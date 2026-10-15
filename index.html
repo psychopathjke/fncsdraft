@@ -3834,6 +3834,68 @@
   .ch-subtab{border:0;cursor:pointer;font:inherit;font-size:12px;font-weight:900;letter-spacing:.04em;text-transform:uppercase;
     padding:8px 14px;border-radius:999px;color:#cfd8ff;background:rgba(255,255,255,.07);box-shadow:inset 0 0 0 1px rgba(180,200,255,.18);}
   .ch-subtab.on{color:#0b1a3a;background:#ffdd00;box-shadow:none;}
+  /* МАГАЗИН РАЗДЕЛАМИ (15.10, «чтобы всё понятно было и красиво»): шапка с балансом и чипами разделов, сетап —
+     карточкой на устройство с лесенкой ступеней. Цвета — те же, что у хаба: жёлтая цена, бирюзовый эффект. */
+  .cc-shop-head{position:relative;}
+  .cc-shop-bal{display:flex;flex-direction:column;gap:2px;}
+  .cc-shop-bal em{font-style:normal;color:#8ea6d6;font-size:12px;font-weight:700;}
+  .cc-shop-bal b{font-family:'Oswald','Arial Narrow',Impact,sans-serif;font-weight:700;font-size:36px;line-height:1.05;
+    color:#ffdd00;font-variant-numeric:tabular-nums;letter-spacing:.01em;}
+  .cc-shop-stats{display:flex;flex-wrap:wrap;gap:6px 18px;margin:8px 0 12px;}
+  .cc-shop-stats span{display:inline-flex;align-items:baseline;gap:6px;font-size:12px;color:#8ea6d6;font-weight:700;}
+  .cc-shop-stats em{font-style:normal;}
+  .cc-shop-stats b{color:#e6edfb;font-weight:800;font-variant-numeric:tabular-nums;}
+  .cc-shop-secs{display:flex;flex-wrap:wrap;gap:6px;padding:2px 0;}
+  .cc-shop-secs::-webkit-scrollbar{display:none;}
+  .cc-sec{flex:0 0 auto;display:inline-flex;align-items:center;gap:6px;cursor:pointer;
+    font-family:'Oswald','Arial Narrow',Impact,sans-serif;font-weight:600;font-size:15px;letter-spacing:.02em;
+    color:#c9d6f5;background:rgba(255,255,255,.05);border:1px solid rgba(140,175,255,.22);
+    border-radius:999px;padding:6px 12px;}
+  .cc-sec:hover{border-color:rgba(255,221,0,.6);color:#fff;}
+  .cc-sec:focus-visible{outline:2px solid #ffdd00;outline-offset:2px;}
+  .cc-sec.on{background:#ffdd00;border-color:#ffdd00;color:#0b0f12;}
+  .cc-sec i{font-style:normal;font-family:inherit;font-size:11px;font-weight:700;min-width:18px;height:18px;
+    display:inline-flex;align-items:center;justify-content:center;border-radius:9px;padding:0 5px;
+    background:#00b090;color:#04241d;}
+  .cc-sec.on i{background:#0b0f12;color:#ffdd00;}
+  .cc-shop-why{margin-top:10px;color:#a9bbe3;font-size:12.5px;line-height:1.45;max-width:62ch;}
+  /* Карточка устройства. */
+  .cc-lads{display:flex;flex-direction:column;gap:8px;}
+  .cc-lad{display:flex;align-items:center;gap:12px;padding:10px;border-radius:10px;
+    background:rgba(255,255,255,.04);border:1px solid rgba(140,175,255,.14);}
+  .cc-lad.fresh{border-color:rgba(0,176,144,.6);background:rgba(0,176,144,.08);}
+  .cc-lad.max{background:rgba(0,176,144,.05);}
+  .cc-lad-img{flex:0 0 auto;width:64px;height:64px;object-fit:contain;border-radius:8px;background:#f2f4f8;padding:4px;}
+  .cc-lad-img.wide{width:88px;object-fit:cover;padding:0;background:#0b0f12;}
+  .cc-lad-in{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:2px;}
+  .cc-lad-top{display:flex;align-items:center;justify-content:space-between;gap:8px;}
+  .cc-lad-top b{font-family:'Oswald','Arial Narrow',Impact,sans-serif;font-weight:600;font-size:16px;color:#fff;letter-spacing:.02em;}
+  .cc-pips{display:inline-flex;gap:3px;}
+  .cc-pips i{width:12px;height:4px;border-radius:2px;background:rgba(255,255,255,.16);}
+  .cc-pips i.on{background:#ffdd00;}
+  .cc-lad-now{font-size:11.5px;color:#8094c4;font-weight:700;line-height:1.3;}
+  .cc-lad-next{font-size:13.5px;color:#fff;font-weight:800;line-height:1.3;}
+  .cc-lad-fx{font-size:11.5px;color:#8ad9c0;font-weight:800;line-height:1.35;}
+  .cc-lad-tag{font-style:normal;display:inline-block;margin-right:6px;vertical-align:1px;background:#00b090;color:#04241d;
+    font-size:9px;font-weight:900;letter-spacing:.06em;border-radius:3px;padding:1px 5px;}
+  .cc-lad-buy{flex:0 0 auto;display:flex;flex-direction:column;align-items:stretch;gap:6px;}
+  #screen-career-hub .cc-lad-buy>.ch-sign{width:auto;min-width:88px;padding:9px 12px;white-space:nowrap;}
+  .cc-lad.max .cc-owned{color:#8ad9c0;}
+  /* Строки без обрезки: имя в две строки, эффект переносится, а не уезжает под цену. */
+  .cc-shop .cc-buy-in b, .cc-shop .cc-buy-in i{white-space:normal;overflow:hidden;display:-webkit-box;
+    -webkit-line-clamp:2;-webkit-box-orient:vertical;}
+  .cc-shop .cc-buy-in span{white-space:normal;line-height:1.35;}
+  .cc-flat-img{flex:0 0 auto;width:88px;height:58px;object-fit:cover;border-radius:8px;background:#0b0f12;}
+  .cc-lux-ico{flex:0 0 auto;width:56px;height:56px;display:flex;align-items:center;justify-content:center;font-size:30px;
+    border-radius:10px;background:rgba(255,221,0,.07);border:1px solid rgba(255,221,0,.22);}
+  .cc-photo-credit{margin-top:8px;font-size:10.5px;color:#6f82b0;line-height:1.4;}
+  @media(max-width:420px){
+    .cc-lad{gap:10px;padding:9px;}
+    .cc-lad-img{width:52px;height:52px;}
+    .cc-lad-img.wide{width:72px;}
+    .cc-flat-img{width:72px;height:50px;}
+    #screen-career-hub .cc-lad-buy>.ch-sign{min-width:78px;padding:8px 10px;}
+  }
   .cc-coll{display:flex; flex-wrap:wrap; gap:8px; font-size:28px; line-height:1; margin:4px 0 8px;}
   /* Игроки сайта (careerWorldHTML): регионы чипами, своя строка жёлтой полосой, на телефоне таблица листается вбок. */
   .lb-top{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin:0 0 8px;}
@@ -9276,6 +9338,27 @@ ccCollSpent:'Потрачено на дорогое',
 lbByEarn:'По призовым',
 lbBySpent:'По тратам',
 lbSpentCol:'Потрачено',
+ccSecGear:'Сетап',
+ccSecHome:'Жильё',
+ccSecFame:'Имя',
+ccSecLux:'Роскошь',
+ccSecClub:'Клуб',
+ccSecHint_gear:'Устройства качают навыки и тренировку, кресла и комнаты добавляют запас сил. Новая ступень заменяет старую.',
+ccSecHint_home:'Своё жильё отменяет аренду и добавляет запас сил. Здесь же — переезд в другую страну или регион.',
+ccSecHint_fame:'Свой турнир, мерч и благотворительность приводят подписчиков. Мерч ещё и платит каждый месяц.',
+ccSecHint_lux:'Машина держит уверенность в плохие недели. Остальное силы не даёт — только полку в профиле.',
+ccSecHint_club:'Своя организация: состав, касса и спонсоры. Дорого, зато клуб твой.',
+ccShopRooms:'Комнаты и выезды',
+ccShopNow:'Сейчас',
+ccShopMaxed:'Лучшее',
+ccSlot_mouse:'Мышь',
+ccSlot_keyboard:'Клавиатура',
+ccSlot_headset:'Наушники',
+ccSlot_monitor:'Монитор',
+ccSlot_pc:'Компьютер',
+ccSlot_chair:'Кресло',
+ccSlot_stream:'Стрим',
+ccSlot_car:'Машина',
 ccOwnCupTitle:'Свой турнир',
 ccOwnCupHint:'Ты ставишь призовой фонд — сцена играет твой кап. Деньги уходят победителям, тебе остаются подписчики и имя. Не чаще раза в месяц.',
 ccOwnCupFund:n=>'Фонд '+n,
@@ -11339,6 +11422,27 @@ ccCollSpent:'Spent on the big stuff',
 lbByEarn:'By prize money',
 lbBySpent:'By spending',
 lbSpentCol:'Spent',
+ccSecGear:'Setup',
+ccSecHome:'Home',
+ccSecFame:'Name',
+ccSecLux:'Luxury',
+ccSecClub:'Club',
+ccSecHint_gear:'Devices raise your skills and training, chairs and rooms add to your energy. A new rung replaces the old one.',
+ccSecHint_home:'A place of your own ends the rent and adds energy. Moving to another country or region is here too.',
+ccSecHint_fame:'Your own cup, merch and charity bring followers. Merch also pays every month.',
+ccSecHint_lux:'A car keeps your confidence up in bad weeks. The rest adds no strength — only a shelf on your profile.',
+ccSecHint_club:'Your own organisation: roster, cash and sponsors. Expensive, but the club is yours.',
+ccShopRooms:'Rooms and trips',
+ccShopNow:'Now',
+ccShopMaxed:'Best',
+ccSlot_mouse:'Mouse',
+ccSlot_keyboard:'Keyboard',
+ccSlot_headset:'Headset',
+ccSlot_monitor:'Monitor',
+ccSlot_pc:'PC',
+ccSlot_chair:'Chair',
+ccSlot_stream:'Stream',
+ccSlot_car:'Car',
 ccOwnCupTitle:'Host your own cup',
 ccOwnCupHint:'You put up the prize pool and the scene plays your cup. The money goes to the winners; you keep the followers and the name. Once a month at most.',
 ccOwnCupFund:n=>n+' prize pool',
@@ -113567,7 +113671,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='bdb9b092';
+const CC_BUILD='0c6edc68';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -142236,16 +142340,17 @@ function ccPingNow(){
 }
 /* Bought once, in one place. See the note above careerFlatBuy. */
 const CC_FLATS=[
-  {id:'studio', m2:30,  mult:40,  cap:0},
-  {id:'one',    m2:45,  mult:70,  cap:5},
-  {id:'two',    m2:70,  mult:110, cap:10},
-  {id:'three',  m2:100, mult:170, cap:16},
+  // Фото — Wikimedia Commons, свободные лицензии; авторы подписаны под плиткой (ccFlatCredit).
+  {id:'studio', m2:30,  mult:40,  cap:0,  img:'flat-studio.jpg'},
+  {id:'one',    m2:45,  mult:70,  cap:5,  img:'flat-one.jpg'},
+  {id:'two',    m2:70,  mult:110, cap:10, img:'flat-two.jpg'},
+  {id:'three',  m2:100, mult:170, cap:16, img:'flat-three.jpg'},
   /* Дом и вилла — его просьба 15.10: «что ещё добавить в магазин, у людей много денег» (верх «Игроков сайта»
      держит по $10M, а дороже трёшки за $68–340K тратить было не на что). Цена тем же правилом — месяцы аренды
      места: дом $0,3–1,4M, вилла $1,2–6M. Запас сил растёт ступенями поменьше, чем деньги: дом на 4 больше трёшки,
      вилла ещё на 4 — это роскошь, а не тренировка. */
-  {id:'house',  m2:250, mult:700,  cap:20},
-  {id:'villa',  m2:600, mult:3000, cap:24}
+  {id:'house',  m2:250, mult:700,  cap:20, img:'flat-house.jpg'},
+  {id:'villa',  m2:600, mult:3000, cap:24, img:'flat-villa.jpg'}
 ];
 function ccFlatOf(id){ return CC_FLATS.find(f=>f.id===id) || null; }
 // Where the career is living, as one key: a country inside Europe, a region
@@ -142855,7 +142960,8 @@ function careerLuxHTML(){
   const rows=CC_LUX.map(it=>{
     const own=ccLuxOwns(it.id), can=!own && (cr.balance||0)>=it.cost;
     return `<div class="cc-buy${own?' own':''}">
-      <div class="cc-buy-in"><b>${it.ico} ${T['ccLux_'+it.id]}</b><span>${T.ccLuxNote}</span></div>
+      <span class="cc-lux-ico" aria-hidden="true">${it.ico}</span>
+      <div class="cc-buy-in"><b>${T['ccLux_'+it.id]}</b><span>${T.ccLuxNote}</span></div>
       ${own ? `<span class="cc-owned">${T.ccFlatYours}</span>`
             : `<button class="ch-sign"${can?'':' disabled'} onclick="careerLuxBuy('${it.id}')">$${ccNum(it.cost)}</button>`}
     </div>`;
@@ -142899,6 +143005,7 @@ function careerFlatHTML(){
     const under=(ownedHere && (ccFlatOf(ownedHere.id)||{}).mult >= it.mult) && !own;
     const can=!own && !under && (cr.balance||0)>=price;
     return `<div class="cc-buy${own?' own':''}${under?' cc-buy-old':''}">
+      ${it.img ? `<img class="cc-flat-img" src="${CC_DEVICE_DIR}${it.img}" alt="" loading="lazy" onerror="this.remove()">` : ''}
       <div class="cc-buy-in"><b>${L()['ccFlat'+it.id]}</b>
         <i>${L().ccFlatM2(it.m2)}${rent?' · '+L().ccFlatPays(Math.round(it.mult))+'':''}</i>
         <span>${L().ccFlatNoRent}${it.cap?' · '+L().ccShopCap+' +'+it.cap:''}</span></div>
@@ -142922,8 +143029,11 @@ function careerFlatHTML(){
     ${away ? `<div class="ch-hint" style="margin:6px 0 0;">${
       L().ccFlatElsewhere(L()['ccFlat'+any.id], regionName(any.place)||ccCountryName(any.place))}</div>` : ''}
     <div class="cc-buys">${rows}</div>
+    <div class="cc-photo-credit">${CC_FLAT_CREDIT}</div>
   </div>`;
 }
+// Подпись авторов фото жилья — CC BY / BY-SA требуют имени и лицензии рядом со снимком.
+const CC_FLAT_CREDIT='Photos: Aaaatu (CC BY-SA 4.0), Lo (CC0), Corey Taratuta (CC BY 2.0), Shixart1985 (CC BY 2.0), w_lemay (CC BY-SA 2.0), Rio Ubatay (CC BY-SA 4.0) — Wikimedia Commons';
 function careerMoveHTML(){
   // A taken card gets the regions and not the map: see the note above.
   /* A taken card gets the regions and not the country map: see the note above.
@@ -143173,62 +143283,114 @@ function careerCheatHTML(){
     })()}
   </div>`;
 }
+/* МАГАЗИН РАЗДЕЛАМИ — его слово 15.10: «магазин дизайн поменяй, чтобы всё понятно было и красиво». Был одной
+   лентой в четыре экрана телефона: тридцать строк сетапа подряд, у каждой «NEW», имена обрезаны, а ниже клуб, кап,
+   мерч, жильё и роскошь. Теперь сверху баланс и чипы разделов (на чипе — сколько там по карману прямо сейчас), и
+   виден один раздел. Сетап — по устройству одной карточкой: что стоит сейчас, лесенка ступеней и следующая
+   покупка, а не все ступени списком. */
+let CC_SHOP_SEC='gear';
+const CC_SHOP_SLOTS=['mouse','keyboard','headset','monitor','pc','chair','stream'];
+function ccShopSec(k){ CC_SHOP_SEC=k; careerRenderHub('shop'); try{ const g=document.querySelector('#screen-career-hub .cc-shop-head'); if(g) g.scrollIntoView({block:'start'}); }catch(e){} }
+function ccShopEffect(it){
+  return (it.reach ? L().ccShopReach+' +'+Math.round(it.reach*100)+'%'
+        : it.conf ? L().ccShopConf+' +'+it.conf
+        : it.cap ? L().ccShopCap+' +'+it.cap
+                 : L().ccShopTrain+' +'+Math.round(it.train*100)+'%')+
+    (it.skill ? Object.keys(it.skill).map(k=>' · +'+it.skill[k]+' '+(L()[ATTR_LABEL[k]]||k.toUpperCase())).join('') : '')+
+    (it.days ? ' · '+L().ccShopMonth : '');
+}
+function ccShopImg(it, cls){
+  return it && it.img ? '<img class="'+cls+(it.wide?' wide':'')+'" src="'+CC_DEVICE_DIR+it.img+'" alt="" loading="lazy" onerror="this.remove()">' : '';
+}
+// Следующая ступень слота (или null, если лучшая уже стоит) и лучшая из купленных.
+function ccShopLadder(slot){
+  const rungs=CC_SHOP.filter(x=>x.slot===slot).sort((a,b)=>a.rank-b.rank);
+  const have=ccShopSlotRank(slot);
+  return {rungs:rungs, have:have, cur:rungs.find(x=>x.rank===have)||null, next:rungs.find(x=>x.rank>have)||null};
+}
+function ccShopGiftBtn(it, can){
+  if(!(ccMpOn() && it && !it.days)) return '';
+  return ccPeerOwns(it.id) ? '<span class="cc-owned cc-gift-has">'+L().ccGiftHas+'</span>'
+    : '<button class="ch-sign cc-gift"'+(can?'':' disabled')+' onclick="careerGift(\''+it.id+'\')">🎁 '+L().ccGiftBtn+'</button>';
+}
+function ccShopLadderHTML(slot, fresh){
+  const T=L(), cr=CAREER.career, l=ccShopLadder(slot);
+  if(!l.rungs.length) return '';
+  const it=l.next || l.cur, can=!!l.next && (cr.balance||0)>=l.next.cost;
+  const pips=l.rungs.map(x=>'<i class="'+(x.rank<=l.have?'on':'')+'"></i>').join('');
+  const isNew=l.next && fresh.has(l.next.id);
+  return '<div class="cc-lad'+(l.next?'':' max')+(isNew?' fresh':'')+'">'+
+    ccShopImg(it, 'cc-lad-img')+
+    '<div class="cc-lad-in">'+
+      '<div class="cc-lad-top"><b>'+esc(T['ccSlot_'+slot]||slot)+'</b><span class="cc-pips">'+pips+'</span></div>'+
+      (l.cur ? '<div class="cc-lad-now">'+T.ccShopNow+': '+esc(T['ccShop'+l.cur.id]||l.cur.id)+'</div>' : '')+
+      (l.next
+        ? '<div class="cc-lad-next">'+esc(T['ccShop'+l.next.id]||l.next.id)+'</div>'+
+          '<div class="cc-lad-fx">'+ccShopEffect(l.next)+'</div>'
+        : '<div class="cc-lad-fx">'+ccShopEffect(l.cur)+'</div>')+
+    '</div>'+
+    '<div class="cc-lad-buy">'+(l.next
+      ? '<button class="ch-sign"'+(can?'':' disabled')+' onclick="careerBuy(\''+l.next.id+'\')">$'+ccNum(l.next.cost)+'</button>'+ccShopGiftBtn(l.next, can)
+      : '<span class="cc-owned">'+T.ccShopMaxed+'</span>')+'</div>'+
+  '</div>';
+}
+// Вещь без лесенки (стол, буткемп, зал) — одной строкой, как раньше, только без обрезки.
+function ccShopRowHTML(it, fresh){
+  const cr=CAREER.career, stay=it.days ? ccStayOf(it.id) : null, own=careerOwns(it.id) || !!stay;
+  const can=!own && (cr.balance||0)>=it.cost;
+  return '<div class="cc-buy cc-buy2'+(own?' own':'')+'">'+ccShopImg(it, 'cc-buy-img'+(it.wide?' cc-buy-img-wide':''))+
+    '<div class="cc-buy-in"><b>'+esc(L()['ccShop'+it.id]||it.id)+'</b>'+
+    '<span>'+ccShopEffect(it)+'</span></div>'+
+    (stay ? '<span class="cc-owned">'+L().ccShopUntil(ccDayLabel(stay.until))+'</span>'
+     : own ? '<span class="cc-owned">'+L().ccShopOwned+'</span>'
+     : '<button class="ch-sign"'+(can?'':' disabled')+' onclick="careerBuy(\''+it.id+'\')">$'+ccNum(it.cost)+'</button>')+
+    ccShopGiftBtn(own?null:it, can)+'</div>';
+}
+// Сколько в разделе можно купить прямо сейчас — цифра на чипе.
+function ccShopAffordable(sec){
+  const cr=CAREER.career, bal=cr.balance||0;
+  const slotN=slots=>slots.filter(s=>{ const n=ccShopLadder(s).next; return n && bal>=n.cost; }).length;
+  if(sec==='gear') return slotN(CC_SHOP_SLOTS)+CC_SHOP.filter(x=>!x.slot && !careerOwns(x.id) && !(x.days && ccStayOf(x.id)) && bal>=x.cost).length;
+  if(sec==='home'){ const f=ccFlat(), have=f && f.place===ccFlatPlace() ? (ccFlatOf(f.id)||{}).mult||0 : 0;
+    return CC_FLATS.filter(x=>x.mult>have && bal>=ccFlatPrice(x, ccFlatPlace())).length; }
+  if(sec==='fame') return (ccOwnCupReady() && bal>=CC_OWN_CUP_FUNDS[0] ? 1 : 0)+(ccCharityReady() && bal>=CC_CHARITY_FUNDS[0] ? 1 : 0)+
+    CC_MERCH.filter(m=>{ const n=ccMerchNow(); return (!n || m.cost>n.cost) && bal>=m.cost; }).length;
+  if(sec==='lux') return slotN(['car'])+CC_LUX.filter(x=>!ccLuxOwns(x.id) && bal>=x.cost).length;
+  return 0;
+}
 function careerShopHTML(){
-  const cr=CAREER.career;
+  const T=L(), cr=CAREER.career;
   const fresh=new Set(careerShopNew().map(it=>it.id));
-  const rows=ccShopVisible().map(function(it){
-    const stay=it.days ? ccStayOf(it.id) : null;
-    const own=careerOwns(it.id) || !!stay;
-    // A rig below the one already on the desk is not for sale any more.
-    const outranked=!own && it.slot && ccShopSlotRank(it.slot)>=it.rank;
-    const can=!own && !outranked && (cr.balance||0)>=it.cost;
-    const spec=L()['ccShopSpec'+it.id];
-    // The photo is the product's own, so a desk reads as a desk rather than as
-    // a list of upgrades. Missing files simply leave the row without one.
-    // A room is not a product shot: the bootcamp photo is a landscape of a
-    // place, so it is cropped wide rather than boxed square like a mouse.
-    const shot=it.img ? '<img class="cc-buy-img'+(it.wide?' cc-buy-img-wide':'')+
-      '" src="'+CC_DEVICE_DIR+it.img+'" alt="" loading="lazy" onerror="this.remove()">' : '';
-    return '<div class="cc-buy'+(own?' own':'')+(outranked?' cc-buy-old':'')+
-      (fresh.has(it.id)?' cc-buy-new':'')+'">'+
-      (fresh.has(it.id)?'<span class="cc-buy-tag">'+L().ccShopNew+'</span>':'')+
-      shot+
-      '<div class="cc-buy-in"><b>'+L()['ccShop'+it.id]+'</b>'+
-      (spec ? '<i>'+spec+'</i>' : '')+
-      '<span>'+(it.reach ? L().ccShopReach+' +'+Math.round(it.reach*100)+'%'
-               : it.conf ? L().ccShopConf+' +'+it.conf
-               : it.cap ? L().ccShopCap+' +'+it.cap
-                        : L().ccShopTrain+' +'+Math.round(it.train*100)+'%')+
-        // What the device pays into on the card itself. See CC_SHOP.
-        (it.skill ? Object.keys(it.skill).map(function(k){
-            return ' · +'+it.skill[k]+' '+(L()[ATTR_LABEL[k]]||k.toUpperCase()); }).join('') : '')+
-        (it.days ? ' · '+L().ccShopMonth : '')+'</span></div>'+
-      (stay ? '<span class="cc-owned">'+L().ccShopUntil(ccDayLabel(stay.until))+'</span>'
-           : own ? '<span class="cc-owned">'+L().ccShopOwned+'</span>'
-           : outranked ? '<span class="cc-owned">'+L().ccShopOwnedBetter+'</span>'
-           : '<button class="ch-sign"'+(can?'':' disabled')+' onclick="careerBuy(\''+it.id+'\')">$'+
-             ccNum(it.cost)+'</button>')+
-      ((ccMpOn() && !it.days)
-        ? (ccPeerOwns(it.id)
-            ? '<span class="cc-owned cc-gift-has">'+L().ccGiftHas+'</span>'
-            : '<button class="ch-sign cc-gift"'+(can?'':' disabled')+' onclick="careerGift(\''+it.id+'\')">🎁 '+L().ccGiftBtn+'</button>')
-        : '')+
-      '</div>';
-  }).join('');
-  return '<div class="ch-grid" style="grid-template-columns:minmax(0,1fr);">'+
-    '<div class="ch-tile cc-shop"><h4>'+L().chTabShop+'</h4>'+
-    '<div class="ch-hint">'+L().ccShopHint+'</div>'+
-    '<div class="ch-row"><em>'+L().ccBalance+'</em><b>$'+ccNum((cr.balance||0))+'</b></div>'+
-    '<div class="ch-row"><em>'+L().chEarnings+'</em><b>$'+ccNum((cr.earnings||0))+'</b></div>'+
-    // What today's training is actually multiplied by, the stay included, so
-    // the number on the screen is the number the day loop uses.
-    '<div class="ch-row"><em>'+L().ccShopTrain+'</em><b>+'+Math.round((careerDayGear()-1)*100)+'%</b></div>'+
-    ((CAREER.gear && CAREER.gear.conf) ? '<div class="ch-row"><em>'+L().ccShopConf+'</em><b>+'+
-      CAREER.gear.conf+' · '+L().ccConfFloor(Math.round((CC_FORM_MAX-CAREER.gear.conf)*10)/10)+'</b></div>' : '')+
-    rows+'</div>'+
-    // The one thing on this tab that is not a thing on a desk. It sits under the
-    // desk rather than in it: a rig is a purchase, a move is a decision.
-    careerClubHTML()+careerOwnCupHTML()+careerMerchHTML()+careerCharityHTML()+careerLuxHTML()+careerFlatHTML()+careerMoveHTML()+careerCheatHTML()+'</div>';
+  const secs=[['gear', T.ccSecGear], ['home', T.ccSecHome], ['fame', T.ccSecFame], ['lux', T.ccSecLux], ['club', T.ccSecClub]];
+  if(!secs.some(s=>s[0]===CC_SHOP_SEC)) CC_SHOP_SEC='gear';
+  const conf=(CAREER.gear && CAREER.gear.conf) || 0;
+  const head='<div class="ch-tile cc-shop-head">'+
+    '<div class="cc-shop-bal"><em>'+T.ccBalance+'</em><b>$'+ccNum(cr.balance||0)+'</b></div>'+
+    '<div class="cc-shop-stats">'+
+      '<span><em>'+T.chEarnings+'</em><b>$'+ccNum(cr.earnings||0)+'</b></span>'+
+      // То, на что умножается сегодняшняя тренировка, буткемп включая.
+      '<span><em>'+T.ccShopTrain+'</em><b>+'+Math.round((careerDayGear()-1)*100)+'%</b></span>'+
+      '<span><em>'+T.ccShopCap+'</em><b>'+careerEnergyMax()+'</b></span>'+
+      (conf ? '<span><em>'+T.ccShopConf+'</em><b>+'+conf+'</b></span>' : '')+
+    '</div>'+
+    '<div class="cc-shop-secs">'+secs.map(([k,t])=>{ const n=ccShopAffordable(k);
+      return '<button class="cc-sec'+(CC_SHOP_SEC===k?' on':'')+'" onclick="ccShopSec(\''+k+'\')">'+esc(t)+
+        (n ? '<i>'+n+'</i>' : '')+'</button>'; }).join('')+'</div>'+
+    '<div class="cc-shop-why">'+T['ccSecHint_'+CC_SHOP_SEC]+'</div>'+
+  '</div>';
+  let body='';
+  if(CC_SHOP_SEC==='gear'){
+    const rooms=CC_SHOP.filter(x=>!x.slot);
+    body='<div class="ch-tile cc-shop"><h4>'+T.ccSecGear+'</h4><div class="cc-lads">'+
+      CC_SHOP_SLOTS.map(s=>ccShopLadderHTML(s, fresh)).join('')+'</div></div>'+
+      '<div class="ch-tile cc-shop"><h4>'+T.ccShopRooms+'</h4><div class="cc-buys">'+rooms.map(it=>ccShopRowHTML(it, fresh)).join('')+'</div></div>'+
+      careerCheatHTML();
+  } else if(CC_SHOP_SEC==='home') body=careerFlatHTML()+careerMoveHTML();
+  else if(CC_SHOP_SEC==='fame') body=careerOwnCupHTML()+careerMerchHTML()+careerCharityHTML();
+  else if(CC_SHOP_SEC==='lux') body='<div class="ch-tile cc-shop"><h4>'+T.ccSlot_car+'</h4><div class="cc-lads">'+ccShopLadderHTML('car', fresh)+'</div>'+
+      (conf ? '<div class="ch-hint" style="margin-top:8px;">'+T.ccConfFloor(Math.round((CC_FORM_MAX-conf)*10)/10)+'</div>' : '')+'</div>'+careerLuxHTML();
+  else body=careerClubHTML();
+  return '<div class="ch-grid cc-shop-grid" style="grid-template-columns:minmax(0,1fr);">'+head+body+'</div>';
 }
 
 /* ---- Being asked about it ---------------------------------------------------

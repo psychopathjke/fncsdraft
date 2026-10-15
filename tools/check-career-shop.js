@@ -176,12 +176,13 @@ const BOOT = `
        BETTER - a shop showing you its own bookkeeping. A slot shows the step up
        and nothing else. */
     fresh(20000); careerBuy('pcpro');
-    const html = careerShopHTML();
+    // Магазин разделами (15.10): устройства — в «Сетапе», машина — в «Роскоши», карточкой с фото (cc-lad-img).
+    CC_SHOP_SEC = 'gear'; let html = careerShopHTML(); CC_SHOP_SEC = 'lux'; html += careerShopHTML(); CC_SHOP_SEC = 'gear';
     const shown = ccShopVisible();
     out.notes.rows = {shown: shown.length, ofItems: CC_SHOP.length,
                       ids: shown.map(i => i.id).join(',')};
     // The wide class contains the base class, so count the tags.
-    const imgs = (html.match(/<img class="cc-buy-img/g) || []).length;
+    const imgs = (html.match(/<img class="cc-(buy|lad)-img/g) || []).length;
     out.notes.photos = imgs;
     check('every row drawn carries its photo', imgs === shown.filter(i => i.img).length,
           imgs + ' of ' + shown.filter(i => i.img).length);

@@ -43,7 +43,7 @@ const BOOT = [
 '        if(b.disabled) return {started:false};',
 '        b.click();',
 '        CAREER.career.balance = 50000;',
-'        careerTab("shop");',
+'        CC_SHOP_SEC="home"; careerTab("shop");',   // переезд — в разделе «Жильё» (магазин разделами, 15.10)
 '        var html = document.getElementById("chBody").innerHTML;',
 '        // Открытая плитка: строки регионов и карта живут под кнопкой.',
 '        CH_MOVE = false;',

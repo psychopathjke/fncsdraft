@@ -148,6 +148,7 @@ const BOOT = `
     CH_MOVE_PICK = null;
     show('screen-career-hub');
     CH_MOVE = true;
+    CC_SHOP_SEC = 'home';   // переезд — в разделе «Жильё» (магазин разделами, 15.10)
     careerRenderHub('shop');
     const body = document.getElementById('chBody');
     const svgBefore = body.querySelector('.cc-map');
