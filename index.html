@@ -113727,7 +113727,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='11fda771';
+const CC_BUILD='fbfa1df1';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -142988,7 +142988,7 @@ function careerCharityHTML(){
   const rows=CC_CHARITY_FUNDS.map((sum, i)=>{
     const can=ready && (cr.balance||0)>=sum;
     return `<div class="cc-buy">
-      <img class="cc-flat-img" src="${CC_DEVICE_DIR}give-${i+1}.jpg" alt="" loading="lazy" onerror="this.remove()">
+      <img class="cc-flat-img" src="${CC_DEVICE_DIR}${CC_CHARITY_IMG[i]}" alt="" loading="lazy" onerror="this.remove()">
       <div class="cc-buy-in"><b>${T.ccCharityGive('$'+ccNum(sum))}</b>
         <span>+${ccFollowers(Math.round(sum*CC_CHARITY_REACH))} ${T.xFollowers}</span></div>
       <button class="ch-sign"${can?'':' disabled'} onclick="careerCharity(${sum})">$${ccNum(sum)}</button>
@@ -143003,7 +143003,8 @@ function careerCharityHTML(){
     <div class="cc-photo-credit">${CC_CHARITY_CREDIT}</div>
   </div>`;
 }
-const CC_CHARITY_CREDIT='Photos: XHiide (CC BY-SA 4.0), Gage Skidmore (CC BY-SA 2.0), Joe Mabel (CC BY-SA 3.0) — Wikimedia Commons';
+const CC_CHARITY_IMG=['give-1b.jpg', 'give-2.jpg', 'give-3.jpg'];
+const CC_CHARITY_CREDIT='Photos: MTA New York (CC BY 2.0), Gage Skidmore (CC BY-SA 2.0), Joe Mabel (CC BY-SA 3.0) — Wikimedia Commons';
 
 /* РОСКОШЬ. Только престиж: вещь встаёт на полку в профиле («Коллекция») и в сумму «Потрачено», которую видно
    в «Игроках сайта». Силы, энергии и подписчиков не даёт — для этого есть остальной магазин. */
