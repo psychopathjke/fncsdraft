@@ -7808,6 +7808,7 @@
       <section class="hl-pane" id="homeScene" hidden></section>
       <section class="hl-pane" id="homeBoard" hidden></section>
     </section>
+    <script>(function(){try{var c=JSON.parse(localStorage.getItem("fd_home_live")||"null"),b=document.getElementById("homeLive");var l=localStorage.getItem("fncsdraft_lang");if(!c||!b||!c.html||(l&&l!==c.lang))return;b.innerHTML=c.html;b.setAttribute("data-tab",c.tab||"real");b.hidden=false;}catch(e){}})();</script>
 
     <button class="restart-btn" onclick="openHistoryScreen()" style="margin-top:12px;width:100%;display:flex;align-items:center;justify-content:center;gap:8px;">
       <span data-i18n="historyBtn"></span> <span id="achievementBadge" style="color:var(--accent);font-weight:800;"></span>
@@ -113981,7 +113982,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='21f00f2a';
+const CC_BUILD='480d5a21';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -159136,6 +159137,9 @@ function homeLiveTabs(k){
   if(!panes.some(p=>p[0]===cur)) cur=panes[0][0];
   box.dataset.tab=cur;
   bar.innerHTML=panes.map(p=>'<button type="button" role="tab" aria-selected="'+(p[0]===cur)+'" class="'+(p[0]===cur ? 'on' : '')+'" onclick="homeLiveTabs(\''+p[0]+'\')">'+esc(p[2])+'</button>').join('');
+  /* Снимок блока — в браузер: при следующем заходе оболочка ставит его сразу (скрипт под разметкой #homeLive),
+     не дожидаясь app.js (15.10: «с делеем результаты появляются»). Пишется, только когда таблица сайта уже пришла. */
+  if(HOME_BOARD && HOME_BOARD._at){ try{ localStorage.setItem('fd_home_live', JSON.stringify({lang:LANG, tab:cur, html:box.innerHTML})); }catch(e){} }
 }
 function homeBoardDraw(){
   const box=document.getElementById('homeBoard'); if(!box) return;
