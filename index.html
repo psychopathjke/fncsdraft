@@ -113476,7 +113476,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='8962c32f';
+const CC_BUILD='770f88c1';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -136146,8 +136146,14 @@ function careerDmPool(){
   // Through the scene's eyes, not the roster's: a seat held by the player's own
   // card is a free seat. See ccSceneMateOf — и по СЕГОДНЯШНИМ парам, как и ответ
   // в личке (careerDmMateOf), иначе развёдшийся стоял бы в хвосте как занятый.
-  const seatRank=p=>{ const m=careerDmMateOf({handle:p.handle});
-    return !m ? 0 : careerDuoBeatsYou({handle:p.handle}) ? 2 : 1; };
+  /* Ранг — один раз на человека, а не на каждое сравнение сортировки (Notion 15.10, «лаги после
+     первой церемонии»): каждый вызов — careerDmMateOf → ccSquadMatesOf по всем парам пула, и
+     n·log n таких проходов стоили «Соцсети» и каждому «Следующему дню» ~80 мс. */
+  const rankOf=new Map();
+  const seatRank=p=>{ if(rankOf.has(p)) return rankOf.get(p);
+    const m=careerDmMateOf({handle:p.handle});
+    const r=!m ? 0 : careerDuoBeatsYou({handle:p.handle}) ? 2 : 1;
+    rankOf.set(p, r); return r; };
   near.sort((a,b)=>seatRank(a)-seatRank(b));
   /* Two seats held for the best people in the window, whatever their seat.
 
@@ -163914,7 +163920,23 @@ function ccArcRealGf(sn, n, reg){
   const rows=b.slice().sort((p,q)=>p.rank-q.rank);
   return {set:set, rows:rows, team:rows[0].duo.map(h=>ccStageCardFrom({h:h, r:reg}))};
 }
+/* Закрытый сезон не меняется — его История считается один раз (Notion 15.10, «лаги после первой
+   церемонии»: вкладка пересобирала сцену сезона на каждую отрисовку, ~55 мс, ccPickThird по всем
+   регионам). Кэш живёт на объекте карьеры: другой слот или перезагрузка читают заново; язык и
+   журнал в ключе — подписи и строки игрока. Идущий сезон — в пределах дня: день тоже в ключе. */
+const CC_ARC_SEASON=new WeakMap();
 function careerArchiveSeason(sn){
+  const cr=CAREER.career;
+  let m=CC_ARC_SEASON.get(cr);
+  if(!m){ m={}; CC_ARC_SEASON.set(cr, m); }
+  const ck=sn+'|'+(sn<cr.season ? '' : cr.day+'|'+(cr.seasonOver?1:0))+'|'+(typeof LANG!=='undefined' ? LANG : '')+'|'+
+           (CAREER.player.nick||'')+'|'+ccCareerRegion()+'|'+(cr.log||[]).length+'|'+Object.keys(cr.arcWorld||{}).length;
+  if(sn<cr.season) return m[ck] || (m[ck]=careerArchiveSeasonRaw(sn));
+  // Идущий сезон — одна последняя запись, а не по записи на каждый день.
+  if(!m.live || m.live.ck!==ck) m.live={ck:ck, a:careerArchiveSeasonRaw(sn)};
+  return m.live.a;
+}
+function careerArchiveSeasonRaw(sn){
   const cr=CAREER.career;
   // What that season was actually played in, not what its number implies.
   const size=careerSeasonSize(sn);
