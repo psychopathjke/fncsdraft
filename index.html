@@ -7042,7 +7042,6 @@
   .mg-board.open{border-color:#3fd0ff;}
   /* ГЛАВНАЯ 15.10 («новая главная», его «делай»): сверху «Продолжить» по сохранениям, под режимами — ряд «С другом»,
      настоящий календарь FNCS и «Игроки сайта». Метки «Режим 1/2» сняты: у карьеры и менеджера стояла одна цифра. */
-  .hero-mode-tag{display:none;}
   .home-block{margin:0 0 12px;padding:16px 16px 14px;border-radius:var(--r,14px);
     background:linear-gradient(160deg,#1a3480 0%,#12245c 55%,#0b1640 100%);box-shadow:inset 0 0 0 1px rgba(150,180,255,.18);}
   .home-block[hidden]{display:none !important;}
@@ -7123,93 +7122,18 @@
   .hr-table tr:nth-child(-n+3) td:first-child{color:#ffdd00;}
   .hr-table td:nth-child(2){color:#fff;font-weight:700;}
   body.hr-lock{overflow:hidden;}
-  /* ГЛАВНАЯ ПЛОТНЕЕ (15.10): три режима одним рядом, на телефоне — ниже и без плашек; живые блоки вкладками. */
-  .hero-pair>.hero.hero-draft{margin:0;}
-  .hero-pair:has(.hero-mgr:not([hidden]))>.hero-draft:not(.hero-mgr)>.hero-art.hd-logos{display:block;position:absolute;inset:0;min-height:0;clip-path:none;opacity:.3;}
-  .hero-pair:has(.hero-mgr:not([hidden]))>.hero-draft:not(.hero-mgr) .hero-body{position:relative;z-index:2;}
-  .hero-pair .hero-career .hero-cta .hero-btn-alt{display:none;}
-  @media(min-width:901px){
-    #screen-mode .hero-pair:has(.hero-mgr:not([hidden])){grid-template-columns:repeat(3,minmax(0,1fr));}
-    #screen-mode .hero-pair:has(.hero-mgr:not([hidden]))>.hero{min-height:360px;}
-    #screen-mode .hero-pair:has(.hero-mgr:not([hidden])) .hero-body{padding:26px 22px 24px;}
-    #screen-mode .hero-pair:has(.hero-mgr:not([hidden])) .hero-title{font-size:clamp(26px,2.3vw,36px);}
-    .hero-pair .hero-sub{font-size:13px;}
-  }
-  @media(max-width:900px){
-    .hero-pair>.hero{min-height:0;margin:0 0 10px;}
-    .hero-pair .hero-chips,.hero-pair .hero-about{display:none;}
-    .hero-pair .hero-body{padding:18px 18px 18px;gap:10px;}
-    .hero-pair .hero-title{font-size:28px;}
-    .hero-pair .hero-sub{font-size:13px;line-height:1.45;}
-  }
+  /* Вкладки живого блока на главной (Результаты 2026 / Сцена сейчас / Игроки сайта). */
+  .home-tabs{margin-top:16px;}
   #homeLive .hl-pane{display:none;}
   #homeLive[data-tab="real"] #homeReal:not([hidden]),#homeLive[data-tab="scene"] #homeScene:not([hidden]),
   #homeLive[data-tab="board"] #homeBoard:not([hidden]){display:block;}
   .hl-pane>.home-h{display:none;}
   .hl-tabs{display:flex;gap:6px;margin:0 0 10px;overflow-x:auto;scrollbar-width:none;}
-  .home-tabs{margin-top:10px;}
   .hl-tabs::-webkit-scrollbar{display:none;}
   .hl-tabs button{flex:0 0 auto;font-family:var(--font-display);font-weight:600;font-size:16px;letter-spacing:.03em;text-transform:uppercase;
     padding:8px 14px 7px;border-radius:999px;border:1px solid rgba(140,175,255,.25);background:rgba(255,255,255,.05);color:#c9d6f5;cursor:pointer;}
   .hl-tabs button.on{background:#ffdd00;border-color:#ffdd00;color:#0b0f12;}
   .hl-tabs button:focus-visible{outline:2px solid #ffdd00;outline-offset:2px;}
-  .home-hist{padding:12px 16px;}
-  .home-hist .home-h{font-size:17px;}
-  @media(max-width:700px){
-    .hf-card{flex-direction:row;align-items:center;gap:10px;padding:10px;}
-    .hf-card .cstrip-btn{flex:0 0 auto;min-width:128px;}
-    .hf-card p{font-size:12px;}
-  }
-  /* ЛОББИ (15.10, «как в игре»): сцена с выбором режима и живая колонка. Панели сцены — три прежних героя,
-     видна одна (data-mode у #homeLobby). Правила hero-pair (коллажи, фон) работают как раньше: сцена — тот же .hero-pair. */
-  .lobby{display:grid;grid-template-columns:minmax(0,1.9fr) minmax(300px,1fr);gap:12px;align-items:start;margin:0 0 12px;}
-  #screen-mode .lobby-stage.hero-pair{display:grid !important;grid-template-columns:210px minmax(0,1fr) !important;gap:0 !important;margin:0 !important;
-    border-radius:var(--r,14px);overflow:hidden;box-shadow:inset 0 0 0 1px rgba(150,180,255,.22);min-height:680px;
-    background:linear-gradient(160deg,#1d3b8c 0%,#13265f 46%,#0b1640 100%);}
-  #screen-mode .lobby-stage>.hero{grid-column:2;grid-row:1;margin:0 !important;min-height:0 !important;border-radius:0;clip-path:none;box-shadow:none;}
-  #homeLobby[data-mode="career"] .lobby-stage>.hero:not(.hero-career),
-  #homeLobby[data-mode="mgr"] .lobby-stage>.hero:not(.hero-mgr),
-  #homeLobby[data-mode="draft"] .lobby-stage>.hero:not([data-pane="draft"]){display:none !important;}
-  .lobby-stage .hero-body{justify-content:flex-end;padding:30px 30px 30px !important;}
-  .lobby-stage .hero-title{font-size:clamp(32px,3.6vw,54px) !important;}
-  .lobby-stage .hero-sub{font-size:14px;}
-  .lobby-stage .hero-cta .hero-btn-go{font-size:22px;padding:16px 36px 15px;}
-  .lobby-modes{grid-column:1;grid-row:1;position:relative;z-index:3;display:flex;flex-direction:column;gap:6px;
-    padding:22px 0 22px 14px;background:rgba(4,9,32,.62);box-shadow:inset -1px 0 0 rgba(150,180,255,.18);}
-  .lobby-modes button{display:block;width:100%;text-align:left;font-family:var(--font-display);font-weight:700;font-style:italic;
-    font-size:23px;letter-spacing:.02em;text-transform:uppercase;color:#c9d6f5;background:transparent;border:0;
-    padding:13px 16px 12px;border-radius:10px 0 0 10px;cursor:pointer;}
-  .lobby-modes button[hidden]{display:none;}
-  .lobby-modes button:hover{color:#fff;background:rgba(255,255,255,.06);}
-  .lobby-modes button.on{background:#ffdd00;color:#0b0f12;}
-  .lobby-modes button:focus-visible{outline:2px solid #ffdd00;outline-offset:-2px;}
-  .lobby-left{display:flex;flex-direction:column;gap:12px;min-width:0;}
-  .lobby-left>.home-block{margin:0;}
-  @media(max-width:900px){ .lobby-left{display:contents;} .lobby-stage{order:1;} .lobby-live{order:2;} .lobby-left>.home-friends{order:3;} .lobby-left>.home-hist{order:4;} }
-  #homeLobby #homeLive{margin:0;}
-  .lobby .hr-list{grid-template-columns:1fr;gap:6px;}
-  .lobby .hr-ev{padding:7px 9px;gap:10px;}
-  .lobby .hr-ev img{width:58px;height:40px;border-radius:6px;}
-  .lobby .hr-go{display:none;}
-  .lobby .hr-in b{font-size:15px;}
-  .lobby .hs-ev img{width:66px;height:46px;}
-  .lobby .home-sub{margin-bottom:8px;}
-  @media(min-width:901px){
-    #homeLobby #homeLive .hl-tabs{display:none;}
-    #homeLobby #homeLive .hl-pane:not([hidden]){display:block !important;}
-    #homeLobby #homeLive .hl-pane+.hl-pane:not([hidden]){margin-top:16px;padding-top:14px;border-top:1px solid rgba(255,255,255,.1);}
-    #homeLobby .hl-pane>.home-h{display:block;font-size:18px;}
-  }
-  @media(max-width:900px){
-    .lobby{grid-template-columns:1fr;}
-    #screen-mode .lobby-stage.hero-pair{grid-template-columns:1fr !important;min-height:0;}
-    .lobby-modes{flex-direction:row;padding:8px;gap:6px;box-shadow:inset 0 -1px 0 rgba(150,180,255,.18);}
-    .lobby-modes button{flex:1 1 0;font-size:16px;text-align:center;padding:10px 4px 9px;border-radius:8px;}
-    #screen-mode .lobby-stage>.hero{grid-column:1;grid-row:2;}
-    .lobby-stage .hero-body{padding:22px 18px 22px !important;min-height:300px;}
-    .lobby-stage .hero-title{font-size:30px !important;}
-    .lobby-stage .hero-cta .hero-btn-go{font-size:19px;padding:14px 28px 13px;}
-  }
   .hero-mgr[hidden]{display:none !important;}
   /* Пара: карьера игрока слева, менеджера справа; арт уходит под текст. Кнопка «Карьера менеджера» в блоке игрока
      тогда лишняя — дверь рядом. На телефоне — одна под другой, как было. */
@@ -7634,16 +7558,7 @@
          Id кнопок cstripDuo/cstripRace/cstripCode сохранены: на них смотрят
          check-mp-doors и setLang. Арт — ключевой арт Major 1, один. -->
     <!-- Карьера игрока и карьера менеджера — ОДНОЙ строкой, две половины (его скрин 7.10: красные рамки слева и справа). -->
-    <!-- ЛОББИ (15.10): сцена режима слева, живая колонка справа. Режим выбирается списком на сцене (homeMode — здесь же,
-         в оболочке, чтобы список работал до загрузки app.js). Три героя остались как были — это панели сцены. -->
-    <div class="lobby" id="homeLobby" data-mode="career">
-    <div class="lobby-left">
-    <div class="hero-pair lobby-stage">
-      <div class="lobby-modes" role="tablist">
-        <button type="button" role="tab" data-m="career" class="on" aria-selected="true" onclick="homeMode('career')"><span data-i18n="navCareer"></span></button>
-        <button type="button" role="tab" data-m="mgr" class="hero-mgr" hidden aria-selected="false" onclick="homeMode('mgr')"><span data-i18n="hmMgrNav"></span></button>
-        <button type="button" role="tab" data-m="draft" aria-selected="false" onclick="homeMode('draft')"><span data-i18n="navDraft"></span></button>
-      </div>
+    <div class="hero-pair">
     <section class="hero hero-career" aria-labelledby="heroTitle">
       <!-- Самые хайповые игроки всех лет позади текста, на менеджере — гербы клубов (его слово 8.10). -->
       <div class="hero-collage hc-players" aria-hidden="true"><img src="photos/BUGHA.jpg" alt="" loading="lazy" onerror="this.remove()"><img src="photos/aqua.png" alt="" loading="lazy" onerror="this.remove()"><img src="photos/Mongraal.jpg" alt="" loading="lazy" onerror="this.remove()"><img src="photos/Benjyfishy.jpg" alt="" loading="lazy" onerror="this.remove()"><img src="photos/Clix.jpg" alt="" loading="lazy" onerror="this.remove()"><img src="photos/MrSavage.jpg" alt="" loading="lazy" onerror="this.remove()"><img src="photos/nyhrox.png" alt="" loading="lazy" onerror="this.remove()"><img src="photos/Bizzle.png" alt="" loading="lazy" onerror="this.remove()"><img src="photos/TaySon.jpg" alt="" loading="lazy" onerror="this.remove()"><img src="photos/Mero.png" alt="" loading="lazy" onerror="this.remove()"><img src="photos/Th0masHD.jpg" alt="" loading="lazy" onerror="this.remove()"><img src="photos/Setty.jpg" alt="" loading="lazy" onerror="this.remove()"><img src="photos/Reet.jpg" alt="" loading="lazy" onerror="this.remove()"><img src="photos/Kami.jpg" alt="" loading="lazy" onerror="this.remove()"><img src="photos/Edgey.jpg" alt="" loading="lazy" onerror="this.remove()"><img src="photos/Khanada.jpg" alt="" loading="lazy" onerror="this.remove()"><img src="photos/Queasy.jpg" alt="" loading="lazy" onerror="this.remove()"><img src="photos/Malibuca.jpg" alt="" loading="lazy" onerror="this.remove()"><img src="photos/Peterbot.jpg" alt="" loading="lazy" onerror="this.remove()"><img src="photos/Pollo.jpg" alt="" loading="lazy" onerror="this.remove()"><img src="photos/Veno.jpg" alt="" loading="lazy" onerror="this.remove()"><img src="photos/Cooper.jpg" alt="" loading="lazy" onerror="this.remove()"><img src="photos/vic0.jpg" alt="" loading="lazy" onerror="this.remove()"><img src="photos/SwizzY.jpg" alt="" loading="lazy" onerror="this.remove()"></div>
@@ -7664,6 +7579,14 @@
           <button class="hero-btn hero-btn-alt" type="button" onclick="homeOpenDraft()"><span data-i18n="heroDraft"></span></button>
         </div>
         <div class="hero-about"><a href="about.html"><span data-i18n="aboutLink"></span></a></div>
+        <!-- Видно сразу, а не после загрузки app.js (его правка 29.09: «с задержкой появляется with a friend»);
+             CC_MP_OPEN=false по-прежнему прячет ряд из setLang. -->
+        <div class="hero-team" id="heroTeam">
+          <span class="hero-team-lbl" data-i18n="heroTeamLbl"></span>
+          <button class="cstrip-btn cstrip-btn-duo" id="cstripDuo" type="button" onclick="careerMpNew()" data-i18n="heroDuo"></button>
+          <button class="cstrip-btn cstrip-btn-duo" id="cstripRace" type="button" onclick="careerRaceNew()" data-i18n="ccRaceMake"></button>
+          <button class="cstrip-btn cstrip-btn-code" id="cstripCode" type="button" onclick="careerMpJoinNew()" data-i18n="ccMpEnter"></button>
+        </div>
       </div>
       <div class="hero-art" style="background-image:url(art/fncs-2026-major1.jpg);cursor:pointer" role="img" aria-label="FNCS 2026 Major 1" onclick="careerStart()"></div>
     </section>
@@ -7679,8 +7602,17 @@
       </div>
       <div class="hero-art" style="background:url(art/mode-major1.jpg) center/cover;cursor:pointer" role="img" aria-label="Fortnite Manager" onclick="mgrStart()"></div>
     </section>
-    <!-- Драфт — третьей плиткой того же ряда (15.10: «скомкано, вниз листать надо»). -->
-    <section class="hero hero-draft" data-pane="draft" aria-labelledby="heroDraftTitle">
+    </div>
+    <!-- Две колонки сразу (его скрин 8.10: «когда захожу на сайт вот так показывает, потом 2 колонки»): блок менеджера
+         открывался из app.js после загрузки 9 МБ, и до этого главная стояла в одну колонку. Тот же список хостов,
+         что в mgrAllowed. -->
+    <script>(function(){var h=(location.hostname||"").toLowerCase();if(!h||h==="localhost"||h==="127.0.0.1"||h==="debug.fncsdraft.pages.dev")document.querySelectorAll('.hero-mgr, .hero-mgr-btn, .nav-pill[data-nav="manager"]').forEach(function(el){el.hidden=false;});})();</script>
+    <!-- Все плитки режимов — в ОДНОЙ панели того же кроя, что герой. Скриншот (красная рамка вокруг всех рядов): «с этими
+         прямоугольниками чет придумать, чтоб они как 1 был по дизайну, а то
+         первый выделяется». -->
+    <!-- ДВА РЕЖИМА (его слово 29.09): два одинаковых больших блока — КАРЬЕРА и ДРАФТ («такого же размера»).
+         Кнопка драфта раскрывает под ним выбор года 2019–2026 и форматов. -->
+    <section class="hero hero-draft" aria-labelledby="heroDraftTitle">
       <div class="hero-body">
         <span class="dp-tag hero-mode-tag" data-i18n="hmDraftTag"></span>
         <h2 class="hero-title" id="heroDraftTitle" data-i18n="hdHeroTitle"></h2>
@@ -7702,41 +7634,6 @@
         <div class="hd-wall"><figure class="hd-logo hd-wide"><img src="art/fncs-2019.jpg" alt="" loading="lazy"><figcaption>WC 2019</figcaption></figure><figure class="hd-logo"><img src="art/cups/f10.jpg" alt="" loading="lazy"><figcaption>2019</figcaption></figure><figure class="hd-logo"><img src="art/cups/f11.jpg" alt="" loading="lazy"><figcaption>2019</figcaption></figure><figure class="hd-logo"><img src="art/cups/f12.jpg" alt="" loading="lazy"><figcaption>2020</figcaption></figure><figure class="hd-logo"><img src="art/cups/f14.jpg" alt="" loading="lazy"><figcaption>2020</figcaption></figure><figure class="hd-logo"><img src="art/cups/f15.jpg" alt="" loading="lazy"><figcaption>2021</figcaption></figure><figure class="hd-logo"><img src="art/cups/f17.jpg" alt="" loading="lazy"><figcaption>2021</figcaption></figure><figure class="hd-logo"><img src="art/cups/f18gr.jpg" alt="" loading="lazy"><figcaption>2021</figcaption></figure><figure class="hd-logo"><img src="art/cups/f19.jpg" alt="" loading="lazy"><figcaption>2022</figcaption></figure><figure class="hd-logo"><img src="art/cups/f22inv.jpg" alt="" loading="lazy"><figcaption>2022</figcaption></figure><figure class="hd-logo"><img src="art/cups/f23.jpg" alt="" loading="lazy"><figcaption>2023</figcaption></figure><figure class="hd-logo"><img src="art/cups/f25.jpg" alt="" loading="lazy"><figcaption>2023</figcaption></figure><figure class="hd-logo"><img src="art/cups/f28.jpg" alt="" loading="lazy"><figcaption>2024</figcaption></figure><figure class="hd-logo hd-wide"><img src="art/mode-major1-2025.jpg" alt="" loading="lazy"><figcaption>2025</figcaption></figure><figure class="hd-logo hd-wide"><img src="art/fncs-2026.jpg" alt="" loading="lazy"><figcaption>2026</figcaption></figure></div>
       </div>
     </section>
-    </div>
-    <!-- «С другом» — своим блоком с пояснением под каждой дверью (15.10). Id дверей и #heroTeam прежние: на них смотрят
-         check-mp-doors и setLang (флаг CC_MP_OPEN прячет весь блок). Пояснение — вне кнопки: сторож сверяет подпись. -->
-    <section class="home-block home-friends" id="heroTeam">
-      <h2 class="home-h" data-i18n="hmFriendsTitle"></h2>
-      <p class="home-sub" data-i18n="hmFriendsSub"></p>
-      <div class="hf-grid">
-        <div class="hf-card"><button class="cstrip-btn cstrip-btn-duo" id="cstripDuo" type="button" onclick="careerMpNew()" data-i18n="heroDuo"></button><p data-i18n="hmFriendDuo"></p></div>
-        <div class="hf-card"><button class="cstrip-btn cstrip-btn-duo" id="cstripRace" type="button" onclick="careerRaceNew()" data-i18n="ccRaceMake"></button><p data-i18n="hmFriendRace"></p></div>
-        <div class="hf-card"><button class="cstrip-btn cstrip-btn-code" id="cstripCode" type="button" onclick="careerMpJoinNew()" data-i18n="ccMpEnter"></button><p data-i18n="hmFriendCode"></p></div>
-      </div>
-    </section>
-    <button class="home-block home-hist" type="button" onclick="openHistoryScreen()">
-      <span><span class="home-h" data-i18n="historyBtn"></span><small data-i18n="hmHistSub"></small></span>
-      <span id="achievementBadge"></span>
-    </button>
-    </div>
-    <!-- Результаты, календарь и игроки сайта — одним блоком с вкладками (homeLiveTabs), а не тремя друг под другом. -->
-    <section class="home-block home-tabs lobby-live" id="homeLive" data-tab="real" hidden>
-      <div class="hl-tabs" role="tablist" id="homeLiveTabs"></div>
-      <section class="hl-pane" id="homeReal" hidden></section>
-      <section class="hl-pane" id="homeScene" hidden></section>
-      <section class="hl-pane" id="homeBoard" hidden></section>
-    </section>
-    </div>
-    <script>function homeMode(k){var lb=document.getElementById("homeLobby");if(!lb)return;if(!k){try{k=localStorage.getItem("fd_home_mode");}catch(e){}}var mb=lb.querySelector('.lobby-modes [data-m="mgr"]');if(["career","mgr","draft"].indexOf(k)<0||(k==="mgr"&&mb&&mb.hidden))k="career";lb.setAttribute("data-mode",k);lb.querySelectorAll(".lobby-modes button").forEach(function(b){var on=b.getAttribute("data-m")===k;b.classList.toggle("on",on);b.setAttribute("aria-selected",on?"true":"false");});try{localStorage.setItem("fd_home_mode",k);}catch(e){}}setTimeout(function(){homeMode();},0);</script>
-    <!-- Две колонки сразу (его скрин 8.10: «когда захожу на сайт вот так показывает, потом 2 колонки»): блок менеджера
-         открывался из app.js после загрузки 9 МБ, и до этого главная стояла в одну колонку. Тот же список хостов,
-         что в mgrAllowed. -->
-    <script>(function(){var h=(location.hostname||"").toLowerCase();if(!h||h==="localhost"||h==="127.0.0.1"||h==="debug.fncsdraft.pages.dev")document.querySelectorAll('.hero-mgr, .hero-mgr-btn, .nav-pill[data-nav="manager"]').forEach(function(el){el.hidden=false;});})();</script>
-    <!-- Все плитки режимов — в ОДНОЙ панели того же кроя, что герой. Скриншот (красная рамка вокруг всех рядов): «с этими
-         прямоугольниками чет придумать, чтоб они как 1 был по дизайну, а то
-         первый выделяется». -->
-    <!-- ДВА РЕЖИМА (его слово 29.09): два одинаковых больших блока — КАРЬЕРА и ДРАФТ («такого же размера»).
-         Кнопка драфта раскрывает под ним выбор года 2019–2026 и форматов. -->
     <section class="modes-panel dp-shut" id="draftPanel">
     <div class="dp-years" id="dpYears"></div>
     <div class="year-row" id="modeYears">
@@ -7872,6 +7769,18 @@
     </section>
 
     <!-- Настоящий календарь FNCS и «Игроки сайта» — рисуют homeSceneDraw и homeBoardDraw. -->
+
+    <!-- Результаты 2026, календарь и игроки сайта — одним блоком с вкладками (homeLiveTabs), под драфтом. -->
+    <section class="home-block home-tabs" id="homeLive" data-tab="real" hidden>
+      <div class="hl-tabs" role="tablist" id="homeLiveTabs"></div>
+      <section class="hl-pane" id="homeReal" hidden></section>
+      <section class="hl-pane" id="homeScene" hidden></section>
+      <section class="hl-pane" id="homeBoard" hidden></section>
+    </section>
+
+    <button class="restart-btn" onclick="openHistoryScreen()" style="margin-top:12px;width:100%;display:flex;align-items:center;justify-content:center;gap:8px;">
+      <span data-i18n="historyBtn"></span> <span id="achievementBadge" style="color:var(--accent);font-weight:800;"></span>
+    </button>
 
     <details style="margin-top:14px;">
       <summary style="cursor:pointer;font-size:13px;font-weight:700;color:var(--ink-dim);padding:8px 0;" data-i18n="detailsSummary"></summary>
@@ -114041,7 +113950,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='5789fc40';
+const CC_BUILD='6cf28074';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
