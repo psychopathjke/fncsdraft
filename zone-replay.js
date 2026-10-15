@@ -240,7 +240,22 @@
       'align-items:flex-start;gap:3px;pointer-events:none;');
     wrap.appendChild(feed);
 
-    var handle = {wrap:wrap, stage:stage, svg:svg, head:head, side:side, feed:feed,
+    /* Скорость ×1/×2/×4 — кнопка на самой карте (15.10, «дальше» после главной). Множитель живёт на handle
+       и читается play() на каждом шаге, так что переключение действует сразу, посреди игры. Выбор помнится
+       в браузере: кто смотрит на ×2, хочет ×2 и в следующей игре. */
+    var mul = 1;
+    try { mul = +localStorage.getItem('fd_replay_mul') || 1; } catch(e){}
+    if([1,2,4].indexOf(mul) < 0) mul = 1;
+    var speedBtn = el('button', 'zr-speed',
+      'position:absolute;left:6px;top:27px;z-index:3;font:800 11px/1 system-ui,sans-serif;letter-spacing:.04em;' +
+      'color:#0b0f12;background:#ffdd00;border:0;border-radius:999px;padding:5px 9px;cursor:pointer;' +
+      'box-shadow:0 1px 4px rgba(0,0,0,.5);');
+    speedBtn.type = 'button';
+    speedBtn.textContent = '×' + mul;
+    speedBtn.setAttribute('aria-label', 'Replay speed');
+    wrap.appendChild(speedBtn);
+
+    var handle = {wrap:wrap, stage:stage, svg:svg, head:head, side:side, feed:feed, mul:mul, speedBtn:speedBtn,
                   // The photograph, which is the only part of the stage that
                   // wants to be a layer while the camera moves. See paint().
                   img:img,
@@ -263,6 +278,17 @@
     // A hand on the wheel takes the camera off play() for good. Two things
     // writing one transform is a fight the viewer always loses.
     if(opts.zoom) addZoom(wrap, stage, handle);
+
+    // Нажатие на кнопку — не начало перетаскивания карты (addZoom слушает тот же wrap).
+    ['pointerdown', 'mousedown', 'touchstart', 'wheel'].forEach(function(t){
+      speedBtn.addEventListener(t, function(ev){ ev.stopPropagation(); }, {passive: true});
+    });
+    speedBtn.addEventListener('click', function(ev){
+      ev.stopPropagation();
+      handle.mul = handle.mul === 1 ? 2 : handle.mul === 2 ? 4 : 1;
+      speedBtn.textContent = '×' + handle.mul;
+      try { localStorage.setItem('fd_replay_mul', String(handle.mul)); } catch(e){}
+    });
 
     container.appendChild(wrap);
     return handle;
@@ -1150,6 +1176,27 @@
         'rgba(255,255,255,.96)', 1.6));
     }
 
+    /* Где кто умер (15.10): крестик на месте гибели держится до конца игры, как на карте повтора в самой игре.
+       Место — последняя точка отряда: мёртвый отряд в кадре стоит там, где выбыл. Свой — жёлтым. */
+    handle.dead = handle.dead || {};
+    for(var q=0;q<frame.dots.length;q++){
+      var dq = frame.dots[q];
+      if(dq && !dq.alive && !handle.dead[q]) handle.dead[q] = {x: dq.x, y: dq.y};
+    }
+    var xs = 0.75 / (handle.scale || 1);
+    for(var dk in handle.dead){
+      var dp = handle.dead[dk], mineX = roster[dk] && roster[dk].you;
+      var col = mineX ? '#ffdd00' : 'rgba(255,255,255,.62)';
+      var path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      path.setAttribute('d', 'M' + (dp.x - xs) + ' ' + (dp.y - xs) + ' L' + (dp.x + xs) + ' ' + (dp.y + xs) +
+                             ' M' + (dp.x + xs) + ' ' + (dp.y - xs) + ' L' + (dp.x - xs) + ' ' + (dp.y + xs));
+      path.setAttribute('stroke', col);
+      path.setAttribute('stroke-width', mineX ? 2.6 : 1.6);
+      path.setAttribute('stroke-linecap', 'round');
+      path.setAttribute('vector-effect', 'non-scaling-stroke');
+      handle.svg.appendChild(path);
+    }
+
     // The arrows first, all of them, and the names on top afterwards — an
     // arrow drawn over a name is the thing that was reported: "не видно ников
     // из-за стрелочек". Nothing on this map may cover a name.
@@ -1797,6 +1844,8 @@
     // frame from wherever the last one's squads happened to be standing.
     handle.fan = {}; handle.fanAt = null;
     handle.fanEase = smooth && !calm ? FAN_EASE_MS : 0;
+    // Крестики прошлой игры этой не принадлежат.
+    handle.dead = {};
 
     return new Promise(function(resolve){
       function show(frame){
@@ -1851,7 +1900,7 @@
           if(stopsHere(frame)){ finish(true); return; }
           // How long the frame is held, rather than how it is animated between
           // — so the pacing still applies where the interpolation does not.
-          setTimeout(next, frameMs / beat(i - 1).pace);
+          setTimeout(next, frameMs / beat(i - 1).pace / (handle.mul || 1));
         })();
         return;
       }
@@ -1885,7 +1934,7 @@
         // The target is interpolated either way, so arriving on it outright is
         // a camera that follows exactly rather than one that cuts.
         camera.to(viewAt(whole, at - whole), calm ? 1 : dt / CAM_EASE_MS);
-        at += dt / frameMs * speed;
+        at += dt / frameMs * speed * (handle.mul || 1);
         var i = Math.floor(at);
         if(i >= timeline.length - 1){ finish(); return; }
         var fresh = i !== shown;
@@ -1933,6 +1982,7 @@
   function whole(handle){
     if(!handle || handle.byHand) return;
     handle.svg.innerHTML = '';
+    handle.dead = {};
     // И шапка: 'ЗОНА 12 0:00' над пустым островом — это счёт прошлой игры.
     if(handle.head) handle.head.innerHTML = '';
     if(handle.side){ handle.side.innerHTML = ''; handle.side.style.display = 'none'; }
