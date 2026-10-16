@@ -164200,7 +164200,20 @@ function mgrBoardAsk(msg, overBy, retry){
   const turn=Math.max(20000, (MGR.club && MGR.club.turnover) || 100000);
   const pen=Math.max(5, Math.min(25, Math.round(5+overBy/turn*60)));
   const ru=(typeof LANG!=='undefined' && LANG==='ru');
-  const q=ru ? msg+'. Ты главный — подписать всё равно? Доверие совета −'+pen : ({fr:()=>(msg+'. C’est toi le patron — signer quand même ? Confiance du board −'+pen), it:()=>(msg+'. Il capo sei tu — firmare comunque? Fiducia della dirigenza −'+pen), pt:()=>(msg+'. Você é o chefe — contratar mesmo assim? Confiança da diretoria −'+pen), de:()=>(msg+'. Du bist der Boss — trotzdem verpflichten? Vertrauen des Vorstands −'+pen), es:()=>(msg+'. Tú eres el jefe — ¿fichar de todos modos? Confianza de la directiva −'+pen)}[LANG]||(()=>(msg+'. You are the boss — sign anyway? Board confidence −'+pen)))();
+  const q=(ru ? msg+'. Ты главный — подписать всё равно? Доверие совета −'+pen :({fr:()=>(msg+'. C’est toi le patron — signer quand même ? Confiance du board −'+pen), it:()=>(msg+'. Il capo sei tu — firmare comunque? Fiducia della dirigenza −'+pen), pt:()=>(msg+'. Você é o chefe — contratar mesmo assim? Confiança da diretoria −'+pen), de:()=>(msg+'. Du bist der Boss — trotzdem verpflichten? Vertrauen des Vorstands −'+pen), es:()=>(msg+'. Tú eres el jefe — ¿fichar de todos modos? Confianza de la directiva −'+pen)}[LANG]||(()=>(msg+'. You are the boss — sign anyway? Board confidence −'+pen)))())
+    /* Сколько доверия останется и что будет на нуле (Notion «fncsdraft 15.10», скрин 10: «решил всех подписать,
+       и меня уволили — это баг?»). Увольнение по доверию — правило, но вопрос показывал только «−N»: не видно,
+       что следующая подпись — последняя. Теперь «34 → 19», а при ≤ 10 после 30 дней — прямо «совет уволит». */
+    +(()=>{ const now=mgrConf(), after=Math.max(0, now-pen);
+      const fire=after<=10 && MGR.season0 && CAREER.career.day>=ccAddDays(MGR.season0, 30);
+      const W={ru:[' ('+now+' → '+after+')', '. При 10 и ниже совет увольняет — после этой подписи тебя уволят'],
+        fr:[' ('+now+' → '+after+')', '. À 10 ou moins le board te renvoie — après cette signature tu seras viré'],
+        it:[' ('+now+' → '+after+')', '. A 10 o meno la dirigenza ti esonera — dopo questa firma sarai licenziato'],
+        pt:[' ('+now+' → '+after+')', '. Com 10 ou menos a diretoria te demite — depois desta contratação você será demitido'],
+        de:[' ('+now+' → '+after+')', '. Bei 10 oder weniger entlässt dich der Vorstand — nach dieser Verpflichtung bist du raus'],
+        es:[' ('+now+' → '+after+')', '. Con 10 o menos la directiva te despide — tras este fichaje te despedirán']}[LANG]
+        || [' ('+now+' → '+after+')', '. At 10 or less the board fires you — after this signing you will be fired'];
+      return W[0]+(fire ? W[1] : ''); })();
   ccAsk(q, ()=>{
     MGR_BOARD_PASS=true;
     try{ retry(); } finally { MGR_BOARD_PASS=false; }
