@@ -175,6 +175,8 @@ export class Board {
     this.sql.exec(`CREATE TABLE IF NOT EXISTS daily(day TEXT, id TEXT, nick TEXT, country TEXT, score INTEGER,
       place INTEGER, field INTEGER, team TEXT, at INTEGER, PRIMARY KEY(day, id))`);
     try{ this.sql.exec('ALTER TABLE daily ADD COLUMN power INTEGER DEFAULT 0'); }catch(e){}   // 16.10: самый сильный состав дня
+    try{ this.sql.exec('ALTER TABLE daily ADD COLUMN p100 INTEGER DEFAULT 0'); }catch(e){}    // 16.10: точная сила (сотые) с синергией
+    try{ this.sql.exec('ALTER TABLE daily ADD COLUMN syn INTEGER DEFAULT 0'); }catch(e){}
   }
   /* /daily: POST — строка дня, GET ?day=&me= — верх дня и своё место. Старше 60 дней — стираются. */
   async daily(req, url){
@@ -183,21 +185,21 @@ export class Board {
       const now=Date.now(), r=dailyRow(e, now);
       if(r.err) return json({err:r.err}, 400);
       const w=r.row;
-      this.sql.exec('INSERT OR IGNORE INTO daily(day,id,nick,country,score,place,field,team,power,at) VALUES(?,?,?,?,?,?,?,?,?,?)',
-        w.day, w.id, w.nick, w.country, w.score, w.place, w.field, w.team, w.power, w.at);
+      this.sql.exec('INSERT OR IGNORE INTO daily(day,id,nick,country,score,place,field,team,power,p100,syn,at) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)',
+        w.day, w.id, w.nick, w.country, w.score, w.place, w.field, w.team, w.power, w.p100, w.syn, w.at);
       this.sql.exec('DELETE FROM daily WHERE day < ?', dayOf(now-60*864e5));
       return json({ok:true});
     }
     const day=DAY_RE.test(String(url.searchParams.get('day')||'')) ? url.searchParams.get('day') : dayOf(Date.now());
     // 16.10, его слово «только сила»: таблица дня — по силе состава (средний рейтинг карточек), очки — при равенстве.
-    const rows=this.sql.exec('SELECT * FROM daily WHERE day=? ORDER BY power DESC, score DESC, at ASC LIMIT '+DAILY_TOP, day).toArray();
+    const rows=this.sql.exec('SELECT * FROM daily WHERE day=? ORDER BY p100 DESC, score DESC, at ASC LIMIT '+DAILY_TOP, day).toArray();
     const total=this.sql.exec('SELECT COUNT(*) AS n FROM daily WHERE day=?', day).toArray()[0].n;
     const me=String(url.searchParams.get('me')||'');
     let you=null;
     const mine=/^[a-z0-9-]{16,40}$/.test(me) ? this.sql.exec('SELECT * FROM daily WHERE day=? AND id=?', day, me).toArray()[0] : null;
     if(mine){
-      const above=this.sql.exec('SELECT COUNT(*) AS n FROM daily WHERE day=? AND (power>? OR (power=? AND (score>? OR (score=? AND at<?))))',
-        day, mine.power||0, mine.power||0, mine.score, mine.score, mine.at).toArray()[0].n;
+      const above=this.sql.exec('SELECT COUNT(*) AS n FROM daily WHERE day=? AND (p100>? OR (p100=? AND (score>? OR (score=? AND at<?))))',
+        day, mine.p100||0, mine.p100||0, mine.score, mine.score, mine.at).toArray()[0].n;
       you={rank:above+1, row:strip(mine)};
     }
     return json({day, total, rows:rows.map(r=>Object.assign(strip(r), r.id===me ? {you:true} : {})), you});

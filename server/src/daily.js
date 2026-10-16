@@ -30,12 +30,14 @@ function normalize(e, now){
   if(score==null || place==null || field==null || place>field) return {err:'num'};
   const team=(Array.isArray(e.team) ? e.team : []).slice(0, 4).map(h=>cleanNick(h).slice(0, 24)).filter(Boolean).join(',');
   const country=/^[a-z]{2}$/.test(String(e.country||'')) ? e.country : '';
-  // Сила состава — средний рейтинг карточек (16.10: «в таблице дня — состав, у которого больше всего силы»). Нет — 0.
-  const power=int(e.power, 0, 100)||0;
-  return {row:{day, id, nick, country, score, place, field, team, power, at:now}};
+  // Сила состава (16.10): средний рейтинг карточек до сотых + синергия (до +12) — «точная сила». Хранится в сотых
+  // (p100), чтобы порядок был без ничьих; syn — сколько из неё синергия, для подписи. Нет — 0.
+  const p100=int(Math.round(Number(e.power)*100), 0, 15000)||0;
+  const syn=int(e.syn, 0, 12)||0;
+  return {row:{day, id, nick, country, score, place, field, team, power:Math.floor(p100/100), p100, syn, at:now}};
 }
 
 /* Порядок таблицы дня (16.10, его слово «только сила»): сила состава, потом очки, потом кто раньше сыграл. */
-function better(a, b){ return (b.power||0)-(a.power||0) || b.score-a.score || a.at-b.at; }
+function better(a, b){ return (b.p100||0)-(a.p100||0) || b.score-a.score || a.at-b.at; }
 
 module.exports={ normalize, better, dayOf, DAY_RE, TOP };

@@ -110555,7 +110555,7 @@ function dailyFinish(you, place, teams){
   const s=dailyStore(); s.days=s.days||{};
   const r=s.days[DAILY.day]=Object.assign(s.days[DAILY.day]||{}, {n:DAILY.n, map:DAILY.map, place, field:teams.length,
     score:Math.round(you.totalPts||0), elims:you.totalElims||0, wins:you.wins||0, team:drafted.map(p=>p.handle),
-    power:drafted.length ? Math.round(drafted.reduce((s,p)=>s+p.rating,0)/drafted.length) : 0});
+    ...dailyPowerOf(drafted)});
   dailySave(s);
   DAILY=null;
   dailyBanner();
@@ -110567,7 +110567,7 @@ function dailyFinish(you, place, teams){
 }
 function dailyShareText(r){
   const T=L(), m=MAP_CHOICES.find(x=>x.key===r.map);
-  return 'FNCS Draft · '+T.dyTitle(r.n)+(r.power ? '\n💪 '+dailyPowerWord()+' '+r.power : '')+'\n'+(r.place===1 ? '👑' : r.place<=3 ? '🥇' : r.place<=10 ? '🔥' : '🎯')+' #'+r.place+'/'+r.field+' · '+r.score+' '+T.dyPts+
+  return 'FNCS Draft · '+T.dyTitle(r.n)+(r.power ? '\n💪 '+dailyPowerWord()+' '+dailyPowFmt(r)+(r.syn ? ' ('+dailyAvgFmt(r)+' +'+r.syn+')' : '') : '')+'\n'+(r.place===1 ? '👑' : r.place<=3 ? '🥇' : r.place<=10 ? '🔥' : '🎯')+' #'+r.place+'/'+r.field+' · '+r.score+' '+T.dyPts+
     (m ? '\n🗺️ '+m.label : '')+'\n👥 '+(r.team||[]).join(' + ')+'\nhttps://fncsdraft.com';
 }
 function dailyShare(){
@@ -110586,7 +110586,7 @@ function dailySend(){
   let country=''; try{ country=String((CAREER && CAREER.player && CAREER.player.country)||'').toLowerCase().slice(0, 2); }catch(e){}
   const day=dailyDay();
   fetch(base, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id:dailyId(), day, nick, country,
-    score:r.score, place:r.place, field:r.field, team:r.team, power:r.power||0})})
+    score:r.score, place:r.place, field:r.field, team:r.team, power:r.power||0, syn:r.syn||0})})
     .then(x=>x.ok).catch(()=>false).then(ok=>{
       if(ok){ const s2=dailyStore(); if(s2.days && s2.days[day]){ s2.days[day].sent=nick; dailySave(s2); } }
       DAILY_BOARD=null;
@@ -110597,7 +110597,7 @@ function dailySend(){
 function dailyResultDraw(box, r){
   if(!box || !r) return;
   const T=L();
-  const head='<div class="dy-head"><b>'+esc(T.dyTitle(r.n))+'</b>'+(r.score!=null ? '<span>'+(r.power ? '💪 '+esc(dailyPowerWord())+' '+r.power+' · ' : '')+'#'+r.place+' / '+r.field+' · '+r.score+' '+esc(T.dyPts)+'</span>' : '<span>'+esc(T.dyLeft)+'</span>')+'</div>';
+  const head='<div class="dy-head"><b>'+esc(T.dyTitle(r.n))+'</b>'+(r.score!=null ? '<span>'+(r.power ? '💪 '+esc(dailyPowerWord())+' '+dailyPowFmt(r)+(r.syn ? ' ('+dailyAvgFmt(r)+' + '+esc(dailySynWord())+' '+r.syn+')' : '')+' · ' : '')+'#'+r.place+' / '+r.field+' · '+r.score+' '+esc(T.dyPts)+'</span>' : '<span>'+esc(T.dyLeft)+'</span>')+'</div>';
   const send=r.score==null || !dailyBase() ? '' : r.sent ? '<p class="dy-ok">'+esc(T.dySent(r.sent))+'</p>'
     : '<div class="dy-send"><input id="dyNick" maxlength="24" autocomplete="nickname" placeholder="'+esc(T.dyNick)+'" value="'+esc(dailyNick())+'">'+
       '<button class="ch-play" type="button" onclick="dailySend()">'+esc(T.dySend)+'</button></div>';
@@ -110621,11 +110621,25 @@ function dailyLoad(cb){
    потом «нет, только сила»). Сила — средний рейтинг четырёх карточек, как «88/100» в драфте; сервер ставит по ней,
    очки турнира — только при равенстве. У строк, отправленных до правки, силы нет (0) — они внизу. */
 function dailyPowerWord(){ return ({ru:'сила', fr:'force', it:'forza', pt:'força', de:'Stärke', es:'fuerza'}[LANG]) || 'power'; }
+function dailySynWord(){ return ({ru:'синергия', fr:'synergie', it:'sinergia', pt:'sinergia', de:'Synergie', es:'sinergia'}[LANG]) || 'synergy'; }
+/* ТОЧНАЯ СИЛА (16.10, его слово «пусть будет точная сила» — и вопрос «а синергия за язык, страну есть?»):
+   средний рейтинг карточек до сотых + синергия так, как её считает игра (computeSynergy: сыгранная пара +5, одна
+   страна +2, общий язык +1; в силу не больше SYN_POW_CAP = 12 — как в buildTeam). Без ничьих в таблице, и
+   выигрывает не только тот, кто брал самые большие цифры, но и тот, кто собрал сыгранный состав. */
+function dailyPowerOf(sq){
+  if(!sq || !sq.length) return {power:0, syn:0, avg:0};
+  const avg=sq.reduce((s,p)=>s+p.rating,0)/sq.length, syn=Math.min(computeSynergy(sq).bonus, SYN_POW_CAP);
+  return {power:Math.round((avg+syn)*100)/100, syn, avg:Math.round(avg*100)/100};
+}
+// Строка с сервера несёт p100 (сотые); своя запись — power с сотыми и avg.
+function dailyPowNum(r){ return r.p100 ? r.p100/100 : (r.power||0); }
+function dailyPowFmt(r){ return dailyPowNum(r).toFixed(2); }
+function dailyAvgFmt(r){ return (r.avg!=null ? r.avg : dailyPowNum(r)-(r.syn||0)).toFixed(2); }
 function dailyRowsHTML(rows){
   const T=L(), flag=c=>c ? '<img src="flags/w20/'+esc(ccCountryOf(c))+'.png" alt="" onerror="this.remove()">' : '';
   return rows.map((r,i)=>'<div class="hb-row'+(r.you ? ' me' : '')+'"><i>'+(i+1)+'</i><b>'+flag(r.country)+esc(r.nick)+
-    '<small>'+(r.team ? esc(String(r.team).split(',').join(' + '))+' · ' : '')+'#'+r.place+'/'+r.field+' · '+r.score+' '+esc(T.dyPts)+'</small></b>'+
-    '<span title="'+esc(dailyPowerWord())+'">'+(r.power>0 ? '💪 '+r.power : '—')+'</span></div>').join('');
+    '<small>'+(r.team ? esc(String(r.team).split(',').join(' + '))+' · ' : '')+(r.syn ? esc(dailySynWord())+' +'+r.syn+' · ' : '')+'#'+r.place+'/'+r.field+' · '+r.score+' '+esc(T.dyPts)+'</small></b>'+
+    '<span title="'+esc(dailyPowerWord())+'">'+(dailyPowNum(r)>0 ? '💪 '+dailyPowFmt(r) : '—')+'</span></div>').join('');
 }
 /* Окно дня: свой итог и таблица (поверх экрана, как «топ 50» на главной). */
 function dailyOpen(){
@@ -110660,7 +110674,7 @@ function homeDailyDraw(){
   const set=(id, h)=>{ const el=document.getElementById(id); if(el) el.innerHTML=h; };
   set('dyNum', '#'+dailyNum(day));
   set('dyMap', esc(map.label+' · '+T.dyPlayers(dailyYear(map))));
-  set('dyMine', r ? (r.score!=null ? '<div class="dy-mine"><b>'+(r.power ? '💪 '+r.power : '#'+r.place+' / '+r.field)+'</b><span>'+(r.power ? '#'+r.place+'/'+r.field+' · ' : '')+r.score+' '+esc(T.dyPts)+'</span></div>'
+  set('dyMine', r ? (r.score!=null ? '<div class="dy-mine"><b>'+(r.power ? '💪 '+dailyPowFmt(r) : '#'+r.place+' / '+r.field)+'</b><span>'+(r.power ? '#'+r.place+'/'+r.field+' · ' : '')+r.score+' '+esc(T.dyPts)+'</span></div>'
                                    : '<div class="dy-mine"><span>'+esc(T.dyLeft)+'</span></div>') : '');
   if(r) set('dyActs', '<button class="hero-btn hero-btn-alt" type="button" onclick="dailyOpen()">'+esc(T.dyBoard)+'</button>'+
     (r.score!=null ? '<button class="hero-btn hero-btn-alt dy-share" type="button" onclick="dailyShare()">'+esc(T.dyShare)+'</button>' : ''));
