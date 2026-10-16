@@ -33,8 +33,8 @@ const BOOTSTRAP = `
     out.dropped = built.dropped;
     out.count = teams.length;
     out.top = teams.slice(0, 3).map(function(t){
-      /* Титул или подиум года (гранд-финал, ЛАН, World Cup) — у таких людей есть карточка формы, см. fifaYearPass. */
-      var form = (typeof FIFA_RATING !== 'undefined' && FIFA_RATING && FIFA_RATING.form) || {};
+      /* Титул или подиум года (гранд-финал, ЛАН, World Cup) — у таких людей есть карточка формы, см. yearRatingPass. */
+      var form = (typeof YEAR_RATING !== 'undefined' && YEAR_RATING && YEAR_RATING.form) || {};
       var titled = t.members ? t.members.some(function(m){ return !!form[m.id]; })
         : pool.some(function(p){ return t.handles.indexOf(p.handle) >= 0 && form[p.id]; });
       return {who: t.handles.join(' & '), avg: Math.round(t.avg), stage: t.stage, rank: t.rank, titled: titled};

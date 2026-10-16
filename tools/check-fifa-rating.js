@@ -6,7 +6,7 @@
 //   4. чемпион гранд-финала не ниже финалиста своего набора и региона;
 //   5. карточки формы: есть, у каждой своя прибавка и вид 'form', подпись на всех языках интерфейса,
 //      в паке — примерно каждый десятый (4–20%), базу и её форму один пак не даёт;
-//   6. карьера читает те же доли (FIFA_RATING.cfg в ccSeasonOvr) — сезон карьеры не выше потолка региона.
+//   6. карьера читает те же доли (YEAR_RATING.cfg в ccSeasonOvr) — сезон карьеры не выше потолка региона.
 //   node tools/check-fifa-rating.js
 const fs = require('fs'), os = require('os'), path = require('path');
 const { execFileSync } = require('child_process');
@@ -23,14 +23,14 @@ const BOOT = `
   const out={fails:[], notes:{}};
   const check=(n, ok, d)=>{ if(!ok) out.fails.push(n+(d!==undefined?': '+d:'')); };
   try{
-    const C=FIFA_RATING && FIFA_RATING.cfg;
-    check('FIFA_RATING is filled', !!C);
-    const cards=PLAYERS_BASE.filter(q=>q._fifa);
+    const C=YEAR_RATING && YEAR_RATING.cfg;
+    check('YEAR_RATING is filled', !!C);
+    const cards=PLAYERS_BASE.filter(q=>q._yr);
     check('the pass rated the FNCS sets', cards.length>50000, String(cards.length));
     // 1. formula
     let worst=0, who='';
     cards.forEach(q=>{
-      const f=q._fifa;
+      const f=q._yr;
       let v=f.prev!=null ? (1-C.prevW)*f.season + C.prevW*f.prev : f.season;
       v+=C.expPts*f.exp;
       if(f.stat!=null) v=(1-C.statMix)*v + C.statMix*f.stat;
@@ -38,7 +38,7 @@ const BOOT = `
       const d=Math.abs(v-f.blended); if(d>worst){ worst=d; who=q.cardSet+' '+q.handle+' '+v.toFixed(2)+' vs '+f.blended; }
     });
     check('every card is its own formula', worst<=0.15, who);
-    check('experience is capped', cards.every(q=>q._fifa.exp<=C.expCap));
+    check('experience is capped', cards.every(q=>q._yr.exp<=C.expCap));
     // 2. top compressed
     const bySR={};
     cards.forEach(q=>{ const k=q.cardSet+'|'+q.region; const b=bySR[k]=bySR[k]||{n:0, g95:0, g90:0}; b.n++; if(q.rating>=95) b.g95++; if(q.rating>=90) b.g90++; });
@@ -62,7 +62,7 @@ const BOOT = `
     });
     check('a Grand Final champion is not far under the 10th place and below', bad.length<=3, bad.slice(0,5).join('; '));
     // 5. form cards
-    const F=FIFA_RATING.form, ids=Object.keys(F);
+    const F=YEAR_RATING.form, ids=Object.keys(F);
     out.notes.formCards=ids.length;
     check('form cards exist', ids.length>200, String(ids.length));
     const sample=PLAYERS_BASE.filter(p=>F[p.id]).slice(0, 40);
@@ -71,7 +71,7 @@ const BOOT = `
           forms.slice(0,2).map(c=>c.handle+' '+c.rating+'/'+(c.form&&c.form.base)).join(','));
     check('the form skin exists', !!(CARD_SKIN.form && RARITY_COLOR.form));
     ['ru','en','fr','it','pt'].forEach(lang=>{ const d=I18N[lang]||{};
-      ['formTag','ccRarityform','formWhyWin','formWhyElims','formWhyLan','brkFifaTitle','brkFifaPrev','brkFifaExp','brkFormBoost'].forEach(k=>{
+      ['formTag','ccRarityform','formWhyWin','formWhyElims','formWhyLan','brkYearTitle','brkYearPrev','brkYearExp','brkFormBoost'].forEach(k=>{
         check('label '+k+' in '+lang, typeof d[k]==='string' && d[k].length>0); }); });
     const html=futCardHTML(forms[0]);
     check('the card face says it is in form', html.indexOf(String(L().formTag).toUpperCase())>=0);
@@ -99,7 +99,7 @@ const BOOT = `
     const season=ccSeasonOvr();
     let top=0; season.forEach((v,k)=>{ if(k.indexOf('EU|')===0 && v>top) top=v; });
     check('the career season tops out at the region ceiling', top===REGION_TOP.EU, String(top));
-    check('the career reads FIFA_RATING', /FIFA_RATING/.test(String(ccSeasonOvr)));
+    check('the career reads YEAR_RATING', /YEAR_RATING/.test(String(ccSeasonOvr)));
   }catch(e){ out.fails.push('threw: '+(e && e.stack || e)); }
   document.getElementById('__out').textContent='BE'+'GINJSON'+encodeURIComponent(JSON.stringify(out))+'EN'+'DJSON';
 })();

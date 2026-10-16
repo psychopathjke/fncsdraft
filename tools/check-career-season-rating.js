@@ -137,9 +137,9 @@ const BOOT = `
       out.notes.stretch={topRaw:Math.round(hiRaw*10)/10, ceiling:REGION_TOP.EU,
                          scale:Math.round(scale*1000)/1000};
       /* 15.10: год — первая ступень. Дальше рейтинг года как в ФИФЕ, те же доли, что у карточек драфта
-         (FIFA_RATING.cfg): 60% года + 40% чистого прошлого сезона + 1.5 за каждый финал до этого года (до двух),
+         (YEAR_RATING.cfg): 60% года + 40% чистого прошлого сезона + 1.5 за каждый финал до этого года (до двух),
          вторая растяжка региона с низом на месте и сжатие верха. Сторож пересчитывает каждую ступень. */
-      const W2=CC_SEASON_WORK, FC=FIFA_RATING.cfg;
+      const W2=CC_SEASON_WORK, FC=YEAR_RATING.cfg;
       const s1=W2.stage1.get(many);
       out.notes.busiest.stage1=Math.round(s1*10)/10;
       check('a busy year is its weighted average, stretched to the region',
@@ -149,11 +149,11 @@ const BOOT = `
             Math.abs(Math.round(hiRaw*scale)-REGION_TOP.EU)<=1,
             JSON.stringify(out.notes.stretch));
       // Прошлый сезон — на шкале этого года (место среди тех, у кого он есть, перенесено на числа года).
-      const pu=FIFA_RATING.pure[many]||{};
+      const pu=YEAR_RATING.pure[many]||{};
       const had=pu[CC_NOW_YEAR-1]!=null || pu[CC_NOW_YEAR-2]!=null;
       const prev=W2.prevAl.has(many) ? W2.prevAl.get(many) : null;
       check('the previous season is read when there is one', had===(prev!=null), String(had)+' '+prev);
-      const fin=(FIFA_RATING.finals[many]||[]).filter(t=>t<CC_NOW_YEAR).length;
+      const fin=(YEAR_RATING.finals[many]||[]).filter(t=>t<CC_NOW_YEAR).length;
       const mix=(prev!=null ? (1-FC.prevW)*s1 + FC.prevW*prev : s1) + FC.expPts*Math.min(FC.expCap, fin);
       out.notes.busiest.fifa={prev, finals:fin, blended:Math.round(W2.blended.get(many)*10)/10};
       check('then 60% year + 40% previous season + finals experience', Math.abs(mix-W2.blended.get(many))<0.01,

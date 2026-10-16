@@ -1,4 +1,4 @@
-// ЗАМЕР РЕЙТИНГА ГОДА «КАК В ФИФЕ» (15.10.2026) — откуда взяты доли в fifaYearPass (index.html).
+// ЗАМЕР РЕЙТИНГА ГОДА «КАК В ФИФЕ» (15.10.2026) — откуда взяты доли в yearRatingPass (index.html).
 //
 // Честный замер: рейтинг человека на начало события — только по тому, что было ДО него, — против мест
 //   • в гранд-финалах FNCS каждого набора и региона (2019–2026, 161 финал),
@@ -10,7 +10,7 @@
 // — в 10% выборок этих лет нет вовсе ((6/8)^8). 89–90% у такой правки = «лучше везде, где её видно».
 //
 // Числа событий — _eventOvr карточек (что вечер стоил сам по себе) и этапы книг 2025–2026 (_ratingParts);
-// fifaYearPass их не меняет, поэтому замер одинаков до и после правки. Места: realGf / _xxGf карточек, таблицы ЛАНов.
+// yearRatingPass их не меняет, поэтому замер одинаков до и после правки. Места: realGf / _xxGf карточек, таблицы ЛАНов.
 // Статы — командные строки события (килы за игру, среднее место, доля побед): личных в выгрузках Tracker нет.
 //
 //   node tools/measure-fifa-rating.js            — таблица: нынешняя формула, ФИФА и что даёт каждая часть
@@ -142,7 +142,7 @@ function build(J) {
     if (reg && P[keyOf(reg, n)]) return keyOf(reg, n); return resolve(n, ev.year); }).filter(Boolean); }));
   const lanAppear = {};
   lanEvents.forEach(ev => ev.entries.forEach(e => e.keys.forEach(k => (lanAppear[k] = lanAppear[k] || []).push(ev.t))));
-  // Чистый год человека и выравнивание прошлого сезона на шкалу года по месту в очереди (как alignPrev в fifaYearPass).
+  // Чистый год человека и выравнивание прошлого сезона на шкалу года по месту в очереди (как alignPrev в yearRatingPass).
   const pure = {}, AL = {};
   Object.values(P).forEach(p => { const by = {}; Object.values(p.sets).forEach(x => (by[YEAR(x.s)] = by[YEAR(x.s)] || []).push([x.full, x.parts ? 2.0 : stageW(x.s, x.stage)]));
     pure[p.key] = {}; Object.keys(by).forEach(y => pure[p.key][y] = wmean(by[y])); });
