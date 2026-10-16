@@ -7972,7 +7972,11 @@
       document.getElementById("dyNum").textContent="#"+(Math.round((Date.parse(d+"T00:00:00Z")-Date.parse("2026-10-16T00:00:00Z"))/864e5)+1);
       document.getElementById("dyMap").textContent=M[Math.abs(h)%M.length];
       var r=((JSON.parse(localStorage.getItem("fd_daily")||"{}")||{}).days||{})[d];
-      if(r&&r.score!=null)document.getElementById("dyMine").innerHTML='<div class="dy-mine"><b>#'+(+r.place)+' / '+(+r.field)+'</b><span>'+(+r.score)+'</span></div>';
+      if(r&&r.score!=null)document.getElementById("dyMine").innerHTML=r.power?'<div class="dy-mine"><b>💪 '+(+r.power).toFixed(2)+'</b><span>#'+(+r.place)+'/'+(+r.field)+' · '+(+r.score)+'</span></div>':'<div class="dy-mine"><b>#'+(+r.place)+' / '+(+r.field)+'</b><span>'+(+r.score)+'</span></div>';
+      /* Таблица дня — сразу из прошлого ответа (его «с делеем таблица появляется», 16.10): homeDailyDraw кладёт
+         строки в fd_daily_home, здесь они встают до app.js, свежие приходят следом. Только за сегодня. */
+      var t=JSON.parse(localStorage.getItem("fd_daily_home")||"null");
+      if(t&&t.day===d&&t.html){document.getElementById("homeDailyRows").innerHTML=t.html;if(t.total)document.getElementById("dyTotal").textContent=" · "+t.total;}
     }catch(e){}})();</script>
 
     <!-- Результаты 2026, календарь и игроки сайта — одним блоком с вкладками (homeLiveTabs), под драфтом. -->
@@ -110634,12 +110638,20 @@ function dailyLeft(){
   const h=Math.floor(ms/36e5), m=Math.floor(ms%36e5/6e4);
   return h+' '+L().dyH+' '+m+' '+L().dyM;
 }
+/* Без задержки (16.10, его «с делеем таблица появляется»): прошлый ответ за сегодня лежит в fd_daily_board и
+   отдаётся сразу, свежий — вторым вызовом cb, когда придёт (все, кто зовёт, просто перерисовывают). */
 function dailyLoad(cb){
   const base=dailyBase(); if(!base){ cb(null); return; }
-  const d=DAILY_BOARD;
-  if(d && d.day===dailyDay() && Date.now()-d._at<60000){ cb(d); return; }
-  fetch(base+'?day='+dailyDay()+'&me='+encodeURIComponent(dailyId())).then(r=>r.ok ? r.json() : null).catch(()=>null).then(x=>{
-    DAILY_BOARD=x ? Object.assign(x, {_at:Date.now()}) : null; cb(DAILY_BOARD); });
+  const day=dailyDay();
+  let d=DAILY_BOARD;
+  if(d && d.day===day && Date.now()-d._at<60000){ cb(d); return; }
+  if(!(d && d.day===day)){ try{ const c=JSON.parse(localStorage.getItem('fd_daily_board')||'null'); if(c && c.day===day) d=c; }catch(e){} }
+  if(d && d.day===day) cb(d);
+  fetch(base+'?day='+day+'&me='+encodeURIComponent(dailyId())).then(r=>r.ok ? r.json() : null).catch(()=>null).then(x=>{
+    if(!x){ if(!(d && d.day===day)) cb(null); return; }
+    DAILY_BOARD=Object.assign(x, {_at:Date.now()});
+    try{ localStorage.setItem('fd_daily_board', JSON.stringify(DAILY_BOARD)); }catch(e){}
+    cb(DAILY_BOARD); });
 }
 /* ТАБЛИЦА ДНЯ — ПО СИЛЕ СОСТАВА (16.10, его слово: «в таблице дня — состав, у которого больше всего силы»,
    потом «нет, только сила»). Сила — средний рейтинг четырёх карточек, как «88/100» в драфте; сервер ставит по ней,
@@ -110710,6 +110722,8 @@ function homeDailyDraw(){
     if(!d){ el.innerHTML=''; return; }
     el.innerHTML=(d.rows||[]).length ? '<div>'+dailyRowsHTML(d.rows.slice(0, 5))+'</div>'+(d.you ? '<div class="hb-me">'+esc(T.dyRank(d.you.rank, d.total))+'</div>' : '')
                                      : '<p class="home-sub">'+esc(T.dyEmpty)+'</p>';
+    // Для оболочки: при следующем заходе эти строки встанут до app.js (скрипт сразу за #homeDaily).
+    try{ localStorage.setItem('fd_daily_home', JSON.stringify({day:d.day, total:d.total||0, html:el.innerHTML})); }catch(e){}
   });
 }
 
