@@ -100,3 +100,15 @@ console.log('stage', out.stage, out.waited, out.scr, 'beat', out.beat);
 if (!out.result) out.fails.push('турнир дня не доигран за время пробы');
 if (out.fails.length) { out.fails.forEach(f => console.error('FAIL ' + f)); process.exit(1); }
 console.log('драфт дня: паки одни, попытка одна, итог записан');
+
+// Каркас блока на главной ставит остров до app.js по своей копии списка островов — она обязана совпадать с MAP_CHOICES.
+{
+  const inl = src.match(/<script>\(function\(\)\{try\{var M=(\[[^\]]*\]);var d=new Date/);
+  const mc = src.slice(src.indexOf('const MAP_CHOICES=[') + 18, src.indexOf('];', src.indexOf('const MAP_CHOICES=[')) + 1);
+  const labels = eval(mc).map(x => x.label);
+  if (!inl || JSON.stringify(JSON.parse(inl[1])) !== JSON.stringify(labels)) {
+    console.error('FAIL копия островов в каркасе драфта дня разошлась с MAP_CHOICES — перегенерируй список в разметке #homeDaily');
+    process.exit(1);
+  }
+  console.log('каркас драфта дня: острова совпадают с MAP_CHOICES (' + labels.length + ')');
+}
