@@ -1023,6 +1023,11 @@
       }
     }
 
+    /* caught(отряд, room)^ENGAGE_BIAS — одно число на отряд за тик: exposure читает силу отряда, номер зоны и силу лобби,
+       room задан на весь вызов. Было — два Math.pow на каждую пару в контакте (16.10, лаги: половина времени resolveContacts).
+       Число то же самое, итоги игр — до бита (хеш 48 игр до и после). */
+    var cbias = new Array(alive.length);
+    function caughtB(i){ var v = cbias[i]; if(v === undefined) v = cbias[i] = Math.pow(caught(alive[i], room), ENGAGE_BIAS); return v; }
     for(var a=0;a<alive.length;a++){
       var s = alive[a];
       if(!s.alive || s.busy) continue;
@@ -1069,8 +1074,8 @@
         var pair = s.power + o.power;
         var eS = pair > 0 ? Math.pow(2 * s.power / pair, PICK_EXP) : 1;
         var eO = pair > 0 ? Math.pow(2 * o.power / pair, PICK_EXP) : 1;
-        var pS = s.seek * Math.pow(caught(o, room), ENGAGE_BIAS) * eS;
-        var pO = o.seek * Math.pow(caught(s, room), ENGAGE_BIAS) * eO;
+        var pS = s.seek * caughtB(b) * eS;
+        var pO = o.seek * caughtB(a) * eO;
         // Пара одиночек на высадке — см. SOLO_DROP_MUL.
         var dropMul = (dropping && (!s.team.squad || s.team.squad.length === 1) &&
                        (!o.team.squad || o.team.squad.length === 1)) ? SOLO_DROP_MUL : 1;
@@ -1118,7 +1123,7 @@
             var sdx = streaker.x - v.x, sdy = streaker.y - v.y;
             if(sdx*sdx + sdy*sdy > CONTACT_RANGE * CONTACT_RANGE) continue;
             var vp = streaker.power + v.power;
-            if(rng() >= Math.pow(caught(v, room), ENGAGE_BIAS) *
+            if(rng() >= caughtB(c) *
                         (vp > 0 ? Math.pow(2 * streaker.power / vp, PICK_EXP) : 1)) continue;
             victim = v; break;
           }
