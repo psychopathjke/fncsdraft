@@ -174,6 +174,7 @@ export class Board {
     // Драфт дня (16.10): одна строка на браузер в день, первая попытка не перезаписывается. См. daily.js.
     this.sql.exec(`CREATE TABLE IF NOT EXISTS daily(day TEXT, id TEXT, nick TEXT, country TEXT, score INTEGER,
       place INTEGER, field INTEGER, team TEXT, at INTEGER, PRIMARY KEY(day, id))`);
+    try{ this.sql.exec('ALTER TABLE daily ADD COLUMN power INTEGER DEFAULT 0'); }catch(e){}   // 16.10: самый сильный состав дня
   }
   /* /daily: POST — строка дня, GET ?day=&me= — верх дня и своё место. Старше 60 дней — стираются. */
   async daily(req, url){
@@ -182,8 +183,8 @@ export class Board {
       const now=Date.now(), r=dailyRow(e, now);
       if(r.err) return json({err:r.err}, 400);
       const w=r.row;
-      this.sql.exec('INSERT OR IGNORE INTO daily(day,id,nick,country,score,place,field,team,at) VALUES(?,?,?,?,?,?,?,?,?)',
-        w.day, w.id, w.nick, w.country, w.score, w.place, w.field, w.team, w.at);
+      this.sql.exec('INSERT OR IGNORE INTO daily(day,id,nick,country,score,place,field,team,power,at) VALUES(?,?,?,?,?,?,?,?,?,?)',
+        w.day, w.id, w.nick, w.country, w.score, w.place, w.field, w.team, w.power, w.at);
       this.sql.exec('DELETE FROM daily WHERE day < ?', dayOf(now-60*864e5));
       return json({ok:true});
     }
@@ -198,7 +199,10 @@ export class Board {
         day, mine.score, mine.score, mine.place, mine.place, mine.at).toArray()[0].n;
       you={rank:above+1, row:strip(mine)};
     }
-    return json({day, total, rows:rows.map(r=>Object.assign(strip(r), r.id===me ? {you:true} : {})), you});
+    // Самый сильный состав дня — по силе, при равенстве — у кого больше очков.
+    const st=this.sql.exec('SELECT * FROM daily WHERE day=? AND power>0 ORDER BY power DESC, score DESC, at ASC LIMIT 1', day).toArray()[0];
+    const strongest=st ? Object.assign(strip(st), st.id===me ? {you:true} : {}) : null;
+    return json({day, total, rows:rows.map(r=>Object.assign(strip(r), r.id===me ? {you:true} : {})), you, strongest});
   }
   one(id){ return this.sql.exec('SELECT * FROM rows WHERE id=?', id).toArray()[0]||null; }
   async fetch(req){

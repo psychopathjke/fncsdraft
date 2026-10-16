@@ -30,7 +30,9 @@ function normalize(e, now){
   if(score==null || place==null || field==null || place>field) return {err:'num'};
   const team=(Array.isArray(e.team) ? e.team : []).slice(0, 4).map(h=>cleanNick(h).slice(0, 24)).filter(Boolean).join(',');
   const country=/^[a-z]{2}$/.test(String(e.country||'')) ? e.country : '';
-  return {row:{day, id, nick, country, score, place, field, team, at:now}};
+  // Сила состава — средний рейтинг карточек (16.10: «в таблице дня — состав, у которого больше всего силы»). Нет — 0.
+  const power=int(e.power, 0, 100)||0;
+  return {row:{day, id, nick, country, score, place, field, team, power, at:now}};
 }
 
 /* Порядок таблицы дня: очки, потом место, потом кто раньше сыграл. */

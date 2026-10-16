@@ -14,5 +14,8 @@ check('место больше лобби — отказ', normalize(Object.assi
 check('разметка в нике', normalize(Object.assign({}, OK, {nick:'<b>x'}), NOW).row.nick==='bx');
 check('плохой id', normalize(Object.assign({}, OK, {id:'x'}), NOW).err==='id');
 check('dayOf', dayOf(NOW)==='2026-10-17');
+check('сила состава', normalize(Object.assign({}, OK, {power:91}), NOW).row.power===91);
+check('сила без поля — 0', r.row.power===0);
+check('сила вне границ — 0', normalize(Object.assign({}, OK, {power:500}), NOW).row.power===0);
 if(fails.length){ console.log('КРАСНОЕ:\n '+fails.join('\n ')); process.exit(1); }
 console.log('daily: всё зелёное');
