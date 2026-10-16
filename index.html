@@ -20397,7 +20397,7 @@ const CC_LANGS=['en','ru','fr','it','pt','de','es'];
    Аргентина 50 тыс.). Словари — отдельными файлами i18n-de.js / i18n-es.js (tools/build-i18n.js): app.js упирается в 9 МБ,
    а словарь нужен только тем, кто выбрал язык. Пока файл не пришёл, L() показывает английский (он и так под каждым языком). */
 const CC_LANG_FILES={de:1, es:1};
-let CC_I18N_V={de:'50fbf98c', es:'bf6abd8a'};   // ==== CC_I18N_V (tools/build-i18n.js) ====
+let CC_I18N_V={de:'d44e130f', es:'f2c30856'};   // ==== CC_I18N_V (tools/build-i18n.js) ====
 const CC_LANG_WAIT={};
 function ccLangLoad(lang, done){
   if(!CC_LANG_FILES[lang] || (typeof I18N!=='undefined' && I18N[lang])){ done && done(); return; }
@@ -20742,6 +20742,12 @@ Object.assign(I18N.en, {hiTitle:'FNCS Draft as an app', hiIos:'In Safari tap Sha
 Object.assign(I18N.fr, {hiTitle:'FNCS Draft comme une app', hiIos:'Dans Safari, touche Partager en bas → « Sur l’écran d’accueil ». Ça s’ouvre en plein écran, sans barre d’adresse.', hiAndroid:'Mets le site sur ton écran d’accueil — il s’ouvre comme une app.', hiBtn:'Installer'});
 Object.assign(I18N.it, {hiTitle:'FNCS Draft come app', hiIos:'In Safari tocca Condividi in basso → “Aggiungi alla schermata Home”. Si apre a schermo intero, senza barra degli indirizzi.', hiAndroid:'Metti il sito nella schermata Home — si apre come un’app.', hiBtn:'Installa'});
 Object.assign(I18N.pt, {hiTitle:'FNCS Draft como app', hiIos:'No Safari toque em Compartilhar embaixo → “Adicionar à Tela de Início”. Abre em tela cheia, sem barra de endereço.', hiAndroid:'Coloque o site na tela inicial — ele abre como um app.', hiBtn:'Instalar'});
+/* Особые карточки 97/98/99 (16.10). */
+Object.assign(I18N.ru, {formWhyLanwin:'чемпион ЛАНа', formWhyPoty:'игрок года'});
+Object.assign(I18N.en, {formWhyLanwin:'LAN champion', formWhyPoty:'player of the year'});
+Object.assign(I18N.fr, {formWhyLanwin:'champion d’un LAN', formWhyPoty:'joueur de l’année'});
+Object.assign(I18N.it, {formWhyLanwin:'campione di una LAN', formWhyPoty:'giocatore dell’anno'});
+Object.assign(I18N.pt, {formWhyLanwin:'campeão de LAN', formWhyPoty:'jogador do ano'});
 /* Главная 15.10: «Продолжить», «С другом», «Сцена сейчас», «Игроки сайта». Остальные языки — английские до доперевода. */
 Object.assign(I18N.ru, {hmContinue:'Продолжить', hmContinueSub:'Твои сохранения — с того дня, где остановился.', hmPlayOn:'Играть',
   hmSlotCareer:'Карьера', hmSlotMgr:'Менеджер', hmSlotLine:(s,d,e)=>'Сезон '+s+' · дивизион '+d+' · '+e, hmMgrLine:(s,c)=>'Сезон '+s+' · касса '+c,
@@ -91591,28 +91597,60 @@ var RATING_FLOOR={};
        чемпион гранд-финала +3, лучшая по килам за игру команда топ-10 финала +2;
        ЛАН и World Cup: первое место +4, второе и третье +3. Прибавки — допущение, как «+2…+4» в ФИФЕ. */
     const FORM={};
-    const giveForm=(q, f)=>{ if(!q) return; const r=Math.min(99, q.rating+f.boost); if(r<=q.rating) return;
-      const cur=FORM[q.id]; if(!cur || cur.boost<f.boost) FORM[q.id]=Object.assign({}, f, {boost:r-q.rating}); };
+    /* ПОТОЛКИ ОСОБЫХ КАРТОЧЕК (16.10, его «да» на шкалу как в ФИФЕ): база — до 96, как была; сверху — только особые.
+       97 — форма (лучшие килы топ-10 финала, 2–3 место ЛАНа или World Cup), 98 — чемпион (финал набора, ЛАН, World Cup),
+       99 — игрок года (больше всех побед за год, ниже). Прибавка та же, что была; потолок — по виду карточки. Из двух
+       карточек одного человека в наборе остаётся та, что выше. */
+    const giveForm=(q, f)=>{ if(!q) return; const r=Math.min(f.cap||97, q.rating+f.boost); if(r<=q.rating) return;
+      const cur=FORM[q.id]; if(!cur || cur.base+cur.boost<r) FORM[q.id]=Object.assign({}, f, {boost:r-q.rating, base:q.rating}); };
     const cardIn=(k, set)=>list.find(q=>q.cardSet===set && keyOf(q)===k) || null;
     const finals={};
     list.forEach(q=>{ const g=gfOf(q); if(!g) return; (finals[q.cardSet+'|'+q.region]=finals[q.cardSet+'|'+q.region] || []).push({q, g}); });
     Object.values(finals).forEach(rows=>{
       if(new Set(rows.map(x=>x.g.rank)).size<10) return;
       const ev=rows[0].q.gfEvent || String(rows[0].q.event||'').replace(/—.*?\(/, '— Grand Finals (');
-      rows.filter(x=>x.g.rank===1).forEach(x=>giveForm(x.q, {event:ev, place:1, boost:3, why:'win'}));
+      rows.filter(x=>x.g.rank===1).forEach(x=>giveForm(x.q, {event:ev, place:1, boost:3, why:'win', cap:98}));
       /* Одна команда: больше всех килов за игру среди топ-10 (кроме чемпиона), при равенстве — выше местом.
          Пустые и нулевые строки килов не в счёт — иначе «лучшими» оказывалась вся десятка разом. */
       const top10=rows.filter(x=>x.g.rank>1 && x.g.rank<=10 && x.g.avgElims>0 && x.g.matches)
         .sort((a,b)=>b.g.avgElims-a.g.avgElims || a.g.rank-b.g.rank);
       if(top10.length){ const r0=top10[0].g.rank;
-        top10.filter(x=>x.g.rank===r0).forEach(x=>giveForm(x.q, {event:ev, place:r0, boost:2, why:'elims'})); }
+        top10.filter(x=>x.g.rank===r0).forEach(x=>giveForm(x.q, {event:ev, place:r0, boost:2, why:'elims', cap:97})); }
     });
     LANS.forEach(L_=>L_.rows.forEach(e=>{ if(e.rank>3) return;
-      e.keys.forEach(k=>giveForm(cardIn(k, L_.set), {event:L_.ev, place:e.rank, boost:e.rank===1 ? 4 : 3, why:'lan'})); }));
+      e.keys.forEach(k=>giveForm(cardIn(k, L_.set), {event:L_.ev, place:e.rank, boost:e.rank===1 ? 4 : 3, why:e.rank===1 ? 'lanwin' : 'lan', cap:e.rank===1 ? 98 : 97})); }));
     ['h1','h2'].forEach(set=>(WC2019_FIELD[set]||[]).slice(0, 3).forEach((names, i)=>names.forEach(n=>{
       const k=who(n, 2019.57, null);
-      giveForm(k && cardIn(k, set), {event:set==='h1' ? 'Fortnite World Cup 2019 Solo — Finals (New York)' : 'Fortnite World Cup 2019 Duos — Finals (New York)', place:i+1, boost:i===0 ? 4 : 3, why:'lan'});
+      giveForm(k && cardIn(k, set), {event:set==='h1' ? 'Fortnite World Cup 2019 Solo — Finals (New York)' : 'Fortnite World Cup 2019 Duos — Finals (New York)', place:i+1, boost:i===0 ? 4 : 3, why:i===0 ? 'lanwin' : 'lan', cap:i===0 ? 98 : 97});
     })));
+    /* ИГРОК ГОДА — 99. Победы за год: финал набора (первое место в своём регионе) — 1, мировой ЛАН или World Cup — 2.
+       Больше всех — игрок года; ничья — по рейтингу. Партнёры по победам обычно делят первое место, поэтому 99 получают
+       оба: «одна-две карточки в год». Карточка — в последнем наборе года, где он есть. */
+    { const wins={}, mates={};
+      const add=(ks, y)=>(n)=>{ ks=ks.filter(Boolean); if(!ks.length || !y) return; const w=wins[y]=wins[y]||{};
+        ks.forEach(k=>{ w[k]=(w[k]||0)+n; const m=mates[y+'|'+k]=mates[y+'|'+k]||new Set(); ks.forEach(o=>{ if(o!==k) m.add(o); }); }); };
+      // Победа в финале набора — вся команда-победитель региона (одно первое место) — по 1.
+      Object.values(finals).forEach(rows=>{ if(new Set(rows.map(x=>x.g.rank)).size<10) return;
+        add(rows.filter(x=>x.g.rank===1).map(x=>keyOf(x.q)), Math.floor(SET_T[rows[0].q.cardSet]||0))(1); });
+      // Мировой ЛАН и World Cup — по 2.
+      // Строки ЛАНов 2026 — по нику (место у каждого своё): команда — одно место в одном регионе.
+      LANS.forEach(L_=>{ const teams={}; L_.rows.forEach(e=>{ if(e.rank!==1) return; const t=teams[e.rank+'|'+(e.reg||'')]=teams[e.rank+'|'+(e.reg||'')]||[]; t.push(...e.keys); });
+        Object.values(teams).forEach(ks=>add(ks, Math.floor(L_.t))(2)); });
+      ['h1','h2'].forEach(set=>add(((WC2019_FIELD[set]||[])[0]||[]).map(n=>who(n, 2019.57, null)), 2019)(2));
+      // Один лидер года: больше побед, ничья — выше рейтинг в последнем наборе года; 99 — ему и напарникам по победам
+      // с тем же счётом (дуо/трио делят титул). Меньше двух очков побед за год — игрока года нет.
+      Object.keys(wins).forEach(y=>{
+        const sets=Object.keys(SET_T).filter(st=>Math.floor(SET_T[st])===+y).sort((a,b)=>SET_T[b]-SET_T[a]);
+        const lastCard=k=>{ for(const st of sets){ const q=cardIn(k, st); if(q) return q; } return null; };
+        const score=k=>wins[y][k]*1000+((lastCard(k)||{}).rating||0);
+        const lead=Object.keys(wins[y]).sort((a,b)=>score(b)-score(a))[0];
+        if(!lead || wins[y][lead]<2) return;
+        const who_=[lead].concat([...(mates[y+'|'+lead]||[])].filter(k=>wins[y][k]===wins[y][lead]));
+        who_.forEach(k=>{ const q=lastCard(k); if(q) giveForm(q, {event:'FNCS Player of the Year '+y, place:1, boost:99-q.rating, why:'poty', cap:99}); });
+      });
+    }
+    // База — не выше 96 (шкала как в ФИФЕ: 97–99 — только особые карточки, см. giveForm). Наборы вне прохода — тоже.
+    PLAYERS_BASE.forEach(q=>{ if(q && q.tier==='cardmode' && q.rating>96){ q.rating=96; q._targetOvr=96; q.rarity=rarityForRating(96); q._attrs=null; } });
     FIFA_RATING={cfg:CFG, setT:SET_T, form:FORM,
       pure:Object.fromEntries(Object.entries(P).map(([k,p])=>[k, Object.fromEntries(Object.entries(p.years).map(([y,a])=>[y, Math.round(wmean(a)*10)/10]))])),
       finals:Object.fromEntries(Object.entries(P).map(([k,p])=>[k, p.finals.slice().sort((a,b)=>a-b)]))};
@@ -97814,7 +97852,7 @@ function ccFormCardsFor(src){
     if(!f || p.form) return;
     let c=CC_FORM_CACHE.get(p);
     if(!c || c.form.base!==p.rating){
-      const r=Math.min(99, p.rating+f.boost);
+      const r=Math.min(f.cap||99, p.rating+f.boost);
       if(r<=p.rating) return;
       c={...p, rating:r, _targetOvr:r, rarity:rarityForRating(r), _attrs:null,
          form:{event:f.event, place:f.place, why:f.why, boost:r-p.rating, base:p.rating}};
@@ -114336,7 +114374,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='5da4b249';
+const CC_BUILD='0a0df89e';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
