@@ -7061,6 +7061,7 @@
   .mg-club.ev{flex-wrap:wrap;} .mg-club.ev .mg-cname{flex:1 1 100%;} .mg-club.ev .mg-take{flex:1 1 auto;}
   .mg-conf{position:relative;margin-top:6px;height:18px;border-radius:999px;background:rgba(255,255,255,.08);overflow:hidden;}
   .mg-conf span{position:relative;z-index:1;font-size:11px;padding:0 8px;line-height:18px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block;}
+  .mg-conf-how{display:block;margin-top:4px;font-size:11px;line-height:1.35;color:#8ea6d6;}
   .mg-conf i{position:absolute;left:0;top:0;bottom:0;} .mg-conf i.hi{background:rgba(31,122,74,.7);} .mg-conf i.mid{background:rgba(201,162,39,.6);} .mg-conf i.lo{background:rgba(163,51,51,.7);}
   .mg-newopts{display:flex;flex-direction:column;gap:6px;margin:8px 0;}
   .mg-newopts .mg-seg button small{opacity:.7;margin-left:4px;}
@@ -161366,7 +161367,8 @@ function mgrPayMonths(toDay){
       if(MGR.debtMonths>1) mgrConfAdd(-Math.max(1, Math.min(4, Math.round(debt/turn*2))));
       if(MGR.debtMonths===1){ const ru=(typeof LANG!=='undefined' && LANG==='ru'); MGR.inbox=MGR.inbox||[];
         MGR.inbox.unshift({id:'debt'+m, day:CAREER.career.day, kind:'info', done:'info', text:ru ? 'Совет: касса в минусе ('+mgrMoney(c.cash)+'). Продай кого-нибудь или выиграй — долгий минус бьёт по доверию' : ({fr:()=>('Direction : le club est dans le rouge ('+mgrMoney(c.cash)+'). Vends ou gagne — une longue dette coûte la confiance'), it:()=>('Dirigenza: il club è in rosso ('+mgrMoney(c.cash)+'). Vendi o vinci — un debito lungo costa fiducia'), pt:()=>('Diretoria: o clube está no vermelho ('+mgrMoney(c.cash)+'). Venda ou vença — dívida longa custa confiança'), de:()=>('Vorstand: Der Club ist im Minus ('+mgrMoney(c.cash)+'). Verkaufe oder gewinne — lange Schulden kosten Vertrauen'), es:()=>('Directiva: el club está en números rojos ('+mgrMoney(c.cash)+'). Vende o gana — una deuda larga cuesta confianza')}[LANG]||(()=>('Board: the club is in the red ('+mgrMoney(c.cash)+'). Sell or win — a long debt costs confidence')))()}); } }
-    else { MGR.debtMonths=0; if(mgrConf()<60) mgrConfAdd(2); }
+    // Касса в плюсе: +2 до 60; а если и зарплаты в потолке — до 80 (16.10, скрин 11: экономный клуб совет тоже ценит).
+    else { MGR.debtMonths=0; if(mgrConf()<(mgrWageBill()<=(c.wageCap||Infinity) ? 80 : 60)) mgrConfAdd(2); }
     const [y, mo]=m.split('-').map(Number); m=(mo===12 ? (y+1)+'-01' : y+'-'+String(mo+1).padStart(2, '0'));
   }
   c.paidMonth=m;
@@ -162928,7 +162930,7 @@ function mgrWeekly(fromDay, toDay){
       let clubs=[]; try{ clubs=[...new Set((ccSceneRoster(MGR.region)||[]).map(c=>c.org).filter(o=>o && o!==MGR.club.name))]; }catch(e){}
       if(cand.length && clubs.length){
         const p=cand[Math.floor(rnd()*cand.length)], by=clubs[Math.floor(rnd()*clubs.length)], sum=MGR.contracts[hKey(p)].clause;
-        MGR.club.cash+=sum; mgrTransferAdd(sum); mgrDrop(p.handle); MGR.moves=MGR.moves||{}; MGR.moves[hKey(p)]=by;
+        MGR.club.cash+=sum; mgrTransferAdd(sum); mgrConfSell(sum); mgrDrop(p.handle); MGR.moves=MGR.moves||{}; MGR.moves[hKey(p)]=by;
         MGR.log.unshift({day:d, kind:'sell', name:p.handle, sum});
         MGR.inbox.unshift({id:'c'+d, day:d, kind:'info', done:'info', text:mgrT4().clauseHit(by, p.handle, mgrMoney(sum))});
         continue;
@@ -162961,7 +162963,7 @@ function mgrInboxDo(id, ok){
   if(m.kind==='offer'){
     // Игрока уже нет в клубе (продан, отпущен, ушёл) — предложение пустое: денег нет, письмо закрывается.
     if(ok && !mgrOwned().some(x=>hKey(x)===hKey(m.h))){ m.done='expired'; mgrSave(); mgrOpenHub(); return; }
-    if(ok){ MGR.club.cash+=m.sum; mgrTransferAdd(m.sum); mgrFeedPost('sell', {h:m.h, club:m.from||''}); mgrDrop(m.h);
+    if(ok){ MGR.club.cash+=m.sum; mgrTransferAdd(m.sum); mgrConfSell(m.sum); mgrFeedPost('sell', {h:m.h, club:m.from||''}); mgrDrop(m.h);
             (MGR.inbox||[]).forEach(x=>{ if(x!==m && !x.done && x.kind==='offer' && hKey(x.h)===hKey(m.h)) x.done='expired'; });
             MGR.log.unshift({day:CAREER.career.day, kind:'sell', name:m.h, sum:m.sum}); MGR.moves=MGR.moves||{}; MGR.moves[hKey(m.h)]=m.from||null; }
     else mgrMoraleAdd(m.h, -1);
@@ -162971,7 +162973,7 @@ function mgrInboxDo(id, ok){
     else mgrMoraleAdd(m.h, -1);
   }
   if(m.kind==='leave'){
-    if(ok){ MGR.club.cash+=m.sum; mgrTransferAdd(m.sum); mgrFeedPost('sell', {h:m.h, club:m.from||''}); mgrDrop(m.h); MGR.log.unshift({day:CAREER.career.day, kind:'sell', name:m.h, sum:m.sum}); }
+    if(ok){ MGR.club.cash+=m.sum; mgrTransferAdd(m.sum); mgrConfSell(m.sum); mgrFeedPost('sell', {h:m.h, club:m.from||''}); mgrDrop(m.h); MGR.log.unshift({day:CAREER.career.day, kind:'sell', name:m.h, sum:m.sum}); }
     else mgrMoraleAdd(m.h, -1);
   }
   if(m.kind==='scout'){ if(ok){ m.done='yes'; mgrSave(); mgrToAcad(m.h, true); return; } }
@@ -164234,11 +164236,35 @@ function mgrConfNight(row, clubGot){
   else { const grads=row.teams.reduce((s,t)=>s+Object.keys(t.kills||{}).filter(h=>(MGR.promoted||[]).some(x=>hKey(x)===hKey(h))).length, 0);
          d=grads ? 4 : bad ? -4 : 0; }
   d+=((MGR.club.rep||50)>=70 ? 1 : (MGR.club.rep||50)<=30 ? -1 : 0);
+  /* ДОВЕРИЕ НЕ ТОЛЬКО МЕСТАМИ (Notion «fncsdraft 15.10», скрин 11: «как поднять доверие?» — «сейчас никак, ток
+     плейсы, добавлю» — «ну тогда херня»). Поверх характера клуба, для всех: призовые в вечер +2 (у «бизнеса» они
+     уже в его +4), победа +5, топ-3 +2; испытание сезона выполнено — +10 один раз. Оценка режима. */
+  if(clubGot>0 && id!=='business') d+=2;
+  d+=best===1 ? 5 : best<=3 ? 2 : 0;
+  try{ const ch=mgrChallengeState(); if(ch && ch.done && MGR.challenge && !MGR.challenge.trust){ MGR.challenge.trust=true; d+=10; } }catch(e){}
   mgrConfAdd(d);
+}
+// Продажа за отступные — деньги клубу, совет это ценит: до +6 по сумме против оборота (16.10, тот же скрин 11).
+function mgrConfSell(sum){ if(!(sum>0)) return; const turn=Math.max(20000, (MGR.club && MGR.club.turnover) || 100000); mgrConfAdd(Math.max(1, Math.min(6, Math.round(sum/turn*20)))); }
+/* ОБОРОТ РАСТЁТ ОТ ПРИЗОВЫХ (скрин 11: «60к обороты — надо с этим что-то продумать»). Оборот считался один раз на
+   старте (mgrClubBudget) и не знал, что клуб выигрывает: потолок зарплат стоял на месте весь сезон и дальше. Теперь
+   половина призовых клуба идёт в годовой оборот, а потолок зарплат — не ниже половины оборота на 12 месяцев. */
+const MGR_TURNOVER_PRIZE=0.5;
+function mgrTurnoverGrow(clubGot){
+  const c=MGR && MGR.club; if(!c || !(clubGot>0)) return;
+  c.turnover=Math.round(((c.turnover||0)+clubGot*MGR_TURNOVER_PRIZE)/100)*100;
+  c.wageCap=Math.max(c.wageCap||0, Math.round(c.turnover*0.5/12/100)*100);
 }
 function mgrConfHTML(){
   const T7=mgrT7(), c=mgrConf(), id=mgrIdentity();
-  return '<div class="mg-conf"><span>'+T7.conf+' <b>'+c+'</b> · '+T7.id+': '+esc(T7['id'+id[0].toUpperCase()+id.slice(1)])+' — '+esc(T7['id'+id[0].toUpperCase()+id.slice(1)+'N'])+'</span><i style="width:'+c+'%" class="'+(c<30?'lo':c<60?'mid':'hi')+'"></i></div>';
+  return '<div class="mg-conf"><span>'+T7.conf+' <b>'+c+'</b> · '+T7.id+': '+esc(T7['id'+id[0].toUpperCase()+id.slice(1)])+' — '+esc(T7['id'+id[0].toUpperCase()+id.slice(1)+'N'])+'</span><i style="width:'+c+'%" class="'+(c<30?'lo':c<60?'mid':'hi')+'"></i></div>'+
+    '<small class="mg-conf-how">'+esc(({ru:'Поднимают: победа +5, топ-3 +2, призовые +2, продажа за отступные до +6, месяц в плюсе +2 (с зарплатами в потолке — до 80), испытание сезона +10. Роняют: подпись сверх бюджета, долг со второго месяца, провальные вечера. 10 и ниже — увольнение.',
+      fr:'Montent : victoire +5, top 3 +2, gains +2, vente avec indemnité jusqu’à +6, mois positif +2 (salaires sous le plafond — jusqu’à 80), défi de saison +10. Baissent : signature hors budget, dette dès le 2e mois, soirées ratées. 10 ou moins — renvoi.',
+      it:'Salgono: vittoria +5, top 3 +2, premi +2, cessione a titolo oneroso fino a +6, mese in attivo +2 (stipendi sotto il tetto — fino a 80), sfida di stagione +10. Scendono: firme fuori budget, debito dal 2º mese, serate negative. 10 o meno — esonero.',
+      pt:'Sobem: vitória +5, top 3 +2, prêmios +2, venda com multa até +6, mês no azul +2 (salários no teto — até 80), desafio da temporada +10. Caem: contratação acima do orçamento, dívida a partir do 2º mês, noites ruins. 10 ou menos — demissão.',
+      de:'Steigt: Sieg +5, Top 3 +2, Preisgeld +2, Verkauf mit Ablöse bis +6, Monat im Plus +2 (Gehälter im Rahmen — bis 80), Saisonaufgabe +10. Sinkt: Verpflichtung über Budget, Schulden ab dem 2. Monat, schwache Abende. 10 oder weniger — Entlassung.',
+      es:'Suben: victoria +5, top 3 +2, premios +2, venta con traspaso hasta +6, mes en positivo +2 (sueldos bajo el tope — hasta 80), reto de temporada +10. Bajan: fichaje fuera de presupuesto, deuda desde el 2.º mes, noches malas. 10 o menos — despido.'}[LANG])
+      || 'Goes up: win +5, top 3 +2, prize money +2, sale with a fee up to +6, month in profit +2 (wages under the cap — up to 80), season challenge +10. Goes down: signing over budget, debt from the 2nd month, bad nights. 10 or less — fired.')+'</small>';
 }
 // Проверка увольнения — после вечера и раз в месяц. Первые 30 дней совет терпит.
 function mgrSackCheck(){
@@ -164850,7 +164876,7 @@ function mgrReportBox(title, rows, clubGot, note){
 }
 function mgrAfterResults(ev, row, clubGot){
   const T2=mgrT2();
-  MGR.club.cash+=clubGot; mgrTransferAdd(Math.round(clubGot*0.5)); MGR.club.earned=(MGR.club.earned||0)+clubGot;
+  MGR.club.cash+=clubGot; mgrTransferAdd(Math.round(clubGot*0.5)); MGR.club.earned=(MGR.club.earned||0)+clubGot; mgrTurnoverGrow(clubGot);
   row.year=MGR.year; try{ if(!row.art) row.art=mgrEvArt(ev); }catch(e){}   // логотип турнира — в итоги и журнал (Notion 8.10)
   MGR.log.unshift(row); try{ mgrFeedNight(row); }catch(e){}
   try{ mgrGuestNight(row); }catch(e){ console.error('mgrGuestNight', e); }
