@@ -432,11 +432,6 @@
 <link rel="icon" type="image/png" sizes="192x192" href="favicon-192.png">
 <!-- Сайт как приложение (16.10): манифест и иконка для экрана «Домой» на iPhone — непрозрачная 180×180. -->
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
-<link rel="manifest" href="manifest.webmanifest">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black">
-<meta name="apple-mobile-web-app-title" content="FNCS Draft">
 
 <meta name="description" content="Play a Fortnite career on the real FNCS calendar — divisions, Majors, Reload and LANs, solo or with a friend. Or draft a squad of real FNCS players and run the whole tournament. Free, no signup.">
 <meta name="theme-color" content="#0e1116">
@@ -7715,8 +7710,6 @@
          Id кнопок cstripDuo/cstripRace/cstripCode сохранены: на них смотрят
          check-mp-doors и setLang. Арт — ключевой арт Major 1, один. -->
     <!-- Карьера игрока и карьера менеджера — ОДНОЙ строкой, две половины (его скрин 7.10: красные рамки слева и справа). -->
-    <!-- «Поставь на экран Домой» — iPhone без установки и Android с кнопкой (homeInstallDraw, 16.10). -->
-    <div class="home-install" id="homeInstall" hidden></div>
     <div class="hero-pair">
     <section class="hero hero-career" aria-labelledby="heroTitle">
       <!-- Самые хайповые игроки всех лет позади текста, на менеджере — гербы клубов (его слово 8.10). -->
@@ -114377,7 +114370,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='45f3e772';
+const CC_BUILD='725b822c';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -159572,27 +159565,7 @@ setTimeout(()=>{ try{ if(!mgrAllowed()) return; document.querySelectorAll('.hero
 /* ГЛАВНАЯ 15.10: «Продолжить» по сохранениям, «Сцена сейчас» по настоящему календарю 2026 и «Игроки сайта».
    Рисуется из ccHeroCareerText — то есть на загрузке, на смене языка и при каждом возврате на главную. */
 let HOME_BOARD=null, HOME_BOARD_ALL=false;
-/* САЙТ КАК ПРИЛОЖЕНИЕ (16.10). Safari на iPhone кнопки установки не показывает — подсказка, как поставить через
-   «Поделиться»; Chrome на Android даёт событие beforeinstallprompt — тогда кнопка «Установить». Уже поставленному и
-   закрывшему подсказку — ничего. */
-let HOME_INSTALL_EV=null;
-try{ window.addEventListener('beforeinstallprompt', e=>{ e.preventDefault(); HOME_INSTALL_EV=e; try{ homeInstallDraw(); }catch(err){} }); }catch(e){}
-function homeInstallDraw(){
-  const box=document.getElementById('homeInstall'); if(!box) return;
-  let hide=false; try{ hide=localStorage.getItem('fd_install_hide')==='1'; }catch(e){}
-  const standalone=!!(navigator.standalone || (window.matchMedia && matchMedia('(display-mode: standalone)').matches));
-  const ios=/iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform==='MacIntel' && navigator.maxTouchPoints>1);
-  if(hide || standalone || (!ios && !HOME_INSTALL_EV)){ box.hidden=true; return; }
-  const T=L();
-  box.innerHTML='<span class="hi-ico">📲</span><div><b>'+esc(T.hiTitle)+'</b><span>'+esc(ios ? T.hiIos : T.hiAndroid)+'</span></div>'+
-    (HOME_INSTALL_EV ? '<button class="ch-play" type="button" onclick="homeInstallGo()">'+esc(T.hiBtn)+'</button>' : '')+
-    '<button class="hi-x" type="button" aria-label="'+esc(T.hmRealClose)+'" onclick="homeInstallHide()">✕</button>';
-  box.hidden=false;
-}
-function homeInstallGo(){ const e=HOME_INSTALL_EV; if(!e) return; HOME_INSTALL_EV=null; try{ e.prompt(); }catch(err){} homeInstallDraw(); }
-function homeInstallHide(){ try{ localStorage.setItem('fd_install_hide', '1'); }catch(e){} homeInstallDraw(); }
 function homeRender(){
-  try{ homeInstallDraw(); }catch(e){}
   try{ homeSceneDraw(); }catch(e){}
   try{ homeTimerDraw(); }catch(e){}
   try{ homeBoardDraw(); }catch(e){}
