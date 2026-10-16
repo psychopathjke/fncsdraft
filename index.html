@@ -7120,6 +7120,34 @@
   .home-hist small{display:block;margin-top:4px;font-size:12.5px;color:#a9bbe3;}
   .home-hist #achievementBadge{font-family:var(--font-display);font-size:18px;color:#ffdd00;font-weight:700;white-space:nowrap;}
   @media(max-width:900px){ .home-live{grid-template-columns:1fr;} }
+  /* Драфт дня: слева номер, остров и кнопка, справа верх таблицы дня. */
+  .home-daily{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px;
+    border-color:rgba(255,221,0,.45) !important;box-shadow:inset 0 0 0 1px rgba(255,221,0,.12);}
+  .home-daily[hidden]{display:none;}
+  .home-daily .hero-mode-tag{margin-bottom:6px;display:inline-block;}
+  .home-daily .cstrip-chips{margin:0 0 12px;}
+  .dy-acts{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:10px;}
+  .dy-acts .hero-btn{min-height:44px;}
+  .dy-mine{display:flex;align-items:baseline;gap:10px;margin:2px 0 0;}
+  .dy-mine b{font-family:var(--font-display);font-size:30px;font-weight:700;color:#ffdd00;line-height:1;}
+  .dy-mine span{color:#e6edfb;font-weight:700;}
+  .dy-next{margin:10px 0 0;}
+  .dy-top-h{margin:2px 0 8px;font-family:var(--font-display);font-weight:600;font-size:17px;letter-spacing:.02em;color:#fff;}
+  .dy-bar{display:flex;flex-wrap:wrap;gap:4px 14px;align-items:baseline;margin:0 0 12px;padding:10px 14px;border-radius:10px;
+    background:rgba(255,221,0,.1);border:1px solid rgba(255,221,0,.45);font-size:13px;color:#e6edfb;}
+  .dy-bar b{font-family:var(--font-display);font-size:18px;color:#ffdd00;letter-spacing:.02em;}
+  .dy-res{margin:12px 0;padding:14px 16px;border-radius:12px;background:rgba(255,221,0,.08);border:1px solid rgba(255,221,0,.45);}
+  .dy-res[hidden]{display:none;}
+  .dy-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 12px;}
+  .dy-head b{font-family:var(--font-display);font-size:20px;color:#ffdd00;}
+  .dy-head span{font-weight:800;color:#fff;}
+  .dy-send{display:flex;gap:8px;margin-top:10px;}
+  .dy-send input{flex:1;min-width:0;min-height:44px;padding:0 12px;border-radius:8px;border:1px solid rgba(255,255,255,.25);
+    background:#0b1640;color:#fff;font:inherit;font-size:16px;}
+  .dy-send input:focus-visible{outline:2px solid #ffdd00;outline-offset:1px;}
+  .dy-ok{margin:10px 0 0;color:#7ef0dd;font-weight:700;font-size:13px;}
+  .dy-note{margin-top:10px;}
+  @media(max-width:900px){ .home-daily{grid-template-columns:1fr;} }
   @media(max-width:700px){ .hf-grid{grid-template-columns:1fr;} .home-h{font-size:19px;} }
   /* Результаты 2026 на главной и окно полной таблицы. */
   .hr-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,420px),1fr));gap:10px;}
@@ -7730,7 +7758,7 @@
           <button class="hero-btn hero-btn-alt hero-mgr-btn" type="button" onclick="mgrStart()"><span id="mgCareerBtn" data-i18n="hmMgrCareer"></span></button>
           <button class="hero-btn hero-btn-alt" type="button" onclick="homeOpenDraft()"><span data-i18n="heroDraft"></span></button>
         </div>
-        <div class="hero-about"><a href="about.html"><span data-i18n="aboutLink"></span></a></div>
+        <div class="hero-about"><a href="about.html"><span data-i18n="aboutLink"></span></a> · <a href="/players"><span data-i18n="playersLink"></span></a></div>
         <!-- Видно сразу, а не после загрузки app.js (его правка 29.09: «с задержкой появляется with a friend»);
              CC_MP_OPEN=false по-прежнему прячет ряд из setLang. -->
         <div class="hero-team" id="heroTeam">
@@ -7922,6 +7950,9 @@
     </section>
 
     <!-- Настоящий календарь FNCS и «Игроки сайта» — рисуют homeSceneDraw и homeBoardDraw. -->
+
+    <!-- Драфт дня (16.10): одни паки на всех, одна попытка, таблица дня — рисует homeDailyDraw. -->
+    <section class="home-block home-daily" id="homeDaily" hidden></section>
 
     <!-- Результаты 2026, календарь и игроки сайта — одним блоком с вкладками (homeLiveTabs), под драфтом. -->
     <section class="home-block home-tabs" id="homeLive" data-tab="real" hidden>
@@ -20390,7 +20421,7 @@ const CC_LANGS=['en','ru','fr','it','pt','de','es'];
    Аргентина 50 тыс.). Словари — отдельными файлами i18n-de.js / i18n-es.js (tools/build-i18n.js): app.js упирается в 9 МБ,
    а словарь нужен только тем, кто выбрал язык. Пока файл не пришёл, L() показывает английский (он и так под каждым языком). */
 const CC_LANG_FILES={de:1, es:1};
-let CC_I18N_V={de:'d44e130f', es:'f2c30856'};   // ==== CC_I18N_V (tools/build-i18n.js) ====
+let CC_I18N_V={de:'d7cf1a30', es:'d7a76fb4'};   // ==== CC_I18N_V (tools/build-i18n.js) ====
 const CC_LANG_WAIT={};
 function ccLangLoad(lang, done){
   if(!CC_LANG_FILES[lang] || (typeof I18N!=='undefined' && I18N[lang])){ done && done(); return; }
@@ -20729,12 +20760,13 @@ Object.assign(I18N.en, {clTitle:'Cloud', clOn:'on', clOffNow:'off — careers li
 Object.assign(I18N.fr, {clTitle:'Cloud', clOn:'activé', clOffNow:'désactivé — les carrières restent dans ce navigateur', clWhy:'Active le cloud pour obtenir un code. Avec lui, tes carrières et ton manager s’ouvrent sur n’importe quel appareil, même si ce navigateur est vidé.', clEnable:'Activer le cloud', clHave:'J’ai un code', clKeep:'Note ce code : il ouvre tes carrières sur un autre appareil.', clSent:w=>'Dernier envoi : '+w, clBusy:'envoi…', clPushNow:'Envoyer maintenant', clOther:'Entrer un autre code', clOff:'Désactiver', clOpen:'Ouvrir', clFound:n=>'Sauvegardes sur ce code : '+n, clCareer:'carrière', clMgr:'manager', clTake:'Les récupérer ici', clSure:'Remplace les mêmes emplacements ici — touche encore', clErr:m=>'Le cloud n’a pas répondu ('+m+'). Ta carrière est sauvegardée dans le navigateur ; on réessaiera.', clBad:'Le code fait 16 caractères, ex. K7QM-2XPA-9RTD-WH4C'});
 Object.assign(I18N.it, {clTitle:'Cloud', clOn:'attivo', clOffNow:'spento — le carriere restano in questo browser', clWhy:'Attiva il cloud per avere un codice. Con esso carriere e manager si aprono su qualsiasi dispositivo, anche se questo browser viene svuotato.', clEnable:'Attiva il cloud', clHave:'Ho un codice', clKeep:'Segnati questo codice: apre le tue carriere su un altro dispositivo.', clSent:w=>'Ultimo invio: '+w, clBusy:'invio…', clPushNow:'Invia ora', clOther:'Inserisci un altro codice', clOff:'Spegni', clOpen:'Apri', clFound:n=>'Salvataggi con questo codice: '+n, clCareer:'carriera', clMgr:'manager', clTake:'Portali in questo browser', clSure:'Sostituisce gli stessi slot qui — tocca di nuovo', clErr:m=>'Il cloud non ha risposto ('+m+'). La carriera è salvata nel browser; riproveremo.', clBad:'Il codice ha 16 caratteri, es. K7QM-2XPA-9RTD-WH4C'});
 Object.assign(I18N.pt, {clTitle:'Nuvem', clOn:'ligada', clOffNow:'desligada — as carreiras ficam só neste navegador', clWhy:'Ligue a nuvem para receber um código. Com ele, suas carreiras e o manager abrem em qualquer aparelho, mesmo se este navegador for limpo.', clEnable:'Ligar a nuvem', clHave:'Tenho um código', clKeep:'Anote este código: ele abre suas carreiras em outro aparelho.', clSent:w=>'Último envio: '+w, clBusy:'enviando…', clPushNow:'Enviar agora', clOther:'Digitar outro código', clOff:'Desligar', clOpen:'Abrir', clFound:n=>'Saves neste código: '+n, clCareer:'carreira', clMgr:'manager', clTake:'Trazer para este navegador', clSure:'Substitui os mesmos slots aqui — toque de novo', clErr:m=>'A nuvem não respondeu ('+m+'). Sua carreira está salva no navegador; tentaremos de novo.', clBad:'O código tem 16 caracteres, ex. K7QM-2XPA-9RTD-WH4C'});
-/* Сайт как приложение (16.10). */
-Object.assign(I18N.ru, {hiTitle:'FNCS Draft как приложение', hiIos:'В Safari нажми «Поделиться» внизу → «На экран „Домой“». Откроется на весь экран, без адресной строки.', hiAndroid:'Поставь сайт на главный экран — откроется как приложение.', hiBtn:'Установить'});
-Object.assign(I18N.en, {hiTitle:'FNCS Draft as an app', hiIos:'In Safari tap Share at the bottom → “Add to Home Screen”. It opens full screen, no address bar.', hiAndroid:'Put the site on your home screen — it opens like an app.', hiBtn:'Install'});
-Object.assign(I18N.fr, {hiTitle:'FNCS Draft comme une app', hiIos:'Dans Safari, touche Partager en bas → « Sur l’écran d’accueil ». Ça s’ouvre en plein écran, sans barre d’adresse.', hiAndroid:'Mets le site sur ton écran d’accueil — il s’ouvre comme une app.', hiBtn:'Installer'});
-Object.assign(I18N.it, {hiTitle:'FNCS Draft come app', hiIos:'In Safari tocca Condividi in basso → “Aggiungi alla schermata Home”. Si apre a schermo intero, senza barra degli indirizzi.', hiAndroid:'Metti il sito nella schermata Home — si apre come un’app.', hiBtn:'Installa'});
-Object.assign(I18N.pt, {hiTitle:'FNCS Draft como app', hiIos:'No Safari toque em Compartilhar embaixo → “Adicionar à Tela de Início”. Abre em tela cheia, sem barra de endereço.', hiAndroid:'Coloque o site na tela inicial — ele abre como um app.', hiBtn:'Instalar'});
+/* Драфт дня (16.10). */
+Object.assign(I18N.ru, {playersLink:'Игроки FNCS'}); Object.assign(I18N.en, {playersLink:'FNCS players'}); Object.assign(I18N.fr, {playersLink:'Joueurs FNCS'}); Object.assign(I18N.it, {playersLink:'Giocatori FNCS'}); Object.assign(I18N.pt, {playersLink:'Jogadores FNCS'});
+Object.assign(I18N.ru, {dyTag:'Каждый день', dyTitle:n=>'Драфт дня #'+n, dySub:'У всех сегодня одни и те же паки. Одна попытка — и таблица дня: кто соберёт лучшее дуо.', dyRules:'дуо · все годы и регионы · 12 игр', dyOnce:'Попытка одна: после «Выйти на турнир» переиграть нельзя.', dyPlay:'Играть', dyBoard:'Таблица дня', dyShare:'Поделиться', dyCopied:'Скопировано', dyPts:'очк.', dyNick:'Ник для таблицы', dySend:'В таблицу', dySent:n=>'Ты в таблице дня как '+n, dyLeft:'Турнир не доигран — попытка сгорела', dyNext:t=>'Новый драфт через '+t, dyH:'ч', dyM:'мин', dyRank:(r,t)=>'Твоё место: '+r+' из '+t, dyEmpty:'Сегодня ещё никто не сыграл. Будь первым.', dyHonest:'Результат присылает браузер игрока, сервер его не пересчитывает.'});
+Object.assign(I18N.en, {dyTag:'Every day', dyTitle:n=>'Daily Draft #'+n, dySub:'Everyone gets the same packs today. One try, one daily leaderboard: who builds the best duo.', dyRules:'duo · all years and regions · 12 games', dyOnce:'One try: once you hit “Enter tournament” there is no replay.', dyPlay:'Play', dyBoard:'Daily leaderboard', dyShare:'Share', dyCopied:'Copied', dyPts:'pts', dyNick:'Name for the leaderboard', dySend:'Submit', dySent:n=>'You are on today’s board as '+n, dyLeft:'Tournament not finished — the try is used', dyNext:t=>'Next draft in '+t, dyH:'h', dyM:'min', dyRank:(r,t)=>'Your place: '+r+' of '+t, dyEmpty:'Nobody has played today yet. Be the first.', dyHonest:'Results are sent by the player’s browser; the server does not recompute them.'});
+Object.assign(I18N.fr, {dyTag:'Chaque jour', dyTitle:n=>'Draft du jour #'+n, dySub:'Tout le monde a les mêmes packs aujourd’hui. Un seul essai, un classement du jour : qui monte le meilleur duo.', dyRules:'duo · toutes les années et régions · 12 parties', dyOnce:'Un seul essai : après « Entrer dans le tournoi », pas de revanche.', dyPlay:'Jouer', dyBoard:'Classement du jour', dyShare:'Partager', dyCopied:'Copié', dyPts:'pts', dyNick:'Pseudo pour le classement', dySend:'Envoyer', dySent:n=>'Tu es dans le classement du jour : '+n, dyLeft:'Tournoi non terminé — l’essai est perdu', dyNext:t=>'Prochain draft dans '+t, dyH:'h', dyM:'min', dyRank:(r,t)=>'Ta place : '+r+' sur '+t, dyEmpty:'Personne n’a encore joué aujourd’hui. Sois le premier.', dyHonest:'Le résultat est envoyé par le navigateur du joueur ; le serveur ne le recalcule pas.'});
+Object.assign(I18N.it, {dyTag:'Ogni giorno', dyTitle:n=>'Draft del giorno #'+n, dySub:'Oggi tutti hanno gli stessi pack. Un solo tentativo e la classifica del giorno: chi costruisce il duo migliore.', dyRules:'duo · tutti gli anni e le regioni · 12 partite', dyOnce:'Un solo tentativo: dopo «Entra nel torneo» non si rigioca.', dyPlay:'Gioca', dyBoard:'Classifica del giorno', dyShare:'Condividi', dyCopied:'Copiato', dyPts:'pt', dyNick:'Nome per la classifica', dySend:'Invia', dySent:n=>'Sei nella classifica del giorno come '+n, dyLeft:'Torneo non finito — tentativo usato', dyNext:t=>'Nuovo draft tra '+t, dyH:'h', dyM:'min', dyRank:(r,t)=>'Il tuo posto: '+r+' su '+t, dyEmpty:'Oggi non ha ancora giocato nessuno. Sii il primo.', dyHonest:'Il risultato lo invia il browser del giocatore; il server non lo ricalcola.'});
+Object.assign(I18N.pt, {dyTag:'Todo dia', dyTitle:n=>'Draft do dia #'+n, dySub:'Hoje todo mundo recebe os mesmos packs. Uma tentativa e o ranking do dia: quem monta a melhor dupla.', dyRules:'duo · todos os anos e regiões · 12 partidas', dyOnce:'Uma tentativa só: depois de “Entrar no torneio” não dá para jogar de novo.', dyPlay:'Jogar', dyBoard:'Ranking do dia', dyShare:'Compartilhar', dyCopied:'Copiado', dyPts:'pts', dyNick:'Nick para o ranking', dySend:'Enviar', dySent:n=>'Você está no ranking do dia como '+n, dyLeft:'Torneio não terminado — tentativa usada', dyNext:t=>'Próximo draft em '+t, dyH:'h', dyM:'min', dyRank:(r,t)=>'Sua posição: '+r+' de '+t, dyEmpty:'Ninguém jogou hoje ainda. Seja o primeiro.', dyHonest:'O resultado é enviado pelo navegador do jogador; o servidor não o recalcula.'});
 /* Особые карточки 97/98/99 (16.10). */
 Object.assign(I18N.ru, {formWhyLanwin:'чемпион ЛАНа', formWhyPoty:'игрок года'});
 Object.assign(I18N.en, {formWhyLanwin:'LAN champion', formWhyPoty:'player of the year'});
@@ -97321,6 +97353,7 @@ function chooseMode(size, major){
   // Год или один кубок. Ставится ЗДЕСЬ, а не в startDraft: экран регионов уже
   // читает список кругов, чтобы сказать, сколько их и чем год кончается.
   pendingYear = YEAR_CHAINS[major] ? major : null;
+  DAILY=null;   // любой режим, выбранный руками, — не драфт дня (dailyStart ставит его после)
   MODE_ART_NOW=modeArtFor(size, major);
   CC_DRAFT_RUN=true;   // драфт, не командный вечер — мультиплеер молчит (см. ccMpOn)
   // Настройка комнаты прошлого карьерного вечера (единицы слабости дивизиона,
@@ -97744,6 +97777,7 @@ function startDraft(size, major){
   renderSlots();
   nextRound();
   show('screen-draft');
+  dailyBanner();
 }
 
 function updateRerollUI(){
@@ -97922,13 +97956,13 @@ function nextRound(){
       renderTeamPicker();
     }
   } else {
-    currentCandidates=generatePack();
+    currentCandidates=dailyRoll('p', generatePack);
     renderCandidates(currentCandidates);
   }
-  currentWeaponOptions=generateWeaponPack();
+  currentWeaponOptions=dailyRoll('w', generateWeaponPack);
   renderItemPack(currentWeaponOptions, 'weaponCandidates', pickWeapon);
   updateLootPoolNote();
-  currentHealOptions=generateHealPack();
+  currentHealOptions=dailyRoll('h', generateHealPack);
   renderItemPack(currentHealOptions, 'healCandidates', pickHeal);
   updateRerollUI();
 }
@@ -99605,10 +99639,10 @@ function rerollAll(){
   if(roundPlayerPicked && roundWeaponPicked && roundHealPicked) return;
   rerollsLeft--;
   updateRerollUI();
-  if(!roundPlayerPicked){ currentCandidates=generatePack(); renderCandidates(currentCandidates); }
-  if(!roundWeaponPicked){ currentWeaponOptions=generateWeaponPack(); renderItemPack(currentWeaponOptions, 'weaponCandidates', pickWeapon); }
+  if(!roundPlayerPicked){ currentCandidates=dailyRoll('p', generatePack); renderCandidates(currentCandidates); }
+  if(!roundWeaponPicked){ currentWeaponOptions=dailyRoll('w', generateWeaponPack); renderItemPack(currentWeaponOptions, 'weaponCandidates', pickWeapon); }
   updateLootPoolNote();
-  if(!roundHealPicked){ currentHealOptions=generateHealPack(); renderItemPack(currentHealOptions, 'healCandidates', pickHeal); }
+  if(!roundHealPicked){ currentHealOptions=dailyRoll('h', generateHealPack); renderItemPack(currentHealOptions, 'healCandidates', pickHeal); }
 }
 
 // The Major's real teams, as cards, best first. This takes the place of the
@@ -100609,9 +100643,12 @@ function sleep(ms){
 
 function startRun(){
   currentRunGen=runGeneration;
+  // Драфт дня: попытка сгорает здесь, симуляция сеется днём (см. dailyRoll).
+  if(DAILY && !YEAR_KEY && !isMajorMode){ dailyBurn(); dailySimOn(); } else DAILY=null;
   Promise.resolve(YEAR_KEY ? runYearTournament()
                 : isMajorMode ? runMajorTournament() : runTournament())
-    .catch(e=>{ if(e!==RUN_ABANDONED) throw e; });
+    .catch(e=>{ if(e!==RUN_ABANDONED) throw e; })
+    .finally(dailySimOff);
 }
 
 /* ---------- Весь год одним составом ----------
@@ -110405,10 +110442,209 @@ async function runTournament(){
   renderStats();
   finalizeRunStats(squadSize, false, place, teams.length, false, false, false, you, teams);
   showShareButton(you, place, teams.length, false, teams);
+  { const dr=document.getElementById('dailyResult'); if(dr && !DAILY) dr.hidden=true; }
+  if(DAILY) dailyFinish(you, place, teams);
 }
 
 // Set before the results render so the standings can show what each row won.
 let lobbyPrizeTable=null;
+/* ---------- Драфт дня (16.10, его «3» из «что добавить, чтобы привлечь игроков») ----------
+
+   Как Wordle: у всех в один день (по UTC) одни и те же паки, одна попытка и таблица дня на сервере
+   (mp.fncsdraft.com/daily, server/src/daily.js). Режим — свободное дуо: все годы и все регионы, 12 игр,
+   остров дня из MAP_CHOICES по номеру дня.
+
+   Одинаковые паки: каждый пак игроков, оружия и хилок сдаётся своим генератором от «день|пак|круг|рерол»
+   (dailyRoll) — сколько бросков ушло на анимацию или на чужой выбор, на сдачу не влияет. Сама симуляция
+   тоже сеется днём (dailySimOn в startRun): тот же состав и те же решения дают тот же итог.
+
+   Попытка сгорает, когда нажата «В турнир», а не на выборе: пересдать паки нельзя, переиграть плохой
+   турнир — тоже. Итог дня хранится в localStorage (fd_daily), таблица — на сервере. Сервер игру не
+   считает, строку присылает браузер; таблица честно это говорит. */
+const DAILY_EPOCH='2026-10-16';
+let DAILY=null;            // {day, n, map} — пока идёт драфт дня, иначе null
+let DAILY_RAND=null;       // родной Math.random на время сеянной симуляции
+let DAILY_BOARD=null;      // последний ответ /daily
+function dailyDay(ms){ return new Date(ms==null ? Date.now() : ms).toISOString().slice(0, 10); }
+function dailyNum(day){ return Math.round((Date.parse(day+'T00:00:00Z')-Date.parse(DAILY_EPOCH+'T00:00:00Z'))/864e5)+1; }
+function dailyMap(day){ return MAP_CHOICES[ccHashStr('daily-map|'+day)%MAP_CHOICES.length]; }
+function dailyBase(){ const b=ccBoardBase(); return b ? b.replace(/\/board$/, '/daily') : null; }
+function dailyStore(){ try{ return JSON.parse(localStorage.getItem('fd_daily')||'{}')||{}; }catch(e){ return {}; } }
+function dailySave(o){ try{ localStorage.setItem('fd_daily', JSON.stringify(o)); }catch(e){} }
+function dailyId(){
+  const s=dailyStore();
+  if(!s.id){
+    let id=''; try{ id=crypto.randomUUID(); }catch(e){ id=Date.now().toString(36)+'-'+Math.random().toString(36).slice(2)+Math.random().toString(36).slice(2); }
+    s.id=String(id).toLowerCase().replace(/[^a-z0-9-]/g, '').slice(0, 40); dailySave(s);
+  }
+  return s.id;
+}
+function dailyToday(){ const s=dailyStore(), d=dailyDay(); return (s.days||{})[d]||null; }
+function dailyNick(){
+  const s=dailyStore(); if(s.nick) return s.nick;
+  try{ const pl=CAREER && CAREER.player; if(pl && (pl.nick||pl.handle)) return String(pl.nick||pl.handle).slice(0, 24); }catch(e){}
+  return '';
+}
+/* Сдача пака своим генератором: Math.random подменяется только на время fn. */
+function dailyRoll(tag, fn){
+  if(!DAILY) return fn();
+  const g=careerRng(ccHashStr('daily|'+DAILY.day+'|'+tag+'|'+round+'|'+rerollsLeft)), nat=Math.random;
+  Math.random=g;
+  try{ return fn(); } finally { Math.random=nat; }
+}
+function dailySimOn(){
+  if(!DAILY || DAILY_RAND) return;
+  DAILY_RAND=Math.random;
+  Math.random=careerRng(ccHashStr('daily|'+DAILY.day+'|sim|'+drafted.map(hKey).sort().join(',')));
+}
+function dailySimOff(){ if(DAILY_RAND){ Math.random=DAILY_RAND; DAILY_RAND=null; } }
+
+function dailyStart(){
+  const today=dailyToday();
+  if(today){ dailyOpen(); return; }
+  const day=dailyDay(), map=dailyMap(day);
+  chooseMode(2);
+  DAILY={day, n:dailyNum(day), map:map.key};
+  preSelectedRegions=[]; preSelectedYears=[]; preHomeRegion=null; pendingMapSet=map.key;
+  setSimMode(false); setPlayMode(false);
+  startDraft(2);
+}
+/* Полоса над драфтом: какой это день и что попытка одна. */
+function dailyBanner(){
+  const scr=document.getElementById('screen-draft'); if(!scr) return;
+  let b=document.getElementById('dailyBar');
+  if(!DAILY){ if(b) b.remove(); return; }
+  if(!b){ b=document.createElement('div'); b.id='dailyBar'; b.className='dy-bar'; scr.insertBefore(b, scr.firstChild); }
+  const T=L(), m=MAP_CHOICES.find(x=>x.key===DAILY.map);
+  b.innerHTML='<b>'+esc(T.dyTitle(DAILY.n))+'</b><span>'+esc((m ? m.label+' · ' : '')+T.dyRules)+'</span><span>'+esc(T.dyOnce)+'</span>';
+}
+/* «В турнир» нажато — попытка сгорела, даже если вкладку закроют посреди турнира. */
+function dailyBurn(){
+  if(!DAILY) return;
+  const s=dailyStore(); s.days=s.days||{};
+  if(!s.days[DAILY.day]) s.days[DAILY.day]={n:DAILY.n, map:DAILY.map, at:Date.now()};
+  Object.keys(s.days).sort().slice(0, -30).forEach(k=>{ delete s.days[k]; });
+  dailySave(s);
+}
+function dailyFinish(you, place, teams){
+  if(!DAILY) return;
+  const s=dailyStore(); s.days=s.days||{};
+  const r=s.days[DAILY.day]=Object.assign(s.days[DAILY.day]||{}, {n:DAILY.n, map:DAILY.map, place, field:teams.length,
+    score:Math.round(you.totalPts||0), elims:you.totalElims||0, wins:you.wins||0, team:drafted.map(p=>p.handle)});
+  dailySave(s);
+  DAILY=null;
+  dailyBanner();
+  const box=document.getElementById('dailyResult')||(()=>{ const d=document.createElement('div'); d.id='dailyResult'; d.className='dy-res';
+    const fb=document.getElementById('finalBanner'); fb.parentNode.insertBefore(d, fb.nextSibling); return d; })();
+  box.hidden=false;
+  dailyResultDraw(box, r);
+  try{ homeRender(); }catch(e){}
+}
+function dailyShareText(r){
+  const T=L(), m=MAP_CHOICES.find(x=>x.key===r.map);
+  return 'FNCS Draft · '+T.dyTitle(r.n)+'\n'+(r.place===1 ? '👑' : r.place<=3 ? '🥇' : r.place<=10 ? '🔥' : '🎯')+' #'+r.place+'/'+r.field+' · '+r.score+' '+T.dyPts+
+    (m ? '\n🗺️ '+m.label : '')+'\n👥 '+(r.team||[]).join(' + ')+'\nhttps://fncsdraft.com';
+}
+function dailyShare(){
+  const r=dailyToday(); if(!r || r.score==null) return;
+  const text=dailyShareText(r), T=L();
+  const done=()=>{ document.querySelectorAll('.dy-share').forEach(b=>{ b.textContent=T.dyCopied; setTimeout(()=>{ b.textContent=T.dyShare; }, 1800); }); };
+  if(navigator.share){ navigator.share({text}).catch(()=>{}); return; }
+  try{ navigator.clipboard.writeText(text).then(done, ()=>{}); }catch(e){}
+}
+function dailySend(){
+  const r=dailyToday(), base=dailyBase(), inp=document.getElementById('dyNick');
+  if(!r || r.score==null || !base) return;
+  const nick=String(inp && inp.value || '').replace(/[<>&"'`\\]/g, '').trim().slice(0, 24);
+  if(!nick){ if(inp) inp.focus(); return; }
+  const s=dailyStore(); s.nick=nick; dailySave(s);
+  let country=''; try{ country=String((CAREER && CAREER.player && CAREER.player.country)||'').toLowerCase().slice(0, 2); }catch(e){}
+  const day=dailyDay();
+  fetch(base, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id:dailyId(), day, nick, country,
+    score:r.score, place:r.place, field:r.field, team:r.team})})
+    .then(x=>x.ok).catch(()=>false).then(ok=>{
+      if(ok){ const s2=dailyStore(); if(s2.days && s2.days[day]){ s2.days[day].sent=nick; dailySave(s2); } }
+      DAILY_BOARD=null;
+      document.querySelectorAll('#dailyResult, #dailyModalBody').forEach(el=>dailyResultDraw(el, dailyToday()));
+      try{ homeDailyDraw(); }catch(e){}
+    });
+}
+function dailyResultDraw(box, r){
+  if(!box || !r) return;
+  const T=L();
+  const head='<div class="dy-head"><b>'+esc(T.dyTitle(r.n))+'</b>'+(r.score!=null ? '<span>#'+r.place+' / '+r.field+' · '+r.score+' '+esc(T.dyPts)+'</span>' : '<span>'+esc(T.dyLeft)+'</span>')+'</div>';
+  const send=r.score==null || !dailyBase() ? '' : r.sent ? '<p class="dy-ok">'+esc(T.dySent(r.sent))+'</p>'
+    : '<div class="dy-send"><input id="dyNick" maxlength="24" autocomplete="nickname" placeholder="'+esc(T.dyNick)+'" value="'+esc(dailyNick())+'">'+
+      '<button class="ch-play" type="button" onclick="dailySend()">'+esc(T.dySend)+'</button></div>';
+  const share=r.score!=null ? '<button class="hero-btn hero-btn-alt dy-share" type="button" onclick="dailyShare()">'+esc(T.dyShare)+'</button>' : '';
+  box.innerHTML=head+send+'<div class="dy-acts">'+share+'<button class="home-more" type="button" onclick="dailyOpen()">'+esc(T.dyBoard)+'</button></div>'+
+    '<p class="home-sub dy-next">'+esc(T.dyNext(dailyLeft()))+'</p>';
+}
+function dailyLeft(){
+  const ms=Date.parse(dailyDay(Date.now()+864e5)+'T00:00:00Z')-Date.now();
+  const h=Math.floor(ms/36e5), m=Math.floor(ms%36e5/6e4);
+  return h+' '+L().dyH+' '+m+' '+L().dyM;
+}
+function dailyLoad(cb){
+  const base=dailyBase(); if(!base){ cb(null); return; }
+  const d=DAILY_BOARD;
+  if(d && d.day===dailyDay() && Date.now()-d._at<60000){ cb(d); return; }
+  fetch(base+'?day='+dailyDay()+'&me='+encodeURIComponent(dailyId())).then(r=>r.ok ? r.json() : null).catch(()=>null).then(x=>{
+    DAILY_BOARD=x ? Object.assign(x, {_at:Date.now()}) : null; cb(DAILY_BOARD); });
+}
+function dailyRowsHTML(rows){
+  const T=L(), flag=c=>c ? '<img src="flags/w20/'+esc(ccCountryOf(c))+'.png" alt="" onerror="this.remove()">' : '';
+  return rows.map((r,i)=>'<div class="hb-row'+(r.you ? ' me' : '')+'"><i>'+(i+1)+'</i><b>'+flag(r.country)+esc(r.nick)+
+    '<small>#'+r.place+'/'+r.field+(r.team ? ' · '+esc(String(r.team).split(',').join(' + ')) : '')+'</small></b><span>'+r.score+'</span></div>').join('');
+}
+/* Окно дня: свой итог и таблица (поверх экрана, как «топ 50» на главной). */
+function dailyOpen(){
+  const T=L();
+  let m=document.getElementById('homeRealModal');
+  if(!m){
+    m=document.createElement('div'); m.id='homeRealModal'; m.className='hr-modal';
+    m.addEventListener('click', ev=>{ if(ev.target===m) homeRealClose(); });
+    document.addEventListener('keydown', ev=>{ if(ev.key==='Escape' && document.getElementById('homeRealModal')) homeRealClose(); });
+    document.body.appendChild(m);
+  }
+  const r=dailyToday();
+  m.innerHTML='<div class="hr-box" role="dialog" aria-modal="true" aria-label="'+esc(T.dyBoard)+'">'+
+    '<div class="hr-top"><b>'+esc(T.dyTitle(dailyNum(dailyDay())))+' · '+esc(T.dyBoard)+'</b><button type="button" class="hr-x" onclick="homeRealClose()" aria-label="'+esc(T.hmRealClose)+'">✕</button></div>'+
+    '<div class="hr-wrap">'+(r ? '<div class="dy-res" id="dailyModalBody"></div>' : '')+'<div id="dailyModalRows"><p class="home-sub">'+esc(T.lbLoad)+'</p></div></div></div>';
+  document.body.classList.add('hr-lock');
+  if(r) dailyResultDraw(document.getElementById('dailyModalBody'), r);
+  dailyLoad(d=>{
+    const el=document.getElementById('dailyModalRows'); if(!el) return;
+    if(!d){ el.innerHTML='<p class="home-sub">'+esc(T.lbErr)+'</p>'; return; }
+    el.innerHTML=(d.rows||[]).length ? '<div>'+dailyRowsHTML(d.rows)+'</div>'+(d.you ? '<div class="hb-me">'+esc(T.dyRank(d.you.rank, d.total))+'</div>' : '')+
+      '<p class="home-sub dy-note">'+esc(T.dyHonest)+'</p>'
+      : '<p class="home-sub">'+esc(T.dyEmpty)+'</p>';
+  });
+}
+/* Блок на главной: номер дня, остров, кнопка или свой итог, верх таблицы дня. */
+function homeDailyDraw(){
+  const box=document.getElementById('homeDaily'); if(!box) return;
+  const T=L(), day=dailyDay(), n=dailyNum(day), map=dailyMap(day), r=dailyToday();
+  const mine=r ? (r.score!=null ? '<div class="dy-mine"><b>#'+r.place+' / '+r.field+'</b><span>'+r.score+' '+esc(T.dyPts)+'</span></div>'
+                                : '<div class="dy-mine"><span>'+esc(T.dyLeft)+'</span></div>') : '';
+  const btn=r ? '<button class="hero-btn hero-btn-alt" type="button" onclick="dailyOpen()">'+esc(T.dyBoard)+'</button>'+
+                (r.score!=null ? '<button class="hero-btn hero-btn-alt dy-share" type="button" onclick="dailyShare()">'+esc(T.dyShare)+'</button>' : '')
+              : '<button class="hero-btn hero-btn-go" type="button" onclick="dailyStart()">'+esc(T.dyPlay)+'</button>'+
+                '<button class="home-more" type="button" onclick="dailyOpen()">'+esc(T.dyBoard)+'</button>';
+  box.innerHTML='<div class="dy-main"><span class="dp-tag hero-mode-tag">'+esc(T.dyTag)+'</span>'+
+    '<h2 class="home-h">'+esc(T.dyTitle(n))+'</h2><p class="home-sub">'+esc(T.dySub)+'</p>'+
+    '<div class="cstrip-chips"><span class="cstrip-chip">'+esc(map.label)+'</span><span class="cstrip-chip">'+esc(T.dyRules)+'</span></div>'+
+    mine+'<div class="dy-acts">'+btn+'</div><p class="home-sub dy-next">'+esc(T.dyNext(dailyLeft()))+'</p></div>'+
+    '<div class="dy-top" id="homeDailyTop"></div>';
+  box.hidden=false;
+  dailyLoad(d=>{
+    const el=document.getElementById('homeDailyTop'); if(!el) return;
+    if(!d){ el.innerHTML=''; return; }
+    el.innerHTML='<h3 class="dy-top-h">'+esc(T.dyBoard)+(d.total ? ' · '+d.total : '')+'</h3>'+
+      ((d.rows||[]).length ? '<div>'+dailyRowsHTML(d.rows.slice(0, 5))+'</div>'+(d.you ? '<div class="hb-me">'+esc(T.dyRank(d.you.rank, d.total))+'</div>' : '')
+                          : '<p class="home-sub">'+esc(T.dyEmpty)+'</p>');
+  });
+}
 
 
 // ---------- Event results panel ----------
@@ -114370,7 +114606,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='725b822c';
+const CC_BUILD='ceebf22d';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -159566,6 +159802,7 @@ setTimeout(()=>{ try{ if(!mgrAllowed()) return; document.querySelectorAll('.hero
    Рисуется из ccHeroCareerText — то есть на загрузке, на смене языка и при каждом возврате на главную. */
 let HOME_BOARD=null, HOME_BOARD_ALL=false;
 function homeRender(){
+  try{ homeDailyDraw(); }catch(e){}
   try{ homeSceneDraw(); }catch(e){}
   try{ homeTimerDraw(); }catch(e){}
   try{ homeBoardDraw(); }catch(e){}

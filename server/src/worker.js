@@ -20,6 +20,7 @@
 import { createLobby } from './lobby.js';
 import { createBoard, REGIONS, TOP } from './board.js';
 import { CODE_RE, MAX_ONE, MAX_ALL, MAX_KEYS, checkReq, parts } from './vault.js';
+import { normalize as dailyRow, dayOf, DAY_RE, TOP as DAILY_TOP } from './daily.js';
 
 export class Lobby {
   // Тридцать дней тишины — и лобби убирается. См. touch/alarm ниже.
@@ -170,10 +171,39 @@ export class Board {
     // Последние отказы (Notion 15.10: строку с >500 титулами сервер молча выбрасывал неделю). Ник и
     // причина видны по GET /board?rejects=1, id не хранится.
     this.sql.exec('CREATE TABLE IF NOT EXISTS rejects(at INTEGER, nick TEXT, err TEXT, body TEXT)');
+    // Драфт дня (16.10): одна строка на браузер в день, первая попытка не перезаписывается. См. daily.js.
+    this.sql.exec(`CREATE TABLE IF NOT EXISTS daily(day TEXT, id TEXT, nick TEXT, country TEXT, score INTEGER,
+      place INTEGER, field INTEGER, team TEXT, at INTEGER, PRIMARY KEY(day, id))`);
+  }
+  /* /daily: POST — строка дня, GET ?day=&me= — верх дня и своё место. Старше 60 дней — стираются. */
+  async daily(req, url){
+    if(req.method==='POST'){
+      let e=null; try{ e=await req.json(); }catch(err){ return json({err:'json'}, 400); }
+      const now=Date.now(), r=dailyRow(e, now);
+      if(r.err) return json({err:r.err}, 400);
+      const w=r.row;
+      this.sql.exec('INSERT OR IGNORE INTO daily(day,id,nick,country,score,place,field,team,at) VALUES(?,?,?,?,?,?,?,?,?)',
+        w.day, w.id, w.nick, w.country, w.score, w.place, w.field, w.team, w.at);
+      this.sql.exec('DELETE FROM daily WHERE day < ?', dayOf(now-60*864e5));
+      return json({ok:true});
+    }
+    const day=DAY_RE.test(String(url.searchParams.get('day')||'')) ? url.searchParams.get('day') : dayOf(Date.now());
+    const rows=this.sql.exec('SELECT * FROM daily WHERE day=? ORDER BY score DESC, place ASC, at ASC LIMIT '+DAILY_TOP, day).toArray();
+    const total=this.sql.exec('SELECT COUNT(*) AS n FROM daily WHERE day=?', day).toArray()[0].n;
+    const me=String(url.searchParams.get('me')||'');
+    let you=null;
+    const mine=/^[a-z0-9-]{16,40}$/.test(me) ? this.sql.exec('SELECT * FROM daily WHERE day=? AND id=?', day, me).toArray()[0] : null;
+    if(mine){
+      const above=this.sql.exec('SELECT COUNT(*) AS n FROM daily WHERE day=? AND (score>? OR (score=? AND (place<? OR (place=? AND at<?))))',
+        day, mine.score, mine.score, mine.place, mine.place, mine.at).toArray()[0].n;
+      you={rank:above+1, row:strip(mine)};
+    }
+    return json({day, total, rows:rows.map(r=>Object.assign(strip(r), r.id===me ? {you:true} : {})), you});
   }
   one(id){ return this.sql.exec('SELECT * FROM rows WHERE id=?', id).toArray()[0]||null; }
   async fetch(req){
     const url=new URL(req.url);
+    if(url.pathname==='/daily') return this.daily(req, url);
     if(req.method==='POST'){
       let e=null; try{ e=await req.json(); }catch(err){ return json({err:'json'}, 400); }
       if(e && e.del){
@@ -262,7 +292,7 @@ function json(o, status){
 export default {
   async fetch(req, env){
     const url=new URL(req.url);
-    if(url.pathname==='/board'){
+    if(url.pathname==='/board' || url.pathname==='/daily'){
       if(req.method==='OPTIONS') return new Response(null, {status:204, headers:CORS});
       if(req.method!=='GET' && req.method!=='POST') return new Response('no', {status:405, headers:CORS});
       // Тело не больше пары килобайт: строка карьеры столько и весит.

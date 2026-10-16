@@ -36,7 +36,7 @@ if (fs.existsSync(OUT) && fs.readdirSync(OUT).length)
 const FILES = ['index.html', 'about.html', '404.html', 'maps.js', 'zone-sim.js', 'zone-replay.js', 'mp.js', 'lines-more.js', 'i18n-de.js', 'i18n-es.js', 'sw.js',
   'logo.png', 'og-image.png', 'robots.txt', 'sitemap.xml', '_headers',
   'favicon.ico', 'favicon-48.png', 'favicon-96.png', 'favicon-192.png',
-  // Сайт как приложение (16.10): манифест и иконки экрана «Домой».
+  // Иконки для закладок и экрана «Домой» (манифест снят 16.10 — сайт остаётся сайтом).
   'icon-512.png', 'apple-touch-icon.png'];
 // flags/ — свои копии флагов: flagcdn.com стоит за Cloudflare, а до него у
 // части российских провайдеров запросы висят (5 сентября 2026, см. sw.js).
@@ -304,6 +304,9 @@ const prefilled = prefillI18n(OUT);
   fs.writeFileSync(swPath, sw, 'utf8');
   console.log('воркер: версия ' + hash + ', в список положено ' + core.length + ' адресов');
 })();
+
+/* Страницы игроков (/player/<ник>, /players) и их адреса в sitemap.xml — см. build-player-pages.js. */
+require('child_process').execFileSync(process.execPath, [path.join(__dirname, 'build-player-pages.js'), OUT], { stdio: 'inherit' });
 
 const count = (function walk(d) {
   return fs.readdirSync(d, { withFileTypes: true })
