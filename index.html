@@ -7149,12 +7149,6 @@
   .dy-send input:focus-visible{outline:2px solid #ffdd00;outline-offset:1px;}
   .dy-ok{margin:10px 0 0;color:#7ef0dd;font-weight:700;font-size:13px;}
   .dy-note{margin-top:10px;}
-  .dy-strong{margin:0 0 12px;padding:12px 14px;border-radius:12px;background:linear-gradient(90deg,rgba(255,221,0,.14),rgba(255,221,0,.03));border:1px solid rgba(255,221,0,.35);display:flex;flex-direction:column;gap:3px;}
-  .dy-strong em{font-style:normal;font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#ffdd00;}
-  .dy-strong b{font-size:16px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
-  .dy-strong b span{font-size:12px;font-weight:800;color:#0b1020;background:#ffdd00;border-radius:6px;padding:1px 6px;}
-  .dy-strong small{color:#a9b8de;font-size:12px;}
-  .dy-strong.me{border-color:#ffdd00;}
   @media(max-width:900px){ .home-daily{grid-template-columns:1fr;} }
   @media(max-width:700px){ .hf-grid{grid-template-columns:1fr;} .home-h{font-size:19px;} }
   /* Результаты 2026 на главной и окно полной таблицы. */
@@ -110571,7 +110565,7 @@ function dailyFinish(you, place, teams){
 }
 function dailyShareText(r){
   const T=L(), m=MAP_CHOICES.find(x=>x.key===r.map);
-  return 'FNCS Draft · '+T.dyTitle(r.n)+'\n'+(r.place===1 ? '👑' : r.place<=3 ? '🥇' : r.place<=10 ? '🔥' : '🎯')+' #'+r.place+'/'+r.field+' · '+r.score+' '+T.dyPts+
+  return 'FNCS Draft · '+T.dyTitle(r.n)+(r.power ? '\n💪 '+dailyPowerWord()+' '+r.power : '')+'\n'+(r.place===1 ? '👑' : r.place<=3 ? '🥇' : r.place<=10 ? '🔥' : '🎯')+' #'+r.place+'/'+r.field+' · '+r.score+' '+T.dyPts+
     (m ? '\n🗺️ '+m.label : '')+'\n👥 '+(r.team||[]).join(' + ')+'\nhttps://fncsdraft.com';
 }
 function dailyShare(){
@@ -110601,7 +110595,7 @@ function dailySend(){
 function dailyResultDraw(box, r){
   if(!box || !r) return;
   const T=L();
-  const head='<div class="dy-head"><b>'+esc(T.dyTitle(r.n))+'</b>'+(r.score!=null ? '<span>#'+r.place+' / '+r.field+' · '+r.score+' '+esc(T.dyPts)+'</span>' : '<span>'+esc(T.dyLeft)+'</span>')+'</div>';
+  const head='<div class="dy-head"><b>'+esc(T.dyTitle(r.n))+'</b>'+(r.score!=null ? '<span>'+(r.power ? '💪 '+esc(dailyPowerWord())+' '+r.power+' · ' : '')+'#'+r.place+' / '+r.field+' · '+r.score+' '+esc(T.dyPts)+'</span>' : '<span>'+esc(T.dyLeft)+'</span>')+'</div>';
   const send=r.score==null || !dailyBase() ? '' : r.sent ? '<p class="dy-ok">'+esc(T.dySent(r.sent))+'</p>'
     : '<div class="dy-send"><input id="dyNick" maxlength="24" autocomplete="nickname" placeholder="'+esc(T.dyNick)+'" value="'+esc(dailyNick())+'">'+
       '<button class="ch-play" type="button" onclick="dailySend()">'+esc(T.dySend)+'</button></div>';
@@ -110621,21 +110615,15 @@ function dailyLoad(cb){
   fetch(base+'?day='+dailyDay()+'&me='+encodeURIComponent(dailyId())).then(r=>r.ok ? r.json() : null).catch(()=>null).then(x=>{
     DAILY_BOARD=x ? Object.assign(x, {_at:Date.now()}) : null; cb(DAILY_BOARD); });
 }
+/* ТАБЛИЦА ДНЯ — ПО СИЛЕ СОСТАВА (16.10, его слово: «в таблице дня — состав, у которого больше всего силы»,
+   потом «нет, только сила»). Сила — средний рейтинг четырёх карточек, как «88/100» в драфте; сервер ставит по ней,
+   очки турнира — только при равенстве. У строк, отправленных до правки, силы нет (0) — они внизу. */
+function dailyPowerWord(){ return ({ru:'сила', fr:'force', it:'forza', pt:'força', de:'Stärke', es:'fuerza'}[LANG]) || 'power'; }
 function dailyRowsHTML(rows){
   const T=L(), flag=c=>c ? '<img src="flags/w20/'+esc(ccCountryOf(c))+'.png" alt="" onerror="this.remove()">' : '';
   return rows.map((r,i)=>'<div class="hb-row'+(r.you ? ' me' : '')+'"><i>'+(i+1)+'</i><b>'+flag(r.country)+esc(r.nick)+
-    '<small>#'+r.place+'/'+r.field+(r.team ? ' · '+esc(String(r.team).split(',').join(' + ')) : '')+'</small></b><span>'+r.score+'</span></div>').join('');
-}
-/* Самый сильный состав дня (16.10, его слово: «может в таблице дня будет состав, у которого больше всего силы»):
-   плашка над таблицей — чей состав с наибольшим средним рейтингом карточек и как он сыграл. Сила приходит с
-   сервера (daily.power), у строк до этой правки её нет — они в выборе не участвуют. */
-function dailyStrongHTML(s){
-  if(!s || !(s.power>0)) return '';
-  const W={ru:['Самый сильный состав дня', 'сила'], fr:['L’équipe la plus forte du jour', 'force'], it:['La squadra più forte del giorno', 'forza'],
-    pt:['O time mais forte do dia', 'força'], de:['Das stärkste Team des Tages', 'Stärke'], es:['El equipo más fuerte del día', 'fuerza']}[LANG] || ['Strongest squad of the day', 'power'];
-  const flag=s.country ? '<img src="flags/w20/'+esc(ccCountryOf(s.country))+'.png" alt="" onerror="this.remove()">' : '';
-  return '<div class="dy-strong'+(s.you ? ' me' : '')+'"><em>💪 '+esc(W[0])+'</em><b>'+flag+esc(s.nick)+' <span>'+esc(W[1])+' '+s.power+'</span></b>'+
-    '<small>'+esc(String(s.team||'').split(',').join(' + '))+' · #'+s.place+'/'+s.field+' · '+s.score+' '+esc(L().dyPts)+'</small></div>';
+    '<small>'+(r.team ? esc(String(r.team).split(',').join(' + '))+' · ' : '')+'#'+r.place+'/'+r.field+' · '+r.score+' '+esc(T.dyPts)+'</small></b>'+
+    '<span title="'+esc(dailyPowerWord())+'">'+(r.power>0 ? '💪 '+r.power : '—')+'</span></div>').join('');
 }
 /* Окно дня: свой итог и таблица (поверх экрана, как «топ 50» на главной). */
 function dailyOpen(){
@@ -110656,7 +110644,7 @@ function dailyOpen(){
   dailyLoad(d=>{
     const el=document.getElementById('dailyModalRows'); if(!el) return;
     if(!d){ el.innerHTML='<p class="home-sub">'+esc(T.lbErr)+'</p>'; return; }
-    el.innerHTML=(d.rows||[]).length ? dailyStrongHTML(d.strongest)+'<div>'+dailyRowsHTML(d.rows)+'</div>'+(d.you ? '<div class="hb-me">'+esc(T.dyRank(d.you.rank, d.total))+'</div>' : '')+
+    el.innerHTML=(d.rows||[]).length ? '<div>'+dailyRowsHTML(d.rows)+'</div>'+(d.you ? '<div class="hb-me">'+esc(T.dyRank(d.you.rank, d.total))+'</div>' : '')+
       '<p class="home-sub dy-note">'+esc(T.dyHonest)+'</p>'
       : '<p class="home-sub">'+esc(T.dyEmpty)+'</p>';
   });
@@ -110670,7 +110658,7 @@ function homeDailyDraw(){
   const set=(id, h)=>{ const el=document.getElementById(id); if(el) el.innerHTML=h; };
   set('dyNum', '#'+dailyNum(day));
   set('dyMap', esc(map.label));
-  set('dyMine', r ? (r.score!=null ? '<div class="dy-mine"><b>#'+r.place+' / '+r.field+'</b><span>'+r.score+' '+esc(T.dyPts)+'</span></div>'
+  set('dyMine', r ? (r.score!=null ? '<div class="dy-mine"><b>'+(r.power ? '💪 '+r.power : '#'+r.place+' / '+r.field)+'</b><span>'+(r.power ? '#'+r.place+'/'+r.field+' · ' : '')+r.score+' '+esc(T.dyPts)+'</span></div>'
                                    : '<div class="dy-mine"><span>'+esc(T.dyLeft)+'</span></div>') : '');
   if(r) set('dyActs', '<button class="hero-btn hero-btn-alt" type="button" onclick="dailyOpen()">'+esc(T.dyBoard)+'</button>'+
     (r.score!=null ? '<button class="hero-btn hero-btn-alt dy-share" type="button" onclick="dailyShare()">'+esc(T.dyShare)+'</button>' : ''));

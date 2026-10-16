@@ -189,20 +189,18 @@ export class Board {
       return json({ok:true});
     }
     const day=DAY_RE.test(String(url.searchParams.get('day')||'')) ? url.searchParams.get('day') : dayOf(Date.now());
-    const rows=this.sql.exec('SELECT * FROM daily WHERE day=? ORDER BY score DESC, place ASC, at ASC LIMIT '+DAILY_TOP, day).toArray();
+    // 16.10, его слово «только сила»: таблица дня — по силе состава (средний рейтинг карточек), очки — при равенстве.
+    const rows=this.sql.exec('SELECT * FROM daily WHERE day=? ORDER BY power DESC, score DESC, at ASC LIMIT '+DAILY_TOP, day).toArray();
     const total=this.sql.exec('SELECT COUNT(*) AS n FROM daily WHERE day=?', day).toArray()[0].n;
     const me=String(url.searchParams.get('me')||'');
     let you=null;
     const mine=/^[a-z0-9-]{16,40}$/.test(me) ? this.sql.exec('SELECT * FROM daily WHERE day=? AND id=?', day, me).toArray()[0] : null;
     if(mine){
-      const above=this.sql.exec('SELECT COUNT(*) AS n FROM daily WHERE day=? AND (score>? OR (score=? AND (place<? OR (place=? AND at<?))))',
-        day, mine.score, mine.score, mine.place, mine.place, mine.at).toArray()[0].n;
+      const above=this.sql.exec('SELECT COUNT(*) AS n FROM daily WHERE day=? AND (power>? OR (power=? AND (score>? OR (score=? AND at<?))))',
+        day, mine.power||0, mine.power||0, mine.score, mine.score, mine.at).toArray()[0].n;
       you={rank:above+1, row:strip(mine)};
     }
-    // Самый сильный состав дня — по силе, при равенстве — у кого больше очков.
-    const st=this.sql.exec('SELECT * FROM daily WHERE day=? AND power>0 ORDER BY power DESC, score DESC, at ASC LIMIT 1', day).toArray()[0];
-    const strongest=st ? Object.assign(strip(st), st.id===me ? {you:true} : {}) : null;
-    return json({day, total, rows:rows.map(r=>Object.assign(strip(r), r.id===me ? {you:true} : {})), you, strongest});
+    return json({day, total, rows:rows.map(r=>Object.assign(strip(r), r.id===me ? {you:true} : {})), you});
   }
   one(id){ return this.sql.exec('SELECT * FROM rows WHERE id=?', id).toArray()[0]||null; }
   async fetch(req){

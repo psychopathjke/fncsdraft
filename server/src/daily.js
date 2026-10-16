@@ -35,7 +35,7 @@ function normalize(e, now){
   return {row:{day, id, nick, country, score, place, field, team, power, at:now}};
 }
 
-/* Порядок таблицы дня: очки, потом место, потом кто раньше сыграл. */
-function better(a, b){ return b.score-a.score || a.place-b.place || a.at-b.at; }
+/* Порядок таблицы дня (16.10, его слово «только сила»): сила состава, потом очки, потом кто раньше сыграл. */
+function better(a, b){ return (b.power||0)-(a.power||0) || b.score-a.score || a.at-b.at; }
 
 module.exports={ normalize, better, dayOf, DAY_RE, TOP };
