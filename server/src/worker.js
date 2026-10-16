@@ -19,6 +19,7 @@
  * есть кто, лежит в attachment самого сокета. */
 import { createLobby } from './lobby.js';
 import { createBoard, REGIONS, TOP } from './board.js';
+import { CODE_RE, MAX_ONE, MAX_ALL, MAX_KEYS, checkReq, parts } from './vault.js';
 
 export class Lobby {
   // Тридцать дней тишины — и лобби убирается. См. touch/alarm ниже.
@@ -215,6 +216,42 @@ export class Board {
   }
 }
 function strip(r){ const o=Object.assign({}, r); delete o.id; return o; }
+
+/* Облачные сохранения — один объект на код (см. vault.js). Таблицы: meta (ключ, когда, размер, подпись для списка)
+ * и parts (куски строки). put заменяет запись целиком; лимиты на запись и на весь код — в vault.js. */
+export class Vault {
+  constructor(state, env){
+    this.state=state; this.sql=state.storage.sql;
+    this.sql.exec('CREATE TABLE IF NOT EXISTS meta(key TEXT PRIMARY KEY, at INTEGER, size INTEGER, info TEXT)');
+    this.sql.exec('CREATE TABLE IF NOT EXISTS parts(key TEXT, n INTEGER, data TEXT, PRIMARY KEY(key, n))');
+  }
+  async fetch(req){
+    let b=null; try{ b=await req.json(); }catch(e){ return json({err:'json'}, 400); }
+    const r=checkReq(b);
+    if(r.err) return json({err:r.err}, 400);
+    if(r.op==='list')
+      return json({saves:this.sql.exec('SELECT key, at, size, info FROM meta ORDER BY key').toArray()});
+    if(r.op==='get'){
+      const ps=this.sql.exec('SELECT data FROM parts WHERE key=? ORDER BY n', r.key).toArray();
+      if(!ps.length) return json({err:'none'}, 404);
+      const m=this.sql.exec('SELECT at, info FROM meta WHERE key=?', r.key).toArray()[0]||{};
+      return json({key:r.key, at:m.at||0, info:m.info||'{}', data:ps.map(p=>p.data).join('')});
+    }
+    if(r.op==='del'){
+      this.sql.exec('DELETE FROM parts WHERE key=?', r.key);
+      this.sql.exec('DELETE FROM meta WHERE key=?', r.key);
+      return json({ok:true});
+    }
+    // put: лимиты на число ключей и на общий объём — по остальным записям этого кода.
+    const others=this.sql.exec('SELECT COUNT(*) AS n, COALESCE(SUM(size),0) AS s FROM meta WHERE key<>?', r.key).toArray()[0];
+    if(others.n>=MAX_KEYS) return json({err:'keys'}, 413);
+    if(others.s+r.data.length>MAX_ALL) return json({err:'full'}, 413);
+    this.sql.exec('DELETE FROM parts WHERE key=?', r.key);
+    parts(r.data).forEach((p, i)=>this.sql.exec('INSERT INTO parts(key, n, data) VALUES(?,?,?)', r.key, i, p));
+    this.sql.exec('INSERT OR REPLACE INTO meta(key, at, size, info) VALUES(?,?,?,?)', r.key, r.at||Date.now(), r.data.length, r.info);
+    return json({ok:true});
+  }
+}
 const CORS={'Access-Control-Allow-Origin':'*', 'Access-Control-Allow-Methods':'GET, POST, OPTIONS',
             'Access-Control-Allow-Headers':'Content-Type'};
 function json(o, status){
@@ -232,6 +269,17 @@ export default {
       if(req.method==='POST' && Number(req.headers.get('Content-Length')||0) > 4096) return json({err:'size'}, 413);
       const stub=env.BOARD.get(env.BOARD.idFromName('global'));
       return stub.fetch(req);
+    }
+    if(url.pathname==='/vault'){
+      if(req.method==='OPTIONS') return new Response(null, {status:204, headers:CORS});
+      if(req.method!=='POST') return new Response('no', {status:405, headers:CORS});
+      if(Number(req.headers.get('Content-Length')||0) > MAX_ONE+64*1024) return json({err:'size'}, 413);
+      // Код читается из тела ещё раз внутри объекта; здесь — только чтобы выбрать объект. Тело читается один раз.
+      const text=await req.text();
+      let code=''; try{ code=String(JSON.parse(text).code||''); }catch(e){ return json({err:'json'}, 400); }
+      if(!CODE_RE.test(code)) return json({err:'code'}, 400);
+      const stub=env.VAULT.get(env.VAULT.idFromName('v:'+code));
+      return stub.fetch(new Request(req.url, {method:'POST', body:text, headers:{'Content-Type':'application/json'}}));
     }
     const m=url.pathname.match(/^\/lobby\/([A-Z0-9]{6})$/);
     if(!m) return new Response('no', {status:404});

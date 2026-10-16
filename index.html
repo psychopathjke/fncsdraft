@@ -1824,6 +1824,21 @@
   .ev-review li{display:flex;justify-content:space-between;gap:10px;font-size:12.5px;}
   .ev-review li em{font-style:normal;color:#a9bbe3;} .ev-review li b{color:#fff;text-align:right;}
   .ev-tip{margin:8px 0 0;font-size:12.5px;color:#ffe86b;font-weight:700;line-height:1.4;}
+  .cl-box{margin:0 0 14px;padding:12px 14px;border-radius:12px;background:rgba(255,255,255,.05);border:1px solid rgba(140,175,255,.25);}
+  .cl-box[hidden]{display:none;}
+  .cl-head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;} .cl-head b{font-size:15px;color:#fff;} .cl-head span{font-size:12px;color:#9fe1ff;font-weight:700;}
+  .cl-code{margin:8px 0 4px;font-family:var(--font-display);font-weight:700;font-size:24px;letter-spacing:.08em;color:#ffdd00;user-select:all;-webkit-user-select:all;}
+  .cl-sub{margin:4px 0 0;font-size:12.5px;color:#b9c7ea;line-height:1.45;}
+  .cl-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;}
+  .cl-row .ch-play{width:auto;display:inline-block;padding:10px 18px;}
+  .cl-enter{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;}
+  .cl-enter input{flex:1 1 220px;min-width:0;font:700 16px/1 var(--font-display);letter-spacing:.08em;text-transform:uppercase;padding:10px 12px;
+    border-radius:10px;border:1px solid rgba(180,200,255,.35);background:rgba(0,0,0,.25);color:#fff;}
+  .cl-enter .ch-play{width:auto;display:inline-block;padding:10px 18px;}
+  .cl-list ul{list-style:none;margin:8px 0;padding:0;display:flex;flex-direction:column;gap:4px;}
+  .cl-list li{display:flex;justify-content:space-between;gap:10px;font-size:13px;} .cl-list li span{color:#9fb3e6;}
+  .cl-list .ch-play{width:auto;display:inline-block;padding:10px 18px;}
+  .cl-err{margin:8px 0 0;color:#ff8fa8;font-size:12.5px;font-weight:700;}
   .cc-coach-offer{display:flex;flex-direction:column;gap:6px;margin:12px 0;padding:12px;border-radius:12px;background:rgba(75,227,176,.08);border:1px solid rgba(75,227,176,.45);}
   .cc-coach-offer b{font-size:15px;color:#fff;} .cc-coach-offer span{font-size:12.5px;color:#c3d1f0;line-height:1.45;}
   .cc-coach-offer .ch-play{align-self:flex-start;}
@@ -8182,6 +8197,7 @@
         </div>
       </div>
       <div class="cc-slot-sub" data-i18n="ccSlotsSub"></div>
+      <div class="cl-box" id="ccCloud" hidden></div>
       <div class="cc-slot-grid" id="ccSlotGrid"></div>
       <div id="ccHall"></div>
       </div>
@@ -20365,7 +20381,7 @@ const CC_LANGS=['en','ru','fr','it','pt','de','es'];
    Аргентина 50 тыс.). Словари — отдельными файлами i18n-de.js / i18n-es.js (tools/build-i18n.js): app.js упирается в 9 МБ,
    а словарь нужен только тем, кто выбрал язык. Пока файл не пришёл, L() показывает английский (он и так под каждым языком). */
 const CC_LANG_FILES={de:1, es:1};
-let CC_I18N_V={de:'c5ccc373', es:'46817caf'};   // ==== CC_I18N_V (tools/build-i18n.js) ====
+let CC_I18N_V={de:'a6008755', es:'c55c32fd'};   // ==== CC_I18N_V (tools/build-i18n.js) ====
 const CC_LANG_WAIT={};
 function ccLangLoad(lang, done){
   if(!CC_LANG_FILES[lang] || (typeof I18N!=='undefined' && I18N[lang])){ done && done(); return; }
@@ -20698,6 +20714,12 @@ Object.assign(I18N.en, {ccPlanTitle:n=>n+'’s game plan for tonight', ccPlanOk:
 Object.assign(I18N.fr, {ccPlanTitle:n=>'Le plan de '+n+' pour ce soir', ccPlanOk:'Compris', ccPlanDrop:'Drop :', ccPlanDrop_home:'notre spot, sans contest', ccPlanDrop_contest:'contest — on prend le spot de force', ccPlanRot:'Rotation :', ccPlanRot_early:'tôt, avant la fermeture', ccPlanRot_with:'avec la zone', ccPlanFight:'Fights :', ccPlanFight_fight:'on les prend quand ils viennent', ccPlanFight_avoid:'on évite, on protège le placement', ccPlanLate:'Endgame :', ccPlanLate_mid:'centre de la zone', ccPlanLate_edge:'bord de la zone', evTitle:'Bilan de la soirée', evBest:'Meilleure game', evBestGame:(g,p,e)=>'game '+g+' : '+p+'e, '+e+' kills', evKills:'Kills', evPerGame:x=>x+' par game', evDeaths:'Morts', evDeathKill:n=>'face aux joueurs ×'+n, evDeathDrop:n=>'au drop ×'+n, evDeathStorm:n=>'tempête ×'+n, evDeathSurge:n=>'surge ×'+n, evNemesis:'T’a le plus tué', evPlan:'Plan du coach', evPlanDone:(a,b)=>a+' sur '+b+' suivis', evTip_kill:'Tu meurs surtout en fight — travaille la visée et le build cette semaine.', evTip_drop:'Tu meurs au drop — travaille l’ouverture et prends un spot plus calme.', evTip_storm:'La tempête te coûte des games — travaille les rotations et la survie.', evTip_surge:'Le surge te sort — il faut des dégâts : fights en milieu de game.', ccPostEvKilled:(h,n,m)=>['@'+m+', '+n+' fois face à nous ce soir. Rien de personnel','croisé @'+m+' '+n+' fois ce soir — à chaque fois pour nous','@'+m+' dans le lobby = kills offerts ('+n+' ce soir)'][n%3], ccPostEvVR:(g,e,n)=>['Top 1 en game '+g+' sur '+n+', '+e+' kills. On continue','game '+g+' : couronne et '+e+' kills 👑','game '+g+' pour nous. '+e+' kills, ça a fait du bruit'][g%3], ccPostEvKills:(k,n)=>[k+' kills en '+n+' games. Le lobby s’en souviendra',k+' kills ce soir, pas de top 1 mais du bruit'][k%2]});
 Object.assign(I18N.it, {ccPlanTitle:n=>'Il piano di '+n+' per stasera', ccPlanOk:'Ricevuto', ccPlanDrop:'Drop:', ccPlanDrop_home:'il nostro spot, niente contest', ccPlanDrop_contest:'contest — prendiamo lo spot con la forza', ccPlanRot:'Rotazione:', ccPlanRot_early:'presto, prima che chiuda', ccPlanRot_with:'con la tempesta', ccPlanFight:'Fight:', ccPlanFight_fight:'li prendiamo quando arrivano', ccPlanFight_avoid:'stiamo fuori, proteggiamo il piazzamento', ccPlanLate:'Endgame:', ccPlanLate_mid:'centro della zona', ccPlanLate_edge:'bordo della zona', evTitle:'Analisi della serata', evBest:'Partita migliore', evBestGame:(g,p,e)=>'partita '+g+': '+p+'°, '+e+' kill', evKills:'Kill', evPerGame:x=>x+' a partita', evDeaths:'Morti', evDeathKill:n=>'contro giocatori ×'+n, evDeathDrop:n=>'al drop ×'+n, evDeathStorm:n=>'tempesta ×'+n, evDeathSurge:n=>'surge ×'+n, evNemesis:'Ti ha ucciso più spesso', evPlan:'Piano del coach', evPlanDone:(a,b)=>a+' su '+b+' seguiti', evTip_kill:'Muori soprattutto nei fight — allena mira e build questa settimana.', evTip_drop:'Muori al drop — allena l’apertura e scegli uno spot più tranquillo.', evTip_storm:'La tempesta ti costa partite — allena rotazioni e sopravvivenza.', evTip_surge:'Il surge ti elimina — servono danni: fight a metà partita.', ccPostEvKilled:(h,n,m)=>['@'+m+', '+n+' volte contro di noi stasera. Niente di personale','incontrato @'+m+' '+n+' volte stasera — sempre a nostro favore','@'+m+' in lobby = kill gratis ('+n+' stasera)'][n%3], ccPostEvVR:(g,e,n)=>['Victory Royale nella partita '+g+' di '+n+', '+e+' kill. Avanti','partita '+g+': corona e '+e+' kill 👑','presa la partita '+g+'. '+e+' kill, rumorosa'][g%3], ccPostEvKills:(k,n)=>[k+' kill in '+n+' partite. La lobby se lo ricorderà',k+' kill stasera, niente corona ma rumore'][k%2]});
 Object.assign(I18N.pt, {ccPlanTitle:n=>'O plano de '+n+' para hoje', ccPlanOk:'Entendido', ccPlanDrop:'Drop:', ccPlanDrop_home:'nosso spot, sem contest', ccPlanDrop_contest:'contest — tomar o spot na força', ccPlanRot:'Rotação:', ccPlanRot_early:'cedo, antes de fechar', ccPlanRot_with:'junto com a tempestade', ccPlanFight:'Fights:', ccPlanFight_fight:'pegamos quando aparecem', ccPlanFight_avoid:'ficamos fora, protegemos a colocação', ccPlanLate:'Endgame:', ccPlanLate_mid:'centro da zona', ccPlanLate_edge:'borda da zona', evTitle:'Resumo da noite', evBest:'Melhor partida', evBestGame:(g,p,e)=>'partida '+g+': '+p+'º, '+e+' abates', evKills:'Abates', evPerGame:x=>x+' por partida', evDeaths:'Mortes', evDeathKill:n=>'para jogadores ×'+n, evDeathDrop:n=>'no drop ×'+n, evDeathStorm:n=>'tempestade ×'+n, evDeathSurge:n=>'surge ×'+n, evNemesis:'Quem mais te matou', evPlan:'Plano do coach', evPlanDone:(a,b)=>a+' de '+b+' seguidos', evTip_kill:'Você morre mais nos fights — treine mira e build esta semana.', evTip_drop:'Você morre no drop — treine a abertura e escolha um spot mais calmo.', evTip_storm:'A tempestade custa partidas — treine rotações e sobrevivência.', evTip_surge:'O surge te elimina — precisa de dano: fights no meio da partida.', ccPostEvKilled:(h,n,m)=>['@'+m+', '+n+' vezes contra nós hoje. Nada pessoal','encontramos @'+m+' '+n+' vezes hoje — sempre a nosso favor','@'+m+' no lobby = abates grátis ('+n+' hoje)'][n%3], ccPostEvVR:(g,e,n)=>['Victory Royale na partida '+g+' de '+n+', '+e+' abates. Seguimos','partida '+g+': coroa e '+e+' abates 👑','levamos a partida '+g+'. '+e+' abates, foi barulhento'][g%3], ccPostEvKills:(k,n)=>[k+' abates em '+n+' partidas. O lobby vai lembrar',k+' abates hoje, sem coroa mas barulhento'][k%2]});
+/* Облачные сохранения (16.10). */
+Object.assign(I18N.ru, {clTitle:'Облако', clOn:'включено', clOffNow:'выключено — карьеры только в этом браузере', clWhy:'Включи облако — получишь код. По нему карьеры и менеджер откроются на любом устройстве, даже если браузер почистят.', clEnable:'Включить облако', clHave:'У меня есть код', clKeep:'Запиши этот код: по нему твои карьеры откроются на другом устройстве.', clSent:w=>'Последняя отправка: '+w, clBusy:'отправляем…', clPushNow:'Отправить сейчас', clOther:'Ввести другой код', clOff:'Выключить', clOpen:'Открыть', clFound:n=>'В облаке по этому коду: '+n, clCareer:'карьера', clMgr:'менеджер', clTake:'Забрать в этот браузер', clSure:'Заменит такие же слоты здесь — нажми ещё раз', clErr:m=>'Облако не ответило ('+m+'). Карьера сохранена в браузере, попробуем позже.', clBad:'Код — 16 знаков, например K7QM-2XPA-9RTD-WH4C'});
+Object.assign(I18N.en, {clTitle:'Cloud', clOn:'on', clOffNow:'off — careers live only in this browser', clWhy:'Turn on the cloud to get a code. With it your careers and manager open on any device, even if this browser is wiped.', clEnable:'Turn on cloud', clHave:'I have a code', clKeep:'Write this code down: it opens your careers on another device.', clSent:w=>'Last upload: '+w, clBusy:'uploading…', clPushNow:'Upload now', clOther:'Enter another code', clOff:'Turn off', clOpen:'Open', clFound:n=>'Saves on this code: '+n, clCareer:'career', clMgr:'manager', clTake:'Bring them to this browser', clSure:'Replaces the same slots here — tap again', clErr:m=>'The cloud did not answer ('+m+'). Your career is saved in the browser; we will retry.', clBad:'The code is 16 characters, like K7QM-2XPA-9RTD-WH4C'});
+Object.assign(I18N.fr, {clTitle:'Cloud', clOn:'activé', clOffNow:'désactivé — les carrières restent dans ce navigateur', clWhy:'Active le cloud pour obtenir un code. Avec lui, tes carrières et ton manager s’ouvrent sur n’importe quel appareil, même si ce navigateur est vidé.', clEnable:'Activer le cloud', clHave:'J’ai un code', clKeep:'Note ce code : il ouvre tes carrières sur un autre appareil.', clSent:w=>'Dernier envoi : '+w, clBusy:'envoi…', clPushNow:'Envoyer maintenant', clOther:'Entrer un autre code', clOff:'Désactiver', clOpen:'Ouvrir', clFound:n=>'Sauvegardes sur ce code : '+n, clCareer:'carrière', clMgr:'manager', clTake:'Les récupérer ici', clSure:'Remplace les mêmes emplacements ici — touche encore', clErr:m=>'Le cloud n’a pas répondu ('+m+'). Ta carrière est sauvegardée dans le navigateur ; on réessaiera.', clBad:'Le code fait 16 caractères, ex. K7QM-2XPA-9RTD-WH4C'});
+Object.assign(I18N.it, {clTitle:'Cloud', clOn:'attivo', clOffNow:'spento — le carriere restano in questo browser', clWhy:'Attiva il cloud per avere un codice. Con esso carriere e manager si aprono su qualsiasi dispositivo, anche se questo browser viene svuotato.', clEnable:'Attiva il cloud', clHave:'Ho un codice', clKeep:'Segnati questo codice: apre le tue carriere su un altro dispositivo.', clSent:w=>'Ultimo invio: '+w, clBusy:'invio…', clPushNow:'Invia ora', clOther:'Inserisci un altro codice', clOff:'Spegni', clOpen:'Apri', clFound:n=>'Salvataggi con questo codice: '+n, clCareer:'carriera', clMgr:'manager', clTake:'Portali in questo browser', clSure:'Sostituisce gli stessi slot qui — tocca di nuovo', clErr:m=>'Il cloud non ha risposto ('+m+'). La carriera è salvata nel browser; riproveremo.', clBad:'Il codice ha 16 caratteri, es. K7QM-2XPA-9RTD-WH4C'});
+Object.assign(I18N.pt, {clTitle:'Nuvem', clOn:'ligada', clOffNow:'desligada — as carreiras ficam só neste navegador', clWhy:'Ligue a nuvem para receber um código. Com ele, suas carreiras e o manager abrem em qualquer aparelho, mesmo se este navegador for limpo.', clEnable:'Ligar a nuvem', clHave:'Tenho um código', clKeep:'Anote este código: ele abre suas carreiras em outro aparelho.', clSent:w=>'Último envio: '+w, clBusy:'enviando…', clPushNow:'Enviar agora', clOther:'Digitar outro código', clOff:'Desligar', clOpen:'Abrir', clFound:n=>'Saves neste código: '+n, clCareer:'carreira', clMgr:'manager', clTake:'Trazer para este navegador', clSure:'Substitui os mesmos slots aqui — toque de novo', clErr:m=>'A nuvem não respondeu ('+m+'). Sua carreira está salva no navegador; tentaremos de novo.', clBad:'O código tem 16 caracteres, ex. K7QM-2XPA-9RTD-WH4C'});
 /* Главная 15.10: «Продолжить», «С другом», «Сцена сейчас», «Игроки сайта». Остальные языки — английские до доперевода. */
 Object.assign(I18N.ru, {hmContinue:'Продолжить', hmContinueSub:'Твои сохранения — с того дня, где остановился.', hmPlayOn:'Играть',
   hmSlotCareer:'Карьера', hmSlotMgr:'Менеджер', hmSlotLine:(s,d,e)=>'Сезон '+s+' · дивизион '+d+' · '+e, hmMgrLine:(s,c)=>'Сезон '+s+' · касса '+c,
@@ -114292,7 +114314,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='ec73a266';
+const CC_BUILD='9951734e';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -117595,6 +117617,162 @@ function ccApplyTeamState(t){
   finally{ CC_MP_ADVANCE=false; }
   ccWorldReset();
 }
+/* ОБЛАЧНЫЕ СОХРАНЕНИЯ (16.10, «что ещё глобального» → «1»). Карьера жила только в localStorage: почистил браузер или
+   сменил телефон — её нет. Теперь по коду-ключу (16 знаков, без путаных букв) сейвы карьер и менеджера уходят на сервер
+   (mp.fncsdraft.com/vault, server/src/vault.js) сжатыми gzip и забираются на любом устройстве тем же кодом.
+   Сервер о игре не знает ничего: ключ localStorage → строка. Отправка — через 45 с после сохранения и при уходе со
+   вкладки, только изменившиеся слоты (подпись длина+хеш); удалённый тут слот удаляется и там. */
+const CC_CLOUD_LS='fd_cloud_code', CC_CLOUD_SENT='fd_cloud_sent', CC_CLOUD_ALPH='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+const CC_CLOUD_KEY=/^fncsdraft_(career|manager)(_s\d{1,2})?$/;
+let CC_CLOUD_T=null, CC_CLOUD_BUSY=false, CC_CLOUD_MSG='', CC_CLOUD_LIST=null, CC_CLOUD_ENTER=false, CC_CLOUD_ARM=false;
+function ccCloudBase(){
+  const h=(typeof MP!=='undefined' && MP.host) || '';
+  if(!h && location.protocol==='file:') return null;
+  return String(h||'wss://mp.fncsdraft.com').replace(/^wss:/, 'https:').replace(/^ws:/, 'http:')+'/vault';
+}
+function ccCloudCode(){ try{ return localStorage.getItem(CC_CLOUD_LS)||''; }catch(e){ return ''; } }
+function ccCloudFmt(c){ return String(c||'').replace(/(.{4})(?=.)/g, '$1-'); }
+function ccCloudNewCode(){
+  const a=new Uint32Array(16); crypto.getRandomValues(a);
+  return Array.from(a, x=>CC_CLOUD_ALPH[x%32]).join('');
+}
+function ccCloudKeys(){
+  const out=[];
+  try{ for(let i=0; i<localStorage.length; i++){ const k=localStorage.key(i); if(CC_CLOUD_KEY.test(k)) out.push(k); } }catch(e){}
+  return out.sort();
+}
+async function ccCloudPack(str){
+  if(typeof CompressionStream==='undefined') return 'p:'+str;
+  const cs=new Blob([str]).stream().pipeThrough(new CompressionStream('gzip'));
+  const buf=new Uint8Array(await new Response(cs).arrayBuffer());
+  let bin=''; for(let i=0; i<buf.length; i+=0x8000) bin+=String.fromCharCode.apply(null, buf.subarray(i, i+0x8000));
+  return 'g:'+btoa(bin);
+}
+async function ccCloudUnpack(d){
+  d=String(d||'');
+  if(d.slice(0,2)==='p:') return d.slice(2);
+  const bin=atob(d.slice(2)), u=new Uint8Array(bin.length);
+  for(let i=0; i<bin.length; i++) u[i]=bin.charCodeAt(i);
+  const ds=new Blob([u]).stream().pipeThrough(new DecompressionStream('gzip'));
+  return await new Response(ds).text();
+}
+function ccCloudInfo(key, raw){
+  try{
+    const s=ccSaveParse(raw); if(!s) return {};
+    if(/manager/.test(key)) return {kind:'mgr', name:(s.club||{}).name||'', day:((s.shadow||{}).career||{}).day||''};
+    return {kind:'career', name:(s.player||{}).nick||'', day:(s.career||{}).day||'', earn:Math.round((s.career||{}).earnings||0)};
+  }catch(e){ return {}; }
+}
+async function ccCloudPost(o){
+  const b=ccCloudBase(); if(!b) throw new Error('offline');
+  const r=await fetch(b, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(o)});
+  const j=await r.json().catch(()=>({err:'json'}));
+  if(!r.ok || j.err) throw new Error(j.err||('http '+r.status));
+  return j;
+}
+function ccCloudSent(){ try{ return JSON.parse(localStorage.getItem(CC_CLOUD_SENT)||'{}')||{}; }catch(e){ return {}; } }
+async function ccCloudPush(){
+  const code=ccCloudCode(); if(!code || CC_CLOUD_BUSY) return;
+  CC_CLOUD_BUSY=true;
+  const sent=ccCloudSent();
+  try{
+    const keys=ccCloudKeys();
+    for(const k of keys){
+      const raw=localStorage.getItem(k)||'';
+      const sig=raw.length+':'+ccHashStr(raw);
+      if(sent[k]===sig) continue;
+      await ccCloudPost({code, op:'put', key:k, data:await ccCloudPack(raw), info:ccCloudInfo(k, raw), at:Date.now()});
+      sent[k]=sig;
+    }
+    // Слот удалён здесь — удаляется и в облаке, иначе на другом устройстве он вернулся бы.
+    for(const k of Object.keys(sent)){
+      if(k==='_at' || keys.indexOf(k)>=0) continue;
+      await ccCloudPost({code, op:'del', key:k}); delete sent[k];
+    }
+    sent._at=Date.now();
+    try{ localStorage.setItem(CC_CLOUD_SENT, JSON.stringify(sent)); }catch(e){}
+    CC_CLOUD_MSG='';
+  }catch(e){ CC_CLOUD_MSG=String(e && e.message || e); }
+  finally{ CC_CLOUD_BUSY=false; ccCloudDraw(); }
+}
+function ccCloudSoon(){
+  if(!ccCloudCode()) return;
+  clearTimeout(CC_CLOUD_T);
+  CC_CLOUD_T=setTimeout(()=>{ ccCloudPush(); }, 45000);
+}
+try{ document.addEventListener('visibilitychange', ()=>{ if(document.visibilityState==='hidden' && CC_CLOUD_T){ clearTimeout(CC_CLOUD_T); CC_CLOUD_T=null; ccCloudPush(); } }); }catch(e){}
+// Панель на экране выбора карьеры.
+function ccCloudDraw(){
+  const box=document.getElementById('ccCloud'); if(!box) return;
+  const T=L(), code=ccCloudCode();
+  if(!ccCloudBase()){ box.hidden=true; return; }
+  box.hidden=false;
+  let h='<div class="cl-head"><b>☁ '+esc(T.clTitle)+'</b>';
+  if(code){
+    const sent=ccCloudSent();
+    const when=sent._at ? new Date(sent._at).toLocaleString(LANG==='ru' ? 'ru-RU' : LANG, {day:'numeric', month:'short', hour:'2-digit', minute:'2-digit'}) : '—';
+    h+='<span>'+esc(T.clOn)+'</span></div><div class="cl-code">'+esc(ccCloudFmt(code))+'</div>'+
+       '<p class="cl-sub">'+esc(T.clKeep)+'</p><p class="cl-sub">'+esc(T.clSent(when))+(CC_CLOUD_BUSY ? ' · '+esc(T.clBusy) : '')+'</p>'+
+       '<div class="cl-row"><button class="cc-car-open" onclick="ccCloudPush()">'+esc(T.clPushNow)+'</button>'+
+       '<button class="cc-car-open" onclick="ccCloudEnter()">'+esc(T.clOther)+'</button>'+
+       '<button class="cc-car-open" onclick="ccCloudOff()">'+esc(T.clOff)+'</button></div>';
+  } else {
+    h+='<span>'+esc(T.clOffNow)+'</span></div><p class="cl-sub">'+esc(T.clWhy)+'</p>'+
+       '<div class="cl-row"><button class="ch-play" onclick="ccCloudOn()">'+esc(T.clEnable)+'</button>'+
+       '<button class="cc-car-open" onclick="ccCloudEnter()">'+esc(T.clHave)+'</button></div>';
+  }
+  if(CC_CLOUD_ENTER){
+    h+='<div class="cl-enter"><input id="ccCloudIn" maxlength="24" placeholder="XXXX-XXXX-XXXX-XXXX" autocapitalize="characters" autocomplete="off" spellcheck="false">'+
+       '<button class="ch-play" onclick="ccCloudOpen()">'+esc(T.clOpen)+'</button></div>';
+  }
+  if(CC_CLOUD_LIST){
+    const rows=CC_CLOUD_LIST.saves.map(sv=>{ let i={}; try{ i=JSON.parse(sv.info||'{}'); }catch(e){}
+      return '<li><b>'+esc(i.name||sv.key)+'</b><span>'+esc((i.kind==='mgr' ? T.clMgr : T.clCareer)+(i.day ? ' · '+i.day : '')+(i.earn ? ' · $'+ccNum(i.earn) : ''))+'</span></li>'; }).join('');
+    h+='<div class="cl-list"><p class="cl-sub">'+esc(T.clFound(CC_CLOUD_LIST.saves.length))+'</p><ul>'+rows+'</ul>'+
+       (CC_CLOUD_LIST.saves.length ? '<button class="ch-play" onclick="ccCloudRestore()">'+esc(CC_CLOUD_ARM ? T.clSure : T.clTake)+'</button>' : '')+'</div>';
+  }
+  if(CC_CLOUD_MSG) h+='<p class="cl-err">'+esc(T.clErr(CC_CLOUD_MSG))+'</p>';
+  box.innerHTML=h;
+}
+function ccCloudOn(){
+  try{ localStorage.setItem(CC_CLOUD_LS, ccCloudNewCode()); localStorage.removeItem(CC_CLOUD_SENT); }catch(e){}
+  CC_CLOUD_MSG=''; ccCloudDraw(); ccCloudPush();
+}
+function ccCloudOff(){
+  try{ localStorage.removeItem(CC_CLOUD_LS); localStorage.removeItem(CC_CLOUD_SENT); }catch(e){}
+  CC_CLOUD_LIST=null; CC_CLOUD_ENTER=false; ccCloudDraw();
+}
+function ccCloudEnter(){ CC_CLOUD_ENTER=!CC_CLOUD_ENTER; CC_CLOUD_LIST=null; CC_CLOUD_ARM=false; ccCloudDraw(); try{ document.getElementById('ccCloudIn').focus(); }catch(e){} }
+async function ccCloudOpen(){
+  const el=document.getElementById('ccCloudIn');
+  const code=String(el ? el.value : '').toUpperCase().replace(/[^A-Z0-9]/g, '');
+  if(!/^[A-HJ-NP-Z2-9]{16}$/.test(code)){ CC_CLOUD_MSG=L().clBad; ccCloudDraw(); return; }
+  try{ const j=await ccCloudPost({code, op:'list'}); CC_CLOUD_LIST={code, saves:j.saves||[]}; CC_CLOUD_MSG=''; CC_CLOUD_ARM=false; }
+  catch(e){ CC_CLOUD_MSG=String(e && e.message || e); }
+  ccCloudDraw();
+}
+// Забрать всё из облака: два нажатия — сейвы этого браузера с теми же ключами заменяются.
+async function ccCloudRestore(){
+  if(!CC_CLOUD_LIST) return;
+  if(!CC_CLOUD_ARM){ CC_CLOUD_ARM=true; ccCloudDraw(); return; }
+  const {code, saves}=CC_CLOUD_LIST, sent={};
+  try{
+    for(const sv of saves){
+      const j=await ccCloudPost({code, op:'get', key:sv.key});
+      const raw=await ccCloudUnpack(j.data);
+      localStorage.setItem(sv.key, raw);
+      sent[sv.key]=raw.length+':'+ccHashStr(raw);
+    }
+    sent._at=Date.now();
+    localStorage.setItem(CC_CLOUD_LS, code);
+    localStorage.setItem(CC_CLOUD_SENT, JSON.stringify(sent));
+    CC_CLOUD_LIST=null; CC_CLOUD_ENTER=false; CC_CLOUD_ARM=false; CC_CLOUD_MSG='';
+    CAREER=null;
+    try{ careerRenderSlots(); }catch(e){}
+    try{ homeRender(); }catch(e){}
+  }catch(e){ CC_CLOUD_MSG=String(e && e.message || e); }
+  ccCloudDraw();
+}
 function careerSave(){
   if(!CAREER) return;
   if(CAREER._mgr){ if(typeof mgrSave==='function') mgrSave(); return; }   // теневая карьера Fortnite Manager
@@ -117635,6 +117813,7 @@ function careerSave(){
       if(lz) localStorage.setItem(key, CC_SAVE_LZ+LZString.compressToUTF16(json));
       CC_SAVE_FAIL=null;
       careerSaveWarn();
+      try{ ccCloudSoon(); }catch(e){}
       return;
     }catch(e){
       CC_SAVE_FAIL=String(e&&e.name||e);
@@ -118176,6 +118355,7 @@ function careerRenderSlots(){
   // Зал славы под сеткой: все карьеры на одном экране. См. careerHallHTML.
   const hall=document.getElementById('ccHall');
   if(hall) hall.innerHTML=careerHallHTML();
+  try{ ccCloudDraw(); }catch(e){}
 }
 /* Дверь с главного экрана: сперва выбор, потом карьера.
 
@@ -159877,6 +160057,7 @@ function mgrSave(){
   const raw=JSON.stringify(MGR), lz=raw.length>MGR_SAVE_LZ_FROM && typeof LZString!=='undefined';
   try{ localStorage.setItem(key, lz ? CC_SAVE_LZ+LZString.compressToUTF16(raw) : raw); }
   catch(e){ try{ localStorage.setItem(key, CC_SAVE_LZ+LZString.compressToUTF16(raw)); }catch(e2){} }
+  try{ if(typeof ccCloudSoon==='function') ccCloudSoon(); }catch(e){}
 }
 function mgrSlotT(){
   const ru=(typeof LANG!=='undefined' && LANG==='ru');

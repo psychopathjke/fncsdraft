@@ -25,3 +25,12 @@ class_name = "Board"
 [[migrations]]
 tag = "v2"
 new_sqlite_classes = ["Board"]
+
+# Облачные сохранения (16.10): один объект на код-ключ, сейвы кусками в его SQLite. См. src/vault.js.
+[[durable_objects.bindings]]
+name = "VAULT"
+class_name = "Vault"
+
+[[migrations]]
+tag = "v3"
+new_sqlite_classes = ["Vault"]
