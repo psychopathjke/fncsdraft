@@ -430,7 +430,13 @@
 <link rel="icon" type="image/png" sizes="48x48" href="favicon-48.png">
 <link rel="icon" type="image/png" sizes="96x96" href="favicon-96.png">
 <link rel="icon" type="image/png" sizes="192x192" href="favicon-192.png">
-<link rel="apple-touch-icon" href="favicon-192.png">
+<!-- Сайт как приложение (16.10): манифест и иконка для экрана «Домой» на iPhone — непрозрачная 180×180. -->
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-title" content="FNCS Draft">
 
 <meta name="description" content="Play a Fortnite career on the real FNCS calendar — divisions, Majors, Reload and LANs, solo or with a friend. Or draft a squad of real FNCS players and run the whole tournament. Free, no signup.">
 <meta name="theme-color" content="#0e1116">
@@ -7248,6 +7254,14 @@
   .ht-watch:focus-visible{outline:2px solid #ffdd00;outline-offset:2px;}
   .ht-sep{flex-basis:100%;height:0;}
   @media(max-width:600px){ .ht-cd{margin-left:0;flex-basis:100%;font-size:22px;} }
+  .home-install{display:flex;align-items:center;gap:12px;margin:0 0 12px;padding:10px 12px;border-radius:12px;
+    background:linear-gradient(90deg,#1a3480,#12245c);border:1px solid rgba(255,221,0,.35);color:#e6edfb;}
+  .home-install[hidden]{display:none;}
+  .hi-ico{font-size:24px;flex:0 0 auto;}
+  .home-install>div{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:2px;}
+  .home-install b{color:#fff;font-size:14px;} .home-install span{font-size:12.5px;color:#c3d1f0;line-height:1.4;}
+  .home-install .ch-play{width:auto;flex:0 0 auto;padding:9px 14px;}
+  .hi-x{flex:0 0 auto;width:30px;height:30px;border-radius:50%;border:1px solid rgba(255,255,255,.3);background:transparent;color:#fff;cursor:pointer;}
   /* Вкладки живого блока на главной (Результаты 2026 / Сцена сейчас / Игроки сайта). */
   .home-tabs{margin-top:16px;}
   #homeLive .hl-pane{display:none;}
@@ -7701,6 +7715,8 @@
          Id кнопок cstripDuo/cstripRace/cstripCode сохранены: на них смотрят
          check-mp-doors и setLang. Арт — ключевой арт Major 1, один. -->
     <!-- Карьера игрока и карьера менеджера — ОДНОЙ строкой, две половины (его скрин 7.10: красные рамки слева и справа). -->
+    <!-- «Поставь на экран Домой» — iPhone без установки и Android с кнопкой (homeInstallDraw, 16.10). -->
+    <div class="home-install" id="homeInstall" hidden></div>
     <div class="hero-pair">
     <section class="hero hero-career" aria-labelledby="heroTitle">
       <!-- Самые хайповые игроки всех лет позади текста, на менеджере — гербы клубов (его слово 8.10). -->
@@ -20381,7 +20397,7 @@ const CC_LANGS=['en','ru','fr','it','pt','de','es'];
    Аргентина 50 тыс.). Словари — отдельными файлами i18n-de.js / i18n-es.js (tools/build-i18n.js): app.js упирается в 9 МБ,
    а словарь нужен только тем, кто выбрал язык. Пока файл не пришёл, L() показывает английский (он и так под каждым языком). */
 const CC_LANG_FILES={de:1, es:1};
-let CC_I18N_V={de:'a6008755', es:'c55c32fd'};   // ==== CC_I18N_V (tools/build-i18n.js) ====
+let CC_I18N_V={de:'50fbf98c', es:'bf6abd8a'};   // ==== CC_I18N_V (tools/build-i18n.js) ====
 const CC_LANG_WAIT={};
 function ccLangLoad(lang, done){
   if(!CC_LANG_FILES[lang] || (typeof I18N!=='undefined' && I18N[lang])){ done && done(); return; }
@@ -20720,6 +20736,12 @@ Object.assign(I18N.en, {clTitle:'Cloud', clOn:'on', clOffNow:'off — careers li
 Object.assign(I18N.fr, {clTitle:'Cloud', clOn:'activé', clOffNow:'désactivé — les carrières restent dans ce navigateur', clWhy:'Active le cloud pour obtenir un code. Avec lui, tes carrières et ton manager s’ouvrent sur n’importe quel appareil, même si ce navigateur est vidé.', clEnable:'Activer le cloud', clHave:'J’ai un code', clKeep:'Note ce code : il ouvre tes carrières sur un autre appareil.', clSent:w=>'Dernier envoi : '+w, clBusy:'envoi…', clPushNow:'Envoyer maintenant', clOther:'Entrer un autre code', clOff:'Désactiver', clOpen:'Ouvrir', clFound:n=>'Sauvegardes sur ce code : '+n, clCareer:'carrière', clMgr:'manager', clTake:'Les récupérer ici', clSure:'Remplace les mêmes emplacements ici — touche encore', clErr:m=>'Le cloud n’a pas répondu ('+m+'). Ta carrière est sauvegardée dans le navigateur ; on réessaiera.', clBad:'Le code fait 16 caractères, ex. K7QM-2XPA-9RTD-WH4C'});
 Object.assign(I18N.it, {clTitle:'Cloud', clOn:'attivo', clOffNow:'spento — le carriere restano in questo browser', clWhy:'Attiva il cloud per avere un codice. Con esso carriere e manager si aprono su qualsiasi dispositivo, anche se questo browser viene svuotato.', clEnable:'Attiva il cloud', clHave:'Ho un codice', clKeep:'Segnati questo codice: apre le tue carriere su un altro dispositivo.', clSent:w=>'Ultimo invio: '+w, clBusy:'invio…', clPushNow:'Invia ora', clOther:'Inserisci un altro codice', clOff:'Spegni', clOpen:'Apri', clFound:n=>'Salvataggi con questo codice: '+n, clCareer:'carriera', clMgr:'manager', clTake:'Portali in questo browser', clSure:'Sostituisce gli stessi slot qui — tocca di nuovo', clErr:m=>'Il cloud non ha risposto ('+m+'). La carriera è salvata nel browser; riproveremo.', clBad:'Il codice ha 16 caratteri, es. K7QM-2XPA-9RTD-WH4C'});
 Object.assign(I18N.pt, {clTitle:'Nuvem', clOn:'ligada', clOffNow:'desligada — as carreiras ficam só neste navegador', clWhy:'Ligue a nuvem para receber um código. Com ele, suas carreiras e o manager abrem em qualquer aparelho, mesmo se este navegador for limpo.', clEnable:'Ligar a nuvem', clHave:'Tenho um código', clKeep:'Anote este código: ele abre suas carreiras em outro aparelho.', clSent:w=>'Último envio: '+w, clBusy:'enviando…', clPushNow:'Enviar agora', clOther:'Digitar outro código', clOff:'Desligar', clOpen:'Abrir', clFound:n=>'Saves neste código: '+n, clCareer:'carreira', clMgr:'manager', clTake:'Trazer para este navegador', clSure:'Substitui os mesmos slots aqui — toque de novo', clErr:m=>'A nuvem não respondeu ('+m+'). Sua carreira está salva no navegador; tentaremos de novo.', clBad:'O código tem 16 caracteres, ex. K7QM-2XPA-9RTD-WH4C'});
+/* Сайт как приложение (16.10). */
+Object.assign(I18N.ru, {hiTitle:'FNCS Draft как приложение', hiIos:'В Safari нажми «Поделиться» внизу → «На экран „Домой“». Откроется на весь экран, без адресной строки.', hiAndroid:'Поставь сайт на главный экран — откроется как приложение.', hiBtn:'Установить'});
+Object.assign(I18N.en, {hiTitle:'FNCS Draft as an app', hiIos:'In Safari tap Share at the bottom → “Add to Home Screen”. It opens full screen, no address bar.', hiAndroid:'Put the site on your home screen — it opens like an app.', hiBtn:'Install'});
+Object.assign(I18N.fr, {hiTitle:'FNCS Draft comme une app', hiIos:'Dans Safari, touche Partager en bas → « Sur l’écran d’accueil ». Ça s’ouvre en plein écran, sans barre d’adresse.', hiAndroid:'Mets le site sur ton écran d’accueil — il s’ouvre comme une app.', hiBtn:'Installer'});
+Object.assign(I18N.it, {hiTitle:'FNCS Draft come app', hiIos:'In Safari tocca Condividi in basso → “Aggiungi alla schermata Home”. Si apre a schermo intero, senza barra degli indirizzi.', hiAndroid:'Metti il sito nella schermata Home — si apre come un’app.', hiBtn:'Installa'});
+Object.assign(I18N.pt, {hiTitle:'FNCS Draft como app', hiIos:'No Safari toque em Compartilhar embaixo → “Adicionar à Tela de Início”. Abre em tela cheia, sem barra de endereço.', hiAndroid:'Coloque o site na tela inicial — ele abre como um app.', hiBtn:'Instalar'});
 /* Главная 15.10: «Продолжить», «С другом», «Сцена сейчас», «Игроки сайта». Остальные языки — английские до доперевода. */
 Object.assign(I18N.ru, {hmContinue:'Продолжить', hmContinueSub:'Твои сохранения — с того дня, где остановился.', hmPlayOn:'Играть',
   hmSlotCareer:'Карьера', hmSlotMgr:'Менеджер', hmSlotLine:(s,d,e)=>'Сезон '+s+' · дивизион '+d+' · '+e, hmMgrLine:(s,c)=>'Сезон '+s+' · касса '+c,
@@ -114314,7 +114336,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='9951734e';
+const CC_BUILD='e9a5f189';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -159505,7 +159527,27 @@ setTimeout(()=>{ try{ if(!mgrAllowed()) return; document.querySelectorAll('.hero
 /* ГЛАВНАЯ 15.10: «Продолжить» по сохранениям, «Сцена сейчас» по настоящему календарю 2026 и «Игроки сайта».
    Рисуется из ccHeroCareerText — то есть на загрузке, на смене языка и при каждом возврате на главную. */
 let HOME_BOARD=null, HOME_BOARD_ALL=false;
+/* САЙТ КАК ПРИЛОЖЕНИЕ (16.10). Safari на iPhone кнопки установки не показывает — подсказка, как поставить через
+   «Поделиться»; Chrome на Android даёт событие beforeinstallprompt — тогда кнопка «Установить». Уже поставленному и
+   закрывшему подсказку — ничего. */
+let HOME_INSTALL_EV=null;
+try{ window.addEventListener('beforeinstallprompt', e=>{ e.preventDefault(); HOME_INSTALL_EV=e; try{ homeInstallDraw(); }catch(err){} }); }catch(e){}
+function homeInstallDraw(){
+  const box=document.getElementById('homeInstall'); if(!box) return;
+  let hide=false; try{ hide=localStorage.getItem('fd_install_hide')==='1'; }catch(e){}
+  const standalone=!!(navigator.standalone || (window.matchMedia && matchMedia('(display-mode: standalone)').matches));
+  const ios=/iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform==='MacIntel' && navigator.maxTouchPoints>1);
+  if(hide || standalone || (!ios && !HOME_INSTALL_EV)){ box.hidden=true; return; }
+  const T=L();
+  box.innerHTML='<span class="hi-ico">📲</span><div><b>'+esc(T.hiTitle)+'</b><span>'+esc(ios ? T.hiIos : T.hiAndroid)+'</span></div>'+
+    (HOME_INSTALL_EV ? '<button class="ch-play" type="button" onclick="homeInstallGo()">'+esc(T.hiBtn)+'</button>' : '')+
+    '<button class="hi-x" type="button" aria-label="'+esc(T.hmRealClose)+'" onclick="homeInstallHide()">✕</button>';
+  box.hidden=false;
+}
+function homeInstallGo(){ const e=HOME_INSTALL_EV; if(!e) return; HOME_INSTALL_EV=null; try{ e.prompt(); }catch(err){} homeInstallDraw(); }
+function homeInstallHide(){ try{ localStorage.setItem('fd_install_hide', '1'); }catch(e){} homeInstallDraw(); }
 function homeRender(){
+  try{ homeInstallDraw(); }catch(e){}
   try{ homeSceneDraw(); }catch(e){}
   try{ homeTimerDraw(); }catch(e){}
   try{ homeBoardDraw(); }catch(e){}
