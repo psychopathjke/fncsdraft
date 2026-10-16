@@ -4512,6 +4512,23 @@
   /* Клуб отвечает с галочкой; ответ автора на чей-то комментарий стоит
      ступенькой ниже, как ветка; хейтер — серым, чтобы не путать с похвалой. */
   .x-co-r b .x-tick{margin-left:3px;vertical-align:1px;}
+  /* 16.10: лайки ответа, «Ratio», опрос, тренды. */
+  .x-co-l{font-style:normal;font-size:11px;color:#6f7fa6;margin-left:8px;font-weight:600;}
+  .x-ratio{font-style:normal;font-size:10px;font-weight:900;color:#ff6b6b;border:1px solid rgba(255,107,107,.5);border-radius:4px;padding:0 4px;margin-left:6px;}
+  .x-poll{display:flex;flex-direction:column;gap:6px;margin:8px 0 4px;}
+  .x-poll-b{padding:8px 12px;border-radius:999px;border:1px solid rgba(29,155,240,.55);background:transparent;color:#8ecdf8;font-weight:700;cursor:pointer;text-align:left;}
+  .x-poll-b:hover{background:rgba(29,155,240,.12);}
+  .x-poll-r{position:relative;display:flex;justify-content:space-between;gap:8px;padding:7px 10px;border-radius:6px;overflow:hidden;font-size:13px;color:#e6ecf5;}
+  .x-poll-r i{position:absolute;left:0;top:0;bottom:0;background:rgba(140,175,255,.16);border-radius:6px;}
+  .x-poll-r.me i{background:rgba(29,155,240,.32);}
+  .x-poll-r span,.x-poll-r b{position:relative;}
+  .x-poll small{color:#6f7fa6;font-size:11.5px;}
+  .x-trends .x-trend{display:flex;flex-direction:column;align-items:flex-start;gap:1px;width:100%;padding:7px 4px;background:none;border:0;border-top:1px solid rgba(140,175,255,.12);cursor:pointer;text-align:left;color:#e6ecf5;}
+  .x-trends .x-trend:hover{background:rgba(255,255,255,.04);}
+  .x-trend em{font-style:normal;font-size:11px;color:#6f7fa6;}
+  .x-trend b{font-size:14px;}
+  .x-trend span{font-size:11px;color:#6f7fa6;}
+  .x-trend-on{display:flex;align-items:center;gap:8px;margin:0 0 8px;font-size:13px;color:#8ecdf8;}
   .x-co-r.sub{margin-left:16px;}
   .x-co-r.sub::before{content:'↳';color:#67799f;margin-right:5px;}
   .x-co-r.hate{color:#8d95a8;}
@@ -20870,6 +20887,31 @@ Object.assign(I18N.ru, {
   ccDmSmmGrow:(n,big,v)=>(big ? ['Подписчиков за вечер: +'+n+'. Запости W, пока горячо — скрин и одна строка.','Новых подписчиков: +'+n+'. Сейчас момент: клип с лучшей игры.'] : ['Подписчиков с прошлого раза: +'+n+'. Короткий пост о вечере их удержит.','Новых подписчиков: +'+n+'. Одного поста в день хватит, не спамь.'])[v%2],
   ccDmSmmBad:v=>['Сегодня лучше ничего не постить на эмоциях. Завтра — спокойная строка про следующую цель.','Пропусти ленту сегодня. Плохому вечеру твит не нужен.'][v%2],
   ccDmMktBrands:v=>['После таких вечеров бренды спрашивают про тебя — загляни в спонсоров.','Два бренда сегодня просили твою стату. Такие результаты поднимают твою цену.'][v%2]});
+/* Слухи, опросы, ветки (16.10, careerRumorTick / careerPollTick / ccPostComments). */
+Object.assign(I18N.en, {
+  ccPostRumorPair:(a,b,v)=>['sources: @'+a+' and @'+b+' have been scrimming together 👀 duo next season?','hearing @'+a+' x @'+b+' is a thing for next season. thoughts?','👀 @'+a+' and @'+b+' in the same customs again. something is cooking'][v%3],
+  ccPostRumorYou:(me,v)=>['hearing @'+me+' is on a few orgs’ radar after this week 👀','multiple orgs asked about @'+me+' after the last cup. stay tuned','@'+me+' could be the next unsigned player to get picked up 👀'][v%3],
+  ccPostRumorDrama:(a,b,v)=>['@'+a+' and @'+b+' going at it in the replies after last night 🍿','things got heated between @'+a+' and @'+b+' in the cup lobby 🍿','@'+a+' vs @'+b+' beef is back on the timeline 🍿'][v%3],
+  ccPostRumorTrue:(a,b)=>'called it ✅ @'+a+' x @'+b+' confirmed',
+  ccPostPollWin:ev=>'Who wins '+ev+'? 🏆',
+  ccCoRumorMe:['🤫','no comment','fake news','maybe 👀','lol','who told you this','👀'],
+  ccCoRumor:['source?','cap','👀👀','would be cracked','no way','trust me bro','this account is never right','W if true','not happening'],
+  ccCoPoll:['voted','easy pick','first option is free','sleeper pick: last one','where is my guy','this poll is rigged','hard one'],
+  ccCoDefend:['who asked','check the scoreboard','ratio','imagine saying this','stay mad','he’s top 10 in the region btw','L take','go play the cup yourself'],
+  ccCoHateBack:['cope','ok bro','we’ll see','fanboy','relax','whatever helps you sleep'],
+  ccCoBanter:['fr','real','this','+1','no shot','facts','nah']});
+Object.assign(I18N.ru, {
+  ccPostRumorPair:(a,b,v)=>['источники: @'+a+' и @'+b+' скримятся вместе 👀 дуо на следующий сезон?','слышал, @'+a+' x @'+b+' будут играть в следующем сезоне. что думаете?','👀 @'+a+' и @'+b+' опять в одних кастомках. что-то готовится'][v%3],
+  ccPostRumorYou:(me,v)=>['слышал, @'+me+' на радаре у нескольких оргов после этой недели 👀','после прошлого капа про @'+me+' спрашивали сразу несколько оргов. ждём','@'+me+' может стать следующим подписанным 👀'][v%3],
+  ccPostRumorDrama:(a,b,v)=>['@'+a+' и @'+b+' сцепились в ответах после вчерашнего 🍿','между @'+a+' и @'+b+' стало жарко в лобби капа 🍿','бифф @'+a+' vs @'+b+' снова в ленте 🍿'][v%3],
+  ccPostRumorTrue:(a,b)=>'я же говорил ✅ @'+a+' x @'+b+' подтверждено',
+  ccPostPollWin:ev=>'Кто выиграет '+ev+'? 🏆',
+  ccCoRumorMe:['🤫','без комментариев','фейк','может быть 👀','лол','кто тебе такое сказал','👀'],
+  ccCoRumor:['источник?','кап','👀👀','было бы жёстко','не может быть','верь мне бро','этот акк никогда не прав','W если правда','не будет такого'],
+  ccCoPoll:['проголосовал','лёгкий выбор','первый вариант бесплатный','тёмная лошадка — последний','где мой игрок','опрос подкручен','сложно'],
+  ccCoDefend:['кто спрашивал','посмотри таблицу','ратио','представь такое написать','бесись дальше','он топ-10 региона кстати','слабый тейк','иди сам сыграй кап'],
+  ccCoHateBack:['копиум','ок бро','посмотрим','фанат','расслабься','как скажешь'],
+  ccCoBanter:['реально','факт','вот','+1','не','база','неа']});
 /* Ответы под постами своего вида (16.10, см. CC_CO_BY_KIND): статистика, новый сезон, подкол, цитата с пресс-конференции.
    Остальные языки берут английский — на X сцена и так отвечает по-английски. */
 Object.assign(I18N.en, {ccPostLfdWantAny:(h,d)=>['LFD. Div '+d+' and up. DMs open','looking for a duo, div '+d+'+. dms open','LFD 🙏 div '+d+' or higher, hmu'][ccHashStr(String(h))%3],
@@ -109564,6 +109606,138 @@ function ccStaffAfterNight(place, total){
     last[k]=today;
   });
 }
+/* СЛУХИ, ОПРОСЫ, ТРЕНДЫ (16.10, его «3468» из «сделай соцсеть очень реалистично»). Аккаунты выдуманные — ни одного
+   настоящего медиа. Roster Watch пишет слухи о составах: два настоящих игрока одной силы «скримятся вместе», и если на
+   стыке сезона они правда объявят дуо — «called it ✅» (ccRumorConfirm из careerWorldDuos). После твоего подиума без
+   клуба — «@ты на радаре у оргов». Comp Tea ☕ — драма в ответах, без последствий. FNCS Hub перед Мейджором и ЛАНом
+   спрашивает «кто выиграет» — четыре самые сильные пары региона (и ты, если ты там), голос сохраняется, проценты — от
+   силы с разбросом. Тренды справа считаются по ленте за неделю: кого упоминают и кто пишет (по лайкам), плюс #FNCS
+   рядом с Мейджором и метка сезона. Клик по тренду — лента по нему. */
+const CC_RUMOR_BY={name:'Roster Watch', handle:'rosterwatchfn', f:48000};
+const CC_TEA_BY={name:'Comp Tea ☕', handle:'comptea', f:21000};
+const CC_POLL_BY={name:'FNCS Hub', handle:'fncshub', f:65000};
+function careerRumorTick(){
+  const cr=CAREER && CAREER.career; if(!cr) return;
+  if(typeof ccMpOn==='function' && ccMpOn()) return;
+  const today=careerToday();
+  if(cr.rumorNext && today<cr.rumorNext) return;
+  const rnd=careerRng(ccHashStr('rumor|'+today+'|'+(cr.season||1)));
+  const first=!cr.rumorNext;
+  cr.rumorNext=ccAddDays(today, 5+Math.floor(rnd()*4));
+  if(first) return;   // первый раз — только завести часы, не в день старта карьеры
+  const me=ccHandle((CAREER.player && CAREER.player.nick)||''), v=Math.floor(rnd()*3);
+  const top=(cr.log||[]).some(x=>x && x.day && x.place>0 && x.place<=3 && ccDaysBetween(x.day, today)<=7);
+  if(top && !CAREER.org && rnd()<0.6){ careerNews('flat', 'ccPostRumorYou', [me, v], {by:CC_RUMOR_BY}); return; }
+  let roster=[]; try{ roster=(careerRosterNowEU()||[]).filter(c=>c && c.handle && hKey(c)!==hKey(me)); }catch(e){}
+  roster=roster.sort((a,b)=>ccCardOvr(b)-ccCardOvr(a)).slice(0, 80);
+  if(roster.length<6) return;
+  if(rnd()<0.2){
+    const a=roster[Math.floor(rnd()*Math.min(40, roster.length))]; let b=a;
+    for(let g=0; g<10 && b===a; g++) b=roster[Math.floor(rnd()*Math.min(40, roster.length))];
+    if(b!==a) careerNews('flat', 'ccPostRumorDrama', [ccHandle(a.handle), ccHandle(b.handle), v], {by:CC_TEA_BY});
+    return;
+  }
+  for(let g=0; g<20; g++){
+    const a=roster[Math.floor(rnd()*roster.length)], oa=ccCardOvr(a);
+    let mate=null; try{ mate=ccPairMateOf(a.handle); }catch(e){}
+    const c=roster.filter(x=>x!==a && Math.abs(ccCardOvr(x)-oa)<=4 && !(mate && hKey(mate)===hKey(x)));
+    if(!c.length) continue;
+    const b=c[Math.floor(rnd()*c.length)];
+    cr.rumors=(cr.rumors||[]).concat([{a:a.handle, b:b.handle, day:today}]).slice(-12);
+    careerNews('flat', 'ccPostRumorPair', [ccHandle(a.handle), ccHandle(b.handle), v], {by:CC_RUMOR_BY});
+    return;
+  }
+}
+function ccRumorConfirm(a, b){
+  const cr=CAREER && CAREER.career; if(!cr || !cr.rumors) return;
+  const same=(x,y)=>hKey(x)===hKey(y);
+  const r=cr.rumors.find(x=>!x.ok && ((same(x.a,a) && same(x.b,b)) || (same(x.a,b) && same(x.b,a))));
+  if(!r) return;
+  r.ok=1;
+  careerNews('good', 'ccPostRumorTrue', [ccHandle(r.a), ccHandle(r.b)], {by:CC_RUMOR_BY});
+}
+// Варианты опроса: четыре самые сильные пары региона; ты — вместо четвёртой, если ты не слабее её.
+function ccPollOptions(){
+  let duos=[]; try{ duos=(careerPools().duos||[]).filter(d=>d && d.cards && d.cards.length>=2); }catch(e){}
+  duos=duos.slice().sort((a,b)=>ccDuoOvr(b)-ccDuoOvr(a)).slice(0, 4);
+  const out=duos.map(d=>({l:'@'+ccHandle(d.cards[0].handle)+' & @'+ccHandle(d.cards[1].handle), o:ccDuoOvr(d)}));
+  try{
+    const mate=careerMateRec(), mine=ccMyShownOvr(), mo=mate && mate.card ? ccCardOvr(mate.card) : mine, avg=(mine+mo)/2;
+    if(out.length>=4 && avg>=out[3].o-1){
+      const me='@'+ccHandle(CAREER.player.nick||'')+(mate && mate.card ? ' & @'+ccHandle(mate.card.handle) : '');
+      out[3]={l:me, o:avg, you:1};
+    }
+  }catch(e){}
+  if(!out.length) return out;
+  const rnd=careerRng(ccHashStr('poll|'+careerToday())), mx=Math.max(...out.map(x=>x.o));
+  out.forEach(x=>{ x.w=Math.round(Math.exp((x.o-mx)/2.5)*(0.8+0.4*rnd())*1000); });
+  return out;
+}
+function careerPollTick(){
+  const cr=CAREER && CAREER.career; if(!cr) return;
+  if(typeof ccMpOn==='function' && ccMpOn()) return;
+  const days=careerYearDays(), today=careerToday();
+  for(let d=1; d<=3; d++){
+    const at=ccAddDays(today, d);
+    const on=(days.get(at)||[]).filter(e=>e && (e.kind==='major' || e.kind==='gc'));
+    if(!on.length) continue;
+    const key='poll|'+at.slice(0, 7);
+    cr.told=cr.told||{};
+    if(cr.told[key]) return;
+    cr.told[key]=1;
+    const opts=ccPollOptions();
+    if(opts.length<3) return;
+    careerNews('flat', 'ccPostPollWin', [on[0].label||''],
+      {by:CC_POLL_BY, poll:{o:opts.map(x=>x.l), w:opts.map(x=>x.w), end:at, v:null}});
+    return;
+  }
+}
+function ccPollHTML(n){
+  const P=n && n.poll; if(!P || !P.o || !P.o.length) return '';
+  const T=(typeof LANG!=='undefined' && LANG==='ru') ? {votes:'голосов', ends:'до', done:'Итоги'} : {votes:'votes', ends:'ends', done:'Final results'};
+  const ended=careerToday()>P.end, voted=P.v!=null;
+  let st={likes:0}; try{ st=ccPostStats(n, ccPostAuthor(n)); }catch(e){}
+  const total=Math.max(12, Math.round(st.likes*2.2))+(voted?1:0);
+  const sum=P.w.reduce((a,b)=>a+b, 0)||1;
+  const pct=P.o.map((x,i)=>Math.round((P.w[i]/sum*(total-(voted?1:0))+(P.v===i?1:0))/total*100));
+  const rows=(voted || ended)
+    ? P.o.map((x,i)=>'<div class="x-poll-r'+(P.v===i?' me':'')+'"><i style="width:'+pct[i]+'%"></i><span>'+esc(x)+(P.v===i?' ✓':'')+'</span><b>'+pct[i]+'%</b></div>').join('')
+    : P.o.map((x,i)=>'<button class="x-poll-b" onclick="careerPollVote(\''+esc(n.id||'')+'\','+i+')">'+esc(x)+'</button>').join('');
+  return '<div class="x-poll">'+rows+'<small>'+ccNum(total)+' '+T.votes+' · '+(ended ? T.done : T.ends+' '+esc(ccDayLabel(P.end)))+'</small></div>';
+}
+function careerPollVote(id, i){
+  const e=(CAREER.career.news||[]).find(n=>n && n.id===id);
+  if(!e || !e.poll || e.poll.v!=null || careerToday()>e.poll.end) return;
+  e.poll.v=i; careerSave(); careerRenderHub(CH_TAB);
+}
+function ccTrendsHTML(){
+  const cr=CAREER && CAREER.career; if(!cr) return '';
+  const today=careerToday(), score=new Map(), name=new Map();
+  const add=(t, v)=>{ if(!t) return; const k=t.toLowerCase(); score.set(k, (score.get(k)||0)+v); if(!name.has(k)) name.set(k, t); };
+  const me=hKey(ccHandle((CAREER.player && CAREER.player.nick)||''));
+  (cr.news||[]).forEach(n=>{
+    if(!n || !n.day || ccDaysBetween(n.day, today)>6) return;
+    let who, st; try{ who=ccPostAuthor(n); st=ccPostStats(n, who); }catch(e){ return; }
+    const w=Math.max(1, st.likes);
+    let txt=''; try{ txt=String(ccText(n)).replace(/<[^>]+>/g, ' '); }catch(e){}
+    // Ник — как пишет его сам человек (карточка), а не строчными из @-упоминания.
+    (txt.match(/@([A-Za-z0-9_]+)/g)||[]).forEach(h=>{ const x=h.slice(1); if(hKey(x)===me) return; let c=null; try{ c=ccWhoCard(x); }catch(e){} add((c && c.handle) || x, w); });
+    if(who && !who.you && !who.verified && !who.f && who.name) add(who.name, w*0.5);
+  });
+  try{
+    const days=careerYearDays();
+    for(let d=-2; d<=7; d++){ const on=(days.get(ccAddDays(today, d))||[]); if(on.some(e=>e && (e.kind==='major'||e.kind==='gc'))){ add('#FNCS', 40000); break; } }
+    for(let d=0; d<=3; d++){ const on=(days.get(ccAddDays(today, d))||[]); if(on.some(e=>e && e.kind==='reload')){ add('#Reload', 9000); break; } }
+    if(ccMetaOpen()) add(ccSeasonTag(today).short||'', 25000);
+  }catch(e){}
+  const list=[...score.entries()].sort((a,b)=>b[1]-a[1]).slice(0, 5);
+  if(!list.length) return '';
+  const ru=(typeof LANG!=='undefined' && LANG==='ru');
+  const T=ru ? {h:'Тренды', p:'В тренде в Fortnite', e:'Киберспорт · в тренде', posts:'постов'} : {h:'Trends for you', p:'Trending in Fortnite', e:'Esports · Trending', posts:'posts'};
+  return '<div class="ch-tile x-trends"><h4>'+T.h+'</h4>'+list.map(([k,v],i)=>{ const t=name.get(k), tag=/^#/.test(t) || /^C\d+/.test(t);
+    return '<button class="x-trend" onclick="careerTrend(\''+esc(t).replace(/'/g,"\\'")+'\')"><em>'+(i+1)+' · '+(tag ? T.e : T.p)+'</em><b>'+esc(t)+'</b><span>'+ccFollowers(Math.round(v/3)+40)+' '+T.posts+'</span></button>'; }).join('')+'</div>';
+}
+function careerTrend(t){ CH_FEED_Q=t||null; CH_SOCIAL='feed'; CH_FEED='all'; careerRenderHub('social'); }
 /* СОВЕТ КОУЧА (Notion 15.10, фидбек: «the option to get a coach doesn't really do anything»; ответ игроку — «coach
    suggests…»). Нанятый коуч говорит, что выбрать: где у вариантов есть проценты (ccChoiceOdds — «X% выживают»), он берёт
    вариант с лучшим последним числом; где чисел нет — ход по умолчанию. Слабый коуч (прирост тренировки < 0.32) ошибается
@@ -123305,6 +123479,9 @@ function careerAdvanceBody(iso){
   careerNotesTick();
   // Анонс ближайшего крупного вечера и реакция на него — см. careerAnnounceTick.
   careerAnnounceTick();
+  // Слухи и опросы сцены (16.10). Ошибка в них не должна останавливать день.
+  try{ careerRumorTick(); }catch(e){ console.error('rumor', e); }
+  try{ careerPollTick(); }catch(e){ console.error('poll', e); }
   careerCustomsPostTick();
   careerAdPostTick();
   // Трансферный рынок сцены и месячный «кто выстрелил». См. careerSceneMovesTick.
@@ -135030,6 +135207,7 @@ function careerNews(kind, key, args, opt){
                    // стоят две кнопки, и кому адресован ответ. См. careerBeefAnswer.
                    beef:(opt&&opt.beef)||undefined,
                    sp:(opt&&opt.sp)||undefined,   // рекламный пост бренда (careerSponsorPost)
+                   poll:(opt&&opt.poll)||undefined,   // опрос (careerPollTick, 16.10)
                    text:(opt&&opt.text)||undefined});
   if(cr.news.length>CAREER_NEWS_KEEP) cr.news.length=CAREER_NEWS_KEEP;
 }
@@ -135078,6 +135256,8 @@ const CC_POST_BY={
   ccPostEvKilled:'arg0', ccPostEvVR:'you', ccPostEvKills:'you',
   // Пресс-конференции (16.10): цитату и исход обещания пишет пресса, на провокацию отвечает названный игрок.
   ccPostPress:'press', ccPostPressKept:'press', ccPostPressBroke:'press', ccPostPressRival:'arg0',
+  // Слухи и опросы (16.10) пишут выдуманные медиа-аккаунты — автор едет в opt.by; здесь — на случай записи без него.
+  ccPostRumorPair:'press', ccPostRumorYou:'press', ccPostRumorDrama:'press', ccPostRumorTrue:'press', ccPostPollWin:'press',
   // LFD is the player saying it out loud. Nobody else posts that for you.
   ccNewsLfd:'you',
   // And so is an injury: a wrist is the player's own week, not a transfer the
@@ -135824,6 +136004,7 @@ function ccFollowText(handle, ovr){
 const CC_POST_W={good:1, flat:0.42, bad:0.72};
 function ccPostStats(e, who){
   const f = who.you ? (e.f!=null ? e.f : careerReach())
+          : who.f>0 ? who.f   // свой счёт подписчиков у аккаунта (слухи, опросы — 16.10)
           : who.verified ? CC_PRESS_REACH
           : ccReachOf(who.ovr, who.name);
   const w = CC_POST_W[e.kind]!=null ? CC_POST_W[e.kind] : 0.5;
@@ -135895,7 +136076,7 @@ const CC_ORG_POST_ARG={
 };
 function ccPostAuthor(e){
   if(e.by) return {name:e.by.name, handle:e.by.handle||ccHandle(e.by.name),
-                   verified:!!e.by.verified, card:e.by.card||null, ovr:e.by.ovr,
+                   verified:!!e.by.verified, card:e.by.card||null, ovr:e.by.ovr, f:e.by.f||0,
                    // Герб клуба едет с автором: без этой строки аватарка
                    // организации оставалась кружком с инициалами.
                    logo:e.by.logo||null};
@@ -136473,16 +136654,20 @@ function careerNewsHTML(limit){
    Подписка обязана что-то менять, иначе кнопка «подписаться» — украшение.
    «Подписки» показывают тех, на кого подписан игрок, и его самого: своя строка
    в своей же ленте стоит везде, где такая вкладка есть. */
-let CH_FEED='all', CH_WHO=null;
+let CH_FEED='all', CH_WHO=null, CH_FEED_Q=null;
 function careerFeedMode(m){ CH_FEED=m; careerRenderHub('social'); }
 function careerFeedHTML(){
   const news=(CAREER.career.news||[]);
-  const list=CH_FEED==='subs'
+  let list=CH_FEED==='subs'
     ? news.filter(n=>{ const w=ccPostAuthor(n); return w.you || ccFollowing(w.handle); })
     : news;
+  // Нажатый тренд (ccTrendsHTML) — лента по нему, с крестиком сверху.
+  let chip='';
+  if(CH_FEED_Q){ const q=CH_FEED_Q.toLowerCase(); list=list.filter(n=>{ try{ return (ccText(n)+' '+ccPostAuthor(n).handle).toLowerCase().indexOf(q.replace(/^[#@]/,''))>=0; }catch(e){ return false; } });
+    chip='<div class="x-trend-on"><b>'+esc(CH_FEED_Q)+'</b><button class="x-act" onclick="careerTrend(null)">✕</button></div>'; }
   if(!list.length) return `<div class="ch-empty">${
     CH_FEED==='subs' ? L().ccFeedSubsEmpty : L().ccNewsEmpty}</div>`;
-  return list.slice(0, CAREER_NEWS_KEEP).map(ccPostHTML).join('');
+  return chip+list.slice(0, CAREER_NEWS_KEEP).map(ccPostHTML).join('');
 }
 /* ---- Чужой профиль --------------------------------------------------------
 
@@ -136760,6 +136945,8 @@ const CC_CO_BY_KIND=[
   [/^ccNewsMetaNew/, 'Meta'],
   [/^ccPostEvKilled|^ccPostPressRival/, 'Taunt'],
   [/^ccPostPress$/, 'Press'],
+  [/^ccPostRumor/, 'Rumor'],
+  [/^ccPostPoll/, 'Poll'],
   [/^ccPostPressBroke/, 'Bad'],
   [/^ccNewsSigned|^ccNewsExtended|^ccNewsPromotedRoster|^ccNewsRaise/, 'Sign'],
   [/^ccNewsReleased|^ccNewsLeft|^ccPostBye/, 'Left'],
@@ -136922,7 +137109,7 @@ function ccPostComments(n, who, st){
     // Хейтер — тем чаще, чем хуже вечер и чем громче карьера.
     const hateP=hush ? 0 : mood==='Bad' ? 0.5 : mood==='Mid' ? 0.25 : good ? 0.12 : 0.08;
     hater=rnd()<hateP*Math.min(1, 0.4+(careerReach()||0)/20000);
-  } else if(!who.verified){
+  } else if(!who.verified && !who.f){
     // Человек сцены: его пара, его клуб, кто был в комнате, кого он упомянул.
     let mate=null; try{ mate=ccPairMateOf(who.handle); }catch(e){}
     if(mate && mate.handle && resulty && rnd()<(good?0.6:0.3)) add(mate.handle, mateBank, {pro:true});
@@ -136947,7 +137134,8 @@ function ccPostComments(n, who, st){
     // Пресса или клуб: отвечают те, о ком пост, и верх сцены.
     // Тот, о ком пост, либо благодарит, либо молчит — «monster» под
     // поздравлением с собственной победой он не пишет.
-    mentioned.forEach(h=>{ if(rnd()<0.6) add(h, bankOf('ccCoTy'), {pro:true}); else seenH.add(hKey(h)); });
+    // Под слухом о себе не благодарят — отмалчиваются или отшучиваются (16.10).
+    mentioned.forEach(h=>{ if(rnd()<0.6) add(h, bankOf(mood==='Rumor' ? 'ccCoRumorMe' : 'ccCoTy'), {pro:true}); else seenH.add(hKey(h)); });
     const top=roster.slice().sort((a,b)=>ovrOf(b)-ovrOf(a)).slice(0, 60);
     const nPro=(mood==='Table'||mood==='Hype') ? 1 : 1+Math.floor(rnd()*2);
     for(let i=0; i<nPro && top.length; i++) add(top[Math.floor(rnd()*top.length)].handle, proBank, {pro:true});
@@ -136970,10 +137158,35 @@ function ccPostComments(n, who, st){
   let guard=0;
   while(rows.length<want && guard++<40) add(fanHandle(), fanBank, {});
   if(hater) add(fanHandle(), bankOf((mood==='Bad'||mood==='Mid') ? 'ccCoHateBad' : 'ccCoHate'), {hate:true});
+  /* ВЕТКИ И РАТИО (16.10, его «3»): под хейтером за тебя вступаются — напарник, если есть, иначе зритель, — и хейтер
+     иногда огрызается; под чужими постами зрители спорят с первым ответом. У каждого ответа свои лайки (доля лайков
+     поста по роли), а хейтер под твоим слабым вечером иногда собирает больше лайков, чем пост, — «Ratio». */
+  {
+    const hi=rows.findIndex(r=>r.hate);
+    if(hi>=0){
+      const hr=rows[hi];
+      hr.ratio=!!who.you && (mood==='Bad'||mood==='Mid') && rnd()<0.25;
+      let mh=null; try{ const m=who.you ? careerPartnerCard() : ccPairMateOf(who.handle); mh=m && m.handle; }catch(e){}
+      const dh=(mh && hKey(mh)!==authorK) ? mh : fanHandle();
+      const dt=pick(bankOf('ccCoDefend'));
+      if(dt){
+        rows.splice(hi+1, 0, {h:dh, t:dt, pro:dh===mh, sub:true, def:true});
+        if(rnd()<0.45){ const bt=pick(bankOf('ccCoHateBack')); if(bt) rows.splice(hi+2, 0, {h:hr.h, t:bt, hate:true, sub:true}); }
+      }
+    }
+    if(!who.you && rows.length>=2 && rnd()<0.3){
+      const i=rows.findIndex(r=>!r.sub && !r.hate);
+      const bt=i>=0 ? pick(bankOf('ccCoBanter')) : null;
+      if(bt) rows.splice(i+1, 0, {h:fanHandle(), t:bt, sub:true});
+    }
+    const pl=Math.max(1, (st && st.likes)||1);
+    rows.forEach(r=>{ const k=r.ratio ? 1.1+rnd()*0.9 : r.pro ? 0.04+rnd()*0.25 : r.def ? 0.05+rnd()*0.3 : r.hate ? 0.01+rnd()*0.06 : 0.005+rnd()*0.08;
+      r.likes=Math.round(pl*k); });
+  }
   /* Автор отвечает одному из написавших — только человек сцены, и не в
      каждом посте: под своим за игрока не пишет никто, аккаунт сцены и клуб
      в комментариях не сидят. */
-  if(!who.you && !who.verified && who.handle && rows.length && !hush && rnd()<0.4){
+  if(!who.you && !who.verified && !who.f && who.handle && rows.length && !hush && rnd()<0.4){
     const at=rows.findIndex(r=>r.pro && !r.org);
     const i=at>=0 ? at : Math.floor(rnd()*rows.length);
     const t=pick(bankOf('ccCoTy'));
@@ -136986,6 +137199,7 @@ function ccPostComments(n, who, st){
     const hAt=esc(ccHandle(r.h));
     let s='<div class="x-co-r'+(r.pro?' pro':'')+(r.org?' org':'')+(r.hate?' hate':'')+(r.sub?' sub':'')+'">'+
         '<b>@'+hAt+(r.org?'<i class="x-tick">✓</i>':'')+'</b><span>'+esc(r.t)+'</span>'+
+        (r.ratio ? '<i class="x-ratio">Ratio</i>' : '')+(r.likes>0 ? '<em class="x-co-l">♥ '+ccFollowers(r.likes)+'</em>' : '')+
         // Под своим постом у каждой строки — «Ответить»: см. careerReplyTo.
         (who.you && !r.sub ? '<button class="x-co-re" onclick="careerReplyTo(\''+idAt+'\',\''+
            esc(r.h).replace(/'/g,"\\'")+'\')">'+esc(L().ccReplyBtn)+'</button>' : '')+
@@ -137459,6 +137673,7 @@ function ccPostHTML(n){
         ccArtHTML(n)+
         ccQuoteHTML(n)+
         ccCardShotHTML(n.card)+
+        ccPollHTML(n)+
         (n.sp ? `<div class="x-sp"><img src="${PHOTO_DIR}sp_${esc(CC_SPONSOR_LOGO[n.sp]||n.sp)}.png" alt="" onerror="this.remove()"><span>${esc(L()["ccSponsor"+n.sp]||n.sp)}</span></div>` : "")+
         `<div class="x-acts"><span>${CC_X_REPLY}<b>${ccFollowers(st.replies)}</b></span>`+
         `<span>${CC_X_REPOST}<b>${ccFollowers(st.reposts)}</b></span>`+
@@ -141335,6 +141550,7 @@ function careerSocialHTML(){
             ${careerFeedHTML()}</div>`}
     </main>
     <aside class="x-side">
+      ${ccTrendsHTML()}
       ${careerTrophiesHTML()}
       ${careerCollectionHTML()}
       <div class="ch-tile">
@@ -147583,6 +147799,8 @@ function careerWorldDuos(season){
       by:{name:a.handle, ovr:a._ovr,
           card:a.region?{handle:a.handle, region:a.region}:null}
     });
+    // Слух сбылся — аккаунт слухов напоминает, что он это говорил (careerRumorTick).
+    try{ ccRumorConfirm(a.handle, b.handle); }catch(e){}
   }
 }
 
