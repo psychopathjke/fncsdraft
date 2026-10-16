@@ -166,7 +166,7 @@ const BOOT = `
     CAREER.career.day = ccAddDays(CAREER.career.day, CC_AD_POST_DELAY);
     check('ad: two days later the ad goes up', careerAdPostTick() === 1);
     check('ad: with the PR card attached',
-          (CAREER.career.news||[]).some(n => n.k === 'ccPostLfdWant' && n.card));
+          (CAREER.career.news||[]).some(n => /^ccPostLfdWant/.test(n.k) && n.card));
     check('ad: and only once', careerAdPostTick() === 0);
 
     // 3. Таблица под постом — окно вокруг своей строки, флаги, отсечка, пин.

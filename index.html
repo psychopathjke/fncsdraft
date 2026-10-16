@@ -1820,6 +1820,19 @@
   .cc-choice-mate i::after{content:':';}
   .cc-plan{list-style:none;margin:4px 0 0;padding:0;display:flex;flex-direction:column;gap:3px;}
   .cc-plan li{font-size:12.5px;line-height:1.35;} .cc-plan em{font-style:normal;font-weight:800;color:#4be3b0;}
+  /* Пресс-конференция в «Центре» (16.10). */
+  .cc-press{border:1px solid rgba(255,221,0,.45);background:linear-gradient(160deg,rgba(255,221,0,.10),rgba(255,255,255,.02) 60%);}
+  .cc-press-h{display:flex;justify-content:space-between;align-items:center;gap:8px;}
+  .cc-press-h b{font-family:var(--font-display);font-size:16px;letter-spacing:.04em;text-transform:uppercase;color:#ffdd00;}
+  .cc-press-h span{font-size:11px;color:#8ea6d6;font-weight:700;}
+  .cc-press-q{margin:8px 0 10px;font-size:15px;font-weight:700;color:#fff;line-height:1.35;}
+  .cc-press-as{display:flex;flex-direction:column;gap:6px;}
+  .cc-press-a{display:flex;flex-direction:column;gap:2px;text-align:left;padding:9px 12px;border-radius:10px;cursor:pointer;
+    background:rgba(255,255,255,.05);border:1px solid rgba(140,175,255,.25);color:#e6ecf5;font:inherit;}
+  .cc-press-a:hover{border-color:#ffdd00;background:rgba(255,221,0,.08);}
+  .cc-press-a b{font-weight:600;font-size:13.5px;}
+  .cc-press-a small{font-size:11px;color:#8ea6d6;}
+  .cc-press-skip{margin-top:8px;background:none;border:0;color:#8ea6d6;font-size:12px;cursor:pointer;text-decoration:underline;padding:2px 0;}
   .ev-review{margin-top:12px;padding:10px 12px;border-radius:10px;background:rgba(255,255,255,.04);border:1px solid rgba(140,175,255,.2);}
   .ev-review h5{margin:0 0 6px;font-size:13px;letter-spacing:.04em;text-transform:uppercase;color:#9fe1ff;}
   .ev-review ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:4px;}
@@ -4839,6 +4852,11 @@
   .x-compose-box:focus{outline:none;border-color:#3ee9b8;}
   .x-compose-box::placeholder{color:#7183b0;}
   .x-compose-foot{display:flex;align-items:center;justify-content:flex-end;gap:10px;margin-top:8px;}
+  /* Что написать — готовые строки по ситуации карьеры (16.10). */
+  .x-ideas{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 0 46px;}
+  .x-idea{font:600 12px/1.2 system-ui,sans-serif;padding:6px 10px;border-radius:999px;cursor:pointer;
+    background:rgba(29,155,240,.10);border:1px solid rgba(29,155,240,.4);color:#8ecdf8;max-width:100%;text-align:left;}
+  .x-idea:hover{background:rgba(29,155,240,.2);color:#fff;}
   /* Кнопка в строке композера — своей ширины, не хабовской. Без этого хабовое
      #screen-career-hub .ch-sign{width:100%} раскатывало «Запостить» на всю
      плитку и сжимало текст «Ищу дуо» в столбик по слову. Скриншот.
@@ -20811,6 +20829,59 @@ Object.assign(I18N.en, {dyTitleW:'Daily Draft', dyTag:'Every day', dyTitle:n=>'D
 Object.assign(I18N.fr, {dyTitleW:'Draft du jour', dyTag:'Chaque jour', dyTitle:n=>'Draft du jour #'+n, dySub:'Une saison au hasard chaque jour : tes propres packs, mais seulement des joueurs de cette période. Un seul essai, le classement du jour se fait à la force de la squad.', dyRules:'squad · toutes les régions · 12 parties', dyPlayers:y=>'joueurs de '+y, dyOnce:'Un seul essai : après « Entrer dans le tournoi », pas de revanche.', dyPlay:'Jouer', dyBoard:'Classement du jour', dyShare:'Partager', dyCopied:'Copié', dyPts:'pts', dyNick:'Pseudo pour le classement', dySend:'Envoyer', dySent:n=>'Tu es dans le classement du jour : '+n, dyLeft:'Tournoi non terminé — l’essai est perdu', dyNext:t=>'Prochain draft dans '+t, dyH:'h', dyM:'min', dyRank:(r,t)=>'Ta place : '+r+' sur '+t, dyEmpty:'Personne n’a encore joué aujourd’hui. Sois le premier.', dyHonest:'Le résultat est envoyé par le navigateur du joueur ; le serveur ne le recalcule pas.'});
 Object.assign(I18N.it, {dyTitleW:'Draft del giorno', dyTag:'Ogni giorno', dyTitle:n=>'Draft del giorno #'+n, dySub:'Ogni giorno una stagione a caso: pack tuoi, ma solo giocatori di quel periodo. Un solo tentativo, la classifica del giorno va per forza della squad.', dyRules:'squad · tutte le regioni · 12 partite', dyPlayers:y=>'giocatori del '+y, dyOnce:'Un solo tentativo: dopo «Entra nel torneo» non si rigioca.', dyPlay:'Gioca', dyBoard:'Classifica del giorno', dyShare:'Condividi', dyCopied:'Copiato', dyPts:'pt', dyNick:'Nome per la classifica', dySend:'Invia', dySent:n=>'Sei nella classifica del giorno come '+n, dyLeft:'Torneo non finito — tentativo usato', dyNext:t=>'Nuovo draft tra '+t, dyH:'h', dyM:'min', dyRank:(r,t)=>'Il tuo posto: '+r+' su '+t, dyEmpty:'Oggi non ha ancora giocato nessuno. Sii il primo.', dyHonest:'Il risultato lo invia il browser del giocatore; il server non lo ricalcola.'});
 Object.assign(I18N.pt, {dyTitleW:'Draft do dia', dyTag:'Todo dia', dyTitle:n=>'Draft do dia #'+n, dySub:'Uma temporada aleatória por dia: packs só seus, mas apenas jogadores daquele período. Uma tentativa, o ranking do dia é pela força do squad.', dyRules:'squad · todas as regiões · 12 partidas', dyPlayers:y=>'jogadores de '+y, dyOnce:'Uma tentativa só: depois de “Entrar no torneio” não dá para jogar de novo.', dyPlay:'Jogar', dyBoard:'Ranking do dia', dyShare:'Compartilhar', dyCopied:'Copiado', dyPts:'pts', dyNick:'Nick para o ranking', dySend:'Enviar', dySent:n=>'Você está no ranking do dia como '+n, dyLeft:'Torneio não terminado — tentativa usada', dyNext:t=>'Próximo draft em '+t, dyH:'h', dyM:'min', dyRank:(r,t)=>'Sua posição: '+r+' de '+t, dyEmpty:'Ninguém jogou hoje ainda. Seja o primeiro.', dyHonest:'O resultado é enviado pelo navegador do jogador; o servidor não o recalcula.'});
+/* Пресс-конференции (16.10): строки ленты — тексты в PRESS_TXT на открытом языке, ключ один (английский словарь лежит
+   под каждым языком в L()). */
+Object.assign(I18N.en, {ccPostPress:(me,sit,ai,p,n,r,mate,g)=>ccPressPostText(me,sit,ai,p,n,r,mate,g),
+  ccPostPressRival:(r,me,v)=>ccPressT().rival[(v||0)%3](me),
+  ccPostPressKept:(me,g)=>ccPressT().kept(me, (ccPressT().goalName||{})[g]||g),
+  ccPostPressBroke:(me,g,p)=>ccPressT().broke(me, (ccPressT().goalName||{})[g]||g, p)});
+/* Личка после вечера (16.10, ccKinchDm / ccStaffAfterNight). v — номер варианта фразы, чтобы не повторялись. */
+Object.assign(I18N.en, {
+  ccDmKinchSum:(lbl,p,g,avg,el,pg,rk)=>'📊 '+esc(String(lbl))+': #'+p+'. '+g+' games, avg placement '+avg+', '+el+' elims ('+pg+' per game) — #'+rk+' in the lobby by elims.',
+  ccDmKinchCmp:rows=>'Inside the squad: '+(rows||[]).map(r=>(r[4] ? 'you' : '@'+esc(r[0]))+' — '+r[1]+' elims, '+ccNum(r[2])+' dmg ('+r[3]+'%)').join(' · '),
+  ccDmKinchVerdict:(who,me,sh,v)=>me ? ['You carried tonight: '+sh+'% of the squad damage was yours.','Top fragger of the squad — you, '+sh+'% of the damage.'][v%2]
+    : ['@'+esc(who)+' led the squad with '+sh+'% of the damage. Your fights are where the points are.','Top fragger: @'+esc(who)+' ('+sh+'%). Worth watching how he takes fights.'][v%2],
+  ccDmCoachNight:(ok,n,cause,v)=>(n ? ['We followed the plan '+ok+' of '+n+' times. ','Plan check: '+ok+'/'+n+'. ','You stuck to the plan '+ok+'/'+n+'. ','Plan: '+ok+' of '+n+'. '][v%4] : '')+(cause ? (L()['evTip_'+cause]||'') : ['Good work tonight.','Let’s keep this up.'][v%2]),
+  ccDmAnStorm:(s,v)=>['You died in the storm '+s+' times. Rotate one circle earlier — by the second zone it is already late.','Storm deaths: '+s+'. Your rotations start too late, move on the first close.','We lost '+s+' games to the storm. I would leave POI 20 seconds earlier.','Zone killed us '+s+' times tonight. Earlier rotations, fewer fights on the way.'][v%4],
+  ccDmAnDrop:(d,v)=>['Off spawn twice ('+d+'). Either the drop is contested or we fight too early.','We died on drop '+d+' times. Let’s look at a quieter spot for a week.','Drop fights cost us '+d+' games. Numbers say: avoid the contest.','Early deaths: '+d+'. Land, loot, then take the fight.'][v%4],
+  ccDmAnFights:(k,v)=>['Lost '+k+' fights tonight. Take fights with the height and full mats only.','You died in fights '+k+' times. Too many third-party situations — reset more.','Fight deaths: '+k+'. Fewer open-field fights, more boxes.','We lose fights after rotations — '+k+' times. Heal up before you push.'][v%4],
+  ccDmAnGood:(a,v)=>['Avg placement '+a+'. This is the level — now add elims in the mid game.','Solid night, avg '+a+'. Survival is there, damage can be higher.','Avg placement '+a+'. Repeat this and the points come by themselves.','Numbers look good: avg '+a+'. Keep the same rotations.'][v%4],
+  ccDmPsyBad:v=>['One bad night is one night. Write down one mistake and one good thing — then close the game.','Don’t scroll the feed tonight. Sleep, water, tomorrow with a clear head.','If you tilt — 10 minutes without a screen before the next game. Every time.','Compare yourself with you a month ago, not with the top 1.'][v%4],
+  ccDmPsyWin:v=>['Congrats. Tomorrow — same routine. Don’t change what works.','Enjoy it today. Tomorrow the goal is the next game, not the next trophy.','Big night. Remember how calm you were in the endgame — that is the skill.','Well done. Sleep well, the pressure will be higher next week.'][v%4],
+  ccDmPsyBurn:v=>['You are running on empty. Take a day off — the form comes back faster than from grinding.','I see the fatigue in the numbers. One rest day, no scrims, no tournaments.'][v%2],
+  ccDmPsyHot:v=>['You are in form. Don’t add hours now — protect the routine.','Good streak. The trap is overthinking it — play like it is a normal day.'][v%2],
+  ccDmSmmGrow:(n,big,v)=>(big ? ['+'+n+' followers tonight. Post the W while it is hot — screenshot plus one line.','+'+n+' new followers. Now is the moment: a clip from your best game.'] : ['+'+n+' followers since last time. A short post about tonight keeps them.','+'+n+' new followers. One post a day is enough, don’t spam.'])[v%2],
+  ccDmSmmBad:v=>['Today better post nothing in emotions. Tomorrow — a calm line about the next goal.','Skip the feed today. Bad nights do not need a tweet.'][v%2],
+  ccDmMktBrands:v=>['After nights like this brands ask about you — check the sponsors tab.','Two brands asked for your stats today. Results like this raise your price.'][v%2]});
+Object.assign(I18N.ru, {
+  ccDmKinchSum:(lbl,p,g,avg,el,pg,rk)=>'📊 '+esc(String(lbl))+': #'+p+'. Игр: '+g+', средний плейс '+avg+', киллов: '+el+' ('+pg+' за игру) — #'+rk+' в лобби по киллам.',
+  ccDmKinchCmp:rows=>'Внутри состава: '+(rows||[]).map(r=>(r[4] ? 'ты' : '@'+esc(r[0]))+' — киллы '+r[1]+', урон '+ccNum(r[2])+' ('+r[3]+'%)').join(' · '),
+  ccDmKinchVerdict:(who,me,sh,v)=>me ? ['Сегодня тащил ты: '+sh+'% урона состава — твои.','Топ-фраггер состава — ты, '+sh+'% урона.'][v%2]
+    : ['@'+esc(who)+' тащил: '+sh+'% урона. Очки у тебя — в файтах.','Топ-фраггер: @'+esc(who)+' ('+sh+'%). Посмотри, как он заходит в файты.'][v%2],
+  ccDmCoachNight:(ok,n,cause,v)=>(n ? ['По плану сыграли '+ok+' из '+n+'. ','План: '+ok+'/'+n+'. ','Ты держался плана '+ok+'/'+n+'. ','По плану — '+ok+' из '+n+'. '][v%4] : '')+(cause ? (L()['evTip_'+cause]||'') : ['Хорошая работа сегодня.','Так и держим.'][v%2]),
+  ccDmAnStorm:(s,v)=>['Смертей в шторме: '+s+'. Ротируй на круг раньше — на второй зоне уже поздно.','Шторм: '+s+' смерти за вечер. Ротации начинаются поздно — выходи на первом сужении.','Игр, отданных шторму: '+s+'. Я бы уходил с точки на 20 секунд раньше.','Зона забрала у нас игр: '+s+'. Раньше ротации, меньше файтов по пути.'][v%4],
+  ccDmAnDrop:(d,v)=>['Смертей на высадке: '+d+'. Либо точку контестят, либо мы рано лезем в файт.','Падений на дропе: '+d+'. Давай неделю на более тихой точке.','Игр, проигранных на высадке: '+d+'. Цифры говорят: без контеста.','Ранних смертей: '+d+'. Сначала лут, потом файт.'][v%4],
+  ccDmAnFights:(k,v)=>['Проиграно файтов: '+k+'. Заходи с высотой и полными метсами.','Смертей в файтах: '+k+'. Слишком много третьих — чаще ресетай.','Файтов в минус: '+k+'. Меньше драк в открытую, больше боксов.','Проигранных файтов после ротаций: '+k+'. Сначала хил, потом пуш.'][v%4],
+  ccDmAnGood:(a,v)=>['Средний плейс '+a+'. Это уровень — теперь добавь киллы в середине игры.','Ровный вечер, средний '+a+'. Выживание есть, урона можно больше.','Средний плейс '+a+'. Повтори — и очки придут сами.','Цифры хорошие: средний '+a+'. Ротации те же.'][v%4],
+  ccDmPsyBad:v=>['Один плохой вечер — это один вечер. Запиши одну ошибку и одну хорошую вещь — и закрой игру.','Не листай ленту сегодня. Сон, вода, завтра с чистой головой.','Если тильт — 10 минут без экрана перед следующей игрой. Каждый раз.','Сравнивай себя с собой месяц назад, а не с топ-1.'][v%4],
+  ccDmPsyWin:v=>['Поздравляю. Завтра — тот же режим. Не меняй то, что работает.','Порадуйся сегодня. Завтра цель — следующая игра, не следующий кубок.','Сильный вечер. Запомни, как спокойно ты играл концовку — это и есть навык.','Молодец. Выспись — на следующей неделе давление будет выше.'][v%4],
+  ccDmPsyBurn:v=>['Ты на износе. Возьми день отдыха — форма вернётся быстрее, чем от гринда.','Вижу усталость по цифрам. Один день отдыха: без скримов и турниров.'][v%2],
+  ccDmPsyHot:v=>['Ты в форме. Не добавляй часы сейчас — береги режим.','Хорошая серия. Ловушка — начать загоняться. Играй как в обычный день.'][v%2],
+  ccDmSmmGrow:(n,big,v)=>(big ? ['Подписчиков за вечер: +'+n+'. Запости W, пока горячо — скрин и одна строка.','Новых подписчиков: +'+n+'. Сейчас момент: клип с лучшей игры.'] : ['Подписчиков с прошлого раза: +'+n+'. Короткий пост о вечере их удержит.','Новых подписчиков: +'+n+'. Одного поста в день хватит, не спамь.'])[v%2],
+  ccDmSmmBad:v=>['Сегодня лучше ничего не постить на эмоциях. Завтра — спокойная строка про следующую цель.','Пропусти ленту сегодня. Плохому вечеру твит не нужен.'][v%2],
+  ccDmMktBrands:v=>['После таких вечеров бренды спрашивают про тебя — загляни в спонсоров.','Два бренда сегодня просили твою стату. Такие результаты поднимают твою цену.'][v%2]});
+/* Ответы под постами своего вида (16.10, см. CC_CO_BY_KIND): статистика, новый сезон, подкол, цитата с пресс-конференции.
+   Остальные языки берут английский — на X сцена и так отвечает по-английски. */
+Object.assign(I18N.en, {ccPostLfdWantAny:(h,d)=>['LFD. Div '+d+' and up. DMs open','looking for a duo, div '+d+'+. dms open','LFD 🙏 div '+d+' or higher, hmu'][ccHashStr(String(h))%3],
+  ccCoStat:['insane numbers','who was #1 in elims?','kinch the goat 🐐','those elims 📈','bookmarking this','that avg placement 👀','numbers dont lie','pls do this every cup'],
+  ccCoMeta:['pool looks good','pump back pls 🙏','rip my drop spot','we will see in scrims','meta is so mid 💀','finally a new map','who else hates this pool','surge is gonna be crazy'],
+  ccCoTaunt:['💀💀','he is cooking you','ratio','get him in scrims','🤣🤣','free elims bro…','you are not safe','reply @ him'],
+  ccCoPress:['W mentality','bold','he means it','we will see 👀','humble 🙏','talk is cheap','clip this','respect the honesty']});
+Object.assign(I18N.ru, {ccPostLfdWantAny:(h,d)=>'LFD. Дивизион '+d+' и выше. Пишите в лс',
+  ccCoStat:['цифры безумные','кто первый по киллам?','кинч лучший 🐐','эти киллы 📈','сохранил','средний плейс 👀','цифры не врут','делай так каждый кап'],
+  ccCoMeta:['пул норм','верните помпу 🙏','прощай моя точка','посмотрим на скримах','мета мид 💀','наконец новая карта','кто ещё ненавидит этот пул','сёрдж будет жёсткий'],
+  ccCoTaunt:['💀💀','он тебя готовит','ратио','поймай его на скримах','🤣🤣','бесплатные киллы…','ты не в безопасности','ответь ему'],
+  ccCoPress:['менталка W','смело','он серьёзно','посмотрим 👀','скромно 🙏','слова ничего не стоят','клипни это','уважаю честность']});
 /* Особые карточки 97/98/99 (16.10). */
 Object.assign(I18N.ru, {formWhyLanwin:'чемпион ЛАНа', formWhyPoty:'игрок года'});
 Object.assign(I18N.en, {formWhyLanwin:'LAN champion', formWhyPoty:'player of the year'});
@@ -109160,6 +109231,339 @@ function ccEveningPosts(rows){
   if(!vr && !done.e && rows.length>=4 && kills/rows.length>=3){ careerNews('good', 'ccPostEvKills', [kills, rows.length]); posted=done.e=true; }
   if(posted){ try{ careerSave(); }catch(e){} }
 }
+/* ПРЕСС-КОНФЕРЕНЦИИ (16.10, его «делай» на «пресс-конференции как в FIFA»). После заметного вечера — победа, подиум,
+   провал фаворита, серия из трёх сильных или трёх слабых вечеров, исход обещания — в «Центре» ждёт журналист: два-три
+   вопроса, по три ответа разного тона. Ответ двигает форму, подписчиков, настрой напарника и репутацию (мелко — это
+   приправа, не двигатель карьеры), уходит цитатой в ленту, а провокация зовёт ответ названного игрока сцены.
+   ОБЕЩАНИЕ («цель на следующий турнир: топ-10 / только победа») проверяется следующим вечером: сдержал — большой плюс,
+   нет — следующая пресс-конференция начнётся с этого. Карточка, а не окно посреди вечера: перемотка и симуляция недели
+   её не ждут, неотвеченная гаснет через день без последствий. В игре вдвоём (ccMpOn) не бывает — форма читается обоими
+   браузерами. Тексты — PRESS_TXT, 7 языков. */
+const CC_PRESS_GAP=3;      // дней между пресс-конференциями (победа — без паузы)
+const CC_PRESS_LIFE=1;     // сколько дней неотвеченная висит в «Центре»
+// [форма, подписчики (% охвата, не меньше 20), напарник, репутация] на каждый из трёх ответов.
+const CC_PRESS_EFF={
+  win:   [[0.25,1,2,1],[0.5,3,0,0],[0.25,4,0,-1]],
+  podium:[[0.25,1,2,1],[0.5,2,0,0],[0,3,0,-1]],
+  flop:  [[0.25,0,2,1],[0.25,1,0,-1],[0.25,2,-10,-1]],
+  hot:   [[0.25,1,2,1],[0.5,3,0,0],[0.25,4,0,-1]],
+  cold:  [[0.5,0,2,1],[0.25,1,0,-1],[0,2,-10,-1]],
+  kept:  [[0.25,1,0,1],[0.25,3,0,0],[0.5,2,0,0]],
+  broke: [[0.25,0,0,1],[0,1,0,-1],[0,1,0,-2]],
+  goal:  [[0,0,0,0],[0,1,0,0],[0,2,0,0]]};
+// Исход обещания: [форма, подписчики, репутация].
+const CC_PRESS_PROMISE={kept:{top10:[0.5,5,2], win:[1,10,3]}, broke:{top10:[-0.25,-2,-1], win:[-0.5,-3,-2]}};
+const PRESS_TXT={
+  ru:{title:'Пресс-конференция', skip:'Пропустить', of:(p,n)=>'#'+p+' из '+n, tags:{form:'форма', fans:'подписчики', mate:'напарник', rep:'репутация', promise:'обещание — проверят на следующем турнире'},
+    goalName:{top10:'топ-10', win:'победу'},
+    q:{win:'Победа! Что сегодня решило турнир?', podium:c=>'#'+c.p+' из '+c.n+'. Довольны или чего-то не хватило?', flop:c=>'Вас ставили в фавориты, а итог — #'+c.p+'. Что случилось?',
+       hot:'Третий сильный вечер подряд. В чём секрет формы?', cold:'Три слабых вечера подряд. Это кризис?', kept:c=>'Вы обещали '+c.g+' — и сделали. Что дальше?',
+       broke:c=>'Вы обещали '+c.g+', а заняли #'+c.p+'. Что скажете?', goal:'И последнее: цель на следующий турнир?'},
+    a:{win:['Командная работа и спокойный эндгейм. Завтра снова с нуля.','Мы просто лучшие в этом лобби. Привыкайте.',c=>'Спросите у '+c.r+' — он сегодня видел нас вблизи.'],
+       podium:['Хороший вечер, пару ошибок в концовке разберём.','Ещё чуть-чуть — и это была бы победа. Следующая наша.',c=>c.r+' сегодня повезло с зоной, не больше.'],
+       flop:['Ошиблись в эндгейме, разберём записи.','Лобби было случайным, мы лучше этого результата.',c=>c.mate ? 'Пару раз мы с '+c.mate+' разошлись по плану.' : 'Зона весь вечер была против меня.'],
+       hot:['Режим и тренировки, никакой магии.','Я сейчас в лучшей форме в регионе.',c=>'Пусть догоняют. '+c.r+', ты следующий.'],
+       cold:['Бывает. Работаем, результат вернётся.','Кризис? Поговорим после следующего турнира.',c=>c.mate ? 'Нам с '+c.mate+' надо поговорить внутри команды.' : 'Слишком много случайностей в лобби.'],
+       kept:['Спасибо, но это только начало.','Я же говорил.','Теперь цель выше.'],
+       broke:['Не справился. Отвечаю за слова — исправим.','Сезон длинный, ещё сделаем.','Обещания — это для прессы.'],
+       goal:['Без обещаний — играем свою игру.','Топ-10.','Только победа.']},
+    post:(me,q)=>'🎙 @'+me+' на пресс-конференции: «'+q+'»',
+    rival:[me=>'@'+me+' смело. Увидимся в следующем капе 🙂',me=>'громкие слова от @'+me+'. посмотрим в лобби',me=>'@'+me+' запомню 👀'],
+    kept:(me,g)=>'@'+me+' обещал '+g+' — и сдержал слово 👏', broke:(me,g,p)=>'@'+me+' обещал '+g+', а в итоге #'+p+'. Неловко.'},
+  en:{title:'Press conference', skip:'Skip', of:(p,n)=>'#'+p+' of '+n, tags:{form:'form', fans:'followers', mate:'teammate', rep:'reputation', promise:'a promise — checked at the next tournament'},
+    goalName:{top10:'a top 10', win:'a win'},
+    q:{win:'A win! What decided the tournament today?', podium:c=>'#'+c.p+' of '+c.n+'. Happy, or was something missing?', flop:c=>'You were the favourites and finished #'+c.p+'. What happened?',
+       hot:'Third strong night in a row. What is the secret?', cold:'Three weak nights in a row. Is this a crisis?', kept:c=>'You promised '+c.g+' — and delivered. What next?',
+       broke:c=>'You promised '+c.g+' and finished #'+c.p+'. Your answer?', goal:'One last thing: the goal for the next tournament?'},
+    a:{win:['Teamwork and a calm endgame. Tomorrow we start from zero.','We are simply the best in this lobby. Get used to it.',c=>'Ask '+c.r+' — he saw us up close today.'],
+       podium:['A good night, we will review a couple of endgame mistakes.','So close to a win. The next one is ours.',c=>c.r+' just got lucky with the zone today.'],
+       flop:['We messed up the endgame, we will review the VODs.','The lobby was random, we are better than this result.',c=>c.mate ? c.mate+' and I were not on the same plan a few times.' : 'The zone was against me all night.'],
+       hot:['Routine and practice, no magic.','I am the best player in the region right now.',c=>'Let them catch up. '+c.r+', you are next.'],
+       cold:['It happens. We keep working, the results will come back.','A crisis? Talk to me after the next tournament.',c=>c.mate ? c.mate+' and I need to talk inside the team.' : 'Too much randomness in the lobby.'],
+       kept:['Thanks, but this is only the start.','I told you so.','Now the goal is higher.'],
+       broke:['I did not deliver. I own my words — we will fix it.','The season is long, we will get there.','Promises are for the press.'],
+       goal:['No promises — we play our game.','Top 10.','Only the win.']},
+    post:(me,q)=>'🎙 @'+me+' at the press conference: “'+q+'”',
+    rival:[me=>'@'+me+' bold. see you next cup 🙂',me=>'big words from @'+me+'. we will see in the lobby',me=>'@'+me+' noted 👀'],
+    kept:(me,g)=>'@'+me+' promised '+g+' and delivered 👏', broke:(me,g,p)=>'@'+me+' promised '+g+' and finished #'+p+'. Awkward.'},
+  fr:{title:'Conférence de presse', skip:'Passer', of:(p,n)=>'#'+p+' sur '+n, tags:{form:'forme', fans:'abonnés', mate:'coéquipier', rep:'réputation', promise:'une promesse — vérifiée au prochain tournoi'},
+    goalName:{top10:'un top 10', win:'une victoire'},
+    q:{win:'Victoire ! Qu’est-ce qui a fait la différence ce soir ?', podium:c=>'#'+c.p+' sur '+c.n+'. Satisfait, ou il manquait quelque chose ?', flop:c=>'Vous étiez favoris et vous finissez #'+c.p+'. Que s’est-il passé ?',
+       hot:'Troisième grosse soirée d’affilée. Le secret de cette forme ?', cold:'Trois soirées ratées d’affilée. C’est la crise ?', kept:c=>'Vous aviez promis '+c.g+' — c’est fait. Et maintenant ?',
+       broke:c=>'Vous aviez promis '+c.g+' et vous finissez #'+c.p+'. Votre réponse ?', goal:'Dernière question : l’objectif pour le prochain tournoi ?'},
+    a:{win:['Travail d’équipe et un endgame calme. Demain on repart de zéro.','On est simplement les meilleurs de ce lobby. Habituez-vous.',c=>'Demandez à '+c.r+' — il nous a vus de près ce soir.'],
+       podium:['Bonne soirée, on revoit deux-trois erreurs de fin de partie.','Si proche de la victoire. La prochaine est pour nous.',c=>c.r+' a juste eu de la chance avec la zone.'],
+       flop:['On a raté l’endgame, on va revoir les VODs.','Le lobby était aléatoire, on vaut mieux que ça.',c=>c.mate ? 'Avec '+c.mate+', on n’avait pas le même plan plusieurs fois.' : 'La zone était contre moi toute la soirée.'],
+       hot:['Routine et entraînement, pas de magie.','Je suis le meilleur joueur de la région en ce moment.',c=>'Qu’ils nous rattrapent. '+c.r+', tu es le prochain.'],
+       cold:['Ça arrive. On travaille, les résultats reviendront.','La crise ? On en reparle après le prochain tournoi.',c=>c.mate ? 'On doit parler en interne avec '+c.mate+'.' : 'Trop de hasard dans le lobby.'],
+       kept:['Merci, mais ce n’est que le début.','Je l’avais dit.','Maintenant l’objectif est plus haut.'],
+       broke:['Je n’ai pas tenu parole. J’assume — on va corriger.','La saison est longue, on y arrivera.','Les promesses, c’est pour la presse.'],
+       goal:['Pas de promesses — on joue notre jeu.','Top 10.','Seulement la victoire.']},
+    post:(me,q)=>'🎙 @'+me+' en conférence de presse : « '+q+' »',
+    rival:[me=>'@'+me+' audacieux. on se voit à la prochaine cup 🙂',me=>'grands mots de @'+me+'. on verra dans le lobby',me=>'@'+me+' noté 👀'],
+    kept:(me,g)=>'@'+me+' avait promis '+g+' et a tenu parole 👏', broke:(me,g,p)=>'@'+me+' avait promis '+g+' et finit #'+p+'. Gênant.'},
+  it:{title:'Conferenza stampa', skip:'Salta', of:(p,n)=>'#'+p+' su '+n, tags:{form:'forma', fans:'follower', mate:'compagno', rep:'reputazione', promise:'una promessa — verificata al prossimo torneo'},
+    goalName:{top10:'una top 10', win:'una vittoria'},
+    q:{win:'Vittoria! Cosa ha deciso il torneo stasera?', podium:c=>'#'+c.p+' su '+c.n+'. Soddisfatto o mancava qualcosa?', flop:c=>'Eravate i favoriti e chiudete #'+c.p+'. Cos’è successo?',
+       hot:'Terza grande serata di fila. Il segreto della forma?', cold:'Tre serate storte di fila. È crisi?', kept:c=>'Avevi promesso '+c.g+' — e ce l’hai fatta. E adesso?',
+       broke:c=>'Avevi promesso '+c.g+' e chiudi #'+c.p+'. Cosa rispondi?', goal:'Ultima cosa: l’obiettivo per il prossimo torneo?'},
+    a:{win:['Lavoro di squadra e un endgame tranquillo. Domani si riparte da zero.','Siamo semplicemente i migliori di questa lobby. Abituatevi.',c=>'Chiedete a '+c.r+' — stasera ci ha visti da vicino.'],
+       podium:['Bella serata, rivedremo un paio di errori nel finale.','Così vicini alla vittoria. La prossima è nostra.',c=>c.r+' è stato solo fortunato con la zona.'],
+       flop:['Abbiamo sbagliato l’endgame, rivedremo le VOD.','La lobby era casuale, valiamo più di questo.',c=>c.mate ? 'Con '+c.mate+' non eravamo sullo stesso piano un paio di volte.' : 'La zona è stata contro di me tutta la sera.'],
+       hot:['Routine e allenamento, nessuna magia.','Sono il miglior giocatore della regione adesso.',c=>'Che ci inseguano. '+c.r+', sei il prossimo.'],
+       cold:['Capita. Lavoriamo, i risultati torneranno.','Crisi? Ne riparliamo dopo il prossimo torneo.',c=>c.mate ? 'Io e '+c.mate+' dobbiamo parlarne in squadra.' : 'Troppa casualità nella lobby.'],
+       kept:['Grazie, ma è solo l’inizio.','Ve l’avevo detto.','Ora l’obiettivo è più alto.'],
+       broke:['Non ce l’ho fatta. Rispondo delle mie parole — rimedieremo.','La stagione è lunga, ci arriveremo.','Le promesse sono per la stampa.'],
+       goal:['Niente promesse — giochiamo il nostro gioco.','Top 10.','Solo la vittoria.']},
+    post:(me,q)=>'🎙 @'+me+' in conferenza stampa: «'+q+'»',
+    rival:[me=>'@'+me+' coraggioso. ci vediamo alla prossima cup 🙂',me=>'parole grosse da @'+me+'. vedremo in lobby',me=>'@'+me+' segnato 👀'],
+    kept:(me,g)=>'@'+me+' aveva promesso '+g+' e ha mantenuto 👏', broke:(me,g,p)=>'@'+me+' aveva promesso '+g+' e chiude #'+p+'. Imbarazzante.'},
+  pt:{title:'Coletiva de imprensa', skip:'Pular', of:(p,n)=>'#'+p+' de '+n, tags:{form:'forma', fans:'seguidores', mate:'parceiro', rep:'reputação', promise:'uma promessa — conferida no próximo torneio'},
+    goalName:{top10:'um top 10', win:'uma vitória'},
+    q:{win:'Vitória! O que decidiu o torneio hoje?', podium:c=>'#'+c.p+' de '+c.n+'. Satisfeito ou faltou algo?', flop:c=>'Vocês eram favoritos e terminaram em #'+c.p+'. O que aconteceu?',
+       hot:'Terceira noite forte seguida. Qual o segredo da forma?', cold:'Três noites fracas seguidas. É crise?', kept:c=>'Você prometeu '+c.g+' — e cumpriu. E agora?',
+       broke:c=>'Você prometeu '+c.g+' e terminou em #'+c.p+'. O que diz?', goal:'Última: qual a meta para o próximo torneio?'},
+    a:{win:['Trabalho em equipe e um endgame calmo. Amanhã começa do zero.','Somos simplesmente os melhores deste lobby. Acostumem-se.',c=>'Pergunta pro '+c.r+' — ele viu a gente de perto hoje.'],
+       podium:['Noite boa, vamos rever uns erros no final.','Quase a vitória. A próxima é nossa.',c=>c.r+' só teve sorte com a zona hoje.'],
+       flop:['Erramos o endgame, vamos rever as VODs.','O lobby foi aleatório, somos melhores que isso.',c=>c.mate ? 'Eu e o '+c.mate+' não estivemos no mesmo plano algumas vezes.' : 'A zona esteve contra mim a noite toda.'],
+       hot:['Rotina e treino, nada de mágica.','Sou o melhor jogador da região agora.',c=>'Que corram atrás. '+c.r+', você é o próximo.'],
+       cold:['Acontece. Seguimos trabalhando, os resultados voltam.','Crise? Conversamos depois do próximo torneio.',c=>c.mate ? 'Eu e o '+c.mate+' precisamos conversar internamente.' : 'Aleatoriedade demais no lobby.'],
+       kept:['Obrigado, mas é só o começo.','Eu avisei.','Agora a meta é mais alta.'],
+       broke:['Não cumpri. Assumo minhas palavras — vamos corrigir.','A temporada é longa, a gente chega lá.','Promessa é coisa de imprensa.'],
+       goal:['Sem promessas — jogamos o nosso jogo.','Top 10.','Só a vitória.']},
+    post:(me,q)=>'🎙 @'+me+' na coletiva: “'+q+'”',
+    rival:[me=>'@'+me+' corajoso. nos vemos na próxima cup 🙂',me=>'palavras grandes do @'+me+'. veremos no lobby',me=>'@'+me+' anotado 👀'],
+    kept:(me,g)=>'@'+me+' prometeu '+g+' e cumpriu 👏', broke:(me,g,p)=>'@'+me+' prometeu '+g+' e terminou em #'+p+'. Constrangedor.'},
+  de:{title:'Pressekonferenz', skip:'Überspringen', of:(p,n)=>'#'+p+' von '+n, tags:{form:'Form', fans:'Follower', mate:'Teamkollege', rep:'Ruf', promise:'ein Versprechen — wird beim nächsten Turnier geprüft'},
+    goalName:{top10:'eine Top 10', win:'einen Sieg'},
+    q:{win:'Sieg! Was hat heute das Turnier entschieden?', podium:c=>'#'+c.p+' von '+c.n+'. Zufrieden oder fehlte etwas?', flop:c=>'Ihr wart Favoriten und landet auf #'+c.p+'. Was ist passiert?',
+       hot:'Dritter starker Abend in Folge. Was ist das Geheimnis?', cold:'Drei schwache Abende in Folge. Ist das eine Krise?', kept:c=>'Du hast '+c.g+' versprochen — und geliefert. Was jetzt?',
+       broke:c=>'Du hast '+c.g+' versprochen und bist #'+c.p+' geworden. Deine Antwort?', goal:'Zum Schluss: das Ziel fürs nächste Turnier?'},
+    a:{win:['Teamwork und ein ruhiges Endgame. Morgen fangen wir bei null an.','Wir sind einfach die Besten in dieser Lobby. Gewöhnt euch dran.',c=>'Fragt '+c.r+' — der hat uns heute aus der Nähe gesehen.'],
+       podium:['Guter Abend, ein paar Fehler im Endgame schauen wir uns an.','So knapp am Sieg. Der nächste gehört uns.',c=>c.r+' hatte heute einfach Glück mit der Zone.'],
+       flop:['Wir haben das Endgame verbockt, wir schauen die VODs.','Die Lobby war Zufall, wir sind besser als das.',c=>c.mate ? c.mate+' und ich hatten ein paarmal nicht denselben Plan.' : 'Die Zone war den ganzen Abend gegen mich.'],
+       hot:['Routine und Training, keine Magie.','Ich bin gerade der beste Spieler der Region.',c=>'Sollen sie aufholen. '+c.r+', du bist der Nächste.'],
+       cold:['Kommt vor. Wir arbeiten weiter, die Ergebnisse kommen zurück.','Krise? Reden wir nach dem nächsten Turnier.',c=>c.mate ? c.mate+' und ich müssen intern reden.' : 'Zu viel Zufall in der Lobby.'],
+       kept:['Danke, aber das ist erst der Anfang.','Hab ich doch gesagt.','Jetzt ist das Ziel höher.'],
+       broke:['Ich habe nicht geliefert. Ich stehe zu meinem Wort — wir korrigieren das.','Die Saison ist lang, wir schaffen das.','Versprechen sind für die Presse.'],
+       goal:['Keine Versprechen — wir spielen unser Spiel.','Top 10.','Nur der Sieg.']},
+    post:(me,q)=>'🎙 @'+me+' auf der Pressekonferenz: „'+q+'“',
+    rival:[me=>'@'+me+' mutig. wir sehen uns im nächsten cup 🙂',me=>'große worte von @'+me+'. wir sehen uns in der lobby',me=>'@'+me+' notiert 👀'],
+    kept:(me,g)=>'@'+me+' hat '+g+' versprochen und geliefert 👏', broke:(me,g,p)=>'@'+me+' hat '+g+' versprochen und ist #'+p+' geworden. Peinlich.'},
+  es:{title:'Rueda de prensa', skip:'Saltar', of:(p,n)=>'#'+p+' de '+n, tags:{form:'forma', fans:'seguidores', mate:'compañero', rep:'reputación', promise:'una promesa — se comprueba en el próximo torneo'},
+    goalName:{top10:'un top 10', win:'una victoria'},
+    q:{win:'¡Victoria! ¿Qué decidió hoy el torneo?', podium:c=>'#'+c.p+' de '+c.n+'. ¿Contento o faltó algo?', flop:c=>'Erais favoritos y acabáis #'+c.p+'. ¿Qué pasó?',
+       hot:'Tercera gran noche seguida. ¿El secreto de la forma?', cold:'Tres noches flojas seguidas. ¿Es una crisis?', kept:c=>'Prometiste '+c.g+' — y cumpliste. ¿Y ahora?',
+       broke:c=>'Prometiste '+c.g+' y acabaste #'+c.p+'. ¿Qué dices?', goal:'Por último: ¿el objetivo para el próximo torneo?'},
+    a:{win:['Trabajo en equipo y un endgame tranquilo. Mañana empezamos de cero.','Somos simplemente los mejores de este lobby. Acostumbraos.',c=>'Preguntadle a '+c.r+' — hoy nos vio de cerca.'],
+       podium:['Buena noche, revisaremos un par de errores del final.','A nada de la victoria. La próxima es nuestra.',c=>c.r+' solo tuvo suerte con la zona hoy.'],
+       flop:['Fallamos el endgame, revisaremos los VODs.','El lobby fue aleatorio, somos mejores que esto.',c=>c.mate ? c.mate+' y yo no tuvimos el mismo plan varias veces.' : 'La zona estuvo contra mí toda la noche.'],
+       hot:['Rutina y entrenamiento, nada de magia.','Ahora mismo soy el mejor jugador de la región.',c=>'Que nos alcancen. '+c.r+', eres el siguiente.'],
+       cold:['Pasa. Seguimos trabajando, los resultados volverán.','¿Crisis? Hablamos después del próximo torneo.',c=>c.mate ? c.mate+' y yo tenemos que hablar dentro del equipo.' : 'Demasiado azar en el lobby.'],
+       kept:['Gracias, pero esto es solo el principio.','Os lo dije.','Ahora el objetivo es más alto.'],
+       broke:['No cumplí. Respondo de mis palabras — lo arreglaremos.','La temporada es larga, llegaremos.','Las promesas son para la prensa.'],
+       goal:['Sin promesas — jugamos nuestro juego.','Top 10.','Solo la victoria.']},
+    post:(me,q)=>'🎙 @'+me+' en rueda de prensa: «'+q+'»',
+    rival:[me=>'@'+me+' valiente. nos vemos en la próxima cup 🙂',me=>'palabras grandes de @'+me+'. lo veremos en el lobby',me=>'@'+me+' apuntado 👀'],
+    kept:(me,g)=>'@'+me+' prometió '+g+' y cumplió 👏', broke:(me,g,p)=>'@'+me+' prometió '+g+' y acabó #'+p+'. Incómodo.'}};
+function ccPressT(){ return PRESS_TXT[typeof LANG!=='undefined' ? LANG : 'en'] || PRESS_TXT.en; }
+function ccPressMe(){ const pl=CAREER && CAREER.player; return (pl && (pl.nick||pl.handle)) || ''; }
+// Текст ответа — из ключей, на языке, который сейчас открыт (запись в сейве — ситуация и номер ответа, не строка).
+function ccPressAns(sit, ai, c){ const a=(ccPressT().a[sit]||PRESS_TXT.en.a[sit]||[])[ai]; return typeof a==='function' ? a(c||{}) : (a||''); }
+function ccPressQ(sit, c){ const q=ccPressT().q[sit]; return typeof q==='function' ? q(c||{}) : (q||''); }
+// Соперник для провокации: сильный человек своей сцены, не ты и не напарник; один на день.
+function ccPressRival(){
+  let pool=[]; try{ pool=(careerRosterNowEU()||[]).slice(); }catch(e){}
+  const mate=careerMateRec(), mk=mate && mate.card ? hKey(mate.card) : '';
+  pool=pool.filter(p=>p && p.handle && hKey(p)!==mk).sort((a,b)=>((b._ovr||b.rating||0)-(a._ovr||a.rating||0))).slice(0, 15);
+  if(!pool.length) return '';
+  return pool[careerRng(ccHashStr('press-rival|'+careerToday()))()*pool.length|0].handle;
+}
+/* Конец вечера (careerApplyGrowth): сначала исход обещания, потом — нужна ли пресс-конференция. beat — доля поля,
+   которую ты обошёл; expected — доля, которую ты сильнее (то же, что считает рост). */
+function ccPressAfterNight(place, total, expected){
+  if(!CAREER || !CAREER.career || !(total>1)) return;
+  if(typeof ccMpOn==='function' && ccMpOn()) return;
+  const cr=CAREER.career, today=careerToday(), beat=1-(place-1)/(total-1);
+  cr.pressLog=(cr.pressLog||[]).concat([Math.round(beat*100)/100]).slice(-3);
+  let res=null;
+  const pr=cr.pressPromise;
+  if(pr && pr.day<today && total>=10){
+    const ok=pr.goal==='win' ? place===1 : place<=10;
+    const e=CC_PRESS_PROMISE[ok?'kept':'broke'][pr.goal];
+    cr.form=clamp((cr.form||0)+e[0], -CC_FORM_MAX, CC_FORM_MAX);
+    careerReachAdd(Math.round(Math.max(20, careerReach()*0.01)*e[1]), true);
+    careerRepAdd(e[2]);
+    careerNews(ok ? 'good' : 'bad', ok ? 'ccPostPressKept' : 'ccPostPressBroke', [ccPressMe(), pr.goal, place]);
+    res={ok, goal:pr.goal, p:place};
+    delete cr.pressPromise;
+  }
+  let sit=null;
+  if(place===1) sit='win';
+  else if(place<=3 && total>=20) sit='podium';
+  else if(expected>=0.7 && beat<0.4) sit='flop';
+  else if(cr.pressLog.length===3 && cr.pressLog.every(b=>b>=0.8)) sit='hot';
+  else if(cr.pressLog.length===3 && cr.pressLog.every(b=>b<=0.35)) sit='cold';
+  if(!sit && !res) return;
+  if(!res && sit!=='win' && cr.pressLast && ccDaysBetween(cr.pressLast, today)<CC_PRESS_GAP) return;
+  const qs=[];
+  if(res) qs.push(res.ok ? 'kept' : 'broke');
+  if(sit) qs.push(sit);
+  if(!cr.pressPromise) qs.push('goal');
+  const mate=careerMateRec();
+  cr.press={day:today, qs, i:0, ctx:{p:place, n:total, r:ccPressRival(), mate:mate && mate.card ? mate.card.handle : '', g:res ? res.goal : ''}};
+  cr.pressLast=today;
+  if(sit==='hot' || sit==='cold') cr.pressLog=[];
+}
+function ccPressLive(){
+  const cr=CAREER && CAREER.career, pr=cr && cr.press;
+  if(!pr || !pr.qs || pr.i>=pr.qs.length) return null;
+  if(ccDaysBetween(pr.day, careerToday())>CC_PRESS_LIFE){ cr.press=null; return null; }
+  return pr;
+}
+// Что ответ сдвинет — словами, без чисел: [форма, подписчики, напарник, репутация].
+function ccPressTags(e){
+  const T=ccPressT().tags, out=[];
+  if(e[0]) out.push((e[0]>0?'+':'−')+' '+T.form);
+  if(e[1]) out.push((e[1]>0?'+':'−')+' '+T.fans);
+  if(e[2]) out.push((e[2]>0?'+':'−')+' '+T.mate);
+  if(e[3]) out.push((e[3]>0?'+':'−')+' '+T.rep);
+  return out.join(' · ');
+}
+function ccPressCtx(pr){
+  const c=Object.assign({}, pr.ctx);
+  if(c.g) c.g=(ccPressT().goalName||{})[c.g]||c.g;
+  return c;
+}
+function ccPressHTML(){
+  const pr=ccPressLive(); if(!pr) return '';
+  const T=ccPressT(), sit=pr.qs[pr.i], c=ccPressCtx(pr), eff=CC_PRESS_EFF[sit]||[];
+  const mateless=!pr.ctx.mate;
+  const btns=[0,1,2].map(ai=>{ const e=(eff[ai]||[0,0,0,0]).slice(); if(mateless) e[2]=0;
+    return '<button class="cc-press-a" type="button" onclick="ccPressAnswer('+ai+')"><b>«'+esc(ccPressAns(sit, ai, c))+'»</b>'+
+      ((sit==='goal' && ai>0) ? '<small>🤝 '+esc(T.tags.promise)+'</small>' : (ccPressTags(e) ? '<small>'+esc(ccPressTags(e))+'</small>' : ''))+'</button>'; }).join('');
+  return '<div class="ch-tile cc-press"><div class="cc-press-h"><b>🎙 '+esc(T.title)+'</b><span>'+(pr.i+1)+' / '+pr.qs.length+'</span></div>'+
+    '<p class="cc-press-q">'+esc(ccPressQ(sit, c))+'</p><div class="cc-press-as">'+btns+'</div>'+
+    '<button class="cc-press-skip" type="button" onclick="ccPressSkip()">'+esc(T.skip)+'</button></div>';
+}
+function ccPressAnswer(ai){
+  const pr=ccPressLive(); if(!pr) return;
+  const cr=CAREER.career, sit=pr.qs[pr.i], e=(CC_PRESS_EFF[sit]||[])[ai]||[0,0,0,0];
+  cr.form=clamp((cr.form||0)+e[0], -CC_FORM_MAX, CC_FORM_MAX);
+  if(e[1]) careerReachAdd(Math.round(Math.max(20, careerReach()*0.01)*e[1]), true);
+  const mate=careerMateRec();
+  if(e[2] && mate && pr.ctx.mate){ if(mate.patience==null) mate.patience=CAREER_PATIENCE_START; mate.patience=clamp(mate.patience+e[2], 0, 100); }
+  if(e[3]) careerRepAdd(e[3]);
+  if(sit==='goal' && ai>0) cr.pressPromise={goal:ai===2 ? 'win' : 'top10', day:careerToday()};
+  // Цитата — первый ответ по делу (не «цель»), в ленту от прессы; провокация с ником — ответ этого игрока.
+  if(sit!=='goal' && !pr.posted){
+    pr.posted=true;
+    careerNews('flat', 'ccPostPress', [ccPressMe(), sit, ai, pr.ctx.p, pr.ctx.n, pr.ctx.r, pr.ctx.mate, pr.ctx.g]);
+    const provoke=ai===2 && /^(win|podium|hot)$/.test(sit) && pr.ctx.r;
+    if(provoke) careerNews('flat', 'ccPostPressRival', [pr.ctx.r, ccPressMe(), ccHashStr(pr.day+pr.ctx.r)%3]);
+  }
+  pr.i++;
+  if(pr.i>=pr.qs.length) cr.press=null;
+  careerSave();
+  careerRenderHub(CH_TAB);
+}
+function ccPressSkip(){ if(CAREER && CAREER.career){ CAREER.career.press=null; careerSave(); careerRenderHub(CH_TAB); } }
+// Строки ленты: ключи живут в I18N.en (L() кладёт английский под каждый язык), текст — на открытом языке.
+function ccPressPostText(me, sit, ai, p, n, r, mate, g){
+  const T=ccPressT(), c={p, n, r, mate, g:g ? (T.goalName||{})[g]||g : ''};
+  return T.post(me, ccPressAns(sit, ai, c));
+}
+/* ЛИЧКА ПОСЛЕ ВЕЧЕРА (16.10, его слова: «пусть Кинч в лс пишет разбор игрока и сравнение с тиммейтами», «и остальной
+   стафф пишет что-то», «психолог советует», «чтоб разнообразие было»).
+   — Kinch Analytics: разбор финала больше не пост в ленте, а личка: место, плейс, киллы, место в лобби по киллам и
+     раскладка ВНУТРИ состава — киллы и урон каждого, доля урона. Делит тем же, чем «моя статистика» (ccKillWeights,
+     ZoneReplay.killShare), и подводит итог: кто тащил.
+   — Стафф, который нанят: коуч (план вечера и главное, что тренировать), аналитик (шторм, высадка, файты), психолог
+     (после провала, серии, выгорания и после победы), SMM (сколько пришло подписчиков и что постить), маркетолог
+     (бренды после сильного вечера). Только по делу, каждый не чаще раза в CC_STAFF_DM_GAP дня, за вечер не больше
+     CC_STAFF_DM_MAX. Ничего не меняют в числах — это голоса, а не механика. В игре вдвоём молчат (ccMpOn). */
+const CC_STAFF_DM_GAP=2, CC_STAFF_DM_MAX=2;
+const CC_KINCH_WHO={handle:'Kinch Analytics', verified:true, roster:false, staff:'kinch'};
+function ccStaffThread(who){ return careerDmFind(who.handle) || careerDmThread(who); }
+function ccKinchDm(ranked, you, label){
+  if(typeof ccMpOn==='function' && ccMpOn()) return false;
+  const log=(you.stageLog||[]).filter(g=>g && g.place!=null);
+  if(log.length<2) return false;
+  const games=log.length, place=ranked.indexOf(you)+1;
+  if(place<1) return false;
+  const avg=log.reduce((s,g)=>s+g.place, 0)/games, elims=log.reduce((s,g)=>s+(g.elims||0), 0);
+  const rk=ranked.filter(t=>t!==you && (t.stageElims||0)>elims).length+1;
+  const t=ccStaffThread(CC_KINCH_WHO);
+  careerDmPush(t, 'them', 'ccDmKinchSum', [label, place, games, avg.toFixed(1), elims, (elims/games).toFixed(1), rk]);
+  // Раскладка внутри состава: доля каждого — по весам киллов (как в «моей статистике»), урон — той же долей.
+  const sq=((you.squad||you._cards||you.cards)||[]).filter(c=>c && c.handle);
+  if(sq.length>=2){
+    let w=null; try{ w=ccKillWeights(sq); }catch(e){}
+    if(w && w.length===sq.length){
+      const sum=w.reduce((a,v)=>a+Math.max(0.01, v||0), 0), dmg=(you.mstats && you.mstats.dmgTo)||0;
+      const me=hKey((CAREER.player && (CAREER.player.nick||CAREER.player.handle))||''), pc=careerCard && careerCard();
+      const rows=sq.map((c,i)=>{
+        let e=Math.round(elims*Math.max(0.01, w[i]||0)/sum);
+        try{ if(typeof ZoneReplay!=='undefined' && ZoneReplay.killShare){ const v=ZoneReplay.killShare(elims, w, i); if(v!=null) e=v; } }catch(err){}
+        const share=Math.round(Math.max(0.01, w[i]||0)/sum*100);
+        const isMe=(pc && hKey(c)===hKey(pc)) || hKey(c)===me || !!c.isYou;
+        return [String(c.handle), e, Math.round(dmg*share/100), share, isMe ? 1 : 0];
+      });
+      careerDmPush(t, 'them', 'ccDmKinchCmp', [rows]);
+      const top=rows.slice().sort((a,b)=>b[3]-a[3])[0];
+      careerDmPush(t, 'them', 'ccDmKinchVerdict', [top[0], top[4], top[3], ccHashStr(careerToday()+label)%2]);
+    }
+  }
+  return true;
+}
+// Кто из стаффа нанят: [ключ, имя]. Коуч — по справочнику, остальные — по записи найма (ccStaffTermRecs).
+function ccStaffOn(){
+  const out=[];
+  try{ (ccStaffTermRecs()||[]).forEach(r=>{ if(r && r.name && !(r.rec && r.rec.gone)) out.push([r.key, String(r.name)]); }); }catch(e){}
+  return out;
+}
+function ccStaffAfterNight(place, total){
+  if(!CAREER || !CAREER.career || !(total>1)) return;
+  if(typeof ccMpOn==='function' && ccMpOn()) return;
+  const cr=CAREER.career, today=careerToday(), beat=1-(place-1)/(total-1);
+  const last=cr.staffDm=(cr.staffDm && typeof cr.staffDm==='object') ? cr.staffDm : {};
+  const rows=(CC_EVENING && CC_EVENING.day===today) ? CC_EVENING.rows : [];
+  const deaths={kill:0, storm:0, surge:0, drop:0};
+  rows.forEach(r=>{ if(r.place===1) return; if(r.dd) deaths.drop++; else if(r.dc==='storm') deaths.storm++; else if(r.dc==='surge') deaths.surge++; else if(r.dc) deaths.kill++; });
+  const v=ccHashStr(today+'|'+place)%4;
+  const lines=[];   // [вес, ключ стаффа, имя, ключ реплики, аргументы]
+  const f=careerForm(), burn=careerBurnout();
+  ccStaffOn().forEach(([k, name])=>{
+    if(last[k] && ccDaysBetween(last[k], today)<CC_STAFF_DM_GAP) return;
+    if(k==='coach'){
+      const plan=rows.filter(r=>r.plan), ok=plan.reduce((n,r)=>n+r.plan.ok, 0), n=plan.reduce((n,r)=>n+r.plan.n, 0);
+      const main=Object.entries(deaths).sort((a,b)=>b[1]-a[1])[0];
+      if(n || (main && main[1]>=2)) lines.push([beat<0.5 ? 3 : 1, k, name, 'ccDmCoachNight', [ok, n, main && main[1]>0 ? main[0] : '', v]]);
+    } else if(k==='analyst'){
+      if(deaths.storm>=2) lines.push([3, k, name, 'ccDmAnStorm', [deaths.storm, v]]);
+      else if(deaths.drop>=2) lines.push([3, k, name, 'ccDmAnDrop', [deaths.drop, v]]);
+      else if(deaths.kill>=4 && beat<0.5) lines.push([2, k, name, 'ccDmAnFights', [deaths.kill, v]]);
+      else if(beat>=0.8 && rows.length) lines.push([1, k, name, 'ccDmAnGood', [Math.round(rows.reduce((s,r)=>s+r.place,0)/rows.length*10)/10, v]]);
+    } else if(k==='psych'){
+      if(burn>0) lines.push([5, k, name, 'ccDmPsyBurn', [v]]);
+      else if(beat<0.35 || f<=-1.5) lines.push([4, k, name, 'ccDmPsyBad', [v]]);
+      else if(place===1) lines.push([2, k, name, 'ccDmPsyWin', [v]]);
+      else if(f>=2) lines.push([1, k, name, 'ccDmPsyHot', [v]]);
+    } else if(k==='smm'){
+      const grow=(cr.reach||0)-(cr.smmSeen!=null ? cr.smmSeen : (cr.reach||0));
+      cr.smmSeen=cr.reach||0;
+      if(beat<0.3) lines.push([2, k, name, 'ccDmSmmBad', [v]]);
+      else if(grow>=20) lines.push([beat>=0.8 ? 3 : 1, k, name, 'ccDmSmmGrow', [ccNum(grow), beat>=0.8 ? 1 : 0, v]]);
+    } else if(k==='mkt'){
+      if(place<=3 && total>=20) lines.push([2, k, name, 'ccDmMktBrands', [v]]);
+    }
+  });
+  lines.sort((a,b)=>b[0]-a[0]).slice(0, CC_STAFF_DM_MAX).forEach(([w, k, name, key, args])=>{
+    const t=ccStaffThread({handle:name, roster:false, staff:k});
+    careerDmPush(t, 'them', key, args);
+    last[k]=today;
+  });
+}
 /* СОВЕТ КОУЧА (Notion 15.10, фидбек: «the option to get a coach doesn't really do anything»; ответ игроку — «coach
    suggests…»). Нанятый коуч говорит, что выбрать: где у вариантов есть проценты (ccChoiceOdds — «X% выживают»), он берёт
    вариант с лучшим последним числом; где чисел нет — ход по умолчанию. Слабый коуч (прирост тренировки < 0.32) ошибается
@@ -119711,6 +120115,7 @@ function careerCentreHTML(card, a){
       <!-- The profile leads the centre and the tournament card sits with the
            career, his call, 18 August: the two swapped places. -->
       <!-- Как на проде: профиль, под ним новости. Цели и развитие — во вкладке «Тренировка». -->
+      ${(typeof ccPressHTML==='function') ? ccPressHTML() : ''}
       ${careerProfileTileHTML()}
       ${careerNewsHubHTML()}
     </div>
@@ -120404,7 +120809,7 @@ function ccStaffAutoRenew(toISO){
       if((cr.balance||0)<cost){ r.gone=true; careerNews('bad', 'ccNewsStaffGone', [t.role, t.name]); return; }
       cr.balance-=cost;
       r.until=ccAddDays(r.until, ccStaffTermDays(months));
-      careerNews('flat', 'ccNewsStaffRenew', [t.role, t.name, cost, months>=CC_STAFF_YEAR ? 12 : 1]);
+      // В ленту продление не пишется (16.10, его слово): это бухгалтерия, а не новость; деньги видны в балансе.
     }
   });
 }
@@ -124209,6 +124614,8 @@ function ccSeasonTag(day){
   if(c.name) return {full:T.ccChapterName(c.c, c.name), short:'C'+c.c+' '+c.name};
   return {full:T.ccChapterSeason(c.c, c.s), short:'C'+c.c+'S'+c.s};
 }
+/* Сезон в постах — «C7S2», а не внутренний номер «S40» (16.10, «сделай твиттер реалистичней»). */
+function ccSeasonTagOf(season){ try{ return ccSeasonTag(season.from).short || season.id; }catch(e){ return season.id; } }
 function ccEvPalOf(fam){ const i=CC_EV_COL[fam]; return i==null ? null : CC_EV_PAL[i]; }
 function ccEvPalette(ev, day){
   if(!ev || typeof CC_EV_COL==='undefined') return null;
@@ -130962,6 +131369,9 @@ function careerApplyGrowth(place, total, you, field){
   const mine=strength(you);
   const stronger=field.filter(t=>t!==you && strength(t)<mine).length;
   const expected = field.length>1 ? stronger/(field.length-1) : 0.5;
+  // Пресс-конференция после заметного вечера и исход обещания (ccPressAfterNight). Не ломает вечер ни при какой ошибке.
+  try{ ccPressAfterNight(place, total, expected); }catch(e){ console.error('press', e); }
+  try{ ccStaffAfterNight(place, total); }catch(e){ console.error('staff dm', e); }
   const before = pl.ovrExact!=null ? pl.ovrExact : pl.ovr;
   const taper = clamp((careerPotential()-before)/CAREER_TAPER, 0, 1);
   // Who you play with is who you learn from. A partner above you drags you up
@@ -134666,6 +135076,8 @@ const CC_POST_BY={
   ccNewsMpSplit:'you',
   ccNewsMpPaySync:'you',
   ccPostEvKilled:'arg0', ccPostEvVR:'you', ccPostEvKills:'you',
+  // Пресс-конференции (16.10): цитату и исход обещания пишет пресса, на провокацию отвечает названный игрок.
+  ccPostPress:'press', ccPostPressKept:'press', ccPostPressBroke:'press', ccPostPressRival:'arg0',
   // LFD is the player saying it out loud. Nobody else posts that for you.
   ccNewsLfd:'you',
   // And so is an injury: a wrist is the player's own week, not a transfer the
@@ -134688,7 +135100,7 @@ const CC_POST_BY={
   ccPostDuoSplitBy:'arg0', ccPostDuoSplitByt:'arg0', ccPostTrioLF:'arg0',
   // Анкету свободного агента пишет он сам — как и всё остальное про себя.
   // Точку высадки объявляет тоже он.
-  ccPostLfdWant:'arg0', ccPostDropCall:'arg0',
+  ccPostLfdWant:'arg0', ccPostLfdWantAny:'arg0', ccPostDropCall:'arg0',
   // Квал из хитов: свой — свой, прошедший бот — от своего имени (первый аргумент).
   ccPostQualGrands:'you', ccPostBotQualGrands:'arg0',
   // Кастомка — свой вечер и своя строка о нём. Пост про титул подписывает
@@ -135399,7 +135811,9 @@ function ccReachOf(ovr, handle){
   const real=ccFollowOf(handle);
   if(real) return real;
   const o=Math.max(55, Math.min(99, ovr||72));
-  return Math.round(200*Math.pow(o-55, 1.5));
+  /* Выдуманный игрок рейтинга 80 — ≈5 тыс. подписчиков, 90 — ≈8 тыс. (было 25 и 41 тыс.: LFD-твит неизвестного собирал
+     по 300 лайков). У настоящих — их настоящее число из CC_XFOLLOW выше. 16.10. */
+  return Math.round(40*Math.pow(o-55, 1.5));
 }
 /* Подписчики человека на экране (его слово 8.10: «у игроков тоже можно писать фоловеров»): настоящее число из
    CC_XFOLLOW, иначе — та же кривая по рейтингу, что считает просмотры ленты, со знаком «≈». */
@@ -135414,7 +135828,11 @@ function ccPostStats(e, who){
           : ccReachOf(who.ovr, who.name);
   const w = CC_POST_W[e.kind]!=null ? CC_POST_W[e.kind] : 0.5;
   const jit = 0.82 + (ccHashStr((e.k||'')+'|'+(e.day||'')+'|'+((e.a||[]).join(',')))%37)/100;
-  const views = Math.round(f*(0.35+1.15*w)*jit);
+  /* ОХВАТ ПАДАЕТ С РАЗМЕРОМ АККАУНТА (16.10, «сделай реалистичней»). Было f×(0.35…1.5): у Merstach (530 тыс.) недельный
+     кап собирал 660 тыс. просмотров и 14,6 тыс. лайков, подкол Chap'а — 395 тыс. и 8,7 тыс. На живом X маленький
+     аккаунт добирает до своего числа подписчиков, большой — 10–30 %: 0.9 × (f/5000)^−0.35, не ниже 0.08. */
+  const share = Math.max(0.08, Math.min(0.9, 0.9*Math.pow(Math.max(1, f)/5000, -0.35)));
+  const views = Math.round(f*share*(0.35+1.15*w)*jit);
   const likes = Math.round(views*0.022);
   /* Ответов — одна двадцатая от лайков, репостов — одна двенадцатая.
 
@@ -136335,7 +136753,14 @@ const CC_CO_BY_KIND=[
   [/^ccPostLfdWant|^ccNewsLfd/, 'Lfd'],
   [/Bday/, 'Bday'],
   [/^ccNewsAnnounce|^ccNewsRoadmap|^ccPostHype|^ccPostDates/, 'Hype'],
-  [/^ccNewsDuoAnnounce|^ccNewsDuoAgain|^ccNewsSquadNew|^ccNewsPartnerNew/, 'Duo'],
+  [/^ccNewsDuoAnnounce|^ccNewsDuoAgain|^ccNewsSquadNew|^ccNewsPartnerNew|^ccNewsSceneDuo/, 'Duo'],
+  /* Свои банки (16.10, «посмотри твиттер и сделай реалистичней»): под таблицей статистики Kinch, анонсом сезона и
+     подколом писали ответы на средний вечер («mid but fine», «could be worse») — у них не было своего вида. */
+  [/^ccNewsStatBoard|^ccNewsKinch/, 'Stat'],
+  [/^ccNewsMetaNew/, 'Meta'],
+  [/^ccPostEvKilled|^ccPostPressRival/, 'Taunt'],
+  [/^ccPostPress$/, 'Press'],
+  [/^ccPostPressBroke/, 'Bad'],
   [/^ccNewsSigned|^ccNewsExtended|^ccNewsPromotedRoster|^ccNewsRaise/, 'Sign'],
   [/^ccNewsReleased|^ccNewsLeft|^ccPostBye/, 'Left'],
   [/^ccNewsD1Table/, 'Table'],
@@ -136431,7 +136856,8 @@ function ccPostComments(n, who, st){
   const bankOf=name=>{ const b=L()[ccSquadKey(name)]||L()[name]; return (Array.isArray(b)&&b.length) ? b : null; };
   const fanBank=bankOf('ccCo'+mood)||L().ccCoNews;
   const good=(mood==='Win'||mood==='Pod'||mood==='Duo'||mood==='Sign');
-  const proBank=good ? bankOf('ccCoProWin') : mood==='Bad' ? bankOf('ccCoProBad')
+  // Под анонсом дуо профи желают удачи, а не «earned 🐐» (16.10) — у анонса свой банк.
+  const proBank=mood==='Duo' ? fanBank : good ? bankOf('ccCoProWin') : mood==='Bad' ? bankOf('ccCoProBad')
               : mood==='Lfd' ? bankOf('ccCoProLfd') : fanBank;
   // «🐐» от напарника под сорок третьим местом — нет; под серединой он пишет
   // то же, что под плохим вечером: «вернёмся», «в следующий раз».
@@ -136737,7 +137163,8 @@ function ccRoadmapLines(){
 function careerRoadmapTick(){
   const cr=CAREER && CAREER.career; if(!cr) return false;
   const news=cr.news||[];
-  const gone=new Set(news.filter(n=>n && n.k==='ccNewsRoadmap').map(n=>n.id));
+  // И продление стаффа (16.10, его слово «стафф когда продление не нужно писать в сошиал») — тем же путём из старых сейвов.
+  const gone=new Set(news.filter(n=>n && (n.k==='ccNewsRoadmap' || n.k==='ccNewsStaffRenew')).map(n=>n.id));
   if(gone.size) cr.news=news.filter(n=>!(n && (gone.has(n.id) || (n.q && gone.has(n.q)))));
   return false;
 }
@@ -137061,6 +137488,63 @@ function ccPostLeft(){
   const box=document.getElementById('ccPostBox'), left=document.getElementById('ccPostLeft');
   if(!box || !left) return;
   left.textContent=String(CC_POST_MAX-(box.value||'').length);
+}
+/* ЧТО НАПИСАТЬ (16.10, Notion 15.10 скрин 13: «варианты ответов что написать, смотря что происходит в карьере»). Под полем
+   поста — до четырёх готовых строк из того, что с карьерой сейчас: свежий результат, новый напарник или его нет, турнир
+   завтра, форма, новый сезон, обещание с пресс-конференции. Клик ставит строку в поле — её можно поправить. Языки, где
+   строк нет, берут английский: в X сцена пишет так. */
+const CC_IDEAS={
+  ru:{win:m=>['W'+(m?' @'+m:'')+' 🐐','взяли 🏆 спасибо всем кто болел','1st. едем дальше'],
+      pod:(m,p)=>['#'+p+'. близко, следующий наш','топ-'+p+(m?' с @'+m:'')+' 🔥'],
+      bad:p=>['не наш день. разберём и вернёмся','#'+p+'. тяжело. go next'],
+      mid:p=>['#'+p+' — нормально, но можем лучше','средний вечер, завтра лучше'],
+      mate:m=>['играю с @'+m+' 🤝','новый сезон, новое дуо — @'+m+' 🔥'],
+      lfd:d=>['LFD. дивизион '+d+'+, пишите в лс','ищу дуо на сезон 🙏 лс открыты'],
+      next:e=>['завтра: '+e+'. let’s go','завтра турнир 🎯 фокус'],
+      hot:['форма есть 📈','лучшая неделя за сезон'], cold:['тяжёлая неделя. обратно на скримы','не сдаёмся. гринд'],
+      meta:s=>['новый сезон '+s+' — мнения по пулу?',''+s+': ищем новую точку 👀'],
+      promise:g=>['цель — '+g+'. посмотрите','сказал '+g+' — значит '+g]},
+  en:{win:m=>['W'+(m?' @'+m:'')+' 🐐','we won 🏆 thanks for the support','1st. on to the next'],
+      pod:(m,p)=>['#'+p+'. so close, next one is ours','top '+p+(m?' with @'+m:'')+' 🔥'],
+      bad:p=>['not our day. we review and come back','#'+p+'. rough one. go next'],
+      mid:p=>['#'+p+' — fine, but we can do better','mid night, tomorrow better'],
+      mate:m=>['playing with @'+m+' 🤝','new season, new duo — @'+m+' 🔥'],
+      lfd:d=>['LFD. div '+d+'+, dms open','looking for a duo this season 🙏 dms open'],
+      next:e=>['tomorrow: '+e+'. let’s go','tournament tomorrow 🎯 locking in'],
+      hot:['in form rn 📈','best week of the season'], cold:['rough week. back to scrims','we don’t stop. grind'],
+      meta:s=>['new season '+s+' — thoughts on the pool?',s+': looking for a new spot 👀'],
+      promise:g=>['goal is '+g+'. watch','said '+g+', meant '+g]}};
+function ccPostIdeas(){
+  const T=CC_IDEAS[typeof LANG!=='undefined' ? LANG : 'en'] || CC_IDEAS.en, cr=CAREER.career, out=[];
+  const rnd=careerRng(ccHashStr('ideas|'+careerToday()));
+  const one=a=>a && a.length ? a[Math.floor(rnd()*a.length)] : null;
+  const mate=careerMateRec(), mh=mate && mate.card ? mate.card.handle : '';
+  // Свежий свой результат — из журнала карьеры (cr.log), последние три дня: место и размер комнаты.
+  const last=(cr.log||[]).slice().reverse().find(x=>x && x.day && x.place>0 && ccDaysBetween(x.day, careerToday())<=3);
+  if(last){
+    const p=last.place, of=Math.max(2, last.of||50), beat=1-(p-1)/(of-1);
+    if(p===1) out.push(one(T.win(mh)));
+    else if(p<=3 || beat>=0.9) out.push(one(T.pod(mh, p)));
+    else if(beat<=0.3) out.push(one(T.bad(p)));
+    else out.push(one(T.mid(p)));
+  }
+  if(mh && mate.since && ccDaysBetween(mate.since, careerToday())<=7) out.push(one(T.mate(mh)));
+  if(!mh && !(typeof ccMpOn==='function' && ccMpOn())) out.push(one(T.lfd(cr.division||1)));
+  try{ const nx=ccHdrNext(); if(nx && nx.n===1 && nx.ev && nx.ev.label) out.push(one(T.next(nx.ev.label))); }catch(e){}
+  const f=careerForm();
+  if(f>=1.5) out.push(one(T.hot)); else if(f<=-1.5) out.push(one(T.cold));
+  try{ if(ccMetaOpen()) out.push(one(T.meta(ccSeasonTag(careerToday()).short||''))); }catch(e){}
+  if(cr.pressPromise){ const g=(ccPressT().goalName||{})[cr.pressPromise.goal]||cr.pressPromise.goal; out.push(one(T.promise(g))); }
+  return out.filter(Boolean).slice(0, 4);
+}
+function ccPostIdeasHTML(){
+  let ideas=[]; try{ ideas=ccPostIdeas(); }catch(e){ return ''; }
+  if(!ideas.length) return '';
+  return '<div class="x-ideas">'+ideas.map(t=>'<button type="button" class="x-idea" data-t="'+esc(t)+'" onclick="ccPostIdea(this)">'+esc(t)+'</button>').join('')+'</div>';
+}
+function ccPostIdea(b){
+  const box=document.getElementById('ccPostBox'); if(!box || !b) return;
+  box.value=String(b.dataset.t||'').slice(0, CC_POST_MAX); box.focus(); ccPostLeft();
 }
 function careerPostWrite(){
   const box=document.getElementById('ccPostBox');
@@ -140814,7 +141298,7 @@ function careerSocialHTML(){
       <textarea class="x-compose-box" id="ccPostBox" rows="2" maxlength="${CC_POST_MAX}"
         placeholder="${esc(CC_QUOTE ? L().ccQuotePh : L().ccPostWhat)}" oninput="ccPostLeft()"></textarea>
     </div>
-    ${CC_QUOTE ? ccQuoteHTML({q:CC_QUOTE}) : ''}
+    ${CC_QUOTE ? ccQuoteHTML({q:CC_QUOTE}) : ccPostIdeasHTML()}
     <div class="x-compose-foot">
       <span class="x-compose-left" id="ccPostLeft">${CC_POST_MAX}</span>
       <button class="ch-sign" onclick="careerPostWrite()">${L().ccPostBtn}</button>
@@ -142015,6 +142499,8 @@ function ccKinchPost(ranked, you, label){
   const pts=(you.stagePts!=null ? you.stagePts : log.reduce((s,g)=>s+(g.pts||0), 0));
   const placePts=Math.max(0, pts-elimPts);
   const better=ranked.filter(t=>t!==you && (t.stageElims||0)>elims).length;
+  // С 16.10 разбор — в личку, со сравнением внутри состава (ccKinchDm). В игре вдвоём — как раньше, постом.
+  try{ if(ccKinchDm(ranked, you, label)) return; }catch(e){ console.error('kinch dm', e); }
   careerNews('flat', 'ccNewsKinch', [label, place, games, avg.toFixed(1), elims,
              (elims/games).toFixed(1), ccNum(placePts), ccNum(elimPts), better+1],
              (function(){ const rows=ccStatMine(ranked, you);
@@ -142228,8 +142714,12 @@ function careerCongrats(ranked, you, label){
      считает выигранные кубки по журналу. Без этого сцена растёт только в
      числах, а читается она именно по строке под ником. См. ccBioLine. */
   handles.filter(Boolean).forEach(ccTitleAdd);
-  careerNews('good', 'ccNewsCongrats', [tags || bare(w), label],
-             {tbl:{div:1, cap:label, rows, me:bare(w)}, art:'final'});
+  /* Недельный финал — не повод для аккаунта сцены (16.10, «посмотри твиттер и сделай реалистичней»: за полтора
+     месяца шесть поздравлений Fortnite Competitive с недельными событиями). В жизни он поздравляет с FNCS, Мейджорами,
+     ЛАНами; недельный финал празднуют сами победители и их клуб — это остаётся. */
+  if(label!==L().calWeeklyFinal)
+    careerNews('good', 'ccNewsCongrats', [tags || bare(w), label],
+               {tbl:{div:1, cap:label, rows, me:bare(w)}, art:'final'});
   /* И КЛУБ ГОВОРИТ СВОИМ ГОЛОСОМ.
 
      У аккаунта организации в жизни своя лента: «THE WORLD CHAMPIONS. We came.
@@ -147014,7 +147504,7 @@ function careerSeasonTurn(season){
      Друг уходит только сам, из лобби; бросок ему не судья. */
   if(typeof ccMpTeam==='function' && ccMpTeam()){
     const peer=(typeof MP!=='undefined' && MP.peer) ? MP.peer : null;
-    if(peer) careerNews('good', 'ccNewsDuoAgain', [season.id, ccHandle(peer.handle)]);
+    if(peer) careerNews('good', 'ccNewsDuoAgain', [ccSeasonTagOf(season), ccHandle(peer.handle)]);
     careerWorldDuos(season);
     careerSave();
     return {season:season.id, split:false, from:peer?peer.handle:null};
@@ -147023,7 +147513,7 @@ function careerSeasonTurn(season){
   const verdict=careerDuoHolds();
   let out={season:season.id, split:false, from:mate?mate.handle:null};
   if(mate && verdict.hold){
-    careerNews('good', 'ccNewsDuoAgain', [season.id, ccHandle(mate.handle)]);
+    careerNews('good', 'ccNewsDuoAgain', [ccSeasonTagOf(season), ccHandle(mate.handle)]);
   } else if(mate){
     careerMateDrop(mate.handle);
     careerMateLeftMark(mate.handle);
@@ -147089,7 +147579,7 @@ function careerWorldDuos(season){
     const a=d.cards[0], b=d.cards[1];
     const names=[ccHandle(b.handle)];
     if(per>2){ const c=third(); if(c) names.push(ccHandle(c.handle)); }
-    careerNews('flat', 'ccNewsDuoAnnounce', [season.id, names.join(L().ccListAnd+'@')], {
+    careerNews('flat', 'ccNewsDuoAnnounce', [ccSeasonTagOf(season), names.join(L().ccListAnd+'@')], {
       by:{name:a.handle, ovr:a._ovr,
           card:a.region?{handle:a.handle, region:a.region}:null}
     });
@@ -159827,13 +160317,7 @@ async function runCareerCup(){
   }
   // The scene's account congratulates the room it covers — winners tagged,
   // the same standings screenshot attached.
-  if(from===1 && winner){
-    const wtags=(winner===you ? [CAREER.player.nick, mate&&mate.handle]
-                              : (winner.cards||winner.squad||[]).map(c=>c&&c.handle))
-      .filter(Boolean).map(h=>'@'+ccHandle(h)).join(' ');
-    feed.push(['good', 'ccNewsCongrats', [wtags||bare(winner), L().ccCongratsCup],
-      {tbl:shotOf(winner, L().ccCongratsCup)}]);
-  }
+  // Кап дивизиона аккаунт сцены больше не поздравляет (16.10, см. careerCongrats) — каждый вечер это шум, не новость.
   // The top of the scale, not a ceiling drawn for this career: the only thing
   // left to say near 99 is that there is nowhere above it.
   if(CAREER_SCALE_TOP-growth.after<=2) feed.push(['flat', 'ccNewsCeiling', [CAREER_SCALE_TOP]]);
@@ -169490,7 +169974,9 @@ function careerAdPostTick(){
     ad.posted=1;
     const h=ad.handle || k;
     if(!ccAdOf(h)) return;   // уже нашёл пару — анкета не нужна
-    careerNews('flat', 'ccPostLfdWant', [ccHandle(h), ad.div, ad.pr], {card:ccHandle(h)});
+    // PR — круглым числом, а без порога — без «min 0 PR» (16.10): так анкету в X никто не пишет.
+    const pr=Math.round((+ad.pr||0)/500)*500;
+    careerNews('flat', pr>0 ? 'ccPostLfdWant' : 'ccPostLfdWantAny', [ccHandle(h), ad.div, pr>0 ? ccNum(pr) : 0], {card:ccHandle(h)});
     n++;
   });
   return n;
@@ -169516,7 +170002,8 @@ function careerMetaStart(id){
   const cr=CAREER && CAREER.career; if(!cr) return;
   if(cr.meta && cr.meta.id===id) return;
   cr.meta={id:id, days:0, from:careerToday()};
-  careerNews('flat', 'ccNewsMetaNew', [id]);
+  // Сезон в посте — «C7S2», не внутренний «S40» (16.10).
+  careerNews('flat', 'ccNewsMetaNew', [(function(){ try{ return ccSeasonTag(careerToday()).short || id; }catch(e){ return id; } })()]);
 }
 function careerMetaDay(){
   const m=ccMeta(); if(!m) return;
