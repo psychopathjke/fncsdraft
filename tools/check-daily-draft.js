@@ -1,4 +1,4 @@
-// Драфт дня (16.10): у всех одни паки, попытка одна, итог ложится в fd_daily.
+// Драфт дня (16.10): сезон дня один на всех, паки у каждого свои из игроков этого года, попытка одна, итог ложится в fd_daily.
 //
 // Проверяется в одной вкладке: два захода в драфт дня с разным числом «посторонних» бросков между ними и с
 // рероллом — паки совпадают; обычный драфт после этого — не драфт дня; потом турнир дня целиком, до итога.
@@ -41,7 +41,11 @@ const BOOT = `<script>
     for(var i=0;i<777;i++) Math.random();
     dailyStart();
     var b=[]; b.push(snap()); rerollAll(); b.push(snap());
-    if(a.join("\\n")!==b.join("\\n")) out.fails.push("паки дня разошлись между заходами:\\n"+a.join("\\n")+"\\n---\\n"+b.join("\\n"));
+    // 16.10 (его слово «пусть будут рандомные игроки… игроки того периода»): паки свои у каждого, а игроки — года острова дня.
+    if(a.join("\\n")===b.join("\\n")) out.fails.push("паки дня одинаковые между заходами — должны быть случайными");
+    var yr=dailyYear(dailyMap(dailyDay())), wrong=currentCandidates.filter(function(p){ return getPlayerYear(p)!==yr; });
+    if(wrong.length) out.fails.push("в паке игроки не "+yr+"-го: "+wrong.map(function(p){ return p.handle+" "+getPlayerYear(p); }).join(", "));
+    if(preSelectedYears.join()!==String(yr)) out.fails.push("сезон дня не выбран: "+preSelectedYears.join());
     out.packs=a;
     // Обычный драфт — уже не драфт дня.
     chooseMode(2);
@@ -99,7 +103,7 @@ if (out.result) console.log('итог: #' + out.result.place + '/' + out.result.
 console.log('stage', out.stage, out.waited, out.scr, 'beat', out.beat);
 if (!out.result) out.fails.push('турнир дня не доигран за время пробы');
 if (out.fails.length) { out.fails.forEach(f => console.error('FAIL ' + f)); process.exit(1); }
-console.log('драфт дня: паки одни, попытка одна, итог записан');
+console.log('драфт дня: паки свои, игроки года острова, попытка одна, итог записан');
 
 // Каркас блока на главной ставит остров до app.js по своей копии списка островов — она обязана совпадать с MAP_CHOICES.
 {

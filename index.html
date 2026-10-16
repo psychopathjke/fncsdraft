@@ -20441,7 +20441,7 @@ const CC_LANGS=['en','ru','fr','it','pt','de','es'];
    Аргентина 50 тыс.). Словари — отдельными файлами i18n-de.js / i18n-es.js (tools/build-i18n.js): app.js упирается в 9 МБ,
    а словарь нужен только тем, кто выбрал язык. Пока файл не пришёл, L() показывает английский (он и так под каждым языком). */
 const CC_LANG_FILES={de:1, es:1};
-let CC_I18N_V={de:'56d251ab', es:'904dcd9e'};   // ==== CC_I18N_V (tools/build-i18n.js) ====
+let CC_I18N_V={de:'892ad51f', es:'5f8b0c43'};   // ==== CC_I18N_V (tools/build-i18n.js) ====
 const CC_LANG_WAIT={};
 function ccLangLoad(lang, done){
   if(!CC_LANG_FILES[lang] || (typeof I18N!=='undefined' && I18N[lang])){ done && done(); return; }
@@ -20782,11 +20782,11 @@ Object.assign(I18N.it, {clTitle:'Cloud', clOn:'attivo', clOffNow:'spento — le 
 Object.assign(I18N.pt, {clTitle:'Nuvem', clOn:'ligada', clOffNow:'desligada — as carreiras ficam só neste navegador', clWhy:'Ligue a nuvem para receber um código. Com ele, suas carreiras e o manager abrem em qualquer aparelho, mesmo se este navegador for limpo.', clEnable:'Ligar a nuvem', clHave:'Tenho um código', clKeep:'Anote este código: ele abre suas carreiras em outro aparelho.', clSent:w=>'Último envio: '+w, clBusy:'enviando…', clPushNow:'Enviar agora', clOther:'Digitar outro código', clOff:'Desligar', clOpen:'Abrir', clFound:n=>'Saves neste código: '+n, clCareer:'carreira', clMgr:'manager', clTake:'Trazer para este navegador', clSure:'Substitui os mesmos slots aqui — toque de novo', clErr:m=>'A nuvem não respondeu ('+m+'). Sua carreira está salva no navegador; tentaremos de novo.', clBad:'O código tem 16 caracteres, ex. K7QM-2XPA-9RTD-WH4C'});
 /* Драфт дня (16.10). */
 Object.assign(I18N.ru, {playersLink:'Игроки FNCS'}); Object.assign(I18N.en, {playersLink:'FNCS players'}); Object.assign(I18N.fr, {playersLink:'Joueurs FNCS'}); Object.assign(I18N.it, {playersLink:'Giocatori FNCS'}); Object.assign(I18N.pt, {playersLink:'Jogadores FNCS'});
-Object.assign(I18N.ru, {dyTitleW:'Драфт дня', dyTag:'Каждый день', dyTitle:n=>'Драфт дня #'+n, dySub:'У всех сегодня одни и те же паки. Одна попытка — и таблица дня: кто соберёт лучший сквад.', dyRules:'сквад · все годы и регионы · 12 игр', dyOnce:'Попытка одна: после «Выйти на турнир» переиграть нельзя.', dyPlay:'Играть', dyBoard:'Таблица дня', dyShare:'Поделиться', dyCopied:'Скопировано', dyPts:'очк.', dyNick:'Ник для таблицы', dySend:'В таблицу', dySent:n=>'Ты в таблице дня как '+n, dyLeft:'Турнир не доигран — попытка сгорела', dyNext:t=>'Новый драфт через '+t, dyH:'ч', dyM:'мин', dyRank:(r,t)=>'Твоё место: '+r+' из '+t, dyEmpty:'Сегодня ещё никто не сыграл. Будь первым.', dyHonest:'Результат присылает браузер игрока, сервер его не пересчитывает.'});
-Object.assign(I18N.en, {dyTitleW:'Daily Draft', dyTag:'Every day', dyTitle:n=>'Daily Draft #'+n, dySub:'Everyone gets the same packs today. One try, one daily leaderboard: who builds the best squad.', dyRules:'squad · all years and regions · 12 games', dyOnce:'One try: once you hit “Enter tournament” there is no replay.', dyPlay:'Play', dyBoard:'Daily leaderboard', dyShare:'Share', dyCopied:'Copied', dyPts:'pts', dyNick:'Name for the leaderboard', dySend:'Submit', dySent:n=>'You are on today’s board as '+n, dyLeft:'Tournament not finished — the try is used', dyNext:t=>'Next draft in '+t, dyH:'h', dyM:'min', dyRank:(r,t)=>'Your place: '+r+' of '+t, dyEmpty:'Nobody has played today yet. Be the first.', dyHonest:'Results are sent by the player’s browser; the server does not recompute them.'});
-Object.assign(I18N.fr, {dyTitleW:'Draft du jour', dyTag:'Chaque jour', dyTitle:n=>'Draft du jour #'+n, dySub:'Tout le monde a les mêmes packs aujourd’hui. Un seul essai, un classement du jour : qui monte la meilleure squad.', dyRules:'squad · toutes les années et régions · 12 parties', dyOnce:'Un seul essai : après « Entrer dans le tournoi », pas de revanche.', dyPlay:'Jouer', dyBoard:'Classement du jour', dyShare:'Partager', dyCopied:'Copié', dyPts:'pts', dyNick:'Pseudo pour le classement', dySend:'Envoyer', dySent:n=>'Tu es dans le classement du jour : '+n, dyLeft:'Tournoi non terminé — l’essai est perdu', dyNext:t=>'Prochain draft dans '+t, dyH:'h', dyM:'min', dyRank:(r,t)=>'Ta place : '+r+' sur '+t, dyEmpty:'Personne n’a encore joué aujourd’hui. Sois le premier.', dyHonest:'Le résultat est envoyé par le navigateur du joueur ; le serveur ne le recalcule pas.'});
-Object.assign(I18N.it, {dyTitleW:'Draft del giorno', dyTag:'Ogni giorno', dyTitle:n=>'Draft del giorno #'+n, dySub:'Oggi tutti hanno gli stessi pack. Un solo tentativo e la classifica del giorno: chi costruisce la squad migliore.', dyRules:'squad · tutti gli anni e le regioni · 12 partite', dyOnce:'Un solo tentativo: dopo «Entra nel torneo» non si rigioca.', dyPlay:'Gioca', dyBoard:'Classifica del giorno', dyShare:'Condividi', dyCopied:'Copiato', dyPts:'pt', dyNick:'Nome per la classifica', dySend:'Invia', dySent:n=>'Sei nella classifica del giorno come '+n, dyLeft:'Torneo non finito — tentativo usato', dyNext:t=>'Nuovo draft tra '+t, dyH:'h', dyM:'min', dyRank:(r,t)=>'Il tuo posto: '+r+' su '+t, dyEmpty:'Oggi non ha ancora giocato nessuno. Sii il primo.', dyHonest:'Il risultato lo invia il browser del giocatore; il server non lo ricalcola.'});
-Object.assign(I18N.pt, {dyTitleW:'Draft do dia', dyTag:'Todo dia', dyTitle:n=>'Draft do dia #'+n, dySub:'Hoje todo mundo recebe os mesmos packs. Uma tentativa e o ranking do dia: quem monta o melhor squad.', dyRules:'squad · todos os anos e regiões · 12 partidas', dyOnce:'Uma tentativa só: depois de “Entrar no torneio” não dá para jogar de novo.', dyPlay:'Jogar', dyBoard:'Ranking do dia', dyShare:'Compartilhar', dyCopied:'Copiado', dyPts:'pts', dyNick:'Nick para o ranking', dySend:'Enviar', dySent:n=>'Você está no ranking do dia como '+n, dyLeft:'Torneio não terminado — tentativa usada', dyNext:t=>'Próximo draft em '+t, dyH:'h', dyM:'min', dyRank:(r,t)=>'Sua posição: '+r+' de '+t, dyEmpty:'Ninguém jogou hoje ainda. Seja o primeiro.', dyHonest:'O resultado é enviado pelo navegador do jogador; o servidor não o recalcula.'});
+Object.assign(I18N.ru, {dyTitleW:'Драфт дня', dyTag:'Каждый день', dyTitle:n=>'Драфт дня #'+n, dySub:'Каждый день — случайный сезон: паки у всех свои, но только из игроков того периода. Одна попытка, таблица дня — по силе состава.', dyRules:'сквад · все регионы · 12 игр', dyPlayers:y=>'игроки '+y, dyOnce:'Попытка одна: после «Выйти на турнир» переиграть нельзя.', dyPlay:'Играть', dyBoard:'Таблица дня', dyShare:'Поделиться', dyCopied:'Скопировано', dyPts:'очк.', dyNick:'Ник для таблицы', dySend:'В таблицу', dySent:n=>'Ты в таблице дня как '+n, dyLeft:'Турнир не доигран — попытка сгорела', dyNext:t=>'Новый драфт через '+t, dyH:'ч', dyM:'мин', dyRank:(r,t)=>'Твоё место: '+r+' из '+t, dyEmpty:'Сегодня ещё никто не сыграл. Будь первым.', dyHonest:'Результат присылает браузер игрока, сервер его не пересчитывает.'});
+Object.assign(I18N.en, {dyTitleW:'Daily Draft', dyTag:'Every day', dyTitle:n=>'Daily Draft #'+n, dySub:'A random season every day: your own packs, but only players from that period. One try, the daily board ranks squad power.', dyRules:'squad · all regions · 12 games', dyPlayers:y=>'players of '+y, dyOnce:'One try: once you hit “Enter tournament” there is no replay.', dyPlay:'Play', dyBoard:'Daily leaderboard', dyShare:'Share', dyCopied:'Copied', dyPts:'pts', dyNick:'Name for the leaderboard', dySend:'Submit', dySent:n=>'You are on today’s board as '+n, dyLeft:'Tournament not finished — the try is used', dyNext:t=>'Next draft in '+t, dyH:'h', dyM:'min', dyRank:(r,t)=>'Your place: '+r+' of '+t, dyEmpty:'Nobody has played today yet. Be the first.', dyHonest:'Results are sent by the player’s browser; the server does not recompute them.'});
+Object.assign(I18N.fr, {dyTitleW:'Draft du jour', dyTag:'Chaque jour', dyTitle:n=>'Draft du jour #'+n, dySub:'Une saison au hasard chaque jour : tes propres packs, mais seulement des joueurs de cette période. Un seul essai, le classement du jour se fait à la force de la squad.', dyRules:'squad · toutes les régions · 12 parties', dyPlayers:y=>'joueurs de '+y, dyOnce:'Un seul essai : après « Entrer dans le tournoi », pas de revanche.', dyPlay:'Jouer', dyBoard:'Classement du jour', dyShare:'Partager', dyCopied:'Copié', dyPts:'pts', dyNick:'Pseudo pour le classement', dySend:'Envoyer', dySent:n=>'Tu es dans le classement du jour : '+n, dyLeft:'Tournoi non terminé — l’essai est perdu', dyNext:t=>'Prochain draft dans '+t, dyH:'h', dyM:'min', dyRank:(r,t)=>'Ta place : '+r+' sur '+t, dyEmpty:'Personne n’a encore joué aujourd’hui. Sois le premier.', dyHonest:'Le résultat est envoyé par le navigateur du joueur ; le serveur ne le recalcule pas.'});
+Object.assign(I18N.it, {dyTitleW:'Draft del giorno', dyTag:'Ogni giorno', dyTitle:n=>'Draft del giorno #'+n, dySub:'Ogni giorno una stagione a caso: pack tuoi, ma solo giocatori di quel periodo. Un solo tentativo, la classifica del giorno va per forza della squad.', dyRules:'squad · tutte le regioni · 12 partite', dyPlayers:y=>'giocatori del '+y, dyOnce:'Un solo tentativo: dopo «Entra nel torneo» non si rigioca.', dyPlay:'Gioca', dyBoard:'Classifica del giorno', dyShare:'Condividi', dyCopied:'Copiato', dyPts:'pt', dyNick:'Nome per la classifica', dySend:'Invia', dySent:n=>'Sei nella classifica del giorno come '+n, dyLeft:'Torneo non finito — tentativo usato', dyNext:t=>'Nuovo draft tra '+t, dyH:'h', dyM:'min', dyRank:(r,t)=>'Il tuo posto: '+r+' su '+t, dyEmpty:'Oggi non ha ancora giocato nessuno. Sii il primo.', dyHonest:'Il risultato lo invia il browser del giocatore; il server non lo ricalcola.'});
+Object.assign(I18N.pt, {dyTitleW:'Draft do dia', dyTag:'Todo dia', dyTitle:n=>'Draft do dia #'+n, dySub:'Uma temporada aleatória por dia: packs só seus, mas apenas jogadores daquele período. Uma tentativa, o ranking do dia é pela força do squad.', dyRules:'squad · todas as regiões · 12 partidas', dyPlayers:y=>'jogadores de '+y, dyOnce:'Uma tentativa só: depois de “Entrar no torneio” não dá para jogar de novo.', dyPlay:'Jogar', dyBoard:'Ranking do dia', dyShare:'Compartilhar', dyCopied:'Copiado', dyPts:'pts', dyNick:'Nick para o ranking', dySend:'Enviar', dySent:n=>'Você está no ranking do dia como '+n, dyLeft:'Torneio não terminado — tentativa usada', dyNext:t=>'Próximo draft em '+t, dyH:'h', dyM:'min', dyRank:(r,t)=>'Sua posição: '+r+' de '+t, dyEmpty:'Ninguém jogou hoje ainda. Seja o primeiro.', dyHonest:'O resultado é enviado pelo navegador do jogador; o servidor não o recalcula.'});
 /* Особые карточки 97/98/99 (16.10). */
 Object.assign(I18N.ru, {formWhyLanwin:'чемпион ЛАНа', formWhyPoty:'игрок года'});
 Object.assign(I18N.en, {formWhyLanwin:'LAN champion', formWhyPoty:'player of the year'});
@@ -110507,13 +110507,15 @@ function dailyNick(){
   try{ const pl=CAREER && CAREER.player; if(pl && (pl.nick||pl.handle)) return String(pl.nick||pl.handle).slice(0, 24); }catch(e){}
   return '';
 }
-/* Сдача пака своим генератором: Math.random подменяется только на время fn. */
-function dailyRoll(tag, fn){
-  if(!DAILY) return fn();
-  const g=careerRng(ccHashStr('daily|'+DAILY.day+'|'+tag+'|'+round+'|'+rerollsLeft)), nat=Math.random;
-  Math.random=g;
-  try{ return fn(); } finally { Math.random=nat; }
-}
+/* ПАКИ ДНЯ — СЛУЧАЙНЫЕ, СЕЗОН ДНЯ — ОДИН НА ВСЕХ (16.10, его слово: «нет, пусть будут рандомные игроки, пусть будут
+   рандомные сезоны, из этих сезонов пусть будут игроки того периода»). Было: одни паки на всех, как в Wordle.
+   Теперь день задаёт остров (dailyMap), остров — сезон, а паки у каждого свои, только из игроков года этого
+   сезона (preSelectedYears в dailyStart; поле турнира берётся из того же года). Таблица — по силе состава.
+   Год острова — по букве ключа MAP_CHOICES: m Ch7 2026, t Ch6 2025, f Ch5 2024, e Ch4 2023, k Ch3 2022,
+   j Ch2 S5–8 2021, i Ch2 S2–4 2020, h Ch1 S9/SX и Ch2 S1 2019. */
+const DAILY_MAP_YEAR={m:2026, t:2025, f:2024, e:2023, k:2022, j:2021, i:2020, h:2019};
+function dailyYear(map){ return DAILY_MAP_YEAR[String((map && map.key) || '')[0]] || 2026; }
+function dailyRoll(tag, fn){ return fn(); }
 function dailySimOn(){
   if(!DAILY || DAILY_RAND) return;
   DAILY_RAND=Math.random;
@@ -110526,8 +110528,8 @@ function dailyStart(){
   if(today){ dailyOpen(); return; }
   const day=dailyDay(), map=dailyMap(day);
   chooseMode(4);
-  DAILY={day, n:dailyNum(day), map:map.key};
-  preSelectedRegions=[]; preSelectedYears=[]; preHomeRegion=null; pendingMapSet=map.key;
+  DAILY={day, n:dailyNum(day), map:map.key, year:dailyYear(map)};
+  preSelectedRegions=[]; preSelectedYears=[DAILY.year]; preHomeRegion=null; pendingMapSet=map.key;
   setSimMode(false); setPlayMode(false);
   startDraft(4);
 }
@@ -110538,7 +110540,7 @@ function dailyBanner(){
   if(!DAILY){ if(b) b.remove(); return; }
   if(!b){ b=document.createElement('div'); b.id='dailyBar'; b.className='dy-bar'; scr.insertBefore(b, scr.firstChild); }
   const T=L(), m=MAP_CHOICES.find(x=>x.key===DAILY.map);
-  b.innerHTML='<b>'+esc(T.dyTitle(DAILY.n))+'</b><span>'+esc((m ? m.label+' · ' : '')+T.dyRules)+'</span><span>'+esc(T.dyOnce)+'</span>';
+  b.innerHTML='<b>'+esc(T.dyTitle(DAILY.n))+'</b><span>'+esc((m ? m.label+' · ' : '')+T.dyPlayers(DAILY.year)+' · '+T.dyRules)+'</span><span>'+esc(T.dyOnce)+'</span>';
 }
 /* «В турнир» нажато — попытка сгорела, даже если вкладку закроют посреди турнира. */
 function dailyBurn(){
@@ -110657,7 +110659,7 @@ function homeDailyDraw(){
   const T=L(), day=dailyDay(), map=dailyMap(day), r=dailyToday();
   const set=(id, h)=>{ const el=document.getElementById(id); if(el) el.innerHTML=h; };
   set('dyNum', '#'+dailyNum(day));
-  set('dyMap', esc(map.label));
+  set('dyMap', esc(map.label+' · '+T.dyPlayers(dailyYear(map))));
   set('dyMine', r ? (r.score!=null ? '<div class="dy-mine"><b>'+(r.power ? '💪 '+r.power : '#'+r.place+' / '+r.field)+'</b><span>'+(r.power ? '#'+r.place+'/'+r.field+' · ' : '')+r.score+' '+esc(T.dyPts)+'</span></div>'
                                    : '<div class="dy-mine"><span>'+esc(T.dyLeft)+'</span></div>') : '');
   if(r) set('dyActs', '<button class="hero-btn hero-btn-alt" type="button" onclick="dailyOpen()">'+esc(T.dyBoard)+'</button>'+
