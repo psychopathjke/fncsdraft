@@ -107651,8 +107651,11 @@ let LAST_ZONE_TIMELINE = [];
 let LAST_ZONE_ROSTER = [];
 let RECORD_NEXT_ZONE_GAME = false;
 
+/* Чужие регионы быстрой моделью (16.10): разброс силы ±24% подобран по замеру — связь силы и места 0.624 против 0.625 у
+   полного движка (NAC, EU, ASIA, BR по 20 вечеров), переход дня в 4 раза быстрее. CC_WORLD_FAST_EXP — запасная ручка, 1. */
+let CC_WORLD_FAST=false, CC_WORLD_FAST_EXP=1, CC_WORLD_FAST_NOISE=0.24;
 function useZoneSim(teams){
-  return typeof ZoneSim !== 'undefined'
+  return typeof ZoneSim !== 'undefined' && !CC_WORLD_FAST
       // Every mode and every squad size the app plays. The engine was written
       // for duos in a Major and gated to exactly that while it was being
       // calibrated, but nothing in it counts to two and nothing in it knows
@@ -110271,7 +110274,7 @@ function simulateGame(teams, lobbyOpts){
   // gets caught out, and _pc decides who walks away from it.
   alive.forEach(t=>{
     t._elims=0; t._feed=[];
-    t._pf=Math.max(1, t.pow*gameForm());
+    t._pf=Math.max(1, t.pow*gameForm()*(CC_WORLD_FAST && CC_WORLD_FAST_NOISE ? 1+CC_WORLD_FAST_NOISE*(Math.random()*2-1) : 1));   // чужие регионы быстрой моделью — шире бросок (CC_WORLD_FAST)
     /* Что выпало форме — отдельно от того, что сделал игрок.
 
        Жалоба игрока: «в начале каждой игры почему-то разная
@@ -110288,7 +110291,7 @@ function simulateGame(teams, lobbyOpts){
     t._pc=Math.max(1, t._pf+(CC_ZB ? 0 : (t.closeEdge||0)));   // Zero Build: край построек не считается
   });
   const lobbySquadSize=(teams[0].squad && teams[0].squad.length) || 2;
-  const DUEL_POW_EXPONENT=DUEL_POW_EXPONENT_BY_MODE[lobbySquadSize]||5;
+  const DUEL_POW_EXPONENT=(DUEL_POW_EXPONENT_BY_MODE[lobbySquadSize]||5)*(CC_WORLD_FAST ? CC_WORLD_FAST_EXP : 1);
   let round=0;
   const maxRounds=teams.length+8;
   while(alive.length>1 && round<maxRounds){
@@ -114374,7 +114377,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='8367f405';
+const CC_BUILD='95ccc614';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -142046,7 +142049,11 @@ function careerRegionsWeek(iso){
       let ranked=null;
       // Посев — с регионом: один и тот же день в семи комнатах не должен
       // тасовать семь пулов одной и той же лентой чисел.
+      /* Чужие регионы — быстрой моделью (16.10, лаги: 75% перехода дня уходило на полный движок зоны для кубков,
+         которых игрок не смотрит — только таблица и лента). Свой регион и свои вечера — полным движком, как были. */
+      CC_WORLD_FAST=true;
       try{ ranked=ccAsRegion(reg, ()=>careerWorldD1(iso+'|'+reg)); }catch(e){ ranked=null; }
+      finally{ CC_WORLD_FAST=false; }
       if(!ranked || ranked.length<3) return;
       const cap=regionName(reg)+' · '+label;
       const post=(t, i)=>{
