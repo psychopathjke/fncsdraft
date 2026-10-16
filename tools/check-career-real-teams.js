@@ -63,8 +63,9 @@ const BOOT = `
       const k=d.cards.map(c=>hKey(c)).sort().join('|');
       if(b25.has('P:'+k)) pairReal++;
       if(b24.has('P:'+k) && !b25.has('P:'+k)) pairOld++;
-      const t=cr.trios[d.cards.map(c=>hKey(c)).sort().join('+')];
-      if(t){ trioChecked++; if(b25.has([...d.cards.map(c=>hKey(c)), t].sort().join('|'))) trioReal++; }
+      const tk=d.cards.map(c=>hKey(c)).sort().join('+'), t=cr.trios[tk];
+      // Третьих, посаженных по силе туда, где в записи третьего нет (ccContinuityThirds, 16.10), здесь не судим.
+      if(t && !(cr.trioFilled||{})[tk]){ trioChecked++; if(b25.has([...d.cards.map(c=>hKey(c)), t].sort().join('|'))) trioReal++; }
     });
     const yr24=real1.reduce((n,d)=>n+d.cards.filter(c=>!c._debut && ccCardYear(c)<=2024).length, 0);
     // Дебютанты 2025-го: без карточек до 2024-го включительно, рейтинг — настоящий 2025-го.
@@ -82,6 +83,8 @@ const BOOT = `
     check('2024→2025: пары сцены — настоящие составы 2025-го', real1.length>=40, String(real1.length));
     check('2024→2025: каждая пара записана в 2025-м вместе', pairReal===real1.length, pairReal+'/'+real1.length);
     check('2024→2025: третьи посеяны из 2025-го', trioChecked>=20 && trioReal===trioChecked, trioReal+'/'+trioChecked);
+    const filled=Object.keys(cr.trioFilled||{}).length;
+    check('2024→2025: по силе досажены немногие (записанных больше)', filled<=trioChecked*0.25, filled+' по силе / '+trioChecked+' с карточек');
     check('2024→2025: рынок трио не открывается', ccTrioMarket(cr, true)===0);
     // 1б. Потенциал из жизни: рейтинг идёт к рейтингу года календаря, постепенно.
     const pot=(day)=>{

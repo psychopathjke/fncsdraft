@@ -127964,6 +127964,7 @@ function careerPools(){
   if((ccNowYear()<2026 || real) && careerSquadSize()>=3 && CAREER && CAREER.career && !CC_REGION_AS && CAREER.career.triosSeeded!==seedTag){
     const cr=CAREER.career; cr.trios=(real || ccNowYear()<2025) ? {} : (cr.trios||{});
     duos.forEach(d=>{ if(d.third && !seated.has(d.third)){ cr.trios[d.cards.map(c=>hKey(c)).sort().join('+')]=d.third; seated.add(d.third); } });
+    if(real) ccContinuityThirds(duos, seated, cr);
     cr.triosSeeded=seedTag;
     if(typeof careerSave==='function') careerSave();
   }
@@ -128113,6 +128114,8 @@ function careerPools(){
      не ниже полосы Дивизиона 1 собираются в пары сами — сначала те, кто играл
      вместе на записи (ccRemadeDuos), остальные — сосед по силе с соседом. */
   if(careerSquadSize()!==3 && ccContinuity()) ccContinuityDuos(duosLive);
+  // Трио-год такой карьеры: ядра троек, собранных на стыке из свободных (ccContinuityThirds).
+  if(careerSquadSize()===3 && real && !CC_REGION_AS) ccContinuityCores(duosLive);
   duosLive.forEach(d=>{ if(d && d.cards) d.cards=d.cards.map(liftOne); });
   /* И все остальные имена ростера — свободными агентами.
 
@@ -128196,6 +128199,66 @@ function ccRecordedMates(){
   CC_REC_MATES=m; return m;
 }
 function ccRecordedTogether(a, b){ const m=ccRecordedMates(); const s=m.get(hKey(a)); return !!(s && s.has(hKey(b))); }
+/* ТРИО-ГОД БЕЗ ТРЕТЬИХ (Notion «fncsdraft 15.10», 16.10: «когда новая глава после седьмой
+   главы начинается, несколько одних из самых сильных без сквада остаются… и так в каждой главе»).
+
+   Карьера, перешедшая в следующий год, берёт составы года календаря (ccRealTeamDuos), а
+   рынок трио у неё выключен (ccTrioMarket). Третьи приходили только с карточек — а в 2026-м
+   (и в каждом трио-годе после него: календарь снова 2026-й) записаны дуо, третьих там нет.
+   Свободных сильных в дуо-год сводит ccContinuityDuos, в трио-год — никто. Замер
+   (tools/check-career-chapter-squads.js): в первый день трио-года 11 из топ-40 сцены без
+   состава — Verox 92, Veno 92, Mexe 90, Pixx 89…; в дуо-годы — 0.
+
+   Теперь на стыке, один раз на снимок: паре без третьего — ближайший по силе свободный не
+   ниже полосы Дивизиона 1 (пары сильнейшими вперёд, записанная вместе игра — плюс),
+   а свободные, на которых пар не хватило, — тройками подряд по силе. Ядра таких троек
+   записаны в cr.trioCores: пул пересобирается каждую неделю, и без записи они
+   разошлись бы по третьим креслам чужих пар. */
+const CC_THIRD_RECORDED=2;
+function ccContinuityThirds(duos, seated, cr){
+  const floor=ccBand(1, ccPoolRegion()==='ALL' ? undefined : ccPoolRegion())-2;
+  const free=careerRosterNowEU().filter(p=>!seated.has(hKey(p)) && ccCardOvr(p)>=floor)
+    .map(p=>{ const c={...p}; c._k=hKey(p); return c; })
+    .sort((a,b)=>ccCardOvr(b)-ccCardOvr(a));
+  cr.trioCores=[]; cr.trioFilled={};   // какие третьи посажены по силе, а не с карточек
+  if(!free.length) return;
+  const open=duos.filter(d=>!cr.trios[d.cards.map(c=>hKey(c)).sort().join('+')])
+    .sort((a,b)=>ccDuoOvr(b)-ccDuoOvr(a));
+  for(const d of open){
+    if(!free.length) break;
+    const avg=ccDuoOvr(d);
+    if(avg<floor-4) break;   // ниже — третьего возьмёт вечер, как брал (ccPickThird)
+    let bi=-1, bs=Infinity;
+    free.forEach((c,i)=>{
+      const s=Math.abs(ccCardOvr(c)-avg)-(d.cards.some(x=>ccRecordedTogether(x, c)) ? CC_THIRD_RECORDED : 0);
+      if(s<bs){ bs=s; bi=i; }
+    });
+    const t=free.splice(bi, 1)[0], key=d.cards.map(c=>hKey(c)).sort().join('+');
+    cr.trios[key]=hKey(t); cr.trioFilled[key]=1;
+    seated.add(hKey(t));
+  }
+  for(let i=0; i+2<free.length; i+=3){
+    const a=free[i], b=free[i+1], c=free[i+2];
+    cr.trioCores.push([hKey(a), hKey(b)]);
+    cr.trios[[hKey(a), hKey(b)].sort().join('+')]=hKey(c); cr.trioFilled[[hKey(a), hKey(b)].sort().join('+')]=1;
+    [a, b, c].forEach(x=>seated.add(hKey(x)));
+  }
+}
+function ccContinuityCores(duosLive){
+  const cr=CAREER && CAREER.career, cores=cr && cr.trioCores;
+  if(!cores || !cores.length) return;
+  const taken=new Set(); duosLive.forEach(d=>d.cards.forEach(c=>taken.add(hKey(c))));
+  const byKey=new Map(); careerRosterNowEU().forEach(p=>byKey.set(hKey(p), p));
+  cores.forEach(([ka, kb])=>{
+    const a=byKey.get(ka), b=byKey.get(kb);
+    if(!a || !b || taken.has(ka) || taken.has(kb)) return;
+    const key=[ka, kb].sort().join('+');
+    if(ccRealTeamBroken({cards:[a, b]})) return;   // разошлись в этом году — стоят врозь, как все
+    const ca={...a, _k:ka}, cb={...b, _k:kb};
+    duosLive.push({cards:[ca, cb], avg:(ccCardOvr(a)+ccCardOvr(b))/2, _remade:true, _core:key});
+    taken.add(ka); taken.add(kb);
+  });
+}
 function ccContinuityDuos(duosLive){
   const taken=new Set(); duosLive.forEach(d=>d.cards.forEach(c=>taken.add(hKey(c))));
   const floor=ccBand(1, ccPoolRegion()==='ALL' ? undefined : ccPoolRegion())-2;
@@ -129779,7 +129842,12 @@ const CC_REAL_PULL_HALF=90;
    из 834, через шесть недель — в среднем на единицу. Теперь стык сам закрывает
    треть разницы (как обновление рейтингов к новому сезону), остальное идёт
    постепенно, как шло. */
-const CC_REAL_PULL_OPEN=1/3;
+/* И ДВЕ ТРЕТИ, А НЕ ТРЕТЬ (Notion «fncsdraft 15.10», 16.10: «у части ботов рейтинг даже
+   близко не становится похож на реальный, когда новая глава начинается»). Замер
+   (tools/check-career-chapter-squads.js, карьера 2020-го, стыки 2021–2026): в день стыка
+   с рейтингом года расходятся на 5+ от 150 до 280 человек. Постепенность остаётся
+   (выбор «постепенно за сезон»), но стык теперь — обновление рейтингов к сезону всерьёз. */
+const CC_REAL_PULL_OPEN=2/3;
 let CC_NOW_YEAR_FORCE=0;
 const CC_REAL_TARGETS={};
 function ccRealPullStep(){
