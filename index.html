@@ -1376,6 +1376,7 @@
     border-bottom:1px solid rgba(255,255,255,.06);}
   .prize-row b{color:#ffd166;font-variant-numeric:tabular-nums;}
 
+  .syn-hint{margin-top:4px;padding:3px 8px;border-radius:6px;background:rgba(48,209,88,.14);border:1px solid rgba(48,209,88,.45);color:#7ee2a0;font-size:11px;font-weight:800;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   .pick-btn{margin-top:10px;width:100%;background:transparent;border:1px solid var(--r-color);color:var(--r-color);
     font-size:11px;text-transform:uppercase;letter-spacing:.05em;padding:7px 0;border-radius:4px;cursor:pointer;font-weight:700;}
   .pick-btn:hover{background:var(--r-color);color:#0e1116;}
@@ -99752,6 +99753,29 @@ function pickTeam(team){
   maybeAdvanceRound();
 }
 
+/* СИНЕРГИЯ ДО ВЫБОРА (16.10, его «да» на «показывать на карточке кандидата, что она даст»). Раньше синергию было видно
+   только после выбора — в блоке состава; в паке игрок не знал, что кандидат сыгран с уже взятым, и в драфте дня
+   терял до +10 силы. Здесь — сколько синергии прибавит именно этот выбор: та же computeSynergy на составе с ним и
+   без него, оба с потолком SYN_POW_CAP (столько и пойдёт в силу), и откуда она: с кем сыгран, страна, язык. */
+function synPickHint(p){
+  if(!drafted.length || !p) return '';
+  const cap=b=>Math.min(b, SYN_POW_CAP);
+  const before=computeSynergy(drafted), after=computeSynergy(drafted.concat([p]));
+  const d=cap(after.bonus)-cap(before.bonus);
+  if(d<=0) return '';
+  const was=new Set(before.links.map(l=>l.type+'|'+l.a+'|'+l.b));
+  const fresh=after.links.filter(l=>(l.a===p.handle || l.b===p.handle) && !was.has(l.type+'|'+l.a+'|'+l.b));
+  const W=({ru:['страна', 'язык', 'с'], fr:['pays', 'langue', 'avec'], it:['paese', 'lingua', 'con'], pt:['país', 'idioma', 'com'],
+    de:['Land', 'Sprache', 'mit'], es:['país', 'idioma', 'con']}[LANG]) || ['country', 'language', 'with'];
+  const mates=fresh.filter(l=>l.type==='partner').map(l=>l.a===p.handle ? l.b : l.a);
+  const why=[];
+  if(mates.length) why.push(W[2]+' '+mates.join(', '));
+  // Страна и язык платятся раз на состав: причина — только если этот выбор их и открывает.
+  const has=(s, t)=>s.links.some(l=>l.type===t);
+  if(has(after, 'nation') && !has(before, 'nation')) why.push(W[0]);
+  if(has(after, 'language') && !has(before, 'language')) why.push(W[1]);
+  return '<div class="syn-hint" title="'+esc(L().synergyLabel||'')+'">🔗 +'+d+(why.length ? ' · '+esc(why.join(' · ')) : '')+'</div>';
+}
 function renderCandidates(list){
   const el=document.getElementById('candidates');
   el.innerHTML='';
@@ -99762,7 +99786,7 @@ function renderCandidates(list){
       const c=document.createElement('div');
       c.style.cssText='display:flex;flex-direction:column;gap:2px;';
       c.style.setProperty('--r-color', RARITY_COLOR[shownRarity(p)]);
-      c.innerHTML=futCardHTML(p)+`<button class="pick-btn" style="width:100%;">${L().pickBtn}</button>`;
+      c.innerHTML=futCardHTML(p)+synPickHint(p)+`<button class="pick-btn" style="width:100%;">${L().pickBtn}</button>`;
       c.querySelector('.pick-btn').onclick=()=>pick(p);
       wireCardPeek(c, p);
       el.appendChild(c);
