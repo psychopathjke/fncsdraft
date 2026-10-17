@@ -153301,7 +153301,7 @@ function ccNextYearEvents(){
   const mp=typeof ccMpOn==='function' && ccMpOn();
   return CC_NEXT_YEAR_EVENTS.filter(v=>!(mp && v.fight));
 }
-function ccVictoryListKey(){ return ccCalYear()+'|'+(ccYearShift()>0 ? 1 : 0)+'|'+((typeof ccMpOn==='function' && ccMpOn()) ? 1 : 0); }
+function ccVictoryListKey(){ return ccCalYear()+'|'+ccYearShift()+'|'+((typeof ccMpOn==='function' && ccMpOn()) ? 1 : 0); }
 /* Остальные денежные капы года — всё, что в архиве Tracker платило деньгами (ecomm в
    PayoutTable) и не вошло выше: DreamHack Online Open, Winter Royale, капы стримеров и
    т. п. (CC_CUPS_ARCH, tools/build-cups-archive.js). Вечер — машина Victory Cup, выплаты —
@@ -153372,6 +153372,15 @@ function ccVictoryList(){
   const extra=y>=2026 ? [] : CC_CUPS_ARCH.filter(v=>!v.invite && v.day>=from && v.day<=to
     && !hard.has(v.day) && !lanDays.has(v.day) && !ownDays.has(v.day));
   CC_VICTORY_LIST=own.concat(lans, extra).sort((a,b)=>a.day<b.day?-1:a.day>b.day?1:0);
+  /* Годы продолжения (2027+) играют календарь 2026-го со сдвигом дат, а в имени события стоял
+     настоящий год: «Games of the Future 2025 - Abu Dhabi» в декабре 2027-го (17.10, Notion
+     «fncsdraft 15.10», скрин 19). Год в имени и подписи ЛАНа сдвигается на тот же шаг. */
+  const sh=ccYearShift();
+  if(sh>0){
+    const bump=t=>typeof t==='string' ? t.replace(/\b(20[12]\d)\b/g, m=>String(+m+sh)) : t;
+    CC_VICTORY_LIST=CC_VICTORY_LIST.map(v=>(/\b20[12]\d\b/.test(v.name||'')||/\b20[12]\d\b/.test(v.lan||''))
+      ? Object.assign({}, v, {name:bump(v.name), lan:bump(v.lan)}) : v);
+  }
   CC_VICTORY_LIST_OF=yk;
   return CC_VICTORY_LIST;
 }
