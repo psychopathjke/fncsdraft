@@ -21322,6 +21322,15 @@ Object.assign(I18N.ru, {ccAskMoneyLbl:'Деньги', ccAskTermsLbl:'Услов�
   dmStRe_mkt_more:"Принято. Пройдусь по списку, напишу, если кто-то клюнет",
   dmStRe_mkt_big:"Понял. Крупные смотрят на результаты — подиум сильно поможет",
   dmStRe_mkt_ok:"Договорились",
+  ccCoReady:["посмотрим в субботу","👀","докажи на турнире","слова слова","верю","ну давай","жду результат","лочнулся 🔒","так держать"],
+  ccCoProReady:["👀","посмотрим","увидимся в лобби","бери высоту, тогда поверю","ну-ну"],
+  ccCoMateReady:["мы готовы 🤝","го","суббота наша","варимся 🍳","заряжен"],
+  ccCoTalk:["реально","факт","👀","жиза","согласен","лол","база","ну такое","+"],
+  ccCoProTalk:["реально","лол","👀","факт","+1"],
+  ccCoMateTalk:["😂","факт","это правда","лол","ага"],
+  ccCoAsk:["зависит от зоны","вопрос года","спроси у Кинча","сложный вопрос","👀","хороший вопрос","тут без вариантов","ответ очевиден"],
+  ccCoProAsk:["зависит","👀","лол","скажу в субботу","без комментариев"],
+  ccCoMateAsk:["спросишь меня потом","лол","ты знаешь ответ","😂"],
   ccFnChamp:h=>'Чемпион вечера — @'+h,
   ccLockerTitle:'Шкафчик', ccLockerNone:'Пусто. Баннер дают за гранд-финал или ЛАН и за каждый клуб, кирку — чемпиону FNCS',
   ccLockClub:'баннер клуба', ccLockNow:'сейчас', ccLock_pickaxe:'кирка', ccLock_spray:'спрей', ccLock_banner:'баннер', ccLock_emote:'эмоция',
@@ -21415,6 +21424,15 @@ Object.assign(I18N.en, {ccAskMoneyLbl:'Money', ccAskTermsLbl:'Terms', ccAsk_smal
   dmStRe_mkt_more:"Noted. I will go through the list and tell you if someone bites",
   dmStRe_mkt_big:"Got it. The big ones look at results — a podium would help a lot",
   dmStRe_mkt_ok:"Deal",
+  ccCoReady:["see you saturday","👀","prove it in the lobby","talk is cheap","i believe","lets see it","waiting on results","locked in 🔒","keep it up"],
+  ccCoProReady:["👀","we will see","see you in the lobby","take height and i will believe it","sure"],
+  ccCoMateReady:["we are ready 🤝","lets go","saturday is ours","cooking 🍳","locked in"],
+  ccCoTalk:["real","fr","👀","true","agreed","lol","facts","eh","+1"],
+  ccCoProTalk:["real","lol","👀","facts","+1"],
+  ccCoMateTalk:["😂","facts","this is true","lol","yep"],
+  ccCoAsk:["depends on zone","question of the year","ask Kinch","hard one","👀","good question","no contest","answer is obvious"],
+  ccCoProAsk:["depends","👀","lol","ask me saturday","no comment"],
+  ccCoMateAsk:["ask me later","lol","you know the answer","😂"],
   ccFnChamp:h=>'Champion of the night — @'+h,
   ccLockerTitle:'Locker', ccLockerNone:'Empty. A banner comes with a grand final, a LAN and every club you play for, the pickaxe with an FNCS title',
   ccLockClub:'club banner', ccLockNow:'current', ccLock_pickaxe:'pickaxe', ccLock_spray:'spray', ccLock_banner:'banner', ccLock_emote:'emote',
@@ -136315,7 +136333,7 @@ function ccPostStats(e, who){
           : who.verified ? CC_PRESS_REACH
           : ccReachOf(who.ovr, who.name);
   const w = CC_POST_W[e.kind]!=null ? CC_POST_W[e.kind] : 0.5;
-  const jit = 0.82 + (ccHashStr((e.k||'')+'|'+(e.day||'')+'|'+((e.a||[]).join(',')))%37)/100;
+  const jit = 0.82 + (ccHashStr((e.k||'')+'|'+(e.day||'')+'|'+((e.a||[]).join(','))+'|'+(e.text||''))%37)/100;
   /* ОХВАТ ПАДАЕТ С РАЗМЕРОМ АККАУНТА (16.10, «сделай реалистичней»). Было f×(0.35…1.5): у Merstach (530 тыс.) недельный
      кап собирал 660 тыс. просмотров и 14,6 тыс. лайков, подкол Chap'а — 395 тыс. и 8,7 тыс. На живом X маленький
      аккаунт добирает до своего числа подписчиков, большой — 10–30 %: 0.9 × (f/5000)^−0.35, не ниже 0.08. */
@@ -137270,6 +137288,22 @@ const CC_CO_BY_KIND=[
   [/^ccPostPodium|Through$|^ccNewsWfIn|^ccNewsGcIn|^ccPostWins|^ccNewsEvalCash|^ccNewsVicCash/, 'Pod'],
   [/Out$|NoWin$|NoCash$|^ccPostClose|^ccPostOneOff|^ccPostTriedBest|^ccNewsRcDrop|^ccNewsRelegated|^ccNewsMpSplit|^ccNewsRentGone/, 'Bad']
 ];
+/* ОТВЕТЫ ПОД СВОИМ ПОСТОМ ПО СМЫСЛУ (17.10, Notion «fncsdraft 15.10», его «реплаи не по теме»: под «ищу дуо на сезон 🙏
+   лс открыты» и «форма есть 📈» писали «best 🔥», «earned», «congrats» — любая своя строка словами считалась новостью
+   и брала банк поздравлений). Теперь тема — по словам поста: ищу дуо/трио → «V», «dm'd»; форма, готовность, буткемп,
+   скримы → «посмотрим в субботу», «👀»; победа → поздравления; тильт и плохой вечер → поддержка; вопрос → ответы на
+   вопрос; остальное — разговорное «real», «fr», без поздравлений. */
+const CC_CO_TEXT=[
+  [/(^|[^a-zа-яё])(lf[dts]|looking for|ищу|ищем|нужен (дуо|тиммейт|трио)|лс открыт|dms? open|need a (duo|trio|mate))/i, 'Lfd'],
+  [/(выиграл|выиграли|победил|победа|we won|i won|won the|#1\b|топ[- ]?1\b|\bgg wp\b|🏆)/i, 'Win'],
+  [/(тильт|tilt|плохо|ужасн|rough|awful|сгорел|бросаю|quit|😔|😞|💀)/i, 'Bad'],
+  [/(форм|ready|готов|bootcamp|буткемп|grind|гринд|тренир|scrim|скрим|📈|cook|in form|locked in|настрой|голоден|hungry)/i, 'Ready'],
+  [/\?\s*$/, 'Ask']
+];
+function ccCoTextMood(t){
+  for(let i=0;i<CC_CO_TEXT.length;i++) if(CC_CO_TEXT[i][0].test(t)) return CC_CO_TEXT[i][1];
+  return 'Talk';
+}
 function ccCoMood(n){
   const k=String((n&&n.k)||'');
   for(let i=0;i<CC_CO_BY_KIND.length;i++) if(CC_CO_BY_KIND[i][0].test(k)) return CC_CO_BY_KIND[i][1];
@@ -137283,7 +137317,7 @@ function ccCoMood(n){
     const beat=1-(p-1)/Math.max(1, of-1);
     return p===1 ? 'Win' : (p<=3 || beat>=0.9) ? 'Pod' : beat<=0.3 ? 'Bad' : 'Mid';
   }
-  if(!k) return 'News';                         // своя строка словами
+  if(!k) return ccCoTextMood(String((n && n.text) || ''));   // своя строка словами — по смыслу (ccCoTextMood)
   return n.kind==='bad' ? 'Bad' : n.kind==='good' ? 'News' : 'Mid';
 }
 /* Главный свой пост вечера.
@@ -137345,7 +137379,7 @@ function ccPostComments(n, who, st){
   const replies=(st && st.replies)||0;
   if(replies<1) return onlyMine();
   const cr=(CAREER&&CAREER.career)||{};
-  const seed=ccHashStr('co|'+(n.id||'')+'|'+(n.k||'')+'|'+(n.day||''));
+  const seed=ccHashStr('co|'+(n.id||'')+'|'+(n.k||'')+'|'+(n.day||'')+'|'+(n.text||''));
   const rnd=careerRng(seed);
   const mood=ccCoMood(n);
   // Банк по сезону: в трио про дуо писать нечего — см. ccSquadKey.
@@ -137354,10 +137388,11 @@ function ccPostComments(n, who, st){
   const good=(mood==='Win'||mood==='Pod'||mood==='Duo'||mood==='Sign');
   // Под анонсом дуо профи желают удачи, а не «earned 🐐» (16.10) — у анонса свой банк.
   const proBank=mood==='Duo' ? fanBank : good ? bankOf('ccCoProWin') : mood==='Bad' ? bankOf('ccCoProBad')
-              : mood==='Lfd' ? bankOf('ccCoProLfd') : fanBank;
+              : mood==='Lfd' ? bankOf('ccCoProLfd') : (mood==='Ready'||mood==='Talk'||mood==='Ask') ? (bankOf('ccCoPro'+mood)||fanBank) : fanBank;
   // «🐐» от напарника под сорок третьим местом — нет; под серединой он пишет
   // то же, что под плохим вечером: «вернёмся», «в следующий раз».
-  const mateBank=bankOf(mood==='Duo' ? 'ccCoDuo' : (mood==='Bad'||mood==='Mid') ? 'ccCoMateDown' : 'ccCoMateUp');
+  const mateBank=bankOf(mood==='Duo' ? 'ccCoDuo' : (mood==='Bad'||mood==='Mid') ? 'ccCoMateDown'
+                 : (mood==='Ready'||mood==='Talk'||mood==='Ask') ? 'ccCoMate'+mood : 'ccCoMateUp');
   // Напарник пишет под вечером, а не под анонсом Epic или скрином таблицы.
   const resulty=good || mood==='Bad' || mood==='Mid' || mood==='News';
   const rows=[], seenH=new Set(), seenT=new Set();
@@ -142383,8 +142418,11 @@ function ccAdOf(handle){
 // Проходит ли игрок по объявлению. PR своей строки — тот же, что видит доска.
 function ccAdFits(ad){
   if(!ad || !ad.pr) return true;
-  const mine=CAREER.player && ccPrCardOf(CAREER.player.handle);
-  return (mine ? mine.pr : 0) >= ad.pr;
+  /* Своя строка доски — по метке you, а не по нику карточки (17.10, Notion «fncsdraft 15.10»: «не могу играть хотя
+     pr есть» — PR 218 883 в шапке, а объявление просило 82 239: у построенного игрока handle нет, ccPrCardOf(null)
+     давал ноль, и ни одно объявление с порогом не открывалось). */
+  const me=careerPrRows().find(r=>r.you);
+  return (me ? me.pr : 0) >= ad.pr;
 }
 function ccDuoFindRender(keepFocus){
   const q=CC_DUO_Q.trim().toLowerCase();
