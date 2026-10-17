@@ -112732,6 +112732,10 @@ function dailyDay(ms){ return new Date(ms==null ? Date.now() : ms).toISOString()
 function dailyNum(day){ return Math.round((Date.parse(day+'T00:00:00Z')-Date.parse(DAILY_EPOCH+'T00:00:00Z'))/864e5)+1; }
 function dailyMap(day){ return MAP_CHOICES[ccHashStr('daily-map|'+day)%MAP_CHOICES.length]; }
 function dailyBase(){ const b=ccBoardBase(); return b ? b.replace(/\/board$/, '/daily') : null; }
+/* Debug и локальные сборки пишут в свою таблицу дня (17.10, его «сделай ещё на debug больше драфтов»): у debug и
+   прода один сервер, тестовые драфты не должны вставать в настоящий топ. Сервер держит её отдельно (?t=dbg → daily_dbg). */
+function dailyDbg(){ try{ return !/^(www\.)?fncsdraft\.com$/.test(location.hostname); }catch(e){ return true; } }
+function dailyQ(){ return dailyDbg() ? 't=dbg&' : ''; }
 function dailyStore(){ try{ return JSON.parse(localStorage.getItem('fd_daily')||'{}')||{}; }catch(e){ return {}; } }
 function dailySave(o){ try{ localStorage.setItem('fd_daily', JSON.stringify(o)); }catch(e){} }
 function dailyId(){
@@ -112826,7 +112830,7 @@ function dailySend(){
   const s=dailyStore(); s.nick=nick; dailySave(s);
   let country=''; try{ country=String((CAREER && CAREER.player && CAREER.player.country)||'').toLowerCase().slice(0, 2); }catch(e){}
   const day=dailyDay();
-  fetch(base, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id:dailyId(), day, nick, country,
+  fetch(base+(dailyDbg() ? '?t=dbg' : ''), {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id:dailyId(), day, nick, country,
     score:r.score, place:r.place, field:r.field, team:r.team, power:r.power||0, syn:r.syn||0})})
     .then(x=>x.ok).catch(()=>false).then(ok=>{
       if(ok){ const s2=dailyStore(); if(s2.days && s2.days[day]){ s2.days[day].sent=nick; dailySave(s2); } }
@@ -112860,7 +112864,7 @@ function dailyLoad(cb){
   if(d && d.day===day && Date.now()-d._at<60000){ cb(d); return; }
   if(!(d && d.day===day)){ try{ const c=JSON.parse(localStorage.getItem('fd_daily_board')||'null'); if(c && c.day===day) d=c; }catch(e){} }
   if(d && d.day===day) cb(d);
-  fetch(base+'?day='+day+'&me='+encodeURIComponent(dailyId())).then(r=>r.ok ? r.json() : null).catch(()=>null).then(x=>{
+  fetch(base+'?'+dailyQ()+'day='+day+'&me='+encodeURIComponent(dailyId())).then(r=>r.ok ? r.json() : null).catch(()=>null).then(x=>{
     if(!x){ if(!(d && d.day===day)) cb(null); return; }
     DAILY_BOARD=Object.assign(x, {_at:Date.now()});
     try{ localStorage.setItem('fd_daily_board', JSON.stringify(DAILY_BOARD)); }catch(e){}
