@@ -190,6 +190,8 @@ export class Board {
       const now=Date.now(), r=dailyRow(e, now);
       if(r.err) return json({err:r.err}, 400);
       const w=r.row;
+      // Страны карьеры нет — флаг по IP (заголовок ставит воркер, см. fetch ниже).
+      if(!w.country){ const cc=String(req.headers.get('X-Fd-Country')||''); if(/^[a-z]{2}$/.test(cc)) w.country=cc; }
       this.sql.exec('INSERT OR IGNORE INTO '+T+'(day,id,nick,country,score,place,field,team,power,p100,syn,at) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)',
         w.day, w.id, w.nick, w.country, w.score, w.place, w.field, w.team, w.power, w.p100, w.syn, w.at);
       this.sql.exec('DELETE FROM '+T+' WHERE day < ?', dayOf(now-60*864e5));
@@ -307,6 +309,14 @@ export default {
       // Тело не больше пары килобайт: строка карьеры столько и весит.
       if(req.method==='POST' && Number(req.headers.get('Content-Length')||0) > 4096) return json({err:'size'}, 413);
       const stub=env.BOARD.get(env.BOARD.idFromName('global'));
+      /* Страна по IP для таблицы дня (17.10, его «давай по ip»): Cloudflare знает страну запроса (req.cf.country), сам IP
+         никуда не пишется. Заголовок ставит только этот воркер — присланный клиентом перезаписывается. Объект берёт её,
+         если браузер не прислал страну карьеры. XX/T1 (неизвестно, Tor) — без флага. */
+      if(url.pathname==='/daily' && req.method==='POST'){
+        const cc=String((req.cf && req.cf.country) || '').toLowerCase();
+        const h=new Headers(req.headers); h.set('X-Fd-Country', /^[a-z]{2}$/.test(cc) && cc!=='xx' && cc!=='t1' ? cc : '');
+        return stub.fetch(new Request(req, {headers:h}));
+      }
       return stub.fetch(req);
     }
     if(url.pathname==='/vault'){
