@@ -93278,8 +93278,11 @@ var RATING_FLOOR={};
     const ledgerSet=s=>/^[tm]\d$/.test(s);
     const low=h=>String(h||'').toLowerCase().trim();
     const keyOf=q=>(q.region||'')+'|'+low(q.handle);
+    const gfMemo=new Map();
     const gfOf=q=>{ if(q.realGf && q.realGf.rank) return q.realGf;
-      for(const k in q) if(/^_[a-z]\dGf$/.test(k) && q[k] && q[k].rank) return q[k]; return null; };
+      if(gfMemo.has(q)) return gfMemo.get(q);
+      let g=null; for(const k in q) if(/^_[a-z]\dGf$/.test(k) && q[k] && q[k].rank){ g=q[k]; break; }
+      gfMemo.set(q, g); return g; };
     const stageOf=q=>gfOf(q) ? 'G' : (q._t1Stage==='P' || /^(P|Playin)$/.test(String(q.real && q.real.stage || ''))) ? 'P' : 'L';
     const stageW=q=>ledgerSet(q.cardSet) ? 2.0 : stageOf(q)==='G' ? (isWC(q.cardSet) ? 8.0 : 2.0)
       : stageOf(q)==='P' ? (isWC(q.cardSet) ? 0.6 : 0.9) : (isWC(q.cardSet) ? 0.4 : 0.5);
@@ -93393,7 +93396,10 @@ var RATING_FLOOR={};
        карточек одного человека в наборе остаётся та, что выше. */
     const giveForm=(q, f)=>{ if(!q) return; const r=Math.min(f.cap||97, q.rating+f.boost); if(r<=q.rating) return;
       const cur=FORM[q.id]; if(!cur || cur.base+cur.boost<r) FORM[q.id]=Object.assign({}, f, {boost:r-q.rating, base:q.rating}); };
-    const cardIn=(k, set)=>list.find(q=>q.cardSet===set && keyOf(q)===k) || null;
+    // Индекс «набор|ключ → первая карточка»: перебор list на каждый вызов съедал ~1.2 с на загрузке.
+    const cardAt=new Map();
+    list.forEach(q=>{ const id=q.cardSet+'|'+keyOf(q); if(!cardAt.has(id)) cardAt.set(id, q); });
+    const cardIn=(k, set)=>cardAt.get(set+'|'+k) || null;
     const finals={};
     list.forEach(q=>{ const g=gfOf(q); if(!g) return; (finals[q.cardSet+'|'+q.region]=finals[q.cardSet+'|'+q.region] || []).push({q, g}); });
     Object.values(finals).forEach(rows=>{
@@ -93432,8 +93438,8 @@ var RATING_FLOOR={};
       Object.keys(wins).forEach(y=>{
         const sets=Object.keys(SET_T).filter(st=>Math.floor(SET_T[st])===+y).sort((a,b)=>SET_T[b]-SET_T[a]);
         const lastCard=k=>{ for(const st of sets){ const q=cardIn(k, st); if(q) return q; } return null; };
-        const score=k=>wins[y][k]*1000+((lastCard(k)||{}).rating||0);
-        const lead=Object.keys(wins[y]).sort((a,b)=>score(b)-score(a))[0];
+        const sc={}; Object.keys(wins[y]).forEach(k=>{ sc[k]=wins[y][k]*1000+((lastCard(k)||{}).rating||0); });
+        const lead=Object.keys(wins[y]).sort((a,b)=>sc[b]-sc[a])[0];
         if(!lead || wins[y][lead]<2) return;
         const who_=[lead].concat([...(mates[y+'|'+lead]||[])].filter(k=>wins[y][k]===wins[y][lead]));
         who_.forEach(k=>{ const q=lastCard(k); if(q) giveForm(q, {event:'FNCS Player of the Year '+y, place:1, boost:99-q.rating, why:'poty', cap:99}); });
@@ -116929,7 +116935,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='2c3e96c1';
+const CC_BUILD='ea188eaa';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
