@@ -185,6 +185,8 @@ export class Board {
     const T=url.searchParams.get('t')==='dbg' ? 'daily_dbg' : 'daily';
     if(req.method==='POST'){
       let e=null; try{ e=await req.json(); }catch(err){ return json({err:'json'}, 400); }
+      // 17.10: убрать тестовых ботов (id «dbgbot-…») — только из таблицы debug, настоящую это не трогает.
+      if(e && e.dropBots && T==='daily_dbg'){ this.sql.exec("DELETE FROM daily_dbg WHERE id LIKE 'dbgbot-%'"); return json({ok:true}); }
       const now=Date.now(), r=dailyRow(e, now);
       if(r.err) return json({err:r.err}, 400);
       const w=r.row;
