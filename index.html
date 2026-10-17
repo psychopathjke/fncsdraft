@@ -2673,7 +2673,8 @@
   .ch-purse-now div{text-align:left;}
   .ch-purse-now .ch-en-row{justify-content:flex-start;}
   .ch-purse-now .ch-cash{color:#3ee9b8;}
-  .ch-purse-now .ch-pend{display:block;font-size:10.5px;font-weight:700;color:#8ea6d6;margin-top:1px;}
+  .ch-purse-now .ch-pend{display:block;font-size:10.5px;font-weight:700;color:#8ea6d6;margin-top:1px;cursor:pointer;}
+  .ch-pend-list{display:flex;flex-direction:column;gap:1px;margin-top:3px;font-weight:600;color:#c3cde4}
   .ch-purse em{display:block;font-style:normal;font-size:9px;color:#8b98a5;
     font-weight:800;letter-spacing:.1em;text-transform:uppercase;}
   .ch-purse b{font-size:16px;font-weight:900;}
@@ -3768,7 +3769,17 @@
   .zr-kit .zk-art svg{width:24px;height:24px;}
   /* Кирка — картинка The Axe of Champions 2.0 (CC_PICKAXE_ART); силуэт остаётся
      запасным, если картинка не загрузилась (img снимает себя по onerror). */
-  .zr-kit .zk-pickaxe{width:38px;height:26px;display:flex;align-items:center;justify-content:center;}
+  .zr-kit .cc-locker-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:8px}
+.cc-lock-it{display:flex;flex-direction:column;align-items:center;text-align:center;gap:3px;padding:8px 6px;border-radius:10px;
+  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08)}
+.cc-lock-it b{font-size:11.5px;line-height:1.2}.cc-lock-it em{font-style:normal;font-size:10.5px;opacity:.65}
+.cc-lock-ic{font-size:30px;line-height:40px;height:40px}.cc-lock-ic img{height:40px;width:auto}
+.cc-lock-pickaxe{border-color:rgba(255,210,63,.55);background:linear-gradient(180deg,rgba(255,210,63,.16),rgba(255,255,255,.03))}
+.cc-lock-banner{border-color:rgba(122,162,255,.4)}
+.cc-gala-d{font-style:normal;font-size:.55em;margin-left:6px;opacity:.85}.cc-gala-d.up{color:#3ddc84}.cc-gala-d.down{color:#ff6b6b}
+.cc-cast{position:absolute;left:7px;top:26px;max-width:54%;padding:4px 8px;border-left:3px solid var(--accent,#ffd23f);
+  background:rgba(8,10,16,.72);color:#f2f4fa;font-size:11.5px;font-weight:700;line-height:1.3;border-radius:0 6px 6px 0;pointer-events:none;z-index:3}
+.zk-pickaxe{width:38px;height:26px;display:flex;align-items:center;justify-content:center;}
   .zr-kit .zk-pickaxe img{max-width:100%;max-height:100%;object-fit:contain;display:block;
     transform:rotate(-25deg) scale(1.45);filter:drop-shadow(0 1px 2px rgba(0,0,0,.8));}
   .zr-kit .zk-pickaxe:empty{width:20px;height:22px;background:#dfe8ff;
@@ -20889,13 +20900,13 @@ Object.assign(I18N.ru, {
   ccDmSmmBad:v=>['Сегодня лучше ничего не постить на эмоциях. Завтра — спокойная строка про следующую цель.','Пропусти ленту сегодня. Плохому вечеру твит не нужен.'][v%2],
   ccDmMktBrands:v=>['После таких вечеров бренды спрашивают про тебя — загляни в спонсоров.','Два бренда сегодня просили твою стату. Такие результаты поднимают твою цену.'][v%2]});
 /* Хотфиксы, связь, выплаты (16.10, careerHotfixTick / ccTechToday / careerPayTick). */
-Object.assign(I18N.en, {ccPayPend:'pending', ccTechLbl:'Connection',
+Object.assign(I18N.en, {ccPayPend:'pending', ccPayNext:d=>'next '+d, ccPayPendAll:'Prize money arrives 30 days after the event. Tap for all payouts', ccTechLbl:'Connection',
   ccDmPayout:(sum,n)=>'Your payout of $'+sum+' for '+n+(n===1?' event':' events')+' has been sent. Thanks for competing!',
   ccNewsHotfix:(w,v)=>['Competitive hotfix: '+w+' is disabled in tournaments for the rest of the season.','Hotfix is live: '+w+' has been removed from competitive playlists.','Update: '+w+' is now unvaulted from comp… just kidding, it is disabled for the rest of the season.'][v%2],
   ccPostTechNet:v=>['internet is dying today 💀 playing on 80 ping','my wifi picked the worst day possible','packet loss on cup day. love it'][v%3],
   ccNewsRehost:g=>'Game '+g+' of tonight’s session was re-hosted due to server issues. Points from the original game are void.',
   ccNewsTeamingDq:(a,b)=>'@'+a+' and @'+b+' have been disqualified from tonight’s event for teaming.'});
-Object.assign(I18N.ru, {ccPayPend:'ожидается', ccTechLbl:'Связь',
+Object.assign(I18N.ru, {ccPayPend:'ожидается', ccPayNext:d=>'ближайшая '+d, ccPayPendAll:'Призовые приходят через 30 дней после турнира. Нажми — все выплаты с датами', ccTechLbl:'Связь',
   ccDmPayout:(sum,n)=>'Выплата $'+sum+' за турниры ('+n+') отправлена. Спасибо за участие!',
   ccNewsHotfix:(w,v)=>['Хотфикс компетитива: '+w+' отключён в турнирах до конца сезона.','Хотфикс вышел: '+w+' убран из соревновательных плейлистов.'][v%2],
   ccPostTechNet:v=>['интернет умирает сегодня 💀 играю на 80 пинге','вайфай выбрал худший день','потеря пакетов в день капа. обожаю'][v%3],
@@ -21246,6 +21257,22 @@ Object.assign(I18N.ru, {ccAskMoneyLbl:'Деньги', ccAskTermsLbl:'Услов�
   dmOrgYesBonus:v=>'Договорились: $'+v+' бонусом при подписании',
   dmOrgNoBonus:'Бонус за подпись не даём никому. Зарплата — вот наш аргумент',
   tlSignBonus:(c,v)=>c+': бонус за подпись $'+v,
+  ccFnChamp:h=>'Чемпион вечера — @'+h,
+  ccLockerTitle:'Шкафчик', ccLockerNone:'Пусто. Косметику дают за победы: спрей за кап, баннер за гранд-финал или ЛАН, кирку — чемпиону FNCS',
+  ccLock_pickaxe:'кирка', ccLock_spray:'спрей', ccLock_banner:'баннер', ccLock_emote:'эмоция',
+  ccNewsLocker:(i,n)=>i+' В шкафчике новое: «'+n+'»',
+  ccGalaShare:'Поделиться итогами', ccGalaShareTag:'Итоги года', ccGalaVsPrev:'▲▼ — сравнение с прошлым сезоном', ccGalaPrevRow:'Прошлый сезон: призовые · лучшее место',
+  ccCastStart:[n=>'Поехали! '+n+' команд в лобби, автобус пошёл', n=>'И мы в эфире — '+n+' команд, кто заберёт эту игру?', n=>'Новая игра, '+n+' команд. Смотрим за дропами'],
+  ccCastZone:[(z,n)=>'Зона '+z+' закрывается, осталось '+n, (z,n)=>'Ротации к '+z+'-й зоне — '+n+' команд ещё в игре', (z,n)=>'Круг '+z+'. '+n+' живых, становится тесно'],
+  ccCastWipe:[(k,n)=>'Мясо! Минус '+k+' команд за секунды, осталось '+n, (k,n)=>'Что там происходит?! '+k+' команд вылетели разом'],
+  ccCastYouKill:[h=>h+' забирает файт!', h=>'Чистый килл от '+h, h=>h+' не прощает ошибок'],
+  ccCastYouMulti:[(h,k)=>h+' — '+k+' килла подряд! Это заявка', (h,k)=>'ДАБЛ от '+h+'! Лобби проснулось'],
+  ccCastFinal:[n=>'Финальные '+n+'! Каждая ротация решает', n=>'Осталось '+n+' — сейчас начнётся самое интересное'],
+  ccCastYouOut:[(h,p)=>'А вот и всё для '+h+' — '+p+'-е место', (h,p)=>h+' падает, '+p+'-е. Обидно'],
+  ccCastYouWin:[h=>'VICTORY ROYALE — '+h.toUpperCase()+'!!!', h=>h+' ЗАБИРАЕТ ИГРУ! Какой эндгейм!'],
+  ccCastWin:[h=>h+' забирает эту игру', h=>'Победа — '+h+'. Чисто сыграно'],
+  ccNewsFnWin:(n,p,h,w)=>n+': чемпион! '+w+' побед подряд, в финале — @'+h+' 🥊',
+  ccNewsFnOut:(n,p,h,w)=>n+': '+(p===2 ? 'финал' : p===3 ? 'полуфинал' : p===5 ? 'четвертьфинал' : 'первый круг')+', выбил @'+h,
   ccAskTimeLbl:'Время', ccAskThink:'Дай подумать пару дней', ccAskThinkWhat:p=>'Просьбой не считается. Клуб ждёт '+CC_THINK_DAYS+' дня: ~'+p+'% — поднимут предложение, иначе поставят срок (или уйдут, если тянулись к тебе вниз)',
   dmAskThink:'Спасибо, предложение серьёзное. Дайте пару дней подумать — отвечу',
   dmOrgThinkOk:d=>'Конечно, не торопим. Ждём ответ к '+ccDayLabel(d)+'.',
@@ -21266,6 +21293,22 @@ Object.assign(I18N.en, {ccAskMoneyLbl:'Money', ccAskTermsLbl:'Terms', ccAsk_smal
   dmOrgYesBonus:v=>'Deal: $'+v+' as a signing bonus',
   dmOrgNoBonus:'We do not do signing bonuses for anyone. The salary is our argument',
   tlSignBonus:(c,v)=>c+': signing bonus $'+v,
+  ccFnChamp:h=>'Champion of the night — @'+h,
+  ccLockerTitle:'Locker', ccLockerNone:'Empty. Cosmetics come with wins: a spray for a cup, a banner for a grand final or a LAN, the pickaxe for an FNCS champion',
+  ccLock_pickaxe:'pickaxe', ccLock_spray:'spray', ccLock_banner:'banner', ccLock_emote:'emote',
+  ccNewsLocker:(i,n)=>i+' New in the locker: "'+n+'"',
+  ccGalaShare:'Share my year', ccGalaShareTag:'Year in review', ccGalaVsPrev:'▲▼ — compared with last season', ccGalaPrevRow:'Last season: prize money · best place',
+  ccCastStart:[n=>'Here we go! '+n+' teams in the lobby, the bus is moving', n=>'And we are live — '+n+' teams, who takes this one?', n=>'New game, '+n+' teams. Eyes on the drops'],
+  ccCastZone:[(z,n)=>'Zone '+z+' closing, '+n+' left', (z,n)=>'Rotations into zone '+z+' — '+n+' teams still alive', (z,n)=>'Circle '+z+'. '+n+' alive, it is getting tight'],
+  ccCastWipe:[(k,n)=>'Carnage! '+k+' teams gone in seconds, '+n+' left', (k,n)=>'What is happening?! '+k+' teams out at once'],
+  ccCastYouKill:[h=>h+' takes the fight!', h=>'Clean pick from '+h, h=>h+' does not forgive mistakes'],
+  ccCastYouMulti:[(h,k)=>h+' with '+k+' in a row! That is a statement', (h,k)=>'DOUBLE from '+h+'! The lobby is awake'],
+  ccCastFinal:[n=>'Final '+n+'! Every rotation matters now', n=>n+' left — this is where it gets good'],
+  ccCastYouOut:[(h,p)=>'And that is it for '+h+' — '+p+'th place', (h,p)=>h+' goes down in '+p+'th. Painful'],
+  ccCastYouWin:[h=>'VICTORY ROYALE FOR '+h.toUpperCase()+'!!!', h=>h+' TAKES THE GAME! What an endgame!'],
+  ccCastWin:[h=>h+' takes this game', h=>'Victory for '+h+'. Clean'],
+  ccNewsFnWin:(n,p,h,w)=>n+': champion! '+w+' wins in a row, beat @'+h+' in the final 🥊',
+  ccNewsFnOut:(n,p,h,w)=>n+': '+(p===2 ? 'lost the final' : p===3 ? 'out in the semis' : p===5 ? 'out in the quarters' : 'out in round one')+' to @'+h,
   ccAskTimeLbl:'Time', ccAskThink:'Let me think a couple of days', ccAskThinkWhat:p=>'Not an ask. The club waits '+CC_THINK_DAYS+' days: ~'+p+'% they sweeten the offer, otherwise they set a deadline (or walk, if they were reaching down for you)',
   dmAskThink:'Thanks, it is a serious offer. Give me a couple of days to think it over',
   dmOrgThinkOk:d=>'Of course, no rush. We will wait for your answer by '+ccDayLabel(d)+'.',
@@ -101745,6 +101788,7 @@ async function simulateGamesLive(teams, numGames, pointsFn, killMult, fieldPrefi
   // the right numbers rather than being corrected onto them.
   let lastOrder='', lastMove=0;
   function onZoneFrame(lobby, frame){
+    try{ if(CAREER_RUN) ccCastFrame(lobby, frame); }catch(e){}
     let alive=0;
     for(const d of frame.dots) if(d.alive) alive++;
     const next=new Map();
@@ -118787,6 +118831,7 @@ async function ccCloudRestore(){
 function careerSave(){
   if(!CAREER) return;
   if(CAREER._mgr){ if(typeof mgrSave==='function') mgrSave(); return; }   // теневая карьера Fortnite Manager
+  try{ if(typeof ccLockerCheck==='function') ccLockerCheck(); }catch(e){}
   // Экран карьер читает сейв не загружая его — пусть знает, есть ли у карьеры дивизионы сейчас.
   try{ if(CAREER.career) CAREER.career.noDiv=!!ccNoDivisions(); }catch(e){}
   try{ ccNightStamp(); }catch(e){}
@@ -119825,7 +119870,7 @@ function careerRenderHubBody(tab){
     // number that answers "can I" is what is left, not what was ever won. The
     // career's total keeps its place in the ladder tile and the history.
     `<div class="ch-go" onclick="careerTab('shop')"><em>${L().ccBalance}</em><b class="ch-cash">${ccMoney(cr.balance||0)}</b>${
-      ccPayPending()>0 ? `<small class="ch-pend">+${ccMoney(ccPayPending())} ${esc(L().ccPayPend||'pending')}</small>` : ''}</div>`+
+      ccPayPending()>0 ? ccPayPendHTML() : ''}</div>`+
     (ccTechToday() ? `<div><em>${esc(L().ccTechLbl||'Connection')}</em><b class="cc-pen bad">📶 −${CC_TECH_PEN}</b></div>` : '')+
     /* Form, reputation and burnout, which used to live in the ladder tile.
 
@@ -126378,8 +126423,9 @@ function ccWorldReset(){
 }
 let CC_YEAR_DAYS_OF=null;
 function careerYearDays(){
-  if(CC_YEAR_DAYS && CC_YEAR_DAYS_OF===ccCalYear()) return CC_YEAR_DAYS;
-  CC_YEAR_DAYS_OF=ccCalYear();
+  const ydKey=(typeof ccVictoryListKey==='function') ? ccVictoryListKey() : ccCalYear();
+  if(CC_YEAR_DAYS && CC_YEAR_DAYS_OF===ydKey) return CC_YEAR_DAYS;
+  CC_YEAR_DAYS_OF=ydKey;
   const out=new Map();
   const add=(iso, kind, label, id, only)=>{
     if(iso<ccYearFrom() || iso>ccYearTo()) return;
@@ -134645,6 +134691,16 @@ function ccPayIn(mine, now){
   return mine-cut;
 }
 const CC_PAY_DELAY=30;
+/* Когда придут призовые (17.10, его вопрос «где посмотреть, когда призовые придут?»): под балансом — сумма
+   и ближайшая дата, по нажатию — весь список выплат с датами. */
+let CC_PAY_OPEN=false;
+function ccPayPendHTML(){
+  const q=((CAREER.career.payQ)||[]).slice().sort((a,b)=>a.due<b.due?-1:a.due>b.due?1:0);
+  if(!q.length) return '';
+  const rows=CC_PAY_OPEN ? '<span class="ch-pend-list">'+q.map(x=>'<span>'+ccMoney(x.amt)+' — '+esc(ccDayLabel(x.due))+'</span>').join('')+'</span>' : '';
+  return '<small class="ch-pend" role="button" tabindex="0" onclick="CC_PAY_OPEN=!CC_PAY_OPEN;careerRenderHub()" title="'+esc(L().ccPayPendAll)+'">+'+
+    ccMoney(ccPayPending())+' '+esc(L().ccPayPend||'pending')+' · '+esc(L().ccPayNext(ccDayLabel(q[0].due)))+(q.length>1 ? ' ▾' : '')+rows+'</small>';
+}
 function ccPayPending(){ const q=(CAREER && CAREER.career && CAREER.career.payQ)||[]; return q.reduce((a,x)=>a+(x.amt||0), 0); }
 const CC_PAY_WHO={handle:'Epic Payouts', verified:true, roster:false, staff:'pay'};
 function careerPayTick(){
@@ -135453,7 +135509,7 @@ const CC_POST_BY={
      всякую неназванную строку. Ответ и отказ — твои собственные слова. */
   ccBeefStart:'by',
   ccBeefHit:'you', ccBeefQuiet:'you',
-  ccNewsSp:'you', ccNews1v1:'you', ccNewsSick:'you',
+  ccNewsSp:'you', ccNews1v1:'you', ccNewsSick:'you', ccNewsLocker:'you', ccNewsFnWin:'you', ccNewsFnOut:'you',
   ccNewsFriendYes:'you', ccNewsFriendNo:'you',
   ccNewsCheatPaid:'you', ccNewsBanned:'you',
   // Moving is the player's own news in all three directions — the flight, the
@@ -141030,6 +141086,50 @@ function careerTrophies(){
           lans:summit+paris+gc, summit:summit, paris:paris, globals:gc,
           majors:won('major','final'), weekly:won('final')};
 }
+/* ШКАФЧИК (17.10, его «10»): косметика за то, за что её дают в настоящем Fortnite — кирка чемпиона FNCS (Axe of Champions),
+   спреи за победы, баннеры за гранд-финалы и ЛАНы. Выдаётся по журналу вечеров (cr.log) — ничего отдельно не копится,
+   поэтому старые сейвы получают своё задним числом, молча (без постов); новые награды — с постом. */
+const CC_LOCKER_ICON={pickaxe:'⛏️', spray:'🎨', banner:'🚩', emote:'🕺'};
+function ccLockerPlain(s){ return String(s||'').replace(/<[^>]*>/g, '').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#39;/g, "'").trim(); }
+function ccLockerRules(e){
+  const out=[], name=()=>ccLockerPlain(ccLogName(e));
+  if(e.place===1 && ((e.kind==='major' && e.stage==='final') || e.kind==='globals' || (e.kind==='summit' && e.stage==='final') || (e.kind==='rc' && e.stage==='final')))
+    out.push({id:'axe', kind:'pickaxe', name:'Axe of Champions'});
+  if(e.kind==='major' && e.stage==='final') out.push({id:'gf'+e.season, kind:'banner', name:'FNCS Grand Finalist · '+ccSeasonYearOf(e.season)});
+  if(e.lan) out.push({id:'lan|'+e.day, kind:'banner', name:name()});
+  if(e.place===1 && e.kind==='final') out.push({id:'wf', kind:'spray', name:'Weekly Final Champion'});
+  if(e.place===1 && e.kind==='reload' && e.stage==='final') out.push({id:'reload', kind:'spray', name:'Reload Champion'});
+  if(e.place===1 && e.kind==='victory') out.push(e.fight ? {id:'fn', kind:'emote', name:'Fight Night Champion'} : {id:'cup', kind:'spray', name:'Cup Champion'});
+  if((e.prize||0)>0) out.push({id:'pay1', kind:'spray', name:'First Paycheck', once:true});
+  return out;
+}
+function ccLockerCheck(){
+  const cr=CAREER && CAREER.career; if(!cr || !cr.log) return;
+  const quiet=cr.lockSeen==null;
+  const from=cr.lockSeen||0; if(from>=cr.log.length) return;
+  cr.locker=cr.locker||[];
+  for(let i=from;i<cr.log.length;i++){
+    const e=cr.log[i]; if(!e || e.who) continue;
+    ccLockerRules(e).forEach(g=>{
+      const have=cr.locker.find(x=>x.id===g.id);
+      if(have){ if(!g.once) have.x=(have.x||1)+1; return; }
+      cr.locker.push({id:g.id, kind:g.kind, name:g.name, day:e.day, season:e.season, x:1});
+      if(!quiet) careerNews('good', 'ccNewsLocker', [CC_LOCKER_ICON[g.kind]||'🎁', g.name]);
+    });
+  }
+  cr.lockSeen=cr.log.length;
+}
+function ccLockerHTML(){
+  const cr=CAREER && CAREER.career; if(!cr) return '';
+  try{ ccLockerCheck(); }catch(e){}
+  const items=(cr.locker||[]).slice().sort((a,b)=>({pickaxe:0, banner:1, emote:2, spray:3}[a.kind]-{pickaxe:0, banner:1, emote:2, spray:3}[b.kind]));
+  const ic=it=>it.kind==='pickaxe' && typeof CC_PICKAXE_ART!=='undefined'
+    ? '<img src="'+CC_PICKAXE_ART+'" alt="" loading="lazy">' : (CC_LOCKER_ICON[it.kind]||'🎁');
+  return '<div class="ch-tile cc-locker"><h4>'+L().ccLockerTitle+'</h4>'+(items.length
+    ? '<div class="cc-locker-grid">'+items.map(it=>'<div class="cc-lock-it cc-lock-'+it.kind+'" title="'+esc(it.name)+'"><span class="cc-lock-ic">'+ic(it)+
+        '</span><b>'+esc(it.name)+'</b><em>'+esc(L()['ccLock_'+it.kind]||it.kind)+(it.x>1 ? ' ×'+it.x : '')+'</em></div>').join('')+'</div>'
+    : '<div class="ch-empty">'+L().ccLockerNone+'</div>')+'</div>';
+}
 function careerTrophiesHTML(){
   const t=careerTrophies();
   const row=(name, n)=>n>0 ? `<div class="ch-row"><em>${esc(name)}</em><b>${n}</b></div>` : '';
@@ -141716,6 +141816,7 @@ function careerSocialHTML(){
     <aside class="x-side">
       ${ccTrendsHTML()}
       ${careerTrophiesHTML()}
+      ${ccLockerHTML()}
       ${careerCollectionHTML()}
       <div class="ch-tile">
         <h4>${ccSay('dmLooking')}</h4>
@@ -146773,7 +146874,7 @@ function careerCanPlayKindOn(day, kind, seatsAside){
    ЛАНов, ev.qualTop — сколько мест проходит; остальные — по PR до ev.prInvite. */
 function ccLanQualified(ev){
   if(!ev || !ev.qualFrom || !ev.qualFrom.length || typeof CC_CUPS_ARCH==='undefined') return false;
-  const days=new Set(CC_CUPS_ARCH.filter(x=>ev.qualFrom.indexOf(x.id)>=0).map(x=>x.day));
+  const days=new Set(CC_CUPS_ARCH.concat(typeof CC_NEXT_YEAR_EVENTS!=='undefined' ? CC_NEXT_YEAR_EVENTS : []).filter(x=>ev.qualFrom.indexOf(x.id)>=0).map(x=>x.day));
   const cr=CAREER && CAREER.career; if(!cr) return false;
   return (cr.log||[]).some(r=>r && r.kind==='victory' && days.has(r.day) && r.place<=(ev.qualTop||10));
 }
@@ -148230,9 +148331,72 @@ function ccGalaYear(){
     // было — роста тоже нет, а не «вырос на весь рейтинг».
     grew: placed.length ? Math.round(ovr - (placed[0].ovr||ovr)) : 0,
     runs: careerBigRuns(s),
+    prev: ccGalaPrev(s),
     months: (careerAwards().won||[]).filter(x=>x.kind==='month' && x.season===s && x.you),
     goty: (careerAwards().won||[]).filter(x=>x.kind==='season' && x.season===s)[0] || null
   };
+}
+/* ИТОГИ ГОДА (17.10, его «8»): к церемонии — сравнение с прошлым годом и картинка, которой можно поделиться. */
+function ccGalaPrev(s){
+  const log=((CAREER.career.log)||[]).filter(r=>r.season===s-1);
+  if(!log.length) return null;
+  const placed=log.filter(r=>r.place);
+  return {events:log.length, wins:log.reduce((n,r)=>n+(r.wins||0), 0), elims:log.reduce((n,r)=>n+(r.elims||0), 0),
+          prize:log.reduce((n,r)=>n+(r.prize||0), 0), best:placed.length ? Math.min.apply(null, placed.map(r=>r.place)) : null};
+}
+function ccGalaDelta(now, was, money){
+  if(was==null) return '';
+  const d=now-was; if(!d) return '<i class="cc-gala-d">=</i>';
+  return '<i class="cc-gala-d '+(d>0 ? 'up' : 'down')+'">'+(d>0 ? '▲' : '▼')+(money ? ccMoney(Math.abs(d)) : ccNum(Math.abs(d)))+'</i>';
+}
+function ccGalaShareLines(y){
+  const cr=CAREER.career, log=(cr.log||[]).filter(e=>e.season===cr.season);
+  const mates={}; log.forEach(e=>(e.mates||(e.mate?[e.mate]:[])).forEach(m=>{ if(m) mates[m]=(mates[m]||0)+1; }));
+  const top=Object.keys(mates).sort((a,b)=>mates[b]-mates[a])[0];
+  const run=(y.runs||[])[0];
+  return {tiles:[[ccNum(y.events), L().ccGalaEvents], [ccNum(y.wins), L().ccGalaWins], [ccNum(y.elims), L().ccGalaElims],
+                 [ccMoney(y.prize), L().ccGalaPrize], [y.best ? '#'+y.best.place : '—', L().ccGalaBest], [String(y.ovr), L().ccGalaOvr]],
+          rows:[run ? [careerRunLabel(run), L().ccBoardPlace(run.place, run.of)] : null,
+                top ? [L().lfGalaTopMate, top+' · '+mates[top]] : null,
+                (y.goty && y.goty.you) ? [L().ccGalaGotyYou, '🏆'] : null,
+                y.prev ? [L().ccGalaPrevRow, ccMoney(y.prev.prize)+' · '+(y.prev.best ? '#'+y.prev.best : '—')] : null,
+                ((CAREER.career.locker||[]).filter(it=>it.season===CAREER.career.season).length)
+                  ? [L().ccLockerTitle, (CAREER.career.locker||[]).filter(it=>it.season===CAREER.career.season).map(it=>it.name).slice(0, 2).join(', ')] : null
+               ].filter(Boolean).slice(0, 4)};
+}
+async function ccGalaShare(){
+  const y=ccGalaYear(), S=ccGalaShareLines(y), pl=CAREER.player;
+  const W=1080, H=1350, c=document.createElement('canvas'); c.width=W; c.height=H;
+  const x=c.getContext('2d'), font=(w, s)=>w+' '+s+'px Oswald, "Segoe UI", Roboto, sans-serif';
+  const g=x.createLinearGradient(0, 0, 0, H); g.addColorStop(0, '#141a2e'); g.addColorStop(1, '#07090f');
+  x.fillStyle=g; x.fillRect(0, 0, W, H);
+  x.fillStyle='#ffd23f'; x.fillRect(72, 96, 12, 120);
+  x.fillStyle='#ffd23f'; x.font=font(700, 40); x.fillText(L().ccGalaShareTag.toUpperCase(), 108, 136);
+  x.fillStyle='#f2f4fa'; x.font=font(800, 88); x.fillText(String(pl.nick||'').slice(0, 18), 108, 214);
+  x.fillStyle='#9aa3b8'; x.font=font(500, 38); x.fillText(L().ccGalaTitle(y.season)+' · '+ccSeasonYear(), 108, 268);
+  const cols=3, gap=24, tw=(W-144-gap*(cols-1))/cols, th=210, top=330;
+  S.tiles.forEach((t, i)=>{
+    const cx=72+(i%cols)*(tw+gap), cy=top+Math.floor(i/cols)*(th+gap);
+    x.fillStyle='rgba(255,255,255,.06)'; x.fillRect(cx, cy, tw, th);
+    let size=72; x.font=font(800, size); while(size>34 && x.measureText(t[0]).width>tw-40){ size-=4; x.font=font(800, size); }
+    x.fillStyle='#f2f4fa'; x.fillText(t[0], cx+24, cy+108);
+    x.fillStyle='#9aa3b8'; x.font=font(600, 30); x.fillText(String(t[1]).slice(0, 22), cx+24, cy+164);
+  });
+  let ry=top+2*(th+gap)+50;
+  S.rows.forEach(r=>{
+    x.fillStyle='#9aa3b8'; x.font=font(500, 32); x.fillText(String(r[0]).slice(0, 40), 72, ry);
+    x.fillStyle='#ffd23f'; x.font=font(700, 40); x.fillText(String(r[1]).slice(0, 40), 72, ry+50);
+    ry+=118;
+  });
+  x.fillStyle='#5b6378'; x.font=font(700, 34); x.fillText('fncsdraft.com', 72, H-64);
+  const blob=await new Promise(r=>c.toBlob(r, 'image/png'));
+  const name='fncsdraft-season-'+y.season+'.png';
+  try{ const file=new File([blob], name, {type:'image/png'});
+    if(navigator.canShare && navigator.canShare({files:[file]})){ await navigator.share({files:[file]}); return 'shared'; } }
+  catch(e){ if(e && e.name==='AbortError') return 'cancel'; }
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=name; document.body.append(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(a.href), 5000);
+  return 'saved';
 }
 function ccGalaNum(v, label){
   return `<div class="cc-gala-num"><b>${v}</b><em>${label}</em></div>`;
@@ -148264,15 +148428,16 @@ function ccGalaSlide(i, y){
     </div>`;
   if(i===1) return `<h4>${L().ccGalaYearH}</h4>
     <div class="cc-gala-nums">
-      ${ccGalaNum(ccNum(y.events), L().ccGalaEvents)}
-      ${ccGalaNum(ccNum(y.wins), L().ccGalaWins)}
-      ${ccGalaNum(ccNum(y.elims), L().ccGalaElims)}
-      ${ccGalaNum(ccMoney(y.prize), L().ccGalaPrize)}
+      ${ccGalaNum(ccNum(y.events)+ccGalaDelta(y.events, y.prev && y.prev.events), L().ccGalaEvents)}
+      ${ccGalaNum(ccNum(y.wins)+ccGalaDelta(y.wins, y.prev && y.prev.wins), L().ccGalaWins)}
+      ${ccGalaNum(ccNum(y.elims)+ccGalaDelta(y.elims, y.prev && y.prev.elims), L().ccGalaElims)}
+      ${ccGalaNum(ccMoney(y.prize)+ccGalaDelta(y.prize, y.prev && y.prev.prize, true), L().ccGalaPrize)}
       ${ccGalaNum(ccNum(y.pr), L().ccGalaPr)}
       ${ccGalaNum(y.best ? '#'+y.best.place : '—', L().ccGalaBest)}
     </div>
     <div class="cc-gala-row"><em>${L().ccGalaOvr}</em><b>${y.ovr} <i>${
-      esc(L().ccGalaOvrUp(y.grew))}</i></b></div>`;
+      esc(L().ccGalaOvrUp(y.grew))}</i></b></div>
+    ${y.prev ? `<div class="cc-gala-hint">${esc(L().ccGalaVsPrev)}</div>` : ''}`;
   if(i===2) return ccGalaYouSlide();
   if(i===3) return `<h4>${L().ccGalaRunsH}</h4>
     ${y.runs.length ? y.runs.map(r=>`<div class="cc-gala-row"><em>${esc(careerRunLabel(r))}</em><b>${
@@ -148308,6 +148473,7 @@ function ccGalaDraw(){
       <div class="cc-gala-dots">${dots}</div>
       <div class="cc-gala-cta">
         ${i>0 ? `<button class="cstrip-btn cstrip-btn-code" onclick="ccGalaGo(-1)">${L().ccGalaBack}</button>` : ''}
+        ${i>=1 ? `<button class="cstrip-btn cstrip-btn-code" onclick="ccGalaShare()">${L().ccGalaShare}</button>` : ''}
         ${last ? `<button class="cstrip-btn cstrip-btn-go" onclick="ccGalaFinish()">${L().ccNewSeason}</button>`
                : `<button class="cstrip-btn cstrip-btn-go" onclick="ccGalaGo(1)">${L().ccGalaNext}</button>`}
         <button class="cstrip-btn cstrip-btn-code" onclick="ccGalaClose()">${L().ccGalaSkip}</button>
@@ -151321,7 +151487,34 @@ const CC_CUPS_ARCH=[
   {day:'2026-09-21',id:'LAN_Amar_Rohat_Pro_Invitational',mode:'solo',n:1,name:"Amar x Rohat: Pro Invitational",payT:CC_CUPS_ARCH_PAY[116],lan:"Amar x Rohat: Pro Invitational · Online",invite:100}
 ];
 // ==== /Cups archive ====
-function ccVictoryBase(){ return ccIs2020() ? [] : ccIs2019() ? CC_VICTORY_2019 : ccIs2021() ? CC_VICTORY_2021 : ccIs2022() ? CC_VICTORY_2022 : ccIs2023() ? CC_VICTORY_2023 : ccIs2024() ? CC_VICTORY_2024 : ccIs2025() ? CC_VICTORY_2025 : CC_VICTORY; }
+function ccVictoryBase(){ return ccIs2020() ? [] : ccIs2019() ? CC_VICTORY_2019 : ccIs2021() ? CC_VICTORY_2021 : ccIs2022() ? CC_VICTORY_2022 : ccIs2023() ? CC_VICTORY_2023 : ccIs2024() ? CC_VICTORY_2024 : ccIs2025() ? CC_VICTORY_2025
+  : ccYearShift()>0 ? CC_VICTORY.concat(ccNextYearEvents()) : CC_VICTORY; }
+/* СОБЫТИЯ 2027-ГО (17.10, его «2» из идей: Epic 27.09.2026 объявил на 2027 Reload Zero Build Championship и Arenas Fight Night —
+   fortnitetracker.com/article/2437). Годы после 2026-го живут по календарю 2026-го (ccYearShift), поэтому дни — в датах 2026-го,
+   на экране они уже с годом сдвига. Дни выбраны свободные (пятницы без FNCS/кубков, проба free.js). Расписания и призовых Epic
+   ещё не публиковал — это наш расклад, а не измерение:
+   · Reload Zero Build Championship — два открытых отбора (машина Victory Cup, без строек, лобби Reload) и финал на 40 человек
+     по приглашению: топ-10 любого отбора (qualFrom), остальные — по PR.
+   · Arenas Fight Night — вечер файтов 1 на 1 сеткой на 16 (runCareerFightNight), до пяти раундов, как дружеский 1v1.
+   В игре вдвоём Fight Night нет: сетка не локстеп. */
+const CC_Y27_ZBC_PAY={EU:[[1,1500],[2,1000],[3,800],[5,600],[10,400],[25,250],[50,150],[100,100]]};
+const CC_Y27_ZBC_FINAL_PAY={EU:[[1,25000],[2,15000],[3,10000],[5,6000],[10,3000],[20,1500]]};
+const CC_Y27_FN_PAY={EU:[[1,5000],[2,2500],[4,1000],[8,500]]};
+const CC_NEXT_YEAR_EVENTS=[
+  {day:'2026-01-30', id:'Y27_ArenasFightNight', mode:'solo', n:1, name:'Arenas Fight Night', fight:true, payT:CC_Y27_FN_PAY},
+  {day:'2026-03-13', id:'Y27_ArenasFightNight', mode:'solo', n:2, name:'Arenas Fight Night', fight:true, payT:CC_Y27_FN_PAY},
+  {day:'2026-04-03', id:'Y27_ReloadZBChampionship_Q', mode:'duo', n:1, name:'Reload Zero Build Championship · Qualifier', zb:true, payT:CC_Y27_ZBC_PAY},
+  {day:'2026-04-10', id:'Y27_ReloadZBChampionship_Q', mode:'duo', n:2, name:'Reload Zero Build Championship · Qualifier', zb:true, payT:CC_Y27_ZBC_PAY},
+  {day:'2026-04-24', id:'Y27_ReloadZBChampionship_Final', mode:'duo', n:1, name:'Reload Zero Build Championship · Final', zb:true, payT:CC_Y27_ZBC_FINAL_PAY,
+   invite:40, qualFrom:['Y27_ReloadZBChampionship_Q'], qualTop:10, prInvite:20},
+  {day:'2026-07-31', id:'Y27_ArenasFightNight', mode:'solo', n:3, name:'Arenas Fight Night', fight:true, payT:CC_Y27_FN_PAY},
+  {day:'2026-10-09', id:'Y27_ArenasFightNight', mode:'solo', n:4, name:'Arenas Fight Night', fight:true, payT:CC_Y27_FN_PAY}
+];
+function ccNextYearEvents(){
+  const mp=typeof ccMpOn==='function' && ccMpOn();
+  return CC_NEXT_YEAR_EVENTS.filter(v=>!(mp && v.fight));
+}
+function ccVictoryListKey(){ return ccCalYear()+'|'+(ccYearShift()>0 ? 1 : 0)+'|'+((typeof ccMpOn==='function' && ccMpOn()) ? 1 : 0); }
 /* Остальные денежные капы года — всё, что в архиве Tracker платило деньгами (ecomm в
    PayoutTable) и не вошло выше: DreamHack Online Open, Winter Royale, капы стримеров и
    т. п. (CC_CUPS_ARCH, tools/build-cups-archive.js). Вечер — машина Victory Cup, выплаты —
@@ -151367,10 +151560,10 @@ function ccPlacementApply(through, place2, r2n, ev, place1, n1){
   return div;
 }
 function ccVictoryList(){
-  const y=ccCalYear();
-  if(CC_VICTORY_LIST && CC_VICTORY_LIST_OF===y) return CC_VICTORY_LIST;
+  const y=ccCalYear(), yk=ccVictoryListKey();
+  if(CC_VICTORY_LIST && CC_VICTORY_LIST_OF===yk) return CC_VICTORY_LIST;
   const base=ccVictoryBase();
-  if(typeof CC_CUPS_ARCH==='undefined'){ CC_VICTORY_LIST=base; CC_VICTORY_LIST_OF=y; return base; }
+  if(typeof CC_CUPS_ARCH==='undefined'){ CC_VICTORY_LIST=base; CC_VICTORY_LIST_OF=yk; return base; }
   const from=ccYearFrom(), to=ccYearTo(), busy=new Set(), hard=new Set();
   ccYearRows().forEach(r=>{ for(let d=r[0]; d<=r[1]; d=ccAddDays(d,1)){ busy.add(d); hard.add(d); } });
   ccCupWeeks().forEach(w=>{ [w[1], w[2], w[3]].forEach(d=>{ if(d) busy.add(d); }); });
@@ -151392,7 +151585,7 @@ function ccVictoryList(){
   const extra=y>=2026 ? [] : CC_CUPS_ARCH.filter(v=>!v.invite && v.day>=from && v.day<=to
     && !hard.has(v.day) && !lanDays.has(v.day) && !ownDays.has(v.day));
   CC_VICTORY_LIST=own.concat(lans, extra).sort((a,b)=>a.day<b.day?-1:a.day>b.day?1:0);
-  CC_VICTORY_LIST_OF=y;
+  CC_VICTORY_LIST_OF=yk;
   return CC_VICTORY_LIST;
 }
 // Остров Reload по году: 2026-й — четвёртый круг серии, 2025-й — первый (другого измеренного нет).
@@ -158431,12 +158624,144 @@ async function runCareerEwc2024(ev){
   else if(champ.real) careerNews('flat', 'ccNewsWorldWon', ['Esports World Cup 2024', champ.label]);
   ewc24Finish(ev, 'Esports World Cup 2024', myPlace, 16, mine, cash>0);
 }
+/* ARENAS FIGHT NIGHT — сетка на 16 из игроков своего региона около твоего рейтинга, файты до пяти раундов.
+   Шанс раунда — тот же, что у дружеского 1v1 (careerFriend1v1): 0.5 + 3% за очко рейтинга, 8–92%. Без лобби и зоны. */
+const CC_FN_SIZE=16, CC_FN_TO=5;
+function ccFnOvr(c){ return c && c._you ? c._ovr : (c && (c._ovr || (attrsFor(c)||{}).ovr)) || 70; }
+function ccFnBracket(ev){
+  const cr=CAREER.career, pl=CAREER.player;
+  const mine=pl.ovrExact!=null ? pl.ovrExact : pl.ovr;
+  const rnd=careerRng(ccHashStr('fn|'+(cr.season||1)+'|'+careerToday()+'|'+(ev.n||1)));
+  const meKey=pl.handle ? hKey(pl.handle) : '';
+  const pool=(ccSceneRoster(ccCareerRegion())||[]).filter(c=>c && c.handle && hKey(c)!==meKey)
+    .slice().sort((a,b)=>Math.abs(ccFnOvr(a)-mine)-Math.abs(ccFnOvr(b)-mine)).slice(0, 40);
+  const field=[];
+  while(field.length<CC_FN_SIZE-1 && pool.length) field.push(pool.splice(Math.floor(rnd()*pool.length), 1)[0]);
+  const you={_you:true, handle:pl.nick||'You', _ovr:mine};
+  // Посев по рейтингу: 1–16, 2–15, … — ты на своём месте по силе.
+  const seeded=field.concat([you]).sort((a,b)=>ccFnOvr(b)-ccFnOvr(a));
+  const order=[0,15,7,8,3,12,4,11,1,14,6,9,2,13,5,10].filter(i=>i<seeded.length).map(i=>seeded[i]);
+  const rounds=[]; let alive=order, out=new Map();
+  while(alive.length>1){
+    const next=[], res=[];
+    for(let i=0;i<alive.length;i+=2){
+      const a=alive[i], b=alive[i+1];
+      if(!b){ next.push(a); continue; }
+      const p=clamp(0.5+(ccFnOvr(a)-ccFnOvr(b))*0.03, 0.08, 0.92);
+      let x=0, y=0; while(x<CC_FN_TO && y<CC_FN_TO){ if(rnd()<p) x++; else y++; }
+      const w=x>y ? a : b, l=x>y ? b : a;
+      res.push({a, b, x, y}); next.push(w); out.set(l, alive.length);
+    }
+    rounds.push(res); alive=next;
+  }
+  out.set(alive[0], 1);
+  // Место: чемпион 1, финалист 2, полуфинал 3, четвертьфинал 5, первый круг 9 (как «топ-N» сетки).
+  const place=t=>{ const n=out.get(t); return n===1 ? 1 : n===2 ? 2 : n===4 ? 3 : n===8 ? 5 : 9; };
+  return {you, rounds, place:place(you), champ:alive[0], size:order.length, rnd};
+}
+const CC_FN_ROUND=n=>n===16 ? 'R16' : n===8 ? 'QF' : n===4 ? 'SF' : 'F';
+/* КАСТЕРЫ НА ВЕЧЕРЕ (17.10, его «9»): строка комментатора поверх карты, как эфир FNCS. Источник — те же кадры, что
+   рисуют карту и живую таблицу (onZoneFrame): старт игры, новая зона, твои киллы, мясо в центре, финальные N, твой вылет,
+   победа. Не чаще строки в CC_CAST_GAP кадров, кроме главных моментов (вылет, победа) — их не пропускаем. */
+const CC_CAST_GAP=14;
+let CC_CAST=null;
+function ccCastName(t){ return String((t && (t.name || (t.squad && t.squad.map(c=>c.handle).join(' & ')))) || '').replace(/<[^>]*>/g, '').trim(); }
+function ccCastSay(key, args, must){
+  const S=CC_CAST; if(!S) return;
+  if(!must && S.frame-S.lastAt<CC_CAST_GAP) return;
+  const bank=L()[key]; if(!bank) return;
+  const lines=Array.isArray(bank) ? bank : [bank];
+  const f=lines[(S.n++ + S.seed)%lines.length];
+  const text=typeof f==='function' ? f.apply(null, args||[]) : f;
+  S.lastAt=S.frame;
+  const feeds=[...document.querySelectorAll('.zr-feed')].filter(x=>x.offsetParent!==null);
+  const wrap=(feeds[feeds.length-1]||{}).parentElement; if(!wrap) return;
+  let el=wrap.querySelector('.cc-cast');
+  if(!el){ el=document.createElement('div'); el.className='cc-cast'; wrap.appendChild(el); }
+  el.textContent='🎙️ '+text;
+}
+function ccCastFrame(lobby, frame){
+  if(!frame || !frame.dots) return;
+  let alive=0; frame.dots.forEach(d=>{ if(d.alive) alive++; });
+  const yi=lobby.findIndex(t=>t && t.isYou), yd=yi>=0 ? frame.dots[yi] : null;
+  let S=CC_CAST;
+  // Новая игра: живых стало больше или зона откатилась назад.
+  if(!S || alive>S.alive || (frame.zone!=null && frame.zone<S.zone)){
+    S=CC_CAST={frame:0, lastAt:-99, n:0, seed:ccHashStr(careerToday()+'|'+alive)%7, alive:alive, zone:frame.zone||0,
+               yE:yd ? (yd.e||0) : 0, yAlive:!!(yd && yd.alive), final:false, done:false};
+    ccCastSay('ccCastStart', [alive], true);
+    return;
+  }
+  S.frame++;
+  if(S.done) return;
+  const you=yi>=0 ? ccCastName(lobby[yi]) : '';
+  // Порядок — по важности: победа, твой вылет, финальные N, твои киллы, мясо, зона.
+  if(alive===1){
+    const wi=frame.dots.findIndex(d=>d.alive), w=lobby[wi];
+    ccCastSay(w && w.isYou ? 'ccCastYouWin' : 'ccCastWin', [ccCastName(w)], true);
+    S.done=true;
+  } else if(yd && S.yAlive && !yd.alive){
+    S.yAlive=false;
+    ccCastSay('ccCastYouOut', [you, yd.p || alive+1], true);
+  } else if(alive<=5 && !S.final){
+    S.final=true; ccCastSay('ccCastFinal', [alive], true);
+  } else if(yd && yd.alive && (yd.e||0)>S.yE){
+    const k=(yd.e||0)-S.yE;
+    ccCastSay(k>=2 ? 'ccCastYouMulti' : 'ccCastYouKill', [you, k], k>=2);
+  } else if(S.alive-alive>=3){
+    ccCastSay('ccCastWipe', [S.alive-alive, alive]);
+  } else if(frame.zone!=null && frame.zone>S.zone){
+    ccCastSay('ccCastZone', [frame.zone, alive]);
+  }
+  if(yd) S.yE=yd.e||0;
+  S.alive=alive; if(frame.zone!=null) S.zone=frame.zone;
+}
+async function runCareerFightNight(ev){
+  const cr=CAREER.career, pl=CAREER.player;
+  skipAnimation=false; CC_SKIP_RUN=false;
+  document.getElementById('majorStages').innerHTML='';
+  const rsPrev=document.getElementById('runSummary'); if(rsPrev) rsPrev.innerHTML='';
+  document.getElementById('lobbyTitle').textContent='';
+  document.getElementById('lobbyBody').innerHTML='';
+  clearEventPanel();
+  document.getElementById('finalBanner').style.display='none';
+  CAREER_RUN=true;
+  show('screen-results');
+  const B=ccFnBracket(ev), you=B.you;
+  const card=document.createElement('div'); card.className='stage-card';
+  const rows=[]; let wins=0, games=0, rw=0, lastOpp=null;
+  B.rounds.forEach(res=>{
+    const m=res.find(r=>r.a===you || r.b===you); if(!m) return;
+    const mineX=m.a===you ? m.x : m.y, theirX=m.a===you ? m.y : m.x, opp=m.a===you ? m.b : m.a;
+    games++; rw+=mineX; if(mineX>theirX) wins++; lastOpp=opp;
+    rows.push('<div>'+CC_FN_ROUND(res.length*2)+' · @'+esc(ccHandle(opp.handle))+' ('+Math.round(ccFnOvr(opp))+') — <b>'+mineX+'–'+theirX+'</b></div>');
+  });
+  card.innerHTML='<h4>'+esc((ev.name||'Arenas Fight Night')+' '+(ev.n||''))+'</h4><div class="stage-detail">'+rows.join('')+
+    (B.place!==1 ? '<div>'+L().ccFnChamp(ccHandle(B.champ.handle))+'</div>' : '')+'</div>';
+  document.getElementById('majorStages').appendChild(card);
+  const cash=ccVictoryPayOf(ev, B.place);
+  if(cash){ ccPayIn(cash); careerReachAdd(careerReachResult(B.place, B.size, cr.division, 'victory')); }
+  // Файты учат файтам — как дружеский 1v1, но за вечер.
+  if(!pl.attrs) pl.attrs=ccOwnAttrs();
+  if(pl.attrs) ['aim','clu'].forEach(k=>{ pl.attrs[k]=clamp((pl.attrs[k]||50)+0.1*games, 35, 99); });
+  careerNews(B.place===1 ? 'good' : 'flat', B.place===1 ? 'ccNewsFnWin' : 'ccNewsFnOut',
+             [ev.name||'Arenas Fight Night', B.place, lastOpp ? ccHandle(lastOpp.handle) : '', wins]);
+  cr.log=cr.log||[];
+  cr.log.push({season:cr.season, day:careerToday(), div:cr.division, place:B.place, of:B.size, pts:rw, passed:cash>0,
+               ovr:pl.ovr, games:games, wins:wins, elims:rw, avg:null, mate:null, mates:[], prize:cash, kind:'victory', solo:true, fight:true});
+  careerAdvanceTo(ccAddDays(careerToday(), 1));
+  careerSave();
+  careerRenderHub('centre');
+  careerTwoRoundResultCard({title:(ev.name||'Arenas Fight Night')+' '+(ev.n||''), place:B.place, through:cash>0,
+    wins:wins, cash:cash, cut:0, byPlace:true, placed:0});
+}
 async function runCareerVictoryNight(){
   const cr=CAREER.career;
   const ev=careerVictoryOn(careerToday());
   if(!ev) return;
   // EWC 2024 — не батл рояль: свой движок серий 4 на 4 (runCareerEwc2024).
   if(ev.ewc24 && typeof runCareerEwc2024==='function') return runCareerEwc2024(ev);
+  if(ev.fight) return runCareerFightNight(ev);
   // Командный вечер ждёт напарника. См. ccMpGate.
   const mpStart=ccMpLock() ? await ccMpGate('victory') : null;
   const solo=ev.mode==='solo';
