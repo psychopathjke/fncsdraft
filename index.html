@@ -7620,6 +7620,16 @@
      экрана листаются кнопками, полоска внизу говорит, сколько осталось. */
   .cc-gala-wrap{position:fixed;inset:0;z-index:120;display:flex;align-items:center;
     justify-content:center;padding:18px;background:rgba(4,10,28,.86);}
+  /* Окно «Поделиться итогами» (ccGalaShareModal) — поверх церемонии. */
+  .cc-share-wrap{z-index:130;}
+  .cc-share{display:flex;flex-direction:column;gap:12px;width:min(420px,100%);max-height:94vh;overflow:auto;
+    padding:16px;border-radius:var(--r);background:linear-gradient(112deg,#0b1a3a 0%,#123055 100%);
+    box-shadow:inset 0 0 0 1px rgba(255,221,0,.32),0 24px 60px rgba(0,0,0,.55);}
+  .cc-share h4{margin:0;font-family:var(--font-display);font-weight:700;font-size:13px;letter-spacing:.08em;
+    text-transform:uppercase;color:#dfe8fb;}
+  .cc-share-img{display:block;width:100%;height:auto;max-height:62vh;object-fit:contain;border-radius:8px;}
+  .cc-share-cta{display:flex;flex-wrap:wrap;gap:8px;}
+  .cc-share-cta a.cstrip-btn{text-decoration:none;display:inline-flex;align-items:center;}
   .cc-gala{position:relative;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.42fr);
     width:min(860px,100%);max-height:92vh;overflow:hidden;border-radius:var(--r);
     background:linear-gradient(112deg,#0b1a3a 0%,#123055 55%,#0e2747 100%);
@@ -20971,6 +20981,7 @@ Object.assign(I18N.fr=I18N.fr||{},
   "ccLock_emote": "emote",
   "ccNewsLocker": (i,n)=>i+' Nouveau dans le casier : « '+n+' »',
   "ccGalaShare": "Partager mon année",
+  "ccShareSend": "Envoyer", "ccShareSave": "Enregistrer l'image", "ccShareCopy": "Copier", "ccShareClose": "Fermer", "ccShareCopied": "Image copiée", "ccShareSendFail": "Le partage ne s'est pas ouvert. Enregistre l'image", "ccShareFail": "Impossible de dessiner l'image", "ccShareSeason": "Partager la saison",
   "ccGalaShareTag": "Bilan de l’année",
   "ccGalaVsPrev": "▲▼ — par rapport à la saison dernière",
   "ccGalaPrevRow": "Saison dernière : gains · meilleure place",
@@ -21424,6 +21435,7 @@ Object.assign(I18N.it=I18N.it||{},
   "ccLock_emote": "emote",
   "ccNewsLocker": (i,n)=>i+' Novità nell’armadietto: "'+n+'"',
   "ccGalaShare": "Condividi il mio anno",
+  "ccShareSend": "Invia", "ccShareSave": "Salva immagine", "ccShareCopy": "Copia", "ccShareClose": "Chiudi", "ccShareCopied": "Immagine copiata", "ccShareSendFail": "La condivisione non si è aperta. Salva l'immagine", "ccShareFail": "Impossibile disegnare l'immagine", "ccShareSeason": "Condividi la stagione",
   "ccGalaShareTag": "Il mio anno",
   "ccGalaVsPrev": "▲▼ — rispetto alla stagione scorsa",
   "ccGalaPrevRow": "Stagione scorsa: montepremi · miglior posto",
@@ -21878,6 +21890,7 @@ Object.assign(I18N.pt=I18N.pt||{},
   "ccLock_emote": "gesto",
   "ccNewsLocker": (i,n)=>i+' Novo no armário: "'+n+'"',
   "ccGalaShare": "Compartilhar meu ano",
+  "ccShareSend": "Enviar", "ccShareSave": "Salvar imagem", "ccShareCopy": "Copiar", "ccShareClose": "Fechar", "ccShareCopied": "Imagem copiada", "ccShareSendFail": "O compartilhamento não abriu. Salve a imagem", "ccShareFail": "Não foi possível desenhar a imagem", "ccShareSeason": "Compartilhar temporada",
   "ccGalaShareTag": "Retrospectiva do ano",
   "ccGalaVsPrev": "▲▼ — comparado com a temporada passada",
   "ccGalaPrevRow": "Temporada passada: premiação · melhor colocação",
@@ -21904,7 +21917,7 @@ Object.assign(I18N.pt=I18N.pt||{},
 Object.assign(I18N.fr, {dyColPlayer:'Joueur et équipe', dyYou:'toi', dyPowSplit:'note moyenne des cartes + synergie'});
 Object.assign(I18N.it, {dyColPlayer:'Giocatore e squadra', dyYou:'tu', dyPowSplit:'valutazione media delle carte + sinergia'});
 Object.assign(I18N.pt, {dyColPlayer:'Jogador e time', dyYou:'você', dyPowSplit:'overall médio das cartas + sinergia'});
-let CC_I18N_V={de:'e26246a0', es:'56e39921'};   // ==== CC_I18N_V (tools/build-i18n.js) ====
+let CC_I18N_V={de:'0368fc45', es:'8f589c8f'};   // ==== CC_I18N_V (tools/build-i18n.js) ====
 const CC_LANG_WAIT={};
 function ccLangLoad(lang, done){
   if(!CC_LANG_FILES[lang] || (typeof I18N!=='undefined' && I18N[lang])){ done && done(); return; }
@@ -22720,7 +22733,7 @@ Object.assign(I18N.ru, {ccAskMoneyLbl:'Деньги', ccAskTermsLbl:'Услов�
   ccLockerTitle:'Шкафчик', ccLockerNone:'Пусто. Баннер дают за гранд-финал или ЛАН и за каждый клуб, кирку — чемпиону FNCS',
   ccLockClub:'баннер клуба', ccLockNow:'сейчас', ccLock_pickaxe:'кирка', ccLock_spray:'спрей', ccLock_banner:'баннер', ccLock_emote:'эмоция',
   ccNewsLocker:(i,n)=>i+' В шкафчике новое: «'+n+'»',
-  ccGalaShare:'Поделиться итогами', ccGalaShareTag:'Итоги года', ccGalaVsPrev:'▲▼ — сравнение с прошлым сезоном', ccGalaPrevRow:'Прошлый сезон: призовые · лучшее место',
+  ccGalaShare:'Поделиться итогами', ccShareSend:'Отправить', ccShareSave:'Сохранить картинку', ccShareCopy:'Скопировать', ccShareClose:'Закрыть', ccShareCopied:'Картинка скопирована', ccShareSendFail:'Не открылось. Сохрани картинку', ccShareFail:'Картинку нарисовать не вышло', ccShareSeason:'Поделиться сезоном', ccGalaShareTag:'Итоги года', ccGalaVsPrev:'▲▼ — сравнение с прошлым сезоном', ccGalaPrevRow:'Прошлый сезон: призовые · лучшее место',
   ccCastStart:[n=>'Поехали! '+n+' команд в лобби, автобус пошёл', n=>'И мы в эфире — '+n+' команд, кто заберёт эту игру?', n=>'Новая игра, '+n+' команд. Смотрим за дропами'],
   ccCastZone:[(z,n)=>'Зона '+z+' закрывается, осталось '+n, (z,n)=>'Ротации к '+z+'-й зоне — '+n+' команд ещё в игре', (z,n)=>'Круг '+z+'. '+n+' живых, становится тесно'],
   ccCastWipe:[(k,n)=>'Мясо! Минус '+k+' команд за секунды, осталось '+n, (k,n)=>'Что там происходит?! '+k+' команд вылетели разом'],
@@ -22823,7 +22836,7 @@ Object.assign(I18N.en, {ccAskMoneyLbl:'Money', ccAskTermsLbl:'Terms', ccAsk_smal
   ccLockerTitle:'Locker', ccLockerNone:'Empty. A banner comes with a grand final, a LAN and every club you play for, the pickaxe with an FNCS title',
   ccLockClub:'club banner', ccLockNow:'current', ccLock_pickaxe:'pickaxe', ccLock_spray:'spray', ccLock_banner:'banner', ccLock_emote:'emote',
   ccNewsLocker:(i,n)=>i+' New in the locker: "'+n+'"',
-  ccGalaShare:'Share my year', ccGalaShareTag:'Year in review', ccGalaVsPrev:'▲▼ — compared with last season', ccGalaPrevRow:'Last season: prize money · best place',
+  ccGalaShare:'Share my year', ccShareSend:'Send', ccShareSave:'Save image', ccShareCopy:'Copy', ccShareClose:'Close', ccShareCopied:'Image copied', ccShareSendFail:'Sharing did not open. Save the image instead', ccShareFail:'Could not draw the picture', ccShareSeason:'Share season', ccGalaShareTag:'Year in review', ccGalaVsPrev:'▲▼ — compared with last season', ccGalaPrevRow:'Last season: prize money · best place',
   ccCastStart:[n=>'Here we go! '+n+' teams in the lobby, the bus is moving', n=>'And we are live — '+n+' teams, who takes this one?', n=>'New game, '+n+' teams. Eyes on the drops'],
   ccCastZone:[(z,n)=>'Zone '+z+' closing, '+n+' left', (z,n)=>'Rotations into zone '+z+' — '+n+' teams still alive', (z,n)=>'Circle '+z+'. '+n+' alive, it is getting tight'],
   ccCastWipe:[(k,n)=>'Carnage! '+k+' teams gone in seconds, '+n+' left', (k,n)=>'What is happening?! '+k+' teams out at once'],
@@ -150032,15 +150045,17 @@ const CC_GALA_SLIDES=6;   // + слайд «Твой год» (ccGalaYouSlide) �
 let CC_GALA_STEP=0;
 // Год, собранный из того, что карьера УЖЕ записала: журнал, доска PR и список
 // наград. Церемония ничего не считает от себя — она читает.
-function ccGalaYear(){
-  const cr=CAREER.career, s=cr.season;
+function ccGalaYear(season){
+  const cr=CAREER.career, s=season||cr.season;
   const log=(cr.log||[]).filter(r=>r.season===s);
   const placed=log.filter(r=>r.place);
   const best=placed.length ? placed.reduce((a,b)=>(b.place<a.place ? b : a)) : null;
   const from=Math.max(0, (s||1)-1)*365;
   const me=careerAwardBoard(from, from+365).filter(r=>r.you)[0];
   const card=careerCard(), a=card ? attrsFor(card) : null;
-  const ovr = a ? Math.round(a.ovr + (card._pingEdge||0) + (card._ageEdge||0))
+  // Прошлый сезон — рейтинг его последнего вечера, а не сегодняшний.
+  const ovr = s!==cr.season && log.length && log[log.length-1].ovr ? log[log.length-1].ovr
+            : a ? Math.round(a.ovr + (card._pingEdge||0) + (card._ageEdge||0))
                 : CAREER.player.ovr;
   return {
     season:s, div:cr.division,
@@ -150074,7 +150089,7 @@ function ccGalaDelta(now, was, money){
   return '<i class="cc-gala-d '+(d>0 ? 'up' : 'down')+'">'+(d>0 ? '▲' : '▼')+(money ? ccMoney(Math.abs(d)) : ccNum(Math.abs(d)))+'</i>';
 }
 function ccGalaShareLines(y){
-  const cr=CAREER.career, log=(cr.log||[]).filter(e=>e.season===cr.season);
+  const cr=CAREER.career, log=(cr.log||[]).filter(e=>e.season===y.season);
   const mates={}; log.forEach(e=>(e.mates||(e.mate?[e.mate]:[])).forEach(m=>{ if(m) mates[m]=(mates[m]||0)+1; }));
   const top=Object.keys(mates).sort((a,b)=>mates[b]-mates[a])[0];
   const run=(y.runs||[])[0];
@@ -150084,12 +150099,65 @@ function ccGalaShareLines(y){
                 top ? [L().lfGalaTopMate, top+' · '+mates[top]] : null,
                 (y.goty && y.goty.you) ? [L().ccGalaGotyYou, '🏆'] : null,
                 y.prev ? [L().ccGalaPrevRow, ccMoney(y.prev.prize)+' · '+(y.prev.best ? '#'+y.prev.best : '—')] : null,
-                ((CAREER.career.locker||[]).filter(it=>it.season===CAREER.career.season && it.kind!=='spray').length)
-                  ? [L().ccLockerTitle, (CAREER.career.locker||[]).filter(it=>it.season===CAREER.career.season && it.kind!=='spray').map(it=>it.name).slice(0, 2).join(', ')] : null
+                ((CAREER.career.locker||[]).filter(it=>it.season===y.season && it.kind!=='spray').length)
+                  ? [L().ccLockerTitle, (CAREER.career.locker||[]).filter(it=>it.season===y.season && it.kind!=='spray').map(it=>it.name).slice(0, 2).join(', ')] : null
                ].filter(Boolean).slice(0, 4)};
 }
-async function ccGalaShare(){
-  const y=ccGalaYear(), S=ccGalaShareLines(y), pl=CAREER.player;
+/* ПОДЕЛИТЬСЯ — ОКНОМ С КАРТИНКОЙ (17.10, его «поделиться результатами сезона нельзя»). Раньше кнопка
+   молча отдавала файл: на ПК он тихо падал в загрузки (или открывалось окно Windows), в Safari
+   navigator.share после await рисования терял жест нажатия и падал. Теперь картинка рисуется сразу,
+   показывается, и уже по ГОТОВОМУ файлу: «Отправить» (share в том же нажатии), «Сохранить» (обычная
+   ссылка download) и «Скопировать» (буфер обмена). Любой сезон — не только идущий: из Истории тоже. */
+let CC_GALA_FILE=null;
+async function ccGalaShare(season){
+  let blob=null, name='';
+  try{ ({blob, name}=await ccGalaShareBlob(season)); }
+  catch(e){ console.warn('gala share', e); }
+  ccGalaShareModal(blob, name);
+}
+function ccGalaShareModal(blob, name){
+  const T=L();
+  if(CC_GALA_FILE && CC_GALA_FILE.url) URL.revokeObjectURL(CC_GALA_FILE.url);
+  CC_GALA_FILE=blob ? {blob:blob, name:name, url:URL.createObjectURL(blob), file:null} : null;
+  try{ if(blob && typeof File==='function') CC_GALA_FILE.file=new File([blob], name, {type:'image/png'}); }catch(e){}
+  const canSend=!!(CC_GALA_FILE && CC_GALA_FILE.file && navigator.canShare && (()=>{ try{ return navigator.canShare({files:[CC_GALA_FILE.file]}); }catch(e){ return false; } })());
+  const canCopy=!!(blob && navigator.clipboard && navigator.clipboard.write && typeof ClipboardItem==='function');
+  let el=document.getElementById('ccGalaShareModal');
+  if(!el){ el=document.createElement('div'); el.id='ccGalaShareModal'; el.className='cc-gala-wrap cc-share-wrap';
+    el.addEventListener('click', e=>{ if(e.target===el) ccGalaShareClose(); }); document.body.appendChild(el); }
+  el.innerHTML=`<div class="cc-share" role="dialog" aria-modal="true">
+    <h4>${esc(T.ccGalaShare)}</h4>
+    ${CC_GALA_FILE ? `<img class="cc-share-img" src="${CC_GALA_FILE.url}" alt="">` : `<div class="cc-gala-hint">${esc(T.ccShareFail||'Could not draw the picture')}</div>`}
+    <div class="cc-share-cta">
+      ${canSend ? `<button class="cstrip-btn cstrip-btn-go" onclick="ccGalaShareSend()">${esc(T.ccShareSend||'Send')}</button>` : ''}
+      ${CC_GALA_FILE ? `<a class="cstrip-btn ${canSend ? 'cstrip-btn-code' : 'cstrip-btn-go'}" href="${CC_GALA_FILE.url}" download="${esc(name)}">${esc(T.ccShareSave||'Save image')}</a>` : ''}
+      ${canCopy ? `<button class="cstrip-btn cstrip-btn-code" id="ccShareCopyBtn" onclick="ccGalaShareCopy()">${esc(T.ccShareCopy||'Copy')}</button>` : ''}
+      <button class="cstrip-btn cstrip-btn-code" onclick="ccGalaShareClose()">${esc(T.ccShareClose||'Close')}</button>
+    </div>
+    <div class="cc-gala-hint" id="ccShareNote"></div>
+  </div>`;
+}
+function ccGalaShareSend(){
+  const f=CC_GALA_FILE; if(!f || !f.file) return;
+  // Файл уже готов: share зовётся в том же нажатии, без await перед ним.
+  navigator.share({files:[f.file]}).catch(e=>{
+    if(e && e.name==='AbortError') return;
+    const n=document.getElementById('ccShareNote'); if(n) n.textContent=L().ccShareSendFail||'Sharing did not open. Save the image instead';
+  });
+}
+function ccGalaShareCopy(){
+  const f=CC_GALA_FILE, n=document.getElementById('ccShareNote'); if(!f) return;
+  navigator.clipboard.write([new ClipboardItem({'image/png':f.blob})])
+    .then(()=>{ if(n) n.textContent=L().ccShareCopied||'Copied'; })
+    .catch(()=>{ if(n) n.textContent=L().ccShareSendFail||'Sharing did not open. Save the image instead'; });
+}
+function ccGalaShareClose(){
+  const el=document.getElementById('ccGalaShareModal'); if(el) el.remove();
+  if(CC_GALA_FILE && CC_GALA_FILE.url) URL.revokeObjectURL(CC_GALA_FILE.url);
+  CC_GALA_FILE=null;
+}
+async function ccGalaShareBlob(season){
+  const y=ccGalaYear(season), S=ccGalaShareLines(y), pl=CAREER.player;
   const W=1080, H=1350, c=document.createElement('canvas'); c.width=W; c.height=H;
   const x=c.getContext('2d'), font=(w, s)=>w+' '+s+'px Oswald, "Segoe UI", Roboto, sans-serif';
   const g=x.createLinearGradient(0, 0, 0, H); g.addColorStop(0, '#141a2e'); g.addColorStop(1, '#07090f');
@@ -150097,7 +150165,7 @@ async function ccGalaShare(){
   x.fillStyle='#ffd23f'; x.fillRect(72, 96, 12, 120);
   x.fillStyle='#ffd23f'; x.font=font(700, 40); x.fillText(L().ccGalaShareTag.toUpperCase(), 108, 136);
   x.fillStyle='#f2f4fa'; x.font=font(800, 88); x.fillText(String(pl.nick||'').slice(0, 18), 108, 214);
-  x.fillStyle='#9aa3b8'; x.font=font(500, 38); x.fillText(L().ccGalaTitle(y.season)+' · '+ccSeasonYear(), 108, 268);
+  x.fillStyle='#9aa3b8'; x.font=font(500, 38); x.fillText(L().ccGalaTitle(y.season)+' · '+ccSeasonYearOf(y.season), 108, 268);
   const cols=3, gap=24, tw=(W-144-gap*(cols-1))/cols, th=210, top=330;
   S.tiles.forEach((t, i)=>{
     const cx=72+(i%cols)*(tw+gap), cy=top+Math.floor(i/cols)*(th+gap);
@@ -150114,13 +150182,8 @@ async function ccGalaShare(){
   });
   x.fillStyle='#5b6378'; x.font=font(700, 34); x.fillText('fncsdraft.com', 72, H-64);
   const blob=await new Promise(r=>c.toBlob(r, 'image/png'));
-  const name='fncsdraft-season-'+y.season+'.png';
-  try{ const file=new File([blob], name, {type:'image/png'});
-    if(navigator.canShare && navigator.canShare({files:[file]})){ await navigator.share({files:[file]}); return 'shared'; } }
-  catch(e){ if(e && e.name==='AbortError') return 'cancel'; }
-  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=name; document.body.append(a); a.click(); a.remove();
-  setTimeout(()=>URL.revokeObjectURL(a.href), 5000);
-  return 'saved';
+  if(!blob) throw new Error('toBlob gave nothing');
+  return {blob:blob, name:'fncsdraft-season-'+y.season+'.png'};
 }
 function ccGalaNum(v, label){
   return `<div class="cc-gala-num"><b>${v}</b><em>${label}</em></div>`;
@@ -150197,7 +150260,7 @@ function ccGalaDraw(){
       <div class="cc-gala-dots">${dots}</div>
       <div class="cc-gala-cta">
         ${i>0 ? `<button class="cstrip-btn cstrip-btn-code" onclick="ccGalaGo(-1)">${L().ccGalaBack}</button>` : ''}
-        ${i>=1 ? `<button class="cstrip-btn cstrip-btn-code" onclick="ccGalaShare()">${L().ccGalaShare}</button>` : ''}
+        ${i>=1 ? `<button class="cstrip-btn cstrip-btn-code" onclick="ccGalaShare(${y.season})">${L().ccGalaShare}</button>` : ''}
         ${last ? `<button class="cstrip-btn cstrip-btn-go" onclick="ccGalaFinish()">${L().ccNewSeason}</button>`
                : `<button class="cstrip-btn cstrip-btn-go" onclick="ccGalaGo(1)">${L().ccGalaNext}</button>`}
         <button class="cstrip-btn cstrip-btn-code" onclick="ccGalaClose()">${L().ccGalaSkip}</button>
@@ -170039,6 +170102,7 @@ function careerArchiveHTML(){
          the word "Duo" on the tab strip, and a trios season read "Duo · a trios
          season". His report, 20 August. -->
     <div class="ch-row"><em>${L().ccSeasonFormat}</em><b>${ccArcFormat(sn, a.size)}</b></div>
+    ${(cr.log||[]).some(e=>e.season===sn) ? `<div class="cc-chips"><button class="cc-back" onclick="ccGalaShare(${sn})">${esc(L().ccShareSeason||'Share season')}</button></div>` : ''}
     ${rowsG}
     <div class="cc-chips cc-chips-reg">${chipsR}</div>
     ${rowsR}

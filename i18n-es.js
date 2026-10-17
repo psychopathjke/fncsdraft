@@ -4036,3 +4036,6 @@ Object.assign(I18N.es=I18N.es||{}, {dyColPlayer:'Jugador y equipo', dyYou:'tú',
 /* Дозаливка «es» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
 Object.assign(I18N.es=I18N.es||{},
 ({ ccAwTrio: 'Trío del Año' }));
+/* Дозаливка «es» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
+Object.assign(I18N.es=I18N.es||{},
+({ ccShareSend:'Enviar', ccShareSave:'Guardar imagen', ccShareCopy:'Copiar', ccShareClose:'Cerrar', ccShareCopied:'Imagen copiada', ccShareSendFail:'No se abrió el menú de compartir. Guarda la imagen', ccShareFail:'No se pudo dibujar la imagen', ccShareSeason:'Compartir temporada' }));
