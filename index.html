@@ -145932,15 +145932,20 @@ function ccCoachRatingOf(c){
   const f=(c && CC_COACH_X[c.at])||500;
   return Math.max(60, Math.min(76, Math.round(60+6*Math.log10(Math.max(1000, f)/1000))));
 }
-const CC_COACH_TOP={cost:3500, train:0.35, chem:0.4};
-const CC_COACH_LOW={cost:2500, train:0.28, chem:0};
+/* ЦЕНА ПО РЕЙТИНГУ, ШИРОКО (17.10, его «цены коучей нужно поменять»). Было $2 500…3 500 у всех: при зарплате
+   дивизиона 3 в $100 и дивизиона 2 в $300 коуч внизу недоступен вовсе, а в первом дивизионе ($500…15 000) копеечный,
+   и лучший коуч был всего на 40% дороже самого слабого. Теперь $300 (рейтинг 60) … $8 000 (95) по квадрату: слабый
+   коуч по карману со второго-третьего дивизиона, топовый стоит как хорошая зарплата первого. Сила и химия — прежние. */
+const CC_COACH_TOP={cost:8000, train:0.35, chem:0.4};
+const CC_COACH_LOW={cost:300, train:0.28, chem:0};
 (function ccCoachRankTerms(){
   const span=(a,b,k)=>b+(a-b)*k;
   // Зарплата и сила — от рейтинга (60 → нижняя, 95 → верхняя), а не от места в списке.
   CC_COACHES.forEach(c=>{
     c.rating=ccCoachRatingOf(c);
     const k=Math.max(0, Math.min(1, (c.rating-60)/35));
-    c.cost  = Math.round(span(CC_COACH_TOP.cost,  CC_COACH_LOW.cost,  k)/100)*100;
+    const cost=span(CC_COACH_TOP.cost, CC_COACH_LOW.cost, k*k);
+    c.cost  = cost<1000 ? Math.round(cost/50)*50 : Math.round(cost/100)*100;
     c.train = Math.round(span(CC_COACH_TOP.train, CC_COACH_LOW.train, k)*100)/100;
     const chem=Math.round(span(CC_COACH_TOP.chem, CC_COACH_LOW.chem, k)*10)/10;
     if(chem>0) c.chem=chem; else delete c.chem;
