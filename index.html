@@ -3769,7 +3769,8 @@
   .zr-kit .zk-art svg{width:24px;height:24px;}
   /* Кирка — картинка The Axe of Champions 2.0 (CC_PICKAXE_ART); силуэт остаётся
      запасным, если картинка не загрузилась (img снимает себя по onerror). */
-  .zr-kit .cc-locker-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:8px}
+  .zr-kit .cc-locker-me{margin-top:12px}
+.cc-locker-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:8px}
 .cc-lock-it{display:flex;flex-direction:column;align-items:center;text-align:center;gap:3px;padding:8px 6px;border-radius:10px;
   background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08)}
 .cc-lock-it b{font-size:11.5px;line-height:1.2}.cc-lock-it em{font-style:normal;font-size:10.5px;opacity:.65}
@@ -119970,7 +119971,8 @@ function careerRenderHubBody(tab){
      is today, and everything that describes the career rather than the day gets
      its own tab. The two cards, who you are, the seat beside you, and the four
      people who pay you or take a cut. */
-  if(CH_TAB==='me'){ body.innerHTML=careerMeHTML(); return; }
+  // Шкафчик — и во вкладке «Я» (17.10, его «где шкафчик»: на телефоне правая колонка соцсети уезжает под ленту).
+  if(CH_TAB==='me'){ body.innerHTML=careerMeHTML()+'<div class="cc-locker-me">'+ccLockerHTML()+'</div>'; return; }
   if(CH_TAB==='club'){ body.innerHTML=careerClubTabHTML(); return; }
   // Цели и развитие — сверху «Тренировки»: с «Центра» они ушли, когда он вернулся к виду прода (29.09).
   if(CH_TAB==='train'){ body.innerHTML='<div class="ch-grid ch-grid-me ch-train-goals">'+ccGoalsTileHTML()+ccDevTileHTML()+'</div>'+careerTrainTabHTML(); return; }
@@ -141798,7 +141800,7 @@ function careerSocialHTML(){
     <main class="x-main">
       ${view==='dms' ? inbox
         : view==='notes' ? notesHTML
-        : view==='me' ? profile
+        : view==='me' ? profile+ccLockerHTML()
         : view==='who' ? careerWhoHTML(CH_WHO)
         /* У ленты есть шапка — как «Home» над таймлайном у X, и в ней же
            переключатель «всё / подписки»: подписка должна что-то менять, иначе
