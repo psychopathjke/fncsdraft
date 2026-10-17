@@ -2673,6 +2673,7 @@
   .ch-purse-now div{text-align:left;}
   .ch-purse-now .ch-en-row{justify-content:flex-start;}
   .ch-purse-now .ch-cash{color:#3ee9b8;}
+  .ch-purse-now .ch-pend{display:block;font-size:10.5px;font-weight:700;color:#8ea6d6;margin-top:1px;}
   .ch-purse em{display:block;font-style:normal;font-size:9px;color:#8b98a5;
     font-weight:800;letter-spacing:.1em;text-transform:uppercase;}
   .ch-purse b{font-size:16px;font-weight:900;}
@@ -20887,6 +20888,19 @@ Object.assign(I18N.ru, {
   ccDmSmmGrow:(n,big,v)=>(big ? ['Подписчиков за вечер: +'+n+'. Запости W, пока горячо — скрин и одна строка.','Новых подписчиков: +'+n+'. Сейчас момент: клип с лучшей игры.'] : ['Подписчиков с прошлого раза: +'+n+'. Короткий пост о вечере их удержит.','Новых подписчиков: +'+n+'. Одного поста в день хватит, не спамь.'])[v%2],
   ccDmSmmBad:v=>['Сегодня лучше ничего не постить на эмоциях. Завтра — спокойная строка про следующую цель.','Пропусти ленту сегодня. Плохому вечеру твит не нужен.'][v%2],
   ccDmMktBrands:v=>['После таких вечеров бренды спрашивают про тебя — загляни в спонсоров.','Два бренда сегодня просили твою стату. Такие результаты поднимают твою цену.'][v%2]});
+/* Хотфиксы, связь, выплаты (16.10, careerHotfixTick / ccTechToday / careerPayTick). */
+Object.assign(I18N.en, {ccPayPend:'pending', ccTechLbl:'Connection',
+  ccDmPayout:(sum,n)=>'Your payout of $'+sum+' for '+n+(n===1?' event':' events')+' has been sent. Thanks for competing!',
+  ccNewsHotfix:(w,v)=>['Competitive hotfix: '+w+' is disabled in tournaments for the rest of the season.','Hotfix is live: '+w+' has been removed from competitive playlists.','Update: '+w+' is now unvaulted from comp… just kidding, it is disabled for the rest of the season.'][v%2],
+  ccPostTechNet:v=>['internet is dying today 💀 playing on 80 ping','my wifi picked the worst day possible','packet loss on cup day. love it'][v%3],
+  ccNewsRehost:g=>'Game '+g+' of tonight’s session was re-hosted due to server issues. Points from the original game are void.',
+  ccNewsTeamingDq:(a,b)=>'@'+a+' and @'+b+' have been disqualified from tonight’s event for teaming.'});
+Object.assign(I18N.ru, {ccPayPend:'ожидается', ccTechLbl:'Связь',
+  ccDmPayout:(sum,n)=>'Выплата $'+sum+' за турниры ('+n+') отправлена. Спасибо за участие!',
+  ccNewsHotfix:(w,v)=>['Хотфикс компетитива: '+w+' отключён в турнирах до конца сезона.','Хотфикс вышел: '+w+' убран из соревновательных плейлистов.'][v%2],
+  ccPostTechNet:v=>['интернет умирает сегодня 💀 играю на 80 пинге','вайфай выбрал худший день','потеря пакетов в день капа. обожаю'][v%3],
+  ccNewsRehost:g=>'Игра '+g+' сегодняшней сессии перехощена из-за проблем с сервером. Очки исходной игры аннулированы.',
+  ccNewsTeamingDq:(a,b)=>'@'+a+' и @'+b+' дисквалифицированы с сегодняшнего турнира за тиминг.'});
 /* Слухи, опросы, ветки (16.10, careerRumorTick / careerPollTick / ccPostComments). */
 Object.assign(I18N.en, {
   ccPostRumorPair:(a,b,v)=>['sources: @'+a+' and @'+b+' have been scrimming together 👀 duo next season?','hearing @'+a+' x @'+b+' is a thing for next season. thoughts?','👀 @'+a+' and @'+b+' in the same customs again. something is cooking'][v%3],
@@ -110115,7 +110129,7 @@ function ccChestRarity(rng){
 // ниже, если класс пуст совсем — любой ствол пула. С шансом CC_CHEST_CONSUMABLE —
 // расходник.
 function ccChestRoll(rng, set){
-  const pool=CC_LOOT_BY_SET[ccLootSet(set)];
+  const pool=ccLootPool(set);
   const cls=ccChestClass(rng, pool.weapons);
   const inCls=cls ? pool.weapons.filter(w=>w.icon===cls) : pool.weapons;
   const rar=ccChestRarity(rng);
@@ -110215,7 +110229,7 @@ function ccPackRng(pack, salt){
 }
 function ccPackFloor(pack, set, rng){
   if(!pack) return pack;
-  const r=ccPackRng(pack, "floor"), pool=CC_LOOT_BY_SET[ccLootSet(set)];
+  const r=ccPackRng(pack, "floor"), pool=ccLootPool(set);
   if(!pool) return pack;
   pack.weapons=pack.weapons||[]; pack.heals=pack.heals||[];
   const lowest=list=>{ const by={}; list.forEach(o=>{ const k=o.name; if(!by[k] || RARITY_LADDER.indexOf(o.rarity)<RARITY_LADDER.indexOf(by[k].rarity)) by[k]=o; }); return Object.keys(by).map(k=>by[k]); };
@@ -110904,6 +110918,21 @@ function ccLootSet(set){
   if(!s){ try{ s=(CAREER && CAREER.career) ? careerBrSet() : null; }catch(e){ s=null; } }
   return CC_LOOT_BY_SET[s] ? s : 'm2';
 }
+/* Пул острова без того, что хотфикс выключил в этом сезоне (careerHotfixTick, 16.10). Только карьера: драфт и
+   менеджер играют пул острова как есть. */
+function ccHotfixVault(k){
+  try{
+    if(typeof CC_DRAFT_RUN!=='undefined' && CC_DRAFT_RUN && !CAREER_RUN) return null;
+    const cr=CAREER && CAREER.career, h=cr && cr.hotfix;
+    if(!h || h.set!==k || !cr.meta || h.sid!==cr.meta.id || !(h.vault||[]).length) return null;
+    return new Set(h.vault);
+  }catch(e){ return null; }
+}
+function ccLootPool(set){
+  const k=ccLootSet(set), p=CC_LOOT_BY_SET[k];
+  const hv=p && ccHotfixVault(k);
+  return hv ? {weapons:p.weapons.filter(w=>!hv.has(w.name)), heals:p.heals} : p;
+}
 function ccLootPack(rng, set){
   const pick=(pool,n)=>{
     const left=pool.slice(), out=[];
@@ -110911,7 +110940,7 @@ function ccLootPack(rng, set){
       out.push(left.splice(Math.floor((rng?rng():Math.random())*left.length), 1)[0]);
     return out;
   };
-  const pool=CC_LOOT_BY_SET[ccLootSet(set)];
+  const pool=ccLootPool(set);
   const heals=pool.heals.filter(ccIsHealItem);
   const moves=pool.heals.filter(x=>CC_MOVE_ITEMS.indexOf(x.name)>=0);
   // Автомат и дробовик (отзыв), не два случайных класса; нет класса в пуле — добор ниже.
@@ -119783,7 +119812,9 @@ function careerRenderHubBody(tab){
     // before spending — a coach, a month at the bootcamp, a rig — and the
     // number that answers "can I" is what is left, not what was ever won. The
     // career's total keeps its place in the ladder tile and the history.
-    `<div class="ch-go" onclick="careerTab('shop')"><em>${L().ccBalance}</em><b class="ch-cash">${ccMoney(cr.balance||0)}</b></div>`+
+    `<div class="ch-go" onclick="careerTab('shop')"><em>${L().ccBalance}</em><b class="ch-cash">${ccMoney(cr.balance||0)}</b>${
+      ccPayPending()>0 ? `<small class="ch-pend">+${ccMoney(ccPayPending())} ${esc(L().ccPayPend||'pending')}</small>` : ''}</div>`+
+    (ccTechToday() ? `<div><em>${esc(L().ccTechLbl||'Connection')}</em><b class="cc-pen bad">📶 −${CC_TECH_PEN}</b></div>` : '')+
     /* Form, reputation and burnout, which used to live in the ladder tile.
 
        They belong up here rather than in a tile you scroll to: all three are the
@@ -123482,6 +123513,9 @@ function careerAdvanceBody(iso){
   // Слухи и опросы сцены (16.10). Ошибка в них не должна останавливать день.
   try{ careerRumorTick(); }catch(e){ console.error('rumor', e); }
   try{ careerPollTick(); }catch(e){ console.error('poll', e); }
+  // Хотфиксы и выплаты призовых (16.10).
+  try{ careerHotfixTick(); }catch(e){ console.error('hotfix', e); }
+  try{ careerPayTick(); }catch(e){ console.error('pay', e); }
   careerCustomsPostTick();
   careerAdPostTick();
   // Трансферный рынок сцены и месячный «кто выстрелил». См. careerSceneMovesTick.
@@ -131157,7 +131191,7 @@ function careerBurnout(){
 function careerForm(){
   // Confidence holds the floor and never the ceiling. See the cars in CC_SHOP.
   const conf=(CAREER.gear && CAREER.gear.conf) || 0;
-  return clamp((CAREER.career.form||0)-careerBurnout()-ccMetaPen(),
+  return clamp((CAREER.career.form||0)-careerBurnout()-ccMetaPen()-ccTechPen(),
                Math.min(0, -CC_FORM_MAX+conf), CC_FORM_MAX);
 }
 function careerFormAdd(place, of){
@@ -131549,6 +131583,7 @@ function careerApplyGrowth(place, total, you, field){
   // Пресс-конференция после заметного вечера и исход обещания (ccPressAfterNight). Не ломает вечер ни при какой ошибке.
   try{ ccPressAfterNight(place, total, expected); }catch(e){ console.error('press', e); }
   try{ ccStaffAfterNight(place, total); }catch(e){ console.error('staff dm', e); }
+  try{ ccTechSceneAfterNight(total); }catch(e){}
   const before = pl.ovrExact!=null ? pl.ovrExact : pl.ovr;
   const taper = clamp((careerPotential()-before)/CAREER_TAPER, 0, 1);
   // Who you play with is who you learn from. A partner above you drags you up
@@ -134574,7 +134609,7 @@ function careerEndAgent(){
 }
 // What lands in the hand, and what the agent takes out of it on the way. The
 // winnings are untouched: a board of prize money is a board of prize money.
-function ccPayIn(mine){
+function ccPayIn(mine, now){
   const cr=CAREER.career;
   if(!(mine>0)) return 0;
   cr.earnings=(cr.earnings||0)+mine;
@@ -134587,8 +134622,83 @@ function ccPayIn(mine){
   if(cut){
     cr.orgCut=(cr.orgCut||0)+cut;
   }
+  /* ВЫПЛАТА НЕ СРАЗУ (16.10, его «4»: «задержка призовых»). Epic платит призовые через несколько недель после турнира —
+     до этого они «ожидаются»: видны под балансом, на баланс приходят в день выплаты (careerPayTick), с письмом.
+     В игре вдвоём — сразу: там балансы сверяются между браузерами (ccMpOn). Заработок (earnings) пишется сразу. */
+  if(!now && !(typeof ccMpOn==='function' && ccMpOn())){
+    cr.payQ=(cr.payQ||[]).concat([{amt:mine-cut, day:careerToday(), due:ccAddDays(careerToday(), CC_PAY_DELAY)}]);
+    return mine-cut;
+  }
   cr.balance=(cr.balance||0)+(mine-cut);
   return mine-cut;
+}
+const CC_PAY_DELAY=30;
+function ccPayPending(){ const q=(CAREER && CAREER.career && CAREER.career.payQ)||[]; return q.reduce((a,x)=>a+(x.amt||0), 0); }
+const CC_PAY_WHO={handle:'Epic Payouts', verified:true, roster:false, staff:'pay'};
+function careerPayTick(){
+  const cr=CAREER && CAREER.career; if(!cr || !(cr.payQ||[]).length) return 0;
+  const today=careerToday(), due=cr.payQ.filter(x=>x.due<=today);
+  if(!due.length) return 0;
+  const sum=due.reduce((a,x)=>a+(x.amt||0), 0);
+  cr.payQ=cr.payQ.filter(x=>x.due>today);
+  cr.balance=(cr.balance||0)+sum;
+  try{ careerDmPush(ccStaffThread(CC_PAY_WHO), 'them', 'ccDmPayout', [ccNum(sum), due.length]); }catch(e){}
+  return sum;
+}
+/* ХОТФИКС ПОСРЕДИ СЕЗОНА (16.10, его «1»). Раз в 4+ недели, не раньше двух недель от начала сезона и не больше двух
+   за сезон: Epic выключает в соревновательном одно оружие — до конца сезона его нет ни в сундуках, ни в наборах
+   (ccLootPool). Последний автомат и последний дробовик не трогаются. Пост от аккаунта сцены, реакция — как на мету. */
+const CC_HOTFIX_GAP=28, CC_HOTFIX_ODDS=0.08;
+function careerHotfixTick(){
+  const cr=CAREER && CAREER.career; if(!cr) return;
+  if(typeof ccMpOn==='function' && ccMpOn()) return;
+  const m=cr.meta, today=careerToday();
+  if(!m || !m.from || ccDaysBetween(m.from, today)<14) return;
+  const h=(cr.hotfix && cr.hotfix.sid===m.id) ? cr.hotfix : null;
+  if(h && (h.n>=2 || ccDaysBetween(h.day, today)<CC_HOTFIX_GAP)) return;
+  const rnd=careerRng(ccHashStr('hotfix|'+today+'|'+m.id));
+  if(rnd()>CC_HOTFIX_ODDS) return;
+  const k=ccLootSet(), pool=(CC_LOOT_BY_SET[k]||{}).weapons||[];
+  const out=new Set((h && h.vault)||[]);
+  const names=[...new Set(pool.map(w=>w.name))].filter(n=>!out.has(n));
+  const cand=names.filter(n=>{ const ic=(pool.find(w=>w.name===n)||{}).icon;
+    return pool.some(w=>w.icon===ic && w.name!==n && !out.has(w.name)); });
+  if(!cand.length) return;
+  const pick=cand[Math.floor(rnd()*cand.length)];
+  cr.hotfix={sid:m.id, set:k, vault:[...out, pick], n:((h && h.n)||0)+1, day:today};
+  careerNews('flat', 'ccNewsHotfix', [pick, Math.floor(rnd()*3)]);
+}
+/* ПРОБЛЕМЫ СО СВЯЗЬЮ (16.10, его «2»). В день онлайн-турнира с шансом CC_TECH_ODDS «интернет лагает с утра» — минус
+   CC_TECH_PEN к форме на этот день (careerForm), видно в шапке и постом. На ЛАНе (gc) не бывает. Бросок посеян днём:
+   перезагрузка не перебросит. После крупного вечера сцена иногда пишет о перехосте игры или дисквалификации команды
+   за тиминг (ccTechSceneAfterNight) — новости, без чисел. */
+const CC_TECH_ODDS=0.05, CC_TECH_PEN=0.6;
+function ccTechToday(){
+  const cr=CAREER && CAREER.career; if(!cr) return null;
+  if(typeof ccMpOn==='function' && ccMpOn()) return null;
+  const today=careerToday();
+  if(cr.tech && cr.tech.day===today) return cr.tech.kind ? cr.tech : null;
+  let on=[]; try{ on=(careerYearDays().get(today)||[]).filter(e=>e && e.kind!=='gc'); }catch(e){}
+  const hit=on.length>0 && careerRng(ccHashStr('tech|'+today+'|'+(cr.season||1)))()<CC_TECH_ODDS;
+  cr.tech={day:today, kind:hit ? 'net' : null};
+  if(hit) careerNews('bad', 'ccPostTechNet', [ccHashStr(today)%3]);
+  return hit ? cr.tech : null;
+}
+function ccTechPen(){ try{ return ccTechToday() ? CC_TECH_PEN : 0; }catch(e){ return 0; } }
+function ccTechSceneAfterNight(total){
+  const cr=CAREER && CAREER.career; if(!cr || !(total>=30)) return;
+  if(typeof ccMpOn==='function' && ccMpOn()) return;
+  const today=careerToday();
+  let big=false; try{ big=(careerYearDays().get(today)||[]).some(e=>e && (e.kind==='major' || e.kind==='gc' || e.kind==='final')); }catch(e){}
+  if(!big) return;
+  const rnd=careerRng(ccHashStr('techscene|'+today));
+  const r=rnd();
+  if(r<0.12) careerNews('flat', 'ccNewsRehost', [2+Math.floor(rnd()*4)]);
+  else if(r<0.18){
+    let duos=[]; try{ duos=(careerPools().duos||[]).filter(d=>d && d.cards && d.cards.length>=2); }catch(e){}
+    if(duos.length>20){ const d=duos[10+Math.floor(rnd()*(duos.length-10))];
+      careerNews('flat', 'ccNewsTeamingDq', [ccHandle(d.cards[0].handle), ccHandle(d.cards[1].handle)]); }
+  }
 }
 function careerSponsorDm(){
   const offer=ccSponsorOffer();
@@ -135258,6 +135368,7 @@ const CC_POST_BY={
   ccPostPress:'press', ccPostPressKept:'press', ccPostPressBroke:'press', ccPostPressRival:'arg0',
   // Слухи и опросы (16.10) пишут выдуманные медиа-аккаунты — автор едет в opt.by; здесь — на случай записи без него.
   ccPostRumorPair:'press', ccPostRumorYou:'press', ccPostRumorDrama:'press', ccPostRumorTrue:'press', ccPostPollWin:'press',
+  ccNewsHotfix:'press', ccNewsRehost:'press', ccNewsTeamingDq:'press', ccPostTechNet:'you',
   // LFD is the player saying it out loud. Nobody else posts that for you.
   ccNewsLfd:'you',
   // And so is an injury: a wrist is the player's own week, not a transfer the
@@ -136942,7 +137053,9 @@ const CC_CO_BY_KIND=[
   /* Свои банки (16.10, «посмотри твиттер и сделай реалистичней»): под таблицей статистики Kinch, анонсом сезона и
      подколом писали ответы на средний вечер («mid but fine», «could be worse») — у них не было своего вида. */
   [/^ccNewsStatBoard|^ccNewsKinch/, 'Stat'],
-  [/^ccNewsMetaNew/, 'Meta'],
+  [/^ccNewsMetaNew|^ccNewsHotfix|^ccNewsRehost/, 'Meta'],
+  [/^ccPostTechNet/, 'Bad'],
+  [/^ccNewsTeamingDq/, 'Rumor'],
   [/^ccPostEvKilled|^ccPostPressRival/, 'Taunt'],
   [/^ccPostPress$/, 'Press'],
   [/^ccPostRumor/, 'Rumor'],
@@ -140685,7 +140798,7 @@ function careerSignFromDm(id){
   else careerNews('good', o.academy ? 'ccNewsSignedAcademy' : 'ccNewsSigned',
              [o.name, ccNum(o.salary)], {by:ccOrgBy(o.name)});
   careerEvent(o.academy ? 'tlAcademy' : 'tlSigned', [o.name, ccNum(o.salary)]);
-  if(o.signBonus){ ccPayIn(o.signBonus); careerEvent('tlSignBonus', [o.name, ccNum(o.signBonus)]); }
+  if(o.signBonus){ ccPayIn(o.signBonus, true); careerEvent('tlSignBonus', [o.name, ccNum(o.signBonus)]); }
   if(o.perk==='gear'){ careerOrgKitOut(); careerNews('good', 'ccNewsOrgKit', [o.name]); }
   else if(o.perk==='coach') careerNews('good', 'ccNewsOrgCoach', [o.name]);
   careerSave();

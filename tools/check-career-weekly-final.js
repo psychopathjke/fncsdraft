@@ -165,7 +165,7 @@ const BOOT = `
     if (row.prize !== Math.round(wfPrize(row.place)/2))
       fail('#' + row.place + ' was paid ' + row.prize + ', half the table says ' + Math.round(wfPrize(row.place)/2));
     if ((s2.earnings||0) !== row.prize) fail('prize money did not reach earnings');
-    if ((s2.balance||0) !== row.prize) fail('prize money did not reach the balance');
+    if ((s2.balance||0) + (s2.payQ||[]).reduce((t,x)=>t+(x.amt||0),0) !== row.prize) fail('prize money did not reach the balance');
     if (s2.wf) fail('the seat was not spent');
     out.steps.push('final #' + row.place + ' of ' + row.of + ' — $' + row.prize +
                    ', earnings $' + s2.earnings + ', seat spent');

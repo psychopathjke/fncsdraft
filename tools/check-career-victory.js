@@ -163,8 +163,8 @@ const BOOT = `
     const feed = [...document.querySelectorAll('#chBody .x-post-in p')].map(b=>b.textContent.trim());
     if (!feed.length) fail('the feed is empty after a Victory Cup');
     out.steps.push('feed: ' + feed.slice(0,2).join(' / '));
-    const mineCards = [...document.querySelectorAll("#chBody .x-shot")].filter(c => /#[0-9]+ [/] [0-9]+/.test(c.textContent));
-    if (!mineCards.length) fail("the breakdown post carries no My stats card");
+    // 16.10: разбор Кинча — в личке, а не постом в ленте (Notion 15.10); карточка «Моя статистика» — кнопкой под итогом, выше.
+    if (JSON.stringify(CAREER.dms || []).indexOf("ccDmKinchSum") < 0) fail("no Kinch breakdown in DMs after the cup");
 
     // ---- play the duos one, which does seat a partner --------------------
     seed(4, '2026-01-12', 70);

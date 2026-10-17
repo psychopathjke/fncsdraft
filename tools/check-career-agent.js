@@ -83,11 +83,11 @@ const BOOT = `
           !repped.paid, String(repped.paid));
     // The club is the one that takes a share of a board, and only if one is signed.
     CAREER.org = {name:'Probe', tier:90, salary:1000, cut:careerOrgCutFor(90), paid:0};
-    const beforeOrg = CAREER.career.balance;
+    const beforeOrg = CAREER.career.balance + ccPayPending();
     ccPayIn(gross);
     check('a club takes its share of the board',
-          CAREER.career.balance - beforeOrg === gross - Math.round(gross*careerOrgCut()),
-          String(CAREER.career.balance - beforeOrg));
+          CAREER.career.balance + ccPayPending() - beforeOrg === gross - Math.round(gross*careerOrgCut()),
+          String(CAREER.career.balance + ccPayPending() - beforeOrg));
     check('and that share is written down where it went',
           CAREER.career.orgCut === Math.round(gross*careerOrgCut()),
           String(CAREER.career.orgCut));
@@ -150,8 +150,8 @@ const BOOT = `
     careerSignAgentFromDm(t2.id);
     careerEndAgentFromDm(t2.id);
     check('ending it is one press', !careerAgent());
-    ccPayIn(1000);
-    check('and the money is whole again', CAREER.career.balance === 1000,
+    CAREER.career.payQ = []; ccPayIn(1000);
+    check('and the money is whole again', CAREER.career.balance + ccPayPending() === 1000,
           String(CAREER.career.balance));
   } catch(e) { out.err = String(e && e.stack || e); }
   document.getElementById('__out').textContent =

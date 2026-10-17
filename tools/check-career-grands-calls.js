@@ -89,7 +89,7 @@ const BOOT = `
     LANG='en'; CC_L_CACHE={};
     const solo=ccText(CAREER.career.news[0]);
     out.notes.push('solo en: "'+solo+'"');
-    check('в соло квал — в финал', /FINALS/.test(solo) && !/GRANDS/.test(solo), solo);
+    check('в соло квал — в финал', /finals/i.test(solo) && !/grands/i.test(solo), solo);
     LANG=was; CC_L_CACHE={};
 
     // ---- без записанной точки — пост без неё, а не «зона 0» -----------------
