@@ -21266,7 +21266,7 @@ Object.assign(I18N.ru, {ccAskMoneyLbl:'Деньги', ccAskTermsLbl:'Услов�
   dmOrgNoBonus:'Бонус за подпись не даём никому. Зарплата — вот наш аргумент',
   tlSignBonus:(c,v)=>c+': бонус за подпись $'+v,
   ccFnChamp:h=>'Чемпион вечера — @'+h,
-  ccLockerTitle:'Шкафчик', ccLockerNone:'Пусто. Косметику дают за победы: спрей за кап, баннер за гранд-финал или ЛАН, кирку — чемпиону FNCS',
+  ccLockerTitle:'Шкафчик', ccLockerNone:'Пусто. Баннер дают за гранд-финал или ЛАН и за каждый клуб, кирку — чемпиону FNCS',
   ccLockClub:'баннер клуба', ccLockNow:'сейчас', ccLock_pickaxe:'кирка', ccLock_spray:'спрей', ccLock_banner:'баннер', ccLock_emote:'эмоция',
   ccNewsLocker:(i,n)=>i+' В шкафчике новое: «'+n+'»',
   ccGalaShare:'Поделиться итогами', ccGalaShareTag:'Итоги года', ccGalaVsPrev:'▲▼ — сравнение с прошлым сезоном', ccGalaPrevRow:'Прошлый сезон: призовые · лучшее место',
@@ -21302,7 +21302,7 @@ Object.assign(I18N.en, {ccAskMoneyLbl:'Money', ccAskTermsLbl:'Terms', ccAsk_smal
   dmOrgNoBonus:'We do not do signing bonuses for anyone. The salary is our argument',
   tlSignBonus:(c,v)=>c+': signing bonus $'+v,
   ccFnChamp:h=>'Champion of the night — @'+h,
-  ccLockerTitle:'Locker', ccLockerNone:'Empty. Cosmetics come with wins: a spray for a cup, a banner for a grand final or a LAN, the pickaxe for an FNCS champion',
+  ccLockerTitle:'Locker', ccLockerNone:'Empty. A banner comes with a grand final, a LAN and every club you play for, the pickaxe with an FNCS title',
   ccLockClub:'club banner', ccLockNow:'current', ccLock_pickaxe:'pickaxe', ccLock_spray:'spray', ccLock_banner:'banner', ccLock_emote:'emote',
   ccNewsLocker:(i,n)=>i+' New in the locker: "'+n+'"',
   ccGalaShare:'Share my year', ccGalaShareTag:'Year in review', ccGalaVsPrev:'▲▼ — compared with last season', ccGalaPrevRow:'Last season: prize money · best place',
@@ -141106,10 +141106,8 @@ function ccLockerRules(e){
     out.push({id:'axe', kind:'pickaxe', name:'Axe of Champions'});
   if(e.kind==='major' && e.stage==='final') out.push({id:'gf'+e.season, kind:'banner', name:'FNCS Grand Finalist · '+ccSeasonYearOf(e.season)});
   if(e.lan) out.push({id:'lan|'+e.day, kind:'banner', name:name()});
-  if(e.place===1 && e.kind==='final') out.push({id:'wf', kind:'spray', name:'Weekly Final Champion'});
-  if(e.place===1 && e.kind==='reload' && e.stage==='final') out.push({id:'reload', kind:'spray', name:'Reload Champion'});
-  if(e.place===1 && e.kind==='victory') out.push(e.fight ? {id:'fn', kind:'emote', name:'Fight Night Champion'} : {id:'cup', kind:'spray', name:'Cup Champion'});
-  if((e.prize||0)>0) out.push({id:'pay1', kind:'spray', name:'First Paycheck', once:true});
+  // Спреев нет (17.10, его «спрей шкафчика убери»).
+  if(e.place===1 && e.kind==='victory' && e.fight) out.push({id:'fn', kind:'emote', name:'Fight Night Champion'});
   return out;
 }
 /* ЛОГОТИПЫ В ШКАФЧИКЕ (17.10, его «добавь в шкафчике логотипы»): у награды — арт турнира, за который она дана
@@ -141150,7 +141148,7 @@ function ccLockerCheck(){
 function ccLockerHTML(){
   const cr=CAREER && CAREER.career; if(!cr) return '';
   try{ ccLockerCheck(); }catch(e){}
-  const items=(cr.locker||[]).concat(ccLockerClubs()).sort((a,b)=>({pickaxe:0, banner:1, emote:2, spray:3}[a.kind]-{pickaxe:0, banner:1, emote:2, spray:3}[b.kind]));
+  const items=(cr.locker||[]).filter(it=>it.kind!=='spray').concat(ccLockerClubs()).sort((a,b)=>({pickaxe:0, banner:1, emote:2, spray:3}[a.kind]-{pickaxe:0, banner:1, emote:2, spray:3}[b.kind]));
   // Картинка: герб клуба; кирка поверх арта турнира; остальное — арт турнира со значком вида в углу.
   const ic=it=>{
     if(it.logo) return '<img class="cc-lock-logo" src="'+esc(it.logo)+'" alt="" loading="lazy" onerror="this.remove()">';
@@ -148396,8 +148394,8 @@ function ccGalaShareLines(y){
                 top ? [L().lfGalaTopMate, top+' · '+mates[top]] : null,
                 (y.goty && y.goty.you) ? [L().ccGalaGotyYou, '🏆'] : null,
                 y.prev ? [L().ccGalaPrevRow, ccMoney(y.prev.prize)+' · '+(y.prev.best ? '#'+y.prev.best : '—')] : null,
-                ((CAREER.career.locker||[]).filter(it=>it.season===CAREER.career.season).length)
-                  ? [L().ccLockerTitle, (CAREER.career.locker||[]).filter(it=>it.season===CAREER.career.season).map(it=>it.name).slice(0, 2).join(', ')] : null
+                ((CAREER.career.locker||[]).filter(it=>it.season===CAREER.career.season && it.kind!=='spray').length)
+                  ? [L().ccLockerTitle, (CAREER.career.locker||[]).filter(it=>it.season===CAREER.career.season && it.kind!=='spray').map(it=>it.name).slice(0, 2).join(', ')] : null
                ].filter(Boolean).slice(0, 4)};
 }
 async function ccGalaShare(){
