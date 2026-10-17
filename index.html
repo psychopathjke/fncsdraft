@@ -135512,8 +135512,9 @@ function ccMktPull(x){
 }
 function ccMktTermsOf(m){
   const k=ccRankPull(CC_MARKETING, m);
+  // Цена — та же кривая штаба, $250…3 000 (17.10, его «а другой стафф»); без места в списке — CC_MKT_BASE.
   return {cost: m && m.cost!=null ? m.cost
-                : Math.round((CC_MKT_BASE*(1+(k==null?0:k*1.5)))/50)*50,
+                : (k==null ? CC_MKT_BASE : ccStaffCostCurve(250, 3000, k)),
           rate: m && m.rate!=null ? m.rate : (1+(k==null?0:k*0.6))};
 }
 function ccMkt(){
@@ -137389,8 +137390,9 @@ function ccSmmPull(x){
    without the curve arguing back. */
 function ccSmmTermsOf(m){
   const k=ccRankPull(CC_SMM, m);
+  // Цена — та же кривая штаба, $150…3 000 (17.10, его «а другой стафф»); прирост — прежний.
   const t=(k==null) ? {cost:600, boost:0.22}
-                    : {cost:Math.round((400+k*1100)/50)*50, boost:+(0.18+k*0.42).toFixed(2)};
+                    : {cost:ccStaffCostCurve(150, 3000, k), boost:+(0.18+k*0.42).toFixed(2)};
   return {cost: m && m.cost!=null ? m.cost : t.cost,
           boost: m && m.boost!=null ? m.boost : t.boost};
 }
@@ -137527,7 +137529,14 @@ const CC_PSYCHS=[
    трансляции +6, независимый аналитик +4. Своя игра: 4·lg(призовые/10 000$) по Liquipedia (Vivid 26k, Blakeps 83k,
    Tocata 6k). Аудитория — 1.5·lg(подписчики/1000), почти ничего. */
 const CC_ANALYST_ROLE={data:20, desk:12, service:8, host:6, indie:4};
-const CC_STAFF2={analyst:{list:CC_ANALYSTS, cost:[1000,2500]}, psych:{list:CC_PSYCHS, cost:[800,2500]}};
+/* Цены штаба — как у коучей (17.10, его «а другой стафф» после «цены коучей поменять»): от рейтинга по квадрату,
+   дешёвый низ по карману со второго-третьего дивизиона, верх как хорошая зарплата первого. Аналитик $300…6 000
+   (+1…+3 к силе — эффект сильный), психолог $250…4 000. См. ccStaffCostCurve. */
+const CC_STAFF2={analyst:{list:CC_ANALYSTS, cost:[300,6000]}, psych:{list:CC_PSYCHS, cost:[250,4000]}};
+function ccStaffCostCurve(lo, hi, k){
+  const c=lo+(hi-lo)*k*k;
+  return c<1000 ? Math.round(c/50)*50 : Math.round(c/100)*100;
+}
 function ccStaff2Rating(kind, p){
   if(!p) return 60;
   if(p.rating!=null) return p.rating;
@@ -137536,7 +137545,7 @@ function ccStaff2Rating(kind, p){
   return Math.max(60, Math.min(95, Math.round(60+(CC_ANALYST_ROLE[p.role]||0)+play+1.5*Math.log10(Math.max(1000, p.x||0)/1000))));
 }
 function ccStaff2K(kind, p){ return Math.max(0, Math.min(1, (ccStaff2Rating(kind, p)-60)/35)); }
-function ccStaff2Cost(kind, p){ const c=CC_STAFF2[kind].cost; return Math.round((c[0]+(c[1]-c[0])*ccStaff2K(kind, p))/50)*50; }
+function ccStaff2Cost(kind, p){ const c=CC_STAFF2[kind].cost; return ccStaffCostCurve(c[0], c[1], ccStaff2K(kind, p)); }
 function ccStaff2List(kind){ return CC_STAFF2[kind].list.slice().sort((a,b)=>ccStaff2Rating(kind, b)-ccStaff2Rating(kind, a) || (b.x||0)-(a.x||0)); }
 function ccStaff2(kind){ const m=CAREER && CAREER[kind]; return (!m || careerToday()>m.until) ? null : m; }
 function ccAnalystPow(){ const m=ccStaff2('analyst'); return (!m || ccMpOn()) ? 0 : Math.round(1+2*Math.max(0, Math.min(1, (m.rating-60)/35))); }
