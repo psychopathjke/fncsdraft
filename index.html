@@ -450,13 +450,13 @@
 <meta property="og:title" content="FNCS Draft — Fortnite career mode with real FNCS players">
 <meta property="og:description" content="Play a Fortnite career on the real FNCS calendar: divisions, Majors, Reload, LANs, solo or with a friend. Or draft real FNCS players and run the tournament.">
 <meta property="og:url" content="https://fncsdraft.com/">
-<meta property="og:image" content="https://fncsdraft.com/og-image.png">
+<meta property="og:image" content="https://fncsdraft.com/og-image.png?v=1710">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="FNCS Draft — Fortnite career mode with real FNCS players">
 <meta name="twitter:description" content="Play a Fortnite career on the real FNCS calendar, solo or with a friend. Or draft real FNCS players and run the tournament.">
-<meta name="twitter:image" content="https://fncsdraft.com/og-image.png">
+<meta name="twitter:image" content="https://fncsdraft.com/og-image.png?v=1710">
 
 <style>
   /* Атрибут hidden обязан прятать — всегда, а не когда повезёт.
@@ -4803,6 +4803,8 @@
   .cc-goty-win b{display:block;font-size:17px;font-weight:900;color:#fff;}
   .cc-goty-win em{display:block;font-style:normal;font-size:11.5px;color:var(--ink-dim);}
   .cc-goty-ball{font-size:26px;line-height:1;}
+  .cc-aw-ic{width:40px;height:40px;object-fit:contain;filter:drop-shadow(0 2px 4px rgba(0,0,0,.55));vertical-align:middle}
+  .cc-gala-row b .cc-aw-ic{width:30px;height:30px}
   .cc-goty-win.me{background:rgba(255,221,0,.22);border-color:#ffdd00;}
   .cc-goty-row i{display:inline-block;width:18px;font-style:normal;color:var(--ink-dimmer);}
   .cc-goty-row.me b,.cc-goty-row.me em{color:#ffdd00;}
@@ -8043,7 +8045,7 @@
     </section>
     <script>(function(){try{var M=["Chapter 7 Season 2","Chapter 7 Season 3","Chapter 6 Season 1","Chapter 6 Season 2","Chapter 6 Season 3","Chapter 5 Season 1","Chapter 5 Season 2","Chapter 5 Season 3","Chapter 5 Season 4","Chapter 4 Season 1","Chapter 4 Season 2","Chapter 4 Season 3","Chapter 4 Season 4","Chapter 3 Season 1","Chapter 3 Season 2","Chapter 3 Season 3","Chapter 3 Season 4","Chapter 2 Season 5","Chapter 2 Season 6","Chapter 2 Season 7","Chapter 2 Season 8","Chapter 1 Season 9","Chapter 1 Season X","Chapter 2 Season 1","Chapter 2 Season 2","Chapter 2 Season 3","Chapter 2 Season 4"];var d=new Date().toISOString().slice(0,10),h=2166136261,s="daily-map|"+d;
       for(var i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619);}
-      document.getElementById("dyNum").textContent="#"+(Math.round((Date.parse(d+"T00:00:00Z")-Date.parse("2026-10-16T00:00:00Z"))/864e5)+1);
+      document.getElementById("dyNum").textContent="#"+(Math.round((Date.parse(d+"T00:00:00Z")-Date.parse("2026-10-17T00:00:00Z"))/864e5)+1);
       document.getElementById("dyMap").textContent=M[Math.abs(h)%M.length];
       var r=((JSON.parse(localStorage.getItem("fd_daily")||"{}")||{}).days||{})[d];
       if(r&&r.score!=null)document.getElementById("dyMine").innerHTML=r.power?'<div class="dy-mine"><b>💪 '+(+r.power).toFixed(2)+'</b><span>#'+(+r.place)+'/'+(+r.field)+' · '+(+r.score)+'</span></div>':'<div class="dy-mine"><b>#'+(+r.place)+' / '+(+r.field)+'</b><span>'+(+r.score)+'</span></div>';
@@ -111338,7 +111340,7 @@ let lobbyPrizeTable=null;
    Попытка сгорает, когда нажата «В турнир», а не на выборе: пересдать паки нельзя, переиграть плохой
    турнир — тоже. Итог дня хранится в localStorage (fd_daily), таблица — на сервере. Сервер игру не
    считает, строку присылает браузер; таблица честно это говорит. */
-const DAILY_EPOCH='2026-10-16';
+const DAILY_EPOCH='2026-10-17';   // 17.10 его слово «пусть с сегодняшнего дейли драфт»: #1 — 17 октября
 let DAILY=null;            // {day, n, map} — пока идёт драфт дня, иначе null
 let DAILY_RAND=null;       // родной Math.random на время сеянной симуляции
 let DAILY_BOARD=null;      // последний ответ /daily
@@ -148484,6 +148486,12 @@ function careerRunLabel(row){
    очками года и числом сыгранных вечеров. Своя строка подсвечена — ради неё
    всё и читают. Пятёрка берётся из самой награды; у наград, записанных до
    этой правки, её нет — тогда таблица считается заново по тому же году. */
+/* ИКОНКИ НАГРАД — предметы Fortnite вместо эмодзи (17.10, его «awards сделай логотипы, фортнайтовские»): игрок года —
+   мифическая золотая рыбка (главный трофей острова), награда месяца — флоппер Мидаса, лучшее дуо — Chug Splash (лечит
+   всю команду), новичок — Small Fry, фраггер — помпа, IGL — сканер разведки. Картинки — из items/ сайта. */
+const CC_AW_ICON={goty:'items/m1-mythic-goldfish.png', month:'items/m1-midas-flopper.png', duo:'items/m1-chug-splash.png',
+  rookie:'items/m1-small-fry.png', frag:'items/m1-iron-pump-shotgun.png', igl:'items/itm-recon-scanner.webp'};
+function ccAwIcon(k){ const s=CC_AW_ICON[k] || CC_AW_ICON.igl; return '<img class="cc-aw-ic" src="'+s+'" alt="" loading="lazy">'; }
 function careerSeasonCatsHTML(){
   const cr=CAREER.career, T=L();
   const won=careerAwardCatsWon(cr.season);
@@ -148491,7 +148499,7 @@ function careerSeasonCatsHTML(){
   const block=a=>{ const top=a.top||[]; if(!top.length) return ''; const w=top[0];
     const rest=top.slice(1).map((r,i)=>`<div class="ch-row cc-goty-row${r.you?' me':''}"><em><i>${i+2}</i>${esc(r.n)}</em><b>${r.pct}%</b></div>`).join('');
     return `<div class="cc-aw-cat"><h5>${esc(ccAwCatLabel(a.cat))}</h5>
-      <div class="cc-goty-win${w.you?' me':''}"><span class="cc-goty-ball" aria-hidden="true">${a.cat==='duo'?'🤝':a.cat==='rookie'?'🌱':a.cat==='frag'?'🎯':'🧠'}</span>
+      <div class="cc-goty-win${w.you?' me':''}"><span class="cc-goty-ball" aria-hidden="true">${ccAwIcon(a.cat)}</span>
         <div><b>${esc(w.n)}</b><em>${esc(T.ccAwVote(w.pct))}</em></div></div>${rest}</div>`; };
   return `<div class="ch-tile cc-goty cc-aw"><h4>${T.ccAwCatsH}</h4>${won.map(block).join('')}<div class="ch-hint">${T.ccAwHow}</div></div>`;
 }
@@ -148512,7 +148520,7 @@ function careerSeasonAwardHTML(){
   return `<div class="ch-tile cc-goty">
     <h4>${L().ccGotyTitle}</h4>
     <div class="cc-goty-win${win.you?' me':''}">
-      <span class="cc-goty-ball" aria-hidden="true">🏆</span>
+      <span class="cc-goty-ball" aria-hidden="true">${ccAwIcon('goty')}</span>
       <div><b>${esc(win.n)}</b>
         <em>${esc(L().ccGotyLine(ccNum(win.p), win.e))}</em></div>
     </div>
@@ -148679,9 +148687,9 @@ function ccGalaSlide(i, y){
     <h4 class="cc-gala-h2">${L().ccGalaAwardsH}</h4>
     ${(y.months.length || (y.goty && y.goty.you))
       ? (y.goty && y.goty.you ? `<div class="cc-gala-row me"><em>${
-            esc(L().ccGalaGotyYou)}</em><b>🏆</b></div>` : '')+
+            esc(L().ccGalaGotyYou)}</em><b>${ccAwIcon('goty')}</b></div>` : '')+
         y.months.map(m=>`<div class="cc-gala-row"><em>${
-            esc(L().ccGalaMonthWon(ccMonthName(m.key)))}</em><b>🏅</b></div>`).join('')
+            esc(L().ccGalaMonthWon(ccMonthName(m.key)))}</em><b>${ccAwIcon('month')}</b></div>`).join('')
       : `<div class="cc-gala-hint">${L().ccGalaAwardsNone}</div>`}`;
   // Номинации сезона — перед игроком года (careerSeasonCatsHTML).
   if(i===4) return careerSeasonCatsHTML() || `<div class="cc-gala-hint">${L().ccGalaAwardsNone}</div>`;
