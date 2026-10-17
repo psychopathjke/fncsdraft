@@ -34,24 +34,24 @@ const BOOT = `
     const cr=CAREER.career;
     check('сезон 2, календарь 2026', cr.season===2 && cr.year===2026 && ccCalYear()===2026, cr.season+'/'+cr.year);
     check('дуо', careerSquadSize()===2);
-    check('карточки — 2025-го (свой мир)', ccNowYear()===2025 && ccContinuity());
+    check('карточки — 2026-го (новая глава, 17.10)', ccNowYear()===2026 && ccChapterMoved());
     const now=careerRosterNowEU();
     // Дебютанты 2026-го (5b6fd46: новички следующих лет входят в сцену на стыке года) — своей карточкой года дебюта, это не утечка.
     const yrs=new Set(now.filter(c=>!c._debut).map(ccCardYear));
     out.notes.debut=now.filter(c=>c._debut).length;
-    check('сцена — карты 2025-го и дебютанты', yrs.size===1 && yrs.has(2025) && now.every(c=>ccCardYear(c)===2025 || c._debut===ccCardYear(c)), [...yrs].join(','));
+    check('сцена — карты 2026-го', yrs.size===1 && yrs.has(2026) && now.every(c=>ccCardYear(c)===2026), [...yrs].join(','));
     // Рост за 2025 переносится по нику: берём середняка сцены, даём ему +3 в книге и смотрим в пуле.
     const mid=now.find(p=>p._ovr>=80 && p._ovr<=88);
     CAREER.dev=CAREER.dev||{}; CAREER.dev[hKey(mid)]=3; CC_POOLS=null; CC_NOW_CARDS={};
     out.notes.mid={h:mid.handle, ovr:mid._ovr};
-    check('снимок — t3', ccSnapshotNow().tag==='t3', ccSnapshotNow().tag);
+    check('снимок — m1 (первый 2026-го)', ccSnapshotNow().tag==='m1', ccSnapshotNow().tag);
     const pool=careerPools();
     out.notes.pool={duos:pool.duos.length, players:pool.players.length};
     check('пары есть и их много (ядра трио + собранные по силе)', pool.duos.length>=60, String(pool.duos.length));
     const lifted=[...pool.duos.reduce((a,d)=>a.concat(d.cards), []), ...pool.players].find(c=>hKey(c)===hKey(mid));
     check('рост за 2025 перенесён в 2026-й (+3 по нику)', lifted && ccCardOvr(lifted)===mid._ovr+3, JSON.stringify({was:mid._ovr, now:lifted && ccCardOvr(lifted)}));
-    const bad=pool.duos.filter(d=>d.cards.some(c=>ccCardYear(c)!==2025 && !c._debut));
-    check('в парах нет карт 2026-го (кроме дебютантов)', bad.length===0, String(bad.length));
+    const bad=pool.duos.filter(d=>d.cards.some(c=>ccCardYear(c)>2026) || (d._real && !d.cards.some(c=>ccCardYear(c)===2026)));
+    check('в парах — карты 2026-го', bad.length===0, String(bad.length));
     // Ровность — у пар, собранных по рейтингам 2025-го; дебютанты приходят своими настоящими парами.
     // С 27.09 (a123267, идея тестера «из 2025 в 2026 — дуо как в жизни») пары года — настоящие дуо 2026-го
     // (d._real) с настоящим разрывом; по силе собирает только ccContinuityDuos — их и меряем.
@@ -62,7 +62,8 @@ const BOOT = `
     check('пары ровные по силе (средний разрыв < 4)', avgGap<4, String(avgGap));
     const room=careerCupField(Object.assign({}, cr, {division:1}), [], 50, 'cont', false, 0);
     check('комната Д1 — 49 пар вокруг игрока', room.length>=45, String(room.length));
-    check('в комнате все с картами 2025-го', room.every(t=>(t.squad||[]).every(c=>!c.event || /2025|ladder/.test(String(c.event)) || c.tier==='ladder' || c._debut)), room.slice(0,3).map(t=>(t.squad||[]).map(c=>c.handle+'|'+c.event).join(' & ')).join(' ; '));
+    const oddR=room.filter(t=>!(t.squad||[]).every(c=>!c.event || c.tier==='ladder' || ccCardYear(c)<=2026));
+    check('в комнате нет карт из будущего', oddR.length===0, oddR.slice(0,3).map(t=>(t.squad||[]).map(c=>c.handle+'|'+c.event).join(' & ')).join(' ; '));
     // Год целиком скипом — мир 2026-го (Reload, Саммит, Антверпен) на людях 2025-го не падает.
     let guard=0; while(!cr.seasonOver && guard++<400) careerSkipWeek();
     check('год 2026 прошёл', cr.seasonOver, 'дней '+guard);
@@ -71,7 +72,7 @@ const BOOT = `
     out.notes.paid=paid;
     check('мир сыграл Мейджоры и Антверпен', paid.some(k=>/major1/.test(k)) && paid.some(k=>/globals/.test(k)), paid.join(','));
     careerNewSeason();
-    check('сезон 3 — трио, люди всё те же', careerSquadSize()===3 && ccNowYear()===2025 && cr.year===2026, cr.season+'/'+cr.size);
+    check('сезон 3 — трио, люди 2026-го', careerSquadSize()===3 && ccNowYear()===2026 && cr.year===2026, cr.season+'/'+cr.size);
   }catch(e){ out.err=String(e && e.stack || e); }
   document.getElementById('__out').textContent='PB'+'EGIN'+encodeURIComponent(JSON.stringify(out))+'PE'+'ND';
 })();

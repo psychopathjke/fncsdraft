@@ -116813,6 +116813,8 @@ function careerLoad(){
               careerMigrateHome(); careerMigrateDiff(); careerMigrateSpotIslands();
               careerMigrateNoDiv(); careerMigrateDivDepth();
               careerMigrateBeefsOff();
+              // Новая глава — книги роста поправкой (ccChapterCarry); сейв в середине главы — один раз.
+              if(ccChapterCarry()) careerSave();
               // Сейв, раздутый линейной формулой твича, — под потолок. См. CC_TW_CEIL.
               careerMigrateTwitch();
               // A save from before the desk touched the card owns the devices
@@ -116935,7 +116937,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='ea188eaa';
+const CC_BUILD='6816ec19';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -127876,9 +127878,49 @@ function ccNowYear(){
   if(typeof CC_NOW_YEAR_FORCE!=='undefined' && CC_NOW_YEAR_FORCE) return CC_NOW_YEAR_FORCE;
   if(typeof SHOWN_SCREEN!=='undefined' && SHOWN_SCREEN==='screen-career-create' && typeof CC!=='undefined' && CC)
     return ccPastYear(CC.year) ? CC.year : 2026;
-  const cr=(typeof CAREER!=='undefined' && CAREER && CAREER.career) || null;
-  if(cr && ccPastYear(cr.year0)) return cr.year0;
+  /* НОВАЯ ГЛАВА — НАСТОЯЩИЙ ГОД (Notion «17.10», тестер: «команды не все как в жизни в новых
+     главах», «типы на европе фнкс выиграли, а у них 70 рейтинга»; его предложение — «чтобы
+     полностью настоящие данные переносились в новую главу, будто ты только начал играть в этой
+     главе», и ответ автора «думаю, да»). Было: сцена жила людьми года старта (cr.year0), рейтинг
+     лишь подтягивался к году календаря (ccRealPull), составы года ставились только если оба
+     человека дожили, остальные сводились по силе. Теперь сцена, составы и рейтинги — года
+     календаря, как у свежей карьеры; прошлая глава остаётся небольшой поправкой (ccChapterCarry). */
   return ccCalYear();
+}
+/* Что сцена наиграла в прошлой главе — поправкой, а не вторым рейтингом: на стыке книги роста
+   (CAREER.dev, CAREER.devL) сжимаются вдвое и не дальше ±3 (тестер: «у кого-то может побольше
+   или немного меньше рейтинг быть, если хороший результат в прошлой главе показали, но всё равно
+   чтобы рейтинг сильно не отличался»). Один раз на год: сейв, уже стоящий в новой главе, сжимается
+   при загрузке. Годы после 2026-го — та же глава 2026-го, их не трогает. */
+const CC_CHAPTER_CARRY=0.5, CC_CHAPTER_CAP=3;
+/* Карьера уже перешла в новую главу (год календаря не год старта). Сцена у неё — года календаря,
+   как у свежей (ccNowYear), но составы собираются тем же путём, что и до правки 17.10: настоящие
+   составы года (ccRealTeamDuos) плюс свободные сильные в пары и тройки (ccContinuityDuos/Thirds) —
+   иначе в первый день главы до трети топ-40 стояли без состава (check-career-chapter-squads). */
+function ccChapterMoved(){
+  const cr=(typeof CAREER!=='undefined' && CAREER && CAREER.career) || null;
+  if(CC_NOW_YEAR_FORCE || !cr || !ccPastYear(cr.year0)) return false;
+  if(typeof SHOWN_SCREEN!=='undefined' && SHOWN_SCREEN==='screen-career-create') return false;
+  return ccCalYear()!==cr.year0;
+}
+function ccChapterCarry(){
+  const cr=(typeof CAREER!=='undefined' && CAREER && CAREER.career) || null;
+  if(!cr || cr.chapterY===cr.year) return false;
+  const moved=cr.chapterY!=null || (cr.year0!=null && cr.year!==cr.year0);
+  cr.chapterY=cr.year;
+  if(!moved) return true;
+  // Тройки и ядра, посеянные из людей года старта, — заново из сцены года (careerPools).
+  delete cr.triosSeeded; delete cr.trioCores; delete cr.trioFilled;
+  if(typeof CC_POOLS!=='undefined') CC_POOLS=null;
+  ['dev', 'devL'].forEach(b=>{
+    const book=CAREER[b];
+    if(!book || typeof book!=='object') return;
+    Object.keys(book).forEach(k=>{
+      const v=Math.max(-CC_CHAPTER_CAP, Math.min(CC_CHAPTER_CAP, (+book[k]||0)*CC_CHAPTER_CARRY));
+      if(Math.abs(v)<0.05) delete book[k]; else book[k]=Math.round(v*10)/10;
+    });
+  });
+  return true;
 }
 // Второй и дальше год карьеры 2025-го (или 2024-го): календарь новее, люди свои.
 function ccContinuity(){ return ccNowYear()<2026 && ccNowYear()!==ccCalYear(); }
@@ -130333,7 +130375,7 @@ function ccRealTeamBroken(d, cr){
 function careerPools(){
   const snap0=ccSnapshotNow();
   // Карьера, перешедшая в следующий год: составы — года календаря (ccRealTeamDuos).
-  const cont=ccContinuity();
+  const cont=ccChapterMoved();
   const real=cont ? ccRealSnap(ccCalYear()) : null;
   // Посев троек — по снимку года, кэш пула — ещё и по неделе потенциала (ccRealPull):
   // иначе недельная пересборка стирала бы тройки каждую неделю.
@@ -130505,7 +130547,7 @@ function careerPools(){
      нет. Ядра трио 2025-го уже стоят парами (ccDuosOf); все свободные сцены
      не ниже полосы Дивизиона 1 собираются в пары сами — сначала те, кто играл
      вместе на записи (ccRemadeDuos), остальные — сосед по силе с соседом. */
-  if(careerSquadSize()!==3 && ccContinuity()) ccContinuityDuos(duosLive);
+  if(careerSquadSize()!==3 && ccChapterMoved()) ccContinuityDuos(duosLive);
   // Трио-год такой карьеры: ядра троек, собранных на стыке из свободных (ccContinuityThirds).
   if(careerSquadSize()===3 && real && !CC_REGION_AS) ccContinuityCores(duosLive);
   duosLive.forEach(d=>{ if(d && d.cards) d.cards=d.cards.map(liftOne); });
@@ -130608,7 +130650,7 @@ function ccRecordedTogether(a, b){ const m=ccRecordedMates(); const s=m.get(hKey
    разошлись бы по третьим креслам чужих пар. */
 const CC_THIRD_RECORDED=2;
 function ccContinuityThirds(duos, seated, cr){
-  const floor=ccBand(1, ccPoolRegion()==='ALL' ? undefined : ccPoolRegion())-2;
+  const floor=ccBand(1, ccPoolRegion()==='ALL' ? undefined : ccPoolRegion())-2-CC_CHAPTER_CAP;   // с запасом на поправку прошлой главы (ccChapterCarry): карта ниже, рейтинг в сцене выше
   const free=careerRosterNowEU().filter(p=>!seated.has(hKey(p)) && ccCardOvr(p)>=floor)
     .map(p=>{ const c={...p}; c._k=hKey(p); return c; })
     .sort((a,b)=>ccCardOvr(b)-ccCardOvr(a));
@@ -130653,7 +130695,7 @@ function ccContinuityCores(duosLive){
 }
 function ccContinuityDuos(duosLive){
   const taken=new Set(); duosLive.forEach(d=>d.cards.forEach(c=>taken.add(hKey(c))));
-  const floor=ccBand(1, ccPoolRegion()==='ALL' ? undefined : ccPoolRegion())-2;
+  const floor=ccBand(1, ccPoolRegion()==='ALL' ? undefined : ccPoolRegion())-2-CC_CHAPTER_CAP;
   const free=careerRosterNowEU().filter(p=>!taken.has(hKey(p)) && ccCardOvr(p)>=floor).map(p=>{ const c={...p}; c._k=hKey(p); return c; });
   if(free.length<2) return;
   const made=ccRemadeDuos(free);
@@ -149293,7 +149335,7 @@ function ccTrioMarket(cr, force){
   const c=cr || (CAREER && CAREER.career);
   if(!c || careerSquadSize()!==3) return 0;
   if(ccIs2025() && ccNowYear()===2025) return 0;   // трио 2025-го настоящие, с карточек — рынку тут нечего делать
-  if(ccContinuity()) return 0;                     // и у карьеры, перешедшей в следующий год: составы года календаря (ccRealTeamDuos)
+  if(ccChapterMoved()) return 0;                   // и у карьеры, перешедшей в следующий год: составы года календаря (ccRealTeamDuos)
   // На стыке года рынок открывается ВСЕГДА (force): метка там ещё от прошлого
   // сезона, а сезон уже новый.
   if(!force && c.raided===c.season) return 0;
@@ -149402,6 +149444,7 @@ function careerNewSeason(){
      первая комната января собиралась бы прошлогодними парами — теми, которых
      этот же стык только что развёл. */
   CC_POOLS=null; CC_NOW_CARDS={};
+  ccChapterCarry();
   // Odd years are duos and even years are trios. Written down rather than
   // derived — see careerSquadSize.
   /* Год 2025 играется один раз: со стыка карьера идёт в 2026-й (дуо, как

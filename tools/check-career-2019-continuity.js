@@ -37,7 +37,7 @@ const BOOT = `
       const [y, sz]=years[i];
       check('сезон '+(i+2)+' — '+y+', размер '+sz, cr.season===i+2 && cr.year===y && careerSquadSize()===sz, cr.season+'/'+cr.year+'/'+cr.size);
       if(i===0){
-        check('люди — 2019-го', ccNowYear()===2019 && ccContinuity());
+        check('люди — года календаря (новая глава, 17.10)', ccNowYear()===ccCalYear() && ccChapterMoved());
         const pool=careerPools();
         out.notes.pool2020={duos:pool.duos.length, real:pool.duos.filter(d=>d._real).length};
       }

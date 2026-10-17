@@ -32,7 +32,7 @@ const BOOT = `
     careerNewSeason();
     const cr=CAREER.career;
     check('сезон 2 — 2024, дуо', cr.season===2 && cr.year===2024 && ccCalYear()===2024 && careerSquadSize()===2, cr.season+'/'+cr.year+'/'+cr.size);
-    check('люди — 2023-го (свой мир)', ccNowYear()===2023 && ccContinuity());
+    check('люди — года календаря (новая глава, 17.10)', ccNowYear()===ccCalYear() && ccChapterMoved());
     check('год на карточке — 2024', ccSeasonYearOf(2)===2024 && ccSeasonYearOf(3)===2025 && ccSeasonYearOf(4)===2026);
     check('ЛАН второго года — Форт-Уэрт', ccLanHostKey('globals')==='Ftw', ccLanHostKey('globals'));
     const pool=careerPools();
@@ -40,9 +40,10 @@ const BOOT = `
     const deb=pool.duos.reduce((n,d)=>n+d.cards.filter(c=>c._debut===2024).length, 0);
     out.notes.pool={duos:pool.duos.length, real:real.length, debutants:deb};
     check('пары 2024-го — как в жизни', real.length>=40, String(real.length));
-    check('дебютанты 2024-го в парах', deb>=20, String(deb));
-    const bad=pool.duos.filter(d=>d.cards.some(c=>!c._debut && ccCardYear(c)!==2023));
-    check('остальные — карточки 2023-го', bad.length===0, bad.slice(0,3).map(d=>d.cards.map(c=>c.handle+'|'+ccCardYear(c)).join('&')).join(' ; '));
+    check('дебютантов нет — вся сцена 2024-го (17.10)', deb===0, String(deb));
+    // Как у свежей карьеры: в сцене и люди без карточки года (последняя прошлая), но не из будущего; настоящие пары — года.
+    const bad=pool.duos.filter(d=>d.cards.some(c=>ccCardYear(c)>2024) || (d._real && !d.cards.some(c=>ccCardYear(c)===2024)));
+    check('в парах — карточки до 2024-го, в настоящих паре хоть один с карточкой 2024-го', bad.length===0, bad.slice(0,3).map(d=>d.cards.map(c=>c.handle+'|'+ccCardYear(c)).join('&')).join(' ; '));
     let guard=0; while(!cr.seasonOver && guard++<400) careerSkipWeek();
     check('год 2024 прошёл', cr.seasonOver, 'дней '+guard);
     check('без ошибок JS (2024)', out.errs.length===0, out.errs.slice(0,3).join(' | '));

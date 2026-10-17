@@ -34,25 +34,24 @@ const BOOT = `
     const cr=CAREER.career;
     check('сезон 2, календарь 2025', cr.season===2 && cr.year===2025 && ccCalYear()===2025, cr.season+'/'+cr.year);
     check('трио', careerSquadSize()===3);
-    check('карточки — 2024-го (свой мир)', ccNowYear()===2024 && ccContinuity());
+    check('карточки — 2025-го (новая глава, 17.10)', ccNowYear()===2025 && ccChapterMoved());
     const now=careerRosterNowEU();
-    /* 27.09: на стыке года в сцену входят дебютанты следующего года (ccDebutants) —
-       со своей карточкой года дебюта. Остальные — карточки 2024-го. */
+    // 17.10: новая глава — сцена года календаря целиком, как у свежей карьеры 2025-го.
     const yrs=new Set(now.filter(c=>!c._debut).map(ccCardYear));
     const debY=new Set(now.filter(c=>c._debut).map(ccCardYear));
-    check('сцена — карты 2024-го и дебютанты 2025-го', yrs.size===1 && yrs.has(2024) && [...debY].every(y=>y===2025), [...yrs].join(',')+' / '+[...debY].join(','));
-    check('снимок — f3', ccSnapshotNow().tag==='f3', ccSnapshotNow().tag);
+    check('сцена — карты 2025-го', yrs.size===1 && yrs.has(2025) && debY.size===0, [...yrs].join(',')+' / '+[...debY].join(','));
+    check('снимок — t1 (первый 2025-го)', ccSnapshotNow().tag==='t1', ccSnapshotNow().tag);
     const pool=careerPools();
     out.notes.pool={duos:pool.duos.length, players:pool.players.length, trios:Object.keys(cr.trios||{}).length};
     check('пары есть', pool.duos.length>=40, String(pool.duos.length));
-    const bad=pool.duos.filter(d=>d.cards.some(c=>ccCardYear(c)!==2024 && !c._debut));
-    check('в парах — карты 2024-го и дебютанты', bad.length===0, String(bad.length)+' '+bad.slice(0,3).map(d=>d.cards.map(c=>c.handle+'|'+ccCardYear(c)).join('&')).join(' ; '));
+    const bad=pool.duos.filter(d=>d.cards.some(c=>ccCardYear(c)>2025) || (d._real && !d.cards.some(c=>ccCardYear(c)===2025)));
+    check('в парах — карты до 2025-го, в настоящих паре хоть один с карточкой 2025-го', bad.length===0, String(bad.length)+' '+bad.slice(0,3).map(d=>d.cards.map(c=>c.handle+'|'+ccCardYear(c)).join('&')).join(' ; '));
     // Комната трио-года: третьих досаживает рынок (в 2025-м с людьми 2025-го он выключен, тут — нет).
     const room=careerCupField(Object.assign({}, cr, {division:1}), [], 33, 'cont24', false, 0);
     out.notes.room={n:room.length, sizes:[...new Set(room.map(t=>(t.squad||[]).length))]};
     check('комната Д1 — тройки', room.length>=30 && room.every(t=>(t.squad||[]).length===3), JSON.stringify(out.notes.room));
-    const odd=room.filter(t=>!(t.squad||[]).every(c=>!c.event || c._debut || /2024|ladder/.test(String(c.event)) || c.tier==='ladder'));
-    check('в комнате — карты 2024-го и дебютанты', odd.length===0, odd.slice(0,3).map(t=>(t.squad||[]).map(c=>c.handle+'|'+c.event).join(' & ')).join(' ; '));
+    const odd=room.filter(t=>!(t.squad||[]).every(c=>!c.event || /2025|ladder/.test(String(c.event)) || c.tier==='ladder'));
+    check('в комнате — карты 2025-го', odd.length===0, odd.slice(0,3).map(t=>(t.squad||[]).map(c=>c.handle+'|'+c.event).join(' & ')).join(' ; '));
     // Год 2025 целиком скипом — мир 2025-го (группы, Showdown, Лион) на людях 2024-го не падает.
     let guard=0; while(!cr.seasonOver && guard++<400) careerSkipWeek();
     check('год 2025 прошёл', cr.seasonOver, 'дней '+guard);
@@ -61,7 +60,7 @@ const BOOT = `
     out.notes.paid=paid;
     check('мир сыграл Мейджоры и Лион', paid.some(k=>/major1/.test(k)) && paid.some(k=>/globals/.test(k)), paid.join(','));
     careerNewSeason();
-    check('сезон 3 — 2026, дуо, люди всё те же', careerSquadSize()===2 && ccNowYear()===2024 && cr.year===2026, cr.season+'/'+cr.size+'/'+cr.year);
+    check('сезон 3 — 2026, дуо, люди 2026-го', careerSquadSize()===2 && ccNowYear()===2026 && cr.year===2026, cr.season+'/'+cr.size+'/'+cr.year);
     const pool3=careerPools();
     out.notes.pool3={duos:pool3.duos.length};
     check('дуо-год: пары собраны (ядра троек + по силе)', pool3.duos.length>=40, String(pool3.duos.length));
