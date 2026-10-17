@@ -4033,3 +4033,6 @@ Object.assign(I18N.es=I18N.es||{},
   "dmOrgThinkGone": n=>n+': mientras lo pensabas cerramos con otro jugador. Sin rencores, suerte',
 }));
 Object.assign(I18N.es=I18N.es||{}, {dyColPlayer:'Jugador y equipo', dyYou:'tú', dyPowSplit:'valoración media de las cartas + sinergia'});
+/* Дозаливка «es» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
+Object.assign(I18N.es=I18N.es||{},
+({ ccAwTrio: 'Trío del Año' }));

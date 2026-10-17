@@ -4033,3 +4033,6 @@ Object.assign(I18N.de=I18N.de||{},
   "dmOrgThinkGone": n=>n+': während du nachgedacht hast, haben wir uns mit einem anderen Spieler geeinigt. Nichts für ungut, viel Glück',
 }));
 Object.assign(I18N.de=I18N.de||{}, {dyColPlayer:'Spieler und Team', dyYou:'du', dyPowSplit:'Durchschnittswertung der Karten + Synergie'});
+/* Дозаливка «de» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
+Object.assign(I18N.de=I18N.de||{},
+({ ccAwTrio: 'Trio des Jahres' }));
