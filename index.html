@@ -7207,6 +7207,32 @@
   .dy-send input:focus-visible{outline:2px solid #ffdd00;outline-offset:1px;}
   .dy-ok{margin:10px 0 0;color:#7ef0dd;font-weight:700;font-size:13px;}
   .dy-note{margin-top:10px;}
+  .dy-thead{display:grid;grid-template-columns:30px minmax(0,1fr) auto;gap:10px;padding:0 10px 6px;font-size:11px;font-weight:800;
+    letter-spacing:.08em;text-transform:uppercase;color:#7f93c4;border-bottom:1px solid rgba(140,175,255,.18);}
+  .dy-thead span:last-child{text-align:right;}
+  .dy-row{display:grid;grid-template-columns:30px minmax(0,1fr) auto;gap:10px;align-items:center;padding:10px;border-radius:10px;
+    border-bottom:1px solid rgba(140,175,255,.1);}
+  .dy-row.me{background:rgba(255,221,0,.09);box-shadow:inset 3px 0 0 #ffdd00;}
+  .dy-rk{display:flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;font-style:normal;
+    font-family:var(--font-display);font-weight:700;font-size:15px;color:#c9d6f5;background:rgba(255,255,255,.06);}
+  .dy-m1 .dy-rk{background:linear-gradient(180deg,#ffe36b,#e0a800);color:#1a1300;}
+  .dy-m2 .dy-rk{background:linear-gradient(180deg,#eef2f8,#a9b4c6);color:#141a24;}
+  .dy-m3 .dy-rk{background:linear-gradient(180deg,#f0b07a,#b46a2c);color:#1d0f04;}
+  .dy-who{min-width:0;}
+  .dy-who>b{display:flex;align-items:center;gap:6px;font-weight:800;color:#fff;font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .dy-who>b img{width:18px;height:auto;border-radius:2px;flex:none;}
+  .dy-who>b u{text-decoration:none;font-size:10.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#1a1300;
+    background:#ffdd00;border-radius:4px;padding:1px 5px;}
+  .dy-team{display:flex;flex-wrap:wrap;gap:4px;margin-top:5px;}
+  .dy-team em{font-style:normal;font-size:11.5px;font-weight:700;color:#cfe0ff;padding:2px 7px;border-radius:999px;
+    background:rgba(120,160,255,.12);border:1px solid rgba(140,175,255,.22);}
+  .dy-who>small{display:block;margin-top:5px;font-size:11.5px;color:#8ea6d6;font-weight:600;}
+  .dy-pow{text-align:right;}
+  .dy-pow b{display:block;font-family:var(--font-display);font-size:22px;font-weight:700;line-height:1;color:#ffdd00;font-variant-numeric:tabular-nums;}
+  .dy-m1 .dy-pow b{font-size:24px;}
+  .dy-pow small{display:block;margin-top:4px;font-size:11px;color:#8ea6d6;font-weight:700;font-variant-numeric:tabular-nums;}
+  .dy-pow small span{color:#7ef0dd;}
+  .hr-box{max-width:calc(100vw - 24px);}
   @media(max-width:900px){ .home-daily{grid-template-columns:1fr;} }
   @media(max-width:700px){ .hf-grid{grid-template-columns:1fr;} .home-h{font-size:19px;} }
   /* Результаты 2026 на главной и окно полной таблицы. */
@@ -21875,7 +21901,10 @@ Object.assign(I18N.pt=I18N.pt||{},
   "dmOrgThinkPush": d=>'Precisamos fechar o time. A proposta vale até '+ccDayLabel(d)+', depois seguimos em frente',
   "dmOrgThinkGone": n=>n+': enquanto você pensava, fechamos com outro jogador. Sem ressentimentos, boa sorte',
 }));
-let CC_I18N_V={de:'54060123', es:'06b788f1'};   // ==== CC_I18N_V (tools/build-i18n.js) ====
+Object.assign(I18N.fr, {dyColPlayer:'Joueur et équipe', dyYou:'toi', dyPowSplit:'note moyenne des cartes + synergie'});
+Object.assign(I18N.it, {dyColPlayer:'Giocatore e squadra', dyYou:'tu', dyPowSplit:'valutazione media delle carte + sinergia'});
+Object.assign(I18N.pt, {dyColPlayer:'Jogador e time', dyYou:'você', dyPowSplit:'overall médio das cartas + sinergia'});
+let CC_I18N_V={de:'767b4641', es:'54fe70a5'};   // ==== CC_I18N_V (tools/build-i18n.js) ====
 const CC_LANG_WAIT={};
 function ccLangLoad(lang, done){
   if(!CC_LANG_FILES[lang] || (typeof I18N!=='undefined' && I18N[lang])){ done && done(); return; }
@@ -22686,6 +22715,7 @@ Object.assign(I18N.ru, {ccAskMoneyLbl:'Деньги', ccAskTermsLbl:'Услов�
   ccCoAsk:["зависит от зоны","вопрос года","спроси у Кинча","сложный вопрос","👀","хороший вопрос","тут без вариантов","ответ очевиден"],
   ccCoProAsk:["зависит","👀","лол","скажу в субботу","без комментариев"],
   ccCoMateAsk:["спросишь меня потом","лол","ты знаешь ответ","😂"],
+  dyColPlayer:'Игрок и состав', dyYou:'ты', dyPowSplit:'средний рейтинг карточек + синергия',
   ccFnChamp:h=>'Чемпион вечера — @'+h,
   ccLockerTitle:'Шкафчик', ccLockerNone:'Пусто. Баннер дают за гранд-финал или ЛАН и за каждый клуб, кирку — чемпиону FNCS',
   ccLockClub:'баннер клуба', ccLockNow:'сейчас', ccLock_pickaxe:'кирка', ccLock_spray:'спрей', ccLock_banner:'баннер', ccLock_emote:'эмоция',
@@ -22788,6 +22818,7 @@ Object.assign(I18N.en, {ccAskMoneyLbl:'Money', ccAskTermsLbl:'Terms', ccAsk_smal
   ccCoAsk:["depends on zone","question of the year","ask Kinch","hard one","👀","good question","no contest","answer is obvious"],
   ccCoProAsk:["depends","👀","lol","ask me saturday","no comment"],
   ccCoMateAsk:["ask me later","lol","you know the answer","😂"],
+  dyColPlayer:'Player and squad', dyYou:'you', dyPowSplit:'average card rating + synergy',
   ccFnChamp:h=>'Champion of the night — @'+h,
   ccLockerTitle:'Locker', ccLockerNone:'Empty. A banner comes with a grand final, a LAN and every club you play for, the pickaxe with an FNCS title',
   ccLockClub:'club banner', ccLockNow:'current', ccLock_pickaxe:'pickaxe', ccLock_spray:'spray', ccLock_banner:'banner', ccLock_emote:'emote',
@@ -112853,11 +112884,23 @@ function dailyPowerOf(sq){
 function dailyPowNum(r){ return r.p100 ? r.p100/100 : (r.power||0); }
 function dailyPowFmt(r){ return dailyPowNum(r).toFixed(2); }
 function dailyAvgFmt(r){ return (r.avg!=null ? r.avg : dailyPowNum(r)-(r.syn||0)).toFixed(2); }
-function dailyRowsHTML(rows){
+/* Строка таблицы дня (17.10, его «daily leaderboard додизайнить таблицу»): всё в одну строку не влезало — состав,
+   синергия и место резались, сила справа уезжала за край телефона. Теперь: место (топ-3 — золото/серебро/бронза),
+   ник с флагом, состав чипами в перенос, под ним место в турнире и очки; справа крупно сила и её разбор. */
+function dailyRowsHTML(rows, from){
   const T=L(), flag=c=>c ? '<img src="flags/w20/'+esc(ccCountryOf(c))+'.png" alt="" onerror="this.remove()">' : '';
-  return rows.map((r,i)=>'<div class="hb-row'+(r.you ? ' me' : '')+'"><i>'+(i+1)+'</i><b>'+flag(r.country)+esc(r.nick)+
-    '<small>'+(r.team ? esc(String(r.team).split(',').join(' + '))+' · ' : '')+(r.syn ? esc(dailySynWord())+' +'+r.syn+' · ' : '')+'#'+r.place+'/'+r.field+' · '+r.score+' '+esc(T.dyPts)+'</small></b>'+
-    '<span title="'+esc(dailyPowerWord())+'">'+(dailyPowNum(r)>0 ? '💪 '+dailyPowFmt(r) : '—')+'</span></div>').join('');
+  const head='<div class="dy-thead"><span>#</span><span>'+esc(T.dyColPlayer)+'</span><span>'+esc(dailyPowerWord())+'</span></div>';
+  return head+rows.map((r,i)=>{
+    const n=(from||0)+i+1, med=n<=3 ? ' dy-m'+n : '';
+    const team=r.team ? String(r.team).split(',').filter(Boolean).map(h=>'<em>'+esc(h)+'</em>').join('') : '';
+    const pow=dailyPowNum(r)>0;
+    return '<div class="dy-row'+(r.you ? ' me' : '')+med+'"><i class="dy-rk">'+n+'</i>'+
+      '<div class="dy-who"><b>'+flag(r.country)+esc(r.nick)+(r.you ? ' <u>'+esc(T.dyYou)+'</u>' : '')+'</b>'+
+        (team ? '<div class="dy-team">'+team+'</div>' : '')+
+        '<small>#'+r.place+'/'+r.field+' · '+r.score+' '+esc(T.dyPts)+'</small></div>'+
+      '<div class="dy-pow"><b>'+(pow ? dailyPowFmt(r) : '—')+'</b>'+
+        (pow ? '<small title="'+esc(T.dyPowSplit)+'">'+dailyAvgFmt(r)+(r.syn ? ' <span>+'+r.syn+'</span>' : '')+'</small>' : '')+'</div></div>';
+  }).join('');
 }
 /* Окно дня: свой итог и таблица (поверх экрана, как «топ 50» на главной). */
 function dailyOpen(){

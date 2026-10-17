@@ -4032,3 +4032,4 @@ Object.assign(I18N.de=I18N.de||{},
   "dmOrgThinkPush": d=>'Wir müssen den Roster festmachen. Das Angebot steht bis '+ccDayLabel(d)+', dann machen wir weiter',
   "dmOrgThinkGone": n=>n+': während du nachgedacht hast, haben wir uns mit einem anderen Spieler geeinigt. Nichts für ungut, viel Glück',
 }));
+Object.assign(I18N.de=I18N.de||{}, {dyColPlayer:'Spieler und Team', dyYou:'du', dyPowSplit:'Durchschnittswertung der Karten + Synergie'});

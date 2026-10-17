@@ -4032,3 +4032,4 @@ Object.assign(I18N.es=I18N.es||{},
   "dmOrgThinkPush": d=>'Necesitamos cerrar el roster. La oferta sigue en pie hasta el '+ccDayLabel(d)+'; después pasamos página',
   "dmOrgThinkGone": n=>n+': mientras lo pensabas cerramos con otro jugador. Sin rencores, suerte',
 }));
+Object.assign(I18N.es=I18N.es||{}, {dyColPlayer:'Jugador y equipo', dyYou:'tú', dyPowSplit:'valoración media de las cartas + sinergia'});
