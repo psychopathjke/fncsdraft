@@ -77,6 +77,22 @@ try{
   out.notes.ui={more:n, cut:html.indexOf('careerAskCut(')>=0, bonus:html.indexOf('careerAskBonus(')>=0, lever:html.indexOf('careerAskLever(')>=0, cutRow:html.indexOf(L().lfCut)>=0};
   check('три кнопки размера просьбы', n===3, String(n));
   check('кнопки доли, бонуса и козыря и строка доли в условиях', out.notes.ui.cut && out.notes.ui.bonus && out.notes.ui.lever && out.notes.ui.cutRow, JSON.stringify(out.notes.ui));
+  check('кнопка «дай подумать»', html.indexOf('careerAskThink(')>=0);
+
+  // ---- «дай подумать» (17.10): просьбу не тратит, через два дня клуб поднимает, ставит срок или уходит
+  const th={sweet:0, push:0, gone:0, asks:0, again:0, raise:[]};
+  for(let i=0;i<80;i++){ seed(i%2 ? 86 : 72); t=offer(80, 1000, 'Think '+i); careerAskThink(t.id);
+    if((t.asks||0)!==0) th.asks++;
+    const from=CAREER.career.day, to=ccAddDays(from, CC_THINK_DAYS); CAREER.career.day=to; careerOrgDays(from, to);
+    const k=t.msgs.map(m=>m.k).filter(x=>/^dmOrgThink(Sweet|Push|Gone)/.test(x))[0]||'';
+    if(/Sweet/.test(k)){ th.sweet++; th.raise.push(t.offer.salary); } else if(/Push/.test(k)) th.push++; else if(/Gone/.test(k)) th.gone++;
+    if(t.offer){ const n0=t.msgs.length; careerAskThink(t.id); if(t.msgs.length!==n0) th.again++; } }
+  out.notes.think={sweet:th.sweet, push:th.push, gone:th.gone, asks:th.asks, again:th.again, raise:[Math.min.apply(null, th.raise), Math.max.apply(null, th.raise)]};
+  check('подумать — не просьба', th.asks===0, th.asks);
+  check('каждый раз клуб что-то отвечает', th.sweet+th.push+th.gone===80, JSON.stringify(out.notes.think));
+  check('бывает и подъём, и срок, и уход', th.sweet>5 && th.push>5 && th.gone>0, JSON.stringify(out.notes.think));
+  check('подъём — 6–10%', th.raise.every(v=>v>=1050 && v<=1100), th.raise.join(','));
+  check('подумать — один раз', th.again===0, th.again);
 }catch(e){ out.fails.push(String(e.stack||e)); }
 document.getElementById('__out').textContent='@@B@@'+encodeURIComponent(JSON.stringify(out))+'@@E@@'; }, 500));<\/script>`;
 const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'neg-')), tmp = path.join(dir, 'index.html');

@@ -21245,7 +21245,13 @@ Object.assign(I18N.ru, {ccAskMoneyLbl:'Деньги', ccAskTermsLbl:'Услов�
   dmOrgNoCut:'Доля с призовых у нас одна для всех. Тут не двигаемся',
   dmOrgYesBonus:v=>'Договорились: $'+v+' бонусом при подписании',
   dmOrgNoBonus:'Бонус за подпись не даём никому. Зарплата — вот наш аргумент',
-  tlSignBonus:(c,v)=>c+': бонус за подпись $'+v});
+  tlSignBonus:(c,v)=>c+': бонус за подпись $'+v,
+  ccAskTimeLbl:'Время', ccAskThink:'Дай подумать пару дней', ccAskThinkWhat:p=>'Просьбой не считается. Клуб ждёт '+CC_THINK_DAYS+' дня: ~'+p+'% — поднимут предложение, иначе поставят срок (или уйдут, если тянулись к тебе вниз)',
+  dmAskThink:'Спасибо, предложение серьёзное. Дайте пару дней подумать — отвечу',
+  dmOrgThinkOk:d=>'Конечно, не торопим. Ждём ответ к '+ccDayLabel(d)+'.',
+  dmOrgThinkSweet:v=>'Подумали со своей стороны: чтобы тебе было проще решиться — $'+v+' в месяц. Это наш потолок',
+  dmOrgThinkPush:d=>'Нам нужно закрывать состав. Предложение в силе до '+ccDayLabel(d)+', потом идём дальше',
+  dmOrgThinkGone:n=>n+': пока ты думал, мы договорились с другим игроком. Без обид, удачи'});
 Object.assign(I18N.en, {ccAskMoneyLbl:'Money', ccAskTermsLbl:'Terms', ccAsk_small:'A bit more', ccAsk_fair:'More', ccAsk_hard:'Hardball', ccAskCut:'Smaller prize cut', ccAskBonus:'Signing bonus',
   ccAskLever:'Mention the other offer', ccAskLeverWhat:'You have another offer on the table — your next ask lands easier', ccSignBonusRow:'Signing bonus',
   dmAskSmall:v=>'I like the offer. Bring it to $'+v+' a month and I sign right away',
@@ -21259,7 +21265,13 @@ Object.assign(I18N.en, {ccAskMoneyLbl:'Money', ccAskTermsLbl:'Terms', ccAsk_smal
   dmOrgNoCut:'The prize cut is the same for everyone here. We will not move on that',
   dmOrgYesBonus:v=>'Deal: $'+v+' as a signing bonus',
   dmOrgNoBonus:'We do not do signing bonuses for anyone. The salary is our argument',
-  tlSignBonus:(c,v)=>c+': signing bonus $'+v});
+  tlSignBonus:(c,v)=>c+': signing bonus $'+v,
+  ccAskTimeLbl:'Time', ccAskThink:'Let me think a couple of days', ccAskThinkWhat:p=>'Not an ask. The club waits '+CC_THINK_DAYS+' days: ~'+p+'% they sweeten the offer, otherwise they set a deadline (or walk, if they were reaching down for you)',
+  dmAskThink:'Thanks, it is a serious offer. Give me a couple of days to think it over',
+  dmOrgThinkOk:d=>'Of course, no rush. We will wait for your answer by '+ccDayLabel(d)+'.',
+  dmOrgThinkSweet:v=>'We thought about it on our side too: to make it easier — $'+v+' a month. That is our ceiling',
+  dmOrgThinkPush:d=>'We need to lock the roster. The offer stands until '+ccDayLabel(d)+', then we move on',
+  dmOrgThinkGone:n=>n+': while you were thinking we agreed terms with another player. No hard feelings, good luck'});
 Object.assign(I18N.fr, {ccAskMoneyLbl:'Argent', ccAskTermsLbl:'Conditions', ccAsk_small:'Un peu plus', ccAsk_fair:'Plus', ccAsk_hard:'Sans concession', ccAskCut:'Moins de part sur les gains', ccAskBonus:'Prime à la signature',
   ccAskLever:'Parler de l\u2019autre offre', ccAskLeverWhat:'Tu as une autre offre en main — ta prochaine demande passera plus facilement', ccSignBonusRow:'Prime à la signature',
   dmAskSmall:v=>'L\u2019offre me plaît. Montez à $'+v+' par mois et je signe direct',
@@ -140710,6 +140722,43 @@ function careerAskLever(id){
   ccOrgSay(t, 'dmOrgLever', [other]);
   careerSave(); careerRenderHub('social');
 }
+/* «ДАЙ ПОДУМАТЬ» (17.10, его «7» из идей с Reddit/FM-вишлистов: «не отвечать сразу, а взять день-два»).
+   Просьбой не считается (asks не тратит), но клуб ждёт ответа CC_THINK_DAYS дня — и за это время решает сам:
+   поднимает предложение, чтобы помочь решиться (чаще, если ты сильнее уровня клуба или у тебя есть другой оффер),
+   ставит жёсткий срок, или — если клуб тянулся вниз к тебе — уходит к другому. Один раз на предложение. */
+const CC_THINK_DAYS=2, CC_THINK_SWEET=0.08;
+function careerAskThink(id){
+  const t=careerDms().find(x=>x.id===id);
+  if(!t || !t.offer || t.pending || t.thought) return;
+  t.thought=true;
+  t.pending={kind:'think', due:ccAddDays(careerToday(), CC_THINK_DAYS)};
+  careerDmPush(t, 'you', 'dmAskThink');
+  ccOrgSay(t, 'dmOrgThinkOk', [t.pending.due]);
+  careerSave(); careerRenderHub('social');
+}
+function ccThinkOdds(t){
+  const gap=ccOrgGap(t.offer);
+  return Math.round(clamp(0.35+gap*0.03+(ccAskLeverOrg(t) ? 0.2 : 0)+(t.lever ? 0.1 : 0), 0.1, 0.85)*100);
+}
+function ccThinkResolve(t){
+  const rnd=careerRng(ccHashStr('think|'+t.id+'|'+CAREER.career.season+'|'+careerToday()));
+  const sync=f=>{ const o=(CAREER.offers||[]).find(x=>x.name===t.offer.name); if(o) f(o); f(t.offer); };
+  if(rnd()<ccThinkOdds(t)/100){
+    const v=Math.round(t.offer.salary*(1+CC_THINK_SWEET*(0.75+rnd()*0.5))/50)*50;
+    sync(o=>{ o.salary=v; });
+    ccOrgSay(t, 'dmOrgThinkSweet', [ccNum(v)]);
+    return;
+  }
+  if(ccOrgGap(t.offer)<CC_ASK_WALK_UNDER && rnd()<0.35){
+    ccOrgSay(t, 'dmOrgThinkGone', [t.offer.name]);
+    CAREER.offers=(CAREER.offers||[]).filter(o=>o.name!==t.offer.name);
+    t.offer=null; t.state='declined';
+    return;
+  }
+  const until=ccAddDays(careerToday(), 3);
+  sync(o=>{ if(!o.until || o.until>until) o.until=until; });
+  ccOrgSay(t, 'dmOrgThinkPush', [t.offer.until]);
+}
 function careerAskPerk(id){ // same thread, same clock — see careerAskMore
   const t=careerDms().find(x=>x.id===id);
   if(!careerAskOpen(t) || t.offer.perk) return;
@@ -140733,6 +140782,7 @@ function careerOrgDays(fromISO, toISO){
       const p=t.pending, was=t.offer.salary;
       t.pending=null;
       const sync=f=>{ const o=(CAREER.offers||[]).find(x=>x.name===t.offer.name); if(o) f(o); f(t.offer); };
+      if(p.kind==='think'){ ccThinkResolve(t); return; }
       if(p.kind==='more')
         ccAskResolve(t,
           ()=>{ sync(o=>{ o.salary=p.want; });
@@ -141263,7 +141313,8 @@ function careerSocialHTML(){
               ${!open.lever && ccAskLeverOrg(open) ? `<button class="cc-back" onclick="careerAskLever(\'${open.id}\')" title="${esc(L().ccAskLeverWhat)}">${L().ccAskLever}</button>` : ''}
               ${open.offer.perk ? '' : `<button class="cc-back" onclick="careerAskPerk(\'${open.id}\')"
                 title="${esc(L().ccAskOdds(careerAskOdds(open.offer, open.asks||0)))}">${L().ccAskPerk}</button>`}
-            </div></div>`}
+            </div>${open.thought ? '' : `<div class="dm-ask-row"><em>${L().ccAskTimeLbl}</em><button class="cc-back" onclick="careerAskThink(\'${open.id}\')"
+                title="${esc(L().ccAskThinkWhat(ccThinkOdds(open)))}">${L().ccAskThink}</button></div>`}</div>`}
         <button class="ch-sign" onclick="careerSignFromDm(\'${open.id}\')">${L().ccSign}</button>
       </div>`
       : open.who.hater ? `<div class="dm-foot dm-foot-hate">
