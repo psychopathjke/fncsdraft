@@ -129173,13 +129173,81 @@ function ccSceneCheck(){
  *
  * Сезон ставится до ccSceneLift: развитие считается от того, чем человек
  * является, а не от того, чем он был в лучший вечер. */
+/* ПЕРЕЕХАВШИЕ ЗА ГОД (17.10, Notion «fncsdraft 15.10»: «тайсон и на na и в европе»). TaySon в 2024-м
+   сыграл Мейджоры 1–2 за Европу, а с июньского квала Мейджора 3 — за NAC (с Eomzo), и сцена года,
+   собранная «все карты региона за этот год», держала его в обоих регионах весь сезон.
+   Переезд отличается от тёзок датами: у переехавшего карты года идут по регионам ПОДРЯД, без
+   пересечения (EU до апреля, NAC с июня), а тёзки (Rise NAC/ASIA, Cold NAC/NAW) играют параллельно —
+   их правило не трогает. Человек стоит там, где его последняя карта на день карьеры, до первой —
+   в регионе первой. Ключ — hKey без региона, как и у самих карт.
+   Мировые турниры (Глобалы, Инвитейшнл, Саммит, EWC) в расчёт не идут — это не «где он играет», и
+   страна должна совпадать: разные флаги на двух сегментах — это два человека. */
+let CC_MOVERS={};
+const CC_MOVER_REGS=new Set(['EU','NAC','NAW','BR','ASIA','ME','OCE']);
+const CC_MOVER_SKIP=/Global Championship|Invitational|Summit|Esports World Cup|EWC|Pro-Am|All-Star/;
+function ccYearMovers(y){
+  if(CC_MOVERS[y]) return CC_MOVERS[y];
+  const seg=new Map();
+  PLAYERS.forEach(p=>{
+    if(ccCardYear(p)!==y) return;
+    const r=p.region||'';
+    if(!CC_MOVER_REGS.has(r) || CC_MOVER_SKIP.test(p.event||'')) return;
+    const d=ccCardDay(p); if(!d) return;
+    const k=hKey(p);
+    if(!seg.has(k)) seg.set(k, new Map());
+    const m=seg.get(k);
+    let s=m.get(r);
+    if(!s) m.set(r, s={r:r, lo:d, hi:d, nat:new Set()});
+    else { if(d<s.lo) s.lo=d; if(d>s.hi) s.hi=d; }
+    if(p.nat) s.nat.add(p.nat);
+  });
+  const out=new Map();
+  seg.forEach((m, k)=>{
+    if(m.size<2) return;
+    const list=[...m.values()].sort((a,b)=>a.lo-b.lo);
+    for(let i=1; i<list.length; i++){
+      if(list[i].lo<=list[i-1].hi) return;
+      const a=list[i-1].nat, b=list[i].nat;
+      if(a.size && b.size && ![...a].some(n=>b.has(n))) return;
+    }
+    out.set(k, list.map(s=>({r:s.r, lo:s.lo, hi:s.hi})));
+  });
+  return (CC_MOVERS[y]=out);
+}
+function ccMoverRegion(k){
+  const list=ccYearMovers(ccNowYear()).get(k);
+  if(!list) return null;
+  const t=+String(careerToday()).replace(/-/g,'');
+  let r=list[0].r;
+  list.forEach(s=>{ if(s.lo<=t) r=s.r; });
+  return r;
+}
+// Не здесь в этот день — переехал (или ещё не переехал) в другой регион.
+function ccMovedAway(p, reg){
+  if(ccCardYear(p)!==ccNowYear()) return false;
+  const r=ccMoverRegion(hKey(p));
+  return r!=null && r!==reg;
+}
+// Где сейчас все переехавшие года — часть ключа кэшей сцены и пула лобби.
+let CC_MOVERS_TAG={at:null, s:''};
+function ccMoversTag(){
+  const at=ccNowYear()+'|'+careerToday();
+  if(CC_MOVERS_TAG.at===at) return CC_MOVERS_TAG.s;
+  const m=ccYearMovers(ccNowYear());
+  let s=m.size ? '|mv' : '';
+  m.forEach((list, k)=>{ s+=','+ccMoverRegion(k); });
+  CC_MOVERS_TAG={at:at, s:s};
+  return s;
+}
 function ccSceneRoster(reg){
   ccSceneCheck();
-  if(CC_NOW_CARDS[reg]) return CC_NOW_CARDS[reg];
+  const ck=reg+ccMoversTag();
+  if(CC_NOW_CARDS[ck]) return CC_NOW_CARDS[ck];
   const season=ccSeasonOvr();
   const now=new Map();
   PLAYERS.forEach(p=>{
     if((p.region||'')!==reg || ccCardYear(p)!==ccNowYear()) return;
+    if(ccMovedAway(p, reg)) return;
     const k=hKey(p), day=ccCardDay(p) || ccNowYear()*10000;
     const cur=now.get(k);
     if(!cur || day>cur._day){
@@ -129222,8 +129290,8 @@ function ccSceneRoster(reg){
     });
   }
   // Люди своего клуба носят его герб — см. ccClubStamp.
-  CC_NOW_CARDS[reg]=ccClubStamp([...now.values()].sort((a,b)=>b._ovr-a._ovr));
-  return CC_NOW_CARDS[reg];
+  CC_NOW_CARDS[ck]=ccClubStamp([...now.values()].sort((a,b)=>b._ovr-a._ovr));
+  return CC_NOW_CARDS[ck];
 }
 function careerRosterNowEU(){ return ccSceneRoster(ccCareerRegion()); }
 
@@ -130020,12 +130088,13 @@ let CC_EU_ALL={};
 function ccEuCards(){
   // Карьера, перешедшая в следующий год, держит ещё и дебютантов (ccDebutants) — своим ключом.
   const debut=ccDebutants();
-  const reg=ccPoolRegion()+(ccNowYear()<2026 ? '|'+ccNowYear() : '')+(debut ? '|d'+ccCalYear() : '');
+  // Переехавшие за год (ccMovedAway) — в пуле только того региона, где они в этот день.
+  const reg=ccPoolRegion()+(ccNowYear()<2026 ? '|'+ccNowYear() : '')+(debut ? '|d'+ccCalYear() : '')+ccMoversTag();
   if(CC_EU_ALL[reg]) return CC_EU_ALL[reg];
   const season=ccSeasonOvr();
   const reg0=ccPoolRegion(), yearCap=ccNowYear();
   // 2025-й год: сцена — люди 2025-го, карт позже того года не существует.
-  CC_EU_ALL[reg]=(reg0==='ALL' ? PLAYERS.slice() : PLAYERS.filter(p=>(p.region||'')===reg0))
+  CC_EU_ALL[reg]=(reg0==='ALL' ? PLAYERS.slice() : PLAYERS.filter(p=>(p.region||'')===reg0 && !ccMovedAway(p, reg0)))
                    .filter(p=>yearCap>=2026 || ccCardYear(p)<=yearCap)
                    .map(p=>{
                      const c={...p};
