@@ -3926,8 +3926,10 @@
   .cc-shop-stats b{color:#e6edfb;font-weight:800;font-variant-numeric:tabular-nums;}
   .cc-shop-secs{display:flex;flex-wrap:wrap;gap:6px;padding:2px 0;}
   /* Магазин предметов (18.10): витрина дня в цветах редкости Fortnite, V-Bucks, образ в шкафчике. */
-  .cc-vb-ic{display:inline-block;width:14px;height:14px;margin-right:4px;vertical-align:-2px;border-radius:50%;
-    background:radial-gradient(circle at 35% 35%,#e9f6ff 0 18%,#5fb6ff 40%,#1d5fd0 100%);box-shadow:0 0 0 1px rgba(255,255,255,.35) inset;}
+  /* Значок — настоящая монета V-Bucks (fortnite-api.com/images/vbuck.png, своей копией 64 px в art/). */
+  .cc-vb-ic{display:inline-block;width:16px;height:16px;margin-right:4px;vertical-align:-3px;
+    background:url(art/vbucks.png) center/contain no-repeat;}
+  .cc-vb-now .cc-vb-ic{width:26px;height:26px;vertical-align:-6px;}
   .ch-vb{white-space:nowrap;}
   .cc-vb-now{display:flex;align-items:center;gap:10px;font-size:22px;margin:4px 0 10px;}
   .cc-vb-now b{font-family:var(--font-display);}
@@ -117103,7 +117105,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='8b95ab66';
+const CC_BUILD='5444de04';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
