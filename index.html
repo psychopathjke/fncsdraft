@@ -115807,7 +115807,12 @@ function ccPickedStart(){
 }
 // Короткая подпись кнопки на плитке: C5S1, Major 1 → M1, Season X → SX.
 function ccSeasonShort(tag){ return CC_SEASON_SUB[tag] || String(CC_SEASON_LABEL[tag]||tag).replace(/^Major /, 'M').replace(/^Season /, 'S'); }
-function ccPickStartSeason(tag){ CC.startTag=tag; ccRenderChips(); ccSync(); }
+function ccPickStartSeason(tag){
+  CC.startTag=tag;
+  // Рейтинги в списке карточек — того сезона (ccRatingSnap на экране создания): взятая карточка — заново.
+  if(CC.mode==='card'){ CC.card=null; if(typeof ccRenderList==='function') ccRenderList(); }
+  ccRenderChips(); if(typeof ccRenderCard==='function') ccRenderCard(); ccSync();
+}
 function ccPickYearSeason(y, tag){
   if(ccMpLockedYear() && y!==ccMpLockedYear()) return;
   if((CC.year||2026)!==y) ccPickYear(y);
@@ -116993,7 +116998,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='fc28c2db';
+const CC_BUILD='07c491b6';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -129267,7 +129272,7 @@ let CC_NOW_CARDS={}, CC_NOW_TAG=null, CC_ARC_PAIRS={};
 function ccSceneTag(){
   // Неделя подтягивания к рейтингу из жизни (ccRealPull) — сцена пересобирается раз в неделю.
   // И сезон рейтинга (ccRatingSnap): со сменой сезона внутри года сцена берёт его числа.
-  const y='|y'+ccCalYear()+'|p'+ccRealPullStep()+'|r'+(CAREER ? ccRatingSnapTag() : '');
+  const y='|y'+ccCalYear()+'|p'+ccRealPullStep()+'|r'+ccRatingSnapTag();
   if(!CAREER) return 'none'+y;
   return ccSlot()+'|'+((CAREER.player&&CAREER.player.nick)||'')+'|'+((CAREER.career&&CAREER.career.season)||0)+y;
 }
@@ -130004,6 +130009,15 @@ let CC_SEASON_OVR_YEAR=null;
 const CC_SNAPS_BY_YEAR=()=>({2019:CC_SNAPSHOTS_2019, 2020:CC_SNAPSHOTS_2020, 2021:CC_SNAPSHOTS_2021, 2022:CC_SNAPSHOTS_2022,
   2023:CC_SNAPSHOTS_2023, 2024:CC_SNAPSHOTS_2024, 2025:CC_SNAPSHOTS_2025, 2026:CC_SNAPSHOTS});
 function ccRatingSnap(){
+  /* Экран создания: сезон — выбранный на плитке года (ccPickedStart, иначе первый), чтобы список карточек
+     показывал рейтинги того сезона, с которого начнётся карьера (его «каждый сезон пусть обновляются»). */
+  if(typeof SHOWN_SCREEN!=='undefined' && SHOWN_SCREEN==='screen-career-create' && typeof CC!=='undefined' && CC && !CC_NOW_YEAR_FORCE){
+    const list=CC_SNAPS_BY_YEAR()[ccNowYear()];
+    if(!list || list.length<2) return null;
+    const s=(typeof ccPickedStart==='function' && ccPickedStart()) || list[0], i=list.indexOf(s);
+    if(i<0 || i===list.length-1) return null;
+    return {tag:s.tag, cut:+String(list[i+1].from).replace(/-/g, ''), nextTag:list[i+1].tag};
+  }
   const cr=(typeof CAREER!=='undefined' && CAREER && CAREER.career) || null;
   const Y=ccNowYear();
   // Рейтинг года «как у свежей карьеры» (ccRealTargets, ccDebutants ставят CC_NOW_YEAR_FORCE) — весь год, не сезон:

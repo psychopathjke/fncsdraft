@@ -69,6 +69,11 @@ sb[2] && sb[2].click();
 check('нажатие C5S3 на плитке ставит 2024 и C5S3', CC.year===2024 && ccPickedStart() && ccPickedStart().from==='2024-06-14', CC.year+' '+JSON.stringify(ccPickedStart()));
 const onNow=[...document.querySelectorAll('#ccYearChips .cc-yt-s.on')].map(b=>b.textContent);
 check('подсвечен выбранный сезон', onNow.join()==='C5S3', onNow.join());
+// Список карточек на экране создания — рейтинги выбранного сезона.
+const chapAt=tag=>{ ccPickStartSeason(tag); const c=careerRosterNowEU().find(x=>hKey(x)==='chap'); return c ? c._ovr : null; };
+const cf1=chapAt('f1'), cf3=chapAt('f3');
+notes.create={f1:cf1, f3:cf3};
+check('на экране создания Chap в C5S1 ниже, чем в C5S3', cf1!=null && cf3!=null && cf3-cf1>=10, cf1+' → '+cf3);
 ccPickYear(2025);
 check('смена года сбрасывает сезон на первый', ccPickedStart()===null, JSON.stringify(ccPickedStart()));
 CC_MP_NEW={role:'a'}; ccRenderChips();
