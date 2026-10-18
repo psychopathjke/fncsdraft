@@ -34,6 +34,17 @@ for(const off of [false, true]){
   }
 }
 check('разница — и есть прибавка', notes.on.shown-notes.off.shown===Math.round(notes.on.card[0]+notes.on.card[1]), notes.on.shown+' vs '+notes.off.shown);
+// «Свои статы до 99» — прибавки нет всегда, переключателя нет (его слово 18.10: «отключи эти +10, где игрок сам выбирает статы»).
+localStorage.clear(); CAREER=null;
+careerEntry(); ccSetMode('free'); ccPickRole('roleFRG'); ccPickRegion('EU'); ccPickCountry('de');
+{ const n=document.getElementById('ccNick'); n.value='EdgeFree'; n.dispatchEvent(new Event('input',{bubbles:true})); }
+document.getElementById('ccAge').value='16'; ccSync();
+const fField=document.getElementById('ccEdgeField').style.display;
+document.getElementById('ccStart').click();
+{ const pl=CAREER.player, c=careerCard();
+  notes.free={field:fField, noEdge:!!pl.noEdge, save:[pl.closeRangeEdge, pl.ageEdge], card:[c._pingEdge, c._ageEdge]};
+  check('свои статы: переключателя нет', fField==='none', fField);
+  check('свои статы: прибавки нет', pl.noEdge===true && !c._pingEdge && !c._ageEdge && pl.closeRangeEdge===0 && pl.ageEdge===0, JSON.stringify(notes.free)); }
 // Взятой карточке выбора нет.
 localStorage.clear(); CAREER=null; careerEntry(); CC.mode='card'; ccRenderChips();
 check('у взятой карточки выбора нет', document.getElementById('ccEdgeField').style.display==='none', document.getElementById('ccEdgeField').style.display);

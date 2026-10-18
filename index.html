@@ -115593,8 +115593,8 @@ function ccMakePlayer(){
   const rating=ccSpaApply(a);
   return {
     handle:nick, nat:ccNatOf(CC.country), region:CC.region||'EU', org:null,
-    _pingEdge: CC.noEdge ? 0 : ccPingEdge(CC.country ? ccPingOf(CC.country, CC.region) : null),
-    _ageEdge: CC.noEdge ? 0 : ccAgeEdge(parseInt(document.getElementById('ccAge').value,10)),
+    _pingEdge: ccNoEdgeNow() ? 0 : ccPingEdge(CC.country ? ccPingOf(CC.country, CC.region) : null),
+    _ageEdge: ccNoEdgeNow() ? 0 : ccAgeEdge(parseInt(document.getElementById('ccAge').value,10)),
     _age: parseInt(document.getElementById('ccAge').value,10),
     _pingMs: CC.country ? ccPingOf(CC.country, CC.region) : null,
     tier:'ranked', event:L().ccDivEvent.replace('{N}', CC.div), placement:null,
@@ -115797,6 +115797,9 @@ function ccPickRegion(r){
 function ccPickRole(k){ CC.role=k; ccRenderChips(); ccSync(); }
 // Без прибавки за пинг и возраст: рейтинг своего игрока — ровно собранный (Notion «18.10»).
 function ccPickEdge(off){ CC.noEdge=!!off; ccRenderChips(); if(typeof ccRenderCard==='function') ccRenderCard(); ccSync(); }
+/* Прибавки нет: выключена переключателем — или это «Свои статы до 99» (CC.spaFree), там её нет всегда
+   (его слово 18.10: «отключи эти +10, где игрок сам выбирает статы»). */
+function ccNoEdgeNow(){ return !!(CC && (CC.noEdge || CC.spaFree)); }
 // Прибавка у игрока карьеры выключена (pl.noEdge с экрана создания).
 function ccEdgeOff(pl){ return !!(pl && pl.noEdge); }
 /* СЕЗОН СТАРТА (18.10, тестер: «может в карьере дать выбор по сезонам ещё, а не по годам»). Сезоны года —
@@ -115925,7 +115928,8 @@ function ccRenderChips(){
   }
   ccRenderSeasonChips();
   const ef=document.getElementById('ccEdgeField'), ech=document.getElementById('ccEdgeChips');
-  if(ef) ef.style.display=CC.mode==='rookie' ? '' : 'none';
+  // В «Своих статах до 99» прибавки нет без выбора — переключатель только у обычного новичка.
+  if(ef) ef.style.display=(CC.mode==='rookie' && !CC.spaFree) ? '' : 'none';
   if(ech) ech.innerHTML=[[false, L().ccEdgeOn], [true, L().ccEdgeOff]].map(([v, t])=>
     `<button class="cc-chip${!!CC.noEdge===v?' on':''}" onclick="ccPickEdge(${v})">${t}</button>`).join('');
   const dchips=document.getElementById('ccDiffChips');
@@ -116351,7 +116355,7 @@ const CC_AGE_MIN=13, CC_AGE_MAX=50;
 /* Что дают возраст и страна — словами, прямо у выбора (вместо строк PNG/AGE на карточке).
    Только построенному: взятой карточке и креатору прибавок нет (см. ccStart). */
 function ccGainNotes(){
-  const T=L(), built=CC.mode==='rookie' && !CC.noEdge;
+  const T=L(), built=CC.mode==='rookie' && !ccNoEdgeNow();
   const ag=document.getElementById('ccAgeGain'), pg=document.getElementById('ccPingGain');
   if(ag){
     const age=parseInt((document.getElementById('ccAge')||{}).value,10);
@@ -116431,7 +116435,7 @@ function ccSync(){
   }
   // What the two are worth, said before the career starts — and they are worth
   // nothing to a taken card, so the readout promises nothing there either.
-  const built=CC.mode==='rookie' && !CC.noEdge;
+  const built=CC.mode==='rookie' && !ccNoEdgeNow();
   const pingEdge=built?ccPingEdge(ping):0, ageEdge=built?ccAgeEdge(age):0;
   const plus=v=>(v>0?'+':'')+(Math.round(v*10)/10);
   out.innerHTML =
@@ -116602,16 +116606,16 @@ function ccStart(){
          отвечать: см. careerBirthdays и ccPlayerAge. Пусто у всех, кто его не
          вводил, и у каждого старого сейва, и это ничего не меняет. */
       born: CC.born || null,
-      closeRangeEdge: (card || creator || CC.noEdge) ? 0 : ccPingEdge(ping),
+      closeRangeEdge: (card || creator || ccNoEdgeNow()) ? 0 : ccPingEdge(ping),
       // Прибавка за пинг и возраст выключена на экране создания — и на всю карьеру (ccEdgeOff).
-      noEdge: (!card && !creator && CC.noEdge) ? true : undefined,
+      noEdge: (!card && !creator && ccNoEdgeNow()) ? true : undefined,
       // The region the career competes in. A rookie's is always Europe - the
       // country map is - and a taken card's is whichever one it was taken from.
       region: CC.region||'EU', ovr, role, attrs,
       // «Свои статы до 99»: выставленное — нижний предел, ниже результаты статы не опускают
       // (его скрин 29.09: «я везде выбирал 99» — через пару вечеров стало 98.6). См. ccAttrFloor.
       attrsFloor: (!card && !creator && CC.spaFree && attrs) ? ATTR_KEYS.reduce((o,k)=>(o[k]=attrs[k], o), {}) : undefined,
-      ageEdge: (card || creator || CC.noEdge) ? 0 : ccAgeEdge(age),
+      ageEdge: (card || creator || ccNoEdgeNow()) ? 0 : ccAgeEdge(age),
       // Where this career is from, which is what rent is measured against. A
       // career that starts in NA Central is not renting NA Central. See ccRentNow.
       homeRegion: CC.region||'EU',
@@ -117015,7 +117019,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='211333a0';
+const CC_BUILD='37b6c57f';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
