@@ -689,9 +689,12 @@
       var raw = plain(events[e]);
       var cut = raw.indexOf(':');
       var cause = plain(raw.slice(0, cut)), victim = plain(raw.slice(cut + 1));
+      // Убийство твоей команды — с иконкой надетой кирки вместо значка (карьера, магазин предметов, 18.10).
+      var ci = indexOfName[cause], axe = (ci != null && roster[ci].you && typeof window !== 'undefined') ? window.CC_FN_AXE : null;
       var row = (cause === 'storm' || cause === 'surge')
         ? badge(cause) + pillFor(victim)
-        : pillFor(cause) + badge('kill') + pillFor(victim);
+        : pillFor(cause) + (axe ? '<img src="' + esc(axe) + '" alt="" style="width:22px;height:22px;flex:none;' +
+            'filter:drop-shadow(0 1px 2px #000);" onerror="this.remove()">' : badge('kill')) + pillFor(victim);
       handle.lines.push(feedRow(row));
     }
     while(handle.lines.length > 4) handle.lines.shift();
