@@ -4039,3 +4039,9 @@ Object.assign(I18N.de=I18N.de||{},
 /* Дозаливка «de» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
 Object.assign(I18N.de=I18N.de||{},
 ({ ccShareSend:'Senden', ccShareSave:'Bild speichern', ccShareCopy:'Kopieren', ccShareClose:'Schließen', ccShareCopied:'Bild kopiert', ccShareSendFail:'Teilen hat sich nicht geöffnet. Speichere das Bild', ccShareFail:'Das Bild konnte nicht gezeichnet werden', ccShareSeason:'Saison teilen' }));
+/* Дозаливка «de» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
+Object.assign(I18N.de=I18N.de||{},
+({ ccStartSeason:'Startsaison', ccStartSeasonNote:'Die Karriere beginnt in der ersten Woche dieser Saison. Teams und Ratings der Szene sind so wie damals und ändern sich danach von Saison zu Saison.' }));
+/* Дозаливка «de» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
+Object.assign(I18N.de=I18N.de||{},
+({ ccSeasonsN:n=>n+' Saisons' }));
