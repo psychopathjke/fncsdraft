@@ -57,6 +57,14 @@ check('V-Bucks в шапке рядом с балансом', /ch-vb/.test(shopT
 const lock=ccLockerHTML();
 check('образ в шкафчике со скином', /cc-fn-load/.test(lock) && lock.indexOf(sk.id.toLowerCase())>0);
 ccFnPick('o'); check('выбор из купленного открывается', /cc-fn-pick/.test(ccLockerHTML()));
+// Шкафчик своей вкладкой: выбор скина открыт сразу, купленный скин в нём.
+CC_FN_PICK=null; careerTab('locker');
+const lb=document.getElementById('chBody').innerHTML;
+check('вкладка «Шкафчик»: образ и выбор скина сразу', /cc-fn-load/.test(lb) && /cc-fn-pick/.test(lb) && lb.indexOf(sk.id.toLowerCase())>0);
+check('кнопка вкладки есть', !!document.querySelector('.ch-tab[data-tab="locker"]'));
+// После покупки в магазине — кнопка «Надеть в шкафчике».
+const em=ccFnShopDay(careerToday()).find(x=>x.t==='e' && !ccFnOwn()[x.id]);
+if(em){ CAREER.vb=(CAREER.vb||0)+5000; ccFnBuy(em.i); check('после покупки кнопка «Надеть в шкафчике»', /cc-fn-tolock/.test(document.getElementById('chBody').innerHTML)); }
 ccFnEquip('o', null); check('скин снимается', !ccFnEq().o);
 return {fails, notes};
 `;

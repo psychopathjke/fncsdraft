@@ -4051,3 +4051,6 @@ Object.assign(I18N.de=I18N.de||{},
 /* Дозаливка «de» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
 Object.assign(I18N.de=I18N.de||{},
 ({ ccSecItems:'Item-Shop', ccSecHint_items:'Der echte Fortnite-Shop dieses Tages: Outfits, Spitzhacken, Gleiter, Emotes. Bezahlt mit V-Bucks, und V-Bucks kosten Karrieregeld zum Epic-Preis deiner Region. Gekauftes trägst du im Spind.', ccVbPacksH:'V-Bucks', ccVbNote:r=>'Epic-Preise der Zeit für '+r+'. Vom Karriereguthaben abgezogen.', ccFnShopH:d=>'Shop vom '+d, ccFnTomorrow:'wechselt morgen', ccFnOwned:'Gekauft', ccFnNoVb:'Zu wenig V-Bucks', ccFnLoading:'Shop wird geladen…', ccFnEmpty:'Für diesen Tag gibt es keinen Shop in den Daten.', ccFnType_o:'Outfit', ccFnType_b:'Rücken-Accessoire', ccFnType_p:'Spitzhacke', ccFnType_g:'Gleiter', ccFnType_e:'Emote', ccFnType_w:'Lackierung', ccFnTypes_o:'Outfits', ccFnTypes_b:'Rücken-Accessoires', ccFnTypes_p:'Spitzhacken', ccFnTypes_g:'Gleiter', ccFnTypes_e:'Emotes', ccFnTypes_w:'Lackierungen', ccFnLoadout:'Ausrüstung', ccFnTakeOff:'Ablegen', ccFnNone:'Noch nichts zum Anziehen.', ccFnToShop:'Zum Item-Shop' }));
+/* Дозаливка «de» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
+Object.assign(I18N.de=I18N.de||{},
+({ chTabLocker:'Spind', ccFnToLocker:'Im Spind anziehen' }));
