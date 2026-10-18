@@ -4054,3 +4054,6 @@ Object.assign(I18N.es=I18N.es||{},
 /* Дозаливка «es» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
 Object.assign(I18N.es=I18N.es||{},
 ({ chTabLocker:'Taquilla', ccFnToLocker:'Equipar en la taquilla' }));
+/* Дозаливка «es» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
+Object.assign(I18N.es=I18N.es||{},
+({ccFnEra:n=>'Capítulo '+n, ccFnFeatured:'Destacados', ccFnDaily:'Diarios'}));

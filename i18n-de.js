@@ -4054,3 +4054,6 @@ Object.assign(I18N.de=I18N.de||{},
 /* Дозаливка «de» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
 Object.assign(I18N.de=I18N.de||{},
 ({ chTabLocker:'Spind', ccFnToLocker:'Im Spind anziehen' }));
+/* Дозаливка «de» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
+Object.assign(I18N.de=I18N.de||{},
+({ccFnEra:n=>'Kapitel '+n, ccFnFeatured:'Empfohlen', ccFnDaily:'Täglich'}));

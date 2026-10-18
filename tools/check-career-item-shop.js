@@ -66,6 +66,15 @@ check('кнопка вкладки есть', !!document.querySelector('.ch-tab[
 const em=ccFnShopDay(careerToday()).find(x=>x.t==='e' && !ccFnOwn()[x.id]);
 if(em){ CAREER.vb=(CAREER.vb||0)+5000; ccFnBuy(em.i); check('после покупки кнопка «Надеть в шкафчике»', /cc-fn-tolock/.test(document.getElementById('chBody').innerHTML)); }
 ccFnEquip('o', null); check('скин снимается', !ccFnEq().o);
+// 5) Вид магазина по главе: Глава 1 — «Рекомендуемые/Ежедневные», дальше — по типам; тёмный магазин с ноября 2023.
+const eras={};
+[['2019-06-01','c1',1],['2020-06-01','c2',2],['2022-06-01','c3',3],['2023-06-01','c3',4],['2023-11-10','c5',4],['2024-06-01','c5',5],['2026-05-01','c5',7]].forEach(([d,k,ch])=>{
+  seed(d, 'EU', 100); const e=ccFnShopEra(d); eras[d]=e.k+'/'+e.ch;
+  check(d+': вид '+k+', глава '+ch, e.k===k && e.ch===ch, e.k+'/'+e.ch);
+  const h=ccFnShopHTML(); check(d+': класс вида в разметке', h.indexOf('cc-fn-shop cc-fn-'+k)>0);
+  if(k==='c1') check(d+': разделы Главы 1', h.indexOf(L().ccFnFeatured)>0 && h.indexOf(L().ccFnDaily)>0);
+});
+notes.eras=eras;
 return {fails, notes};
 `;
 const tmp=path.join(fs.mkdtempSync(path.join(os.tmpdir(),'cis-')),'body.js'); fs.writeFileSync(tmp, body);
