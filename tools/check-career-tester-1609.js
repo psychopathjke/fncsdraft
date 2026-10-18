@@ -51,7 +51,10 @@ const BOOT = `
     // ---- 1. брошенный напарник ---------------------------------------------------
     const pool=careerPools();
     const paired=new Set(); pool.duos.forEach(d=>d.cards.forEach(c=>paired.add(c._k||hKey(c))));
-    const free=(pool.players||[]).filter(c=>!paired.has(c._k||hKey(c)) && Math.abs(ccCardOvr(c)-86)<3);
+    /* Подопытный — ближайший к 86 свободный (±5). С рейтингом сезона (18.10) в феврале 2026-го свободные — те, кто
+       Major 1 не играл, и стоят они прошлым сезоном: у верха 90, 83, 82 — в ±3 от 86 никого. Сценарий тот же. */
+    const free=(pool.players||[]).filter(c=>!paired.has(c._k||hKey(c)) && Math.abs(ccCardOvr(c)-86)<5)
+      .sort((a,b)=>Math.abs(ccCardOvr(a)-86)-Math.abs(ccCardOvr(b)-86));
     const dB=(pool.duos||[]).filter(x=>x.cards.length===2 && Math.abs(ccDuoOvr(x)-86)<4)[3];
     if(!free.length || !dB) fail('no free agent / pair near 86 to stage the swap');
     const E=free[0], B=dB.cards[0], Y=dB.cards[1];

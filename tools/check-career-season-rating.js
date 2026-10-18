@@ -200,11 +200,14 @@ const BOOT = `
 
       const pool=ccEuCards();
       const mine=pool.find(c=>c._k===hKey({handle:handleOf(many)}));
-      out.notes.inPool={ovr:mine && mine._ovr, target:mine && mine._targetOvr};
+      /* 18.10: в карьере своего года рейтинг — сезона того дня (ccRatingSnap), поэтому сверка — с ccSeasonOvr
+         после старта карьеры, а не с годом, посчитанным до неё. */
+      const seasonNow=ccSeasonOvr();
+      out.notes.inPool={ovr:mine && mine._ovr, target:mine && mine._targetOvr, season:seasonNow.get(many), snap:ccRatingSnapTag()};
       check('the pool card carries the season rating',
-            mine && mine._ovr===season.get(many), JSON.stringify(out.notes.inPool));
+            mine && mine._ovr===seasonNow.get(many), JSON.stringify(out.notes.inPool));
       check('and its attributes are moved onto it',
-            mine && Math.abs(attrsFor(mine).ovr-season.get(many))<=1,
+            mine && Math.abs(attrsFor(mine).ovr-seasonNow.get(many))<=1,
             String(mine && attrsFor(mine).ovr));
 
       /* And the shape survives the move: the six are shifted together, so a

@@ -99,7 +99,8 @@ const BOOT = `
     const season=ccSeasonOvr();
     let top=0; season.forEach((v,k)=>{ if(k.indexOf('EU|')===0 && v>top) top=v; });
     check('the career season tops out at the region ceiling', top===REGION_TOP.EU, String(top));
-    check('the career reads YEAR_RATING', /YEAR_RATING/.test(String(ccSeasonOvr)));
+    // 18.10: расчёт — в ccSeasonOvrCalc (ccSeasonOvr переносит порядок сезона на шкалу года).
+    check('the career reads YEAR_RATING', /YEAR_RATING/.test(String(ccSeasonOvr)+String(typeof ccSeasonOvrCalc==='function' ? ccSeasonOvrCalc : '')));
   }catch(e){ out.fails.push('threw: '+(e && e.stack || e)); }
   document.getElementById('__out').textContent='BE'+'GINJSON'+encodeURIComponent(JSON.stringify(out))+'EN'+'DJSON';
 })();

@@ -41,7 +41,11 @@ const BOOT = `
     careerNewSeason();
     const cr=CAREER.career;
     check('стык: календарь 2025-го, трио', cr.year===2025 && careerSquadSize()===3, cr.year+'/'+careerSquadSize());
-    const T=ccRealTargets(2025);
+    // 18.10: в первый день 2025-го действует рейтинг сезона t1 (ccRatingSnap) — цель та же, что у свежей карьеры этого дня.
+    const SO=ccRatingSnap() ? ccSeasonOvr() : null;
+    CC_POOLS=null;
+    // Только карточки 2025-го — как и ccRealTargets(2025): старая карточка в пуле (Vadeal 2022 96) рейтинг сезона не несёт.
+    const T=SO ? new Map(careerPools().players.filter(c=>ccCardYear(c)===2025).map(c=>[c._k||hKey(c), SO.get(ccSeasonKey(c))]).filter(e=>e[1]!=null)) : ccRealTargets(2025);
     CC_POOLS=null;
     let n=0, moved=0, toward=0;
     careerPools().players.forEach(c=>{
@@ -49,6 +53,7 @@ const BOOT = `
       if(b==null || t==null || Math.abs(t-b)<3) return;
       n++; if(c._ovr!==b) moved++;
       if(Math.abs(t-c._ovr)<Math.abs(t-b)) toward++;
+      else if(c._ovr!==b) (out.notes.away=out.notes.away||[]).push(c.handle+' '+b+'→'+c._ovr+' цель '+t+' книга '+careerDevOf(c));
     });
     out.notes.roll={n, moved, toward, frac:ccRealPullFrac()};
     check('стык: люди с целью есть', n>=100, String(n));

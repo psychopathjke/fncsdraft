@@ -529,7 +529,9 @@ const SECTIONS=[
     const ext=Object.values(MGR.ext||{}).find(c=>!c._youth);
     MGR.scouts=[]; mgrScoutHire(3); mgrScoutSet(MGR.scouts[0].id, 'region', 'NAC'); mgrScoutSet(MGR.scouts[0].id, 'min', '80');
     mgrScoutWeek(ccAddDays(CAREER.career.day, 7));
-    const f=Object.values(MGR.srep).find(r=>r.region==='NAC');
+    // Тот, у кого карточка 2025-го вообще есть: кого скаут найдёт, зависит от рейтингов сезона (18.10).
+    const has25=h=>PLAYERS.some(p=>(p.region||'')==='NAC' && hKey(p)===hKey(h) && ccCardYear(p)===2025);
+    const f=Object.values(MGR.srep).find(r=>r.region==='NAC' && has25(r.h)) || Object.values(MGR.srep).find(r=>r.region==='NAC');
     if(f){ MGR.bench.push(f.h); mgrContract(f.h);
       const y0=mgrCard(f.h).date; MGR.year=2025; MGR.shadow=mgrShadow(2025, MGR.region); MGR_ACTIVE=false; mgrEnter();
       mgrExtRefresh();

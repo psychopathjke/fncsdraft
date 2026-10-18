@@ -17,14 +17,21 @@ try{
               attrs:ccRookieAttrs(ovr,'roleIGL'), ageEdge:0, photo:null, handle:null, cardRegion:null, nat:null},
       career:Object.assign({season:1, day:'2026-02-10', division:1, earnings:0, balance:0, reach:500, tokens:[], log:[], news:[]}, extra||{}), partner:null, partners:[]}));
     careerLoad(); };
-  seed(84);
-  const pool=careerDuoSearchPool(true).filter(w=>w && w.handle && !(careerDmMateOf(w) && careerDuoBeatsYou(w)));
-  out.notes.pool=pool.length;
+  /* Свой рейтинг — первый из 84, 82, 86, 80, 88, при котором у порога есть кандидат другой роли: с рейтингом сезона
+     (18.10) сцена февраля 2026-го другая, и у 84 такой нашёлся один, да и тот своей роли. Проверка та же. */
   const marg=w=>{ CAREER.dmBoost=0; return careerDmMargin(w); };
-  const near=pool.filter(w=>{ const m=marg(w); return m<0 && m>=-CC_DM_COND; });
-  const far=pool.filter(w=>marg(w)<-CC_DM_COND-1 && marg(w)>-50);
   const roleOf=w=>((w.card ? attrsFor(w.card) : attrsFor(w))||{}).roleKey;
-  const nearOther=near.find(w=>roleOf(w)!==ccRoleNow()), nearSame=near.find(w=>roleOf(w)===ccRoleNow());
+  let pool=[], near=[], far=[], nearOther=null, nearSame=null;
+  for(const ovr of [84, 82, 86, 80, 88]){
+    seed(ovr);
+    pool=careerDuoSearchPool(true).filter(w=>w && w.handle && !(careerDmMateOf(w) && careerDuoBeatsYou(w)));
+    near=pool.filter(w=>{ const m=marg(w); return m<0 && m>=-CC_DM_COND; });
+    far=pool.filter(w=>marg(w)<-CC_DM_COND-1 && marg(w)>-50);
+    nearOther=near.find(w=>roleOf(w)!==ccRoleNow()); nearSame=near.find(w=>roleOf(w)===ccRoleNow());
+    out.notes.ovr=ovr;
+    if(nearOther) break;
+  }
+  out.notes.pool=pool.length;
   out.notes.near=near.length; out.notes.far=far.length;
   check('в поиске есть те, кому не хватило немного', near.length>0);
 

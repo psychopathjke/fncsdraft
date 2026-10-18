@@ -8188,6 +8188,12 @@
           <div class="cc-chips" id="ccYearChips"></div>
           <div class="cc-note" id="ccYearNote"></div>
         </div>
+        <!-- Сезон старта внутри года (18.10): составы и рейтинги того сезона. -->
+        <div class="cc-field" id="ccSeasonField">
+          <label data-i18n="ccStartSeason"></label>
+          <div class="cc-chips" id="ccSeasonChips"></div>
+          <div class="cc-note" id="ccSeasonNote"></div>
+        </div>
       </div>
 
       <div class="cc-tabs">
@@ -9860,7 +9866,7 @@ ccMovePickHint:'Выбери страну на карте — цифра на н
 ccMoveGain:'Рейтинг за пинг',
 ccMoveAlready:'Ты уже здесь', ccMoveGo:r=>'Переехать в '+r,
 ccOrgCutRow:'Клуб с призовых', ccOrgCutPaid:'Отдано клубу',
-ccYear:'Год', ccYear2026:'дуо → трио', ccYear2025:'трио', ccYear2024:'дуо', ccYear2023:'дуо', ccYear2022:'дуо', ccYear2021:'трио', ccYear2020:'дуо → соло → трио', ccYear2019:'соло и дуо → трио → сквады', ccYrXWeek:(w,r,q)=>(w===0 ? 'разминка' : (q ? 'квалификатор ' : 'неделя ')+w)+' · раунд '+r, ccYrXHeats:d=>'хиты · день '+d, ccYrXHeatN:(l,h)=>l+' · хит '+h, ccYrXFinal:wc=>wc ? 'финал · Нью-Йорк' : 'финал', ccYrXWcIn:k=>'Топ-'+k+' региона — в финал World Cup в Нью-Йорке', ccYr21Heat:(n,h)=>'Мейджор '+n+' · полуфинал · хит '+h, ccYr21Reboot:n=>'Мейджор '+n+' · Reboot Round', ccYr21ToReboot:'Не прошли — остаётся Reboot Round', ccYr21Gr:'FNCS Grand Royale', ccMajSeatGr21:'Финал сезона — приглашение на FNCS Grand Royale', ccYr22Direct:k=>'Топ-'+k+' квалификатора — сразу в Гранд-финал', ccYr22SemiUp:'Проход в Гранд-финал', ccYr22SemiNext:'Не прошли — следующая сессия полуфинала', ccYr22Inv:'FNCS Invitational · Роли', ccMajSeatInv22:n=>'Топ-'+n+' — приглашение на FNCS Invitational в Роли', ccYr23Day:(n,w,d)=>'Мейджор '+n+' · неделя '+w+' · день '+d, ccYr23WeekFinal:(n,w)=>'Мейджор '+n+' · финал недели '+w, ccYr23Surge:n=>'Мейджор '+n+' · Surge Week', ccYr23Lcm:d=>'Last Chance Major · '+(d===3 ? 'финал' : 'день '+d), ccYr23SurgeWon:'Топ-10 Surge Week — билет в финал Мейджора', ccYr23SeriesTicket:k=>'Топ-'+k+' серии — финал Мейджора', ccYr23NoTicket:k=>'Вне топ-'+k+' серии — остаётся Surge Week', ccYr23GcDay:d=>['верхняя сетка','нижняя сетка','финал'][d-1]||'', ccYr23GcUp:'Топ-25 — сразу в финал', ccYr23GcDown:'Нижняя сетка — второй шанс', ccYr23GcOut:'Нижняя сетка: вылет', ccMajSeatGc23:n=>'Топ-'+n+' едут на Global Championship в Копенгаген', ccYr23EliteOnly:'Мейджор 1 — только для дивизиона 1 (Elite)', ccYr23LcmSeat:n=>'Топ-'+n+' — нижняя сетка Копенгагена', ccYr24Qual:(n,q,r)=>'Мейджор '+n+' · квалификатор '+q+' · раунд '+r, ccYr24Semi:(n,r)=>'Мейджор '+n+' · полуфинал · день '+r, ccYr24Upper:'верхняя сетка', ccYr24Lower:'нижняя сетка', ccYr24Series:(p,k)=>'Очки серии: '+p+' · место '+k, ccYr24ToUpper:'Верхняя сетка полуфинала — по очкам серии', ccYr24ToLower:'Нижняя сетка полуфинала — по очкам серии', ccYr24NoSemi:'Мест в полуфинале нет — очков серии не хватило', ccYr24VrTicket:'Победа в матче — билет в финал Мейджора', ccYr24Down:'Билета нет — падение в нижнюю сетку', ccYr24Up:'подъём в верхнюю сетку', ccYr24World:'Другая сетка играет в тот же вечер', ccYr25Group:n=>'группа '+n, ccYr25Lobby:'лобби последнего шанса', ccYr25Showdown:(n,r)=>'FNCS Showdown '+n+' · раунд '+r, ccYr25SoloCash:(n,r)=>'Solo Cash Cup '+n+' · раунд '+r,
+ccStartSeason:'Сезон старта', ccStartSeasonNote:'Карьера начнётся с первой недели этого сезона. Составы и рейтинги сцены будут такими, какими они были тогда, и дальше меняются от сезона к сезону.', ccYear:'Год', ccYear2026:'дуо → трио', ccYear2025:'трио', ccYear2024:'дуо', ccYear2023:'дуо', ccYear2022:'дуо', ccYear2021:'трио', ccYear2020:'дуо → соло → трио', ccYear2019:'соло и дуо → трио → сквады', ccYrXWeek:(w,r,q)=>(w===0 ? 'разминка' : (q ? 'квалификатор ' : 'неделя ')+w)+' · раунд '+r, ccYrXHeats:d=>'хиты · день '+d, ccYrXHeatN:(l,h)=>l+' · хит '+h, ccYrXFinal:wc=>wc ? 'финал · Нью-Йорк' : 'финал', ccYrXWcIn:k=>'Топ-'+k+' региона — в финал World Cup в Нью-Йорке', ccYr21Heat:(n,h)=>'Мейджор '+n+' · полуфинал · хит '+h, ccYr21Reboot:n=>'Мейджор '+n+' · Reboot Round', ccYr21ToReboot:'Не прошли — остаётся Reboot Round', ccYr21Gr:'FNCS Grand Royale', ccMajSeatGr21:'Финал сезона — приглашение на FNCS Grand Royale', ccYr22Direct:k=>'Топ-'+k+' квалификатора — сразу в Гранд-финал', ccYr22SemiUp:'Проход в Гранд-финал', ccYr22SemiNext:'Не прошли — следующая сессия полуфинала', ccYr22Inv:'FNCS Invitational · Роли', ccMajSeatInv22:n=>'Топ-'+n+' — приглашение на FNCS Invitational в Роли', ccYr23Day:(n,w,d)=>'Мейджор '+n+' · неделя '+w+' · день '+d, ccYr23WeekFinal:(n,w)=>'Мейджор '+n+' · финал недели '+w, ccYr23Surge:n=>'Мейджор '+n+' · Surge Week', ccYr23Lcm:d=>'Last Chance Major · '+(d===3 ? 'финал' : 'день '+d), ccYr23SurgeWon:'Топ-10 Surge Week — билет в финал Мейджора', ccYr23SeriesTicket:k=>'Топ-'+k+' серии — финал Мейджора', ccYr23NoTicket:k=>'Вне топ-'+k+' серии — остаётся Surge Week', ccYr23GcDay:d=>['верхняя сетка','нижняя сетка','финал'][d-1]||'', ccYr23GcUp:'Топ-25 — сразу в финал', ccYr23GcDown:'Нижняя сетка — второй шанс', ccYr23GcOut:'Нижняя сетка: вылет', ccMajSeatGc23:n=>'Топ-'+n+' едут на Global Championship в Копенгаген', ccYr23EliteOnly:'Мейджор 1 — только для дивизиона 1 (Elite)', ccYr23LcmSeat:n=>'Топ-'+n+' — нижняя сетка Копенгагена', ccYr24Qual:(n,q,r)=>'Мейджор '+n+' · квалификатор '+q+' · раунд '+r, ccYr24Semi:(n,r)=>'Мейджор '+n+' · полуфинал · день '+r, ccYr24Upper:'верхняя сетка', ccYr24Lower:'нижняя сетка', ccYr24Series:(p,k)=>'Очки серии: '+p+' · место '+k, ccYr24ToUpper:'Верхняя сетка полуфинала — по очкам серии', ccYr24ToLower:'Нижняя сетка полуфинала — по очкам серии', ccYr24NoSemi:'Мест в полуфинале нет — очков серии не хватило', ccYr24VrTicket:'Победа в матче — билет в финал Мейджора', ccYr24Down:'Билета нет — падение в нижнюю сетку', ccYr24Up:'подъём в верхнюю сетку', ccYr24World:'Другая сетка играет в тот же вечер', ccYr25Group:n=>'группа '+n, ccYr25Lobby:'лобби последнего шанса', ccYr25Showdown:(n,r)=>'FNCS Showdown '+n+' · раунд '+r, ccYr25SoloCash:(n,r)=>'Solo Cash Cup '+n+' · раунд '+r,
 ccYearNote2026:'Сезон FNCS 2026: дивизионные кубки, два Мейджора, Reload, Глобалы в Антверпене. Второй год — трио.',
 ccYearNote2020:'Сезон 2020: FNCS онлайн, формат меняется по сезонам — C2S2 дуо, C2S3 соло, C2S4 трио. Недели и квалификаторы, хиты, финалы. Состав — трио, каждый вечер — в своём формате. Карточки — 2020 года.', ccYearNote2019:'Сезон 2019: World Cup и первые FNCS. Недели Online Open (соло и дуо) и финалы в Нью-Йорке, осенью FNCS Season X (трио) и Chapter 2 Season 1 (сквады). Состав — сквад, каждый вечер — в своём формате. Карточки — 2019 года.', ccYearNote2021:'Сезон FNCS 2021: трио весь год, Chapter 2, онлайн. Четыре сезона FNCS: квалификаторы, полуфинал хитами, Reboot Round и Гранд-финал; в ноябре — FNCS Grand Royale. Карточки и рейтинги — FNCS 2021.', ccYearNote2022:'Сезон FNCS 2022: дуо весь год, Chapter 3. Три сезона FNCS: открытые квалификаторы, полуфинал в три сессии и Гранд-финал; осенью — дивизионные кубки, в ноябре — Invitational в Роли. Карточки и рейтинги — FNCS 2022.', ccYearNote2023:'Сезон FNCS 2023: дуо весь год, Chapter 4. Дивизионы Elite / Contender / Challenger до Мейджора 1, три Мейджора с неделями и Surge Week, Last Chance Major и Копенгаген. Карточки и рейтинги — FNCS 2023.', ccYearNote2024:'Сезон FNCS 2024: дуо весь год, три Мейджора с открытыми квалификаторами, серией и полуфиналами в две сетки, Глобалы в Форт-Уэрте. Дивизионных кубков ещё нет — деньги в Duos Cash Cup, Solo Victory Cup и оценке. Соперники — карточки 2024-го. После Форт-Уэрта карьера идёт в 2025-й (трио) теми же людьми.',
 ccYearNote2025:'Сезон FNCS 2025: трио весь год, три Мейджора с групповым этапом, Глобалы в Лионе. Соперники — карточки 2025-го. После Лиона карьера идёт в 2026-й.',
@@ -11949,7 +11955,7 @@ ccMovePickHint:'Pick a country on the map — the number on it is the ping',
 ccMoveGain:'Rating from ping',
 ccMoveAlready:'You already live here', ccMoveGo:r=>'Move to '+r,
 ccOrgCutRow:'Club takes of winnings', ccOrgCutPaid:'Paid to the club',
-ccYear:'Year', ccYear2026:'duos → trios', ccYear2025:'trios', ccYear2024:'duos', ccYear2023:'duos', ccYear2022:'duos', ccYear2021:'trios', ccYear2020:'duos → solo → trios', ccYear2019:'solo & duos → trios → squads', ccYrXWeek:(w,r,q)=>(w===0 ? 'warm-up' : (q ? 'Qualifier ' : 'Week ')+w)+' · round '+r, ccYrXHeats:d=>'Heats · day '+d, ccYrXHeatN:(l,h)=>l+' · Heat '+h, ccYrXFinal:wc=>wc ? 'Finals · New York' : 'Finals', ccYrXWcIn:k=>'Top '+k+' of the region — to the World Cup Finals in New York', ccYr21Heat:(n,h)=>'Major '+n+' · Semi-Finals · Heat '+h, ccYr21Reboot:n=>'Major '+n+' · Reboot Round', ccYr21ToReboot:'Not through — the Reboot Round is left', ccYr21Gr:'FNCS Grand Royale', ccMajSeatGr21:'A season Grand Final — an invitation to the FNCS Grand Royale', ccYr22Direct:k=>'Top '+k+' of the qualifier — straight to the Grand Finals', ccYr22SemiUp:'Through to the Grand Finals', ccYr22SemiNext:'Not through — the next Semi-Finals session', ccYr22Inv:'FNCS Invitational · Raleigh', ccMajSeatInv22:n=>'Top '+n+' — an invitation to the FNCS Invitational in Raleigh', ccYr23Day:(n,w,d)=>'Major '+n+' · Week '+w+' · Day '+d, ccYr23WeekFinal:(n,w)=>'Major '+n+' · Week '+w+' Finals', ccYr23Surge:n=>'Major '+n+' · Surge Week', ccYr23Lcm:d=>'Last Chance Major · '+(d===3 ? 'Finals' : 'Day '+d), ccYr23SurgeWon:'Top 10 of the Surge Week — a ticket to the Major final', ccYr23SeriesTicket:k=>'Top '+k+' of the series — Major final', ccYr23NoTicket:k=>'Outside the series top '+k+' — the Surge Week is left', ccYr23GcDay:d=>['Upper Bracket','Lower Bracket','Grand Finals'][d-1]||'', ccYr23GcUp:'Top 25 — straight to the Grand Finals', ccYr23GcDown:'Lower Bracket — a second chance', ccYr23GcOut:'Lower Bracket: eliminated', ccMajSeatGc23:n=>'Top '+n+' fly to the Global Championship in Copenhagen', ccYr23EliteOnly:'Major 1 — Division 1 (Elite) only', ccYr23LcmSeat:n=>'Top '+n+' — Copenhagen Lower Bracket', ccYr24Qual:(n,q,r)=>'Major '+n+' · Open Qualifier '+q+' · round '+r, ccYr24Semi:(n,r)=>'Major '+n+' · Semi-Finals · day '+r, ccYr24Upper:'upper bracket', ccYr24Lower:'lower bracket', ccYr24Series:(p,k)=>'Series points: '+p+' · rank '+k, ccYr24ToUpper:'Upper bracket of the Semi-Finals — on series points', ccYr24ToLower:'Lower bracket of the Semi-Finals — on series points', ccYr24NoSemi:'No Semi-Finals seat — not enough series points', ccYr24VrTicket:'A Victory Royale — a ticket to the Major Finals', ccYr24Down:'No ticket — relegated to the lower bracket', ccYr24Up:'promoted to the upper bracket', ccYr24World:'The other bracket plays the same evening', ccYr25Group:n=>'group '+n, ccYr25Lobby:'last chance lobby', ccYr25Showdown:(n,r)=>'FNCS Showdown '+n+' · round '+r, ccYr25SoloCash:(n,r)=>'Solo Cash Cup '+n+' · round '+r,
+ccStartSeason:'Starting season', ccStartSeasonNote:'The career starts in the first week of this season. Teams and ratings on the scene are what they were back then, and they change from season to season after that.', ccYear:'Year', ccYear2026:'duos → trios', ccYear2025:'trios', ccYear2024:'duos', ccYear2023:'duos', ccYear2022:'duos', ccYear2021:'trios', ccYear2020:'duos → solo → trios', ccYear2019:'solo & duos → trios → squads', ccYrXWeek:(w,r,q)=>(w===0 ? 'warm-up' : (q ? 'Qualifier ' : 'Week ')+w)+' · round '+r, ccYrXHeats:d=>'Heats · day '+d, ccYrXHeatN:(l,h)=>l+' · Heat '+h, ccYrXFinal:wc=>wc ? 'Finals · New York' : 'Finals', ccYrXWcIn:k=>'Top '+k+' of the region — to the World Cup Finals in New York', ccYr21Heat:(n,h)=>'Major '+n+' · Semi-Finals · Heat '+h, ccYr21Reboot:n=>'Major '+n+' · Reboot Round', ccYr21ToReboot:'Not through — the Reboot Round is left', ccYr21Gr:'FNCS Grand Royale', ccMajSeatGr21:'A season Grand Final — an invitation to the FNCS Grand Royale', ccYr22Direct:k=>'Top '+k+' of the qualifier — straight to the Grand Finals', ccYr22SemiUp:'Through to the Grand Finals', ccYr22SemiNext:'Not through — the next Semi-Finals session', ccYr22Inv:'FNCS Invitational · Raleigh', ccMajSeatInv22:n=>'Top '+n+' — an invitation to the FNCS Invitational in Raleigh', ccYr23Day:(n,w,d)=>'Major '+n+' · Week '+w+' · Day '+d, ccYr23WeekFinal:(n,w)=>'Major '+n+' · Week '+w+' Finals', ccYr23Surge:n=>'Major '+n+' · Surge Week', ccYr23Lcm:d=>'Last Chance Major · '+(d===3 ? 'Finals' : 'Day '+d), ccYr23SurgeWon:'Top 10 of the Surge Week — a ticket to the Major final', ccYr23SeriesTicket:k=>'Top '+k+' of the series — Major final', ccYr23NoTicket:k=>'Outside the series top '+k+' — the Surge Week is left', ccYr23GcDay:d=>['Upper Bracket','Lower Bracket','Grand Finals'][d-1]||'', ccYr23GcUp:'Top 25 — straight to the Grand Finals', ccYr23GcDown:'Lower Bracket — a second chance', ccYr23GcOut:'Lower Bracket: eliminated', ccMajSeatGc23:n=>'Top '+n+' fly to the Global Championship in Copenhagen', ccYr23EliteOnly:'Major 1 — Division 1 (Elite) only', ccYr23LcmSeat:n=>'Top '+n+' — Copenhagen Lower Bracket', ccYr24Qual:(n,q,r)=>'Major '+n+' · Open Qualifier '+q+' · round '+r, ccYr24Semi:(n,r)=>'Major '+n+' · Semi-Finals · day '+r, ccYr24Upper:'upper bracket', ccYr24Lower:'lower bracket', ccYr24Series:(p,k)=>'Series points: '+p+' · rank '+k, ccYr24ToUpper:'Upper bracket of the Semi-Finals — on series points', ccYr24ToLower:'Lower bracket of the Semi-Finals — on series points', ccYr24NoSemi:'No Semi-Finals seat — not enough series points', ccYr24VrTicket:'A Victory Royale — a ticket to the Major Finals', ccYr24Down:'No ticket — relegated to the lower bracket', ccYr24Up:'promoted to the upper bracket', ccYr24World:'The other bracket plays the same evening', ccYr25Group:n=>'group '+n, ccYr25Lobby:'last chance lobby', ccYr25Showdown:(n,r)=>'FNCS Showdown '+n+' · round '+r, ccYr25SoloCash:(n,r)=>'Solo Cash Cup '+n+' · round '+r,
 ccYearNote2026:'FNCS 2026: divisional cups, two Majors, Reload, the Global Championship in Antwerp. Year two is trios.',
 ccYearNote2020:'2020: online FNCS, the format changes by season — C2S2 duos, C2S3 solos, C2S4 trios. Weeks and qualifiers, heats, finals. The roster is a trio; every night is played in its own format. Cards are from 2020.', ccYearNote2019:'2019: the World Cup and the first FNCS. Online Open weeks (solo and duos) and the finals in New York, then FNCS Season X (trios) and Chapter 2 Season 1 (squads). The roster is a squad; every night is played in its own format. Cards are from 2019.', ccYearNote2021:'FNCS 2021: trios all year, Chapter 2, online. Four FNCS seasons: qualifiers, Semi-Final heats, the Reboot Round and the Grand Finals; the FNCS Grand Royale in November. Cards and ratings are FNCS 2021.', ccYearNote2022:'FNCS 2022: duos all year, Chapter 3. Three FNCS seasons: open qualifiers, three Semi-Final sessions and the Grand Finals; divisional cups in the autumn and the Invitational in Raleigh in November. Cards and ratings are FNCS 2022.', ccYearNote2023:'FNCS 2023: duos all year, Chapter 4. Elite / Contender / Challenger divisions up to Major 1, three Majors with weekly qualifiers and a Surge Week, the Last Chance Major and Copenhagen. Cards and ratings are FNCS 2023.', ccYearNote2024:'FNCS 2024: duos all year, three Majors with Open Qualifiers, a series leaderboard and two-bracket Semi-Finals, the Global Championship in Fort Worth. No divisional cups yet — the money is in the Duos Cash Cup, the Solo Victory Cup and the Performance Evaluation. The field is the 2024 cards. After Fort Worth the career moves into 2025 (trios) with the same people.',
 ccYearNote2025:'FNCS 2025: trios all year, three Majors with a Group Stage, the Global Championship in Lyon. The field is the 2025 cards. After Lyon the career moves into 2026.',
@@ -15225,7 +15231,7 @@ ccDivision:'Division',
 ccDivNote:'La division fixe ta note de départ. Cinq, c’est toute la montée depuis rien ; un, c’est que tu es déjà dans le top 50 de ta région.',
 ccStartOvr:'Note de départ',
 ccStartOvrNote:'Il n’y avait pas de divisions en 2024 — c’est simplement ton point de départ. Cinq, c’est toute la montée depuis rien ; un, c’est que tu es déjà dans le top 50 de ta région.',
-ccYear:'Année', ccYear2026:'duos → trios', ccYear2025:'trios', ccYear2024:'duos', ccYear2023:'duos', ccYear2022:'duos', ccYear2021:'trios', ccYear2020:'duos → solo → trios', ccYear2019:'solo et duos → trios → escouades', ccYrXWeek:(w,r,q)=>(w===0 ? 'échauffement' : (q ? 'qualificatif ' : 'semaine ')+w)+' · manche '+r, ccYrXHeats:d=>'heats · jour '+d, ccYrXHeatN:(l,h)=>l+' · heat '+h, ccYrXFinal:wc=>wc ? 'finale · New York' : 'finale', ccYrXWcIn:k=>'Top '+k+' de la région — en finale de la World Cup à New York', ccYr21Heat:(n,h)=>'Major '+n+' · demi-finales · heat '+h, ccYr21Reboot:n=>'Major '+n+' · Reboot Round', ccYr21ToReboot:'Pas qualifiés — reste le Reboot Round', ccYr21Gr:'FNCS Grand Royale', ccMajSeatGr21:'Une Grande Finale de saison — invitation au FNCS Grand Royale', ccYr22Direct:k=>'Top '+k+' du qualificatif — directement en Grande Finale', ccYr22SemiUp:'Qualifiés pour la Grande Finale', ccYr22SemiNext:'Pas qualifiés — session suivante des demi-finales', ccYr22Inv:'FNCS Invitational · Raleigh', ccMajSeatInv22:n=>'Top '+n+' — invitation au FNCS Invitational à Raleigh', ccYr23Day:(n,w,d)=>'Major '+n+' · semaine '+w+' · jour '+d, ccYr23WeekFinal:(n,w)=>'Major '+n+' · finale de la semaine '+w, ccYr23Surge:n=>'Major '+n+' · Surge Week', ccYr23Lcm:d=>'Last Chance Major · '+(d===3 ? 'finale' : 'jour '+d), ccYr23SurgeWon:'Top 10 de la Surge Week — billet pour la finale du Major', ccYr23SeriesTicket:k=>'Top '+k+' de la série — finale du Major', ccYr23NoTicket:k=>'Hors du top '+k+' de la série — reste la Surge Week', ccYr23GcDay:d=>['tableau supérieur','tableau inférieur','finale'][d-1]||'', ccYr23GcUp:'Top 25 — directement en finale', ccYr23GcDown:'Tableau inférieur — seconde chance', ccYr23GcOut:'Tableau inférieur : éliminé', ccMajSeatGc23:n=>'Le top '+n+' part au Global Championship à Copenhague', ccYr23EliteOnly:'Major 1 — division 1 (Elite) uniquement', ccYr23LcmSeat:n=>'Top '+n+' — tableau inférieur de Copenhague', ccYr24Qual:(n,q,r)=>'Major '+n+' · qualifier ouvert '+q+' · manche '+r, ccYr24Semi:(n,r)=>'Major '+n+' · demi-finales · jour '+r, ccYr24Upper:'upper bracket', ccYr24Lower:'lower bracket', ccYr24Series:(p,k)=>'Points de série : '+p+' · rang '+k, ccYr24ToUpper:'Upper bracket des demi-finales — aux points de série', ccYr24ToLower:'Lower bracket des demi-finales — aux points de série', ccYr24NoSemi:'Pas de place en demi-finales — pas assez de points de série', ccYr24VrTicket:'Une Victoire royale — un billet pour la finale du Major', ccYr24Down:'Pas de billet — relégation dans le lower bracket', ccYr24Up:'promotion dans l\'upper bracket', ccYr24World:'L’autre bracket joue le même soir', ccYr25Group:n=>'groupe '+n, ccYr25Lobby:'lobby de la dernière chance', ccYr25Showdown:(n,r)=>'FNCS Showdown '+n+' · manche '+r, ccYr25SoloCash:(n,r)=>'Solo Cash Cup '+n+' · manche '+r,
+ccStartSeason:'Saison de départ', ccStartSeasonNote:'La carrière commence la première semaine de cette saison. Les équipes et les notes de la scène sont celles de l’époque, puis changent de saison en saison.', ccYear:'Année', ccYear2026:'duos → trios', ccYear2025:'trios', ccYear2024:'duos', ccYear2023:'duos', ccYear2022:'duos', ccYear2021:'trios', ccYear2020:'duos → solo → trios', ccYear2019:'solo et duos → trios → escouades', ccYrXWeek:(w,r,q)=>(w===0 ? 'échauffement' : (q ? 'qualificatif ' : 'semaine ')+w)+' · manche '+r, ccYrXHeats:d=>'heats · jour '+d, ccYrXHeatN:(l,h)=>l+' · heat '+h, ccYrXFinal:wc=>wc ? 'finale · New York' : 'finale', ccYrXWcIn:k=>'Top '+k+' de la région — en finale de la World Cup à New York', ccYr21Heat:(n,h)=>'Major '+n+' · demi-finales · heat '+h, ccYr21Reboot:n=>'Major '+n+' · Reboot Round', ccYr21ToReboot:'Pas qualifiés — reste le Reboot Round', ccYr21Gr:'FNCS Grand Royale', ccMajSeatGr21:'Une Grande Finale de saison — invitation au FNCS Grand Royale', ccYr22Direct:k=>'Top '+k+' du qualificatif — directement en Grande Finale', ccYr22SemiUp:'Qualifiés pour la Grande Finale', ccYr22SemiNext:'Pas qualifiés — session suivante des demi-finales', ccYr22Inv:'FNCS Invitational · Raleigh', ccMajSeatInv22:n=>'Top '+n+' — invitation au FNCS Invitational à Raleigh', ccYr23Day:(n,w,d)=>'Major '+n+' · semaine '+w+' · jour '+d, ccYr23WeekFinal:(n,w)=>'Major '+n+' · finale de la semaine '+w, ccYr23Surge:n=>'Major '+n+' · Surge Week', ccYr23Lcm:d=>'Last Chance Major · '+(d===3 ? 'finale' : 'jour '+d), ccYr23SurgeWon:'Top 10 de la Surge Week — billet pour la finale du Major', ccYr23SeriesTicket:k=>'Top '+k+' de la série — finale du Major', ccYr23NoTicket:k=>'Hors du top '+k+' de la série — reste la Surge Week', ccYr23GcDay:d=>['tableau supérieur','tableau inférieur','finale'][d-1]||'', ccYr23GcUp:'Top 25 — directement en finale', ccYr23GcDown:'Tableau inférieur — seconde chance', ccYr23GcOut:'Tableau inférieur : éliminé', ccMajSeatGc23:n=>'Le top '+n+' part au Global Championship à Copenhague', ccYr23EliteOnly:'Major 1 — division 1 (Elite) uniquement', ccYr23LcmSeat:n=>'Top '+n+' — tableau inférieur de Copenhague', ccYr24Qual:(n,q,r)=>'Major '+n+' · qualifier ouvert '+q+' · manche '+r, ccYr24Semi:(n,r)=>'Major '+n+' · demi-finales · jour '+r, ccYr24Upper:'upper bracket', ccYr24Lower:'lower bracket', ccYr24Series:(p,k)=>'Points de série : '+p+' · rang '+k, ccYr24ToUpper:'Upper bracket des demi-finales — aux points de série', ccYr24ToLower:'Lower bracket des demi-finales — aux points de série', ccYr24NoSemi:'Pas de place en demi-finales — pas assez de points de série', ccYr24VrTicket:'Une Victoire royale — un billet pour la finale du Major', ccYr24Down:'Pas de billet — relégation dans le lower bracket', ccYr24Up:'promotion dans l\'upper bracket', ccYr24World:'L’autre bracket joue le même soir', ccYr25Group:n=>'groupe '+n, ccYr25Lobby:'lobby de la dernière chance', ccYr25Showdown:(n,r)=>'FNCS Showdown '+n+' · manche '+r, ccYr25SoloCash:(n,r)=>'Solo Cash Cup '+n+' · manche '+r,
 ccYearNote2026:'FNCS 2026 : coupes divisionnaires, deux Majors, Reload, le Global Championship à Anvers. Deuxième année en trios.',
 ccYearNote2020:'2020 : FNCS en ligne, le format change selon la saison — C2S2 en duos, C2S3 en solo, C2S4 en trios. Semaines et qualifs, heats, finales. L’effectif est un trio ; chaque soirée se joue dans son format. Cartes 2020.', ccYearNote2019:'2019 : la World Cup et les premières FNCS. Semaines Online Open (solo et duos) et finales à New York, puis FNCS Season X (trios) et Chapter 2 Season 1 (escouades). L’effectif est une escouade ; chaque soirée se joue dans son format. Cartes 2019.', ccYearNote2021:'FNCS 2021 : trios toute l’année, Chapter 2, en ligne. Quatre saisons FNCS : qualifs, demi-finales en heats, Reboot Round et Grande Finale ; le FNCS Grand Royale en novembre. Cartes et notes FNCS 2021.', ccYearNote2022:'FNCS 2022 : duos toute l’année, Chapter 3. Trois saisons FNCS : qualifs ouvertes, demi-finales en trois sessions et Grande Finale ; coupes divisionnaires à l’automne, l’Invitational à Raleigh en novembre. Cartes et notes FNCS 2022.', ccYearNote2023:'FNCS 2023 : duos toute l’année, Chapter 4. Divisions Elite / Contender / Challenger jusqu’au Major 1, trois Majors avec qualifs hebdomadaires et Surge Week, le Last Chance Major et Copenhague. Cartes et notes FNCS 2023.', ccYearNote2024:'FNCS 2024 : duos toute l’année, trois Majors avec qualifiers ouverts, classement de série et demi-finales à deux brackets, le Global Championship à Fort Worth. Pas encore de coupes divisionnaires : l’argent est dans la Duos Cash Cup, la Solo Victory Cup et l’évaluation. Les adversaires sont les cartes 2024. Après Fort Worth, la carrière passe en 2025 (trios) avec les mêmes joueurs.',
 ccYearNote2025:'FNCS 2025 : trios toute l’année, trois Majors avec phase de groupes, le Global Championship à Lyon. Les adversaires sont les cartes 2025. Après Lyon, la carrière passe en 2026.',
@@ -15572,7 +15578,7 @@ ccRole:"Ruolo",
 ccSpTitle:"Punti abilità",
 ccSpCreateHint:"Abbassa alcune statistiche e alza le altre — +1 costa tanti punti quanto pesa la statistica nel rating (il numero a destra). Una volta sola, qui.", ccSpaTitle:"Statistiche", ccSpReset:"Azzera", ccSpFreeHint:"Qualsiasi statistica da 35 a 99 — con i pulsanti o scrivendola. Il rating viene dalle statistiche: tutto 99 è 99.", ccSpAll99:"Tutto 99",
 ccDivision:"Divisione",
-ccYear:"Anno", ccYear2026:"duo → trio", ccYear2025:"trio", ccYear2024:'duo', ccYear2023:'duo', ccYear2022:'duo', ccYear2021:'trio', ccYear2020:'duo → solo → trio', ccYear2019:'solo e duo → trio → squadre', ccYrXWeek:(w,r,q)=>(w===0 ? 'riscaldamento' : (q ? 'qualificazione ' : 'settimana ')+w)+' · round '+r, ccYrXHeats:d=>'heat · giorno '+d, ccYrXHeatN:(l,h)=>l+' · heat '+h, ccYrXFinal:wc=>wc ? 'finale · New York' : 'finale', ccYrXWcIn:k=>'Top '+k+' della regione — alla finale della World Cup a New York', ccYr21Heat:(n,h)=>'Major '+n+' · semifinali · heat '+h, ccYr21Reboot:n=>'Major '+n+' · Reboot Round', ccYr21ToReboot:'Non passati — resta il Reboot Round', ccYr21Gr:'FNCS Grand Royale', ccMajSeatGr21:'Una Gran Finale di stagione — invito al FNCS Grand Royale', ccYr22Direct:k=>'Top '+k+' della qualificazione — direttamente in Gran Finale', ccYr22SemiUp:'In Gran Finale', ccYr22SemiNext:'Non passati — prossima sessione delle semifinali', ccYr22Inv:'FNCS Invitational · Raleigh', ccMajSeatInv22:n=>'Top '+n+' — invito al FNCS Invitational a Raleigh', ccYr23Day:(n,w,d)=>'Major '+n+' · settimana '+w+' · giorno '+d, ccYr23WeekFinal:(n,w)=>'Major '+n+' · finale della settimana '+w, ccYr23Surge:n=>'Major '+n+' · Surge Week', ccYr23Lcm:d=>'Last Chance Major · '+(d===3 ? 'finale' : 'giorno '+d), ccYr23SurgeWon:'Top 10 della Surge Week — biglietto per la finale del Major', ccYr23SeriesTicket:k=>'Top '+k+' della serie — finale del Major', ccYr23NoTicket:k=>'Fuori dal top '+k+' della serie — resta la Surge Week', ccYr23GcDay:d=>['upper bracket','lower bracket','finale'][d-1]||'', ccYr23GcUp:'Top 25 — direttamente in finale', ccYr23GcDown:'Lower bracket — seconda possibilità', ccYr23GcOut:'Lower bracket: eliminati', ccMajSeatGc23:n=>'Il top '+n+' va al Global Championship a Copenaghen', ccYr23EliteOnly:'Major 1 — solo divisione 1 (Elite)', ccYr23LcmSeat:n=>'Top '+n+' — lower bracket di Copenaghen', ccYr24Qual:(n,q,r)=>'Major '+n+' · Open Qualifier '+q+' · round '+r, ccYr24Semi:(n,r)=>'Major '+n+' · semifinali · giorno '+r, ccYr24Upper:'upper bracket', ccYr24Lower:'lower bracket', ccYr24Series:(p,k)=>'Punti serie: '+p+' · posto '+k, ccYr24ToUpper:'Upper bracket delle semifinali — sui punti serie', ccYr24ToLower:'Lower bracket delle semifinali — sui punti serie', ccYr24NoSemi:'Nessun posto in semifinale — punti serie insufficienti', ccYr24VrTicket:'Una Vittoria reale — un biglietto per la finale del Major', ccYr24Down:'Nessun biglietto — retrocessione nel lower bracket', ccYr24Up:'promozione nell\'upper bracket', ccYr24World:'L’altro bracket gioca la stessa sera', ccYr25Group:n=>'girone '+n, ccYr25Lobby:'lobby dell\'ultima chance', ccYr25Showdown:(n,r)=>'FNCS Showdown '+n+' · round '+r, ccYr25SoloCash:(n,r)=>'Solo Cash Cup '+n+' · round '+r,
+ccStartSeason:'Stagione di partenza', ccStartSeasonNote:'La carriera inizia nella prima settimana di questa stagione. Squadre e rating della scena sono quelli di allora e poi cambiano di stagione in stagione.', ccYear:"Anno", ccYear2026:"duo → trio", ccYear2025:"trio", ccYear2024:'duo', ccYear2023:'duo', ccYear2022:'duo', ccYear2021:'trio', ccYear2020:'duo → solo → trio', ccYear2019:'solo e duo → trio → squadre', ccYrXWeek:(w,r,q)=>(w===0 ? 'riscaldamento' : (q ? 'qualificazione ' : 'settimana ')+w)+' · round '+r, ccYrXHeats:d=>'heat · giorno '+d, ccYrXHeatN:(l,h)=>l+' · heat '+h, ccYrXFinal:wc=>wc ? 'finale · New York' : 'finale', ccYrXWcIn:k=>'Top '+k+' della regione — alla finale della World Cup a New York', ccYr21Heat:(n,h)=>'Major '+n+' · semifinali · heat '+h, ccYr21Reboot:n=>'Major '+n+' · Reboot Round', ccYr21ToReboot:'Non passati — resta il Reboot Round', ccYr21Gr:'FNCS Grand Royale', ccMajSeatGr21:'Una Gran Finale di stagione — invito al FNCS Grand Royale', ccYr22Direct:k=>'Top '+k+' della qualificazione — direttamente in Gran Finale', ccYr22SemiUp:'In Gran Finale', ccYr22SemiNext:'Non passati — prossima sessione delle semifinali', ccYr22Inv:'FNCS Invitational · Raleigh', ccMajSeatInv22:n=>'Top '+n+' — invito al FNCS Invitational a Raleigh', ccYr23Day:(n,w,d)=>'Major '+n+' · settimana '+w+' · giorno '+d, ccYr23WeekFinal:(n,w)=>'Major '+n+' · finale della settimana '+w, ccYr23Surge:n=>'Major '+n+' · Surge Week', ccYr23Lcm:d=>'Last Chance Major · '+(d===3 ? 'finale' : 'giorno '+d), ccYr23SurgeWon:'Top 10 della Surge Week — biglietto per la finale del Major', ccYr23SeriesTicket:k=>'Top '+k+' della serie — finale del Major', ccYr23NoTicket:k=>'Fuori dal top '+k+' della serie — resta la Surge Week', ccYr23GcDay:d=>['upper bracket','lower bracket','finale'][d-1]||'', ccYr23GcUp:'Top 25 — direttamente in finale', ccYr23GcDown:'Lower bracket — seconda possibilità', ccYr23GcOut:'Lower bracket: eliminati', ccMajSeatGc23:n=>'Il top '+n+' va al Global Championship a Copenaghen', ccYr23EliteOnly:'Major 1 — solo divisione 1 (Elite)', ccYr23LcmSeat:n=>'Top '+n+' — lower bracket di Copenaghen', ccYr24Qual:(n,q,r)=>'Major '+n+' · Open Qualifier '+q+' · round '+r, ccYr24Semi:(n,r)=>'Major '+n+' · semifinali · giorno '+r, ccYr24Upper:'upper bracket', ccYr24Lower:'lower bracket', ccYr24Series:(p,k)=>'Punti serie: '+p+' · posto '+k, ccYr24ToUpper:'Upper bracket delle semifinali — sui punti serie', ccYr24ToLower:'Lower bracket delle semifinali — sui punti serie', ccYr24NoSemi:'Nessun posto in semifinale — punti serie insufficienti', ccYr24VrTicket:'Una Vittoria reale — un biglietto per la finale del Major', ccYr24Down:'Nessun biglietto — retrocessione nel lower bracket', ccYr24Up:'promozione nell\'upper bracket', ccYr24World:'L’altro bracket gioca la stessa sera', ccYr25Group:n=>'girone '+n, ccYr25Lobby:'lobby dell\'ultima chance', ccYr25Showdown:(n,r)=>'FNCS Showdown '+n+' · round '+r, ccYr25SoloCash:(n,r)=>'Solo Cash Cup '+n+' · round '+r,
 ccYearNote2026:"FNCS 2026: coppe divisionali, due Major, Reload, Global Championship ad Anversa. Il secondo anno è in trio.",
 ccYearNote2020:"2020: FNCS online, il formato cambia con la stagione — C2S2 duo, C2S3 solo, C2S4 trio. Settimane e qualificazioni, heat, finali. La rosa è un trio; ogni serata si gioca nel suo formato. Carte del 2020.", ccYearNote2019:"2019: la World Cup e le prime FNCS. Settimane Online Open (solo e duo) e finali a New York, poi FNCS Season X (trio) e Chapter 2 Season 1 (squadre). La rosa è una squadra; ogni serata si gioca nel suo formato. Carte del 2019.", ccYearNote2021:"FNCS 2021: trio tutto l'anno, Chapter 2, online. Quattro stagioni FNCS: qualificazioni, semifinali a heat, Reboot Round e Gran Finale; l'FNCS Grand Royale a novembre. Carte e rating FNCS 2021.", ccYearNote2022:"FNCS 2022: duo tutto l'anno, Chapter 3. Tre stagioni FNCS: qualificazioni aperte, semifinali in tre sessioni e Gran Finale; coppe divisionali in autunno, l'Invitational a Raleigh a novembre. Carte e rating FNCS 2022.", ccYearNote2023:"FNCS 2023: duo tutto l'anno, Chapter 4. Divisioni Elite / Contender / Challenger fino al Major 1, tre Major con qualificazioni settimanali e Surge Week, il Last Chance Major e Copenaghen. Carte e rating FNCS 2023.", ccYearNote2024:"FNCS 2024: duo tutto l'anno, tre Major con Open Qualifier, classifica di serie e semifinali a due bracket, Global Championship a Fort Worth. Niente coppe divisionali ancora: i soldi sono nella Duos Cash Cup, nella Solo Victory Cup e nella valutazione. Gli avversari sono le carte 2024. Dopo Fort Worth la carriera passa al 2025 (trio) con le stesse persone.",
 ccYearNote2025:"FNCS 2025: trio tutto l'anno, tre Major con fase a gironi, Global Championship a Lione. Gli avversari sono le carte 2025. Dopo Lione la carriera passa al 2026.",
@@ -18120,7 +18126,7 @@ ccRole:"Função",
 ccSpTitle:"Pontos de habilidade",
 ccSpCreateHint:"Baixe alguns atributos e suba outros — +1 custa tantos pontos quanto o atributo pesa no rating (o número à direita). Uma vez só, aqui.", ccSpaTitle:"Atributos", ccSpReset:"Zerar", ccSpFreeHint:"Qualquer atributo de 35 a 99 — pelos botões ou digitando. O rating vem dos atributos: tudo 99 é 99.", ccSpAll99:"Tudo 99",
 ccDivision:"Divisão",
-ccYear:"Ano", ccYear2026:"duplas → trios", ccYear2025:"trios", ccYear2024:'duplas', ccYear2023:'duplas', ccYear2022:'duplas', ccYear2021:'trios', ccYear2020:'duplas → solo → trios', ccYear2019:'solo e duplas → trios → squads', ccYrXWeek:(w,r,q)=>(w===0 ? 'aquecimento' : (q ? 'classificatória ' : 'semana ')+w)+' · rodada '+r, ccYrXHeats:d=>'heats · dia '+d, ccYrXHeatN:(l,h)=>l+' · heat '+h, ccYrXFinal:wc=>wc ? 'final · Nova York' : 'final', ccYrXWcIn:k=>'Top '+k+' da região — para a final da World Cup em Nova York', ccYr21Heat:(n,h)=>'Major '+n+' · semifinais · heat '+h, ccYr21Reboot:n=>'Major '+n+' · Reboot Round', ccYr21ToReboot:'Não passaram — resta o Reboot Round', ccYr21Gr:'FNCS Grand Royale', ccMajSeatGr21:'Uma Grande Final de temporada — convite para o FNCS Grand Royale', ccYr22Direct:k=>'Top '+k+' da classificatória — direto para a Grande Final', ccYr22SemiUp:'Vaga na Grande Final', ccYr22SemiNext:'Não passaram — próxima sessão das semifinais', ccYr22Inv:'FNCS Invitational · Raleigh', ccMajSeatInv22:n=>'Top '+n+' — convite para o FNCS Invitational em Raleigh', ccYr23Day:(n,w,d)=>'Major '+n+' · semana '+w+' · dia '+d, ccYr23WeekFinal:(n,w)=>'Major '+n+' · final da semana '+w, ccYr23Surge:n=>'Major '+n+' · Surge Week', ccYr23Lcm:d=>'Last Chance Major · '+(d===3 ? 'final' : 'dia '+d), ccYr23SurgeWon:'Top 10 da Surge Week — vaga na final do Major', ccYr23SeriesTicket:k=>'Top '+k+' da série — final do Major', ccYr23NoTicket:k=>'Fora do top '+k+' da série — resta a Surge Week', ccYr23GcDay:d=>['chave superior','chave inferior','final'][d-1]||'', ccYr23GcUp:'Top 25 — direto para a final', ccYr23GcDown:'Chave inferior — segunda chance', ccYr23GcOut:'Chave inferior: eliminados', ccMajSeatGc23:n=>'O top '+n+' vai ao Global Championship em Copenhague', ccYr23EliteOnly:'Major 1 — só divisão 1 (Elite)', ccYr23LcmSeat:n=>'Top '+n+' — chave inferior de Copenhague', ccYr24Qual:(n,q,r)=>'Major '+n+' · classificatória aberta '+q+' · rodada '+r, ccYr24Semi:(n,r)=>'Major '+n+' · semifinais · dia '+r, ccYr24Upper:'upper bracket', ccYr24Lower:'lower bracket', ccYr24Series:(p,k)=>'Pontos de série: '+p+' · posição '+k, ccYr24ToUpper:'Upper bracket das semifinais — pelos pontos de série', ccYr24ToLower:'Lower bracket das semifinais — pelos pontos de série', ccYr24NoSemi:'Sem vaga nas semifinais — faltaram pontos de série', ccYr24VrTicket:'Uma Vitória Royale — um bilhete para a final do Major', ccYr24Down:'Sem bilhete — rebaixado para o lower bracket', ccYr24Up:'promovido ao upper bracket', ccYr24World:'O outro bracket joga na mesma noite', ccYr25Group:n=>'grupo '+n, ccYr25Lobby:'lobby da última chance', ccYr25Showdown:(n,r)=>'FNCS Showdown '+n+' · rodada '+r, ccYr25SoloCash:(n,r)=>'Solo Cash Cup '+n+' · rodada '+r,
+ccStartSeason:'Temporada inicial', ccStartSeasonNote:'A carreira começa na primeira semana desta temporada. Times e ratings da cena são os daquela época e mudam de temporada em temporada.', ccYear:"Ano", ccYear2026:"duplas → trios", ccYear2025:"trios", ccYear2024:'duplas', ccYear2023:'duplas', ccYear2022:'duplas', ccYear2021:'trios', ccYear2020:'duplas → solo → trios', ccYear2019:'solo e duplas → trios → squads', ccYrXWeek:(w,r,q)=>(w===0 ? 'aquecimento' : (q ? 'classificatória ' : 'semana ')+w)+' · rodada '+r, ccYrXHeats:d=>'heats · dia '+d, ccYrXHeatN:(l,h)=>l+' · heat '+h, ccYrXFinal:wc=>wc ? 'final · Nova York' : 'final', ccYrXWcIn:k=>'Top '+k+' da região — para a final da World Cup em Nova York', ccYr21Heat:(n,h)=>'Major '+n+' · semifinais · heat '+h, ccYr21Reboot:n=>'Major '+n+' · Reboot Round', ccYr21ToReboot:'Não passaram — resta o Reboot Round', ccYr21Gr:'FNCS Grand Royale', ccMajSeatGr21:'Uma Grande Final de temporada — convite para o FNCS Grand Royale', ccYr22Direct:k=>'Top '+k+' da classificatória — direto para a Grande Final', ccYr22SemiUp:'Vaga na Grande Final', ccYr22SemiNext:'Não passaram — próxima sessão das semifinais', ccYr22Inv:'FNCS Invitational · Raleigh', ccMajSeatInv22:n=>'Top '+n+' — convite para o FNCS Invitational em Raleigh', ccYr23Day:(n,w,d)=>'Major '+n+' · semana '+w+' · dia '+d, ccYr23WeekFinal:(n,w)=>'Major '+n+' · final da semana '+w, ccYr23Surge:n=>'Major '+n+' · Surge Week', ccYr23Lcm:d=>'Last Chance Major · '+(d===3 ? 'final' : 'dia '+d), ccYr23SurgeWon:'Top 10 da Surge Week — vaga na final do Major', ccYr23SeriesTicket:k=>'Top '+k+' da série — final do Major', ccYr23NoTicket:k=>'Fora do top '+k+' da série — resta a Surge Week', ccYr23GcDay:d=>['chave superior','chave inferior','final'][d-1]||'', ccYr23GcUp:'Top 25 — direto para a final', ccYr23GcDown:'Chave inferior — segunda chance', ccYr23GcOut:'Chave inferior: eliminados', ccMajSeatGc23:n=>'O top '+n+' vai ao Global Championship em Copenhague', ccYr23EliteOnly:'Major 1 — só divisão 1 (Elite)', ccYr23LcmSeat:n=>'Top '+n+' — chave inferior de Copenhague', ccYr24Qual:(n,q,r)=>'Major '+n+' · classificatória aberta '+q+' · rodada '+r, ccYr24Semi:(n,r)=>'Major '+n+' · semifinais · dia '+r, ccYr24Upper:'upper bracket', ccYr24Lower:'lower bracket', ccYr24Series:(p,k)=>'Pontos de série: '+p+' · posição '+k, ccYr24ToUpper:'Upper bracket das semifinais — pelos pontos de série', ccYr24ToLower:'Lower bracket das semifinais — pelos pontos de série', ccYr24NoSemi:'Sem vaga nas semifinais — faltaram pontos de série', ccYr24VrTicket:'Uma Vitória Royale — um bilhete para a final do Major', ccYr24Down:'Sem bilhete — rebaixado para o lower bracket', ccYr24Up:'promovido ao upper bracket', ccYr24World:'O outro bracket joga na mesma noite', ccYr25Group:n=>'grupo '+n, ccYr25Lobby:'lobby da última chance', ccYr25Showdown:(n,r)=>'FNCS Showdown '+n+' · rodada '+r, ccYr25SoloCash:(n,r)=>'Solo Cash Cup '+n+' · rodada '+r,
 ccYearNote2026:"FNCS 2026: copas divisionais, dois Majors, Reload, Global Championship em Antuérpia. O segundo ano é em trios.",
 ccYearNote2020:"2020: FNCS online, o formato muda por temporada — C2S2 duplas, C2S3 solo, C2S4 trios. Semanas e classificatórias, heats, finais. O elenco é um trio; cada noite é jogada no seu formato. Cartas de 2020.", ccYearNote2019:"2019: a World Cup e as primeiras FNCS. Semanas Online Open (solo e duplas) e as finais em Nova York, depois FNCS Season X (trios) e Chapter 2 Season 1 (squads). O elenco é um squad; cada noite é jogada no seu formato. Cartas de 2019.", ccYearNote2021:"FNCS 2021: trios o ano todo, Chapter 2, online. Quatro temporadas da FNCS: classificatórias, semifinais em heats, Reboot Round e Grande Final; o FNCS Grand Royale em novembro. Cartas e ratings do FNCS 2021.", ccYearNote2022:"FNCS 2022: duplas o ano todo, Chapter 3. Três temporadas da FNCS: classificatórias abertas, semifinais em três sessões e Grande Final; copas divisionais no outono e o Invitational em Raleigh em novembro. Cartas e ratings do FNCS 2022.", ccYearNote2023:"FNCS 2023: duplas o ano todo, Chapter 4. Divisões Elite / Contender / Challenger até o Major 1, três Majors com classificatórias semanais e Surge Week, o Last Chance Major e Copenhague. Cartas e ratings do FNCS 2023.", ccYearNote2024:"FNCS 2024: duplas o ano todo, três Majors com classificatórias abertas, tabela de série e semifinais em dois brackets, Global Championship em Fort Worth. Ainda sem copas divisionais: o dinheiro está na Duos Cash Cup, na Solo Victory Cup e na avaliação. Os adversários são as cartas de 2024. Depois de Fort Worth a carreira segue para 2025 (trios) com as mesmas pessoas.",
 ccYearNote2025:"FNCS 2025: trios o ano todo, três Majors com fase de grupos, Global Championship em Lyon. Os adversários são as cartas de 2025. Depois de Lyon a carreira segue para 2026.",
@@ -21917,7 +21923,7 @@ Object.assign(I18N.pt=I18N.pt||{},
 Object.assign(I18N.fr, {dyColPlayer:'Joueur et équipe', dyYou:'toi', dyPowSplit:'note moyenne des cartes + synergie'});
 Object.assign(I18N.it, {dyColPlayer:'Giocatore e squadra', dyYou:'tu', dyPowSplit:'valutazione media delle carte + sinergia'});
 Object.assign(I18N.pt, {dyColPlayer:'Jogador e time', dyYou:'você', dyPowSplit:'overall médio das cartas + sinergia'});
-let CC_I18N_V={de:'0368fc45', es:'8f589c8f'};   // ==== CC_I18N_V (tools/build-i18n.js) ====
+let CC_I18N_V={de:'ab1f5179', es:'9a9c8550'};   // ==== CC_I18N_V (tools/build-i18n.js) ====
 const CC_LANG_WAIT={};
 function ccLangLoad(lang, done){
   if(!CC_LANG_FILES[lang] || (typeof I18N!=='undefined' && I18N[lang])){ done && done(); return; }
@@ -115773,6 +115779,36 @@ function ccPickRegion(r){
   ccSync();
 }
 function ccPickRole(k){ CC.role=k; ccRenderChips(); ccSync(); }
+/* СЕЗОН СТАРТА (18.10, тестер: «может в карьере дать выбор по сезонам ещё, а не по годам»). Сезоны года —
+   те же снимки сцены, по которым карьера и так живёт (ccSnapshotNow); выбранный не первый пишется в сейв
+   как cr.startFrom, и первый день карьеры — первая игровая неделя с этой даты (careerStartDay). Рейтинги
+   сезона — ccRatingSnap. Командная карьера и гонка начинают год с начала: день у всех один. */
+const CC_SEASON_LABEL={h1:'Season 9', h3:'Season X', h4:'C2S1', i0:'C2S1', i1:'C2S2', i3:'C2S4',
+  j1:'C2S5', j2:'C2S6', j3:'C2S7', j4:'C2S8', k1:'C3S1', k2:'C3S2', k3:'C3S3',
+  e1:'Major 1', e2:'Major 2', e3:'Major 3', f1:'Major 1', f2:'Major 2', f3:'Major 3',
+  t1:'Major 1', t2:'Major 2', t3:'Major 3', m1:'Major 1', m2:'Major 2'};
+const CC_SEASON_SUB={e1:'C4S1', e2:'C4S2', e3:'C4S3', f1:'C5S1', f2:'C5S2', f3:'C5S3', t1:'C6S1', t2:'C6S2', t3:'C6S3'};
+function ccStartSeasons(){ return CC_SNAPS_BY_YEAR()[ccPickedYear()] || []; }
+function ccStartSeasonAllowed(){ return !ccMpLockedYear() && !(typeof CC_MP_NEW!=='undefined' && CC_MP_NEW); }
+function ccPickedStart(){
+  const list=ccStartSeasons();
+  if(!ccStartSeasonAllowed() || !CC.startTag) return null;
+  const i=list.findIndex(s=>s.tag===CC.startTag);
+  return i>0 ? list[i] : null;
+}
+function ccPickStartSeason(tag){ CC.startTag=tag; ccRenderSeasonChips(); ccSync(); }
+function ccRenderSeasonChips(){
+  const field=document.getElementById('ccSeasonField'), box=document.getElementById('ccSeasonChips');
+  if(!field || !box) return;
+  const list=ccStartSeasons();
+  if(list.length<2 || !ccStartSeasonAllowed()){ field.style.display='none'; CC.startTag=null; return; }
+  field.style.display='';
+  const cur=(ccPickedStart() || list[0]).tag;
+  box.innerHTML=list.map(s=>`<button class="cc-chip${s.tag===cur?' on':''}" onclick="ccPickStartSeason('${s.tag}')">`+
+    `${esc(CC_SEASON_LABEL[s.tag]||s.tag)}<small>${CC_SEASON_SUB[s.tag] ? esc(CC_SEASON_SUB[s.tag])+' · ' : ''}${esc(ccHdrDate(s.from))}</small></button>`).join('');
+  const note=document.getElementById('ccSeasonNote');
+  if(note) note.textContent=L().ccStartSeasonNote;
+}
 function ccPickDiv(d){ CC.div=d; ccRenderChips(); ccSync(); }
 function ccPickDiff(id){ CC.diff=id; ccRenderChips(); ccSync(); }
 // Год карьеры: 2026 (дуо, потом трио) или 2025 (трио, три Мейджора, Лион). См. ccCalYear.
@@ -115781,6 +115817,7 @@ function ccPickedYear(){ return (CC && ccPastYear(CC.year)) ? CC.year : 2026; }
 function ccPickYear(y){
   if(ccMpLockedYear() && y!==ccMpLockedYear()) return;   // год задан хозяином комнаты
   CC.year=ccPastYear(y) ? y : 2026;
+  CC.startTag=null;   // сезон старта — свой у каждого года, со сменой года снова первый
   // NA West в 2024-м нет: выбранный — в NA Central, тем же путём, что кнопка.
   if(CC.region && ccYearRegions().indexOf(CC.region)<0){ ccPickRegion('NAC'); ccRenderChips(); ccRenderCard(); ccSync(); return; }
   ccRenderRegions();
@@ -115857,6 +115894,7 @@ function ccRenderChips(){
     const yn=document.getElementById('ccYearNote');
     if(yn) yn.textContent=(lockY ? L().ccMpLockedBy+' · ' : '')+L()['ccYearNote'+(CC.year||2026)];
   }
+  ccRenderSeasonChips();
   const dchips=document.getElementById('ccDiffChips');
   if(dchips) dchips.innerHTML=CC_DIFFS.map(d=>{
     const on=(CC.diff||'easy')===d.id;
@@ -116551,6 +116589,8 @@ function ccStart(){
     // careerSquadSize for why the shape is written down rather than derived.
     career:{season:1, size:(ccYearRosterSize(CC.year)), year:ccPickedYear(), year0:ccPickedYear(),
             diff:(CC.diff||'easy'), day:null,
+            // Сезон старта внутри года (ccPickedStart): первый день — с него, см. careerStartDay.
+            startFrom:(ccPickedStart()||{}).from || undefined,
             // Год без лестницы заводится на её верху: соперники, имена и
             // напарники — сцена целиком, как в Дивизионе 1. См. ccNoDivisions.
             // Чип при этом остаётся стартовым рейтингом и в ovr уже учтён.
@@ -124709,17 +124749,23 @@ const CC_D1_ONLY=['final','eval'];
 // follows from it.
 function careerStartDay(){
   const days=careerYearDays();
+  /* Карьера, начатая с сезона внутри года (cr.startFrom, экран создания): первый год — с этой даты, не раньше,
+     иначе первые дни стояли бы в прошлом сезоне со старыми составами. Следующие годы — с начала. */
+  const cr=(typeof CAREER!=='undefined' && CAREER && CAREER.career) || null;
+  const at=(cr && cr.startFrom && (cr.season||1)===1) ? cr.startFrom : null;
   for(let w=1; w<=ccYearWeeks(); w++){
     const from=careerWeekStart(w);
-    for(let d=0; d<7; d++)
+    for(let d=0; d<7; d++){
+      if(at && ccAddDays(from,d)<at) continue;
       // A Reload day counts only when it is the Opens: everything after them
       // needs a qualification a new career does not have.
       if((days.get(ccAddDays(from,d))||[]).some(e=>
            CC_PLAYABLE.indexOf(e.kind)>=0 && CC_D1_ONLY.indexOf(e.kind)<0 &&
            (e.kind!=='reload' || /Opens$/.test(String(e.id||'')))))
-        return from;
+        return (at && from<at) ? at : from;
+    }
   }
-  return ccYearFrom();
+  return at || ccYearFrom();
 }
 // Moving the clock. Past the last day of the measured year the career year is
 // over — there is no thirty-ninth week to walk into.
@@ -129207,7 +129253,8 @@ let CC_NOW_CARDS={}, CC_NOW_TAG=null, CC_ARC_PAIRS={};
    дальше, а сбрасывает его тот, кто сдвиги меняет, — careerGrowField. */
 function ccSceneTag(){
   // Неделя подтягивания к рейтингу из жизни (ccRealPull) — сцена пересобирается раз в неделю.
-  const y='|y'+ccCalYear()+'|p'+ccRealPullStep();
+  // И сезон рейтинга (ccRatingSnap): со сменой сезона внутри года сцена берёт его числа.
+  const y='|y'+ccCalYear()+'|p'+ccRealPullStep()+'|r'+(CAREER ? ccRatingSnapTag() : '');
   if(!CAREER) return 'none'+y;
   return ccSlot()+'|'+((CAREER.player&&CAREER.player.nick)||'')+'|'+((CAREER.career&&CAREER.career.season)||0)+y;
 }
@@ -129936,9 +129983,67 @@ var CC_LEDGER_2026;
  * недосмотр, что был в двух источниках национальности; см. ccNatRegions. */
 function ccSeasonKey(c){ return (c && c.region || '')+'|'+hKey(c); }
 let CC_SEASON_OVR_YEAR=null;
+/* РЕЙТИНГ СЕЗОНА (18.10, его выбор: «старт + составы + рейтинг сезона»). Внутри года сцена живёт снимками
+   (ccSnapshotNow: C5S1/C5S2/C5S3 и т.д.), и рейтинг теперь идёт за ними: в год идут только вечера по конец
+   текущего сезона. Chap в 2024-м: в C5S1 у него полуфинал Мейджора 1 и слабый 2023-й, к C5S3 — гранд-финалы и
+   Форт-Уэрт. Последний сезон года — весь год, как было. Только когда карьера играет свой год (календарь = год
+   людей); годы после 2026-го — весь 2026-й. */
+const CC_SNAPS_BY_YEAR=()=>({2019:CC_SNAPSHOTS_2019, 2020:CC_SNAPSHOTS_2020, 2021:CC_SNAPSHOTS_2021, 2022:CC_SNAPSHOTS_2022,
+  2023:CC_SNAPSHOTS_2023, 2024:CC_SNAPSHOTS_2024, 2025:CC_SNAPSHOTS_2025, 2026:CC_SNAPSHOTS});
+function ccRatingSnap(){
+  const cr=(typeof CAREER!=='undefined' && CAREER && CAREER.career) || null;
+  const Y=ccNowYear();
+  // Рейтинг года «как у свежей карьеры» (ccRealTargets, ccDebutants ставят CC_NOW_YEAR_FORCE) — весь год, не сезон:
+  // иначе он запоминался с тем снимком, что стоял в момент первого вызова (check-career-chapter-squads, 2027+).
+  if(!cr || CC_NOW_YEAR_FORCE || ccCalYear()!==Y) return null;
+  if(Y>=2026 && ccYearShift()>0) return null;   // 2027-й и дальше — тот же 2026-й, весь
+  const list=CC_SNAPS_BY_YEAR()[Y];
+  if(!list || list.length<2) return null;
+  const s=ccSnapshotNow(), i=list.indexOf(s);
+  if(i<0 || i===list.length-1) return null;
+  const next=list[i+1];
+  return {tag:s.tag, cut:+String(next.from).replace(/-/g, ''), nextTag:next.tag};
+}
+function ccRatingSnapTag(){ const r=ccRatingSnap(); return r ? r.tag : 'Y'; }
+/* Сезон — порядок, год — шкала. Числа сезона считаются тем же расчётом по вечерам до его конца, а потом место
+   человека в регионе переносится на числа всего года (как alignPrev переносит прошлый сезон): в начале года
+   вечеров мало, вес несыгранного тянет середину вниз, и Д1 2026-го в Major 1 читался 74.5 при полосе 75–82
+   (check-career-field). Порядок — сезона, шкала дивизионов — прежняя. */
+let CC_SEASON_FULL={key:null, r:null};
 function ccSeasonOvr(){
-  if(CC_SEASON_OVR && CC_SEASON_OVR_YEAR===ccNowYear()) return CC_SEASON_OVR;
-  CC_SEASON_OVR_YEAR=ccNowYear();
+  const RS=ccRatingSnap(), rsKey=ccNowYear()+'|'+(RS ? RS.tag : 'Y');
+  if(CC_SEASON_OVR && CC_SEASON_OVR_YEAR===rsKey) return CC_SEASON_OVR;
+  CC_SEASON_OVR_YEAR=rsKey;
+  if(CC_SEASON_FULL.key!==ccNowYear()) CC_SEASON_FULL={key:ccNowYear(), r:ccSeasonOvrCalc(null)};
+  const full=CC_SEASON_FULL.r;
+  if(!RS){ CC_SEASON_OVR=full.out; CC_SEASON_WORK=full.work; return CC_SEASON_OVR; }
+  const part=ccSeasonOvrCalc(RS), regOf=k=>String(k).slice(0, String(k).indexOf('|'));
+  const fullBy={}, partBy={};
+  full.out.forEach((v, k)=>(fullBy[regOf(k)]=fullBy[regOf(k)] || []).push(v));
+  part.out.forEach((v, k)=>(partBy[regOf(k)]=partBy[regOf(k)] || []).push(v));
+  Object.values(fullBy).forEach(a=>a.sort((x,z)=>x-z)); Object.values(partBy).forEach(a=>a.sort((x,z)=>x-z));
+  const out=new Map();
+  part.out.forEach((v, k)=>{
+    const a=partBy[regOf(k)], b=fullBy[regOf(k)];
+    if(!b || b.length<10 || a.length<10){ out.set(k, v); return; }
+    // Место — середина равных (у равных один номер), на шкалу года той же долей.
+    let lo=0; while(lo<a.length && a[lo]<v) lo++;
+    let hi=lo; while(hi<a.length && a[hi]===v) hi++;
+    const f=((lo+hi-1)/2)/(a.length-1);
+    out.set(k, b[Math.min(b.length-1, Math.max(0, Math.round(f*(b.length-1))))]);
+  });
+  CC_SEASON_OVR=out;
+  CC_SEASON_WORK=Object.assign({}, part.work, {season:part.out, year:full.out});
+  return out;
+}
+function ccSeasonOvrCalc(RS){
+  // Кто в году есть, но по конец этого сезона ещё не играл — ниже, после смеси с прошлым.
+  const allK=new Set();
+  // Сколько веса вечеров года уже позади (по всем людям): вес несыгранного (CC_SEASON_PRIOR) — той же долей года.
+  let wAll=0, wCut=0;
+  const setT=(typeof YEAR_RATING!=='undefined' && YEAR_RATING && YEAR_RATING.setT) || {};
+  const ledgerIn=set=>!RS || setT[set]==null || setT[RS.nextTag]==null || setT[set]<setT[RS.nextTag];
+  const cardIn=c=>{ const d=ccCardDay(c); return !RS || !d || d<RS.cut; };
   // 2025-й: книга 2026-го не читается — рейтинг года складывается из карточек 2025-го (t1–t3).
   const LEDGER=ccNowYear()<2026 ? null : CC_LEDGER_2026;
   /* Один вечер — одна строка.
@@ -129999,6 +130104,9 @@ function ccSeasonOvr(){
           if(!(rank>0)) return;
           const k=reg+'|'+h;
           if(!here.has(k)) return;
+          allK.add(k); wAll+=src.weight;
+          if(!ledgerIn(src.set)) return;
+          wCut+=src.weight;
           add(k, ev, src.score(rank), src.weight);
         });
       });
@@ -130016,6 +130124,9 @@ function ccSeasonOvr(){
     const o=(c._eventOvr!=null ? c._eventOvr : (attrsFor(c)||{}).ovr);
     if(!(o>0)) return;
     const ev=String((c.gfEvent || c.event) || '');
+    allK.add(ccSeasonKey(c)); wAll+=ccStageWeight(ev);
+    if(!cardIn(c)) return;
+    wCut+=ccStageWeight(ev);
     add(ccSeasonKey(c), ev, o, ccStageWeight(ev));
   });
   const out=new Map();
@@ -130084,11 +130195,12 @@ function ccSeasonOvr(){
     floors.set(reg, v);
     return v;
   };
+  const PRIOR_W=CC_SEASON_PRIOR*((RS && wAll>0) ? wCut/wAll : 1);
   pre.forEach((p, k)=>{
     const reg=String(k).slice(0, String(k).indexOf('|'));
     const prior=floorOf(reg);
     const v=(prior!=null)
-      ? (p.sum + prior*CC_SEASON_PRIOR)/(p.w + CC_SEASON_PRIOR)
+      ? (p.sum + prior*PRIOR_W)/(p.w + PRIOR_W)
       : p.sum/p.w;
     raw.set(k, v);
     const cur=byReg.get(reg);
@@ -130112,14 +130224,21 @@ function ccSeasonOvr(){
   });
   /* Прошлый сезон — на шкалу этого года по месту в очереди (как у карточек драфта, см. alignPrev в yearRatingPass):
      место человека среди тех, у кого в регионе есть прошлый сезон, переносится на числа года после растяжки. */
+  // Рейтинг сезона: в году есть, по конец сезона не играл — его прошлый сезон (на той же шкале), без него — низ региона.
+  const prevMiss=new Map(), missing=[];
+  if(RS) allK.forEach(k=>{ if(raw.has(k)) return; missing.push(k);
+    const pu=FR && FR.pure[k] || {}; const prev=pu[Y-1]!=null ? pu[Y-1] : pu[Y-2]!=null ? pu[Y-2] : null;
+    if(prev!=null) prevMiss.set(k, prev); });
   { const AL={};
     prevRaw.forEach((p, k)=>{ const reg=String(k).slice(0, String(k).indexOf('|'));
       const m=AL[reg]=AL[reg] || {a:[], b:[]}; m.a.push(p); m.b.push(stage1.get(k)); });
     Object.values(AL).forEach(m=>{ m.a.sort((x,z)=>x-z); m.b.sort((x,z)=>x-z); });
-    prevRaw.forEach((p, k)=>{ const m=AL[String(k).slice(0, String(k).indexOf('|'))];
-      if(!m || m.a.length<10){ prevAl.set(k, p); return; }
+    const align=(p, k, to)=>{ const m=AL[String(k).slice(0, String(k).indexOf('|'))];
+      if(!m || m.a.length<10){ to.set(k, p); return; }
       let i=0; while(i<m.a.length && m.a[i]<p) i++;
-      prevAl.set(k, m.b[Math.min(m.b.length-1, Math.round(i/(m.a.length-1)*(m.b.length-1)))]); }); }
+      to.set(k, m.b[Math.min(m.b.length-1, Math.round(i/(m.a.length-1)*(m.b.length-1)))]); };
+    prevRaw.forEach((p, k)=>align(p, k, prevAl));
+    prevMiss.forEach((p, k)=>align(p, k, prevMiss)); }
   stage1.forEach((s1, k)=>{
     const reg=String(k).slice(0, String(k).indexOf('|'));
     let b=s1;
@@ -130132,6 +130251,14 @@ function ccSeasonOvr(){
     if(!(hi2.get(reg)>=b)) hi2.set(reg, b);
     if(!(lo2.get(reg)<=b)) lo2.set(reg, b);
   });
+  missing.forEach(k=>{
+    const reg=String(k).slice(0, String(k).indexOf('|'));
+    let b=prevMiss.has(k) ? prevMiss.get(k) : floorOf(reg);
+    if(b==null) return;
+    if(FR) b+=FR.cfg.expPts*Math.min(FR.cfg.expCap, (FR.finals[k] || []).filter(t=>t<Y).length);
+    // В растяжку региона не входят: шкалу задают те, кто в этом году уже играл.
+    blended.set(k, Math.min(b, hi2.has(reg) ? hi2.get(reg) : b));
+  });
   blended.forEach((b, k)=>{
     const reg=String(k).slice(0, String(k).indexOf('|'));
     /* Вторая растяжка — с низом на месте, как у карточек драфта: опыт и прошлый сезон поднимают верх, и умножение
@@ -130142,10 +130269,8 @@ function ccSeasonOvr(){
       if(scaled>K) scaled=K+(top-K)*Math.pow(Math.min(1, (scaled-K)/(top-K)), FR.cfg.gamma); }
     out.set(k, Math.round(clamp(scaled, 30, CAREER_SCALE_TOP)));
   });
-  CC_SEASON_OVR=out;
   // Промежуточные числа — для сторожа (check-career-season-rating): год после первой растяжки, смесь ФИФЫ, края региона.
-  CC_SEASON_WORK={stage1, blended, lo2, hi2, prevAl};
-  return out;
+  return {out, work:{stage1, blended, lo2, hi2, prevAl}};
 }
 let CC_SEASON_WORK=null;
 let CC_EU_ALL={};
@@ -130153,7 +130278,7 @@ function ccEuCards(){
   // Карьера, перешедшая в следующий год, держит ещё и дебютантов (ccDebutants) — своим ключом.
   const debut=ccDebutants();
   // Переехавшие за год (ccMovedAway) — в пуле только того региона, где они в этот день.
-  const reg=ccPoolRegion()+(ccNowYear()<2026 ? '|'+ccNowYear() : '')+(debut ? '|d'+ccCalYear() : '')+ccMoversTag();
+  const reg=ccPoolRegion()+(ccNowYear()<2026 ? '|'+ccNowYear() : '')+(debut ? '|d'+ccCalYear() : '')+ccMoversTag()+'|r'+ccRatingSnapTag();
   if(CC_EU_ALL[reg]) return CC_EU_ALL[reg];
   const season=ccSeasonOvr();
   const reg0=ccPoolRegion(), yearCap=ccNowYear();

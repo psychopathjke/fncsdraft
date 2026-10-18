@@ -35,7 +35,9 @@ careerSave(); careerLoad();
 check('и не дважды', CAREER.dev.malibuca===2, JSON.stringify(CAREER.dev));
 // 3) Рейтинги сцены — настоящие года, ±3.
 CC_POOLS=null; const P=careerPools();
-const T=ccRealTargets(ccCalYear());
+// 18.10: внутри своего года — рейтинг сезона того же дня (ccRatingSnap), как у свежей карьеры того дня.
+const SO=ccRatingSnap() ? ccSeasonOvr() : null;
+const T=SO ? new Map([...P.players].map(c=>[c._k||hKey(c), SO.get(ccSeasonKey(c))]).filter(e=>e[1]!=null)) : ccRealTargets(ccCalYear());
 let n=0, worst=0, who='';
 P.players.forEach(c=>{ const t=T.get(c._k||hKey(c)); if(t==null) return; n++; const g=Math.abs(c._ovr-t); if(g>worst){ worst=g; who=c.handle+' '+c._ovr+'/'+t; } });
 notes.players=n; notes.worst=worst;

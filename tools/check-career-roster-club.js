@@ -127,7 +127,11 @@ const BOOT = `
       const target = {handle: paired.handle, ovr: paired._ovr, roster: true};
       seed(Math.round(paired._ovr) + 6, 1);
       const above = careerDmWouldAccept(target);
-      seed(Math.round(paired._ovr) - 1, 1);
+      /* «Ниже» — ниже обоих в паре: закрывает дверь их пара (careerDuoBeatsYou), а не один человек. С рейтингом
+         сезона (18.10) у SwizzY в феврале 2026-го меньше, чем у Pixie, и «Pixie − 1» пару уже перевешивало. */
+      const mateCard = mateOf(paired) || {};
+      const mateOvr = mateCard._ovr != null ? mateCard._ovr : (mateCard.ovr != null ? mateCard.ovr : paired._ovr);
+      seed(Math.round(Math.min(paired._ovr, mateOvr)) - 1, 1);
       const below = careerDmWouldAccept(target);
       out.notes.duo = {above: above, below: below, target: paired._ovr};
       check('somebody you out-rate will leave their duo for you', above === true);

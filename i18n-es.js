@@ -4039,3 +4039,6 @@ Object.assign(I18N.es=I18N.es||{},
 /* Дозаливка «es» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
 Object.assign(I18N.es=I18N.es||{},
 ({ ccShareSend:'Enviar', ccShareSave:'Guardar imagen', ccShareCopy:'Copiar', ccShareClose:'Cerrar', ccShareCopied:'Imagen copiada', ccShareSendFail:'No se abrió el menú de compartir. Guarda la imagen', ccShareFail:'No se pudo dibujar la imagen', ccShareSeason:'Compartir temporada' }));
+/* Дозаливка «es» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
+Object.assign(I18N.es=I18N.es||{},
+({ ccStartSeason:'Temporada inicial', ccStartSeasonNote:'La carrera empieza en la primera semana de esta temporada. Los equipos y ratings de la escena son los de entonces y cambian de temporada en temporada.' }));

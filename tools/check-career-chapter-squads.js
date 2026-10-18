@@ -24,7 +24,10 @@ for(let i=0;i<8;i++){
   const size=careerSquadSize();
   const top=[...P.players].sort((a,b)=>b._ovr-a._ovr).filter((c,j,arr)=>arr.findIndex(x=>(x._k||hKey(x))===(c._k||hKey(c)))===j).slice(0,40);
   const lonely=top.filter(c=>{ const k=c._k||hKey(c); return !inDuo.has(k) && !thirds.has(k); });
-  const T=ccRealTargets(ccCalYear());
+  // 18.10: внутри своего года рейтинг — сезона (ccRatingSnap), и свежая карьера того же дня видит тот же сезон:
+  // сравнивать с ним, а не с рейтингом всего года. Годы после 2026-го — весь год, как было.
+  const SO=ccRatingSnap() ? ccSeasonOvr() : null;
+  const T=SO ? new Map([...P.players].map(c=>[c._k||hKey(c), SO.get(ccSeasonKey(c))]).filter(e=>e[1]!=null)) : ccRealTargets(ccCalYear());
   const gaps=[]; P.players.forEach(c=>{ const t=T.get(c._k||hKey(c)); if(t!=null) gaps.push(c._ovr-t); });
   const st=a=>a.length?{n:a.length, meanAbs:+(a.reduce((x,y)=>x+Math.abs(y),0)/a.length).toFixed(2), ge3:a.filter(x=>Math.abs(x)>=3).length, ge5:a.filter(x=>Math.abs(x)>=5).length}:null;
   out.push({season:cr.season, year:cr.year, cal:ccCalYear(), shift:ccYearShift(), size, cont:ccContinuity(), duos:P.duos.length, players:P.players.length,
