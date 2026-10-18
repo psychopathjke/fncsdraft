@@ -82163,12 +82163,13 @@ pushCard({handle:'luk3', nat:'Аргентина', natSource:'x', region:'BR',
 pushCard({handle:'Vicens', nat:'Мексика', natSource:'x', region:'NAC',
           event:'FNCS 2026 Division 1 (NA Central)', date:'7 окт 2026', placement:null, note:'',
           tier:'cardmode', cardSet:'d4', org:'Team Eldia', rarity:rarityForRating(76), rating:76});
-// Infinix — в АКАДЕМИИ Team Eldia, не в основе (сообщение клуба, Notion «0910»: «@Infinixontop is on the academy roster»).
-// Tracker 9.10 (Epic «Eld SaradaLoverǃ», Epic Events, Европа): PR 117, #34 111 EU, $0, 49 событий / 77 сессий, один топ-100,
-// среднее место 4 639. Ниже Xeno (дивизион 2, $100 → 72) — на уровне академиста Lix: 66 (было 72 оценкой без профиля).
-pushCard({handle:'Infinix', nat:'Франция', natSource:'x', region:'EU',
-          event:'FNCS 2026 Solos (Europe)', date:'6 окт 2026', placement:null, note:'',
-          tier:'cardmode', cardSet:'d4', org:'Team Eldia', academy:true, rarity:rarityForRating(66), rating:66});
+// 18.10, Notion «18.10» (сообщение игрока): «could you remove Infinix from the FNCS draft and add Buedelupro». Infinix убран.
+// Buedelupro: Tracker «ELD Buedelupro» (Epic Events, Бразилия, PC), 18.10.2026: PR 9 448, #1 054 BR, $50, страна в рейтинге
+// Tracker: Аргентина. FNCS Division 1 Practice (BR) #340…#435, FNCS Solos Qualifier 2 Round 3 #96 (11.10). Vicens того же клуба
+// (дивизион 1, +7 000 PR) стоит 76; у Buedelupro PR выше и топ-100 третьего раунда соло: 77.
+pushCard({handle:'Buedelupro', nat:'Аргентина', natSource:'tracker', region:'BR',
+          event:'FNCS 2026 Solos Qualifier 2 — Round 3 (Brazil)', date:'11 окт 2026', placement:96, note:'',
+          tier:'cardmode', cardSet:'d4', org:'Team Eldia', rarity:rarityForRating(77), rating:77});
 /* Shimo, состав — его просьба 9.10 (у клуба не было игроков в данных). Из ленты x.com/ShimoCrew (api.fxtwitter.com, 9.10.2026):
    игроки с «Player for @ShimoCrew» в профиле и посты «Qual FNCS round 2» 5–6.10 — Xeno (@Xenofnrr, 14, Франция, «Div 2, 100$»),
    hydra (@hydra_yhyh, 14, Франция), Kyzёn (@Kyzenn12, Финляндия, «$3k»; ник Kyzenn — Kyzen уже занят французом),
@@ -98529,7 +98530,7 @@ const PLAYER_PHOTO={
   // ==== /Portraits by strongest card ====
   // Team Eldia (30.09): аватары из X — @magmafavelado и @emilfn12.
   "Chainsaw mag@BR":"Chainsaw_mag.jpg", "Chapofn1@EU":"Chapofn1.jpg",
-  "serkkovv@ME":"serkkovv.jpg", "luk3@BR":"luk3.jpg", "Vicens@NAC":"Vicens.jpg", "Infinix@EU":"Infinix.jpg",   // Team Eldia, X-аватарки 8.10
+  "serkkovv@ME":"serkkovv.jpg", "luk3@BR":"luk3.jpg", "Vicens@NAC":"Vicens.jpg",   // Team Eldia, X-аватарки 8.10
   "Kyzenn@EU":"Kyzenn.jpg", "Xeno@EU":"Xeno.jpg", "hydra@EU":"hydra.jpg", "Helena@EU":"Helena.jpg", "Lix@EU":"Lix.jpg", "Ariaa@EU":"Ariaa.jpg"   // Shimo, X-аватарки 9.10
 };
 
@@ -117056,7 +117057,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='349a2c29';
+const CC_BUILD='afa5994c';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -133831,7 +133832,7 @@ const CC_ORG_NEW=[
   /* Team Eldia — по просьбе 30.09 (x.com/Team_Eldia, «Team amateur fortnite», открыт 26.09.2026).
      Любительский клуб: ни esportsearnings, ни Liquipedia — уровень пола списка, как у Drayko.
      Состав из их же анонсов: Chainsaw mag (@magmafavelado, Бразилия) и Chapofn1 (@emilfn12, Дания); с 8.10 — ещё
-     serkkovv, luk3, Vicens, Infinix (см. pushCard Team Eldia). */
+     serkkovv, luk3, Vicens; с 18.10 Buedelupro вместо Infinix (см. pushCard Team Eldia). */
   {name:'Team Eldia',     tier:78, n:0, newcomer:true},   // герб logos/Team_Eldia.jpg с аватара
   /* Его четыре, 30 августа («на рабочем столе орги, добавил новые»): гербы
      легли в logos/. Уровни — по тому же ряду призовых esportsearnings, что и
