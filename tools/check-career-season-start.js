@@ -59,15 +59,20 @@ CC_NOW_YEAR_FORCE=2026; const forced=ccRatingSnap(); CC_NOW_YEAR_FORCE=null;
 check('рейтинг «как у свежей карьеры» — весь год', forced===null, JSON.stringify(forced));
 // 5) Экран создания.
 localStorage.clear(); CAREER=null;
-openCareerCreate(); ccPickYear(2024);
-const chips=document.querySelectorAll('#ccSeasonChips .cc-chip').length;
-check('у 2024 три сезона на выбор', chips===3, String(chips));
-ccPickStartSeason('f3');
-check('выбранный сезон — C5S3', ccPickedStart() && ccPickedStart().from==='2024-06-14', JSON.stringify(ccPickedStart()));
+openCareerCreate(); ccPickYear(2025);
+// Сезоны — кнопками на плитках годов (его набросок «18.10»): у 2024-го три, нажатие ставит и год, и сезон.
+const wrap24=[...document.querySelectorAll('#ccYearChips .cc-yt-wrap')].find(w=>/^2024/.test(w.querySelector('.cc-year-tile').textContent));
+const sb=wrap24 ? [...wrap24.querySelectorAll('.cc-yt-s')] : [];
+notes.tile24=sb.map(b=>b.textContent);
+check('на плитке 2024 три сезона: C5S1 C5S2 C5S3', sb.map(b=>b.textContent).join(' ')==='C5S1 C5S2 C5S3', notes.tile24.join(' '));
+sb[2] && sb[2].click();
+check('нажатие C5S3 на плитке ставит 2024 и C5S3', CC.year===2024 && ccPickedStart() && ccPickedStart().from==='2024-06-14', CC.year+' '+JSON.stringify(ccPickedStart()));
+const onNow=[...document.querySelectorAll('#ccYearChips .cc-yt-s.on')].map(b=>b.textContent);
+check('подсвечен выбранный сезон', onNow.join()==='C5S3', onNow.join());
 ccPickYear(2025);
 check('смена года сбрасывает сезон на первый', ccPickedStart()===null, JSON.stringify(ccPickedStart()));
-CC_MP_NEW={role:'a'}; ccRenderSeasonChips();
-check('в командной карьере сезона нет', document.getElementById('ccSeasonField').style.display==='none' && ccPickedStart()===null, document.getElementById('ccSeasonField').style.display);
+CC_MP_NEW={role:'a'}; ccRenderChips();
+check('в командной карьере сезонов на плитках нет', document.querySelectorAll('#ccYearChips .cc-yt-s').length===0 && ccPickedStart()===null, String(document.querySelectorAll('#ccYearChips .cc-yt-s').length));
 CC_MP_NEW=null;
 return {fails, notes};
 `;

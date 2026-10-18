@@ -2310,14 +2310,20 @@
   #screen-career-create .cc-year-panel .cc-year-tile:disabled{opacity:.4;cursor:not-allowed;}
   #screen-career-create .cc-year-panel .cc-year-tile:disabled:hover{background-size:cover;}
   @media (prefers-reduced-motion:reduce){ #screen-career-create .cc-year-panel .cc-year-tile{transition:none;} }
-  /* Сезон старта — своей плашкой сразу под годами, плитки во всю ширину (18.10). */
-  #screen-career-create .cc-season-box{margin:12px 0 4px;padding:12px 12px 10px;border-radius:6px;
-    background:rgba(0,176,144,.10);border:1px solid rgba(0,176,144,.45);}
-  #screen-career-create .cc-season-box>label{display:block;color:#3fe0c0;font-size:13px;letter-spacing:.08em;margin-bottom:8px;}
-  #screen-career-create .cc-season-chips{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;}
-  #screen-career-create .cc-season-chips .cc-chip{margin:0;padding:12px 8px;font-size:16px;text-align:center;}
-  #screen-career-create .cc-season-chips .cc-chip small{display:block;margin-top:3px;font-size:11px;opacity:.8;}
-  #screen-career-create .cc-season-box .cc-note{margin-top:8px;}
+  /* Сезон старта — кнопками на плитке года (18.10, его набросок): на ПК внизу справа, на телефоне строкой под
+     подписью. Нажатие выбирает и год, и сезон. */
+  #screen-career-create .cc-year-panel .cc-yt-wrap{position:relative;}
+  #screen-career-create .cc-year-panel .cc-yt-wrap>.cc-year-tile{width:100%;height:100%;margin:0;}
+  #screen-career-create .cc-year-panel .cc-yt-seasons{position:absolute;z-index:3;top:7px;right:7px;display:flex;gap:4px;}
+  #screen-career-create .cc-year-panel .cc-yt-seasons:not(.on){opacity:.7;}
+  @media (min-width:700px){ #screen-career-create .cc-year-panel .cc-yt-seasons{top:auto;bottom:9px;right:10px;gap:6px;} }
+  #screen-career-create .cc-year-panel .cc-yt-s{padding:5px 6px;margin:0;border:1px solid rgba(255,255,255,.45);
+    border-radius:3px;background:rgba(0,0,0,.55);color:#fff;font-family:var(--font-display);font-size:10px;font-weight:700;
+    letter-spacing:.04em;line-height:1;cursor:pointer;}
+  @media (min-width:700px){ #screen-career-create .cc-year-panel .cc-yt-s{padding:6px 10px;font-size:12px;}
+    #screen-career-create .cc-year-panel .cc-yt-wrap .cc-year-tile small{padding-right:calc(var(--sn,0) * 52px);} }
+  #screen-career-create .cc-year-panel .cc-yt-s:hover{border-color:#3fe0c0;}
+  #screen-career-create .cc-year-panel .cc-yt-s.on{background:#00b090;border-color:#00b090;}
   .cc-tab{border:none;cursor:pointer;font-weight:900;font-style:italic;font-size:12px;
     letter-spacing:.05em;text-transform:uppercase;padding:10px 18px;
     background:#0b0f12;color:#fff;opacity:.42;transition:opacity .12s;}
@@ -8194,12 +8200,7 @@
         <div class="cc-field" id="ccYearField" style="margin-top:0;">
           <label data-i18n="ccYear"></label>
           <div class="cc-chips" id="ccYearChips"></div>
-          <!-- Сезон старта внутри года (18.10): сразу под годами, своей плашкой — его «чтоб сразу заметно было». -->
-          <div class="cc-season-box" id="ccSeasonField">
-            <label data-i18n="ccStartSeason"></label>
-            <div class="cc-season-chips" id="ccSeasonChips"></div>
-            <div class="cc-note" id="ccSeasonNote"></div>
-          </div>
+          <!-- Сезон старта (18.10) — кнопками на самих плитках годов (его набросок в Notion «18.10»). -->
           <div class="cc-note" id="ccYearNote"></div>
         </div>
       </div>
@@ -115804,19 +115805,16 @@ function ccPickedStart(){
   const i=list.findIndex(s=>s.tag===CC.startTag);
   return i>0 ? list[i] : null;
 }
-function ccPickStartSeason(tag){ CC.startTag=tag; ccRenderSeasonChips(); ccSync(); }
-function ccRenderSeasonChips(){
-  const field=document.getElementById('ccSeasonField'), box=document.getElementById('ccSeasonChips');
-  if(!field || !box) return;
-  const list=ccStartSeasons();
-  if(list.length<2 || !ccStartSeasonAllowed()){ field.style.display='none'; CC.startTag=null; return; }
-  field.style.display='';
-  const cur=(ccPickedStart() || list[0]).tag;
-  box.innerHTML=list.map(s=>`<button class="cc-chip${s.tag===cur?' on':''}" onclick="ccPickStartSeason('${s.tag}')">`+
-    `${esc(CC_SEASON_LABEL[s.tag]||s.tag)}<small>${CC_SEASON_SUB[s.tag] ? esc(CC_SEASON_SUB[s.tag])+' · ' : ''}${esc(ccHdrDate(s.from))}</small></button>`).join('');
-  const note=document.getElementById('ccSeasonNote');
-  if(note) note.textContent=L().ccStartSeasonNote;
+// Короткая подпись кнопки на плитке: C5S1, Major 1 → M1, Season X → SX.
+function ccSeasonShort(tag){ return CC_SEASON_SUB[tag] || String(CC_SEASON_LABEL[tag]||tag).replace(/^Major /, 'M').replace(/^Season /, 'S'); }
+function ccPickStartSeason(tag){ CC.startTag=tag; ccRenderChips(); ccSync(); }
+function ccPickYearSeason(y, tag){
+  if(ccMpLockedYear() && y!==ccMpLockedYear()) return;
+  if((CC.year||2026)!==y) ccPickYear(y);
+  ccPickStartSeason(tag);
 }
+// Сезон не выбрать (командная карьера, гонка) — выбор сбрасывается на начало года.
+function ccRenderSeasonChips(){ if(!ccStartSeasonAllowed() || ccStartSeasons().length<2) CC.startTag=null; }
 function ccPickDiv(d){ CC.div=d; ccRenderChips(); ccSync(); }
 function ccPickDiff(id){ CC.diff=id; ccRenderChips(); ccSync(); }
 // Год карьеры: 2026 (дуо, потом трио) или 2025 (трио, три Мейджора, Лион). См. ccCalYear.
@@ -115897,12 +115895,17 @@ function ccRenderChips(){
       const on=(CC.year||2026)===y;
       const off=lockY && y!==lockY;
       const look=YEAR_LOOK[y]||{lan:''};
-      // Сколько сезонов можно выбрать в году — прямо на плитке (18.10).
-      const nS=ccStartSeasonAllowed() ? (CC_SNAPS_BY_YEAR()[y]||[]).length : 0;
-      return `<button class="cc-chip cc-year-tile${on?' on':''}${off?' soon':''}" style="--yr-art:url(${look.art})" ${off?'disabled title="'+esc(L().ccMpLockedBy)+'"':''} onclick="ccPickYear(${y})"><b>${y}</b><small>${L()['ccYear'+y]}</small><i>${look.lan}${nS>1 ? ' · '+L().ccSeasonsN(nS) : ''}</i></button>`;
+      // Сезоны года — кнопками на самой плитке (18.10): нажатие выбирает и год, и сезон.
+      const ss=ccStartSeasonAllowed() ? (CC_SNAPS_BY_YEAR()[y]||[]) : [];
+      const curS=on ? (ccPickedStart()||ss[0]||{}).tag : null;
+      // Кнопки сезонов — рядом с плиткой в общей обёртке, а не внутри неё: кнопка в кнопке не везде нажимается.
+      const sHTML=ss.length>1 ? `<div class="cc-yt-seasons${on?' on':''}">${ss.map(s=>`<button type="button" class="cc-yt-s${s.tag===curS?' on':''}" `+
+        `title="${esc((CC_SEASON_LABEL[s.tag]||s.tag)+' · '+ccHdrDate(s.from))}" onclick="ccPickYearSeason(${y},'${s.tag}')">${esc(ccSeasonShort(s.tag))}</button>`).join('')}</div>` : '';
+      return `<div class="cc-yt-wrap" style="--sn:${ss.length>1 ? ss.length : 0}"><button class="cc-chip cc-year-tile${on?' on':''}${off?' soon':''}" style="--yr-art:url(${look.art})" ${off?'disabled title="'+esc(L().ccMpLockedBy)+'"':''} onclick="ccPickYear(${y})"><b>${y}</b><small>${L()['ccYear'+y]}</small><i>${look.lan}</i></button>${sHTML}</div>`;
     }).join('');
     const yn=document.getElementById('ccYearNote');
-    if(yn) yn.textContent=(lockY ? L().ccMpLockedBy+' · ' : '')+L()['ccYearNote'+(CC.year||2026)];
+    if(yn) yn.textContent=(lockY ? L().ccMpLockedBy+' · ' : '')+L()['ccYearNote'+(CC.year||2026)]+
+      (ccStartSeasonAllowed() && ccStartSeasons().length>1 ? ' '+L().ccStartSeasonNote : '');
   }
   ccRenderSeasonChips();
   const dchips=document.getElementById('ccDiffChips');
@@ -116990,7 +116993,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='716cbbe2';
+const CC_BUILD='fc28c2db';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
