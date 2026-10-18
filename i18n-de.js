@@ -4045,3 +4045,6 @@ Object.assign(I18N.de=I18N.de||{},
 /* Дозаливка «de» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
 Object.assign(I18N.de=I18N.de||{},
 ({ ccSeasonsN:n=>n+' Saisons' }));
+/* Дозаливка «de» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
+Object.assign(I18N.de=I18N.de||{},
+({ ccEdgeTitle:'Bonus für Ping und Alter', ccEdgeOn:'Mit Bonus', ccEdgeOff:'Ohne Bonus', ccEdgeNote:'Ohne Bonus hat dein Spieler genau das Rating, das du gebaut hast: Ping und Alter geben nichts dazu, und ein Umzug ändert es nicht.' }));

@@ -458,16 +458,22 @@
             <div class="cc-gain" id="ccAgeGain"></div>
             
             <input id="ccBorn" class="cc-born" type="date" oninput="ccBornInput()">
-            <div class="cc-note cc-born-note" data-i18n="ccBornHint">Date of birth — optional. Fill it in and the scene wishes you a happy birthday on the day. The number above is your age on the day the season starts; the birthday itself falls inside it.</div>
+            <div class="cc-note cc-born-note" data-i18n="ccBornHint">Date of birth: optional. Fill it in and the scene wishes you a happy birthday on the day. The number above is your age on the day the season starts; the birthday itself falls inside it.</div>
           </div>
           <div class="cc-field" id="ccRoleField">
             <label data-i18n="ccRole">Role</label>
             <div class="cc-chips" id="ccRoleChips"></div>
           </div>
           
+          <div class="cc-field" id="ccEdgeField">
+            <label data-i18n="ccEdgeTitle">Ping and age bonus</label>
+            <div class="cc-chips" id="ccEdgeChips"></div>
+            <div class="cc-note" data-i18n="ccEdgeNote">With no bonus your player is rated exactly as you built them: ping and age add nothing, and moving does not change it.</div>
+          </div>
+          
           <div class="cc-field" id="ccSpField">
             <label data-i18n="ccSpaTitle">Stats</label>
-            <div class="cc-spa-note"><span data-i18n="ccSpCreateHint">Lower some stats and raise others — +1 costs as many points as the stat weighs in the rating (the number on the right). Once, here.</span></div>
+            <div class="cc-spa-note"><span data-i18n="ccSpCreateHint">Lower some stats and raise others: +1 costs as many points as the stat weighs in the rating (the number on the right). Once, here.</span></div>
             <div class="ch-sp" id="ccSpRows"></div>
           </div>
           <div class="cc-field" id="ccDivField">
@@ -609,7 +615,7 @@
     <div class="sim-modes" id="simModes">
       <button class="sim-btn" id="simRealisticBtn" onclick="setSimMode(true)">
         <h5 data-i18n="simRealisticTitle">Realistic simulation</h5>
-        <p data-i18n="simRealisticNote">Pick one of the Major's real duos. Rosters are fixed — everybody plays with the people they actually played with.</p>
+        <p data-i18n="simRealisticNote">Pick one of the Major's real duos. Rosters are fixed: everybody plays with the people they actually played with.</p>
       </button>
       <button class="sim-btn active" id="simDraftBtn" onclick="setSimMode(false)">
         <h5 data-i18n="simDraftTitle">Draft simulation</h5>
@@ -618,10 +624,10 @@
     </div>
     <div class="rating-explainer" style="margin-top:18px;">
       <h4 id="preregionTitle" data-i18n="preregionTitle">Who can end up in your squad</h4>
-      <div class="region-note" id="preregionNote" data-i18n="preregionNote">Tick the regions whose players are dealt to you in packs. As many as you like, or all of them — it says nothing about which tournament you play.</div>
+      <div class="region-note" id="preregionNote" data-i18n="preregionNote">Tick the regions whose players are dealt to you in packs. As many as you like, or all of them: it says nothing about which tournament you play.</div>
     </div>
     <div class="region-filter" id="preRegionChecks" style="margin-top:14px;"></div>
-    <div id="regionWarning" style="display:none;color:var(--danger);font-size:13px;font-weight:700;margin-top:10px;" data-i18n="regionWarningText">⚠️ Pick a region first — it's required</div>
+    <div id="regionWarning" style="display:none;color:var(--danger);font-size:13px;font-weight:700;margin-top:10px;" data-i18n="regionWarningText">⚠️ Pick a region first: it's required</div>
 
     
     <div id="homeRegionBlock" style="display:none;">
@@ -635,10 +641,10 @@
     <div id="eraBlock">
       <div class="rating-explainer" style="margin-top:14px;">
         <h4 data-i18n="eraTitle">Which seasons do you want to draft from?</h4>
-        <div class="region-note" data-i18n="eraNote">Tick one or more years — packs will only contain players from those seasons. A year with no players in the selected regions can't be picked.</div>
+        <div class="region-note" data-i18n="eraNote">Tick one or more years: packs will only contain players from those seasons. A year with no players in the selected regions can't be picked.</div>
       </div>
       <div class="region-filter" id="eraChecks" style="margin-top:10px;"></div>
-      <div id="eraWarning" style="display:none;color:var(--danger);font-size:13px;font-weight:700;margin-top:10px;" data-i18n="eraWarningText">⚠️ Pick a time period first — it's required</div>
+      <div id="eraWarning" style="display:none;color:var(--danger);font-size:13px;font-weight:700;margin-top:10px;" data-i18n="eraWarningText">⚠️ Pick a time period first: it's required</div>
     </div>
 
     <div id="mapBlock">
@@ -652,13 +658,13 @@
     
     <div class="rating-explainer" style="margin-top:18px;">
       <h4 data-i18n="playModeTitle">How you play it</h4>
-      <div class="region-note" data-i18n="playModeNote">One difference only — whether it asks you mid-match. You place the landing marker either way</div>
+      <div class="region-note" data-i18n="playModeNote">One difference only: whether it asks you mid-match. You place the landing marker either way</div>
     </div>
     
     <div class="sim-modes" id="playModes" style="margin-top:10px;">
       <button class="sim-btn active" id="playWatchBtn" onclick="setPlayMode(false)">
         <h5 data-i18n="playWatchTitle">Simulate</h5>
-        <p data-i18n="playWatchNote">No mid-match questions — the simulation makes the loot and high-ground calls</p>
+        <p data-i18n="playWatchNote">No mid-match questions: the simulation makes the loot and high-ground calls</p>
       </button>
       <button class="sim-btn" id="playSelfBtn" onclick="setPlayMode(true)">
         <h5 data-i18n="playSelfTitle">Play it</h5>
@@ -679,7 +685,7 @@
             <div class="pack-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10zm0 2c-4.4 0-8 2.6-8 5.8V22h16v-2.2c0-3.2-3.6-5.8-8-5.8z"/></svg></div>
             <div>
               <h2 id="packHeadTitle" data-i18n="packOpenTitle">Player pack</h2>
-              <p id="packHeadDesc" data-i18n="packOpenDesc">Pick one player for your squad — the rest go back into the pool.</p>
+              <p id="packHeadDesc" data-i18n="packOpenDesc">Pick one player for your squad: the rest go back into the pool.</p>
             </div>
             <button class="restart-btn" id="rerollBtn" style="margin-left:auto;white-space:nowrap;" onclick="rerollAll()"><span data-i18n="rerollLabel">Reroll</span> (<span id="rerollCount">2</span>)</button>
           </div>
@@ -694,7 +700,7 @@
             <div class="pack-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M1 10h13l1-2h3l1 2h4v2h-4l-1 1h-2v3h-2l-1-3H9l-1 4H6l1-4H4v2H2v-2H1z"/></svg></div>
             <div>
               <h2 data-i18n="weaponPackTitle">Weapon pack</h2>
-              <p data-i18n="weaponPackDesc">Pick a weapon — affects squad power.</p>
+              <p data-i18n="weaponPackDesc">Pick a weapon: affects squad power.</p>
               <p id="lootPoolNote" style="color:var(--accent);font-size:11px;letter-spacing:.03em;margin-top:2px;"></p>
             </div>
           </div>
@@ -704,7 +710,7 @@
             <div class="pack-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M10 3h4v6h6v4h-6v6h-4v-6H4V9h6z"/></svg></div>
             <div>
               <h2 data-i18n="healPackTitle">Heal pack</h2>
-              <p data-i18n="healPackDesc">Pick a consumable — also affects squad power.</p>
+              <p data-i18n="healPackDesc">Pick a consumable: also affects squad power.</p>
             </div>
           </div>
           <div class="candidates" id="healCandidates"></div>
@@ -713,10 +719,10 @@
       <div class="squad-panel">
         <h3 data-i18n="yourSquadTitle">Your squad</h3>
         <div class="count"><span id="squadFilled">0</span>/<span id="squadTotal">4</span> <span data-i18n="draftedLabel">drafted</span></div>
-        <div class="squad-avg"><span data-i18n="avgRatingLabel">Average rating:</span> <b id="squadAvg">—</b> · <span data-i18n="synergyLabel">Synergy:</span> <b id="synergyVal">+0</b></div>
+        <div class="squad-avg"><span data-i18n="avgRatingLabel">Average rating:</span> <b id="squadAvg">-</b> · <span data-i18n="synergyLabel">Synergy:</span> <b id="synergyVal">+0</b></div>
         <div class="squad-avg"><span data-i18n="loadoutLabel">Loadout:</span> <b id="loadoutVal">+0</b></div>
         <div class="squad-avg" id="roleRow"><span data-i18n="rolesLabel">Roles:</span> <b id="roleVal">+0</b> <span id="roleNames" style="color:var(--ink-dim);font-size:11px;"></span></div>
-        <div class="squad-avg" style="font-size:16px;padding-top:2px;"><span data-i18n="totalPowerLabel">Total power:</span> <b id="totalPowerVal" style="color:var(--accent);">—</b></div>
+        <div class="squad-avg" style="font-size:16px;padding-top:2px;"><span data-i18n="totalPowerLabel">Total power:</span> <b id="totalPowerVal" style="color:var(--accent);">-</b></div>
         <div class="synergy-svg-wrap"><svg id="synergySvg" viewBox="0 0 260 220" width="100%"></svg></div>
         <div id="slots"></div>
         <div id="synergyDetails" style="font-size:11px;color:var(--ink-dim);line-height:1.6;margin-top:6px;"></div>
@@ -952,7 +958,7 @@
     background:linear-gradient(160deg,#1d2430 0%,#161c26 60%,#11161e 100%);
     border:1px solid var(--line);padding:24px;box-shadow:0 20px 60px rgba(0,0,0,.55);">
     <div id="careerEndTitle" style="font-weight:900;font-size:17px;margin-bottom:8px;" data-i18n="chEndTitle">End this career?</div>
-    <div style="color:var(--ink-dim);font-size:13px;line-height:1.5;margin-bottom:20px;" data-i18n="chEndBody">The player, the division and everything earned are wiped. There is only one save — there is no coming back to it.</div>
+    <div style="color:var(--ink-dim);font-size:13px;line-height:1.5;margin-bottom:20px;" data-i18n="chEndBody">The player, the division and everything earned are wiped. There is only one save: there is no coming back to it.</div>
     <div style="display:flex;gap:10px;justify-content:flex-end;">
       <button id="careerEndNo" onclick="careerEndClose()" style="background:var(--panel2);border:1px solid var(--line);color:var(--ink);
         border-radius:8px;padding:9px 16px;font-weight:800;font-size:13px;cursor:pointer;" data-i18n="resetConfirmNo">Cancel</button>
@@ -967,7 +973,7 @@
     background:linear-gradient(160deg,#1d2430 0%,#161c26 60%,#11161e 100%);
     border:1px solid var(--line);padding:24px;box-shadow:0 20px 60px rgba(0,0,0,.55);">
     <div id="resetConfirmTitle" style="font-weight:900;font-size:17px;margin-bottom:8px;" data-i18n="resetConfirmTitle">Leave to the menu?</div>
-    <div id="resetConfirmBodyEl" style="color:var(--ink-dim);font-size:13px;line-height:1.5;margin-bottom:20px;" data-i18n="resetConfirmBody">The current run will be lost — progress is not saved.</div>
+    <div id="resetConfirmBodyEl" style="color:var(--ink-dim);font-size:13px;line-height:1.5;margin-bottom:20px;" data-i18n="resetConfirmBody">The current run will be lost: progress is not saved.</div>
     <div style="display:flex;gap:10px;justify-content:flex-end;">
       <button id="resetConfirmNo" onclick="closeResetConfirm()" style="background:var(--panel2);border:1px solid var(--line);color:var(--ink);
         border-radius:8px;padding:9px 16px;font-weight:800;font-size:13px;cursor:pointer;" data-i18n="resetConfirmNo">Cancel</button>
@@ -977,7 +983,7 @@
   </div>
 </div>
 
-<style>#fdBoot{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);z-index:9999;display:flex;align-items:center;gap:10px;max-width:min(92vw,560px);padding:10px 16px;border-radius:12px;background:rgba(10,14,28,.94);color:#fff;font:600 13px/1.4 system-ui,"Segoe UI",Arial,sans-serif;box-shadow:0 12px 40px rgba(0,0,0,.5);border:1px solid rgba(255,255,255,.14);opacity:0;transition:opacity .35s,transform .35s;pointer-events:none}#fdBoot.on{opacity:1;pointer-events:auto}#fdBoot i{flex:none;width:14px;height:14px;border-radius:50%;border:2px solid rgba(255,255,255,.25);border-top-color:#ffd600;animation:fdSpin .8s linear infinite}@keyframes fdSpin{to{transform:rotate(360deg)}}@media (prefers-reduced-motion:reduce){#fdBoot i{animation:none}}#fdBoot.slow{border-color:#ffd600}#fdBoot.fail{border-color:#ff5c5c}#fdBoot.fail i{animation:none;border-color:#ff5c5c}#fdBoot button{flex:none;background:#ffd600;color:#111;border:0;border-radius:8px;padding:6px 12px;font:800 12px system-ui,"Segoe UI",Arial,sans-serif;cursor:pointer}#fdBoot.nudge{transform:translateX(-50%) scale(1.06)}#fdBoot.off{opacity:0;transform:translateX(-50%) translateY(12px)}</style><script>window.__fdBoot=(function(){var ru=/^ru/i.test(navigator.language||"");var T=ru?{wait:"\u0417\u0430\u0433\u0440\u0443\u0436\u0430\u0435\u043c \u043f\u0440\u0438\u043b\u043e\u0436\u0435\u043d\u0438\u0435\u2026",slow:"\u0421\u0435\u0442\u044c \u043c\u0435\u0434\u043b\u0435\u043d\u043d\u0430\u044f \u2014 \u043f\u0440\u0438\u043b\u043e\u0436\u0435\u043d\u0438\u0435 \u0435\u0449\u0451 \u0435\u0434\u0435\u0442. \u0415\u0441\u043b\u0438 \u0442\u0430\u043a \u0438 \u043d\u0435 \u043e\u0442\u043a\u0440\u043e\u0435\u0442\u0441\u044f: \u043e\u0431\u043d\u043e\u0432\u0438\u0442\u0435 \u0441\u0442\u0440\u0430\u043d\u0438\u0446\u0443 (Ctrl+F5), \u0441\u043c\u0435\u043d\u0438\u0442\u0435 DNS (1.1.1.1) \u0438\u043b\u0438 \u0432\u043a\u043b\u044e\u0447\u0438\u0442\u0435 VPN.",fail:"\u041f\u0440\u0438\u043b\u043e\u0436\u0435\u043d\u0438\u0435 \u043d\u0435 \u0437\u0430\u0433\u0440\u0443\u0437\u0438\u043b\u043e\u0441\u044c.",retry:"\u041e\u0431\u043d\u043e\u0432\u0438\u0442\u044c"}:{wait:"Loading the app\u2026",slow:"Slow network \u2014 the app is still on its way. If it never opens: reload (Ctrl+F5), change DNS (1.1.1.1) or use a VPN.",fail:"The app did not load.",retry:"Reload"};var el=null,t=null,done=false;function make(){if(el)return el;el=document.createElement("div");el.id="fdBoot";el.setAttribute("role","status");el.innerHTML="<i></i><span></span>";el.lastChild.textContent=T.wait;document.body.appendChild(el);return el;}function show(){if(done)return;make();el.className="on";}show();t=setTimeout(function(){if(done)return;show();el.className="on slow";el.lastChild.textContent=T.slow;},15000);document.addEventListener("click",function(){if(done||!el)return;el.className+=" nudge";setTimeout(function(){if(el)el.className=el.className.replace(" nudge","");},500);},true);return{ok:function(){done=true;clearTimeout(t);if(el){el.className="off";setTimeout(function(){if(el&&el.parentNode)el.parentNode.removeChild(el);el=null;},400);}},fail:function(){if(done)return;clearTimeout(t);show();el.className="on fail";el.innerHTML="<i></i><span></span><button type=\"button\"></button>";el.children[1].textContent=T.fail;el.children[2].textContent=T.retry;el.children[2].onclick=function(){location.reload();};}};})();</script><script src="app.js?v=3b2167ac" onload="__fdBoot.ok()" onerror="__fdBoot.fail()"></script>
+<style>#fdBoot{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);z-index:9999;display:flex;align-items:center;gap:10px;max-width:min(92vw,560px);padding:10px 16px;border-radius:12px;background:rgba(10,14,28,.94);color:#fff;font:600 13px/1.4 system-ui,"Segoe UI",Arial,sans-serif;box-shadow:0 12px 40px rgba(0,0,0,.5);border:1px solid rgba(255,255,255,.14);opacity:0;transition:opacity .35s,transform .35s;pointer-events:none}#fdBoot.on{opacity:1;pointer-events:auto}#fdBoot i{flex:none;width:14px;height:14px;border-radius:50%;border:2px solid rgba(255,255,255,.25);border-top-color:#ffd600;animation:fdSpin .8s linear infinite}@keyframes fdSpin{to{transform:rotate(360deg)}}@media (prefers-reduced-motion:reduce){#fdBoot i{animation:none}}#fdBoot.slow{border-color:#ffd600}#fdBoot.fail{border-color:#ff5c5c}#fdBoot.fail i{animation:none;border-color:#ff5c5c}#fdBoot button{flex:none;background:#ffd600;color:#111;border:0;border-radius:8px;padding:6px 12px;font:800 12px system-ui,"Segoe UI",Arial,sans-serif;cursor:pointer}#fdBoot.nudge{transform:translateX(-50%) scale(1.06)}#fdBoot.off{opacity:0;transform:translateX(-50%) translateY(12px)}</style><script>window.__fdBoot=(function(){var ru=/^ru/i.test(navigator.language||"");var T=ru?{wait:"\u0417\u0430\u0433\u0440\u0443\u0436\u0430\u0435\u043c \u043f\u0440\u0438\u043b\u043e\u0436\u0435\u043d\u0438\u0435\u2026",slow:"\u0421\u0435\u0442\u044c \u043c\u0435\u0434\u043b\u0435\u043d\u043d\u0430\u044f \u2014 \u043f\u0440\u0438\u043b\u043e\u0436\u0435\u043d\u0438\u0435 \u0435\u0449\u0451 \u0435\u0434\u0435\u0442. \u0415\u0441\u043b\u0438 \u0442\u0430\u043a \u0438 \u043d\u0435 \u043e\u0442\u043a\u0440\u043e\u0435\u0442\u0441\u044f: \u043e\u0431\u043d\u043e\u0432\u0438\u0442\u0435 \u0441\u0442\u0440\u0430\u043d\u0438\u0446\u0443 (Ctrl+F5), \u0441\u043c\u0435\u043d\u0438\u0442\u0435 DNS (1.1.1.1) \u0438\u043b\u0438 \u0432\u043a\u043b\u044e\u0447\u0438\u0442\u0435 VPN.",fail:"\u041f\u0440\u0438\u043b\u043e\u0436\u0435\u043d\u0438\u0435 \u043d\u0435 \u0437\u0430\u0433\u0440\u0443\u0437\u0438\u043b\u043e\u0441\u044c.",retry:"\u041e\u0431\u043d\u043e\u0432\u0438\u0442\u044c"}:{wait:"Loading the app\u2026",slow:"Slow network \u2014 the app is still on its way. If it never opens: reload (Ctrl+F5), change DNS (1.1.1.1) or use a VPN.",fail:"The app did not load.",retry:"Reload"};var el=null,t=null,done=false;function make(){if(el)return el;el=document.createElement("div");el.id="fdBoot";el.setAttribute("role","status");el.innerHTML="<i></i><span></span>";el.lastChild.textContent=T.wait;document.body.appendChild(el);return el;}function show(){if(done)return;make();el.className="on";}show();t=setTimeout(function(){if(done)return;show();el.className="on slow";el.lastChild.textContent=T.slow;},15000);document.addEventListener("click",function(){if(done||!el)return;el.className+=" nudge";setTimeout(function(){if(el)el.className=el.className.replace(" nudge","");},500);},true);return{ok:function(){done=true;clearTimeout(t);if(el){el.className="off";setTimeout(function(){if(el&&el.parentNode)el.parentNode.removeChild(el);el=null;},400);}},fail:function(){if(done)return;clearTimeout(t);show();el.className="on fail";el.innerHTML="<i></i><span></span><button type=\"button\"></button>";el.children[1].textContent=T.fail;el.children[2].textContent=T.retry;el.children[2].onclick=function(){location.reload();};}};})();</script><script src="app.js?v=5b4706a3" onload="__fdBoot.ok()" onerror="__fdBoot.fail()"></script>
 <script>
 /* Mode-tile art, fetched a screen ahead of the scroll rather than all at once.
    See the note on data-art: seven tiles were 368KB before the first screen had

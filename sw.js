@@ -35,8 +35,8 @@
  * в собранной папке — хеш app.js и настоящие адреса. Файл в репозитории
  * специально нерабочий как воркер — его никто и не регистрирует с file://.
  */
-const V = "3b2167ac";
-const CORE = ["./","./zone-sim.js?v=48a2b31c","./zone-replay.js?v=7719856c","./mp.js?v=066b92f3","./lines-more.js?v=5aebca09","./app.js?v=3b2167ac","./fonts/oswald-cyrillic-ext.woff2","./fonts/oswald-cyrillic.woff2","./fonts/oswald-latin-ext.woff2","./fonts/oswald-latin.woff2"];
+const V = "5b4706a3";
+const CORE = ["./","./zone-sim.js?v=48a2b31c","./zone-replay.js?v=7719856c","./mp.js?v=066b92f3","./lines-more.js?v=5aebca09","./app.js?v=5b4706a3","./fonts/oswald-cyrillic-ext.woff2","./fonts/oswald-cyrillic.woff2","./fonts/oswald-latin-ext.woff2","./fonts/oswald-latin.woff2"];
 
 const DOC = 'fncsdraft-doc-' + V;      // оболочка: одна на сборку
 const APP = 'fncsdraft-app-' + V;      // скрипты с ?v=: одни на сборку
@@ -68,6 +68,19 @@ function isDoc(req) {
 }
 function isVersioned(url) {
   return url.search.indexOf('v=') >= 0;
+}
+/* ?v= — первые 8 знаков SHA-1 содержимого (stamp-scripts, build-deploy). Сразу после выкладки край Cloudflare
+   может отдать по новому адресу ещё СТАРЫЙ файл, и «сначала кэш» запоминал бы его под новым адресом навсегда:
+   18.10 debug отдал app.js сборки 18.10b под ?v=09b22faf, и новой функции в браузере не было. Чужой хеш — не кладём
+   в кэш (файл всё равно отдаём, следующий заход спросит сеть снова). */
+async function sameVersion(url, res) {
+  const v = new URL(url).searchParams.get('v') || '';
+  if (!/^[0-9a-f]{8}$/.test(v) || !(self.crypto && crypto.subtle)) return true;
+  try {
+    const h = new Uint8Array(await crypto.subtle.digest('SHA-1', await res.arrayBuffer()));
+    let hex = ''; for (let i = 0; i < 4; i++) hex += h[i].toString(16).padStart(2, '0');
+    return hex === v;
+  } catch (e) { return true; }
 }
 function isMedia(url) {
   return /\.(?:jpg|jpeg|png|svg|webp|gif|ico|woff2?)$/i.test(url.pathname);
@@ -111,7 +124,7 @@ self.addEventListener('fetch', event => {
       const hit = await caches.match(req);
       if (hit) return hit;
       const res = await fetch(req);
-      if (res && res.ok)
+      if (res && res.ok && (!isVersioned(url) || await sameVersion(url, res.clone())))
         (await caches.open(isVersioned(url) ? APP : MEDIA)).put(req, res.clone());
       return res;
     })());
