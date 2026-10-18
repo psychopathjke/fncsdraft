@@ -4045,3 +4045,6 @@ Object.assign(I18N.es=I18N.es||{},
 /* Дозаливка «es» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
 Object.assign(I18N.es=I18N.es||{},
 ({ ccSeasonsN:n=>n+' temporadas' }));
+/* Дозаливка «es» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
+Object.assign(I18N.es=I18N.es||{},
+({ ccEdgeTitle:'Bonus por ping y edad', ccEdgeOn:'Con bonus', ccEdgeOff:'Sin bonus', ccEdgeNote:'Sin bonus tu jugador tiene exactamente el rating que armaste: el ping y la edad no suman nada y mudarte no lo cambia.' }));
