@@ -154,7 +154,8 @@ const BOOT = `
       const prev=W2.prevAl.has(many) ? W2.prevAl.get(many) : null;
       check('the previous season is read when there is one', had===(prev!=null), String(had)+' '+prev);
       const fin=(YEAR_RATING.finals[many]||[]).filter(t=>t<CC_NOW_YEAR).length;
-      const mix=(prev!=null ? (1-FC.prevW)*s1 + FC.prevW*prev : s1) + FC.expPts*Math.min(FC.expCap, fin);
+      // 18.10: прошлый сезон тянет вниз не больше чем на dropCap (Chap 2024).
+      const mix=(prev!=null ? Math.max((1-FC.prevW)*s1 + FC.prevW*prev, s1-FC.dropCap) : s1) + FC.expPts*Math.min(FC.expCap, fin);
       out.notes.busiest.fifa={prev, finals:fin, blended:Math.round(W2.blended.get(many)*10)/10};
       check('then 60% year + 40% previous season + finals experience', Math.abs(mix-W2.blended.get(many))<0.01,
             JSON.stringify(out.notes.busiest));
@@ -220,9 +221,12 @@ const BOOT = `
 
       // ---- and the app outside the career is untouched --------------------
       const live=PLAYERS.filter(p=>ccSeasonKey(p)===many)[0];
-      out.notes.appCard={ovr:attrsFor(live).ovr, season:season.get(many)};
+      /* Карточка драфта читает своё число года (_targetOvr от yearRatingPass), а не число карьеры. Раньше здесь
+         было «числа разные» — с dropCap (18.10) у sky они совпали честно (93 и 93), сторож краснел на совпадении. */
+      const own=live._targetOvr!=null ? live._targetOvr : live.rating;
+      out.notes.appCard={ovr:attrsFor(live).ovr, own, season:season.get(many)};
       check('the real card is not rewritten by the career',
-            attrsFor(live).ovr!==season.get(many),
+            live!==mine && attrsFor(live).ovr===own,
             JSON.stringify(out.notes.appCard));
       check('and it still reads its own event',
             attrsFor(live).ovr===(attrsFor(live)||{}).ovr && attrsFor(live).ovr>0,

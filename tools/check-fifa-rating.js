@@ -31,7 +31,7 @@ const BOOT = `
     let worst=0, who='';
     cards.forEach(q=>{
       const f=q._yr;
-      let v=f.prev!=null ? (1-C.prevW)*f.season + C.prevW*f.prev : f.season;
+      let v=f.prev!=null ? Math.max((1-C.prevW)*f.season + C.prevW*f.prev, f.season-C.dropCap) : f.season;
       v+=C.expPts*f.exp;
       if(f.stat!=null) v=(1-C.statMix)*v + C.statMix*f.stat;
       if(f.floor!=null) v=Math.max(v, f.floor);

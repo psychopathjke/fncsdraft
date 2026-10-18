@@ -205,7 +205,13 @@ function rating(f, cfg, ctx) {
   }
   let v = S;
   const prev = cfg.align ? f.prevAl : f.prevYear;
-  if (cfg.pw && prev != null) v = v == null ? prev : (1 - cfg.pw) * v + cfg.pw * prev;
+  if (cfg.pw && prev != null) {
+    // pwDown: свой вес прошлому, когда он ниже года (прорыв); dropCap: прошлый тянет вниз не больше чем на столько.
+    const w = (cfg.pwDown != null && v != null && prev < v) ? cfg.pwDown : cfg.pw;
+    const s = v;
+    v = v == null ? prev : (1 - w) * v + w * prev;
+    if (cfg.dropCap != null && s != null) v = Math.max(v, s - cfg.dropCap);
+  }
   if (v == null) return null;
   if (cfg.expK) v += cfg.expK * Math.min(cfg.expCap || 99, (cfg.expGF ? f.expGF : 0) + (cfg.expLAN ? f.expLAN : 0));
   if (cfg.sm && ctx.statOvr != null) v = (1 - cfg.sm) * v + cfg.sm * ctx.statOvr;
@@ -253,7 +259,7 @@ function boot(evs, a, b, R = 2000) {
 
 // ---------------------------------------------------------------- 4. отчёт
 const CURRENT = { mode: 'current' };
-const FIFA = { mode: 'fifa', onlyUp: true, align: true, pw: 0.4, expK: 1.5, expCap: 2, expGF: true, expLAN: true, sm: 0.1 };
+const FIFA = { mode: 'fifa', onlyUp: true, align: true, pw: 0.4, dropCap: 2, expK: 1.5, expCap: 2, expGF: true, expLAN: true, sm: 0.1 };
 if (require.main === module) {
   const J = dumpCards(), D = build(J), evs = events(D);
   const gf = e => e.kind === 'gf', lan = e => e.kind === 'lan';
