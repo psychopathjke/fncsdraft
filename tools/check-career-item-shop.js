@@ -75,6 +75,16 @@ const eras={};
   if(k==='c1') check(d+': разделы Главы 1', h.indexOf(L().ccFnFeatured)>0 && h.indexOf(L().ccFnDaily)>0);
 });
 notes.eras=eras;
+// 6) Разделы по наборам, как в игре: 10.03.2024 — раздел «Eminem» со скином (большая плитка) и его рюкзаком/киркой рядом.
+seed('2024-03-10', 'EU', 100);
+const box=document.createElement('div'); box.innerHTML=ccFnShopHTML();
+const secs=[...box.querySelectorAll('.cc-fn-sec')].map(s=>({h:s.querySelector('h5').textContent, big:[...s.querySelectorAll('.cc-fn-it.big b')].map(b=>b.textContent), sm:[...s.querySelectorAll('.cc-fn-it.sm b')].map(b=>b.textContent)}));
+notes.sets=secs.slice(0,4).map(s=>s.h+': '+s.big.length+'+'+s.sm.length);
+const emi=secs.find(s=>s.h==='Eminem');
+check('раздел набора «Eminem»', emi && emi.big.includes('Slim Shady') && emi.sm.includes("Raven's Stare") && emi.sm.includes("Axe 'Bout Me"), JSON.stringify(emi));
+check('скины без набора не в куче с кирками', secs.every(s=>!(s.big.length && s.h===L().ccFnTypes_p)));
+seed('2019-06-01', 'EU', 100); box.innerHTML=ccFnShopHTML();
+check('Глава 1: «Ежедневные» ровными квадратами', !!box.querySelector('.cc-fn-grid.daily') && !box.querySelector('.cc-fn-grid.daily .big'));
 return {fails, notes};
 `;
 const tmp=path.join(fs.mkdtempSync(path.join(os.tmpdir(),'cis-')),'body.js'); fs.writeFileSync(tmp, body);

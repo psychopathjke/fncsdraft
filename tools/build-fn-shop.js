@@ -13,7 +13,7 @@ if (!src) { console.error('нужен путь к br7.json'); process.exit(1); }
 const data = JSON.parse(fs.readFileSync(src, 'utf8')).data;
 const TYPE = { outfit: 'o', backpack: 'b', pickaxe: 'p', glider: 'g', emote: 'e', wrap: 'w' };
 const FIRST = '2019-01-01';
-const items = [], idx = new Map(), byDay = new Map();
+const items = [], idx = new Map(), byDay = new Map(), sets = [], setIdx = new Map();
 for (const x of data) {
   const t = TYPE[x.type && x.type.value];
   if (!t || !x.shopHistory || !x.shopHistory.length || !x.name) continue;
@@ -22,7 +22,10 @@ for (const x of data) {
   // Серия (Icon, Marvel, DC…) важнее редкости для цены: у fortnite-api она в series.value, иначе rarity.value.
   const r = (x.series && x.series.backendValue ? 'S:' + String(x.series.value || '').replace(/\s+Series$/i, '') : '') || (x.rarity && x.rarity.value) || 'common';
   idx.set(x.id, items.length);
-  items.push([x.id, x.name, t, r]);
+  // Набор (set) — по нему игра делит витрину на разделы: скин рядом со своей киркой, рюкзаком, дельтапланом.
+  const sv = x.set && x.set.value;
+  if (sv && !setIdx.has(sv)) { setIdx.set(sv, sets.length); sets.push(sv); }
+  items.push(sv ? [x.id, x.name, t, r, setIdx.get(sv)] : [x.id, x.name, t, r]);
   for (const d of days) { if (!byDay.has(d)) byDay.set(d, []); byDay.get(d).push(idx.get(x.id)); }
 }
 const keys = [...byDay.keys()].sort();
@@ -34,7 +37,7 @@ for (let d = new Date(FIRST + 'T00:00:00Z'); d.toISOString().slice(0, 10) <= las
   out.push((byDay.get(k) || []).map(n => n.toString(36)).join(','));
 }
 const body = '/* fncsdraft — магазин Fortnite по дням (tools/build-fn-shop.js, fortnite-api.com). */\n' +
-  'var CC_FN_SHOP=' + JSON.stringify({ first: FIRST, last: last, items: items, days: out.join(';') }) + ';\n';
+  'var CC_FN_SHOP=' + JSON.stringify({ first: FIRST, last: last, items: items, sets: sets, days: out.join(';') }) + ';\n';
 fs.writeFileSync(path.join(ROOT, 'fn-shop.js'), body);
 const v = crypto.createHash('sha1').update(body).digest('hex').slice(0, 8);
 let html = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');

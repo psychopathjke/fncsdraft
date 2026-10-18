@@ -3953,6 +3953,17 @@
   .cc-fn-buy:disabled{opacity:.5;cursor:not-allowed;}
   .cc-fn-own{margin-top:3px;padding:6px 4px;border-radius:6px;background:rgba(0,176,144,.85);color:#fff;font-weight:800;font-size:12px;text-align:center;}
   .cc-fn-it.own{opacity:.85;}
+  /* Раздел-набор как в игре: скин — большая плитка на две строки, рюкзак/кирка/дельтаплан — маленькие рядом. */
+  .cc-fn-grid{grid-auto-flow:row dense;}
+  .cc-fn-it.big{grid-row:span 2;}
+  .cc-fn-it.big .cc-fn-img{flex:1 1 auto;}
+  .cc-fn-it.sm{min-height:118px;}
+  .cc-fn-it.sm .cc-fn-img{position:relative;flex:1 1 0;min-height:0;aspect-ratio:auto;}
+  .cc-fn-it.sm .cc-fn-img img{position:absolute;inset:0;}
+  .cc-fn-it.sm em{display:none;}
+  .cc-fn-it.sm b{font-size:12px;}
+  .cc-fn-grid.daily .cc-fn-it.sm{min-height:0;}
+  .cc-fn-grid.daily .cc-fn-it.sm .cc-fn-img{flex:none;aspect-ratio:1/1;}
   /* Вид магазина по главе карьеры (ccFnShopEra). */
   .cc-fn-shop .cc-fn-era{display:inline-block;margin-left:6px;padding:2px 8px;border-radius:4px;font-size:11px;letter-spacing:.06em;text-transform:uppercase;
     background:rgba(255,255,255,.14);vertical-align:2px;}
@@ -3990,7 +4001,7 @@
   /* С ноября 2023: тёмный магазин, плитки лентой со свайпом, полоска редкости снизу. */
   #screen-career-hub .ch-tile.cc-fn-c5{background:linear-gradient(180deg,#191b3d 0%,#0c0d1c 60%);}
   .cc-fn-c5 .cc-fn-ttl{font-size:24px;}
-  .cc-fn-c5 .cc-fn-grid{display:grid;grid-template-columns:none;grid-auto-flow:column;grid-auto-columns:minmax(148px,168px);
+  .cc-fn-c5 .cc-fn-grid{display:grid;grid-template-columns:none;grid-template-rows:repeat(2,minmax(118px,auto));grid-auto-flow:column dense;grid-auto-columns:minmax(148px,168px);
     overflow-x:auto;scroll-snap-type:x proximity;padding-bottom:6px;}
   .cc-fn-c5 .cc-fn-it{scroll-snap-align:start;border-radius:12px;border-bottom:3px solid color-mix(in srgb,var(--fn-bg) 60%,#fff);
     background:linear-gradient(180deg,color-mix(in srgb,var(--fn-bg) 55%,#fff) 0%,var(--fn-bg) 45%,color-mix(in srgb,var(--fn-bg) 30%,#000) 100%);}
@@ -22030,7 +22041,7 @@ Object.assign(I18N.it, {dyColPlayer:'Giocatore e squadra', dyYou:'tu', dyPowSpli
 Object.assign(I18N.pt, {dyColPlayer:'Jogador e time', dyYou:'você', dyPowSplit:'overall médio das cartas + sinergia'});
 let CC_I18N_V={de:'ee403985', es:'558bb6e1'};   // ==== CC_I18N_V (tools/build-i18n.js) ====
 // Версия fn-shop.js (магазин Fortnite по дням, tools/build-fn-shop.js) — для ?v= ленивой загрузки.
-let CC_FN_SHOP_V='62553252';
+let CC_FN_SHOP_V='0c643ab3';
 const CC_LANG_WAIT={};
 function ccLangLoad(lang, done){
   if(!CC_LANG_FILES[lang] || (typeof I18N!=='undefined' && I18N[lang])){ done && done(); return; }
@@ -117151,7 +117162,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='16db4d00';
+const CC_BUILD='cc86e84d';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -147711,7 +147722,7 @@ function ccFnShopLoad(done){
 let CC_FN_DAYS=null;
 function ccFnItem(i){
   const x=CC_FN_SHOP.items[i];
-  return x ? {i:i, id:x[0], name:x[1], t:x[2], r:x[3]} : null;
+  return x ? {i:i, id:x[0], name:x[1], t:x[2], r:x[3], set:x[4]!=null && CC_FN_SHOP.sets ? CC_FN_SHOP.sets[x[4]] : null} : null;
 }
 // Магазин дня: список предметов настоящего магазина Fortnite на эту дату.
 function ccFnShopDay(day){
@@ -147796,9 +147807,9 @@ function ccFnEquip(slot, id){
 function ccFnPick(slot){ CC_FN_PICK=CC_FN_PICK===slot ? null : slot; careerRenderHub(CH_TAB); }
 function ccFnShopOpen(){ CC_SHOP_SEC='items'; careerTab('shop'); }
 function ccFnLockerOpen(slot){ CC_FN_PICK=slot||'o'; careerTab('locker'); }
-function ccFnCardHTML(it, owned, canPay){
+function ccFnCardHTML(it, owned, canPay, big){
   const bg=CC_FN_RAR[it.r] || CC_FN_RAR.rare, T=L();
-  return '<div class="cc-fn-it'+(owned ? ' own' : '')+'" style="--fn-bg:'+bg+'">'+
+  return '<div class="cc-fn-it '+(big ? 'big' : 'sm')+(owned ? ' own' : '')+'" style="--fn-bg:'+bg+'">'+
     '<span class="cc-fn-img"><img src="'+ccFnImg(it.id)+'" alt="" loading="lazy" onerror="this.remove()"></span>'+
     '<b>'+esc(it.name)+'</b><em>'+esc(T['ccFnType_'+it.t]||'')+'</em>'+
     (owned ? '<span class="cc-fn-own">'+esc(T.ccFnOwned)+'</span>'
@@ -147821,19 +147832,29 @@ function ccFnShopHTML(){
     '<div class="cc-vb-packs">'+packs.map((p, k)=>'<button class="cc-vb-pack" '+((cr.balance||0)>=p.usd ? '' : 'disabled')+
       ' onclick="ccVbBuy('+k+')"><b><i class="cc-vb-ic"></i>'+ccNum(p.vb)+'</b><em>$'+p.usd.toFixed(2)+'</em></button>').join('')+'</div>'+
     '<div class="ch-hint">'+esc(T.ccVbNote(regionName(ccCareerRegion())))+'</div></div>';
-  const era=ccFnShopEra(day), groups={};
-  const sec=(h, items)=>'<div class="cc-fn-sec"><h5>'+esc(h)+'</h5><div class="cc-fn-grid">'+
-    items.map(it=>ccFnCardHTML(it, !!own[it.id], vb>=ccFnPrice(it))).join('')+'</div></div>';
+  const era=ccFnShopEra(day);
+  // Как в игре: витрина делится на наборы (скин рядом со своим рюкзаком, киркой, дельтапланом), скин — большая плитка,
+  // остальное — маленькие рядом. Наборы — по цене, дорогие выше; предметы без набора — в конце, по типам.
+  const TORD={o:0, b:1, p:2, g:3, w:4, e:5};
+  const setSort=a=>a.slice().sort((a, b)=>TORD[a.t]-TORD[b.t] || ccFnPrice(b)-ccFnPrice(a));
+  const sec=(h, items, cls, keep)=>'<div class="cc-fn-sec"><h5>'+esc(h)+'</h5><div class="cc-fn-grid'+(cls||'')+'">'+
+    (keep ? items : setSort(items))
+      .map(it=>ccFnCardHTML(it, !!own[it.id], vb>=ccFnPrice(it), cls ? false : it.t==='o')).join('')+'</div></div>';
+  const bySet=new Map(), loose={};
+  list.forEach(it=>{ if(it.set){ if(!bySet.has(it.set)) bySet.set(it.set, []); bySet.get(it.set).push(it); } else (loose[it.t]=loose[it.t]||[]).push(it); });
+  // Набор из одного предмета — не раздел, а «россыпь» по типу.
+  [...bySet].forEach(([k, a])=>{ if(a.length<2){ bySet.delete(k); (loose[a[0].t]=loose[a[0].t]||[]).push(a[0]); } });
+  const worth=a=>a.reduce((s, it)=>s+ccFnPrice(it), 0);
+  const sets=[...bySet].sort((a, b)=>worth(b[1])-worth(a[1]));
+  const looseHTML=cls=>['o','b','p','g','e','w'].filter(t=>loose[t]).map(t=>sec(T['ccFnTypes_'+t]||'', loose[t], cls)).join('');
   let body;
   if(era.k==='c1'){
-    // Глава 1: две колонки, как в игре: крупное (скины и наборы эпик+) — «Рекомендуемые», остальное — «Ежедневные».
-    const big=it=>(it.t==='o' || it.t==='b') && !/^(common|uncommon|rare)$/.test(it.r);
-    const feat=list.filter(big), daily=list.filter(it=>!big(it));
-    body=(feat.length ? sec(T.ccFnFeatured, feat) : '')+(daily.length ? sec(T.ccFnDaily, daily) : '');
-  } else {
-    list.forEach(it=>(groups[it.t]=groups[it.t]||[]).push(it));
-    body=['o','p','g','e','w','b'].filter(t=>groups[t]).map(t=>sec(T['ccFnTypes_'+t]||'', groups[t])).join('');
-  }
+    // Глава 1: «Рекомендуемые» — наборы со скином эпик+ (большие плитки), «Ежедневные» — остальное ровными квадратами.
+    const feat=sets.filter(([, a])=>a.some(it=>it.t==='o' && !/^(common|uncommon|rare)$/.test(it.r)));
+    const daily=sets.filter(s=>feat.indexOf(s)<0).flatMap(s=>s[1]).concat(...Object.values(loose));
+    body=(feat.length ? sec(T.ccFnFeatured, feat.flatMap(s=>setSort(s[1])), '', true) : '')+
+      (daily.length ? sec(T.ccFnDaily, daily, ' daily') : '');
+  } else body=sets.map(([k, a])=>sec(k, a)).join('')+looseHTML();
   const grid='<div class="ch-tile cc-fn-shop cc-fn-'+era.k+'"><h4><span class="cc-fn-ttl">'+esc(T.ccFnShopH(ccHdrDate(day)))+'</span>'+
     ' <span class="cc-fn-era">'+esc(T.ccFnEra(era.ch))+'</span> <small>'+esc(T.ccFnTomorrow)+'</small></h4>'+
     (list.length ? body : '<div class="ch-empty">'+esc(T.ccFnEmpty)+'</div>')+'</div>';
