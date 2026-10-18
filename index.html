@@ -8553,10 +8553,10 @@
       <div class="squad-panel">
         <h3 data-i18n="yourSquadTitle"></h3>
         <div class="count"><span id="squadFilled">0</span>/<span id="squadTotal">4</span> <span data-i18n="draftedLabel"></span></div>
-        <div class="squad-avg"><span data-i18n="avgRatingLabel"></span> <b id="squadAvg">—</b> · <span data-i18n="synergyLabel"></span> <b id="synergyVal">+0</b></div>
+        <div class="squad-avg"><span data-i18n="avgRatingLabel"></span> <b id="squadAvg">-</b> · <span data-i18n="synergyLabel"></span> <b id="synergyVal">+0</b></div>
         <div class="squad-avg"><span data-i18n="loadoutLabel"></span> <b id="loadoutVal">+0</b></div>
         <div class="squad-avg" id="roleRow"><span data-i18n="rolesLabel"></span> <b id="roleVal">+0</b> <span id="roleNames" style="color:var(--ink-dim);font-size:11px;"></span></div>
-        <div class="squad-avg" style="font-size:16px;padding-top:2px;"><span data-i18n="totalPowerLabel"></span> <b id="totalPowerVal" style="color:var(--accent);">—</b></div>
+        <div class="squad-avg" style="font-size:16px;padding-top:2px;"><span data-i18n="totalPowerLabel"></span> <b id="totalPowerVal" style="color:var(--accent);">-</b></div>
         <div class="synergy-svg-wrap"><svg id="synergySvg" viewBox="0 0 260 220" width="100%"></svg></div>
         <div id="slots"></div>
         <div id="synergyDetails" style="font-size:11px;color:var(--ink-dim);line-height:1.6;margin-top:6px;"></div>
@@ -9779,8 +9779,8 @@ ccTableSafe:(p,keep)=>ccTopC(p)+' — Дивизион 1 остаётся',
 ccTableDrop:(p,keep)=>ccTopC(p)+' — ниже '+keep+'-го, вылет во второй',
 ccTableNotIn:'Тебя ещё нет в таблице',
 ccTableRule:keep=>'В конце года первые '+keep+' остаются в Дивизионе 1, остальные заходят заново через второй',
-ccNewsKeptD1Low:(p,keep)=>'Итог сезона: #'+(p||'—')+' — ниже '+keep+'-го, но дивизион остаётся за тобой',
-ccNewsRelegated:(p,keep)=>'Итог сезона: #'+(p||'—')+' — ниже '+keep+'-го, следующий год во втором дивизионе',
+ccNewsKeptD1Low:(p,keep)=>'Итог сезона: #'+(p||'-')+' — ниже '+keep+'-го, но дивизион остаётся за тобой',
+ccNewsRelegated:(p,keep)=>'Итог сезона: #'+(p||'-')+' — ниже '+keep+'-го, следующий год во втором дивизионе',
 ccNewsKeptD1:p=>'Итог сезона: '+ccTop(p)+' — Дивизион 1 сохранён',
 chTabSocial:'Соцсети', chTabShop:'Магазин',
 ccNotes:'Уведомления',
@@ -11868,8 +11868,8 @@ ccTableSafe:(p,keep)=>ccTopC(p)+' — Division 1 kept',
 ccTableDrop:(p,keep)=>ccTopC(p)+' — below '+keep+'th, down to Division 2',
 ccTableNotIn:'You are not in the table yet',
 ccTableRule:keep=>'At the end of the year the top '+keep+' keep Division 1; everyone else re-enters through Division 2',
-ccNewsKeptD1Low:(p,keep)=>'End of season: #'+(p||'—')+' — below '+keep+'th, and the division is still yours',
-ccNewsRelegated:(p,keep)=>'End of season: #'+(p||'—')+' — below '+keep+'th, next year in Division 2',
+ccNewsKeptD1Low:(p,keep)=>'End of season: #'+(p||'-')+' — below '+keep+'th, and the division is still yours',
+ccNewsRelegated:(p,keep)=>'End of season: #'+(p||'-')+' — below '+keep+'th, next year in Division 2',
 ccNewsKeptD1:p=>'End of season: '+ccTop(p)+' — Division 1 kept',
 chTabSocial:'Social', chTabShop:'Shop',
 ccNotes:'Notifications',
@@ -13939,8 +13939,8 @@ ccTableWeeks:n=>'Finales hebdo jouées : '+n,
 ccTableSafe:(p,keep)=>ccTopC(p)+' — Division 1 gardée',
 ccTableDrop:(p,keep)=>ccTopC(p)+' — sous la '+keep+'e place, descente en Division 2',
 ccTableRule:keep=>'À la fin de l’année, le top '+keep+' garde la Division 1 ; tous les autres repassent par la Division 2',
-ccNewsKeptD1Low:(p,keep)=>'Fin de saison : n°'+(p||'—')+' — sous la '+keep+'e place, mais la division reste la tienne',
-ccNewsRelegated:(p,keep)=>'Fin de saison : n°'+(p||'—')+' — sous la '+keep+'e place, l’an prochain en Division 2',
+ccNewsKeptD1Low:(p,keep)=>'Fin de saison : n°'+(p||'-')+' — sous la '+keep+'e place, mais la division reste la tienne',
+ccNewsRelegated:(p,keep)=>'Fin de saison : n°'+(p||'-')+' — sous la '+keep+'e place, l’an prochain en Division 2',
 ccNewsKeptD1:p=>'Fin de saison : '+ccTop(p)+' — Division 1 gardée',
 ccNotesMore:n=>'Ouvrir les réseaux · '+n+' de plus',
 ccFlatM2:n=>n+' m²',
@@ -16129,8 +16129,8 @@ ccTableWeeks:n=>'Finali settimanali giocate: '+n,
 ccTableSafe:(p,keep)=>ccTopC(p)+' — Divisione 1 mantenuta',
 ccTableDrop:(p,keep)=>ccTopC(p)+' — sotto il '+keep+'\u00b0, gi\u00f9 in Divisione 2',
 ccTableRule:keep=>'A fine anno i primi '+keep+' restano in Divisione 1; tutti gli altri rientrano dalla Divisione 2',
-ccNewsKeptD1Low:(p,keep)=>'Fine stagione: #'+(p||'—')+' — sotto il '+keep+'\u00b0, e la divisione resta tua',
-ccNewsRelegated:(p,keep)=>'Fine stagione: #'+(p||'—')+' — sotto il '+keep+'\u00b0, l\u2019anno prossimo in Divisione 2',
+ccNewsKeptD1Low:(p,keep)=>'Fine stagione: #'+(p||'-')+' — sotto il '+keep+'\u00b0, e la divisione resta tua',
+ccNewsRelegated:(p,keep)=>'Fine stagione: #'+(p||'-')+' — sotto il '+keep+'\u00b0, l\u2019anno prossimo in Divisione 2',
 ccNewsKeptD1:p=>'Fine stagione: '+ccTop(p)+' — Divisione 1 mantenuta',
 ccNotesMore:n=>'Apri i social · altri '+n,
 ccFlatM2:n=>n+' m²',
@@ -18677,8 +18677,8 @@ ccTableWeeks:n=>'Finais semanais jogadas: '+n,
 ccTableSafe:(p,keep)=>ccTopC(p)+' — Divis\u00e3o 1 mantida',
 ccTableDrop:(p,keep)=>ccTopC(p)+' — abaixo do '+keep+'\u00ba, desce para a Divis\u00e3o 2',
 ccTableRule:keep=>'No fim do ano os '+keep+' primeiros ficam na Divis\u00e3o 1; o resto volta a entrar pela Divis\u00e3o 2',
-ccNewsKeptD1Low:(p,keep)=>'Fim de temporada: #'+(p||'—')+' — abaixo do '+keep+'\u00ba, e a divis\u00e3o continua sua',
-ccNewsRelegated:(p,keep)=>'Fim de temporada: #'+(p||'—')+' — abaixo do '+keep+'\u00ba, ano que vem na Divis\u00e3o 2',
+ccNewsKeptD1Low:(p,keep)=>'Fim de temporada: #'+(p||'-')+' — abaixo do '+keep+'\u00ba, e a divis\u00e3o continua sua',
+ccNewsRelegated:(p,keep)=>'Fim de temporada: #'+(p||'-')+' — abaixo do '+keep+'\u00ba, ano que vem na Divis\u00e3o 2',
 ccNewsKeptD1:p=>'Fim de temporada: '+ccTop(p)+' — Divis\u00e3o 1 mantida',
 ccNotesMore:n=>'Abrir as redes · mais '+n,
 ccFlatM2:n=>n+' m²',
@@ -23123,7 +23123,41 @@ function L(){
     if(LANG==='en') CC_L_CACHE[LANG]=Object.assign({}, own);
     Object.keys(more).forEach(k=>{ const base=CC_L_CACHE[LANG][k]; if(Array.isArray(base)) CC_L_CACHE[LANG][k]=base.concat(more[k]); });
   }
+  CC_L_CACHE[LANG]=ccNoDashDict(CC_L_CACHE[LANG]);
   return CC_L_CACHE[LANG];
+}
+/* БЕЗ ДЛИННЫХ ТИРЕ (его слово 18.10: «длинные тире убери»; главная — 17.10). Весь текст интерфейса идёт через L(), и
+   словарь языка чистится один раз, на копии (I18N не трогается): строки, массивы строк и функции-шаблоны (их
+   результат). Первое « — » в предложении — двоеточие, если двоеточия до него нет, дальше — запятые; тире в
+   начале фразы снимается; одиночное (пустая клетка) — «-»; между числами — «-». Названия турниров в данных не
+   трогаются: по ним код сверяет события. */
+function ccNoDash(s){
+  if(typeof s!=='string' || s.indexOf('—')<0) return s;
+  if(/^\s*—\s*$/.test(s)) return '-';
+  s=s.replace(/(\d)\s*—\s*(\d)/g, '$1-$2');
+  s=s.replace(/(^|[\n(«"])[  ]*—[  ]*/g, '$1');
+  s=s.replace(/[  ]+—[  ]*$/g, '');
+  s=s.replace(/[^.!?\n]+[.!?\n]*/g, sen=>{
+    let used=false;
+    return sen.replace(/[  ]+—(?:[  ]+|(?=<)|$)/g, (m, off)=>{
+      const before=sen.slice(0, off).replace(/<[^>]*>/g, '');
+      if(!used && before.indexOf(':')<0 && before.trim()){ used=true; return ': '; }
+      return ', ';
+    });
+  });
+  return s.replace(/—/g, '-');
+}
+function ccNoDashDict(d){
+  const out={};
+  Object.keys(d).forEach(k=>{
+    const v=d[k];
+    if(typeof v==='string') out[k]=ccNoDash(v);
+    else if(typeof v==='function') out[k]=function(){ const r=v.apply(this, arguments); return typeof r==='string' ? ccNoDash(r) : Array.isArray(r) ? r.map(ccNoDash) : r; };
+    else if(Array.isArray(v)) out[k]=v.map(x=>typeof x==='string' ? ccNoDash(x)
+      : typeof x==='function' ? function(){ const r=x.apply(this, arguments); return typeof r==='string' ? ccNoDash(r) : r; } : x);
+    else out[k]=v;
+  });
+  return out;
 }
 function applyStaticI18n(){
   // {CARDS} / {EVENTS} are filled from the roster itself so the explainer can
@@ -24411,7 +24445,7 @@ Object.assign(FLAG_CODE, FLAG_CODE_EXTRA);
 Object.assign(NATIONALITY, NEW_NATIONALITY_2025);
 
 const GLOBALS2025_EXTRA=[
-  {handle:'S1neD',region:'UNK',nat:'Украина',event:'Профиль игрока (результат на FNCS не опубликован)',date:'—'},
+  {handle:'S1neD',region:'UNK',nat:'Украина',event:'Профиль игрока (результат на FNCS не опубликован)',date:'-'},
   {handle:'Goofy',region:'OCE',nat:'Австралия'},{handle:'m0untain',region:'OCE',nat:'Австралия'},{handle:'VortexM',region:'OCE',nat:'Австралия'},
   {handle:'Snowy',region:'ME',nat:'Оман'},{handle:'Saald',region:'ME',nat:'Кувейт'},
   {handle:'Scarpa',region:'BR',nat:'Бразилия'},{handle:'WeY',region:'BR',nat:'Бразилия'},
@@ -93610,10 +93644,13 @@ const EVENT_PHRASE_EN={
   ' (участник, точное место не опубликовано)':' (participant, exact placement not published)'
 };
 function translateEventText(str){
-  if(!str || LANG!=='en') return str;
+  if(!str) return str;
+  // На экране — без длинного тире (18.10): «Major 1 · Grand Finals». Само имя события в данных прежнее.
+  const nd=s=>String(s).replace(/\s+—\s+/g, ' · ');
+  if(LANG!=='en') return nd(str);
   let out=str;
   Object.keys(EVENT_PHRASE_EN).forEach(k=>{ out=out.split(k).join(EVENT_PHRASE_EN[k]); });
-  return out;
+  return nd(out);
 }
 
 const MONTH_EN={'янв':'Jan','фев':'Feb','мар':'Mar','апр':'Apr','мая':'May','июн':'Jun','июл':'Jul','авг':'Aug','сен':'Sep','окт':'Oct','ноя':'Nov','дек':'Dec'};
@@ -101649,7 +101686,7 @@ function renderSlots(){
     const avg=Math.round(drafted.reduce((s,p)=>s+p.rating,0)/drafted.length);
     avgEl.innerHTML=avg+'/100';
   } else {
-    avgEl.innerHTML='—';
+    avgEl.innerHTML='-';
   }
   const syn=computeSynergy(drafted);
   document.getElementById('synergyVal').textContent='+'+syn.bonus;
@@ -101686,7 +101723,7 @@ function renderSlots(){
     totalPowerEl.style.color = totalPower>100 ? '#ffd700' : (totalPower<0 ? 'var(--danger)' : 'var(--accent)');
     totalPowerEl.style.textShadow = totalPower>100 ? '0 0 8px rgba(255,215,0,.6)' : 'none';
   } else {
-    totalPowerEl.textContent='—';
+    totalPowerEl.textContent='-';
     totalPowerEl.style.textShadow='none';
   }
 
@@ -101831,7 +101868,7 @@ let fillerSeq=0;
 function makeFiller(){
   fillerSeq++;
   return {handle:'Резерв-'+fillerSeq, partner:null, nat:null, region:'GEN',
-    event:'Резервный игрок (не реальный участник FNCS)', date:'—', placement:null,
+    event:'Резервный игрок (не реальный участник FNCS)', date:'-', placement:null,
     rarity:'common', rating:38, tier:'filler'};
 }
 
@@ -102332,7 +102369,7 @@ function thresholdLabel(place){
   if(place===1) return L().victoryRoyaleWord;
   if(place<=7) return 'Top '+place;
   if(place<=25) return 'Top 25';
-  return '—';
+  return '-';
 }
 
 let skipAnimation=false;
@@ -102564,8 +102601,8 @@ function renderYearCard(){
     return `<tr class="lobby-row">
       <td>${esc(l.title)}</td>
       <td class="num">${best ? `<b style="color:${best.passed?'var(--accent)':'var(--ink-dim)'};">#${best.rank}</b>
-        <span style="color:var(--ink-dimmer);">/${best.total}</span>` : '—'}</td>
-      <td class="num" style="color:var(--ink-dim);">${paid?fmtMoney(paid):'—'}</td></tr>`;
+        <span style="color:var(--ink-dimmer);">/${best.total}</span>` : '-'}</td>
+      <td class="num" style="color:var(--ink-dim);">${paid?fmtMoney(paid):'-'}</td></tr>`;
   }).join('');
   const card=document.createElement('div');
   card.className='stage-card';
@@ -103107,7 +103144,7 @@ async function simulateGamesLive(teams, numGames, pointsFn, killMult, fieldPrefi
      на игру, и показывать этот шум как «силу» значило бы врать в другую
      сторону. Живая игра опознаётся по liveScore, как и очки с килами. */
   const livePow = t => {
-    if(t.pow==null && t._pf==null) return '—';
+    if(t.pow==null && t._pf==null) return '-';
     const live = liveScore && liveScore.has(t._uid) && t._pf!=null;
     if(!live) return Math.round(t.pow);
     /* Сила карточки плюс то, что игрок с ней сделал: лут после второй зоны и
@@ -104317,7 +104354,7 @@ async function revealStageLog(you, shell, instant){
     running+=g.pts;
     const tr=document.createElement('tr');
     const gameLabel = g.isLandingBonus ? '🪂' : (L().gameWord+' '+g.game);
-    const placeLabel = g.place!=null ? '#'+g.place : '—';
+    const placeLabel = g.place!=null ? '#'+g.place : '-';
     tr.innerHTML=`<td>${gameLabel}</td><td class="num">${placeLabel}</td><td class="num">${g.elims}</td><td class="num">${g.pts}</td><td class="num">${running}</td>`;
     shell.logBody.appendChild(tr);
     if(g.feed && g.feed.length){
@@ -105607,7 +105644,7 @@ function landingFieldHTML(you, bots){
     // loadout already in it — not the plain average of card ratings.
     const ovr = t.pow!=null ? Math.round(t.pow)
       : (t.squad&&t.squad.length
-          ? Math.round(t.squad.reduce((s,p)=>s+attrsFor(p).ovr,0)/t.squad.length) : '—');
+          ? Math.round(t.squad.reduce((s,p)=>s+attrsFor(p).ovr,0)/t.squad.length) : '-');
     const names=t.squad ? t.squad.map(p=>cardFlag(p,13)+p.handle).join(' & ') : t.name;
     return `<tr${mine?' style="background:rgba(0,176,144,.10);font-weight:700;"':''}>
       <td>${names}${mine?' <span style="color:var(--accent);font-size:10px;text-transform:uppercase;"> · '+L().summitYouTag+'</span>':''}</td>
@@ -107517,7 +107554,7 @@ function animateRows(wrapEl, perRow, startIndex){
 // How a Summit entrant did back home: their placement in their own region's
 // Grand Finals and what that finish paid.
 function regionResultHTML(t){
-  if(!t || !t.regionRank) return '—';
+  if(!t || !t.regionRank) return '-';
   const prize=t.regionPrize||0;
   return `<span style="color:var(--ink-dim);">#${t.regionRank}</span>`+
     (prize?` <span style="color:#ffd166;font-weight:800;">${fmtMoney(prize)}</span>`:'');
@@ -107557,7 +107594,7 @@ function landingRecord(t){
 }
 function landingCellHTML(t){
   const zone=landingZoneLabel(t);
-  if(!zone) return '—';
+  if(!zone) return '-';
   // The spot, and what happened on it.
   //
   // This column has been in twice and out twice, and both removals were right at
@@ -107577,7 +107614,7 @@ function landingCellHTML(t){
   const rec=landingRecord(t);
   return rec
     ? `<span style="color:var(--accent);font-weight:800;">${rec}</span>`
-    : `<span style="color:var(--ink-dimmer);" title="${L().landingNobodyElse}">—</span>`;
+    : `<span style="color:var(--ink-dimmer);" title="${L().landingNobodyElse}">-</span>`;
 }
 
 // The plate the broadcast cuts to once a stage is done: who won it and the
@@ -108792,7 +108829,7 @@ async function runGcLastChance(you, region, opts){
   const rolledDown=!wonSeat && alreadyQualified && rank<=slots;
   await revealStageLog(you, shell, true);
   const note = wonSeat ? L().gclcPass(rank, slots)
-    : rolledDown ? L().gclcSeatRolls(rank, (seats[seats.length-1]||{}).name || '—')
+    : rolledDown ? L().gclcSeatRolls(rank, (seats[seats.length-1]||{}).name || '-')
     : alreadyQualified ? L().gclcAlreadyIn
     : L().gclcFail(slots);
   finalizeStageCard(shell, rank, finals.length, you.stagePts, wonSeat||alreadyQualified, you.gotVR, note);
@@ -109063,13 +109100,13 @@ function renderGameHistory(you){
   you.gameLog.forEach(g=>{
     const tr=document.createElement('tr');
     const gameLabel = g.isLandingBonus ? '🪂' : (L().gameWord+' '+g.game);
-    const placeLabel = g.place!=null ? '#'+g.place : '—';
+    const placeLabel = g.place!=null ? '#'+g.place : '-';
     tr.innerHTML=`<td>${gameLabel}</td><td class="num">${placeLabel}</td><td class="num">${g.elims}</td><td class="num">${g.pts}</td>`;
     body.appendChild(tr);
   });
   const totalTr=document.createElement('tr');
   totalTr.style.fontWeight='800';
-  totalTr.innerHTML=`<td>${L().totalWord}</td><td class="num">—</td><td class="num">${you.totalElims}</td><td class="rate">${you.totalPts}</td>`;
+  totalTr.innerHTML=`<td>${L().totalWord}</td><td class="num">-</td><td class="num">${you.totalElims}</td><td class="rate">${you.totalPts}</td>`;
   body.appendChild(totalTr);
   animateRows(body.closest('.lobby-wrap') || body.parentElement.parentElement);
 }
@@ -111931,9 +111968,9 @@ function ccPackPow(p){
 const ccRarityWord=r=>{ const k=ccRarityKey(r); return k ? k.charAt(0).toUpperCase()+k.slice(1) : ''; };
 // Стак пишется числом рядом с названием, как в инвентаре: «Small Shield Potion ×6».
 const ccStackTag=o=>(o && o.n>1) ? ' ×'+o.n : '';
-function ccItemLabel(o){ return o ? o.name+ccStackTag(o)+' ('+ccRarityWord(o.rarity)+')' : '—'; }
+function ccItemLabel(o){ return o ? o.name+ccStackTag(o)+' ('+ccRarityWord(o.rarity)+')' : '-'; }
 function ccPackLine(p){
-  const name=o=>o ? o.name+ccStackTag(o) : '—';
+  const name=o=>o ? o.name+ccStackTag(o) : '-';
   return [...(p.weapons||[]), ...(p.heals||[]), p.move].map(name).join(' · ');
 }
 // Шанс стычки на высадке: сила как у высадочной дуэли (LANDING_POW_EXPONENT,
@@ -112081,7 +112118,7 @@ async function ccAskLoot(you, ui){
   // С чем уйдёшь с соседней точки: своё плюс её лучшее (ccPackMerge), а не её пак вместо своего.
   const merged=ccPackMerge(mine, other, null, Math.random);
   ccMpMark('l1');
-  const name=o=>o ? esc(o.name) : '—';
+  const name=o=>o ? esc(o.name) : '-';
   const listOf=p=>[...p.weapons, ...p.heals, p.move].map(name).join(' · ');
   /* Спрашивают обоих, а решение всё равно одно.
 
@@ -113640,7 +113677,7 @@ function yearBreakdownHTML(p, glow){
   if(!f) return '';
   const L_=L(), C=(typeof YEAR_RATING!=='undefined' && YEAR_RATING && YEAR_RATING.cfg) || {};
   const row=(name, val)=>`<div class="srow" style="padding:3px 0;"><span style="text-transform:none;letter-spacing:0;">${name}</span><b style="font-variant-numeric:tabular-nums;">${val}</b></div>`;
-  const rows=[row(L_.brkYearSeason, f.season.toFixed(1)), row(L_.brkYearPrev, f.prev!=null ? f.prev.toFixed(1) : '—'),
+  const rows=[row(L_.brkYearSeason, f.season.toFixed(1)), row(L_.brkYearPrev, f.prev!=null ? f.prev.toFixed(1) : '-'),
               row(L_.brkYearExp, f.exp ? '+'+(f.exp*(C.expPts||1.5)).toFixed(1) : '0')];
   if(f.stat!=null) rows.push(row(L_.brkYearStat, f.stat.toFixed(1)));
   if(f.floor!=null) rows.push(row(L_.brkYearFloor, f.floor.toFixed(1)));
@@ -113703,7 +113740,7 @@ function renderStats(){
   drafted.forEach(p=>{
     const flag = cardFlag(p, 15);
     const tr=document.createElement('tr');
-    tr.innerHTML=`<td>${flag}${p.handle}</td><td>${regionName(p.region)}</td><td>${translateEventText(p.event)} (${translateDate(p.date)})</td><td class="num">${p.placement!=null?'#'+p.placement:'—'}</td><td class="rate">${p.rating}</td>`;
+    tr.innerHTML=`<td>${flag}${p.handle}</td><td>${regionName(p.region)}</td><td>${translateEventText(p.event)} (${translateDate(p.date)})</td><td class="num">${p.placement!=null?'#'+p.placement:'-'}</td><td class="rate">${p.rating}</td>`;
     body.appendChild(tr);
   });
   animateRows(document.getElementById('statBody').closest('.lobby-wrap') || document.getElementById('statBody').parentElement.parentElement);
@@ -114278,7 +114315,7 @@ async function shareResultImage(){
     ctx.font='900 24px '+fam; ctx.fillStyle=INK;
     ctx.fillText(pl.handle.toUpperCase(), panelX+24, ry+22);
     ctx.font='700 14px '+fam; ctx.fillStyle=MUTED;
-    ctx.fillText((pl.nat?natDisplay(pl.nat):'—')+'  ·  '+pl.rating, panelX+24, ry+42);
+    ctx.fillText((pl.nat?natDisplay(pl.nat):'-')+'  ·  '+pl.rating, panelX+24, ry+42);
     // exotic — креатор Про-Ама, тот же #70C7F8, что на карточке и в --exotic.
     const rColor={common:'#9aa0a6',uncommon:'#3aa76a',rare:'#2b8fd0',epic:'#8b4ecc',legendary:'#d9a520',mythic:'#d9a520',exotic:'#70c7f8'}[shownRarity(pl)]||'#9aa0a6';
     ctx.fillStyle=rColor; ctx.fillRect(panelX+panelW-38, ry+8, 14, 14);
@@ -114448,7 +114485,7 @@ function renderCardCollection(){
     const card=document.createElement('div');
     card.className='achv-card '+(has?'unlocked':'locked');
     const flag=cardFlag(p,16);
-    card.innerHTML=`<div class="achv-icon">${has?'🃏':'🔒'}</div><div><div class="achv-title">${flag}${p.handle}</div><div class="achv-desc">${L().ratingHeader} ${p.rating} · ${p.nat?natDisplay(p.nat):'—'}</div></div>`;
+    card.innerHTML=`<div class="achv-icon">${has?'🃏':'🔒'}</div><div><div class="achv-title">${flag}${p.handle}</div><div class="achv-desc">${L().ratingHeader} ${p.rating} · ${p.nat?natDisplay(p.nat):'-'}</div></div>`;
     grid.appendChild(card);
   });
   const progressEl=document.getElementById('collectionProgress');
@@ -114831,7 +114868,7 @@ function ccBuildMap(click, reg){
       if(state) usDone=true;
     }
     shapes+=`<path class="cc-mp" data-code="${e.c}" d="${o.d}" fill="url(#${fid})">`+
-      `<title>${nm} — ${e.ping} ms</title></path>`;
+      `<title>${nm}: ${e.ping} ms</title></path>`;
     const call=(ccMapHere(reg)===CC_MAP) ? CC_CALLOUT[e.c] : null;
     const at=call||[o.cx,o.cy];
     // Size follows how much room the country actually has, not its bounding box.
@@ -116361,7 +116398,7 @@ function ccGainNotes(){
     const age=parseInt((document.getElementById('ccAge')||{}).value,10);
     const e=isFinite(age) ? ccAgeEdge(age) : 0;
     ag.style.display=built ? '' : 'none';
-    ag.innerHTML=T.ccAgeGain(isFinite(age)?age:'—', (e>0?'+':'')+e, CC_AGE_EDGE, CC_AGE_PEAK, CC_AGE_FADE);
+    ag.innerHTML=T.ccAgeGain(isFinite(age)?age:'-', (e>0?'+':'')+e, CC_AGE_EDGE, CC_AGE_PEAK, CC_AGE_FADE);
   }
   if(pg){
     pg.style.display=built ? '' : 'none';
@@ -116418,7 +116455,7 @@ function ccSync(){
     const f=CC.creator ? ccProAmFollowers(CC.creator) : 0;
     out.innerHTML = CC.creator
       ? `<span><em>${L().ccRoRegion||''}</em>${esc(regionName(CC.region||'EU'))}</span>`+
-        `<span><em>${L().xFollowers}</em>${f?ccNum(f):'—'}</span>`
+        `<span><em>${L().xFollowers}</em>${f?ccNum(f):'-'}</span>`
       : `<span>${L().ccPickCreator}</span>`;
     return;
   }
@@ -116428,7 +116465,7 @@ function ccSync(){
     if(CC.card){
       const opts=ccCountriesHere(CC.region).map(x=>`<option value="${esc(x.c)}">${esc(ccCountryName(x.c)||x.c)}</option>`).join('');
       out.innerHTML=`<span>${L().ccPickCountry}</span><select class="cc-country-sel" onchange="ccPickCountry(this.value)">`+
-        `<option value="">—</option>${opts}</select>`;
+        `<option value="">-</option>${opts}</select>`;
       return;
     }
     out.innerHTML=`<span>${L().ccPickCountry}</span>`; return;
@@ -116450,7 +116487,7 @@ function ccSync(){
     (ping!=null
       ? `<span><em>${L().ccRoPing}</em>${ping} ms${pingEdge?` <b class="cc-ro-plus">${plus(pingEdge)}</b>`:''}</span>`
       : '')+
-    `<span><em>${L().ccAge}</em>${isFinite(age)?age:'—'}${ageEdge?` <b class="cc-ro-plus${ageEdge<0?' bad':''}">${plus(ageEdge)}</b>`:''}</span>`+
+    `<span><em>${L().ccAge}</em>${isFinite(age)?age:'-'}${ageEdge?` <b class="cc-ro-plus${ageEdge<0?' bad':''}">${plus(ageEdge)}</b>`:''}</span>`+
     `<span><em>${L().ccRoRole}</em>${L()[CC.card?attrsFor(CC.card).roleKey:CC.role]}</span>`+
     // Taking a card takes their duo with it — said here, before the start.
     (CC.card ? (()=>{ const m=ccRealMateOf(CC.card);
@@ -117019,7 +117056,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='37b6c57f';
+const CC_BUILD='349a2c29';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -117274,7 +117311,7 @@ function ccMpGateDayWhy(){
 }
 function ccMpFfErrSaw(p){
   if(!p || !(ccMpOn() || (typeof ccRaceOn==='function' && ccRaceOn()))) return;
-  var text=L().ccMpFfPeerBroke(String(p.text||'—'));
+  var text=L().ccMpFfPeerBroke(String(p.text||'-'));
   try{ ccMpTell(text); }catch(e){}
   if(typeof CC_FF!=='undefined' && CC_FF){
     CC_FF.stop={text:text};
@@ -120415,7 +120452,7 @@ function ccCloudDraw(){
   let h='<div class="cl-head"><b>☁ '+esc(T.clTitle)+'</b>';
   if(code){
     const sent=ccCloudSent();
-    const when=sent._at ? new Date(sent._at).toLocaleString(LANG==='ru' ? 'ru-RU' : LANG, {day:'numeric', month:'short', hour:'2-digit', minute:'2-digit'}) : '—';
+    const when=sent._at ? new Date(sent._at).toLocaleString(LANG==='ru' ? 'ru-RU' : LANG, {day:'numeric', month:'short', hour:'2-digit', minute:'2-digit'}) : '-';
     h+='<span>'+esc(T.clOn)+'</span></div><div class="cl-code">'+esc(ccCloudFmt(code))+'</div>'+
        '<p class="cl-sub">'+esc(T.clKeep)+'</p><p class="cl-sub">'+esc(T.clSent(when))+(CC_CLOUD_BUSY ? ' · '+esc(T.clBusy) : '')+'</p>'+
        '<div class="cl-row"><button class="cc-car-open" onclick="ccCloudPush()">'+esc(T.clPushNow)+'</button>'+
@@ -121040,7 +121077,7 @@ function careerRenderSlots(){
         '<em>'+meta+'</em></div>'+
       '<div class="cc-car-ovr"><small>'+L().ccRoOvr+'</small>'+c.ovr+'</div>'+
       (c.noDiv
-        ? '<div class="cc-car-div cc-car-se"><small>'+L().ccSlotSeason+'</small>'+esc(ccSeasonTag(c.day).short||'—')+'</div>'
+        ? '<div class="cc-car-div cc-car-se"><small>'+L().ccSlotSeason+'</small>'+esc(ccSeasonTag(c.day).short||'-')+'</div>'
         : '<div class="cc-car-div"><small>'+L().ccDivision+'</small>'+c.div+'</div>')+
       '<div class="cc-car-go">'+
         '<button class="'+(n===here?'ch-play':'cc-car-open')+'" onclick="careerSlotOpen('+n+')">'+
@@ -121441,7 +121478,7 @@ function careerWorldHTML(){
   const evw=k=>{ try{ return ccFfKindWord(k)||''; }catch(e){ return ''; } };
   const tr=(r,i)=>'<tr class="'+(r.you?'lb-me':'')+'"><td>'+(i+1)+'</td><td>'+flag(r.country)+esc(r.nick)+
     '<small> · '+esc(T.lbSeasons(r.seasons))+'</small></td><td>'+esc(r.region)+'</td><td>$'+ccNum(CC_BOARD_SORT==='spent' ? (r.spent||0) : r.earn)+
-    '</td><td>'+r.ovr+'</td><td>'+r.div+'</td><td>'+r.titles+'</td><td>'+(r.best ? esc(r.best)+(r.bestEv ? ' <small>'+esc(evw(r.bestEv))+'</small>' : '') : '—')+'</td></tr>';
+    '</td><td>'+r.ovr+'</td><td>'+r.div+'</td><td>'+r.titles+'</td><td>'+(r.best ? esc(r.best)+(r.bestEv ? ' <small>'+esc(evw(r.bestEv))+'</small>' : '') : '-')+'</td></tr>';
   let body=rows.map(tr).join('');
   if(d.you && !rows.some(r=>r.you)) body+='<tr class="lb-gap"><td colspan="8">…</td></tr>'+tr(Object.assign({you:true}, d.you.row), d.you.rank-1);
   return head+me+'<div class="lb-wrap"><table class="lb-table"><thead><tr>'+c.map(x=>'<th>'+esc(x)+'</th>').join('')+
@@ -123186,7 +123223,7 @@ function ccDropSideHTML(home, set){
 // Чего стоит лут коробки — теми же очками, что видит пикер на высадке.
 function careerSpotPointsOf(i, set){
   const p=careerSpotPowOf(i, set);
-  return p==null ? '—' : L().landingPoints(p);
+  return p==null ? '-' : L().landingPoints(p);
 }
 /* Сила, которую точка даёт команде на вечер (applyLandingPow: очки точки идут в силу
    один к одному). null — точки нет на загруженном острове. */
@@ -123651,7 +123688,7 @@ function careerOrgTileHTML(){
         ${org.perk ? `<em class="ch-perk">${T['ccPerk'+org.perk]}</em>` : ''}</div>
       <div class="cc-orgc-cells">
         ${cell(T.ccWage, ccMoney(org.salary)+T.ccPerSeason)}
-        ${cell(T.ccOrgCutRow, careerOrgCut() ? Math.round(careerOrgCut()*100)+'%' : '—')}
+        ${cell(T.ccOrgCutRow, careerOrgCut() ? Math.round(careerOrgCut()*100)+'%' : '-')}
         ${cell(T.ccGoal, careerOrgGoalText(org.goal)+(met ? ' ✓' : ''), met)}
         ${g ? cell(T.ccMgTitle, careerMonthGoalText(g)+' · '+ccMoney(g.bonus)+(gOk ? ' ✓' : ''), gOk) : ''}
       </div>
@@ -123726,7 +123763,7 @@ function careerOrgTileHTML(){
 // more: the cup this mode actually plays is 150 duos cutting to 50, and a tile
 // promising "top 200" over a lobby where fifty advance is a tile that lies. The
 // derivation from these numbers to that one is in the design doc.
-const CAREER_CUT={1:'—', 2:'top 50', 3:'top 100', 4:'top 200', 5:'top 400'};
+const CAREER_CUT={1:'-', 2:'top 50', 3:'top 100', 4:'top 200', 5:'top 400'};
 
 /* ---- The calendar ---------------------------------------------------------
    A week number is not a calendar. This lays the season out on real months, one
@@ -124273,7 +124310,7 @@ function ccHostRun(){
   careerRepAdd(1);
   const who=winners.length
     ? winners.map(h=>'@'+ccHandle(h)+(wins.get(h)>1 ? ' ×'+wins.get(h) : '')).join(', ')
-    : '—';
+    : '-';
   careerNews('flat', 'ccPostHosted', [per, who, myWins]);
   cr.hostLast={day:careerToday(), a:[myWins, cash ? ccNum(cash) : 0, who]};
   return {wins:myWins, cash:cash, pot:pot, per:per, winners:winners};
@@ -125059,7 +125096,7 @@ function ccGoalsTileHTML(){
     let now;
     if(org.goal.type==='promote') now=L().ccDivision+' '+cr.division;
     else { const best=(cr.log||[]).filter(e=>e.season===cr.season).reduce((b,e)=>Math.min(b, e.place||999), 999);
-      now=best<999 ? '#'+best : '—'; }
+      now=best<999 ? '#'+best : '-'; }
     rows.push(row(L().hgClub+' · '+org.name, careerOrgGoalText(org.goal), met ? '✓ '+esc(L().hgDone) : esc(L().hgNow)+' '+esc(now), met));
   }
   const mg=careerMonthGoal();
@@ -129212,7 +129249,7 @@ function careerLadderPlayer(rnd, ovr, taken, natHint, roleWant, topOvr, plain){
   // Настоящему — его собственный флаг (или никакого), выдуманному — из пула региона.
   const nat=rp ? (rp[1] ? ccNatOf(rp[1]) : null) : natGen;
   return {handle:h, nat:nat, region:ccCareerRegion(), org:null,
-          tier:'ladder', event:L().ccLadderEvent, date:'—', placement:null,
+          tier:'ladder', event:L().ccLadderEvent, date:'-', placement:null,
           rating:r, _targetOvr:r, _attrs:ccRookieAttrs(r, role), _real:!!rp};
 }
 
@@ -135373,7 +135410,7 @@ function careerOrgGoal(div){
 }
 function careerOrgGoalText(goal){
   // Цели может не быть вовсе: свой клуб задач себе не ставит. См. careerClubFound.
-  if(!goal || !goal.type) return '—';
+  if(!goal || !goal.type) return '-';
   return goal.type==='promote' ? L().ccGoalPromote(goal.target) : L().ccGoalPlace(goal.target);
 }
 // Whether the season's log has already done it. Promotion is read off the
@@ -144432,7 +144469,7 @@ function ccTrainWeekHTML(){
     else if(did.length) body='<span class="tw-did">'+did.filter(x=>String(x).indexOf('ev:')!==0).map(id=>{
         const g=(grades.find(r=>r.id===id)||{}).g;
         return '<i title="'+esc(ccActName(id))+'">'+(CC_TRAIN_ICON[id]||'•')+(g ? '<b class="g-'+g.replace('+','p')+'">'+g+'</b>' : '')+'</i>'; }).join('')+'</span>';
-    else body='<span class="tw-free">'+(iso<today ? '—' : iso===today ? esc(L().lfTwPick) : '')+'</span>';
+    else body='<span class="tw-free">'+(iso<today ? '-' : iso===today ? esc(L().lfTwPick) : '')+'</span>';
     return '<div class="tw-day'+(iso===today?' now':'')+(iso<today?' past':'')+'"><em>'+L().calDows[d]+'</em><b>'+
       new Date(iso+'T00:00:00Z').getUTCDate()+'</b>'+body+'</div>';
   }).join('');
@@ -144745,7 +144782,7 @@ function careerDayPanelHTML(locked){
          красная строка с текстом. Ровно то же решение, что у перемотки —
          см. CC_FF.err и .cc-ffo-err. */
       (CC_DAY_ERR ? '<div class="cc-ffo-err"><b>'+esc(L().ccDayBroke(ccDayLabel(CC_DAY_ERR.day)))+'</b>'+
-                    '<span>'+esc(CC_DAY_ERR.text||'—')+'</span></div>' : '')+
+                    '<span>'+esc(CC_DAY_ERR.text||'-')+'</span></div>' : '')+
     '</div></div>';
 }
 function careerPickDay(id){
@@ -145592,7 +145629,7 @@ function careerWorldFinals(fromISO, toISO){
   const log=cr.log||[];
   const paid=cr.worldPaid=cr.worldPaid||{};
   const drafted=[me].concat(careerMates().filter(Boolean));
-  const stubOf=()=>({name:'—', pow:0, squad:[], _stub:true, isYou:true, stagePts:0});
+  const stubOf=()=>({name:'-', pow:0, squad:[], _stub:true, isYou:true, stagePts:0});
   const rank=f=>f.slice().sort((a,b)=>(b.stagePts||0)-(a.stagePts||0) || (b.wins||0)-(a.wins||0) || (b.stageElims||0)-(a.stageElims||0));
   let played=0;
   /* Ключ — турнир, а не день: финал мейджора и Глобалы идут два дня, платят раз.
@@ -147044,7 +147081,7 @@ function careerOwnCup(fund, sure){
   cr.balance-=fund;
   const got=careerReachAdd(Math.round(fund*CC_OWN_CUP_REACH));
   const w=ccOwnCupWinner(fund);
-  const wn=w ? '@'+(w.handle||'') : '—';
+  const wn=w ? '@'+(w.handle||'') : '-';
   const was=cr.ownCup||{};
   cr.ownCup={last:careerToday(), n:(was.n||0)+1, spent:(was.spent||0)+fund, win:wn, got:got, fund:fund};
   careerNews('good', 'ccNewsOwnCup', [CAREER.player.nick||'', ccNum(fund), wn, ccFollowers(got)]);
@@ -148683,7 +148720,7 @@ function careerFfDigest(ff){
     // Упавший день говорит, какой это был день и что именно сломалось: без
     // текста ошибки «ноль дней» — это загадка, а не сообщение. См. CC_FF.err.
     (ff.err ? '<div class="cc-ffo-err"><b>'+esc(L().ccFfBroke(ccDayLabel(ff.err.day)))+'</b>'+
-              '<span>'+esc(ff.err.text||'—')+'</span></div>' : '')+
+              '<span>'+esc(ff.err.text||'-')+'</span></div>' : '')+
     (stats?'<div class="cc-ffo-stats">'+stats+'</div>':'')+
     (tiles?'<div class="cc-ffo-grid">'+tiles+'</div>'
           :'<div class="cc-ffo-empty">'+esc(L().ccFfNothing)+'</div>')+
@@ -150334,11 +150371,11 @@ function ccGalaShareLines(y){
   const top=Object.keys(mates).sort((a,b)=>mates[b]-mates[a])[0];
   const run=(y.runs||[])[0];
   return {tiles:[[ccNum(y.events), L().ccGalaEvents], [ccNum(y.wins), L().ccGalaWins], [ccNum(y.elims), L().ccGalaElims],
-                 [ccMoney(y.prize), L().ccGalaPrize], [y.best ? '#'+y.best.place : '—', L().ccGalaBest], [String(y.ovr), L().ccGalaOvr]],
+                 [ccMoney(y.prize), L().ccGalaPrize], [y.best ? '#'+y.best.place : '-', L().ccGalaBest], [String(y.ovr), L().ccGalaOvr]],
           rows:[run ? [careerRunLabel(run), L().ccBoardPlace(run.place, run.of)] : null,
                 top ? [L().lfGalaTopMate, top+' · '+mates[top]] : null,
                 (y.goty && y.goty.you) ? [L().ccGalaGotyYou, '🏆'] : null,
-                y.prev ? [L().ccGalaPrevRow, ccMoney(y.prev.prize)+' · '+(y.prev.best ? '#'+y.prev.best : '—')] : null,
+                y.prev ? [L().ccGalaPrevRow, ccMoney(y.prev.prize)+' · '+(y.prev.best ? '#'+y.prev.best : '-')] : null,
                 ((CAREER.career.locker||[]).filter(it=>it.season===y.season && it.kind!=='spray').length)
                   ? [L().ccLockerTitle, (CAREER.career.locker||[]).filter(it=>it.season===y.season && it.kind!=='spray').map(it=>it.name).slice(0, 2).join(', ')] : null
                ].filter(Boolean).slice(0, 4)};
@@ -150433,7 +150470,7 @@ function ccGalaNum(v, label){
 function ccGalaYouSlide(){
   const cr=CAREER.career, log=(cr.log||[]).filter(e=>e.season===cr.season);
   const rated=log.filter(e=>e.rating!=null);
-  const avg=rated.length ? (rated.reduce((a,e)=>a+e.rating,0)/rated.length).toFixed(1) : '—';
+  const avg=rated.length ? (rated.reduce((a,e)=>a+e.rating,0)/rated.length).toFixed(1) : '-';
   const best=rated.slice().sort((a,b)=>b.rating-a.rating)[0];
   const mvp=rated.filter(e=>e.mvpYou).length;
   const mates={}; log.forEach(e=>(e.mates||(e.mate?[e.mate]:[])).forEach(m=>{ if(m) mates[m]=(mates[m]||0)+1; }));
@@ -150460,7 +150497,7 @@ function ccGalaSlide(i, y){
       ${ccGalaNum(ccNum(y.elims)+ccGalaDelta(y.elims, y.prev && y.prev.elims), L().ccGalaElims)}
       ${ccGalaNum(ccMoney(y.prize)+ccGalaDelta(y.prize, y.prev && y.prev.prize, true), L().ccGalaPrize)}
       ${ccGalaNum(ccNum(y.pr), L().ccGalaPr)}
-      ${ccGalaNum(y.best ? '#'+y.best.place : '—', L().ccGalaBest)}
+      ${ccGalaNum(y.best ? '#'+y.best.place : '-', L().ccGalaBest)}
     </div>
     <div class="cc-gala-row"><em>${L().ccGalaOvr}</em><b>${y.ovr} <i>${
       esc(L().ccGalaOvrUp(y.grew))}</i></b></div>
@@ -151648,7 +151685,7 @@ function ccMajorWorldHeats(iso){
   /* Место игрока в змейке занимает заглушка: сама раскладка обязана совпасть с
      той, по которой он вышел в свой день, иначе соседний хит соберётся из
      других людей. В комнату заглушка не идёт. */
-  const stub={name:'—', pow:0, squad:[], _stub:true};
+  const stub={name:'-', pow:0, squad:[], _stub:true};
   const seeded=rows.map(r=>r==='you' ? stub : ccMajorTeamFrom(r));
   const heats=seedHeats(seeded, ccMajorHeats());
   const room=(heats[ev.nth-1]||[]).filter(t=>!t._stub).slice(0, st.field);
@@ -151990,8 +152027,8 @@ function careerMoney(){
 function careerMoneyKeys(){
   const cr=CAREER.career;
   const fs=careerFncsSeason(careerToday());
-  return {yr:String(cr.season), fs:cr.season+':'+((fs&&fs.id)||'—'),
-          fsName:(fs&&fs.id)||'—'};
+  return {yr:String(cr.season), fs:cr.season+':'+((fs&&fs.id)||'-'),
+          fsName:(fs&&fs.id)||'-'};
 }
 // prize(place, team) — the payout table of whatever just finished.
 /* ---- A prize is won by a duo and paid to two people -------------------------
@@ -155240,7 +155277,7 @@ function ccLanSummitSim(drafted){
   let rows=[];
   try{
     ccWorldRun('lansim|'+cr.season+'|summit', ()=>{
-      const stub={name:'—', pow:0, squad:[], _stub:true, isYou:true, stagePts:0};
+      const stub={name:'-', pow:0, squad:[], _stub:true, isYou:true, stagePts:0};
       const room=(careerSummitField('final', stub, drafted||[])||[]).filter(t=>t && !t._stub && !t.isYou);
       if(room.length<2) return;
       room.forEach(t=>{ t.stagePts=0; t.wins=0; t.stageElims=0; });
@@ -155549,7 +155586,7 @@ function ccStageCardFrom(rec){
   // Ника больше нет в сцене — человек всё равно играл, и место его не пустует.
   const r=clamp(Math.round(rec.o||ccBand(1)), 35, ccGenTop());
   return {handle:rec.h, nat:rec.n||null, region:reg, org:null,
-          tier:'ladder', event:L().ccLadderEvent, date:'—', placement:null,
+          tier:'ladder', event:L().ccLadderEvent, date:'-', placement:null,
           rating:r, _targetOvr:r, _attrs:ccRookieAttrs(r, rec.k||'roleFRG')};
 }
 /* СБОРКА КОМАНДЫ ИЗ ЗАПИСИ — ВНЕ СЕЯНОГО ПОТОКА. Атрибуты выдуманной карточки, роли и химия
@@ -156600,7 +156637,7 @@ function ccMajorCardFrom(rec){
   }
   const r=clamp(Math.round(rec.o||ccBand(1)), 35, ccGenTop());
   return {handle:rec.h, nat:rec.n||null, region:ccCareerRegion(), org:null,
-          tier:'ladder', event:L().ccLadderEvent, date:'—', placement:null,
+          tier:'ladder', event:L().ccLadderEvent, date:'-', placement:null,
           rating:r, _targetOvr:r, _attrs:ccRookieAttrs(r, rec.k||'roleFRG')};
 }
 // Тем же правилом, что ccStageTeamFrom: сборка из записи не берёт бросков вечера.
@@ -163984,7 +164021,7 @@ function mgrOpenNew(year){
     '<div class="mgn-faces">'+faces(c)+'</div>'+
     '<div class="mgn-cells"><span><small>'+esc(T9.transfer)+'</small><b>'+mgrMoney(c.budget.transfer)+'</b></span>'+
       '<span><small>'+esc(T9.wageCap)+'</small><b>'+mgrMoney(c.budget.wageCap)+'</b></span>'+
-      '<span><small>'+esc(T9.star)+'</small><b>'+esc(c.star||'—')+'</b></span></div>'+
+      '<span><small>'+esc(T9.star)+'</small><b>'+esc(c.star||'-')+'</b></span></div>'+
     '<div class="mgn-exp">'+esc(T9.expect[c.expect])+'</div></div>';
   const tile=(c,i)=>'<div class="ch-tile mgn-club" data-i="'+i+'" onclick="mgrTake('+i+')">'+
     '<div class="mgn-head"><span class="mg-logo">'+mgrLogo(c.name, false)+'</span>'+
@@ -163992,7 +164029,7 @@ function mgrOpenNew(year){
     '<div class="mgn-row"><em>'+esc(T9.transfer)+'</em><b>'+mgrMoney(c.budget.transfer)+'</b></div>'+
     '<div class="mgn-row"><em>'+esc(T9.wageCap)+'</em><b>'+mgrMoney(c.budget.wageCap)+' '+esc(T.month)+'</b></div>'+
     '<div class="mgn-row"><em>'+esc(T9.fans)+'</em><b'+(mgrOrgFollowers(c.name, c.avg).est ? ' title="'+esc(T9.fansEst)+'"' : '')+'>'+(mgrOrgFollowers(c.name, c.avg).est ? '≈' : '')+ccFollowers(mgrOrgFollowers(c.name, c.avg).n)+'</b></div>'+
-    '<div class="mgn-row"><em>'+esc(T9.star)+'</em><b>'+esc(c.star||'—')+' · '+c.n+' '+esc(T.players)+'</b></div>'+
+    '<div class="mgn-row"><em>'+esc(T9.star)+'</em><b>'+esc(c.star||'-')+' · '+c.n+' '+esc(T.players)+'</b></div>'+
     '<div class="mgn-exp">'+esc(T9.expect[c.expect])+'</div></div>';
   const real='<div class="ch-subtabs mgn-sort">'+sub(MGR_NEW_SORT==='stars', "MGR_NEW_SORT='stars';mgrOpenNew()", T9.byStars)+
       sub(MGR_NEW_SORT==='budget', "MGR_NEW_SORT='budget';mgrOpenNew()", T9.byBudget)+'</div>'+
@@ -164162,7 +164199,7 @@ function mgrCardBase(h){
 function mgrSnap(c){
   const a=Object.assign({}, attrsFor(c));
   return {handle:c.handle, nat:c.nat||null, region:c.region||null, org:c.org||null, rating:c.rating, _targetOvr:Math.round(ccCardOvr(c)||c.rating||0),
-          _attrs:a, _roleKey:a.roleKey, date:c.date||'—', event:c.event||'', tier:c.tier||null, rarity:c.rarity||null, placement:c.placement||null};
+          _attrs:a, _roleKey:a.roleKey, date:c.date||'-', event:c.event||'', tier:c.tier||null, rarity:c.rarity||null, placement:c.placement||null};
 }
 function mgrCard(h){
   const c=mgrCardBase(h);
@@ -164481,7 +164518,7 @@ function mgrGuestNight(row){
     t.gdrop=(t.gdrop||[]).concat(gone.map(hKey));
     t.guests=[];
     mgrGuestAuto();
-    const now=(t.guests||[]).join(', ')||'—', who=t.cards[0]||'';
+    const now=(t.guests||[]).join(', ')||'-', who=t.cards[0]||'';
     MGR.inbox=MGR.inbox||[];
     MGR.inbox.unshift({id:'gs'+row.day+'_'+t.id, day:row.day, kind:'info', done:'info',
       text:ru ? who+' меняет напарника после трёх слабых вечеров: '+gone.join(', ')+' → '+now : ({fr:()=>(who+' change de coéquipier après trois mauvaises soirées : '+gone.join(', ')+' → '+now), it:()=>(who+' cambia compagno dopo tre serate deboli: '+gone.join(', ')+' → '+now), pt:()=>(who+' troca de parceiro após três noites fracas: '+gone.join(', ')+' → '+now), de:()=>(who+' wechselt den Mitspieler nach drei schwachen Abenden: '+gone.join(', ')+' → '+now), es:()=>(who+' cambia de compañero tras tres noches flojas: '+gone.join(', ')+' → '+now)}[LANG]||(()=>(who+' changes teammate after three weak nights: '+gone.join(', ')+' → '+now)))()});
@@ -165004,7 +165041,7 @@ function mgrSquadHTML(){
       ((MGR.academy||[]).length ? MGR.academy.map(mgrCardTileHTML).join('') : '<div class="ch-empty">'+esc(T.none)+'</div>')+'</div></div>';
   const T9=mgrT9();
   const loan=(MGR.loanOut||[]).length ? '<div class="ch-tile mgs-team mgs-loan"><h4>'+esc(T9.loanH)+'</h4>'+
-      MGR.loanOut.map(h=>{ const l=(MGR.loans||{})[hKey(h)]||{}; return '<div class="mgn-row"><em>'+esc(h)+'</em><b>'+esc(T9.loanTo(l.to||'—', ccDayLabel(l.until||'')))+'</b></div>'; }).join('')+'</div>' : '';
+      MGR.loanOut.map(h=>{ const l=(MGR.loans||{})[hKey(h)]||{}; return '<div class="mgn-row"><em>'+esc(h)+'</em><b>'+esc(T9.loanTo(l.to||'-', ccDayLabel(l.until||'')))+'</b></div>'; }).join('')+'</div>' : '';
   return '<div class="mgs-wrap mgs-grid">'+teams+'</div><div class="mgs-wrap mgs-grid mgs-grid2">'+bench+acad+loan+'</div>'+mgrPromisesHTML();
 }
 function mgrSheetOpen(h){
@@ -165018,7 +165055,7 @@ function mgrSheetOpen(h){
   const el=document.getElementById('mgSheet');
   el.innerHTML='<div class="ch-tile mgs-in"><h4>'+esc(h)+'</h4><button class="mgs-x" onclick="mgrSheetClose()">✕</button>'+
     '<div class="mgs-top"><div class="mgs-big">'+futCardHTML(cd, {wide:true, noEvent:true})+'</div><div class="mgs-facts">'+
-      row(T9.role, esc(L()[a.roleKey]||'—'))+(mgrAgeNow(h)!=null ? row(T9.ageH, esc(T9.age(mgrAgeNow(h)))) : '')+row(T4.pot, esc(mgrPotText(h)))+
+      row(T9.role, esc(L()[a.roleKey]||'-'))+(mgrAgeNow(h)!=null ? row(T9.ageH, esc(T9.age(mgrAgeNow(h)))) : '')+row(T4.pot, esc(mgrPotText(h)))+
       row(T2.wage, mgrMoney(mgrWage(h))+' '+esc(T.month))+row(T9.until, esc(T4.contractTo(mgrUntil(h))))+
       row(T2.morale, (mgrMorale(h)>0 ? '+' : '')+mgrMorale(h))+
       row(T9.trait, MGR_TRAIT_ICON[mgrTrait(h)]+' '+esc(T9.traits[mgrTrait(h)])+' <small>'+esc(T9.traitN[mgrTrait(h)])+'</small>')+
@@ -165097,7 +165134,7 @@ function mgrYouthMonth(monthKey){
     const n=1+(rnd()<0.4 ? 1 : 0), got=[];
     for(let i=0; i<n; i++){
       const h=mgrYouthName(rnd, taken), r=50+Math.floor(rnd()*19), role=rnd()<0.5 ? 'roleIGL' : 'roleFRG';
-      MGR.ext[hKey(h)]={handle:h, nat:s.nat||null, region:MGR.region, org:null, tier:'ladder', event:'Youth', date:'—', placement:null,
+      MGR.ext[hKey(h)]={handle:h, nat:s.nat||null, region:MGR.region, org:null, tier:'ladder', event:'Youth', date:'-', placement:null,
         rating:r, _targetOvr:r, _attrs:ccRookieAttrs(r, role), _youth:true, ageYear:MGR.year, age:15+Math.floor(rnd()*3), _pot:70+Math.floor(rnd()*25)};
       MGR.ylist.push(h); got.push(h);
     }
@@ -165144,7 +165181,7 @@ function mgrFeedPost(kind, data){
 function mgrClubShot(row){
   const ru=(typeof LANG!=='undefined' && LANG==='ru');
   const tbl={cap:MGR.club.name+' · '+row.name, rows:(row.teams||[]).slice().sort((a,b)=>a.place-b.place).map(t=>({p:t.place,
-    n:Object.keys(t.kills||{}).join(' & ')||t.name||'—', f:Object.keys(t.kills||{}).map(h=>{ const c=mgrCard(h); return c ? c.nat : null; }).filter(Boolean),
+    n:Object.keys(t.kills||{}).join(' & ')||t.name||'-', f:Object.keys(t.kills||{}).map(h=>{ const c=mgrCard(h); return c ? c.nat : null; }).filter(Boolean),
     s:Math.round(t.pts||0), e:t.elims||0, w:t.wins||0, m:null}))};
   tbl.me=(tbl.rows[0]||{}).n;
   const best=tbl.rows[0], text=best ? (ru ? '#'+best.p+(row.teams[0] && row.teams[0].of ? ' из '+row.teams[0].of : '')+' — '+row.name : ({fr:()=>('#'+best.p+' — '+row.name), it:()=>('#'+best.p+' — '+row.name), pt:()=>('#'+best.p+' — '+row.name), de:()=>('#'+best.p+' — '+row.name), es:()=>('#'+best.p+' — '+row.name)}[LANG]||(()=>('#'+best.p+' — '+row.name)))()) : row.name;
@@ -165226,7 +165263,7 @@ function mgrWorldPrize(ev, place, size, stage, wins){
 function mgrWorldRow(tm, place, ev, size, stage){
   const sq=tm.squad||[];
   const orgs=[...new Set(sq.map(c=>mgrOrgOf(c)).filter(Boolean))];
-  return {place, n:sq.map(c=>c.handle).join(' & ')||tm.name||'—', orgs,
+  return {place, n:sq.map(c=>c.handle).join(' & ')||tm.name||'-', orgs,
           pts:tm.stagePts!=null ? Math.round(tm.stagePts) : null, el:tm.stageElims!=null ? tm.stageElims : null,
           prize:mgrWorldPrize(ev, place, size, stage, tm.wins), mine:!!tm.isClub || orgs.indexOf(MGR.club.name)>=0};
 }
@@ -165249,7 +165286,7 @@ function mgrWorldStore(ev, ranked, played, stage){
   /* МЕДИА КАК В КАРЬЕРЕ (его слова 8.10: «Fortnite Competitive нет в медиа, хочу медиа с таблицами, как в карьере игрока»):
      @FNCompetitive постит итоги капа картинкой-таблицей (ccShotHTML карьеры): топ-10 — флаги, ники, элимы, очки. */
   try{
-    const tbl={cap:ev.name, mode:(mgrTW().fmt||{})[ev.mode]||'', rows:ranked.slice(0, 10).map((tm,i)=>({p:i+1, n:(tm.squad||[]).map(c=>c.handle).join(' & ')||tm.name||'—',
+    const tbl={cap:ev.name, mode:(mgrTW().fmt||{})[ev.mode]||'', rows:ranked.slice(0, 10).map((tm,i)=>({p:i+1, n:(tm.squad||[]).map(c=>c.handle).join(' & ')||tm.name||'-',
       f:(tm.squad||[]).map(c=>c.nat).filter(Boolean), s:Math.round(tm.stagePts||0), e:tm.stageElims||0, m:(tm.stageLog||[]).length||null, w:tm.wins||0}))};
     const mine=ranked.findIndex(tm=>tm.isClub); if(mine>=10){ const tm=ranked[mine]; tbl.pin={p:mine+1, n:(tm.squad||[]).map(c=>c.handle).join(' & '), s:Math.round(tm.stagePts||0), e:tm.stageElims||0, m:(tm.stageLog||[]).length||null, w:tm.wins||0}; tbl.me=tbl.pin.n; }
     else if(mine>=0) tbl.me=tbl.rows[mine].n;
@@ -165363,7 +165400,7 @@ function mgrWorldEventsHTML(){
     return '<details class="ch-tile mgw-ev"'+(i===0 ? ' open' : '')+'><summary><b>'+esc(r.name)+'</b> <small>'+esc(ccDayLabel(r.day))+' · '+(r.mode ? esc(W.fmt[r.mode]||r.mode)+' · ' : '')+(r.played ? esc(T9.wPlayed) : esc(T9.wSim))+' · '+r.n+'</small>'+(mine ? ' <i class="mgw-minetag">★</i>' : '')+'</summary>'+
     (mine ? '<button class="cc-back mgw-jump" onclick="mgrJumpMine(this)">'+esc(W.mine)+'</button>' : '')+
     '<div class="mgw-scroll"><table class="mgw-t"><tr><th>#</th><th>'+esc(T9.wTeam)+'</th><th>'+esc(T9.wOrg)+'</th><th>'+esc(T9.wPts)+'</th><th>$</th></tr>'+
-    r.rows.map((x,j)=>(j>0 && x.place>r.rows[j-1].place+1 ? '<tr class="mgw-gap"><td colspan="5">…</td></tr>' : '')+'<tr class="'+(x.mine || x.orgs.indexOf(MGR.club.name)>=0 ? 'mine' : '')+'"><td>'+x.place+'</td><td>'+esc(x.n)+'</td><td>'+esc(x.orgs.join(', ')||'—')+'</td><td>'+(x.pts!=null ? x.pts : '—')+'</td><td>'+(x.prize ? mgrMoney(x.prize) : '')+'</td></tr>').join('')+
+    r.rows.map((x,j)=>(j>0 && x.place>r.rows[j-1].place+1 ? '<tr class="mgw-gap"><td colspan="5">…</td></tr>' : '')+'<tr class="'+(x.mine || x.orgs.indexOf(MGR.club.name)>=0 ? 'mine' : '')+'"><td>'+x.place+'</td><td>'+esc(x.n)+'</td><td>'+esc(x.orgs.join(', ')||'-')+'</td><td>'+(x.pts!=null ? x.pts : '-')+'</td><td>'+(x.prize ? mgrMoney(x.prize) : '')+'</td></tr>').join('')+
     '</table></div></details>'; }).join('');
 }
 function mgrJumpMine(btn){
@@ -165917,7 +165954,7 @@ function mgrT2(){
     board:'Совет директоров', goalEarn:s=>'Заработать призовыми не меньше '+s, goalPlace:p=>'Лучшее место в сезоне — '+p+' или выше',
     endSeason:'Итоги сезона', seasonOver:'Сезон закончен', met:'выполнено', notMet:'не выполнено', fired:'Совет тебя уволил. Найди новый клуб',
     nextSeason:y=>'Сезон '+y, stay:'Совет доволен — следующий сезон', lastYear:'Это последний год в игре — можно начать с другим клубом',
-    fncsQ:'Квалификация', fncsF:'Финал', qualified:n=>n+' в финале', out:n=>n+' не прошли', best:'лучшее место', bestNone:'—',
+    fncsQ:'Квалификация', fncsF:'Финал', qualified:n=>n+' в финале', out:n=>n+' не прошли', best:'лучшее место', bestNone:'-',
     teamWord:'Команда', benchWord:'Запас', newTeamDone:'Команда собрана', needMore:n=>'Для команды нужно ещё '+n
   } : ({fr:()=>({
     tClub:'Club', tMarket:'Marché', tInbox:'Messages', to:'→', release:'Libérer', releaseAsk:(n,s)=>'Libérer '+n+' ? Indemnité '+s,
@@ -165928,7 +165965,7 @@ function mgrT2(){
     board:'Direction', goalEarn:s=>'Gagner au moins '+s+' de gains', goalPlace:p=>'Meilleur résultat de la saison — '+p+' ou mieux',
     endSeason:'Bilan de la saison', seasonOver:'Saison terminée', met:'atteint', notMet:'raté', fired:'La direction t\'a viré. Trouve un nouveau club',
     nextSeason:y=>'Saison '+y, stay:'La direction est contente — saison suivante', lastYear:'C\'est la dernière année du jeu — recommence avec un autre club',
-    fncsQ:'Qualifier', fncsF:'Finale', qualified:n=>n+' sont en finale', out:n=>n+' sont éliminés', best:'meilleur résultat', bestNone:'—',
+    fncsQ:'Qualifier', fncsF:'Finale', qualified:n=>n+' sont en finale', out:n=>n+' sont éliminés', best:'meilleur résultat', bestNone:'-',
     teamWord:'Équipe', benchWord:'Banc', newTeamDone:'Équipe formée', needMore:n=>'Il en manque '+n+' pour une équipe'
   }), it:()=>({
     tClub:'Club', tMarket:'Mercato', tInbox:'Posta', to:'→', release:'Svincola', releaseAsk:(n,s)=>'Svincolare '+n+'? Buonuscita '+s,
@@ -165939,7 +165976,7 @@ function mgrT2(){
     board:'Dirigenza', goalEarn:s=>'Guadagna almeno '+s+' di montepremi', goalPlace:p=>'Miglior piazzamento della stagione — '+p+' o meglio',
     endSeason:'Resoconto stagione', seasonOver:'Stagione finita', met:'fatto', notMet:'mancato', fired:'La dirigenza ti ha licenziato. Trova un nuovo club',
     nextSeason:y=>'Stagione '+y, stay:'La dirigenza è soddisfatta — prossima stagione', lastYear:'Questo è l\'ultimo anno del gioco — ricomincia con un altro club',
-    fncsQ:'Qualifica', fncsF:'Finale', qualified:n=>n+' in finale', out:n=>n+' eliminati', best:'miglior piazzamento', bestNone:'—',
+    fncsQ:'Qualifica', fncsF:'Finale', qualified:n=>n+' in finale', out:n=>n+' eliminati', best:'miglior piazzamento', bestNone:'-',
     teamWord:'Squadra', benchWord:'Panchina', newTeamDone:'Squadra creata', needMore:n=>'Ne servono ancora '+n+' per una squadra'
   }), pt:()=>({
     tClub:'Clube', tMarket:'Mercado', tInbox:'Mensagens', to:'→', release:'Dispensar', releaseAsk:(n,s)=>'Dispensar '+n+'? Multa rescisória '+s,
@@ -165950,7 +165987,7 @@ function mgrT2(){
     board:'Diretoria', goalEarn:s=>'Ganhe pelo menos '+s+' em premiação', goalPlace:p=>'Melhor colocação da temporada — '+p+' ou melhor',
     endSeason:'Balanço da temporada', seasonOver:'Temporada encerrada', met:'cumprida', notMet:'não cumprida', fired:'A diretoria te demitiu. Procure um novo clube',
     nextSeason:y=>'Temporada '+y, stay:'A diretoria está satisfeita — próxima temporada', lastYear:'Este é o último ano do jogo — recomece com outro clube',
-    fncsQ:'Qualificatória', fncsF:'Final', qualified:n=>n+' foram à final', out:n=>n+' estão fora', best:'melhor colocação', bestNone:'—',
+    fncsQ:'Qualificatória', fncsF:'Final', qualified:n=>n+' foram à final', out:n=>n+' estão fora', best:'melhor colocação', bestNone:'-',
     teamWord:'Time', benchWord:'Banco', newTeamDone:'Time montado', needMore:n=>'Faltam '+n+' para um time'
   }), de:()=>({
     tClub:'Club', tMarket:'Markt', tInbox:'Posteingang', to:'→', release:'Entlassen', releaseAsk:(n,s)=>n+' entlassen? Abfindung '+s,
@@ -165961,7 +165998,7 @@ function mgrT2(){
     board:'Vorstand', goalEarn:s=>'Verdiene mindestens '+s+' Preisgeld', goalPlace:p=>'Beste Platzierung der Saison — '+p+' oder besser',
     endSeason:'Saisonbilanz', seasonOver:'Saison vorbei', met:'erreicht', notMet:'verfehlt', fired:'Der Vorstand hat dich entlassen. Such dir einen neuen Club',
     nextSeason:y=>'Saison '+y, stay:'Der Vorstand ist zufrieden — nächste Saison', lastYear:'Das ist das letzte Jahr im Spiel — fang mit einem anderen Club neu an',
-    fncsQ:'Qualifier', fncsF:'Finale', qualified:n=>n+' im Finale', out:n=>n+' ausgeschieden', best:'beste Platzierung', bestNone:'—',
+    fncsQ:'Qualifier', fncsF:'Finale', qualified:n=>n+' im Finale', out:n=>n+' ausgeschieden', best:'beste Platzierung', bestNone:'-',
     teamWord:'Team', benchWord:'Bank', newTeamDone:'Team zusammengestellt', needMore:n=>'Noch '+n+' für ein Team nötig'
   }), es:()=>({
     tClub:'Club', tMarket:'Mercado', tInbox:'Mensajes', to:'→', release:'Liberar', releaseAsk:(n,s)=>'¿Liberar a '+n+'? Indemnización '+s,
@@ -165972,7 +166009,7 @@ function mgrT2(){
     board:'Directiva', goalEarn:s=>'Gana al menos '+s+' en premios', goalPlace:p=>'Mejor puesto de la temporada — '+p+' o mejor',
     endSeason:'Balance de la temporada', seasonOver:'Temporada terminada', met:'cumplido', notMet:'fallido', fired:'La directiva te despidió. Busca un club nuevo',
     nextSeason:y=>'Temporada '+y, stay:'La directiva está contenta — próxima temporada', lastYear:'Este es el último año del juego — empieza de nuevo con otro club',
-    fncsQ:'Clasificatoria', fncsF:'Final', qualified:n=>n+' llegaron a la final', out:n=>n+' quedaron fuera', best:'mejor puesto', bestNone:'—',
+    fncsQ:'Clasificatoria', fncsF:'Final', qualified:n=>n+' llegaron a la final', out:n=>n+' quedaron fuera', best:'mejor puesto', bestNone:'-',
     teamWord:'Equipo', benchWord:'Banquillo', newTeamDone:'Equipo armado', needMore:n=>'Faltan '+n+' para un equipo'
   })}[LANG]||(()=>({
     tClub:'Club', tMarket:'Market', tInbox:'Inbox', to:'→', release:'Release', releaseAsk:(n,s)=>'Release '+n+'? Severance '+s,
@@ -165983,7 +166020,7 @@ function mgrT2(){
     board:'Board', goalEarn:s=>'Earn at least '+s+' in prize money', goalPlace:p=>'Best finish of the season — '+p+' or better',
     endSeason:'Season review', seasonOver:'Season over', met:'done', notMet:'missed', fired:'The board fired you. Find a new club',
     nextSeason:y=>'Season '+y, stay:'The board is happy — next season', lastYear:'This is the last year in the game — start again with another club',
-    fncsQ:'Qualifier', fncsF:'Final', qualified:n=>n+' made the final', out:n=>n+' are out', best:'best finish', bestNone:'—',
+    fncsQ:'Qualifier', fncsF:'Final', qualified:n=>n+' made the final', out:n=>n+' are out', best:'best finish', bestNone:'-',
     teamWord:'Team', benchWord:'Bench', newTeamDone:'Team built', needMore:n=>n+' more needed for a team'
   })))();
 }
@@ -166009,7 +166046,7 @@ function mgrLoan(h){
   const avgOf=o=>{ const v=by[o].sort((a,b)=>b-a).slice(0, 6); return v.reduce((s,x)=>s+x, 0)/v.length; };
   const all=Object.keys(by), weaker=all.filter(o=>avgOf(o)<(MGR.club.avg||0));
   const clubs=weaker.length ? weaker : all;
-  const to=clubs.length ? clubs[Math.abs(ccHashStr(hKey(h)+CAREER.career.day))%clubs.length] : '—';
+  const to=clubs.length ? clubs[Math.abs(ccHashStr(hKey(h)+CAREER.career.day))%clubs.length] : '-';
   MGR.bench=(MGR.bench||[]).filter(x=>hKey(x)!==hKey(h));
   MGR.academy=(MGR.academy||[]).filter(x=>hKey(x)!==hKey(h));
   MGR.loanOut=(MGR.loanOut||[]).concat([h]);
@@ -166476,7 +166513,7 @@ function mgrT4(){
     expiring:'Истекают контракты', renew:(n,s)=>'Продлить '+n+' за '+s+' в месяц', leaves:n=>n+' уходит свободным', clauseHit:(c,n,s)=>c+' выкупил '+n+' по отступным '+s,
     tTrain:'Тренировки', trainH:'Фокус недели', trScrims:'Скримы', trCreative:'Creative', trVod:'Разбор VOD', trRest:'Отдых',
     trScrimsN:'+сила на ближайший вечер, усталость растёт', trCreativeN:'рост игроков быстрее', trVodN:'мораль +, почти без усталости', trRestN:'усталость падает',
-    fatigue:'Усталость', tired:'Ассистент: команда устала (больше 70%) — сила на вечерах падает. Поставь неделю отдыха во вкладке «Тренировки»', staff:'Штаб', hire:'Нанять', fire:'Уволить', tier:t=>['—','базовый','хороший','элитный'][t]||'—',
+    fatigue:'Усталость', tired:'Ассистент: команда устала (больше 70%) — сила на вечерах падает. Поставь неделю отдыха во вкладке «Тренировки»', staff:'Штаб', hire:'Нанять', fire:'Уволить', tier:t=>['-','базовый','хороший','элитный'][t]||'-',
     sCoach:'Тренер', sAnalyst:'Аналитик', sPsych:'Психолог', sSmm:'SMM',
     sCoachN:'рост игроков', sAnalystN:'разбор соперников перед вечером, +сила', sPsychN:'мораль не ниже −1, восстанавливается', sSmmN:'спонсоры +',
     report:'Разбор соперников', strong:'Сильнейшие в лобби', fresh:'Свободный агент'
@@ -166490,7 +166527,7 @@ function mgrT4(){
     expiring:'Contrats expirants', renew:(n,s)=>'Prolonger '+n+' à '+s+' par mois', leaves:n=>n+' part libre', clauseHit:(c,n,s)=>c+' a activé la clause de départ de '+n+' : '+s,
     tTrain:'Entraînement', trainH:'Priorité de la semaine', trScrims:'Scrims', trCreative:'Creative', trVod:'Analyse VOD', trRest:'Repos',
     trScrimsN:'+power pour la prochaine soirée, la fatigue monte', trCreativeN:'les joueurs progressent plus vite', trVodN:'moral +, peu fatigant', trRestN:'la fatigue baisse',
-    fatigue:'Fatigue', tired:'Assistant : l\'équipe est fatiguée (plus de 70 %) — la power baisse les soirs de match. Programme une semaine de repos dans l\'onglet Entraînement', staff:'Staff', hire:'Recruter', fire:'Renvoyer', tier:t=>['—','basique','bon','élite'][t]||'—',
+    fatigue:'Fatigue', tired:'Assistant : l\'équipe est fatiguée (plus de 70 %) — la power baisse les soirs de match. Programme une semaine de repos dans l\'onglet Entraînement', staff:'Staff', hire:'Recruter', fire:'Renvoyer', tier:t=>['-','basique','bon','élite'][t]||'-',
     sCoach:'Coach', sAnalyst:'Analyste', sPsych:'Psychologue', sSmm:'SMM',
     sCoachN:'progression des joueurs', sAnalystN:'rapport sur les adversaires avant la soirée, +power', sPsychN:'plancher de moral −1, récupère', sSmmN:'sponsors +',
     report:'Rapport adverse', strong:'Le plus fort du lobby', fresh:'Agent libre'
@@ -166504,7 +166541,7 @@ function mgrT4(){
     expiring:'Contratti in scadenza', renew:(n,s)=>'Rinnova '+n+' a '+s+' al mese', leaves:n=>n+' se ne va a parametro zero', clauseHit:(c,n,s)=>c+' ha attivato la clausola rescissoria di '+n+': '+s,
     tTrain:'Allenamento', trainH:'Focus della settimana', trScrims:'Scrims', trCreative:'Creative', trVod:'Analisi VOD', trRest:'Riposo',
     trScrimsN:'+power per la prossima serata, sale la fatica', trCreativeN:'i giocatori crescono più in fretta', trVodN:'morale +, stanca poco', trRestN:'la fatica cala',
-    fatigue:'Fatica', tired:'Assistente: la squadra è stanca (oltre il 70%) — la power cala nelle serate di gara. Imposta una settimana di riposo nella scheda Allenamento', staff:'Staff', hire:'Assumi', fire:'Licenzia', tier:t=>['—','base','buono','élite'][t]||'—',
+    fatigue:'Fatica', tired:'Assistente: la squadra è stanca (oltre il 70%) — la power cala nelle serate di gara. Imposta una settimana di riposo nella scheda Allenamento', staff:'Staff', hire:'Assumi', fire:'Licenzia', tier:t=>['-','base','buono','élite'][t]||'-',
     sCoach:'Coach', sAnalyst:'Analista', sPsych:'Psicologo', sSmm:'SMM',
     sCoachN:'crescita dei giocatori', sAnalystN:'report sugli avversari prima della serata, +power', sPsychN:'soglia minima del morale −1, si riprende', sSmmN:'sponsor +',
     report:'Report sugli avversari', strong:'Il più forte della lobby', fresh:'Free agent'
@@ -166518,7 +166555,7 @@ function mgrT4(){
     expiring:'Contratos vencendo', renew:(n,s)=>'Renovar '+n+' por '+s+' ao mês', leaves:n=>n+' sai de graça', clauseHit:(c,n,s)=>c+' ativou a cláusula de rescisão de '+n+': '+s,
     tTrain:'Treino', trainH:'Foco da semana', trScrims:'Scrims', trCreative:'Creative', trVod:'Análise de VOD', trRest:'Descanso',
     trScrimsN:'+power na próxima noite, o cansaço aumenta', trCreativeN:'os jogadores evoluem mais rápido', trVodN:'moral +, cansa pouco', trRestN:'o cansaço diminui',
-    fatigue:'Cansaço', tired:'Assistente: o time está cansado (acima de 70%) — a power cai nas noites de jogo. Marque uma semana de descanso na aba Treino', staff:'Equipe técnica', hire:'Contratar', fire:'Demitir', tier:t=>['—','básico','bom','elite'][t]||'—',
+    fatigue:'Cansaço', tired:'Assistente: o time está cansado (acima de 70%) — a power cai nas noites de jogo. Marque uma semana de descanso na aba Treino', staff:'Equipe técnica', hire:'Contratar', fire:'Demitir', tier:t=>['-','básico','bom','elite'][t]||'-',
     sCoach:'Coach', sAnalyst:'Analista', sPsych:'Psicólogo', sSmm:'SMM',
     sCoachN:'evolução dos jogadores', sAnalystN:'relatório dos rivais antes da noite, +power', sPsychN:'piso de moral −1, se recupera', sSmmN:'patrocinadores +',
     report:'Relatório dos rivais', strong:'O mais forte do lobby', fresh:'Agente livre'
@@ -166532,7 +166569,7 @@ function mgrT4(){
     expiring:'Auslaufende Verträge', renew:(n,s)=>n+' für '+s+' im Monat verlängern', leaves:n=>n+' geht ablösefrei', clauseHit:(c,n,s)=>c+' hat die Ausstiegsklausel von '+n+' gezogen: '+s,
     tTrain:'Training', trainH:'Fokus der Woche', trScrims:'Scrims', trCreative:'Creative', trVod:'VOD-Analyse', trRest:'Pause',
     trScrimsN:'+Power für den nächsten Abend, Müdigkeit steigt', trCreativeN:'Spieler wachsen schneller', trVodN:'Moral +, kaum anstrengend', trRestN:'Müdigkeit sinkt',
-    fatigue:'Müdigkeit', tired:'Assistent: Das Team ist müde (über 70 %) — die Power sinkt an Spielabenden. Plane im Tab Training eine Pausenwoche ein', staff:'Staff', hire:'Einstellen', fire:'Entlassen', tier:t=>['—','Basis','gut','Elite'][t]||'—',
+    fatigue:'Müdigkeit', tired:'Assistent: Das Team ist müde (über 70 %) — die Power sinkt an Spielabenden. Plane im Tab Training eine Pausenwoche ein', staff:'Staff', hire:'Einstellen', fire:'Entlassen', tier:t=>['-','Basis','gut','Elite'][t]||'-',
     sCoach:'Coach', sAnalyst:'Analyst', sPsych:'Psychologe', sSmm:'SMM',
     sCoachN:'Spielerentwicklung', sAnalystN:'Gegnerbericht vor dem Abend, +Power', sPsychN:'Moral-Untergrenze −1, erholt sich', sSmmN:'Sponsoren +',
     report:'Gegnerbericht', strong:'Der Stärkste in der Lobby', fresh:'Free Agent'
@@ -166546,7 +166583,7 @@ function mgrT4(){
     expiring:'Contratos por vencer', renew:(n,s)=>'Renovar a '+n+' por '+s+' al mes', leaves:n=>n+' se va libre', clauseHit:(c,n,s)=>c+' activó la cláusula de rescisión de '+n+': '+s,
     tTrain:'Entrenamiento', trainH:'Enfoque de la semana', trScrims:'Scrims', trCreative:'Creative', trVod:'Revisión de VOD', trRest:'Descanso',
     trScrimsN:'+power para la próxima noche, sube la fatiga', trCreativeN:'los jugadores crecen más rápido', trVodN:'moral +, casi no cansa', trRestN:'baja la fatiga',
-    fatigue:'Fatiga', tired:'Asistente: el equipo está cansado (más del 70 %) — la power baja en las noches de partido. Pon una semana de descanso en la pestaña Entrenamiento', staff:'Staff', hire:'Contratar', fire:'Despedir', tier:t=>['—','básico','bueno','élite'][t]||'—',
+    fatigue:'Fatiga', tired:'Asistente: el equipo está cansado (más del 70 %) — la power baja en las noches de partido. Pon una semana de descanso en la pestaña Entrenamiento', staff:'Staff', hire:'Contratar', fire:'Despedir', tier:t=>['-','básico','bueno','élite'][t]||'-',
     sCoach:'Coach', sAnalyst:'Analista', sPsych:'Psicólogo', sSmm:'SMM',
     sCoachN:'crecimiento de los jugadores', sAnalystN:'informe de rivales antes de la noche, +power', sPsychN:'piso de moral −1, se recupera', sSmmN:'patrocinadores +',
     report:'Informe de rivales', strong:'El más fuerte del lobby', fresh:'Agente libre'
@@ -166560,7 +166597,7 @@ function mgrT4(){
     expiring:'Contracts expiring', renew:(n,s)=>'Renew '+n+' at '+s+' a month', leaves:n=>n+' leaves on a free', clauseHit:(c,n,s)=>c+' triggered '+n+'\'s release clause '+s,
     tTrain:'Training', trainH:'Focus of the week', trScrims:'Scrims', trCreative:'Creative', trVod:'VOD review', trRest:'Rest',
     trScrimsN:'+power for the next night, fatigue builds', trCreativeN:'players grow faster', trVodN:'morale +, barely tiring', trRestN:'fatigue drops',
-    fatigue:'Fatigue', tired:'Assistant: the squad is tired (over 70%) — power drops on match nights. Set a rest week in the Training tab', staff:'Staff', hire:'Hire', fire:'Fire', tier:t=>['—','basic','good','elite'][t]||'—',
+    fatigue:'Fatigue', tired:'Assistant: the squad is tired (over 70%) — power drops on match nights. Set a rest week in the Training tab', staff:'Staff', hire:'Hire', fire:'Fire', tier:t=>['-','basic','good','elite'][t]||'-',
     sCoach:'Coach', sAnalyst:'Analyst', sPsych:'Psychologist', sSmm:'SMM',
     sCoachN:'player growth', sAnalystN:'opponent report before the night, +power', sPsychN:'morale floor −1, recovers', sSmmN:'sponsors +',
     report:'Opponent report', strong:'Strongest in the lobby', fresh:'Free agent'
@@ -167483,10 +167520,10 @@ function mgrChallengeState(){
   let done=false, prog='';
   if(c.id==='treble'){ const w=n.filter(r=>r.teams.some(t=>t.place===1)).length; done=w>=3; prog=w+'/3'; }
   else if(c.id==='grands2'){ done=n.some(r=>r.fncs && r.teams.filter(t=>t.stage===mgrT2().fncsF).length>=2); prog=done ? '✓' : '0/1'; }
-  else if(c.id==='ewc'){ const r=n.find(r=>r.ewc); done=!!(r && r.teams.some(t=>t.place<=3)); prog=r ? '#'+Math.min(...r.teams.map(t=>t.place)) : '—'; }
+  else if(c.id==='ewc'){ const r=n.find(r=>r.ewc); done=!!(r && r.teams.some(t=>t.place<=3)); prog=r ? '#'+Math.min(...r.teams.map(t=>t.place)) : '-'; }
   else if(c.id==='academy'){ const k=MGR.gradNights||0; done=k>=5; prog=k+'/5'; }
   else if(c.id==='profit'){ const need=Math.round((c.cash0||0)*1.5); done=MGR.club.cash>=need; prog=mgrMoney(MGR.club.cash)+' / '+mgrMoney(need); }
-  else if(c.id==='underdog'){ const b=Math.min(99, ...n.map(r=>Math.min(...r.teams.map(t=>t.place)))); done=b<=5; prog=b<99 ? '#'+b : '—'; }
+  else if(c.id==='underdog'){ const b=Math.min(99, ...n.map(r=>Math.min(...r.teams.map(t=>t.place)))); done=b<=5; prog=b<99 ? '#'+b : '-'; }
   return {id:c.id, name:T7.chNames[c.id]||c.id, done, prog};
 }
 function mgrChallengeHTML(){
@@ -167661,7 +167698,7 @@ function mgrEventWeek(d){
   else if(k==='tweet'){ m.h=pick(); m.text=T7.eTweet(m.h); m.a=T7.eTweetA; m.b=T7.eTweetB; }
   else if(k==='custom'){ m.sum=Math.max(300, Math.round(spBase*0.3/100)*100); m.text=T7.eCustom; m.a=T7.eCustomA; m.b=T7.eCustomB; }
   else if(k==='feud'){ const t=MGR.teams.find(t=>t.cards.length>=2); if(!t) return; m.h=t.cards[0]; m.h2=t.cards[1]; m.text=T7.eFeud(m.h, m.h2); m.a=T7.eFeudA; m.b=T7.eFeudB; }
-  else if(k==='leak'){ m.h=pick(); const cl=Object.keys(MGR.rivals||{}); m.club=cl.length ? cl[Math.floor(rnd()*cl.length)] : '—'; m.text=T7.eLeak(m.h, m.club); m.a=T7.eLeakA; m.b=T7.eLeakB; }
+  else if(k==='leak'){ m.h=pick(); const cl=Object.keys(MGR.rivals||{}); m.club=cl.length ? cl[Math.floor(rnd()*cl.length)] : '-'; m.text=T7.eLeak(m.h, m.club); m.a=T7.eLeakA; m.b=T7.eLeakB; }
   else { m.h=pick(); m.text=T7.ePc(m.h); m.a=T7.ePcA; m.b=T7.ePcB; }
   MGR.inbox.unshift(m);
 }
@@ -167821,9 +167858,9 @@ function mgrSponsorsTabHTML(){
     row(T.net, (net<0 ? '−' : '+')+mgrMoney(Math.abs(net)), net<0 ? 'dn' : 'up')+'</div>';
   const fans=typeof mgrFans==='function' ? mgrFans() : 0;
   const why='<div class="ch-tile"><h4>'+esc(T.why)+'</h4>'+
-    row(T.lvl, String(MGR.club.avg||'—'))+row(T.rep, String(MGR.club.rep!=null ? MGR.club.rep : 50))+
+    row(T.lvl, String(MGR.club.avg||'-'))+row(T.rep, String(MGR.club.rep!=null ? MGR.club.rep : 50))+
     row(T.fans, (MGR.club.fansEst ? '≈' : '')+ccFollowers(fans)+(typeof mgrFansMul==='function' ? ' · ×'+mgrFansMul().toFixed(2) : ''))+
-    row(T.smm, mgrStaff('smm') ? '+'+(8*mgrStaff('smm'))+'%' : '—')+
+    row(T.smm, mgrStaff('smm') ? '+'+(8*mgrStaff('smm'))+'%' : '-')+
     row(T.deal, '×'+(typeof mgrDealMul==='function' ? mgrDealMul().toFixed(2) : '1.00'))+'</div>';
   const legacy=(MGR.deal && MGR.deal.year===MGR.year) ? '<div class="ch-tile"><h4>'+esc(T.deal0)+'</h4>'+mgrDealHTML()+'</div>' : '';
   return '<div class="mgk-body mg-sp-tab">'+mgrSponsorsBrandsHTML()+'<div class="mg-sp-top">'+money+why+'</div>'+legacy+'</div>';
@@ -168831,7 +168868,7 @@ function careerPlayerStatsHTML(h, reg){
   let fncs=''; try{ fncs=ccFncsBlockHTML(h, reg, rows); }catch(e){}
   if(!rows.length && !prRank && !money) return fncs ? '<div class="cc-ps">'+fncs+'</div>' : '';
   const sum=i=>rows.reduce((a,e)=>a+(e[i]||0), 0);
-  const avg=rows.length ? (rows.reduce((a,e)=>a+e[2], 0)/rows.length).toFixed(1) : '—';
+  const avg=rows.length ? (rows.reduce((a,e)=>a+e[2], 0)/rows.length).toFixed(1) : '-';
   const best=rows.length ? Math.min.apply(null, rows.map(e=>e[2])) : null;
   const podiums=rows.filter(e=>e[2]<=3).length;
   const cell=(a,b)=>'<div><span>'+a+'</span><b>'+b+'</b></div>';
@@ -169439,7 +169476,7 @@ function ccArcTeam(reg, size, rng, skip, y){
   }
   return team.length>=Math.min(size, 1) ? team.slice(0, size) : null;
 }
-function ccArcName(team){ return team ? team.map(c=>c.handle).join(' & ') : '—'; }
+function ccArcName(team){ return team ? team.map(c=>c.handle).join(' & ') : '-'; }
 // The regions a LAN's winner is drawn from, weighted the way the scene is.
 const CC_ARC_LAN_W=[['EU',4],['NAC',3],['NAW',2],['BR',2],['ASIA',1],['ME',1],['OCE',1]];
 function ccArcLanRegion(rng){
@@ -169772,7 +169809,7 @@ function careerArchiveSeasonRaw(sn){
     const nr=wins.nations ? mine : (nSeen && nSeen.reg) ? nSeen.reg : ccArcLanRegion(seed('nations'));
     global.push({slot:'nations', label:L().ccNatCongrats, mine:me.nations,
       win:{reg:nr,
-           name:wins.nations || (nSeen && nSeen.name) || (row ? natDisplay(row.nat) : '—'),
+           name:wins.nations || (nSeen && nSeen.name) || (row ? natDisplay(row.nat) : '-'),
            nat:row ? row.nat : null,
            you:!!wins.nations, team:(nSeen && nSeen.team) || (row ? row.top : null)}});
   }
@@ -170227,7 +170264,7 @@ function careerArcTableHTML(sn, key){
       <td class="arc-n">${esc(r.name)}${r.prize?`<span class="st-prize">${ccMoney(r.prize)}</span>`:''}${r.you?` <i>${L().arcYou}</i>`:''}${
         t.lan?`<small>${esc(regionName(r.reg))}</small>`:''}</td>
       <td class="ev-num arc-pts">${ccNum(r.pts)}</td>
-      <td class="ev-num">${r.wins||'—'}</td>
+      <td class="ev-num">${r.wins||'-'}</td>
       <td class="ev-num">${ccNum(r.elims)}</td>
     </tr>`).join('');
   return `<div class="arc-wrap">
@@ -170418,7 +170455,7 @@ function careerProfileHTML(){
   const sum=(k)=>log.reduce((s,e)=>s+(e[k]||0),0);
   const games=sum('games'), wins=sum('wins'), elims=sum('elims');
   const withAvg=log.filter(e=>e.avg!=null);
-  const avg=withAvg.length ? (withAvg.reduce((s,e)=>s+e.avg,0)/withAvg.length).toFixed(1) : '—';
+  const avg=withAvg.length ? (withAvg.reduce((s,e)=>s+e.avg,0)/withAvg.length).toFixed(1) : '-';
   const promos=log.filter(e=>e.passed).length;
 
   const pr=ccPrTable(CAREER.career.log||[]);
@@ -170431,16 +170468,16 @@ function careerProfileHTML(){
       <td class="ev-num"><span class="ev-place${podium?' top':(cut?' cut':'')}">#${e.place}</span>
         <small>/${e.of}</small></td>
       <td class="ev-num ev-pts">${e.pts}</td>
-      <td class="ev-num ev-rate${e.rating>=8?' hi':e.rating!=null&&e.rating<5?' lo':''}">${e.rating!=null ? e.rating.toFixed(1)+(e.mvpYou?' ★':'') : '—'}</td>
+      <td class="ev-num ev-rate${e.rating>=8?' hi':e.rating!=null&&e.rating<5?' lo':''}">${e.rating!=null ? e.rating.toFixed(1)+(e.mvpYou?' ★':'') : '-'}</td>
       <td class="ev-num ev-pr${pr.counted.has(e)?' in':''}"
           title="${esc(pr.counted.has(e)?L().evPrIn:L().evPrOut)} · ×${ccPrMult(e)}">${
-        rating!=null ? ccNum(rating) : '—'}</td>
-      <td class="ev-num ev-cash">${e.prize ? ccMoney(e.prize) : '—'}</td>
-      <td class="ev-mate">${e.mate?esc(e.mate):'—'}</td>
-      <td class="ev-num">${e.games!=null?e.games:'—'}</td>
-      <td class="ev-num">${e.wins!=null?e.wins:'—'}</td>
-      <td class="ev-num">${e.elims!=null?e.elims:'—'}</td>
-      <td class="ev-num">${e.avg!=null?e.avg:'—'}</td>
+        rating!=null ? ccNum(rating) : '-'}</td>
+      <td class="ev-num ev-cash">${e.prize ? ccMoney(e.prize) : '-'}</td>
+      <td class="ev-mate">${e.mate?esc(e.mate):'-'}</td>
+      <td class="ev-num">${e.games!=null?e.games:'-'}</td>
+      <td class="ev-num">${e.wins!=null?e.wins:'-'}</td>
+      <td class="ev-num">${e.elims!=null?e.elims:'-'}</td>
+      <td class="ev-num">${e.avg!=null?e.avg:'-'}</td>
       <td class="ev-num ev-ovr">${e.ovr}</td>
     </tr>`;
   }).join('');
@@ -172867,7 +172904,7 @@ function careerStatsHTML(){
     tile(T.ccStTitle, `<div class="ch-empty">${T.ccStEmpty}</div>`)}</div>`;
   const sum=(rows,k)=>rows.reduce((s,e)=>s+(e[k]||0),0);
   const avgOf=rows=>{ const w=rows.filter(e=>e.avg!=null);
-    return w.length ? (w.reduce((s,e)=>s+e.avg,0)/w.length).toFixed(1) : '—'; };
+    return w.length ? (w.reduce((s,e)=>s+e.avg,0)/w.length).toFixed(1) : '-'; };
   const bestOf=rows=>rows.length ? Math.min.apply(null, rows.map(e=>e.place)) : null;
   const games=sum(log,'games'), wins=sum(log,'wins'), elims=sum(log,'elims');
   const podiums=log.filter(e=>e.place<=3).length, top10=log.filter(e=>e.place<=10).length;
@@ -172890,7 +172927,7 @@ function careerStatsHTML(){
     [...m.entries()].map(([k,rows])=>`<tr><td class="ev-name"><b>${name(k,rows)}</b></td>
       <td class="ev-num">${rows.length}</td><td class="ev-num">#${bestOf(rows)}</td>
       <td class="ev-num">${sum(rows,'wins')}</td><td class="ev-num">${avgOf(rows)}</td>
-      <td class="ev-num ev-cash">${sum(rows,'prize') ? ccMoney(sum(rows,'prize')) : '—'}</td></tr>`).join('')
+      <td class="ev-num ev-cash">${sum(rows,'prize') ? ccMoney(sum(rows,'prize')) : '-'}</td></tr>`).join('')
     }</tbody></table></div>`);
   const byKind=table(T.ccStByKind, group(e=>e.kind||'cup'), k=>esc(ccStKindName(k)));
   const bySeason=table(T.ccStBySeason, group(e=>e.season||1),
