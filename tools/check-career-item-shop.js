@@ -83,7 +83,14 @@ notes.sets=secs.slice(0,4).map(s=>s.h+': '+s.big.length+'+'+s.sm.length);
 const emi=secs.find(s=>s.h==='Eminem');
 check('раздел набора «Eminem»', emi && emi.big.includes('Slim Shady') && emi.sm.includes("Raven's Stare") && emi.sm.includes("Axe 'Bout Me"), JSON.stringify(emi));
 check('скины без набора не в куче с кирками', secs.every(s=>!(s.big.length && s.h===L().ccFnTypes_p)));
+// Шкафчик в виде своей главы: класс главы, большой образ с надетым скином, разделы «Персонаж» и «Эмоции · Обёртки».
+{ const sk2=ccFnShopDay(careerToday()).find(x=>x.t==='o'); CAREER.vb=5000; ccFnBuy(sk2.i);
+  const lk=document.createElement('div'); lk.innerHTML=ccFnLoadoutHTML();
+  check('шкафчик 2024 — тёмный вид', !!lk.querySelector('.cc-fn-load.cc-fn-c5'));
+  check('большой образ с надетым скином', !!lk.querySelector('.cc-fn-hero img') && lk.querySelector('.cc-fn-hero').innerHTML.indexOf(sk2.id.toLowerCase())>0);
+  check('разделы шкафчика', lk.querySelectorAll('.cc-fn-cat').length===2 && lk.querySelectorAll('.cc-fn-slot').length===6); }
 seed('2019-06-01', 'EU', 100); box.innerHTML=ccFnShopHTML();
+check('шкафчик 2019 — вид Главы 1', /cc-fn-load cc-fn-c1/.test(ccFnLoadoutHTML()));
 check('Глава 1: «Ежедневные» ровными квадратами', !!box.querySelector('.cc-fn-grid.daily') && !box.querySelector('.cc-fn-grid.daily .big'));
 return {fails, notes};
 `;
