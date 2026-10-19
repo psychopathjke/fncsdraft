@@ -23455,7 +23455,7 @@ Object.assign(I18N.ru, {ccAskMoneyLbl:'Деньги', ccAskTermsLbl:'Услов�
   dyColPlayer:'Игрок и состав', dyYou:'ты', dyPowSplit:'средний рейтинг карточек + синергия',
   ccFnChamp:h=>'Чемпион вечера — @'+h,
   ccLockerTitle:'Шкафчик', ccLockerNone:'Пусто. Баннер дают за гранд-финал или ЛАН и за каждый клуб, кирку — чемпиону FNCS',
-  ccLockClub:'баннер клуба', ccLockNow:'сейчас', ccLock_pickaxe:'кирка', ccLock_spray:'спрей', ccLock_banner:'баннер', ccLock_emote:'эмоция',
+  ccLockClub:'баннер клуба', ccLockNow:'сейчас', ccLock_pickaxe:'кирка', ccLock_glider:'дельтаплан', ccLock_spray:'спрей', ccLock_banner:'баннер', ccLock_emote:'эмоция',
   ccNewsLocker:(i,n)=>i+' В шкафчике новое: «'+n+'»',
   ccGalaShare:'Поделиться итогами', ccShareSend:'Отправить', ccShareSave:'Сохранить картинку', ccShareCopy:'Скопировать', ccShareClose:'Закрыть', ccShareCopied:'Картинка скопирована', ccShareSendFail:'Не открылось. Сохрани картинку', ccShareFail:'Картинку нарисовать не вышло', ccShareSeason:'Поделиться сезоном', ccGalaShareTag:'Итоги года', ccGalaVsPrev:'▲▼ — сравнение с прошлым сезоном', ccGalaPrevRow:'Прошлый сезон: призовые · лучшее место',
   ccCastStart:[n=>'Поехали! '+n+' команд в лобби, автобус пошёл', n=>'И мы в эфире — '+n+' команд, кто заберёт эту игру?', n=>'Новая игра, '+n+' команд. Смотрим за дропами'],
@@ -23558,7 +23558,7 @@ Object.assign(I18N.en, {ccAskMoneyLbl:'Money', ccAskTermsLbl:'Terms', ccAsk_smal
   dyColPlayer:'Player and squad', dyYou:'you', dyPowSplit:'average card rating + synergy',
   ccFnChamp:h=>'Champion of the night — @'+h,
   ccLockerTitle:'Locker', ccLockerNone:'Empty. A banner comes with a grand final, a LAN and every club you play for, the pickaxe with an FNCS title',
-  ccLockClub:'club banner', ccLockNow:'current', ccLock_pickaxe:'pickaxe', ccLock_spray:'spray', ccLock_banner:'banner', ccLock_emote:'emote',
+  ccLockClub:'club banner', ccLockNow:'current', ccLock_pickaxe:'pickaxe', ccLock_glider:'glider', ccLock_spray:'spray', ccLock_banner:'banner', ccLock_emote:'emote',
   ccNewsLocker:(i,n)=>i+' New in the locker: "'+n+'"',
   ccGalaShare:'Share my year', ccShareSend:'Send', ccShareSave:'Save image', ccShareCopy:'Copy', ccShareClose:'Close', ccShareCopied:'Image copied', ccShareSendFail:'Sharing did not open. Save the image instead', ccShareFail:'Could not draw the picture', ccShareSeason:'Share season', ccGalaShareTag:'Year in review', ccGalaVsPrev:'▲▼ — compared with last season', ccGalaPrevRow:'Last season: prize money · best place',
   ccCastStart:[n=>'Here we go! '+n+' teams in the lobby, the bus is moving', n=>'And we are live — '+n+' teams, who takes this one?', n=>'New game, '+n+' teams. Eyes on the drops'],
@@ -144485,12 +144485,14 @@ function careerTrophies(){
 /* ШКАФЧИК (17.10, его «10»): косметика за то, за что её дают в настоящем Fortnite — кирка чемпиона FNCS (Axe of Champions),
    спреи за победы, баннеры за гранд-финалы и ЛАНы. Выдаётся по журналу вечеров (cr.log) — ничего отдельно не копится,
    поэтому старые сейвы получают своё задним числом, молча (без постов); новые награды — с постом. */
-const CC_LOCKER_ICON={pickaxe:'⛏️', spray:'🎨', banner:'🚩', emote:'🕺'};
+const CC_LOCKER_ICON={pickaxe:'⛏️', glider:'☂️', spray:'🎨', banner:'🚩', emote:'🕺'};
 function ccLockerPlain(s){ return String(s||'').replace(/<[^>]*>/g, '').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#39;/g, "'").trim(); }
 function ccLockerRules(e){
   const out=[], name=()=>ccLockerPlain(ccLogName(e));
   if(e.place===1 && ((e.kind==='major' && e.stage==='final') || e.kind==='globals' || (e.kind==='summit' && e.stage==='final') || (e.kind==='rc' && e.stage==='final')))
     out.push({id:'axe', kind:'pickaxe', name:'Axe of Champions', fncs:true});
+  // Первая Victory Royale сезона — зонтик сезона (одна строка на сезон, см. ccUmbrellaFor).
+  if((e.wins||0)>0) out.push({umb:true, kind:'glider'});
   if(e.kind==='major' && e.stage==='final') out.push({id:'gf'+e.season, kind:'banner', name:'FNCS Grand Finalist · '+ccSeasonYearOf(e.season)});
   if(e.lan) out.push({id:'lan|'+e.day, kind:'banner', name:name()});
   // Спреев нет (17.10, его «спрей шкафчика убери»).
@@ -144523,6 +144525,11 @@ function ccLockerCheck(){
      перечитывается заново молча — каждая победа даёт кирку своего сезона. */
   // Шкафчик целиком собирается из журнала, поэтому перечитывается с нуля — иначе баннеры посчитались бы дважды.
   if(cr.locker.some(x=>x.id==='axe')){ cr.locker=[]; cr.lockSeen=null; cr.lockAgain=true; }
+  // Зонтики за победы до 20.10 — задним числом, молча (журнал уже прочитан, правило новое).
+  if(!cr.umbScan){ cr.umbScan=1;
+    cr.log.slice(0, cr.lockSeen||0).forEach(e=>{ if(!e || e.who || !((e.wins||0)>0)) return;
+      const u=ccUmbrellaGive(e.day), id='umb|'+u.id;
+      if(!cr.locker.some(x=>x.id===id)) cr.locker.push({id, kind:'glider', name:u.name, day:e.day, season:e.season, x:1, ek:e.kind, art:'', fn:u.id}); }); }
   const quiet=cr.lockSeen==null || !!cr.lockAgain;
   const from=cr.lockSeen||0; if(from>=cr.log.length){ if(cr.lockSeen==null) cr.lockSeen=cr.log.length; delete cr.lockAgain; return; }
   for(let i=from;i<cr.log.length;i++){
@@ -144530,6 +144537,7 @@ function ccLockerCheck(){
     ccLockerRules(e).forEach(g=>{
       // Победа в FNCS — кирка чемпиона того сезона: своя строка в шкафчике и в руках (см. ccFncsAxeFor).
       if(g.fncs){ const ax=ccFncsAxeGive(e.day, quiet); g={id:'axe|'+ax.id, kind:'pickaxe', name:ax.name, fn:ax.id}; }
+      if(g.umb){ const u=ccUmbrellaGive(e.day); g={id:'umb|'+u.id, kind:'glider', name:u.name, fn:u.id, once:true}; }
       const have=cr.locker.find(x=>x.id===g.id);
       if(have){ if(!g.once) have.x=(have.x||1)+1; return; }
       cr.locker.push({id:g.id, kind:g.kind, name:g.name, day:e.day, season:e.season, x:1, ek:e.kind, art:ccLockerArtOf(e.day, e.kind), fn:g.fn});
@@ -144541,14 +144549,14 @@ function ccLockerCheck(){
 function ccLockerHTML(){
   const cr=CAREER && CAREER.career; if(!cr) return '';
   try{ ccLockerCheck(); }catch(e){}
-  const items=(cr.locker||[]).filter(it=>it.kind!=='spray').concat(ccLockerClubs()).sort((a,b)=>({pickaxe:0, banner:1, emote:2, spray:3}[a.kind]-{pickaxe:0, banner:1, emote:2, spray:3}[b.kind]));
+  const items=(cr.locker||[]).filter(it=>it.kind!=='spray').concat(ccLockerClubs()).sort((a,b)=>({pickaxe:0, glider:1, banner:2, emote:3, spray:4}[a.kind]-{pickaxe:0, glider:1, banner:2, emote:3, spray:4}[b.kind]));
   // Картинка: герб клуба; кирка поверх арта турнира; остальное — арт турнира со значком вида в углу.
   const ic=it=>{
     if(it.logo) return '<img class="cc-lock-logo" src="'+esc(it.logo)+'" alt="" loading="lazy" onerror="this.remove()">';
     const art=it.art || (it.day ? ccLockerArtOf(it.day, it.ek || (it.id==='wf' ? 'final' : it.id==='reload' ? 'reload' : it.id==='axe' ? 'major' : 'victory')) : '');
     // Кирка — на своём золотом фоне: на светлом постере Мейджора её не видно.
-    const bg=it.kind==='pickaxe' ? ' style="background:radial-gradient(circle at 50% 40%,#6b4d12,#241a06)"' : art ? ' style="background-image:url('+esc(art)+')"' : '';
-    const top=it.kind==='pickaxe' && it.fn ? '<img class="cc-lock-axe" src="'+ccFnImg(it.fn)+'" alt="" loading="lazy" onerror="this.remove()">'
+    const bg=(it.kind==='pickaxe' || it.kind==='glider') ? ' style="background:radial-gradient(circle at 50% 40%,#6b4d12,#241a06)"' : art ? ' style="background-image:url('+esc(art)+')"' : '';
+    const top=it.fn ? '<img class="cc-lock-axe" src="'+ccFnImg(it.fn)+'" alt="" loading="lazy" onerror="this.remove()">'
       : it.kind==='pickaxe' && typeof CC_PICKAXE_ART!=='undefined'
       ? '<img class="cc-lock-axe" src="'+CC_PICKAXE_ART+'" alt="" loading="lazy">' : '<i>'+(CC_LOCKER_ICON[it.kind]||'🎁')+'</i>';
     return '<span class="cc-lock-art"'+bg+'>'+top+'</span>';
@@ -149208,6 +149216,33 @@ function ccFncsAxeFor(day){
   const before=CC_FNCS_AXES.filter(a=>a[0]<=day);
   const a=same[0] || before[before.length-1] || CC_FNCS_AXES[0];
   return {id:a[1], name:a[2]};
+}
+/* VICTORY UMBRELLA (его выбор 20.10 из списка «чего нет из Fortnite»): первая Victory Royale сезона даёт зонтик этого
+   сезона, как в игре. Номер сезона — ccSeasonNumOn дня вечера; зонтики — fortnite-api (Umbrella_Season_NN и ранние).
+   Сезон без своего (дальше S42) — последний известный. Дельтаплан ложится в шкафчик, надевать — самому. */
+const CC_UMBRELLAS={1:['Solo_Umbrella','The Umbrella'], 2:['Umbrella_Snowflake','Snowflake'], 3:['Umbrella_PaperParasol','Paper Parasol'],
+  4:['Umbrella_Season_04','Wet Paint'], 5:['Umbrella_Season_05','Beach Umbrella'], 6:['Umbrella_Season_06','Webrella'], 7:['Umbrella_Season_07','Snowfall'],
+  8:['Umbrella_Season_08','Palm Leaf'], 9:['Umbrella_Season_09','Holographic'], 10:['Umbrella_Season_10','X'], 11:['Umbrella_Season_11','Downpour'],
+  12:['Umbrella_Season_12','CLASSIFIED'], 13:['Umbrella_Season_13','Fortilla Flier'], 14:["Umbrella_Season_14","Mighty Marvel 'Brella"],
+  15:["Umbrella_Season_15","Bounty 'Brella"], 16:["Umbrella_Season_16","Foundational 'Brella"], 17:['Umbrella_Season_17','Invasion'],
+  18:['Umbrella_Season_18','Umbrella of the Last Reality'], 19:['Umbrella_Season_19','Seven Signet'], 20:['Umbrella_Season_20','Gunn-brella'],
+  21:['Umbrella_Season_21','Battle Bloom'], 22:['Umbrella_Season_22','Chromebrella'], 23:['Umbrella_Season_23','The Peerless Parasol'],
+  24:['Umbrella_Season_24','MEGA-brella'], 25:['Umbrella_Season_25','Nana-brella'], 26:['Umbrella_Season_26','Eclipse Brella'],
+  27:['Umbrella_Season_27','Time Brella'], 28:['Umbrella_Season_28','Rebel Brella'], 29:['Umbrella_Season_29','The Olympian'],
+  30:["Umbrella_Season_30","Junker 'Brella"], 31:['Umbrella_Season_31','Doom Brella'], 32:["Umbrella_Season_32","Remix 'Brella"],
+  33:["Umbrella_Season_33","Shogun 'Brella"], 34:['Umbrella_Season_34','The Vaultbrella'], 35:["Umbrella_Ch6MiniSeason1","Death Star 'Brella"],
+  36:["Umbrella_Season36","Utopia 'Brella"], 37:["Umbrella_Season_37","O.X.R. 'Brella"], 38:["Umbrella_Ch6MiniSeason2","Safety Inspector 'Brella"],
+  39:["Umbrella_RankedTandem","Fame 'Brella"], 40:["Umbrella_Season_40","New Seven 'Brella"], 41:['Umbrella_Season_41','Dark Cube-rella'],
+  42:["Umbrella_Season_42","Override 'Brella"]};
+function ccUmbrellaFor(day){
+  const n=ccSeasonNumOn(day)||0;
+  const k=CC_UMBRELLAS[n] ? n : n>42 ? 42 : 1;
+  return {n:n, id:CC_UMBRELLAS[k][0], name:CC_UMBRELLAS[k][1]};
+}
+function ccUmbrellaGive(day){
+  const u=ccUmbrellaFor(day), own=ccFnOwn();
+  if(!own[u.id]) own[u.id]={t:'g', n:u.name, r:'rare', d:day, umb:true};
+  return u;
 }
 // Выдать кирку чемпиона: в шкафчик и сразу в руки (quiet — старый сейв задним числом: только в шкафчик).
 function ccFncsAxeGive(day, quiet){

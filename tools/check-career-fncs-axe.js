@@ -44,6 +44,14 @@ check('строка шкафчика своя', cr.locker.some(x=>x.id==='axe|'+
 check('пост о награде', (cr.news||[]).some(n=>n.k==='ccNewsLocker'));
 k=kitAxe(); notes.kitWon=k;
 check('в матче — кирка из шкафчика', k.indexOf(want.name)===0 && k.toLowerCase().indexOf(want.id.toLowerCase())>=0, k);
+// Victory Umbrella: первая победа сезона — зонтик сезона, один на сезон.
+cr.log.push({season:1, day:'2026-05-10', kind:'victory', place:3, of:100, div:1, pts:200, wins:1});
+cr.log.push({season:1, day:'2026-05-11', kind:'victory', place:1, of:100, div:1, pts:250, wins:2});
+careerRenderHub('centre');
+const um=ccUmbrellaFor('2026-05-10'); notes.umbrella=um.n+' '+um.name;
+check('зонтик сезона в шкафчике', CAREER.fnOwn[um.id] && CAREER.fnOwn[um.id].t==='g', um.id);
+check('зонтик — одна строка на сезон', cr.locker.filter(x=>x.id==='umb|'+um.id).length===1 && cr.locker.find(x=>x.id==='umb|'+um.id).x===1);
+check('зонтик S11 — Downpour', ccUmbrellaFor('2020-01-10').name==='Downpour', ccUmbrellaFor('2020-01-10').name);
 // 3) Старый сейв.
 seed('2026-10-01', {});
 CAREER.career.log=[{season:1, day:'2025-08-30', kind:'globals', place:1, of:50, div:1, lan:true},
