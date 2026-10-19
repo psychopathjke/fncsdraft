@@ -117322,7 +117322,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='96c1e81c';
+const CC_BUILD='86277196';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -121948,6 +121948,22 @@ function careerRenderHubBody(tab){
 const CC_LB_DEFAULTS=['cid_005_athena_commando_m_default','cid_001_athena_commando_f_default','cid_006_athena_commando_m_default',
   'cid_002_athena_commando_f_default','cid_007_athena_commando_m_default','cid_003_athena_commando_f_default',
   'cid_008_athena_commando_m_default','cid_004_athena_commando_f_default'];
+/* Популярные у про-игроков скины (его «просто добавь рандомные популярные скины»: реальных «чей скин у кого» нет —
+   они только в реплеях, см. Osirion) — [id, первый день в магазине по fn-shop.js]: в 2019-м никто не стоит в скине 2024-го. */
+const CC_LB_POPULAR=[['cid_044_athena_commando_f_scipop','2019-01-02'],['cid_170_athena_commando_f_luchador','2019-01-02'],
+  ['cid_160_athena_commando_m_speedyred','2019-01-03'],['cid_102_athena_commando_m_raven','2019-01-05'],['cid_334_athena_commando_m_scrapyard','2019-02-10'],
+  ['cid_061_athena_commando_f_skigirl','2019-02-20'],['cid_397_athena_commando_f_treasurehunterfashion','2019-05-08'],
+  ['cid_452_athena_commando_f_cyberfu','2019-07-12'],['cid_472_athena_commando_f_cyberkarate','2019-07-21'],
+  ['cid_493_athena_commando_f_jurassicarchaeology','2019-08-04'],['cid_029_athena_commando_f_halloween','2019-10-31'],
+  ['cid_748_athena_commando_f_hitman','2020-04-18'],['cid_726_athena_commando_m_targetpractice','2020-05-15'],
+  ['cid_784_athena_commando_f_renegaderaiderfire','2020-06-28'],['cid_795_athena_commando_m_dummeez','2020-08-05'],
+  ['cid_a_158_athena_commando_f_buffet_yc20h','2021-08-05'],['cid_a_359_athena_commando_f_bunnypurple','2022-03-11'],
+  ['cid_a_377_athena_commando_f_littleegg_omnb5','2022-05-08'],['cid_028_athena_commando_f','2024-12-20']];
+// Icon-скины самих игроков: на своём хозяине — с даты выхода.
+const CC_LB_ICON={ninja:['cid_605_athena_commando_m_tourbus','2020-01-17'], lachlan:['cid_891_athena_commando_m_lunchbox','2020-11-13'],
+  loserfruit:['cid_764_athena_commando_f_loofah','2020-06-22'], thegrefg:['cid_990_athena_commando_m_grilledcheese_snx4k','2021-01-17'],
+  bugha:['cid_a_140_athena_commando_m_bluecheese','2021-07-21'], 'ali-a':['cid_a_415_athena_commando_m_alfredo','2022-05-20'],
+  clix:['character_twilightspotspell','2025-03-23'], mongraal:['character_vigorknackdill','2026-06-28']};
 function ccLobbyHTML(card, btn, next, when){
   const pl=CAREER.player, eq=CAREER.fnEq||{}, own=CAREER.fnOwn||{};
   const era=ccFnShopEra(careerToday());
@@ -121955,10 +121971,18 @@ function ccLobbyHTML(card, btn, next, when){
     '<img class="full" src="'+ccFnFull(id)+'" data-id="'+esc(id)+'" alt="" loading="lazy" onerror="ccFnHeroErr(this)">'+
     '<div class="cc-lb-plate"><b>'+esc(name)+'</b><em>'+esc(String(ovr))+'</em></div></div>';
   const myOvr=Math.round((card && (card._ovr||card.rating)) || pl.ovr || 0);
-  const mine=fig(eq.o && own[eq.o] ? eq.o : CC_LB_DEFAULTS[0], pl.nick||pl.handle||'', myOvr, true);
-  // Стандартный скин по нику, но без повторов в одном лобби (у двоих не бывает одного и того же).
-  const used=new Set([0]), skinOf=c=>{ const n=CC_LB_DEFAULTS.length;
-    let k=1+ccHashStr(hKey(c))%(n-1); while(used.has(k)) k=1+(k%(n-1)); used.add(k); return CC_LB_DEFAULTS[k]; };
+  const myIcon=CC_LB_ICON[hKey(pl.handle||pl.nick||'')];
+  const mine=fig(eq.o && own[eq.o] ? eq.o : (myIcon && myIcon[1]<=careerToday() ? myIcon[0] : CC_LB_DEFAULTS[0]), pl.nick||pl.handle||'', myOvr, true);
+  // Скин напарника: своя icon-скин, если она уже вышла (Bugha, Clix, Mongraal…), иначе популярный у про-игроков скин,
+  // вышедший к этому дню (по нику, без повторов в одном лобби); до 2019-го и без совпадений — стандартный.
+  const today=careerToday(), used=new Set();
+  const skinOf=c=>{
+    const icon=CC_LB_ICON[hKey(c)];
+    if(icon && icon[1]<=today && !used.has(icon[0])){ used.add(icon[0]); return icon[0]; }
+    const pool=CC_LB_POPULAR.filter(p=>p[1]<=today && !used.has(p[0]));
+    if(pool.length){ const id=pool[ccHashStr(hKey(c))%pool.length][0]; used.add(id); return id; }
+    const id=CC_LB_DEFAULTS.find(x=>x!==CC_LB_DEFAULTS[0] && !used.has(x)) || CC_LB_DEFAULTS[1]; used.add(id); return id;
+  };
   const mates=(careerMates()||[]).filter(Boolean).slice(0, 3).map(c=>
     fig(skinOf(c), c.handle, Math.round(c._ovr||c.rating||0)));
   // Свой — в середине: первый напарник слева, остальные справа (как пати в лобби).
