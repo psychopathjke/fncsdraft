@@ -4035,6 +4035,44 @@
     background:linear-gradient(transparent,rgba(0,0,0,.65));}
   .cc-fn-hero i{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-style:normal;font-size:44px;opacity:.5;}
   .cc-fn-cat+.cc-fn-cat{margin-top:10px;}
+  /* Лобби на «Центре» (ccLobbyHTML): сцена главы, фигуры в полный рост, справа внизу событие и жёлтая кнопка. */
+  .cc-lobby{position:relative;height:380px;margin:0 0 12px;border-radius:12px;overflow:hidden;color:#fff;}
+  .cc-lb-c1{background:radial-gradient(ellipse at 50% 20%,#8fd0ff 0%,#3a86e8 40%,#1a3a9e 85%);}
+  .cc-lb-c2{background:repeating-linear-gradient(-55deg,rgba(255,255,255,.05) 0 12px,transparent 12px 26px),linear-gradient(180deg,#5a3bd0,#22186b);}
+  .cc-lb-c3{background:radial-gradient(ellipse at 50% 25%,#bfeaff 0%,#47b4ff 40%,#1468d6 90%);}
+  .cc-lb-c5{background:radial-gradient(ellipse at 50% 35%,#3b3f86 0%,#1a1c3d 55%,#0c0d1c 100%);}
+  .cc-lobby::after{content:"";position:absolute;left:10%;right:10%;bottom:4%;height:14%;border-radius:50%;pointer-events:none;
+    background:radial-gradient(ellipse at center,rgba(255,255,255,.22),rgba(255,255,255,0) 70%);}
+  .cc-lb-stage{position:absolute;inset:0 0 0 0;display:flex;justify-content:center;align-items:flex-end;padding-bottom:2%;}
+  .cc-lb-fig{position:relative;z-index:1;height:78%;aspect-ratio:1/1;margin:0 -7%;flex:none;}
+  .cc-lb-fig.me{height:94%;z-index:2;cursor:pointer;}
+  .cc-lb-fig img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;object-position:50% 100%;
+    filter:drop-shadow(0 6px 10px rgba(0,0,0,.35));}
+  .cc-lb-fig img.icon{inset:auto 25% 10% 25%;width:50%;height:50%;border-radius:10px;}
+  .cc-lb-plate{position:absolute;left:50%;top:2%;transform:translateX(-50%);z-index:3;display:flex;gap:6px;align-items:baseline;
+    padding:3px 10px;border-radius:6px;background:rgba(0,0,0,.55);white-space:nowrap;}
+  .cc-lb-plate b{font-family:var(--font-display);font-size:14px;text-transform:uppercase;letter-spacing:.02em;}
+  .cc-lb-plate em{font-style:normal;font-size:12px;color:#ffe14d;font-weight:800;}
+  .cc-lb-fig.me .cc-lb-plate{background:rgba(0,0,0,.7);box-shadow:0 0 0 2px #ffe14d inset;}
+  .cc-lb-side{position:absolute;right:14px;bottom:14px;z-index:4;display:flex;flex-direction:column;align-items:stretch;gap:8px;width:min(300px,46%);}
+  .cc-lb-mode{padding:8px 12px;border-radius:8px;background:rgba(0,0,0,.6);}
+  .cc-lb-mode em{display:block;font-style:normal;font-size:11px;letter-spacing:.06em;text-transform:uppercase;opacity:.8;}
+  .cc-lb-mode b{display:block;font-family:var(--font-display);font-size:18px;text-transform:uppercase;line-height:1.1;}
+  .cc-lb-play{padding:14px 18px;border:0;border-radius:6px;background:#ffe14d;color:#111;cursor:pointer;
+    font-family:var(--font-display);font-size:26px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;
+    box-shadow:0 4px 0 #b39a00;transform:skewX(-6deg);}
+  .cc-lb-play:hover{background:#fff06b;}
+  .cc-lb-play:disabled{background:#9a9a9a;box-shadow:0 4px 0 #666;cursor:not-allowed;}
+  @media (max-width:560px){ .cc-lobby{height:330px;}
+    .cc-lb-stage{bottom:96px;inset:0 0 96px 0;}
+    .cc-lb-side{left:10px;right:10px;bottom:10px;width:auto;flex-direction:row;align-items:stretch;}
+    .cc-lb-mode{flex:1;min-width:0;} .cc-lb-mode b{font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+    .cc-lb-play{font-size:20px;padding:10px 16px;} .cc-lb-plate b{font-size:12px;} .cc-lb-plate{padding:2px 6px;}
+    /* Четверо в сквад-лобби на 340 px: картинка квадратная, сам персонаж — её середина, поэтому фигуры заходят
+       друг на друга сильнее, а напарники ниже своего. */
+    .cc-lb-fig{height:68%;margin:0 -16%;} .cc-lb-fig.me{height:92%;}
+    .cc-lb-fig:not(.me) .cc-lb-plate{top:-2%;padding:1px 5px;gap:4px;} .cc-lb-fig:not(.me) .cc-lb-plate b{font-size:10px;}
+    .cc-lb-fig:not(.me) .cc-lb-plate em{font-size:10px;} .cc-lb-fig:nth-child(4) .cc-lb-plate{top:12%;} }
   .cc-fn-cat h5{margin:0 0 6px;}
   .cc-fn-cats .cc-fn-slots{grid-template-columns:repeat(4,minmax(0,1fr));}
   @media (max-width:560px){ .cc-fn-cats .cc-fn-slots{grid-template-columns:repeat(2,minmax(0,1fr));} }
@@ -117212,7 +117250,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='cf2fa734';
+const CC_BUILD='bebb798c';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -121829,6 +121867,35 @@ function careerRenderHubBody(tab){
   body.innerHTML=careerCentreHTML(card, a);
 }
 
+/* Лобби как в Fortnite (его «главное меню как в фортнайте сейчас, чтоб было видно скин и кнопка реди»): посередине
+   свой надетый скин в полный рост, по бокам напарники (у них своего образа нет — стандартные скины Fortnite, у
+   каждого свой по нику), над головами ник и рейтинг; справа внизу — ближайшее событие и большая жёлтая кнопка.
+   Кнопка — та же, что в панели ниже (первая .ch-play из btn): её действие, подпись и запрет, ничего своего. */
+const CC_LB_DEFAULTS=['cid_005_athena_commando_m_default','cid_001_athena_commando_f_default','cid_006_athena_commando_m_default',
+  'cid_002_athena_commando_f_default','cid_007_athena_commando_m_default','cid_003_athena_commando_f_default',
+  'cid_008_athena_commando_m_default','cid_004_athena_commando_f_default'];
+function ccLobbyHTML(card, btn, next, when){
+  const pl=CAREER.player, eq=CAREER.fnEq||{}, own=CAREER.fnOwn||{};
+  const era=ccFnShopEra(careerToday());
+  const fig=(id, name, ovr, me)=>'<div class="cc-lb-fig'+(me ? ' me' : '')+'"'+(me ? ' onclick="ccFnLockerOpen(\'o\')"' : '')+'>'+
+    '<img class="full" src="'+ccFnFull(id)+'" data-id="'+esc(id)+'" alt="" loading="lazy" onerror="ccFnHeroErr(this)">'+
+    '<div class="cc-lb-plate"><b>'+esc(name)+'</b><em>'+esc(String(ovr))+'</em></div></div>';
+  const myOvr=Math.round((card && (card._ovr||card.rating)) || pl.ovr || 0);
+  const mine=fig(eq.o && own[eq.o] ? eq.o : CC_LB_DEFAULTS[0], pl.nick||pl.handle||'', myOvr, true);
+  // Стандартный скин по нику, но без повторов в одном лобби (у двоих не бывает одного и того же).
+  const used=new Set([0]), skinOf=c=>{ const n=CC_LB_DEFAULTS.length;
+    let k=1+ccHashStr(hKey(c))%(n-1); while(used.has(k)) k=1+(k%(n-1)); used.add(k); return CC_LB_DEFAULTS[k]; };
+  const mates=(careerMates()||[]).filter(Boolean).slice(0, 3).map(c=>
+    fig(skinOf(c), c.handle, Math.round(c._ovr||c.rating||0)));
+  // Свой — в середине: первый напарник слева, остальные справа (как пати в лобби).
+  const row=mates.length ? [mates[0], mine].concat(mates.slice(1)) : [mine];
+  const m=/<button class="ch-play([^"]*)"([^>]*)>([\s\S]*?)<\/button>/.exec(btn||'');
+  const play=m ? '<button class="cc-lb-play'+m[1].replace(/\bch-/g, ' cc-lb-')+'"'+m[2]+'>'+m[3]+'</button>' : '';
+  const mode=next ? '<div class="cc-lb-mode"><em>'+esc((careerSquadSize()===3 ? L().ccSeasonTrios : careerSquadSize()===4 ? 'Squads' : L().ccSeasonDuos)+(when ? ' · '+when : ''))+'</em>'+
+    '<b>'+esc(next.label||next.title||'')+'</b></div>' : '';
+  return '<div class="cc-lobby cc-lb-'+era.k+'"><div class="cc-lb-stage">'+row.join('')+'</div>'+
+    '<div class="cc-lb-side">'+mode+play+'</div></div>';
+}
 function careerCentreHTML(card, a){
   const cr=CAREER.career, pl=CAREER.player;
   const next=careerNext();
@@ -122092,7 +122159,7 @@ function careerCentreHTML(card, a){
     ? `<div class="ch-row"><em>${L().chPerfEval}</em><b>$400</b></div>`
     : `<div class="ch-row"><em>${L().chPerfEval}</em><b>${L().chD1Only}</b></div>`;
 
-  return `
+  return `${ccLobbyHTML(card, btn, next, nextWhen)}
   <div class="ch-next">
     <div class="ch-next-head"><h3>${L().chNext}</h3><span>${
       // Which year this is, beside when it is. A season that alternates has to
@@ -147826,7 +147893,7 @@ function ccFnImg(id, small){ return 'https://fortnite-api.com/images/cosmetics/b
 function ccFnFull(id){ return 'https://fortnite-api.com/images/cosmetics/br/'+String(id).toLowerCase()+'/featured.png'; }
 function ccFnHeroErr(img){
   if(img.dataset.f){ img.remove(); return; }
-  img.dataset.f='1'; img.className='';
+  img.dataset.f='1'; img.classList.remove('full'); img.classList.add('icon');
   img.src=ccFnImg(img.dataset.id);
 }
 // Вид магазина той главы, что идёт в карьере: c1 — синий «Рекомендуемые / Ежедневные» Главы 1, c2 — полосатые плитки
