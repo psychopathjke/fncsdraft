@@ -4038,7 +4038,7 @@
   /* Лобби на «Центре» (ccLobbyHTML): сцена главы, фигуры в полный рост, справа внизу событие и жёлтая кнопка. */
   /* Сетка главного меню: сверху вкладки и кошелёк, слева панели, посередине сцена, справа внизу режим и кнопка. */
   .cc-lobby{position:relative;display:grid;grid-template-columns:250px minmax(0,1fr) 290px;grid-template-rows:auto minmax(0,1fr);
-    grid-template-areas:"top top top" "left stage side";height:480px;margin:0 0 12px;border-radius:12px;overflow:hidden;color:#fff;}
+    grid-template-areas:"top top top" "left stage side";height:560px;margin:0 0 12px;border-radius:12px;overflow:hidden;color:#fff;}
   .cc-lb-top{grid-area:top;display:flex;align-items:center;gap:10px;padding:10px 14px;z-index:5;}
   .cc-lb-nav{display:flex;gap:4px;flex:1;min-width:0;overflow-x:auto;scrollbar-width:none;}
   .cc-lb-nav button{flex:none;padding:6px 12px;border:0;background:transparent;color:#fff;cursor:pointer;opacity:.8;
@@ -4099,7 +4099,17 @@
   .cc-lb-plate b{font-family:var(--font-display);font-size:14px;text-transform:uppercase;letter-spacing:.02em;}
   .cc-lb-plate em{font-style:normal;font-size:12px;color:#ffe14d;font-weight:800;}
   .cc-lb-fig.me .cc-lb-plate{background:rgba(0,0,0,.7);box-shadow:0 0 0 2px #ffe14d inset;}
-  .cc-lb-side{grid-area:side;align-self:end;z-index:4;display:flex;flex-direction:column;align-items:stretch;gap:8px;padding:0 14px 14px 0;}
+  .cc-lb-side{grid-area:side;z-index:4;display:flex;flex-direction:column;justify-content:space-between;gap:8px;padding:0 14px 14px 0;min-height:0;}
+  .cc-lb-right{display:flex;flex-direction:column;gap:8px;min-height:0;overflow:auto;scrollbar-width:none;}
+  .cc-lb-go{display:flex;flex-direction:column;align-items:stretch;gap:8px;}
+  .cc-lb-attrs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px;}
+  .cc-lb-attrs span{display:flex;flex-direction:column;align-items:center;padding:3px 0;border-radius:4px;background:rgba(255,255,255,.08);}
+  .cc-lb-attrs em{font-style:normal;font-size:10px;opacity:.8;text-transform:uppercase;} .cc-lb-attrs b{font-size:15px;font-weight:800;}
+  .cc-lb-week{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:3px;}
+  .cc-lb-week span{display:flex;flex-direction:column;align-items:center;padding:2px 0;border-radius:4px;background:rgba(255,255,255,.06);}
+  .cc-lb-week em{font-style:normal;font-size:9px;opacity:.7;text-transform:uppercase;} .cc-lb-week b{font-size:13px;}
+  .cc-lb-week span.ev{box-shadow:inset 0 -3px 0 #3fe0c0;} .cc-lb-week span.today{background:#ffe14d;color:#111;}
+  .cc-lb-row span{opacity:.8;font-size:12px;}
   .cc-lb-mode{padding:8px 12px;border-radius:8px;background:rgba(0,0,0,.6);}
   .cc-lb-mode em{display:block;font-style:normal;font-size:11px;letter-spacing:.06em;text-transform:uppercase;opacity:.8;}
   .cc-lb-mode b{display:block;font-family:var(--font-display);font-size:18px;text-transform:uppercase;line-height:1.1;}
@@ -4116,9 +4126,11 @@
     .cc-lb-top{flex-wrap:wrap;padding:8px 10px;} .cc-lb-nav{order:2;flex-basis:100%;} .cc-lb-c1 .cc-lb-nav{justify-content:flex-start;}
     .cc-lb-nav button{font-size:13px;padding:5px 9px;} .cc-lb-wallet{margin-left:auto;}
     .cc-lb-left{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));padding:0 10px 10px;overflow:visible;}
-    .cc-lb-left .cc-lb-panel:first-child{grid-row:span 2;} }
+    .cc-lb-left .cc-lb-panel:first-child{grid-row:span 2;}
+    .cc-lb-side{padding:0 10px 10px;} .cc-lb-right{order:2;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));overflow:visible;}
+    .cc-lb-right .cc-lb-panel:nth-child(2){grid-column:1/3;order:3;} }
   @media (max-width:560px){
-    .cc-lb-side{padding:0 10px 10px;flex-direction:row;flex-wrap:wrap;align-items:stretch;} .cc-lb-fmt{flex-basis:100%;}
+    .cc-lb-go{flex-direction:row;flex-wrap:wrap;align-items:stretch;} .cc-lb-fmt{flex-basis:100%;}
     .cc-lb-mode{flex:1;min-width:0;} .cc-lb-mode b{font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
     .cc-lb-play{font-size:20px;padding:10px 16px;} .cc-lb-plate b{font-size:12px;} .cc-lb-plate{padding:2px 6px;}
     /* Четверо в сквад-лобби на 340 px: картинка квадратная, сам персонаж — её середина, поэтому фигуры заходят
@@ -117303,7 +117315,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='6dd42880';
+const CC_BUILD='0f92e8b7';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -121947,7 +121959,33 @@ function ccLobbyHTML(card, btn, next, when){
   const mode=next ? '<div class="cc-lb-mode"><em>'+esc((careerSquadSize()===3 ? L().ccSeasonTrios : careerSquadSize()===4 ? 'Squads' : L().ccSeasonDuos)+(when ? ' · '+when : ''))+'</em>'+
     '<b>'+esc(next.label||next.title||'')+'</b></div>' : '';
   return '<div class="cc-lobby cc-lb-'+era.k+'">'+ccLobbyTopHTML(era)+'<div class="cc-lb-stage">'+row.join('')+'</div>'+
-    ccLobbyPanelsHTML(card)+'<div class="cc-lb-side">'+(era.k==='c1' ? ccLobbyFmtHTML(next) : '')+mode+play+'</div></div>';
+    ccLobbyPanelsHTML(card)+'<div class="cc-lb-side"><div class="cc-lb-right">'+ccLobbyRightHTML(card)+'</div>'+
+    '<div class="cc-lb-go">'+(era.k==='c1' ? ccLobbyFmtHTML(next) : '')+mode+play+'</div></div></div>';
+}
+/* Справа от скина — то, что было на «Центре» ниже (его «пусть на экране со скином будут характеристики, составы,
+   вся информация с центра»): шесть характеристик с рейтингом, неделя по дням (сегодня и вечера), клуб, деньги,
+   подписчики. Нажатие ведёт в свою вкладку. */
+function ccLobbyRightHTML(card){
+  const T=L(), cr=CAREER.career, out=[];
+  const panel=(h, body, go)=>'<div class="cc-lb-panel"'+(go ? ' onclick="careerTab(\''+go+'\')"' : '')+'><h5>'+esc(h)+'</h5>'+body+'</div>';
+  try{
+    const a=attrsFor(careerCard()) || {};
+    const ovr=Math.round((card && (card._ovr||card.rating)) || CAREER.player.ovr || 0);
+    out.push(panel(T.ccRoOvr ? T.ccRoOvr+' '+ovr : String(ovr), '<div class="cc-lb-attrs">'+['aim','end','sur','exp','clu','con'].map(k=>
+      '<span><em>'+esc(T[ATTR_LABEL[k]]||k.toUpperCase())+'</em><b>'+Math.round(a[k]||0)+'</b></span>').join('')+'</div>', 'train'));
+  }catch(e){}
+  try{
+    const ev=careerEvents(), mon=careerMonday(careerToday());
+    out.push(panel(T.chTabCalendar, '<div class="cc-lb-week">'+[0,1,2,3,4,5,6].map(d=>{ const iso=ccAddDays(mon, d), on=(ev.get(iso)||[]).length;
+      return '<span class="'+(iso===careerToday() ? 'today' : '')+(on ? ' ev' : '')+'"><em>'+esc(T.calDows[d])+'</em><b>'+Number(iso.slice(8))+'</b></span>'; }).join('')+'</div>', 'calendar'));
+  }catch(e){}
+  try{
+    const org=CAREER.org;
+    out.push(panel(T.chTabClub, '<div class="cc-lb-row"><b>'+esc(org && org.name ? org.name : 'F/A')+'</b></div>'+
+      '<div class="cc-lb-row"><span>'+esc(T.chEarnings)+'</span><i>'+ccMoney(cr.earnings||0)+'</i></div>'+
+      '<div class="cc-lb-row"><span>'+esc(T.xFollowers)+'</span><i>'+esc(ccFollowers(careerReach()))+'</i></div>', 'club'));
+  }catch(e){}
+  return out.join('');
 }
 /* Главное меню той главы, а не пустая сцена (его «посмотри, как в каждом сезоне реализовано главное меню, и сделай
    так же, только чтоб пусто не было: ростеры, тренировки и т. д.»). Сверху — вкладки, как в игре (Глава 1: капсом
