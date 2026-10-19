@@ -2494,6 +2494,8 @@
   .cc-ro-plus.bad{color:#ff6b6b;}
   .cc-card-in{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px;}
   .cc-card-n{font-weight:900;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  /* Устройство про-игрока в выборе карточки (19.10): геймпад или клавиатура с мышью, как в лобби. */
+  .cc-card-in-ico{margin-left:6px;opacity:.8;} .cc-card-in-ico .cc-inico{height:12px;vertical-align:-1px;}
   /* What they have done, on the row you scan and under the card you are looking
      at. A rating says somebody is good; this says whether they win things. */
   .cc-card-res{font-size:10px;font-weight:800;color:#6b7883;
@@ -4371,6 +4373,21 @@
     #screen-career-hub .cc-lobby.cc-lb-full .cc-lb-sched .ch-day em{justify-self:start;}
   }
   @media (max-width:700px){ .cc-lobby.cc-lb-full .cc-lb-bottom{order:0;} }
+  /* Составы в меню целиком, без прокрутки (его слово 19.10: «чтоб все составы вмещались на главной»): панели рейтинга
+     и ресурсов в меню больше нет (рейтинг — над фигурами), а сами составы плотнее: мелкая аватарка, ник и «95 · IGL»
+     одной строкой, у пустого состава — одна строка, подсказки «можно собрать за неделю» спрятаны. */
+  #screen-career-hub .cc-lobby .ch-tile-ros .ch-ro{margin:0 0 5px;padding:5px 9px;}
+  #screen-career-hub .cc-lobby .ch-tile-ros .ch-ro > small{display:none;}
+  #screen-career-hub .cc-lobby .ch-tile-ros .ch-ro > em{display:inline;font-size:10px;}
+  #screen-career-hub .cc-lobby .ch-tile-ros .ch-ro > b{display:inline;margin-left:6px;font-size:11px;}
+  #screen-career-hub .cc-lobby .ch-tile-ros .ch-ro:not(.on):not(.ch-ro-nat) .ch-ro-spot{display:none;}
+  #screen-career-hub .cc-lobby .ch-tile-ros .ch-ro-ms{gap:2px;margin-top:3px;}
+  #screen-career-hub .cc-lobby .ch-tile-ros .ch-ro-m{gap:6px;padding:1px 0;}
+  #screen-career-hub .cc-lobby .ch-tile-ros .ch-ro-av{width:22px;height:22px;flex:none;font-size:8px;}
+  #screen-career-hub .cc-lobby .ch-tile-ros .ch-ro-t{display:flex;align-items:baseline;gap:6px;min-width:0;}
+  #screen-career-hub .cc-lobby .ch-tile-ros .ch-ro-t b{font-size:12px;white-space:nowrap;}
+  #screen-career-hub .cc-lobby .ch-tile-ros .ch-ro-t small{font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  #screen-career-hub .cc-lobby .ch-tile-ros .ch-ro-spot{margin-top:3px;font-size:10px;}
   /* Вкладки меню — как на профиле (Notion «19.10», скрины 19/21/24: «выбор панелек вот так, как на профиле, чтоб
      везде дизайн одинаковый»): Oswald капсом, активная — светлая таблетка, точки-метки видны; во всех главах. */
   #screen-career-hub .cc-lobby .cc-lb-top{padding:10px 14px;}
@@ -4388,6 +4405,9 @@
     /* Верхние углы — прямые: сверху меню стыкуется с шапкой хаба, и скругление открывало светлые уголки (скрин 28). */
     #screen-career-hub.ch-lobby-on .cc-lobby{margin:0;border-radius:0 0 16px 16px;}
   }
+  /* На «Центре» шапка хаба (ник, рейтинг, энергия, баланс) не нужна: рейтинг — над фигурой, кошелёк — в полосе вкладок
+     меню (Notion «19.10», скрин 31: верх из четырёх полос «выглядит странно»). На ПК, телефон оставляет её как есть. */
+  @media (min-width:701px){ #screen-career-hub.ch-lobby-on .ch-top{display:none;} }
   /* Полоса вкладок меню — синяя, как на профиле (скрины 26–27), а не прозрачная поверх картинки. */
   #screen-career-hub .cc-lobby .cc-lb-top{background:linear-gradient(90deg,#1b3584,#162c74 60%,#1a3380);box-shadow:0 1px 0 rgba(180,200,255,.18);}
   /* Фон с нарисованными подиумами (ccLobbyPads) — свои подиумы не рисуются. */
@@ -116806,7 +116826,7 @@ function ccRenderList(){
     return `<button class="cc-card${on}" onclick="ccPickCard('${x.p.handle.replace(/'/g,"\\'")}')">
       ${url?`<img class="cc-card-ph" src="${url}" alt="">`:`<span class="cc-card-ph"></span>`}
       <span class="cc-card-in">
-        <span class="cc-card-n">${cardFlag(x.p,13)}${esc(x.p.handle)}</span>
+        <span class="cc-card-n">${cardFlag(x.p,13)}${esc(x.p.handle)}<span class="cc-card-in-ico" title="${esc(L()['ccInput_'+ccProInput(x.p)]||'')}">${ccInputIcon(ccProInput(x.p))}</span></span>
         <span class="cc-card-o">${x.p.org ? esc(x.p.org) : L().ccFreeAgent}</span>
         ${x.mate ? `<span class="cc-card-mate">${L().ccMateNow(esc(x.mate))}</span>` : ''}
       </span>
@@ -117715,7 +117735,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='6c9fb3c6';
+const CC_BUILD='df51eb93';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -122483,24 +122503,26 @@ function ccLobbyHTML(card, btn, next, when, strip, ex){
       '<div class="cc-lb-lvl"><span class="cc-lb-banner">'+esc(String(cr.division||1))+'</span><div><b>LEVEL '+myOvr+'</b>'+
         '<u class="cc-lb-xp"><s style="width:'+Math.round(lvlFrac*100)+'%"></s></u></div></div>'+
       '<div class="cc-lb-tier" onclick="careerTab(\'table\')"><b>'+esc(T.ccDivision||'Division')+' '+(cr.division||1)+'</b><em>'+esc(ccLobbyWeek())+'</em></div>'+
-      ccLobbyQuestsHTML('DAILY CHALLENGES')+ccLobbyRightHTML(card, true, true)+(ex.side||'');
+      ccLobbyQuestsHTML('DAILY CHALLENGES')+(ex.side||'');
+    // С карточкой вечера (ex.play) плашка режима не нужна: формат, название и день уже на ней (Notion «19.10», скрин 31).
     right='<div class="cc-lb-region">'+esc(regionName(ccCareerRegion()))+'</div>'+
-      '<div class="cc-lb-modebox"><b>'+esc(fmtWord)+'</b><em>'+esc(evName)+(when ? ' · '+esc(when) : '')+'</em></div>'+playBox;
+      (ex.play ? '' : '<div class="cc-lb-modebox"><b>'+esc(fmtWord)+'</b><em>'+esc(evName)+(when ? ' · '+esc(when) : '')+'</em></div>')+playBox;
   } else if(fam==='B'){
     left='<div class="cc-lb-chap">'+esc(sn.c)+'</div><div class="cc-lb-sea">'+esc(sn.s)+'</div>'+
       '<div class="cc-lb-lvl2"><b>LEVEL '+myOvr+'</b><u class="cc-lb-xp"><s style="width:'+Math.round(lvlFrac*100)+'%"></s><i>'+esc(ccLobbyWeek())+'</i></u></div>'+
       '<button class="cc-lb-quests" onclick="this.nextElementSibling.hidden=!this.nextElementSibling.hidden">VIEW QUESTS</button>'+
       '<div hidden>'+ccLobbyQuestsHTML('')+'</div>'+
-      ccLobbyResourcesHTML(sn.s)+ccLobbyRightHTML(card, true, true)+(ex.side||'');
-    right='<div class="cc-lb-news" onclick="careerTab(\'calendar\')"><em>'+esc(when||'')+'</em><b>'+esc(evName)+'</b></div>'+
-      '<div class="cc-lb-modebox"><b>'+esc(fmtWord)+'</b></div>'+playBox;
+      (ex.side||'');
+    // Плашки «день · вечер» и «DUOS» над карточкой вечера повторяли её же (Notion «19.10», скрин 31) — с ex.play их нет.
+    right=(ex.play ? '' : '<div class="cc-lb-news" onclick="careerTab(\'calendar\')"><em>'+esc(when||'')+'</em><b>'+esc(evName)+'</b></div>'+
+      '<div class="cc-lb-modebox"><b>'+esc(fmtWord)+'</b></div>')+playBox;
   } else {
     // Слева сверху — карточка новостей с обложкой ближайшего турнира; под ней — карточка вечера с PLAY.
     left=(ccLobbyNewsCardHTML() || '<div class="cc-lb-news cc-lb-card" onclick="careerTab(\'calendar\')"'+(nextArt ? ' style="--card-art:url('+nextArt+')"' : '')+'>'+
         '<em>'+esc(newsWhen)+'</em><b>'+esc(newsEv ? (newsEv.label||evName) : (evName||sn.s))+'</b></div>')+
       playBox;
     // Справа — ростер с местом высадки и сборной, новости, тренировка, рейтинг, клуб; ниже кольцо LVL и кнопки.
-    right='<div class="cc-lb-stack">'+ccLobbyRightHTML(card, true, true)+(ex.side||'')+'</div>'+
+    right='<div class="cc-lb-stack">'+(ex.side||'')+'</div>'+
       '<div class="cc-lb-ringrow"><div class="cc-lb-bar-btns"><button onclick="careerTab(\'social\')">'+esc(T.chTabMedia||'Media')+'</button>'+
       '<button onclick="careerTab(\'items\')">'+esc(T.chTabItems||'Item Shop')+'</button></div>'+
       '<div class="cc-lb-ring" onclick="careerTab(\'train\')" style="--p:'+Math.round(lvlFrac*100)+'"><em>LVL</em><b>'+myOvr+'</b></div></div>';
@@ -122579,6 +122601,13 @@ function ccLobbyPads(lb){
 }
 function ccLobbyFit(){
   const lb=document.querySelector('.cc-lobby.cc-lb-full'); if(lb) try{ ccLobbyPads(lb); }catch(e){}
+  /* Витрина магазина под составами — только если влезает целиком: обрезанная по краю колонки она читалась
+     поломкой, а составы важнее (его слово 19.10: «чтоб все составы вмещались»). */
+  if(lb) lb.querySelectorAll('.cc-lb-stack, .cc-lb-famA .cc-lb-left, .cc-lb-famB .cc-lb-left').forEach(col=>{
+    const pk=col.querySelector('.cc-peek'); if(!pk) return;
+    pk.style.display='';
+    if(col.scrollHeight>col.clientHeight+2) pk.style.display='none';
+  });
   if(!lb || innerWidth<=700) return;
   lb.style.height='';
   // Колонка с карточкой вечера: в нынешнем меню слева, в меню Глав 1–4 справа.
