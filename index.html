@@ -4097,6 +4097,10 @@
   .cc-lb-plus.cc-lb-s1{left:37%;bottom:46%;} .cc-lb-plus.cc-lb-s2{left:61%;bottom:46%;} .cc-lb-plus.cc-lb-s3{left:72%;bottom:46%;}
   .cc-lb-fig img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;object-position:50% 100%;filter:drop-shadow(0 8px 12px rgba(0,0,0,.4));}
   .cc-lb-fig img.icon{inset:auto 25% 10% 25%;width:50%;height:50%;border-radius:10px;}
+  /* Кадр по колени (ccLbFigCut): ниже ростом, срез растворяется у подиума. */
+  .cc-lb-fig img.cut{inset:auto 9% 0 9%;width:82%;height:82%;
+    -webkit-mask-image:linear-gradient(180deg,#000 74%,transparent 100%);mask-image:linear-gradient(180deg,#000 74%,transparent 100%);}
+  .cc-lb-fig:has(img.cut) .cc-lb-plate{top:14%;}
   .cc-lb-plate{position:absolute;left:50%;top:-3%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:flex-start;
     padding-left:26px;white-space:nowrap;text-shadow:0 1px 3px rgba(0,0,0,.8);}
   .cc-lb-plate b{font-family:var(--font-display);font-size:15px;letter-spacing:.01em;}
@@ -122606,7 +122610,7 @@ function ccLobbyHTML(card, btn, next, when, strip, ex){
     const ped='<span class="cc-lb-ped'+(i===0 ? ' me' : '')+s+'"></span>';
     if(!p) return ped+'<button class="cc-lb-plus'+s+'" onclick="careerTab(\'me\')" title="'+esc(T.lfRosters)+'">+</button>';
     return ped+'<div class="cc-lb-fig'+(p.me ? ' me' : '')+s+'"'+(p.me ? ' onclick="ccFnLockerOpen(\'o\')"' : '')+'>'+
-      '<img class="full" src="'+ccFnFull(p.id)+'" data-id="'+esc(p.id)+'" alt="" loading="lazy" onerror="ccFnHeroErr(this)">'+
+      '<img class="full" src="'+ccFnFull(p.id)+'" data-id="'+esc(p.id)+'" alt="" loading="lazy" crossorigin="anonymous" onload="ccLbFigCut(this)" onerror="ccFnHeroErr(this)">'+
       '<div class="cc-lb-plate">'+(p.me ? '<i class="cc-lb-crown">♛</i>' : '')+'<span class="cc-lb-hex">'+p.ovr+'</span><b>'+esc(p.name)+' <u>'+p.ovr+'</u></b>'+
       '<span class="cc-lb-in">'+ccInputIcon(p.input)+'</span>'+
       '<em class="'+(ready ? 'ok' : '')+'">'+(ready ? 'Ready' : 'Not Ready')+'</em></div></div>';
@@ -149068,6 +149072,19 @@ function ccFnImg(id, small){ return 'https://fortnite-api.com/images/cosmetics/b
 // Скин в полный рост (featured.png: персонаж стоит, как в лобби игры, фон прозрачный) — для шкафчика.
 // Нет такой картинки — квадратная иконка; нет и её — пусто.
 function ccFnFull(id){ return 'https://fortnite-api.com/images/cosmetics/br/'+String(id).toLowerCase()+'/featured.png'; }
+/* Рендер, обрезанный снизу (Notion «19.10», скрин 42: «почему не фулл мою модельку видно скина» — Rex). У старых скинов
+   Главы 1 featured.png — промо-кадр по колени во весь квадрат, и в меню фигура выходила вдвое крупнее соседей и без ног.
+   Полного роста у них нет ни в одном источнике, поэтому такой кадр (персонаж касается нижнего края) рисуется ниже ростом,
+   а срез растворяется у подиума (класс cut). fortnite-api отдаёт картинки с CORS, пиксели читаются. */
+function ccLbFigCut(img){
+  try{
+    const c=document.createElement('canvas'); c.width=c.height=48;
+    const x=c.getContext('2d', {willReadFrequently:true}); x.drawImage(img, 0, 0, 48, 48);
+    const row=x.getImageData(0, 46, 48, 2).data;
+    let n=0; for(let i=3; i<row.length; i+=4) if(row[i]>60) n++;
+    img.classList.toggle('cut', n>=6);
+  }catch(e){}
+}
 function ccFnHeroErr(img){
   if(img.dataset.f){ img.remove(); return; }
   img.dataset.f='1'; img.classList.remove('full'); img.classList.add('icon');
