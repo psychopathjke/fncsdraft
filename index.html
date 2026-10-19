@@ -7798,8 +7798,10 @@
   .dy-who>b u{text-decoration:none;font-size:10.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#1a1300;
     background:#ffdd00;border-radius:4px;padding:1px 5px;}
   .dy-team{display:flex;flex-wrap:wrap;gap:4px;margin-top:5px;}
-  .dy-team em{font-style:normal;font-size:11.5px;font-weight:700;color:#cfe0ff;padding:2px 7px;border-radius:999px;
-    background:rgba(120,160,255,.12);border:1px solid rgba(140,175,255,.22);}
+  /* Ники состава — без обводки и подложки (его слово 19.10), через точку. */
+  .dy-team{gap:2px 6px;}
+  .dy-team em{font-style:normal;font-size:12px;font-weight:700;color:#cfe0ff;}
+  .dy-team em+em::before{content:'·';margin-right:6px;color:#6f85b8;}
   .dy-who>small{display:block;margin-top:5px;font-size:11.5px;color:#8ea6d6;font-weight:600;}
   .dy-pow{text-align:right;}
   .dy-pow b{display:block;font-family:var(--font-display);font-size:22px;font-weight:700;line-height:1;color:#ffdd00;font-variant-numeric:tabular-nums;}
@@ -117689,7 +117691,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='977df583';
+const CC_BUILD='b72943d9';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
