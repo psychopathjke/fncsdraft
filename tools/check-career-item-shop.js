@@ -54,14 +54,22 @@ openCareerHub(); ccFnShopOpen();
 const shopTxt=(document.querySelector('#screen-career-hub')||document.body).innerHTML;
 check('раздел «Магазин предметов» с карточками', /cc-fn-it/.test(shopTxt) && /cc-vb-pack/.test(shopTxt));
 check('V-Bucks в шапке рядом с балансом', /ch-vb/.test(shopTxt));
-// Шкафчика в карьере нет (19.10, его слово «в карьере убери шкафчик»): вкладки нет, старый адрес ведёт в Item Shop,
-// купленное надевается сразу.
-check('вкладки «Шкафчик» нет', !document.querySelector('.ch-tab[data-tab="locker"]'));
-careerTab('locker'); check('старый адрес шкафчика ведёт в Item Shop', CH_TAB==='items' && /cc-fn-it/.test(document.getElementById('chBody').innerHTML));
+const lock=ccLockerHTML();
+check('образ в шкафчике со скином', /cc-fn-load/.test(lock) && lock.indexOf(sk.id.toLowerCase())>0);
+ccFnPick('o'); check('выбор из купленного открывается', /cc-(fn|lk5)-pick/.test(ccLockerHTML()));
+// Шкафчик своей вкладкой: выбор скина открыт сразу, купленный скин в нём.
+CC_FN_PICK=null; careerTab('locker');
+const lb=document.getElementById('chBody').innerHTML;
+check('вкладка «Шкафчик»: образ и выбор скина сразу', /cc-fn-load/.test(lb) && /cc-(fn|lk5)-pick/.test(lb) && lb.indexOf(sk.id.toLowerCase())>0);
+check('кнопка вкладки есть', !!document.querySelector('.ch-tab[data-tab="locker"]'));
+// Item Shop — своя вкладка рядом со шкафчиком, в обычном магазине его раздела больше нет.
+const tabs=[...document.querySelectorAll('#screen-career-hub .ch-tab')].map(b=>b.dataset.tab);
+check('вкладка Item Shop перед шкафчиком', tabs.indexOf('items')>=0 && tabs.indexOf('items')+1===tabs.indexOf('locker'), tabs.join(','));
 careerTab('items'); check('во вкладке Item Shop витрина дня', /cc-fn-it/.test(document.getElementById('chBody').innerHTML));
-careerTab('shop'); check('в магазине нет раздела предметов', !/cc-fn-it/.test(document.getElementById('chBody').innerHTML) && !/ccShopSec('items')/.test(document.getElementById('chBody').innerHTML));
+careerTab('shop'); check('в магазине нет раздела предметов', !/cc-fn-it/.test(document.getElementById('chBody').innerHTML) && !/ccShopSec\('items'\)/.test(document.getElementById('chBody').innerHTML));
+// После покупки в магазине — кнопка «Надеть в шкафчике».
 const em=ccFnShopDay(careerToday()).find(x=>x.t==='e' && !ccFnOwn()[x.id]);
-if(em){ CAREER.vb=(CAREER.vb||0)+5000; ccFnBuy(em.i); check('купленное надето сразу', ccFnEq().e===em.id); check('кнопки «в шкафчик» нет', !/cc-fn-tolock/.test(document.getElementById('chBody').innerHTML)); }
+if(em){ CAREER.vb=(CAREER.vb||0)+5000; ccFnBuy(em.i); check('после покупки кнопка «Надеть в шкафчике»', /cc-fn-tolock/.test(document.getElementById('chBody').innerHTML)); }
 ccFnEquip('o', null); check('скин снимается', !ccFnEq().o);
 // 5) Вид магазина по главе: Глава 1 — «Рекомендуемые/Ежедневные», дальше — по типам; тёмный магазин с ноября 2023.
 const eras={};
