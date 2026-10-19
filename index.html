@@ -11285,7 +11285,7 @@ dmYes:'Го. Я свободен.',
 dmNoUp:(o,d)=>'Спасибо, но я пока остаюсь в своём составе', dmNoUp1:(o,d)=>'Не, сейчас не меняюсь. Удачи', dmNoUp2:(o,d)=>'Приятно, правда, но в этом сезоне я со своим дуо', dmNoUp3:(o,d)=>'Сейчас не ищу перемен', dmNoUp4:(o,d)=>'Уважаю, что написал, но остаюсь где есть', dmNo:(o,d)=>'Спасибо, но я '+o+' и сижу в Дивизионе '+(d>1?d-1:1)+'. Пока не вариант.',
 dmNoDuo:m=>'Спасибо, но у меня дуо с '+m+' — мы продолжаем.',
 ccDuoViewPlayers:"Игроки", ccDuoViewPairs:"Пары", ccJoinPairBtn:"Попроситься третьим", ccJoinPairThird:h=>"третий: "+h, ccJoinPairOpen:"ищут третьего", ccJoinPairHint:"Готовые пары твоего региона: третьего нет или он слабее тебя. Согласятся — садятся к тебе оба.", ccJoinPairNone:"Пар, куда можно попроситься третьим, сейчас нет.", ccJoinPairOwnReg:"Пары — только твоего региона.", dmJoinAsk:m=>'Привет! Вижу, вы с '+m+' играете вдвоём. Возьмёте меня третьим?', dmJoinYes:m=>'Обсудили с '+m+' — залетай, будешь третьим.', dmJoinNo:m=>'Поговорил с '+m+' — пока нет, третьего подберём сами.', dmJoinRole:r=>'Третьим нам нужен '+r+'. Пересядешь — пиши.',
-dmFmtAsk:(f,d)=>'Привет! Собираю состав на '+f+' — первый кап '+d+'. Сыграем вместе?', dmFmtPair:(m,f,d)=>'Мы с '+m+' ищем третьего на '+f+' — первый кап '+d+'. Залетай к нам?', roClubAsk:'Позвать в клуб', roClubNo:(o,d)=>o+' не берёт '+d+' — не их уровень', dmRealTeam:e=>'Новый сезон, '+e+' — играем тем составом, что был в жизни. Я в деле.',
+dmFmtAsk:(f,d)=>'Привет! Собираю состав на '+f+' — первый кап '+d+'. Сыграем вместе?', dmFmtPair:(m,f,d)=>'Мы с '+m+' ищем третьего на '+f+' — первый кап '+d+'. Залетай к нам?', roClubAsk:'Позвать в клуб', roClubWait:d=>'Менеджер договаривается · ответ '+d, dmClubAskMe:(h,o)=>'Можешь подтянуть '+h+' к нам в '+o+'? Хочу, чтобы мы играли за один клуб', dmClubAskOk:(o,h)=>'Понял. Поговорю с '+o+' про '+h+', дай пару дней', dmClubAskYes:(h,o)=>'Договорился: '+o+' берёт '+h+'. Контракт подписан', dmClubAskNo:(h,o)=>'Говорил с '+o+': '+h+' пока не их уровень. Через месяц спрошу ещё раз', dmClubAskMeOrg:(h,o)=>'Хочу, чтобы '+h+' играл со мной в '+o+'. Возьмёте?', dmClubAskOrgOk:(o,h)=>'Посмотрим на '+h+' и ответим через пару дней', dmClubAskOrgYes:(h,o)=>'Решили: берём '+h+'. Добро пожаловать в '+o, dmClubAskOrgNo:(h,o)=>'Посмотрели '+h+': пока не наш уровень. Вернёмся к этому через месяц', roClubNo:(o,d)=>o+' не берёт '+d+' — не их уровень', dmRealTeam:e=>'Новый сезон, '+e+' — играем тем составом, что был в жизни. Я в деле.',
 dmNoPartner:o=>'Слышал, ты без напарника. Я '+o+', тоже свободен. Скинемся?',
 dmSeatSour:(o,m)=>'С '+m+' сезон не идёт, ищу куда уйти. Я '+o+' — если у тебя место свободно, я в деле',
 dmLfd:o=>'Видел твой пост. Я '+o+', место есть — пробуем?',
@@ -13379,7 +13379,7 @@ dmYes:'Yeah, I am free. Let us do it.',
 dmNoUp:(o,d)=>'Appreciate it, but I am sticking with my current setup for now', dmNoUp1:(o,d)=>'Nah, not switching right now. Good luck though', dmNoUp2:(o,d)=>'Honestly flattered, but I am locked in with my duo this season', dmNoUp3:(o,d)=>'Not looking for a change at the moment', dmNoUp4:(o,d)=>'Respect for asking, but I am staying where I am', dmNo:(o,d)=>'Thanks, but I am '+o+' and sitting in Division '+(d>1?d-1:1)+'. Not right now.',
 dmNoDuo:m=>'Thanks, but I have a duo with '+m+' — we are running it back.',
 ccDuoViewPlayers:"Players", ccDuoViewPairs:"Pairs", ccJoinPairBtn:"Ask to be third", ccJoinPairThird:h=>"third: "+h, ccJoinPairOpen:"looking for a third", ccJoinPairHint:"Standing pairs in your region with no third, or a third weaker than you. If they say yes, both join you.", ccJoinPairNone:"No pairs to ask right now.", ccJoinPairOwnReg:"Pairs are from your own region only.", dmJoinAsk:m=>'Hey! I see you and '+m+' play as a duo. Take me as your third?', dmJoinYes:m=>'Talked it over with '+m+' — you are in, you are our third.', dmJoinNo:m=>'Talked to '+m+' — not for now, we will find a third ourselves.', dmJoinRole:r=>'We need a '+r+' as the third. Switch and write again.',
-dmFmtAsk:(f,d)=>'Hey! Building a roster for '+f+' — first cup '+d+'. Play together?', dmFmtPair:(m,f,d)=>m+' and I need a third for '+f+' — first cup '+d+'. Want in?', roClubAsk:'Bring to the club', roClubNo:(o,d)=>o+' pass on '+d+' — not their level', dmRealTeam:e=>'New season, '+e+' — let’s play it with our real roster. I’m in.',
+dmFmtAsk:(f,d)=>'Hey! Building a roster for '+f+' — first cup '+d+'. Play together?', dmFmtPair:(m,f,d)=>m+' and I need a third for '+f+' — first cup '+d+'. Want in?', roClubAsk:'Bring to the club', roClubWait:d=>'Your manager is on it · answer '+d, dmClubAskMe:(h,o)=>'Can you get '+h+' into '+o+'? I want us on the same club', dmClubAskOk:(o,h)=>'Got it. I will talk to '+o+' about '+h+', give me a couple of days', dmClubAskYes:(h,o)=>'Done: '+o+' take '+h+'. Contract signed', dmClubAskNo:(h,o)=>'Talked to '+o+': '+h+' is not their level yet. I will ask again in a month', dmClubAskMeOrg:(h,o)=>'I want '+h+' playing with me at '+o+'. Will you take them?', dmClubAskOrgOk:(o,h)=>'We will look at '+h+' and get back to you in a couple of days', dmClubAskOrgYes:(h,o)=>'Decided: we take '+h+'. Welcome to '+o, dmClubAskOrgNo:(h,o)=>'We looked at '+h+': not our level yet. Let us revisit in a month', roClubNo:(o,d)=>o+' pass on '+d+' — not their level', dmRealTeam:e=>'New season, '+e+' — let’s play it with our real roster. I’m in.',
 dmNoPartner:o=>'Heard you have no duo. I am '+o+' and free. Want to run it?',
 dmSeatSour:(o,m)=>'The season with '+m+' is not working and I am looking to move. I am '+o+' — if your seat is open, I am in',
 dmLfd:o=>'Saw your post. I am '+o+' and I have room — want to try it?',
@@ -124208,7 +124208,10 @@ function ccRostersStripHTML(){
   const mateHTML=(c, f)=>{
     const a=(typeof attrsFor==='function' ? attrsFor(c) : null)||{};
     const noUntil=orgName ? ccClubAskNoUntil(c.handle, orgName) : null;
-    const bring=(orgName && f && c.org!==orgName && !(typeof ccMpOn==='function' && ccMpOn()) && noUntil)
+    const asking=orgName ? ccClubAskPending(c.handle, orgName) : null;
+    const bring=(orgName && f && c.org!==orgName && !(typeof ccMpOn==='function' && ccMpOn()) && asking)
+      ? '<small class="ch-ro-clubno ch-ro-asking">'+esc(T.roClubWait(ccDayLabel(asking.due)))+'</small>'
+      : (orgName && f && c.org!==orgName && !(typeof ccMpOn==='function' && ccMpOn()) && noUntil)
       ? '<small class="ch-ro-clubno">'+esc(T.roClubNoUntil(ccDayLabel(noUntil)))+'</small>'
       : (orgName && f && c.org!==orgName && !(typeof ccMpOn==='function' && ccMpOn()))
       ? '<button class="ch-ro-club" onclick="event.stopPropagation();ccOrgBringMate(\''+esc(String(c.handle).replace(/'/g, ''))+'\', '+f+')">'+esc(T.roClubAsk)+'</button>' : '';
@@ -126495,6 +126498,7 @@ function careerAdvanceBody(iso){
   careerProAmInviteTick();
   careerDmDays(cr.day, to);
   try{ ccStaffDmTick(to); }catch(e){}   // штаб пишет в личку по делу (ccStaffDmTick)
+  try{ ccClubAskTick(to); }catch(e){ console.error('clubAsk', e); }   // итог «позвать в клуб» через менеджера (ccOrgBringMate)
   // And the seat, if it is empty, hears from somebody who is free.
   careerSeatDms(cr.day, to);
   careerFmtSeatDms(cr.day, to);
@@ -143141,24 +143145,60 @@ function ccClubAskNoUntil(handle, orgName){
   const m=CAREER && CAREER.clubAskNo, k=hKey(handle)+'|'+String(orgName||'');
   const d=m && m[k]; return (d && careerToday()<d) ? d : null;
 }
+/* НЕ В ОДИН КЛИК (его слово 19.10: «сначала пишу менеджеру, и потом пусть он договаривается, а не сразу оргу даёт
+   тиммейту в один клик»). Кнопка — это просьба в личку: своему менеджеру (careerAgent), а без менеджера — самому клубу.
+   Он отвечает, что поговорит, и через 2–3 дня пишет итог (ccClubAskTick). Решает то же правило: клуб берёт, если
+   напарник не ниже уровня клуба (tier − 6); отказ держится CC_CLUB_ASK_COOL дней. Пока идут переговоры, кнопки нет —
+   вместо неё «договаривается» (ccClubAskPending). */
+function ccClubAskThread(org){
+  const ag=careerAgent();
+  if(ag && ag.name){ const t=ccAgentThreadOf(ag.name, true); if(t) return {t, agent:true}; }
+  const t=careerDmFind(org.name) || careerDmThread({handle:org.name, ovr:org.tier||75, role:'roleIGL', roster:false, org:true});
+  return {t, agent:false};
+}
+function ccClubAskPending(handle, orgName){
+  return (CAREER && CAREER.clubAsks || []).find(a=>a.h===hKey(handle) && a.org===orgName) || null;
+}
 function ccOrgBringMate(handle, fmt){
   const org=CAREER.org; if(!org || !org.name) return;
-  if(ccClubAskNoUntil(handle, org.name)) return;
+  if(ccClubAskNoUntil(handle, org.name) || ccClubAskPending(handle, org.name)) return;
   const list=(fmt && fmt!==careerSquadSize()) ? (((CAREER.rosters||{})[fmt])||[]) : careerMateRecords();
   const r=list.find(x=>{ const c=ccMateCardOf(x); return c && hKey(c.handle)===hKey(handle); });
   if(!r) return;
   const c=ccMateCardOf(r);
-  const ovr=Math.round(ccCardOvr(c)||(attrsFor(c)||{}).ovr||c.rating||0);
-  if(ovr>=(org.tier||80)-6){
-    r.org=org.name;
-    careerNews('good', 'ccNewsSignedDuo', [org.name, ccHandle(c.handle)], {by:ccOrgBy(org.name)});
-  } else {
-    careerNews('bad', 'roClubNo', [org.name, ccHandle(c.handle)]);
-    CAREER.clubAskNo=CAREER.clubAskNo||{};
-    CAREER.clubAskNo[hKey(c.handle)+'|'+org.name]=ccAddDays(careerToday(), CC_CLUB_ASK_COOL);
-  }
+  const {t, agent}=ccClubAskThread(org);
+  careerDmPush(t, 'me', agent ? 'dmClubAskMe' : 'dmClubAskMeOrg', ['@'+ccHandle(c.handle), org.name]);
+  careerDmPush(t, 'them', agent ? 'dmClubAskOk' : 'dmClubAskOrgOk', [org.name, '@'+ccHandle(c.handle)]);
+  const days=2+(ccHashStr(hKey(c.handle)+'|'+careerToday())%2);
+  CAREER.clubAsks=(CAREER.clubAsks||[]).concat([{h:hKey(c.handle), handle:c.handle, fmt:fmt||0, org:org.name, due:ccAddDays(careerToday(), days), by:agent ? 'agent' : 'org'}]);
   careerSave();
   careerRenderHub();
+}
+// Итог переговоров — в свой день: менеджер (или клуб) пишет, взяли или нет.
+function ccClubAskTick(day){
+  const asks=CAREER && CAREER.clubAsks; if(!asks || !asks.length) return;
+  const today=day||careerToday(), org=CAREER.org;
+  CAREER.clubAsks=asks.filter(a=>{
+    if(today<a.due) return true;
+    if(!org || org.name!==a.org) return false;   // сменил клуб — просьба потеряла смысл
+    const list=(a.fmt && a.fmt!==careerSquadSize()) ? (((CAREER.rosters||{})[a.fmt])||[]) : careerMateRecords();
+    const r=list.find(x=>{ const c=ccMateCardOf(x); return c && hKey(c.handle)===a.h; });
+    if(!r) return false;                          // напарника уже нет в составе
+    const c=ccMateCardOf(r), agent=a.by==='agent' && careerAgent();
+    const t=agent ? ccAgentThreadOf(careerAgent().name, true) : (careerDmFind(org.name) || ccClubAskThread(org).t);
+    const ovr=Math.round(ccCardOvr(c)||(attrsFor(c)||{}).ovr||c.rating||0);
+    if(ovr>=(org.tier||80)-6){
+      r.org=org.name;
+      careerDmPush(t, 'them', agent ? 'dmClubAskYes' : 'dmClubAskOrgYes', ['@'+ccHandle(c.handle), org.name]);
+      careerNews('good', 'ccNewsSignedDuo', [org.name, ccHandle(c.handle)], {by:ccOrgBy(org.name)});
+    } else {
+      careerDmPush(t, 'them', agent ? 'dmClubAskNo' : 'dmClubAskOrgNo', ['@'+ccHandle(c.handle), org.name]);
+      careerNews('bad', 'roClubNo', [org.name, ccHandle(c.handle)]);
+      CAREER.clubAskNo=CAREER.clubAskNo||{};
+      CAREER.clubAskNo[a.h+'|'+org.name]=ccAddDays(today, CC_CLUB_ASK_COOL);
+    }
+    return false;
+  });
 }
 function careerSeatDms(fromISO, toISO){
   for(let d=ccAddDays(fromISO,1); d<=toISO; d=ccAddDays(d,1))
