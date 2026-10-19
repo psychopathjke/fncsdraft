@@ -5,6 +5,7 @@
  * Решения — здесь, без сети; проверка — server/tools/check-daily.js. */
 
 const { cleanNick } = require('./board.js');
+const { badNick } = require('./nick-filter.js');
 
 const DAY_RE=/^\d{4}-\d{2}-\d{2}$/;
 const TOP=100;
@@ -24,6 +25,8 @@ function normalize(e, now){
   if(!DAY_RE.test(day) || (day!==dayOf(now) && day!==dayOf(now-864e5))) return {err:'day'};
   const nick=cleanNick(e.nick);
   if(!nick) return {err:'nick'};
+  // N-word и оскорбления в таблицу дня не встают (19.10, его слово). См. nick-filter.js.
+  if(badNick(nick)) return {err:'nickbad'};
   const score=int(e.score, 0, 100000);
   const place=int(e.place, 1, 1000);
   const field=int(e.field, 1, 1000);
@@ -40,4 +43,4 @@ function normalize(e, now){
 /* Порядок таблицы дня (16.10, его слово «только сила»): сила состава, потом очки, потом кто раньше сыграл. */
 function better(a, b){ return (b.p100||0)-(a.p100||0) || b.score-a.score || a.at-b.at; }
 
-module.exports={ normalize, better, dayOf, DAY_RE, TOP };
+module.exports={ normalize, better, dayOf, DAY_RE, TOP, badNick };

@@ -20,7 +20,7 @@
 import { createLobby } from './lobby.js';
 import { createBoard, REGIONS, TOP } from './board.js';
 import { CODE_RE, MAX_ONE, MAX_ALL, MAX_KEYS, checkReq, parts } from './vault.js';
-import { normalize as dailyRow, dayOf, DAY_RE, TOP as DAILY_TOP } from './daily.js';
+import { normalize as dailyRow, dayOf, DAY_RE, TOP as DAILY_TOP, badNick } from './daily.js';
 
 export class Lobby {
   // Тридцать дней тишины — и лобби убирается. См. touch/alarm ниже.
@@ -199,6 +199,9 @@ export class Board {
     }
     const day=DAY_RE.test(String(url.searchParams.get('day')||'')) ? url.searchParams.get('day') : dayOf(Date.now());
     // 16.10, его слово «только сила»: таблица дня — по силе состава (средний рейтинг карточек), очки — при равенстве.
+    // Строки с ником из nick-filter.js (попавшие до фильтра 19.10) стираются при чтении и в таблицу не идут.
+    const bad=this.sql.exec('SELECT id, nick FROM '+T+' WHERE day=?', day).toArray().filter(r=>badNick(r.nick));
+    bad.forEach(r=>this.sql.exec('DELETE FROM '+T+' WHERE day=? AND id=?', day, r.id));
     const rows=this.sql.exec('SELECT * FROM '+T+' WHERE day=? ORDER BY p100 DESC, score DESC, at ASC LIMIT '+DAILY_TOP, day).toArray();
     const total=this.sql.exec('SELECT COUNT(*) AS n FROM '+T+' WHERE day=?', day).toArray()[0].n;
     const me=String(url.searchParams.get('me')||'');
