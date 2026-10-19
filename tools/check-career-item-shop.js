@@ -62,6 +62,11 @@ CC_FN_PICK=null; careerTab('locker');
 const lb=document.getElementById('chBody').innerHTML;
 check('вкладка «Шкафчик»: образ и выбор скина сразу', /cc-fn-load/.test(lb) && /cc-fn-pick/.test(lb) && lb.indexOf(sk.id.toLowerCase())>0);
 check('кнопка вкладки есть', !!document.querySelector('.ch-tab[data-tab="locker"]'));
+// Item Shop — своя вкладка рядом со шкафчиком, в обычном магазине его раздела больше нет.
+const tabs=[...document.querySelectorAll('#screen-career-hub .ch-tab')].map(b=>b.dataset.tab);
+check('вкладка Item Shop перед шкафчиком', tabs.indexOf('items')>=0 && tabs.indexOf('items')+1===tabs.indexOf('locker'), tabs.join(','));
+careerTab('items'); check('во вкладке Item Shop витрина дня', /cc-fn-it/.test(document.getElementById('chBody').innerHTML));
+careerTab('shop'); check('в магазине нет раздела предметов', !/cc-fn-it/.test(document.getElementById('chBody').innerHTML) && !/ccShopSec\('items'\)/.test(document.getElementById('chBody').innerHTML));
 // После покупки в магазине — кнопка «Надеть в шкафчике».
 const em=ccFnShopDay(careerToday()).find(x=>x.t==='e' && !ccFnOwn()[x.id]);
 if(em){ CAREER.vb=(CAREER.vb||0)+5000; ccFnBuy(em.i); check('после покупки кнопка «Надеть в шкафчике»', /cc-fn-tolock/.test(document.getElementById('chBody').innerHTML)); }
