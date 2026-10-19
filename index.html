@@ -4220,12 +4220,15 @@
   /* C — нынешнее лобби: табличка над головой, круглые «+», карточка новостей, плитки расписания снизу. */
   .cc-lb-famC{height:780px;}
   .cc-lb-famA,.cc-lb-famB{height:720px;}
-  .cc-lb-famC .cc-lb-plate{flex-direction:row;align-items:center;gap:8px;padding:3px 12px 3px 4px;top:-6%;background:linear-gradient(90deg,rgba(20,60,150,.85),rgba(20,60,150,.35));
-    border-radius:4px;text-shadow:none;}
+  /* Ник над фигурой — мягкая тёмная подложка без края (его слово 19.10: «ники странно выглядит обводка»):
+     был синий градиентный прямоугольник с резким краем, на синем фоне меню он читался рамкой. */
+  .cc-lb-famC .cc-lb-plate{flex-direction:row;align-items:center;gap:7px;padding:3px 12px 3px 3px;top:-6%;
+    background:rgba(6,12,32,.52);border-radius:999px;text-shadow:0 1px 2px rgba(0,0,0,.6);
+    -webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);}
   .cc-lb-famC .cc-lb-crown,.cc-lb-famC .cc-lb-plate b u{display:none;}
-  .cc-lb-famC .cc-lb-hex{display:flex;align-items:center;justify-content:center;width:30px;height:32px;margin:-6px 0;background:#1d1d24;color:#fff;
+  .cc-lb-famC .cc-lb-hex{display:flex;align-items:center;justify-content:center;width:26px;height:28px;margin:-3px 0;background:#2b5bd8;color:#fff;
     font-family:var(--font-display);font-size:14px;font-style:italic;clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);}
-  .cc-lb-famC .cc-lb-in{display:inline-flex;opacity:.9;}
+  .cc-lb-famC .cc-lb-in{display:inline-flex;opacity:.7;}
   .cc-lb-famC .cc-lb-plate b{font-size:16px;}
   .cc-lb-famC .cc-lb-plate em{position:absolute;left:44px;top:100%;margin-top:2px;font-size:11px;}
   .cc-lb-famC .cc-lb-plus{width:46px;height:46px;border:0;border-radius:50%;background:rgba(30,30,38,.85);font-size:30px;line-height:44px;font-weight:300;
@@ -4297,6 +4300,9 @@
   .cc-lb-ringrow .cc-lb-bar-btns{margin:0;}
   .cc-lb-famC .cc-lb-pill{flex:none;}
   .cc-lb-note{flex:none;}
+  /* Реген в профиле (ccRegenCards): чей он, одной плашкой над карточкой. */
+  .cc-regen-tag{margin:0 0 8px;padding:5px 10px;border-radius:8px;background:linear-gradient(90deg,#7b2ff7,#f107a3);color:#fff;
+    font-family:var(--font-display);font-size:14px;letter-spacing:.04em;text-transform:uppercase;text-align:center;}
   .cc-lb-note .cc-notebar{margin:0;padding:0;background:none;border:0;}
   .cc-lb-next{margin:0 14px 6px;padding:6px 10px;border-radius:10px;background:rgba(8,12,26,.72);}
   #screen-career-hub .cc-lb-next .ch-next-head{padding:0 0 4px;}
@@ -4365,6 +4371,20 @@
     #screen-career-hub .cc-lobby.cc-lb-full .cc-lb-sched .ch-day em{justify-self:start;}
   }
   @media (max-width:700px){ .cc-lobby.cc-lb-full .cc-lb-bottom{order:0;} }
+  /* Панели главного меню — привычное синее стекло хаба (--fn-panel/--fn-deep), а не отдельный тёмно-серый
+     (его слово 19.10: «пусть привычный дизайн в хабе будет синий, а не отдельный»). Плотнее, чем во вкладках:
+     под ними картинка лобби. */
+  #screen-career-hub .cc-lobby{--lb-panel:rgba(38,66,160,.78);--lb-deep:rgba(10,24,72,.82);}
+  #screen-career-hub .cc-lobby.cc-lb-full .ch-tile,
+  .cc-lb-full.cc-lb-famC .cc-lb-stack .cc-lb-panel,
+  #screen-career-hub .cc-lobby .cc-lb-panel{background:var(--lb-panel);border:1px solid var(--fn-line);}
+  #screen-career-hub .cc-lobby.cc-lb-full .cc-lb-sched .ch-day,
+  #screen-career-hub .cc-lb-sched .ch-day{background:var(--lb-panel);box-shadow:inset 0 0 0 1px var(--fn-line);}
+  #screen-career-hub .cc-lobby .cc-lb-next{background:var(--lb-deep);box-shadow:inset 0 0 0 1px var(--fn-line);}
+  #screen-career-hub .cc-lobby .cc-lb-playbox .ch-art{background-color:#14286a;}
+  #screen-career-hub .cc-lobby .cc-lb-playbox .ch-art::after{background:linear-gradient(180deg,rgba(14,32,96,.55),rgba(10,24,72,.88));}
+  #screen-career-hub .cc-lobby .cc-lb-playbox .cc-act,#screen-career-hub .cc-lobby .cc-lb-playbox .cc-six-t,
+  #screen-career-hub .cc-lobby .cc-lb-playbox .cc-job{background:rgba(120,150,235,.2);}
   #screen-career-hub .cc-lobby .cc-lb-playbox .cc-acts > *,#screen-career-hub .cc-lobby .cc-lb-playbox .cc-six > *{min-width:0;}
   #screen-career-hub .cc-lobby .cc-lb-playbox .cc-acts{grid-template-columns:minmax(0,1fr) minmax(0,1fr);}
   #screen-career-hub .cc-lobby .cc-lb-playbox .cc-six{grid-template-columns:repeat(6,minmax(0,1fr));}
@@ -10190,6 +10210,9 @@ ccRunGclc:'GC Last Chance · финал',
 ccNewCareer:'Новая карьера',
 ccNewCareerAsk:'Начать новую карьеру? Эта будет стёрта.',
 ccNewsRetired:(age,season)=>'Завершение карьеры в '+age+', после '+season+' сезонов',
+ccNewsSceneRetire:(h,age)=>h+' завершает карьеру'+(age ? ' в '+age : '')+'. Спасибо за всё',
+ccNewsRegen:(h,age,of,nat)=>'На сцену выходит '+h+', '+age+' лет. Почерк и страна как у '+of+': все уже зовут его регеном '+of,
+ccRegenOf:of=>'Реген '+of, ccRegenNew:'Новичок сцены',
 ccNewsRetiredForced:(age,season)=>'Карьера окончена в '+age+': рейтинг упал ниже уровня лестницы',
 ccNewSeason:'Новый сезон',
 ccPotential:'Рейтинг / потолок',
@@ -12279,6 +12302,9 @@ ccRunGclc:'GC Last Chance · final',
 ccNewCareer:'New career',
 ccNewCareerAsk:'Start a new career? This one is erased.',
 ccNewsRetired:(age,season)=>'Retired at '+age+', after '+season+' seasons',
+ccNewsSceneRetire:(h,age)=>h+' retires'+(age ? ' at '+age : '')+'. Thanks for everything',
+ccNewsRegen:(h,age,of,nat)=>h+', '+age+', enters the scene. Same country and same style as '+of+': everyone already calls him the '+of+' regen',
+ccRegenOf:of=>of+' regen', ccRegenNew:'New on the scene',
 ccNewsRetiredForced:(age,season)=>'Career over at '+age+': the rating fell under the ladder',
 ccNewSeason:'New season',
 ccPotential:'Rating / ceiling',
@@ -14656,6 +14682,9 @@ ccSumParis:p=>'Paris : '+ccTop(p),
 ccSumSeats:n=>'Places au Reload Championship : '+n,
 ccSumOrgs:list=>'Clubs : '+list,
 ccNewsRetired:(age,season)=>'Retraite à '+age+' ans, après '+season+' saisons',
+ccNewsSceneRetire:(h,age)=>h+' prend sa retraite'+(age ? ' à '+age+' ans' : '')+'. Merci pour tout',
+ccNewsRegen:(h,age,of,nat)=>h+', '+age+' ans, arrive sur la scène. Même pays et même style que '+of+' : tout le monde l’appelle déjà le regen de '+of,
+ccRegenOf:of=>'Regen de '+of, ccRegenNew:'Nouveau sur la scène',
 ccNewsRetiredForced:(age,season)=>'Carrière finie à '+age+' ans : la note est passée sous l’échelle',
 ccMgPlace:n=>'une place dans le top '+n,
 ccNewsMonthBonus:(club,v)=>club+' a payé le bonus du mois : '+v,
@@ -16612,6 +16641,9 @@ ccRunSummit:city=>'Summit · '+city,
 ccRunGlobals:city=>'Global Championship · '+city,
 ccRunRc:city=>'Reload Championship · '+city,
 ccNewsRetired:(age,season)=>'Ritirato a '+age+' anni, dopo '+season+' stagioni',
+ccNewsSceneRetire:(h,age)=>h+' si ritira'+(age ? ' a '+age+' anni' : '')+'. Grazie di tutto',
+ccNewsRegen:(h,age,of,nat)=>h+', '+age+' anni, entra sulla scena. Stesso paese e stesso stile di '+of+': tutti lo chiamano già il regen di '+of,
+ccRegenOf:of=>'Regen di '+of, ccRegenNew:'Nuovo sulla scena',
 ccNewsRetiredForced:(age,season)=>'Carriera finita a '+age+': la valutazione \u00e8 scesa sotto la scala',
 ccMgPlace:n=>'un piazzamento nei primi '+n,
 ccNewsMonthBonus:(club,v)=>club+' ha pagato il bonus del mese: $'+v,
@@ -19160,6 +19192,9 @@ ccRunSummit:city=>'Summit · '+city,
 ccRunGlobals:city=>'Global Championship · '+city,
 ccRunRc:city=>'Reload Championship · '+city,
 ccNewsRetired:(age,season)=>'Aposentado aos '+age+', depois de '+season+' temporadas',
+ccNewsSceneRetire:(h,age)=>h+' se aposenta'+(age ? ' aos '+age : '')+'. Obrigado por tudo',
+ccNewsRegen:(h,age,of,nat)=>h+', '+age+' anos, chega à cena. Mesmo país e mesmo estilo de '+of+': todo mundo já chama ele de regen do '+of,
+ccRegenOf:of=>'Regen do '+of, ccRegenNew:'Novo na cena',
 ccNewsRetiredForced:(age,season)=>'Carreira encerrada aos '+age+': o rating caiu abaixo da escada',
 ccMgPlace:n=>'terminar no top '+n,
 ccNewsMonthBonus:(club,v)=>club+' pagou o b\u00f4nus do m\u00eas: $'+v,
@@ -114160,7 +114195,8 @@ function openCardPeek(pl){
   if(!body) return;
   // В карьере под листом карточки — её сезон в этой карьере (careerPlayerStatsHTML).
   const inCareer=(typeof CAREER!=='undefined' && CAREER && CAREER.career) && ((typeof CAREER_RUN!=='undefined' && CAREER_RUN) || /career/.test(String(typeof SHOWN_SCREEN!=='undefined' ? SHOWN_SCREEN : '')));
-  body.innerHTML=playerStatSheetHTML(team, idx, pl)+(inCareer && typeof careerPlayerStatsHTML==='function' ? careerPlayerStatsHTML(pl.handle, pl.region) : '');
+  body.innerHTML=(pl && pl._regen ? '<div class="cc-regen-tag">'+esc((pl.regenOf ? L().ccRegenOf(pl.regenOf) : L().ccRegenNew)+(ccAgeNow(pl.handle)!=null ? ' · '+ccAgeNow(pl.handle) : ''))+'</div>' : '')+
+    playerStatSheetHTML(team, idx, pl && pl._regen ? ccRegenShown(pl) : pl)+(inCareer && typeof careerPlayerStatsHTML==='function' ? careerPlayerStatsHTML(pl.handle, pl.region) : '');
   document.getElementById('cardPeekModal').style.display='flex';
 }
 function closeCardPeek(){
@@ -117653,7 +117689,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='5f4a031c';
+const CC_BUILD='977df583';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -130381,13 +130417,14 @@ function ccMoversTag(){
 }
 function ccSceneRoster(reg){
   ccSceneCheck();
-  const ck=reg+ccMoversTag();
+  const ck=reg+ccMoversTag()+ccRegenTag();
   if(CC_NOW_CARDS[ck]) return CC_NOW_CARDS[ck];
   const season=ccSeasonOvr();
   const now=new Map();
+  ccRegenSync();
   PLAYERS.forEach(p=>{
     if((p.region||'')!==reg || ccCardYear(p)!==ccNowYear()) return;
-    if(ccMovedAway(p, reg)) return;
+    if(ccMovedAway(p, reg) || ccRegenGone(p)) return;
     const k=hKey(p), day=ccCardDay(p) || ccNowYear()*10000;
     const cur=now.get(k);
     if(!cur || day>cur._day){
@@ -130429,6 +130466,8 @@ function ccSceneRoster(reg){
       ccSceneLift(c); now.set(k, c);
     });
   }
+  // Регены (ccRegenCards) — после 2026-го, на месте ушедших.
+  ccRegenCards(reg).forEach(g=>{ const c={...g}; if(now.has(c._k)) return; ccSceneLift(c); now.set(c._k, c); });
   // Люди своего клуба носят его герб — см. ccClubStamp.
   CC_NOW_CARDS[ck]=ccClubStamp([...now.values()].sort((a,b)=>b._ovr-a._ovr));
   return CC_NOW_CARDS[ck];
@@ -131318,13 +131357,14 @@ function ccEuCards(){
   // Карьера, перешедшая в следующий год, держит ещё и дебютантов (ccDebutants) — своим ключом.
   const debut=ccDebutants();
   // Переехавшие за год (ccMovedAway) — в пуле только того региона, где они в этот день.
-  const reg=ccPoolRegion()+(ccNowYear()<2026 ? '|'+ccNowYear() : '')+(debut ? '|d'+ccCalYear() : '')+ccMoversTag()+'|r'+ccRatingSnapTag();
+  ccRegenSync();
+  const reg=ccPoolRegion()+(ccNowYear()<2026 ? '|'+ccNowYear() : '')+(debut ? '|d'+ccCalYear() : '')+ccMoversTag()+'|r'+ccRatingSnapTag()+ccRegenTag();
   if(CC_EU_ALL[reg]) return CC_EU_ALL[reg];
   const season=ccSeasonOvr();
   const reg0=ccPoolRegion(), yearCap=ccNowYear();
   // 2025-й год: сцена — люди 2025-го, карт позже того года не существует.
   CC_EU_ALL[reg]=(reg0==='ALL' ? PLAYERS.slice() : PLAYERS.filter(p=>(p.region||'')===reg0 && !ccMovedAway(p, reg0)))
-                   .filter(p=>yearCap>=2026 || ccCardYear(p)<=yearCap)
+                   .filter(p=>(yearCap>=2026 || ccCardYear(p)<=yearCap) && !ccRegenGone(p))
                    .map(p=>{
                      const c={...p};
                      const a=attrsFor(p);
@@ -131355,6 +131395,7 @@ function ccEuCards(){
       if(d && ccCardYear(p)===d.year) CC_EU_ALL[reg].push(ccDebutCard(p, d));
     });
   }
+  ccRegenCards(reg0).forEach(g=>CC_EU_ALL[reg].push({...g}));
   return CC_EU_ALL[reg];
 }
 // One card per person inside one set of events — the strongest, because a
@@ -131715,7 +131756,8 @@ function careerPools(){
      нет. Ядра трио 2025-го уже стоят парами (ccDuosOf); все свободные сцены
      не ниже полосы Дивизиона 1 собираются в пары сами — сначала те, кто играл
      вместе на записи (ccRemadeDuos), остальные — сосед по силе с соседом. */
-  if(careerSquadSize()!==3 && ccChapterMoved()) ccContinuityDuos(duosLive);
+  // И после 2026-го (регены, ccRegenSync): напарник ушёл из сцены — половинка и новички сходятся по силе так же.
+  if(careerSquadSize()!==3 && (ccChapterMoved() || ccRegenOn())) ccContinuityDuos(duosLive);
   // Трио-год такой карьеры: ядра троек, собранных на стыке из свободных (ccContinuityThirds).
   if(careerSquadSize()===3 && real && !CC_REGION_AS) ccContinuityCores(duosLive);
   duosLive.forEach(d=>{ if(d && d.cards) d.cards=d.cards.map(liftOne); });
@@ -133527,6 +133569,150 @@ function ccDebutCard(p, deb){
   c._targetOvr=deb.ovr; c.rating=deb.ovr; c._ovr=deb.ovr;
   c._debut=deb.year;
   return c;
+}
+/* РЕГЕНЫ (Notion «19.10», тестер: «как в фифе добавить регенов… когда месси карьеру завершает, появляется
+   аргентинец с очень крутыми статами, и логично, что это реген месси; либо реген не чей-то, а просто рандомный»).
+
+   Настоящие данные кончаются на 2026-м: дальше каждый год — тот же 2026-й, и сцена без этого не стареет и не
+   обновляется. Теперь на каждом стыке года после 2026-го (ccYearShift) часть сцены уходит — чем старше, тем
+   вероятнее (возраст ccAgeNow; без даты рождения — ровный шанс), — а на место ушедшего приходит новичок
+   16–17 лет: та же страна и регион, тот же почерк (шесть чисел — с карточки ушедшего, растянутые к его
+   рейтингу), стартует ниже и год за годом растёт к уровню оригинала. Ушедшая звезда (84+) всегда оставляет
+   регена — «видно, чей он»; остальные — через раз, и тогда это просто новичок.
+
+   Решение пишется в сейв один раз на год (cr.regen: y — до какого года посчитано, out — ушедшие, list —
+   регены), поэтому сцена одна и та же при каждой загрузке. Свои напарники и составы не уходят. */
+const CC_REGEN_STAR=84;
+const CC_REGEN_A=['Ky','Zo','Vex','Ri','No','Lu','Tre','Mak','Sol','Ven','Jax','Ori','Fen','Kai','Rex','Dru','Ash','Lio','Nyx','Pax',
+  'Bry','Cael','Dax','Eli','Fyn','Gus','Hux','Ivo','Jin','Kov','Lex','Mav','Nox','Oz','Pim','Quin','Rho','Sky','Tav','Ulv','Vio','Wyn','Yuk','Zev'];
+const CC_REGEN_B=['ro','ix','en','yo','zz','ly','ka','ra','on','is','ex','ii','ey','o','a','zy','va','no','th','ko','ri','us','el','x','n'];
+const CC_REGEN_C=['', '', '', '', 'z', 'x', 'FN', 'fn', 'TTV', '1', '7', '22', '09', 'Pro', 'OG', 'Jr'];
+function ccRegenOn(){
+  const cr=(typeof CAREER!=='undefined' && CAREER && CAREER.career) || null;
+  return !!(cr && !CC_NOW_YEAR_FORCE && ccYearShift()>0);
+}
+function ccRegenName(seed, taken){
+  for(let i=0; i<40; i++){
+    const h=ccHashStr(seed+'|'+i);
+    const a=CC_REGEN_A[h%CC_REGEN_A.length], b=CC_REGEN_B[Math.floor(h/53)%CC_REGEN_B.length], c=CC_REGEN_C[Math.floor(h/1597)%CC_REGEN_C.length];
+    const name=(i>=20 ? a+b+c+(h%90+10) : a+b+c);
+    if(!taken.has(name.toLowerCase())){ taken.add(name.toLowerCase()); return name; }
+  }
+  return 'Rookie'+(ccHashStr(seed)%9000+1000);
+}
+// Свои: напарники, составы других форматов, сам игрок — они не уходят, даже старые.
+function ccRegenKeep(){
+  const keep=new Set();
+  const add=r=>{ if(!r) return; const h=r.card ? r.card.handle : r.handle; if(h) keep.add(hKey(h)); };
+  (CAREER.partners||[]).forEach(add); add(CAREER.partner);
+  Object.values(CAREER.rosters||{}).forEach(l=>(l||[]).forEach(add));
+  try{ const me=careerCard(); if(me) keep.add(hKey(me)); }catch(e){}
+  return keep;
+}
+// Шанс уйти за год по возрасту на этот год. Без даты рождения — 7 %.
+function ccRegenRetireP(age, ovr){
+  let p=age==null ? 0.07 : age<21 ? 0 : age<23 ? 0.05 : age<25 ? 0.12 : age<27 ? 0.25 : 0.45;
+  if(ovr<70) p+=0.05;
+  return p;
+}
+function ccRegenYear(cr, y){
+  const R=cr.regen, keep=ccRegenKeep(), seed=String(cr.seed||'')+'|'+(cr.year0||'')+'|rg'+y;
+  const taken=new Set(PLAYERS.map(p=>hKey(p))); R.list.forEach(g=>taken.add(hKey(g.h)));
+  // Самая свежая карточка 2026-го на человека (ключ — регион+ник: тёзки разных регионов — разные люди).
+  const best=new Map();
+  PLAYERS.forEach(p=>{
+    if(ccCardYear(p)!==2026 || CC_REGIONS.indexOf(p.region||'')<0) return;
+    const k=(p.region||'')+'|'+hKey(p), d=ccCardDay(p)||0, cur=best.get(k);
+    if(!cur || d>cur.d) best.set(k, {p:p, d:d});
+  });
+  // И регены прошлых лет стареют и уходят так же.
+  const people=[];
+  best.forEach(({p}, k)=>{ if(!R.out[hKey(p)]) people.push({k:hKey(p), handle:p.handle, reg:p.region, nat:p.nat||'', card:p,
+    ovr:Math.round((attrsFor(p)||{}).ovr||p.rating||0)+Math.round(careerDevOf({...p, _k:hKey(p)})||0)}); });
+  R.list.forEach(g=>{ if(!R.out[hKey(g.h)]) people.push({k:hKey(g.h), handle:g.h, reg:g.reg, nat:g.nat, regen:g, ovr:ccRegenOvr(g, y)}); });
+  const gone=[], born=[];
+  people.forEach(x=>{
+    if(keep.has(x.k)) return;
+    const age=x.regen ? (17+(y-x.regen.y)+(x.regen.a-16)) : ccAgeNow(x.handle);
+    const roll=(ccHashStr(seed+'|'+x.k)%10000)/10000;
+    if(roll>=ccRegenRetireP(age, x.ovr)) return;
+    R.out[x.k]=y; gone.push({h:x.handle, age:age, ovr:x.ovr, reg:x.reg});
+    const star=x.ovr>=CC_REGEN_STAR;
+    if(!star && (ccHashStr(seed+'|b|'+x.k)%2)) return;
+    const h2=ccHashStr(seed+'|g|'+x.k);
+    const src=x.regen ? x.regen.src : x.handle;
+    const peak=clamp(x.ovr+((h2%7)-3), 55, CAREER_SCALE_TOP);
+    const g={h:ccRegenName(seed+'|'+x.k, taken), of:x.handle, src:src, srcReg:x.regen ? x.regen.srcReg : x.reg, reg:x.reg, nat:x.nat, y:y,
+      a:16+(h2%2), o0:clamp(peak-(star ? 9 : 7)-(Math.floor(h2/7)%5), 50, 92), to:peak, gr:2+(Math.floor(h2/31)%3)};
+    R.list.push(g); born.push(g);
+  });
+  // В ленту — заметные: ушедшие 84+ и их регены, не больше четырёх строк каждого.
+  const my=ccCareerRegion();
+  gone.filter(x=>x.ovr>=CC_REGEN_STAR).sort((a,b)=>(b.reg===my)-(a.reg===my) || b.ovr-a.ovr).slice(0, 4)
+    .forEach(x=>careerNews('flat', 'ccNewsSceneRetire', [x.h, x.age!=null ? x.age : 0]));
+  born.filter(g=>g.of && ccRegenOvr(g, y)>=70).sort((a,b)=>(b.reg===my)-(a.reg===my) || b.to-a.to).slice(0, 4)
+    .forEach(g=>careerNews('good', 'ccNewsRegen', [g.h, g.a, g.of, g.nat||'']));
+}
+// Рейтинг регена в год y: старт o0, растёт на gr в год до to.
+function ccRegenOvr(g, y){ return Math.min(g.to, g.o0+g.gr*Math.max(0, y-g.y)); }
+function ccRegenSync(){
+  if(!ccRegenOn()) return null;
+  const cr=CAREER.career, shift=ccYearShift();
+  if(!cr.regen) cr.regen={y:0, out:{}, list:[]};
+  if(cr.regen.y>=shift) return cr.regen;
+  while(cr.regen.y<shift){ cr.regen.y++; ccRegenYear(cr, cr.regen.y); }
+  CC_NOW_CARDS={}; CC_EU_ALL={}; CC_POOLS=null; CC_REGEN_CARDS={};
+  if(typeof careerSave==='function') careerSave();
+  return cr.regen;
+}
+// Ушёл из сцены (по году карьеры) — его карточек нет ни в сцене, ни в лобби.
+function ccRegenGone(p){
+  if(!ccRegenOn()) return false;
+  const R=CAREER.career.regen;
+  return !!(R && R.out[hKey(p)]);
+}
+function ccRegenTag(){ const R=ccRegenOn() && CAREER.career.regen; return R ? '|g'+R.y+'.'+R.list.length : ''; }
+// Карточки регенов региона: карточка ушедшего-«исходника» под новым ником, растянутая к рейтингу года.
+let CC_REGEN_CARDS={};
+function ccRegenCards(reg){
+  const R=ccRegenSync(); if(!R || !R.list.length) return [];
+  const y=ccYearShift(), key=(reg||'ALL')+ccRegenTag()+'|'+y;
+  if(CC_REGEN_CARDS[key]) return CC_REGEN_CARDS[key];
+  const src=new Map();
+  PLAYERS.forEach(p=>{ if(ccCardYear(p)!==2026) return; const k=(p.region||'')+'|'+hKey(p), d=ccCardDay(p)||0, cur=src.get(k); if(!cur || d>cur.d) src.set(k, {p:p, d:d}); });
+  const out=[];
+  R.list.forEach(g=>{
+    if(R.out[hKey(g.h)] || (reg && reg!=='ALL' && g.reg!==reg)) return;
+    const base=src.get(g.srcReg+'|'+hKey(g.src)); if(!base) return;
+    const c={...base.p};
+    ['org','team','liquiName','photo','twitch','partner','earnings','x','tw','yt'].forEach(f=>{ delete c[f]; });
+    c.handle=g.h; c.region=g.reg; c.nat=g.nat; c._k=hKey(g.h);
+    c.regenOf=g.of||null; c._regen=g.y;
+    // Роль — исходника: почерк тот же (realRoleKey ищет по нику, а ник новый).
+    const rk=realRoleKey(base.p); if(rk) c._roleKey=rk;
+    const r=ccRegenOvr(g, y);
+    delete c._attrs; delete c._floored; delete c._lifted;
+    c._targetOvr=r; c.rating=r; c._ovr=r;
+    out.push(c);
+  });
+  CC_REGEN_CARDS[key]=out;
+  return out;
+}
+/* Лист регена в профиле: шесть чисел и рейтинг — его, а турниры, финалы и разбор рейтинга — нет: это история
+   исходника, у семнадцатилетнего её быть не может. */
+function ccRegenShown(pl){
+  const c={...pl, _attrs:{...attrsFor(pl), _floored:true}};
+  ['real','realGf','missedGf','_ratingParts','_m2Playin','_m2Gf','gfEvent','_eventOvr','note','placement','_yr'].forEach(f=>{ delete c[f]; });
+  return c;
+}
+// День рождения регена: ему a лет в год появления, дальше стареет вместе со сценой (ccAgeNow).
+function ccRegenBorn(handle){
+  if(!ccRegenOn()) return null;
+  const R=CAREER.career.regen; if(!R) return null;
+  const g=R.list.find(x=>hKey(x.h)===hKey(handle)); if(!g) return null;
+  // ccAgeNow = возраст на дату календаря + ccSeasonsIn: в год y (ccYearShift) ему a+(сейчас−y).
+  const seasonsAtY=ccSeasonsIn()-(ccYearShift()-g.y);
+  return (ccCalYear()-(g.a-seasonsAtY))+'-01-01';
 }
 /* Годы идут цепочкой: следующий начинается с того, на чём закончился прошлый.
    Иначе каждый новый год считался бы от рейтинга года старта, и прошлогодний
@@ -138417,7 +138603,7 @@ const CC_POST_BY={
   // careerNewSeason, — но ключ остаётся ради старых сейвов, чья лента его уже
   // держит: без автора такая строка ушла бы под имя сцены задним числом.
   ccNewsRelegated:'press', ccNewsKeptD1:'press', ccNewsKeptD1Low:'press',
-  ccNewsRetired:'press', ccNewsRetiredForced:'press',
+  ccNewsRetired:'press', ccNewsRetiredForced:'press', ccNewsSceneRetire:'press', ccNewsRegen:'press',
   ccNewsDuoAgain:'you', ccNewsDuoSplit:'you', ccNewsDuoOutgrown:'you',
   ccNewsDuoAnnounce:'you',
   ccNewsMajThrough:'you', ccNewsMajOut:'you', ccNewsMajCash:'you', ccNewsMajNoCash:'you', ccNewsEvCash:'you', ccNewsEvNoCash:'you',
@@ -141233,6 +141419,7 @@ const CC_BORN_LQ={"7ssk7":"1999-02-26","4zr":"2004-10-24","4drstorm":"2003-05-23
 function ccBornOf(handle, region){
   const h=String(handle||'').toLowerCase();
   if(!h) return null;
+  const rg=ccRegenBorn(h); if(rg) return rg;
   if(region){ const hit=CC_BORN[String(region)+'|'+h]; if(hit) return hit; }
   if(CC_BORN[h]) return CC_BORN[h];
   // Даты с Liquipedia (его слово 7.10: «найди возраста каждого игрока на ликвидпедии»), сверены по стране карточки.
