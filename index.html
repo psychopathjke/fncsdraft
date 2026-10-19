@@ -2407,6 +2407,10 @@
   .cc-chip.on{background:#00b090;border-color:#00b090;color:#fff;}
   .cc-chip small{display:block;font-size:9px;font-weight:800;opacity:.6;margin-top:2px;}
   .cc-chip.on small{opacity:.9;}
+  .cc-inico{display:inline-block;height:1.1em;width:auto;vertical-align:-.2em;}
+  #ccInputChips .cc-chip{padding:6px 4px;}
+  #ccInputChips .cc-inico{height:22px;vertical-align:middle;}
+  .cc-lb-row b .cc-inico{height:.95em;margin-right:5px;opacity:.85;}
   .cc-chip:disabled{opacity:.4;cursor:not-allowed;}
   /* The card preview keeps the app's own card renderer, so what you build here
      is drawn by exactly the code that draws every other card in the game. */
@@ -116161,6 +116165,13 @@ function ccPickRegion(r){
   ccSync();
 }
 function ccPickRole(k){ CC.role=k; ccRenderChips(); ccSync(); }
+/* Значки устройства как в лобби Fortnite: белый силуэт клавиатуры с мышью и геймпада (currentColor). */
+function ccInputIcon(k){
+  const t=esc(L()['ccInput_'+k]||k);
+  return k==='pad'
+    ? '<svg class="cc-inico" viewBox="0 0 32 20" role="img" aria-label="'+t+'"><title>'+t+'</title><path fill="currentColor" fill-rule="evenodd" d="M8 3h16c4 0 6.5 3 7.4 8.2l.5 3.2c.4 2.8-1.6 4.6-3.8 4.6-1.6 0-2.6-.9-3.6-2.2l-1.6-2H9.1l-1.6 2c-1 1.3-2 2.2-3.6 2.2-2.2 0-4.2-1.8-3.8-4.6l.5-3.2C1.5 6 4 3 8 3zM8.5 7.6h2v2h2v2h-2v2h-2v-2h-2v-2h2zM21.95 8.3a1.05 1.05 0 1 0 2.1 0a1.05 1.05 0 1 0-2.1 0zM24.35 10.6a1.05 1.05 0 1 0 2.1 0a1.05 1.05 0 1 0-2.1 0zM19.55 10.6a1.05 1.05 0 1 0 2.1 0a1.05 1.05 0 1 0-2.1 0zM21.95 12.9a1.05 1.05 0 1 0 2.1 0a1.05 1.05 0 1 0-2.1 0z"/></svg>'
+    : '<svg class="cc-inico" viewBox="0 0 34 20" role="img" aria-label="'+t+'"><title>'+t+'</title><rect x="1" y="5" width="22" height="13" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/><g fill="currentColor"><rect x="3.8" y="7.8" width="2.2" height="2.2"/><rect x="7.6" y="7.8" width="2.2" height="2.2"/><rect x="11.4" y="7.8" width="2.2" height="2.2"/><rect x="15.2" y="7.8" width="2.2" height="2.2"/><rect x="19" y="7.8" width="2.2" height="2.2"/><rect x="3.8" y="11.2" width="2.2" height="2.2"/><rect x="7.6" y="11.2" width="2.2" height="2.2"/><rect x="11.4" y="11.2" width="2.2" height="2.2"/><rect x="15.2" y="11.2" width="2.2" height="2.2"/><rect x="19" y="11.2" width="2.2" height="2.2"/><rect x="7" y="14.6" width="10" height="1.8"/></g><rect x="25.5" y="3" width="7.5" height="15" rx="3.75" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M29.25 3v5.5" stroke="currentColor" stroke-width="1.6"/></svg>';
+}
 function ccPickInput(k){ CC.input=(k==='pad') ? 'pad' : 'kbm'; ccRenderChips(); ccSync(); }
 /* Кто из про-игроков играет на контроллере (ключ ника, hKey) — по проверенным источникам (prosettings.net и др.,
    tools/measured/controller-pros.json); у остальных клавиатура и мышь. */
@@ -116245,7 +116256,7 @@ function ccRenderChips(){
   }).join('');
   { const ic=document.getElementById('ccInputChips'), lockIn=card ? ccProInput(card) : null;
     if(ic) ic.innerHTML=['kbm','pad'].map(k=>`<button class="cc-chip${(lockIn||CC.input||'kbm')===k?' on':''}" ${card?'disabled':''} `+
-      `onclick="ccPickInput(\'${k}\')">${esc(L()['ccInput_'+k]||k)}</button>`).join(''); }
+      `onclick="ccPickInput(\'${k}\')">${ccInputIcon(k)}</button>`).join(''); }
   /* Год без дивизионов (ccNoDivisions) оставляет эти чипы на месте, но зовёт
      их своим именем: лестницы в 2024-м нет, а вопрос «с чего ты начинаешь»
      есть — ccDivNote и так отвечал «Дивизион задаёт стартовый рейтинг». Само
@@ -117403,7 +117414,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='7f8cf392';
+const CC_BUILD='5ba537c7';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -121874,7 +121885,7 @@ function careerRenderHubBody(tab){
       CAREER.org ? esc(CAREER.org.name) : '',
       ccNoDivisions() ? '' : L().ccDivision+' '+cr.division,
       L()[a?a.roleKey:pl.role]||'',
-      (ccInputOf(pl)==='pad' ? '🎮 ' : '⌨ ')+esc(L()['ccInput_'+ccInputOf(pl)]||''),
+      ccInputIcon(ccInputOf(pl)),
       careerTopHonour()
     ].filter(Boolean).join(' · ')}</div></div>`+
     '';   // колокольчик снят 29.09 («хаб такой же как был») — входящие строкой в «Центре»
@@ -122215,7 +122226,7 @@ function ccLobbyPanelsHTML(card, noQuests){
   const ros=[me].concat((careerMates()||[]).filter(Boolean).map(c=>({handle:c.handle, ovr:Math.round(c._ovr||c.rating||0), pad:ccProInput(c)==='pad'})));
   let chem='';
   try{ if(careerPartnerCard()) chem='<div class="cc-lb-sub">'+esc(T.ccChem)+' '+Math.min(100, Math.round(careerChemDays()/CC_CHEM_DAYS*100))+'%</div>'; }catch(e){}
-  const roster=panel(T.lfRosters, ros.map(r=>'<div class="cc-lb-row'+(r.me ? ' me' : '')+'"><b>'+esc(r.handle)+(r.pad ? ' 🎮' : '')+'</b><i>'+r.ovr+'</i></div>').join('')+chem, 'me');
+  const roster=panel(T.lfRosters, ros.map(r=>'<div class="cc-lb-row'+(r.me ? ' me' : '')+'"><b>'+ccInputIcon(r.pad ? 'pad' : 'kbm')+esc(r.handle)+'</b><i>'+r.ovr+'</i></div>').join('')+chem, 'me');
   // Тренировка: энергия и настрой.
   let train='';
   try{
