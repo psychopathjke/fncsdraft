@@ -94533,7 +94533,15 @@ function cardSetName(set){
        : 'FNCS Major 2';
 }
 
-function regionName(code){ if(code==='UNK') return L().regionUnk; const r=REGIONS.find(r=>r.code===code); if(!r) return code; return LANG==='ru' ? r.nameRu : r.nameEn; }
+function regionName(code){ if(code==='UNK') return L().regionUnk; if(code==='NAC' && ccNacWasEast()) return 'NA East'; const r=REGIONS.find(r=>r.code===code); if(!r) return code; return LANG==='ru' ? r.nameRu : r.nameEn; }
+/* NA EAST (пункт 7 списка 20.10, идея «возвращение NA East»): NA Central у Epic — с Главы 4 (4 декабря 2022); до неё восточный
+   регион звался NA East. Игроки и данные те же (наш код NAC), меняется только название — в карьере, по дню календаря. */
+function ccNacWasEast(){
+  // Только внутри идущей карьеры (хаб или её вечер): на экране создания может висеть старый сейв другого года.
+  try{ const on=(typeof CAREER_RUN!=='undefined' && CAREER_RUN) || (typeof SHOWN_SCREEN!=='undefined' && SHOWN_SCREEN==='screen-career-hub');
+    return on && typeof CAREER!=='undefined' && CAREER && CAREER.career && typeof careerToday==='function' && careerToday()<'2022-12-04'; }catch(e){ return false; }
+}
+function ccRegShort(code){ return code==='NAC' && ccNacWasEast() ? 'NAE' : code; }
 
 // ---------- Balance: what the modifiers are allowed to be worth ----------
 // Power is what the whole simulation ranks teams on, and the thing it should
@@ -122448,7 +122456,7 @@ function ccBoardLoad(){
 }
 function careerWorldHTML(){
   const T=L(), cr=CAREER.career, off=!!(cr.board && cr.board.off);
-  const regs=[[null, T.lbAll]].concat(['EU','NAC','NAW','BR','ASIA','ME','OCE'].map(r=>[r, r]));
+  const regs=[[null, T.lbAll]].concat(['EU','NAC','NAW','BR','ASIA','ME','OCE'].map(r=>[r, ccRegShort(r)]));
   const head='<div class="lb-top"><div class="lb-regs">'+regs.map(([k,t])=>
       '<button class="ch-subtab'+(CC_BOARD_REGION===k?' on':'')+'" onclick="ccBoardRegion('+(k?'\''+k+'\'':'null')+')">'+esc(t)+'</button>').join('')+
     '</div><button class="ch-swap" onclick="ccBoardToggle()">'+esc(off ? T.lbShow : T.lbHide)+'</button></div>'+
@@ -140961,7 +140969,7 @@ function ccAwayRegionOf(card){
 }
 function ccRegChipHTML(card){
   const reg=ccAwayRegionOf(card);
-  return reg ? '<i class="x-reg" title="'+esc(regionName(reg))+'">'+esc(reg)+'</i>' : '';
+  return reg ? '<i class="x-reg" title="'+esc(regionName(reg))+'">'+esc(ccRegShort(reg))+'</i>' : '';
 }
 /* Две кнопки под чужим постом — единственное место в ленте, где игрок отвечает
    не лайком. Стоят только под постом ссоры и только пока на него не ответили:
@@ -145360,7 +145368,7 @@ function careerSocialHTML(){
     </div>`;}).join('');
   const sugChips=`<div class="x-sug-regs">${[homeReg].concat(CC_REGIONS.filter(r=>r!==homeReg)).map(r=>
     `<button class="x-sug-reg${(sugReg||homeReg)===r?' on':''}" title="${esc(regionName(r))}"`+
-    ` onclick="careerSugRegion(\'${esc(r)}\')">${esc(r)}</button>`).join('')}</div>`;
+    ` onclick="careerSugRegion(\'${esc(r)}\')">${esc(ccRegShort(r))}</button>`).join('')}</div>`;
   const suggest=sugChips+(sugRows || `<div class="ch-empty">${L().dmEmpty}</div>`);
   /* Уведомления — третий экран рельса. Лайки на своих постах и те, кто
      подписался: и то и другое приходит само, и на второе можно ответить
