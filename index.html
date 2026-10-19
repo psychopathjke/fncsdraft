@@ -4264,6 +4264,13 @@
   #screen-career-hub .cc-lb-sched .ch-day.ch-today{box-shadow:inset 0 0 0 2px #f8f82a;}
   /* Всё с «Центра» в самом меню (cc-lb-full): колонки слева и справа листаются, внизу полоса сезона и неделя. */
   .cc-lobby.cc-lb-full{height:920px;}
+  /* Без ползунков у колонок (его «убрать ползунок возле капа»): листается колесом и пальцем. */
+  .cc-lb-full .cc-lb-left,.cc-lb-full .cc-lb-right{scrollbar-width:none !important;}
+  .cc-lb-full .cc-lb-left::-webkit-scrollbar,.cc-lb-full .cc-lb-right::-webkit-scrollbar{display:none;}
+  /* Фон поднят над полосой сезона и расписания (его «картинка на заднем фоне будто выше должна быть»): низ картинки — у
+     верха нижней полосы, а не под ней. */
+  .cc-lobby.cc-lb-full{background:linear-gradient(90deg,rgba(0,0,0,.45),rgba(0,0,0,0) 24%,rgba(0,0,0,0) 76%,rgba(0,0,0,.45)),
+    var(--lb-bg) center bottom 190px/cover no-repeat,#13204a;}
   .cc-lb-full .cc-lb-left,.cc-lb-full .cc-lb-right{top:56px;bottom:214px;overflow-y:auto;overflow-x:hidden;scrollbar-width:thin;
     scrollbar-color:rgba(255,255,255,.35) transparent;padding-bottom:6px;max-height:none;}
   .cc-lb-full .cc-lb-left{width:310px;justify-content:flex-start;gap:8px;}
@@ -4317,6 +4324,14 @@
   .cc-lb-full .cc-lb-stack{gap:8px;}
   .cc-lb-next .ch-season{display:flex;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;gap:3px;}
   .cc-lb-next .ch-season > *{flex:none;}
+  .cc-lb-next{position:relative;}
+  #screen-career-hub .cc-lb-next .ch-ffwrap{position:absolute;top:5px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:8px;
+    margin:0;padding:0;border:0;background:none;}
+  #screen-career-hub .cc-lb-next .ch-ffcap{margin:0;font-size:10.5px;opacity:.75;white-space:nowrap;}
+  #screen-career-hub .cc-lb-next .ch-ff{display:flex;gap:6px;margin:0;}
+  #screen-career-hub .cc-lb-next .ch-ffbtn{padding:3px 12px;min-height:0;font-size:11px;border-radius:999px;}
+  #screen-career-hub .cc-lb-next .ch-ffnote{display:none;}
+  @media (max-width:700px){ #screen-career-hub .cc-lb-next .ch-ffwrap{position:static;transform:none;margin:6px 0 2px;} }
   /* Ряд плиток снизу, как Discover: подиумы стоят над ним. */
   @media (min-width:701px){ .cc-lb-famC .cc-lb-stage{inset:0 0 140px 0;} }
   /* Лист «Подробнее»: всё, что было на «Центре» под меню, — внутри, по кнопке. */
@@ -117569,7 +117584,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='41f07e86';
+const CC_BUILD='a7056387';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -122741,6 +122756,8 @@ function careerCentreHTML(card, a){
         esc(L().ccEwcSeatOn(ccDayLabel(CC_RC_DAY), ccRelMySeats(cr).length))}</em>` : ''}</div>
     <div class="ch-season">${seasonBar.join('')}</div>
     ${weekPeek}
+    ${/* Перемотка «неделя / месяц» — здесь, у полосы сезона, а не в карточке капа (его «сделать аккуратно где-то скип недели/месяца»). */
+      careerFfButtonsHTML()}
   </div>`;
   const lbPlay=`<div class="ch-col-play cc-lb-playcol">
       ${typeof ccRosterSoonHTML==='function' ? ccRosterSoonHTML() : ''}
@@ -122830,7 +122847,7 @@ function careerCentreHTML(card, a){
                  расхождение режимов чинится ею же. Спрятать её вместе с
                  кнопкой значило бы запереть игрока без выхода. */
               (playable || ccMpOn() || ccRaceModeWhy()) ? careerSimRowHTML() : ''}
-            ${btn}${careerFfButtonsHTML()}
+            ${btn}
           </div>
         </div>`}
       ${(typeof ccNatSquadHTML==='function') ? ccNatSquadHTML() : ''}
