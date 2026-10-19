@@ -122698,11 +122698,17 @@ function ccLobbyPads(lb){
   if(!pad || innerWidth<=700){ els.forEach(e=>{ e.style.left=''; e.style.bottom=''; e.style.height=''; e.style.top=''; }); return; }
   const W=lb.clientWidth, H=lb.clientHeight, k=Math.max(W/1280, H/pad.h), offX=(W-1280*k)/2, offY=H-pad.h*k;
   const sr=stage.getBoundingClientRect(), lr=lb.getBoundingClientRect(), sTop=sr.top-lr.top, sH=sr.height;
+  // Низ полосы недель в координатах сцены: на широком окне фон крупнее, фигура по диску растёт и вместе с ником
+  // уходила под полосу (скрин 34 «ник не видно», s33). Фигура с ником (+6% сверху и строка ника) не выше полосы.
+  const bar=lb.querySelector('.cc-lb-bottom'), barY=bar ? bar.getBoundingClientRect().bottom-sr.top : -1e9;
   pad.p.forEach(([x, y, w], i)=>{
     const cx=offX+x*k, cy=offY+y*k-sTop, dw=w*k;
     stage.querySelectorAll('.cc-lb-s'+i).forEach(e=>{
       e.style.left=cx+'px';
-      if(e.classList.contains('cc-lb-fig')){ const h=dw*(i===0 ? 1.55 : 1.6); e.style.height=h+'px'; e.style.bottom=(sH-cy-dw*0.07)+'px'; }
+      if(e.classList.contains('cc-lb-fig')){
+        const foot=cy+dw*0.07, h=Math.max(120, Math.min(dw*(i===0 ? 1.55 : 1.6), (foot-barY-30)/1.06));
+        e.style.height=h+'px'; e.style.bottom=(sH-foot)+'px';
+      }
       else if(e.classList.contains('cc-lb-plus')){ e.style.bottom=(sH-cy+dw*0.55)+'px'; }
     });
   });
@@ -122719,9 +122725,21 @@ function ccLobbyFit(){
   if(!lb || innerWidth<=700) return;
   lb.style.height='';
   // Колонка с карточкой вечера: в нынешнем меню слева, в меню Глав 1–4 справа.
-  const c=lb.querySelector(lb.classList.contains('cc-lb-famC') ? '.cc-lb-left' : '.cc-lb-right'); if(!c) return;
-  const extra=c.scrollHeight-c.clientHeight;
-  if(extra>0) lb.style.height=(lb.offsetHeight+extra+6)+'px';
+  const c=lb.querySelector(lb.classList.contains('cc-lb-famC') ? '.cc-lb-left' : '.cc-lb-right');
+  if(c){ const extra=c.scrollHeight-c.clientHeight; if(extra>0) lb.style.height=(lb.offsetHeight+extra+6)+'px'; }
+  try{ ccLobbyPlatesClear(lb); }catch(e){}
+}
+/* Notion «19.10», скрин 34 («ник не видно»): в невысоком окне ник над передней фигурой уходил под полосу недель
+   сверху (она лежит поверх сцены). Подпись, что залезает под полосу, опускается ниже неё, на голову фигуры. */
+function ccLobbyPlatesClear(lb){
+  const bar=lb.querySelector('.cc-lb-bottom'); if(!bar) return;
+  const plates=[...lb.querySelectorAll('.cc-lb-plate')];
+  plates.forEach(p=>{ p.style.top=''; });
+  const limit=bar.getBoundingClientRect().bottom+6;
+  plates.forEach(p=>{
+    const over=limit-p.getBoundingClientRect().top;
+    if(over>0) p.style.top=(p.offsetTop+over)+'px';
+  });
 }
 window.addEventListener('resize', ()=>{ clearTimeout(window.__ccLbFitT); window.__ccLbFitT=setTimeout(ccLobbyFit, 200); });
 function ccLobbySeasonName(day){
