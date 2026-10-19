@@ -4311,7 +4311,7 @@
   #screen-career-hub .cc-lobby .cc-lb-playbox .ch-livebar{padding-top:8px;}
   #screen-career-hub .cc-lobby .cc-lb-playbox .ch-art-in{padding:6px 12px 12px;}
   #screen-career-hub .cc-lobby .cc-lb-playbox .ch-matchof{font-size:11px;}
-  #screen-career-hub .cc-lobby .cc-lb-playbox .ch-art-in h3{font-size:19px;line-height:1.05;margin:2px 0 4px;}
+  #screen-career-hub .cc-lobby .cc-lb-playbox .ch-art-in h3{font-size:19px;line-height:1.18;margin:4px 0 6px;overflow:visible;overflow-wrap:anywhere;}
   #screen-career-hub .cc-lobby .cc-lb-playbox .ch-big{margin:0 0 6px;display:flex;align-items:baseline;justify-content:center;gap:6px;}
   #screen-career-hub .cc-lobby .cc-lb-playbox .ch-big b{display:inline;font-size:34px;}
   #screen-career-hub .cc-lobby .cc-lb-playbox .ch-big span{display:inline;}
@@ -117648,7 +117648,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='466376ed';
+const CC_BUILD='5f4a031c';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -121267,6 +121267,19 @@ function ccNextShape(next){
             of:careerVictoryField(solo)};
   }
   if(k==='globals') return {games:CC_GLOB_GAMES, cut:0, of:ccGlobField()};
+  /* Кубок наций своей ветки не имел и падал в дивизионный кубок: финал в Катовице показывал «матч 1 из 11»
+     и «50 проходят из 190» (Notion «19.10», скрин 16). Числа — те же, что читает runCareerNations:
+     отбор — соло до ста человек, проходит один; квалификация — своя комната зоны и её квота; финал — 12 игр. */
+  if(k==='nations'){
+    try{
+      const ev=careerNationsOn(careerToday()), st=ccNatStage(ev), S=CC_NATIONS[st], mine=ccNationsMine();
+      if(st==='final') return {games:S.games, cut:0, of:CC_NATIONS_FIELD};
+      if(st==='trial') return {games:S.games, cut:1, of:1+Math.min(99, Math.max(0, ((mine && mine.others)||[]).length-(CC_NATIONS_SQUAD-1)))};
+      const lobbies=ccNatQualLobbies(mine.zone, mine);
+      let at=0; lobbies.forEach((l,i)=>{ if(l.length<lobbies[at].length) at=i; });
+      return {games:S.games, cut:ccNatSlotsOf(mine.zone, lobbies, at), of:lobbies[at].length+1};
+    }catch(e){ return cup; }
+  }
   /* Solo Series своей ветки не имела и падала в дивизионный кубок: скриншот
      30 августа, страница «playin» — «33 проходят из 113, матч 1 из 11» над
      квалом, который играет 4900 человек, десять игр и топ-100. Вопрос:
@@ -122932,7 +122945,7 @@ function careerCentreHTML(card, a){
                     : `<div class="ch-big"><b>${sh.of}</b><span>${ccSquadWordCap()}</span></div>`; })()
               : `<p>${next.sub}</p>`}
             <div class="ch-mode"><span>${[careerNightSolo(next) ? L().ccSpotSoloTab : ccSquadWordCap(),
-                ccNoDivisions() ? '' : L().ccDivision+' '+cr.division].filter(Boolean).join(' · ')}</span></div>
+                (ccNoDivisions() || next.type==='nations') ? '' : L().ccDivision+' '+cr.division].filter(Boolean).join(' · ')}</span></div>
             <!-- Про-Ам играется НЕ с напарником, а с контент-мейкером, и это
                  надо знать до нажатия: с кем сидишь и сколько его смотрят.
                  См. ccProAmMate и CC_PROAM_TWITCH. -->
@@ -129884,6 +129897,10 @@ function ccSquadWord(){
   let n=careerSquadSize();
   if(!CC_EVENT_SIZE && typeof ccVictoryFormat==='function' && typeof careerVictoryOn==='function'){
     const f=ccVictoryFormat(careerVictoryOn(careerToday())); if(f) n=f;
+  }
+  // В день Кубка наций — сборная: отбор соло, квалификация и финал — сквадом.
+  if(!CC_EVENT_SIZE && typeof careerNationsOn==='function'){
+    try{ const ev=careerNationsOn(careerToday()); if(ev) n=ccNatStage(ev)==='trial' ? 1 : CC_NATIONS_SQUAD; }catch(e){}
   }
   return n===1 ? L().lfWordSoloOne : n===4 ? L().lfWordSquads : n===3 ? L().ccWordTrios : L().ccWordDuos;
 }
@@ -159000,10 +159017,18 @@ function ccM22SeriesRank(m, key){
   const at=keys.indexOf(key);
   return at<0 ? 0 : at+1;
 }
-// Очки серии за место в раунде: последний раунд вдвое дороже предпоследнего.
+/* Очки серии за место в раунде: дошедший до последнего раунда стоит выше любого вылетевшего раньше.
+   Было «weight×(n−i)» — у вылетевших на предпоследнем раунде n≈200, у последнего n≈42, и 51-е место
+   второго раунда (≈200 очков) обгоняло 9-е место финального (84). Полуфинал (топ-50 серии) забирали
+   вылетевшие раньше, и в C3S1 в финал было только «топ-8 в один из дней» (Notion «19.10», тестер).
+   Теперь предпоследний раунд — 1…99, последний — 100 + 2×(n−i). */
 function ccM22SeriesAdd(m, ranked, weight, rowOf){
   const n=ranked.length;
-  ranked.forEach((t,i)=>{ const k=ccSeatKey(t); m.series[k]=(m.series[k]||0)+weight*(n-i); if(!m.seriesRows[k]) m.seriesRows[k]=rowOf(t); });
+  ranked.forEach((t,i)=>{
+    const k=ccSeatKey(t);
+    const pts=weight===1 ? Math.max(1, Math.round(99*(n-i)/n)) : 100+weight*(n-i);
+    m.series[k]=(m.series[k]||0)+pts; if(!m.seriesRows[k]) m.seriesRows[k]=rowOf(t);
+  });
 }
 const ccM22Key=r=>r==='you' ? 'you' : JSON.stringify(r);
 /* Квалификатор, досчитанный молча: его последние два раунда — пятьдесят сильных сцены.
