@@ -156052,7 +156052,9 @@ async function runCareerEval(){
     finalizeStageCard(shell2, place2, r2.length, you.stagePts, cash>0 ? true : null, false,
       top5 ? (cash ? L().ccEvalTop5Cash(ccShareOf(cash, you)) : L().ccRelFail(5))
            : (wins ? L().ccEvalCash(wins, ccShareOf(cash, you)) : L().ccEvalNoWin));
-    await revealStandings(shell2, ranked2, you, 0, null, null, null, null, true);
+    // Призы в таблице — тем же правилом, что кошелёк (Notion «19.10», скрин 45: «в таблице нет» — шапка «Top 5: $200», колонки не было).
+    await revealStandings(shell2, ranked2, you, 0, null, null,
+      top5 ? (p=>p<=5 ? top5 : 0) : (p=>((ranked2[p-1]||{}).wins||0)*ccEvalWinCash()), null, true);
   }
   removeSkipButton();
   ccBoardAfter(evalFinal, you, L().calPerfEval);
