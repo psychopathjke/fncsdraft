@@ -4066,3 +4066,6 @@ Object.assign(I18N.es=I18N.es||{},
 /* Дозаливка «es» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
 Object.assign(I18N.es=I18N.es||{},
 ({dmAskq:'Hola. Armo un squad para la copa, ¿te apuntas?', dmAskBtnq:'Escribir: «¿squad?»'}));
+/* Дозаливка «es» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
+Object.assign(I18N.es=I18N.es||{},
+({lbMore:'Más', lbAlertMp:'Equipo', lbAlertRace:'Carrera', lbAlertTalk:'Entrevista', lbAlertRoster:'Plantilla'}));

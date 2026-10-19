@@ -4035,116 +4035,168 @@
     background:linear-gradient(transparent,rgba(0,0,0,.65));}
   .cc-fn-hero i{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-style:normal;font-size:44px;opacity:.5;}
   .cc-fn-cat+.cc-fn-cat{margin-top:10px;}
-  /* Лобби на «Центре» (ccLobbyHTML): сцена главы, фигуры в полный рост, справа внизу событие и жёлтая кнопка. */
-  /* Сетка главного меню: сверху вкладки и кошелёк, слева панели, посередине сцена, справа внизу режим и кнопка. */
-  .cc-lobby{position:relative;display:grid;grid-template-columns:250px minmax(0,1fr) 290px;grid-template-rows:auto minmax(0,1fr);
-    grid-template-areas:"top top top" "left stage side";height:600px;margin:0 0 12px;border-radius:12px;overflow:hidden;color:#fff;}
-  .cc-lb-top{grid-area:top;display:flex;align-items:center;gap:10px;padding:10px 14px;z-index:5;}
-  .cc-lb-nav{display:flex;gap:4px;flex:1;min-width:0;overflow-x:auto;scrollbar-width:none;}
-  .cc-lb-nav button{flex:none;padding:6px 12px;border:0;background:transparent;color:#fff;cursor:pointer;opacity:.8;
-    font-family:var(--font-display);font-size:15px;text-transform:uppercase;letter-spacing:.03em;}
-  .cc-lb-nav button.on{opacity:1;}
-  .cc-lb-nav .ch-dot{display:inline-block;width:6px;height:6px;margin-left:3px;vertical-align:6px;border-radius:50%;background:#c6ff3c;}  /* На ПК вкладки хаба на «Центре» — шапка лобби, своя полоса прячется; на телефоне наоборот: нижняя панель хаба
-     остаётся, а шапка лобби без вкладок (только кошелёк). */
-  @media (min-width:701px){ #screen-career-hub.ch-lobby-on .ch-tabs{display:none;} }
-  @media (max-width:700px){ .cc-lb-nav{display:none;} }
-  .cc-lb-wallet{display:flex;gap:8px;flex:none;}
-  .cc-lb-wallet span{display:flex;align-items:center;gap:5px;padding:4px 10px;border-radius:999px;background:rgba(0,0,0,.45);
-    font-weight:800;font-size:13px;cursor:pointer;white-space:nowrap;}
-  .cc-lb-left{grid-area:left;display:flex;flex-direction:column;gap:8px;padding:0 0 14px 14px;z-index:4;min-height:0;overflow:auto;scrollbar-width:none;}
-  .cc-lb-panel{padding:8px 10px;cursor:pointer;background:rgba(0,0,0,.45);border-radius:8px;}
-  .cc-lb-panel h5{margin:0 0 6px;font-family:var(--font-display);font-size:14px;text-transform:uppercase;letter-spacing:.04em;}
-  .cc-lb-row{display:flex;justify-content:space-between;gap:6px;font-size:13px;line-height:1.5;}
-  .cc-lb-row b{font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-  .cc-lb-row i{font-style:normal;font-weight:800;color:#ffe14d;}
-  .cc-lb-row.me b{color:#ffe14d;}
-  .cc-lb-sub{font-size:11.5px;opacity:.8;margin-top:3px;}
-  .cc-lb-bar{display:grid;grid-template-columns:1fr auto;gap:2px 8px;font-size:12px;margin-bottom:6px;}
-  .cc-lb-bar em{font-style:normal;opacity:.85;} .cc-lb-bar b{font-weight:800;}
-  .cc-lb-bar u{grid-column:1/3;display:block;height:6px;border-radius:3px;background:rgba(255,255,255,.18);overflow:hidden;}
-  .cc-lb-bar s{display:block;height:100%;background:#3fe0c0;}
-  .cc-lb-q{display:flex;gap:6px;font-size:12px;line-height:1.35;margin-bottom:4px;}
-  .cc-lb-q i{flex:none;width:14px;height:14px;border:1.5px solid rgba(255,255,255,.6);border-radius:3px;font-style:normal;font-size:10px;
-    display:flex;align-items:center;justify-content:center;margin-top:1px;}
-  .cc-lb-q.ok i{background:#3fe0c0;border-color:#3fe0c0;color:#04110f;}
-  .cc-lb-fmt{display:flex;gap:4px;}
-  .cc-lb-fmt span{flex:1;text-align:center;padding:5px 0;font-family:var(--font-display);font-size:12px;text-transform:uppercase;
-    background:rgba(0,0,0,.45);border:2px solid rgba(255,255,255,.3);}
-  .cc-lb-fmt span.on{background:#fff;color:#1a3a9e;border-color:#fff;}
-  /* Фон — настоящий фон лобби того сезона (ccLobbyBg), по краям притемнён под панели; цвет — пока картинка грузится. */
-  .cc-lobby{background:linear-gradient(90deg,rgba(0,0,0,.5),rgba(0,0,0,0) 26%,rgba(0,0,0,0) 74%,rgba(0,0,0,.5)),
-    linear-gradient(180deg,rgba(0,0,0,.35),rgba(0,0,0,0) 14%),var(--lb-bg) center/cover no-repeat,#13204a;}
-  /* Главное меню по семействам (Fortnite Wiki, «Lobby»): Глава 1 — вкладки в рамках, выбранная жёлтая, кнопка —
-     широкий косой жёлтый блок; Главы 2–4 — открытые белые вкладки, выбранная в белой плашке, «PLAY!» с наклоном;
-     с v26.30 (октябрь 2023) — вкладки-пилюли, карточка «Играть» слева, кнопка скруглённая и прямая. */
-  .cc-lb-c1 .cc-lb-nav{justify-content:center;gap:2px;}
-  .cc-lb-c1 .cc-lb-nav button{background:rgba(8,30,90,.55);border:1px solid rgba(255,255,255,.25);}
-  .cc-lb-c1 .cc-lb-nav button.on{background:#ffe14d;color:#111;border-color:#ffe14d;}
-  .cc-lb-c1 .cc-lb-panel{border-radius:2px;background:rgba(18,50,150,.6);border:2px solid rgba(255,255,255,.35);}
-  .cc-lb-c1 .cc-lb-panel h5{margin:-8px -10px 6px;padding:5px 10px;background:rgba(255,255,255,.14);}
-  .cc-lb-c1 .cc-lb-play{border-radius:2px;transform:skewX(-8deg);}
-  .cc-lb-c2 .cc-lb-nav button.on,.cc-lb-c3 .cc-lb-nav button.on{background:#fff;color:#14205a;}
-  .cc-lb-c2 .cc-lb-panel{background:rgba(10,14,50,.72);border-radius:4px;}
-  .cc-lb-c2 .cc-lb-panel h5{border-left:4px solid #ffe14d;padding-left:7px;}
-  .cc-lb-c2 .cc-lb-play,.cc-lb-c3 .cc-lb-play{font-style:italic;transform:skewX(-10deg);}
-  .cc-lb-c3 .cc-lb-panel{background:rgba(5,30,90,.55);border:1px solid rgba(255,255,255,.35);border-radius:12px;}
-  .cc-lb-c5 .cc-lb-nav button{border-radius:999px;} .cc-lb-c5 .cc-lb-nav button.on{background:rgba(255,255,255,.18);}
-  .cc-lb-c5 .cc-lb-panel{background:rgba(15,16,40,.72);border:1px solid rgba(255,255,255,.1);border-radius:14px;}
-  .cc-lb-c5 .cc-lb-play{border-radius:14px;transform:none;}
-  @media (min-width:701px){ .cc-lobby.cc-lb-c5{grid-template-columns:290px minmax(0,1fr) 250px;grid-template-areas:"top top top" "side stage left";}
-    .cc-lb-c5 .cc-lb-side{padding:0 0 14px 14px;} .cc-lb-c5 .cc-lb-left{padding:0 14px 14px 0;} }
-  .cc-lb-stage::after{content:"";position:absolute;left:5%;right:5%;bottom:3%;height:12%;border-radius:50%;pointer-events:none;
-    background:radial-gradient(ellipse at center,rgba(255,255,255,.22),rgba(255,255,255,0) 70%);}
-  .cc-lb-stage{grid-area:stage;position:relative;display:flex;justify-content:center;align-items:flex-end;padding-bottom:2%;min-height:0;}
-  .cc-lb-fig{position:relative;z-index:1;height:78%;aspect-ratio:1/1;margin:0 -7%;flex:none;}
-  .cc-lb-fig.me{height:94%;z-index:2;cursor:pointer;}
-  .cc-lb-fig img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;object-position:50% 100%;
-    filter:drop-shadow(0 6px 10px rgba(0,0,0,.35));}
+  /* ГЛАВНОЕ МЕНЮ (ccLobbyHTML): фон сезона на весь экран меню, подиумы как в Fortnite, панели поверх фона.
+     Семейства A (Глава 1), B (Главы 2–4), C (с октября 2023) — по истории лобби Fortnite Wiki. */
+  .cc-lobby{position:relative;height:640px;margin:0 0 12px;border-radius:10px;overflow:hidden;color:#fff;
+    background:linear-gradient(90deg,rgba(0,0,0,.45),rgba(0,0,0,0) 24%,rgba(0,0,0,0) 76%,rgba(0,0,0,.45)),var(--lb-bg) center/cover no-repeat,#13204a;}
+  .cc-lb-stage{position:absolute;inset:0;z-index:1;}
+  .cc-lb-ped{position:absolute;z-index:1;width:11%;aspect-ratio:4/1;transform:translateX(-50%);border-radius:50%;
+    background:radial-gradient(ellipse at center,#b9c4d6 0%,#7b8597 55%,#3b4352 72%,rgba(0,0,0,0) 74%);box-shadow:0 6px 14px rgba(0,0,0,.35);}
+  .cc-lb-ped.me{width:16%;background:radial-gradient(ellipse at center,#e9ffff 0%,#7ff3ff 40%,#2bc4e6 62%,rgba(43,196,230,.0) 74%);
+    box-shadow:0 0 30px rgba(80,230,255,.6);}
+  .cc-lb-fig{position:absolute;z-index:2;aspect-ratio:1/1;transform:translateX(-50%);}
+  .cc-lb-fig.me{z-index:3;cursor:pointer;}
+  /* Места партии (CC_LB_SLOTS): свой впереди посередине, сзади один слева и двое справа. */
+  .cc-lb-fig.cc-lb-s0{left:50%;bottom:9%;height:70%;} .cc-lb-fig.cc-lb-s1{left:37%;bottom:21%;height:55%;}
+  .cc-lb-fig.cc-lb-s2{left:61%;bottom:21%;height:55%;} .cc-lb-fig.cc-lb-s3{left:72%;bottom:22%;height:53%;}
+  .cc-lb-ped.cc-lb-s0{left:50%;bottom:6.5%;} .cc-lb-ped.cc-lb-s1{left:37%;bottom:18.5%;} .cc-lb-ped.cc-lb-s2{left:61%;bottom:18.5%;} .cc-lb-ped.cc-lb-s3{left:72%;bottom:19.5%;}
+  .cc-lb-plus.cc-lb-s1{left:37%;bottom:46%;} .cc-lb-plus.cc-lb-s2{left:61%;bottom:46%;} .cc-lb-plus.cc-lb-s3{left:72%;bottom:46%;}
+  .cc-lb-fig img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;object-position:50% 100%;filter:drop-shadow(0 8px 12px rgba(0,0,0,.4));}
   .cc-lb-fig img.icon{inset:auto 25% 10% 25%;width:50%;height:50%;border-radius:10px;}
-  .cc-lb-plate{position:absolute;left:50%;top:2%;transform:translateX(-50%);z-index:3;display:flex;gap:6px;align-items:baseline;
-    padding:3px 10px;border-radius:6px;background:rgba(0,0,0,.55);white-space:nowrap;}
-  .cc-lb-plate b{font-family:var(--font-display);font-size:14px;text-transform:uppercase;letter-spacing:.02em;}
-  .cc-lb-plate em{font-style:normal;font-size:12px;color:#ffe14d;font-weight:800;}
-  .cc-lb-fig.me .cc-lb-plate{background:rgba(0,0,0,.7);box-shadow:0 0 0 2px #ffe14d inset;}
-  .cc-lb-side{grid-area:side;z-index:4;display:flex;flex-direction:column;justify-content:space-between;gap:8px;padding:0 14px 14px 0;min-height:0;}
-  .cc-lb-right{display:flex;flex-direction:column;gap:8px;min-height:0;overflow:auto;scrollbar-width:none;}
-  .cc-lb-go{display:flex;flex-direction:column;align-items:stretch;gap:8px;}
-  .cc-lb-attrs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px;}
-  .cc-lb-attrs span{display:flex;flex-direction:column;align-items:center;padding:3px 0;border-radius:4px;background:rgba(255,255,255,.08);}
-  .cc-lb-attrs em{font-style:normal;font-size:10px;opacity:.8;text-transform:uppercase;} .cc-lb-attrs b{font-size:15px;font-weight:800;}
-  .cc-lb-week{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:3px;}
-  .cc-lb-week span{display:flex;flex-direction:column;align-items:center;padding:2px 0;border-radius:4px;background:rgba(255,255,255,.06);}
-  .cc-lb-week em{font-style:normal;font-size:9px;opacity:.7;text-transform:uppercase;} .cc-lb-week b{font-size:13px;}
+  .cc-lb-plate{position:absolute;left:50%;top:-3%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:flex-start;
+    padding-left:26px;white-space:nowrap;text-shadow:0 1px 3px rgba(0,0,0,.8);}
+  .cc-lb-plate b{font-family:var(--font-display);font-size:15px;letter-spacing:.01em;}
+  .cc-lb-plate b u{text-decoration:none;color:#ffe14d;margin-left:4px;}
+  .cc-lb-plate em{font-style:normal;font-size:12px;font-weight:800;color:#ff6b6b;}
+  .cc-lb-plate em.ok{color:#5bff8a;}
+  .cc-lb-crown{position:absolute;left:0;top:2px;font-style:normal;font-size:20px;color:#ffd84d;}
+  .cc-lb-plus{position:absolute;z-index:2;transform:translateX(-50%);width:30px;height:30px;padding:0;border:2px dashed rgba(255,255,255,.85);
+    background:rgba(0,0,0,.15);color:#fff;font-size:20px;line-height:24px;cursor:pointer;}
+  .cc-lb-top{position:absolute;left:0;right:0;top:0;z-index:5;display:flex;align-items:center;gap:8px;padding:6px 10px;}
+  .cc-lb-nav{display:flex;gap:2px;flex:1;min-width:0;justify-content:center;overflow-x:auto;scrollbar-width:none;}
+  .cc-lb-nav button{flex:none;padding:4px 12px;border:0;background:transparent;color:#fff;cursor:pointer;
+    font-family:var(--font-display);font-size:14px;text-transform:uppercase;letter-spacing:.03em;}
+  .cc-lb-nav .ch-dot{display:none;}
+  .cc-lb-partyc{flex:none;padding:3px 9px;border:2px solid #2f7fff;background:rgba(8,22,70,.75);font-weight:800;font-size:13px;cursor:pointer;}
+  .cc-lb-wallet{display:flex;gap:6px;flex:none;}
+  .cc-lb-wallet span{display:flex;align-items:center;gap:5px;padding:3px 10px;background:rgba(8,22,70,.75);border:2px solid #2f7fff;
+    font-weight:800;font-size:13px;cursor:pointer;white-space:nowrap;}
+  .cc-lb-left{position:absolute;left:0;top:48px;bottom:0;z-index:4;width:270px;display:flex;flex-direction:column;gap:6px;
+    overflow:auto;scrollbar-width:none;padding:0 0 70px 0;}
+  .cc-lb-right{position:absolute;right:0;top:48px;z-index:4;width:270px;display:flex;flex-direction:column;gap:6px;max-height:calc(100% - 250px);
+    overflow:auto;scrollbar-width:none;}
+  .cc-lb-bottom{position:absolute;left:0;right:0;bottom:0;z-index:4;}
+  .cc-lb-panel{padding:7px 10px;cursor:pointer;background:rgba(6,20,70,.7);}
+  .cc-lb-panel h5{margin:0 0 5px;font-family:var(--font-display);font-size:13px;text-transform:uppercase;letter-spacing:.04em;}
+  .cc-lb-row{display:flex;justify-content:space-between;gap:6px;font-size:12.5px;line-height:1.45;}
+  .cc-lb-row b{font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .cc-lb-row i{font-style:normal;font-weight:800;color:#ffe14d;} .cc-lb-row.me b{color:#ffe14d;} .cc-lb-row span{opacity:.8;}
+  .cc-lb-sub{font-size:11.5px;opacity:.8;margin-top:3px;}
+  .cc-lb-bar{display:grid;grid-template-columns:1fr auto;gap:2px 8px;font-size:12px;margin-bottom:5px;}
+  .cc-lb-bar em{font-style:normal;opacity:.85;} .cc-lb-bar b{font-weight:800;}
+  .cc-lb-bar u{grid-column:1/3;display:block;height:6px;background:rgba(255,255,255,.18);overflow:hidden;} .cc-lb-bar s{display:block;height:100%;background:#3fe0c0;}
+  .cc-lb-q{display:flex;gap:6px;font-size:12px;line-height:1.35;margin-bottom:4px;}
+  .cc-lb-q i{flex:none;width:14px;height:14px;border:1.5px solid rgba(255,255,255,.6);font-style:normal;font-size:10px;display:flex;align-items:center;justify-content:center;margin-top:1px;}
+  .cc-lb-q.ok i{background:#3fe0c0;border-color:#3fe0c0;color:#04110f;}
+  .cc-lb-attrs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:3px;}
+  .cc-lb-attrs span{display:flex;flex-direction:column;align-items:center;padding:2px 0;background:rgba(255,255,255,.08);}
+  .cc-lb-attrs em{font-style:normal;font-size:10px;opacity:.8;text-transform:uppercase;} .cc-lb-attrs b{font-size:14px;font-weight:800;}
+  .cc-lb-week{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:2px;}
+  .cc-lb-week span{display:flex;flex-direction:column;align-items:center;padding:2px 0;background:rgba(255,255,255,.07);}
+  .cc-lb-week em{font-style:normal;font-size:9px;opacity:.7;text-transform:uppercase;} .cc-lb-week b{font-size:12px;}
   .cc-lb-week span.ev{box-shadow:inset 0 -3px 0 #3fe0c0;} .cc-lb-week span.today{background:#ffe14d;color:#111;}
-  .cc-lb-row span{opacity:.8;font-size:12px;}
-  .cc-lb-mode{padding:8px 12px;border-radius:8px;background:rgba(0,0,0,.6);}
-  .cc-lb-mode em{display:block;font-style:normal;font-size:11px;letter-spacing:.06em;text-transform:uppercase;opacity:.8;}
-  .cc-lb-mode b{display:block;font-family:var(--font-display);font-size:18px;text-transform:uppercase;line-height:1.1;}
-  .cc-lb-play{padding:14px 18px;border:0;border-radius:6px;background:#ffe14d;color:#111;cursor:pointer;
-    font-family:var(--font-display);font-size:26px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;
-    box-shadow:0 4px 0 #b39a00;transform:skewX(-6deg);}
-  .cc-lb-play:hover{background:#fff06b;}
-  .cc-lb-play:disabled{background:#9a9a9a;box-shadow:0 4px 0 #666;cursor:not-allowed;}
-  /* Узкий ПК и планшет: панели слева уже, справа уже. */
-  @media (max-width:1000px){ .cc-lobby{grid-template-columns:200px minmax(0,1fr) 230px;} }
-  /* Телефон: столбиком — вкладки, сцена, режим и кнопка, панели под ними в две колонки. */
-  @media (max-width:700px){ .cc-lobby{grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-rows:auto 260px auto auto;height:auto;
-      grid-template-areas:"top top" "stage stage" "side side" "left left";}
-    .cc-lb-top{flex-wrap:wrap;padding:8px 10px;} .cc-lb-nav{order:2;flex-basis:100%;} .cc-lb-c1 .cc-lb-nav{justify-content:flex-start;}
-    .cc-lb-nav button{font-size:13px;padding:5px 9px;} .cc-lb-wallet{margin-left:auto;}
-    .cc-lb-left{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));padding:0 10px 10px;overflow:visible;}
-    .cc-lb-left .cc-lb-panel:first-child{grid-row:span 2;}
-    .cc-lb-side{padding:0 10px 10px;} .cc-lb-right{order:2;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));overflow:visible;}
-    .cc-lb-right .cc-lb-panel:nth-child(2){grid-column:1/3;order:3;} }
-  @media (max-width:560px){
-    .cc-lb-go{flex-direction:row;flex-wrap:wrap;align-items:stretch;} .cc-lb-fmt{flex-basis:100%;}
-    .cc-lb-mode{flex:1;min-width:0;} .cc-lb-mode b{font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-    .cc-lb-play{font-size:20px;padding:10px 16px;} .cc-lb-plate b{font-size:12px;} .cc-lb-plate{padding:2px 6px;}
-    /* Четверо в сквад-лобби на 340 px: картинка квадратная, сам персонаж — её середина, поэтому фигуры заходят
-       друг на друга сильнее, а напарники ниже своего. */
-    .cc-lb-fig{height:68%;margin:0 -16%;} .cc-lb-fig.me{height:92%;}
-    .cc-lb-fig:not(.me) .cc-lb-plate{top:-2%;padding:1px 5px;gap:4px;} .cc-lb-fig:not(.me) .cc-lb-plate b{font-size:10px;}
-    .cc-lb-fig:not(.me) .cc-lb-plate em{font-size:10px;} .cc-lb-fig:nth-child(4) .cc-lb-plate{top:12%;} }
+  .cc-lb-play{display:block;width:100%;padding:12px 18px;border:0;background:#ffe14d;color:#111;cursor:pointer;
+    font-family:var(--font-display);font-size:30px;font-weight:700;text-transform:uppercase;letter-spacing:.02em;}
+  .cc-lb-play:hover{background:#fff176;} .cc-lb-play:disabled{background:#9a9a9a;cursor:not-allowed;}
+  .cc-lb-go{display:flex;flex-direction:column;gap:4px;}
+  .cc-lb-modebox{padding:8px 12px;background:rgba(8,22,70,.8);border:2px solid #2f7fff;}
+  .cc-lb-modebox b{display:block;font-family:var(--font-display);font-size:20px;text-transform:uppercase;text-align:center;}
+  .cc-lb-modebox em{display:block;font-style:normal;font-size:11.5px;opacity:.85;text-align:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .cc-lb-bar-btns{display:flex;gap:6px;justify-content:flex-end;}
+  .cc-lb-bar-btns button{padding:4px 12px;border:1px solid rgba(255,255,255,.6);background:rgba(0,0,0,.35);color:#fff;font-size:13px;cursor:pointer;}
+  .cc-lb-more.alert{border-color:#ffe14d;color:#ffe14d;} .cc-lb-more i{font-style:normal;font-weight:900;}
+  .cc-lb-alert{position:absolute;right:14px;bottom:200px;z-index:4;max-width:260px;text-align:right;cursor:pointer;text-shadow:0 1px 3px #000;}
+  .cc-lb-alert b{display:block;color:#ffe14d;font-family:var(--font-display);font-size:16px;} .cc-lb-alert span{font-size:12.5px;}
+  /* A — Глава 1 (Season 9): полоса вкладок, «SEASON N», уровень, золотой тир, «DAILY CHALLENGES»; PLAY справа внизу. */
+  .cc-lb-famA .cc-lb-top{background:rgba(6,18,58,.85);padding:4px 10px;}
+  .cc-lb-famA .cc-lb-nav button{background:#2e7be3;color:#d6ecff;margin:0 1px;padding:3px 14px;font-size:13px;}
+  .cc-lb-famA .cc-lb-nav button.on{background:#fff;color:#14264f;}
+  .cc-lb-famA.cc-lb-c1 .cc-lb-nav{gap:4px;}
+  .cc-lb-season{padding:6px 10px;background:#3f8ee8;font-family:var(--font-display);font-size:22px;font-style:italic;}
+  .cc-lb-lvl{display:flex;gap:10px;align-items:center;padding:8px 10px;background:rgba(10,40,120,.8);}
+  .cc-lb-banner{display:flex;align-items:center;justify-content:center;width:46px;height:52px;background:#e0249a;font-family:var(--font-display);font-size:22px;
+    clip-path:polygon(0 0,100% 0,100% 80%,50% 100%,0 80%);}
+  .cc-lb-lvl b{font-family:var(--font-display);font-size:24px;}
+  .cc-lb-xp{display:block;position:relative;height:8px;margin-top:4px;background:rgba(0,0,0,.4);min-width:150px;} .cc-lb-xp s{display:block;height:100%;background:#7ed957;}
+  .cc-lb-tier{display:flex;justify-content:space-between;align-items:center;padding:8px 10px;background:linear-gradient(90deg,#c7861d,#e8b04a);cursor:pointer;}
+  .cc-lb-tier b{font-family:var(--font-display);font-size:18px;font-style:italic;} .cc-lb-tier em{font-style:normal;font-size:12px;font-weight:700;}
+  .cc-lb-famA .cc-lb-qs h5{margin:-7px -10px 6px;padding:4px 10px;background:#2e6fd0;font-style:italic;}
+  .cc-lb-famA .cc-lb-panel{background:rgba(10,40,120,.72);}
+  .cc-lb-region{align-self:flex-end;margin:0 10px 0 0;padding:2px 10px;border:2px solid #fff;font-weight:800;font-size:12px;background:rgba(0,0,0,.3);transform:skewX(-10deg);}
+  .cc-lb-famA .cc-lb-bottom{display:flex;flex-direction:column;align-items:flex-end;}
+  .cc-lb-famA .cc-lb-go{width:300px;margin:0 10px 8px 0;}
+  .cc-lb-famA .cc-lb-play{transform:skewX(-6deg);}
+  .cc-lb-famA .cc-lb-bar-btns{align-self:stretch;padding:5px 10px;background:rgba(6,18,58,.9);}
+  /* B — Главы 2–4 (v11.00): открытые белые вкладки, «CHAPTER N / SEASON M», VIEW QUESTS, ресурсы; CHANGE / PLAY! / FILL. */
+  .cc-lb-famB .cc-lb-nav button{font-size:14px;} .cc-lb-famB .cc-lb-nav button.on{background:#fff;color:#14205a;transform:skewX(-6deg);}
+  .cc-lb-famB .cc-lb-left{padding-left:14px;width:280px;}
+  .cc-lb-chap{color:#4fe0ff;font-family:var(--font-display);font-size:18px;font-style:italic;text-transform:uppercase;}
+  .cc-lb-sea{font-family:var(--font-display);font-size:40px;font-style:italic;line-height:1;text-transform:uppercase;text-shadow:0 2px 6px rgba(0,0,0,.6);}
+  .cc-lb-lvl2 b{display:block;color:#4fe0ff;font-family:var(--font-display);font-size:20px;font-style:italic;}
+  .cc-lb-lvl2 .cc-lb-xp{height:16px;background:rgba(0,0,0,.55);} .cc-lb-lvl2 .cc-lb-xp s{background:#4fe0ff;}
+  .cc-lb-lvl2 .cc-lb-xp i{position:absolute;right:6px;top:0;font-style:normal;font-size:11px;line-height:16px;}
+  .cc-lb-quests{margin:8px 0 2px;padding:7px 10px;border:2px solid #9ff;background:#1aa3ff;color:#fff;font-family:var(--font-display);font-size:16px;cursor:pointer;width:100%;}
+  .cc-lb-resh{margin-top:8px;font-family:var(--font-display);font-size:15px;font-style:italic;text-transform:uppercase;}
+  .cc-lb-res{display:flex;justify-content:space-between;gap:8px;font-size:13px;cursor:pointer;color:#bfe8ff;}
+  .cc-lb-res b{color:#fff;display:flex;align-items:center;gap:4px;}
+  .cc-lb-famB .cc-lb-panel{background:rgba(5,14,60,.7);border:1px solid rgba(80,160,255,.6);}
+  .cc-lb-news{padding:8px 10px;background:rgba(5,14,60,.75);border:2px solid #2f7fff;cursor:pointer;}
+  .cc-lb-news em{display:block;font-style:normal;font-size:11px;opacity:.8;text-transform:uppercase;}
+  .cc-lb-news b{display:block;font-family:var(--font-display);font-size:16px;text-transform:uppercase;margin-bottom:4px;}
+  .cc-lb-famB .cc-lb-right{padding-right:14px;width:290px;}
+  .cc-lb-famB .cc-lb-bottom{display:flex;flex-direction:column;align-items:flex-end;}
+  .cc-lb-famB .cc-lb-go{width:290px;margin:0 14px 6px 0;}
+  .cc-lb-famB .cc-lb-modebox{background:rgba(5,14,60,.85);border:2px solid #2f7fff;padding:14px;} .cc-lb-famB .cc-lb-modebox b{font-size:24px;font-style:italic;}
+  .cc-lb-blue{padding:5px;border:0;background:#1aa3ff;color:#fff;font-family:var(--font-display);font-size:15px;cursor:pointer;}
+  .cc-lb-famB .cc-lb-play{font-style:italic;transform:skewX(-8deg);}
+  .cc-lb-famB .cc-lb-bar-btns{margin:0 14px 8px 0;}
+  /* C — с v26.30: вкладки-пилюли с сеткой и поиском, карточка режима слева внизу, кольцо LVL справа, ряд плиток. */
+  .cc-lb-famC .cc-lb-top{padding:10px 14px;} .cc-lb-famC .cc-lb-nav{justify-content:flex-start;gap:4px;}
+  .cc-lb-famC .cc-lb-nav button{border-radius:8px;padding:5px 12px;} .cc-lb-famC .cc-lb-nav button.on{background:rgba(255,255,255,.9);color:#111;}
+  .cc-lb-ico{flex:none;width:30px;border:0;background:transparent;color:#fff;font-size:16px;cursor:pointer;}
+  .cc-lb-famC .cc-lb-wallet span{border:0;border-radius:999px;background:rgba(0,0,0,.45);}
+  .cc-lb-famC .cc-lb-left{left:14px;top:56px;bottom:150px;width:230px;padding:0;justify-content:space-between;}
+  .cc-lb-famC .cc-lb-news{border:0;border-radius:12px;background:rgba(0,0,0,.45);}
+  .cc-lb-famC .cc-lb-go{padding:12px;border-radius:12px;background:rgba(40,40,52,.82);gap:8px;}
+  .cc-lb-famC .cc-lb-modebox{background:none;border:0;padding:0;} .cc-lb-famC .cc-lb-modebox b{font-size:18px;font-style:italic;white-space:normal;}
+  .cc-lb-pill{padding:7px;border-radius:8px;background:#cfd2d8;color:#111;text-align:center;font-weight:800;font-size:14px;}
+  .cc-lb-famC .cc-lb-play{border-radius:12px;font-size:26px;}
+  .cc-lb-famC .cc-lb-right{left:auto;right:14px;top:auto;bottom:150px;width:auto;align-items:flex-end;overflow:visible;max-height:none;}
+  .cc-lb-ring{display:flex;flex-direction:column;align-items:center;justify-content:center;width:64px;height:64px;border-radius:12px;cursor:pointer;
+    background:radial-gradient(circle,rgba(30,30,40,.9) 52%,transparent 54%),conic-gradient(#b16cff calc(var(--p)*1%),rgba(255,255,255,.25) 0);}
+  .cc-lb-ring em{font-style:normal;font-size:10px;} .cc-lb-ring b{font-size:20px;line-height:1;}
+  .cc-lb-famC .cc-lb-bar-btns button{border:0;border-radius:999px;background:rgba(0,0,0,.5);}
+  .cc-lb-tiles{display:flex;gap:8px;padding:0 14px 12px;overflow-x:auto;scrollbar-width:none;}
+  .cc-lb-tiles .cc-lb-panel{flex:none;width:200px;height:110px;overflow:hidden;border-radius:10px;background:rgba(10,10,20,.72);}
+  /* Ряд плиток снизу, как Discover: подиумы стоят над ним. */
+  @media (min-width:701px){ .cc-lb-famC .cc-lb-stage{inset:0 0 124px 0;} .cc-lb-famC .cc-lb-left,.cc-lb-famC .cc-lb-right{bottom:136px;} }
+  /* Лист «Подробнее»: всё, что было на «Центре» под меню, — внутри, по кнопке. */
+  .cc-lb-sheet{position:relative;margin-top:-4px;}
+  .cc-lb-sheet-x{position:sticky;top:6px;float:right;z-index:6;margin:6px 6px 0 0;padding:4px 10px;border:1px solid rgba(255,255,255,.5);background:rgba(0,0,0,.6);color:#fff;cursor:pointer;}
+  /* На ПК вкладки хаба на «Центре» — шапка меню, своя полоса прячется; на телефоне нижняя панель хаба остаётся. */
+  @media (min-width:701px){ #screen-career-hub.ch-lobby-on .ch-tabs{display:none;} }
+  @media (max-width:1100px){ .cc-lb-left,.cc-lb-right{width:220px;} .cc-lb-famB .cc-lb-left,.cc-lb-famB .cc-lb-right{width:230px;} }
+  /* Телефон: сцена сверху, под ней кнопка и панели столбиком — всё внутри меню. */
+  @media (max-width:700px){
+    .cc-lobby{height:auto;display:flex;flex-direction:column;padding-top:0;background:#0d1838;}
+    .cc-lb-top{position:relative;order:0;} .cc-lb-nav{display:none;} .cc-lb-wallet{margin-left:auto;}
+    .cc-lb-stage{position:relative;order:1;height:330px;inset:auto;background:var(--lb-bg) center/cover no-repeat;}
+    .cc-lb-famC .cc-lb-stage{inset:auto;}
+    .cc-lb-fig.cc-lb-s0{left:50%;bottom:7%;height:74%;} .cc-lb-fig.cc-lb-s1{left:20%;bottom:18%;height:56%;}
+    .cc-lb-fig.cc-lb-s2{left:77%;bottom:18%;height:56%;} .cc-lb-fig.cc-lb-s3{left:93%;bottom:20%;height:50%;}
+    .cc-lb-ped{width:24%;} .cc-lb-ped.me{width:34%;}
+    .cc-lb-ped.cc-lb-s0{left:50%;bottom:4%;} .cc-lb-ped.cc-lb-s1{left:20%;bottom:15%;} .cc-lb-ped.cc-lb-s2{left:77%;bottom:15%;} .cc-lb-ped.cc-lb-s3{left:93%;bottom:17%;}
+    .cc-lb-plus.cc-lb-s1{left:20%;bottom:44%;} .cc-lb-plus.cc-lb-s2{left:77%;bottom:44%;} .cc-lb-plus.cc-lb-s3{left:93%;bottom:44%;}
+    .cc-lb-fig.cc-lb-s3 .cc-lb-plate{left:20%;}
+    .cc-lb-bottom{position:relative;order:2;} .cc-lb-famC .cc-lb-bottom{order:4;}
+    .cc-lb-left,.cc-lb-right,.cc-lb-famC .cc-lb-left,.cc-lb-famC .cc-lb-right{position:relative;inset:auto;width:auto;max-height:none;padding:0 10px 8px;overflow:visible;}
+    .cc-lb-left{order:3;} .cc-lb-right{order:4;} .cc-lb-famC .cc-lb-left{order:2;}
+    .cc-lb-famA .cc-lb-go,.cc-lb-famB .cc-lb-go{width:auto;margin:0 10px 8px;} .cc-lb-famA .cc-lb-bottom,.cc-lb-famB .cc-lb-bottom{align-items:stretch;}
+    .cc-lb-alert{position:relative;order:2;right:auto;bottom:auto;max-width:none;text-align:left;padding:0 10px 8px;}
+    .cc-lb-plate b{font-size:11px;} .cc-lb-plate em{font-size:10px;} .cc-lb-plate{padding-left:18px;} .cc-lb-crown{font-size:14px;}
+    .cc-lb-fig:not(.me) .cc-lb-plate b u{display:none;}
+    .cc-lb-tiles{padding:0 10px 10px;} .cc-lb-tiles .cc-lb-panel{width:170px;}
+  }
   .cc-fn-cat h5{margin:0 0 6px;}
   .cc-fn-cats .cc-fn-slots{grid-template-columns:repeat(4,minmax(0,1fr));}
   @media (max-width:560px){ .cc-fn-cats .cc-fn-slots{grid-template-columns:repeat(2,minmax(0,1fr));} }
@@ -10135,7 +10187,7 @@ ccMovePickHint:'Выбери страну на карте — цифра на н
 ccMoveGain:'Рейтинг за пинг',
 ccMoveAlready:'Ты уже здесь', ccMoveGo:r=>'Переехать в '+r,
 ccOrgCutRow:'Клуб с призовых', ccOrgCutPaid:'Отдано клубу',
-ccSeasonsN:n=>n+' сезона', ccEdgeTitle:'Прибавка за пинг и возраст', ccEdgeOn:'С прибавкой', ccEdgeOff:'Без прибавки', ccEdgeNote:'Без прибавки рейтинг твоего игрока ровно такой, каким ты его собрал: пинг и возраст ничего не добавляют, и переезд его не меняет.', chTabItems:'Item Shop', chTabLocker:'Шкафчик', ccFnToLocker:'Надеть в шкафчике', ccSecItems:'Магазин предметов', ccSecHint_items:'Настоящий магазин Fortnite этого дня: скины, кирки, дельтапланы, эмоции. Покупается за V-Bucks, а V-Bucks за деньги карьеры по цене Epic для твоего региона. Купленное надевается в шкафчике.', ccVbPacksH:'V-Bucks', ccVbNote:r=>'Цены Epic своего времени для региона: '+r+'. Списываются с баланса карьеры.', ccFnShopH:d=>'Магазин на '+d, ccFnTomorrow:'обновится завтра', ccFnEra:n=>'Глава '+n, ccFnFeatured:'Рекомендуемые', ccFnDaily:'Ежедневные', ccFnOwned:'Куплено', ccFnNoVb:'Не хватает V-Bucks', ccFnLoading:'Загружаем магазин…', ccFnEmpty:'В этот день магазина в данных нет.', ccFnType_o:'Скин', ccFnType_b:'Рюкзак', ccFnType_p:'Кирка', ccFnType_g:'Дельтаплан', ccFnType_e:'Эмоция', ccFnType_w:'Обёртка', ccFnTypes_o:'Скины', ccFnTypes_b:'Рюкзаки', ccFnTypes_p:'Кирки', ccFnTypes_g:'Дельтапланы', ccFnTypes_e:'Эмоции', ccFnTypes_w:'Обёртки', ccFnLoadout:'Образ', ccFnCatChar:'Персонаж', ccFnTakeOff:'Снять', ccFnNone:'Пока нечего надеть.', ccFnToShop:'В магазин предметов', ccStartSeason:'Сезон старта', ccStartSeasonNote:'Карьера начнётся с первой недели этого сезона. Составы и рейтинги сцены будут такими, какими они были тогда, и дальше меняются от сезона к сезону.', ccYear:'Год', ccYear2026:'дуо → трио', ccYear2025:'трио', ccYear2024:'дуо', ccYear2023:'дуо', ccYear2022:'дуо', ccYear2021:'трио', ccYear2020:'дуо → соло → трио', ccYear2019:'соло и дуо → трио → сквады', ccYrXWeek:(w,r,q)=>(w===0 ? 'разминка' : (q ? 'квалификатор ' : 'неделя ')+w)+' · раунд '+r, ccYrXHeats:d=>'хиты · день '+d, ccYrXHeatN:(l,h)=>l+' · хит '+h, ccYrXFinal:wc=>wc ? 'финал · Нью-Йорк' : 'финал', ccYrXWcIn:k=>'Топ-'+k+' региона — в финал World Cup в Нью-Йорке', ccYr21Heat:(n,h)=>'Мейджор '+n+' · полуфинал · хит '+h, ccYr21Reboot:n=>'Мейджор '+n+' · Reboot Round', ccYr21ToReboot:'Не прошли — остаётся Reboot Round', ccYr21Gr:'FNCS Grand Royale', ccMajSeatGr21:'Финал сезона — приглашение на FNCS Grand Royale', ccYr22Direct:k=>'Топ-'+k+' квалификатора — сразу в Гранд-финал', ccYr22SemiUp:'Проход в Гранд-финал', ccYr22SemiNext:'Не прошли — следующая сессия полуфинала', ccYr22Inv:'FNCS Invitational · Роли', ccMajSeatInv22:n=>'Топ-'+n+' — приглашение на FNCS Invitational в Роли', ccYr23Day:(n,w,d)=>'Мейджор '+n+' · неделя '+w+' · день '+d, ccYr23WeekFinal:(n,w)=>'Мейджор '+n+' · финал недели '+w, ccYr23Surge:n=>'Мейджор '+n+' · Surge Week', ccYr23Lcm:d=>'Last Chance Major · '+(d===3 ? 'финал' : 'день '+d), ccYr23SurgeWon:'Топ-10 Surge Week — билет в финал Мейджора', ccYr23SeriesTicket:k=>'Топ-'+k+' серии — финал Мейджора', ccYr23NoTicket:k=>'Вне топ-'+k+' серии — остаётся Surge Week', ccYr23GcDay:d=>['верхняя сетка','нижняя сетка','финал'][d-1]||'', ccYr23GcUp:'Топ-25 — сразу в финал', ccYr23GcDown:'Нижняя сетка — второй шанс', ccYr23GcOut:'Нижняя сетка: вылет', ccMajSeatGc23:n=>'Топ-'+n+' едут на Global Championship в Копенгаген', ccYr23EliteOnly:'Мейджор 1 — только для дивизиона 1 (Elite)', ccYr23LcmSeat:n=>'Топ-'+n+' — нижняя сетка Копенгагена', ccYr24Qual:(n,q,r)=>'Мейджор '+n+' · квалификатор '+q+' · раунд '+r, ccYr24Semi:(n,r)=>'Мейджор '+n+' · полуфинал · день '+r, ccYr24Upper:'верхняя сетка', ccYr24Lower:'нижняя сетка', ccYr24Series:(p,k)=>'Очки серии: '+p+' · место '+k, ccYr24ToUpper:'Верхняя сетка полуфинала — по очкам серии', ccYr24ToLower:'Нижняя сетка полуфинала — по очкам серии', ccYr24NoSemi:'Мест в полуфинале нет — очков серии не хватило', ccYr24VrTicket:'Победа в матче — билет в финал Мейджора', ccYr24Down:'Билета нет — падение в нижнюю сетку', ccYr24Up:'подъём в верхнюю сетку', ccYr24World:'Другая сетка играет в тот же вечер', ccYr25Group:n=>'группа '+n, ccYr25Lobby:'лобби последнего шанса', ccYr25Showdown:(n,r)=>'FNCS Showdown '+n+' · раунд '+r, ccYr25SoloCash:(n,r)=>'Solo Cash Cup '+n+' · раунд '+r,
+ccSeasonsN:n=>n+' сезона', ccEdgeTitle:'Прибавка за пинг и возраст', ccEdgeOn:'С прибавкой', ccEdgeOff:'Без прибавки', ccEdgeNote:'Без прибавки рейтинг твоего игрока ровно такой, каким ты его собрал: пинг и возраст ничего не добавляют, и переезд его не меняет.', lbMore:'Подробнее', lbAlertMp:'Команда', lbAlertRace:'Гонка', lbAlertTalk:'Интервью', lbAlertRoster:'Состав', chTabItems:'Item Shop', chTabLocker:'Шкафчик', ccFnToLocker:'Надеть в шкафчике', ccSecItems:'Магазин предметов', ccSecHint_items:'Настоящий магазин Fortnite этого дня: скины, кирки, дельтапланы, эмоции. Покупается за V-Bucks, а V-Bucks за деньги карьеры по цене Epic для твоего региона. Купленное надевается в шкафчике.', ccVbPacksH:'V-Bucks', ccVbNote:r=>'Цены Epic своего времени для региона: '+r+'. Списываются с баланса карьеры.', ccFnShopH:d=>'Магазин на '+d, ccFnTomorrow:'обновится завтра', ccFnEra:n=>'Глава '+n, ccFnFeatured:'Рекомендуемые', ccFnDaily:'Ежедневные', ccFnOwned:'Куплено', ccFnNoVb:'Не хватает V-Bucks', ccFnLoading:'Загружаем магазин…', ccFnEmpty:'В этот день магазина в данных нет.', ccFnType_o:'Скин', ccFnType_b:'Рюкзак', ccFnType_p:'Кирка', ccFnType_g:'Дельтаплан', ccFnType_e:'Эмоция', ccFnType_w:'Обёртка', ccFnTypes_o:'Скины', ccFnTypes_b:'Рюкзаки', ccFnTypes_p:'Кирки', ccFnTypes_g:'Дельтапланы', ccFnTypes_e:'Эмоции', ccFnTypes_w:'Обёртки', ccFnLoadout:'Образ', ccFnCatChar:'Персонаж', ccFnTakeOff:'Снять', ccFnNone:'Пока нечего надеть.', ccFnToShop:'В магазин предметов', ccStartSeason:'Сезон старта', ccStartSeasonNote:'Карьера начнётся с первой недели этого сезона. Составы и рейтинги сцены будут такими, какими они были тогда, и дальше меняются от сезона к сезону.', ccYear:'Год', ccYear2026:'дуо → трио', ccYear2025:'трио', ccYear2024:'дуо', ccYear2023:'дуо', ccYear2022:'дуо', ccYear2021:'трио', ccYear2020:'дуо → соло → трио', ccYear2019:'соло и дуо → трио → сквады', ccYrXWeek:(w,r,q)=>(w===0 ? 'разминка' : (q ? 'квалификатор ' : 'неделя ')+w)+' · раунд '+r, ccYrXHeats:d=>'хиты · день '+d, ccYrXHeatN:(l,h)=>l+' · хит '+h, ccYrXFinal:wc=>wc ? 'финал · Нью-Йорк' : 'финал', ccYrXWcIn:k=>'Топ-'+k+' региона — в финал World Cup в Нью-Йорке', ccYr21Heat:(n,h)=>'Мейджор '+n+' · полуфинал · хит '+h, ccYr21Reboot:n=>'Мейджор '+n+' · Reboot Round', ccYr21ToReboot:'Не прошли — остаётся Reboot Round', ccYr21Gr:'FNCS Grand Royale', ccMajSeatGr21:'Финал сезона — приглашение на FNCS Grand Royale', ccYr22Direct:k=>'Топ-'+k+' квалификатора — сразу в Гранд-финал', ccYr22SemiUp:'Проход в Гранд-финал', ccYr22SemiNext:'Не прошли — следующая сессия полуфинала', ccYr22Inv:'FNCS Invitational · Роли', ccMajSeatInv22:n=>'Топ-'+n+' — приглашение на FNCS Invitational в Роли', ccYr23Day:(n,w,d)=>'Мейджор '+n+' · неделя '+w+' · день '+d, ccYr23WeekFinal:(n,w)=>'Мейджор '+n+' · финал недели '+w, ccYr23Surge:n=>'Мейджор '+n+' · Surge Week', ccYr23Lcm:d=>'Last Chance Major · '+(d===3 ? 'финал' : 'день '+d), ccYr23SurgeWon:'Топ-10 Surge Week — билет в финал Мейджора', ccYr23SeriesTicket:k=>'Топ-'+k+' серии — финал Мейджора', ccYr23NoTicket:k=>'Вне топ-'+k+' серии — остаётся Surge Week', ccYr23GcDay:d=>['верхняя сетка','нижняя сетка','финал'][d-1]||'', ccYr23GcUp:'Топ-25 — сразу в финал', ccYr23GcDown:'Нижняя сетка — второй шанс', ccYr23GcOut:'Нижняя сетка: вылет', ccMajSeatGc23:n=>'Топ-'+n+' едут на Global Championship в Копенгаген', ccYr23EliteOnly:'Мейджор 1 — только для дивизиона 1 (Elite)', ccYr23LcmSeat:n=>'Топ-'+n+' — нижняя сетка Копенгагена', ccYr24Qual:(n,q,r)=>'Мейджор '+n+' · квалификатор '+q+' · раунд '+r, ccYr24Semi:(n,r)=>'Мейджор '+n+' · полуфинал · день '+r, ccYr24Upper:'верхняя сетка', ccYr24Lower:'нижняя сетка', ccYr24Series:(p,k)=>'Очки серии: '+p+' · место '+k, ccYr24ToUpper:'Верхняя сетка полуфинала — по очкам серии', ccYr24ToLower:'Нижняя сетка полуфинала — по очкам серии', ccYr24NoSemi:'Мест в полуфинале нет — очков серии не хватило', ccYr24VrTicket:'Победа в матче — билет в финал Мейджора', ccYr24Down:'Билета нет — падение в нижнюю сетку', ccYr24Up:'подъём в верхнюю сетку', ccYr24World:'Другая сетка играет в тот же вечер', ccYr25Group:n=>'группа '+n, ccYr25Lobby:'лобби последнего шанса', ccYr25Showdown:(n,r)=>'FNCS Showdown '+n+' · раунд '+r, ccYr25SoloCash:(n,r)=>'Solo Cash Cup '+n+' · раунд '+r,
 ccYearNote2026:'Сезон FNCS 2026: дивизионные кубки, два Мейджора, Reload, Глобалы в Антверпене. Второй год — трио.',
 ccYearNote2020:'Сезон 2020: FNCS онлайн, формат меняется по сезонам — C2S2 дуо, C2S3 соло, C2S4 трио. Недели и квалификаторы, хиты, финалы. Состав — трио, каждый вечер — в своём формате. Карточки — 2020 года.', ccYearNote2019:'Сезон 2019: World Cup и первые FNCS. Недели Online Open (соло и дуо) и финалы в Нью-Йорке, осенью FNCS Season X (трио) и Chapter 2 Season 1 (сквады). Состав — сквад, каждый вечер — в своём формате. Карточки — 2019 года.', ccYearNote2021:'Сезон FNCS 2021: трио весь год, Chapter 2, онлайн. Четыре сезона FNCS: квалификаторы, полуфинал хитами, Reboot Round и Гранд-финал; в ноябре — FNCS Grand Royale. Карточки и рейтинги — FNCS 2021.', ccYearNote2022:'Сезон FNCS 2022: дуо весь год, Chapter 3. Три сезона FNCS: открытые квалификаторы, полуфинал в три сессии и Гранд-финал; осенью — дивизионные кубки, в ноябре — Invitational в Роли. Карточки и рейтинги — FNCS 2022.', ccYearNote2023:'Сезон FNCS 2023: дуо весь год, Chapter 4. Дивизионы Elite / Contender / Challenger до Мейджора 1, три Мейджора с неделями и Surge Week, Last Chance Major и Копенгаген. Карточки и рейтинги — FNCS 2023.', ccYearNote2024:'Сезон FNCS 2024: дуо весь год, три Мейджора с открытыми квалификаторами, серией и полуфиналами в две сетки, Глобалы в Форт-Уэрте. Дивизионных кубков ещё нет — деньги в Duos Cash Cup, Solo Victory Cup и оценке. Соперники — карточки 2024-го. После Форт-Уэрта карьера идёт в 2025-й (трио) теми же людьми.',
 ccYearNote2025:'Сезон FNCS 2025: трио весь год, три Мейджора с групповым этапом, Глобалы в Лионе. Соперники — карточки 2025-го. После Лиона карьера идёт в 2026-й.',
@@ -12224,7 +12276,7 @@ ccMovePickHint:'Pick a country on the map — the number on it is the ping',
 ccMoveGain:'Rating from ping',
 ccMoveAlready:'You already live here', ccMoveGo:r=>'Move to '+r,
 ccOrgCutRow:'Club takes of winnings', ccOrgCutPaid:'Paid to the club',
-ccSeasonsN:n=>n+' seasons', ccEdgeTitle:'Ping and age bonus', ccEdgeOn:'With bonus', ccEdgeOff:'No bonus', ccEdgeNote:'With no bonus your player is rated exactly as you built them: ping and age add nothing, and moving does not change it.', chTabItems:'Item Shop', chTabLocker:'Locker', ccFnToLocker:'Wear it in the locker', ccSecItems:'Item Shop', ccSecHint_items:'The real Fortnite Item Shop of this day: outfits, pickaxes, gliders, emotes. Paid in V-Bucks, and V-Bucks cost career money at Epic’s price for your region. What you buy is worn in the locker.', ccVbPacksH:'V-Bucks', ccVbNote:r=>'Epic prices of the time for '+r+'. Taken from your career balance.', ccFnShopH:d=>'Item Shop for '+d, ccFnTomorrow:'refreshes tomorrow', ccFnEra:n=>'Chapter '+n, ccFnFeatured:'Featured', ccFnDaily:'Daily', ccFnOwned:'Owned', ccFnNoVb:'Not enough V-Bucks', ccFnLoading:'Loading the shop…', ccFnEmpty:'No shop in the data for this day.', ccFnType_o:'Outfit', ccFnType_b:'Back Bling', ccFnType_p:'Pickaxe', ccFnType_g:'Glider', ccFnType_e:'Emote', ccFnType_w:'Wrap', ccFnTypes_o:'Outfits', ccFnTypes_b:'Back Blings', ccFnTypes_p:'Pickaxes', ccFnTypes_g:'Gliders', ccFnTypes_e:'Emotes', ccFnTypes_w:'Wraps', ccFnLoadout:'Loadout', ccFnCatChar:'Character', ccFnTakeOff:'Take off', ccFnNone:'Nothing to wear yet.', ccFnToShop:'To the Item Shop', ccStartSeason:'Starting season', ccStartSeasonNote:'The career starts in the first week of this season. Teams and ratings on the scene are what they were back then, and they change from season to season after that.', ccYear:'Year', ccYear2026:'duos → trios', ccYear2025:'trios', ccYear2024:'duos', ccYear2023:'duos', ccYear2022:'duos', ccYear2021:'trios', ccYear2020:'duos → solo → trios', ccYear2019:'solo & duos → trios → squads', ccYrXWeek:(w,r,q)=>(w===0 ? 'warm-up' : (q ? 'Qualifier ' : 'Week ')+w)+' · round '+r, ccYrXHeats:d=>'Heats · day '+d, ccYrXHeatN:(l,h)=>l+' · Heat '+h, ccYrXFinal:wc=>wc ? 'Finals · New York' : 'Finals', ccYrXWcIn:k=>'Top '+k+' of the region — to the World Cup Finals in New York', ccYr21Heat:(n,h)=>'Major '+n+' · Semi-Finals · Heat '+h, ccYr21Reboot:n=>'Major '+n+' · Reboot Round', ccYr21ToReboot:'Not through — the Reboot Round is left', ccYr21Gr:'FNCS Grand Royale', ccMajSeatGr21:'A season Grand Final — an invitation to the FNCS Grand Royale', ccYr22Direct:k=>'Top '+k+' of the qualifier — straight to the Grand Finals', ccYr22SemiUp:'Through to the Grand Finals', ccYr22SemiNext:'Not through — the next Semi-Finals session', ccYr22Inv:'FNCS Invitational · Raleigh', ccMajSeatInv22:n=>'Top '+n+' — an invitation to the FNCS Invitational in Raleigh', ccYr23Day:(n,w,d)=>'Major '+n+' · Week '+w+' · Day '+d, ccYr23WeekFinal:(n,w)=>'Major '+n+' · Week '+w+' Finals', ccYr23Surge:n=>'Major '+n+' · Surge Week', ccYr23Lcm:d=>'Last Chance Major · '+(d===3 ? 'Finals' : 'Day '+d), ccYr23SurgeWon:'Top 10 of the Surge Week — a ticket to the Major final', ccYr23SeriesTicket:k=>'Top '+k+' of the series — Major final', ccYr23NoTicket:k=>'Outside the series top '+k+' — the Surge Week is left', ccYr23GcDay:d=>['Upper Bracket','Lower Bracket','Grand Finals'][d-1]||'', ccYr23GcUp:'Top 25 — straight to the Grand Finals', ccYr23GcDown:'Lower Bracket — a second chance', ccYr23GcOut:'Lower Bracket: eliminated', ccMajSeatGc23:n=>'Top '+n+' fly to the Global Championship in Copenhagen', ccYr23EliteOnly:'Major 1 — Division 1 (Elite) only', ccYr23LcmSeat:n=>'Top '+n+' — Copenhagen Lower Bracket', ccYr24Qual:(n,q,r)=>'Major '+n+' · Open Qualifier '+q+' · round '+r, ccYr24Semi:(n,r)=>'Major '+n+' · Semi-Finals · day '+r, ccYr24Upper:'upper bracket', ccYr24Lower:'lower bracket', ccYr24Series:(p,k)=>'Series points: '+p+' · rank '+k, ccYr24ToUpper:'Upper bracket of the Semi-Finals — on series points', ccYr24ToLower:'Lower bracket of the Semi-Finals — on series points', ccYr24NoSemi:'No Semi-Finals seat — not enough series points', ccYr24VrTicket:'A Victory Royale — a ticket to the Major Finals', ccYr24Down:'No ticket — relegated to the lower bracket', ccYr24Up:'promoted to the upper bracket', ccYr24World:'The other bracket plays the same evening', ccYr25Group:n=>'group '+n, ccYr25Lobby:'last chance lobby', ccYr25Showdown:(n,r)=>'FNCS Showdown '+n+' · round '+r, ccYr25SoloCash:(n,r)=>'Solo Cash Cup '+n+' · round '+r,
+ccSeasonsN:n=>n+' seasons', ccEdgeTitle:'Ping and age bonus', ccEdgeOn:'With bonus', ccEdgeOff:'No bonus', ccEdgeNote:'With no bonus your player is rated exactly as you built them: ping and age add nothing, and moving does not change it.', lbMore:'More', lbAlertMp:'Team', lbAlertRace:'Race', lbAlertTalk:'Interview', lbAlertRoster:'Roster', chTabItems:'Item Shop', chTabLocker:'Locker', ccFnToLocker:'Wear it in the locker', ccSecItems:'Item Shop', ccSecHint_items:'The real Fortnite Item Shop of this day: outfits, pickaxes, gliders, emotes. Paid in V-Bucks, and V-Bucks cost career money at Epic’s price for your region. What you buy is worn in the locker.', ccVbPacksH:'V-Bucks', ccVbNote:r=>'Epic prices of the time for '+r+'. Taken from your career balance.', ccFnShopH:d=>'Item Shop for '+d, ccFnTomorrow:'refreshes tomorrow', ccFnEra:n=>'Chapter '+n, ccFnFeatured:'Featured', ccFnDaily:'Daily', ccFnOwned:'Owned', ccFnNoVb:'Not enough V-Bucks', ccFnLoading:'Loading the shop…', ccFnEmpty:'No shop in the data for this day.', ccFnType_o:'Outfit', ccFnType_b:'Back Bling', ccFnType_p:'Pickaxe', ccFnType_g:'Glider', ccFnType_e:'Emote', ccFnType_w:'Wrap', ccFnTypes_o:'Outfits', ccFnTypes_b:'Back Blings', ccFnTypes_p:'Pickaxes', ccFnTypes_g:'Gliders', ccFnTypes_e:'Emotes', ccFnTypes_w:'Wraps', ccFnLoadout:'Loadout', ccFnCatChar:'Character', ccFnTakeOff:'Take off', ccFnNone:'Nothing to wear yet.', ccFnToShop:'To the Item Shop', ccStartSeason:'Starting season', ccStartSeasonNote:'The career starts in the first week of this season. Teams and ratings on the scene are what they were back then, and they change from season to season after that.', ccYear:'Year', ccYear2026:'duos → trios', ccYear2025:'trios', ccYear2024:'duos', ccYear2023:'duos', ccYear2022:'duos', ccYear2021:'trios', ccYear2020:'duos → solo → trios', ccYear2019:'solo & duos → trios → squads', ccYrXWeek:(w,r,q)=>(w===0 ? 'warm-up' : (q ? 'Qualifier ' : 'Week ')+w)+' · round '+r, ccYrXHeats:d=>'Heats · day '+d, ccYrXHeatN:(l,h)=>l+' · Heat '+h, ccYrXFinal:wc=>wc ? 'Finals · New York' : 'Finals', ccYrXWcIn:k=>'Top '+k+' of the region — to the World Cup Finals in New York', ccYr21Heat:(n,h)=>'Major '+n+' · Semi-Finals · Heat '+h, ccYr21Reboot:n=>'Major '+n+' · Reboot Round', ccYr21ToReboot:'Not through — the Reboot Round is left', ccYr21Gr:'FNCS Grand Royale', ccMajSeatGr21:'A season Grand Final — an invitation to the FNCS Grand Royale', ccYr22Direct:k=>'Top '+k+' of the qualifier — straight to the Grand Finals', ccYr22SemiUp:'Through to the Grand Finals', ccYr22SemiNext:'Not through — the next Semi-Finals session', ccYr22Inv:'FNCS Invitational · Raleigh', ccMajSeatInv22:n=>'Top '+n+' — an invitation to the FNCS Invitational in Raleigh', ccYr23Day:(n,w,d)=>'Major '+n+' · Week '+w+' · Day '+d, ccYr23WeekFinal:(n,w)=>'Major '+n+' · Week '+w+' Finals', ccYr23Surge:n=>'Major '+n+' · Surge Week', ccYr23Lcm:d=>'Last Chance Major · '+(d===3 ? 'Finals' : 'Day '+d), ccYr23SurgeWon:'Top 10 of the Surge Week — a ticket to the Major final', ccYr23SeriesTicket:k=>'Top '+k+' of the series — Major final', ccYr23NoTicket:k=>'Outside the series top '+k+' — the Surge Week is left', ccYr23GcDay:d=>['Upper Bracket','Lower Bracket','Grand Finals'][d-1]||'', ccYr23GcUp:'Top 25 — straight to the Grand Finals', ccYr23GcDown:'Lower Bracket — a second chance', ccYr23GcOut:'Lower Bracket: eliminated', ccMajSeatGc23:n=>'Top '+n+' fly to the Global Championship in Copenhagen', ccYr23EliteOnly:'Major 1 — Division 1 (Elite) only', ccYr23LcmSeat:n=>'Top '+n+' — Copenhagen Lower Bracket', ccYr24Qual:(n,q,r)=>'Major '+n+' · Open Qualifier '+q+' · round '+r, ccYr24Semi:(n,r)=>'Major '+n+' · Semi-Finals · day '+r, ccYr24Upper:'upper bracket', ccYr24Lower:'lower bracket', ccYr24Series:(p,k)=>'Series points: '+p+' · rank '+k, ccYr24ToUpper:'Upper bracket of the Semi-Finals — on series points', ccYr24ToLower:'Lower bracket of the Semi-Finals — on series points', ccYr24NoSemi:'No Semi-Finals seat — not enough series points', ccYr24VrTicket:'A Victory Royale — a ticket to the Major Finals', ccYr24Down:'No ticket — relegated to the lower bracket', ccYr24Up:'promoted to the upper bracket', ccYr24World:'The other bracket plays the same evening', ccYr25Group:n=>'group '+n, ccYr25Lobby:'last chance lobby', ccYr25Showdown:(n,r)=>'FNCS Showdown '+n+' · round '+r, ccYr25SoloCash:(n,r)=>'Solo Cash Cup '+n+' · round '+r,
 ccYearNote2026:'FNCS 2026: divisional cups, two Majors, Reload, the Global Championship in Antwerp. Year two is trios.',
 ccYearNote2020:'2020: online FNCS, the format changes by season — C2S2 duos, C2S3 solos, C2S4 trios. Weeks and qualifiers, heats, finals. The roster is a trio; every night is played in its own format. Cards are from 2020.', ccYearNote2019:'2019: the World Cup and the first FNCS. Online Open weeks (solo and duos) and the finals in New York, then FNCS Season X (trios) and Chapter 2 Season 1 (squads). The roster is a squad; every night is played in its own format. Cards are from 2019.', ccYearNote2021:'FNCS 2021: trios all year, Chapter 2, online. Four FNCS seasons: qualifiers, Semi-Final heats, the Reboot Round and the Grand Finals; the FNCS Grand Royale in November. Cards and ratings are FNCS 2021.', ccYearNote2022:'FNCS 2022: duos all year, Chapter 3. Three FNCS seasons: open qualifiers, three Semi-Final sessions and the Grand Finals; divisional cups in the autumn and the Invitational in Raleigh in November. Cards and ratings are FNCS 2022.', ccYearNote2023:'FNCS 2023: duos all year, Chapter 4. Elite / Contender / Challenger divisions up to Major 1, three Majors with weekly qualifiers and a Surge Week, the Last Chance Major and Copenhagen. Cards and ratings are FNCS 2023.', ccYearNote2024:'FNCS 2024: duos all year, three Majors with Open Qualifiers, a series leaderboard and two-bracket Semi-Finals, the Global Championship in Fort Worth. No divisional cups yet — the money is in the Duos Cash Cup, the Solo Victory Cup and the Performance Evaluation. The field is the 2024 cards. After Fort Worth the career moves into 2025 (trios) with the same people.',
 ccYearNote2025:'FNCS 2025: trios all year, three Majors with a Group Stage, the Global Championship in Lyon. The field is the 2025 cards. After Lyon the career moves into 2026.',
@@ -15500,7 +15552,7 @@ ccDivision:'Division',
 ccDivNote:'La division fixe ta note de départ. Cinq, c’est toute la montée depuis rien ; un, c’est que tu es déjà dans le top 50 de ta région.',
 ccStartOvr:'Note de départ',
 ccStartOvrNote:'Il n’y avait pas de divisions en 2024 — c’est simplement ton point de départ. Cinq, c’est toute la montée depuis rien ; un, c’est que tu es déjà dans le top 50 de ta région.',
-ccSeasonsN:n=>n+' saisons', ccEdgeTitle:'Bonus de ping et d’âge', ccEdgeOn:'Avec bonus', ccEdgeOff:'Sans bonus', ccEdgeNote:'Sans bonus, ton joueur a exactement la note que tu lui as donnée : le ping et l’âge n’ajoutent rien, et un déménagement ne la change pas.', chTabItems:'Boutique d’objets', chTabLocker:'Casier', ccFnToLocker:'Porter dans le casier', ccSecItems:'Boutique', ccSecHint_items:'La vraie boutique Fortnite de ce jour : tenues, pioches, planeurs, emotes. Payée en V-Bucks, et les V-Bucks coûtent l’argent de la carrière au prix Epic de ta région. Ce que tu achètes se porte dans le casier.', ccVbPacksH:'V-Bucks', ccVbNote:r=>'Prix Epic de l’époque pour '+r+'. Pris sur le solde de la carrière.', ccFnShopH:d=>'Boutique du '+d, ccFnTomorrow:'change demain', ccFnEra:n=>'Chapitre '+n, ccFnFeatured:'En vedette', ccFnDaily:'Quotidien', ccFnOwned:'Possédé', ccFnNoVb:'Pas assez de V-Bucks', ccFnLoading:'Chargement de la boutique…', ccFnEmpty:'Pas de boutique dans les données ce jour-là.', ccFnType_o:'Tenue', ccFnType_b:'Sac à dos', ccFnType_p:'Pioche', ccFnType_g:'Planeur', ccFnType_e:'Emote', ccFnType_w:'Revêtement', ccFnTypes_o:'Tenues', ccFnTypes_b:'Sacs à dos', ccFnTypes_p:'Pioches', ccFnTypes_g:'Planeurs', ccFnTypes_e:'Emotes', ccFnTypes_w:'Revêtements', ccFnLoadout:'Équipement', ccFnCatChar:'Personnage', ccFnTakeOff:'Retirer', ccFnNone:'Rien à porter pour l’instant.', ccFnToShop:'Vers la boutique', ccStartSeason:'Saison de départ', ccStartSeasonNote:'La carrière commence la première semaine de cette saison. Les équipes et les notes de la scène sont celles de l’époque, puis changent de saison en saison.', ccYear:'Année', ccYear2026:'duos → trios', ccYear2025:'trios', ccYear2024:'duos', ccYear2023:'duos', ccYear2022:'duos', ccYear2021:'trios', ccYear2020:'duos → solo → trios', ccYear2019:'solo et duos → trios → escouades', ccYrXWeek:(w,r,q)=>(w===0 ? 'échauffement' : (q ? 'qualificatif ' : 'semaine ')+w)+' · manche '+r, ccYrXHeats:d=>'heats · jour '+d, ccYrXHeatN:(l,h)=>l+' · heat '+h, ccYrXFinal:wc=>wc ? 'finale · New York' : 'finale', ccYrXWcIn:k=>'Top '+k+' de la région — en finale de la World Cup à New York', ccYr21Heat:(n,h)=>'Major '+n+' · demi-finales · heat '+h, ccYr21Reboot:n=>'Major '+n+' · Reboot Round', ccYr21ToReboot:'Pas qualifiés — reste le Reboot Round', ccYr21Gr:'FNCS Grand Royale', ccMajSeatGr21:'Une Grande Finale de saison — invitation au FNCS Grand Royale', ccYr22Direct:k=>'Top '+k+' du qualificatif — directement en Grande Finale', ccYr22SemiUp:'Qualifiés pour la Grande Finale', ccYr22SemiNext:'Pas qualifiés — session suivante des demi-finales', ccYr22Inv:'FNCS Invitational · Raleigh', ccMajSeatInv22:n=>'Top '+n+' — invitation au FNCS Invitational à Raleigh', ccYr23Day:(n,w,d)=>'Major '+n+' · semaine '+w+' · jour '+d, ccYr23WeekFinal:(n,w)=>'Major '+n+' · finale de la semaine '+w, ccYr23Surge:n=>'Major '+n+' · Surge Week', ccYr23Lcm:d=>'Last Chance Major · '+(d===3 ? 'finale' : 'jour '+d), ccYr23SurgeWon:'Top 10 de la Surge Week — billet pour la finale du Major', ccYr23SeriesTicket:k=>'Top '+k+' de la série — finale du Major', ccYr23NoTicket:k=>'Hors du top '+k+' de la série — reste la Surge Week', ccYr23GcDay:d=>['tableau supérieur','tableau inférieur','finale'][d-1]||'', ccYr23GcUp:'Top 25 — directement en finale', ccYr23GcDown:'Tableau inférieur — seconde chance', ccYr23GcOut:'Tableau inférieur : éliminé', ccMajSeatGc23:n=>'Le top '+n+' part au Global Championship à Copenhague', ccYr23EliteOnly:'Major 1 — division 1 (Elite) uniquement', ccYr23LcmSeat:n=>'Top '+n+' — tableau inférieur de Copenhague', ccYr24Qual:(n,q,r)=>'Major '+n+' · qualifier ouvert '+q+' · manche '+r, ccYr24Semi:(n,r)=>'Major '+n+' · demi-finales · jour '+r, ccYr24Upper:'upper bracket', ccYr24Lower:'lower bracket', ccYr24Series:(p,k)=>'Points de série : '+p+' · rang '+k, ccYr24ToUpper:'Upper bracket des demi-finales — aux points de série', ccYr24ToLower:'Lower bracket des demi-finales — aux points de série', ccYr24NoSemi:'Pas de place en demi-finales — pas assez de points de série', ccYr24VrTicket:'Une Victoire royale — un billet pour la finale du Major', ccYr24Down:'Pas de billet — relégation dans le lower bracket', ccYr24Up:'promotion dans l\'upper bracket', ccYr24World:'L’autre bracket joue le même soir', ccYr25Group:n=>'groupe '+n, ccYr25Lobby:'lobby de la dernière chance', ccYr25Showdown:(n,r)=>'FNCS Showdown '+n+' · manche '+r, ccYr25SoloCash:(n,r)=>'Solo Cash Cup '+n+' · manche '+r,
+ccSeasonsN:n=>n+' saisons', ccEdgeTitle:'Bonus de ping et d’âge', ccEdgeOn:'Avec bonus', ccEdgeOff:'Sans bonus', ccEdgeNote:'Sans bonus, ton joueur a exactement la note que tu lui as donnée : le ping et l’âge n’ajoutent rien, et un déménagement ne la change pas.', lbMore:'Plus', lbAlertMp:'Équipe', lbAlertRace:'Course', lbAlertTalk:'Interview', lbAlertRoster:'Effectif', chTabItems:'Boutique d’objets', chTabLocker:'Casier', ccFnToLocker:'Porter dans le casier', ccSecItems:'Boutique', ccSecHint_items:'La vraie boutique Fortnite de ce jour : tenues, pioches, planeurs, emotes. Payée en V-Bucks, et les V-Bucks coûtent l’argent de la carrière au prix Epic de ta région. Ce que tu achètes se porte dans le casier.', ccVbPacksH:'V-Bucks', ccVbNote:r=>'Prix Epic de l’époque pour '+r+'. Pris sur le solde de la carrière.', ccFnShopH:d=>'Boutique du '+d, ccFnTomorrow:'change demain', ccFnEra:n=>'Chapitre '+n, ccFnFeatured:'En vedette', ccFnDaily:'Quotidien', ccFnOwned:'Possédé', ccFnNoVb:'Pas assez de V-Bucks', ccFnLoading:'Chargement de la boutique…', ccFnEmpty:'Pas de boutique dans les données ce jour-là.', ccFnType_o:'Tenue', ccFnType_b:'Sac à dos', ccFnType_p:'Pioche', ccFnType_g:'Planeur', ccFnType_e:'Emote', ccFnType_w:'Revêtement', ccFnTypes_o:'Tenues', ccFnTypes_b:'Sacs à dos', ccFnTypes_p:'Pioches', ccFnTypes_g:'Planeurs', ccFnTypes_e:'Emotes', ccFnTypes_w:'Revêtements', ccFnLoadout:'Équipement', ccFnCatChar:'Personnage', ccFnTakeOff:'Retirer', ccFnNone:'Rien à porter pour l’instant.', ccFnToShop:'Vers la boutique', ccStartSeason:'Saison de départ', ccStartSeasonNote:'La carrière commence la première semaine de cette saison. Les équipes et les notes de la scène sont celles de l’époque, puis changent de saison en saison.', ccYear:'Année', ccYear2026:'duos → trios', ccYear2025:'trios', ccYear2024:'duos', ccYear2023:'duos', ccYear2022:'duos', ccYear2021:'trios', ccYear2020:'duos → solo → trios', ccYear2019:'solo et duos → trios → escouades', ccYrXWeek:(w,r,q)=>(w===0 ? 'échauffement' : (q ? 'qualificatif ' : 'semaine ')+w)+' · manche '+r, ccYrXHeats:d=>'heats · jour '+d, ccYrXHeatN:(l,h)=>l+' · heat '+h, ccYrXFinal:wc=>wc ? 'finale · New York' : 'finale', ccYrXWcIn:k=>'Top '+k+' de la région — en finale de la World Cup à New York', ccYr21Heat:(n,h)=>'Major '+n+' · demi-finales · heat '+h, ccYr21Reboot:n=>'Major '+n+' · Reboot Round', ccYr21ToReboot:'Pas qualifiés — reste le Reboot Round', ccYr21Gr:'FNCS Grand Royale', ccMajSeatGr21:'Une Grande Finale de saison — invitation au FNCS Grand Royale', ccYr22Direct:k=>'Top '+k+' du qualificatif — directement en Grande Finale', ccYr22SemiUp:'Qualifiés pour la Grande Finale', ccYr22SemiNext:'Pas qualifiés — session suivante des demi-finales', ccYr22Inv:'FNCS Invitational · Raleigh', ccMajSeatInv22:n=>'Top '+n+' — invitation au FNCS Invitational à Raleigh', ccYr23Day:(n,w,d)=>'Major '+n+' · semaine '+w+' · jour '+d, ccYr23WeekFinal:(n,w)=>'Major '+n+' · finale de la semaine '+w, ccYr23Surge:n=>'Major '+n+' · Surge Week', ccYr23Lcm:d=>'Last Chance Major · '+(d===3 ? 'finale' : 'jour '+d), ccYr23SurgeWon:'Top 10 de la Surge Week — billet pour la finale du Major', ccYr23SeriesTicket:k=>'Top '+k+' de la série — finale du Major', ccYr23NoTicket:k=>'Hors du top '+k+' de la série — reste la Surge Week', ccYr23GcDay:d=>['tableau supérieur','tableau inférieur','finale'][d-1]||'', ccYr23GcUp:'Top 25 — directement en finale', ccYr23GcDown:'Tableau inférieur — seconde chance', ccYr23GcOut:'Tableau inférieur : éliminé', ccMajSeatGc23:n=>'Le top '+n+' part au Global Championship à Copenhague', ccYr23EliteOnly:'Major 1 — division 1 (Elite) uniquement', ccYr23LcmSeat:n=>'Top '+n+' — tableau inférieur de Copenhague', ccYr24Qual:(n,q,r)=>'Major '+n+' · qualifier ouvert '+q+' · manche '+r, ccYr24Semi:(n,r)=>'Major '+n+' · demi-finales · jour '+r, ccYr24Upper:'upper bracket', ccYr24Lower:'lower bracket', ccYr24Series:(p,k)=>'Points de série : '+p+' · rang '+k, ccYr24ToUpper:'Upper bracket des demi-finales — aux points de série', ccYr24ToLower:'Lower bracket des demi-finales — aux points de série', ccYr24NoSemi:'Pas de place en demi-finales — pas assez de points de série', ccYr24VrTicket:'Une Victoire royale — un billet pour la finale du Major', ccYr24Down:'Pas de billet — relégation dans le lower bracket', ccYr24Up:'promotion dans l\'upper bracket', ccYr24World:'L’autre bracket joue le même soir', ccYr25Group:n=>'groupe '+n, ccYr25Lobby:'lobby de la dernière chance', ccYr25Showdown:(n,r)=>'FNCS Showdown '+n+' · manche '+r, ccYr25SoloCash:(n,r)=>'Solo Cash Cup '+n+' · manche '+r,
 ccYearNote2026:'FNCS 2026 : coupes divisionnaires, deux Majors, Reload, le Global Championship à Anvers. Deuxième année en trios.',
 ccYearNote2020:'2020 : FNCS en ligne, le format change selon la saison — C2S2 en duos, C2S3 en solo, C2S4 en trios. Semaines et qualifs, heats, finales. L’effectif est un trio ; chaque soirée se joue dans son format. Cartes 2020.', ccYearNote2019:'2019 : la World Cup et les premières FNCS. Semaines Online Open (solo et duos) et finales à New York, puis FNCS Season X (trios) et Chapter 2 Season 1 (escouades). L’effectif est une escouade ; chaque soirée se joue dans son format. Cartes 2019.', ccYearNote2021:'FNCS 2021 : trios toute l’année, Chapter 2, en ligne. Quatre saisons FNCS : qualifs, demi-finales en heats, Reboot Round et Grande Finale ; le FNCS Grand Royale en novembre. Cartes et notes FNCS 2021.', ccYearNote2022:'FNCS 2022 : duos toute l’année, Chapter 3. Trois saisons FNCS : qualifs ouvertes, demi-finales en trois sessions et Grande Finale ; coupes divisionnaires à l’automne, l’Invitational à Raleigh en novembre. Cartes et notes FNCS 2022.', ccYearNote2023:'FNCS 2023 : duos toute l’année, Chapter 4. Divisions Elite / Contender / Challenger jusqu’au Major 1, trois Majors avec qualifs hebdomadaires et Surge Week, le Last Chance Major et Copenhague. Cartes et notes FNCS 2023.', ccYearNote2024:'FNCS 2024 : duos toute l’année, trois Majors avec qualifiers ouverts, classement de série et demi-finales à deux brackets, le Global Championship à Fort Worth. Pas encore de coupes divisionnaires : l’argent est dans la Duos Cash Cup, la Solo Victory Cup et l’évaluation. Les adversaires sont les cartes 2024. Après Fort Worth, la carrière passe en 2025 (trios) avec les mêmes joueurs.',
 ccYearNote2025:'FNCS 2025 : trios toute l’année, trois Majors avec phase de groupes, le Global Championship à Lyon. Les adversaires sont les cartes 2025. Après Lyon, la carrière passe en 2026.',
@@ -15847,7 +15899,7 @@ ccRole:"Ruolo",
 ccSpTitle:"Punti abilità",
 ccSpCreateHint:"Abbassa alcune statistiche e alza le altre — +1 costa tanti punti quanto pesa la statistica nel rating (il numero a destra). Una volta sola, qui.", ccSpaTitle:"Statistiche", ccSpReset:"Azzera", ccSpFreeHint:"Qualsiasi statistica da 35 a 99 — con i pulsanti o scrivendola. Il rating viene dalle statistiche: tutto 99 è 99.", ccSpAll99:"Tutto 99",
 ccDivision:"Divisione",
-ccSeasonsN:n=>n+' stagioni', ccEdgeTitle:'Bonus di ping ed età', ccEdgeOn:'Con bonus', ccEdgeOff:'Senza bonus', ccEdgeNote:'Senza bonus il tuo giocatore ha esattamente il rating che gli hai dato: ping ed età non aggiungono nulla e un trasloco non lo cambia.', chTabItems:'Negozio oggetti', chTabLocker:'Armadietto', ccFnToLocker:'Indossa nell’armadietto', ccSecItems:'Negozio oggetti', ccSecHint_items:'Il vero negozio Fortnite di quel giorno: costumi, picconi, deltaplani, emote. Si paga in V-Buck, e i V-Buck costano i soldi della carriera al prezzo Epic della tua regione. Quello che compri si indossa nell’armadietto.', ccVbPacksH:'V-Buck', ccVbNote:r=>'Prezzi Epic dell’epoca per '+r+'. Presi dal saldo della carriera.', ccFnShopH:d=>'Negozio del '+d, ccFnTomorrow:'cambia domani', ccFnEra:n=>'Capitolo '+n, ccFnFeatured:'In evidenza', ccFnDaily:'Giornalieri', ccFnOwned:'Posseduto', ccFnNoVb:'V-Buck insufficienti', ccFnLoading:'Carico il negozio…', ccFnEmpty:'Nessun negozio nei dati per questo giorno.', ccFnType_o:'Costume', ccFnType_b:'Dorso', ccFnType_p:'Piccone', ccFnType_g:'Deltaplano', ccFnType_e:'Emote', ccFnType_w:'Copertura', ccFnTypes_o:'Costumi', ccFnTypes_b:'Dorsi', ccFnTypes_p:'Picconi', ccFnTypes_g:'Deltaplani', ccFnTypes_e:'Emote', ccFnTypes_w:'Coperture', ccFnLoadout:'Equipaggiamento', ccFnCatChar:'Personaggio', ccFnTakeOff:'Togli', ccFnNone:'Ancora niente da indossare.', ccFnToShop:'Al negozio oggetti', ccStartSeason:'Stagione di partenza', ccStartSeasonNote:'La carriera inizia nella prima settimana di questa stagione. Squadre e rating della scena sono quelli di allora e poi cambiano di stagione in stagione.', ccYear:"Anno", ccYear2026:"duo → trio", ccYear2025:"trio", ccYear2024:'duo', ccYear2023:'duo', ccYear2022:'duo', ccYear2021:'trio', ccYear2020:'duo → solo → trio', ccYear2019:'solo e duo → trio → squadre', ccYrXWeek:(w,r,q)=>(w===0 ? 'riscaldamento' : (q ? 'qualificazione ' : 'settimana ')+w)+' · round '+r, ccYrXHeats:d=>'heat · giorno '+d, ccYrXHeatN:(l,h)=>l+' · heat '+h, ccYrXFinal:wc=>wc ? 'finale · New York' : 'finale', ccYrXWcIn:k=>'Top '+k+' della regione — alla finale della World Cup a New York', ccYr21Heat:(n,h)=>'Major '+n+' · semifinali · heat '+h, ccYr21Reboot:n=>'Major '+n+' · Reboot Round', ccYr21ToReboot:'Non passati — resta il Reboot Round', ccYr21Gr:'FNCS Grand Royale', ccMajSeatGr21:'Una Gran Finale di stagione — invito al FNCS Grand Royale', ccYr22Direct:k=>'Top '+k+' della qualificazione — direttamente in Gran Finale', ccYr22SemiUp:'In Gran Finale', ccYr22SemiNext:'Non passati — prossima sessione delle semifinali', ccYr22Inv:'FNCS Invitational · Raleigh', ccMajSeatInv22:n=>'Top '+n+' — invito al FNCS Invitational a Raleigh', ccYr23Day:(n,w,d)=>'Major '+n+' · settimana '+w+' · giorno '+d, ccYr23WeekFinal:(n,w)=>'Major '+n+' · finale della settimana '+w, ccYr23Surge:n=>'Major '+n+' · Surge Week', ccYr23Lcm:d=>'Last Chance Major · '+(d===3 ? 'finale' : 'giorno '+d), ccYr23SurgeWon:'Top 10 della Surge Week — biglietto per la finale del Major', ccYr23SeriesTicket:k=>'Top '+k+' della serie — finale del Major', ccYr23NoTicket:k=>'Fuori dal top '+k+' della serie — resta la Surge Week', ccYr23GcDay:d=>['upper bracket','lower bracket','finale'][d-1]||'', ccYr23GcUp:'Top 25 — direttamente in finale', ccYr23GcDown:'Lower bracket — seconda possibilità', ccYr23GcOut:'Lower bracket: eliminati', ccMajSeatGc23:n=>'Il top '+n+' va al Global Championship a Copenaghen', ccYr23EliteOnly:'Major 1 — solo divisione 1 (Elite)', ccYr23LcmSeat:n=>'Top '+n+' — lower bracket di Copenaghen', ccYr24Qual:(n,q,r)=>'Major '+n+' · Open Qualifier '+q+' · round '+r, ccYr24Semi:(n,r)=>'Major '+n+' · semifinali · giorno '+r, ccYr24Upper:'upper bracket', ccYr24Lower:'lower bracket', ccYr24Series:(p,k)=>'Punti serie: '+p+' · posto '+k, ccYr24ToUpper:'Upper bracket delle semifinali — sui punti serie', ccYr24ToLower:'Lower bracket delle semifinali — sui punti serie', ccYr24NoSemi:'Nessun posto in semifinale — punti serie insufficienti', ccYr24VrTicket:'Una Vittoria reale — un biglietto per la finale del Major', ccYr24Down:'Nessun biglietto — retrocessione nel lower bracket', ccYr24Up:'promozione nell\'upper bracket', ccYr24World:'L’altro bracket gioca la stessa sera', ccYr25Group:n=>'girone '+n, ccYr25Lobby:'lobby dell\'ultima chance', ccYr25Showdown:(n,r)=>'FNCS Showdown '+n+' · round '+r, ccYr25SoloCash:(n,r)=>'Solo Cash Cup '+n+' · round '+r,
+ccSeasonsN:n=>n+' stagioni', ccEdgeTitle:'Bonus di ping ed età', ccEdgeOn:'Con bonus', ccEdgeOff:'Senza bonus', ccEdgeNote:'Senza bonus il tuo giocatore ha esattamente il rating che gli hai dato: ping ed età non aggiungono nulla e un trasloco non lo cambia.', lbMore:'Altro', lbAlertMp:'Squadra', lbAlertRace:'Gara', lbAlertTalk:'Intervista', lbAlertRoster:'Formazione', chTabItems:'Negozio oggetti', chTabLocker:'Armadietto', ccFnToLocker:'Indossa nell’armadietto', ccSecItems:'Negozio oggetti', ccSecHint_items:'Il vero negozio Fortnite di quel giorno: costumi, picconi, deltaplani, emote. Si paga in V-Buck, e i V-Buck costano i soldi della carriera al prezzo Epic della tua regione. Quello che compri si indossa nell’armadietto.', ccVbPacksH:'V-Buck', ccVbNote:r=>'Prezzi Epic dell’epoca per '+r+'. Presi dal saldo della carriera.', ccFnShopH:d=>'Negozio del '+d, ccFnTomorrow:'cambia domani', ccFnEra:n=>'Capitolo '+n, ccFnFeatured:'In evidenza', ccFnDaily:'Giornalieri', ccFnOwned:'Posseduto', ccFnNoVb:'V-Buck insufficienti', ccFnLoading:'Carico il negozio…', ccFnEmpty:'Nessun negozio nei dati per questo giorno.', ccFnType_o:'Costume', ccFnType_b:'Dorso', ccFnType_p:'Piccone', ccFnType_g:'Deltaplano', ccFnType_e:'Emote', ccFnType_w:'Copertura', ccFnTypes_o:'Costumi', ccFnTypes_b:'Dorsi', ccFnTypes_p:'Picconi', ccFnTypes_g:'Deltaplani', ccFnTypes_e:'Emote', ccFnTypes_w:'Coperture', ccFnLoadout:'Equipaggiamento', ccFnCatChar:'Personaggio', ccFnTakeOff:'Togli', ccFnNone:'Ancora niente da indossare.', ccFnToShop:'Al negozio oggetti', ccStartSeason:'Stagione di partenza', ccStartSeasonNote:'La carriera inizia nella prima settimana di questa stagione. Squadre e rating della scena sono quelli di allora e poi cambiano di stagione in stagione.', ccYear:"Anno", ccYear2026:"duo → trio", ccYear2025:"trio", ccYear2024:'duo', ccYear2023:'duo', ccYear2022:'duo', ccYear2021:'trio', ccYear2020:'duo → solo → trio', ccYear2019:'solo e duo → trio → squadre', ccYrXWeek:(w,r,q)=>(w===0 ? 'riscaldamento' : (q ? 'qualificazione ' : 'settimana ')+w)+' · round '+r, ccYrXHeats:d=>'heat · giorno '+d, ccYrXHeatN:(l,h)=>l+' · heat '+h, ccYrXFinal:wc=>wc ? 'finale · New York' : 'finale', ccYrXWcIn:k=>'Top '+k+' della regione — alla finale della World Cup a New York', ccYr21Heat:(n,h)=>'Major '+n+' · semifinali · heat '+h, ccYr21Reboot:n=>'Major '+n+' · Reboot Round', ccYr21ToReboot:'Non passati — resta il Reboot Round', ccYr21Gr:'FNCS Grand Royale', ccMajSeatGr21:'Una Gran Finale di stagione — invito al FNCS Grand Royale', ccYr22Direct:k=>'Top '+k+' della qualificazione — direttamente in Gran Finale', ccYr22SemiUp:'In Gran Finale', ccYr22SemiNext:'Non passati — prossima sessione delle semifinali', ccYr22Inv:'FNCS Invitational · Raleigh', ccMajSeatInv22:n=>'Top '+n+' — invito al FNCS Invitational a Raleigh', ccYr23Day:(n,w,d)=>'Major '+n+' · settimana '+w+' · giorno '+d, ccYr23WeekFinal:(n,w)=>'Major '+n+' · finale della settimana '+w, ccYr23Surge:n=>'Major '+n+' · Surge Week', ccYr23Lcm:d=>'Last Chance Major · '+(d===3 ? 'finale' : 'giorno '+d), ccYr23SurgeWon:'Top 10 della Surge Week — biglietto per la finale del Major', ccYr23SeriesTicket:k=>'Top '+k+' della serie — finale del Major', ccYr23NoTicket:k=>'Fuori dal top '+k+' della serie — resta la Surge Week', ccYr23GcDay:d=>['upper bracket','lower bracket','finale'][d-1]||'', ccYr23GcUp:'Top 25 — direttamente in finale', ccYr23GcDown:'Lower bracket — seconda possibilità', ccYr23GcOut:'Lower bracket: eliminati', ccMajSeatGc23:n=>'Il top '+n+' va al Global Championship a Copenaghen', ccYr23EliteOnly:'Major 1 — solo divisione 1 (Elite)', ccYr23LcmSeat:n=>'Top '+n+' — lower bracket di Copenaghen', ccYr24Qual:(n,q,r)=>'Major '+n+' · Open Qualifier '+q+' · round '+r, ccYr24Semi:(n,r)=>'Major '+n+' · semifinali · giorno '+r, ccYr24Upper:'upper bracket', ccYr24Lower:'lower bracket', ccYr24Series:(p,k)=>'Punti serie: '+p+' · posto '+k, ccYr24ToUpper:'Upper bracket delle semifinali — sui punti serie', ccYr24ToLower:'Lower bracket delle semifinali — sui punti serie', ccYr24NoSemi:'Nessun posto in semifinale — punti serie insufficienti', ccYr24VrTicket:'Una Vittoria reale — un biglietto per la finale del Major', ccYr24Down:'Nessun biglietto — retrocessione nel lower bracket', ccYr24Up:'promozione nell\'upper bracket', ccYr24World:'L’altro bracket gioca la stessa sera', ccYr25Group:n=>'girone '+n, ccYr25Lobby:'lobby dell\'ultima chance', ccYr25Showdown:(n,r)=>'FNCS Showdown '+n+' · round '+r, ccYr25SoloCash:(n,r)=>'Solo Cash Cup '+n+' · round '+r,
 ccYearNote2026:"FNCS 2026: coppe divisionali, due Major, Reload, Global Championship ad Anversa. Il secondo anno è in trio.",
 ccYearNote2020:"2020: FNCS online, il formato cambia con la stagione — C2S2 duo, C2S3 solo, C2S4 trio. Settimane e qualificazioni, heat, finali. La rosa è un trio; ogni serata si gioca nel suo formato. Carte del 2020.", ccYearNote2019:"2019: la World Cup e le prime FNCS. Settimane Online Open (solo e duo) e finali a New York, poi FNCS Season X (trio) e Chapter 2 Season 1 (squadre). La rosa è una squadra; ogni serata si gioca nel suo formato. Carte del 2019.", ccYearNote2021:"FNCS 2021: trio tutto l'anno, Chapter 2, online. Quattro stagioni FNCS: qualificazioni, semifinali a heat, Reboot Round e Gran Finale; l'FNCS Grand Royale a novembre. Carte e rating FNCS 2021.", ccYearNote2022:"FNCS 2022: duo tutto l'anno, Chapter 3. Tre stagioni FNCS: qualificazioni aperte, semifinali in tre sessioni e Gran Finale; coppe divisionali in autunno, l'Invitational a Raleigh a novembre. Carte e rating FNCS 2022.", ccYearNote2023:"FNCS 2023: duo tutto l'anno, Chapter 4. Divisioni Elite / Contender / Challenger fino al Major 1, tre Major con qualificazioni settimanali e Surge Week, il Last Chance Major e Copenaghen. Carte e rating FNCS 2023.", ccYearNote2024:"FNCS 2024: duo tutto l'anno, tre Major con Open Qualifier, classifica di serie e semifinali a due bracket, Global Championship a Fort Worth. Niente coppe divisionali ancora: i soldi sono nella Duos Cash Cup, nella Solo Victory Cup e nella valutazione. Gli avversari sono le carte 2024. Dopo Fort Worth la carriera passa al 2025 (trio) con le stesse persone.",
 ccYearNote2025:"FNCS 2025: trio tutto l'anno, tre Major con fase a gironi, Global Championship a Lione. Gli avversari sono le carte 2025. Dopo Lione la carriera passa al 2026.",
@@ -18395,7 +18447,7 @@ ccRole:"Função",
 ccSpTitle:"Pontos de habilidade",
 ccSpCreateHint:"Baixe alguns atributos e suba outros — +1 custa tantos pontos quanto o atributo pesa no rating (o número à direita). Uma vez só, aqui.", ccSpaTitle:"Atributos", ccSpReset:"Zerar", ccSpFreeHint:"Qualquer atributo de 35 a 99 — pelos botões ou digitando. O rating vem dos atributos: tudo 99 é 99.", ccSpAll99:"Tudo 99",
 ccDivision:"Divisão",
-ccSeasonsN:n=>n+' temporadas', ccEdgeTitle:'Bônus de ping e idade', ccEdgeOn:'Com bônus', ccEdgeOff:'Sem bônus', ccEdgeNote:'Sem bônus, seu jogador tem exatamente o rating que você montou: ping e idade não somam nada, e mudar de país não altera.', chTabItems:'Loja de itens', chTabLocker:'Armário', ccFnToLocker:'Usar no armário', ccSecItems:'Loja de itens', ccSecHint_items:'A loja real do Fortnite daquele dia: trajes, picaretas, asas-deltas, gestos. Paga em V-Bucks, e os V-Bucks custam dinheiro da carreira no preço da Epic da sua região. O que você compra se usa no armário.', ccVbPacksH:'V-Bucks', ccVbNote:r=>'Preços da Epic da época para '+r+'. Saem do saldo da carreira.', ccFnShopH:d=>'Loja de '+d, ccFnTomorrow:'muda amanhã', ccFnEra:n=>'Capítulo '+n, ccFnFeatured:'Em destaque', ccFnDaily:'Diários', ccFnOwned:'Comprado', ccFnNoVb:'V-Bucks insuficientes', ccFnLoading:'Carregando a loja…', ccFnEmpty:'Sem loja nos dados neste dia.', ccFnType_o:'Traje', ccFnType_b:'Acessório', ccFnType_p:'Picareta', ccFnType_g:'Asa-delta', ccFnType_e:'Gesto', ccFnType_w:'Envelopamento', ccFnTypes_o:'Trajes', ccFnTypes_b:'Acessórios', ccFnTypes_p:'Picaretas', ccFnTypes_g:'Asas-deltas', ccFnTypes_e:'Gestos', ccFnTypes_w:'Envelopamentos', ccFnLoadout:'Visual', ccFnCatChar:'Personagem', ccFnTakeOff:'Tirar', ccFnNone:'Nada para usar ainda.', ccFnToShop:'Para a loja', ccStartSeason:'Temporada inicial', ccStartSeasonNote:'A carreira começa na primeira semana desta temporada. Times e ratings da cena são os daquela época e mudam de temporada em temporada.', ccYear:"Ano", ccYear2026:"duplas → trios", ccYear2025:"trios", ccYear2024:'duplas', ccYear2023:'duplas', ccYear2022:'duplas', ccYear2021:'trios', ccYear2020:'duplas → solo → trios', ccYear2019:'solo e duplas → trios → squads', ccYrXWeek:(w,r,q)=>(w===0 ? 'aquecimento' : (q ? 'classificatória ' : 'semana ')+w)+' · rodada '+r, ccYrXHeats:d=>'heats · dia '+d, ccYrXHeatN:(l,h)=>l+' · heat '+h, ccYrXFinal:wc=>wc ? 'final · Nova York' : 'final', ccYrXWcIn:k=>'Top '+k+' da região — para a final da World Cup em Nova York', ccYr21Heat:(n,h)=>'Major '+n+' · semifinais · heat '+h, ccYr21Reboot:n=>'Major '+n+' · Reboot Round', ccYr21ToReboot:'Não passaram — resta o Reboot Round', ccYr21Gr:'FNCS Grand Royale', ccMajSeatGr21:'Uma Grande Final de temporada — convite para o FNCS Grand Royale', ccYr22Direct:k=>'Top '+k+' da classificatória — direto para a Grande Final', ccYr22SemiUp:'Vaga na Grande Final', ccYr22SemiNext:'Não passaram — próxima sessão das semifinais', ccYr22Inv:'FNCS Invitational · Raleigh', ccMajSeatInv22:n=>'Top '+n+' — convite para o FNCS Invitational em Raleigh', ccYr23Day:(n,w,d)=>'Major '+n+' · semana '+w+' · dia '+d, ccYr23WeekFinal:(n,w)=>'Major '+n+' · final da semana '+w, ccYr23Surge:n=>'Major '+n+' · Surge Week', ccYr23Lcm:d=>'Last Chance Major · '+(d===3 ? 'final' : 'dia '+d), ccYr23SurgeWon:'Top 10 da Surge Week — vaga na final do Major', ccYr23SeriesTicket:k=>'Top '+k+' da série — final do Major', ccYr23NoTicket:k=>'Fora do top '+k+' da série — resta a Surge Week', ccYr23GcDay:d=>['chave superior','chave inferior','final'][d-1]||'', ccYr23GcUp:'Top 25 — direto para a final', ccYr23GcDown:'Chave inferior — segunda chance', ccYr23GcOut:'Chave inferior: eliminados', ccMajSeatGc23:n=>'O top '+n+' vai ao Global Championship em Copenhague', ccYr23EliteOnly:'Major 1 — só divisão 1 (Elite)', ccYr23LcmSeat:n=>'Top '+n+' — chave inferior de Copenhague', ccYr24Qual:(n,q,r)=>'Major '+n+' · classificatória aberta '+q+' · rodada '+r, ccYr24Semi:(n,r)=>'Major '+n+' · semifinais · dia '+r, ccYr24Upper:'upper bracket', ccYr24Lower:'lower bracket', ccYr24Series:(p,k)=>'Pontos de série: '+p+' · posição '+k, ccYr24ToUpper:'Upper bracket das semifinais — pelos pontos de série', ccYr24ToLower:'Lower bracket das semifinais — pelos pontos de série', ccYr24NoSemi:'Sem vaga nas semifinais — faltaram pontos de série', ccYr24VrTicket:'Uma Vitória Royale — um bilhete para a final do Major', ccYr24Down:'Sem bilhete — rebaixado para o lower bracket', ccYr24Up:'promovido ao upper bracket', ccYr24World:'O outro bracket joga na mesma noite', ccYr25Group:n=>'grupo '+n, ccYr25Lobby:'lobby da última chance', ccYr25Showdown:(n,r)=>'FNCS Showdown '+n+' · rodada '+r, ccYr25SoloCash:(n,r)=>'Solo Cash Cup '+n+' · rodada '+r,
+ccSeasonsN:n=>n+' temporadas', ccEdgeTitle:'Bônus de ping e idade', ccEdgeOn:'Com bônus', ccEdgeOff:'Sem bônus', ccEdgeNote:'Sem bônus, seu jogador tem exatamente o rating que você montou: ping e idade não somam nada, e mudar de país não altera.', lbMore:'Mais', lbAlertMp:'Equipe', lbAlertRace:'Corrida', lbAlertTalk:'Entrevista', lbAlertRoster:'Elenco', chTabItems:'Loja de itens', chTabLocker:'Armário', ccFnToLocker:'Usar no armário', ccSecItems:'Loja de itens', ccSecHint_items:'A loja real do Fortnite daquele dia: trajes, picaretas, asas-deltas, gestos. Paga em V-Bucks, e os V-Bucks custam dinheiro da carreira no preço da Epic da sua região. O que você compra se usa no armário.', ccVbPacksH:'V-Bucks', ccVbNote:r=>'Preços da Epic da época para '+r+'. Saem do saldo da carreira.', ccFnShopH:d=>'Loja de '+d, ccFnTomorrow:'muda amanhã', ccFnEra:n=>'Capítulo '+n, ccFnFeatured:'Em destaque', ccFnDaily:'Diários', ccFnOwned:'Comprado', ccFnNoVb:'V-Bucks insuficientes', ccFnLoading:'Carregando a loja…', ccFnEmpty:'Sem loja nos dados neste dia.', ccFnType_o:'Traje', ccFnType_b:'Acessório', ccFnType_p:'Picareta', ccFnType_g:'Asa-delta', ccFnType_e:'Gesto', ccFnType_w:'Envelopamento', ccFnTypes_o:'Trajes', ccFnTypes_b:'Acessórios', ccFnTypes_p:'Picaretas', ccFnTypes_g:'Asas-deltas', ccFnTypes_e:'Gestos', ccFnTypes_w:'Envelopamentos', ccFnLoadout:'Visual', ccFnCatChar:'Personagem', ccFnTakeOff:'Tirar', ccFnNone:'Nada para usar ainda.', ccFnToShop:'Para a loja', ccStartSeason:'Temporada inicial', ccStartSeasonNote:'A carreira começa na primeira semana desta temporada. Times e ratings da cena são os daquela época e mudam de temporada em temporada.', ccYear:"Ano", ccYear2026:"duplas → trios", ccYear2025:"trios", ccYear2024:'duplas', ccYear2023:'duplas', ccYear2022:'duplas', ccYear2021:'trios', ccYear2020:'duplas → solo → trios', ccYear2019:'solo e duplas → trios → squads', ccYrXWeek:(w,r,q)=>(w===0 ? 'aquecimento' : (q ? 'classificatória ' : 'semana ')+w)+' · rodada '+r, ccYrXHeats:d=>'heats · dia '+d, ccYrXHeatN:(l,h)=>l+' · heat '+h, ccYrXFinal:wc=>wc ? 'final · Nova York' : 'final', ccYrXWcIn:k=>'Top '+k+' da região — para a final da World Cup em Nova York', ccYr21Heat:(n,h)=>'Major '+n+' · semifinais · heat '+h, ccYr21Reboot:n=>'Major '+n+' · Reboot Round', ccYr21ToReboot:'Não passaram — resta o Reboot Round', ccYr21Gr:'FNCS Grand Royale', ccMajSeatGr21:'Uma Grande Final de temporada — convite para o FNCS Grand Royale', ccYr22Direct:k=>'Top '+k+' da classificatória — direto para a Grande Final', ccYr22SemiUp:'Vaga na Grande Final', ccYr22SemiNext:'Não passaram — próxima sessão das semifinais', ccYr22Inv:'FNCS Invitational · Raleigh', ccMajSeatInv22:n=>'Top '+n+' — convite para o FNCS Invitational em Raleigh', ccYr23Day:(n,w,d)=>'Major '+n+' · semana '+w+' · dia '+d, ccYr23WeekFinal:(n,w)=>'Major '+n+' · final da semana '+w, ccYr23Surge:n=>'Major '+n+' · Surge Week', ccYr23Lcm:d=>'Last Chance Major · '+(d===3 ? 'final' : 'dia '+d), ccYr23SurgeWon:'Top 10 da Surge Week — vaga na final do Major', ccYr23SeriesTicket:k=>'Top '+k+' da série — final do Major', ccYr23NoTicket:k=>'Fora do top '+k+' da série — resta a Surge Week', ccYr23GcDay:d=>['chave superior','chave inferior','final'][d-1]||'', ccYr23GcUp:'Top 25 — direto para a final', ccYr23GcDown:'Chave inferior — segunda chance', ccYr23GcOut:'Chave inferior: eliminados', ccMajSeatGc23:n=>'O top '+n+' vai ao Global Championship em Copenhague', ccYr23EliteOnly:'Major 1 — só divisão 1 (Elite)', ccYr23LcmSeat:n=>'Top '+n+' — chave inferior de Copenhague', ccYr24Qual:(n,q,r)=>'Major '+n+' · classificatória aberta '+q+' · rodada '+r, ccYr24Semi:(n,r)=>'Major '+n+' · semifinais · dia '+r, ccYr24Upper:'upper bracket', ccYr24Lower:'lower bracket', ccYr24Series:(p,k)=>'Pontos de série: '+p+' · posição '+k, ccYr24ToUpper:'Upper bracket das semifinais — pelos pontos de série', ccYr24ToLower:'Lower bracket das semifinais — pelos pontos de série', ccYr24NoSemi:'Sem vaga nas semifinais — faltaram pontos de série', ccYr24VrTicket:'Uma Vitória Royale — um bilhete para a final do Major', ccYr24Down:'Sem bilhete — rebaixado para o lower bracket', ccYr24Up:'promovido ao upper bracket', ccYr24World:'O outro bracket joga na mesma noite', ccYr25Group:n=>'grupo '+n, ccYr25Lobby:'lobby da última chance', ccYr25Showdown:(n,r)=>'FNCS Showdown '+n+' · rodada '+r, ccYr25SoloCash:(n,r)=>'Solo Cash Cup '+n+' · rodada '+r,
 ccYearNote2026:"FNCS 2026: copas divisionais, dois Majors, Reload, Global Championship em Antuérpia. O segundo ano é em trios.",
 ccYearNote2020:"2020: FNCS online, o formato muda por temporada — C2S2 duplas, C2S3 solo, C2S4 trios. Semanas e classificatórias, heats, finais. O elenco é um trio; cada noite é jogada no seu formato. Cartas de 2020.", ccYearNote2019:"2019: a World Cup e as primeiras FNCS. Semanas Online Open (solo e duplas) e as finais em Nova York, depois FNCS Season X (trios) e Chapter 2 Season 1 (squads). O elenco é um squad; cada noite é jogada no seu formato. Cartas de 2019.", ccYearNote2021:"FNCS 2021: trios o ano todo, Chapter 2, online. Quatro temporadas da FNCS: classificatórias, semifinais em heats, Reboot Round e Grande Final; o FNCS Grand Royale em novembro. Cartas e ratings do FNCS 2021.", ccYearNote2022:"FNCS 2022: duplas o ano todo, Chapter 3. Três temporadas da FNCS: classificatórias abertas, semifinais em três sessões e Grande Final; copas divisionais no outono e o Invitational em Raleigh em novembro. Cartas e ratings do FNCS 2022.", ccYearNote2023:"FNCS 2023: duplas o ano todo, Chapter 4. Divisões Elite / Contender / Challenger até o Major 1, três Majors com classificatórias semanais e Surge Week, o Last Chance Major e Copenhague. Cartas e ratings do FNCS 2023.", ccYearNote2024:"FNCS 2024: duplas o ano todo, três Majors com classificatórias abertas, tabela de série e semifinais em dois brackets, Global Championship em Fort Worth. Ainda sem copas divisionais: o dinheiro está na Duos Cash Cup, na Solo Victory Cup e na avaliação. Os adversários são as cartas de 2024. Depois de Fort Worth a carreira segue para 2025 (trios) com as mesmas pessoas.",
 ccYearNote2025:"FNCS 2025: trios o ano todo, três Majors com fase de grupos, Global Championship em Lyon. Os adversários são as cartas de 2025. Depois de Lyon a carreira segue para 2026.",
@@ -22192,7 +22244,7 @@ Object.assign(I18N.pt=I18N.pt||{},
 Object.assign(I18N.fr, {dyColPlayer:'Joueur et équipe', dyYou:'toi', dyPowSplit:'note moyenne des cartes + synergie'});
 Object.assign(I18N.it, {dyColPlayer:'Giocatore e squadra', dyYou:'tu', dyPowSplit:'valutazione media delle carte + sinergia'});
 Object.assign(I18N.pt, {dyColPlayer:'Jogador e time', dyYou:'você', dyPowSplit:'overall médio das cartas + sinergia'});
-let CC_I18N_V={de:'4cd10280', es:'fecad7cf'};   // ==== CC_I18N_V (tools/build-i18n.js) ====
+let CC_I18N_V={de:'6e1505aa', es:'2c7de33b'};   // ==== CC_I18N_V (tools/build-i18n.js) ====
 // Версия fn-shop.js (магазин Fortnite по дням, tools/build-fn-shop.js) — для ?v= ленивой загрузки.
 let CC_FN_SHOP_V='0c643ab3';
 const CC_LANG_WAIT={};
@@ -117322,7 +117374,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='86277196';
+const CC_BUILD='7f8cf392';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -121964,66 +122016,147 @@ const CC_LB_ICON={ninja:['cid_605_athena_commando_m_tourbus','2020-01-17'], lach
   loserfruit:['cid_764_athena_commando_f_loofah','2020-06-22'], thegrefg:['cid_990_athena_commando_m_grilledcheese_snx4k','2021-01-17'],
   bugha:['cid_a_140_athena_commando_m_bluecheese','2021-07-21'], 'ali-a':['cid_a_415_athena_commando_m_alfredo','2022-05-20'],
   clix:['character_twilightspotspell','2025-03-23'], mongraal:['character_vigorknackdill','2026-06-28']};
+/* ГЛАВНОЕ МЕНЮ ТОГО СЕЗОНА (его «посмотри главное меню каждого сезона и сделай так же», «модельки расположены как в
+   фортнайте», «внизу не должно быть информации, всё в главном меню»). Три семейства по истории лобби Fortnite Wiki
+   (Template:LobbyHistory, скриншоты по версиям):
+     A — Глава 1: узкая полоса вкладок сверху, слева «SEASON N», уровень с полоской XP, золотой тир, «DAILY CHALLENGES»,
+         справа внизу плашка режима и широкая жёлтая PLAY, снизу полоса кнопок;
+     B — Главы 2–4 (v11.00): открытые белые вкладки, слева «CHAPTER N / SEASON M», уровень, синяя VIEW QUESTS, ресурсы
+         сезона; справа карточка новости, режим, синяя CHANGE, жёлтая PLAY!, синяя FILL;
+     C — с v26.30 (октябрь 2023): вкладки-пилюли с сеткой и поиском, слева новость и тёмная карточка режима с серой
+         плашкой и скруглённой PLAY, справа внизу кольцо LVL, снизу ряд плиток.
+   Общее у всех: четыре подиума — свой впереди посередине и светится, три сзади (один слева, два справа), на пустых «+»,
+   над головой корона хозяина, ник и Ready / Not Ready. Фон — настоящий фон лобби сезона (ccLobbyBg).
+   Всё, что было на «Центре» ниже, лежит в листе «Подробнее» (ccLbSheet) внутри меню: ничего под ним. */
+let CC_LB_SHEET=false;
+function ccLbSheet(on){
+  CC_LB_SHEET=(on==null) ? !CC_LB_SHEET : !!on;
+  const s=document.getElementById('ccLbSheet'); if(s) s.hidden=!CC_LB_SHEET;
+  if(CC_LB_SHEET && s) try{ s.scrollIntoView({block:'start'}); }catch(e){}
+}
+// Подиумы как в лобби Fortnite: [x центра в % ширины, низ ног в % высоты, высота фигуры в % высоты].
+const CC_LB_SLOTS=[[50, 9, 70], [37, 21, 55], [61, 21, 55], [72, 22, 53]];
 function ccLobbyHTML(card, btn, next, when){
-  const pl=CAREER.player, eq=CAREER.fnEq||{}, own=CAREER.fnOwn||{};
-  const era=ccFnShopEra(careerToday());
-  const fig=(id, name, ovr, me)=>'<div class="cc-lb-fig'+(me ? ' me' : '')+'"'+(me ? ' onclick="ccFnLockerOpen(\'o\')"' : '')+'>'+
-    '<img class="full" src="'+ccFnFull(id)+'" data-id="'+esc(id)+'" alt="" loading="lazy" onerror="ccFnHeroErr(this)">'+
-    '<div class="cc-lb-plate"><b>'+esc(name)+'</b><em>'+esc(String(ovr))+'</em></div></div>';
+  const T=L(), pl=CAREER.player, cr=CAREER.career, eq=CAREER.fnEq||{}, own=CAREER.fnOwn||{};
+  const era=ccFnShopEra(careerToday()), fam=era.k==='c1' ? 'A' : (era.k==='c2' || era.k==='c3') ? 'B' : 'C';
+  const today=careerToday(), used=new Set();
   const myOvr=Math.round((card && (card._ovr||card.rating)) || pl.ovr || 0);
   const myIcon=CC_LB_ICON[hKey(pl.handle||pl.nick||'')];
-  const mine=fig(eq.o && own[eq.o] ? eq.o : (myIcon && myIcon[1]<=careerToday() ? myIcon[0] : CC_LB_DEFAULTS[0]), pl.nick||pl.handle||'', myOvr, true);
-  // Скин напарника: своя icon-скин, если она уже вышла (Bugha, Clix, Mongraal…), иначе популярный у про-игроков скин,
-  // вышедший к этому дню (по нику, без повторов в одном лобби); до 2019-го и без совпадений — стандартный.
-  const today=careerToday(), used=new Set();
+  const mySkin=eq.o && own[eq.o] ? eq.o : (myIcon && myIcon[1]<=today ? myIcon[0] : CC_LB_DEFAULTS[0]);
+  used.add(mySkin);
+  // Скин напарника: своя icon-скин, если уже вышла; иначе популярный у про-игроков, вышедший к этому дню; без повторов.
   const skinOf=c=>{
     const icon=CC_LB_ICON[hKey(c)];
     if(icon && icon[1]<=today && !used.has(icon[0])){ used.add(icon[0]); return icon[0]; }
     const pool=CC_LB_POPULAR.filter(p=>p[1]<=today && !used.has(p[0]));
     if(pool.length){ const id=pool[ccHashStr(hKey(c))%pool.length][0]; used.add(id); return id; }
-    const id=CC_LB_DEFAULTS.find(x=>x!==CC_LB_DEFAULTS[0] && !used.has(x)) || CC_LB_DEFAULTS[1]; used.add(id); return id;
+    const id=CC_LB_DEFAULTS.find(x=>!used.has(x)) || CC_LB_DEFAULTS[1]; used.add(id); return id;
   };
-  const mates=(careerMates()||[]).filter(Boolean).slice(0, 3).map(c=>
-    fig(skinOf(c), c.handle, Math.round(c._ovr||c.rating||0)));
-  // Свой — в середине: первый напарник слева, остальные справа (как пати в лобби).
-  const row=mates.length ? [mates[0], mine].concat(mates.slice(1)) : [mine];
+  // Готов ли вечер: сегодня есть что играть и кнопка не заперта — тогда Ready, иначе Not Ready (как в лобби).
+  let ready=false; try{ ready=!!(next && next.day===today && careerCanPlay(next) && !cr.seasonOver); }catch(e){}
+  const party=[{id:mySkin, name:pl.nick||pl.handle||'', ovr:myOvr, me:true}]
+    .concat((careerMates()||[]).filter(Boolean).slice(0, 3).map(c=>({id:skinOf(c), name:c.handle, ovr:Math.round(c._ovr||c.rating||0)})));
+  // Места — классами cc-lb-s0…s3 (CSS: на ПК как в лобби, на телефоне шире), числа CC_LB_SLOTS — для ПК.
+  const slot=(i)=>{
+    const p=party[i], s=' cc-lb-s'+i;
+    const ped='<span class="cc-lb-ped'+(i===0 ? ' me' : '')+s+'"></span>';
+    if(!p) return ped+'<button class="cc-lb-plus'+s+'" onclick="careerTab(\'me\')" title="'+esc(T.lfRosters)+'">+</button>';
+    return ped+'<div class="cc-lb-fig'+(p.me ? ' me' : '')+s+'"'+(p.me ? ' onclick="ccFnLockerOpen(\'o\')"' : '')+'>'+
+      '<img class="full" src="'+ccFnFull(p.id)+'" data-id="'+esc(p.id)+'" alt="" loading="lazy" onerror="ccFnHeroErr(this)">'+
+      '<div class="cc-lb-plate">'+(p.me ? '<i class="cc-lb-crown">♛</i>' : '')+'<b>'+esc(p.name)+' <u>'+p.ovr+'</u></b>'+
+      '<em class="'+(ready ? 'ok' : '')+'">'+(ready ? 'Ready' : 'Not Ready')+'</em></div></div>';
+  };
+  const stage='<div class="cc-lb-stage">'+[1,2,3,0].map(slot).join('')+'</div>';
+  // Кнопка — та же, что в панели (первая .ch-play из btn): действие, подпись, запрет.
   const m=/<button class="ch-play([^"]*)"([^>]*)>([\s\S]*?)<\/button>/.exec(btn||'');
   const play=m ? '<button class="cc-lb-play'+m[1].replace(/\bch-/g, ' cc-lb-')+'"'+m[2]+'>'+m[3]+'</button>' : '';
-  const mode=next ? '<div class="cc-lb-mode"><em>'+esc((careerSquadSize()===3 ? L().ccSeasonTrios : careerSquadSize()===4 ? 'Squads' : L().ccSeasonDuos)+(when ? ' · '+when : ''))+'</em>'+
-    '<b>'+esc(next.label||next.title||'')+'</b></div>' : '';
-  return '<div class="cc-lobby cc-lb-'+era.k+'" style="--lb-bg:url('+ccLobbyBg(careerToday())+')">'+ccLobbyTopHTML(era)+'<div class="cc-lb-stage">'+row.join('')+'</div>'+
-    ccLobbyPanelsHTML(card)+'<div class="cc-lb-side"><div class="cc-lb-right">'+ccLobbyRightHTML(card)+'</div>'+
-    '<div class="cc-lb-go">'+(era.k==='c1' ? ccLobbyFmtHTML(next) : '')+mode+play+'</div></div></div>';
+  const fmtWord=(next && next.type==='solo') ? 'Solo' : ({2:'Duos', 3:'Trios', 4:'Squads'})[careerSquadSize()] || 'Duos';
+  const evName=next ? (next.label||next.title||'') : '';
+  const sn=ccLobbySeasonName(today);
+  const lvlFrac=Math.max(0, Math.min(1, ((pl.ovrExact!=null ? pl.ovrExact : pl.ovr)||0)%1));
+  const alerts=ccLobbyAlerts();
+  const more='<button class="cc-lb-more'+(alerts ? ' alert' : '')+'" onclick="ccLbSheet()">'+esc(T.lbMore||'More')+(alerts ? ' <i>!</i>' : '')+'</button>';
+  let left='', right='', bottom='';
+  if(fam==='A'){
+    left='<div class="cc-lb-season">'+esc(sn.a)+'</div>'+
+      '<div class="cc-lb-lvl"><span class="cc-lb-banner">'+esc(String(cr.division||1))+'</span><div><b>LEVEL '+myOvr+'</b>'+
+        '<u class="cc-lb-xp"><s style="width:'+Math.round(lvlFrac*100)+'%"></s></u></div></div>'+
+      '<div class="cc-lb-tier" onclick="careerTab(\'table\')"><b>'+esc(T.ccDivision||'Division')+' '+(cr.division||1)+'</b><em>'+esc(ccLobbyWeek())+'</em></div>'+
+      ccLobbyQuestsHTML('DAILY CHALLENGES')+ccLobbyPanelsHTML(card);
+    right='<div class="cc-lb-region">'+esc(regionName(ccCareerRegion()))+'</div>'+ccLobbyRightHTML(card);
+    bottom='<div class="cc-lb-go"><div class="cc-lb-modebox"><b>'+esc(fmtWord)+'</b><em>'+esc(evName)+(when ? ' · '+esc(when) : '')+'</em></div>'+play+'</div>'+
+      '<div class="cc-lb-bar-btns"><button onclick="careerTab(\'me\')">'+esc(T.lfRosters)+'</button><button onclick="careerTab(\'train\')">'+esc(T.chTabTrain)+'</button>'+more+'</div>';
+  } else if(fam==='B'){
+    left='<div class="cc-lb-chap">'+esc(sn.c)+'</div><div class="cc-lb-sea">'+esc(sn.s)+'</div>'+
+      '<div class="cc-lb-lvl2"><b>LEVEL '+myOvr+'</b><u class="cc-lb-xp"><s style="width:'+Math.round(lvlFrac*100)+'%"></s><i>'+esc(ccLobbyWeek())+'</i></u></div>'+
+      '<button class="cc-lb-quests" onclick="this.nextElementSibling.hidden=!this.nextElementSibling.hidden">VIEW QUESTS</button>'+
+      '<div hidden>'+ccLobbyQuestsHTML('')+'</div>'+
+      ccLobbyResourcesHTML(sn.s)+ccLobbyPanelsHTML(card, true);
+    right='<div class="cc-lb-news" onclick="careerTab(\'calendar\')"><em>'+esc(when||'')+'</em><b>'+esc(evName)+'</b>'+ccLobbyWeekHTML()+'</div>'+ccLobbyRightHTML(card, true);
+    bottom='<div class="cc-lb-go"><div class="cc-lb-modebox"><b>'+esc(fmtWord)+'</b></div>'+
+      '<button class="cc-lb-blue" onclick="careerTab(\'calendar\')">CHANGE</button>'+play+
+      '<button class="cc-lb-blue" onclick="careerTab(\'me\')">FILL</button></div><div class="cc-lb-bar-btns">'+more+'</div>';
+  } else {
+    left='<div class="cc-lb-news" onclick="careerTab(\'calendar\')"><em>'+esc(when||'')+'</em><b>'+esc(evName)+'</b></div>'+
+      '<div class="cc-lb-go"><div class="cc-lb-modebox"><b>'+esc(evName||'Battle Royale')+'</b></div>'+
+      '<div class="cc-lb-pill">'+esc(fmtWord)+'</div>'+play+'</div>';
+    right='<div class="cc-lb-ring" onclick="careerTab(\'train\')" style="--p:'+Math.round(lvlFrac*100)+'"><em>LVL</em><b>'+myOvr+'</b></div>'+
+      '<div class="cc-lb-bar-btns">'+more+'<button onclick="careerTab(\'social\')">'+esc(T.chTabMedia||'Media')+'</button></div>';
+    bottom='<div class="cc-lb-tiles">'+ccLobbyPanelsHTML(card)+ccLobbyRightHTML(card)+'</div>';
+  }
+  return '<div class="cc-lobby cc-lb-'+era.k+' cc-lb-fam'+fam+'" style="--lb-bg:url('+ccLobbyBg(today)+')">'+
+    ccLobbyTopHTML(fam)+stage+'<div class="cc-lb-left">'+left+'</div><div class="cc-lb-right">'+right+'</div>'+
+    '<div class="cc-lb-bottom">'+bottom+'</div>'+
+    (alerts ? '<div class="cc-lb-alert" onclick="ccLbSheet(true)"><b>⚠ ALERT!</b><span>'+esc(alerts)+'</span></div>' : '')+'</div>';
 }
-/* Справа от скина — то, что было на «Центре» ниже (его «пусть на экране со скином будут характеристики, составы,
-   вся информация с центра»): шесть характеристик с рейтингом, неделя по дням (сегодня и вечера), клуб, деньги,
-   подписчики. Нажатие ведёт в свою вкладку. */
-function ccLobbyRightHTML(card){
-  const T=L(), cr=CAREER.career, out=[];
-  const panel=(h, body, go)=>'<div class="cc-lb-panel"'+(go ? ' onclick="careerTab(\''+go+'\')"' : '')+'><h5>'+esc(h)+'</h5>'+body+'</div>';
+// Подпись сезона дня: Глава 1 — «SEASON 9 / SEASON X»; дальше — «CHAPTER N» и «SEASON M» (или имя: OG, Remix…).
+function ccLobbySeasonName(day){
+  let n=0, ch=null; try{ n=ccSeasonNumOn(day)||0; ch=ccChapterOf(n); }catch(e){}
+  if(!ch) return {a:'SEASON', c:'', s:'SEASON'};
+  if(ch.c===1) return {a:'SEASON '+(ch.s===10 ? 'X' : ch.s), c:'CHAPTER 1', s:'SEASON '+(ch.s===10 ? 'X' : ch.s)};
+  const s=ch.name ? String(ch.name).toUpperCase() : 'SEASON '+ch.s;
+  return {a:'CHAPTER '+ch.c+' · '+s, c:'CHAPTER '+(ch.c||''), s:s};
+}
+function ccLobbyWeek(){
+  try{ return L().chWeek+' '+careerWeek()+'/'+ccYearWeeks(); }catch(e){ return ''; }
+}
+function ccLobbyWeekHTML(){
   try{
-    const a=attrsFor(careerCard()) || {};
-    const ovr=Math.round((card && (card._ovr||card.rating)) || CAREER.player.ovr || 0);
-    out.push(panel(T.ccRoOvr ? T.ccRoOvr+' '+ovr : String(ovr), '<div class="cc-lb-attrs">'+['aim','end','sur','exp','clu','con'].map(k=>
-      '<span><em>'+esc(T[ATTR_LABEL[k]]||k.toUpperCase())+'</em><b>'+Math.round(a[k]||0)+'</b></span>').join('')+'</div>', 'train'));
-  }catch(e){}
-  try{
-    const ev=careerEvents(), mon=careerMonday(careerToday());
-    out.push(panel(T.chTabCalendar, '<div class="cc-lb-week">'+[0,1,2,3,4,5,6].map(d=>{ const iso=ccAddDays(mon, d), on=(ev.get(iso)||[]).length;
-      return '<span class="'+(iso===careerToday() ? 'today' : '')+(on ? ' ev' : '')+'"><em>'+esc(T.calDows[d])+'</em><b>'+Number(iso.slice(8))+'</b></span>'; }).join('')+'</div>', 'calendar'));
-  }catch(e){}
+    const T=L(), ev=careerEvents(), mon=careerMonday(careerToday());
+    return '<div class="cc-lb-week">'+[0,1,2,3,4,5,6].map(d=>{ const iso=ccAddDays(mon, d), on=(ev.get(iso)||[]).length;
+      return '<span class="'+(iso===careerToday() ? 'today' : '')+(on ? ' ev' : '')+'"><em>'+esc(T.calDows[d])+'</em><b>'+Number(iso.slice(8))+'</b></span>'; }).join('')+'</div>';
+  }catch(e){ return ''; }
+}
+// Задания (цель клуба, месяца, своя) — как «Daily Challenges» / «Quests» той главы.
+function ccLobbyQuestsHTML(h){
+  const T=L(), q=[];
   try{
     const org=CAREER.org;
-    out.push(panel(T.chTabClub, '<div class="cc-lb-row"><b>'+esc(org && org.name ? org.name : 'F/A')+'</b></div>'+
-      '<div class="cc-lb-row"><span>'+esc(T.chEarnings)+'</span><i>'+ccMoney(cr.earnings||0)+'</i></div>'+
-      '<div class="cc-lb-row"><span>'+esc(T.xFollowers)+'</span><i>'+esc(ccFollowers(careerReach()))+'</i></div>', 'club'));
+    if(org && !org.own && org.goal) q.push([careerOrgGoalText(org.goal), careerOrgGoalMet()]);
+    const mg=careerMonthGoal(); if(mg) q.push([careerMonthGoalText(mg), careerMonthGoalMet()]);
+    const g=ccLife().goal; if(g && !g.done) q.push([ccAttrFull(g.k)+' → '+g.to, false]);
   }catch(e){}
-  return out.join('');
+  return '<div class="cc-lb-panel cc-lb-qs" onclick="careerTab(\'train\')">'+(h ? '<h5>'+esc(h)+'</h5>' : '<h5>'+esc(T.hgTitle)+'</h5>')+
+    (q.length ? q.slice(0, 3).map(([t, ok])=>'<div class="cc-lb-q'+(ok ? ' ok' : '')+'"><i>'+(ok ? '✓' : '')+'</i>'+esc(t)+'</div>').join('')
+      : '<div class="cc-lb-sub">'+esc(T.hgSet)+'</div>')+'</div>';
 }
-/* Главное меню той главы, а не пустая сцена (его «посмотри, как в каждом сезоне реализовано главное меню, и сделай
-   так же, только чтоб пусто не было: ростеры, тренировки и т. д.»). Сверху — вкладки, как в игре (Глава 1: капсом
-   по центру; Глава 2–4: слева; с ноября 2023 — пилюли), справа V-Bucks и деньги; слева панели: ростер, тренировка,
-   задания — всё живое из карьеры, нажатие ведёт в свою вкладку. */
+// Ресурсы сезона (Глава 2: Battle Stars, Bars…) — у карьеры: деньги, V-Bucks, подписчики, энергия.
+function ccLobbyResourcesHTML(s){
+  const T=L(), cr=CAREER.career;
+  const row=(k, v, go)=>'<div class="cc-lb-res"'+(go ? ' onclick="careerTab(\''+go+'\')"' : '')+'><em>'+esc(k)+'</em><b>'+v+'</b></div>';
+  let en=''; try{ en=row(T.ccRingEnergy, Math.round(careerEnergy())+' / '+careerEnergyMax(), 'train'); }catch(e){}
+  return '<div class="cc-lb-resh">'+esc(s)+' RESOURCES</div>'+row(T.ccBalance||'Balance', ccMoney(cr.balance||0), 'shop')+
+    row('V-Bucks', '<i class="cc-vb-ic"></i>'+ccNum(CAREER.vb||0), 'items')+row(T.xFollowers, esc(ccFollowers(careerReach())), 'social')+en;
+}
+// Что ждёт внимания из листа «Подробнее»: командная игра, гонка, интервью, сбор состава — строкой ALERT, как в лобби.
+function ccLobbyAlerts(){
+  const T=L(), out=[];
+  try{ if(typeof careerMpTileHTML==='function' && careerMpTileHTML()) out.push(T.lbAlertMp||'Team'); }catch(e){}
+  try{ if(typeof careerRaceTileHTML==='function' && careerRaceTileHTML()) out.push(T.lbAlertRace||'Race'); }catch(e){}
+  try{ if(typeof careerInterviewHTML==='function' && !CAREER.career.seasonOver && careerInterviewHTML()) out.push(T.lbAlertTalk||'Interview'); }catch(e){}
+  try{ if(typeof ccRosterSoonHTML==='function' && ccRosterSoonHTML()) out.push(T.lbAlertRoster||'Roster'); }catch(e){}
+  return out.join(' · ');
+}
 /* Фон лобби — настоящий фон главного меню того сезона (Fortnite Wiki, «Lobby Background», 1280 px, art/lobby/sNN.webp):
    Season 7 … Глава 7 Сезон 3, по номеру сезона дня (ccSeasonNumOn). Раньше 7-го — 7-й, позже 41-го — 41-й. */
 function ccLobbyBg(day){
@@ -122031,17 +122164,19 @@ function ccLobbyBg(day){
   n=Math.max(7, Math.min(41, n||41));
   return 'art/lobby/s'+String(n).padStart(2, '0')+'.webp';
 }
-function ccLobbyTopHTML(era){
+function ccLobbyTopHTML(fam){
   // Вкладки — те же, что у хаба (#screen-career-hub .ch-tabs): все, со своими метками; скрытые хабом не показываются.
   const hub=[...document.querySelectorAll('#screen-career-hub .ch-tabs .ch-tab')].filter(b=>b.dataset.tab && !b.hidden && b.style.display!=='none');
   const tabs=hub.length ? hub.map(b=>[b.dataset.tab, b.innerHTML]) : [['centre', esc(L().chTabCentre)]];
-  return '<div class="cc-lb-top"><nav class="cc-lb-nav">'+tabs.map(([k, html])=>
+  const party='<span class="cc-lb-partyc" onclick="careerTab(\'me\')">👥 '+(1+((careerMates()||[]).filter(Boolean).length))+'</span>';
+  const icons=fam==='C' ? '<button class="cc-lb-ico" onclick="careerTab(\'hist\')">▦</button><button class="cc-lb-ico" onclick="careerTab(\'table\')">⌕</button>' : '';
+  return '<div class="cc-lb-top">'+(fam!=='C' ? party : '')+'<nav class="cc-lb-nav">'+icons+tabs.map(([k, html])=>
       '<button class="'+(k==='centre' ? 'on' : '')+'" onclick="careerTab(\''+k+'\')">'+html+'</button>').join('')+'</nav>'+
     '<div class="cc-lb-wallet"><span onclick="ccFnShopOpen()"><i class="cc-vb-ic"></i>'+ccNum(CAREER.vb||0)+'</span>'+
     '<span onclick="careerTab(\'shop\')">'+ccMoney(CAREER.career.balance||0)+'</span></div></div>';
 }
-function ccLobbyPanelsHTML(card){
-  const T=L(), pl=CAREER.player, cr=CAREER.career;
+function ccLobbyPanelsHTML(card, noQuests){
+  const T=L(), pl=CAREER.player;
   const panel=(h, body, go)=>'<div class="cc-lb-panel"'+(go ? ' onclick="careerTab(\''+go+'\')"' : '')+'><h5>'+esc(h)+'</h5>'+body+'</div>';
   const bar=(lab, v, max)=>'<div class="cc-lb-bar"><em>'+esc(lab)+'</em><b>'+Math.round(v)+' / '+max+'</b>'+
     '<u><s style="width:'+Math.max(0, Math.min(100, v/max*100))+'%"></s></u></div>';
@@ -122051,28 +122186,32 @@ function ccLobbyPanelsHTML(card){
   let chem='';
   try{ if(careerPartnerCard()) chem='<div class="cc-lb-sub">'+esc(T.ccChem)+' '+Math.min(100, Math.round(careerChemDays()/CC_CHEM_DAYS*100))+'%</div>'; }catch(e){}
   const roster=panel(T.lfRosters, ros.map(r=>'<div class="cc-lb-row'+(r.me ? ' me' : '')+'"><b>'+esc(r.handle)+'</b><i>'+r.ovr+'</i></div>').join('')+chem, 'me');
-  // Тренировка: энергия и настрой, как кольца «Центра».
+  // Тренировка: энергия и настрой.
   let train='';
   try{
     const mood=(careerMateRec() || (typeof ccMpTeam==='function' && ccMpTeam())) ? careerPatience() : null;
     train=panel(T.chTabTrain, bar(T.ccRingEnergy, careerEnergy(), careerEnergyMax())+(mood!=null ? bar(T.ccRingMood, mood, 100) : ''), 'train');
   }catch(e){}
-  // Задания: цель клуба, цель месяца, своя цель по атрибуту — те же, что в «Целях».
-  const q=[];
+  return roster+train+(noQuests ? '' : '');
+}
+/* Рейтинг с шестью характеристиками, неделя, клуб — то, что было на «Центре». */
+function ccLobbyRightHTML(card, noWeek){
+  const T=L(), cr=CAREER.career, out=[];
+  const panel=(h, body, go)=>'<div class="cc-lb-panel"'+(go ? ' onclick="careerTab(\''+go+'\')"' : '')+'><h5>'+esc(h)+'</h5>'+body+'</div>';
+  try{
+    const a=attrsFor(careerCard()) || {};
+    const ovr=Math.round((card && (card._ovr||card.rating)) || CAREER.player.ovr || 0);
+    out.push(panel(T.ccRoOvr ? T.ccRoOvr+' '+ovr : String(ovr), '<div class="cc-lb-attrs">'+['aim','end','sur','exp','clu','con'].map(k=>
+      '<span><em>'+esc(T[ATTR_LABEL[k]]||k.toUpperCase())+'</em><b>'+Math.round(a[k]||0)+'</b></span>').join('')+'</div>', 'train'));
+  }catch(e){}
+  if(!noWeek) out.push(panel(T.chTabCalendar, ccLobbyWeekHTML(), 'calendar'));
   try{
     const org=CAREER.org;
-    if(org && !org.own && org.goal) q.push([careerOrgGoalText(org.goal), careerOrgGoalMet()]);
-    const mg=careerMonthGoal(); if(mg) q.push([careerMonthGoalText(mg), careerMonthGoalMet()]);
-    const g=ccLife().goal; if(g && !g.done) q.push([ccAttrFull(g.k)+' → '+g.to, false]);
+    out.push(panel(T.chTabClub, '<div class="cc-lb-row"><b>'+esc(org && org.name ? org.name : 'F/A')+'</b></div>'+
+      '<div class="cc-lb-row"><span>'+esc(T.chEarnings)+'</span><i>'+ccMoney(cr.earnings||0)+'</i></div>'+
+      '<div class="cc-lb-row"><span>'+esc(T.xFollowers)+'</span><i>'+esc(ccFollowers(careerReach()))+'</i></div>', 'club'));
   }catch(e){}
-  const quests=panel(T.hgTitle, q.length ? q.slice(0, 3).map(([t, ok])=>'<div class="cc-lb-q'+(ok ? ' ok' : '')+'"><i>'+(ok ? '✓' : '')+'</i>'+esc(t)+'</div>').join('')
-    : '<div class="cc-lb-sub">'+esc(T.hgSet)+'</div>', 'train');
-  return '<div class="cc-lb-left">'+roster+train+quests+'</div>';
-}
-// Глава 1: выбор режима над кнопкой (Solo / Duos / Squads), подсвечен формат ближайшего вечера.
-function ccLobbyFmtHTML(next){
-  const n=next && next.type==='solo' ? 1 : careerSquadSize();
-  return '<div class="cc-lb-fmt">'+[[1,'Solo'],[2,'Duos'],[3,'Trios'],[4,'Squads']].map(([k, t])=>'<span class="'+(k===n ? 'on' : '')+'">'+t+'</span>').join('')+'</div>';
+  return out.join('');
 }
 function careerCentreHTML(card, a){
   const cr=CAREER.career, pl=CAREER.player;
@@ -122338,6 +122477,8 @@ function careerCentreHTML(card, a){
     : `<div class="ch-row"><em>${L().chPerfEval}</em><b>${L().chD1Only}</b></div>`;
 
   return `${ccLobbyHTML(card, btn, next, nextWhen)}
+  <div class="cc-lb-sheet" id="ccLbSheet"${CC_LB_SHEET ? '' : ' hidden'}>
+  <button class="cc-lb-sheet-x" onclick="ccLbSheet(false)">✕</button>
   <div class="ch-next">
     <div class="ch-next-head"><h3>${L().chNext}</h3><span>${
       // Which year this is, beside when it is. A season that alternates has to
@@ -122476,6 +122617,7 @@ function careerCentreHTML(card, a){
       ${careerProfileTileHTML()}
       ${careerNewsHubHTML()}
     </div>
+  </div>
   </div>`;
 }
 
