@@ -10760,7 +10760,7 @@ dmReachUp:(o,p)=>'Смотрел твой '+ccTop(p)+'. Я '+o+' овера — 
 dmPromoted:(d,o)=>'Поздравляю с Дивизионом '+d+'. Я '+o+', ищу дуо на этот сезон.',
 /* Год в трио, теми же голосами. Строка берётся по ключу с «t» на конце —
    см. ccSquadKey — и пишется только там, где дуо стоит в самих словах. */
-dmAskt:'Здарова. Ищу тиму, го трио?',
+dmAskt:'Здарова. Ищу тиму, го трио?', dmAskq:'Здарова. Собираю сквад на кап, го?', dmAskBtnq:'Написать: «сквад?»',
 dmNoDuot:m=>'Спасибо, но у меня состав с '+m+' — мы продолжаем.',
 dmNoPartnert:o=>'Слышал, у тебя место в скваде свободно. Я '+o+', тоже свободен. Скинемся?',
 dmPromotedt:(d,o)=>'Поздравляю с Дивизионом '+d+'. Я '+o+', ищу трио на этот сезон.',
@@ -12845,7 +12845,7 @@ dmReachUp:(o,p)=>'Watched your '+ccTop(p)+'. I am '+o+' OVR — normally I would
 dmPromoted:(d,o)=>'Congrats on Division '+d+'. I am '+o+', looking for a duo this season.',
 // The trio year, in the same voices. Keyed with a `t` — see ccSquadKey — and
 // written only where the duo is in the words themselves.
-dmAskt:'Hey. Looking for a third — you in?',
+dmAskt:'Hey. Looking for a third — you in?', dmAskq:'Hey. Putting a squad together for the cup, you in?', dmAskBtnq:'Write: "squad?"',
 dmNoDuot:m=>'Thanks, but I am in a squad with '+m+' — we are running it back.',
 dmNoPartnert:o=>'Heard you have a seat open. I am '+o+' and free. Want to run it?',
 dmPromotedt:(d,o)=>'Congrats on Division '+d+'. I am '+o+', looking for a trio this season.',
@@ -14941,7 +14941,7 @@ dmReachUp:(o,p)=>'J’ai regardé ton '+ccTop(p)+'. Je suis '+o+' d’OVR — no
 dmPromoted:(d,o)=>'Bravo pour la Division '+d+'. Je suis '+o+', je cherche un duo cette saison.',
 // La saison en trios, avec les mêmes voix. Clé suffixée d’un « t » — voir
 // ccSquadKey — et écrite là où le duo est dans les mots eux-mêmes.
-dmAskt:'Salut. Je cherche un troisième — ça te dit ?',
+dmAskt:'Salut. Je cherche un troisième — ça te dit ?', dmAskq:'Salut. Je monte une squad pour la cup, ça te dit ?', dmAskBtnq:'Écrire : « squad ? »',
 dmNoDuot:m=>'Merci, mais je suis en équipe avec '+m+' — on continue.',
 dmNoPartnert:o=>'J’ai entendu que tu avais une place libre. Je suis '+o+' et libre. On tente ?',
 dmPromotedt:(d,o)=>'Bravo pour la Division '+d+'. Je suis '+o+', je cherche un trio cette saison.',
@@ -18050,7 +18050,7 @@ dmLeftYes3:"Là non ha funzionato. Dai, facciamogli vedere",
 dmLeftYes4:"Libero. Quando",
 dmLeftYes:"Libero. Riproviamoci",
 dmYes:"Sì, sono libero. Facciamolo.",
-dmAskt:"Ehi. Cerco un terzo — ci stai?",
+dmAskt:"Ehi. Cerco un terzo — ci stai?", dmAskq:"Ehi. Sto mettendo su una squad per la cup, ci stai?", dmAskBtnq:"Scrivi: «squad?»",
 dmMateLeaving3t:"Un'altra squadra mi vuole. Dammi un motivo per restare",
 ccLfdTitlet:"Cerco un trio",
 ccDuoFreet:"senza squadra",
@@ -20598,7 +20598,7 @@ dmLeftYes3:"Lá não deu certo. Bora mostrar para eles",
 dmLeftYes4:"Livre. Quando",
 dmLeftYes:"Livre. Vamos tentar de novo",
 dmYes:"Isso, estou livre. Bora.",
-dmAskt:"E aí. Procurando um terceiro — cola?",
+dmAskt:"E aí. Procurando um terceiro — cola?", dmAskq:"E aí. Montando um squad pro cup, cola?", dmAskBtnq:"Escrever: «squad?»",
 dmMateLeaving3t:"Outro time me quer. Me dá um motivo para ficar",
 ccLfdTitlet:"Procurando trio",
 ccDuoFreet:"sem time",
@@ -22079,7 +22079,7 @@ Object.assign(I18N.pt=I18N.pt||{},
 Object.assign(I18N.fr, {dyColPlayer:'Joueur et équipe', dyYou:'toi', dyPowSplit:'note moyenne des cartes + synergie'});
 Object.assign(I18N.it, {dyColPlayer:'Giocatore e squadra', dyYou:'tu', dyPowSplit:'valutazione media delle carte + sinergia'});
 Object.assign(I18N.pt, {dyColPlayer:'Jogador e time', dyYou:'você', dyPowSplit:'overall médio das cartas + sinergia'});
-let CC_I18N_V={de:'22820e3c', es:'c3264a9b'};   // ==== CC_I18N_V (tools/build-i18n.js) ====
+let CC_I18N_V={de:'4cd10280', es:'fecad7cf'};   // ==== CC_I18N_V (tools/build-i18n.js) ====
 // Версия fn-shop.js (магазин Fortnite по дням, tools/build-fn-shop.js) — для ?v= ленивой загрузки.
 let CC_FN_SHOP_V='0c643ab3';
 const CC_LANG_WAIT={};
@@ -117208,7 +117208,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='8acd9691';
+const CC_BUILD='a61168ad';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -141129,7 +141129,7 @@ function careerDmPush(t, from, key, args){
   }
   // And in the season's own words: a trio year does not ask anybody to duo. The
   // voice is chosen first, so a duo season keeps all four of them. See ccSquadKey.
-  k=ccSquadKey(k);
+  k=ccSquadKey(k, t && t.fmt);
   /* Годы без дивизионов (2019–2021 и 2022 до осени, ccNoDivisions) — реплики без слова «дивизион»
      (его скрин 1.10, 2019: «я 71 и играю в Дивизионе 1»). Вариант с хвостом Nd, где он есть. */
   try{ if(typeof ccNoDivisions==='function' && ccNoDivisions() && L()[k+'Nd']) k=k+'Nd'; }catch(e){}
@@ -143749,7 +143749,7 @@ function careerSocialHTML(){
             return `<div class="dm-foot">${held ? `<div class="dm-asked">${
               L().ccSlotLoseHint(careerPartnerCard().handle, held.what)}</div>` : ''}
               <button class="ch-sign" onclick="careerDmAcceptAsk(\'${open.id}\')">${ccSay('dmTakeIt')}</button></div>`; })()
-        : `<div class="dm-foot"><button class="ch-sign" onclick="careerDmWrite('${esc(open.who.handle)}')">${ccSay('dmAskBtn')}</button></div>`}`
+        : `<div class="dm-foot"><button class="ch-sign" onclick="careerDmWrite('${esc(open.who.handle)}', null, ${open.fmt||'null'})">${L()[ccSquadKey('dmAskBtn', open.fmt)]}</button></div>`}`
     : `<div class="ch-empty">${L().dmPickThread}</div>`;
 
   /* And why everybody writing to you is worse than you.
@@ -148300,8 +148300,12 @@ function ccMyPeople(){
    Two hooks carry nearly all of it — careerDmPush and careerNews both take a key
    and store it — so a message written in a trio season keeps its trio wording
    for ever, which is right: it was said then. */
-function ccSquadKey(key){
-  if(careerSquadSize()<=2) return key;
+// size — формат, под который пишут (переписка помнит его в t.fmt: сквад на кап дуо-года, Notion «19.10»: «squads
+// нужно собрать, но пишет 2 человека вместо 4»); без него — размер года. Сквад — свои реплики (хвост q), где они есть.
+function ccSquadKey(key, size){
+  const n=size || careerSquadSize();
+  if(n<=2) return key;
+  if(n>=4 && L()[key+'q']) return key+'q';
   if(L()[key+'t']) return key+'t';
   /* A voice variant falls back to the trio line the whole scene shares.
 

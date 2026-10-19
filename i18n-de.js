@@ -4063,3 +4063,6 @@ Object.assign(I18N.de=I18N.de||{},
 /* Дозаливка «de» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
 Object.assign(I18N.de=I18N.de||{},
 ({chTabItems:'Item-Shop'}));
+/* Дозаливка «de» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
+Object.assign(I18N.de=I18N.de||{},
+({dmAskq:'Hey. Ich stelle ein Squad für den Cup zusammen, bist du dabei?', dmAskBtnq:'Schreiben: „Squad?“'}));
