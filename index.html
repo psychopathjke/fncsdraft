@@ -4953,6 +4953,11 @@
   .ch-ro-spotaura em{font-size:10px;letter-spacing:.08em;color:#9fb3e6;}
   .ch-ro-spotaura .cc-aura-row{flex:1 1 auto;max-width:150px;}
   @media (max-width:560px){ .ch-ro.has-spot{flex-direction:column;} .ch-ro-spotcard{flex:none;max-width:none;width:100%;} }
+  /* В колонке меню (310 px) карта рядом сжимала состав: клубы и «+1 po…», «100% …» обрезались (Notion «19.10», скрин 41,
+     «скомкано»). Там карта точки — под составом, на всю ширину, полосой. */
+  .cc-lobby .ch-ro.has-spot{flex-direction:column;gap:8px;}
+  .cc-lobby .ch-ro-spotcard{flex:none;max-width:none;width:100%;}
+  .cc-lobby .ch-ro-spotcard .cc-spot-shot{height:auto;min-height:0;aspect-ratio:16/7;}
   .ch-ro-spot{display:flex;align-items:baseline;gap:6px;margin-top:4px;padding-top:6px;border-top:1px solid rgba(255,255,255,.1);font-size:12px;font-weight:800;color:#fff;cursor:pointer;}
   .ch-ro-spot em{font-style:normal;font-size:10px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;color:#8fa1cc;}
   .ch-ro-spot i{font-style:normal;color:#ffdd00;font-weight:800;}
