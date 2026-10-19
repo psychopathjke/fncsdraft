@@ -4072,3 +4072,6 @@ Object.assign(I18N.es=I18N.es||{},
 /* Дозаливка «es» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
 Object.assign(I18N.es=I18N.es||{},
 ({ccRoleNoIgl:'Sin IGL en el equipo: sin +4 de fuerza por roles.'}));
+/* Дозаливка «es» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
+Object.assign(I18N.es=I18N.es||{},
+({ccInput:'Dispositivo', ccInput_kbm:'Teclado y ratón', ccInput_pad:'Mando'}));
