@@ -20,11 +20,15 @@ const seed=(season)=>{ localStorage.setItem('fncsdraft_career', JSON.stringify({
 seed(1); ccSceneRoster('EU');
 check('2026: регенов нет', !CAREER.career.regen && !ccSceneRoster('EU').some(c=>c._regen));
 // 2) Третий сезон (2028).
-seed(3); const eu=ccSceneRoster('EU'); const R=CAREER.career.regen;
-check('посчитано до 2028', R && R.y===2, R && R.y);
+// Без даты рождения в 2026 — 18 (его слово 19.10), до 30 уходят единицы: в 2028 сцена почти та же.
+seed(3); ccSceneRoster('EU'); notes.out2028=Object.keys((CAREER.career.regen||{out:{}}).out).length;
+check('2028: почти никто не ушёл', notes.out2028<100, notes.out2028);
+// 2) Тринадцатый сезон (2038): неизвестным по 30, уходят массово.
+seed(13); const eu=ccSceneRoster('EU'); const R=CAREER.career.regen;
+check('посчитано до 2038', R && R.y===12, R && R.y);
 const out=Object.keys(R.out).length, list=R.list.length;
 notes.out=out; notes.regens=list; notes.euRegens=eu.filter(c=>c._regen).length;
-check('часть сцены ушла', out>300 && out<4000, out);
+check('часть сцены ушла', out>300 && out<20000, out);
 check('регены есть', list>100, list);
 check('напарник не ушёл', !R.out.queasy);
 check('ушедших нет в сцене', !eu.some(c=>R.out[hKey(c)] && !c._regen));
@@ -37,9 +41,9 @@ check('ники регенов не совпадают с настоящими',
 check('ники регенов без повторов', new Set(R.list.map(g=>hKey(g.h))).size===R.list.length);
 notes.names=R.list.map(g=>g.h);
 // 5) Возраст.
-const g1=R.list.find(g=>g.y===1), g2=R.list.find(g=>g.y===2);
-check('реген 1-го года стал на год старше', g1 && ccAgeNow(g1.h)===g1.a+1, g1 && (g1.h+' '+ccAgeNow(g1.h)+' / '+g1.a));
-check('реген 2-го года — 16–17', g2 && ccAgeNow(g2.h)===g2.a && g2.a>=16 && g2.a<=17, g2 && ccAgeNow(g2.h));
+const g1=R.list.find(g=>g.y===11), g2=R.list.find(g=>g.y===12);
+check('реген прошлого года стал на год старше', g1 && ccAgeNow(g1.h)===g1.a+1, g1 && (g1.h+' '+ccAgeNow(g1.h)+' / '+g1.a));
+check('реген этого года — 16–17', g2 && ccAgeNow(g2.h)===g2.a && g2.a>=16 && g2.a<=17, g2 && ccAgeNow(g2.h));
 // Профиль.
 const top=eu.filter(c=>c._regen && c.regenOf).sort((a,b)=>b._ovr-a._ovr)[0];
 ccPeekByHandle(top.handle);

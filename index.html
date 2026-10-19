@@ -123745,7 +123745,7 @@ function ccMateBlockHTML(mate, rec){
   const pat = rec && rec.patience!=null ? rec.patience : CAREER_PATIENCE_START;
   return `<div class="ch-row"><em>${L().ccResPartner}</em><b>${flagFor(mate)}${esc(mate.handle)} (${attrsFor(mate).ovr})</b></div>`+
     `<div class="ch-row"><em>${L().ccRole}</em><b>${L()[attrsFor(mate).roleKey]||''}</b></div>`+
-    (()=>{ const a=ccAgeNow(mate.handle);
+    (()=>{ const a=ccAgeShown(mate.handle);
       return a ? `<div class="ch-row"><em>${L().ccAge}</em><b>${L().ccYearsOld(a)}</b></div>` : ''; })()+
     `<div class="ch-row"><em>${L().ccMood}</em><b>${L()[careerMoodKey(pat)]}</b></div>`;
 }
@@ -133896,7 +133896,7 @@ function ccRegenYear(cr, y){
   const gone=[], born=[];
   people.forEach(x=>{
     if(keep.has(x.k)) return;
-    const age=x.regen ? (17+(y-x.regen.y)+(x.regen.a-16)) : ccAgeNow(x.handle);
+    const age=x.regen ? (17+(y-x.regen.y)+(x.regen.a-16)) : ccAgeShown(x.handle);
     const roll=(ccHashStr(seed+'|'+x.k)%10000)/10000;
     if(roll>=ccRegenRetireP(age, x.ovr)) return;
     R.out[x.k]=y; gone.push({h:x.handle, age:age, ovr:x.ovr, reg:x.reg});
@@ -139900,7 +139900,7 @@ function ccBioLine(handle){
   if(pl && pl.handle && hKey(pl.handle)===hKey(handle)) return careerBioHTML();
   const card=ccWhoCard(handle);
   const bits=[];
-  const age=ccAgeNow(handle);
+  const age=ccAgeShown(handle);
   if(age) bits.push(String(age));
   if(card && card.nat) bits.push(esc(natDisplay(card.nat)||card.nat));
   if(card && card.org) bits.push(L().ccBioPro+' '+esc(card.org));
@@ -141764,6 +141764,12 @@ function ccAgeNow(handle, iso){
   const a=ccAgeOf(handle, iso);
   return a!=null ? a+ccSeasonsIn() : null;
 }
+/* Возраст для карточек и ухода со сцены. Слово 19.10: «без известной даты рождения пусть у них будет 18 сразу» —
+   в первом сезоне 18, дальше стареет вместе со сценой. Рост рейтинга по-прежнему берёт ccAgeNow и средний возраст сцены. */
+function ccAgeShown(handle){
+  const a=ccAgeNow(handle);
+  return a!=null ? a : 18+ccSeasonsIn();
+}
 const CC_DM_LADDER_OFF=[7, 4, 1, -1, -3, -6];
 /* And what the rung can hold.
 
@@ -141950,7 +141956,7 @@ function careerDmPool(){
      разговора живёт дальше сама и запомнит то, что ей дали. */
   return six.map(p=>({handle:p.handle,
     ovr:(p._ovr!=null ? p._ovr : (attrsFor(p)||{}).ovr), nat:p.nat,
-    role:attrsFor(p).roleKey, roster:true, cardRegion:p.region, age:ccAgeNow(p.handle),
+    role:attrsFor(p).roleKey, roster:true, cardRegion:p.region, age:ccAgeShown(p.handle),
     // `club`, not `org`: a thread with org set on it IS a club writing to you,
     // and the inbox sorts by that. This is the jersey the person is wearing.
     club:p.org||null, pay:ccPlayerPay(p)}));
@@ -144783,7 +144789,7 @@ function careerSocialHTML(){
           : open.who.hater ? L().dmSechaters
           : open.who.fan ? L().dmSecfans
           : [L()[open.who.role]||'', L().ccRoOvr+' '+open.who.ovr,
-             (()=>{ const a=ccAgeNow(open.who.handle); return a ? L().ccYearsOld(a) : ''; })(),
+             (()=>{ const a=ccAgeShown(open.who.handle); return a ? L().ccYearsOld(a) : ''; })(),
              '👥 '+ccFollowText(open.who.handle, open.who.ovr),
              ccDuoFormLabel(open.who.handle),
              open.who.club ? esc(open.who.club) : '',
