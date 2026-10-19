@@ -4385,8 +4385,13 @@
   @media (min-width:701px){
     #screen-career-hub.ch-lobby-on .ch-body{padding:0;}
     #screen-career-hub.ch-lobby-on .ch-stage{padding-bottom:0;}
-    #screen-career-hub.ch-lobby-on .cc-lobby{margin:0;border-radius:16px;}
+    /* Верхние углы — прямые: сверху меню стыкуется с шапкой хаба, и скругление открывало светлые уголки (скрин 28). */
+    #screen-career-hub.ch-lobby-on .cc-lobby{margin:0;border-radius:0 0 16px 16px;}
   }
+  /* Полоса вкладок меню — синяя, как на профиле (скрины 26–27), а не прозрачная поверх картинки. */
+  #screen-career-hub .cc-lobby .cc-lb-top{background:linear-gradient(90deg,#1b3584,#162c74 60%,#1a3380);box-shadow:0 1px 0 rgba(180,200,255,.18);}
+  /* Фон с нарисованными подиумами (ccLobbyPads) — свои подиумы не рисуются. */
+  .cc-lobby.cc-lb-painted .cc-lb-ped{display:none;}
   /* Ник над фигурой — без подложки (скрин 22): номер, ник и устройство белым с тенью, как в лобби игры. */
   #screen-career-hub .cc-lobby.cc-lb-famC .cc-lb-plate{background:none;-webkit-backdrop-filter:none;backdrop-filter:none;padding:0;
     text-shadow:0 1px 3px rgba(0,0,0,.85),0 0 8px rgba(0,0,0,.45);}
@@ -117711,7 +117716,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='1373cfe3';
+const CC_BUILD='138d7b28';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -122541,8 +122546,36 @@ function ccLobbyNewsCardHTML(){
 }
 /* Колонка с капом не листается (его «листается кап всё равно»): если карточке вечера мало места (высадка, отборы,
    эфир), меню само становится выше ровно на нехватку. На телефоне колонки и так идут столбиком. */
+/* НАРИСОВАННЫЕ ПОДИУМЫ (Notion «19.10», скрин 25: «видно, где игроки должны стоять, тут даже нарисованы»).
+   На трёх фонах (s11, s27, s33) четыре подиума уже есть в картинке, и свои CSS-подиумы стояли мимо них. Для этих фонов
+   фигуры ставятся по координатам подиумов в картинке (центр диска и его ширина, в пикселях кадра 1280 по ширине),
+   пересчитанным под то, как фон лёг в меню (cover, по центру, низом к низу), а свои подиумы прячутся.
+   Порядок мест — как у cc-lb-s0…s3: свой впереди, слева, справа, дальний справа. */
+const CC_LB_PADS={
+  s11:{h:677, p:[[640,656,255],[476,602,210],[790,597,190],[927,575,180]]},
+  s27:{h:720, p:[[640,636,250],[475,580,200],[783,573,195],[927,553,180]]},
+  s33:{h:720, p:[[640,636,255],[475,578,200],[785,573,197],[925,553,180]]}
+};
+function ccLobbyPads(lb){
+  const m=/s(\d\d)\.webp/.exec(lb.style.getPropertyValue('--lb-bg')||getComputedStyle(lb).getPropertyValue('--lb-bg')||''); const pad=m && CC_LB_PADS['s'+m[1]];
+  const stage=lb.querySelector('.cc-lb-stage'); if(!stage) return;
+  const els=[...stage.children];
+  lb.classList.toggle('cc-lb-painted', !!pad);
+  if(!pad || innerWidth<=700){ els.forEach(e=>{ e.style.left=''; e.style.bottom=''; e.style.height=''; e.style.top=''; }); return; }
+  const W=lb.clientWidth, H=lb.clientHeight, k=Math.max(W/1280, H/pad.h), offX=(W-1280*k)/2, offY=H-pad.h*k;
+  const sr=stage.getBoundingClientRect(), lr=lb.getBoundingClientRect(), sTop=sr.top-lr.top, sH=sr.height;
+  pad.p.forEach(([x, y, w], i)=>{
+    const cx=offX+x*k, cy=offY+y*k-sTop, dw=w*k;
+    stage.querySelectorAll('.cc-lb-s'+i).forEach(e=>{
+      e.style.left=cx+'px';
+      if(e.classList.contains('cc-lb-fig')){ const h=dw*(i===0 ? 1.55 : 1.6); e.style.height=h+'px'; e.style.bottom=(sH-cy-dw*0.07)+'px'; }
+      else if(e.classList.contains('cc-lb-plus')){ e.style.bottom=(sH-cy+dw*0.55)+'px'; }
+    });
+  });
+}
 function ccLobbyFit(){
-  const lb=document.querySelector('.cc-lobby.cc-lb-full'); if(!lb || innerWidth<=700) return;
+  const lb=document.querySelector('.cc-lobby.cc-lb-full'); if(lb) try{ ccLobbyPads(lb); }catch(e){}
+  if(!lb || innerWidth<=700) return;
   lb.style.height='';
   // Колонка с карточкой вечера: в нынешнем меню слева, в меню Глав 1–4 справа.
   const c=lb.querySelector(lb.classList.contains('cc-lb-famC') ? '.cc-lb-left' : '.cc-lb-right'); if(!c) return;
@@ -122586,7 +122619,7 @@ function ccLobbyResourcesHTML(s){
   const row=(k, v, go)=>'<div class="cc-lb-res"'+(go ? ' onclick="careerTab(\''+go+'\')"' : '')+'><em>'+esc(k)+'</em><b>'+v+'</b></div>';
   let en=''; try{ en=row(T.ccRingEnergy, Math.round(careerEnergy())+' / '+careerEnergyMax(), 'train'); }catch(e){}
   return '<div class="cc-lb-resh">'+esc(s)+' RESOURCES</div>'+row(T.ccBalance||'Balance', ccMoney(cr.balance||0), 'shop')+
-    row('V-Bucks', '<i class="cc-vb-ic"></i>'+ccNum(CAREER.vb||0), 'items')+row(T.xFollowers, esc(ccFollowers(careerReach())), 'social')+en;
+    en;   // V-Bucks и подписчики — лишние (Notion «19.10», скрин 29): V-Bucks и так в кошельке наверху.
 }
 // Что ждёт внимания из листа «Подробнее»: командная игра, гонка, интервью, сбор состава — строкой ALERT, как в лобби.
 function ccLobbyAlerts(){
