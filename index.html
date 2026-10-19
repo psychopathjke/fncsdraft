@@ -4036,14 +4036,59 @@
   .cc-fn-hero i{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-style:normal;font-size:44px;opacity:.5;}
   .cc-fn-cat+.cc-fn-cat{margin-top:10px;}
   /* Лобби на «Центре» (ccLobbyHTML): сцена главы, фигуры в полный рост, справа внизу событие и жёлтая кнопка. */
-  .cc-lobby{position:relative;height:380px;margin:0 0 12px;border-radius:12px;overflow:hidden;color:#fff;}
+  /* Сетка главного меню: сверху вкладки и кошелёк, слева панели, посередине сцена, справа внизу режим и кнопка. */
+  .cc-lobby{position:relative;display:grid;grid-template-columns:250px minmax(0,1fr) 290px;grid-template-rows:auto minmax(0,1fr);
+    grid-template-areas:"top top top" "left stage side";height:480px;margin:0 0 12px;border-radius:12px;overflow:hidden;color:#fff;}
+  .cc-lb-top{grid-area:top;display:flex;align-items:center;gap:10px;padding:10px 14px;z-index:5;}
+  .cc-lb-nav{display:flex;gap:4px;flex:1;min-width:0;overflow-x:auto;scrollbar-width:none;}
+  .cc-lb-nav button{flex:none;padding:6px 12px;border:0;background:transparent;color:#fff;cursor:pointer;opacity:.8;
+    font-family:var(--font-display);font-size:15px;text-transform:uppercase;letter-spacing:.03em;}
+  .cc-lb-nav button.on{opacity:1;}
+  .cc-lb-wallet{display:flex;gap:8px;flex:none;}
+  .cc-lb-wallet span{display:flex;align-items:center;gap:5px;padding:4px 10px;border-radius:999px;background:rgba(0,0,0,.45);
+    font-weight:800;font-size:13px;cursor:pointer;white-space:nowrap;}
+  .cc-lb-left{grid-area:left;display:flex;flex-direction:column;gap:8px;padding:0 0 14px 14px;z-index:4;min-height:0;overflow:auto;scrollbar-width:none;}
+  .cc-lb-panel{padding:8px 10px;cursor:pointer;background:rgba(0,0,0,.45);border-radius:8px;}
+  .cc-lb-panel h5{margin:0 0 6px;font-family:var(--font-display);font-size:14px;text-transform:uppercase;letter-spacing:.04em;}
+  .cc-lb-row{display:flex;justify-content:space-between;gap:6px;font-size:13px;line-height:1.5;}
+  .cc-lb-row b{font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .cc-lb-row i{font-style:normal;font-weight:800;color:#ffe14d;}
+  .cc-lb-row.me b{color:#ffe14d;}
+  .cc-lb-sub{font-size:11.5px;opacity:.8;margin-top:3px;}
+  .cc-lb-bar{display:grid;grid-template-columns:1fr auto;gap:2px 8px;font-size:12px;margin-bottom:6px;}
+  .cc-lb-bar em{font-style:normal;opacity:.85;} .cc-lb-bar b{font-weight:800;}
+  .cc-lb-bar u{grid-column:1/3;display:block;height:6px;border-radius:3px;background:rgba(255,255,255,.18);overflow:hidden;}
+  .cc-lb-bar s{display:block;height:100%;background:#3fe0c0;}
+  .cc-lb-q{display:flex;gap:6px;font-size:12px;line-height:1.35;margin-bottom:4px;}
+  .cc-lb-q i{flex:none;width:14px;height:14px;border:1.5px solid rgba(255,255,255,.6);border-radius:3px;font-style:normal;font-size:10px;
+    display:flex;align-items:center;justify-content:center;margin-top:1px;}
+  .cc-lb-q.ok i{background:#3fe0c0;border-color:#3fe0c0;color:#04110f;}
+  .cc-lb-fmt{display:flex;gap:4px;}
+  .cc-lb-fmt span{flex:1;text-align:center;padding:5px 0;font-family:var(--font-display);font-size:12px;text-transform:uppercase;
+    background:rgba(0,0,0,.45);border:2px solid rgba(255,255,255,.3);}
+  .cc-lb-fmt span.on{background:#fff;color:#1a3a9e;border-color:#fff;}
+  /* Глава 1: вкладки капсом по центру с жёлтой чертой, синие квадратные панели в светлой рамке. */
+  .cc-lb-c1 .cc-lb-nav{justify-content:center;} .cc-lb-c1 .cc-lb-nav button.on{box-shadow:inset 0 -3px 0 #ffe14d;}
+  .cc-lb-c1 .cc-lb-panel{border-radius:2px;background:rgba(18,50,150,.6);border:2px solid rgba(255,255,255,.35);}
+  .cc-lb-c1 .cc-lb-panel h5{margin:-8px -10px 6px;padding:5px 10px;background:rgba(255,255,255,.14);}
+  .cc-lb-c1 .cc-lb-play{border-radius:2px;transform:none;}
+  /* Глава 2: тёмные панели, жёлтая черта у заголовка, вкладка — жёлтая плашка. */
+  .cc-lb-c2 .cc-lb-nav button.on{background:#ffe14d;color:#111;transform:skewX(-8deg);}
+  .cc-lb-c2 .cc-lb-panel{background:rgba(10,14,50,.72);border-radius:4px;}
+  .cc-lb-c2 .cc-lb-panel h5{border-left:4px solid #ffe14d;padding-left:7px;}
+  /* Главы 3–4: светлые скруглённые панели, вкладка — белая подложка. */
+  .cc-lb-c3 .cc-lb-nav button.on{background:#fff;color:#0b48b0;border-radius:6px;}
+  .cc-lb-c3 .cc-lb-panel{background:rgba(5,30,90,.42);border:1px solid rgba(255,255,255,.35);border-radius:12px;}
+  /* С ноября 2023: тёмное стекло, вкладки-пилюли. */
+  .cc-lb-c5 .cc-lb-nav button{border-radius:999px;} .cc-lb-c5 .cc-lb-nav button.on{background:rgba(255,255,255,.16);}
+  .cc-lb-c5 .cc-lb-panel{background:rgba(15,16,40,.7);border:1px solid rgba(255,255,255,.1);border-radius:14px;}
   .cc-lb-c1{background:radial-gradient(ellipse at 50% 20%,#8fd0ff 0%,#3a86e8 40%,#1a3a9e 85%);}
   .cc-lb-c2{background:repeating-linear-gradient(-55deg,rgba(255,255,255,.05) 0 12px,transparent 12px 26px),linear-gradient(180deg,#5a3bd0,#22186b);}
   .cc-lb-c3{background:radial-gradient(ellipse at 50% 25%,#bfeaff 0%,#47b4ff 40%,#1468d6 90%);}
   .cc-lb-c5{background:radial-gradient(ellipse at 50% 35%,#3b3f86 0%,#1a1c3d 55%,#0c0d1c 100%);}
-  .cc-lobby::after{content:"";position:absolute;left:10%;right:10%;bottom:4%;height:14%;border-radius:50%;pointer-events:none;
+  .cc-lb-stage::after{content:"";position:absolute;left:5%;right:5%;bottom:3%;height:12%;border-radius:50%;pointer-events:none;
     background:radial-gradient(ellipse at center,rgba(255,255,255,.22),rgba(255,255,255,0) 70%);}
-  .cc-lb-stage{position:absolute;inset:0 0 0 0;display:flex;justify-content:center;align-items:flex-end;padding-bottom:2%;}
+  .cc-lb-stage{grid-area:stage;position:relative;display:flex;justify-content:center;align-items:flex-end;padding-bottom:2%;min-height:0;}
   .cc-lb-fig{position:relative;z-index:1;height:78%;aspect-ratio:1/1;margin:0 -7%;flex:none;}
   .cc-lb-fig.me{height:94%;z-index:2;cursor:pointer;}
   .cc-lb-fig img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;object-position:50% 100%;
@@ -4054,7 +4099,7 @@
   .cc-lb-plate b{font-family:var(--font-display);font-size:14px;text-transform:uppercase;letter-spacing:.02em;}
   .cc-lb-plate em{font-style:normal;font-size:12px;color:#ffe14d;font-weight:800;}
   .cc-lb-fig.me .cc-lb-plate{background:rgba(0,0,0,.7);box-shadow:0 0 0 2px #ffe14d inset;}
-  .cc-lb-side{position:absolute;right:14px;bottom:14px;z-index:4;display:flex;flex-direction:column;align-items:stretch;gap:8px;width:min(300px,46%);}
+  .cc-lb-side{grid-area:side;align-self:end;z-index:4;display:flex;flex-direction:column;align-items:stretch;gap:8px;padding:0 14px 14px 0;}
   .cc-lb-mode{padding:8px 12px;border-radius:8px;background:rgba(0,0,0,.6);}
   .cc-lb-mode em{display:block;font-style:normal;font-size:11px;letter-spacing:.06em;text-transform:uppercase;opacity:.8;}
   .cc-lb-mode b{display:block;font-family:var(--font-display);font-size:18px;text-transform:uppercase;line-height:1.1;}
@@ -4063,9 +4108,17 @@
     box-shadow:0 4px 0 #b39a00;transform:skewX(-6deg);}
   .cc-lb-play:hover{background:#fff06b;}
   .cc-lb-play:disabled{background:#9a9a9a;box-shadow:0 4px 0 #666;cursor:not-allowed;}
-  @media (max-width:560px){ .cc-lobby{height:330px;}
-    .cc-lb-stage{bottom:96px;inset:0 0 96px 0;}
-    .cc-lb-side{left:10px;right:10px;bottom:10px;width:auto;flex-direction:row;align-items:stretch;}
+  /* Узкий ПК и планшет: панели слева уже, справа уже. */
+  @media (max-width:1000px){ .cc-lobby{grid-template-columns:200px minmax(0,1fr) 230px;} }
+  /* Телефон: столбиком — вкладки, сцена, режим и кнопка, панели под ними в две колонки. */
+  @media (max-width:700px){ .cc-lobby{grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-rows:auto 260px auto auto;height:auto;
+      grid-template-areas:"top top" "stage stage" "side side" "left left";}
+    .cc-lb-top{flex-wrap:wrap;padding:8px 10px;} .cc-lb-nav{order:2;flex-basis:100%;} .cc-lb-c1 .cc-lb-nav{justify-content:flex-start;}
+    .cc-lb-nav button{font-size:13px;padding:5px 9px;} .cc-lb-wallet{margin-left:auto;}
+    .cc-lb-left{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));padding:0 10px 10px;overflow:visible;}
+    .cc-lb-left .cc-lb-panel:first-child{grid-row:span 2;} }
+  @media (max-width:560px){
+    .cc-lb-side{padding:0 10px 10px;flex-direction:row;flex-wrap:wrap;align-items:stretch;} .cc-lb-fmt{flex-basis:100%;}
     .cc-lb-mode{flex:1;min-width:0;} .cc-lb-mode b{font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
     .cc-lb-play{font-size:20px;padding:10px 16px;} .cc-lb-plate b{font-size:12px;} .cc-lb-plate{padding:2px 6px;}
     /* Четверо в сквад-лобби на 340 px: картинка квадратная, сам персонаж — её середина, поэтому фигуры заходят
@@ -117250,7 +117303,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='bebb798c';
+const CC_BUILD='6dd42880';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -121893,8 +121946,53 @@ function ccLobbyHTML(card, btn, next, when){
   const play=m ? '<button class="cc-lb-play'+m[1].replace(/\bch-/g, ' cc-lb-')+'"'+m[2]+'>'+m[3]+'</button>' : '';
   const mode=next ? '<div class="cc-lb-mode"><em>'+esc((careerSquadSize()===3 ? L().ccSeasonTrios : careerSquadSize()===4 ? 'Squads' : L().ccSeasonDuos)+(when ? ' · '+when : ''))+'</em>'+
     '<b>'+esc(next.label||next.title||'')+'</b></div>' : '';
-  return '<div class="cc-lobby cc-lb-'+era.k+'"><div class="cc-lb-stage">'+row.join('')+'</div>'+
-    '<div class="cc-lb-side">'+mode+play+'</div></div>';
+  return '<div class="cc-lobby cc-lb-'+era.k+'">'+ccLobbyTopHTML(era)+'<div class="cc-lb-stage">'+row.join('')+'</div>'+
+    ccLobbyPanelsHTML(card)+'<div class="cc-lb-side">'+(era.k==='c1' ? ccLobbyFmtHTML(next) : '')+mode+play+'</div></div>';
+}
+/* Главное меню той главы, а не пустая сцена (его «посмотри, как в каждом сезоне реализовано главное меню, и сделай
+   так же, только чтоб пусто не было: ростеры, тренировки и т. д.»). Сверху — вкладки, как в игре (Глава 1: капсом
+   по центру; Глава 2–4: слева; с ноября 2023 — пилюли), справа V-Bucks и деньги; слева панели: ростер, тренировка,
+   задания — всё живое из карьеры, нажатие ведёт в свою вкладку. */
+function ccLobbyTopHTML(era){
+  const T=L(), tabs=[['centre','chTabCentre'],['locker','chTabLocker'],['items','chTabItems'],['train','chTabTrain'],['calendar','chTabCalendar'],['me','chTabMe']];
+  return '<div class="cc-lb-top"><nav class="cc-lb-nav">'+tabs.map(([k, key])=>
+      '<button class="'+(k==='centre' ? 'on' : '')+'" onclick="careerTab(\''+k+'\')">'+esc(T[key]||k)+'</button>').join('')+'</nav>'+
+    '<div class="cc-lb-wallet"><span onclick="ccFnShopOpen()"><i class="cc-vb-ic"></i>'+ccNum(CAREER.vb||0)+'</span>'+
+    '<span onclick="careerTab(\'shop\')">'+ccMoney(CAREER.career.balance||0)+'</span></div></div>';
+}
+function ccLobbyPanelsHTML(card){
+  const T=L(), pl=CAREER.player, cr=CAREER.career;
+  const panel=(h, body, go)=>'<div class="cc-lb-panel"'+(go ? ' onclick="careerTab(\''+go+'\')"' : '')+'><h5>'+esc(h)+'</h5>'+body+'</div>';
+  const bar=(lab, v, max)=>'<div class="cc-lb-bar"><em>'+esc(lab)+'</em><b>'+Math.round(v)+' / '+max+'</b>'+
+    '<u><s style="width:'+Math.max(0, Math.min(100, v/max*100))+'%"></s></u></div>';
+  // Ростер: ты и напарники с рейтингом; у основного напарника — сыгранность.
+  const me={handle:pl.nick||pl.handle||'', ovr:Math.round((card && (card._ovr||card.rating)) || pl.ovr || 0), me:true};
+  const ros=[me].concat((careerMates()||[]).filter(Boolean).map(c=>({handle:c.handle, ovr:Math.round(c._ovr||c.rating||0)})));
+  let chem='';
+  try{ if(careerPartnerCard()) chem='<div class="cc-lb-sub">'+esc(T.ccChem)+' '+Math.min(100, Math.round(careerChemDays()/CC_CHEM_DAYS*100))+'%</div>'; }catch(e){}
+  const roster=panel(T.lfRosters, ros.map(r=>'<div class="cc-lb-row'+(r.me ? ' me' : '')+'"><b>'+esc(r.handle)+'</b><i>'+r.ovr+'</i></div>').join('')+chem, 'me');
+  // Тренировка: энергия и настрой, как кольца «Центра».
+  let train='';
+  try{
+    const mood=(careerMateRec() || (typeof ccMpTeam==='function' && ccMpTeam())) ? careerPatience() : null;
+    train=panel(T.chTabTrain, bar(T.ccRingEnergy, careerEnergy(), careerEnergyMax())+(mood!=null ? bar(T.ccRingMood, mood, 100) : ''), 'train');
+  }catch(e){}
+  // Задания: цель клуба, цель месяца, своя цель по атрибуту — те же, что в «Целях».
+  const q=[];
+  try{
+    const org=CAREER.org;
+    if(org && !org.own && org.goal) q.push([careerOrgGoalText(org.goal), careerOrgGoalMet()]);
+    const mg=careerMonthGoal(); if(mg) q.push([careerMonthGoalText(mg), careerMonthGoalMet()]);
+    const g=ccLife().goal; if(g && !g.done) q.push([ccAttrFull(g.k)+' → '+g.to, false]);
+  }catch(e){}
+  const quests=panel(T.hgTitle, q.length ? q.slice(0, 3).map(([t, ok])=>'<div class="cc-lb-q'+(ok ? ' ok' : '')+'"><i>'+(ok ? '✓' : '')+'</i>'+esc(t)+'</div>').join('')
+    : '<div class="cc-lb-sub">'+esc(T.hgSet)+'</div>', 'train');
+  return '<div class="cc-lb-left">'+roster+train+quests+'</div>';
+}
+// Глава 1: выбор режима над кнопкой (Solo / Duos / Squads), подсвечен формат ближайшего вечера.
+function ccLobbyFmtHTML(next){
+  const n=next && next.type==='solo' ? 1 : careerSquadSize();
+  return '<div class="cc-lb-fmt">'+[[1,'Solo'],[2,'Duos'],[3,'Trios'],[4,'Squads']].map(([k, t])=>'<span class="'+(k===n ? 'on' : '')+'">'+t+'</span>').join('')+'</div>';
 }
 function careerCentreHTML(card, a){
   const cr=CAREER.career, pl=CAREER.player;
