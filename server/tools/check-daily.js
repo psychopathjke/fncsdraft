@@ -20,9 +20,9 @@ check('сила без поля — 0', r.row.p100===0);
 check('порядок: сила важнее очков', require('../src/daily.js').better({p100:9025, score:10, at:1}, {p100:9000, score:900, at:0})<0);
 check('сила вне границ — 0', normalize(Object.assign({}, OK, {power:500}), NOW).row.p100===0);
 // 19.10: n-word и оскорбления в таблицу дня не встают; обычные ники с похожими кусками — встают.
-for(const n of ['nigga','N1GG4','n.i.g.g.e.r','nіgga','faggot','KYS','kill yourself','retard','пидорас','Хуй','hitler1488','spic','coon','fuck you'])
+for(const n of ['pidoras','pidr','PIDR228','P1DORAS','nigga','N1GG4','n.i.g.g.e.r','nіgga','faggot','KYS','kill yourself','retard','пидорас','Хуй','hitler1488','spic','coon','fuck you'])
   check('плохой ник «'+n+'» — отказ', normalize(Object.assign({}, OK, {nick:n}), NOW).err==='nickbad');
-for(const n of ['Raccoon','Spicy','Knight','Grape','Speedo','Nigel','Shinigami','Hannibal','Scunthorpe','книга','Конь','Cocoon','Ninja','Bugha','Peterbot'])
+for(const n of ['Spidr','rapidraga','louieblanc','Raccoon','Spicy','Knight','Grape','Speedo','Nigel','Shinigami','Hannibal','Scunthorpe','книга','Конь','Cocoon','Ninja','Bugha','Peterbot'])
   check('обычный ник «'+n+'» проходит', !!normalize(Object.assign({}, OK, {nick:n}), NOW).row);
 if(fails.length){ console.log('КРАСНОЕ:\n '+fails.join('\n ')); process.exit(1); }
 console.log('daily: всё зелёное');
