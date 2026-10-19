@@ -57,10 +57,10 @@ const BOOT = `
   try{
     // Последнее место в сборной — через отбор страны (его вопрос 8.10: «nation квалификацию точно работают сейчас? для
     // последнего игрока»): выиграл отбор — четвёртый в составе, квалификация открыта и играется вчетвером.
-    seed(85, 'de', '2026-10-28');
+    seed(85, 'de', '2026-11-15');
     const m=ccNationsMine(); out.notes.seat=m && {seat:m.seat, inSquad:m.inSquad, cap:m.captain};
     check('85 из Германии — место через отбор', m && m.seat==='trial' && !m.inSquad, JSON.stringify(out.notes.seat));
-    careerAdvanceTo('2026-10-31');
+    careerAdvanceTo('2026-11-18');
     check('отбор открыт', careerCanPlayKind('nations')===true, ccNatWhyLocked && ccNatWhyLocked());
     out.notes.trialHead=await playThrough('trial');
     const N=CAREER.career.nations; out.notes.trial=N.trial;
@@ -69,7 +69,7 @@ const BOOT = `
     const m2=ccNationsMine(); out.notes.after={inSquad:m2.inSquad, squad:(m2.squad||[]).map(p=>p ? (p.handle||p.name||'?') : '—')};
     check('после выигранного отбора — в составе', m2.inSquad===true, JSON.stringify(out.notes.after));
     check('состав — четыре места', (m2.squad||[]).length===4, JSON.stringify(out.notes.after));
-    careerAdvanceTo('2026-11-07');
+    careerAdvanceTo('2026-11-25');
     check('квалификация открыта для игрока с отбора', careerCanPlayKind('nations')===true, ccNatWhyLocked && ccNatWhyLocked());
     out.notes.qualHead=await playThrough('qual');
     const lq=(CAREER.career.log||[]).find(r=>r.kind==='nations' && r.stage!=='trial'); out.notes.qual=lq && {stage:lq.stage, place:lq.place, of:lq.of, mates:lq.mates, nat:lq.nat};

@@ -40,7 +40,7 @@ const BOOT = `
       v:1, player:{nick:'Natman', age:20, source:'rookie', country:'ru', countryPing:15,
         closeRangeEdge:6, region:'EU', ovr:96, role:'roleIGL', attrs:null, ageEdge:4,
         photo:null, handle:null, cardRegion:null, nat:null},
-      career:{season:1, size:2, year:2026, year0:2026, day:'2026-11-07', division:1,
+      career:{season:1, size:2, year:2026, year0:2026, day:'2026-11-25', division:1,
               earnings:0, balance:0, reach:0, tokens:[], log:[], news:[], seed:'natpick'},
       partner:{card:card('M1',88), patience:60, since:'2026-01-01', dev:0},
       partners:[{card:card('M1',88), patience:60, since:'2026-01-01', dev:0}]}));
