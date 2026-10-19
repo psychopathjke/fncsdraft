@@ -4017,11 +4017,13 @@
   .cc-fn-slot em{font-style:normal;font-size:11px;opacity:.85;}
   /* Шкафчик как в игре: слева большой образ, справа ячейки по разделам; вид — по главе карьеры (ccFnShopEra). */
   .cc-fn-lk{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.25fr);gap:12px;align-items:stretch;}
-  .cc-fn-hero{position:relative;display:flex;flex-direction:column;justify-content:flex-end;min-height:220px;padding:0;border:0;border-radius:8px;
+  .cc-fn-hero{position:relative;display:flex;flex-direction:column;justify-content:flex-end;min-height:280px;padding:0;border:0;border-radius:8px;
     overflow:hidden;cursor:pointer;color:#fff;
     background:radial-gradient(circle at 50% 35%,color-mix(in srgb,var(--fn-bg) 50%,#fff) 0%,var(--fn-bg) 50%,color-mix(in srgb,var(--fn-bg) 45%,#000) 100%);}
   .cc-fn-hero img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;object-position:50% 40%;}
-  .cc-fn-hero img.bg{object-fit:cover;filter:blur(16px) brightness(.8);transform:scale(1.2);opacity:.55;}
+  .cc-fn-hero img.full{inset:6px 0 0;height:calc(100% - 6px);object-fit:cover;object-position:50% 100%;filter:drop-shadow(0 6px 10px rgba(0,0,0,.35));}
+  .cc-fn-floor{position:absolute;left:12%;right:12%;bottom:4%;height:12%;border-radius:50%;
+    background:radial-gradient(ellipse at center,rgba(255,255,255,.28),rgba(255,255,255,0) 70%);}
   .cc-fn-hero b{position:relative;padding:18px 8px 8px;text-align:left;font-family:var(--font-display);text-transform:uppercase;font-size:16px;
     background:linear-gradient(transparent,rgba(0,0,0,.65));}
   .cc-fn-hero i{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-style:normal;font-size:44px;opacity:.5;}
@@ -117196,7 +117198,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='cb0a126c';
+const CC_BUILD='6a7113d5';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -147801,6 +147803,14 @@ const CC_FN_RAR={common:'#6b6b6b', uncommon:'#3f8f24', rare:'#2a7fd4', epic:'#8a
   'S:MARVEL':'#b22b2b', 'S:DC':'#3a5bb5', 'S:Gaming Legends':'#4b2ca8', 'S:Star Wars':'#2f2f2f', 'S:DARK':'#8a1d8f',
   'S:Shadow':'#3a3a3a', 'S:Slurp':'#1aa6a6', 'S:Lava':'#b04a1a', 'S:Frozen':'#4f97c9', 'S:CREW':'#2b6c8f'};
 function ccFnImg(id, small){ return 'https://fortnite-api.com/images/cosmetics/br/'+String(id).toLowerCase()+'/'+(small ? 'smallicon' : 'icon')+'.png'; }
+// Скин в полный рост (featured.png: персонаж стоит, как в лобби игры, фон прозрачный) — для шкафчика.
+// Нет такой картинки — квадратная иконка; нет и её — пусто.
+function ccFnFull(id){ return 'https://fortnite-api.com/images/cosmetics/br/'+String(id).toLowerCase()+'/featured.png'; }
+function ccFnHeroErr(img){
+  if(img.dataset.f){ img.remove(); return; }
+  img.dataset.f='1'; img.className='';
+  img.src=ccFnImg(img.dataset.id);
+}
 // Вид магазина той главы, что идёт в карьере: c1 — синий «Рекомендуемые / Ежедневные» Главы 1, c2 — полосатые плитки
 // Главы 2, c3 — светлый магазин Глав 3–4, c5 — тёмный магазин лентами (новый магазин с 3 ноября 2023).
 const CC_FN_CHAPTERS=[['2019-10-13', 1], ['2021-12-04', 2], ['2022-12-03', 3], ['2023-12-02', 4], ['2024-11-30', 5], ['2025-11-29', 6]];
@@ -147924,7 +147934,7 @@ function ccFnLoadoutHTML(){
   // Как шкафчик в игре той главы: слева большой образ (надетый скин), справа ячейки по разделам.
   const o=eq.o && own[eq.o] ? eq.o : null;
   const hero='<button class="cc-fn-hero" onclick="ccFnPick(\'o\')" style="--fn-bg:'+(o ? (CC_FN_RAR[own[o].r]||CC_FN_RAR.rare) : '#1d2433')+'">'+
-    (o ? '<img class="bg" src="'+ccFnImg(o)+'" alt="" loading="lazy" onerror="this.remove()"><img src="'+ccFnImg(o)+'" alt="" loading="lazy" onerror="this.remove()"><b>'+esc(own[o].n||o)+'</b>' : '<i>+</i><b>'+esc(T.ccFnType_o)+'</b>')+'</button>';
+    (o ? '<span class="cc-fn-floor"></span><img class="full" src="'+ccFnFull(o)+'" data-id="'+esc(o)+'" alt="" loading="lazy" onerror="ccFnHeroErr(this)"><b>'+esc(own[o].n||o)+'</b>' : '<i>+</i><b>'+esc(T.ccFnType_o)+'</b>')+'</button>';
   const cat=(h, ss)=>'<div class="cc-fn-cat"><h5>'+esc(h)+'</h5><div class="cc-fn-slots">'+ss.map(slot).join('')+'</div></div>';
   const slots='<div class="cc-fn-lk">'+hero+'<div class="cc-fn-cats">'+cat(T.ccFnCatChar, ['o','b','p','g'])+cat(T.ccFnTypes_e+' · '+T.ccFnTypes_w, ['e','w'])+'</div></div>';
   let pick='';
