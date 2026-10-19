@@ -1,0 +1,6171 @@
+{
+ "generated": "2026-10-19",
+ "method": "Union of (1) Fortnite Esports Wiki (Fandom) Cargo table Players where InputDevice=\"Controller\" (670 pages; queried via api.php action=cargoquery) and (2) ProSettings.net Fortnite list (319 pros) whose player page has a Controller settings/binds section. Liquipedia does not record input. sim_ovr = best ovr of the same handle+region in fncsdraftmajor/tools/measured/player-handles.json (handle match only, verify namesakes).",
+ "caveats": [
+  "Fandom InputDevice is the CURRENT input as last edited; it does not record switches.",
+  "Handle collisions: same handle in different regions may be different people (e.g. Frosty, Rise, FHD, Unknown).",
+  "ProSettings pages with both KBM and controller sections are flagged medium (hybrid page)."
+ ],
+ "switches_and_corrections": [
+  {
+   "handle": "Reet",
+   "region": "NAC",
+   "from": "controller",
+   "to": "KBM?",
+   "year": "2025 (Feb, per ProSettings gear dates; unconfirmed)",
+   "source_url": "https://prosettings.net/players/reet/"
+  },
+  {
+   "handle": "Deyy",
+   "region": "NAC",
+   "from": "controller",
+   "to": "KBM/hybrid?",
+   "year": "2024 (Aug, per ProSettings gear dates; unconfirmed)",
+   "source_url": "https://prosettings.net/players/deyy/"
+  },
+  {
+   "handle": "Marco",
+   "region": "EU",
+   "from": "controller",
+   "to": "KBM?",
+   "year": "2025 (Nov, per ProSettings gear dates; unconfirmed)",
+   "source_url": "https://prosettings.net/players/marco/"
+  },
+  {
+   "handle": "premfn",
+   "region": "NAC",
+   "from": "controller",
+   "to": "KBM?",
+   "year": "2024-2025 (ProSettings gear history)",
+   "source_url": "https://prosettings.net/players/premfn/"
+  },
+  {
+   "handle": "TSM Myth",
+   "region": "NAC",
+   "from": "KBM",
+   "to": "controller (tried)",
+   "year": "2021",
+   "source_url": "https://www.esports.net/news/fortnite/why-are-so-many-fortnite-pros-switching-to-controllers/",
+   "note": "streamer, not a comp pro in 2021"
+  },
+  {
+   "handle": "Rojo",
+   "region": "EU",
+   "note": "NOT controller: Fandom lists KBM; only his duo Wolfiez used a controller at World Cup 2019",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Rojo"
+  },
+  {
+   "handle": "aqua / nyhrox",
+   "region": "EU",
+   "note": "NOT controller: esports.net (2021) claims both used controllers at the World Cup, but Fandom lists both as KBM and 2019 reports name Wolfiez as one of only two controller users. Treat as KBM.",
+   "source_url": [
+    "https://fortnite-esports.fandom.com/wiki/Aqua",
+    "https://fortnite-esports.fandom.com/wiki/Nyhrox"
+   ]
+  },
+  {
+   "handle": "TaySon",
+   "region": "EU",
+   "note": "Fandom: KBM; no source for a controller period found. Treat as KBM.",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/TaySon"
+  }
+ ],
+ "counts": {
+  "total": 687,
+  "by_region": {
+   "NAW": 4,
+   "NAC": 155,
+   "EU": 374,
+   "BR": 29,
+   "ME": 76,
+   "ASIA": 21,
+   "OCE": 28
+  },
+  "high_confidence": 28,
+  "in_simulator": 233
+ },
+ "players": [
+  {
+   "handle": "Mero",
+   "region": "NAW",
+   "input": "controller",
+   "source_url": [
+    "https://fortnite-esports.fandom.com/wiki/Mero",
+    "https://prosettings.net/players/mero/"
+   ],
+   "confidence": "high (2 sources)",
+   "note": "Canada. Widely called the best controller player ever; 6 FNCS titles incl. 2023 FNCS Global Championship (with Cooper). Source: https://esports.gg/news/fortnite/who-is-the-best-fortnite-player/ ; no switch found.",
+   "country": "United States",
+   "sim_ovr": 99,
+   "sim_region": "NAC"
+  },
+  {
+   "handle": "Bylah",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Bylah",
+   "confidence": "medium (1 source)",
+   "country": "United States",
+   "retired": true,
+   "sim_ovr": 96
+  },
+  {
+   "handle": "Coop",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Coop",
+   "confidence": "medium (1 source)",
+   "country": "United States",
+   "retired": true,
+   "sim_ovr": 96
+  },
+  {
+   "handle": "Deyy",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": [
+    "https://fortnite-esports.fandom.com/wiki/Deyy",
+    "https://prosettings.net/players/deyy/"
+   ],
+   "confidence": "high (2 sources)",
+   "note": "Two-time FNCS winner on controller (C2S4, C2S6) per Sportskeeda 2022 (https://www.sportskeeda.com/fortnite/who-best-fortnite-controller-players-time). POSSIBLE SWITCH: ProSettings lists KBM settings and mouse/keyboard gear current from 2024-08-27 (Viper V3 Pro, Wooting 60HE+); likely KBM or hybrid from ~Aug 2024, unconfirmed.",
+   "country": "United States",
+   "team": "One True Revival",
+   "sim_ovr": 96
+  },
+  {
+   "handle": "t3eny",
+   "region": "EU",
+   "input": "controller",
+   "source_url": [
+    "https://fortnite-esports.fandom.com/wiki/T3eny",
+    "https://prosettings.net/players/t3eny/"
+   ],
+   "confidence": "high (2 sources)",
+   "note": "ProSettings blog (Aug 2026) names him among controller players who won the biggest events.",
+   "country": "Slovenia",
+   "team": "Aurora Gaming",
+   "sim_ovr": 96
+  },
+  {
+   "handle": "AyarBaffo",
+   "region": "EU",
+   "input": "controller",
+   "source_url": [
+    "https://fortnite-esports.fandom.com/wiki/AyarBaffo",
+    "https://prosettings.net/players/ayarbaffo/"
+   ],
+   "confidence": "high (2 sources)",
+   "country": "Italy",
+   "sim_ovr": 95
+  },
+  {
+   "handle": "Chimp",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Chimp_(NA_Player)",
+   "confidence": "medium (1 source)",
+   "country": "United States",
+   "team": "One True Revival",
+   "sim_ovr": 95
+  },
+  {
+   "handle": "Reet",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": [
+    "https://fortnite-esports.fandom.com/wiki/Reet",
+    "https://prosettings.net/players/reet/"
+   ],
+   "confidence": "high (2 sources)",
+   "note": "POSSIBLE SWITCH: Fandom still lists Controller, but ProSettings gear history shows Logitech G Pro X Superlight 2 + SteelSeries Apex Pro Mini as current from 2025-02-17 and a user comment says he moved to KBM. Controller (SCUF) 2020-2024 certain; KBM from ~Feb 2025 unconfirmed.",
+   "country": "United States",
+   "team": "XSET",
+   "sim_ovr": 95
+  },
+  {
+   "handle": "Resypical",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Resypical",
+   "confidence": "medium (1 source)",
+   "country": "United States",
+   "sim_ovr": 95
+  },
+  {
+   "handle": "Revised",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Revised",
+   "confidence": "medium (1 source)",
+   "country": "United States",
+   "sim_ovr": 95
+  },
+  {
+   "handle": "Wolfiez",
+   "region": "EU",
+   "input": "controller",
+   "source_url": [
+    "https://fortnite-esports.fandom.com/wiki/Wolfiez",
+    "https://prosettings.net/players/wolfiez/"
+   ],
+   "confidence": "high (2 sources)",
+   "note": "Fortnite World Cup 2019 Duos 2nd ($2.25M) with Rojo, on a standard Xbox One controller; one of only two controller players at the World Cup finals (https://www.thegamer.com/fortnite-world-cup-teen-winner/, https://bleacherreport.com/articles/2847488-fortnite-world-cup-finals-2019-bughas-top-plays-prize-money).",
+   "country": "England",
+   "retired": true,
+   "sim_ovr": 95
+  },
+  {
+   "handle": "Cr1nge",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://prosettings.net/players/cr1nge/",
+   "confidence": "medium (1 source)",
+   "country": "United Kingdom",
+   "sim_ovr": 94
+  },
+  {
+   "handle": "crr",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Crr",
+   "confidence": "medium (1 source)",
+   "note": "Named among controller pioneers (\"Crr\") by Sportskeeda 2022.",
+   "country": "Wales",
+   "team": "Retired",
+   "retired": true,
+   "sim_ovr": 94
+  },
+  {
+   "handle": "Curve",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://prosettings.net/players/curve/",
+   "confidence": "medium (1 source)",
+   "note": "ProSettings blog (Aug 2026) names Curve among controller players who won the biggest events.",
+   "country": "United States",
+   "sim_ovr": 94
+  },
+  {
+   "handle": "Death",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/DeathNYC",
+   "confidence": "medium (1 source)",
+   "country": "United States",
+   "sim_ovr": 94
+  },
+  {
+   "handle": "PXMP",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": [
+    "https://fortnite-esports.fandom.com/wiki/PXMP",
+    "https://prosettings.net/players/pxmp/"
+   ],
+   "confidence": "high (2 sources)",
+   "country": "United States",
+   "team": "Elite Esports",
+   "sim_ovr": 94
+  },
+  {
+   "handle": "Kingaling",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Kingaling",
+   "confidence": "medium (1 source)",
+   "country": "United States",
+   "team": "Gen.G Esports.NA",
+   "sim_ovr": 93
+  },
+  {
+   "handle": "Nxthan",
+   "region": "EU",
+   "input": "controller",
+   "source_url": [
+    "https://fortnite-esports.fandom.com/wiki/Nxthan",
+    "https://prosettings.net/players/nxthan/"
+   ],
+   "confidence": "high (2 sources)",
+   "country": "England",
+   "team": "X6 E-sport",
+   "sim_ovr": 93
+  },
+  {
+   "handle": "Okis",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": [
+    "https://fortnite-esports.fandom.com/wiki/Okis",
+    "https://prosettings.net/players/okis/"
+   ],
+   "confidence": "high (2 sources)",
+   "country": "United States",
+   "sim_ovr": 93
+  },
+  {
+   "handle": "Umplify",
+   "region": "EU",
+   "input": "controller",
+   "source_url": [
+    "https://fortnite-esports.fandom.com/wiki/Umplify",
+    "https://prosettings.net/players/umplify/"
+   ],
+   "confidence": "high (2 sources)",
+   "country": "Netherlands",
+   "retired": true,
+   "sim_ovr": 93
+  },
+  {
+   "handle": "Assault",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": [
+    "https://fortnite-esports.fandom.com/wiki/Assault",
+    "https://prosettings.net/players/assault/"
+   ],
+   "confidence": "high (2 sources)",
+   "country": "United States",
+   "sim_ovr": 92
+  },
+  {
+   "handle": "DKS",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/DKS",
+   "confidence": "medium (1 source)",
+   "country": "France",
+   "sim_ovr": 92
+  },
+  {
+   "handle": "GMoney",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": [
+    "https://fortnite-esports.fandom.com/wiki/GMoney",
+    "https://prosettings.net/players/gmoney/"
+   ],
+   "confidence": "high (2 sources)",
+   "note": "ProSettings shows only controller gear (SCUF Reflex) despite a mouse-settings tab.",
+   "country": "United States",
+   "team": "7VEN",
+   "sim_ovr": 92
+  },
+  {
+   "handle": "Kaan",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Kaan",
+   "confidence": "medium (1 source)",
+   "country": "Germany",
+   "team": "S8UL Esports",
+   "sim_ovr": 92
+  },
+  {
+   "handle": "SkyJump",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/SkyJump",
+   "confidence": "medium (1 source)",
+   "country": "France",
+   "team": "Ravens Esports",
+   "sim_ovr": 92
+  },
+  {
+   "handle": "verT",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/VerT",
+   "confidence": "medium (1 source)",
+   "country": "United States",
+   "team": "FearRising",
+   "sim_ovr": 92,
+   "sim_region": "NAW"
+  },
+  {
+   "handle": "Convic",
+   "region": "NAW",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Convic",
+   "confidence": "medium (1 source)",
+   "country": "United States",
+   "sim_ovr": 91
+  },
+  {
+   "handle": "Dynamic",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Dynamic",
+   "confidence": "medium (1 source)",
+   "country": "Mexico",
+   "sim_ovr": 91,
+   "sim_region": "NAW"
+  },
+  {
+   "handle": "Fishy",
+   "region": "BR",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Fishy",
+   "confidence": "medium (1 source)",
+   "country": "Argentina",
+   "sim_ovr": 91
+  },
+  {
+   "handle": "Frosty",
+   "region": "BR",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Frosty",
+   "confidence": "medium (1 source)",
+   "note": "Sportskeeda 2022: 2nd-most Cash Cup wins (14) among controller players. Fandom residency Brazil; NA handle collisions exist.",
+   "country": "Brazil",
+   "sim_ovr": 91
+  },
+  {
+   "handle": "Mikey",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Mikey_(NAE_Player_2)",
+   "confidence": "medium (1 source)",
+   "country": "United States",
+   "sim_ovr": 91
+  },
+  {
+   "handle": "Minori",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://prosettings.net/players/minori/",
+   "confidence": "medium (1 source)",
+   "country": "Switzerland",
+   "sim_ovr": 91
+  },
+  {
+   "handle": "wavyjacob",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Wavyjacob",
+   "confidence": "medium (1 source)",
+   "country": "United States",
+   "retired": true,
+   "sim_ovr": 91,
+   "sim_region": "NAW"
+  },
+  {
+   "handle": "Alliege",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": [
+    "https://fortnite-esports.fandom.com/wiki/Alliege",
+    "https://prosettings.net/players/alliege/"
+   ],
+   "confidence": "high (2 sources)",
+   "country": "Mexico",
+   "sim_ovr": 90,
+   "sim_region": "NAW"
+  },
+  {
+   "handle": "cam",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Cam",
+   "confidence": "medium (1 source)",
+   "country": "Panama",
+   "sim_ovr": 90
+  },
+  {
+   "handle": "Co1azo",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Co1azo",
+   "confidence": "medium (1 source)",
+   "country": "United States",
+   "sim_ovr": 90
+  },
+  {
+   "handle": "Dokko",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Dokko",
+   "confidence": "medium (1 source)",
+   "country": "Norway",
+   "retired": true,
+   "sim_ovr": 90
+  },
+  {
+   "handle": "dyox",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Dyox",
+   "confidence": "medium (1 source)",
+   "country": "Serbia",
+   "sim_ovr": 90
+  },
+  {
+   "handle": "Gabe",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Gabe_(NAC_Player)",
+   "confidence": "medium (1 source)",
+   "country": "Canada",
+   "team": "Dream Esports (North American Team)",
+   "sim_ovr": 90
+  },
+  {
+   "handle": "kayd",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Kayd",
+   "confidence": "medium (1 source)",
+   "country": "Wales",
+   "team": "Knights of Shadows",
+   "sim_ovr": 90
+  },
+  {
+   "handle": "LeTsHe",
+   "region": "EU",
+   "input": "controller",
+   "source_url": [
+    "https://fortnite-esports.fandom.com/wiki/LeTsHe",
+    "https://prosettings.net/players/letshe/"
+   ],
+   "confidence": "high (2 sources)",
+   "note": "Named among controller pioneers in comp by Sportskeeda 2022.",
+   "country": "Germany",
+   "sim_ovr": 90
+  },
+  {
+   "handle": "Liwshe",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Liwshe",
+   "confidence": "medium (1 source)",
+   "country": "Denmark",
+   "sim_ovr": 90
+  },
+  {
+   "handle": "Mansour",
+   "region": "ME",
+   "input": "controller",
+   "source_url": [
+    "https://fortnite-esports.fandom.com/wiki/Mansour",
+    "https://prosettings.net/players/mansour/"
+   ],
+   "confidence": "high (2 sources)",
+   "country": "Saudi Arabia",
+   "team": "Al Ula Club",
+   "sim_ovr": 90
+  },
+  {
+   "handle": "Scaryy",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Scaryy",
+   "confidence": "medium (1 source)",
+   "country": "Spain",
+   "sim_ovr": 90
+  },
+  {
+   "handle": "Syaaz",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://prosettings.net/players/syaaz/",
+   "confidence": "medium (1 source)",
+   "country": "Romania",
+   "sim_ovr": 90
+  },
+  {
+   "handle": "Tkay",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": [
+    "https://fortnite-esports.fandom.com/wiki/Tkay",
+    "https://prosettings.net/players/tkay/"
+   ],
+   "confidence": "high (2 sources)",
+   "country": "Dominican Republic",
+   "retired": true,
+   "sim_ovr": 90
+  },
+  {
+   "handle": "andyvencha",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Andyvencha",
+   "confidence": "medium (1 source)",
+   "country": "Mexico",
+   "sim_ovr": 89,
+   "sim_region": "NAW"
+  },
+  {
+   "handle": "CZR",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/CZR",
+   "confidence": "medium (1 source)",
+   "country": "Mexico",
+   "team": "Clan Housen",
+   "sim_ovr": 89,
+   "sim_region": "NAW"
+  },
+  {
+   "handle": "gabix",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Gabix",
+   "confidence": "medium (1 source)",
+   "country": "Italy",
+   "sim_ovr": 89
+  },
+  {
+   "handle": "Jaemon",
+   "region": "ASIA",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Jaemon",
+   "confidence": "medium (1 source)",
+   "country": "Japan",
+   "team": "STRIDERZ",
+   "sim_ovr": 89
+  },
+  {
+   "handle": "Kikoo",
+   "region": "EU",
+   "input": "controller",
+   "source_url": [
+    "https://fortnite-esports.fandom.com/wiki/Kiko",
+    "https://prosettings.net/players/kikoo/"
+   ],
+   "confidence": "high (2 sources)",
+   "country": "Portugal",
+   "team": "Detect Esports",
+   "sim_ovr": 89
+  },
+  {
+   "handle": "Klixey",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Klixey",
+   "confidence": "medium (1 source)",
+   "country": "United States",
+   "team": "HYLND",
+   "sim_ovr": 89
+  },
+  {
+   "handle": "Kruyor",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Kruyor",
+   "confidence": "medium (1 source)",
+   "country": "United States",
+   "sim_ovr": 89,
+   "sim_region": "NAW"
+  },
+  {
+   "handle": "Minipiyo",
+   "region": "ASIA",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Minipiyo",
+   "confidence": "medium (1 source)",
+   "country": "Japan",
+   "team": "ZETA DIVISION",
+   "sim_ovr": 89
+  },
+  {
+   "handle": "Pepoclip",
+   "region": "ASIA",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Pepoclip",
+   "confidence": "medium (1 source)",
+   "country": "Japan",
+   "sim_ovr": 89
+  },
+  {
+   "handle": "YooSaltyy",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/YooSaltyy",
+   "confidence": "medium (1 source)",
+   "country": "Mexico",
+   "sim_ovr": 89,
+   "sim_region": "NAW"
+  },
+  {
+   "handle": "Arrow",
+   "region": "ME",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Arrow",
+   "confidence": "medium (1 source)",
+   "country": "Saudi Arabia",
+   "sim_ovr": 88
+  },
+  {
+   "handle": "FHD",
+   "region": "ME",
+   "input": "controller",
+   "source_url": "https://prosettings.net/players/fhd/",
+   "confidence": "medium (1 source)",
+   "note": "ProSettings controller-only; Fandom has two FHD pages (ME), one says KBM - conflict.",
+   "country": "Saudi Arabia",
+   "sim_ovr": 88
+  },
+  {
+   "handle": "Hardfind",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Hardfind",
+   "confidence": "medium (1 source)",
+   "country": "England",
+   "sim_ovr": 88
+  },
+  {
+   "handle": "KanA",
+   "region": "ASIA",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/KanA_(AS_Player)",
+   "confidence": "medium (1 source)",
+   "country": "Japan",
+   "sim_ovr": 88
+  },
+  {
+   "handle": "Kurama",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Kurama",
+   "confidence": "medium (1 source)",
+   "country": "France",
+   "team": "Gentle Mates",
+   "sim_ovr": 88
+  },
+  {
+   "handle": "Modisk",
+   "region": "ME",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Modisk",
+   "confidence": "medium (1 source)",
+   "country": "Norway",
+   "retired": true,
+   "sim_ovr": 88
+  },
+  {
+   "handle": "Mshary",
+   "region": "ME",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Mshary_(Player_2)",
+   "confidence": "medium (1 source)",
+   "country": "Kuwait",
+   "team": "Vision Esport",
+   "sim_ovr": 88
+  },
+  {
+   "handle": "Pirozz",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Pirozz",
+   "confidence": "medium (1 source)",
+   "country": "France",
+   "sim_ovr": 88
+  },
+  {
+   "handle": "Scoped",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": [
+    "https://fortnite-esports.fandom.com/wiki/Scoped",
+    "https://prosettings.net/players/scoped/"
+   ],
+   "confidence": "high (2 sources)",
+   "country": "United States",
+   "retired": true,
+   "sim_ovr": 88
+  },
+  {
+   "handle": "Wqzzi",
+   "region": "ME",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Wqzzi",
+   "confidence": "medium (1 source)",
+   "country": "Saudi Arabia",
+   "sim_ovr": 88
+  },
+  {
+   "handle": "Yasir",
+   "region": "NAW",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Yasir",
+   "confidence": "medium (1 source)",
+   "country": "Mexico",
+   "sim_ovr": 88
+  },
+  {
+   "handle": "Zangi",
+   "region": "EU",
+   "input": "controller",
+   "source_url": [
+    "https://fortnite-esports.fandom.com/wiki/Zangi",
+    "https://prosettings.net/players/zangi/"
+   ],
+   "confidence": "high (2 sources)",
+   "country": "Italy",
+   "team": "Solary",
+   "sim_ovr": 88
+  },
+  {
+   "handle": "Aim",
+   "region": "ASIA",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Aim_(AS_Player)",
+   "confidence": "medium (1 source)",
+   "country": "Japan",
+   "sim_ovr": 87
+  },
+  {
+   "handle": "Akiira",
+   "region": "EU",
+   "input": "controller",
+   "source_url": [
+    "https://fortnite-esports.fandom.com/wiki/Akiira",
+    "https://prosettings.net/players/akiira/"
+   ],
+   "confidence": "high (2 sources)",
+   "country": "France",
+   "team": "Gentle Mates",
+   "sim_ovr": 87
+  },
+  {
+   "handle": "Gntl",
+   "region": "ME",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Gntl",
+   "confidence": "medium (1 source)",
+   "country": "Saudi Arabia",
+   "team": "Falcons Esport",
+   "sim_ovr": 87
+  },
+  {
+   "handle": "Noizy",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Noizy",
+   "confidence": "medium (1 source)",
+   "country": "Mexico",
+   "team": "RY2 Esports",
+   "sim_ovr": 87
+  },
+  {
+   "handle": "Totot",
+   "region": "ASIA",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Totot",
+   "confidence": "medium (1 source)",
+   "country": "Japan",
+   "sim_ovr": 87
+  },
+  {
+   "handle": "7man",
+   "region": "ME",
+   "input": "controller",
+   "source_url": [
+    "https://fortnite-esports.fandom.com/wiki/7man",
+    "https://prosettings.net/players/7man/"
+   ],
+   "confidence": "high (2 sources)",
+   "country": "Bahrain",
+   "team": "ROC Esports.ME",
+   "sim_ovr": 86
+  },
+  {
+   "handle": "Az2m",
+   "region": "ME",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Az2m",
+   "confidence": "medium (1 source)",
+   "country": "Saudi Arabia",
+   "sim_ovr": 86
+  },
+  {
+   "handle": "Baily",
+   "region": "OCE",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Baily",
+   "confidence": "medium (1 source)",
+   "country": "Australia",
+   "sim_ovr": 86
+  },
+  {
+   "handle": "Carrot",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Carrot",
+   "confidence": "medium (1 source)",
+   "country": "England",
+   "sim_ovr": 86
+  },
+  {
+   "handle": "Clapsy",
+   "region": "ME",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Clapsy",
+   "confidence": "medium (1 source)",
+   "country": "Jordan",
+   "sim_ovr": 86
+  },
+  {
+   "handle": "fecoy",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Fecoy",
+   "confidence": "medium (1 source)",
+   "country": "Mexico",
+   "sim_ovr": 86,
+   "sim_region": "NAW"
+  },
+  {
+   "handle": "Jaus",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Jaus",
+   "confidence": "medium (1 source)",
+   "country": "Mexico",
+   "team": "Team Llyrdem",
+   "sim_ovr": 86,
+   "sim_region": "NAW"
+  },
+  {
+   "handle": "Pixovsky",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Pixovsky",
+   "confidence": "medium (1 source)",
+   "country": "Poland",
+   "sim_ovr": 86
+  },
+  {
+   "handle": "Stranger",
+   "region": "ME",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Stranger",
+   "confidence": "medium (1 source)",
+   "country": "United Arab Emirates",
+   "sim_ovr": 86
+  },
+  {
+   "handle": "xJam",
+   "region": "ME",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/XJam",
+   "confidence": "medium (1 source)",
+   "country": "Pakistan",
+   "sim_ovr": 86
+  },
+  {
+   "handle": "Chocoluv",
+   "region": "ASIA",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Chocoluv",
+   "confidence": "medium (1 source)",
+   "country": "Japan",
+   "team": "KIT Gaming",
+   "sim_ovr": 85
+  },
+  {
+   "handle": "JKReet",
+   "region": "ME",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/JKReet",
+   "confidence": "medium (1 source)",
+   "country": "Saudi Arabia",
+   "sim_ovr": 85
+  },
+  {
+   "handle": "Kimkana",
+   "region": "ASIA",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Kimkana",
+   "confidence": "medium (1 source)",
+   "country": "Japan",
+   "team": "Crazy Raccoon",
+   "sim_ovr": 85
+  },
+  {
+   "handle": "Kogane",
+   "region": "ASIA",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Kogane",
+   "confidence": "medium (1 source)",
+   "country": "Japan",
+   "team": "DetonatioN FocusMe",
+   "sim_ovr": 85
+  },
+  {
+   "handle": "Malkawi",
+   "region": "ME",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Malkawi",
+   "confidence": "medium (1 source)",
+   "country": "Jordan",
+   "sim_ovr": 85
+  },
+  {
+   "handle": "Nero",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Nero_(EU_Player_2)",
+   "confidence": "medium (1 source)",
+   "country": "Germany",
+   "retired": true,
+   "sim_ovr": 85
+  },
+  {
+   "handle": "Rabbit",
+   "region": "ASIA",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Rabbit_(AS_Player)",
+   "confidence": "medium (1 source)",
+   "country": "Japan",
+   "team": "Yotta Esports",
+   "sim_ovr": 85
+  },
+  {
+   "handle": "Yama",
+   "region": "ASIA",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Yama",
+   "confidence": "medium (1 source)",
+   "country": "Japan",
+   "sim_ovr": 85
+  },
+  {
+   "handle": "Adol",
+   "region": "ME",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Adol",
+   "confidence": "medium (1 source)",
+   "country": "Saudi Arabia",
+   "sim_ovr": 84
+  },
+  {
+   "handle": "Ardit",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/%D0%90rdit",
+   "confidence": "medium (1 source)",
+   "country": "Germany",
+   "retired": true,
+   "sim_ovr": 84
+  },
+  {
+   "handle": "Diablo",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Diablo",
+   "confidence": "medium (1 source)",
+   "country": "England",
+   "sim_ovr": 84
+  },
+  {
+   "handle": "Hedra",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Hedra",
+   "confidence": "medium (1 source)",
+   "country": "France",
+   "team": "Australe Esport",
+   "sim_ovr": 84
+  },
+  {
+   "handle": "Kickz",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Kickz",
+   "confidence": "medium (1 source)",
+   "country": "United States",
+   "sim_ovr": 84
+  },
+  {
+   "handle": "Marco",
+   "region": "EU",
+   "input": "controller",
+   "source_url": [
+    "https://fortnite-esports.fandom.com/wiki/Marco",
+    "https://prosettings.net/players/marco/"
+   ],
+   "confidence": "high (2 sources)",
+   "note": "POSSIBLE SWITCH: ProSettings lists controller (DualSense, 2024-02) and KBM gear current from 2025-11-03 (DeathAdder V4 Pro); maybe KBM since late 2025.",
+   "country": "Finland",
+   "sim_ovr": 84
+  },
+  {
+   "handle": "Qhvst",
+   "region": "OCE",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Qhvst",
+   "confidence": "medium (1 source)",
+   "country": "Australia",
+   "sim_ovr": 84
+  },
+  {
+   "handle": "Shadox",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Shadox",
+   "confidence": "medium (1 source)",
+   "country": "France",
+   "sim_ovr": 84
+  },
+  {
+   "handle": "Twunti",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Twunti",
+   "confidence": "medium (1 source)",
+   "country": "United States",
+   "team": "HYLND",
+   "sim_ovr": 84
+  },
+  {
+   "handle": "Unknown",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://prosettings.net/players/unknown/",
+   "confidence": "medium (hybrid page)",
+   "note": "ProSettings (US content creator) lists Xbox Elite controller settings plus a mouse; Fandom NA \"Unknown\" says KBM - ambiguous/hybrid.",
+   "country": "United States",
+   "sim_ovr": 84
+  },
+  {
+   "handle": "Faxuty",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Faxuty",
+   "confidence": "medium (1 source)",
+   "country": "United States",
+   "team": "XSET",
+   "sim_ovr": 83,
+   "sim_region": "NAW"
+  },
+  {
+   "handle": "Playify",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Playify",
+   "confidence": "medium (1 source)",
+   "country": "United States",
+   "sim_ovr": 83
+  },
+  {
+   "handle": "Ryaic",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Ryaic",
+   "confidence": "medium (1 source)",
+   "team": "Team Pulsar",
+   "sim_ovr": 83,
+   "sim_region": "NAW"
+  },
+  {
+   "handle": "Sythic",
+   "region": "ME",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Sythic",
+   "confidence": "medium (1 source)",
+   "country": "Palestine",
+   "sim_ovr": 83
+  },
+  {
+   "handle": "Xayrez",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Xayrez",
+   "confidence": "medium (1 source)",
+   "country": "United States",
+   "sim_ovr": 83,
+   "sim_region": "NAW"
+  },
+  {
+   "handle": "rxlphy",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Rxlphy",
+   "confidence": "medium (1 source)",
+   "country": "United States",
+   "team": "Void Esports",
+   "sim_ovr": 82
+  },
+  {
+   "handle": "Sami",
+   "region": "ME",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Sami_(ME_Player)",
+   "confidence": "medium (1 source)",
+   "country": "Iran",
+   "retired": true,
+   "sim_ovr": 82
+  },
+  {
+   "handle": "Sxdia",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Sxdia",
+   "confidence": "medium (1 source)",
+   "country": "Italy",
+   "team": "Knights of Shadows",
+   "sim_ovr": 82
+  },
+  {
+   "handle": "Twx",
+   "region": "ME",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Twx",
+   "confidence": "medium (1 source)",
+   "sim_ovr": 82
+  },
+  {
+   "handle": "Bqrbie",
+   "region": "OCE",
+   "input": "controller",
+   "source_url": [
+    "https://fortnite-esports.fandom.com/wiki/Bqrbie",
+    "https://prosettings.net/players/bqrbie/"
+   ],
+   "confidence": "high (2 sources)",
+   "country": "Australia",
+   "team": "Repulse Gaming Oceania",
+   "sim_ovr": 81
+  },
+  {
+   "handle": "Purav",
+   "region": "OCE",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Purav",
+   "confidence": "medium (1 source)",
+   "country": "Kenya",
+   "team": "Loyal Esports",
+   "sim_ovr": 81
+  },
+  {
+   "handle": "QB",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/QB",
+   "confidence": "medium (1 source)",
+   "country": "Denmark",
+   "sim_ovr": 81
+  },
+  {
+   "handle": "Ricky",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Ricky_(Italian_Player)",
+   "confidence": "medium (1 source)",
+   "country": "Italy",
+   "team": "Knights of Shadows",
+   "sim_ovr": 81
+  },
+  {
+   "handle": "scolleh",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Scolly",
+   "confidence": "medium (1 source)",
+   "country": "England",
+   "retired": true,
+   "sim_ovr": 81
+  },
+  {
+   "handle": "Trapped",
+   "region": "OCE",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Trapped",
+   "confidence": "medium (1 source)",
+   "country": "Australia",
+   "retired": true,
+   "sim_ovr": 81
+  },
+  {
+   "handle": "Darkxz",
+   "region": "BR",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Darkxz",
+   "confidence": "medium (1 source)",
+   "country": "Brazil",
+   "team": "VOLTZ",
+   "sim_ovr": 80
+  },
+  {
+   "handle": "Griff",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Griff",
+   "confidence": "medium (1 source)",
+   "country": "Wales",
+   "sim_ovr": 80
+  },
+  {
+   "handle": "ITzM7mdFN",
+   "region": "ME",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/ITzM7md",
+   "confidence": "medium (1 source)",
+   "country": "Kuwait",
+   "sim_ovr": 80
+  },
+  {
+   "handle": "MAGL",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/MAGL",
+   "confidence": "medium (1 source)",
+   "country": "France",
+   "sim_ovr": 80
+  },
+  {
+   "handle": "Nevify",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Nevify",
+   "confidence": "medium (1 source)",
+   "country": "Trinidad and Tobago",
+   "sim_ovr": 80
+  },
+  {
+   "handle": "Yucky",
+   "region": "ASIA",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Yucky",
+   "confidence": "medium (1 source)",
+   "country": "Japan",
+   "team": "Mighty Titans Osaka",
+   "sim_ovr": 80
+  },
+  {
+   "handle": "Lardl",
+   "region": "ME",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Lardl",
+   "confidence": "medium (1 source)",
+   "country": "Saudi Arabia",
+   "team": "Team Oryx",
+   "sim_ovr": 79
+  },
+  {
+   "handle": "Squish",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Squish",
+   "confidence": "medium (1 source)",
+   "country": "United States",
+   "team": "CubeX Gaming",
+   "sim_ovr": 79
+  },
+  {
+   "handle": "Clzudz",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Clzudz",
+   "confidence": "medium (1 source)",
+   "country": "United States",
+   "sim_ovr": 78,
+   "sim_region": "NAW"
+  },
+  {
+   "handle": "KaanDE",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/KaanDE",
+   "confidence": "medium (1 source)",
+   "country": "Germany",
+   "retired": true,
+   "sim_ovr": 78
+  },
+  {
+   "handle": "Niasen",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Nia",
+   "confidence": "medium (1 source)",
+   "country": "France",
+   "sim_ovr": 78
+  },
+  {
+   "handle": "Spexx",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Spexx",
+   "confidence": "medium (1 source)",
+   "country": "England",
+   "sim_ovr": 78
+  },
+  {
+   "handle": "Vexifire",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Vexifire",
+   "confidence": "medium (1 source)",
+   "country": "United States",
+   "retired": true,
+   "sim_ovr": 78
+  },
+  {
+   "handle": "3R8",
+   "region": "ME",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/3R8",
+   "confidence": "medium (1 source)",
+   "country": "Saudi Arabia",
+   "team": "Scytes Esports",
+   "sim_ovr": 77
+  },
+  {
+   "handle": "Knifer",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Knifer",
+   "confidence": "medium (1 source)",
+   "country": "England",
+   "retired": true,
+   "sim_ovr": 77
+  },
+  {
+   "handle": "Dorito",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Dorito",
+   "confidence": "medium (1 source)",
+   "country": "Mexico",
+   "sim_ovr": 76
+  },
+  {
+   "handle": "ETzo",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/ETzo",
+   "confidence": "medium (1 source)",
+   "country": "Mexico",
+   "sim_ovr": 76,
+   "sim_region": "NAW"
+  },
+  {
+   "handle": "Fakie",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Fakie",
+   "confidence": "medium (1 source)",
+   "country": "United States",
+   "sim_ovr": 76,
+   "sim_region": "NAW"
+  },
+  {
+   "handle": "Puma",
+   "region": "ME",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Puma",
+   "confidence": "medium (1 source)",
+   "country": "Bahrain",
+   "sim_ovr": 76
+  },
+  {
+   "handle": "Rifty",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Rifty",
+   "confidence": "medium (1 source)",
+   "country": "Netherlands",
+   "sim_ovr": 76
+  },
+  {
+   "handle": "Stormy",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Stormy",
+   "confidence": "medium (1 source)",
+   "country": "Netherlands",
+   "sim_ovr": 76
+  },
+  {
+   "handle": "3zix",
+   "region": "ME",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/3zix",
+   "confidence": "medium (1 source)",
+   "country": "Saudi Arabia",
+   "sim_ovr": 75
+  },
+  {
+   "handle": "Aydan",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": [
+    "https://fortnite-esports.fandom.com/wiki/Aydan",
+    "https://prosettings.net/players/aydan/"
+   ],
+   "confidence": "high (2 sources)",
+   "country": "United States",
+   "retired": true,
+   "sim_ovr": 75
+  },
+  {
+   "handle": "CloverFnx",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/CloverFnx",
+   "confidence": "medium (1 source)",
+   "country": "United States",
+   "sim_ovr": 75
+  },
+  {
+   "handle": "DaaN",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/DaaN",
+   "confidence": "medium (1 source)",
+   "country": "Spain",
+   "sim_ovr": 75
+  },
+  {
+   "handle": "M1lo",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/M1lo",
+   "confidence": "medium (1 source)",
+   "country": "Sweden",
+   "sim_ovr": 75
+  },
+  {
+   "handle": "Nxtures",
+   "region": "OCE",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Nxtures",
+   "confidence": "medium (1 source)",
+   "country": "Australia",
+   "team": "Chrome Realm",
+   "sim_ovr": 75
+  },
+  {
+   "handle": "spect",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Spect",
+   "confidence": "medium (1 source)",
+   "country": "United States",
+   "sim_ovr": 75,
+   "sim_region": "NAW"
+  },
+  {
+   "handle": "Jae",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Jae_(EU_Player)",
+   "confidence": "medium (1 source)",
+   "country": "England",
+   "sim_ovr": 74
+  },
+  {
+   "handle": "Johku",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Johku",
+   "confidence": "medium (1 source)",
+   "country": "Finland",
+   "sim_ovr": 74
+  },
+  {
+   "handle": "Moxie",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Moxie",
+   "confidence": "medium (1 source)",
+   "country": "Mexico",
+   "team": "XSET",
+   "sim_ovr": 74
+  },
+  {
+   "handle": "Blzerd",
+   "region": "NAW",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Blzerd",
+   "confidence": "medium (1 source)",
+   "country": "United States",
+   "sim_ovr": 73
+  },
+  {
+   "handle": "Buzz",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Buzz",
+   "confidence": "medium (1 source)",
+   "country": "France",
+   "sim_ovr": 73
+  },
+  {
+   "handle": "Fenix",
+   "region": "ME",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Fenix_(ME_Player)",
+   "confidence": "medium (1 source)",
+   "country": "Saudi Arabia",
+   "team": "Future Esports",
+   "sim_ovr": 73
+  },
+  {
+   "handle": "Perceval",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Perceval",
+   "confidence": "medium (1 source)",
+   "country": "France",
+   "sim_ovr": 73
+  },
+  {
+   "handle": "Teaguey",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Teaguey",
+   "confidence": "medium (1 source)",
+   "country": "England",
+   "retired": true,
+   "sim_ovr": 73
+  },
+  {
+   "handle": "Zqcca",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Zqcca",
+   "confidence": "medium (1 source)",
+   "country": "Italy",
+   "sim_ovr": 73
+  },
+  {
+   "handle": "Adesito",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Adesito",
+   "confidence": "medium (1 source)",
+   "country": "Spain",
+   "sim_ovr": 72
+  },
+  {
+   "handle": "Aryan",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Aryan",
+   "confidence": "medium (1 source)",
+   "country": "England",
+   "sim_ovr": 72
+  },
+  {
+   "handle": "Asppp",
+   "region": "OCE",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Asppp",
+   "confidence": "medium (1 source)",
+   "country": "Australia",
+   "sim_ovr": 72
+  },
+  {
+   "handle": "Cr4zy",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Cr4zy",
+   "confidence": "medium (1 source)",
+   "country": "Spain",
+   "sim_ovr": 72
+  },
+  {
+   "handle": "Didzzz",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/DidzzZ",
+   "confidence": "medium (1 source)",
+   "country": "France",
+   "sim_ovr": 72
+  },
+  {
+   "handle": "Jokzz",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Jokzz",
+   "confidence": "medium (1 source)",
+   "country": "France",
+   "sim_ovr": 72
+  },
+  {
+   "handle": "Vortexia",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Vortexia",
+   "confidence": "medium (1 source)",
+   "country": "England",
+   "sim_ovr": 72
+  },
+  {
+   "handle": "DarKiizZ",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/DarKiizZ",
+   "confidence": "medium (1 source)",
+   "country": "Italy",
+   "team": "Strive With Passion",
+   "sim_ovr": 71
+  },
+  {
+   "handle": "Huguex",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Huguex",
+   "confidence": "medium (1 source)",
+   "country": "Portugal",
+   "sim_ovr": 71
+  },
+  {
+   "handle": "Nipsy",
+   "region": "EU",
+   "input": "controller",
+   "source_url": [
+    "https://fortnite-esports.fandom.com/wiki/Nipsy",
+    "https://prosettings.net/players/nipsy/"
+   ],
+   "confidence": "high (2 sources)",
+   "country": "Republic of Ireland",
+   "sim_ovr": 71
+  },
+  {
+   "handle": "Xha3o0",
+   "region": "ME",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Xha3o0",
+   "confidence": "medium (1 source)",
+   "country": "Saudi Arabia",
+   "sim_ovr": 71
+  },
+  {
+   "handle": "Zicti",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Zicti",
+   "confidence": "medium (1 source)",
+   "sim_ovr": 71
+  },
+  {
+   "handle": "Essitam",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Essitam",
+   "confidence": "medium (1 source)",
+   "country": "Belgium",
+   "retired": true,
+   "sim_ovr": 70
+  },
+  {
+   "handle": "Geo",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Geo",
+   "confidence": "medium (1 source)",
+   "country": "Mexico",
+   "sim_ovr": 70,
+   "sim_region": "NAW"
+  },
+  {
+   "handle": "phyenix",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Phyenix",
+   "confidence": "medium (1 source)",
+   "country": "Austria",
+   "retired": true,
+   "sim_ovr": 70
+  },
+  {
+   "handle": "3jmy",
+   "region": "ME",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/3jmy",
+   "confidence": "medium (1 source)",
+   "country": "Kuwait",
+   "sim_ovr": 67
+  },
+  {
+   "handle": "Kaidon",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Kaidon",
+   "confidence": "medium (1 source)",
+   "country": "England",
+   "team": "KmB Esport",
+   "sim_ovr": 67
+  },
+  {
+   "handle": "Fzn",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Fzn",
+   "confidence": "medium (1 source)",
+   "country": "England",
+   "sim_ovr": 66
+  },
+  {
+   "handle": "Cvrby",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Cvrby",
+   "confidence": "medium (1 source)",
+   "country": "Russia",
+   "retired": true,
+   "sim_ovr": 65
+  },
+  {
+   "handle": "Claw",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Claw",
+   "confidence": "medium (1 source)",
+   "country": "United States",
+   "sim_ovr": 63
+  },
+  {
+   "handle": "Connor",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Connor",
+   "confidence": "medium (1 source)",
+   "country": "England",
+   "sim_ovr": 63
+  },
+  {
+   "handle": "Flubbyy",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Flubbyy",
+   "confidence": "medium (1 source)",
+   "country": "Germany",
+   "team": "95Vikings",
+   "sim_ovr": 63
+  },
+  {
+   "handle": "vazzy",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Vazzy",
+   "confidence": "medium (1 source)",
+   "country": "England",
+   "sim_ovr": 61
+  },
+  {
+   "handle": "Neymar",
+   "region": "ME",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Neymar",
+   "confidence": "medium (1 source)",
+   "country": "South Africa",
+   "team": "The Punishers",
+   "sim_ovr": 59
+  },
+  {
+   "handle": "RottenTwinkies",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/RottenTwinkies",
+   "confidence": "medium (1 source)",
+   "country": "United States",
+   "sim_ovr": 59,
+   "sim_region": "NAW"
+  },
+  {
+   "handle": "Furiouss",
+   "region": "ME",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Furiouss",
+   "confidence": "medium (1 source)",
+   "country": "Qatar",
+   "team": "Team Sarrow.ME",
+   "sim_ovr": 58
+  },
+  {
+   "handle": "QISI",
+   "region": "ME",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/QISI",
+   "confidence": "medium (1 source)",
+   "country": "Saudi Arabia",
+   "sim_ovr": 58
+  },
+  {
+   "handle": "Vohade",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Vohade",
+   "confidence": "medium (1 source)",
+   "country": "United States",
+   "sim_ovr": 58,
+   "sim_region": "NAW"
+  },
+  {
+   "handle": "innocents",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://prosettings.net/players/innocents/",
+   "confidence": "medium (1 source)",
+   "country": "United States",
+   "sim_ovr": 57
+  },
+  {
+   "handle": "Jenks",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Jenks",
+   "confidence": "medium (1 source)",
+   "country": "England",
+   "sim_ovr": 57
+  },
+  {
+   "handle": "samux",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Samux",
+   "confidence": "medium (1 source)",
+   "country": "Italy",
+   "sim_ovr": 57
+  },
+  {
+   "handle": "Durr",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Durr",
+   "confidence": "medium (1 source)",
+   "country": "Portugal",
+   "sim_ovr": 56
+  },
+  {
+   "handle": "xjiuO",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/XjiuO",
+   "confidence": "medium (1 source)",
+   "country": "Italy",
+   "retired": true,
+   "sim_ovr": 56
+  },
+  {
+   "handle": "Zeerox",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Zeerox",
+   "confidence": "medium (1 source)",
+   "country": "Switzerland",
+   "sim_ovr": 56
+  },
+  {
+   "handle": "BizzyXIVI",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/BizzyXIVI",
+   "confidence": "medium (1 source)",
+   "country": "United States",
+   "team": "Thrive 2 Greatness",
+   "sim_ovr": 55
+  },
+  {
+   "handle": "Cowjoww",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Cowjoww",
+   "confidence": "medium (1 source)",
+   "country": "Netherlands",
+   "retired": true,
+   "sim_ovr": 55
+  },
+  {
+   "handle": "Dashh",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Dashh",
+   "confidence": "medium (1 source)",
+   "country": "United States",
+   "sim_ovr": 55
+  },
+  {
+   "handle": "Deqzyy",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Deqzyy",
+   "confidence": "medium (1 source)",
+   "country": "Denmark",
+   "retired": true,
+   "sim_ovr": 55
+  },
+  {
+   "handle": "Gordete",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://prosettings.net/players/gordete/",
+   "confidence": "medium (1 source)",
+   "country": "Spain",
+   "sim_ovr": 55
+  },
+  {
+   "handle": "JanmanNK",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/JanmanNK",
+   "confidence": "medium (1 source)",
+   "country": "Canada",
+   "sim_ovr": 55
+  },
+  {
+   "handle": "Kamo",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://prosettings.net/players/kamo/",
+   "confidence": "medium (1 source)",
+   "country": "Germany",
+   "sim_ovr": 55
+  },
+  {
+   "handle": "Maniac",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Maniac",
+   "confidence": "medium (1 source)",
+   "country": "United States",
+   "sim_ovr": 55
+  },
+  {
+   "handle": "Nawqa",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Nawqa",
+   "confidence": "medium (1 source)",
+   "country": "France",
+   "sim_ovr": 55
+  },
+  {
+   "handle": "Problem",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Problem",
+   "confidence": "medium (1 source)",
+   "country": "United States",
+   "sim_ovr": 55
+  },
+  {
+   "handle": "Sciacqua",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Sciacqua",
+   "confidence": "medium (1 source)",
+   "country": "Italy",
+   "sim_ovr": 55
+  },
+  {
+   "handle": "Stiffaroonie",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Stiffaroonie",
+   "confidence": "medium (1 source)",
+   "country": "United States",
+   "team": "Precision Esports",
+   "sim_ovr": 55
+  },
+  {
+   "handle": "Veloyd",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Veloyd",
+   "confidence": "medium (1 source)",
+   "country": "Netherlands",
+   "sim_ovr": 55
+  },
+  {
+   "handle": "Veri",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Veri",
+   "confidence": "medium (1 source)",
+   "country": "France",
+   "team": "Reality Zoned",
+   "sim_ovr": 55
+  },
+  {
+   "handle": "Can",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Can_(EU_Player)",
+   "confidence": "medium (1 source)",
+   "country": "Germany",
+   "sim_ovr": 54
+  },
+  {
+   "handle": "DeyyDodger",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/DeyyDodger",
+   "confidence": "medium (1 source)",
+   "country": "Republic of Ireland",
+   "sim_ovr": 54
+  },
+  {
+   "handle": "Diztard",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Diztard",
+   "confidence": "medium (1 source)",
+   "country": "United States",
+   "sim_ovr": 54
+  },
+  {
+   "handle": "Drpahks",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Drpahks",
+   "confidence": "medium (1 source)",
+   "country": "United States",
+   "sim_ovr": 54,
+   "sim_region": "NAW"
+  },
+  {
+   "handle": "Jeren",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Jeren",
+   "confidence": "medium (1 source)",
+   "country": "United States",
+   "sim_ovr": 54,
+   "sim_region": "NAW"
+  },
+  {
+   "handle": "Reevers",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Reevers",
+   "confidence": "medium (1 source)",
+   "country": "Belgium",
+   "sim_ovr": 54
+  },
+  {
+   "handle": "SAT",
+   "region": "ME",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/SAT",
+   "confidence": "medium (1 source)",
+   "country": "Saudi Arabia",
+   "sim_ovr": 54
+  },
+  {
+   "handle": "Alyanz",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Alyanz",
+   "confidence": "medium (1 source)",
+   "country": "Scotland",
+   "sim_ovr": 53
+  },
+  {
+   "handle": "JoelUk",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/JoelUk",
+   "confidence": "medium (1 source)",
+   "country": "England",
+   "retired": true,
+   "sim_ovr": 53
+  },
+  {
+   "handle": "M2BK",
+   "region": "ME",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/M2BK",
+   "confidence": "medium (1 source)",
+   "country": "Qatar",
+   "team": "Detect Esports.ME",
+   "sim_ovr": 53
+  },
+  {
+   "handle": "T0ahh",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/T0ahh",
+   "confidence": "medium (1 source)",
+   "country": "Austria",
+   "sim_ovr": 53
+  },
+  {
+   "handle": "Tequilaeater",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Tequilaeater",
+   "confidence": "medium (1 source)",
+   "country": "United States",
+   "sim_ovr": 53
+  },
+  {
+   "handle": "Zxmbie",
+   "region": "ME",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Zxmbie",
+   "confidence": "medium (1 source)",
+   "country": "Jordan",
+   "retired": true,
+   "sim_ovr": 53
+  },
+  {
+   "handle": "Crazyy",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Crazyy_(EU_Player)",
+   "confidence": "medium (1 source)",
+   "country": "Russia",
+   "sim_ovr": 52
+  },
+  {
+   "handle": "Kian",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Kian",
+   "confidence": "medium (1 source)",
+   "country": "Denmark",
+   "retired": true,
+   "sim_ovr": 52
+  },
+  {
+   "handle": "Llobeti4",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Llobeti4",
+   "confidence": "medium (1 source)",
+   "country": "Spain",
+   "retired": true,
+   "sim_ovr": 52
+  },
+  {
+   "handle": "Rehan",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Rehan",
+   "confidence": "medium (1 source)",
+   "country": "United States",
+   "sim_ovr": 52
+  },
+  {
+   "handle": "RodeyBros",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/RodeyBros",
+   "confidence": "medium (1 source)",
+   "country": "United States",
+   "sim_ovr": 52
+  },
+  {
+   "handle": "Yoda",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Yoda",
+   "confidence": "medium (1 source)",
+   "country": "France",
+   "retired": true,
+   "sim_ovr": 52
+  },
+  {
+   "handle": "Papito",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Papito",
+   "confidence": "medium (1 source)",
+   "country": "Netherlands",
+   "retired": true,
+   "sim_ovr": 51
+  },
+  {
+   "handle": "Rockega",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Rockega",
+   "confidence": "medium (1 source)",
+   "country": "Italy",
+   "retired": true,
+   "sim_ovr": 51
+  },
+  {
+   "handle": "Tchikito",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Tchikito",
+   "confidence": "medium (1 source)",
+   "country": "France",
+   "retired": true,
+   "sim_ovr": 51
+  },
+  {
+   "handle": "Trabzon",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Trabzon",
+   "confidence": "medium (1 source)",
+   "country": "Turkey",
+   "team": "Saints Esports",
+   "sim_ovr": 51
+  },
+  {
+   "handle": "zMax",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/ZMax",
+   "confidence": "medium (1 source)",
+   "country": "England",
+   "sim_ovr": 51
+  },
+  {
+   "handle": "Btx Phantom",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Btx_Phantom",
+   "confidence": "medium (1 source)",
+   "team": "FLu Esports",
+   "sim_ovr": 49
+  },
+  {
+   "handle": "Gino",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Gino",
+   "confidence": "medium (1 source)",
+   "country": "Germany",
+   "sim_ovr": 49
+  },
+  {
+   "handle": "Keyaan",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Keyaan",
+   "confidence": "medium (1 source)",
+   "country": "England",
+   "sim_ovr": 49
+  },
+  {
+   "handle": "Kenjiwyd",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Kenjiwyd",
+   "confidence": "medium (1 source)",
+   "sim_ovr": 47
+  },
+  {
+   "handle": "Technique",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Technique",
+   "confidence": "medium (1 source)",
+   "country": "Norway",
+   "retired": true,
+   "sim_ovr": 46
+  },
+  {
+   "handle": "Kyal",
+   "region": "OCE",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Kyal",
+   "confidence": "medium (1 source)",
+   "country": "United Kingdom",
+   "sim_ovr": 45
+  },
+  {
+   "handle": "Mustazico",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Mustazico",
+   "confidence": "medium (1 source)",
+   "country": "Norway",
+   "team": "Playwell Esport Academy",
+   "sim_ovr": 45
+  },
+  {
+   "handle": "Bluii",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Bluii_(Player_2)",
+   "confidence": "medium (1 source)",
+   "country": "United States",
+   "sim_ovr": 43
+  },
+  {
+   "handle": "00mikii",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/00mikii",
+   "confidence": "medium (1 source)",
+   "country": "Italy"
+  },
+  {
+   "handle": "1Laika",
+   "region": "BR",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/1Laika",
+   "confidence": "medium (1 source)",
+   "country": "Brazil"
+  },
+  {
+   "handle": "74vrk",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/74vrk",
+   "confidence": "medium (1 source)",
+   "country": "France"
+  },
+  {
+   "handle": "7LM",
+   "region": "ME",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/7LM",
+   "confidence": "medium (1 source)",
+   "country": "Saudi Arabia",
+   "team": "21 Esports"
+  },
+  {
+   "handle": "АВE",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/%D0%90%D0%92E",
+   "confidence": "medium (1 source)",
+   "country": "Puerto Rico"
+  },
+  {
+   "handle": "Abbaski",
+   "region": "ME",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Abbaski",
+   "confidence": "medium (1 source)",
+   "country": "Saudi Arabia"
+  },
+  {
+   "handle": "Adniq",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Adniq",
+   "confidence": "medium (1 source)",
+   "country": "Norway"
+  },
+  {
+   "handle": "Adze",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Adze",
+   "confidence": "medium (1 source)",
+   "country": "Italy"
+  },
+  {
+   "handle": "Aizen",
+   "region": "ME",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Aizen",
+   "confidence": "medium (1 source)",
+   "country": "Saudi Arabia"
+  },
+  {
+   "handle": "Akekzu",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Akekzu",
+   "confidence": "medium (1 source)",
+   "country": "Sweden"
+  },
+  {
+   "handle": "Akkk",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Akkk",
+   "confidence": "medium (1 source)",
+   "country": "Spain"
+  },
+  {
+   "handle": "AknAr",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/AknAr",
+   "confidence": "medium (1 source)",
+   "country": "Italy",
+   "retired": true
+  },
+  {
+   "handle": "aleccrr",
+   "region": "OCE",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Aleccrr",
+   "confidence": "medium (1 source)",
+   "country": "Australia",
+   "retired": true
+  },
+  {
+   "handle": "Alexcod",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Alexcod",
+   "confidence": "medium (1 source)",
+   "country": "Italy",
+   "team": "Impact Esport"
+  },
+  {
+   "handle": "Alexii",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Alexii",
+   "confidence": "medium (1 source)",
+   "country": "Belgium"
+  },
+  {
+   "handle": "Alexrr1x",
+   "region": "BR",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Alexrr1x",
+   "confidence": "medium (1 source)",
+   "country": "Brazil"
+  },
+  {
+   "handle": "All Piece No Aim",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Peakz",
+   "confidence": "medium (1 source)"
+  },
+  {
+   "handle": "Alphakhor",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Alphakhor",
+   "confidence": "medium (1 source)",
+   "country": "United States",
+   "team": "UpReach"
+  },
+  {
+   "handle": "Angrybunch",
+   "region": "OCE",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Angrybunch",
+   "confidence": "medium (1 source)",
+   "country": "Australia"
+  },
+  {
+   "handle": "Ansilexx",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Ansilexx",
+   "confidence": "medium (1 source)",
+   "country": "England"
+  },
+  {
+   "handle": "Aonza",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Aonza",
+   "confidence": "medium (1 source)",
+   "country": "England"
+  },
+  {
+   "handle": "Aoribtw",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Aoribtw",
+   "confidence": "medium (1 source)",
+   "country": "United States",
+   "team": "H1TMAN ESPORTS"
+  },
+  {
+   "handle": "Apollo",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Apollo",
+   "confidence": "medium (1 source)",
+   "country": "United States"
+  },
+  {
+   "handle": "Aras",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Aras",
+   "confidence": "medium (1 source)",
+   "country": "Germany",
+   "team": "Wave Esports"
+  },
+  {
+   "handle": "Ariana SMG",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Ariana_SMG",
+   "confidence": "medium (1 source)",
+   "country": "Germany"
+  },
+  {
+   "handle": "arman",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Arman",
+   "confidence": "medium (1 source)",
+   "country": "Germany",
+   "retired": true
+  },
+  {
+   "handle": "Astralsq",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Astralsq",
+   "confidence": "medium (1 source)",
+   "country": "France"
+  },
+  {
+   "handle": "Aveeva",
+   "region": "ME",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Aveeva",
+   "confidence": "medium (1 source)",
+   "country": "South Africa"
+  },
+  {
+   "handle": "Axeel",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Axeel",
+   "confidence": "medium (1 source)",
+   "country": "Spain",
+   "retired": true
+  },
+  {
+   "handle": "Axgel",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Axgel",
+   "confidence": "medium (1 source)",
+   "country": "Finland"
+  },
+  {
+   "handle": "Ayjok",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Ayjok",
+   "confidence": "medium (1 source)",
+   "country": "United States"
+  },
+  {
+   "handle": "Azek",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Azek",
+   "confidence": "medium (1 source)",
+   "country": "Poland"
+  },
+  {
+   "handle": "B1ur",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/B1ur",
+   "confidence": "medium (1 source)",
+   "country": "United States",
+   "retired": true
+  },
+  {
+   "handle": "BabaYaga",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/BabaYaga",
+   "confidence": "medium (1 source)",
+   "country": "France",
+   "team": "RAK UNITED"
+  },
+  {
+   "handle": "Banz",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Banz",
+   "confidence": "medium (1 source)",
+   "country": "Netherlands"
+  },
+  {
+   "handle": "Barney Rex",
+   "region": "OCE",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Barney_Rex",
+   "confidence": "medium (1 source)",
+   "country": "Australia"
+  },
+  {
+   "handle": "Barrako",
+   "region": "ME",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Barrako",
+   "confidence": "medium (1 source)",
+   "country": "Kuwait",
+   "retired": true
+  },
+  {
+   "handle": "Benn",
+   "region": "OCE",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Benn",
+   "confidence": "medium (1 source)",
+   "country": "New Zealand"
+  },
+  {
+   "handle": "Berki",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Berki",
+   "confidence": "medium (1 source)",
+   "country": "Turkey",
+   "retired": true
+  },
+  {
+   "handle": "Betterr",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Betterr",
+   "confidence": "medium (1 source)",
+   "country": "Poland",
+   "team": "Detect Esports"
+  },
+  {
+   "handle": "Biltz",
+   "region": "ME",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Biltz",
+   "confidence": "medium (1 source)",
+   "country": "Saudi Arabia"
+  },
+  {
+   "handle": "Blaackfn",
+   "region": "ME",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Blaackfn",
+   "confidence": "medium (1 source)",
+   "country": "Lebanon",
+   "team": "Scytes Esports"
+  },
+  {
+   "handle": "Blaazeerd",
+   "region": "BR",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Blaazeerd",
+   "confidence": "medium (1 source)",
+   "country": "Brazil",
+   "team": "7VEN.BR"
+  },
+  {
+   "handle": "Blackie",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Blackie",
+   "confidence": "medium (1 source)",
+   "country": "Spain",
+   "team": "Locked Esports"
+  },
+  {
+   "handle": "Blade",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Blade",
+   "confidence": "medium (1 source)",
+   "country": "England",
+   "team": "InTenZive"
+  },
+  {
+   "handle": "Blankaa",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Blankaa",
+   "confidence": "medium (1 source)",
+   "country": "France"
+  },
+  {
+   "handle": "bobotambe",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Bobotambe",
+   "confidence": "medium (1 source)",
+   "country": "Germany"
+  },
+  {
+   "handle": "Bouperson",
+   "region": "ASIA",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Bouperson",
+   "confidence": "medium (1 source)",
+   "country": "Japan"
+  },
+  {
+   "handle": "BowTheG",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/BowTheG",
+   "confidence": "medium (1 source)",
+   "country": "England"
+  },
+  {
+   "handle": "Braxle",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Braxle",
+   "confidence": "medium (1 source)",
+   "country": "England"
+  },
+  {
+   "handle": "Broseyy",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Broseyy",
+   "confidence": "medium (1 source)",
+   "country": "Mexico"
+  },
+  {
+   "handle": "Brownеr",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Brown%D0%B5r",
+   "confidence": "medium (1 source)",
+   "country": "Republic of Ireland",
+   "retired": true
+  },
+  {
+   "handle": "Bryzee",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Bryzee",
+   "confidence": "medium (1 source)",
+   "country": "Italy",
+   "retired": true
+  },
+  {
+   "handle": "Buildz",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Buildz",
+   "confidence": "medium (1 source)",
+   "country": "Mexico"
+  },
+  {
+   "handle": "Bxldiz",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Bxldiz",
+   "confidence": "medium (1 source)",
+   "country": "Turkey"
+  },
+  {
+   "handle": "Calmessi10",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Calmessi10",
+   "confidence": "medium (1 source)",
+   "country": "Mexico"
+  },
+  {
+   "handle": "Carti",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Carti",
+   "confidence": "medium (1 source)",
+   "country": "Canada"
+  },
+  {
+   "handle": "Chacorta",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Chacorta",
+   "confidence": "medium (1 source)"
+  },
+  {
+   "handle": "Chacortabtw",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Chacortabtw",
+   "confidence": "medium (1 source)",
+   "country": "Mexico"
+  },
+  {
+   "handle": "ChaosGamingLive",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/ChaosGamingLive",
+   "confidence": "medium (1 source)",
+   "country": "United States"
+  },
+  {
+   "handle": "Chentetas",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Chentetas",
+   "confidence": "medium (1 source)",
+   "country": "Mexico"
+  },
+  {
+   "handle": "Chrisjey",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Chrisjey",
+   "confidence": "medium (1 source)",
+   "country": "Netherlands"
+  },
+  {
+   "handle": "Chriskp",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Chriskp",
+   "confidence": "medium (1 source)",
+   "country": "Greece"
+  },
+  {
+   "handle": "CiccioGamer89",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/CiccioGamer89",
+   "confidence": "medium (1 source)",
+   "country": "Italy",
+   "retired": true
+  },
+  {
+   "handle": "Clasheroonie",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Clasheroonie",
+   "confidence": "medium (1 source)",
+   "country": "United States"
+  },
+  {
+   "handle": "Claww",
+   "region": "ME",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Claww",
+   "confidence": "medium (1 source)",
+   "country": "United Arab Emirates",
+   "team": "Team Strike"
+  },
+  {
+   "handle": "CMon",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Washed_C._Mon",
+   "confidence": "medium (1 source)",
+   "country": "France",
+   "retired": true
+  },
+  {
+   "handle": "CobieX",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/CobieX",
+   "confidence": "medium (1 source)",
+   "country": "United States"
+  },
+  {
+   "handle": "ControlFN",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/ControlFN",
+   "confidence": "medium (1 source)",
+   "country": "England"
+  },
+  {
+   "handle": "Cozy1x",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Cozy1x",
+   "confidence": "medium (1 source)",
+   "country": "Wales",
+   "team": "BTL Esport"
+  },
+  {
+   "handle": "Crfrmatl",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Crfrmatl",
+   "confidence": "medium (1 source)",
+   "country": "United States"
+  },
+  {
+   "handle": "Crr4zy",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://prosettings.net/players/crr4zy/",
+   "confidence": "medium (1 source)",
+   "country": "Spain"
+  },
+  {
+   "handle": "Crxsys",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Crxsys",
+   "confidence": "medium (1 source)",
+   "country": "France"
+  },
+  {
+   "handle": "DaleN",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/DaleN",
+   "confidence": "medium (1 source)",
+   "country": "Sweden"
+  },
+  {
+   "handle": "Dangdroll",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Dangdroll",
+   "confidence": "medium (1 source)",
+   "country": "Sweden"
+  },
+  {
+   "handle": "Darkpat",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Darkpat",
+   "confidence": "medium (1 source)",
+   "country": "Italy",
+   "retired": true
+  },
+  {
+   "handle": "Deadrise",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Deadrise",
+   "confidence": "medium (1 source)",
+   "country": "England",
+   "retired": true
+  },
+  {
+   "handle": "Degaz",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Degaz",
+   "confidence": "medium (1 source)",
+   "country": "Italy",
+   "retired": true
+  },
+  {
+   "handle": "Denby",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Denby",
+   "confidence": "medium (1 source)",
+   "country": "Germany"
+  },
+  {
+   "handle": "Deny",
+   "region": "OCE",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Deny1x",
+   "confidence": "medium (1 source)",
+   "country": "Australia",
+   "team": "BFG Esports"
+  },
+  {
+   "handle": "Destru",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Destru",
+   "confidence": "medium (1 source)",
+   "country": "France"
+  },
+  {
+   "handle": "Deutsh",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Deutsh",
+   "confidence": "medium (1 source)",
+   "country": "Mexico"
+  },
+  {
+   "handle": "Discard",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Discard",
+   "confidence": "medium (1 source)",
+   "country": "Spain"
+  },
+  {
+   "handle": "DonPaPa",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/DonPaPa",
+   "confidence": "medium (1 source)",
+   "country": "France"
+  },
+  {
+   "handle": "Dony",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Dony",
+   "confidence": "medium (1 source)",
+   "country": "Italy",
+   "retired": true
+  },
+  {
+   "handle": "Doog",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Doog",
+   "confidence": "medium (1 source)",
+   "country": "Italy"
+  },
+  {
+   "handle": "DRONE",
+   "region": "ME",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/DRONE",
+   "confidence": "medium (1 source)",
+   "country": "United Arab Emirates"
+  },
+  {
+   "handle": "Droor",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Droor",
+   "confidence": "medium (1 source)",
+   "country": "United States"
+  },
+  {
+   "handle": "Duckie ll",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Duckie_ll",
+   "confidence": "medium (1 source)",
+   "country": "United States"
+  },
+  {
+   "handle": "Dxnette",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Dxnette",
+   "confidence": "medium (1 source)",
+   "country": "France"
+  },
+  {
+   "handle": "Dylzzz",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Dylzzz",
+   "confidence": "medium (1 source)",
+   "country": "England"
+  },
+  {
+   "handle": "Elder",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Elder",
+   "confidence": "medium (1 source)",
+   "country": "Mexico",
+   "team": "Beneath Sect"
+  },
+  {
+   "handle": "EnergyFNBR",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/EnergyFNBR",
+   "confidence": "medium (1 source)",
+   "country": "England"
+  },
+  {
+   "handle": "Enzoo8k",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Enzoo8k",
+   "confidence": "medium (1 source)",
+   "country": "Spain"
+  },
+  {
+   "handle": "Enzouzzz",
+   "region": "BR",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Enzouzzzlol",
+   "confidence": "medium (1 source)",
+   "country": "Brazil"
+  },
+  {
+   "handle": "Eryx",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Eryx",
+   "confidence": "medium (1 source)",
+   "country": "Mexico"
+  },
+  {
+   "handle": "Estevão",
+   "region": "BR",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Estev%C3%A3o",
+   "confidence": "medium (1 source)",
+   "country": "Brazil"
+  },
+  {
+   "handle": "Exityrr",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Exity",
+   "confidence": "medium (1 source)",
+   "country": "Belgium",
+   "retired": true
+  },
+  {
+   "handle": "Eyedead",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Eyedead",
+   "confidence": "medium (1 source)",
+   "country": "Sweden"
+  },
+  {
+   "handle": "F1lck",
+   "region": "ME",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/F1lck",
+   "confidence": "medium (1 source)",
+   "country": "Saudi Arabia"
+  },
+  {
+   "handle": "F3xr",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/F3xr",
+   "confidence": "medium (1 source)",
+   "country": "England"
+  },
+  {
+   "handle": "Fabiojit",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Fabiojit",
+   "confidence": "medium (1 source)",
+   "country": "United States"
+  },
+  {
+   "handle": "Farеs",
+   "region": "ME",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Fares",
+   "confidence": "medium (1 source)",
+   "country": "Egypt",
+   "retired": true
+  },
+  {
+   "handle": "Fares",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Faress",
+   "confidence": "medium (1 source)",
+   "country": "Sweden"
+  },
+  {
+   "handle": "Fay",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Fay_(German_Player)",
+   "confidence": "medium (1 source)",
+   "country": "Germany"
+  },
+  {
+   "handle": "Feehzin",
+   "region": "BR",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Feehzin",
+   "confidence": "medium (1 source)",
+   "country": "Brazil"
+  },
+  {
+   "handle": "Fidunboirr",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Fidunboirr",
+   "confidence": "medium (1 source)",
+   "country": "Sweden"
+  },
+  {
+   "handle": "FineJupiter",
+   "region": "OCE",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/FineJupiter",
+   "confidence": "medium (1 source)",
+   "country": "Fiji"
+  },
+  {
+   "handle": "Finn",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Finn",
+   "confidence": "medium (1 source)",
+   "country": "Germany",
+   "team": "Babos Gaming"
+  },
+  {
+   "handle": "flexpito",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Flexpito",
+   "confidence": "medium (1 source)",
+   "country": "France",
+   "team": "Radiance Esport"
+  },
+  {
+   "handle": "Flood",
+   "region": "ME",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Flood_(ME_Player)",
+   "confidence": "medium (1 source)",
+   "country": "Romania"
+  },
+  {
+   "handle": "Flxme",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Flxme",
+   "confidence": "medium (1 source)",
+   "country": "Italy"
+  },
+  {
+   "handle": "Flxzy",
+   "region": "ME",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Flxzy",
+   "confidence": "medium (1 source)",
+   "country": "Bahrain",
+   "team": "Davis Esport"
+  },
+  {
+   "handle": "flystract",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Flystract",
+   "confidence": "medium (1 source)",
+   "country": "Belgium"
+  },
+  {
+   "handle": "Fox (Italian Player)",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Fox_(Italian_Player)",
+   "confidence": "medium (1 source)",
+   "country": "Italy"
+  },
+  {
+   "handle": "FoxJay",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/FoxJay",
+   "confidence": "medium (1 source)",
+   "country": "Netherlands"
+  },
+  {
+   "handle": "FoxMan",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/FoxMan",
+   "confidence": "medium (1 source)",
+   "country": "United States",
+   "team": "Xen"
+  },
+  {
+   "handle": "Franni",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Franni",
+   "confidence": "medium (1 source)",
+   "country": "Italy"
+  },
+  {
+   "handle": "Freestyle",
+   "region": "OCE",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Free_Style_55",
+   "confidence": "medium (1 source)",
+   "country": "Australia"
+  },
+  {
+   "handle": "Frelya",
+   "region": "ASIA",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Frelya",
+   "confidence": "medium (1 source)",
+   "country": "Japan"
+  },
+  {
+   "handle": "Freshiwnl",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Freshiwnl",
+   "confidence": "medium (1 source)",
+   "country": "Italy",
+   "retired": true
+  },
+  {
+   "handle": "Frxzifyx",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Frxzifyx",
+   "confidence": "medium (1 source)",
+   "country": "England"
+  },
+  {
+   "handle": "Fusionz",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Fusionz_(NAE_Player)",
+   "confidence": "medium (1 source)",
+   "country": "United States"
+  },
+  {
+   "handle": "Fylix",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Fylix",
+   "confidence": "medium (1 source)",
+   "country": "Germany",
+   "team": "Northern Star Gaming"
+  },
+  {
+   "handle": "Fynn",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Fynn",
+   "confidence": "medium (1 source)",
+   "country": "Germany",
+   "retired": true
+  },
+  {
+   "handle": "Gabrish",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Gabrish",
+   "confidence": "medium (1 source)",
+   "country": "Italy",
+   "retired": true
+  },
+  {
+   "handle": "Gejo",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Gejo",
+   "confidence": "medium (1 source)",
+   "country": "Spain"
+  },
+  {
+   "handle": "GEMAI",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/GEMAI",
+   "confidence": "medium (1 source)",
+   "country": "France",
+   "retired": true
+  },
+  {
+   "handle": "Geny",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Geny",
+   "confidence": "medium (1 source)",
+   "country": "Italy",
+   "team": "Team SPN"
+  },
+  {
+   "handle": "Gerlaenco",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Gerlaenco",
+   "confidence": "medium (1 source)",
+   "country": "Netherlands",
+   "retired": true
+  },
+  {
+   "handle": "Ghooslty",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Ghooslty",
+   "confidence": "medium (1 source)",
+   "country": "Mexico"
+  },
+  {
+   "handle": "Ghxxstay",
+   "region": "BR",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Twitter_Ghxxstay",
+   "confidence": "medium (1 source)",
+   "country": "Brazil"
+  },
+  {
+   "handle": "Gianniz",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Gianniz",
+   "confidence": "medium (1 source)",
+   "country": "Sweden",
+   "retired": true
+  },
+  {
+   "handle": "Gibproo",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Gibproo",
+   "confidence": "medium (1 source)"
+  },
+  {
+   "handle": "Globa",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Globa",
+   "confidence": "medium (1 source)",
+   "country": "Italy"
+  },
+  {
+   "handle": "Gordetee",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Gordetee",
+   "confidence": "medium (1 source)",
+   "country": "Spain",
+   "team": "Zenn eSports"
+  },
+  {
+   "handle": "Greek Freak 7",
+   "region": "OCE",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Greek_Freak_7",
+   "confidence": "medium (1 source)",
+   "country": "Australia"
+  },
+  {
+   "handle": "Grxy",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Grxy",
+   "confidence": "medium (1 source)",
+   "country": "Mexico"
+  },
+  {
+   "handle": "Gumon",
+   "region": "BR",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Gumon",
+   "confidence": "medium (1 source)",
+   "country": "Brazil"
+  },
+  {
+   "handle": "Haledy",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Haledy",
+   "confidence": "medium (1 source)",
+   "country": "United States",
+   "retired": true
+  },
+  {
+   "handle": "Havе",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Have",
+   "confidence": "medium (1 source)",
+   "country": "Finland"
+  },
+  {
+   "handle": "Havre",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/HAVRE",
+   "confidence": "medium (1 source)",
+   "country": "Norway",
+   "retired": true
+  },
+  {
+   "handle": "Henry",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Henry_(EU_Player)",
+   "confidence": "medium (1 source)",
+   "country": "Portugal"
+  },
+  {
+   "handle": "HILLY",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/HILLY",
+   "confidence": "medium (1 source)",
+   "country": "England"
+  },
+  {
+   "handle": "Hisashi",
+   "region": "BR",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Hisashi",
+   "confidence": "medium (1 source)",
+   "country": "Japan",
+   "team": "Dallas Esports"
+  },
+  {
+   "handle": "hound",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Hound",
+   "confidence": "medium (1 source)",
+   "country": "United States"
+  },
+  {
+   "handle": "Hssey",
+   "region": "OCE",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Hssey",
+   "confidence": "medium (1 source)",
+   "country": "Australia"
+  },
+  {
+   "handle": "Hugo",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Hxgo",
+   "confidence": "medium (1 source)",
+   "country": "Spain"
+  },
+  {
+   "handle": "Hyrax",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Hyrax",
+   "confidence": "medium (1 source)",
+   "country": "Portugal",
+   "team": "Milli League Rising"
+  },
+  {
+   "handle": "IAleex",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/IAleex",
+   "confidence": "medium (1 source)",
+   "country": "Spain"
+  },
+  {
+   "handle": "iiNeymar",
+   "region": "ME",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/IiNeymar",
+   "confidence": "medium (1 source)",
+   "country": "Saudi Arabia",
+   "retired": true
+  },
+  {
+   "handle": "Impumpz",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Impumpz",
+   "confidence": "medium (1 source)",
+   "country": "England"
+  },
+  {
+   "handle": "Intrepid",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Intrepid",
+   "confidence": "medium (1 source)",
+   "country": "Italy",
+   "retired": true
+  },
+  {
+   "handle": "Ivan",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Ivan_(Spanish_Player)",
+   "confidence": "medium (1 source)",
+   "country": "Spain"
+  },
+  {
+   "handle": "Jackyrr",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Jackyrr",
+   "confidence": "medium (1 source)",
+   "country": "Poland"
+  },
+  {
+   "handle": "jacobbb",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://prosettings.net/players/jacobbb/",
+   "confidence": "medium (1 source)",
+   "country": "United States"
+  },
+  {
+   "handle": "Jafarr",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Jafarr",
+   "confidence": "medium (1 source)",
+   "country": "France"
+  },
+  {
+   "handle": "Jamalali",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Jamalali",
+   "confidence": "medium (1 source)",
+   "country": "Austria"
+  },
+  {
+   "handle": "Jammy",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Jammy",
+   "confidence": "medium (1 source)",
+   "country": "Jamaica"
+  },
+  {
+   "handle": "Jamz",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Jamz_(UK_Player)",
+   "confidence": "medium (1 source)",
+   "country": "England"
+  },
+  {
+   "handle": "Jarvis",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://prosettings.net/players/jarvis/",
+   "confidence": "medium (1 source)",
+   "country": "United Kingdom"
+  },
+  {
+   "handle": "Jehrz",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Jehrz",
+   "confidence": "medium (1 source)",
+   "country": "United States"
+  },
+  {
+   "handle": "Jinkundesu",
+   "region": "ASIA",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Jinkundesu",
+   "confidence": "medium (1 source)",
+   "country": "Japan",
+   "team": "DELTA esports"
+  },
+  {
+   "handle": "Jit ter",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Jit_ter",
+   "confidence": "medium (1 source)",
+   "country": "United States"
+  },
+  {
+   "handle": "Jmo",
+   "region": "ME",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Jmo_(ME_Player)",
+   "confidence": "medium (1 source)",
+   "country": "Saudi Arabia",
+   "team": "Team Oryx"
+  },
+  {
+   "handle": "Joanee2k",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Joanee2k",
+   "confidence": "medium (1 source)",
+   "country": "Spain"
+  },
+  {
+   "handle": "Joe (NA Player)",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Joe_(NA_Player)",
+   "confidence": "medium (1 source)",
+   "country": "United States"
+  },
+  {
+   "handle": "Joexzy",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/JOEXZY",
+   "confidence": "medium (1 source)",
+   "country": "United States",
+   "retired": true
+  },
+  {
+   "handle": "Jomsr",
+   "region": "OCE",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Jomsr",
+   "confidence": "medium (1 source)",
+   "country": "Australia"
+  },
+  {
+   "handle": "Joqqy",
+   "region": "OCE",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Joqqy",
+   "confidence": "medium (1 source)",
+   "country": "Australia"
+  },
+  {
+   "handle": "Joreph",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Joreph",
+   "confidence": "medium (1 source)",
+   "country": "United States"
+  },
+  {
+   "handle": "Josue",
+   "region": "BR",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Josue",
+   "confidence": "medium (1 source)",
+   "country": "Bolivia"
+  },
+  {
+   "handle": "Jxness7",
+   "region": "BR",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Jxness7",
+   "confidence": "medium (1 source)",
+   "country": "Brazil"
+  },
+  {
+   "handle": "Kacpixon",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Kacpixon",
+   "confidence": "medium (1 source)",
+   "country": "Poland"
+  },
+  {
+   "handle": "Kairuv2",
+   "region": "ME",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Kairuv2",
+   "confidence": "medium (1 source)",
+   "country": "Saudi Arabia"
+  },
+  {
+   "handle": "Kakqin",
+   "region": "OCE",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Kakqin",
+   "confidence": "medium (1 source)",
+   "country": "Australia"
+  },
+  {
+   "handle": "Karax",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Karax",
+   "confidence": "medium (1 source)",
+   "country": "France",
+   "team": "X6 E-sport"
+  },
+  {
+   "handle": "Kazie",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Kazie",
+   "confidence": "medium (1 source)",
+   "country": "United Arab Emirates"
+  },
+  {
+   "handle": "Kc1rt",
+   "region": "BR",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Kc1rt",
+   "confidence": "medium (1 source)",
+   "country": "Brazil"
+  },
+  {
+   "handle": "Kero",
+   "region": "ME",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Kero",
+   "confidence": "medium (1 source)",
+   "country": "Saudi Arabia",
+   "team": "DRAGONS eSports"
+  },
+  {
+   "handle": "KhanGamerx",
+   "region": "ME",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/KhanGamerx",
+   "confidence": "medium (1 source)",
+   "country": "United Arab Emirates",
+   "team": "Team Arrow"
+  },
+  {
+   "handle": "Kingz",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Kingz",
+   "confidence": "medium (1 source)",
+   "country": "France"
+  },
+  {
+   "handle": "Kirbty",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Kirbty",
+   "confidence": "medium (1 source)",
+   "country": "United States"
+  },
+  {
+   "handle": "Kiriszn",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Kiriszn",
+   "confidence": "medium (1 source)",
+   "country": "Italy",
+   "retired": true
+  },
+  {
+   "handle": "Klazyy",
+   "region": "ME",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Klazyy",
+   "confidence": "medium (1 source)",
+   "country": "Spain"
+  },
+  {
+   "handle": "Klvztt",
+   "region": "BR",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Klvztt",
+   "confidence": "medium (1 source)",
+   "country": "Chile"
+  },
+  {
+   "handle": "Knogi",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Knogi",
+   "confidence": "medium (1 source)",
+   "country": "Germany",
+   "retired": true
+  },
+  {
+   "handle": "Koenfn",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Koenfn",
+   "confidence": "medium (1 source)",
+   "country": "Netherlands"
+  },
+  {
+   "handle": "Kortex",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Kortex",
+   "confidence": "medium (1 source)",
+   "country": "Mexico"
+  },
+  {
+   "handle": "Koukk",
+   "region": "OCE",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Koukk",
+   "confidence": "medium (1 source)",
+   "country": "Australia"
+  },
+  {
+   "handle": "Krimnl",
+   "region": "OCE",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Krimnl",
+   "confidence": "medium (1 source)",
+   "country": "Australia"
+  },
+  {
+   "handle": "Krom",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Krom",
+   "confidence": "medium (1 source)",
+   "country": "Italy"
+  },
+  {
+   "handle": "Kromatik",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Kromatik",
+   "confidence": "medium (1 source)",
+   "country": "France",
+   "team": "EGY Esports"
+  },
+  {
+   "handle": "KruttGutt",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/KruttGutt",
+   "confidence": "medium (1 source)",
+   "country": "Norway",
+   "retired": true
+  },
+  {
+   "handle": "Kurzanx",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Kurzanx",
+   "confidence": "medium (1 source)",
+   "country": "France",
+   "retired": true
+  },
+  {
+   "handle": "Kutt",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Kutt",
+   "confidence": "medium (1 source)"
+  },
+  {
+   "handle": "Kyziqx",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Kyziqx",
+   "confidence": "medium (1 source)",
+   "country": "Germany"
+  },
+  {
+   "handle": "Laiys",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Laiys",
+   "confidence": "medium (1 source)",
+   "country": "United States"
+  },
+  {
+   "handle": "Laizen",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Laizen",
+   "confidence": "medium (1 source)",
+   "country": "France",
+   "team": "ORA Esport"
+  },
+  {
+   "handle": "Later",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Later",
+   "confidence": "medium (1 source)",
+   "country": "Denmark"
+  },
+  {
+   "handle": "Launcher",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Launcherr",
+   "confidence": "medium (1 source)",
+   "country": "France"
+  },
+  {
+   "handle": "Len",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Len",
+   "confidence": "medium (1 source)",
+   "country": "Germany"
+  },
+  {
+   "handle": "Leoks",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Leoks",
+   "confidence": "medium (1 source)",
+   "country": "Norway"
+  },
+  {
+   "handle": "Lezzy",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Lezzy_(German_Player)",
+   "confidence": "medium (1 source)",
+   "country": "Germany"
+  },
+  {
+   "handle": "Lim0",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Lim0",
+   "confidence": "medium (1 source)",
+   "country": "France",
+   "retired": true
+  },
+  {
+   "handle": "LoganZz",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/LoganZz",
+   "confidence": "medium (1 source)",
+   "country": "Spain",
+   "team": "ZerøZone",
+   "retired": true
+  },
+  {
+   "handle": "Loloo",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Loloo",
+   "confidence": "medium (1 source)",
+   "country": "Spain"
+  },
+  {
+   "handle": "Lolsaucy",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Lolsaucy",
+   "confidence": "medium (1 source)",
+   "country": "United States"
+  },
+  {
+   "handle": "LoRii",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/LoRii",
+   "confidence": "medium (1 source)",
+   "country": "Italy"
+  },
+  {
+   "handle": "Lova",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Lova",
+   "confidence": "medium (1 source)",
+   "country": "Italy",
+   "retired": true
+  },
+  {
+   "handle": "Lucien",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Lucien",
+   "confidence": "medium (1 source)",
+   "country": "Germany"
+  },
+  {
+   "handle": "Luisao",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Luisao",
+   "confidence": "medium (1 source)",
+   "country": "Spain"
+  },
+  {
+   "handle": "Luisitopixixi",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Luisitopixixi",
+   "confidence": "medium (1 source)",
+   "country": "Spain"
+  },
+  {
+   "handle": "Lukas (EU Player)",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Lukas_(EU_Player)",
+   "confidence": "medium (1 source)",
+   "country": "Netherlands",
+   "retired": true
+  },
+  {
+   "handle": "Lyiix",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Lyiix",
+   "confidence": "medium (1 source)",
+   "country": "Austria",
+   "retired": true
+  },
+  {
+   "handle": "M7eyy",
+   "region": "ME",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/M7eyy",
+   "confidence": "medium (1 source)",
+   "country": "Saudi Arabia"
+  },
+  {
+   "handle": "MaFioSo",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/MaFioSo",
+   "confidence": "medium (1 source)",
+   "country": "Portugal",
+   "team": "InTenZive"
+  },
+  {
+   "handle": "Manik",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Manik_(EU_Player)",
+   "confidence": "medium (1 source)",
+   "country": "Denmark"
+  },
+  {
+   "handle": "Mansoureyy",
+   "region": "ME",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Mansoureyy",
+   "confidence": "medium (1 source)",
+   "country": "Saudi Arabia"
+  },
+  {
+   "handle": "MarcoWhale1x",
+   "region": "ME",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/MarcoWhale1x",
+   "confidence": "medium (1 source)",
+   "country": "Saudi Arabia"
+  },
+  {
+   "handle": "Martins (BR Player)",
+   "region": "BR",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Martins_(BR_Player)",
+   "confidence": "medium (1 source)",
+   "country": "Brazil"
+  },
+  {
+   "handle": "Marv",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Marv",
+   "confidence": "medium (1 source)",
+   "country": "Netherlands"
+  },
+  {
+   "handle": "MaTa",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/MaTa",
+   "confidence": "medium (1 source)"
+  },
+  {
+   "handle": "Matnight",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Matnight",
+   "confidence": "medium (1 source)",
+   "country": "France"
+  },
+  {
+   "handle": "Mattbszn",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Mattbszn",
+   "confidence": "medium (1 source)",
+   "country": "England"
+  },
+  {
+   "handle": "Mattranks",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Mattranks",
+   "confidence": "medium (1 source)",
+   "country": "United States"
+  },
+  {
+   "handle": "maxgg",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Maxgg",
+   "confidence": "medium (1 source)",
+   "country": "United States",
+   "team": "Nerve Gaming"
+  },
+  {
+   "handle": "Mcberry",
+   "region": "OCE",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Mcberry",
+   "confidence": "medium (1 source)",
+   "country": "Australia"
+  },
+  {
+   "handle": "Mefoo",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Mefoo",
+   "confidence": "medium (1 source)",
+   "country": "United States"
+  },
+  {
+   "handle": "merfind",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Merfind",
+   "confidence": "medium (1 source)",
+   "country": "Russia",
+   "team": "Lizer Esports"
+  },
+  {
+   "handle": "Mert",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Mert",
+   "confidence": "medium (1 source)",
+   "country": "Germany",
+   "team": "Team Dives Talents"
+  },
+  {
+   "handle": "Mestree",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Mestree",
+   "confidence": "medium (1 source)",
+   "country": "Spain"
+  },
+  {
+   "handle": "Mezz",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Mezz",
+   "confidence": "medium (1 source)",
+   "country": "France",
+   "team": "Radiance Esport"
+  },
+  {
+   "handle": "Mitei",
+   "region": "BR",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Mitei",
+   "confidence": "medium (1 source)",
+   "country": "Brazil"
+  },
+  {
+   "handle": "MohammedSr4",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/MohammedSr4",
+   "confidence": "medium (1 source)",
+   "country": "Norway"
+  },
+  {
+   "handle": "Monа",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Mon%D0%B0",
+   "confidence": "medium (1 source)",
+   "country": "Northern Ireland"
+  },
+  {
+   "handle": "Moneymaker",
+   "region": "EU",
+   "input": "controller",
+   "source_url": [
+    "https://fortnite-esports.fandom.com/wiki/Moneymaker",
+    "https://prosettings.net/players/moneymaker/"
+   ],
+   "confidence": "high (2 sources)",
+   "country": "Sweden",
+   "team": "XP42 Esports"
+  },
+  {
+   "handle": "Moon",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Moon_(Italian_Player)",
+   "confidence": "medium (1 source)",
+   "country": "Italy"
+  },
+  {
+   "handle": "Moussa",
+   "region": "OCE",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Moussa",
+   "confidence": "medium (1 source)",
+   "country": "Australia"
+  },
+  {
+   "handle": "MTS",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/MTS",
+   "confidence": "medium (1 source)",
+   "country": "France"
+  },
+  {
+   "handle": "Muhq",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Muhq",
+   "confidence": "medium (1 source)",
+   "country": "Germany",
+   "retired": true
+  },
+  {
+   "handle": "Mvxrr",
+   "region": "BR",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Mvxrr",
+   "confidence": "medium (1 source)",
+   "country": "Chile",
+   "team": "M7 Esports"
+  },
+  {
+   "handle": "Mxciej",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Mxciej",
+   "confidence": "medium (1 source)",
+   "country": "Austria"
+  },
+  {
+   "handle": "N4оh",
+   "region": "ME",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/N4%D0%BEh",
+   "confidence": "medium (1 source)",
+   "country": "Saudi Arabia"
+  },
+  {
+   "handle": "N7",
+   "region": "ME",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/N7",
+   "confidence": "medium (1 source)",
+   "country": "Saudi Arabia"
+  },
+  {
+   "handle": "Nacharrio",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Nacharrio",
+   "confidence": "medium (1 source)",
+   "country": "Spain"
+  },
+  {
+   "handle": "Nafri",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Nafri",
+   "confidence": "medium (1 source)",
+   "country": "Germany",
+   "team": "DynastyX"
+  },
+  {
+   "handle": "Napo",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Napo_(Florent_Gispert)",
+   "confidence": "medium (1 source)",
+   "country": "France",
+   "team": "RAK UNITED"
+  },
+  {
+   "handle": "Natan",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Natan",
+   "confidence": "medium (1 source)",
+   "country": "Poland"
+  },
+  {
+   "handle": "Nathan",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Nathan_(NAE_Player)",
+   "confidence": "medium (1 source)",
+   "country": "United States"
+  },
+  {
+   "handle": "Nax",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Nax",
+   "confidence": "medium (1 source)",
+   "country": "Germany"
+  },
+  {
+   "handle": "Nayroz",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Nayroz",
+   "confidence": "medium (1 source)",
+   "country": "France",
+   "retired": true
+  },
+  {
+   "handle": "Naysu",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Naysu",
+   "confidence": "medium (1 source)",
+   "country": "France"
+  },
+  {
+   "handle": "Nayzer",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Nayzer",
+   "confidence": "medium (1 source)",
+   "country": "France",
+   "retired": true
+  },
+  {
+   "handle": "Nazgul",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Nazgul",
+   "confidence": "medium (1 source)",
+   "country": "Netherlands",
+   "retired": true
+  },
+  {
+   "handle": "Nbxfv",
+   "region": "ME",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Nbxfv",
+   "confidence": "medium (1 source)",
+   "country": "Saudi Arabia"
+  },
+  {
+   "handle": "NejiZ",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/NejiZFN",
+   "confidence": "medium (1 source)",
+   "country": "France",
+   "retired": true
+  },
+  {
+   "handle": "neu",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Neu",
+   "confidence": "medium (1 source)",
+   "country": "Spain"
+  },
+  {
+   "handle": "Neudtee",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Neudtee",
+   "confidence": "medium (1 source)",
+   "country": "Belgium"
+  },
+  {
+   "handle": "Nevado",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Nevado",
+   "confidence": "medium (1 source)",
+   "country": "Spain",
+   "team": "Elase Esports"
+  },
+  {
+   "handle": "Newton",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Newton",
+   "confidence": "medium (1 source)",
+   "country": "England",
+   "team": "Team Dives"
+  },
+  {
+   "handle": "NeZaK",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/NeZaK",
+   "confidence": "medium (1 source)",
+   "country": "Italy",
+   "team": "Dsyre"
+  },
+  {
+   "handle": "Niivzy",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Niivzy",
+   "confidence": "medium (1 source)",
+   "country": "Poland"
+  },
+  {
+   "handle": "Niki (EU Player)",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Niki_(EU_Player)",
+   "confidence": "medium (1 source)",
+   "country": "Germany",
+   "team": "Wick eSports"
+  },
+  {
+   "handle": "Nizer",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Nizer",
+   "confidence": "medium (1 source)",
+   "country": "Poland",
+   "team": "4Leafs Esports"
+  },
+  {
+   "handle": "Nizo",
+   "region": "ME",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Nizo",
+   "confidence": "medium (1 source)"
+  },
+  {
+   "handle": "Noa",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Noa_(French_Player)",
+   "confidence": "medium (1 source)",
+   "country": "France",
+   "team": "Royalsten"
+  },
+  {
+   "handle": "noahjr10",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Noahjr10",
+   "confidence": "medium (1 source)",
+   "country": "Germany",
+   "team": "BIG Clan"
+  },
+  {
+   "handle": "Nomis",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Nomis",
+   "confidence": "medium (1 source)",
+   "country": "Germany"
+  },
+  {
+   "handle": "Nomzz",
+   "region": "EU",
+   "input": "controller",
+   "source_url": [
+    "https://fortnite-esports.fandom.com/wiki/Nomzz",
+    "https://prosettings.net/players/nomzz/"
+   ],
+   "confidence": "high (2 sources)",
+   "country": "Germany"
+  },
+  {
+   "handle": "Noobieplayer",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Noobieplayer",
+   "confidence": "medium (1 source)",
+   "country": "Netherlands"
+  },
+  {
+   "handle": "Noulish",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Noulish",
+   "confidence": "medium (1 source)"
+  },
+  {
+   "handle": "Noxyhty",
+   "region": "ASIA",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Noxyhty",
+   "confidence": "medium (1 source)",
+   "country": "Japan",
+   "team": "ReLit"
+  },
+  {
+   "handle": "Nuwzh",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Nuwzh",
+   "confidence": "medium (1 source)",
+   "country": "France"
+  },
+  {
+   "handle": "Nxndolol",
+   "region": "BR",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Nxndolol",
+   "confidence": "medium (1 source)",
+   "country": "Brazil"
+  },
+  {
+   "handle": "Obito",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Obito_(EU_Player)",
+   "confidence": "medium (1 source)"
+  },
+  {
+   "handle": "Oltsu",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Oltsu",
+   "confidence": "medium (1 source)",
+   "country": "Finland"
+  },
+  {
+   "handle": "Opt",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Opt",
+   "confidence": "medium (1 source)",
+   "country": "Wales",
+   "retired": true
+  },
+  {
+   "handle": "OptSZN",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/OptSZN",
+   "confidence": "medium (1 source)",
+   "country": "United States"
+  },
+  {
+   "handle": "Orbix",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Orbix",
+   "confidence": "medium (1 source)",
+   "country": "England"
+  },
+  {
+   "handle": "Outpld",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Outpld",
+   "confidence": "medium (1 source)",
+   "country": "Wales"
+  },
+  {
+   "handle": "Over",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Over_(EU_Player)",
+   "confidence": "medium (1 source)",
+   "country": "Croatia"
+  },
+  {
+   "handle": "Owl",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Owl",
+   "confidence": "medium (1 source)",
+   "country": "United States",
+   "team": "Xen"
+  },
+  {
+   "handle": "Parca",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Parca",
+   "confidence": "medium (1 source)",
+   "country": "Italy",
+   "team": "7VEN.EU"
+  },
+  {
+   "handle": "Parxc",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Parxc",
+   "confidence": "medium (1 source)",
+   "country": "United States"
+  },
+  {
+   "handle": "Patehk",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Patehk",
+   "confidence": "medium (1 source)",
+   "country": "United States",
+   "team": "Team Prodigy"
+  },
+  {
+   "handle": "Patto",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Patto",
+   "confidence": "medium (1 source)",
+   "country": "England"
+  },
+  {
+   "handle": "Peppe",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Peppe",
+   "confidence": "medium (1 source)",
+   "country": "Italy"
+  },
+  {
+   "handle": "Pietriin",
+   "region": "BR",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Pietriin",
+   "confidence": "medium (1 source)",
+   "country": "Brazil"
+  },
+  {
+   "handle": "Pila",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Pila",
+   "confidence": "medium (1 source)",
+   "country": "Germany",
+   "team": "Atide Esports"
+  },
+  {
+   "handle": "Piontka",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Piontka",
+   "confidence": "medium (1 source)",
+   "country": "Poland"
+  },
+  {
+   "handle": "Pipbot",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Pipbot",
+   "confidence": "medium (1 source)"
+  },
+  {
+   "handle": "Pluto",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Pluto(EU_Player)",
+   "confidence": "medium (1 source)",
+   "country": "Germany"
+  },
+  {
+   "handle": "PlzZxNano",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/PlzZxNano",
+   "confidence": "medium (1 source)",
+   "country": "United States",
+   "team": "FLu Esports"
+  },
+  {
+   "handle": "Prayy",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/PrayyEU",
+   "confidence": "medium (1 source)",
+   "country": "Germany",
+   "retired": true
+  },
+  {
+   "handle": "premfn",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://prosettings.net/players/premfn/",
+   "confidence": "medium (hybrid page)",
+   "note": "ProSettings has both KBM and controller settings; many mice since 2024, controller DualSense Edge to 2024-11 - likely KBM now (unconfirmed).",
+   "country": "United States"
+  },
+  {
+   "handle": "Pretty",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Pretty",
+   "confidence": "medium (1 source)",
+   "country": "Mexico"
+  },
+  {
+   "handle": "Pro",
+   "region": "ME",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Pro",
+   "confidence": "medium (1 source)",
+   "country": "Saudi Arabia"
+  },
+  {
+   "handle": "Prodigyy",
+   "region": "BR",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Prodigyy",
+   "confidence": "medium (1 source)",
+   "country": "Brazil"
+  },
+  {
+   "handle": "Pvkz",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Pvkz",
+   "confidence": "medium (1 source)",
+   "country": "United States",
+   "retired": true
+  },
+  {
+   "handle": "Qeezy",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Qeezy",
+   "confidence": "medium (1 source)",
+   "country": "England",
+   "team": "Team Swyzz"
+  },
+  {
+   "handle": "rainzz",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Rainzz",
+   "confidence": "medium (1 source)",
+   "country": "Germany"
+  },
+  {
+   "handle": "Raizoo",
+   "region": "ME",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Raizoo",
+   "confidence": "medium (1 source)",
+   "country": "Jordan",
+   "team": "DL Esports"
+  },
+  {
+   "handle": "Rakic",
+   "region": "ME",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Rakic",
+   "confidence": "medium (1 source)",
+   "country": "South Africa",
+   "team": "HighBorn"
+  },
+  {
+   "handle": "Rambo",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Rambo",
+   "confidence": "medium (1 source)",
+   "country": "Italy",
+   "retired": true
+  },
+  {
+   "handle": "RareGG",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/RareGG",
+   "confidence": "medium (1 source)",
+   "country": "France",
+   "team": "RAK UNITED"
+  },
+  {
+   "handle": "Raxqs",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Raxqs",
+   "confidence": "medium (1 source)",
+   "country": "Germany"
+  },
+  {
+   "handle": "Rayxne",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Rayxne",
+   "confidence": "medium (1 source)",
+   "country": "Spain"
+  },
+  {
+   "handle": "RazorX",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://prosettings.net/players/razorx/",
+   "confidence": "medium (1 source)",
+   "country": "United States"
+  },
+  {
+   "handle": "React1x",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/React1x",
+   "confidence": "medium (1 source)",
+   "country": "United States"
+  },
+  {
+   "handle": "Redz",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Redzfnr",
+   "confidence": "medium (1 source)",
+   "country": "Germany",
+   "team": "Enefy Esports"
+  },
+  {
+   "handle": "REEZ",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/REEZ",
+   "confidence": "medium (1 source)",
+   "country": "Germany",
+   "retired": true
+  },
+  {
+   "handle": "Regs",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://prosettings.net/players/regs/",
+   "confidence": "medium (1 source)",
+   "country": "Mexico"
+  },
+  {
+   "handle": "Reinerz",
+   "region": "ASIA",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Reinerz",
+   "confidence": "medium (1 source)",
+   "country": "Japan",
+   "team": "Blue Phoenix"
+  },
+  {
+   "handle": "Remixxx",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Remix",
+   "confidence": "medium (1 source)",
+   "country": "Republic of Ireland",
+   "retired": true
+  },
+  {
+   "handle": "rico",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Ricoshawnn",
+   "confidence": "medium (1 source)",
+   "country": "Austria",
+   "retired": true
+  },
+  {
+   "handle": "Ricy",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Ricy",
+   "confidence": "medium (1 source)",
+   "country": "Belgium",
+   "team": "ECV Esports"
+  },
+  {
+   "handle": "Riney",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Riney",
+   "confidence": "medium (1 source)",
+   "country": "France",
+   "retired": true
+  },
+  {
+   "handle": "Rino",
+   "region": "ME",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Rino",
+   "confidence": "medium (1 source)",
+   "country": "United Arab Emirates"
+  },
+  {
+   "handle": "Rintaroudazo",
+   "region": "ASIA",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Rintaroudazo",
+   "confidence": "medium (1 source)",
+   "country": "Japan",
+   "team": "Team ONYX (Japanese Team)"
+  },
+  {
+   "handle": "Riquelme",
+   "region": "BR",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Riquelme",
+   "confidence": "medium (1 source)",
+   "country": "Brazil"
+  },
+  {
+   "handle": "Rise",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Rise",
+   "confidence": "medium (1 source)",
+   "country": "Italy",
+   "retired": true
+  },
+  {
+   "handle": "Robott",
+   "region": "BR",
+   "input": "controller",
+   "source_url": "https://prosettings.net/players/robott/",
+   "confidence": "medium (1 source)",
+   "country": "Brazil"
+  },
+  {
+   "handle": "Rohunfn",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Rohunfn",
+   "confidence": "medium (1 source)"
+  },
+  {
+   "handle": "Roker",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Roker",
+   "confidence": "medium (1 source)",
+   "country": "Slovenia"
+  },
+  {
+   "handle": "Ronnityy",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Ronnityy",
+   "confidence": "medium (1 source)",
+   "country": "England",
+   "retired": true
+  },
+  {
+   "handle": "Rooklol7",
+   "region": "ME",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Rooklol7",
+   "confidence": "medium (1 source)",
+   "country": "India"
+  },
+  {
+   "handle": "RubanssX",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/RubanssX",
+   "confidence": "medium (1 source)",
+   "country": "Netherlands",
+   "team": "Vitaly Esports"
+  },
+  {
+   "handle": "RubbX",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/RubbX",
+   "confidence": "medium (1 source)",
+   "country": "Netherlands"
+  },
+  {
+   "handle": "Rupapad",
+   "region": "ASIA",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Rupapad",
+   "confidence": "medium (1 source)",
+   "country": "Japan",
+   "team": "ENTER FORCE.36"
+  },
+  {
+   "handle": "Rushh",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Rushh",
+   "confidence": "medium (1 source)",
+   "country": "United States"
+  },
+  {
+   "handle": "Rusteryy",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Rusteryy",
+   "confidence": "medium (1 source)",
+   "country": "Germany"
+  },
+  {
+   "handle": "Rxman",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Rxman",
+   "confidence": "medium (1 source)",
+   "country": "Italy"
+  },
+  {
+   "handle": "Rxnny",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Rxnny",
+   "confidence": "medium (1 source)",
+   "country": "Italy",
+   "team": "Loading One"
+  },
+  {
+   "handle": "Ryptidz",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Ryptidz",
+   "confidence": "medium (1 source)",
+   "country": "United States",
+   "team": "Azteca Esports"
+  },
+  {
+   "handle": "Ryzeuh",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Ryzeuh",
+   "confidence": "medium (1 source)",
+   "country": "France"
+  },
+  {
+   "handle": "Ryzon",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/RYZON",
+   "confidence": "medium (1 source)",
+   "country": "Belgium"
+  },
+  {
+   "handle": "S0vzy",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/S0vzy",
+   "confidence": "medium (1 source)",
+   "country": "United States"
+  },
+  {
+   "handle": "Salt 22",
+   "region": "ME",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Salt_22",
+   "confidence": "medium (1 source)",
+   "country": "United Arab Emirates"
+  },
+  {
+   "handle": "Samkob",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Samkob",
+   "confidence": "medium (1 source)",
+   "country": "Canada"
+  },
+  {
+   "handle": "Santi",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/SantiFN",
+   "confidence": "medium (1 source)",
+   "country": "Portugal",
+   "retired": true
+  },
+  {
+   "handle": "Sanxzy",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Sanxzy",
+   "confidence": "medium (1 source)",
+   "country": "Italy",
+   "team": "Tiger Esports"
+  },
+  {
+   "handle": "Schock",
+   "region": "OCE",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Schock",
+   "confidence": "medium (1 source)",
+   "country": "Australia"
+  },
+  {
+   "handle": "Scopexd",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Scopexd",
+   "confidence": "medium (1 source)",
+   "country": "Italy",
+   "retired": true
+  },
+  {
+   "handle": "Sent",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Sent",
+   "confidence": "medium (1 source)",
+   "country": "Spain",
+   "team": "Tecnical eSports"
+  },
+  {
+   "handle": "Sevenjosh",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Sevenjosh",
+   "confidence": "medium (1 source)",
+   "country": "England",
+   "retired": true
+  },
+  {
+   "handle": "Sgaus",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Sgaus",
+   "confidence": "medium (1 source)",
+   "country": "Italy"
+  },
+  {
+   "handle": "Shadyy",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Shadyy",
+   "confidence": "medium (1 source)",
+   "country": "United States"
+  },
+  {
+   "handle": "Shiro",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/ShiroFNBR",
+   "confidence": "medium (1 source)",
+   "country": "Germany"
+  },
+  {
+   "handle": "Shiwi",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Shiwi",
+   "confidence": "medium (1 source)",
+   "country": "Spain",
+   "team": "Locked Esports"
+  },
+  {
+   "handle": "Shotty (BR Player)",
+   "region": "BR",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Shotty_(BR_Player)",
+   "confidence": "medium (1 source)",
+   "country": "Paraguay"
+  },
+  {
+   "handle": "Sigma3x",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Sigma3x",
+   "confidence": "medium (1 source)",
+   "country": "United States"
+  },
+  {
+   "handle": "Sinklol",
+   "region": "ASIA",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Sinklol",
+   "confidence": "medium (1 source)",
+   "country": "Japan",
+   "team": "ReLit"
+  },
+  {
+   "handle": "Sirious",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Sirious",
+   "confidence": "medium (1 source)",
+   "country": "Italy",
+   "team": "Team Hmble"
+  },
+  {
+   "handle": "Skxyper ay",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Skxyper_ay",
+   "confidence": "medium (1 source)",
+   "country": "Italy"
+  },
+  {
+   "handle": "Slacss",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Slacss",
+   "confidence": "medium (1 source)",
+   "country": "United States"
+  },
+  {
+   "handle": "Slayyer1x",
+   "region": "ME",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Slayyer1x",
+   "confidence": "medium (1 source)",
+   "country": "Pakistan",
+   "team": "Voltrix Esports"
+  },
+  {
+   "handle": "Sleezy",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Sl%D0%B5ezy_(EU_Player)",
+   "confidence": "medium (1 source)",
+   "country": "Germany"
+  },
+  {
+   "handle": "Slicehyper",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Slicehyper",
+   "confidence": "medium (1 source)",
+   "country": "Germany"
+  },
+  {
+   "handle": "Slurp",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Slurp",
+   "confidence": "medium (1 source)",
+   "country": "Israel"
+  },
+  {
+   "handle": "Snoopywyd",
+   "region": "ME",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Snoopywyd",
+   "confidence": "medium (1 source)",
+   "country": "Syria"
+  },
+  {
+   "handle": "Spade",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/SpadeFPS",
+   "confidence": "medium (1 source)",
+   "country": "United States"
+  },
+  {
+   "handle": "Splasheyy",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Splasheyy",
+   "confidence": "medium (1 source)",
+   "country": "England",
+   "team": "Lionscreed"
+  },
+  {
+   "handle": "Sqyroo",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Sqyroo",
+   "confidence": "medium (1 source)",
+   "country": "Poland",
+   "retired": true
+  },
+  {
+   "handle": "SR3",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/SR3",
+   "confidence": "medium (1 source)",
+   "country": "United States",
+   "team": "Repulse Gaming"
+  },
+  {
+   "handle": "Stakken",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Stakken",
+   "confidence": "medium (1 source)",
+   "country": "Norway",
+   "retired": true
+  },
+  {
+   "handle": "Stampz",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Stampz",
+   "confidence": "medium (1 source)",
+   "country": "United States"
+  },
+  {
+   "handle": "Star",
+   "region": "ME",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Star",
+   "confidence": "medium (1 source)",
+   "country": "Kuwait",
+   "retired": true
+  },
+  {
+   "handle": "Stefxm",
+   "region": "BR",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Stefxm",
+   "confidence": "medium (1 source)",
+   "country": "Chile"
+  },
+  {
+   "handle": "Storms",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Storms",
+   "confidence": "medium (1 source)",
+   "country": "United States"
+  },
+  {
+   "handle": "Stormy",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Stormy_(NAW_Player)",
+   "confidence": "medium (1 source)",
+   "country": "Mexico"
+  },
+  {
+   "handle": "Sulaiman",
+   "region": "ME",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Sulaiman_(Player_2)",
+   "confidence": "medium (1 source)",
+   "retired": true
+  },
+  {
+   "handle": "Sway",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": [
+    "https://fortnite-esports.fandom.com/wiki/Sway",
+    "https://prosettings.net/players/sway/"
+   ],
+   "confidence": "high (2 sources)",
+   "note": "Long-time controller pro/creator (FaZe Sway).",
+   "country": "Puerto Rico",
+   "retired": true
+  },
+  {
+   "handle": "SweLucas",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/SweLucas",
+   "confidence": "medium (1 source)",
+   "country": "Sweden"
+  },
+  {
+   "handle": "Swexey",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Swexey",
+   "confidence": "medium (1 source)",
+   "country": "Canada"
+  },
+  {
+   "handle": "Swifty",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Swifty",
+   "confidence": "medium (1 source)",
+   "country": "Wales"
+  },
+  {
+   "handle": "Swiftylol",
+   "region": "ME",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Swiftylol",
+   "confidence": "medium (1 source)",
+   "country": "Saudi Arabia"
+  },
+  {
+   "handle": "SWIIIGHT",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/SWIIIGHT",
+   "confidence": "medium (1 source)",
+   "country": "France"
+  },
+  {
+   "handle": "Swzzy",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Swzzy",
+   "confidence": "medium (1 source)",
+   "country": "Estonia"
+  },
+  {
+   "handle": "Sxxmii",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Sxxmii",
+   "confidence": "medium (1 source)",
+   "country": "Spain",
+   "team": "Saints Esports"
+  },
+  {
+   "handle": "Synrr",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Synrr",
+   "confidence": "medium (1 source)",
+   "country": "Bahamas"
+  },
+  {
+   "handle": "Taintsy",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Taintsy",
+   "confidence": "medium (1 source)",
+   "country": "Scotland"
+  },
+  {
+   "handle": "Talls",
+   "region": "BR",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Talls",
+   "confidence": "medium (1 source)",
+   "country": "Argentina"
+  },
+  {
+   "handle": "Tauruz",
+   "region": "ME",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Tauruz",
+   "confidence": "medium (1 source)",
+   "country": "Malaysia"
+  },
+  {
+   "handle": "Tawerkaxl",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Tawerkaxl",
+   "confidence": "medium (1 source)",
+   "country": "Russia"
+  },
+  {
+   "handle": "tcevasive",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Tcevasive",
+   "confidence": "medium (1 source)",
+   "country": "England"
+  },
+  {
+   "handle": "Tcin",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Tcin",
+   "confidence": "medium (1 source)",
+   "country": "Germany",
+   "retired": true
+  },
+  {
+   "handle": "Teichifishy",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Teichifishy",
+   "confidence": "medium (1 source)",
+   "country": "Germany"
+  },
+  {
+   "handle": "Tekkers",
+   "region": "ME",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Tekkers",
+   "confidence": "medium (1 source)",
+   "country": "Saudi Arabia"
+  },
+  {
+   "handle": "TeyZen",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/TeyZen",
+   "confidence": "medium (1 source)",
+   "country": "Belgium",
+   "retired": true
+  },
+  {
+   "handle": "Tiiger24",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Tiiger24",
+   "confidence": "medium (1 source)",
+   "country": "Spain",
+   "team": "KPI WORLD"
+  },
+  {
+   "handle": "Tilt",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://prosettings.net/players/tilt/",
+   "confidence": "medium (1 source)",
+   "country": "United States"
+  },
+  {
+   "handle": "Timmme",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Timmme",
+   "confidence": "medium (1 source)",
+   "country": "Germany"
+  },
+  {
+   "handle": "Tofranks",
+   "region": "BR",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Tofranks",
+   "confidence": "medium (1 source)",
+   "country": "Argentina"
+  },
+  {
+   "handle": "TOKL",
+   "region": "ME",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/TOKL",
+   "confidence": "medium (1 source)",
+   "country": "Saudi Arabia"
+  },
+  {
+   "handle": "Tombik",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Tombik",
+   "confidence": "medium (1 source)",
+   "country": "Poland"
+  },
+  {
+   "handle": "TooSlowForYou",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Sloww",
+   "confidence": "medium (1 source)",
+   "country": "France"
+  },
+  {
+   "handle": "Trece",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Trece",
+   "confidence": "medium (1 source)",
+   "country": "Spain"
+  },
+  {
+   "handle": "Troxzer",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Troxzer",
+   "confidence": "medium (1 source)",
+   "country": "Poland",
+   "retired": true
+  },
+  {
+   "handle": "Tryhardd",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Tryharddd",
+   "confidence": "medium (1 source)",
+   "country": "Netherlands"
+  },
+  {
+   "handle": "Tweop",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Tweop",
+   "confidence": "medium (1 source)",
+   "country": "Croatia",
+   "team": "Invictus Team"
+  },
+  {
+   "handle": "Twexy",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Twexy",
+   "confidence": "medium (1 source)",
+   "country": "Mexico",
+   "retired": true
+  },
+  {
+   "handle": "Tyrer74",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Tyrer74",
+   "confidence": "medium (1 source)",
+   "country": "England"
+  },
+  {
+   "handle": "Uckee",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Uckee",
+   "confidence": "medium (1 source)",
+   "country": "Sweden"
+  },
+  {
+   "handle": "UiAbstrakt",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/UiAbstrakt",
+   "confidence": "medium (1 source)",
+   "country": "United States"
+  },
+  {
+   "handle": "Vainly",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Vainly",
+   "confidence": "medium (1 source)",
+   "country": "Germany"
+  },
+  {
+   "handle": "Vayz",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Vayz",
+   "confidence": "medium (1 source)",
+   "country": "United States",
+   "retired": true
+  },
+  {
+   "handle": "vBlazified",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/VBlazified",
+   "confidence": "medium (1 source)",
+   "country": "England"
+  },
+  {
+   "handle": "VBqtify",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/VBqtify",
+   "confidence": "medium (1 source)",
+   "country": "United States",
+   "team": "Nerve Gaming"
+  },
+  {
+   "handle": "Velokyd",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Velokyd",
+   "confidence": "medium (1 source)",
+   "country": "Poland"
+  },
+  {
+   "handle": "Vick",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Vick",
+   "confidence": "medium (1 source)",
+   "country": "Italy",
+   "retired": true
+  },
+  {
+   "handle": "Viosk",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Viosk",
+   "confidence": "medium (1 source)",
+   "country": "Germany"
+  },
+  {
+   "handle": "Vipex",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Vipex_(EU_Player)",
+   "confidence": "medium (1 source)",
+   "country": "Turkey"
+  },
+  {
+   "handle": "Vizual",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Vizual",
+   "confidence": "medium (1 source)",
+   "country": "Germany",
+   "retired": true
+  },
+  {
+   "handle": "Vosloww",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Vosloww",
+   "confidence": "medium (1 source)",
+   "country": "France"
+  },
+  {
+   "handle": "VOVO",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/VOVO",
+   "confidence": "medium (1 source)",
+   "country": "France"
+  },
+  {
+   "handle": "vTera",
+   "region": "ME",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/VTera",
+   "confidence": "medium (1 source)",
+   "country": "Saudi Arabia"
+  },
+  {
+   "handle": "Vxttor",
+   "region": "BR",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Vxttor",
+   "confidence": "medium (1 source)",
+   "country": "Brazil"
+  },
+  {
+   "handle": "Vyper",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Vyper",
+   "confidence": "medium (1 source)",
+   "country": "Netherlands",
+   "retired": true
+  },
+  {
+   "handle": "Watts (Scottish Player)",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Watts_(English_Player)",
+   "confidence": "medium (1 source)",
+   "country": "Romania"
+  },
+  {
+   "handle": "Weezle",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Weezle",
+   "confidence": "medium (1 source)",
+   "country": "Canada"
+  },
+  {
+   "handle": "Wolfiizz",
+   "region": "ME",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Wolfiizz",
+   "confidence": "medium (1 source)",
+   "country": "Saudi Arabia"
+  },
+  {
+   "handle": "Xarcy",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Xarcy",
+   "confidence": "medium (1 source)",
+   "country": "England"
+  },
+  {
+   "handle": "Xcon",
+   "region": "OCE",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Xcon",
+   "confidence": "medium (1 source)",
+   "country": "New Zealand"
+  },
+  {
+   "handle": "Xeve",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Xeve",
+   "confidence": "medium (1 source)",
+   "country": "Italy"
+  },
+  {
+   "handle": "Xeyler",
+   "region": "ASIA",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Xeyler",
+   "confidence": "medium (1 source)",
+   "country": "Japan",
+   "team": "LF Esports"
+  },
+  {
+   "handle": "Xpert",
+   "region": "ME",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Xpert",
+   "confidence": "medium (1 source)",
+   "country": "Kuwait"
+  },
+  {
+   "handle": "Yaer",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Yaer",
+   "confidence": "medium (1 source)",
+   "country": "Netherlands",
+   "retired": true
+  },
+  {
+   "handle": "Yayouu",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Yayouu",
+   "confidence": "medium (1 source)",
+   "country": "France",
+   "team": "BTL Esport"
+  },
+  {
+   "handle": "Yonder",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Yonder",
+   "confidence": "medium (1 source)"
+  },
+  {
+   "handle": "Yuden",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Yuden",
+   "confidence": "medium (1 source)",
+   "country": "Portugal"
+  },
+  {
+   "handle": "Yukii",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Yukii_(German_Player)",
+   "confidence": "medium (1 source)",
+   "country": "Ukraine"
+  },
+  {
+   "handle": "Yuqii",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Yuqii",
+   "confidence": "medium (1 source)",
+   "country": "France"
+  },
+  {
+   "handle": "YZY",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/YZY",
+   "confidence": "medium (1 source)",
+   "country": "France"
+  },
+  {
+   "handle": "Zaf",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Zaf",
+   "confidence": "medium (1 source)",
+   "country": "England"
+  },
+  {
+   "handle": "Zaxi",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/ZaxiFNBR",
+   "confidence": "medium (1 source)",
+   "country": "Poland"
+  },
+  {
+   "handle": "Zeldriss",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Zeldriss",
+   "confidence": "medium (1 source)",
+   "country": "France",
+   "team": "BTL Esport"
+  },
+  {
+   "handle": "Zelobud",
+   "region": "OCE",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Zelobud",
+   "confidence": "medium (1 source)",
+   "country": "Australia"
+  },
+  {
+   "handle": "Zewfie",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Zewfie",
+   "confidence": "medium (1 source)",
+   "country": "Canada"
+  },
+  {
+   "handle": "Zexfishy",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Zexfishy",
+   "confidence": "medium (1 source)",
+   "country": "Poland"
+  },
+  {
+   "handle": "Zhаys",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Zh%D0%B0ys",
+   "confidence": "medium (1 source)",
+   "country": "Sweden"
+  },
+  {
+   "handle": "Zhan",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Zhan",
+   "confidence": "medium (1 source)"
+  },
+  {
+   "handle": "Zhy",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Zhy",
+   "confidence": "medium (1 source)",
+   "country": "United States"
+  },
+  {
+   "handle": "Ziggy",
+   "region": "NAC",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Ziggy",
+   "confidence": "medium (1 source)",
+   "country": "United States",
+   "team": "Team Summit"
+  },
+  {
+   "handle": "Zilo (European Player)",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Zilo_(European_Player)",
+   "confidence": "medium (1 source)",
+   "country": "England"
+  },
+  {
+   "handle": "Zocian",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Zocian",
+   "confidence": "medium (1 source)",
+   "country": "France"
+  },
+  {
+   "handle": "Zohan",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Zohan",
+   "confidence": "medium (1 source)",
+   "country": "Denmark"
+  },
+  {
+   "handle": "ZoOxy",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/ZoOxy",
+   "confidence": "medium (1 source)",
+   "country": "France"
+  },
+  {
+   "handle": "Zoshy",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Zoshyy",
+   "confidence": "medium (1 source)",
+   "country": "Spain"
+  },
+  {
+   "handle": "Zxn",
+   "region": "ME",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Zxn",
+   "confidence": "medium (1 source)",
+   "country": "Bahrain"
+  },
+  {
+   "handle": "Zynox",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/ZynoxFNBR",
+   "confidence": "medium (1 source)",
+   "country": "Wales",
+   "team": "NTO Corp"
+  },
+  {
+   "handle": "Zypher",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/ZypherL2",
+   "confidence": "medium (1 source)",
+   "country": "Scotland"
+  },
+  {
+   "handle": "Zyra",
+   "region": "OCE",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Zyra",
+   "confidence": "medium (1 source)",
+   "country": "Australia",
+   "team": "Desert Esports.OCE"
+  },
+  {
+   "handle": "Zyvk",
+   "region": "EU",
+   "input": "controller",
+   "source_url": "https://fortnite-esports.fandom.com/wiki/Zyvk",
+   "confidence": "medium (1 source)",
+   "country": "France"
+  }
+ ]
+}
