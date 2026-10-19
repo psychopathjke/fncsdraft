@@ -58,6 +58,9 @@ check('старт с Season OG: 3–5 ноября 2023', CAREER.career.day>='20
 save(2024, 2, null, {startFrom:'2024-11-02'});
 notes.remix={day:CAREER.career.day, next:(careerNext()||{}).label};
 check('старт с Remix: 2–7 ноября 2024', CAREER.career.day>='2024-11-02' && CAREER.career.day<='2024-11-07', CAREER.career.day);
+save(2025, 3, null, {startFrom:'2025-05-02'});
+notes.sw={day:CAREER.career.day, snap:ccSnapshotNow().tag};
+check('старт со Star Wars: 2–9 мая 2025, снимок C6S2', CAREER.career.day>='2025-05-02' && CAREER.career.day<='2025-05-09' && ccSnapshotNow().tag==='t2', JSON.stringify(notes.sw));
 // 4) 2027 и рейтинг года под CC_NOW_YEAR_FORCE.
 save(2026, 2, '2026-12-20', {season:2, year0:2026});
 check('2027 (второй 2026-й) — весь год', ccRatingSnap()===null, ccRatingSnapTag()+' shift '+ccYearShift());
@@ -86,6 +89,11 @@ notes.create={f1:cf1, f3:cf3};
 check('на экране создания Chap в C5S1 ниже, чем в C5S3', cf1!=null && cf3!=null && cf3-cf1>=10, cf1+' → '+cf3);
 ccPickYearSeason(2024,'remix');
 check('Remix выбран: старт 2 ноября, рейтинг — итог года', ccPickedStart() && ccPickedStart().from==='2024-11-02' && ccRatingSnap()===null, JSON.stringify(ccPickedStart())+' '+JSON.stringify(ccRatingSnap()));
+ccPickYearSeason(2025,'sw');
+{ const w25=[...document.querySelectorAll('#ccYearChips .cc-yt-wrap')].find(w=>/^2025/.test(w.querySelector('.cc-year-tile').textContent));
+  const t25=w25 ? [...w25.querySelectorAll('.cc-yt-s')].map(b=>b.textContent) : [];
+  check('на плитке 2025: C6S1 C6S2 C6S3 Star Wars', t25.join(' ')==='C6S1 C6S2 C6S3 Star Wars', t25.join(' '));
+  check('Star Wars выбран: старт 2 мая, рейтинг сезона C6S2', ccPickedStart() && ccPickedStart().from==='2025-05-02' && ccRatingSnapTag()==='t2', JSON.stringify(ccPickedStart())+' '+ccRatingSnapTag()); }
 ccPickYear(2025);
 check('смена года сбрасывает сезон на первый', ccPickedStart()===null, JSON.stringify(ccPickedStart()));
 CC_MP_NEW={role:'a'}; ccRenderChips();

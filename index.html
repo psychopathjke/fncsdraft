@@ -115992,11 +115992,13 @@ function ccEdgeOff(pl){ return !!(pl && pl.noEdge); }
 const CC_SEASON_LABEL={h1:'Season 9', h3:'Season X', h4:'C2S1', i0:'C2S1', i1:'C2S2', i3:'C2S4',
   j1:'C2S5', j2:'C2S6', j3:'C2S7', j4:'C2S8', k1:'C3S1', k2:'C3S2', k3:'C3S3',
   e1:'Major 1', e2:'Major 2', e3:'Major 3', f1:'Major 1', f2:'Major 2', f3:'Major 3',
-  t1:'Major 1', t2:'Major 2', t3:'Major 3', m1:'Major 1', m2:'Major 2', og:'Season OG', remix:'Chapter 2 Remix'};
-const CC_SEASON_SUB={og:'OG', remix:'Remix', e1:'C4S1', e2:'C4S2', e3:'C4S3', f1:'C5S1', f2:'C5S2', f3:'C5S3', t1:'C6S1', t2:'C6S2', t3:'C6S3'};
-// OG-сезоны Epic с денежными капами (годы продлены до 30.11, ccYearTo) — своей кнопкой старта на плитке года.
-// Снимка рейтинга у них нет: рейтинг — итог года (ccRatingSnap на экране создания отдаёт null).
-const CC_START_EXTRA={2023:[{tag:'og', from:'2023-11-03'}], 2024:[{tag:'remix', from:'2024-11-02'}]};
+  t1:'Major 1', t2:'Major 2', t3:'Major 3', m1:'Major 1', m2:'Major 2', og:'Season OG', remix:'Chapter 2 Remix', sw:'Galactic Battle (Star Wars)'};
+const CC_SEASON_SUB={og:'OG', remix:'Remix', sw:'Star Wars', e1:'C4S1', e2:'C4S2', e3:'C4S3', f1:'C5S1', f2:'C5S2', f3:'C5S3', t1:'C6S1', t2:'C6S2', t3:'C6S3'};
+// Особые сезоны Epic — своей кнопкой старта на плитке года: OG и Remix (годы продлены до 30.11, ccYearTo) и
+// Star Wars (Galactic Battle, C6, 2.05–6.06.2025: FNCS Showdown 4–6, Console Victory Cup, оценки).
+// snap — снимок рейтинга того времени; без него рейтинг — итог года (ccRatingSnap на экране создания отдаёт null).
+const CC_START_EXTRA={2023:[{tag:'og', from:'2023-11-03'}], 2024:[{tag:'remix', from:'2024-11-02'}],
+  2025:[{tag:'sw', from:'2025-05-02', snap:'t2'}]};
 function ccStartSeasonsOf(y){ return (CC_SNAPS_BY_YEAR()[y] || []).concat(CC_START_EXTRA[y] || []); }
 function ccStartSeasons(){ return ccStartSeasonsOf(ccPickedYear()); }
 function ccStartSeasonAllowed(){ return !ccMpLockedYear() && !(typeof CC_MP_NEW!=='undefined' && CC_MP_NEW); }
@@ -117206,7 +117208,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='5a346b2c';
+const CC_BUILD='8acd9691';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -130244,7 +130246,9 @@ function ccRatingSnap(){
   if(typeof SHOWN_SCREEN!=='undefined' && SHOWN_SCREEN==='screen-career-create' && typeof CC!=='undefined' && CC && !CC_NOW_YEAR_FORCE){
     const list=CC_SNAPS_BY_YEAR()[ccNowYear()];
     if(!list || list.length<2) return null;
-    const s=(typeof ccPickedStart==='function' && ccPickedStart()) || list[0], i=list.indexOf(s);
+    let s=(typeof ccPickedStart==='function' && ccPickedStart()) || list[0];
+    if(s && s.snap) s=list.find(x=>x.tag===s.snap) || s;
+    const i=list.indexOf(s);
     if(i<0 || i===list.length-1) return null;
     return {tag:s.tag, cut:+String(list[i+1].from).replace(/-/g, ''), nextTag:list[i+1].tag};
   }
