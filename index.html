@@ -110560,6 +110560,15 @@ const CC_KIT_ICON={
   brick:'<svg viewBox="0 0 24 24"><rect x="2" y="4" width="9" height="5" fill="#c5624d"/><rect x="13" y="4" width="9" height="5" fill="#c5624d"/><rect x="2" y="10" width="20" height="5" fill="#b3523e"/><rect x="2" y="16" width="9" height="5" fill="#c5624d"/><rect x="13" y="16" width="9" height="5" fill="#c5624d"/></svg>',
   metal:'<svg viewBox="0 0 24 24"><path d="M4 8h16l2 8H2z" fill="#b7c3d1"/><path d="M4 8h16l-1-3H5z" fill="#e2e9f1"/><path d="M2 16h20v3H2z" fill="#8a97a8"/></svg>'
 };
+/* Кирка в первом слоте хотбара. В карьере — из шкафчика (скрины 37–38: в шкафчике картонная, в матче была Axe of
+   Champions), без надетой — дефолтная; вне карьеры (драфт про) — по-прежнему Axe of Champions 2.0. */
+function ccKitAxe(){
+  try{ if(typeof CAREER!=='undefined' && CAREER && CAREER.career && CAREER_RUN){
+    const w=ccFnWorn('p'), it=w && CAREER.fnOwn && CAREER.fnOwn[w.id];
+    return w ? {src:ccFnImg(w.id, true), n:w.name, r:(it && it.r) || 'rare'} : {src:ccFnImg('DefaultPickaxe', true), n:'Default Pickaxe', r:'common'};
+  } }catch(e){}
+  return {src:CC_PICKAXE_ART, n:'The Axe of Champions 2.0', r:'rare'};
+}
 function ccKitPanel(lobby, frame){
   const map=CC_RUN_MAP;
   if(!map || !map.isConnected || !frame) return;
@@ -110621,7 +110630,9 @@ function ccKitPanel(lobby, frame){
      файл items/item-axe-of-champions-v2.png вырезан со скрина, фон в прозрачность,
      тёмная рамка окна с краёв стёрта заливкой, поля обрезаны (его «что за чёрная
      чёрточка», 11 сентября: рамка, увеличенная поворотом, шла через весь слот). */
-  const slots='<span class="zk-slot zk-pick r-rare" data-cap="'+esc(T.ccKitPickaxe)+'" title="'+esc(T.ccKitPickaxe)+' · The Axe of Champions 2.0"><span class="zk-art zk-pickaxe"><img alt="" src="'+CC_PICKAXE_ART+'" onerror="this.remove()"></span><u>1</u></span>'+
+  /* В карьере — кирка из шкафчика (скрины 37–38: в шкафчике картонная, в матче была Axe of Champions), без неё — дефолтная. */
+  const axe=ccKitAxe();
+  const slots='<span class="zk-slot zk-pick r-'+ccRarityKey(axe.r)+'" data-cap="'+esc(T.ccKitPickaxe)+'" title="'+esc(T.ccKitPickaxe)+' · '+esc(axe.n)+'"><span class="zk-art zk-pickaxe"><img alt="" src="'+esc(axe.src)+'" onerror="this.remove()"></span><u>1</u></span>'+
     [0,1,2,3,4].map(k=>{
       const o=pack[k];
       const r=o && o.rarity ? ' r-'+ccRarityKey(o.rarity) : '';
@@ -121993,6 +122004,8 @@ let CC_RENDER_MEMO=null;
 function careerRenderHub(tab){
   const outer=!CC_RENDER_MEMO;
   if(outer) CC_RENDER_MEMO=new Map();
+  // Дефолты шкафчика и награды за новые вечера (кирка чемпиона FNCS) — до рисования, чтобы хаб и матч их видели.
+  if(outer) try{ ccFnDefaults(); ccLockerCheck(); }catch(e){}
   try{ return careerRenderHubRaw(tab); }
   finally{ if(outer) CC_RENDER_MEMO=null; try{ ccHubTheme(); }catch(e){} try{ ccTabsSide(); }catch(e){} }
 }
@@ -144422,7 +144435,7 @@ function ccLockerPlain(s){ return String(s||'').replace(/<[^>]*>/g, '').replace(
 function ccLockerRules(e){
   const out=[], name=()=>ccLockerPlain(ccLogName(e));
   if(e.place===1 && ((e.kind==='major' && e.stage==='final') || e.kind==='globals' || (e.kind==='summit' && e.stage==='final') || (e.kind==='rc' && e.stage==='final')))
-    out.push({id:'axe', kind:'pickaxe', name:'Axe of Champions'});
+    out.push({id:'axe', kind:'pickaxe', name:'Axe of Champions', fncs:true});
   if(e.kind==='major' && e.stage==='final') out.push({id:'gf'+e.season, kind:'banner', name:'FNCS Grand Finalist · '+ccSeasonYearOf(e.season)});
   if(e.lan) out.push({id:'lan|'+e.day, kind:'banner', name:name()});
   // Спреев нет (17.10, его «спрей шкафчика убери»).
@@ -144450,19 +144463,25 @@ function ccLockerClubs(){
 }
 function ccLockerCheck(){
   const cr=CAREER && CAREER.career; if(!cr || !cr.log) return;
-  const quiet=cr.lockSeen==null;
-  const from=cr.lockSeen||0; if(from>=cr.log.length) return;
   cr.locker=cr.locker||[];
   for(let i=from;i<cr.log.length;i++){
     const e=cr.log[i]; if(!e || e.who) continue;
     ccLockerRules(e).forEach(g=>{
       const have=cr.locker.find(x=>x.id===g.id);
       if(have){ if(!g.once) have.x=(have.x||1)+1; return; }
-      cr.locker.push({id:g.id, kind:g.kind, name:g.name, day:e.day, season:e.season, x:1, ek:e.kind, art:ccLockerArtOf(e.day, e.kind)});
+      cr.locker.push({id:g.id, kind:g.kind, name:g.name, day:e.day, season:e.season, x:1, ek:e.kind, art:ccLockerArtOf(e.day, e.kind), fn:g.fn});
+  /* Сейв до 19.10 вечера: победы FNCS лежали одной строкой «Axe of Champions». Строка снимается, и журнал
+     перечитывается заново молча — каждая победа даёт кирку своего сезона. */
+  // Шкафчик целиком собирается из журнала, поэтому перечитывается с нуля — иначе баннеры посчитались бы дважды.
+  if(cr.locker.some(x=>x.id==='axe')){ cr.locker=[]; cr.lockSeen=null; cr.lockAgain=true; }
+  const quiet=cr.lockSeen==null || !!cr.lockAgain;
+  const from=cr.lockSeen||0; if(from>=cr.log.length){ if(cr.lockSeen==null) cr.lockSeen=cr.log.length; delete cr.lockAgain; return; }
       if(!quiet) careerNews('good', 'ccNewsLocker', [CC_LOCKER_ICON[g.kind]||'🎁', g.name]);
     });
   }
-  cr.lockSeen=cr.log.length;
+      // Победа в FNCS — кирка чемпиона того сезона: своя строка в шкафчике и в руках (см. ccFncsAxeFor).
+      if(g.fncs){ const ax=ccFncsAxeGive(e.day, quiet); g={id:'axe|'+ax.id, kind:'pickaxe', name:ax.name, fn:ax.id}; }
+  cr.lockSeen=cr.log.length; delete cr.lockAgain;
 }
 function ccLockerHTML(){
   const cr=CAREER && CAREER.career; if(!cr) return '';
@@ -144474,7 +144493,8 @@ function ccLockerHTML(){
     const art=it.art || (it.day ? ccLockerArtOf(it.day, it.ek || (it.id==='wf' ? 'final' : it.id==='reload' ? 'reload' : it.id==='axe' ? 'major' : 'victory')) : '');
     // Кирка — на своём золотом фоне: на светлом постере Мейджора её не видно.
     const bg=it.kind==='pickaxe' ? ' style="background:radial-gradient(circle at 50% 40%,#6b4d12,#241a06)"' : art ? ' style="background-image:url('+esc(art)+')"' : '';
-    const top=it.kind==='pickaxe' && typeof CC_PICKAXE_ART!=='undefined'
+    const top=it.kind==='pickaxe' && it.fn ? '<img class="cc-lock-axe" src="'+ccFnImg(it.fn)+'" alt="" loading="lazy" onerror="this.remove()">'
+      : it.kind==='pickaxe' && typeof CC_PICKAXE_ART!=='undefined'
       ? '<img class="cc-lock-axe" src="'+CC_PICKAXE_ART+'" alt="" loading="lazy">' : '<i>'+(CC_LOCKER_ICON[it.kind]||'🎁')+'</i>';
     return '<span class="cc-lock-art"'+bg+'>'+top+'</span>';
   };
@@ -149068,6 +149088,68 @@ function ccFnEq(){ return CAREER.fnEq || (CAREER.fnEq={}); }
 function ccFnWorn(slot){
   const id=CAREER && CAREER.fnEq && CAREER.fnEq[slot];
   return id ? {id:id, name:(CAREER.fnOwn && CAREER.fnOwn[id] && CAREER.fnOwn[id].n) || id} : null;
+}
+/* ДЕФОЛТЫ И КИРКИ ЧЕМПИОНОВ (Notion «19.10», скрины 37–38, его «в симуляции должна быть кирка, которая у него стоит в
+   шкафчике, и у него ещё дефолтные скины и кирки должны быть», «может выиграть фнкс и ему выдадут кирку, смотря какой
+   фнкс он выиграл»). Дефолты лежат в шкафчике у всех: Default Pickaxe и Recruit Главы 1, с Главы 2 — её Recruit
+   (Rebirth A–D, с C2S5 ещё E–I). Кирка FNCS — та, что Epic выдавал чемпионам этого сезона (fortnite-api, set «FNCS»,
+   дата появления); сезон считается по дате (ccSeasonNumOn). До C2S2 своей кирки у FNCS не было — первая, The Axe of
+   Champions. Сезон без своей — последняя вышедшая до него. */
+const CC_FN_DEFAULTS=[
+  ['2019-01-01', 'DefaultPickaxe', 'p', 'Default Pickaxe'],
+  ['2019-01-01', 'CID_001_Athena_Commando_F_Default', 'o', 'Recruit'], ['2019-01-01', 'CID_005_Athena_Commando_M_Default', 'o', 'Recruit'],
+  ['2019-01-01', 'CID_002_Athena_Commando_F_Default', 'o', 'Recruit'], ['2019-01-01', 'CID_006_Athena_Commando_M_Default', 'o', 'Recruit'],
+  ['2019-01-01', 'CID_003_Athena_Commando_F_Default', 'o', 'Recruit'], ['2019-01-01', 'CID_007_Athena_Commando_M_Default', 'o', 'Recruit'],
+  ['2019-01-01', 'CID_004_Athena_Commando_F_Default', 'o', 'Recruit'], ['2019-01-01', 'CID_008_Athena_Commando_M_Default', 'o', 'Recruit'],
+  ['2019-10-13', 'CID_556_Athena_Commando_F_RebirthDefaultA', 'o', 'Recruit'], ['2019-10-13', 'CID_560_Athena_Commando_M_RebirthDefaultA', 'o', 'Recruit'],
+  ['2019-10-13', 'CID_557_Athena_Commando_F_RebirthDefaultB', 'o', 'Recruit'], ['2019-10-13', 'CID_561_Athena_Commando_M_RebirthDefaultB', 'o', 'Recruit'],
+  ['2019-10-13', 'CID_558_Athena_Commando_F_RebirthDefaultC', 'o', 'Recruit'], ['2019-10-13', 'CID_562_Athena_Commando_M_RebirthDefaultC', 'o', 'Recruit'],
+  ['2019-10-13', 'CID_559_Athena_Commando_F_RebirthDefaultD', 'o', 'Recruit'], ['2019-10-13', 'CID_563_Athena_Commando_M_RebirthDefaultD', 'o', 'Recruit'],
+  ['2020-12-02', 'CID_878_Athena_Commando_F_RebirthDefault_E', 'o', 'Recruit'], ['2020-12-02', 'CID_873_Athena_Commando_M_RebirthDefaultE', 'o', 'Recruit'],
+  ['2020-12-02', 'CID_879_Athena_Commando_F_RebirthDefault_F', 'o', 'Recruit'], ['2020-12-02', 'CID_874_Athena_Commando_M_RebirthDefaultF', 'o', 'Recruit']
+];
+function ccFnDefaults(){
+  if(!CAREER || !CAREER.career) return;
+  const own=ccFnOwn(), day=careerToday();
+  CC_FN_DEFAULTS.forEach(([from, id, t, n])=>{ if(day>=from && !own[id]) own[id]={t:t, n:n, r:'common', d:from, def:true}; });
+}
+const CC_FNCS_AXES=[
+  ['2020-03-17', 'Pickaxe_ID_376_FNCS', 'The Axe of Champions'],
+  ['2022-05-28', 'Pickaxe_ID_804_FNCSS20Male', 'The Axe of Champions 2.0'],
+  ['2022-07-18', 'Pickaxe_ID_835_SpyMaleFNCS1H', 'Bow Blades'],
+  ['2022-11-01', 'Pickaxe_SpyMale_FNCS_22', 'Champion Balisong'],
+  ['2023-02-14', 'Pickaxe_Forsake_FNCS', 'Maceball Bat'],
+  ['2023-05-04', 'Pickaxe_WinterHunterFNCS', 'Eyes of Victory'],
+  ['2023-07-29', 'Pickaxe_HeadhunterStarFNCS', 'Star Jet'],
+  ['2023-10-04', 'Pickaxe_SkeletonHunterFNCS', 'Competitive Slicer'],
+  ['2024-01-23', 'Pickaxe_BestDressedFNCS', "Champion's Blade"],
+  ['2024-04-09', 'Pickaxe_SpyMaleFNCS', 'Determination Daggers'],
+  ['2024-06-22', 'Pickaxe_Angel_FNCS', 'Scarlet Champion'],
+  ['2024-11-13', 'Pickaxe_FNCS_S32', 'Blade of Champions'],
+  ['2025-01-31', 'Pickaxe_NoiseFNCS', 'Wild Blade'],
+  ['2025-04-08', 'Pickaxe_WayWardRebelFNCS', 'FNCS Tape Decker'],
+  ['2025-05-02', 'Pickaxe_RainFNCS', 'FNCS Blade'],
+  ['2025-07-15', 'Pickaxe_StarWandFNCS', 'FNCS Star Wand'],
+  ['2025-08-26', 'Pickaxe_FNCSChampion', 'The Axe of Champions 3.0'],
+  ['2025-11-02', 'Pickaxe_HappyFNCS', 'Champion Chopper'],
+  ['2026-04-01', 'Pickaxe_MoralKoreFNCS', "Competitor's Prybar"],
+  ['2026-07-30', 'Pickaxe_OceanPearlFNCS', "Champion's Club"],
+  ['2026-09-17', 'Pickaxe_FNCS_42', 'FNCS Scythe']
+];
+// Кирка чемпиона FNCS для победы в этот день: своего сезона, иначе последняя до него, до первой — первая.
+function ccFncsAxeFor(day){
+  const n=ccSeasonNumOn(day)||0;
+  const same=n ? CC_FNCS_AXES.filter(a=>(ccSeasonNumOn(a[0])||0)===n) : [];
+  const before=CC_FNCS_AXES.filter(a=>a[0]<=day);
+  const a=same[0] || before[before.length-1] || CC_FNCS_AXES[0];
+  return {id:a[1], name:a[2]};
+}
+// Выдать кирку чемпиона: в шкафчик и сразу в руки (quiet — старый сейв задним числом: только в шкафчик).
+function ccFncsAxeGive(day, quiet){
+  const ax=ccFncsAxeFor(day), own=ccFnOwn();
+  if(!own[ax.id]) own[ax.id]={t:'p', n:ax.name, r:'rare', d:day, fncs:true};
+  if(!quiet) ccFnEq().p=ax.id;
+  return ax;
 }
 // Иконка надетой кирки для ленты убийств (zone-replay.js читает window.CC_FN_AXE в строке твоего убийства).
 try{ Object.defineProperty(window, 'CC_FN_AXE', {configurable:true, get(){
