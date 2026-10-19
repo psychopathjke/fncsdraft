@@ -4371,6 +4371,25 @@
     #screen-career-hub .cc-lobby.cc-lb-full .cc-lb-sched .ch-day em{justify-self:start;}
   }
   @media (max-width:700px){ .cc-lobby.cc-lb-full .cc-lb-bottom{order:0;} }
+  /* Вкладки меню — как на профиле (Notion «19.10», скрины 19/21/24: «выбор панелек вот так, как на профиле, чтоб
+     везде дизайн одинаковый»): Oswald капсом, активная — светлая таблетка, точки-метки видны; во всех главах. */
+  #screen-career-hub .cc-lobby .cc-lb-top{padding:10px 14px;}
+  #screen-career-hub .cc-lobby .cc-lb-nav{gap:8px;justify-content:flex-start;}
+  #screen-career-hub .cc-lobby .cc-lb-nav button{position:relative;margin:0;padding:8px 16px;border:0;border-radius:999px;background:transparent;
+    color:#e6ecff;font-family:var(--font-display);font-size:14px;font-weight:600;font-style:normal;letter-spacing:.07em;text-transform:uppercase;transform:none;}
+  #screen-career-hub .cc-lobby .cc-lb-nav button:hover{background:rgba(255,255,255,.1);}
+  #screen-career-hub .cc-lobby .cc-lb-nav button.on{background:#e4ebf7;color:#0b1a3a;transform:none;}
+  #screen-career-hub .cc-lobby .cc-lb-nav .ch-dot{display:inline-block;}
+  #screen-career-hub .cc-lobby .cc-lb-famA .cc-lb-top,#screen-career-hub .cc-lobby.cc-lb-famA .cc-lb-top{background:transparent;}
+  /* И без рамки вокруг (скрин 23, метки в углах): на «Центре» меню во всю панель хаба, без полей. */
+  @media (min-width:701px){
+    #screen-career-hub.ch-lobby-on .ch-body{padding:0;}
+    #screen-career-hub.ch-lobby-on .ch-stage{padding-bottom:0;}
+    #screen-career-hub.ch-lobby-on .cc-lobby{margin:0;border-radius:16px;}
+  }
+  /* Ник над фигурой — без подложки (скрин 22): номер, ник и устройство белым с тенью, как в лобби игры. */
+  #screen-career-hub .cc-lobby.cc-lb-famC .cc-lb-plate{background:none;-webkit-backdrop-filter:none;backdrop-filter:none;padding:0;
+    text-shadow:0 1px 3px rgba(0,0,0,.85),0 0 8px rgba(0,0,0,.45);}
   /* Панели главного меню — привычное синее стекло хаба (--fn-panel/--fn-deep), а не отдельный тёмно-серый
      (его слово 19.10: «пусть привычный дизайн в хабе будет синий, а не отдельный»). Плотнее, чем во вкладках:
      под ними картинка лобби. */
@@ -117691,7 +117710,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='b72943d9';
+const CC_BUILD='85d540a5';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -122946,7 +122965,9 @@ function careerCentreHTML(card, a){
         (!cr.seasonOver && (next.type==='free' || (!playable && !ccMpBlockWhy() && !ccRaceModeWhy())))
         /* Свободный день — панель дня с прокачкой прямо в главном меню (его «в каждом сезоне во время фри дня должна
            быть прокачка в главном меню»); меню само вытягивается под неё (ccLobbyFit). */
-        ? careerDayPanelHTML(next.type==='free' ? null : {label:next.label||next.title, why:
+        /* День церемонии (вид 'gala') — не закрытый вечер, а свободный день; кнопка церемонии — под панелью (первая
+           .ch-play на экране остаётся «К турниру»). Раньше он шёл замком с заглушкой «Majors are not wired…» (Notion «19.10», скрин 20). */
+        ? careerDayPanelHTML((next.type==='free' || next.type==='gala') ? null : {label:next.label||next.title, why:
             ccRaceModeWhy() ? ccRaceModeWhy()
           /* Арена, ранг, травма, бан (ccLifeWhy) закрывают вечер в careerCanPlayKindOn, а сюда
              не доходили: кэшкап 2019–2022 без Champion League печатал «Majors are not wired
@@ -122968,7 +122989,7 @@ function careerCentreHTML(card, a){
           : next.type==='solo'   ? ccSoloWhyLocked()
           : next.type==='proam'  ? ccProAmWhyLocked()
           : next.type==='nations'? ccNatWhyLocked()
-                                 : L().chSoonHint})
+                                 : L().chSoonHint})+(next.type==='gala' ? '<button class="ch-play ch-gala" onclick="ccGalaOpen()">'+L().ccGalaWatch+'</button>' : '')
         : `<div class="ch-art" style="background-image:url(${art});">
           <div class="ch-livebar">
             ${onToday ? `<b>${L().chLiveTag}</b><span>${L().chLiveNow}</span>`
