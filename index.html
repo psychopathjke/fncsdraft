@@ -4038,12 +4038,16 @@
   /* Лобби на «Центре» (ccLobbyHTML): сцена главы, фигуры в полный рост, справа внизу событие и жёлтая кнопка. */
   /* Сетка главного меню: сверху вкладки и кошелёк, слева панели, посередине сцена, справа внизу режим и кнопка. */
   .cc-lobby{position:relative;display:grid;grid-template-columns:250px minmax(0,1fr) 290px;grid-template-rows:auto minmax(0,1fr);
-    grid-template-areas:"top top top" "left stage side";height:560px;margin:0 0 12px;border-radius:12px;overflow:hidden;color:#fff;}
+    grid-template-areas:"top top top" "left stage side";height:600px;margin:0 0 12px;border-radius:12px;overflow:hidden;color:#fff;}
   .cc-lb-top{grid-area:top;display:flex;align-items:center;gap:10px;padding:10px 14px;z-index:5;}
   .cc-lb-nav{display:flex;gap:4px;flex:1;min-width:0;overflow-x:auto;scrollbar-width:none;}
   .cc-lb-nav button{flex:none;padding:6px 12px;border:0;background:transparent;color:#fff;cursor:pointer;opacity:.8;
     font-family:var(--font-display);font-size:15px;text-transform:uppercase;letter-spacing:.03em;}
   .cc-lb-nav button.on{opacity:1;}
+  .cc-lb-nav .ch-dot{display:inline-block;width:6px;height:6px;margin-left:3px;vertical-align:6px;border-radius:50%;background:#c6ff3c;}  /* На ПК вкладки хаба на «Центре» — шапка лобби, своя полоса прячется; на телефоне наоборот: нижняя панель хаба
+     остаётся, а шапка лобби без вкладок (только кошелёк). */
+  @media (min-width:701px){ #screen-career-hub.ch-lobby-on .ch-tabs{display:none;} }
+  @media (max-width:700px){ .cc-lb-nav{display:none;} }
   .cc-lb-wallet{display:flex;gap:8px;flex:none;}
   .cc-lb-wallet span{display:flex;align-items:center;gap:5px;padding:4px 10px;border-radius:999px;background:rgba(0,0,0,.45);
     font-weight:800;font-size:13px;cursor:pointer;white-space:nowrap;}
@@ -4067,25 +4071,28 @@
   .cc-lb-fmt span{flex:1;text-align:center;padding:5px 0;font-family:var(--font-display);font-size:12px;text-transform:uppercase;
     background:rgba(0,0,0,.45);border:2px solid rgba(255,255,255,.3);}
   .cc-lb-fmt span.on{background:#fff;color:#1a3a9e;border-color:#fff;}
-  /* Глава 1: вкладки капсом по центру с жёлтой чертой, синие квадратные панели в светлой рамке. */
-  .cc-lb-c1 .cc-lb-nav{justify-content:center;} .cc-lb-c1 .cc-lb-nav button.on{box-shadow:inset 0 -3px 0 #ffe14d;}
+  /* Фон — настоящий фон лобби того сезона (ccLobbyBg), по краям притемнён под панели; цвет — пока картинка грузится. */
+  .cc-lobby{background:linear-gradient(90deg,rgba(0,0,0,.5),rgba(0,0,0,0) 26%,rgba(0,0,0,0) 74%,rgba(0,0,0,.5)),
+    linear-gradient(180deg,rgba(0,0,0,.35),rgba(0,0,0,0) 14%),var(--lb-bg) center/cover no-repeat,#13204a;}
+  /* Главное меню по семействам (Fortnite Wiki, «Lobby»): Глава 1 — вкладки в рамках, выбранная жёлтая, кнопка —
+     широкий косой жёлтый блок; Главы 2–4 — открытые белые вкладки, выбранная в белой плашке, «PLAY!» с наклоном;
+     с v26.30 (октябрь 2023) — вкладки-пилюли, карточка «Играть» слева, кнопка скруглённая и прямая. */
+  .cc-lb-c1 .cc-lb-nav{justify-content:center;gap:2px;}
+  .cc-lb-c1 .cc-lb-nav button{background:rgba(8,30,90,.55);border:1px solid rgba(255,255,255,.25);}
+  .cc-lb-c1 .cc-lb-nav button.on{background:#ffe14d;color:#111;border-color:#ffe14d;}
   .cc-lb-c1 .cc-lb-panel{border-radius:2px;background:rgba(18,50,150,.6);border:2px solid rgba(255,255,255,.35);}
   .cc-lb-c1 .cc-lb-panel h5{margin:-8px -10px 6px;padding:5px 10px;background:rgba(255,255,255,.14);}
-  .cc-lb-c1 .cc-lb-play{border-radius:2px;transform:none;}
-  /* Глава 2: тёмные панели, жёлтая черта у заголовка, вкладка — жёлтая плашка. */
-  .cc-lb-c2 .cc-lb-nav button.on{background:#ffe14d;color:#111;transform:skewX(-8deg);}
+  .cc-lb-c1 .cc-lb-play{border-radius:2px;transform:skewX(-8deg);}
+  .cc-lb-c2 .cc-lb-nav button.on,.cc-lb-c3 .cc-lb-nav button.on{background:#fff;color:#14205a;}
   .cc-lb-c2 .cc-lb-panel{background:rgba(10,14,50,.72);border-radius:4px;}
   .cc-lb-c2 .cc-lb-panel h5{border-left:4px solid #ffe14d;padding-left:7px;}
-  /* Главы 3–4: светлые скруглённые панели, вкладка — белая подложка. */
-  .cc-lb-c3 .cc-lb-nav button.on{background:#fff;color:#0b48b0;border-radius:6px;}
-  .cc-lb-c3 .cc-lb-panel{background:rgba(5,30,90,.42);border:1px solid rgba(255,255,255,.35);border-radius:12px;}
-  /* С ноября 2023: тёмное стекло, вкладки-пилюли. */
-  .cc-lb-c5 .cc-lb-nav button{border-radius:999px;} .cc-lb-c5 .cc-lb-nav button.on{background:rgba(255,255,255,.16);}
-  .cc-lb-c5 .cc-lb-panel{background:rgba(15,16,40,.7);border:1px solid rgba(255,255,255,.1);border-radius:14px;}
-  .cc-lb-c1{background:radial-gradient(ellipse at 50% 20%,#8fd0ff 0%,#3a86e8 40%,#1a3a9e 85%);}
-  .cc-lb-c2{background:repeating-linear-gradient(-55deg,rgba(255,255,255,.05) 0 12px,transparent 12px 26px),linear-gradient(180deg,#5a3bd0,#22186b);}
-  .cc-lb-c3{background:radial-gradient(ellipse at 50% 25%,#bfeaff 0%,#47b4ff 40%,#1468d6 90%);}
-  .cc-lb-c5{background:radial-gradient(ellipse at 50% 35%,#3b3f86 0%,#1a1c3d 55%,#0c0d1c 100%);}
+  .cc-lb-c2 .cc-lb-play,.cc-lb-c3 .cc-lb-play{font-style:italic;transform:skewX(-10deg);}
+  .cc-lb-c3 .cc-lb-panel{background:rgba(5,30,90,.55);border:1px solid rgba(255,255,255,.35);border-radius:12px;}
+  .cc-lb-c5 .cc-lb-nav button{border-radius:999px;} .cc-lb-c5 .cc-lb-nav button.on{background:rgba(255,255,255,.18);}
+  .cc-lb-c5 .cc-lb-panel{background:rgba(15,16,40,.72);border:1px solid rgba(255,255,255,.1);border-radius:14px;}
+  .cc-lb-c5 .cc-lb-play{border-radius:14px;transform:none;}
+  @media (min-width:701px){ .cc-lobby.cc-lb-c5{grid-template-columns:290px minmax(0,1fr) 250px;grid-template-areas:"top top top" "side stage left";}
+    .cc-lb-c5 .cc-lb-side{padding:0 0 14px 14px;} .cc-lb-c5 .cc-lb-left{padding:0 14px 14px 0;} }
   .cc-lb-stage::after{content:"";position:absolute;left:5%;right:5%;bottom:3%;height:12%;border-radius:50%;pointer-events:none;
     background:radial-gradient(ellipse at center,rgba(255,255,255,.22),rgba(255,255,255,0) 70%);}
   .cc-lb-stage{grid-area:stage;position:relative;display:flex;justify-content:center;align-items:flex-end;padding-bottom:2%;min-height:0;}
@@ -117315,7 +117322,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='0f92e8b7';
+const CC_BUILD='96c1e81c';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -121752,6 +121759,8 @@ function ccSubTabsHTML(group){
 function careerRenderHubBody(tab){
   CH_TAB=tab||CH_TAB;
   try{ ccYearThemeApply(); }catch(e){}
+  // На «Центре» вкладки хаба живут в шапке лобби (Notion «19.10»: две полосы вкладок одна над другой) — своя прячется.
+  try{ document.getElementById('screen-career-hub').classList.toggle('ch-lobby-on', CH_TAB==='centre'); }catch(e){}
   const pl=CAREER.player, cr=CAREER.career;
   const card=careerCard(), a=card?attrsFor(card):null;
   // The same number the card prints: base plus connection plus age. The header
@@ -121958,7 +121967,7 @@ function ccLobbyHTML(card, btn, next, when){
   const play=m ? '<button class="cc-lb-play'+m[1].replace(/\bch-/g, ' cc-lb-')+'"'+m[2]+'>'+m[3]+'</button>' : '';
   const mode=next ? '<div class="cc-lb-mode"><em>'+esc((careerSquadSize()===3 ? L().ccSeasonTrios : careerSquadSize()===4 ? 'Squads' : L().ccSeasonDuos)+(when ? ' · '+when : ''))+'</em>'+
     '<b>'+esc(next.label||next.title||'')+'</b></div>' : '';
-  return '<div class="cc-lobby cc-lb-'+era.k+'">'+ccLobbyTopHTML(era)+'<div class="cc-lb-stage">'+row.join('')+'</div>'+
+  return '<div class="cc-lobby cc-lb-'+era.k+'" style="--lb-bg:url('+ccLobbyBg(careerToday())+')">'+ccLobbyTopHTML(era)+'<div class="cc-lb-stage">'+row.join('')+'</div>'+
     ccLobbyPanelsHTML(card)+'<div class="cc-lb-side"><div class="cc-lb-right">'+ccLobbyRightHTML(card)+'</div>'+
     '<div class="cc-lb-go">'+(era.k==='c1' ? ccLobbyFmtHTML(next) : '')+mode+play+'</div></div></div>';
 }
@@ -121991,10 +122000,19 @@ function ccLobbyRightHTML(card){
    так же, только чтоб пусто не было: ростеры, тренировки и т. д.»). Сверху — вкладки, как в игре (Глава 1: капсом
    по центру; Глава 2–4: слева; с ноября 2023 — пилюли), справа V-Bucks и деньги; слева панели: ростер, тренировка,
    задания — всё живое из карьеры, нажатие ведёт в свою вкладку. */
+/* Фон лобби — настоящий фон главного меню того сезона (Fortnite Wiki, «Lobby Background», 1280 px, art/lobby/sNN.webp):
+   Season 7 … Глава 7 Сезон 3, по номеру сезона дня (ccSeasonNumOn). Раньше 7-го — 7-й, позже 41-го — 41-й. */
+function ccLobbyBg(day){
+  let n=0; try{ n=ccSeasonNumOn(day)||0; }catch(e){}
+  n=Math.max(7, Math.min(41, n||41));
+  return 'art/lobby/s'+String(n).padStart(2, '0')+'.webp';
+}
 function ccLobbyTopHTML(era){
-  const T=L(), tabs=[['centre','chTabCentre'],['locker','chTabLocker'],['items','chTabItems'],['train','chTabTrain'],['calendar','chTabCalendar'],['me','chTabMe']];
-  return '<div class="cc-lb-top"><nav class="cc-lb-nav">'+tabs.map(([k, key])=>
-      '<button class="'+(k==='centre' ? 'on' : '')+'" onclick="careerTab(\''+k+'\')">'+esc(T[key]||k)+'</button>').join('')+'</nav>'+
+  // Вкладки — те же, что у хаба (#screen-career-hub .ch-tabs): все, со своими метками; скрытые хабом не показываются.
+  const hub=[...document.querySelectorAll('#screen-career-hub .ch-tabs .ch-tab')].filter(b=>b.dataset.tab && !b.hidden && b.style.display!=='none');
+  const tabs=hub.length ? hub.map(b=>[b.dataset.tab, b.innerHTML]) : [['centre', esc(L().chTabCentre)]];
+  return '<div class="cc-lb-top"><nav class="cc-lb-nav">'+tabs.map(([k, html])=>
+      '<button class="'+(k==='centre' ? 'on' : '')+'" onclick="careerTab(\''+k+'\')">'+html+'</button>').join('')+'</nav>'+
     '<div class="cc-lb-wallet"><span onclick="ccFnShopOpen()"><i class="cc-vb-ic"></i>'+ccNum(CAREER.vb||0)+'</span>'+
     '<span onclick="careerTab(\'shop\')">'+ccMoney(CAREER.career.balance||0)+'</span></div></div>';
 }
