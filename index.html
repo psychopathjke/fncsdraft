@@ -4438,6 +4438,10 @@
     #screen-career-hub .cc-lobby.cc-lb-full .cc-lb-sched{padding:0 10px;}
     #screen-career-hub .cc-lobby.cc-lb-full .cc-lb-sched .ch-day{background:rgba(120,150,235,.18);}
   }
+  /* Фон хаба — ровный, без диагональных полос и светлых осколков (его слово 19.10: «полоски убери, которые на заднем фоне»). */
+  #screen-career-hub .ch-stage::before,#screen-career-hub .ch-stage::after,#screen-career-hub .ch-facets,
+  #screen-career-hub .ch-facets::before,#screen-career-hub .ch-facets::after,
+  #screen-career-hub .cc-f1,#screen-career-hub .cc-f2,#screen-career-hub .cc-f3,#screen-career-hub .cc-f4{display:none !important;}
   /* Цвет сезона (ccHubTheme): фон хаба и полоса вкладок меню — из переменных оттенка, плашки — через --fn-panel/--lb-*. */
   #screen-career-hub.ch-themed .ch-stage{background:linear-gradient(160deg,var(--th-a) 0%,var(--th-b) 46%,var(--th-c) 100%);}
   #screen-career-hub.ch-themed .cc-lobby .cc-lb-top{background:linear-gradient(90deg,var(--th-top),var(--th-b) 60%,var(--th-top));}
@@ -117767,7 +117771,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='b8d7944a';
+const CC_BUILD='8c2e4e2e';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
