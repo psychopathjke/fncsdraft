@@ -12,11 +12,13 @@ const HOMO={'а':'a','в':'b','е':'e','ё':'e','к':'k','м':'m','о':'o','р':
 const ANY=['nigg','nlgg','niqq','nibba','fagg','tranny','retard','hitler','killyourself','kilyourself','kysnow','whore',
   'fuck','motherf','bitch','hurensohn','encule','maricon','pedophil',
   // Русский мат латиницей (19.10, его «pidoras pidr тоже не должно быть»).
-  'pidaras','pidoras','pizd','blyat','blyad','nahui','nahuy','nahuj','gandon','gondon','mudak','zaebal','uebok','ueban','shlyuh','shluh'];
+  'pidaras','pidoras','pizd','blyat','blyad','nahui','nahuy','nahuj','gandon','gondon','mudak','zaebal','uebok','ueban','shlyuh','shluh',
+  // Польский мат (в таблице дня 19.10: «jebac remika»).
+  'jebac','jebany','jebana','kurwa','kurva','pierdol','spierdal','chuj'];
 // С начала слова (слово сжато: повторы букв в одну).
 const START=['pidor','pidar','pidr','eblan','niga','niger','nigah','niguh','nigr','fagot','kike','rape','nazi','pedo','slut','negre','chinga','trany','cunt'];
 // Словом целиком.
-const WORD=['chmo','huy','xuy','huj','xyu','hyu','suka','suki','pidr','pidrila','pedik','ebat','ebal','eban','fag','fags','spic','spics','coon','coons','chink','gook','kys','nig','nigs','puta','puto','pute','paki','wetback','dyke','tard'];
+const WORD=['gei','gey','gay','gayy','chmo','huy','xuy','huj','xyu','hyu','suka','suki','pidr','pidrila','pedik','ebat','ebal','eban','fag','fags','spic','spics','coon','coons','chink','gook','kys','nig','nigs','puta','puto','pute','paki','wetback','dyke','tard'];
 // Слова, которые начинаются как запрещённые, но обычные.
 const OK=['nigeria','nigel'];
 // Русские — по кириллице (ё → е), где угодно.
