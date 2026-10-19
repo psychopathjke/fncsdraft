@@ -4266,6 +4266,7 @@
   .cc-lobby.cc-lb-full{height:920px;}
   /* Без ползунков у колонок (его «убрать ползунок возле капа»): листается колесом и пальцем. */
   .cc-lb-full .cc-lb-left,.cc-lb-full .cc-lb-right{scrollbar-width:none !important;}
+  .cc-lb-full.cc-lb-famC .cc-lb-left,.cc-lb-full.cc-lb-famA .cc-lb-right,.cc-lb-full.cc-lb-famB .cc-lb-right{overflow:hidden !important;}
   .cc-lb-full .cc-lb-left::-webkit-scrollbar,.cc-lb-full .cc-lb-right::-webkit-scrollbar{display:none;}
   /* Фон поднят над полосой сезона и расписания (его «картинка на заднем фоне будто выше должна быть»): низ картинки — у
      верха нижней полосы, а не под ней. */
@@ -4277,7 +4278,8 @@
   .cc-lb-full .cc-lb-right{width:330px;}
   .cc-lb-famA.cc-lb-full .cc-lb-left,.cc-lb-famB.cc-lb-full .cc-lb-left{padding-left:10px;}
   .cc-lb-famA.cc-lb-full .cc-lb-right,.cc-lb-famB.cc-lb-full .cc-lb-right{right:10px;padding-right:0;gap:6px;}
-  .cc-lb-full .cc-lb-stage{inset:0 0 200px 0;}
+  /* Сцена — постоянной высоты: меню, вытянутое под панель дня, не раздувает фигуры. */
+  .cc-lb-full .cc-lb-stage{inset:0 0 auto 0;height:720px;}
   .cc-lb-full .cc-lb-bottom{display:block;}
   .cc-lb-playbox{flex:none;}
   #screen-career-hub .cc-lb-playbox .ch-art{margin:0;border-radius:14px;min-height:0;}
@@ -4316,15 +4318,16 @@
   #screen-career-hub .cc-lobby .cc-lb-playbox .ch-mode{margin:2px 0 6px;}
   #screen-career-hub .cc-lobby .cc-lb-playbox .ch-play{margin-top:6px;padding-top:9px;padding-bottom:9px;}
   #screen-career-hub .cc-lobby .cc-lb-playbox .ch-live-hint{font-size:11.5px;margin:4px 0;}
-  #screen-career-hub .cc-lobby .cc-lb-stack .ch-tile{background:rgba(22,28,44,.82);border:0;border-radius:12px;box-shadow:none;margin:0;padding:8px 11px;}
-  #screen-career-hub .cc-lobby .cc-lb-stack .ch-tile h4{margin:0 0 6px;padding:0;background:none;clip-path:none;color:#fff;
+  #screen-career-hub .cc-lobby.cc-lb-full .ch-tile{background:rgba(22,28,44,.82);border:0;border-radius:12px;box-shadow:none;margin:0;padding:8px 11px;}
+  #screen-career-hub .cc-lobby.cc-lb-full .ch-tile h4{margin:0 0 6px;padding:0;background:none;clip-path:none;color:#fff;
     font-family:var(--font-display);font-size:13px;letter-spacing:.04em;text-transform:uppercase;}
-  #screen-career-hub .cc-lobby .cc-lb-stack .ch-tile h4::before,#screen-career-hub .cc-lobby .cc-lb-stack .ch-tile h4::after{display:none;}
+  #screen-career-hub .cc-lobby.cc-lb-full .ch-tile h4::before,#screen-career-hub .cc-lobby.cc-lb-full .ch-tile h4::after{display:none;}
   .cc-lb-full.cc-lb-famC .cc-lb-stack .cc-lb-panel{background:rgba(22,28,44,.82);border-radius:12px;}
   .cc-lb-full .cc-lb-stack{gap:8px;}
   .cc-lb-next .ch-season{display:flex;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;gap:3px;}
   .cc-lb-next .ch-season > *{flex:none;}
   .cc-lb-next{position:relative;}
+  .cc-lb-full .cc-lb-left > *,.cc-lb-full .cc-lb-right > *{flex:none;}
   #screen-career-hub .cc-lb-next .ch-ffwrap{position:absolute;top:5px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:8px;
     margin:0;padding:0;border:0;background:none;}
   #screen-career-hub .cc-lb-next .ch-ffcap{margin:0;font-size:10.5px;opacity:.75;white-space:nowrap;}
@@ -117584,7 +117587,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='a7056387';
+const CC_BUILD='0f17c8e1';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -122330,6 +122333,7 @@ function ccLobbyHTML(card, btn, next, when, strip, ex){
       '<button onclick="careerTab(\'locker\')">'+esc(T.chTabLocker||'Locker')+'</button></div>'+
       '<div class="cc-lb-ring" onclick="careerTab(\'train\')" style="--p:'+Math.round(lvlFrac*100)+'"><em>LVL</em><b>'+myOvr+'</b></div></div>';
   }
+  if(ex.play){ setTimeout(ccLobbyFit, 0); setTimeout(ccLobbyFit, 800); }
   return '<div class="cc-lobby cc-lb-'+era.k+' cc-lb-fam'+fam+(ex.play ? ' cc-lb-full' : '')+(evBg ? ' cc-lb-evbg' : '')+'" style="--lb-bg:url('+(evBg||ccLobbyBg(today))+')">'+
     ccLobbyTopHTML(fam, ex.note)+stage+'<div class="cc-lb-left">'+left+'</div><div class="cc-lb-right">'+right+'</div>'+
     '<div class="cc-lb-bottom">'+bottomBar+'</div></div>';
@@ -122372,6 +122376,17 @@ function ccLobbyNewsCardHTML(){
   return '<div class="cc-lb-news cc-lb-card cc-lb-newsc" onclick="careerOpenFeed()" title="'+esc(T.ccNewsHub||'')+'">'+slides+
     '<i class="cc-lb-dots">'+list.map((n, i)=>'<s'+(i===0 ? ' class="on"' : '')+'></s>').join('')+'</i></div>';
 }
+/* Колонка с капом не листается (его «листается кап всё равно»): если карточке вечера мало места (высадка, отборы,
+   эфир), меню само становится выше ровно на нехватку. На телефоне колонки и так идут столбиком. */
+function ccLobbyFit(){
+  const lb=document.querySelector('.cc-lobby.cc-lb-full'); if(!lb || innerWidth<=700) return;
+  lb.style.height='';
+  // Колонка с карточкой вечера: в нынешнем меню слева, в меню Глав 1–4 справа.
+  const c=lb.querySelector(lb.classList.contains('cc-lb-famC') ? '.cc-lb-left' : '.cc-lb-right'); if(!c) return;
+  const extra=c.scrollHeight-c.clientHeight;
+  if(extra>0) lb.style.height=(lb.offsetHeight+extra+6)+'px';
+}
+window.addEventListener('resize', ()=>{ clearTimeout(window.__ccLbFitT); window.__ccLbFitT=setTimeout(ccLobbyFit, 200); });
 function ccLobbySeasonName(day){
   let n=0, ch=null; try{ n=ccSeasonNumOn(day)||0; ch=ccChapterOf(n); }catch(e){}
   if(!ch) return {a:'SEASON', c:'', s:'SEASON'};
@@ -122786,6 +122801,8 @@ function careerCentreHTML(card, a){
         /* И в гонке то же самое: «Нажал just watching и меня просто перебросило на некст скрин»
            (скриншот) — разные режимы в комнате гонки держат карточку матча, а не день. */
         (!cr.seasonOver && (next.type==='free' || (!playable && !ccMpBlockWhy() && !ccRaceModeWhy())))
+        /* Свободный день — панель дня с прокачкой прямо в главном меню (его «в каждом сезоне во время фри дня должна
+           быть прокачка в главном меню»); меню само вытягивается под неё (ccLobbyFit). */
         ? careerDayPanelHTML(next.type==='free' ? null : {label:next.label||next.title, why:
             ccRaceModeWhy() ? ccRaceModeWhy()
           /* Арена, ранг, травма, бан (ccLifeWhy) закрывают вечер в careerCanPlayKindOn, а сюда
