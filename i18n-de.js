@@ -4109,3 +4109,11 @@ dmGiftThanks:i=>'Wow, „'+i+'“! Danke, echt nett 🙏',
 ccLock_glider:'Gleiter',
 ccFnStyles:'Stile'
 }));
+/* Дозаливка «de» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
+Object.assign(I18N.de=I18N.de||{},
+({
+ccRetiredTitle:'Karriereende',
+ccRetiredHint:'Bekannte Spieler, die die Szene nach 2026 verlassen haben, und die Regens, die nachkamen',
+ccRetiredWho:'Spieler', ccRetiredYear:'Jahr', ccRetiredAge:'Alter', ccRetiredReg:'Region', ccRetiredBy:'Regen',
+ccRetiredTag:(y,a,b)=>'Karriereende '+y+(a!=null ? ' mit '+a : '')+(b ? ' · Nachfolger '+b : '')
+}));

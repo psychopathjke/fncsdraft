@@ -58,6 +58,14 @@ const rk=new Set(R.list.map(g=>hKey(g.h)));
 notes.regenInDuos=P.duos.reduce((n,d)=>n+d.cards.filter(c=>rk.has(hKey(c))).length, 0);
 check('регены играют в парах', notes.regenInDuos>0, notes.regenInDuos);
 check('ушедших нет в парах', !P.duos.some(d=>d.cards.some(c=>R.out[hKey(c)] && !rk.has(hKey(c)))));
+// «Завершили карьеру»: заметные ушедшие с годом, возрастом и сменщиком; плитка в Истории; пометка в профиле.
+const past=R.past||[]; notes.past=past.length; notes.pastTop=past.slice(0,3).map(x=>x.h+' '+(2026+x.y)+' '+x.age+' '+x.ovr+' → '+(x.by||'-'));
+check('список ушедших есть', past.length>20 && past.length<=CC_REGEN_PAST_MAX, past.length);
+check('у ушедших звёзд есть сменщик', past.filter(x=>x.ovr>=CC_REGEN_STAR).every(x=>!!x.by), past.filter(x=>x.ovr>=CC_REGEN_STAR && !x.by).map(x=>x.h).slice(0,3).join());
+check('в Истории — плитка', /cc-retired-t/.test(ccRetiredHTML()));
+{ const g=past[0]; CAREER_RUN=true; ccPeekByHandle(g.h); CAREER_RUN=false; const tx=document.getElementById('cardPeekBody').innerText; check('в профиле ушедшего — пометка', tx.indexOf(String(2026+g.y))>=0 && /арьер|etired/i.test(tx), tx.slice(0,120)); }
+// старый сейв без списка — собирается из R.out
+{ const keep=R.past; delete CAREER.career.regen.past; const sh=ccYearShift(); CAREER.career.regen.y=sh-1; ccRegenSync(); notes.rebuilt=(CAREER.career.regen.past||[]).length; check('старый сейв: список собран', notes.rebuilt>20, notes.rebuilt); CAREER.career.regen.past=keep; }
 // 3) Перезагрузка — то же самое, без пересчёта.
 const snap=JSON.stringify(R);
 careerSave(); careerLoad(); ccSceneRoster('EU');

@@ -4109,3 +4109,11 @@ dmGiftThanks:i=>'¡Vaya, «'+i+'»! Gracias, qué detalle 🙏',
 ccLock_glider:'planeador',
 ccFnStyles:'Estilos'
 }));
+/* Дозаливка «es» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
+Object.assign(I18N.es=I18N.es||{},
+({
+ccRetiredTitle:'Retirados',
+ccRetiredHint:'Jugadores destacados que dejaron la escena después de 2026, y los regens que los sustituyeron',
+ccRetiredWho:'Jugador', ccRetiredYear:'Año', ccRetiredAge:'Edad', ccRetiredReg:'Región', ccRetiredBy:'Regen',
+ccRetiredTag:(y,a,b)=>'Se retiró en '+y+(a!=null ? ' a los '+a : '')+(b ? ' · sustituido por '+b : '')
+}));
