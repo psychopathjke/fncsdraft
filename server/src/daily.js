@@ -10,6 +10,8 @@ const { badNick } = require('./nick-filter.js');
 const DAY_RE=/^\d{4}-\d{2}-\d{2}$/;
 const TOP=100;
 
+// Цифры — от id браузера: у одного человека всегда одни и те же, у разных — разные.
+function bannedNick(id){ let h=2166136261; for(const ch of String(id)){ h^=ch.charCodeAt(0); h=Math.imul(h, 16777619)>>>0; } return 'user'+String(10000000+h%90000000); }
 function dayOf(ms){ return new Date(ms).toISOString().slice(0, 10); }
 function int(v, lo, hi){
   const n=Math.round(Number(v));
@@ -23,10 +25,11 @@ function normalize(e, now){
   if(!/^[a-z0-9-]{16,40}$/.test(id)) return {err:'id'};
   const day=String(e.day||'');
   if(!DAY_RE.test(day) || (day!==dayOf(now) && day!==dayOf(now-864e5))) return {err:'day'};
-  const nick=cleanNick(e.nick);
+  let nick=cleanNick(e.nick);
   if(!nick) return {err:'nick'};
-  // N-word и оскорбления в таблицу дня не встают (19.10, его слово). См. nick-filter.js.
-  if(badNick(nick)) return {err:'nickbad'};
+  // N-word и оскорбления (nick-filter.js): строка остаётся, ник — «user» и цифры, как у Fortnite после бана
+  // (19.10, его слово: «не убирай их из таблицы, просто сделай user и рандомные числа»).
+  if(badNick(nick)) nick=bannedNick(id);
   const score=int(e.score, 0, 100000);
   const place=int(e.place, 1, 1000);
   const field=int(e.field, 1, 1000);
@@ -43,4 +46,4 @@ function normalize(e, now){
 /* Порядок таблицы дня (16.10, его слово «только сила»): сила состава, потом очки, потом кто раньше сыграл. */
 function better(a, b){ return (b.p100||0)-(a.p100||0) || b.score-a.score || a.at-b.at; }
 
-module.exports={ normalize, better, dayOf, DAY_RE, TOP, badNick };
+module.exports={ normalize, better, dayOf, DAY_RE, TOP, badNick, bannedNick };

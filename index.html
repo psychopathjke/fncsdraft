@@ -113526,11 +113526,12 @@ function dailySend(){
   const day=dailyDay();
   fetch(base+(dailyDbg() ? '?t=dbg' : ''), {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id:dailyId(), day, nick, country,
     score:r.score, place:r.place, field:r.field, team:r.team, power:r.power||0, syn:r.syn||0})})
-    .then(x=>x.ok ? true : x.json().then(j=>j && j.err, ()=>false)).catch(()=>false).then(res=>{
-      const ok=res===true;
-      if(ok){ const s2=dailyStore(); if(s2.days && s2.days[day]){ s2.days[day].sent=nick; dailySave(s2); } }
-      // Ник из списка сервера (n-word, оскорбления; server/src/nick-filter.js) — сказать и оставить поле.
-      if(res==='nickbad'){ const s3=dailyStore(); if(s3.nick===nick){ s3.nick=''; dailySave(s3); } DAILY_NICK_BAD=nick; }
+    .then(x=>x.ok ? x.json().then(j=>({ok:true, nick:j && j.nick}), ()=>({ok:true})) : x.json().then(j=>({err:j && j.err}), ()=>({}))).catch(()=>({})).then(res=>{
+      /* Сервер мог записать ник иначе: n-word и оскорбления встают в таблицу как «user» и цифры
+         (server/src/nick-filter.js, как у Fortnite после бана). Своя строка показывает то, что записано. */
+      const shown=(res.ok && res.nick) || nick;
+      if(res.ok){ const s2=dailyStore(); if(s2.days && s2.days[day]){ s2.days[day].sent=shown; dailySave(s2); } if(shown!==nick && s2.nick===nick){ s2.nick=shown; dailySave(s2); } }
+      if(res.err==='nickbad'){ const s3=dailyStore(); if(s3.nick===nick){ s3.nick=''; dailySave(s3); } DAILY_NICK_BAD=nick; }
       DAILY_BOARD=null;
       document.querySelectorAll('#dailyResult, #dailyModalBody').forEach(el=>dailyResultDraw(el, dailyToday()));
       try{ homeDailyDraw(); }catch(e){}
@@ -117710,7 +117711,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='85d540a5';
+const CC_BUILD='1373cfe3';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого

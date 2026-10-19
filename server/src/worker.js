@@ -20,7 +20,7 @@
 import { createLobby } from './lobby.js';
 import { createBoard, REGIONS, TOP } from './board.js';
 import { CODE_RE, MAX_ONE, MAX_ALL, MAX_KEYS, checkReq, parts } from './vault.js';
-import { normalize as dailyRow, dayOf, DAY_RE, TOP as DAILY_TOP, badNick } from './daily.js';
+import { normalize as dailyRow, dayOf, DAY_RE, TOP as DAILY_TOP, badNick, bannedNick } from './daily.js';
 
 export class Lobby {
   // Тридцать дней тишины — и лобби убирается. См. touch/alarm ниже.
@@ -195,13 +195,13 @@ export class Board {
       this.sql.exec('INSERT OR IGNORE INTO '+T+'(day,id,nick,country,score,place,field,team,power,p100,syn,at) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)',
         w.day, w.id, w.nick, w.country, w.score, w.place, w.field, w.team, w.power, w.p100, w.syn, w.at);
       this.sql.exec('DELETE FROM '+T+' WHERE day < ?', dayOf(now-60*864e5));
-      return json({ok:true});
+      return json({ok:true, nick:w.nick});
     }
     const day=DAY_RE.test(String(url.searchParams.get('day')||'')) ? url.searchParams.get('day') : dayOf(Date.now());
     // 16.10, его слово «только сила»: таблица дня — по силе состава (средний рейтинг карточек), очки — при равенстве.
-    // Строки с ником из nick-filter.js (попавшие до фильтра 19.10) стираются при чтении и в таблицу не идут.
+    // Строки с ником из nick-filter.js (попавшие до фильтра 19.10) переименовываются при чтении в «user» с цифрами.
     const bad=this.sql.exec('SELECT id, nick FROM '+T+' WHERE day=?', day).toArray().filter(r=>badNick(r.nick));
-    bad.forEach(r=>this.sql.exec('DELETE FROM '+T+' WHERE day=? AND id=?', day, r.id));
+    bad.forEach(r=>this.sql.exec('UPDATE '+T+' SET nick=? WHERE day=? AND id=?', bannedNick(r.id), day, r.id));
     const rows=this.sql.exec('SELECT * FROM '+T+' WHERE day=? ORDER BY p100 DESC, score DESC, at ASC LIMIT '+DAILY_TOP, day).toArray();
     const total=this.sql.exec('SELECT COUNT(*) AS n FROM '+T+' WHERE day=?', day).toArray()[0].n;
     const me=String(url.searchParams.get('me')||'');
