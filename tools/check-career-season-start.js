@@ -92,7 +92,7 @@ check('Remix выбран: старт 2 ноября, рейтинг — ито�
 ccPickYearSeason(2025,'sw');
 { const w25=[...document.querySelectorAll('#ccYearChips .cc-yt-wrap')].find(w=>/^2025/.test(w.querySelector('.cc-year-tile').textContent));
   const t25=w25 ? [...w25.querySelectorAll('.cc-yt-s')].map(b=>b.textContent) : [];
-  check('на плитке 2025: C6S1 C6S2 C6S3 Star Wars', t25.join(' ')==='C6S1 C6S2 C6S3 Star Wars', t25.join(' '));
+  check('на плитке 2025: C6S1 C6S2 C6S3 Star Wars Simpsons', t25.join(' ')==='C6S1 C6S2 C6S3 Star Wars Simpsons', t25.join(' '));
   check('Star Wars выбран: старт 2 мая, рейтинг сезона C6S2', ccPickedStart() && ccPickedStart().from==='2025-05-02' && ccRatingSnapTag()==='t2', JSON.stringify(ccPickedStart())+' '+ccRatingSnapTag()); }
 ccPickYear(2025);
 check('смена года сбрасывает сезон на первый', ccPickedStart()===null, JSON.stringify(ccPickedStart()));

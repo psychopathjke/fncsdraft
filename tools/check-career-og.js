@@ -100,6 +100,13 @@ const BOOT = `
       const hr=await playThrough('remix trios'); const r3=(save().log||[]).slice(-1)[0];
       check('Trios Cash Cup Remix в дуо-год сыгран', r3 && r3.kind==='victory', JSON.stringify(r3 && {kind:r3.kind, place:r3.place, of:r3.of, prize:r3.prize}));
       out.steps.push('remix 9.11: '+hr+' · #'+(r3&&r3.place)+' of '+(r3&&r3.of)+' · $'+(r3&&r3.prize)); }
+    // Сезон Симпсонов: 2025-й идёт до 29 ноября, денежные Victory Cup ноября — в календаре, сезон 38.
+    seed(1, '2025-11-01');
+    check('год 2025 идёт до 29 ноября', ccYearTo()==='2025-11-29', ccYearTo());
+    { const alt=d=>ccVictoryAlts(d).map(v=>v.id);
+      check('Симпсоны: Duos Victory 8.11 и Squads Victory 9.11', alt('2025-11-08').includes('S38_DuosVictoryCup') && alt('2025-11-09').includes('S38_SquadsVictoryCup'), alt('2025-11-08').join(',')+' / '+alt('2025-11-09').join(','));
+      check('октябрьские капы 2025 в календаре', alt('2025-10-04').length>0, alt('2025-10-04').join(',')); }
+    check('сезон Симпсонов — 38-й', ccSeasonNumOn('2025-11-10')===38 && /Simpsons/.test(JSON.stringify(ccSeasonTag('2025-11-10'))), JSON.stringify(ccSeasonTag('2025-11-10')));
     check('без ошибок JS', out.errs.length===0, out.errs.slice(0,3).join(' | '));
   }catch(e){ out.err=String(e && e.stack || e); }
   document.getElementById('__out').textContent='PB'+'EGIN'+encodeURIComponent(JSON.stringify(out))+'PE'+'ND';

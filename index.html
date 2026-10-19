@@ -4025,7 +4025,10 @@
     overflow:hidden;cursor:pointer;color:#fff;
     background:radial-gradient(circle at 50% 35%,color-mix(in srgb,var(--fn-bg) 50%,#fff) 0%,var(--fn-bg) 50%,color-mix(in srgb,var(--fn-bg) 45%,#000) 100%);}
   .cc-fn-hero img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;object-position:50% 40%;}
-  .cc-fn-hero img.full{inset:6px 0 0;height:calc(100% - 6px);object-fit:cover;object-position:50% 100%;filter:drop-shadow(0 6px 10px rgba(0,0,0,.35));}
+  /* Персонаж всегда целиком по высоте блока и по центру: картинка квадратная, по бокам пусто, поэтому ширина — от
+     высоты, а лишние бока прячет overflow блока (Notion «19.10»: на широком экране cover резал голову). */
+  .cc-fn-hero img.full{top:6px;bottom:auto;left:50%;right:auto;width:auto;max-width:none;height:calc(100% - 6px);aspect-ratio:1/1;
+    transform:translateX(-50%);object-fit:contain;filter:drop-shadow(0 6px 10px rgba(0,0,0,.35));}
   .cc-fn-floor{position:absolute;left:12%;right:12%;bottom:4%;height:12%;border-radius:50%;
     background:radial-gradient(ellipse at center,rgba(255,255,255,.28),rgba(255,255,255,0) 70%);}
   .cc-fn-hero b{position:relative;padding:18px 8px 8px;text-align:left;font-family:var(--font-display);text-transform:uppercase;font-size:16px;
@@ -115992,13 +115995,13 @@ function ccEdgeOff(pl){ return !!(pl && pl.noEdge); }
 const CC_SEASON_LABEL={h1:'Season 9', h3:'Season X', h4:'C2S1', i0:'C2S1', i1:'C2S2', i3:'C2S4',
   j1:'C2S5', j2:'C2S6', j3:'C2S7', j4:'C2S8', k1:'C3S1', k2:'C3S2', k3:'C3S3',
   e1:'Major 1', e2:'Major 2', e3:'Major 3', f1:'Major 1', f2:'Major 2', f3:'Major 3',
-  t1:'Major 1', t2:'Major 2', t3:'Major 3', m1:'Major 1', m2:'Major 2', og:'Season OG', remix:'Chapter 2 Remix', sw:'Galactic Battle (Star Wars)'};
-const CC_SEASON_SUB={og:'OG', remix:'Remix', sw:'Star Wars', e1:'C4S1', e2:'C4S2', e3:'C4S3', f1:'C5S1', f2:'C5S2', f3:'C5S3', t1:'C6S1', t2:'C6S2', t3:'C6S3'};
+  t1:'Major 1', t2:'Major 2', t3:'Major 3', m1:'Major 1', m2:'Major 2', og:'Season OG', remix:'Chapter 2 Remix', sw:'Galactic Battle (Star Wars)', simpsons:'The Simpsons'};
+const CC_SEASON_SUB={og:'OG', remix:'Remix', sw:'Star Wars', simpsons:'Simpsons', e1:'C4S1', e2:'C4S2', e3:'C4S3', f1:'C5S1', f2:'C5S2', f3:'C5S3', t1:'C6S1', t2:'C6S2', t3:'C6S3'};
 // Особые сезоны Epic — своей кнопкой старта на плитке года: OG и Remix (годы продлены до 30.11, ccYearTo) и
 // Star Wars (Galactic Battle, C6, 2.05–6.06.2025: FNCS Showdown 4–6, Console Victory Cup, оценки).
 // snap — снимок рейтинга того времени; без него рейтинг — итог года (ccRatingSnap на экране создания отдаёт null).
 const CC_START_EXTRA={2023:[{tag:'og', from:'2023-11-03'}], 2024:[{tag:'remix', from:'2024-11-02'}],
-  2025:[{tag:'sw', from:'2025-05-02', snap:'t2'}]};
+  2025:[{tag:'sw', from:'2025-05-02', snap:'t2'}, {tag:'simpsons', from:'2025-11-01'}]};
 function ccStartSeasonsOf(y){ return (CC_SNAPS_BY_YEAR()[y] || []).concat(CC_START_EXTRA[y] || []); }
 function ccStartSeasons(){ return ccStartSeasonsOf(ccPickedYear()); }
 function ccStartSeasonAllowed(){ return !ccMpLockedYear() && !(typeof CC_MP_NEW!=='undefined' && CC_MP_NEW); }
@@ -126725,7 +126728,7 @@ function ccChapterOf(n){
   if(n<=34) return {c:6, s:n-32};
   if(n===35) return {c:6, name:'Galactic Battle'};
   if(n<=37) return {c:6, s:n-33};
-  if(n===38) return {c:6, name:'Mini'};
+  if(n===38) return {c:6, name:'Simpsons'};
   if(n<=41) return {c:7, s:n-38};
   return {n:n};
 }
@@ -127235,7 +127238,9 @@ const CC_CUP_2025={games:10, finalGames:6, finalGamesS36:7};
    - No Reload circuit, no Summit and no Global Championship Last Chance, so a
      trio year has fewer days on it and the calendar strip has to say so rather
      than leaving four months looking broken. */
-const CC_YEAR_2025_FROM='2024-12-07', CC_YEAR_2025_TO='2025-09-28';   // + Кубок наций после Лиона
+// До 29.11: после Лиона — капы Главы 6 октября и сезон Симпсонов (C6 мини-сезон, 1–29 ноября 2025: Duos и Squads
+// Victory Cup, Reload Quick Cup из архива Epic). 2026-й начинается 1 декабря.
+const CC_YEAR_2025_FROM='2024-12-07', CC_YEAR_2025_TO='2025-11-29';   // + Кубок наций после Лиона
 // ==== FNCS 2019 cal (tools/splice-2019.js) ====
 /* ---- 2019 в карьере --------------------------------------------------------------
    Формат меняется по ходу года: World Cup (недели Online Open — соло по нечётным, дуо по
@@ -150176,7 +150181,8 @@ const CC_SEASONS_2025=[
   {id:'S34', from:'2025-02-21', to:'2025-05-01'},
   {id:'S35', from:'2025-05-02', to:'2025-06-06'},
   {id:'S36', from:'2025-06-07', to:'2025-08-06'},
-  {id:'S37', from:'2025-08-07', to:'2025-11-28'}
+  {id:'S37', from:'2025-08-07', to:'2025-10-31'},
+  {id:'S38', from:'2025-11-01', to:'2025-11-28'}   // Симпсоны
 ];
 const CC_SEASONS=[
   {id:'S39', from:'2025-11-29', to:'2026-03-18'},
