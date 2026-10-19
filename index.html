@@ -4410,6 +4410,26 @@
   @media (min-width:701px){ #screen-career-hub.ch-lobby-on .ch-top{display:none;} }
   /* Полоса вкладок меню — синяя, как на профиле (скрины 26–27), а не прозрачная поверх картинки. */
   #screen-career-hub .cc-lobby .cc-lb-top{background:linear-gradient(90deg,#1b3584,#162c74 60%,#1a3380);box-shadow:0 1px 0 rgba(180,200,255,.18);}
+  /* Без белых полосок и с углами как в Fortnite (его слово 19.10: «полоски белые вижу, уголки не как в фортнайте»):
+     у полосы сезона, плиток дней, панелей и шапки — ни светлой обводки, ни светлой линии; снаружи меню прямые углы,
+     у плашек внутри — небольшое скругление 8px. Подсветка «сегодня» (жёлтая) остаётся. */
+  @media (min-width:701px){
+    #screen-career-hub.ch-lobby-on .ch-stage{border-radius:0;box-shadow:none;}
+    #screen-career-hub.ch-lobby-on .cc-lobby{border-radius:0;}
+  }
+  #screen-career-hub .cc-lobby .cc-lb-top{box-shadow:none;}
+  #screen-career-hub .cc-lobby .cc-lb-next{box-shadow:none;border:0;border-radius:8px;}
+  #screen-career-hub .cc-lobby.cc-lb-full .cc-lb-sched .ch-day,#screen-career-hub .cc-lb-sched .ch-day{box-shadow:none;border:0;border-radius:8px;}
+  #screen-career-hub .cc-lobby.cc-lb-full .cc-lb-sched .ch-day.ch-today,#screen-career-hub .cc-lb-sched .ch-day.ch-today{box-shadow:inset 0 0 0 2px #f8f82a;}
+  #screen-career-hub .cc-lobby.cc-lb-full .ch-tile,.cc-lb-full.cc-lb-famC .cc-lb-stack .cc-lb-panel,#screen-career-hub .cc-lobby .cc-lb-panel{border:0;border-radius:8px;}
+  #screen-career-hub .cc-lobby .cc-lb-playbox .ch-art,#screen-career-hub .cc-lobby .cc-lb-card{border:0;border-radius:8px;}
+  #screen-career-hub .cc-lobby .ch-tile-ros .ch-ro{border-radius:6px;}
+  /* Хабовые правила рамок (.ch-next, .ch-week, .ch-tile, .ch-ro) сильнее — в меню рамок нет вовсе. */
+  #screen-career-hub .cc-lobby .cc-lb-next,#screen-career-hub .cc-lobby .cc-lb-sched .ch-day,#screen-career-hub .cc-lobby .ch-tile,
+  #screen-career-hub .cc-lobby .cc-lb-panel,#screen-career-hub .cc-lobby .ch-tile-ros .ch-ro,#screen-career-hub .cc-lobby .cc-lb-playbox .ch-art{border:0 !important;outline:0;}
+  #screen-career-hub .cc-lobby .cc-lb-sched .ch-day:not(.ch-today),#screen-career-hub .cc-lobby .cc-lb-next{box-shadow:none !important;}
+  #screen-career-hub .cc-lobby .cc-lb-next::before,#screen-career-hub .cc-lobby .cc-lb-playbox .ch-art::before{display:none;}
+  #screen-career-hub .cc-lobby .ch-tile-ros .ch-ro.on{box-shadow:inset 3px 0 0 #3fe0c5;}
   /* Фон с нарисованными подиумами (ccLobbyPads) — свои подиумы не рисуются. */
   .cc-lobby.cc-lb-painted .cc-lb-ped{display:none;}
   /* Ник над фигурой — без подложки (скрин 22): номер, ник и устройство белым с тенью, как в лобби игры. */
@@ -117735,7 +117755,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='df51eb93';
+const CC_BUILD='bf661a17';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
