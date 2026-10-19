@@ -2315,6 +2315,10 @@
   #screen-career-create .cc-year-panel .cc-yt-wrap{position:relative;}
   #screen-career-create .cc-year-panel .cc-yt-wrap>.cc-year-tile{width:100%;height:100%;margin:0;}
   #screen-career-create .cc-year-panel .cc-yt-seasons{position:absolute;z-index:3;top:7px;right:7px;display:flex;gap:4px;}
+  /* Четыре кнопки (2021, 2023 + OG, 2024 + Remix) на телефоне не влезали в плитку и вылезали влево: уже кнопки
+     и перенос внутри плитки. */
+  @media (max-width:699px){ #screen-career-create .cc-year-panel .cc-yt-seasons{left:7px;flex-wrap:wrap;justify-content:flex-end;gap:3px;}
+    #screen-career-create .cc-year-panel .cc-yt-seasons .cc-yt-s{padding:5px 4px;font-size:9.5px;} }
   #screen-career-create .cc-year-panel .cc-yt-seasons:not(.on){opacity:.7;}
   @media (min-width:700px){ #screen-career-create .cc-year-panel .cc-yt-seasons{top:auto;bottom:9px;right:10px;gap:6px;} }
   #screen-career-create .cc-year-panel .cc-yt-s{padding:5px 6px;margin:0;border:1px solid rgba(255,255,255,.45);
@@ -115988,11 +115992,13 @@ function ccEdgeOff(pl){ return !!(pl && pl.noEdge); }
 const CC_SEASON_LABEL={h1:'Season 9', h3:'Season X', h4:'C2S1', i0:'C2S1', i1:'C2S2', i3:'C2S4',
   j1:'C2S5', j2:'C2S6', j3:'C2S7', j4:'C2S8', k1:'C3S1', k2:'C3S2', k3:'C3S3',
   e1:'Major 1', e2:'Major 2', e3:'Major 3', f1:'Major 1', f2:'Major 2', f3:'Major 3',
-  t1:'Major 1', t2:'Major 2', t3:'Major 3', m1:'Major 1', m2:'Major 2'};
-const CC_SEASON_SUB={e1:'C4S1', e2:'C4S2', e3:'C4S3', f1:'C5S1', f2:'C5S2', f3:'C5S3', t1:'C6S1', t2:'C6S2', t3:'C6S3'};
-// Подпись на плитке года: в год входят OG-сезоны Epic с денежными капами (годы продлены до 30.11, ccYearTo).
-const CC_YEAR_OG={2023:'Season OG', 2024:'Chapter 2 Remix'};
-function ccStartSeasons(){ return CC_SNAPS_BY_YEAR()[ccPickedYear()] || []; }
+  t1:'Major 1', t2:'Major 2', t3:'Major 3', m1:'Major 1', m2:'Major 2', og:'Season OG', remix:'Chapter 2 Remix'};
+const CC_SEASON_SUB={og:'OG', remix:'Remix', e1:'C4S1', e2:'C4S2', e3:'C4S3', f1:'C5S1', f2:'C5S2', f3:'C5S3', t1:'C6S1', t2:'C6S2', t3:'C6S3'};
+// OG-сезоны Epic с денежными капами (годы продлены до 30.11, ccYearTo) — своей кнопкой старта на плитке года.
+// Снимка рейтинга у них нет: рейтинг — итог года (ccRatingSnap на экране создания отдаёт null).
+const CC_START_EXTRA={2023:[{tag:'og', from:'2023-11-03'}], 2024:[{tag:'remix', from:'2024-11-02'}]};
+function ccStartSeasonsOf(y){ return (CC_SNAPS_BY_YEAR()[y] || []).concat(CC_START_EXTRA[y] || []); }
+function ccStartSeasons(){ return ccStartSeasonsOf(ccPickedYear()); }
 function ccStartSeasonAllowed(){ return !ccMpLockedYear() && !(typeof CC_MP_NEW!=='undefined' && CC_MP_NEW); }
 function ccPickedStart(){
   const list=ccStartSeasons();
@@ -116096,12 +116102,12 @@ function ccRenderChips(){
       const off=lockY && y!==lockY;
       const look=YEAR_LOOK[y]||{lan:''};
       // Сезоны года — кнопками на самой плитке (18.10): нажатие выбирает и год, и сезон.
-      const ss=ccStartSeasonAllowed() ? (CC_SNAPS_BY_YEAR()[y]||[]) : [];
+      const ss=ccStartSeasonAllowed() ? ccStartSeasonsOf(y) : [];
       const curS=on ? (ccPickedStart()||ss[0]||{}).tag : null;
       // Кнопки сезонов — рядом с плиткой в общей обёртке, а не внутри неё: кнопка в кнопке не везде нажимается.
       const sHTML=ss.length>1 ? `<div class="cc-yt-seasons${on?' on':''}">${ss.map(s=>`<button type="button" class="cc-yt-s${s.tag===curS?' on':''}" `+
         `title="${esc((CC_SEASON_LABEL[s.tag]||s.tag)+' · '+ccHdrDate(s.from))}" onclick="ccPickYearSeason(${y},'${s.tag}')">${esc(ccSeasonShort(s.tag))}</button>`).join('')}</div>` : '';
-      return `<div class="cc-yt-wrap" style="--sn:${ss.length>1 ? ss.length : 0}"><button class="cc-chip cc-year-tile${on?' on':''}${off?' soon':''}" style="--yr-art:url(${look.art})" ${off?'disabled title="'+esc(L().ccMpLockedBy)+'"':''} onclick="ccPickYear(${y})"><b>${y}</b><small>${L()['ccYear'+y]}${CC_YEAR_OG[y] ? ' · + '+CC_YEAR_OG[y] : ''}</small><i>${look.lan}</i></button>${sHTML}</div>`;
+      return `<div class="cc-yt-wrap" style="--sn:${ss.length>1 ? ss.length : 0}"><button class="cc-chip cc-year-tile${on?' on':''}${off?' soon':''}" style="--yr-art:url(${look.art})" ${off?'disabled title="'+esc(L().ccMpLockedBy)+'"':''} onclick="ccPickYear(${y})"><b>${y}</b><small>${L()['ccYear'+y]}</small><i>${look.lan}</i></button>${sHTML}</div>`;
     }).join('');
     const yn=document.getElementById('ccYearNote');
     if(yn) yn.textContent=(lockY ? L().ccMpLockedBy+' · ' : '')+L()['ccYearNote'+(CC.year||2026)]+
@@ -117200,7 +117206,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='366856cc';
+const CC_BUILD='5a346b2c';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого

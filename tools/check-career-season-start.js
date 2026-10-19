@@ -51,6 +51,13 @@ check('год доигран', cr.seasonOver, 'шагов '+g+', день '+cr.d
 careerNewSeason();
 notes.next={season:cr.season, year:cr.year, day:cr.day, snap:ccSnapshotNow().tag};
 check('следующий год — с начала (2025, t1)', cr.year===2025 && cr.day<'2025-01-01' && ccSnapshotNow().tag==='t1', JSON.stringify(notes.next));
+// 3б) Старт с OG-сезонов (кнопки OG у 2023 и Remix у 2024): первый вечер — денежный кап того сезона.
+save(2023, 2, null, {startFrom:'2023-11-03'});
+notes.og={day:CAREER.career.day, next:(careerNext()||{}).label};
+check('старт с Season OG: 3–5 ноября 2023', CAREER.career.day>='2023-11-03' && CAREER.career.day<='2023-11-05', CAREER.career.day);
+save(2024, 2, null, {startFrom:'2024-11-02'});
+notes.remix={day:CAREER.career.day, next:(careerNext()||{}).label};
+check('старт с Remix: 2–7 ноября 2024', CAREER.career.day>='2024-11-02' && CAREER.career.day<='2024-11-07', CAREER.career.day);
 // 4) 2027 и рейтинг года под CC_NOW_YEAR_FORCE.
 save(2026, 2, '2026-12-20', {season:2, year0:2026});
 check('2027 (второй 2026-й) — весь год', ccRatingSnap()===null, ccRatingSnapTag()+' shift '+ccYearShift());
@@ -64,7 +71,10 @@ openCareerCreate(); ccPickYear(2025);
 const wrap24=[...document.querySelectorAll('#ccYearChips .cc-yt-wrap')].find(w=>/^2024/.test(w.querySelector('.cc-year-tile').textContent));
 const sb=wrap24 ? [...wrap24.querySelectorAll('.cc-yt-s')] : [];
 notes.tile24=sb.map(b=>b.textContent);
-check('на плитке 2024 три сезона: C5S1 C5S2 C5S3', sb.map(b=>b.textContent).join(' ')==='C5S1 C5S2 C5S3', notes.tile24.join(' '));
+check('на плитке 2024: C5S1 C5S2 C5S3 и Remix', sb.map(b=>b.textContent).join(' ')==='C5S1 C5S2 C5S3 Remix', notes.tile24.join(' '));
+{ const w23=[...document.querySelectorAll('#ccYearChips .cc-yt-wrap')].find(w=>/^2023/.test(w.querySelector('.cc-year-tile').textContent));
+  const t23=w23 ? [...w23.querySelectorAll('.cc-yt-s')].map(b=>b.textContent) : [];
+  check('на плитке 2023 есть OG', t23[t23.length-1]==='OG', t23.join(' ')); }
 sb[2] && sb[2].click();
 check('нажатие C5S3 на плитке ставит 2024 и C5S3', CC.year===2024 && ccPickedStart() && ccPickedStart().from==='2024-06-14', CC.year+' '+JSON.stringify(ccPickedStart()));
 const onNow=[...document.querySelectorAll('#ccYearChips .cc-yt-s.on')].map(b=>b.textContent);
@@ -74,6 +84,8 @@ const chapAt=tag=>{ ccPickStartSeason(tag); const c=careerRosterNowEU().find(x=>
 const cf1=chapAt('f1'), cf3=chapAt('f3');
 notes.create={f1:cf1, f3:cf3};
 check('на экране создания Chap в C5S1 ниже, чем в C5S3', cf1!=null && cf3!=null && cf3-cf1>=10, cf1+' → '+cf3);
+ccPickYearSeason(2024,'remix');
+check('Remix выбран: старт 2 ноября, рейтинг — итог года', ccPickedStart() && ccPickedStart().from==='2024-11-02' && ccRatingSnap()===null, JSON.stringify(ccPickedStart())+' '+JSON.stringify(ccRatingSnap()));
 ccPickYear(2025);
 check('смена года сбрасывает сезон на первый', ccPickedStart()===null, JSON.stringify(ccPickedStart()));
 CC_MP_NEW={role:'a'}; ccRenderChips();
