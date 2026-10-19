@@ -74,7 +74,12 @@ const BOOT = `
     seed(1, '2023-11-17');
     const v=careerVictoryOn('2023-11-17');
     check('17 ноября — OG Skirmish с деньгами', v && /OG Skirmish/.test(v.name) && ccVictoryPayOf(v, 1)>0, JSON.stringify(v && {name:v.name, id:v.id, p1:ccVictoryPayOf(v,1), p25:ccVictoryPayOf(v,25), p26:ccVictoryPayOf(v,26)}));
-    check('остров Главы 1 (h1)', careerBrSet()==='h1' && careerNightSet({type:'victory', day:'2023-11-17'})==='h1', careerBrSet()+' / '+careerNightSet({type:'victory', day:'2023-11-17'}));
+    // Остров Season OG по неделям, как в игре (20.10): 17.11 — Сезоны 7–8 (g7); 5.11 — Сезон 5 (g5), 10.11 — 6 (g6), 25.11 — 9/X (h1).
+    check('остров недели OG: 17.11 — Сезон 7 (g7)', careerBrSet()==='g7' && careerNightSet({type:'victory', day:'2023-11-17'})==='g7', careerBrSet()+' / '+careerNightSet({type:'victory', day:'2023-11-17'}));
+    { const at=d=>{ const keep=CAREER.career.day; CAREER.career.day=d; const k=careerBrSet(); CAREER.career.day=keep; return k; };
+      const w=[at('2023-11-05'), at('2023-11-10'), at('2023-11-17'), at('2023-11-25')].join(',');
+      check('острова недель OG: g5, g6, g7, h1', w==='g5,g6,g7,h1', w);
+      check('у островов OG есть клетки и картинки', ['g5','g6','g7'].every(k=>(ZONE_SETS[k]||[]).length>=20 && (ZONE_STATS[k]||[]).length===(ZONE_SETS[k]||[]).length), ['g5','g6','g7'].map(k=>(ZONE_SETS[k]||[]).length+'/'+(ZONE_STATS[k]||[]).length).join(' ')); }
     const h=await playThrough('og skirmish');
     const s=save(); const r=(s.log||[]).slice(-1)[0];
     check('кап сыгран и записан', r && r.kind==='victory', JSON.stringify(r && {kind:r.kind, place:r.place, of:r.of, prize:r.prize}));

@@ -74,6 +74,10 @@ const SETS = {
   i1: {map: 'Map:Chapter 2: Season 2 (12.20)', art: 'art/map-i1.jpg'},
   i2: {map: 'Map:Chapter 2: Season 3 (13.30)', art: 'art/map-i2.jpg'},
   i3: {map: 'Map:Chapter 2: Season 4 (14.30)', art: 'art/map-i3.jpg'},
+  // Season OG (ноябрь 2023) по неделям — tools/build-mx-islands.js g5/g6/g7.
+  g5: {map: 'Map:Season 5 (5.41)', art: 'art/map-g5.jpg'},
+  g6: {map: 'Map:Season 6 (6.30)', art: 'art/map-g6.jpg'},
+  g7: {map: 'Map:Season 7 (7.40)', art: 'art/map-g7.jpg'},
   s42:     {map: 'Map:Chapter 7: Season 4 (42.00)', art: 'art/map-s42.jpg'},
   s42solo: {map: 'Map:Chapter 7: Season 4 (42.00)', art: 'art/map-s42.jpg'},
   /* Острова Мейджоров 2026 — только ради счёта СУНДУКОВ по коробкам (7.09, «сундуков

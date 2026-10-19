@@ -16,7 +16,11 @@ const SETS = {
   h4: 'Map:Chapter 2: Season 1 (11.11)',        // FNCS C2S1, финал 8 декабря 2019
   i1: 'Map:Chapter 2: Season 2 (12.20)',        // FNCS C2S2, финал апрель 2020
   i2: 'Map:Chapter 2: Season 3 (13.30)',        // FNCS C2S3 (соло), финал август 2020
-  i3: 'Map:Chapter 2: Season 4 (14.30)'         // FNCS C2S4, финал октябрь 2020
+  i3: 'Map:Chapter 2: Season 4 (14.30)',        // FNCS C2S4, финал октябрь 2020
+  // Season OG (ноябрь 2023) — остров менялся по неделям: 3–9.11 Сезон 5, 9–16.11 Сезон 6, 16–23.11 Сезоны 7–8 (дальше 9/X = h1).
+  g5: 'Map:Season 5 (5.41)',
+  g6: 'Map:Season 6 (6.30)',
+  g7: 'Map:Season 7 (7.40)'
 };
 const want = process.argv.slice(2).filter(k => SETS[k]);
 const TARGETS = want.length ? want : Object.keys(SETS);
