@@ -149093,7 +149093,10 @@ function ccFnShopDay(day){
   let guard=0;
   while(d>CC_FN_SHOP.last && guard++<20) d=ccAddDays(d, -364);
   const n=ccDaysBetween(CC_FN_SHOP.first, d);
-  const row=CC_FN_DAYS[n] || '';
+  /* Дыры в данных fortnite-api (17.10.2022, 27.01.2026) — витрина предыдущего дня, магазин не пустеет (его «да» 20.10).
+     14.10.2019 пуст по-настоящему: блэкаут ивента The End, магазина не было. */
+  let row=CC_FN_DAYS[n] || '';
+  if(!row && d!=='2019-10-14') for(let k=1; k<=3 && !row; k++) row=CC_FN_DAYS[n-k] || '';
   const order={o:0, p:1, g:2, e:3, w:4, b:5};
   return row.split(',').filter(Boolean).map(s=>ccFnItem(parseInt(s, 36))).filter(Boolean)
     .sort((a,b)=>order[a.t]-order[b.t] || ccFnPrice(b)-ccFnPrice(a) || a.name.localeCompare(b.name));
