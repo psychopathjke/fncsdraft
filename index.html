@@ -4430,6 +4430,14 @@
   #screen-career-hub .cc-lobby .cc-lb-sched .ch-day:not(.ch-today),#screen-career-hub .cc-lobby .cc-lb-next{box-shadow:none !important;}
   #screen-career-hub .cc-lobby .cc-lb-next::before,#screen-career-hub .cc-lobby .cc-lb-playbox .ch-art::before{display:none;}
   #screen-career-hub .cc-lobby .ch-tile-ros .ch-ro.on{box-shadow:inset 3px 0 0 #3fe0c5;}
+  /* Календарь — одним блоком (Notion «19.10», скрин 32): полоса сезона и дни недели на одной подложке, а не две
+     отдельные плашки. */
+  @media (min-width:701px){
+    #screen-career-hub .cc-lobby.cc-lb-full .cc-lb-bottom{left:14px;right:14px;padding:4px 0 8px;border-radius:8px;background:var(--lb-deep);}
+    #screen-career-hub .cc-lobby.cc-lb-full .cc-lb-next{margin:0;padding:4px 10px 6px;background:transparent !important;}
+    #screen-career-hub .cc-lobby.cc-lb-full .cc-lb-sched{padding:0 10px;}
+    #screen-career-hub .cc-lobby.cc-lb-full .cc-lb-sched .ch-day{background:rgba(120,150,235,.18);}
+  }
   /* Фон с нарисованными подиумами (ccLobbyPads) — свои подиумы не рисуются. */
   .cc-lobby.cc-lb-painted .cc-lb-ped{display:none;}
   /* Ник над фигурой — без подложки (скрин 22): номер, ник и устройство белым с тенью, как в лобби игры. */
@@ -117755,7 +117763,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='bf661a17';
+const CC_BUILD='d68d45d6';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -140084,6 +140092,9 @@ const CC_NEWS_KIND=[[/^ccNewsMaj/, 'major'], [/^ccNewsRel|^ccNewsRc/, 'reload'],
 /* Обложка новости — в оформлении того, что игралось (его правка 28.09, скрин поста Kinch
    про ESL Katowice 2019 с гербом FNCS 2026): свой постер у турнира дня (n.evArt, пишется в
    careerNews), иначе постер сезона FNCS, в котором вышел пост; 2026-й — как раньше, по виду. */
+/* Картинка под панелью дня — своего сезона (ccSeasonArtOn), а не кап 2026-го на любом году (Notion «19.10», скрин 32:
+   «кап 26 года на превью не того года»). С ноября 2025-го своей картинки сезона нет — тогда кап этого года. */
+function ccDayArt(){ return ccSeasonArtOn(careerToday()) || CAREER_EV_ART.cup; }
 function ccSeasonArtOn(day){
   const d=String(day||'');
   if(!d || d>='2025-11-29') return '';
@@ -145949,7 +145960,7 @@ function careerDayPanelHTML(locked){
         ((maxed||restFull||(!closed && left<a.energy)||(keys.length && !gainsMove)) ? gains.replace(/<i>[^<]*<\/i>/g,'') : '')+'</span></button>'+
       (a===mates[mates.length-1] ? '</div>' : '');
   }).join('');
-  return '<div class="ch-art cc-day'+(CC_DAY_VIEW==='train' ? ' cc-day-train' : '')+'" style="background-image:url('+CAREER_EV_ART.cup+');">'+
+  return '<div class="ch-art cc-day'+(CC_DAY_VIEW==='train' ? ' cc-day-train' : '')+'" style="background-image:url('+ccDayArt()+');">'+
     // Which day it is, beside what is on it: his ask, 17 August.
     '<div class="ch-livebar"><b class="ch-live-soon">'+L().ccDayTag+'</b><span>'+
       esc(ccDayFull(careerToday()))+' · '+(locked ? esc(locked.label) : L().chDayFree)+
@@ -146056,7 +146067,7 @@ function careerTrainTabHTML(){
     try{ return '<div class="cc-train-tab">'+ccTrainWeekHTML()+ccTrainPlanHTML()+careerDayPanelHTML(null)+'</div>'; } finally{ CC_DAY_VIEW=''; }
   }
   const cr=CAREER.career, next=careerNext();
-  return '<div class="cc-train-tab">'+ccTrainWeekHTML()+ccTrainPlanHTML()+'<div class="ch-art cc-day cc-day-train" style="background-image:url('+CAREER_EV_ART.cup+');">'+
+  return '<div class="cc-train-tab">'+ccTrainWeekHTML()+ccTrainPlanHTML()+'<div class="ch-art cc-day cc-day-train" style="background-image:url('+ccDayArt()+');">'+
     '<div class="ch-livebar"><b class="ch-live-soon">'+L().ccDayTag+'</b><span>'+esc(ccDayFull(careerToday()))+'</span></div>'+
     '<div class="ch-art-in cc-day-in">'+ccTrainPanelHTML(six, true)+
     '<div class="cc-day-locked">'+esc(cr.seasonOver ? L().ccSeasonOver : L().lfTrainEventDay(next.title||''))+'</div>'+
