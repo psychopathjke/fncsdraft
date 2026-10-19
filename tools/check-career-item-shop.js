@@ -56,11 +56,11 @@ check('раздел «Магазин предметов» с карточкам�
 check('V-Bucks в шапке рядом с балансом', /ch-vb/.test(shopTxt));
 const lock=ccLockerHTML();
 check('образ в шкафчике со скином', /cc-fn-load/.test(lock) && lock.indexOf(sk.id.toLowerCase())>0);
-ccFnPick('o'); check('выбор из купленного открывается', /cc-fn-pick/.test(ccLockerHTML()));
+ccFnPick('o'); check('выбор из купленного открывается', /cc-(fn|lk5)-pick/.test(ccLockerHTML()));
 // Шкафчик своей вкладкой: выбор скина открыт сразу, купленный скин в нём.
 CC_FN_PICK=null; careerTab('locker');
 const lb=document.getElementById('chBody').innerHTML;
-check('вкладка «Шкафчик»: образ и выбор скина сразу', /cc-fn-load/.test(lb) && /cc-fn-pick/.test(lb) && lb.indexOf(sk.id.toLowerCase())>0);
+check('вкладка «Шкафчик»: образ и выбор скина сразу', /cc-fn-load/.test(lb) && /cc-(fn|lk5)-pick/.test(lb) && lb.indexOf(sk.id.toLowerCase())>0);
 check('кнопка вкладки есть', !!document.querySelector('.ch-tab[data-tab="locker"]'));
 // Item Shop — своя вкладка рядом со шкафчиком, в обычном магазине его раздела больше нет.
 const tabs=[...document.querySelectorAll('#screen-career-hub .ch-tab')].map(b=>b.dataset.tab);
@@ -89,11 +89,12 @@ const emi=secs.find(s=>s.h==='Eminem');
 check('раздел набора «Eminem»', emi && emi.big.includes('Slim Shady') && emi.sm.includes("Raven's Stare") && emi.sm.includes("Axe 'Bout Me"), JSON.stringify(emi));
 check('скины без набора не в куче с кирками', secs.every(s=>!(s.big.length && s.h===L().ccFnTypes_p)));
 // Шкафчик в виде своей главы: класс главы, большой образ с надетым скином, разделы «Персонаж» и «Эмоции · Обёртки».
+// С Главы 5 — шкафчик нынешнего Fortnite (cc-lk5): модель справа, CHARACTER (4 ячейки) и EMOTES (2).
 { const sk2=ccFnShopDay(careerToday()).find(x=>x.t==='o'); CAREER.vb=5000; ccFnBuy(sk2.i);
   const lk=document.createElement('div'); lk.innerHTML=ccFnLoadoutHTML();
   check('шкафчик 2024 — тёмный вид', !!lk.querySelector('.cc-fn-load.cc-fn-c5'));
-  check('большой образ с надетым скином', !!lk.querySelector('.cc-fn-hero img') && lk.querySelector('.cc-fn-hero').innerHTML.indexOf(sk2.id.toLowerCase())>0);
-  check('разделы шкафчика', lk.querySelectorAll('.cc-fn-cat').length===2 && lk.querySelectorAll('.cc-fn-slot').length===6); }
+  check('большой образ с надетым скином', !!lk.querySelector('.cc-lk5-stage img') && lk.querySelector('.cc-lk5-stage').innerHTML.indexOf(sk2.id.toLowerCase())>0);
+  check('разделы шкафчика', lk.querySelectorAll('.cc-lk5-grid').length===2 && lk.querySelectorAll('.cc-lk5-grid .cc-lk5-slot').length===6); }
 seed('2019-06-01', 'EU', 100); box.innerHTML=ccFnShopHTML();
 check('шкафчик 2019 — вид Главы 1', /cc-fn-load cc-fn-c1/.test(ccFnLoadoutHTML()));
 check('Глава 1: «Ежедневные» ровными квадратами', !!box.querySelector('.cc-fn-grid.daily') && !box.querySelector('.cc-fn-grid.daily .big'));

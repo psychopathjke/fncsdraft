@@ -4023,6 +4023,44 @@
   .cc-fn-slot img{width:100%;aspect-ratio:1/1;object-fit:contain;}
   .cc-fn-slot i{display:flex;align-items:center;justify-content:center;width:100%;aspect-ratio:1/1;font-style:normal;font-size:26px;opacity:.5;}
   .cc-fn-slot em{font-style:normal;font-size:11px;opacity:.85;}
+  /* Шкафчик нынешнего Fortnite (ccFnLocker5HTML). */
+  #screen-career-hub .ch-tile.cc-lk5{position:relative;display:grid;grid-template-columns:64px minmax(0,1fr) minmax(0,1.1fr);gap:18px;min-height:620px;
+    padding:28px 22px 80px;border:0;border-radius:12px;color:#fff;background:linear-gradient(160deg,#0b3a9e 0%,#0f62c9 45%,#1a9be0 100%);overflow:hidden;}
+  .cc-lk5-rail{display:flex;flex-direction:column;gap:6px;align-self:start;margin-top:40px;padding:8px;border-radius:14px;background:rgba(10,30,90,.55);}
+  .cc-lk5-rail button{width:44px;height:44px;border:0;border-radius:10px;background:transparent;color:#fff;font-size:20px;cursor:pointer;}
+  .cc-lk5-rail button.on{background:rgba(220,235,255,.9);}
+  .cc-lk5-mid{min-width:0;}
+  .cc-lk5-sub{display:block;margin-top:24px;font-family:var(--font-display);font-style:italic;font-size:22px;color:#bcd6ff;}
+  .cc-lk5-mid h3{margin:0 0 14px;padding-bottom:8px;border-bottom:1px solid rgba(255,255,255,.25);font-family:var(--font-display);font-style:italic;font-size:44px;line-height:1;}
+  .cc-lk5-mid h3.dim{margin-top:26px;color:rgba(255,255,255,.55);font-size:36px;}
+  .cc-lk5-grid,.cc-lk5-pick{display:grid;grid-template-columns:repeat(4,minmax(0,110px));gap:12px;}
+  .cc-lk5-pick{margin-top:16px;padding-top:12px;border-top:1px dashed rgba(255,255,255,.3);grid-template-columns:repeat(auto-fill,minmax(80px,1fr));}
+  .cc-lk5-slot{position:relative;aspect-ratio:1/1;padding:0;border:0;border-radius:12px;cursor:pointer;overflow:hidden;color:#fff;
+    background:linear-gradient(180deg,color-mix(in srgb,var(--fn-bg,#4f86da) 70%,#8fb8ff),var(--fn-bg,#4f86da));}
+  .cc-lk5-slot img{width:100%;height:100%;object-fit:cover;}
+  .cc-lk5-slot i{font-style:normal;font-size:40px;opacity:.95;filter:grayscale(1) brightness(4);}
+  .cc-lk5-rail button{filter:grayscale(1) brightness(4);} .cc-lk5-rail button.on{filter:grayscale(1) brightness(.35);}
+  .cc-lk5-slot b{font-size:12px;}
+  .cc-lk5-slot.on{outline:3px solid #fff;}
+  .cc-lk5-slot:hover{filter:brightness(1.12);}
+  .cc-lk5-stage{position:relative;min-height:520px;}
+  .cc-lk5-stage img.full{position:absolute;right:0;top:-10px;height:100%;width:auto;aspect-ratio:1/1;max-width:none;object-fit:contain;filter:drop-shadow(0 10px 18px rgba(0,0,0,.35));}
+  .cc-lk5-stage img.icon{position:absolute;right:10%;top:10%;width:60%;object-fit:contain;}
+  .cc-lk5-info{position:absolute;left:0;bottom:0;max-width:70%;text-shadow:0 2px 6px rgba(0,0,40,.5);}
+  .cc-lk5-info em{display:block;font-family:var(--font-display);font-style:italic;font-size:20px;color:#e6f0ff;text-transform:uppercase;}
+  .cc-lk5-info b{display:block;font-family:var(--font-display);font-style:italic;font-size:44px;line-height:1;text-transform:uppercase;margin:2px 0 10px;}
+  .cc-lk5-info span{font-size:15px;}
+  .cc-lk5-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px;} .cc-lk5-tags i{padding:2px 8px;border-radius:4px;background:rgba(255,255,255,.18);font-weight:700;}
+  .cc-lk5-btns{position:absolute;right:22px;bottom:18px;display:flex;gap:12px;}
+  .cc-lk5-btns button{padding:10px 26px;border:0;border-radius:12px;background:#a8d4ff;color:#0b2a6a;font-family:var(--font-display);font-size:18px;text-transform:uppercase;cursor:pointer;}
+  .cc-lk5-btns button:hover{background:#cfe7ff;}
+  @media (max-width:700px){
+    #screen-career-hub .ch-tile.cc-lk5{grid-template-columns:1fr;padding:16px 12px 74px;min-height:0;}
+    .cc-lk5-rail{flex-direction:row;margin:0;justify-self:start;} .cc-lk5-sub{margin-top:0;font-size:17px;} .cc-lk5-mid h3{font-size:32px;}
+    .cc-lk5-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;}
+    .cc-lk5-stage{min-height:360px;order:-1;} .cc-lk5-stage img.full{left:50%;right:auto;transform:translateX(-50%);}
+    .cc-lk5-info b{font-size:30px;} .cc-lk5-btns{left:12px;right:12px;} .cc-lk5-btns button{flex:1;padding:9px 6px;font-size:14px;}
+  }
   /* Шкафчик как в игре: слева большой образ, справа ячейки по разделам; вид — по главе карьеры (ccFnShopEra). */
   .cc-fn-lk{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.25fr);gap:12px;align-items:stretch;}
   .cc-fn-hero{position:relative;display:flex;flex-direction:column;justify-content:flex-end;min-height:280px;padding:0;border:0;border-radius:8px;
@@ -4198,7 +4236,14 @@
     background:linear-gradient(0deg,rgba(0,0,0,.75),rgba(0,0,0,0) 65%),var(--card-art,none) center/cover no-repeat,#7a1440 !important;box-shadow:0 4px 14px rgba(0,0,0,.35);}
   .cc-lb-card b{font-size:19px !important;font-style:italic;line-height:1.05;margin:0 0 6px !important;text-shadow:0 2px 4px rgba(0,0,0,.6);}
   .cc-lb-card em{order:-1;position:absolute;top:10px;left:14px;padding:2px 8px;border-radius:999px;background:rgba(0,0,0,.55);opacity:1 !important;font-weight:700;}
-  .cc-lb-dots{display:flex;gap:4px;} .cc-lb-dots s{width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,.6);} .cc-lb-dots s:first-child{width:16px;border-radius:3px;background:#fff;}
+  .cc-lb-dots{position:relative;z-index:2;display:flex;gap:4px;} .cc-lb-dots s{width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,.6);transition:width .2s;}
+  .cc-lb-dots s.on{width:16px;border-radius:3px;background:#fff;}
+  .cc-lb-newsc{cursor:pointer;}
+  .cc-lb-slide{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end;padding:10px 14px 22px;opacity:0;transition:opacity .5s;
+    background:linear-gradient(0deg,rgba(0,0,0,.8),rgba(0,0,0,0) 70%),var(--card-art,linear-gradient(135deg,#7a1440,#2b1a6a)) center/cover no-repeat;}
+  .cc-lb-slide.on{opacity:1;}
+  .cc-lb-slide b{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;font-size:15px !important;font-style:normal;line-height:1.2;text-transform:none;margin:0 !important;}
+  .cc-lb-slide em{position:static !important;align-self:flex-start;margin-bottom:auto;}
   .cc-lb-famC .cc-lb-go{padding:16px;border-radius:14px;background:rgba(48,58,72,.88);gap:10px;}
   .cc-lb-famC .cc-lb-modebox b{font-size:24px;line-height:1.1;margin:8px 0;}
   .cc-lb-famC .cc-lb-pill{display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:12px;background:#a9b6c6;color:#1b2430;text-align:left;font-size:16px;}
@@ -4217,6 +4262,37 @@
   .cc-lb-sched .ch-weeks.ch-days{gap:8px;border-top:0 !important;}
   #screen-career-hub .cc-lb-sched .ch-day{min-height:118px;border-radius:12px;background:rgba(14,18,30,.78);box-shadow:0 2px 8px rgba(0,0,0,.35);}
   #screen-career-hub .cc-lb-sched .ch-day.ch-today{box-shadow:inset 0 0 0 2px #f8f82a;}
+  /* Всё с «Центра» в самом меню (cc-lb-full): колонки слева и справа листаются, внизу полоса сезона и неделя. */
+  .cc-lobby.cc-lb-full{height:920px;}
+  .cc-lb-full .cc-lb-left,.cc-lb-full .cc-lb-right{top:56px;bottom:214px;overflow-y:auto;overflow-x:hidden;scrollbar-width:thin;
+    scrollbar-color:rgba(255,255,255,.35) transparent;padding-bottom:6px;max-height:none;}
+  .cc-lb-full .cc-lb-left{width:310px;justify-content:flex-start;gap:8px;}
+  .cc-lb-full .cc-lb-right{width:330px;}
+  .cc-lb-famA.cc-lb-full .cc-lb-left,.cc-lb-famB.cc-lb-full .cc-lb-left{padding-left:10px;}
+  .cc-lb-famA.cc-lb-full .cc-lb-right,.cc-lb-famB.cc-lb-full .cc-lb-right{right:10px;padding-right:0;gap:6px;}
+  .cc-lb-full .cc-lb-stage{inset:0 0 200px 0;}
+  .cc-lb-full .cc-lb-bottom{display:block;}
+  .cc-lb-playbox{flex:none;}
+  #screen-career-hub .cc-lb-playbox .ch-art{margin:0;border-radius:14px;min-height:0;}
+  #screen-career-hub .cc-lb-playbox .ch-art-in{padding:12px 14px 14px;}
+  #screen-career-hub .cc-lb-playbox .ch-art-in h3{font-size:22px;}
+  .cc-lb-playcol > *{margin-bottom:8px;}
+  .cc-lb-playcol > :empty{display:none;}
+  .cc-lb-stack > *{flex:none;}
+  #screen-career-hub .cc-lb-stack .ch-tile,#screen-career-hub .cc-lb-stack .ch-news,#screen-career-hub .cc-lb-left .ch-tile{margin:0;border-radius:12px;}
+  .cc-lb-full.cc-lb-famC .cc-lb-right{justify-content:flex-start;}
+  .cc-lb-full.cc-lb-famC .cc-lb-stack{overflow:visible;flex:none;}
+  .cc-lb-full .cc-lb-card{height:110px;flex:none;}
+  .cc-lb-ringrow{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:8px;}
+  .cc-lb-ringrow .cc-lb-ring{margin:0;}
+  .cc-lb-ringrow .cc-lb-bar-btns{margin:0;}
+  .cc-lb-famC .cc-lb-pill{flex:none;}
+  .cc-lb-note{flex:none;}
+  .cc-lb-note .cc-notebar{margin:0;padding:0;background:none;border:0;}
+  .cc-lb-next{margin:0 14px 6px;padding:6px 10px;border-radius:10px;background:rgba(8,12,26,.72);}
+  #screen-career-hub .cc-lb-next .ch-next-head{padding:0 0 4px;}
+  #screen-career-hub .cc-lb-next .ch-next-head h3{font-size:15px;}
+  .cc-lb-famA .cc-lb-next,.cc-lb-famB .cc-lb-next{border-radius:0;}
   /* Ряд плиток снизу, как Discover: подиумы стоят над ним. */
   @media (min-width:701px){ .cc-lb-famC .cc-lb-stage{inset:0 0 140px 0;} }
   /* Лист «Подробнее»: всё, что было на «Центре» под меню, — внутри, по кнопке. */
@@ -4246,6 +4322,11 @@
     .cc-lb-fig:not(.me) .cc-lb-plate b u{display:none;}
     .cc-lb-tiles{padding:0 10px 10px;} .cc-lb-tiles .cc-lb-panel{width:170px;}
     .cc-lb-famC{height:auto;} .cc-lb-famC .cc-lb-right{justify-content:flex-start;}
+    .cc-lobby.cc-lb-full{height:auto;}
+    .cc-lb-full .cc-lb-left,.cc-lb-full .cc-lb-right{width:auto;overflow:visible;}
+    .cc-lb-full .cc-lb-bottom{order:3;} .cc-lb-full .cc-lb-left{order:2;} .cc-lb-full .cc-lb-right{order:4;}
+    .cc-lb-famA.cc-lb-full .cc-lb-right,.cc-lb-famB.cc-lb-full .cc-lb-right{order:2;} .cc-lb-famA.cc-lb-full .cc-lb-left,.cc-lb-famB.cc-lb-full .cc-lb-left{order:4;}
+    .cc-lb-next{margin:0 10px 6px;} .cc-lb-top{flex-wrap:wrap;}
     .cc-lb-evbg .cc-lb-stage{background:none;} .cc-lb-famC .cc-lb-bottom{order:3;} .cc-lb-famC .cc-lb-card{height:96px;}
     .cc-lb-famC .cc-lb-plate b{font-size:11px;} .cc-lb-famC .cc-lb-hex{width:22px;height:24px;font-size:11px;} .cc-lb-famC .cc-lb-plate{gap:4px;padding:2px 6px 2px 2px;}
     .cc-lb-famC .cc-lb-plus{width:34px;height:34px;font-size:22px;line-height:32px;}
@@ -117464,7 +117545,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='4293b02b';
+const CC_BUILD='81f9c296';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -122127,7 +122208,8 @@ function ccLbSheet(on){
 }
 // Подиумы как в лобби Fortnite: [x центра в % ширины, низ ног в % высоты, высота фигуры в % высоты].
 const CC_LB_SLOTS=[[50, 9, 70], [37, 21, 55], [61, 21, 55], [72, 22, 53]];
-function ccLobbyHTML(card, btn, next, when, strip){
+function ccLobbyHTML(card, btn, next, when, strip, ex){
+  ex=ex||{};
   const T=L(), pl=CAREER.player, cr=CAREER.career, eq=CAREER.fnEq||{}, own=CAREER.fnOwn||{};
   const era=ccFnShopEra(careerToday()), fam=era.k==='c1' ? 'A' : (era.k==='c2' || era.k==='c3') ? 'B' : 'C';
   const today=careerToday(), used=new Set();
@@ -122166,54 +122248,52 @@ function ccLobbyHTML(card, btn, next, when, strip){
   const evName=next ? (next.label||next.title||'') : '';
   const sn=ccLobbySeasonName(today);
   const lvlFrac=Math.max(0, Math.min(1, ((pl.ovrExact!=null ? pl.ovrExact : pl.ovr)||0)%1));
-  const alerts=ccLobbyAlerts();
   let todayEv=null; try{ todayEv=(careerEvents().get(today)||[])[0]||null; }catch(e){}
-  const evBg=todayEv ? ccEventArt(todayEv) : '';
+  /* Фон — всегда фон сезона, как в ранкеде (его поправка 19.10: «во время капов тоже задний фон как в ранкеде, только кап
+     меняется слева»): от капа меняются карточка новостей и карточка вечера слева. */
+  const evBg='';
   // Карточка новостей — ближайший турнир (в свободный день — следующий по календарю), с его обложкой.
   let newsEv=null, newsDay='';
   try{ const ev=careerEvents(); for(let d=0; d<21 && !newsEv; d++){ const iso=ccAddDays(today, d), on=ev.get(iso)||[]; if(on.length){ newsEv=on[0]; newsDay=iso; } } }catch(e){}
   const nextArt=(newsEv && ccEventArt(newsEv)) || ccLobbyBg(today);
   const newsWhen=newsDay ? L().calDows[(new Date(newsDay+'T00:00:00Z').getUTCDay()+6)%7]+' '+Number(newsDay.slice(8))+' '+L().calMonthsShort[Number(newsDay.slice(5,7))-1] : (when||'');
   const sched=strip ? '<div class="cc-lb-sched"><div class="ch-weeks ch-days">'+strip+'</div></div>' : '';
-  const more='<button class="cc-lb-more'+(alerts ? ' alert' : '')+'" onclick="ccLbSheet()">'+esc(T.lbMore||'More')+(alerts ? ' <i>!</i>' : '')+'</button>';
-  let left='', right='', bottom='';
+  // Карточка вечера с «Центра» (ex.play): LIVE, матч N из M, сколько проходит, где высадка, кто играет, PLAY, эфир,
+  // пропуск, перемотка. Без неё (старые вызовы) — простой блок режима.
+  const playBox=ex.play ? '<div class="cc-lb-playbox">'+ex.play+'</div>' : '<div class="cc-lb-go">'+play+'</div>';
+  // Внизу у всех глав: полоса сезона (недели) и расписание недели плитками — как на прошлом «Центре».
+  const bottomBar=(ex.bar||'')+sched;
+  let left='', right='';
   if(fam==='A'){
     left='<div class="cc-lb-season">'+esc(sn.a)+'</div>'+
       '<div class="cc-lb-lvl"><span class="cc-lb-banner">'+esc(String(cr.division||1))+'</span><div><b>LEVEL '+myOvr+'</b>'+
         '<u class="cc-lb-xp"><s style="width:'+Math.round(lvlFrac*100)+'%"></s></u></div></div>'+
       '<div class="cc-lb-tier" onclick="careerTab(\'table\')"><b>'+esc(T.ccDivision||'Division')+' '+(cr.division||1)+'</b><em>'+esc(ccLobbyWeek())+'</em></div>'+
-      ccLobbyQuestsHTML('DAILY CHALLENGES')+ccLobbyPanelsHTML(card);
-    right='<div class="cc-lb-region">'+esc(regionName(ccCareerRegion()))+'</div>'+ccLobbyRightHTML(card, true)+ccLobbySchedPanel();
-    bottom='<div class="cc-lb-go"><div class="cc-lb-modebox"><b>'+esc(fmtWord)+'</b><em>'+esc(evName)+(when ? ' · '+esc(when) : '')+'</em></div>'+play+'</div>'+
-      '<div class="cc-lb-bar-btns"><button onclick="careerTab(\'me\')">'+esc(T.lfRosters)+'</button><button onclick="careerTab(\'train\')">'+esc(T.chTabTrain)+'</button>'+more+'</div>';
+      ccLobbyQuestsHTML('DAILY CHALLENGES')+ccLobbyPanelsHTML(card, false, true)+ccLobbyRightHTML(card, true)+(ex.side||'');
+    right='<div class="cc-lb-region">'+esc(regionName(ccCareerRegion()))+'</div>'+
+      '<div class="cc-lb-modebox"><b>'+esc(fmtWord)+'</b><em>'+esc(evName)+(when ? ' · '+esc(when) : '')+'</em></div>'+playBox;
   } else if(fam==='B'){
     left='<div class="cc-lb-chap">'+esc(sn.c)+'</div><div class="cc-lb-sea">'+esc(sn.s)+'</div>'+
       '<div class="cc-lb-lvl2"><b>LEVEL '+myOvr+'</b><u class="cc-lb-xp"><s style="width:'+Math.round(lvlFrac*100)+'%"></s><i>'+esc(ccLobbyWeek())+'</i></u></div>'+
       '<button class="cc-lb-quests" onclick="this.nextElementSibling.hidden=!this.nextElementSibling.hidden">VIEW QUESTS</button>'+
       '<div hidden>'+ccLobbyQuestsHTML('')+'</div>'+
-      ccLobbyResourcesHTML(sn.s)+ccLobbyPanelsHTML(card, true);
-    right='<div class="cc-lb-news" onclick="careerTab(\'calendar\')"><em>'+esc(when||'')+'</em><b>'+esc(evName)+'</b></div>'+ccLobbyRightHTML(card, true)+ccLobbySchedPanel();
-    bottom='<div class="cc-lb-go"><div class="cc-lb-modebox"><b>'+esc(fmtWord)+'</b></div>'+
-      '<button class="cc-lb-blue" onclick="careerTab(\'calendar\')">CHANGE</button>'+play+
-      '<button class="cc-lb-blue" onclick="careerTab(\'me\')">FILL</button></div><div class="cc-lb-bar-btns">'+more+'</div>';
+      ccLobbyResourcesHTML(sn.s)+ccLobbyPanelsHTML(card, true, true)+ccLobbyRightHTML(card, true)+(ex.side||'');
+    right='<div class="cc-lb-news" onclick="careerTab(\'calendar\')"><em>'+esc(when||'')+'</em><b>'+esc(evName)+'</b></div>'+
+      '<div class="cc-lb-modebox"><b>'+esc(fmtWord)+'</b></div>'+playBox;
   } else {
-    // Слева сверху — карточка новостей с обложкой ближайшего турнира; снизу — режим, «Build, Duos», PLAY.
-    left='<div class="cc-lb-news cc-lb-card" onclick="careerTab(\'calendar\')"'+(nextArt ? ' style="--card-art:url('+nextArt+')"' : '')+'>'+
-        '<em>'+esc(newsWhen)+'</em><b>'+esc(newsEv ? (newsEv.label||evName) : (evName||sn.s))+'</b><i class="cc-lb-dots"><s></s><s></s><s></s><s></s></i></div>'+
-      '<div class="cc-lb-go"><div class="cc-lb-modebox"><b>'+esc(todayEv ? (todayEv.label||evName) : 'Battle Royale')+'</b></div>'+
-      '<div class="cc-lb-pill"><i>☷</i>Build, '+esc(fmtWord)+'</div>'+play+'</div>';
-    // Справа — всё, что было на «Центре»: ростер, тренировка, рейтинг, клуб; ниже кольцо LVL и кнопки.
-    right='<div class="cc-lb-stack">'+ccLobbyPanelsHTML(card)+ccLobbyRightHTML(card, true)+'</div>'+
-      '<div class="cc-lb-ring" onclick="careerTab(\'train\')" style="--p:'+Math.round(lvlFrac*100)+'"><em>LVL</em><b>'+myOvr+'</b></div>'+
-      '<div class="cc-lb-bar-btns"><button onclick="careerTab(\'social\')">'+esc(T.chTabMedia||'Media')+'</button>'+
-      '<button onclick="careerTab(\'locker\')">'+esc(T.chTabLocker||'Locker')+'</button>'+more+'</div>';
-    // Внизу, где у Fortnite ряд плиток Discover, — расписание недели с прошлого «Центра».
-    bottom=sched;
+    // Слева сверху — карточка новостей с обложкой ближайшего турнира; под ней — карточка вечера с PLAY.
+    left=(ccLobbyNewsCardHTML() || '<div class="cc-lb-news cc-lb-card" onclick="careerTab(\'calendar\')"'+(nextArt ? ' style="--card-art:url('+nextArt+')"' : '')+'>'+
+        '<em>'+esc(newsWhen)+'</em><b>'+esc(newsEv ? (newsEv.label||evName) : (evName||sn.s))+'</b></div>')+
+      '<div class="cc-lb-pill"><i>☷</i>Build, '+esc(fmtWord)+'</div>'+playBox;
+    // Справа — ростер с местом высадки и сборной, новости, тренировка, рейтинг, клуб; ниже кольцо LVL и кнопки.
+    right='<div class="cc-lb-stack">'+(ex.side||'')+ccLobbyPanelsHTML(card, false, true)+ccLobbyRightHTML(card, true)+'</div>'+
+      '<div class="cc-lb-ringrow"><div class="cc-lb-bar-btns"><button onclick="careerTab(\'social\')">'+esc(T.chTabMedia||'Media')+'</button>'+
+      '<button onclick="careerTab(\'locker\')">'+esc(T.chTabLocker||'Locker')+'</button></div>'+
+      '<div class="cc-lb-ring" onclick="careerTab(\'train\')" style="--p:'+Math.round(lvlFrac*100)+'"><em>LVL</em><b>'+myOvr+'</b></div></div>';
   }
-  return '<div class="cc-lobby cc-lb-'+era.k+' cc-lb-fam'+fam+(evBg ? ' cc-lb-evbg' : '')+'" style="--lb-bg:url('+(evBg||ccLobbyBg(today))+')">'+
-    ccLobbyTopHTML(fam)+stage+'<div class="cc-lb-left">'+left+'</div><div class="cc-lb-right">'+right+'</div>'+
-    '<div class="cc-lb-bottom">'+bottom+'</div>'+
-    (alerts ? '<div class="cc-lb-alert" onclick="ccLbSheet(true)"><b>⚠ ALERT!</b><span>'+esc(alerts)+'</span></div>' : '')+'</div>';
+  return '<div class="cc-lobby cc-lb-'+era.k+' cc-lb-fam'+fam+(ex.play ? ' cc-lb-full' : '')+(evBg ? ' cc-lb-evbg' : '')+'" style="--lb-bg:url('+(evBg||ccLobbyBg(today))+')">'+
+    ccLobbyTopHTML(fam, ex.note)+stage+'<div class="cc-lb-left">'+left+'</div><div class="cc-lb-right">'+right+'</div>'+
+    '<div class="cc-lb-bottom">'+bottomBar+'</div></div>';
 }
 // Подпись сезона дня: Глава 1 — «SEASON 9 / SEASON X»; дальше — «CHAPTER N» и «SEASON M» (или имя: OG, Remix…).
 /* Расписание недели строками (Главы 1–4): день и турнир, как полоса дней прошлого «Центра». */
@@ -122227,6 +122307,31 @@ function ccLobbySchedPanel(){
     }
     return '<div class="cc-lb-panel cc-lb-schedp" onclick="careerTab(\'calendar\')"><h5>'+esc(T.chTabCalendar)+'</h5>'+rows.join('')+'</div>';
   }catch(e){ return ''; }
+}
+/* Новости слева сверху, как карусель новостей в лобби Fortnite: пять свежих из ленты карьеры, листаются сами,
+   точки снизу; нажатие открывает ленту. */
+let CC_LB_NEWS_T=null;
+function ccLobbyNewsCardHTML(){
+  const list=((CAREER.career && CAREER.career.news)||[]).slice(0, 5);
+  if(!list.length) return '';
+  const T=L();
+  const slides=list.map((n, i)=>{
+    let art=null; try{ art=ccNewsArtOf(n); }catch(e){}
+    let txt=''; try{ txt=ccText(n); }catch(e){}
+    let cat=''; try{ cat=T['ccNewsCat'+ccNewsCat(n)]||''; }catch(e){}
+    return '<div class="cc-lb-slide'+(i===0 ? ' on' : '')+'"'+(art ? ' style="--card-art:url('+art.src+')"' : '')+'>'+
+      '<em>'+esc(cat)+(cat ? ' · ' : '')+ccStamp(n)+'</em><b>'+esc(txt)+'</b></div>';
+  }).join('');
+  clearInterval(CC_LB_NEWS_T);
+  if(list.length>1) CC_LB_NEWS_T=setInterval(()=>{
+    const box=document.querySelector('.cc-lb-newsc');
+    if(!box){ clearInterval(CC_LB_NEWS_T); return; }
+    const sl=[...box.querySelectorAll('.cc-lb-slide')], dots=[...box.querySelectorAll('.cc-lb-dots s')];
+    const k=sl.findIndex(x=>x.classList.contains('on')), nx=(k+1)%sl.length;
+    sl.forEach((x, i)=>x.classList.toggle('on', i===nx)); dots.forEach((x, i)=>x.classList.toggle('on', i===nx));
+  }, 6000);
+  return '<div class="cc-lb-news cc-lb-card cc-lb-newsc" onclick="careerOpenFeed()" title="'+esc(T.ccNewsHub||'')+'">'+slides+
+    '<i class="cc-lb-dots">'+list.map((n, i)=>'<s'+(i===0 ? ' class="on"' : '')+'></s>').join('')+'</i></div>';
 }
 function ccLobbySeasonName(day){
   let n=0, ch=null; try{ n=ccSeasonNumOn(day)||0; ch=ccChapterOf(n); }catch(e){}
@@ -122282,18 +122387,18 @@ function ccLobbyBg(day){
   n=Math.max(7, Math.min(41, n||41));
   return 'art/lobby/s'+String(n).padStart(2, '0')+'.webp';
 }
-function ccLobbyTopHTML(fam){
+function ccLobbyTopHTML(fam, note){
   // Вкладки — те же, что у хаба (#screen-career-hub .ch-tabs): все, со своими метками; скрытые хабом не показываются.
   const hub=[...document.querySelectorAll('#screen-career-hub .ch-tabs .ch-tab')].filter(b=>b.dataset.tab && !b.hidden && b.style.display!=='none');
   const tabs=hub.length ? hub.map(b=>[b.dataset.tab, b.innerHTML]) : [['centre', esc(L().chTabCentre)]];
   const party='<span class="cc-lb-partyc" onclick="careerTab(\'me\')">👥 '+(1+((careerMates()||[]).filter(Boolean).length))+'</span>';
   const icons=fam==='C' ? '<button class="cc-lb-ico" onclick="careerTab(\'hist\')">▦</button><button class="cc-lb-ico" onclick="careerTab(\'table\')">⌕</button>' : '';
   return '<div class="cc-lb-top">'+(fam!=='C' ? party : '')+'<nav class="cc-lb-nav">'+icons+tabs.map(([k, html])=>
-      '<button class="'+(k==='centre' ? 'on' : '')+'" onclick="careerTab(\''+k+'\')">'+html+'</button>').join('')+'</nav>'+
+      '<button class="'+(k==='centre' ? 'on' : '')+'" onclick="careerTab(\''+k+'\')">'+html+'</button>').join('')+'</nav>'+(note ? '<div class="cc-lb-note">'+note+'</div>' : '')+
     '<div class="cc-lb-wallet"><span onclick="ccFnShopOpen()"><i class="cc-vb-ic"></i>'+ccNum(CAREER.vb||0)+'</span>'+
     '<span onclick="careerTab(\'shop\')">'+ccMoney(CAREER.career.balance||0)+'</span></div></div>';
 }
-function ccLobbyPanelsHTML(card, noQuests){
+function ccLobbyPanelsHTML(card, noQuests, noRoster){
   const T=L(), pl=CAREER.player;
   const panel=(h, body, go)=>'<div class="cc-lb-panel"'+(go ? ' onclick="careerTab(\''+go+'\')"' : '')+'><h5>'+esc(h)+'</h5>'+body+'</div>';
   const bar=(lab, v, max)=>'<div class="cc-lb-bar"><em>'+esc(lab)+'</em><b>'+Math.round(v)+' / '+max+'</b>'+
@@ -122310,7 +122415,7 @@ function ccLobbyPanelsHTML(card, noQuests){
     const mood=(careerMateRec() || (typeof ccMpTeam==='function' && ccMpTeam())) ? careerPatience() : null;
     train=panel(T.chTabTrain, bar(T.ccRingEnergy, careerEnergy(), careerEnergyMax())+(mood!=null ? bar(T.ccRingMood, mood, 100) : ''), 'train');
   }catch(e){}
-  return roster+train+(noQuests ? '' : '');
+  return (noRoster ? '' : roster)+train;
 }
 /* Рейтинг с шестью характеристиками, неделя, клуб — то, что было на «Центре». */
 function ccLobbyRightHTML(card, noWeek){
@@ -122594,10 +122699,10 @@ function careerCentreHTML(card, a){
     ? `<div class="ch-row"><em>${L().chPerfEval}</em><b>$400</b></div>`
     : `<div class="ch-row"><em>${L().chPerfEval}</em><b>${L().chD1Only}</b></div>`;
 
-  return `${ccLobbyHTML(card, btn, next, nextWhen, strip)}
-  <div class="cc-lb-sheet" id="ccLbSheet"${CC_LB_SHEET ? '' : ' hidden'}>
-  <button class="cc-lb-sheet-x" onclick="ccLbSheet(false)">✕</button>
-  <div class="ch-next">
+  /* Всё, что было на «Центре», — в самом главном меню (Notion «19.10»: «вот эта информация должна быть расположена на
+     экране»): карточка вечера с кнопками — на месте блока режима, ростер и новости — справа, полоса сезона — над
+     расписанием недели. Листа «Подробнее» больше нет. */
+  const lbBar=`<div class="ch-next cc-lb-next">
     <div class="ch-next-head"><h3>${L().chNext}</h3><span>${
       // Which year this is, beside when it is. A season that alternates has to
       // say which one it is on the screen a player opens first, or the extra
@@ -122612,11 +122717,8 @@ function careerCentreHTML(card, a){
         esc(L().ccEwcSeatOn(ccDayLabel(CC_RC_DAY), ccRelMySeats(cr).length))}</em>` : ''}</div>
     <div class="ch-season">${seasonBar.join('')}</div>
     ${weekPeek}
-    <div class="ch-weeks ch-days">${strip}</div>
-  </div>
-  <div class="ch-grid ch-grid-main">
-    <div class="ch-col ch-col-play">
-      ${careerNoteBarHTML()}
+  </div>`;
+  const lbPlay=`<div class="ch-col-play cc-lb-playcol">
       ${typeof ccRosterSoonHTML==='function' ? ccRosterSoonHTML() : ''}
       ${careerMpTileHTML()}
       ${careerRaceTileHTML()}
@@ -122712,8 +122814,8 @@ function careerCentreHTML(card, a){
            reading: where this career finished at its Grand Finals and its LANs.
            His report, 20 August. See careerSeasonBoardHTML. -->
       ${cr.seasonOver ? careerSeasonAwardHTML()+careerSeasonCatsHTML()+careerSeasonBoardHTML() : careerShopPeekHTML()}
-    </div>
-    <div class="ch-col">
+  </div>`;
+  const lbSide=`
       <!-- The ladder tile stood here and is gone, his call, 18 August: division,
            rating, awards, the evaluation and the prize money all say themselves
            somewhere else now — the strip at the top, the bio, the money screen.
@@ -122732,11 +122834,8 @@ function careerCentreHTML(card, a){
            career, his call, 18 August: the two swapped places. -->
       <!-- Как на проде: профиль, под ним новости. Цели и развитие — во вкладке «Тренировка». -->
       ${(typeof ccPressHTML==='function') ? ccPressHTML() : ''}
-      ${careerProfileTileHTML()}
-      ${careerNewsHubHTML()}
-    </div>
-  </div>
-  </div>`;
+      ${careerProfileTileHTML()}`;
+  return ccLobbyHTML(card, btn, next, nextWhen, strip, {bar:lbBar, play:lbPlay, side:lbSide, note:careerNoteBarHTML()});
 }
 
 /* The coach is the player's own, not the duo's — he works with you, and your
@@ -148460,6 +148559,7 @@ function ccFnLoadoutHTML(){
   const hero='<button class="cc-fn-hero" onclick="ccFnPick(\'o\')" style="--fn-bg:'+(o ? (CC_FN_RAR[own[o].r]||CC_FN_RAR.rare) : '#1d2433')+'">'+
     (o ? '<span class="cc-fn-floor"></span><img class="full" src="'+ccFnFull(o)+'" data-id="'+esc(o)+'" alt="" loading="lazy" onerror="ccFnHeroErr(this)"><b>'+esc(own[o].n||o)+'</b>' : '<i>+</i><b>'+esc(T.ccFnType_o)+'</b>')+'</button>';
   const cat=(h, ss)=>'<div class="cc-fn-cat"><h5>'+esc(h)+'</h5><div class="cc-fn-slots">'+ss.map(slot).join('')+'</div></div>';
+  if(era.k==='c5') return ccFnLocker5HTML();
   const slots='<div class="cc-fn-lk">'+hero+'<div class="cc-fn-cats">'+cat(T.ccFnCatChar, ['o','b','p','g'])+cat(T.ccFnTypes_e+' · '+T.ccFnTypes_w, ['e','w'])+'</div></div>';
   let pick='';
   if(CC_FN_PICK){
@@ -148472,6 +148572,42 @@ function ccFnLoadoutHTML(){
   }
   return '<div class="ch-tile cc-fn-load cc-fn-'+era.k+'"><h4><span class="cc-fn-ttl">'+esc(T.ccFnLoadout)+'</span> <span class="cc-fn-era">'+esc(T.ccFnEra(era.ch))+'</span></h4>'+
     slots+pick+'</div>';
+}
+/* Шкафчик нынешнего Fortnite (Notion «19.10», его скрин): синий фон, слева столбик разделов, посередине
+   «My Locker Loadout / CHARACTER» и ячейки, ниже «EMOTES»; справа скин в полный рост, над кнопками — что выбрано
+   и где им пользуются; внизу «Save Loadout» и «В магазин». */
+const CC_FN_SLOT_ICO={o:'👤', b:'🎒', p:'⛏', g:'🪂', e:'💃', w:'🎨'};
+function ccFnLocker5HTML(){
+  const T=L(), own=CAREER.fnOwn||{}, eq=CAREER.fnEq||{};
+  const tile=s=>{ const id=eq[s], it=id && own[id];
+    return '<button class="cc-lk5-slot'+(CC_FN_PICK===s ? ' on' : '')+'" onclick="ccFnPick(\''+s+'\')" title="'+esc(T['ccFnType_'+s]||'')+'"'+
+      (it ? ' style="--fn-bg:'+(CC_FN_RAR[it.r]||CC_FN_RAR.rare)+'"' : '')+'>'+
+      (it ? '<img src="'+ccFnImg(id, true)+'" alt="" loading="lazy" onerror="this.remove()">' : '<i>'+CC_FN_SLOT_ICO[s]+'</i>')+'</button>'; };
+  const sel=(CC_FN_PICK && eq[CC_FN_PICK] && own[eq[CC_FN_PICK]]) ? CC_FN_PICK : 'o';
+  const sid=eq[sel] && own[eq[sel]] ? eq[sel] : null, sit=sid ? own[sid] : null;
+  const day=careerToday(), modes=['Battle Royale'].concat(day>='2023-12-09' ? ['Fortnite Festival'] : [], day>='2024-06-14' ? ['Reload'] : []);
+  const model=sid
+    ? (sel==='o' ? '<img class="full" src="'+ccFnFull(sid)+'" data-id="'+esc(sid)+'" alt="" loading="lazy" onerror="ccFnHeroErr(this)">'
+                 : '<img class="icon" src="'+ccFnImg(sid)+'" alt="" loading="lazy" onerror="this.remove()">') : '';
+  const info=sit ? '<div class="cc-lk5-info"><em>'+esc(T['ccFnType_'+sel]||'')+' – Fortnite</em><b>'+esc(sit.n||sid)+'</b>'+
+      '<span>'+esc(T.ccFnUsable||'This item is usable in:')+'</span><div class="cc-lk5-tags">'+modes.map(m=>'<i>'+esc(m)+'</i>').join('')+'</div></div>' : '';
+  let pick='';
+  if(CC_FN_PICK){
+    const mine=Object.keys(own).filter(id=>own[id].t===CC_FN_PICK);
+    pick='<div class="cc-lk5-pick">'+(mine.length
+      ? mine.map(id=>'<button class="cc-lk5-slot'+(eq[CC_FN_PICK]===id ? ' on' : '')+'" onclick="ccFnEquip(\''+CC_FN_PICK+'\',\''+esc(id)+'\')" title="'+esc(own[id].n||id)+'" style="--fn-bg:'+(CC_FN_RAR[own[id].r]||CC_FN_RAR.rare)+'">'+
+          '<img src="'+ccFnImg(id, true)+'" alt="" loading="lazy" onerror="this.remove()"></button>').join('')+
+        (eq[CC_FN_PICK] ? '<button class="cc-lk5-slot off" onclick="ccFnEquip(\''+CC_FN_PICK+'\',null)"><b>'+esc(T.ccFnTakeOff)+'</b></button>' : '')
+      : '<div class="ch-empty">'+esc(T.ccFnNone)+'</div>')+'</div>';
+  }
+  const rail=[['o','👤'],['e','💃'],['w','🎨']].map(([k, ic])=>'<button class="'+((k==='o' ? ['o','b','p','g'] : [k]).indexOf(CC_FN_PICK||'o')>=0 ? 'on' : '')+'" onclick="ccFnPick(\''+k+'\')">'+ic+'</button>').join('');
+  return '<div class="ch-tile cc-fn-load cc-fn-c5 cc-lk5"><nav class="cc-lk5-rail">'+rail+'</nav>'+
+    '<div class="cc-lk5-mid"><em class="cc-lk5-sub">My Locker Loadout</em><h3>CHARACTER</h3>'+
+      '<div class="cc-lk5-grid">'+['o','b','p','g'].map(tile).join('')+'</div>'+
+      '<h3 class="dim">EMOTES</h3><div class="cc-lk5-grid">'+['e','w'].map(tile).join('')+'</div>'+pick+'</div>'+
+    '<div class="cc-lk5-stage">'+model+info+'</div>'+
+    '<div class="cc-lk5-btns"><button onclick="careerSave()">'+esc(T.ccFnSave||'Save Loadout')+'</button>'+
+      '<button onclick="ccFnShopOpen()">'+esc(T.ccFnToShop)+'</button></div></div>';
 }
 let CC_SHOP_SEC='gear', CC_SHOP_JUST=null, CC_DEALS=null;
 const CC_SHOP_SLOTS=['mouse','keyboard','headset','monitor','pc','chair','stream'];
