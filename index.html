@@ -4343,6 +4343,67 @@
   /* На ПК вкладки хаба на «Центре» — шапка меню, своя полоса прячется; на телефоне нижняя панель хаба остаётся. */
   @media (min-width:701px){ #screen-career-hub.ch-lobby-on .ch-tabs{display:none;} }
   @media (max-width:1100px){ .cc-lb-left,.cc-lb-right{width:220px;} .cc-lb-famB .cc-lb-left,.cc-lb-famB .cc-lb-right{width:230px;} }
+  /* Notion «19.10», скрины 14–15: календарь — сверху, под вкладками (полоса сезона и неделя плитками пониже), а
+     свободный день с прокачкой — в том же окошке, что карточка капа: меню той же высоты, ничего не съезжает. */
+  @media (min-width:701px){
+    .cc-lobby.cc-lb-full{background:linear-gradient(90deg,rgba(0,0,0,.45),rgba(0,0,0,0) 24%,rgba(0,0,0,0) 76%,rgba(0,0,0,.45)),
+      var(--lb-bg) center bottom/cover no-repeat,#13204a;}
+    .cc-lobby.cc-lb-full .cc-lb-bottom{top:54px;bottom:auto;}
+    .cc-lobby.cc-lb-full .cc-lb-next{margin-bottom:6px;}
+    .cc-lobby.cc-lb-full .cc-lb-sched{padding:0 14px;}
+    #screen-career-hub .cc-lobby.cc-lb-full .cc-lb-sched .ch-day{min-height:0;height:50px;padding:5px 10px;display:grid;grid-template-columns:auto 1fr;
+      grid-template-rows:auto auto;column-gap:8px;align-content:center;}
+    #screen-career-hub .cc-lobby.cc-lb-full .cc-lb-sched .ch-day b{grid-row:1 / span 2;font-size:24px;line-height:1;align-self:center;}
+    #screen-career-hub .cc-lobby.cc-lb-full .cc-lb-sched .ch-day em{font-size:10px;}
+    #screen-career-hub .cc-lobby.cc-lb-full .cc-lb-sched .ch-day .ch-day-what{font-size:10.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    .cc-lobby.cc-lb-full .cc-lb-left,.cc-lobby.cc-lb-full .cc-lb-right{top:196px;bottom:14px;}
+    .cc-lobby.cc-lb-full .cc-lb-stage{inset:150px 0 auto 0;height:770px;}
+    /* Правая колонка той же высоты: витрина магазина ниже ростом, кнопки Media/Locker и LVL всегда внизу. */
+    .cc-lb-full.cc-lb-famC .cc-lb-right{overflow:hidden !important;}
+    .cc-lb-full.cc-lb-famC .cc-lb-stack{flex:1 1 0;min-height:0;overflow:hidden;}
+    #screen-career-hub .cc-lobby.cc-lb-full .cc-lb-stack .cc-peek-img,#screen-career-hub .cc-lobby.cc-lb-full .cc-lb-right .cc-peek-img{height:64px;width:auto;object-fit:contain;}
+    #screen-career-hub .cc-lobby.cc-lb-full .cc-lb-sched .ch-day em{justify-self:start;}
+  }
+  @media (max-width:700px){ .cc-lobby.cc-lb-full .cc-lb-bottom{order:0;} }
+  #screen-career-hub .cc-lobby .cc-lb-playbox .cc-acts > *,#screen-career-hub .cc-lobby .cc-lb-playbox .cc-six > *{min-width:0;}
+  #screen-career-hub .cc-lobby .cc-lb-playbox .cc-acts{grid-template-columns:minmax(0,1fr) minmax(0,1fr);}
+  #screen-career-hub .cc-lobby .cc-lb-playbox .cc-six{grid-template-columns:repeat(6,minmax(0,1fr));}
+  /* Панель свободного дня в окошке капа: кольца в строку, шесть статов, занятия строкой с приростом в одну линию,
+     стрим и отдых рядом, подработка одной полосой. Полный прирост — в подсказке на кнопке. */
+  #screen-career-hub .cc-lobby .cc-lb-playbox .cc-day .ch-livebar{padding:6px 10px 0;font-size:11px;}
+  #screen-career-hub .cc-lobby .cc-lb-playbox .cc-day .ch-art-in{padding:4px 10px 10px;}
+  #screen-career-hub .cc-lobby .cc-lb-playbox .cc-rings{display:flex;justify-content:center;gap:18px;margin:2px 0 4px;}
+  #screen-career-hub .cc-lobby .cc-lb-playbox .cc-ring{display:flex;align-items:center;gap:6px;}
+  #screen-career-hub .cc-lobby .cc-lb-playbox .cc-ring-dial{width:36px;height:36px;}
+  #screen-career-hub .cc-lobby .cc-lb-playbox .cc-ring-dial b{font-size:12px;}
+  #screen-career-hub .cc-lobby .cc-lb-playbox .cc-ring span{margin:0;font-size:10px;}
+  #screen-career-hub .cc-lobby .cc-lb-playbox .cc-acts{display:grid;grid-template-columns:1fr 1fr;gap:4px;}
+  #screen-career-hub .cc-lobby .cc-lb-playbox .cc-acts > *{grid-column:1 / -1;margin:0;}
+  #screen-career-hub .cc-lobby .cc-lb-playbox .cc-acts > .cc-act.g-life{grid-column:auto;}
+  #screen-career-hub .cc-lobby .cc-lb-playbox .cc-act-grp{margin:4px 0 0;font-size:11px;line-height:1.2;}
+  #screen-career-hub .cc-lobby .cc-lb-playbox .cc-six{gap:4px;}
+  #screen-career-hub .cc-lobby .cc-lb-playbox .cc-six-t{padding:3px 0;}
+  #screen-career-hub .cc-lobby .cc-lb-playbox .cc-six-t i{font-size:16px;}
+  #screen-career-hub .cc-lobby .cc-lb-playbox .cc-act{min-height:0;padding:4px 9px;}
+  #screen-career-hub .cc-lobby .cc-lb-playbox .cc-act-h b{font-size:12.5px;}
+  #screen-career-hub .cc-lobby .cc-lb-playbox .cc-act-g{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:10px;line-height:1.3;}
+  #screen-career-hub .cc-lobby .cc-lb-playbox .cc-act-g i{display:inline;margin-right:6px;}
+  #screen-career-hub .cc-lobby .cc-lb-playbox .cc-job{margin:6px 0 2px;padding:5px 8px;}
+  #screen-career-hub .cc-lobby .cc-lb-playbox .cc-job em{font-size:10.5px;}
+  #screen-career-hub .cc-lobby .cc-lb-playbox .cc-job-btns{display:grid;grid-template-columns:repeat(4,1fr);gap:3px;margin-top:3px;}
+  #screen-career-hub .cc-lobby .cc-lb-playbox .cc-job-h{padding:3px 2px;font-size:9.5px;white-space:normal;line-height:1.15;}
+  #screen-career-hub .cc-lobby .cc-lb-playbox .cc-day-hint{margin:2px 0;font-size:10px;}
+  #screen-career-hub .cc-lobby .cc-lb-playbox .cc-day .ch-play{margin-top:4px;padding-top:8px;padding-bottom:8px;}
+  #screen-career-hub .cc-lobby .cc-lb-playbox .cc-day-locked{margin:2px 0 4px;padding:4px 8px;font-size:11px;}
+  #screen-career-hub .cc-lobby .cc-lb-playbox .cc-day-ev{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;column-gap:6px;
+    margin:2px 0 4px;padding:5px 8px;font-size:11px;text-align:left;}
+  #screen-career-hub .cc-lobby .cc-lb-playbox .cc-day-ev b{grid-column:1;font-size:12px;line-height:1.2;}
+  #screen-career-hub .cc-lobby .cc-lb-playbox .cc-day-ev span{grid-column:1;font-size:10px;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  #screen-career-hub .cc-lobby .cc-lb-playbox .cc-day-ev-btns{grid-column:2;grid-row:1 / span 2;display:flex;gap:4px;margin:0;}
+  #screen-career-hub .cc-lobby .cc-lb-playbox .cc-day-ev-btns button{margin:0;padding:5px 10px;min-height:0;font-size:11px;}
+  #screen-career-hub .cc-lobby .cc-lb-playbox .cc-day-ev-opts{flex-direction:column;}
+  #screen-career-hub .cc-lobby .cc-lb-playbox .cc-rings .cc-ring{display:flex;flex-direction:row;align-items:center;gap:6px;margin:0;}
+  #screen-career-hub .cc-lobby .cc-lb-playbox .cc-rings .cc-ring-dial{width:34px;height:34px;margin:0;}
   /* Телефон: сцена сверху, под ней кнопка и панели столбиком — всё внутри меню. */
   @media (max-width:700px){
     .cc-lobby{height:auto;display:flex;flex-direction:column;padding-top:0;background:#0d1838;}
@@ -117587,7 +117648,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='0f17c8e1';
+const CC_BUILD='466376ed';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -122250,6 +122311,31 @@ function ccLbSheet(on){
 }
 // Подиумы как в лобби Fortnite: [x центра в % ширины, низ ног в % высоты, высота фигуры в % высоты].
 const CC_LB_SLOTS=[[50, 9, 70], [37, 21, 55], [61, 21, 55], [72, 22, 53]];
+/* Кто стоит в лобби рядом с тобой — состав того вечера, что идёт сегодня (Notion «19.10»: «когда кап
+   на четверых — все четверо в лобби, и так же с трио»): сквад-кап в дуо-год — сквад-составом
+   (CAREER.rosters[4]), трио-кап — трио, сборная — её состав, соло — один. В другие дни — состав сезона. */
+function ccLobbySquadFor(next){
+  const base=careerMates()||[];
+  if(!next || !next.day) return base;
+  try{
+    if(next.type==='solo') return [];
+    if(next.type==='nations'){
+      const ev=careerNationsOn(next.day), mine=ccNationsMine();
+      if(ev && mine){
+        if(ccNatStage(ev)==='trial') return [];
+        const me=hKey(careerCard());
+        return (mine.full||[]).filter(c=>c && hKey(c)!==me);
+      }
+    }
+    if(next.type==='victory' && !(typeof ccMpOn==='function' && ccMpOn())){
+      const f=ccVictoryFormat(careerVictoryOn(next.day));
+      if(f===1) return [];
+      if(f && f!==careerSquadSize())
+        return (((CAREER.rosters||{})[f]) || careerMateRecords()).map(ccMateCardOf).filter(c=>c && c.handle).slice(0, f-1);
+    }
+  }catch(e){}
+  return base;
+}
 function ccLobbyHTML(card, btn, next, when, strip, ex){
   ex=ex||{};
   const T=L(), pl=CAREER.player, cr=CAREER.career, eq=CAREER.fnEq||{}, own=CAREER.fnOwn||{};
@@ -122270,7 +122356,7 @@ function ccLobbyHTML(card, btn, next, when, strip, ex){
   // Готов ли вечер: сегодня есть что играть и кнопка не заперта — тогда Ready, иначе Not Ready (как в лобби).
   let ready=false; try{ ready=!!(next && next.day===today && careerCanPlay(next) && !cr.seasonOver); }catch(e){}
   const party=[{id:mySkin, name:pl.nick||pl.handle||'', ovr:myOvr, me:true, input:ccInputOf(pl)}]
-    .concat((careerMates()||[]).filter(Boolean).slice(0, 3).map(c=>({id:skinOf(c), name:c.handle, ovr:Math.round(c._ovr||c.rating||0), input:ccProInput(c)})));
+    .concat(ccLobbySquadFor(next).filter(Boolean).slice(0, 3).map(c=>({id:skinOf(c), name:c.handle, ovr:Math.round(c._ovr||c.rating||0), input:ccProInput(c)})));
   // Места — классами cc-lb-s0…s3 (CSS: на ПК как в лобби, на телефоне шире), числа CC_LB_SLOTS — для ПК.
   const slot=(i)=>{
     const p=party[i], s=' cc-lb-s'+i;
@@ -122286,7 +122372,8 @@ function ccLobbyHTML(card, btn, next, when, strip, ex){
   // Кнопка — та же, что в панели (первая .ch-play из btn): действие, подпись, запрет.
   const m=/<button class="ch-play([^"]*)"([^>]*)>([\s\S]*?)<\/button>/.exec(btn||'');
   const play=m ? '<button class="cc-lb-play'+m[1].replace(/\bch-/g, ' cc-lb-')+'"'+m[2]+'>'+m[3]+'</button>' : '';
-  const fmtWord=(next && next.type==='solo') ? 'Solo' : ({2:'Duos', 3:'Trios', 4:'Squads'})[careerSquadSize()] || 'Duos';
+  let evFmt=0; try{ if(next && next.type==='victory') evFmt=ccVictoryFormat(careerVictoryOn(next.day)); }catch(e){}
+  const fmtWord=((next && next.type==='solo') || evFmt===1) ? 'Solo' : ({2:'Duos', 3:'Trios', 4:'Squads'})[evFmt||careerSquadSize()] || 'Duos';
   const evName=next ? (next.label||next.title||'') : '';
   const sn=ccLobbySeasonName(today);
   const lvlFrac=Math.max(0, Math.min(1, ((pl.ovrExact!=null ? pl.ovrExact : pl.ovr)||0)%1));
@@ -145514,6 +145601,7 @@ function careerDayPanelHTML(locked){
           (at===SIX.length-1 ? '</div>' : '');
       }
       return head+'<button class="cc-act g-'+grp+(can?'':' off')+(done.indexOf(a.id)>=0?' did':'')+'" '+
+        'title="'+esc(ccActName(a.id)+' · '+(gains+extra.join(' ')).replace(/<\/i>/g, ' · ').replace(/<[^>]+>/g, '').replace(/[\s·]+$/, ''))+'" '+
         (can?'onclick="careerPickDay(\''+a.id+'\')"':'disabled')+'>'+
         '<span class="cc-act-h"><b>'+ccActName(a.id)+'</b><em>'+a.energy+L().ccEnergyMark+'</em></span>'+
         '<span class="cc-act-g">'+gains+extra.join('')+'</span></button>';
