@@ -81,6 +81,16 @@ const BOOT = `
       fail('the Round 2 cut is wrong: EU '+cutAt('EU')+', NAC '+cutAt('NAC')+', OCE '+cutAt('OCE'));
     out.steps.push('round 2 cut: EU 10, NAC 17, the rest 25');
 
+    // Epic's finals table (Notion «19.10», screen 35).
+    const at=(reg,p)=>{ const keep=CAREER.player.region; CAREER.player.region=reg;
+      const v=soloReloadPrize(p); CAREER.player.region=keep; return v; };
+    if(at('EU',1)!==60000 || at('EU',16)!==1250 || at('EU',26)!==750 || at('EU',40)!==750 || at('EU',41)!==0) fail('the EU table is wrong');
+    if(at('NAC',1)!==50000 || at('NAC',21)!==500 || at('NAC',40)!==400) fail('the NAC table is wrong');
+    if(at('NAW',1)!==15000 || at('BR',11)!==500 || at('BR',40)!==300 || at('NAW',10)!==750) fail('the NAW/BR table is wrong');
+    if(at('ASIA',1)!==7000 || at('ME',20)!==300 || at('OCE',21)!==200 || at('OCE',41)!==0) fail('the ASIA/ME/OCE table is wrong');
+    const pot=(reg)=>{ let s=0; for(let p=1;p<=40;p++) s+=at(reg,p); return s; };
+    out.steps.push('prizes: EU pot '+pot('EU')+', NAC '+pot('NAC')+', NAW/BR '+pot('BR')+', ASIA/ME/OCE '+pot('OCE'));
+
     const run=async function(st, state, room, games){
       cr.solosRl=state; cr.day=days[st]; careerSave();
       if(careerNext().type!=='solo') fail(days[st]+' offers '+careerNext().type+' instead of Solo Reload');
