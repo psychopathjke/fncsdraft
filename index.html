@@ -167785,7 +167785,7 @@ function mgrAutoNight(ev){
   if(ev.kind==='ewc' || !mgrClubTeams(size).length){ try{ mgrWorldSim(ev); }catch(e){} return; }
   const cr=CAREER.career, pm=CARD_MODE, ps=squadSize, pd=drafted;
   CARD_MODE=true; squadSize=size;
-  const club=mgrClubTeams(size), clubCards=club.flatMap(t=>t.squad); drafted=clubCards;
+  const club=mgrClubTeams(size).concat(mgrAcadTeams(size)), clubCards=club.flatMap(t=>t.squad); drafted=clubCards;
   const seed=ev.id+'|'+ev.day+'|'+MGR.year;
   /* ВЕЧЕР ДВИЖКОМ, КАК В КАРЬЕРЕ (его слова 8.10: «почему не симулируются турниры как в карьере игрока», «чтоб все
      таблицы зависели от нашей симуляции»): всё поле капа — движком по лобби (mgrEngineRank), клуб — внутри поля, его
@@ -170231,12 +170231,13 @@ function mgrClubTeams(size){
 }
 /* АКАДЕМИЯ НА КАПАХ (Notion «19.10», скрин 44, отзыв игрока: «add that the academy players participate in competitions»).
    На вечер капа клуба (mgrPlay) академия выходит тем же лобби: на соло-кап — каждый сам за себя, на командный —
-   полными составами нужного размера (сильнейшие вместе). Этапы FNCS (раннеры карьеры, mgrCarEvents) — без неё:
-   там прогресс отборов привязан к составам клуба. Деньги академии — клубу целиком (mgrOwnShare без состава = 1). */
+   полными составами нужного размера (сильнейшие вместе). И на этапы FNCS (его «да» 20.10 на «почему академия не выходит
+   на fncs»): у состава академии свой прогресс отборов в MGR.tcar под id из ников (acad:ник+ник) — сменился состав, прогресс
+   новый. Деньги академии — клубу целиком (mgrOwnShare без состава = 1). Про-Ам — без неё (зовут по известности). */
 function mgrAcadTeams(size){
   const cards=(MGR.academy||[]).map(mgrCard).filter(Boolean).sort((a,b)=>(ccCardOvr(b)||0)-(ccCardOvr(a)||0));
   const out=[], T=mgrT();
-  const mk=(sq, i)=>{ const tm=careerTeam(sq); tm.name=(T.acad||'Academy')+' · '+teamLabel(sq); tm.isClub=true; tm.acad=true; tm.mgrId='acad:'+i;
+  const mk=(sq, i)=>{ const tm=careerTeam(sq); tm.name=(T.acad||'Academy')+' · '+teamLabel(sq); tm.isClub=true; tm.acad=true; tm.mgrId='acad:'+sq.map(c=>hKey(c.handle)).sort().join('+');
     tm.mgrReg=mgrRegOfCard(sq[0]); tm.pow+=mgrNightPow(); return tm; };
   if(size===1) cards.forEach((c, i)=>out.push(mk([c], i)));
   else for(let i=0; i+size<=cards.length; i+=size) out.push(mk(cards.slice(i, i+size), i/size));
@@ -170396,8 +170397,8 @@ let MGR_CAR_CACHE=null;
 function mgrCarEvents(from, to){
   if(!MGR || !MGR.teams || MGR.tswap) return [];
   const cr=CAREER.career, size=careerSquadSize();
-  const club=mgrClubTeams(size), solo=mgrClubTeams(1); if(!club.length && !solo.length) return [];
-  const key=[MGR.year, from, to, size, club.concat(solo).map(t=>t.mgrId+':'+(t.squad||[]).map(c=>c.handle).join(',')).join('|'), (MGR.skipped||[]).length, JSON.stringify(MGR.tcar||{}).length].join('#');
+  const club=mgrClubTeams(size), solo=mgrClubTeams(1), acad=mgrAcadTeams(size), acad1=mgrAcadTeams(1); if(!club.length && !solo.length) return [];
+  const key=[MGR.year, from, to, size, club.concat(solo, acad, acad1).map(t=>t.mgrId+':'+(t.squad||[]).map(c=>c.handle).join(',')).join('|'), (MGR.skipped||[]).length, JSON.stringify(MGR.tcar||{}).length].join('#');
   if(MGR_CAR_CACHE && MGR_CAR_CACHE.key===key) return MGR_CAR_CACHE.list.map(e=>Object.assign({}, e));
   const byDay=new Map(), day0=cr.day;
   let days=null; try{ days=careerEvents(); }catch(e){ days=new Map(); }
@@ -170425,7 +170426,9 @@ function mgrCarEvents(from, to){
     } finally { mgrTeamOut(); cr.day=day0; }
   });
   pass(club, MGR_CAR_KINDS, ({2:'duo', 3:'trio', 4:'squad'})[size]||'duo', size);
-  pass(solo, ['solo', 'major', 'proam'], 'solo', 1);   // соло-неделя Мейджора (World Cup Solo) — тоже поодиночке; Про-Ам — приглашённый с креатором
+  pass(solo, ['solo', 'major', 'proam'], 'solo', 1);
+  pass(acad, MGR_CAR_KINDS, ({2:'duo', 3:'trio', 4:'squad'})[size]||'duo', size);   // академия — своими составами (mgrAcadTeams)
+  pass(acad1, ['solo', 'major'], 'solo', 1);   // соло-неделя Мейджора (World Cup Solo) — тоже поодиночке; Про-Ам — приглашённый с креатором
   const list=[...byDay.values()].sort((a,b)=>a.day<b.day ? -1 : a.day>b.day ? 1 : 0);
   MGR_CAR_CACHE={key, list};
   return list.map(e=>Object.assign({}, e));
@@ -170660,7 +170663,7 @@ function mgrProAmAnswer(m, ok){
   return true;
 }
 function mgrCarTeams(ev){
-  const club=mgrClubTeams(mgrEvSize(ev));
+  const club=mgrClubTeams(mgrEvSize(ev)).concat(mgrAcadTeams(mgrEvSize(ev)));
   return (ev.teams||[]).map(id=>club.find(t=>t.mgrId===id)).filter(Boolean);
 }
 // Перемотка: все команды — без вопросов и анимации.
@@ -170701,7 +170704,7 @@ async function mgrPlayFncs(ev){
   await mgrWorldCatchUpLive(ev.day);
   mgrAdvanceTo(ev.day);
   const prevMode=CARD_MODE, prevSize=squadSize, prevDrafted=drafted, prevSet=ACTIVE_LANDING_SET;
-  const club=mgrClubTeams(size), clubCards=club.flatMap(t=>t.squad);
+  const club=mgrClubTeams(size).concat(mgrAcadTeams(size)), clubCards=club.flatMap(t=>t.squad);
   if(mgrFac('boot')) club.forEach(t=>{ t.pow+=1; });   // буткемп-программа перед FNCS
   CARD_MODE=true; squadSize=size; drafted=clubCards;
   try{ useLandingSet(careerBrSet()); }catch(e){}
