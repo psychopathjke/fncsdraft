@@ -167409,7 +167409,7 @@ function mgrClubHTML(evs){
     (i>0 ? '<button class="mg-mini" title="'+T.moveUp+'" onclick="mgrTeamUp('+i+')">'+T.moveUp+'</button>' : '')+'</div>').join('');
   const bench='<div class="mg-team mg-bench"><em>'+T.bench+'</em>'+((MGR.bench||[]).length ? MGR.bench.map(pl).join('') : '<small>'+T.none+'</small>')+
     (MGR.teams.length<MGR_MAX_TEAMS4 ? '<button class="mg-mini2" onclick="mgrNewTeam()">'+T2.newTeam+'</button>' : '')+'</div>';
-  const next=nx ? '<div class="mg-next'+(nx.kind==='fncs'||nx.kind==='ewc' ? ' fncs' : '')+'"><em>'+T.next+'</em><b>'+esc(nx.name)+'</b><small>'+esc(ccDayLabel(nx.day))+' · '+esc(T.fmt[{duo:2,trio:3,squad:4}[nx.mode]]||'')+'</small>'+
+  const next=nx ? '<div class="mg-next'+(nx.kind==='fncs'||nx.kind==='ewc' ? ' fncs' : '')+'"><em>'+T.next+'</em><b>'+esc(nx.name)+'</b><small>'+esc(ccDayLabel(nx.day))+' · '+esc(T.fmt[{solo:1,duo:2,trio:3,squad:4}[nx.mode]]||'')+'</small>'+
       '<div class="mg-cta"><button class="hero-btn hero-btn-go" onclick="mgrPlay()">'+T.play+'</button><button class="hero-btn hero-btn-alt" onclick="mgrSkip()">'+T.skipEv+'</button></div></div>'
     : '<div class="mg-next"><i>'+T2.seasonOver+'</i><div class="mg-cta"><button class="hero-btn hero-btn-go" onclick="mgrSeasonReview()">'+T2.endSeason+'</button></div></div>';
   const cal=evs.slice(1, 7).map(e=>'<li class="'+(e.kind==='fncs'||e.kind==='ewc'?'fncs':'')+'"><span>'+esc(ccDayLabel(e.day))+'</span>'+esc(e.name)+'</li>').join('');
@@ -170026,7 +170026,7 @@ async function mgrPlay(){
   if(ev.kind==='ewc') return mgrPlayEwc(ev);
   if(ev.kind==='car') return mgrPlayCar(ev);
   const T=mgrT(), cr=CAREER.career;
-  const size={duo:2, trio:3, squad:4}[ev.mode];
+  const size={solo:1, duo:2, trio:3, squad:4}[ev.mode]||careerSquadSize();   // соло-кап: без solo:1 размер выходил пустым и клуб выставлял свои тройки (Notion «19.10», скрин 39)
   if(size>1 && !mgrFillShort(size)){ mgrShortAsk(ev, size); return; }   // неполный: запас встаёт сам, иначе — окно выбора
   await mgrWorldCatchUpLive(ev.day);
   mgrAdvanceTo(ev.day);
@@ -170041,7 +170041,7 @@ async function mgrPlay(){
   MGR_NIGHT=club;
   club.forEach(t=>{ t._mgrStyle=t._mgrStyle||'bal'; });
   mgrSetYou(club, await mgrPickTeam(club));
-  const ranked=await mgrRunStage(field, club, CC_VICTORY_R1_GAMES, victoryR1Points, CC_VICTORY_R1_KILL, ev.name, ccVictoryLobby(ev, false));
+  const ranked=await mgrRunStage(field, club, CC_VICTORY_R1_GAMES, victoryR1Points, CC_VICTORY_R1_KILL, ev.name, ccVictoryLobby(ev, size===1));
   try{ mgrWorldStore(ev, ranked, true); }catch(e){}
   const row={day:ev.day, kind:'night', name:ev.name, teams:[]};
   let clubGot=0;
