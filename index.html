@@ -4349,7 +4349,18 @@
   .cc-lb-sheet{position:relative;margin-top:-4px;}
   .cc-lb-sheet-x{position:sticky;top:6px;float:right;z-index:6;margin:6px 6px 0 0;padding:4px 10px;border:1px solid rgba(255,255,255,.5);background:rgba(0,0,0,.6);color:#fff;cursor:pointer;}
   /* На ПК вкладки хаба на «Центре» — шапка меню, своя полоса прячется; на телефоне нижняя панель хаба остаётся. */
-  @media (min-width:701px){ #screen-career-hub.ch-lobby-on .ch-tabs{display:none;} }
+  /* 19.10 вечером: одна полоса вкладок на всех вкладках (его «когда centre и profile переключаются, дизайны
+     и странно выглядит», «то меньше то больше»). На «Центре» стоит та же .ch-tabs, что на «Профиле», со значками и
+     кошельком справа (ccTabsSide); своя полоса меню (.cc-lb-top) на ПК не рисуется, лобби начинается под вкладками. */
+  @media (min-width:701px){
+    #screen-career-hub .cc-lobby .cc-lb-top{display:none;}
+    #screen-career-hub .cc-lobby.cc-lb-full .cc-lb-bottom{top:8px;}
+    #screen-career-hub .cc-lobby.cc-lb-full .cc-lb-left,#screen-career-hub .cc-lobby.cc-lb-full .cc-lb-right{top:150px;}
+    #screen-career-hub .cc-lobby.cc-lb-full .cc-lb-stage{inset:104px 0 auto 0;}
+    #screen-career-hub.ch-lobby-on .ch-tabs{padding-bottom:10px;}
+  }
+  .ch-tabs-side{display:none;}
+  @media (min-width:701px){ #screen-career-hub .ch-tabs-side{display:flex;align-items:center;gap:8px;margin-left:auto;} }
   @media (max-width:1100px){ .cc-lb-left,.cc-lb-right{width:220px;} .cc-lb-famB .cc-lb-left,.cc-lb-famB .cc-lb-right{width:230px;} }
   /* Notion «19.10», скрины 14–15: календарь — сверху, под вкладками (полоса сезона и неделя плитками пониже), а
      свободный день с прокачкой — в том же окошке, что карточка капа: меню той же высоты, ничего не съезжает. */
@@ -117771,7 +117782,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='49a55105';
+const CC_BUILD='dd4b76dd';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -121970,7 +121981,18 @@ function careerRenderHub(tab){
   const outer=!CC_RENDER_MEMO;
   if(outer) CC_RENDER_MEMO=new Map();
   try{ return careerRenderHubRaw(tab); }
-  finally{ if(outer) CC_RENDER_MEMO=null; try{ ccHubTheme(); }catch(e){} }
+  finally{ if(outer) CC_RENDER_MEMO=null; try{ ccHubTheme(); }catch(e){} try{ ccTabsSide(); }catch(e){} }
+}
+// Справа в полосе вкладок хаба — значки (лички, лента, …) и кошелёк, как было в полосе меню; одинаково на всех вкладках.
+function ccTabsSide(){
+  const t=document.querySelector('#screen-career-hub .ch-tabs');
+  if(!t || typeof CAREER==='undefined' || !CAREER || !CAREER.career) return;
+  let s=t.querySelector('.ch-tabs-side');
+  if(!s){ s=document.createElement('div'); s.className='ch-tabs-side'; t.appendChild(s); }
+  let note=''; try{ note=careerNoteBarHTML(); }catch(e){}
+  s.innerHTML=(note ? '<div class="cc-lb-note">'+note+'</div>' : '')+
+    '<div class="cc-lb-wallet"><span onclick="ccFnShopOpen()"><i class="cc-vb-ic"></i>'+ccNum(CAREER.vb||0)+'</span>'+
+    '<span onclick="careerTab(\'shop\')">'+ccMoney(CAREER.career.balance||0)+'</span></div>';
 }
 /* ЦВЕТ ХАБА — ПО СЕЗОНУ (19.10, его «мб дизайн хаба под каждый сезон под их цвета»). Оттенок берётся из картинки
    лобби сезона (ccLobbyBg): средний цвет по насыщенным пикселям, вектором по кругу оттенков. Из него — фон панели,
