@@ -144464,23 +144464,23 @@ function ccLockerClubs(){
 function ccLockerCheck(){
   const cr=CAREER && CAREER.career; if(!cr || !cr.log) return;
   cr.locker=cr.locker||[];
-  for(let i=from;i<cr.log.length;i++){
-    const e=cr.log[i]; if(!e || e.who) continue;
-    ccLockerRules(e).forEach(g=>{
-      const have=cr.locker.find(x=>x.id===g.id);
-      if(have){ if(!g.once) have.x=(have.x||1)+1; return; }
-      cr.locker.push({id:g.id, kind:g.kind, name:g.name, day:e.day, season:e.season, x:1, ek:e.kind, art:ccLockerArtOf(e.day, e.kind), fn:g.fn});
   /* Сейв до 19.10 вечера: победы FNCS лежали одной строкой «Axe of Champions». Строка снимается, и журнал
      перечитывается заново молча — каждая победа даёт кирку своего сезона. */
   // Шкафчик целиком собирается из журнала, поэтому перечитывается с нуля — иначе баннеры посчитались бы дважды.
   if(cr.locker.some(x=>x.id==='axe')){ cr.locker=[]; cr.lockSeen=null; cr.lockAgain=true; }
   const quiet=cr.lockSeen==null || !!cr.lockAgain;
   const from=cr.lockSeen||0; if(from>=cr.log.length){ if(cr.lockSeen==null) cr.lockSeen=cr.log.length; delete cr.lockAgain; return; }
+  for(let i=from;i<cr.log.length;i++){
+    const e=cr.log[i]; if(!e || e.who) continue;
+    ccLockerRules(e).forEach(g=>{
+      // Победа в FNCS — кирка чемпиона того сезона: своя строка в шкафчике и в руках (см. ccFncsAxeFor).
+      if(g.fncs){ const ax=ccFncsAxeGive(e.day, quiet); g={id:'axe|'+ax.id, kind:'pickaxe', name:ax.name, fn:ax.id}; }
+      const have=cr.locker.find(x=>x.id===g.id);
+      if(have){ if(!g.once) have.x=(have.x||1)+1; return; }
+      cr.locker.push({id:g.id, kind:g.kind, name:g.name, day:e.day, season:e.season, x:1, ek:e.kind, art:ccLockerArtOf(e.day, e.kind), fn:g.fn});
       if(!quiet) careerNews('good', 'ccNewsLocker', [CC_LOCKER_ICON[g.kind]||'🎁', g.name]);
     });
   }
-      // Победа в FNCS — кирка чемпиона того сезона: своя строка в шкафчике и в руках (см. ccFncsAxeFor).
-      if(g.fncs){ const ax=ccFncsAxeGive(e.day, quiet); g={id:'axe|'+ax.id, kind:'pickaxe', name:ax.name, fn:ax.id}; }
   cr.lockSeen=cr.log.length; delete cr.lockAgain;
 }
 function ccLockerHTML(){
@@ -149083,12 +149083,6 @@ function ccVbPacks(day){
   return base.map(([vb, usd])=>({vb:vb, usd:Math.round(usd*m*100)/100}));
 }
 function ccFnOwn(){ return CAREER.fnOwn || (CAREER.fnOwn={}); }
-function ccFnEq(){ return CAREER.fnEq || (CAREER.fnEq={}); }
-// Надетое — объект предмета (для значка в матче и кирки в ленте); без данных магазина — только id.
-function ccFnWorn(slot){
-  const id=CAREER && CAREER.fnEq && CAREER.fnEq[slot];
-  return id ? {id:id, name:(CAREER.fnOwn && CAREER.fnOwn[id] && CAREER.fnOwn[id].n) || id} : null;
-}
 /* ДЕФОЛТЫ И КИРКИ ЧЕМПИОНОВ (Notion «19.10», скрины 37–38, его «в симуляции должна быть кирка, которая у него стоит в
    шкафчике, и у него ещё дефолтные скины и кирки должны быть», «может выиграть фнкс и ему выдадут кирку, смотря какой
    фнкс он выиграл»). Дефолты лежат в шкафчике у всех: Default Pickaxe и Recruit Главы 1, с Главы 2 — её Recruit
@@ -149150,6 +149144,12 @@ function ccFncsAxeGive(day, quiet){
   if(!own[ax.id]) own[ax.id]={t:'p', n:ax.name, r:'rare', d:day, fncs:true};
   if(!quiet) ccFnEq().p=ax.id;
   return ax;
+}
+function ccFnEq(){ return CAREER.fnEq || (CAREER.fnEq={}); }
+// Надетое — объект предмета (для значка в матче и кирки в ленте); без данных магазина — только id.
+function ccFnWorn(slot){
+  const id=CAREER && CAREER.fnEq && CAREER.fnEq[slot];
+  return id ? {id:id, name:(CAREER.fnOwn && CAREER.fnOwn[id] && CAREER.fnOwn[id].n) || id} : null;
 }
 // Иконка надетой кирки для ленты убийств (zone-replay.js читает window.CC_FN_AXE в строке твоего убийства).
 try{ Object.defineProperty(window, 'CC_FN_AXE', {configurable:true, get(){
