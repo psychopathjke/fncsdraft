@@ -18,7 +18,10 @@ if(ev){
   MGR.skipped=(MGR.skipped||[]).concat(evs.filter(e=>e.day<ev.day || (e.day===ev.day && e!==ev && e.mode!=='solo')).map(e=>e.id+'|'+e.day));
   MGR.wfrom=ev.day; mgrAdvanceTo(ev.day);
   check('следующий вечер клуба — соло-кап', (mgrEvents()[0]||{}).mode==='solo');
-  const players=MGR.teams.flatMap(t=>t.cards).length;
+  // Академия на кап выходит тоже (mgrAcadTeams, отзыв «academy players participate in competitions»): кладём троих со сцены.
+  MGR.academy=(ccSceneRoster('EU')||[]).filter(c=>c && !mgrAll().some(h=>hKey(h)===hKey(c))).slice(-3).map(c=>c.handle).filter(h=>!!mgrCard(h));
+  const players=MGR.teams.flatMap(t=>t.cards).length+(MGR.academy||[]).length;
+  notes.acad=(MGR.academy||[]).length;
   MGR_SIM_MODE=true; skipAnimation=true; CC_SKIP_RUN=true;
   let done=false; mgrPlay().then(()=>done=true, e=>{ fails.push(String(e.stack||e)); done=true; });
   // Окно «за кого смотреть» и высадка — первым вариантом, как нажал бы человек.
@@ -29,6 +32,7 @@ if(ev){
   notes.rows=row && row.teams.map(t=>t.name+' #'+t.place+'/'+t.of);
   check('строки клуба — по одному игроку', row && row.teams.every(t=>String(t.name).indexOf(' & ')<0), notes.rows && notes.rows.join(' | '));
   check('вышли все игроки клуба', row && row.teams.length===players, row && (row.teams.length+' / '+players));
+  check('академия в строках вечера', !notes.acad || (row && row.teams.filter(t=>String(t.id).indexOf('acad:')===0).length===notes.acad), row && row.teams.map(t=>t.id).join(','));
   const res=(MGR.results||[]).find(r=>r.day===ev.day && r.played);
   check('таблица капа — одиночки', res && res.rows.slice(0,20).every(x=>x.n.indexOf(' & ')<0), res && res.rows[0].n);
   check('наши в таблице', res && res.rows.some(x=>x.mine));

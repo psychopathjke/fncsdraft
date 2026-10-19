@@ -22,13 +22,19 @@ ccSacSet(cs[0].name);
 const it=list[0], price=ccFnPrice(it);
 ccFnBuy(it.i);
 check('покупка прошла', !!ccFnOwn()[it.id]);
+check('без благодарностей в ленте', !(CAREER.career.news||[]).some(n=>n.k==='ccNewsSacThanks'));
 check('5% — креатору', CAREER.sac.vb===Math.round(price*0.05), CAREER.sac.vb+' / '+price);
 // свой код
 check('свой код заперт до 1000', !ccSacOwnOn());
 CAREER.career.reach=200000;
 check('свой код открыт с 1000', ccSacOwnOn());
+let balA=CAREER.career.balance; careerAdvanceTo('2026-03-31'); careerAdvanceTo('2026-04-02');
+check('без созданного кода — без выплат', CAREER.career.balance===balA, balA+' → '+CAREER.career.balance);
+careerRenderHub('items'); check('кнопка «создать код»', !!document.querySelector('#chBody .cc-sac-mk button'));
+ccSacCreate(); notes.code=ccSacOwnCode();
+check('код создан по нику', ccSacOwnCode()==='GIFTER', ccSacOwnCode());
 const bal0=CAREER.career.balance;
-careerAdvanceTo('2026-04-02');
+careerAdvanceTo('2026-05-02');
 notes.paid=Math.round((CAREER.career.balance-bal0)*100)/100;
 check('1-го числа выплата за код', CAREER.career.balance>bal0 && (CAREER.career.news||[]).some(n=>n.k==='ccNewsSacPaid'), notes.paid);
 // подарок
