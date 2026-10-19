@@ -60,22 +60,15 @@ const BOOT = `
   };
   const done=()=>{
     try{
-      // ---- тупик помечается, а не повторяется --------------------------
+      // ---- два фраггера — можно (Notion «19.10»: «играть с двумя-тремя фрагерами»), без спора о роли ----
       start('roleFRG');
       const t=clashThread();
       check('somebody of the same role wrote', !!t);
       if(!t) throw new Error('no same-role candidate on the roster');
-      const before=t.msgs.length;
       careerDmAccept(t.id);
-      const afterOne=t.msgs.length;
-      careerDmAccept(t.id);
-      out.notes.clash={role:t.who.role, mine:ccRoleNow(), need:t.roleFix,
-                       msgs:[before, afterOne, t.msgs.length]};
-      check('the squad is short the other half', t.roleFix==='roleIGL',
-            String(t.roleFix));
-      check('and the line is said once, not once per press',
-            t.msgs.length===afterOne, JSON.stringify(out.notes.clash));
-      check('nobody was seated on the way', !careerPartnerCard());
+      out.notes.twoFrg={role:t.who.role, mine:ccRoleNow(), need:t.roleFix, seated:!!careerPartnerCard(), roles:ccSquadRoles()};
+      check('a fragger takes a fragger straight away', !t.roleFix && !!careerPartnerCard() &&
+            ccSquadRoles().join()==='roleFRG,roleFRG', JSON.stringify(out.notes.twoFrg));
 
       // ---- и в обратную сторону ----------------------------------------
       start('roleIGL');
@@ -97,8 +90,8 @@ const BOOT = `
             ccSquadRoles().filter(r=>r==='roleIGL').length===1,
             ccSquadRoles().join(','));
 
-      // ---- «пусть пересядет он» — просьба ------------------------------
-      start('roleFRG');
+      // ---- «пусть пересядет он» — просьба (два ИГЛа) -------------------
+      start('roleIGL');
       const t3=clashThread();
       careerDmAccept(t3.id);
       const odds=careerDmRoleOdds(t3);
@@ -114,7 +107,7 @@ const BOOT = `
          Никто при этом не двигается — ни он, ни игрок. */
       const card=ccDmWhoCard(t3.who);
       const a=attrsFor(card);
-      card._attrs={...a, aim:99, clu:99, end:40, sur:40, _floored:false};
+      card._attrs={...a, aim:40, clu:40, end:99, sur:99, _floored:false};
       const no=careerDmRoleOdds(t3);
       out.notes.refuse={need:no.need, want:no.want, yes:no.yes};
       check('a shape all the way against it refuses', no.yes===false,
@@ -123,11 +116,11 @@ const BOOT = `
       out.notes.afterNo={seated:!!careerPartnerCard(), mine:ccRoleNow(),
                          stillAsking:t3.roleFix};
       check('a no seats nobody and moves nobody',
-            !careerPartnerCard() && ccRoleNow()==='roleFRG' && t3.roleFix==='roleIGL',
+            !careerPartnerCard() && ccRoleNow()==='roleIGL' && t3.roleFix==='roleFRG',
             JSON.stringify(out.notes.afterNo));
 
       // Согласие: форма в сторону просьбы.
-      card._attrs={...a, aim:40, clu:40, end:99, sur:99, _floored:false};
+      card._attrs={...a, aim:99, clu:99, end:40, sur:40, _floored:false};
       const yes=careerDmRoleOdds(t3);
       check('a shape that fits it agrees', yes.yes===true,
             JSON.stringify({need:yes.need, want:yes.want}));
@@ -137,9 +130,9 @@ const BOOT = `
                           his:seated && attrsFor(seated).roleKey,
                           mine:ccRoleNow()};
       check('a yes seats him in the role he agreed to',
-            seated && attrsFor(seated).roleKey==='roleIGL',
+            seated && attrsFor(seated).roleKey==='roleFRG',
             JSON.stringify(out.notes.afterYes));
-      check('and I stayed where I was', ccRoleNow()==='roleFRG', String(ccRoleNow()));
+      check('and I stayed where I was', ccRoleNow()==='roleIGL', String(ccRoleNow()));
       check('one caller here too',
             ccSquadRoles().filter(r=>r==='roleIGL').length===1,
             ccSquadRoles().join(','));
@@ -151,7 +144,7 @@ const BOOT = `
       out.notes.afterDev={role:attrsFor(careerPartnerCard()).roleKey,
                           stored:rec.role};
       check('and it survives him developing',
-            attrsFor(careerPartnerCard()).roleKey==='roleIGL',
+            attrsFor(careerPartnerCard()).roleKey==='roleFRG',
             JSON.stringify(out.notes.afterDev));
 
       /* ---- его роль держит НАПАРНИК, а не ты ----------------------------
@@ -159,6 +152,11 @@ const BOOT = `
          ничего не меняло — ты уже ФРГ — и ветка шла по кругу: «Ты тоже ИГЛ» /
          «Хорошо, тогда ФРГ беру я» раз за разом. Теперь называется напарник,
          «пересяду сам» не предлагается, повторное нажатие реплик не множит. */
+      // Ты ФРГ, рядом настоящий ИГЛ — посадить его обычной заявкой (роли разные, спора нет).
+      start('roleFRG');
+      { const ig=careerRosterNowEU().find(p=>attrsFor(p).roleKey==='roleIGL' && !ccMyPeople().has(hKey(p)));
+        const ti=careerDmThread({handle:ig.handle, ovr:ig._ovr, nat:ig.nat, role:'roleIGL', roster:true, cardRegion:ig.region||'EU', club:ig.org||null, pay:0});
+        careerDmPush(ti, 'them', 'dmNoPartner', [ig._ovr]); ti.state='offer'; careerSave(); careerDmAccept(ti.id); }
       const realSize=careerSquadSize, realSeats=careerMateSeats;
       careerSquadSize=()=>3; careerMateSeats=()=>2;
       const t4=clashThread() || (()=>{ throw new Error('no second IGL'); })();

@@ -40,7 +40,8 @@ const BOOT = `
     try {
       // ---- what the squad is missing ------------------------------------
       seed('roleFRG', []);
-      check('a fragger alone is looking for a caller', ccSquadRoleWanted()==='roleIGL',
+      // Без ИГЛа команда бывает (Notion «19.10»: два-три фраггера) — фраггер один ищет любого.
+      check('a fragger alone may take anybody', ccSquadRoleWanted()===null,
             String(ccSquadRoleWanted()));
       seed('roleIGL', []);
       check('and a caller alone is looking for a fragger', ccSquadRoleWanted()==='roleFRG',
@@ -51,8 +52,8 @@ const BOOT = `
       check('a trio with two seats open can take either', ccSquadRoleWanted()===null,
             String(ccSquadRoleWanted()));
       seed('roleFRG', ['roleFRG'], 3);
-      check('and with one seat left it must be the caller',
-            ccSquadRoleWanted()==='roleIGL', String(ccSquadRoleWanted()));
+      check('and with one seat left a third fragger is allowed too',
+            ccSquadRoleWanted()===null, String(ccSquadRoleWanted()));
       seed('roleIGL', ['roleFRG'], 3);
       check('a trio that already calls fills up with fraggers',
             ccSquadRoleWanted()==='roleFRG', String(ccSquadRoleWanted()));
