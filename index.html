@@ -4438,6 +4438,10 @@
     #screen-career-hub .cc-lobby.cc-lb-full .cc-lb-sched{padding:0 10px;}
     #screen-career-hub .cc-lobby.cc-lb-full .cc-lb-sched .ch-day{background:rgba(120,150,235,.18);}
   }
+  /* Цвет сезона (ccHubTheme): фон хаба и полоса вкладок меню — из переменных оттенка, плашки — через --fn-panel/--lb-*. */
+  #screen-career-hub.ch-themed .ch-stage{background:linear-gradient(160deg,var(--th-a) 0%,var(--th-b) 46%,var(--th-c) 100%);}
+  #screen-career-hub.ch-themed .cc-lobby .cc-lb-top{background:linear-gradient(90deg,var(--th-top),var(--th-b) 60%,var(--th-top));}
+  #screen-career-hub.ch-themed .cc-lobby{--lb-panel:inherit;--lb-deep:inherit;}
   /* Фон с нарисованными подиумами (ccLobbyPads) — свои подиумы не рисуются. */
   .cc-lobby.cc-lb-painted .cc-lb-ped{display:none;}
   /* Ник над фигурой — без подложки (скрин 22): номер, ник и устройство белым с тенью, как в лобби игры. */
@@ -117763,7 +117767,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='d68d45d6';
+const CC_BUILD='b8d7944a';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -121962,7 +121966,57 @@ function careerRenderHub(tab){
   const outer=!CC_RENDER_MEMO;
   if(outer) CC_RENDER_MEMO=new Map();
   try{ return careerRenderHubRaw(tab); }
-  finally{ if(outer) CC_RENDER_MEMO=null; }
+  finally{ if(outer) CC_RENDER_MEMO=null; try{ ccHubTheme(); }catch(e){} }
+}
+/* ЦВЕТ ХАБА — ПО СЕЗОНУ (19.10, его «мб дизайн хаба под каждый сезон под их цвета»). Оттенок берётся из картинки
+   лобби сезона (ccLobbyBg): средний цвет по насыщенным пикселям, вектором по кругу оттенков. Из него — фон панели,
+   стекло плашек, тёмные полосы и полоса вкладок меню; яркость и насыщенность свои, чтобы текст читался на любом
+   сезоне. Картинка без цвета (серый бункер s12) оставляет привычный синий. Один расчёт на картинку (CC_HUB_THEME). */
+const CC_HUB_THEME={};
+function ccHubThemeApply(h){
+  const el=document.getElementById('screen-career-hub'); if(!el) return;
+  const props=['--fn-panel','--fn-deep','--fn-line','--lb-panel','--lb-deep','--th-a','--th-b','--th-c','--th-top'];
+  if(h==null){ el.classList.remove('ch-themed'); props.forEach(p=>el.style.removeProperty(p)); return; }
+  const hsl=(s, l, a)=>'hsla('+Math.round(h)+','+s+'%,'+l+'%,'+(a==null ? 1 : a)+')';
+  el.style.setProperty('--fn-panel', hsl(55, 66, .22)); el.style.setProperty('--fn-deep', hsl(65, 12, .72));
+  el.style.setProperty('--fn-line', hsl(80, 85, .2));
+  el.style.setProperty('--lb-panel', hsl(58, 38, .8)); el.style.setProperty('--lb-deep', hsl(68, 16, .84));
+  el.style.setProperty('--th-a', hsl(62, 33)); el.style.setProperty('--th-b', hsl(66, 22)); el.style.setProperty('--th-c', hsl(70, 13));
+  el.style.setProperty('--th-top', hsl(62, 30));
+  el.classList.add('ch-themed');
+}
+function ccHubTheme(){
+  if(typeof CAREER==='undefined' || !CAREER || !CAREER.career) return;
+  const src=ccLobbyBg(careerToday());
+  if(src in CC_HUB_THEME){ ccHubThemeApply(CC_HUB_THEME[src]); return; }
+  const img=new Image();
+  img.onload=()=>{
+    let hue=null;
+    try{
+      const c=document.createElement('canvas'); c.width=64; c.height=36;
+      const g=c.getContext('2d'); g.drawImage(img, 0, 0, 64, 36);
+      const d=g.getImageData(0, 0, 64, 36).data;
+      // Самый частый оттенок (24 корзины по 15°, вес — насыщенность×яркость), а не средний: у осеннего леса под
+      // синим небом средний гасился в ноль.
+      const bins=new Array(24).fill(0), bx=new Array(24).fill(0), by=new Array(24).fill(0);
+      let wsum=0;
+      for(let i=0; i<d.length; i+=4){
+        const r=d[i]/255, gg=d[i+1]/255, b=d[i+2]/255, mx=Math.max(r, gg, b), mn=Math.min(r, gg, b), dl=mx-mn;
+        if(dl<0.08 || mx<0.12) continue;
+        let hh=mx===r ? ((gg-b)/dl)%6 : mx===gg ? (b-r)/dl+2 : (r-gg)/dl+4; hh=(hh*60+360)%360;
+        const w=dl*mx, k=Math.floor(hh/15)%24;
+        bins[k]+=w; bx[k]+=Math.cos(hh*Math.PI/180)*w; by[k]+=Math.sin(hh*Math.PI/180)*w; wsum+=w;
+      }
+      let best=0; for(let k=1; k<24; k++) if(bins[k]+bins[(k+1)%24]+bins[(k+23)%24]>bins[best]+bins[(best+1)%24]+bins[(best+23)%24]) best=k;
+      const ks=[(best+23)%24, best, (best+1)%24], X=ks.reduce((s, k)=>s+bx[k], 0), Y=ks.reduce((s, k)=>s+by[k], 0), W=ks.reduce((s, k)=>s+bins[k], 0);
+      // Мало цвета — остаётся синий по умолчанию.
+      if(wsum>40 && W/wsum>0.2) hue=(Math.atan2(Y, X)*180/Math.PI+360)%360;
+    }catch(e){ hue=null; }
+    CC_HUB_THEME[src]=hue;
+    if(ccLobbyBg(careerToday())===src) ccHubThemeApply(hue);
+  };
+  img.onerror=()=>{ CC_HUB_THEME[src]=null; };
+  img.src=src;
 }
 function careerRenderHubRaw(tab){
   // 2019–2020: состав по этапу года (старый сейв со сквадом с апреля тоже сходит на дуо).
