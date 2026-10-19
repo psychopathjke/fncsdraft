@@ -4293,6 +4293,30 @@
   #screen-career-hub .cc-lb-next .ch-next-head{padding:0 0 4px;}
   #screen-career-hub .cc-lb-next .ch-next-head h3{font-size:15px;}
   .cc-lb-famA .cc-lb-next,.cc-lb-famB .cc-lb-next{border-radius:0;}
+  /* Ровно и сразу видно PLAY (его правка 19.10): колонки одной ширины и высоты, карточка капа сжата, панели одного вида,
+     полоса недель в одну строку. */
+  .cc-lb-full .cc-lb-left,.cc-lb-full .cc-lb-right{width:320px;top:58px;bottom:212px;}
+  .cc-lb-full.cc-lb-famC .cc-lb-left{left:16px;} .cc-lb-full.cc-lb-famC .cc-lb-right{right:16px;}
+  .cc-lb-full .cc-lb-card{height:96px;}
+  #screen-career-hub .cc-lobby .cc-lb-playbox .ch-art{min-height:0;border-radius:12px;}
+  #screen-career-hub .cc-lobby .cc-lb-playbox .ch-livebar{padding-top:8px;}
+  #screen-career-hub .cc-lobby .cc-lb-playbox .ch-art-in{padding:6px 12px 12px;}
+  #screen-career-hub .cc-lobby .cc-lb-playbox .ch-matchof{font-size:11px;}
+  #screen-career-hub .cc-lobby .cc-lb-playbox .ch-art-in h3{font-size:19px;line-height:1.05;margin:2px 0 4px;}
+  #screen-career-hub .cc-lobby .cc-lb-playbox .ch-big{margin:0 0 6px;display:flex;align-items:baseline;justify-content:center;gap:6px;}
+  #screen-career-hub .cc-lobby .cc-lb-playbox .ch-big b{display:inline;font-size:34px;}
+  #screen-career-hub .cc-lobby .cc-lb-playbox .ch-big span{display:inline;}
+  #screen-career-hub .cc-lobby .cc-lb-playbox .ch-mode{margin:2px 0 6px;}
+  #screen-career-hub .cc-lobby .cc-lb-playbox .ch-play{margin-top:6px;padding-top:9px;padding-bottom:9px;}
+  #screen-career-hub .cc-lobby .cc-lb-playbox .ch-live-hint{font-size:11.5px;margin:4px 0;}
+  #screen-career-hub .cc-lobby .cc-lb-stack .ch-tile{background:rgba(22,28,44,.82);border:0;border-radius:12px;box-shadow:none;margin:0;padding:8px 11px;}
+  #screen-career-hub .cc-lobby .cc-lb-stack .ch-tile h4{margin:0 0 6px;padding:0;background:none;clip-path:none;color:#fff;
+    font-family:var(--font-display);font-size:13px;letter-spacing:.04em;text-transform:uppercase;}
+  #screen-career-hub .cc-lobby .cc-lb-stack .ch-tile h4::before,#screen-career-hub .cc-lobby .cc-lb-stack .ch-tile h4::after{display:none;}
+  .cc-lb-full.cc-lb-famC .cc-lb-stack .cc-lb-panel{background:rgba(22,28,44,.82);border-radius:12px;}
+  .cc-lb-full .cc-lb-stack{gap:8px;}
+  .cc-lb-next .ch-season{display:flex;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;gap:3px;}
+  .cc-lb-next .ch-season > *{flex:none;}
   /* Ряд плиток снизу, как Discover: подиумы стоят над ним. */
   @media (min-width:701px){ .cc-lb-famC .cc-lb-stage{inset:0 0 140px 0;} }
   /* Лист «Подробнее»: всё, что было на «Центре» под меню, — внутри, по кнопке. */
@@ -117545,7 +117569,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='81f9c296';
+const CC_BUILD='41f07e86';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -122269,7 +122293,7 @@ function ccLobbyHTML(card, btn, next, when, strip, ex){
       '<div class="cc-lb-lvl"><span class="cc-lb-banner">'+esc(String(cr.division||1))+'</span><div><b>LEVEL '+myOvr+'</b>'+
         '<u class="cc-lb-xp"><s style="width:'+Math.round(lvlFrac*100)+'%"></s></u></div></div>'+
       '<div class="cc-lb-tier" onclick="careerTab(\'table\')"><b>'+esc(T.ccDivision||'Division')+' '+(cr.division||1)+'</b><em>'+esc(ccLobbyWeek())+'</em></div>'+
-      ccLobbyQuestsHTML('DAILY CHALLENGES')+ccLobbyPanelsHTML(card, false, true)+ccLobbyRightHTML(card, true)+(ex.side||'');
+      ccLobbyQuestsHTML('DAILY CHALLENGES')+ccLobbyRightHTML(card, true, true)+(ex.side||'');
     right='<div class="cc-lb-region">'+esc(regionName(ccCareerRegion()))+'</div>'+
       '<div class="cc-lb-modebox"><b>'+esc(fmtWord)+'</b><em>'+esc(evName)+(when ? ' · '+esc(when) : '')+'</em></div>'+playBox;
   } else if(fam==='B'){
@@ -122277,16 +122301,16 @@ function ccLobbyHTML(card, btn, next, when, strip, ex){
       '<div class="cc-lb-lvl2"><b>LEVEL '+myOvr+'</b><u class="cc-lb-xp"><s style="width:'+Math.round(lvlFrac*100)+'%"></s><i>'+esc(ccLobbyWeek())+'</i></u></div>'+
       '<button class="cc-lb-quests" onclick="this.nextElementSibling.hidden=!this.nextElementSibling.hidden">VIEW QUESTS</button>'+
       '<div hidden>'+ccLobbyQuestsHTML('')+'</div>'+
-      ccLobbyResourcesHTML(sn.s)+ccLobbyPanelsHTML(card, true, true)+ccLobbyRightHTML(card, true)+(ex.side||'');
+      ccLobbyResourcesHTML(sn.s)+ccLobbyRightHTML(card, true, true)+(ex.side||'');
     right='<div class="cc-lb-news" onclick="careerTab(\'calendar\')"><em>'+esc(when||'')+'</em><b>'+esc(evName)+'</b></div>'+
       '<div class="cc-lb-modebox"><b>'+esc(fmtWord)+'</b></div>'+playBox;
   } else {
     // Слева сверху — карточка новостей с обложкой ближайшего турнира; под ней — карточка вечера с PLAY.
     left=(ccLobbyNewsCardHTML() || '<div class="cc-lb-news cc-lb-card" onclick="careerTab(\'calendar\')"'+(nextArt ? ' style="--card-art:url('+nextArt+')"' : '')+'>'+
         '<em>'+esc(newsWhen)+'</em><b>'+esc(newsEv ? (newsEv.label||evName) : (evName||sn.s))+'</b></div>')+
-      '<div class="cc-lb-pill"><i>☷</i>Build, '+esc(fmtWord)+'</div>'+playBox;
+      playBox;
     // Справа — ростер с местом высадки и сборной, новости, тренировка, рейтинг, клуб; ниже кольцо LVL и кнопки.
-    right='<div class="cc-lb-stack">'+(ex.side||'')+ccLobbyPanelsHTML(card, false, true)+ccLobbyRightHTML(card, true)+'</div>'+
+    right='<div class="cc-lb-stack">'+ccLobbyRightHTML(card, true, true)+(ex.side||'')+'</div>'+
       '<div class="cc-lb-ringrow"><div class="cc-lb-bar-btns"><button onclick="careerTab(\'social\')">'+esc(T.chTabMedia||'Media')+'</button>'+
       '<button onclick="careerTab(\'locker\')">'+esc(T.chTabLocker||'Locker')+'</button></div>'+
       '<div class="cc-lb-ring" onclick="careerTab(\'train\')" style="--p:'+Math.round(lvlFrac*100)+'"><em>LVL</em><b>'+myOvr+'</b></div></div>';
@@ -122418,7 +122442,7 @@ function ccLobbyPanelsHTML(card, noQuests, noRoster){
   return (noRoster ? '' : roster)+train;
 }
 /* Рейтинг с шестью характеристиками, неделя, клуб — то, что было на «Центре». */
-function ccLobbyRightHTML(card, noWeek){
+function ccLobbyRightHTML(card, noWeek, noClub){
   const T=L(), cr=CAREER.career, out=[];
   const panel=(h, body, go)=>'<div class="cc-lb-panel"'+(go ? ' onclick="careerTab(\''+go+'\')"' : '')+'><h5>'+esc(h)+'</h5>'+body+'</div>';
   try{
@@ -122428,7 +122452,7 @@ function ccLobbyRightHTML(card, noWeek){
       '<span><em>'+esc(T[ATTR_LABEL[k]]||k.toUpperCase())+'</em><b>'+Math.round(a[k]||0)+'</b></span>').join('')+'</div>', 'train'));
   }catch(e){}
   if(!noWeek) out.push(panel(T.chTabCalendar, ccLobbyWeekHTML(), 'calendar'));
-  try{
+  if(!noClub) try{
     const org=CAREER.org;
     out.push(panel(T.chTabClub, '<div class="cc-lb-row"><b>'+esc(org && org.name ? org.name : 'F/A')+'</b></div>'+
       '<div class="cc-lb-row"><span>'+esc(T.chEarnings)+'</span><i>'+ccMoney(cr.earnings||0)+'</i></div>'+
@@ -122813,7 +122837,7 @@ function careerCentreHTML(card, a){
       <!-- At the boundary the shop is shut and the year is the thing worth
            reading: where this career finished at its Grand Finals and its LANs.
            His report, 20 August. See careerSeasonBoardHTML. -->
-      ${cr.seasonOver ? careerSeasonAwardHTML()+careerSeasonCatsHTML()+careerSeasonBoardHTML() : careerShopPeekHTML()}
+      ${cr.seasonOver ? careerSeasonAwardHTML()+careerSeasonCatsHTML()+careerSeasonBoardHTML() : ''}
   </div>`;
   const lbSide=`
       <!-- The ladder tile stood here and is gone, his call, 18 August: division,
@@ -122834,7 +122858,8 @@ function careerCentreHTML(card, a){
            career, his call, 18 August: the two swapped places. -->
       <!-- Как на проде: профиль, под ним новости. Цели и развитие — во вкладке «Тренировка». -->
       ${(typeof ccPressHTML==='function') ? ccPressHTML() : ''}
-      ${careerProfileTileHTML()}`;
+      ${careerProfileTileHTML()}
+      ${cr.seasonOver ? '' : careerShopPeekHTML()}`;
   return ccLobbyHTML(card, btn, next, nextWhen, strip, {bar:lbBar, play:lbPlay, side:lbSide, note:careerNoteBarHTML()});
 }
 
