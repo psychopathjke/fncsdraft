@@ -117715,7 +117715,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='6a6b53eb';
+const CC_BUILD='6c9fb3c6';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -122337,7 +122337,8 @@ function careerRenderHubBody(tab){
      its own tab. The two cards, who you are, the seat beside you, and the four
      people who pay you or take a cut. */
   // Шкафчик — и во вкладке «Я» (17.10, его «где шкафчик»: на телефоне правая колонка соцсети уезжает под ленту).
-  if(CH_TAB==='me'){ body.innerHTML=careerMeHTML()+'<div class="cc-locker-me">'+ccLockerHTML()+'</div>'; return; }
+  // Шкафчик из карьеры убран целиком (19.10: «в карьере убери шкафчик», «и в медиа тоже не нужна»).
+  if(CH_TAB==='me'){ body.innerHTML=careerMeHTML(); return; }
   // Шкафчик: образ (выбор скина открыт сразу) и награды.
   // Item Shop — своя вкладка рядом со шкафчиком (18.10, его «сделай item shop отдельный рядом с шкафчиком»).
   if(CH_TAB==='items'){ body.innerHTML='<div class="ch-grid" style="grid-template-columns:minmax(0,1fr);">'+ccFnShopHTML()+'</div>'; return; }
@@ -144998,7 +144999,7 @@ function careerSocialHTML(){
     <main class="x-main">
       ${view==='dms' ? inbox
         : view==='notes' ? notesHTML
-        : view==='me' ? profile+ccLockerHTML()
+        : view==='me' ? profile
         : view==='who' ? careerWhoHTML(CH_WHO)
         /* У ленты есть шапка — как «Home» над таймлайном у X, и в ней же
            переключатель «всё / подписки»: подписка должна что-то менять, иначе
@@ -145016,7 +145017,6 @@ function careerSocialHTML(){
     <aside class="x-side">
       ${ccTrendsHTML()}
       ${careerTrophiesHTML()}
-      ${ccLockerHTML()}
       ${careerCollectionHTML()}
       <div class="ch-tile">
         <h4>${ccSay('dmLooking')}</h4>
