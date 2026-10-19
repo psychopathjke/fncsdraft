@@ -117196,7 +117196,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='20b78785';
+const CC_BUILD='cb0a126c';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -125737,7 +125737,8 @@ const CC_TRIO_ISLANDS_2025=[{from:'2025-04-09', set:'t2'}, {from:'2025-07-16', s
    2021) и вечера в своём формате (2019) иначе проваливались в острова 2025–2026. */
 function ccPastYearIsland(){
   if(!ccPastYear(ccCalYear()) || ccIs2025()) return null;
-  if(ccIs2024()){ const d0=careerToday(); return d0>='2024-08-16' ? 'f4' : d0>='2024-06-14' ? 'f3' : d0>='2024-04-12' ? 'f2' : 'f1'; }
+  if(ccIs2024()){ const d0=careerToday(); if(d0>='2024-11-02' && ZONE_SETS.i1) return 'i1';   // Chapter 2 Remix — остров C2S2
+    return d0>='2024-08-16' ? 'f4' : d0>='2024-06-14' ? 'f3' : d0>='2024-04-12' ? 'f2' : 'f1'; }
   // 2022-й — Chapter 3: остров по сезону (C3S2 с 20.03, C3S3 с 5.06, C3S4 с 18.09 — Роли).
   // 2021-й — Chapter 2: остров по сезону (C2S6 с 16.03, C2S7 с 8.06, C2S8 с 13.09).
   // 2019-й: World Cup — Season 9, осень — Season X, с 13.10 — Chapter 2 Season 1.
@@ -127700,8 +127701,9 @@ const INV2022_PRIZES={"1":200000,"2":140000,"3":120000,"4":90000,"5":70000,"6":6
    50 дуо: топ серии и топ-10 Surge Week (у Мейджора 3 Surge нет — 50 по серии),
    двенадцать игр за два дня. После Мейджора 3 — Last Chance Major (Day 1 → топ-250
    → Day 2 → топ-50 → финал) в нижнюю сетку Копенгагена. См. runCareerMajor2023. */
-// До 19.11: после Кубка наций — сезон OG (C4 Season OG, остров Главы 1) с денежными OG Skirmish креаторов 5–6 и 17–19 ноября.
-const CC_YEAR_2023_FROM='2022-12-05', CC_YEAR_2023_TO='2023-11-19';   // + Кубок наций после Копенгагена
+// До 30.11: после Кубка наций — сезон OG (C4 Season OG, остров Главы 1): денежные OG Skirmish креаторов 5–6 и 17–19 ноября,
+// Solo Victory и ZB Duos Victory Cash Cup 13–30 ноября (архив Epic).
+const CC_YEAR_2023_FROM='2022-12-05', CC_YEAR_2023_TO='2023-11-30';   // + Кубок наций после Копенгагена
 const CAREER_YEAR_2023=[
   // Мейджор 1 (C4S1): недели 2–5, 9–12, 16–19 февраля, Surge 26 февраля, финал 4–5 марта.
   ['2023-02-02','2023-02-02','Major1_2023_W1D1','major'],
@@ -127839,7 +127841,9 @@ const GC2023_PRIZES={"1":1000000,"2":650000,"3":400000,"4":300000,"5":200000,"6"
    и финал на 50 дуо, двенадцать игр за два дня (второй день у Epic ×1.5 — здесь
    не считается). Очки серии — линейные по месту последнего раунда (Epic'ову
    таблицу серии архив не хранит). См. runCareerMajor2024. */
-const CC_YEAR_2024_FROM='2023-12-05', CC_YEAR_2024_TO='2024-09-29';   // + Кубок наций после Форт-Уэрта
+// До 30.11: после Форт-Уэрта — капы Главы 5 Сезона 4 (октябрь) и Chapter 2 Remix (2–30 ноября, остров Главы 2 Сезона 2):
+// Trios Cash Cup, Solo Victory, Reload-капы из архива Epic.
+const CC_YEAR_2024_FROM='2023-12-05', CC_YEAR_2024_TO='2024-11-30';   // + Кубок наций после Форт-Уэрта
 const CAREER_YEAR_2024=[
   // Кубок наций — закрытие сезона, три субботы после последнего турнира FNCS (выдумка режима, см. ccNationsBook).
   ['2024-09-14','2024-09-14','NationsTrial','nations'],
@@ -127962,14 +127966,22 @@ function ccPay24(tables, place){
   return row ? row[1] : 0;
 }
 // Кап с таблицей мест (Duos Cash Cup / Reload Duos Cash Cup): выплата на состав.
+// Сколько человек в команде на этом капе: на вечере — CC_EVENT_SIZE, до него — формат капа (трио-кап дуо-года
+// играется тройкой со стэнд-ином, ccEventRosterBegin), в онлайне и гонке формат не меняется.
+function ccVictoryTeamSize(ev){
+  if(CC_EVENT_SIZE) return CC_EVENT_SIZE;
+  const f=ccVictoryFormat(ev);
+  if(f && !(typeof ccMpOn==='function' && ccMpOn()) && !(typeof ccRacePairOn==='function' && ccRacePairOn())) return f;
+  return careerSquadSize();
+}
 function ccVictoryPayOf(ev, place){
   // Кап из архива Tracker несёт таблицу Epic с собой: по регионам, «до места N — сумма на игрока».
-  if(ev && ev.payT) return ccPay24(ev.payT, place)*(ev.mode==='solo' ? 1 : careerSquadSize());
+  if(ev && ev.payT) return ccPay24(ev.payT, place)*(ev.mode==='solo' ? 1 : ccVictoryTeamSize(ev));
   if(!ev || !ev.pay) return 0;
   // 2023-й — свои сезоны (S24–S26) в CC_DCC_PAY_2023.
   const t=ev.pay==='RDCC' ? CC_RDCC_PAY_2024 : (ccIs2019() && CC_DCC_PAY_2019[ev.pay]) ? CC_DCC_PAY_2019[ev.pay] : (ccIs2021() && CC_DCC_PAY_2021[ev.pay]) ? CC_DCC_PAY_2021[ev.pay] : (ccIs2022() && CC_DCC_PAY_2022[ev.pay]) ? CC_DCC_PAY_2022[ev.pay] : (ccIs2023() && CC_DCC_PAY_2023[ev.pay]) ? CC_DCC_PAY_2023[ev.pay] : CC_DCC_PAY_2024[ev.pay];
   // Соло-кап 2022-го платит таблицей на одного.
-  return ccPay24(t, place)*(ev.mode==='solo' ? 1 : careerSquadSize());
+  return ccPay24(t, place)*(ev.mode==='solo' ? 1 : ccVictoryTeamSize(ev));
 }
 /* Снимки сцены 2024-го: дивизион 1 — сотня полуфиналов ближайшего Мейджора (верхняя
    и нижняя сетки), других дверей в 2024-м не было. Набор f2 — с первого квалификатора
@@ -147953,7 +147965,8 @@ function ccShopDelta(it){
     const cs={}; CC_SHOP.forEach(x=>{ if(x.slot===it.slot && x.skill && careerOwns(x.id) && (!cs._r || x.rank>cs._r)){ cs._r=x.rank; cs.s=x.skill; } });
     Object.keys(it.skill).forEach(k=>{ const g=it.skill[k]-((cs.s||{})[k]||0); if(g<=0) return;
       const lab=T[ATTR_LABEL[k]]||k.toUpperCase();
-      if(a && a[k]!=null){ const to=clamp(a[k]+g, 35, 99); if(to>a[k]) out.push(lab+' '+a[k]+' → '+to); } else out.push(lab+' +'+g); });
+      // Статы дробные (рейтинг сезона) — в строке целыми, как на карточке (Notion «19.10»: «почему пишется миллионные»).
+      if(a && a[k]!=null){ const to=clamp(a[k]+g, 35, 99); if(to>a[k]) out.push(lab+' '+Math.round(a[k])+' → '+Math.round(to)); } else out.push(lab+' +'+g); });
   }
   if(it.cap){ const g=it.cap-held('cap'); if(g>0){ const cur=careerEnergyMax(); out.push(T.ccShopCap+' '+cur+' → '+(cur+g)); } }
   if(it.reach){ const cur=Math.round(held('reach')*100); out.push(T.ccShopReach+' +'+cur+'% → +'+Math.round(it.reach*100)+'%'); }
@@ -150129,7 +150142,8 @@ const CC_SEASONS_2024=[
   {id:'S28', from:'2023-12-03', to:'2024-03-07'},
   {id:'S29', from:'2024-03-08', to:'2024-05-23'},
   {id:'S30', from:'2024-05-24', to:'2024-08-15'},
-  {id:'S31', from:'2024-08-16', to:'2024-11-01'}
+  {id:'S31', from:'2024-08-16', to:'2024-11-01'},
+  {id:'S32', from:'2024-11-02', to:'2024-11-30'}   // Chapter 2 Remix
 ];
 const CC_SEASONS_2025=[
   {id:'S33', from:'2024-12-01', to:'2025-02-20'},
