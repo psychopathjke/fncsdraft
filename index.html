@@ -104095,8 +104095,17 @@ async function simulateGamesLive(teams, numGames, pointsFn, killMult, fieldPrefi
   const rowByUid=new Map();
   const putCell=(cell, val)=>{ if(!cell) return;
     const s=String(val); if(cell.textContent!==s) cell.textContent=s; };
+  /* Живой порядок поля — ключи считаются ОДИН раз на команду, а не в каждом сравнении сортировки: в открытом капе поле
+     2470 дуо, и сравнение звало livePts/liveElims десятки тысяч раз на кадр (профиль 20.10 под эмуляцией телефона:
+     ~3 с из 40 секунд показа). Порядок тот же. */
+  function liveSorted(){
+    const n=teams.length, P=new Float64Array(n), E=new Float64Array(n), W=new Float64Array(n), ix=new Array(n);
+    for(let k=0;k<n;k++){ const t=teams[k]; P[k]=livePts(t); E[k]=liveElims(t); W[k]=t.wins||0; ix[k]=k; }
+    ix.sort((a,b)=>P[b]-P[a] || E[b]-E[a] || W[b]-W[a] || a-b);
+    return ix.map(k=>teams[k]);
+  }
   function renderRows(){
-    const sorted=teams.slice().sort((a,b)=>livePts(b)-livePts(a) || liveElims(b)-liveElims(a) || (b.wins||0)-(a.wins||0));
+    const sorted=liveSorted();
     sorted.forEach((t,i)=>{ t._liveRank=i+1; });
     const shown=sorted.slice(0, LIVE_ROWS);
     if(sorted.length>LIVE_ROWS){
@@ -104335,7 +104344,6 @@ async function simulateGamesLive(teams, numGames, pointsFn, killMult, fieldPrefi
 
     // Numbers first: writing text into rows that are already on screen moves
     // nothing, so a kill can show the instant it lands.
-    const sorted=teams.slice().sort((a,b)=>livePts(b)-livePts(a) || liveElims(b)-liveElims(a) || (b.wins||0)-(a.wins||0));
     /* Ячейка пишется, ТОЛЬКО ЕСЛИ в ней теперь другое число.
 
        Замер на телефоне (Chrome, CPU ×6, вечер дивизионного кубка, 30 секунд):
@@ -104365,11 +104373,13 @@ async function simulateGamesLive(teams, numGames, pointsFn, killMult, fieldPrefi
 
     // Order second, and slowly. Rows that reorder faster than they can travel
     // interrupt each other halfway, and the endgame is several deaths a second.
-    const order=sorted.map(t=>t._uid).join(',');
+    // Порядок считается только тогда, когда его вообще можно применить (раз в 380 мс / 1 с): между перестановками он
+    // никому не нужен, а в большом поле это сортировка тысяч команд на каждом кадре.
     const now=Date.now();
-    if(order!==lastOrder && now-lastMove>=(LIVE_SMALL ? 1000 : 380)){
-      lastOrder=order; lastMove=now;
-      animatedRerender();
+    if(now-lastMove>=(LIVE_SMALL ? 1000 : 380)){
+      const sorted=liveSorted();
+      const order=sorted.slice(0, LIVE_ROWS+1).map(t=>t._uid).join(',')+'|'+((sorted.find(t=>t.isYou)||{})._uid);
+      if(order!==lastOrder){ lastOrder=order; lastMove=now; animatedRerender(); }
     }
   }
 
@@ -104661,7 +104671,14 @@ async function simulateGamesLive(teams, numGames, pointsFn, killMult, fieldPrefi
       // Комната делится на лобби каждую игру, и высадка в каждом своя: с кем
       // ты сидишь в коробке сегодня — вопрос жеребьёвки. Поэтому и стычки
       // считаются по лобби, а не по всему полю. См. creditLandingFights.
-      for(const lobby of lobbies){
+      /* СВОЁ ЛОББИ — ПЕРВЫМ (вне онлайна). В большом капе (2470 дуо, ~50 лобби) лобби до своего считались до показа
+         матча — десятки задач по 50–70 мс на глазах у игрока, пока на карте уже стоит высадка (его слово 20.10:
+         «симуляция карты подлагивает»; трасса по сезонам под эмуляцией телефона — 90–125 таких задач за 40 с во всех
+         годах с открытыми капами). Теперь своё лобби показывается сразу, а чужие досчитываются после. В локстепе (команда,
+         гонка) порядок общий: свой у каждого свой, и общий поток бросков разошёлся бы. */
+      const lobbyOrder=(mine && !(typeof ccMpLock==='function' && ccMpLock()))
+        ? [mine].concat(lobbies.filter(l=>l!==mine)) : lobbies;
+      for(const lobby of lobbyOrder){
         if(dropOnMap) creditLandingContests(lobby);
         /* Лобби с человеком, которое не показывается (чужое — или своё, когда карты нет): тот же
            движок с остановками, что и у своего на карте, только без показа. Иначе у соперника его
@@ -118066,7 +118083,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='2a33828c';
+const CC_BUILD='399c96f0';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
