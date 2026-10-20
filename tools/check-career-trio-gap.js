@@ -91,7 +91,9 @@ const BOOT = `
        «формируются норм триосы, но через месяц опять максимально не настоящие».
        В дуо-год снимок переключается, как и был, — это данные Epic. */
     const pairsOn=day=>{ cr.day=day; CC_POOLS=null; CC_NOW_CARDS={};
-      return (careerPools().duos||[]).map(d=>d.cards.map(c=>hKey(c)).sort().join('+')).sort().join('|'); };
+      // Сменившие регион по ходу года (ccYearMovers, 15.10) законно меняют пары — их пары не сравниваются.
+      const mv=new Set(); try{ const M=(typeof ccYearMovers==='function') ? ccYearMovers(ccNowYear()) : null; if(M) [...M.keys()].forEach(k=>mv.add(String(k).replace(/^.*[|]/,''))); }catch(e){}
+      return (careerPools().duos||[]).filter(d=>!d.cards.some(c=>mv.has(hKey(c)))).map(d=>d.cards.map(c=>hKey(c)).sort().join('+')).sort().join('|'); };
     const trioMar=pairsOn('2026-03-02'), trioAug=pairsOn('2026-08-03');
     check('в трио-год пары пула после 18 июля те же', trioMar===trioAug);
     cr.size=2;

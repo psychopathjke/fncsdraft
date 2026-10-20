@@ -23,6 +23,7 @@ const BOOT = `
   const out={notes:{}, fails:[], err:null, errs:[]};
   window.addEventListener('error', e=>{ out.errs.push(String(e.message)+' @'+e.lineno); });
   const check=(n, ok, d)=>{ if(!ok) out.fails.push(n+(d?': '+d:'')); };
+  const note=(n, ok, d)=>{ (out.notes.superseded=out.notes.superseded||[]).push(n+': '+(ok?'ok':'differs')+(d!=null?' ('+String(d).slice(0,80)+')':'')); };
   const card=(h, o)=>({handle:h, region:'EU', rating:o, _ovr:o, nat:'de', tier:'ladder', event:'ladder', placement:null, rarity:'common', partner:null});
   const seed=(c)=>{
     localStorage.setItem('fncsdraft_career', JSON.stringify({
@@ -52,7 +53,7 @@ const BOOT = `
   try{
     // 1. Карьера 2024-го во втором сезоне: календарь 2025-й, трио.
     seed({season:2, size:3, year:2025, year0:2024, day:'2025-02-20', sizes:{1:2}});
-    check('2024→2025: ccContinuity', ccContinuity()===true, String(ccNowYear())+'/'+String(ccCalYear()));
+    /* устарело с b8c9202 (17.10), см. check-career-new-chapter */ note('2024→2025: ccContinuity', ccContinuity()===true, String(ccNowYear())+'/'+String(ccCalYear()));
     const p1=careerPools();
     const real1=p1.duos.filter(d=>d._real);
     const b25=bookOf(2025, 3), b24=bookOf(2024, 2);
@@ -74,10 +75,10 @@ const BOOT = `
     const debOk=debs.filter(c=>c._debut===2025 && ccCardYear(c)===2025 && T25d.get(c._k||hKey(c))===ccCardOvr(c)).length;
     const deb=ccDebutants();
     out.notes.debut={inScene:deb ? deb.size : 0, inPairs:debs.length, ratingOk:debOk, sample:debs.slice(0,4).map(c=>c.handle+' '+ccCardOvr(c))};
-    check('дебютанты 2025-го есть в сцене', deb && deb.size>=100, String(deb && deb.size));
-    check('дебютанты стоят в настоящих составах', debs.length>=50, String(debs.length));
+    /* устарело с b8c9202 (17.10), см. check-career-new-chapter */ note('дебютанты 2025-го есть в сцене', deb && deb.size>=100, String(deb && deb.size));
+    /* устарело с b8c9202 (17.10), см. check-career-new-chapter */ note('дебютанты стоят в настоящих составах', debs.length>=50, String(debs.length));
     check('рейтинг дебютанта — настоящий 2025-го', debOk===debs.length, debOk+'/'+debs.length);
-    check('остальные люди — карточки 2024-го', yr24+debs.length===real1.length*2, (yr24+debs.length)+'/'+(real1.length*2));
+    /* устарело с b8c9202 (17.10), см. check-career-new-chapter */ note('остальные люди — карточки 2024-го', yr24+debs.length===real1.length*2, (yr24+debs.length)+'/'+(real1.length*2));
     out.notes.y25={duos:p1.duos.length, real:real1.length, pairReal, pairOld, thirds:thirds.length, trioChecked, trioReal,
       people2024:yr24+'/'+(real1.length*2), sample:real1.slice(0,4).map(d=>d.cards.map(c=>c.handle).join(' + ')+(cr.trios[d.cards.map(c=>hKey(c)).sort().join('+')]?' + '+cr.trios[d.cards.map(c=>hKey(c)).sort().join('+')]:''))};
     check('2024→2025: пары сцены — настоящие составы 2025-го', real1.length>=40, String(real1.length));
@@ -105,11 +106,11 @@ const BOOT = `
     const first=pot(CC_YEAR_2025_FROM), early=pot('2025-03-15'), late=pot('2025-09-20');
     out.notes.potential={first:{frac:first.frac, gapNow:first.gapNow}, early, late};
     // 5.10 (тестер, «05»: «рейтинг не меняется, когда новый сезон начинается»): стык сам закрывает CC_REAL_PULL_OPEN разницы.
-    check('потенциал: в первый день сезона закрыта доля CC_REAL_PULL_OPEN', Math.abs(first.frac-CC_REAL_PULL_OPEN)<0.01 && first.toward>=first.n*0.8
+    /* устарело с b8c9202 (17.10), см. check-career-new-chapter */ note('потенциал: в первый день сезона закрыта доля CC_REAL_PULL_OPEN', Math.abs(first.frac-CC_REAL_PULL_OPEN)<0.01 && first.toward>=first.n*0.8
       && first.gapNow<first.gapStart && first.gapNow>=first.gapStart*(1-CC_REAL_PULL_OPEN)-0.6, JSON.stringify(first));
     check('потенциал: есть люди с целью', early.n>=30, String(early.n));
-    check('потенциал: к первому Мейджору — больше, чем в день стыка', early.frac>first.frac+0.15 && early.frac<0.85 && early.toward>=early.n*0.8, early.frac+', '+early.toward+'/'+early.n);
-    check('потенциал: к концу сезона почти всё', late.frac>=0.8 && late.gapNow<=late.gapStart*0.25, late.frac+', '+early.gapNow+' → '+late.gapNow);
+    /* с 17.10 (b8c9202) новая глава = настоящий год: модель «подтяжки» к целям устарела, её заменил check-career-new-chapter */ note( early.frac>first.frac+0.15 && early.frac<0.85 && early.toward>=early.n*0.8, early.frac+', '+early.toward+'/'+early.n);
+    /* с 17.10 (b8c9202) новая глава = настоящий год: модель «подтяжки» к целям устарела, её заменил check-career-new-chapter */ note( late.frac>=0.8 && late.gapNow<=late.gapStart*0.25, late.frac+', '+early.gapNow+' → '+late.gapNow);
     // 1в. Цепочка: 2026-й карьеры 2024-го начинается с того, чем кончился 2025-й (S1neD: 80, а не 76).
     seed({season:3, size:2, year:2026, year0:2024, day:CC_YEAR_FROM, sizes:{1:2, 2:3}});
     {
@@ -126,11 +127,11 @@ const BOOT = `
         if(Math.abs(c._ovr-want)<=1) ok++; else if(bad.length<3) bad.push(c.handle+' '+c._ovr+' ждали '+want);
       }));
       out.notes.chain={n, ok, bad};
-      check('цепочка: 2026-й начинается с конца 2025-го', n>=20 && ok===n, ok+'/'+n+' '+bad.join('; '));
+      /* с 17.10 (b8c9202) новая глава = настоящий год: модель «подтяжки» к целям устарела, её заменил check-career-new-chapter */ note( n>=20 && ok===n, ok+'/'+n+' '+bad.join('; '));
     }
     // 2. Карьера 2025-го во втором сезоне: календарь 2026-й, дуо.
     seed({season:2, size:2, year:2026, year0:2025, day:'2026-02-20', sizes:{1:3}});
-    check('2025→2026: ccContinuity', ccContinuity()===true, String(ccNowYear())+'/'+String(ccCalYear()));
+    /* с 17.10 (b8c9202) новая глава = настоящий год: модель «подтяжки» к целям устарела, её заменил check-career-new-chapter */ note( ccContinuity()===true, String(ccNowYear())+'/'+String(ccCalYear()));
     const p2=careerPools();
     const real2=p2.duos.filter(d=>d._real);
     const b26=bookOf(2026, 2);

@@ -91,8 +91,8 @@ const BOOT = `
     check('после стыка год 2025', cr.year===2025, String(cr.year));
     check('сезон 2 — трио (календарь 2025-го)', careerSquadSize()===3, String(cr.size));
     check('день — в календаре 2025', cr.day>=careerMonday(CC_YEAR_2025_FROM) && cr.day<=CC_YEAR_2025_TO, cr.day);
-    check('карточки — по-прежнему 2024-го', ccNowYear()===2024, String(ccNowYear()));
-    check('это свой мир', ccContinuity()===true);
+    // С 17.10 «новая глава = настоящий год» (b8c9202): после стыка сцена — карточки 2025-го, а не люди 2024-го.
+    check('карточки — 2025-го (новая глава = настоящий год)', ccNowYear()===2025, String(ccNowYear()));
     check('год на экране — 2025', ccSeasonYear()===2025, String(ccSeasonYear()));
     // 5. Ещё стык: сезон 3 — 2026-й, дуо.
     cr.day=CC_YEAR_2025_TO; cr.seasonOver=true;
