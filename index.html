@@ -112355,6 +112355,7 @@ function ccCoachOpinion(options, dflt, kind){
 const CC_CHOICE_ZONES=11;
 const CC_CHOICE_THEME={
   style: {th:'#ffd600', zone:1},    // стиль игры перед игрой — жёлтый W-key
+  plan:  {th:'#6fe3d0', zone:1},    // план тренера перед вечером (ccPlanTitle) — бирюза штаба
   drop:  {th:'#5ec8ff', zone:1},    // автобус и небо
   site:  {th:'#ffc93c', zone:1},    // золото сундука
   loot:  {th:'#b46bff', zone:3},    // эпик из лестницы редкости
@@ -118001,7 +118002,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='515049b9';
+const CC_BUILD='b9c8a13c';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -139036,7 +139037,7 @@ const CC_POST_BY={
      всякую неназванную строку. Ответ и отказ — твои собственные слова. */
   ccBeefStart:'by',
   ccBeefHit:'you', ccBeefQuiet:'you',
-  ccNewsSp:'you', ccNews1v1:'you', ccNewsSick:'you', ccNewsLocker:'you', ccNewsFnWin:'you', ccNewsFnOut:'you',
+  ccNewsSp:'you', ccNews1v1:'you', ccNewsSick:'you', ccNewsLocker:'you', ccNewsFnGift:'you', ccNewsSacOwn:'you', ccNewsSacPaid:'you', ccNewsFnWin:'you', ccNewsFnOut:'you',
   ccNewsFriendYes:'you', ccNewsFriendNo:'you',
   ccNewsCheatPaid:'you', ccNewsBanned:'you',
   // Moving is the player's own news in all three directions — the flight, the
@@ -166963,6 +166964,12 @@ function mgrPayMonths(toDay){
    тогда интерфейс один и тот же, а правка стиля карьеры сама доезжает до менеджера. */
 let MGR_CSS_DONE=false;
 const MGR_TAB_ICON={squad:'me', transfers:'shop', inbox:'social', tables:'table'};
+function mgrSplitSel(sel){
+  const out=[]; let d=0, cur='';
+  for(const ch of String(sel)){ if(ch==='(') d++; else if(ch===')') d=Math.max(0, d-1);
+    if(ch===',' && d===0){ out.push(cur); cur=''; } else cur+=ch; }
+  out.push(cur); return out;
+}
 function mgrCloneHubCss(){
   if(MGR_CSS_DONE) return; MGR_CSS_DONE=true;
   const out=[];
@@ -166970,7 +166977,9 @@ function mgrCloneHubCss(){
     if(r.cssRules && r.media){ walk(r.cssRules, '@media '+r.media.mediaText); continue; }
     if(r.cssRules && r.conditionText!=null && !r.selectorText){ walk(r.cssRules, '@supports '+r.conditionText); continue; }
     const sel=r.selectorText; if(!sel || sel.indexOf('#screen-career-hub')<0) continue;
-    let parts=sel.split(',').map(s=>s.trim()).filter(s=>s.indexOf('#screen-career-hub')>=0).map(s=>s.split('#screen-career-hub').join('#screen-manager'));
+    // Запятые внутри :is(…)/:not(…) — не граница селектора: простое split(',') рвало «:is(.cc-fn-shop, …)» пополам, и браузер
+    // выбрасывал всё после этого правила, вместе с иконками вкладок (сторож mgr-hub, 20.10).
+    let parts=mgrSplitSel(sel).map(s=>s.trim()).filter(s=>s.indexOf('#screen-career-hub')>=0).map(s=>s.split('#screen-career-hub').join('#screen-manager'));
     // Иконки вкладок: у менеджера свои ключи — берут значок близкой вкладки карьеры.
     parts=parts.concat(parts.flatMap(s=>Object.keys(MGR_TAB_ICON).filter(k=>s.indexOf('[data-tab="'+MGR_TAB_ICON[k]+'"]')>=0)
       .map(k=>s.split('[data-tab="'+MGR_TAB_ICON[k]+'"]').join('[data-tab="'+k+'"]'))));

@@ -70,6 +70,8 @@ const BOOT = `
               стоят в списке командных (ccTeamState), а спека здесь про них
               не знала — контракт протух, а не поле лишнее. */
            'seasonTurn','seed','sizes','solo','soloBy','solos','solosBy',
+           // solosRl/solosRlBy — FNCS Solo Reload (ноябрь 2026), своё состояние того же рода, что solos (20.10).
+           'solosRl','solosRlBy',
            'splits','spots','summit','summitSeed',
            'table','tokens','trios','vpick','wf','year','year0'].join(','),
           out.notes.team.join(','));

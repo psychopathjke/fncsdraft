@@ -41,7 +41,10 @@ try{
     CAREER.partner={card:weak, patience:50, since:'2026-01-01', dev:0}; CAREER.partners=[CAREER.partner];
     CAREER.org={name:'Team HavoK', tier:95, salary:1000, since:1, paid:0};
     const n0=(CAREER.career.news||[]).filter(n=>n.k==='roClubNo').length;
+    // С 20.10 просьба идёт через менеджера (ccOrgBringMate → личка, итог в день CAREER.clubAsks[].due — ccClubAskTick).
     ccOrgBringMate('WeakMate'); ccOrgBringMate('WeakMate'); ccOrgBringMate('WeakMate');
+    check('три нажатия — одна просьба', (CAREER.clubAsks||[]).length===1, String((CAREER.clubAsks||[]).length));
+    ccClubAskTick(CAREER.clubAsks[0].due); CAREER.career.day=CAREER.clubAsks.length ? CAREER.career.day : ccAddDays(CAREER.career.day, 3);
     const n1=(CAREER.career.news||[]).filter(n=>n.k==='roClubNo').length;
     check('три нажатия — одна новость отказа', n1-n0===1, String(n1-n0));
     const strip=ccRostersStripHTML(); check('вместо кнопки — «клуб отказал, снова с»', strip.indexOf('ch-ro-clubno')>=0 && strip.indexOf('ccOrgBringMate')<0);
