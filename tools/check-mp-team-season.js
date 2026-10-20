@@ -137,6 +137,9 @@ const boot = (who) => `
         const sy1=ccMpSync; ccMpSync=function(kind, sum, qn){ try{ CC_MP_TRACE('sync '+kind+'#'+qn+' g'+CC_MP_GAME+' done'+(CC_MP_PEER_DONE?1:0)+' seed'+String(CC_MP_SEED).slice(-4)); }catch(e){} return sy1.apply(this, arguments); };
         MP.on('start', function(m){ try{ CC_MP_TRACE('START n'+(m&&m.n)+' seed'+String(m&&m.seed).slice(-4)+' day '+CAREER.career.day); }catch(e){} });
         MP.on('digest', function(){ try{ CC_MP_TRACE('DIGEST from peer'); }catch(e){} }); }
+      /* Кто сказал «врозь»: отправка 'apart'/'leave' и вход в ccMpSplitApart — со стеком и номером игры. */
+      { const ac0=MP.act; MP.act=function(kind, payload){ try{ if(kind==='apart'||kind==='leave'){ const k=CAREER.career.day+' SEND '+kind+' g'+CC_MP_GAME+' q'+CC_MP_CUR_Q+' '+String(new Error().stack).split(String.fromCharCode(10)).slice(2,7).map(s=>s.trim().replace(/^at /,'').split(' (')[0]).join('<'); if(out.notes.splits.length<20) out.notes.splits.push(k); } }catch(e){} return ac0.apply(MP, arguments); };
+        const sa0=ccMpSplitApart; ccMpSplitApart=function(fromPeer){ try{ CC_MP_TRACE('APART from'+(fromPeer?'peer':'me')+' g'+CC_MP_GAME+' leave'+(CC_MP_LEAVE?1:0)); }catch(e){} return sa0.apply(this, arguments); }; }
       { const ss0=ccMpSplitSeen; ccMpSplitSeen=function(n, detail){ try{ const k=CAREER.career.day+' split@'+n+' '+String(detail||'').slice(0,900)+' TR['+window.__tr.slice(-14).join(' | ')+'] LG['+(typeof CC_MP_LEDGER!=='undefined' ? CC_MP_LEDGER.slice(0,70).join(',') : '')+']'; if(out.notes.splits.indexOf(k)<0 && out.notes.splits.length<20) out.notes.splits.push(k); }catch(e){} return ss0.apply(this, arguments); }; }
       window.__ke={}; { const ep0=ccEventPR; ccEventPR=function(o, trueOf){ const r=ep0.apply(this, arguments);
         try{ const k=(CC_EV_DELTA&&CC_EV_DELTA.key)||('w|'+CAREER.career.day); const a=window.__ke[k]||(window.__ke[k]=[]);
