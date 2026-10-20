@@ -8500,7 +8500,7 @@
      tools/check-deploy-folder.js: забыть обновить руками теперь нельзя, папка
      деплоя просто не соберётся зелёной. -->
 <script src="zone-sim.js?v=48a2b31c"></script>
-<script src="zone-replay.js?v=a15ed3e5"></script>
+<script src="zone-replay.js?v=0acf4525"></script>
 <!-- Командная карьера: транспорт и склейка. Весь код мультиплеера живёт здесь,
      в index.html только точки врезки. ?v= — тот же кэш-предохранитель, что и
      у соседей: поменял mp.js — переставь хеш, иначе браузер возьмёт старый
@@ -104174,10 +104174,15 @@ async function simulateGamesLive(teams, numGames, pointsFn, killMult, fieldPrefi
 
      Теперь два прохода: сперва читаются все новые прямоугольники, потом
      пишутся все стили. Картинка та же, порядок работы — нет. */
+  const LIVE_SMALL=(typeof window!=='undefined' && window.matchMedia) ? window.matchMedia('(max-width: 760px)').matches : false;
   function animatedRerender(){
     /* Под пропуском (перемотка, «пропустить») строки не едут: замер 2.10 — месяц перемотки
        ставил ~780 пар кадров и столько же таймеров уборки ради анимации, которую никто не видит. */
     if(skipAnimation){ renderRows(); return; }
+    /* На телефоне строки встают на места без полёта: замер каждой строки до и после перестановки — это пересчёт
+       стилей всей таблицы (~600 элементов, 40–50 мс при процессоре телефона) несколько раз в секунду, и со второй
+       игры, когда очки разошлись и порядок меняется постоянно, показ рвался (его слово 20.10, трасса под эмуляцией). */
+    if(LIVE_SMALL){ renderRows(); followYou(); return; }
     const oldRects=new Map();
     Array.from(body.children).forEach(tr=>{ oldRects.set(tr.dataset.uid, tr.getBoundingClientRect()); });
     renderRows();
@@ -104362,7 +104367,7 @@ async function simulateGamesLive(teams, numGames, pointsFn, killMult, fieldPrefi
     // interrupt each other halfway, and the endgame is several deaths a second.
     const order=sorted.map(t=>t._uid).join(',');
     const now=Date.now();
-    if(order!==lastOrder && now-lastMove>=380){
+    if(order!==lastOrder && now-lastMove>=(LIVE_SMALL ? 1000 : 380)){
       lastOrder=order; lastMove=now;
       animatedRerender();
     }
@@ -110762,6 +110767,7 @@ function ccKitInit(teams){
      лут, а не менять». Лут игры начинается с нуля (t._loot=null выше) — и слоты гаснут тут же. */
   try{
     const box=(typeof CC_RUN_MAP!=='undefined' && CC_RUN_MAP) ? CC_RUN_MAP.querySelector('.zr-kit') : null;
+    if(box) box._parts=null;   // разметка тронута руками — следующий кадр пишет панель целиком (см. ccKitPanel)
     if(box) box.querySelectorAll('.zk-slot:not(.zk-pick)').forEach(sl=>{ sl.className='zk-slot empty'; sl.removeAttribute('title'); const a=sl.querySelector('.zk-art'); if(a) a.remove(); const e=sl.querySelector('em'); if(e) e.remove(); });
   }catch(e){}
 }
@@ -110826,7 +110832,7 @@ function ccKitPanel(lobby, frame){
     if(feed) feed.classList.add('zr-feed-plain');
   }
   const T=L();
-  if(!d.alive){ box.innerHTML='<div class="zk-dead"><b>'+esc(T.ccKitOut)+'</b></div>'; return; }
+  if(!d.alive){ const dead='<div class="zk-dead"><b>'+esc(T.ccKitOut)+'</b></div>'; if(box._dead!==dead){ box.innerHTML=dead; box._dead=dead; box._parts=null; } return; }
   /* Пока на карте стоит вопрос, ресы — ровно те, по которым он задан (модель
      уже списала круги до остановки), иначе подсказка говорит «ресы 0», а
      строка внизу — 110, и это читается как две правды. */
@@ -110950,8 +110956,8 @@ function ccKitPanel(lobby, frame){
     }
     return '<div class="zk-compass">'+h+'<b class="zk-heading">'+Math.round(headDeg)+'</b></div>';
   })();
-  box.innerHTML=
-    compass+
+  const parts=[
+    compass,
     '<div class="zk-top">'+
       /* СВОИ КИЛЛЫ НАД ОТРЯДНЫМИ — отзыв: «выше килы мои ниже на команду», и его же
          референс, турнирный HUD Фортнайта: столбиком, число слева, значок справа. Столбик
@@ -110973,8 +110979,8 @@ function ccKitPanel(lobby, frame){
         '<div class="zk-row"><i class="zk-ico zk-ico-plus">+</i><div class="zk-bar zk-health"><i style="width:'+health+'%"></i></div><b>'+health+'</b></div>'+
       '</div>'+
       '<span class="zk-pts">'+level+'</span>'+
-    '</div>'+
-    surge+
+    '</div>',
+    surge,
     '<div class="zk-right">'+
       (CC_ZB ? '<div class="zk-mats zk-zb" title="Zero Build"><b>Zero Build</b></div>' :
       '<div class="zk-mats'+(low?' low':'')+'" data-total="'+mats+'" title="'+esc(T.ccKitMats(mats))+(low?' · '+esc(T.ccKitLow):'')+'">'+
@@ -110984,7 +110990,17 @@ function ccKitPanel(lobby, frame){
       '</div>')+
       builds+
       '<div class="zk-hotbar"'+(pack.length?'':' title="'+esc(T.ccKitLootNone)+'"')+'>'+slots+'</div>'+
-    '</div>';
+    '</div>'];
+  /* ПО ЧАСТЯМ И ТОЛЬКО ИЗМЕНИВШЕЕСЯ (его слово 20.10: «симуляция карты подлагивает»). Панель целиком писалась разметкой
+     на каждом кадре — компас, полоски, ресы и хотбар с картинками заново — и это был главный пересчёт стилей показа
+     (профиль под эмуляцией телефона). Теперь пять частей в обёртках display:contents (раскладка та же: селекторы
+     .zr-kit .zk-…), и пишется только та, у которой поменялась строка. */
+  box._dead=null;
+  if(!box._parts || box.children.length!==parts.length){
+    box.innerHTML=parts.map(x=>'<div style="display:contents">'+x+'</div>').join(''); box._parts=parts.slice();
+  } else {
+    for(let k=0;k<parts.length;k++) if(parts[k]!==box._parts[k]){ box.children[k].innerHTML=parts[k]; box._parts[k]=parts[k]; }
+  }
 }
 // Одно число ресов — тремя стопками, как на HUD: 40% дерево, 35% кирпич, остаток металл.
 // Три стопки на HUD — дерево, кирпич, металл, каждая не выше капа игры (500):
@@ -118050,7 +118066,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='422b4009';
+const CC_BUILD='2a33828c';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого

@@ -1345,7 +1345,7 @@
     if(handle.side){
       var listed = frame.alive <= SIDE_MAX ? spare : [];
       if(!listed.length){
-        handle.side.style.display = 'none'; handle.side.innerHTML = '';
+        if(handle._sideHtml !== ''){ handle.side.style.display = 'none'; handle.side.innerHTML = ''; handle._sideHtml = ''; }
       } else {
         var rows = [];
         for(var kk=0;kk<listed.length;kk++){
@@ -1377,8 +1377,9 @@
               'border-width:4px 0 4px 7px;border-color:transparent transparent transparent ' + col +
               ';filter:drop-shadow(0 0 1px rgba(0,0,0,.9));"></span></div>');
         }
-        handle.side.innerHTML = rows.join('');
-        handle.side.style.display = 'flex';
+        // Пишется, только если список другой: запись разметки на каждом кадре гнала пересчёт стилей (профиль 20.10).
+        var sideHtml = rows.join('');
+        if(sideHtml !== handle._sideHtml){ handle.side.innerHTML = sideHtml; handle._sideHtml = sideHtml; handle.side.style.display = 'flex'; }
       }
     }
 
@@ -1387,7 +1388,7 @@
     var totP = roster.totalPlayers || totS;
     var mine = placeOf(frame, roster);
     var myKills = killsOf(frame, roster);
-    handle.head.innerHTML =
+    var headHtml =
       '<span style="display:flex;align-items:center;gap:7px;">' +
         '<span>' + esc(labels.zone) + ' ' + frame.zone + '</span>' +
         '<span style="opacity:.8;font-variant-numeric:tabular-nums;">' +
@@ -1397,6 +1398,7 @@
         (myKills != null ? killChip(myKills.you, myKills.team) : '') +
         counter(ICON_PLAYER, (frame.players != null ? frame.players : frame.alive), totP) +
         counter(ICON_SQUAD, frame.alive, totS) + '</span>';
+    if(headHtml !== handle._headHtml){ handle.head.innerHTML = headHtml; handle._headHtml = headHtml; }
 
     pushEvents(handle, frame.events, roster);
   }
@@ -1887,7 +1889,7 @@
     // them out before the first frame even drew. So clearing the feed is the
     // caller's job now, via clearFeed(), done before anything is noted for
     // the game about to play.
-    if(handle.side){ handle.side.innerHTML = ''; handle.side.style.display = 'none'; }
+    if(handle.side){ handle.side.innerHTML = ''; handle.side.style.display = 'none'; handle._sideHtml = ''; }
 
     // Whether the page is allowed to animate anything of its own.
     //
@@ -2054,8 +2056,8 @@
     handle.svg.innerHTML = '';
     handle.dead = {};
     // И шапка: 'ЗОНА 12 0:00' над пустым островом — это счёт прошлой игры.
-    if(handle.head) handle.head.innerHTML = '';
-    if(handle.side){ handle.side.innerHTML = ''; handle.side.style.display = 'none'; }
+    if(handle.head){ handle.head.innerHTML = ''; handle._headHtml = ''; }
+    if(handle.side){ handle.side.innerHTML = ''; handle.side.style.display = 'none'; handle._sideHtml = ''; }
     handle.painted = null;
     paint(handle, 0, 0, 1);
     setView(handle, 0, 0, 1);
