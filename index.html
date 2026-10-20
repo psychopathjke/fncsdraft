@@ -118083,7 +118083,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='399c96f0';
+const CC_BUILD='a90f71e9';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -147526,6 +147526,15 @@ function careerWorldTurns(fromISO, toISO){
         if(CC_EV_DELTA) CC_EV_DELTA.day=lastFinal;   // день PR у соседей — день финала, как у старшего (CC_PRIZE_DAY)
         try{ careerD1Posts(lastFinal); } finally { ccEvDeltaSend(); CC_EV_DELTA=was; }
       } else ccEvSeen();   // копилка старшего доедет актом 'res' (ccEvResApply)
+    } else if(typeof ccMpTeam==='function' && ccMpTeam() && !(typeof ccRaceOn==='function' && ccRaceOn())){
+      /* КОМАНДА — так же: финал считает хозяин лобби (роль a), второй берёт копилку. Командный год 20.10 за Pixie и
+         SwizzY: мировой финал 21.02 у двоих разошёлся на поле и деньгах (у каждого своя таблица сезона на момент шага). */
+      if(ccMpRole()==='a'){
+        const was=CC_EV_DELTA;
+        ccEvDeltaStart(lastFinal+'|wfinal|d1');
+        if(CC_EV_DELTA){ CC_EV_DELTA.day=lastFinal; CC_EV_DELTA.alone=true; }
+        try{ careerD1Posts(lastFinal); } finally { ccEvDeltaSend(); CC_EV_DELTA=was; }
+      }
     } else careerD1Posts(lastFinal);
   }
   // Чужие регионы играют свой финал в любом случае — свой вечер их не отменяет.
