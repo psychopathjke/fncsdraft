@@ -119,6 +119,7 @@ const boot = (who) => `
           const k=(CC_EV_DELTA&&CC_EV_DELTA.key)||('w|'+CAREER.career.day);
           let rec=null;
           if(on){ const a=window.__oth[k]||(window.__oth[k]={e:[], w:null});
+            if(!a.rows) a.rows=(teams||[]).map(t=>[(t.squad||[]).map(c=>c&&c.handle).join("+"), t.pow, Math.round((t.closeEdge||0)*100), t.landingZone?ALL_LANDING_ZONES.indexOf(t.landingZone):-1, t.qualSeat||"-", t.stagePts||0, t.style||t.playStyle||"-"].join(":"));
             if(a.e.length<6){ rec={g:CC_MP_GAME, r0:CC_MP_ROLLS, h:hh((teams||[]).map(t=>[(t.squad||[]).map(c=>c&&c.handle).join('+'), t.pow, t.closeEdge||0, t.landingZone?ALL_LANDING_ZONES.indexOf(t.landingZone):-1, t.attrs?[t.attrs.END,t.attrs.SUR,t.attrs.AIM,t.attrs.CLU].join('.'):'-', t.stagePts||0]))}; a.e.push(rec); }
             if(!a.w){ const w={}; ['dev','devL','splits','duoStreak','lft'].forEach(x=>{ w['W.'+x]=hh(CAREER[x]); }); ['duoSplits','trios','chemSince','spots'].forEach(x=>{ w['C.'+x]=hh(CAREER.career[x]); });
               ['CC_SEATS_REMIX','CC_DROP_STAGE','CC_ZB','FORM_SPREAD','CC_EVENT_SIZE','ACTIVE_LANDING_SET','LANDING_TRIM_SIZE','squadSize','CARD_MODE','CC_SPOT_FEAR_MAP','CC_KILL_CAP'].forEach(x=>{ try{ w['L.'+x]=hh(eval(x)); }catch(e){} });

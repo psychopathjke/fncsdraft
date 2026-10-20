@@ -104656,8 +104656,20 @@ async function simulateGamesLive(teams, numGames, pointsFn, killMult, fieldPrefi
           continue;
         }
         if(lobby!==mine){
-          const off=simulateGame(lobby);
-          if(dropOnMap) creditLandingFights(lobby);
+          /* ЛОББИ БЕЗ ЛЮДЕЙ В ЛОКСТЕПЕ — СВОЙ ГЕНЕРАТОР (сид вечера · игра · номер лобби), не общий поток.
+             Общий поток к этому месту у двоих мог разойтись на десятки тысяч бросков, не меняя таблицы своего
+             лобби (показ, повтор, ответы — командный год 20.10: Duos Victory Cup 12.01, r0 79199 против 85508
+             перед первым чужим лобби), и чужие лобби расходились, а за ними весь вечер. Сверка игры смотрит
+             только своё лобби — она это пропускала. Теперь чужие лобби у всех одни, как бы ни шёл свой. */
+          const lockRng=(typeof ccMpLock==='function' && ccMpLock() && CC_MP_SEED)
+            ? careerRng(ccHashStr('oth|'+CC_MP_SEED+'|'+(CC_MP_GAME||g)+'|'+lobbies.indexOf(lobby))) : null;
+          const mr0=Math.random;
+          if(lockRng) Math.random=lockRng;
+          let off;
+          try{
+            off=simulateGame(lobby);
+            if(dropOnMap) creditLandingFights(lobby);
+          } finally { if(lockRng) Math.random=mr0; }
           score(off);
           ccMpMark('oth');
           if(performance.now()-lastYield > 24){
