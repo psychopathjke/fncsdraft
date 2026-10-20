@@ -41,7 +41,7 @@ const run = (tag, aged) => {
     '--allow-file-access-from-files', '--virtual-time-budget=600000', '--dump-dom',
     'file:///' + tmp.split(String.fromCharCode(92)).join('/')],
     { maxBuffer: 512 * 1024 * 1024, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] });
-  const m = dom.match(/PBEGIN([\s\S]*?)PEND/);
+  const m = dom.match(/PBEGIN([\w%\-.!~*'()]*)PEND/);
   if (!m) { console.error(tag + ': проба не отработала'); process.exit(2); }
   const out = JSON.parse(decodeURIComponent(m[1]));
   if (out.fail) { console.error(tag + ': ' + out.fail); process.exit(1); }

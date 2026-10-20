@@ -15,5 +15,5 @@ const fwd=s=>s.split(String.fromCharCode(92)).join('/');
 fs.writeFileSync(tmp,'<base href="file:///'+fwd(ROOT)+'/">'+src+BOOT);
 const dom=execFileSync(CHROME,['--headless=new','--disable-gpu','--no-sandbox','--allow-file-access-from-files',
   '--virtual-time-budget='+(process.argv[3]||300000),'--dump-dom','file:///'+fwd(tmp)],{maxBuffer:1<<29,encoding:'utf8'});
-const m=dom.match(/PBEGIN([\s\S]*?)PEND/);if(!m){console.error('проба не отработала: '+tmp);process.exit(2);}
+const m=dom.match(/PBEGIN([\w%\-.!~*'()]*)PEND/);if(!m){console.error('проба не отработала: '+tmp);process.exit(2);}
 console.log(JSON.stringify(JSON.parse(decodeURIComponent(m[1])),null,1));fs.rmSync(dir,{recursive:true,force:true});

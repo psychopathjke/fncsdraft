@@ -149,7 +149,7 @@ const dom = execFileSync(CHROME, ['--headless=new','--disable-gpu','--no-sandbox
   '--virtual-time-budget=900000','--dump-dom','file:///' + tmp.replace(/\\/g,'/')],
   {maxBuffer:512*1024*1024, encoding:'utf8', stdio:['ignore','pipe','ignore']});
 fs.rmSync(dir, {recursive:true, force:true});
-const m = dom.match(/PBEGIN([\s\S]*?)PEND/);
+const m = dom.match(/PBEGIN([\w%\-.!~*'()]*)PEND/);
 if (!m) { console.error('проба не отработала'); process.exit(2); }
 const out = JSON.parse(decodeURIComponent(m[1]));
 if (out.errs && out.errs.length) console.error('ошибки страницы: ' + out.errs.slice(0,3).join(' | '));

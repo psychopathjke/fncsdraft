@@ -65,7 +65,7 @@ function roster(names, slice) {
     '--allow-file-access-from-files', '--virtual-time-budget=60000', '--dump-dom',
     'file:///' + tmp.split(path.sep).join('/')], { maxBuffer: 512 * 1024 * 1024, encoding: 'utf8' });
   fs.rmSync(dir, { recursive: true, force: true });
-  const m = dom.match(/PBEGIN([\s\S]*?)PEND/);
+  const m = dom.match(/PBEGIN([\w%\-.!~*'()]*)PEND/);
   if (!m) throw new Error('could not read the roster out of the page');
   const out = JSON.parse(decodeURIComponent(m[1]));
   if (out.err) throw new Error(out.err);

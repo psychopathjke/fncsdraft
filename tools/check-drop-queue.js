@@ -217,7 +217,7 @@ try {
 } finally {
   try { fs.rmSync(dir, { recursive: true, force: true }); } catch (e) {}
 }
-const m = dom.match(/PBEGIN([\s\S]*?)PEND/);
+const m = dom.match(/PBEGIN([\w%\-.!~*'()]*)PEND/);
 if (!m) { console.error('проба не отработала'); process.exit(2); }
 const out = JSON.parse(decodeURIComponent(m[1]));
 console.log(JSON.stringify({runs: out.runs, stagesSeen: out.stagesSeen,

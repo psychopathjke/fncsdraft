@@ -94,7 +94,7 @@ try {
 } finally {
   fs.rmSync(dir, { recursive: true, force: true });
 }
-const m = dom.match(/PBEGIN([\s\S]*?)PEND/);
+const m = dom.match(/PBEGIN([\w%\-.!~*'()]*)PEND/);
 if (!m) { console.error('probe did not run'); process.exit(2); }
 const out = JSON.parse(decodeURIComponent(m[1]));
 if (out.err) { console.error(out.err); process.exit(1); }

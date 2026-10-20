@@ -185,7 +185,7 @@ fs.writeFileSync(tmp, src + BOOT);
 const dom = execFileSync(CHROME, ['--headless=new', '--disable-gpu', '--no-sandbox',
   '--allow-file-access-from-files', '--virtual-time-budget=300000', '--dump-dom',
   'file:///' + tmp.replace(/\\/g, '/')], { maxBuffer: 512 * 1024 * 1024, encoding: 'utf8' });
-const m = dom.match(/PBEGIN([\s\S]*?)PEND/);
+const m = dom.match(/PBEGIN([\w%\-.!~*'()]*)PEND/);
 if (!m) { console.error('probe did not run; copy at ' + tmp); process.exit(2); }
 const out = JSON.parse(decodeURIComponent(m[1]));
 if (out.err) { console.error(out.err); process.exit(1); }

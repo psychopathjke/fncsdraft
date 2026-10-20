@@ -277,7 +277,7 @@ async function runOne(tag, who, port){
     await new Promise(r=>setTimeout(r, 1000));
     const r=await c.send('Runtime.evaluate', {expression:"(document.getElementById('__out')||{}).textContent||''", returnByValue:true});
     const txt=(r.result && r.result.result && r.result.result.value) || '';
-    const m=txt.match(/PBEGIN([\s\S]*?)PEND/);
+    const m=txt.match(/PBEGIN([\w%\-.!~*'()]*)PEND/);
     if(m){ out=JSON.parse(decodeURIComponent(m[1])); break; }
   }
   c.close();

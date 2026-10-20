@@ -289,7 +289,7 @@ const dom = execFileSync(CHROME, ['--headless=new','--disable-gpu','--no-sandbox
   '--window-size=1680,950','--virtual-time-budget=180000','--dump-dom',
   'file:///' + tmp.replace(/\\/g,'/')], {maxBuffer:512*1024*1024, encoding:'utf8', stdio:['ignore','pipe','ignore']});
 fs.rmSync(dir, {recursive:true, force:true});
-const m = dom.match(/BEGIN([\s\S]*?)END/);
+const m = dom.match(/BEGIN([\w%\-.!~*'()]*)END/);
 if (!m) { console.error('проба не дала вывода'); process.exit(2); }
 const out = JSON.parse(decodeURIComponent(m[1]));
 out.steps.forEach(s => console.log('  ' + s));

@@ -26,7 +26,7 @@ const CODE = ('Y' + crypto.randomBytes(3).toString('hex').toUpperCase()).slice(0
 const BUDGET_MS = Number(process.env.CC_BUDGET || 6 * 3600000);
 const SEASONS = Number(process.env.CC_SEASONS || 1);   // 2 — после дуо-года закрыть сезон и сыграть трио-год тем же составом комнаты
 // CC_YEAR=2024 (или 2025) — карьера того года: cr.year/year0 в сейве, календарь и карточки того года; без него — 2026.
-const YEAR = [2024, 2025].indexOf(Number(process.env.CC_YEAR)) >= 0 ? Number(process.env.CC_YEAR) : 0;
+const YEAR = [2019, 2020, 2021, 2022, 2023, 2024, 2025].indexOf(Number(process.env.CC_YEAR)) >= 0 ? Number(process.env.CC_YEAR) : 0;   // 20.10: все годы карьеры
 /* ТЕЛЕФОН В ГОНКЕ. Его слово 11.09: «сделай прогон race 1 с компьютера другой с телефона».
    Шесть вкладок одной машины считают устройство одинаково, поэтому годовая проба не ловила
    разъезд по ширине окна — а его скрин 10.09 был именно про него (комната 900 против 2100).
@@ -164,9 +164,23 @@ const boot = (who) => `
         const ovrs=(pool.duos||[]).map(d=>Math.round(ccDuoOvr(d)*10)).join(',');
         out.notes.fields.push([CAREER.career.day, 'n'+size, 'salt '+salt, 'open'+(open?1:0), 'sharp'+sharp, 'seed '+careerSeed(cr, salt), 'crseed '+ccCareerSeed(),
           'taken'+(mine||[]).length+':'+h((mine||[]).map(c=>c&&hKey(c)).sort().join('|')), 'pool'+keys.length+':'+h(keys.join('|'))+':'+h(ovrs), 'tag '+(pool.tag||'-'),
-          'out'+res.length+':'+h(res.map(t=>(t.squad||t.cards||[]).map(c=>c&&hKey(c)).join('+')).join('|')), 'lock'+(ccRaceLock()?1:0)].join(' '));
+          'out'+res.length+':'+h(res.map(t=>(t.squad||t.cards||[]).map(c=>c&&hKey(c)).join('+')).join('|')), 'lock'+(ccRaceLock()?1:0), (${process.env.CC_RC==="1"} ? 'mates '+careerMates().map(c=>c&&c.handle).join(',')+' size'+careerSquadSize()+' lk['+CC_RACE_LOCK_DBG+']'+' rc '+ccRaceAllCards().map(c=>c&&c.handle).sort().join(',')+' st '+JSON.stringify(ccMpStateKeys(), ['trios','duoSplits','dev','devL','splits'])+' tsd '+CAREER.career.triosSeeded+' ws '+CC_RACE_WORLD_SEED+' mk '+(typeof CC_MP_LEDGER!=='undefined'?CC_MP_LEDGER.slice(-6).join(','):'-') : '')].join(' '));
+        if(${process.env.CC_RC==="1"} && !out.notes.trios0){ out.notes.trios0=Object.keys(CAREER.career.trios||{}).sort().map(k=>k+'='+CAREER.career.trios[k]); }
         if(out.notes.fields.length>8) out.notes.fields.shift(); }catch(e){ out.notes.fields.push('err '+e.message); }
       return res; };
+    /* КОМУ ПЛАТИТ ВЕЧЕР. Прогон годов 20.10, 2021: три строки досок есть не у всех (Queasy, Blacky,
+       Snap). Пишем каждую выплату командам людей и тем, кто с ними в одной строке призовых. */
+    out.notes.pay=[]; { const ma0=careerMoneyAdd; careerMoneyAdd=function(ranked, prize){
+      try{ (ranked||[]).forEach((t,i)=>{ const usd=prize(i+1, t)||0; if(!usd) return; const nm=ccBoardName(t.name); const who=ccMoneyWho(nm);
+        const hum=t.isYou || t.mpTag || who.some(h=>/^live\d/i.test(h));
+        if(hum && out.notes.pay.length<80) out.notes.pay.push(CAREER.career.day+' '+(t.isYou?'*':'')+(t.mpTag||'')+' '+who.join('+')+' $'+usd+' key '+((CC_EV_DELTA&&CC_EV_DELTA.key)||'-')); }); }catch(e){ out.notes.pay.push('err '+e.message); }
+      return ma0.apply(this, arguments); }; }
+    out.notes.rb=[]; { const rb0=ccEventRosterBegin; ccEventRosterBegin=function(fmt){ const r=rb0.apply(this, arguments);
+      try{ out.notes.rb.push(CAREER.career.day+' fmt'+fmt+' '+(r?'swap':'-')+' partners '+(CAREER.partners||[]).map(x=>x&&x.card&&x.card.handle||x&&x.handle).join(',')); }catch(e){} return r; }; }
+    /* КТО МЕНЯЕТ ТРОЙКИ (прогон 2025, 20.10): у одного клиента cr.trios после книги мира не те. */
+    out.notes.tw=[]; if(${process.env.CC_RC==="1"}){ let last=''; const th=()=>{ try{ return String(ccHashStr(JSON.stringify((CAREER.career||{}).trios||null))); }catch(e){ return 'x'; } };
+      const watch=(name)=>{ const f=window[name]; if(typeof f!=='function') return; window[name]=function(){ const b=th(); const r=f.apply(this, arguments); const a=th(); if(a!==b && out.notes.tw.length<60) out.notes.tw.push(CAREER.career.day+' '+name+' '+b+'>'+a); return r; }; };
+      ['ccRaceWorldApply','careerPools','careerLoad','ccApplyTeamState','careerTrioRaids','ccTrioMarket','careerNewSeason','careerEntry','careerCupField','ccContinuityThirds','careerMateSeat','ccEventRosterBegin','ccEventRosterEnd','ccWorldReset'].forEach(watch); }
     out.notes.skipped=[]; const cp0=careerCanPlay; careerCanPlay=function(next){ let ok=cp0.apply(this, arguments);
       /* НЕКЕМ ИГРАТЬ — САЖАЕМ НАПАРНИКА ЗДЕСЬ ЖЕ.
          Живой игрок это и делает: увидел «нужен напарник» и позвал кого-то. На перемотке
@@ -343,7 +357,11 @@ const boot = (who) => `
        расходится на сотни долларов и один-два вечера. Здесь каждый клиент кладёт свою
        доску без СВОИХ строк (они у каждого свои по определению), а Node их сравнивает. */
     out.notes.board=(function(){ try{
-      return careerMoneyRows('year').filter(r=>!r.you).map(r=>r.name+':'+r.events+':'+r.usd);
+      /* Люди гонки и их напарники помечены «~»: у каждого из них своя строка «ты», сравнивать
+         её наличие нельзя. Остальные строки обязаны быть у всех (сверка «нет у одного»). */
+      const race=(typeof ccRaceTakenKeys==='function') ? ccRaceTakenKeys() : new Set();
+      try{ const me=careerCard(); if(me) race.add(hKey(me)); (careerMates()||[]).forEach(m=>m&&race.add(hKey(m))); }catch(e){}
+      return careerMoneyRows('year').filter(r=>!r.you).map(r=>(race.has(hKey(r.name))?'~':'')+r.name+':'+r.events+':'+r.usd);
     }catch(e){ return null; } })();
     /* Какие вечера попали в ДОСКИ этой карьеры (cr.evSeen). Расхождение досок на $100
        при одинаковом числе вечеров означает, что где-то один и тот же вечер посчитан
@@ -431,7 +449,7 @@ async function runOne(tag, who, port, phone){
     try{ [txt, prog]=JSON.parse((r.result && r.result.result && r.result.result.value) || '["",""]'); }catch(e){}
     // Пульс в журнал: раз в минуту, если что-то поменялось.
     if(prog && prog!==lastProg && Date.now()-lastAt>60000){ console.log('  ['+stamp()+'] '+tag+' · '+prog); lastProg=prog; lastAt=Date.now(); }
-    const m=txt.match(/PBEGIN([\s\S]*?)PEND/);
+    const m=txt.match(/PBEGIN([\w%\-.!~*'()]*)PEND/);   // жадно: ник с «PEND» внутри резал вывод (прогон 2019, 20.10)
     if(m){ out=JSON.parse(decodeURIComponent(m[1])); break; }
   }
   c.close();
@@ -457,6 +475,9 @@ async function runOne(tag, who, port, phone){
       (r.notes.mateErr ? ' · напарник не сел: '+r.notes.mateErr : ''));
     if(r.notes.s1) console.log('   сезон 1: '+JSON.stringify(r.notes.s1)+' → сезон '+r.notes.season+' (состав '+r.notes.size+'): старт '+JSON.stringify(r.notes.s2start)+' · напарники '+JSON.stringify(r.notes.s2mates)+' · вечеров по сезонам '+JSON.stringify(r.notes.bySeason));
     console.log('   вечера: '+(r.notes.nights||[]).join(' | '));
+    (r.notes.pay||[]).forEach(x=>console.log('   платёж: '+x));
+    (r.notes.tw||[]).forEach(x=>console.log('   тройки: '+x));
+    (r.notes.rb||[]).forEach(x=>console.log('   состав капа: '+x));
     if(r.notes.renderRolls && r.notes.renderRolls.length) console.log('   FAIL броски в отрисовке: '+r.notes.renderRolls.join(' | '));
     (r.notes.fields||[]).forEach(f=>console.log('   поле: '+f));
     if(r.notes.skipped && r.notes.skipped.length) console.log('   не сыграно: '+[...new Set(r.notes.skipped)].join(' | '));
@@ -472,6 +493,8 @@ async function runOne(tag, who, port, phone){
     if(slow.length) console.log('   медленные барьеры: '+slow.join(' | '));
     if(process.env.CC_VERBOSE==='1'){ console.log('   журнал: '+(r.notes.table||[]).join(' ; ')); console.log('   метки: '+(r.notes.marks||[]).slice(-40).join(' | ')); }
   });
+  if(outs.some(r=>r.notes.trios0)){ const sets=outs.map(r=>new Set(r.notes.trios0||[]));
+    sets.forEach((a,i)=>{ if(!i) return; console.log('тройки #1 vs #'+(i+1)+': только у #1 '+[...sets[0]].filter(x=>!a.has(x)).join(' ')+' · только у #'+(i+1)+' '+[...a].filter(x=>!sets[0].has(x)).join(' ')); }); }
   // Общий вечер у всех, кто в одном дивизионе: журналы сравниваются по дням турниров.
   const days=outs.map(r=>new Set((r.notes.table||[]).map(t=>t.split(' ')[0])));
   const all=[...new Set(outs.flatMap(r=>(r.notes.table||[]).map(t=>t.split(' ')[0])))].sort();
@@ -486,7 +509,16 @@ async function runOne(tag, who, port, phone){
     if(MOBILE.size && !devs.some(x=>x.phone && x.d && x.d.ua==='phone')){ console.log('   FAIL телефон не притворился телефоном'); bad++; }
   }
   // Доски призовых: у всех одна, кроме своих строк.
-  const boards=outs.map(r=>new Map((r.notes.board||[]).map(x=>{ const i=x.indexOf(':'); return [x.slice(0,i), x.slice(i+1)]; })));
+  const skipRow=new Set();
+  outs.forEach(r=>(r.notes.board||[]).forEach(x=>{ if(x[0]==='~') skipRow.add(x.slice(1, x.indexOf(':'))); }));
+  outs.forEach(r=>[].concat(r.notes.mates||[], [r.notes.mate]).forEach(m=>m&&skipRow.add(m)));
+  const boards=outs.map(r=>new Map((r.notes.board||[]).map(x=>{ x=x.replace(/^~/, ''); const i=x.indexOf(':'); return [x.slice(0,i), x.slice(i+1)]; })));
+  /* СТРОКА ЕСТЬ НЕ У ВСЕХ. Раньше «нет строки — не видел» пропускалось, и прогон годов 20.10
+     прошёл зелёным при досках 852 против 854 строк. Чужой человек сцены обязан стоять у всех. */
+  { const keys=new Set(); boards.forEach(b=>b.forEach((v,k)=>keys.add(k)));
+    const miss=[]; keys.forEach(k=>{ if(skipRow.has(k)) return; const have=boards.map(b=>b.has(k)); if(have.some(x=>!x)) miss.push(k+' ['+have.map(x=>x?1:0).join('')+'] '+(boards.find(b=>b.has(k)).get(k))); });
+    console.log('строк не у всех: '+miss.length+(miss.length?': '+miss.slice(0,10).join(' | '):''));
+    if(miss.length){ console.log('   FAIL доски: строка есть не у всех'); bad++; } }
   if(boards.length>1 && boards[0].size){
     const mine=outs.map(r=>new Set([].concat(r.notes.mates||[], (r.notes.dbg&&r.notes.dbg.rivals)||[]).filter(Boolean)));
     let diff=[], nDiff=0;   // строк печатаем шесть, а считаем все: счёт по длине списка трижды соврал 11.09

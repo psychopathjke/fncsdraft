@@ -120,7 +120,7 @@ const dir=fs.mkdtempSync(path.join(os.tmpdir(),'ccsolosess-')); const tmp=path.j
 fs.writeFileSync(tmp, '<base href="file:///'+ROOT.split(SL).join('/')+'/">'+fs.readFileSync(path.join(ROOT,'index.html'),'utf8')+BOOT);
 const dom=execFileSync(CHROME, ['--headless=new','--disable-gpu','--no-sandbox','--allow-file-access-from-files','--virtual-time-budget=300000','--dump-dom','file:///'+tmp.split(SL).join('/')], {maxBuffer:512*1024*1024, encoding:'utf8', stdio:['ignore','pipe','ignore']});
 fs.rmSync(dir,{recursive:true,force:true});
-const m=dom.match(/PBEGIN([\s\S]*?)PEND/); if(!m){ console.error('проба не отработала'); process.exit(2); }
+const m=dom.match(/PBEGIN([\w%\-.!~*'()]*)PEND/); if(!m){ console.error('проба не отработала'); process.exit(2); }
 const out=JSON.parse(decodeURIComponent(m[1]));
 if(out.err){ console.error('ERR: '+out.err); process.exit(1); }
 out.fails.forEach(f=>console.log(' FAIL '+f)); if(out.fails.length) process.exit(1);

@@ -72,7 +72,7 @@ let bad = 0;
     '--hide-scrollbars', '--allow-file-access-from-files', '--virtual-time-budget=20000',
     '--window-size=' + w + ',700', '--dump-dom',
     'file:///' + tmp.replace(/\\/g, '/')], { maxBuffer: 512 * 1024 * 1024, encoding: 'utf8' });
-  const m = dom.match(/BEGIN([\s\S]*?)END/);
+  const m = dom.match(/BEGIN([\w%\-.!~*'()]*)END/);
   if (!m) { console.error('probe did not run at ' + w); process.exit(2); }
   const out = JSON.parse(decodeURIComponent(m[1]));
   console.log('  ' + w + ': rows ' + JSON.stringify(out.notes.rows));

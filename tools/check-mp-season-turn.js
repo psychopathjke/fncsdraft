@@ -36,7 +36,7 @@ const dir=fs.mkdtempSync(path.join(os.tmpdir(),'trn-')); const tmp=path.join(dir
 fs.writeFileSync(tmp,'<base href="file:///'+ROOT+'/">'+fs.readFileSync(path.join(ROOT,'index.html'),'utf8')+BOOT);
 const dom=execFileSync(CHROME,['--headless=new','--disable-gpu','--no-sandbox','--allow-file-access-from-files','--virtual-time-budget=600000','--dump-dom','file:///'+tmp.split(String.fromCharCode(92)).join('/')],{maxBuffer:1<<30,encoding:'utf8',stdio:['ignore','pipe','ignore'],timeout:900000});
 fs.rmSync(dir,{recursive:true,force:true});
-const m=dom.match(/BEGIN([\s\S]*?)END/); if(!m){console.error('no output');process.exit(2);}
+const m=dom.match(/BEGIN([\w%\-.!~*'()]*)END/); if(!m){console.error('no output');process.exit(2);}
 const out=JSON.parse(decodeURIComponent(m[1]));
 const fails=[];
 if(out.fail) fails.push(out.fail);

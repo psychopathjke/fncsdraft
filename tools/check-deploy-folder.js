@@ -104,7 +104,7 @@ try {
     '--allow-file-access-from-files','--virtual-time-budget=60000','--dump-dom',
     'file:///' + tmp.replace(/\\/g,'/')], {maxBuffer:512*1024*1024, encoding:'utf8', stdio:['ignore','pipe','ignore']});
 } finally { fs.rmSync(tmp, {force:true}); }
-const m = dom.match(/BEGIN([\s\S]*?)END/);
+const m = dom.match(/BEGIN([\w%\-.!~*'()]*)END/);
 if (!m) { console.error('страница из папки не поднялась'); process.exit(2); }
 const out = JSON.parse(decodeURIComponent(m[1]));
 out.bad.forEach(u => fails.push('404 в браузере: ' + u));

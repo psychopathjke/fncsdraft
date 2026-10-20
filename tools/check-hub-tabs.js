@@ -111,7 +111,7 @@ for (const w of WIDTHS) {
     '--allow-file-access-from-files', '--window-size=' + w + ',900',
     '--virtual-time-budget=30000', '--dump-dom',
     'file:///' + tmp.replace(/\\/g, '/')], { maxBuffer: 512 * 1024 * 1024, encoding: 'utf8' });
-  const m = dom.match(/PBEGIN([\s\S]*?)PEND/);
+  const m = dom.match(/PBEGIN([\w%\-.!~*'()]*)PEND/);
   if (!m) { console.error(w + 'px: probe did not run; copy at ' + tmp); process.exit(2); }
   const out = JSON.parse(decodeURIComponent(m[1]));
   if (out.err) { console.error(w + 'px: ' + out.err); process.exit(1); }

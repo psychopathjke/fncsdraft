@@ -113,7 +113,7 @@ const dom = execFileSync(CHROME, ['--headless=new', '--disable-gpu', '--no-sandb
   'file:///' + tmp.split(String.fromCharCode(92)).join('/')],
   { maxBuffer: 512 * 1024 * 1024, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] });
 fs.rmSync(dir, { recursive: true, force: true });
-const m = dom.match(/PBEGIN([\s\S]*?)PEND/);
+const m = dom.match(/PBEGIN([\w%\-.!~*'()]*)PEND/);
 if (!m) { const f = path.join(os.tmpdir(), 'ownclub-dom.html'); fs.writeFileSync(f, dom); console.error('проба не отработала, страница в ' + f); process.exit(2); }
 const out = JSON.parse(decodeURIComponent(m[1]));
 if (out.err) { console.error('ERR: ' + out.err); process.exit(1); }

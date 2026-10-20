@@ -189,7 +189,7 @@ const dom = execFileSync(CHROME, [
   'file:///' + tmp.replace(/\\/g, '/')
 ], { maxBuffer: 64 * 1024 * 1024, encoding: 'utf8' });
 
-const m = dom.match(/BEGIN([\s\S]*?)END/);
+const m = dom.match(/BEGIN([\w%\-.!~*'()]*)END/);
 if(!m){ console.error('the probe never reported; copy at ' + tmp); process.exit(2); }
 const r = JSON.parse(decodeURIComponent(m[1]));
 fs.rmSync(dir, {recursive: true, force: true});

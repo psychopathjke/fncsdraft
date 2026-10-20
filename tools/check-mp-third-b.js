@@ -97,7 +97,7 @@ const dom = execFileSync(CHROME, ['--headless=new', '--disable-gpu', '--no-sandb
   '--allow-file-access-from-files', '--virtual-time-budget=60000', '--dump-dom',
   'file:///' + tmp.replace(/\\/g, '/')], {maxBuffer: 512*1024*1024, encoding: 'utf8', stdio:['ignore','pipe','ignore']});
 fs.rmSync(dir, {recursive: true, force: true});
-const m = dom.match(/PBEGIN([\s\S]*?)PEND/);
+const m = dom.match(/PBEGIN([\w%\-.!~*'()]*)PEND/);
 if (!m) { console.error('проба не отработала'); process.exit(2); }
 const out = JSON.parse(decodeURIComponent(m[1]));
 if (out.err) { console.error('ERR: ' + out.err); process.exit(1); }

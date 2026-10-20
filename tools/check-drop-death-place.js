@@ -115,7 +115,7 @@ const dom = execFileSync(CHROME, ['--headless=new', '--disable-gpu', '--no-sandb
   '--virtual-time-budget=300000', '--dump-dom', 'file:///' + tmp.replace(/\\/g, '/')],
   { maxBuffer: 512 * 1024 * 1024, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] });
 
-const m = dom.match(/BEGIN([\s\S]*?)END/);
+const m = dom.match(/BEGIN([\w%\-.!~*'()]*)END/);
 if (!m) { console.error('probe did not run; copy at ' + tmp); process.exit(2); }
 const out = JSON.parse(decodeURIComponent(m[1]));
 out.steps.forEach(s => console.log('  ' + s));

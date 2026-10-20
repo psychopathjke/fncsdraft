@@ -51,7 +51,7 @@ srv.listen(0,'127.0.0.1',()=>{
   execFile(CHROME,["--headless=new","--disable-gpu","--no-sandbox","--virtual-time-budget=60000","--dump-dom",url],{maxBuffer:512*1024*1024,encoding:"utf8",timeout:120000},(err,dom)=>{
   if(err)console.error("chrome failed",err.message); dom=dom||"";
   srv.close();
-  const m=dom.match(/BEGIN([\s\S]*?)END/); if(!m){console.log('страница не поднялась');process.exit(2);}
+  const m=dom.match(/BEGIN([\w%\-.!~*'()]*)END/); if(!m){console.log('страница не поднялась');process.exit(2);}
   const out=JSON.parse(decodeURIComponent(m[1]));
   console.log('url:',out.href); console.log('запрошено файлов:',asked.size,'| нет на сервере:',missing.length,missing.slice(0,15));
   console.log('404 в браузере:',out.bad); console.log('ошибки:',out.errs);

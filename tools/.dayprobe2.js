@@ -38,5 +38,5 @@ const dom=execFileSync(CHROME,['--headless=new','--disable-gpu','--no-sandbox',
  '--allow-file-access-from-files','--virtual-time-budget=120000','--dump-dom',
  'file:///'+tmp.split(path.sep).join('/')],{maxBuffer:512*1024*1024,encoding:'utf8',stdio:['ignore','pipe','ignore']});
 fs.rmSync(dir,{recursive:true,force:true});
-const m=dom.match(/PBEGIN([\s\S]*?)PEND/);
+const m=dom.match(/PBEGIN([\w%\-.!~*'()]*)PEND/);
 console.log(m?JSON.stringify(JSON.parse(decodeURIComponent(m[1])),null,1):'нет вывода');

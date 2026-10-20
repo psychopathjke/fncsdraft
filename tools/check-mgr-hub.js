@@ -1003,7 +1003,7 @@ const dom=execFileSync(CHROME,['--headless=new','--disable-gpu','--no-sandbox','
   '--virtual-time-budget=1800000','--dump-dom','file:///'+tmp.split(String.fromCharCode(92)).join('/')],
   {maxBuffer:1<<30, encoding:'utf8', stdio:['ignore','pipe','ignore'], timeout:2700000});
 fs.rmSync(dir,{recursive:true, force:true});
-const m=dom.match(/BEGIN([\s\S]*?)END/);
+const m=dom.match(/BEGIN([\w%\-.!~*'()]*)END/);
 if(!m){ console.log('FAIL нет вывода'); process.exit(2); }
 const out=JSON.parse(decodeURIComponent(m[1]));
 if(out.errs.length) out.fails.push('JS: '+out.errs.slice(0,3).join(' | '));
