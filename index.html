@@ -118300,6 +118300,8 @@ function ccMpGate(kind){
       if(!why || (new Date()).getTime()-since<CC_MP_LEAVE_MS) return;
       try{ ccMpTell(why); }catch(e){}
       if(typeof CC_FF==='undefined' || !CC_FF){ try{ careerBackToHub(); }catch(e){} }
+      // В перемотке это пропуск дня, как от его ffskip: день шагает (личный вечер — переигрывается одному), а не встаёт ошибкой.
+      else if(MP.gateDay && !(typeof ccRaceOn==='function' && ccRaceOn() && !ccMpTeam())){ CC_MP_FF_SKIPDAY=MP.gateDay; CC_MP_PEER_SKIPS.add(MP.gateDay); }
       if(MP.gateCancel) MP.gateCancel(why);
     }, 1000);
     MP.ready(careerToday(), kind||null);
@@ -118326,6 +118328,10 @@ function ccMpGateDayWhy(){
      где нас нет) и придёт. Его снимок 29 августа: перемотка встала на 22 янв с
      «напарник на 11 янв», пока тот играл соло-квалификацию. Сдаёмся только на
      напарника, который стоит в хабе на другом дне. */
+  /* …кроме перемотки, ушедшей ВПЕРЁД: напарник в перемотке уже на более позднем дне — этот вечер он прошёл (пропустил
+     или сыграл один), и к воротам не придёт, хоть и считает свой. Командный год 20.10: ворота LCQ Solo Reload 16.11
+     висели до конца сезона, а напарник был на 29.11. */
+  if(hb.ff && typeof CC_FF!=='undefined' && CC_FF && String(hb.day)>String((typeof MP!=='undefined' && MP.gateDay) || careerToday())) return L().ccMpOtherDay(ccDayLabel(hb.day));
   if(hb.rand!==false) return null;
   return L().ccMpOtherDay(ccDayLabel(hb.day));
 }
@@ -126478,7 +126484,6 @@ function careerAdvanceTo(iso){
       careerRenderHub('centre');
     return;
   }
-  if(ccPrPruneOnStep()) try{ ccPrPrune(); }catch(e){}
   CC_MP_HOLD=true;
   try{ careerAdvanceBody(iso); }
   finally{ CC_MP_HOLD=false; }
@@ -151997,6 +152002,7 @@ function careerNewSeason(){
      «не надо это правило». Вылет сняли 22-го, сегодня ушла и строка в ленте,
      которая продолжала мерить сезон отменённой отсечкой. */
   careerOrgSeasonEnd();
+  try{ ccPrPrune(); }catch(e){}   // хвост Power Ranking — здесь, у всех одинаково (см. ccPrPrune)
   /* The year that just ended is written down before it stops being the year.
 
      Nothing recorded what a past season was played in — the archive worked it
@@ -157013,7 +157019,12 @@ async function careerLandingPick(field, you, title, kinds, o){
      годовая проба 8.09: Evaluation 18.12, игра 3, у одного лишний own:live6 и вечер стоит.
      Голос за высадку идёт проводом, как в живой игре; в перемотке владелец отвечает сам
      («домой», если дом есть, иначе «тихо») — см. chooser ниже. */
-  if(CC_FF && !(typeof ccRaceLock==='function' && ccRaceLock())){
+  /* И СОЛО ВДВОЁМ В КОМАНДЕ (вопрос с адресом, you.mpTag): короткий путь сажал каждого из двоих на КОМАНДНУЮ точку
+     своего сейва и раскладывал комнату заново на каждого — у двоих высадка финала Solo Reload расходилась с первой игры
+     и вечер вставал на вопросах (командный год 20.10, 21.11: «drop=39/179000 vs drop=39/168784», «mid:swizzy#2 vs
+     late:pixie#1»). Там высадка идёт общим путём, как в гонке: голос с адресом, в перемотке отвечает сам владелец. */
+  const soloPair=!!(you && you.mpTag && typeof ccMpOn==='function' && ccMpOn());
+  if(CC_FF && !(typeof ccRaceLock==='function' && ccRaceLock()) && !soloPair){
     const mine=careerSpotZone(ccNightSpot(ACTIVE_LANDING_SET));
     careerSpotFearOn(you);
     const groups=buildBotLandingAssignment(field.filter(t=>t!==you)).zoneGroups;
@@ -171647,10 +171658,12 @@ function careerPrAdd(ranked, meta){
   // Prune on the way out, so the save never holds more than the board shows.
   if(!ccPrPruneOnStep()) ccPrPrune();
 }
-/* ОБРЕЗКА ХВОСТА — НА ШАГЕ ДНЯ, КОГДА ДОСКА ОБЩАЯ. Хвост доски резался после каждого своего вечера, а копилки чужих
+/* ОБРЕЗКА ХВОСТА — ОДИН РАЗ, НА СТЫКЕ СЕЗОНОВ. Хвост доски резался после каждого своего вечера, а копилки чужих
    вечеров (ccEvResApply) доезжают в своё время и не режут: у двоих хвост обрезался в разные моменты, и строка, срезанная
    у одного, потом снова росла с нуля — Hijoe 85 вечеров у одного и 74 у другого (командный год 20.10, 3800 строк PR).
-   В команде и гонке режется на шаге дня — к нему все вечера дня у всех уже записаны, — и при равенстве по нику. */
+   Шаг дня тоже не годится: после личного соло-вечера одного копилка доезжает до второго уже за его шагом. В команде и
+   гонке хвост держится весь сезон (несколько тысяч строк) и режется в careerNewSeason — у всех в одной точке; при
+   равенстве по нику. */
 function ccPrPruneOnStep(){ return (typeof ccMpTeam==='function' && ccMpTeam()) || (typeof ccRaceOn==='function' && ccRaceOn()); }
 function ccPrPrune(){
   const t=careerPrTally(), names=Object.keys(t.rows);
