@@ -5015,6 +5015,22 @@
   .cc-lobby .ch-ro.has-spot{flex-direction:column;gap:8px;}
   .cc-lobby .ch-ro-spotcard{flex:none;max-width:none;width:100%;}
   .cc-lobby .ch-ro-spotcard .cc-spot-shot{height:auto;min-height:0;aspect-ratio:16/7;}
+  /* Меню без прокрутки (20.10): в колонке карта точки — миниатюра справа от цифр, полосы под составом нет; цифры
+     плотнее. Вне меню миниатюры нет, там прежняя большая карта. */
+  .ch-ro-sx{display:block;}
+  .ch-ro-spotmini{display:none !important;}
+  .cc-lobby .ch-ro.has-spot > .ch-ro-spotcard{display:none;}
+  .cc-lobby .ch-ro-sx{display:flex;align-items:stretch;gap:8px;margin-top:6px;padding-top:6px;border-top:1px solid rgba(255,255,255,.1);}
+  .cc-lobby .ch-ro-sx .ch-ro-stats{flex:1 1 auto;min-width:0;margin:0;padding:0;border:0;gap:4px 8px;}
+  .cc-lobby .ch-ro-sx .ch-ro-stats em{font-size:9px;letter-spacing:.06em;}
+  .cc-lobby .ch-ro-sx .ch-ro-stats b{font-size:12px;}
+  .cc-lobby .ch-ro-sx .ch-ro-stats .cc-aura-row{max-width:none;}
+  .cc-lobby .ch-ro-sx .ch-ro-spotmini{display:block !important;flex:0 0 84px;width:84px;max-width:84px;border-radius:8px;}
+  .cc-lobby .ch-ro-spotmini .cc-spot-shot{width:100%;height:100%;min-height:0;aspect-ratio:auto;}
+  .cc-lobby .ch-ro-spotmini .ch-ro-spotcap{padding:10px 6px 4px;}
+  .cc-lobby .ch-ro-spotmini .ch-ro-spotcap em{font-size:8px;}
+  .cc-lobby .ch-ro-spotmini .ch-ro-spotcap b{font-size:15px;}
+  .cc-lobby .ch-ro-spotmini .ch-ro-spotcap small{font-size:9.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   .ch-ro-spot{display:flex;align-items:baseline;gap:6px;margin-top:4px;padding-top:6px;border-top:1px solid rgba(255,255,255,.1);font-size:12px;font-weight:800;color:#fff;cursor:pointer;}
   .ch-ro-spot em{font-style:normal;font-size:10px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;color:#8fa1cc;}
   .ch-ro-spot i{font-style:normal;color:#ffdd00;font-weight:800;}
@@ -124704,6 +124720,10 @@ function ccRostersStripHTML(){
       if(f===cur && mates.length && careerPartnerCard()){ const d=careerChemDays(), pct=Math.min(100, Math.round(d/CC_CHEM_DAYS*100));
         parts.push(row(T.ccChem, '<b>'+pct+'% · +'+careerChem()+'</b>')); }
       stats='<div class="ch-ro-stats">'+parts.join('')+'</div>';
+      /* В колонке меню — миниатюрой справа от цифр (его слово 20.10: «может расширить красиво как-то ростеры, чтоб
+         не листать»): полоса карты на всю ширину под каждым составом и уводила сборную за край. Большая карта
+         остаётся на «Профиле», где широко; здесь та же точка тем же кликом, только маленькая. */
+      stats='<div class="ch-ro-sx">'+stats+spot.replace('class="ch-ro-spotcard"', 'class="ch-ro-spotcard ch-ro-spotmini"')+'</div>';
     }
     return card
       ? '<div class="ch-ro has-spot'+(f===cur ? ' on' : '')+(soon ? ' soon' : '')+'"><div class="ch-ro-main"><em>'+esc(NAME[f])+' · '+when+'</em>'+who+stats+act+'</div>'+spot+'</div>'
