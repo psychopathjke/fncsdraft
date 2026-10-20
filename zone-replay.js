@@ -1512,6 +1512,13 @@
       return (typeof matchMedia === 'function' && matchMedia('(max-width: 820px)').matches) ? 32 : 0;
     }catch(e){ return 0; }
   })();
+  /* ПОТОЛОК — ТОЛЬКО КОГДА КАДР ДОРОГОЙ (его слово 20.10: «лагает во время ротаций зон»). Тридцать картинок в
+     секунду на iPhone 15 Pro Max с экраном 120 Гц — это рывки ровно тогда, когда все бегут: пока зона стоит,
+     маркеры почти не двигаются и разницы не видно. Замер под эмуляцией телефона: кадр показа (карта + таблица,
+     всё, что делает шаг) — 0.8 мс медиана на ПК, 4.3 при процессоре вчетверо медленнее (p99 1.6 и 25). Поэтому шаг меряется
+     сам (скользящее среднее), и пол в FRAME_FLOOR держится, только пока шаг дороже FRAME_COSTLY_MS: слабому
+     телефону — тридцать кадров, как решили 20 августа, сильному — каждое обновление экрана. */
+  var FRAME_COSTLY_MS = 6, stepCost = 0;
   var lastDrawAt = 0;
   function drawClock(){
     return (typeof performance !== 'undefined' && performance.now) ? performance.now() : Date.now();
@@ -1548,8 +1555,9 @@
          returning on the strength of one would leave the promise unresolved and
          a tournament waiting on it for ever. */
       var now = drawClock();
-      var wait = FRAME_FLOOR - (now - lastDrawAt);
-      if(FRAME_FLOOR && wait > 0){
+      var floor = stepCost > FRAME_COSTLY_MS ? FRAME_FLOOR : 0;
+      var wait = floor - (now - lastDrawAt);
+      if(floor && wait > 0){
         clearTimeout(timer);
         timer = setTimeout(go, Math.max(2, wait));
         if(typeof requestAnimationFrame === 'function') requestAnimationFrame(go);
@@ -1558,7 +1566,9 @@
       done = true;
       lastDrawAt = now;
       clearTimeout(timer);
+      var t0 = drawClock();
       fn();
+      stepCost += (drawClock() - t0 - stepCost) * 0.1;
     }
     timer = setTimeout(go, MIN_DRAW_MS);
     if(typeof requestAnimationFrame === 'function') requestAnimationFrame(go);
