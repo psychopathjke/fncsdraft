@@ -158,7 +158,8 @@ const boot = (who) => `
           let nx=null; try{ nx=careerNext(); }catch(e){}
           out.notes.stall={day:CAREER.career.day, ff:!!CC_FF, next:nx&&{type:nx.type, title:nx.title}, can:nx?careerCanPlay(nx):null,
             why:(typeof ccMpWhy==='function')?ccMpWhy():null, block:(typeof ccMpBlockWhy==='function')?ccMpBlockWhy():null, gate:!!MP.gate, alone:CC_MP_ALONE, rand:!!CC_MP_RAND,
-            screen:[...document.querySelectorAll('.screen')].filter(e=>e.offsetParent!==null).map(e=>e.id).join(','), mates:careerMates().map(m=>m&&m.handle)};
+            screen:[...document.querySelectorAll('.screen')].filter(e=>e.offsetParent!==null).map(e=>e.id).join(','), mates:careerMates().map(m=>m&&m.handle),
+            log:(CAREER.career.log||[]).slice(-3).map(r=>[r.day,r.kind,r.stage||'',r.place,r.who||''].join(' ')), waiting:MP.waiting||null, ffPlayed:(CC_FF&&CC_FF.played||[]).slice(-4), ffUntil:CC_FF&&CC_FF.until, run:(typeof CAREER_RUN!=='undefined'&&CAREER_RUN)?1:0, natTeam:(CAREER.career.nat||{}).team||null};
           break;
         }
       }
@@ -264,9 +265,13 @@ async function runOne(who, port){
     if(m.onlyA.length || m.onlyB.length){ console.log('   FAIL доски призовых: только у A '+m.onlyA.slice(0,6).join(' | ')+' · только у B '+m.onlyB.slice(0,6).join(' | ')); bad++; }
     /* Какие ключи вечеров легли у двоих по-разному. Свой одиночный вечер у одного — «ключ|s<ник>»,
        у другого он же приходит копилкой «R:ключ|s<ник>»: сравниваются как одно. */
-    { const norm=km=>{ const o={}; Object.keys(km||{}).forEach(k=>{ o[k.replace(/^R:/, '')]=km[k]; }); return o; };
+    { /* Свой одиночный вечер пишется под голым ключом, к напарнику он уезжает с ником («|s<ник>»):
+         варианты одного ключа складываются по игроку, и сравнивается сумма. */
+      const norm=km=>{ const o={}; Object.keys(km||{}).forEach(k=>{ const base=k.replace(/^R:/, '').replace(/\|s[^|]*$/, '');
+          const m=o[base]||(o[base]={}); String(km[k]||'').split(',').filter(Boolean).forEach(x=>{ const i=x.lastIndexOf('='); const h=x.slice(0,i); m[h]=(m[h]||0)+Number(x.slice(i+1)); }); });
+        const out={}; Object.keys(o).forEach(k=>{ out[k]=Object.keys(o[k]).sort().filter(h=>o[k][h]).map(h=>h+'='+o[k][h]).join(','); }); return out; };
       const ka=norm(a.km), kb=norm(b.km); const keys=[...new Set([...Object.keys(ka), ...Object.keys(kb)])].sort();
-      let nb=0; keys.forEach(k=>{ if(ka[k]===kb[k]) return; nb++;
+      let nb=0; keys.forEach(k=>{ if((ka[k]||'')===(kb[k]||'')) return; nb++;   // пустой ключ — что его нет
         if(nb<=12){ const pa=new Map((ka[k]||'').split(',').filter(Boolean).map(x=>x.split('='))), pb=new Map((kb[k]||'').split(',').filter(Boolean).map(x=>x.split('=')));
           const hs=[...new Set([...pa.keys(), ...pb.keys()])].filter(h=>pa.get(h)!==pb.get(h)).slice(0,5);
           console.log('   ключ '+k+' ['+(ka[k]!=null?'A':'-')+(kb[k]!=null?'B':'-')+'] '+hs.map(h=>h+' '+(pa.get(h)||0)+'/'+(pb.get(h)||0)).join(' | ')); } });

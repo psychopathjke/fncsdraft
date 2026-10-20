@@ -132,7 +132,7 @@ const boot = (who) => `
         if((list||[]).length>60) return bl1.apply(this, arguments);
         let before=null; try{ const sm=(typeof ccStageSeats==='function') ? ccStageSeats() : null; before=(list||[]).map(t=>{ const k=ccSeatMapKey(t); const v=sm?sm.get(k):null; return (t.mpTag||'')+String(t.name||'').replace(/<[^>]+>/g,'').slice(0,10)+':m'+(v?ALL_LANDING_ZONES.indexOf(ccSeatZone(v)):'-')+':q'+(t.qualSeat||'-')+':sp'+(t.stagePts||0)+':p'+(t.pow||0)+':gc'+(t.gcRoute||'-'); }); }catch(e){ before=['err '+e]; }
         const res=bl1.apply(this, arguments);
-        try{ const after=(list||[]).map(t=>ALL_LANDING_ZONES.indexOf(t.landingZone)); window.__seats.push('d'+CAREER.career.day.slice(5)+' g'+CC_MP_GAME+' r'+CC_MP_ROLLS+' st '+CC_DROP_STAGE+' into'+(o&&o.into?1:0)+' n'+(list||[]).length+' | '+before.map((b,i)=>b+'>'+after[i]).join(' ')); if(window.__seats.length>16) window.__seats.shift(); }catch(e){}
+        try{ const after=(list||[]).map(t=>ALL_LANDING_ZONES.indexOf(t.landingZone)); window.__seats.push('d'+CAREER.career.day.slice(5)+' g'+CC_MP_GAME+' r'+CC_MP_ROLLS+' st '+CC_DROP_STAGE+' into'+(o&&o.into?1:0)+' n'+(list||[]).length+' | '+before.map((b,i)=>b+'>'+after[i]).join(' ')); if(CAREER.career.day===${JSON.stringify(process.env.CC_DAY_DUMP||'')} && CC_MP_GAME<=1){ (window.__seatsDay=window.__seatsDay||[]); if(window.__seatsDay.length<200) window.__seatsDay.push(window.__seats[window.__seats.length-1]); } if(window.__seats.length>16) window.__seats.shift(); }catch(e){}
         return res; }; }
 
     /* ИЗ ЧЕГО СЛОЖИЛАСЬ ОЦЕНКА КОРОБКИ. Прогон 2024 #3/#5 (22.09): в лобби игры 7 слабая половина
@@ -166,6 +166,13 @@ const boot = (who) => `
           'taken'+(mine||[]).length+':'+h((mine||[]).map(c=>c&&hKey(c)).sort().join('|')), 'pool'+keys.length+':'+h(keys.join('|'))+':'+h(ovrs), 'tag '+(pool.tag||'-'),
           'out'+res.length+':'+h(res.map(t=>(t.squad||t.cards||[]).map(c=>c&&hKey(c)).join('+')).join('|')), 'lock'+(ccRaceLock()?1:0), (${process.env.CC_RC==="1"} ? 'mates '+careerMates().map(c=>c&&c.handle).join(',')+' size'+careerSquadSize()+' lk['+CC_RACE_LOCK_DBG+']'+' rc '+ccRaceAllCards().map(c=>c&&c.handle).sort().join(',')+' st '+JSON.stringify(ccMpStateKeys(), ['trios','duoSplits','dev','devL','splits'])+' tsd '+CAREER.career.triosSeeded+' ws '+CC_RACE_WORLD_SEED+' mk '+(typeof CC_MP_LEDGER!=='undefined'?CC_MP_LEDGER.slice(-6).join(','):'-') : '')].join(' '));
         if(${process.env.CC_RC==="1"} && !out.notes.trios0){ out.notes.trios0=Object.keys(CAREER.career.trios||{}).sort().map(k=>k+'='+CAREER.career.trios[k]); }
+        /* ХЕШ КАЖДОГО КЛЮЧА СЕЙВА на сборке поля (CC_RC=1): у троих поле одно, а чужое лобби расходится —
+           какой ключ у них разный, тот и вход. */
+        if(${process.env.CC_RC==="1"}){ const day=CAREER.career.day; out.notes.kh=out.notes.kh||{}; if(!out.notes.kh[day]){ const o={};
+          const hh=x=>{ const s=JSON.stringify(x===undefined?null:x)||''; let v=0; for(let i=0;i<s.length;i++) v=(v*31+s.charCodeAt(i))|0; return (v>>>0).toString(16)+':'+s.length; };
+          Object.keys(CAREER).forEach(k=>{ if(k!=='career') o['T.'+k]=hh(CAREER[k]); });
+          Object.keys(CAREER.career).forEach(k=>{ o['c.'+k]=hh(CAREER.career[k]); });
+          out.notes.kh[day]=o; } }
         if(out.notes.fields.length>8) out.notes.fields.shift(); }catch(e){ out.notes.fields.push('err '+e.message); }
       return res; };
     /* КОМУ ПЛАТИТ ВЕЧЕР. Прогон годов 20.10, 2021: три строки досок есть не у всех (Queasy, Blacky,
@@ -192,6 +199,22 @@ const boot = (who) => `
       const ra1=ccEvResApply; ccEvResApply=function(d){ const ok=ra1.apply(this, arguments);
         try{ if(ok && d && d.key){ const o=window.__km[d.key]||(window.__km[d.key]={}); Object.keys(d.money||{}).forEach(h=>{ const v=Math.round(d.money[h]||0); if(v) o[h]=(o[h]||0)+v; }); o.__in=1; } }catch(e){}
         return ok; }; }
+    /* ЛОББИ БЕЗ ЛЮДЕЙ НА ДНЕ CC_DAY_DUMP: вход каждой команды перед simulateGame и броски до/после.
+       Прогон 2026 (20.10): Duos Victory Cup 5.01 расходится на игре 2 в чужом лобби при равном поле. */
+    out.notes.ws=[]; { const rw0=ccRaceWorldSync; ccRaceWorldSync=function(n, who){ const rec={d:CAREER.career.day, n:n, who:Array.isArray(who)?who.length:String(who), me:ccMpId().slice(-5), lock:(typeof ccRaceLock==="function"&&ccRaceLock())?1:0}; const r=rw0.apply(this, arguments); Promise.resolve(r).then(v=>{ rec.res=v; if(out.notes.ws.length<40) out.notes.ws.push(JSON.stringify(rec)); }); return r; };
+      const ra0=ccRaceWorldApply; ccRaceWorldApply=function(w){ if(out.notes.ws.length<40) out.notes.ws.push("apply "+CAREER.career.day); return ra0.apply(this, arguments); }; }
+    out.notes.oth=[]; if(${JSON.stringify(process.env.CC_DAY_DUMP||'')}){ const sg1=simulateGame; simulateGame=function(teams){
+        const dump=CAREER && CAREER.career && CAREER.career.day===${JSON.stringify(process.env.CC_DAY_DUMP||'')} && CC_MP_GAME<=2 && out.notes.oth.length<160;
+        const r0=CC_MP_ROLLS; let rows=null;
+        if(dump && !out.notes.glob){ const o={}; const hh=x=>{ let t; try{ t=JSON.stringify(x, (k,v)=>(v instanceof Map)?[...v.entries()]:(v instanceof Set)?[...v]:v); }catch(e){ t="!"+e.message; } t=String(t).slice(0,200000); let v=0; for(let i=0;i<t.length;i++) v=(v*31+t.charCodeAt(i))|0; return (v>>>0).toString(16)+":"+t.length; };
+          Object.getOwnPropertyNames(window).filter(k=>/^[A-Z][A-Z0-9_]{2,}$/.test(k)).forEach(k=>{ try{ const v=window[k]; if(typeof v==="function") return; o[k]=hh(v); }catch(e){} });
+          try{ /* let-глобалы не на window: самые подозрительные — по имени */ ["CC_SEATS_REMIX","CC_DROP_STAGE","CC_ZB","FORM_SPREAD","CC_EVENT_SIZE","ACTIVE_LANDING_SET","LANDING_TRIM_SIZE","CC_RUN_MAP","CC_NIGHT_SLOPE","CC_SPOT_FEAR_MAP","CC_BEEF_ZONES","CC_RACE_EDGE_NOW","CC_RACE_POW_NOW","CC_STYLE_SENT","CC_PRIZE_DAY","CC_ZONE_TUNE","CC_RELOAD","CC_SKIP_RUN","skipAnimation","squadSize","CARD_MODE"].forEach(k=>{ try{ o["L."+k]=hh(eval(k)); }catch(e){} }); }catch(e){}
+          try{ ["dev","devL","splits","duoStreak","lft"].forEach(k=>{ o["W."+k]=hh(CAREER[k]); }); ["duoSplits","trios","exMates","triosSeeded","race"].forEach(k=>{ o["W.c."+k]=hh(CAREER.career[k]); }); o.marks=(typeof CC_MP_LEDGER!=="undefined")?CC_MP_LEDGER.slice(0,12).join(","):"-"; }catch(e){}
+          out.notes.glob=o; }
+        if(dump) try{ rows=(teams||[]).map(t=>[(t.squad||[]).map(c=>c&&c.handle).join('+'), t.pow, Math.round((t.closeEdge||0)*100), t.landingZone?ALL_LANDING_ZONES.indexOf(t.landingZone):'-', t.attrs?[t.attrs.END,t.attrs.SUR,t.attrs.AIM,t.attrs.CLU].join('.'):'-', t.style||t.playStyle||'-', Math.round((t.form||0)*100), t.stagePts||0].join(':')); }catch(e){ rows=['err '+e.message]; }
+        const res=sg1.apply(this, arguments);
+        if(dump) out.notes.oth.push({g:CC_MP_GAME, r0:r0, r1:CC_MP_ROLLS, n:(teams||[]).length, rows:rows, ctx:[ACTIVE_LANDING_SET, (ALL_LANDING_ZONES||[]).length, CC_DROP_STAGE, CC_SEATS_REMIX?1:0, (CC_DROP_SEATS&&CC_DROP_SEATS.size)||0, (typeof ccDropBook==="function"&&ccDropBook())?1:0, (typeof ccMpLock==="function"&&ccMpLock())?1:0].join(" ")});
+        return res; }; }
     out.notes.skipped=[]; const cp0=careerCanPlay; careerCanPlay=function(next){ let ok=cp0.apply(this, arguments);
       /* НЕКЕМ ИГРАТЬ — САЖАЕМ НАПАРНИКА ЗДЕСЬ ЖЕ.
          Живой игрок это и делает: увидел «нужен напарник» и позвал кого-то. На перемотке
@@ -379,6 +402,7 @@ const boot = (who) => `
        по-разному, а не пропущен: два списка ключей отвечают, что именно из двух. */
     out.notes.evSeen=Object.keys((cr.evSeen)||{});
     out.notes.km=window.__km||{};
+    out.notes.seatsDay=window.__seatsDay||[];
     out.notes.card=(typeof careerCard==='function' && careerCard()) ? hKey(careerCard()) : null;
     out.notes.money=cr.earnings; out.notes.ovr=CAREER.player.ovr; out.notes.titles=(cr.ewc||[]).length;
     out.notes.mates=careerMates().map(m=>m&&m.handle); out.notes.noMate=(typeof careerNoMate==='function')?careerNoMate('eval'):null; out.notes.form=cr.form; out.notes.energy=cr.energy;
@@ -508,6 +532,30 @@ async function runOne(tag, who, port, phone){
   });
   if(outs.some(r=>r.notes.trios0)){ const sets=outs.map(r=>new Set(r.notes.trios0||[]));
     sets.forEach((a,i)=>{ if(!i) return; console.log('тройки #1 vs #'+(i+1)+': только у #1 '+[...sets[0]].filter(x=>!a.has(x)).join(' ')+' · только у #'+(i+1)+' '+[...a].filter(x=>!sets[0].has(x)).join(' ')); }); }
+  if(outs.some(r=>r.notes.kh)){ const days=[...new Set(outs.flatMap(r=>Object.keys(r.notes.kh||{})))].sort();
+    days.forEach(d=>{ const hs=outs.map(r=>(r.notes.kh||{})[d]); if(hs.some(x=>!x)) return;
+      const keys=[...new Set(hs.flatMap(h=>Object.keys(h)))].sort();
+      const diff=keys.filter(k=>hs.some(h=>h[k]!==hs[0][k]));
+      console.log('ключи сейва '+d+': разные у троих '+diff.length+': '+diff.join(' ')); }); }
+  if(outs.some(r=>(r.notes.seatsDay||[]).length)){ for(let ci=1; ci<outs.length; ci++){ const A=outs[0].notes.seatsDay||[], B=outs[ci].notes.seatsDay||[]; let i=0; while(i<A.length && i<B.length && A[i]===B[i]) i++;
+    console.log('   раздачи #1 vs #'+(ci+1)+': '+A.length+'/'+B.length+(i<Math.max(A.length,B.length) ? ' · первая разная #'+i : ' · одинаковы'));
+    if(i<Math.max(A.length,B.length)){ const ra=String(A[i]||'').split(' | '), rb=String(B[i]||'').split(' | '); console.log('     '+ra[0]+'  ⇄  '+rb[0]); const xa=(ra[1]||'').split(' '), xb=(rb[1]||'').split(' '); let k=0; for(let j=0;j<Math.max(xa.length,xb.length)&&k<10;j++){ if(xa[j]!==xb[j]){ console.log('       '+xa[j]+'  ⇄  '+xb[j]); k++; } } } } }
+  outs.forEach((r,i)=>console.log('   мир #'+(i+1)+': '+(r.notes.ws||[]).slice(-12).join(' | ')));
+  if(outs.some(r=>r.notes.glob)){ for(let ci=1;ci<outs.length;ci++){ const A=outs[0].notes.glob||{}, B=outs[ci].notes.glob||{}; const ks=[...new Set([...Object.keys(A),...Object.keys(B)])].filter(k=>A[k]!==B[k]); console.log("   глобалы #1 vs #"+(ci+1)+": разных "+ks.length+": "+ks.slice(0,40).join(" ")); console.log("     книга #1: "+A.marks+"  ⇄  #"+(ci+1)+": "+B.marks); } }
+  if(outs.some(r=>(r.notes.oth||[]).length)){
+    // Каждый с первым: отличаться может любой (тот, у кого другая история).
+    for(let ci=1; ci<outs.length; ci++){ const A=outs[0].notes.oth||[], B=outs[ci].notes.oth||[]; console.log('   #1 vs #'+(ci+1)+':');
+    console.log('чужие лобби дня '+process.env.CC_DAY_DUMP+': '+A.length+'/'+B.length);
+    for(let i=0;i<Math.min(A.length,B.length);i++){
+      const a=A[i], b=B[i];
+      const same=a.g===b.g && a.n===b.n && a.r0===b.r0 && a.r1===b.r1 && JSON.stringify(a.rows)===JSON.stringify(b.rows);
+      if(same) continue;
+      console.log('   первое разное лобби #'+i+': g'+a.g+'/'+b.g+' n'+a.n+'/'+b.n+' r0 '+a.r0+'/'+b.r0+' r1 '+a.r1+'/'+b.r1); console.log('     ctx '+a.ctx+'  ⇄  '+b.ctx);
+      const ra=a.rows||[], rb=b.rows||[]; let k=0;
+      for(let j=0;j<Math.max(ra.length, rb.length) && k<8;j++){ if(ra[j]!==rb[j]){ console.log('     '+j+': '+ra[j]+'  ⇄  '+rb[j]); k++; } }
+      break;
+    } }
+  }
   // Общий вечер у всех, кто в одном дивизионе: журналы сравниваются по дням турниров.
   const days=outs.map(r=>new Set((r.notes.table||[]).map(t=>t.split(' ')[0])));
   const all=[...new Set(outs.flatMap(r=>(r.notes.table||[]).map(t=>t.split(' ')[0])))].sort();
