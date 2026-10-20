@@ -38,46 +38,59 @@ const BOOT = `
     check('a free agent has no month goal', careerMonthGoal() === null);
 
     // One goal a month, the same one however often it is read.
+    /* С 20.10 (его «пусть сам выбирает реалистичные цели… FNCS там или квал FNCS») — три цели из календаря
+       месяца: надёжная / средняя / амбициозная, бонус ×1/×2/×4 от месячной ставки; засчитывается с дня выбора;
+       не выбрал до вечера — клуб ставит среднюю (careerMonthGoalCheck). */
+    const base = Math.max(100, Math.round(1200/careerWagePaydays().length/10)*10);
     fresh(4);
     const g = careerMonthGoal();
-    check('a club asks for something', !!g);
+    check('a club offers three goals', !!g && Array.isArray(g.opts) && g.opts.length === 3, g && JSON.stringify(g.opts));
     check('and asks the same thing twice', JSON.stringify(careerMonthGoal()) === JSON.stringify(g));
-    check('the low divisions are asked for a cut', g.type === 'cut', g.type);
-    check('the bonus is a month of the wage',
-          g.bonus === Math.max(100, Math.round(1200/careerWagePaydays().length/10)*10), String(g.bonus));
-    out.notes.d4 = g.type + ' $' + g.bonus;
+    check('nothing is picked yet', g.pick === null);
+    check('the bonus grows with the goal', g.opts[0].bonus === Math.round(base/10)*10 && g.opts[1].bonus === Math.round(base*2/10)*10 && g.opts[2].bonus === Math.round(base*4/10)*10,
+          g.opts.map(o=>o.bonus).join('/'));
+    check('every goal is from the calendar or any event', g.opts.every(o=>['cash','fncsCup','fncsFinal','majorQual','majorFinal','solo','any'].indexOf(o.cat)>=0), g.opts.map(o=>o.cat).join(','));
+    out.notes.d4 = g.opts.map(o=>o.type+':'+o.cat+':'+(o.n||'')).join(' | ');
 
-    // Division 1 is asked for a finish worth printing.
     fresh(1);
     const g1 = careerMonthGoal();
-    check('Division 1 is asked for a placing', g1.type === 'place' && g1.n <= 10,
-          g1.type + ' ' + g1.n);
-    out.notes.d1 = g1.type + ' ' + g1.n;
+    check('Division 1 gets an FNCS goal among the three', g1.opts.some(o=>/^fncs|^major/.test(o.cat)), g1.opts.map(o=>o.cat).join(','));
+    out.notes.d1 = g1.opts.map(o=>o.type+':'+o.cat+':'+(o.n||'')).join(' | ');
 
-    // A result inside the month meets it, and the money lands once.
+    // Строка журнала, которая выполняет вариант o: вид по ccMgCat, место или проход.
+    const rowFor = (o, day) => {
+      const kind = {cash:'victory', fncsCup:undefined, fncsFinal:'final', majorQual:'major', majorFinal:'major', solo:'solo', any:'victory'}[o.cat];
+      const r = {season:1, day:day, div:4, place:(o.type==='place' ? o.n : 30), of:500, passed:true, prize:0};
+      if(kind) r.kind = kind;
+      if(o.cat==='majorFinal') r.stage='final'; if(o.cat==='majorQual') r.stage='heats';
+      return r;
+    };
+
     fresh(4);
     const goal = careerMonthGoal();
-    check('nothing is met on an empty month', careerMonthGoalMet() === false);
-    CAREER.career.log.push({season:1, day:'2026-02-17', div:4, place:12, of:500,
-                            kind:'cup', passed:true, prize:0});
-    check('a cut inside the month meets it', careerMonthGoalMet() === true);
+    CAREER.career.log.push(rowFor(goal.opts[0], '2026-02-05'));
+    check('nothing counts before a pick', careerMonthGoalMet() === false);
+    careerMonthGoalPick(0, true);
+    check('a result from before the pick does not count', careerMonthGoalMet() === false);
+    CAREER.career.log.push(rowFor(goal.opts[0], '2026-02-17'));
+    check('a result after the pick meets it', careerMonthGoalMet() === true);
     const paid = careerMonthGoalCheck();
-    check('and it pays the bonus', paid === goal.bonus, String(paid));
-    check('into the balance', CAREER.career.balance === goal.bonus, String(CAREER.career.balance));
+    check('and it pays the bonus', paid === goal.opts[0].bonus, String(paid));
+    check('into the balance', CAREER.career.balance === goal.opts[0].bonus, String(CAREER.career.balance));
     check('once', careerMonthGoalCheck() === 0);
 
-    // Last month's result does not pay this month's bonus.
     fresh(4);
-    CAREER.career.log.push({season:1, day:'2026-01-20', div:4, place:3, of:500,
-                            kind:'cup', passed:true, prize:0});
+    careerMonthGoal();
+    CAREER.career.log.push(Object.assign(rowFor(careerMonthGoal().opts[1], '2026-01-20')));
+    careerMonthGoalCheck();
+    check('nobody picked — the club sets the middle one', careerMonthGoal().pick === 1, String(careerMonthGoal().pick));
     check('a result from another month does not count', careerMonthGoalMet() === false);
 
-    // And the clock moving is what judges it, which is where every runner ends.
     fresh(4);
-    CAREER.career.log.push({season:1, day:'2026-02-11', div:4, place:9, of:500,
-                            kind:'cup', passed:true, prize:0});
+    const gm = careerMonthGoal();
+    CAREER.career.log.push(rowFor(gm.opts[1], '2026-02-11'));
     careerAdvanceTo('2026-02-12');
-    check('advancing the day pays it', CAREER.career.balance > 0, String(CAREER.career.balance));
+    check('advancing the day picks the middle one and pays it', CAREER.career.balance === gm.opts[1].bonus, String(CAREER.career.balance));
     out.notes.paidOnAdvance = CAREER.career.balance;
   } catch(e) { out.err = String(e && e.stack || e); }
   document.getElementById('__out').textContent =

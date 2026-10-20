@@ -123,6 +123,9 @@ const BOOT = `
     check('and the feed says so',
           (CAREER.career.news || []).some(n => n.k === 'ccNewsRentGone'));
 
+    // Плитка и окно переезда вместе (с 20.10 карта и регионы — в окне #movePickModal, его его слово «в отдельном окне»).
+    const mv = () => { const t = careerMoveHTML(); const m = document.getElementById('movePickModal'), b = document.getElementById('movePickBody');
+      return t + ((m && b && m.style.display !== 'none') ? b.innerHTML : ''); };
     // The screen. The tile is only for the career the edge exists for.
     fresh(50000, 'ge');
     const tile = careerMoveHTML();
@@ -130,7 +133,7 @@ const BOOT = `
     check('and it says what the connection is worth',
           tile.indexOf(ccPingOf('ge') + ' ms') >= 0, ccPingOf('ge') + ' ms');
     CH_MOVE = true;
-    const withMap = careerMoveHTML();
+    const withMap = mv();
     const shapes = (withMap.match(/class="cc-mp"/g) || []).length;
     out.notes.mapShapes = shapes;
     check('the map opens with every country on it', shapes >= CC_COUNTRIES.length - 2,
@@ -138,7 +141,7 @@ const BOOT = `
     check('and it is the move handler on it, not the creation screen\\'s',
           /ccMoveMapClick/.test(withMap) && !/ccMapClick/.test(withMap));
     CH_MOVE_PICK = 'rs';
-    const picked = careerMoveHTML();
+    const picked = mv();
     check('picking a country prices it', picked.indexOf('$' + ccRentOf('rs').toLocaleString('en-US')) >= 0);
     check('and says what it is worth', /cc-move-pick/.test(picked));
 
@@ -150,7 +153,7 @@ const BOOT = `
     CH_MOVE = true;
     CC_SHOP_SEC = 'home';   // переезд — в разделе «Жильё» (магазин разделами, 15.10)
     careerRenderHub('shop');
-    const body = document.getElementById('chBody');
+    const body = document.getElementById('movePickBody');
     const svgBefore = body.querySelector('.cc-map');
     const de = body.querySelector('[data-code="de"]');
     check('the map is in the document', !!svgBefore && !!de);
@@ -167,11 +170,8 @@ const BOOT = `
             panel.innerHTML.indexOf(ccCountryName('de')) >= 0);
       // Sticky is what keeps that answer on screen, and a clipping ancestor is
       // what would quietly kill it.
-      check('the panel is sticky', getComputedStyle(panel).position === 'sticky',
-            getComputedStyle(panel).position);
-      const tile = panel.closest('.cc-move');
-      check('and nothing clips it', getComputedStyle(tile).overflow === 'visible',
-            getComputedStyle(tile).overflow);
+      // В окне панель стоит рядом с картой (или под ней на телефоне) и видна без липкости.
+      check('the panel is in the move window', !!panel.closest('#movePickModal'));
       out.notes.mapHeight = Math.round(svgBefore.getBoundingClientRect().height);
     }
 
@@ -272,7 +272,7 @@ const BOOT = `
     // under the same button, and the crossing still goes through.
     CH_MOVE = true;
     check('and is offered the regions',
-          careerMoveHTML().indexOf('careerMoveShowRegion') >= 0);
+          mv().indexOf('careerMoveShowRegion') >= 0);
     CH_MOVE_REG = 'OCE';
     /* Кнопка зовётся careerMoveAsk, а не careerMoveRegion.
        Переезд БЕЗ команды сжигает место на ЛАНе, и с 26 августа он сначала
@@ -280,8 +280,8 @@ const BOOT = `
        переезд по-прежнему делает careerMoveRegion — просто уже после «да».
        Отъезд ВМЕСТЕ место сохраняет и потому спрашивает по-прежнему ничего. */
     check('and picking one gives it the button that goes',
-          careerMoveHTML().indexOf('careerMoveAsk') >= 0 ||
-          careerMoveHTML().indexOf('careerMoveRegion') >= 0);
+          mv().indexOf('careerMoveAsk') >= 0 ||
+          mv().indexOf('careerMoveRegion') >= 0);
     CH_MOVE_REG = null; CH_MOVE = false;
     const wasRegion = ccCareerRegion();
     check('and it can actually cross', careerMoveRegion('NAC') === true);

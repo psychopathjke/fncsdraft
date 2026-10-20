@@ -119127,7 +119127,13 @@ function ccSoloTeamSettle(){
   /* Шагает только день, когда соло-вечер сыгран СЕГОДНЯ (20.10, онлайн-прогон: вдвоём прошли квал 10.01, день штатно встал на
      11.01 — там третья сессия, — пришло состояние напарника, и «прошёл квал» читалось как «сегодня отыграно»: день уезжал на 12.01,
      и 11-е с Reload Opens пропадало. В одиночку такого нет.) */
-  if(!mine || mine.day!==careerToday()) return false;
+  /* Но и не встаёт насовсем: второй день хитов, где обоим играть нечего, должен шагать (сторож check-mp-solo-shared).
+     Держит день не «сыграно не сегодня», а ДРУГОЙ турнир сегодня, который можно сыграть (Reload Opens 11.01). */
+  if(!mine || mine.day!==careerToday()){
+    let other=false;
+    try{ other=(careerEvents().get(careerToday())||[]).some(e=>e.kind!=='solo' && careerCanPlayKind(e.kind)); }catch(e){ other=true; }
+    if(other) return false;
+  }
   const peer=MP.peer;
   if(peer && careerSoloSeriesCanFor(ev, ccSoloStateOf(ev, peer))) return false;   // напарник ещё может сыграть
   CC_MP_ALONE=true;
@@ -139551,7 +139557,7 @@ const CC_POST_BY={
      всякую неназванную строку. Ответ и отказ — твои собственные слова. */
   ccBeefStart:'by',
   ccBeefHit:'you', ccBeefQuiet:'you',
-  ccNewsSp:'you', ccNews1v1:'you', ccNewsSick:'you', ccNewsLocker:'you', ccNewsFnGift:'you', ccNewsSacOwn:'you', ccNewsSacPaid:'you', ccNewsFnWin:'you', ccNewsFnOut:'you',
+  ccNewsSp:'you', ccNews1v1:'you', ccNewsSick:'you', ccNewsLocker:'you', ccNewsFnGift:'you', ccNewsSacOwn:'you', ccNewsSacPaid:'you', ccNewsSacPromo:'you', ccNewsMgAuto:'by', ccNewsFnWin:'you', ccNewsFnOut:'you',
   ccNewsFriendYes:'you', ccNewsFriendNo:'you',
   ccNewsCheatPaid:'you', ccNewsBanned:'you',
   // Moving is the player's own news in all three directions — the flight, the
@@ -149030,7 +149036,8 @@ function careerLogSort(k){
    сезона). Содержимое собирает плитка, как и раньше, — careerRenderHub('shop') после клика по региону
    перерисовывает и окно (ccMoveModalLater), а клик по стране меняет только #ccMovePanel внутри него. */
 function ccMoveModalLater(html){
-  setTimeout(function(){ ccMoveModalSync(html); }, 0);
+  // Сразу, а не таймером: окно лежит на body, отдельно от плитки, и вставлять его можно, пока плитка ещё строится.
+  ccMoveModalSync(html);
   return '';
 }
 function ccMoveModalSync(html){

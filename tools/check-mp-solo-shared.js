@@ -56,7 +56,7 @@ const BOOT = `
     CAREER.career.soloBy={};
     ccSoloSet(MP.peer, {got:'qual', pass:'qual'});   // напарник прошёл в хиты, но хиты ещё не играл
     check('пока сам не играл — день стоит', ccSoloTeamSettle()===false && careerToday()===day0);
-    ccSoloSet(me, {got:'heats', pass:'heats'});       // я отыграл хиты
+    ccSoloSet(me, {got:'heats', pass:'heats', day:careerToday()});       // я отыграл хиты
     check('панель дня знает, что ждём напарника', ccSoloWaitingPeer()===true && ccMpBlockWhy()===L().ccMpSoloWait, String(ccMpBlockWhy()));
     check('напарник ещё может сыграть — день стоит', ccSoloTeamSettle()===false && careerToday()===day0, careerToday());
     ccSoloSet(MP.peer, {got:'heats', pass:null});     // приехал его итог
@@ -106,11 +106,11 @@ const BOOT = `
     check('а дальше не соло — не шагает', ccSoloTeamSettle()===false && careerToday()===ccAddDays(day0, 2), careerToday());
     // Напарнику играть нечего (не прошёл) — ждать его незачем.
     CAREER.career.day=day0; CAREER.career.soloBy={};
-    ccSoloSet(me, {got:'heats', pass:'heats'}); ccSoloSet(MP.peer, {got:'qual', pass:null});
+    ccSoloSet(me, {got:'heats', pass:'heats', day:careerToday()}); ccSoloSet(MP.peer, {got:'qual', pass:null});
     check('напарник не прошёл — день шагает сразу', ccSoloTeamSettle()===true && careerToday()===ccAddDays(day0, 1), careerToday());
     // Чужой итог приезжает командным состоянием — день шагает оттуда же.
     CAREER.career.day=day0; CAREER.career.soloBy={};
-    ccSoloSet(me, {got:'heats', pass:'heats'});
+    ccSoloSet(me, {got:'heats', pass:'heats', day:careerToday()});
     const remote=ccTeamState(); remote.soloBy=Object.assign({}, remote.soloBy); remote.soloBy[hKey(MP.peer)]={got:'heats', pass:'heats'};
     ccMpApplyRemote(remote);
     check('итог напарника приехал состоянием — день шагнул', careerToday()===ccAddDays(day0, 1), careerToday());
