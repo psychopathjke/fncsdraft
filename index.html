@@ -933,14 +933,17 @@
      unlike the dark UI around it so it reads as an overlay, not a table. */
   @keyframes winIn{ from{opacity:0;transform:translate3d(0,26px,0);} to{opacity:1;transform:none;} }
   @keyframes winShard{ from{transform:translate3d(40px,-20px,0) rotate(8deg);opacity:0;} to{transform:none;opacity:1;} }
-  /* Палитра плашки — своя у каждого сезона (Notion 20.10: «дизайн винера не под каждый сезон»): цвета эфира
-     главы ставит winnersEra() переменными на самой плашке, здесь — бирюза 2026 по умолчанию. */
-  .win-card{--win-acc:#12b5a4;--win-acc2:#0e8f83;--win-on:#fff;--win-ink:#0f1620;--win-bg1:#f2f5f8;--win-bg2:#e2e7ed;--win-bg3:#cdd5df;--win-panel:#fff;--win-fig:#eafffb;
-    position:relative;overflow:hidden;margin-top:14px;border-radius:10px;color:var(--win-ink);
-    padding:16px 18px 0;background:linear-gradient(115deg,var(--win-bg1) 0%,var(--win-bg2) 58%,var(--win-bg3) 100%);
+  /* В СТИЛЕ ТАБЛИЦЫ ЭТАПА (Notion 20.10, скрин 6: «пусть эти победители будут в стиле таблицы а не сезонам»).
+     Светлая плашка с бирюзой стояла под синей таблицей чужим куском. Теперь у неё те же правила, что у таблицы над
+     ней: фон — как у .lobby-wrap, полосы с именами и цифрами — как строка .lobby-table td, подписи — как шапка th,
+     акцент — выделение первого места. И так же по палитре турнира (html.ev-pal / ev-classic, ccEvPaletteApply). */
+  .win-card{--win-acc:#ffe600;--win-on:#0b0f16;--win-ink:#eefbfa;--win-dim:#9fd6d3;--win-panel:#12595e;--win-fig:#fff;
+    --win-bg:linear-gradient(160deg,#0f6a6d 0%,#0b474c 46%,#07333a 100%);
+    position:relative;overflow:hidden;margin-top:14px;border-radius:var(--r,12px);color:var(--win-ink);
+    padding:16px 18px 0;background:var(--win-bg);
     box-shadow:0 10px 30px rgba(0,0,0,.35);animation:winIn .5s cubic-bezier(.2,.9,.25,1.05) both;}
-  .win-card::before{content:'';position:absolute;right:-8%;top:-30%;width:52%;height:170%;
-    background:linear-gradient(150deg,var(--win-w1,var(--win-acc)) 0%,var(--win-w2,var(--win-acc2)) 100%);opacity:.9;
+  .win-card::before{content:'';position:absolute;right:-8%;top:0;width:52%;height:118px;
+    background:linear-gradient(150deg,rgba(255,255,255,.16) 0%,rgba(255,255,255,.04) 100%);border-left:3px solid var(--win-acc);opacity:1;
     clip-path:polygon(28% 0, 100% 0, 100% 100%, 0 100%);
     animation:winShard .6s .1s cubic-bezier(.2,.9,.25,1) both;}
   .win-card > *{position:relative;z-index:1;}
@@ -961,16 +964,24 @@
     padding:5px 15px;transform:skewX(-12deg);}
   .win-chip > span{display:inline-block;transform:skewX(12deg);}
   .win-chip.teal{background:var(--win-acc);color:var(--win-on);}
-  .win-chip.dark{background:var(--win-ink);color:var(--win-panel);}
-  .win-panel{margin:14px -18px 0;background:var(--win-panel);}
+  .win-chip.dark{background:rgba(0,0,0,.28);color:#fff;}
+  html.ev-pal .win-card{--win-acc:var(--ev-h,#ffe600);--win-ink:#f4f6ff;--win-dim:var(--ev-th,#fff);
+    --win-panel:color-mix(in srgb,var(--ev-l) 28%,#0b0f16);--win-bg:linear-gradient(135deg,var(--ev-l) 0%,var(--ev-r) 100%);}
+  html.ev-classic .win-card{--win-ink:#fff;--win-dim:rgba(255,255,255,.8);--win-panel:rgba(255,255,255,.13);border-radius:6px;
+    --win-bg:linear-gradient(120deg,var(--ev-l) 0%,var(--ev-r) 100%);}
+  html.ev-classic.ev-light .win-card{--win-bg:linear-gradient(rgba(8,10,20,.34),rgba(8,10,20,.34)),linear-gradient(120deg,var(--ev-l) 0%,var(--ev-r) 100%);}
+  .win-panel{margin:14px -8px 0;padding:0 0 8px;background:transparent;}
+  .win-panel > *{background:var(--win-panel);border-radius:8px;}
+  .win-panel > .win-grid:has(.lab){background:transparent;}
+  .win-panel > .win-grid:has(.val){margin-top:4px;}
   .win-names{padding:13px 18px 12px;font-weight:900;text-transform:uppercase;
     font-size:clamp(14px,2.2vw,21px);letter-spacing:-.01em;line-height:1.15;color:var(--win-ink);}
   .win-you{display:inline-block;margin-left:8px;padding:2px 8px;border-radius:20px;vertical-align:2px;
     background:var(--win-acc);color:var(--win-on);font-size:10px;letter-spacing:.08em;}
   .win-grid{display:grid;grid-template-columns:repeat(4,1fr);}
-  .win-grid .lab{background:var(--win-acc);color:var(--win-on);font-size:9.5px;font-weight:900;letter-spacing:.06em;
+  .win-grid .lab{background:transparent;color:var(--win-dim);font-size:9.5px;font-weight:900;letter-spacing:.06em;
     text-transform:uppercase;text-align:center;padding:7px 4px 6px;line-height:1.2;}
-  .win-grid .val{text-align:center;font-weight:900;color:var(--win-ink);padding:9px 4px 13px;
+  .win-grid .val{text-align:center;font-weight:900;color:#fff;padding:9px 4px 13px;
     font-size:clamp(20px,3.6vw,32px);font-variant-numeric:tabular-nums;}
   .rating-explainer{margin-top:26px;background:var(--panel);border:1px solid var(--line);
     border-radius:3px;padding:18px 20px;clip-path:var(--cut);}
@@ -108635,36 +108646,6 @@ function winnersFigsHTML(team, size){
     `<div class="win-fig" title="${skinFor(p)}">${portraitHTML(p, px)}<span>${p.handle}</span></div>`).join('');
 }
 
-/* ПЛАШКА ПОБЕДИТЕЛЯ ПО СЕЗОНАМ (Notion 20.10, скрин Trios Cash Cup 2021 в бирюзе 2026). Каждой главе свой эфир:
-   2019 Chapter 1 и World Cup (синий с золотом), 2020 Chapter 2 (жёлтый с чёрным, тёмная плашка), 2021 трио Chapter 2
-   (фиолетовый с розовым), 2022 Chapter 3 (синий, оранжевый клин), 2023 Chapter 4 (оранжево-красный), 2024 Chapter 5
-   (лаймовый на тёмном), 2025 Chapter 6 (красный), 2026 и дальше бирюза. Год — сезон карьеры, а вне карьеры —
-   набор карточек победителя. */
-const WIN_ERA={
-  2019:{acc:'#f2b705', acc2:'#c98a00', w1:'#2a55d8', w2:'#14287a', on:'#0b1636', ink:'#0b1636', bg1:'#e9eefc', bg2:'#c9d5f5', bg3:'#9fb4ee', panel:'#fff', fig:'#fff6d6'},
-  2020:{acc:'#ffd400', acc2:'#e0a800', on:'#111', ink:'#f4f4f4', bg1:'#262626', bg2:'#181818', bg3:'#0b0b0b', panel:'#1b1b1b', fig:'#fff7c2'},
-  2021:{acc:'#9b3cf2', acc2:'#e0218a', on:'#fff', ink:'#1a0b2e', bg1:'#f4eefc', bg2:'#e4d6f7', bg3:'#cdb5ef', panel:'#fff', fig:'#fbe8ff'},
-  2022:{acc:'#1f7bff', acc2:'#0b4fc4', w1:'#ff8a2a', w2:'#e2560e', on:'#fff', ink:'#0a1830', bg1:'#eef4ff', bg2:'#d5e4fb', bg3:'#b7cdf3', panel:'#fff', fig:'#e8f1ff'},
-  2023:{acc:'#ff5a1f', acc2:'#d4222a', on:'#fff', ink:'#1e0d08', bg1:'#fff3ec', bg2:'#fbdccb', bg3:'#f5bea3', panel:'#fff', fig:'#fff0e8'},
-  2024:{acc:'#b8f400', acc2:'#6fbf00', on:'#101a00', ink:'#eef7da', bg1:'#1f2618', bg2:'#151b10', bg3:'#0b0f08', panel:'#151b10', fig:'#f3ffd0'},
-  2025:{acc:'#e8202a', acc2:'#8f0f16', on:'#fff', ink:'#16090a', bg1:'#f6eeee', bg2:'#e8d4d5', bg3:'#d4b2b4', panel:'#fff', fig:'#ffe9ea'}
-};
-function winnersEra(winner){
-  let y=0;
-  try{ if(CARD_MODE && typeof CAREER!=='undefined' && CAREER && CAREER.career && typeof ccSeasonYear==='function') y=ccSeasonYear(); }catch(e){}
-  if(!y){
-    const SET_Y={g:2019, h:2019, i:2020, j:2021, k:2022, e:2023, f:2024, t:2025};
-    const p=((winner && winner.squad)||[]).find(q=>q && SET_Y[String(q.cardSet||'').charAt(0)]);
-    y=p ? SET_Y[String(p.cardSet).charAt(0)] : 2026;
-  }
-  return WIN_ERA[y] ? y : 2026;
-}
-function winnersEraStyle(y){
-  const c=WIN_ERA[y]; if(!c) return '';
-  return '--win-acc:'+c.acc+';--win-acc2:'+c.acc2+';--win-on:'+c.on+';--win-ink:'+c.ink+';--win-bg1:'+c.bg1+';--win-bg2:'+c.bg2+
-         ';--win-bg3:'+c.bg3+';--win-panel:'+c.panel+';--win-fig:'+c.fig+(c.w1 ? ';--win-w1:'+c.w1+';--win-w2:'+c.w2 : '');
-}
-
 async function renderWinnersPlate(shell, winner, you){
   if(!winner) return;
   const f=winnersFigures(winner);
@@ -108679,9 +108660,6 @@ async function renderWinnersPlate(shell, winner, you){
 
   const el=document.createElement('div');
   el.className='win-card';
-  const era=winnersEra(winner);
-  el.dataset.era=String(era);
-  el.setAttribute('style', winnersEraStyle(era));
   el.innerHTML=`
     <div class="win-figs">${figs}</div>
     <div class="win-word">${L().winnersWord}</div>
