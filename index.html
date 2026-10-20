@@ -3145,7 +3145,24 @@
     border-radius:3px;padding:1px 5px;margin-left:4px;}
   /* ВЫБОР ШТАБА В КАРЬЕРЕ — СЕТКОЙ КАРТОЧЕК, КАК В МЕНЕДЖЕРЕ (его слово 20.10, скрин окна STAFF): широкое окно, по три
      карточки в ряд, круглое фото, имя с рейтингом в цвете, строки ставки и эффекта, кнопки найма справа. */
-  :is(#coachPickModal,#agentPickModal,#smmPickModal,#mktPickModal,#staff2PickModal) > div{max-width:980px !important;}
+  :is(#coachPickModal,#agentPickModal,#smmPickModal,#mktPickModal,#staff2PickModal,#movePickModal) > div{max-width:980px !important;
+    background:linear-gradient(160deg,var(--cc-th-a,var(--panel)) 0%,var(--cc-th-b,var(--panel)) 46%,var(--cc-th-c,var(--panel)) 100%) !important;}
+  /* Описание карточки штаба — ник и подписчики строкой, эффекты чипами (его слово 20.10: «описание странно выглядит»:
+     «Рейтинг 95 · @… · 👥 418K · вся карточка» и «Прокачка за день +35% · сыгранность +0.4 · на месяц» рвались по словам). */
+  :is(#coachPickModal,#agentPickModal,#smmPickModal,#mktPickModal,#staff2PickModal) .cc-buy-in i.cc-buy-who{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .cc-buy-in .cc-buy-who{display:block;font-style:normal;font-size:11px;color:rgba(255,255,255,.62);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .cc-buy-chips{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px;}
+  #movePickModal .cc-move-x{width:100%;margin-top:12px;padding:11px;border:none;border-radius:10px;background:rgba(200,225,220,.18);
+    color:#eaf5f3;font-weight:800;font-size:14px;cursor:pointer;letter-spacing:.02em;}
+  #movePickModal .cc-move-regions{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:6px;}
+  #movePickModal .cc-move-regions > .dm-side-h,#movePickModal .cc-move-regions > .ch-hint{grid-column:1 / -1;}
+  #movePickModal .cc-movemap{margin-top:10px;max-height:58vh;overflow:hidden;border-radius:10px;}
+  #movePickModal #ccMovePanel{position:static;margin-top:10px;}
+  @media (min-width:860px){ #movePickBody{display:grid;grid-template-columns:minmax(0,1fr) 300px;column-gap:12px;align-items:start;}
+    #movePickBody > .cc-pick-h,#movePickBody > .cc-move-regions{grid-column:1 / -1;} #movePickBody > .cc-movemap{grid-column:1;} #movePickBody > #ccMovePanel{grid-column:2;margin-top:10px;} }
+  .cc-buy-chips em{font-style:normal;font-size:10.5px;font-weight:800;line-height:1.2;padding:2px 7px;border-radius:999px;
+    background:rgba(255,255,255,.08);color:#dfe7ff;white-space:nowrap;}
+  .cc-buy-chips em.up{background:rgba(70,220,150,.16);color:#7cf0b4;}
   :is(#coachPickModal,#agentPickModal,#smmPickModal,#mktPickModal,#staff2PickModal) .cc-buys{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:8px;margin-top:8px;}
   :is(#coachPickModal,#agentPickModal,#smmPickModal,#mktPickModal,#staff2PickModal) .cc-buy{padding:8px 10px;border:1px solid rgba(255,255,255,.1);border-radius:10px;background:rgba(255,255,255,.05);gap:10px;}
   :is(#coachPickModal,#agentPickModal,#smmPickModal,#mktPickModal,#staff2PickModal) .cc-buy:last-child{border-bottom:1px solid rgba(255,255,255,.1);}
@@ -122473,13 +122490,17 @@ const CC_HUB_THEME={};
 function ccHubThemeApply(h){
   const el=document.getElementById('screen-career-hub'); if(!el) return;
   const props=['--fn-panel','--fn-deep','--fn-line','--lb-panel','--lb-deep','--th-a','--th-b','--th-c','--th-top'];
-  if(h==null){ el.classList.remove('ch-themed'); props.forEach(p=>el.style.removeProperty(p)); return; }
+  const root=document.documentElement;
+  if(h==null){ el.classList.remove('ch-themed'); props.forEach(p=>el.style.removeProperty(p)); ['--cc-th-a','--cc-th-b','--cc-th-c'].forEach(p=>root.style.removeProperty(p)); return; }
   const hsl=(s, l, a)=>'hsla('+Math.round(h)+','+s+'%,'+l+'%,'+(a==null ? 1 : a)+')';
   el.style.setProperty('--fn-panel', hsl(55, 66, .22)); el.style.setProperty('--fn-deep', hsl(65, 12, .72));
   el.style.setProperty('--fn-line', hsl(80, 85, .2));
   el.style.setProperty('--lb-panel', hsl(58, 38, .8)); el.style.setProperty('--lb-deep', hsl(68, 16, .84));
   el.style.setProperty('--th-a', hsl(62, 33)); el.style.setProperty('--th-b', hsl(66, 22)); el.style.setProperty('--th-c', hsl(70, 13));
   el.style.setProperty('--th-top', hsl(62, 30));
+  /* Окна выбора штаба и переезда лежат вне хаба (#coachPickModal и т.д. на body) и цвета сезона не видели — синие
+     в любой карьере (его слово 20.10: «дизайн стафа не меняется на разных карьерах»). Те же три оттенка — на html. */
+  root.style.setProperty('--cc-th-a', hsl(62, 33)); root.style.setProperty('--cc-th-b', hsl(66, 22)); root.style.setProperty('--cc-th-c', hsl(70, 13));
   el.classList.add('ch-themed');
 }
 function ccHubTheme(){
@@ -123795,9 +123816,9 @@ function ccCoachPickOpen(){
            words the shop already uses for it. A coach is a purchase like the
            desk is, so it reads like one. -->
       <div class="cc-buy-in"><b>${esc(c.name)} ${ccStaffBadge(c.rating||ccCoachRatingOf(c)).replace('cc-staff-rt', 'cc-staff-rt mgf-rt')}</b>
-        <i>${L().ccRoOvr} ${c.rating||ccCoachRatingOf(c)} · ${c.at?'@'+esc(c.at)+' · ':''}${CC_COACH_X[c.at] ? '👥 '+ccFollowers(CC_COACH_X[c.at])+' · ' : ''}${what}</i>
-        <span>${L().ccShopTrain} +${Math.round(c.train*100)}%${
-          c.chem?' · '+L().ccCoachChem(c.chem):''} · ${L().ccShopMonth}</span></div>
+        <i class="cc-buy-who">${CC_COACH_X[c.at] ? '👥 '+ccFollowers(CC_COACH_X[c.at])+' · ' : ''}${c.at?'@'+esc(c.at):''}</i>
+        <span class="cc-buy-chips"><em class="up">${L().ccShopTrain} +${Math.round(c.train*100)}%</em>${
+          c.chem ? '<em class="up">'+L().ccCoachChem(c.chem)+'</em>' : ''}<em>${what}</em></span></div>
       ${on ? `<span class="cc-owned">${L().ccShopUntil(ccDayLabel(CAREER.coach.until))}</span>`
            : ccHireBtns(can, paid ? 0 : c.cost, "ccCoachPickTake('"+c.id+"')", "ccCoachPickTake('"+c.id+"',12)", paid ? L().ccOrgPays(esc(CAREER.org.name)) : null)}
     </div>`;
@@ -137660,7 +137681,10 @@ function ccRankPull(list, item){
   return Math.max(0, Math.min(1, (ccStaffRating(item)-60)/35));
 }
 function ccByHand(list){
-  const rank=x=>-ccStaffRating(x)*1e7-(CC_STAFF_X[x.at]!=null ? CC_STAFF_X[x.at] : (x.x||0));
+  /* Равный рейтинг — по подписчикам (его слово 20.10). Коучи держат подписчиков в CC_COACH_X, а читался только
+     CC_STAFF_X — у коучей одного рейтинга порядок был файловый (Boop 128K стоял ниже 98K). */
+  const fol=x=>CC_STAFF_X[x.at]!=null ? CC_STAFF_X[x.at] : (typeof CC_COACH_X!=='undefined' && CC_COACH_X[x.at]!=null) ? CC_COACH_X[x.at] : (x.x||0);
+  const rank=x=>-ccStaffRating(x)*1e7-fol(x);
   // Index carried alongside, so everyone unplaced keeps their own table’s order
   // rather than whatever the sort happens to do with equal keys.
   return list.map((x,i)=>({x:x,i:i}))
@@ -137732,8 +137756,8 @@ function ccMktPickOpen(){
       ${m.photo ? `<img class="cc-buy-img cc-buy-face" src="${PHOTO_DIR}${esc(m.photo)}" alt=""
            loading="lazy" onerror="this.remove()">` : ''}
       <div class="cc-buy-in"><b>${esc(m.name)} ${ccStaffBadge(ccStaffRating(m)).replace('cc-staff-rt', 'cc-staff-rt mgf-rt')}</b>
-        <i>${L().ccRoOvr} ${ccStaffRating(m)} · @${esc(m.at)}${m.x ? ' · '+ccFollowers(m.x) : ''}</i>
-        <span>${L().ccMktRate} +${Math.round((t.rate-1)*100)}% · ${L().ccShopMonth}</span></div>
+        <i class="cc-buy-who">${m.x ? '👥 '+ccFollowers(m.x)+' · ' : ''}@${esc(m.at)}</i>
+        <span class="cc-buy-chips"><em class="up">${L().ccMktRate} +${Math.round((t.rate-1)*100)}%</em></span></div>
       ${mine ? `<span class="cc-owned">${L().ccAgentYours}</span>`
              : ccHireBtns(can, t.cost, "careerHireMkt('"+m.id+"')", "careerHireMkt('"+m.id+"',12)")}
     </div>`;
@@ -138373,11 +138397,8 @@ function ccAgentPickOpen(){
       ${a.photo ? `<img class="cc-buy-img cc-buy-face" src="${PHOTO_DIR}${esc(a.photo)}" alt=""
            loading="lazy" onerror="this.remove()">` : ''}
       <div class="cc-buy-in"><b>${esc(a.name)} ${ccStaffBadge(ccStaffRating(a)).replace('cc-staff-rt', 'cc-staff-rt mgf-rt')}</b>
-        <i>${L().ccRoOvr} ${ccStaffRating(a)} · ${a.at ? '@'+esc(a.at) : ''}${
-          a.x ? ' · '+ccFollowers(a.x)+' '+L().xFollowers.toLowerCase() : ''}</i>
-        <span>${L().ccAgentCutRow} ${Math.round(cut*100)}% · ${
-          L().ccAgentReachRow} +${reach} · ${L().ccAgentWageRow} +${
-          Math.round((wage-1)*100)}%</span></div>
+        <i class="cc-buy-who">${a.x ? '👥 '+ccFollowers(a.x)+' · ' : ''}${a.at ? '@'+esc(a.at) : ''}</i>
+        <span class="cc-buy-chips"><em>${L().ccAgentCutRow} ${Math.round(cut*100)}%</em><em class="up">${L().ccAgentReachRow} +${reach}</em><em class="up">${L().ccAgentWageRow} +${Math.round((wage-1)*100)}%</em></span></div>
       ${mine ? `<span class="cc-owned">${L().ccAgentYours}</span>`
              : `<button class="ch-sign"${can?'':' disabled'} onclick="careerSignAgent('${
                  esc(a.name).replace(/'/g,"\\'")}')">${L().ccAgentSign}</button>`}
@@ -139759,9 +139780,8 @@ function ccSmmPickOpen(){
       <img class="cc-buy-img cc-buy-face" src="${PHOTO_DIR}${esc(m.photo)}" alt=""
            loading="lazy" onerror="this.remove()">
       <div class="cc-buy-in"><b>${esc(m.name)} ${ccStaffBadge(ccStaffRating(m)).replace('cc-staff-rt', 'cc-staff-rt mgf-rt')}</b>
-        <i>${L().ccRoOvr} ${ccStaffRating(m)} · @${esc(m.at)}${m.x ? ' · '+ccFollowers(m.x) : ''}${
-          m.org ? ' · '+esc(m.org) : ''}</i>
-        <span>${L().ccSmmGain} +${Math.round(t.boost*100)}% · ${L().ccShopMonth}</span></div>
+        <i class="cc-buy-who">${m.x ? '👥 '+ccFollowers(m.x)+' · ' : ''}@${esc(m.at)}${m.org ? ' · '+esc(m.org) : ''}</i>
+        <span class="cc-buy-chips"><em class="up">${L().ccSmmGain} +${Math.round(t.boost*100)}%</em></span></div>
       ${on ? `<span class="cc-owned">${L().ccShopUntil(ccDayLabel(CAREER.smm.until))}</span>`
            : ccHireBtns(can, t.cost, "careerHireSmm('"+m.id+"')", "careerHireSmm('"+m.id+"',12)")}
     </div>`;
@@ -139871,8 +139891,8 @@ function ccStaff2PickOpen(kind){
     return `<div class="cc-buy${mine?' own':''}">
       ${p.photo ? `<img class="cc-buy-img cc-buy-face" src="${PHOTO_DIR}${esc(p.photo)}" alt="" loading="lazy" onerror="this.remove()">` : ''}
       <div class="cc-buy-in"><b>${esc(p.name)} ${ccStaffBadge(r).replace('cc-staff-rt', 'cc-staff-rt mgf-rt')}</b>
-        <i>${T.ccRoOvr} ${r}${p.at ? ' · @'+esc(p.at) : ''}${p.x ? ' · '+ccFollowers(p.x) : ''} · ${esc(p.why)}</i>
-        <span>${ccStaff2Effect(kind, r)} · ${T.ccShopMonth}</span></div>
+        <i class="cc-buy-who">${p.x ? '👥 '+ccFollowers(p.x)+' · ' : ''}${p.at ? '@'+esc(p.at) : ''}</i>
+        <span class="cc-buy-chips"><em class="up">${ccStaff2Effect(kind, r)}</em><em>${esc(p.why)}</em></span></div>
       ${mine ? `<span class="cc-owned">${T.ccShopUntil(ccDayLabel(on.until))}</span>`
              : ccHireBtns(can, paid ? 0 : cost, "careerHireStaff2('"+kind+"','"+p.id+"')", "careerHireStaff2('"+kind+"','"+p.id+"',12)", paid ? L().ccOrgPays(esc(CAREER.org.name)) : null)}
     </div>`;
@@ -148901,8 +148921,38 @@ function careerLogSort(k){
   CH_LOG_SORT = (k && CH_LOG_SORT!==k) ? k : null;
   careerRenderHub('log');
 }
+/* ПЕРЕЕЗД — ОТДЕЛЬНЫМ ОКНОМ (его слово 20.10: «может при выборе страны сделать, чтоб показывало в отдельном окне,
+   как вот стафф показывает»). Ряды регионов, карта стран и панель ответа стояли прямо во вкладке «Магазин» и
+   раздували её на экран вниз; теперь это окно поверх, как выбор коуча (#movePickModal, та же рамка и цвета
+   сезона). Содержимое собирает плитка, как и раньше, — careerRenderHub('shop') после клика по региону
+   перерисовывает и окно (ccMoveModalLater), а клик по стране меняет только #ccMovePanel внутри него. */
+function ccMoveModalLater(html){
+  setTimeout(function(){ ccMoveModalSync(html); }, 0);
+  return '';
+}
+function ccMoveModalSync(html){
+  let m=document.getElementById('movePickModal');
+  if(html==null){ if(m) m.style.display='none'; return; }
+  if(!m){
+    m=document.createElement('div'); m.id='movePickModal';
+    m.style.cssText='display:none;position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:230;align-items:center;justify-content:center;padding:16px;';
+    m.onclick=function(e){ if(e.target===m) ccMoveModalClose(); };
+    m.innerHTML='<div style="width:100%;max-width:980px;max-height:90vh;overflow-y:auto;border-radius:14px;background:var(--panel);border:1px solid var(--line);padding:16px;box-shadow:0 20px 60px rgba(0,0,0,.6);">'+
+      '<div id="movePickBody"></div><button type="button" class="cc-move-x" onclick="ccMoveModalClose()"></button></div>';
+    document.body.appendChild(m);
+  }
+  const T=L();
+  m.querySelector('.cc-move-x').textContent=T.closeBtn || T.ccMoveClose;
+  document.getElementById('movePickBody').innerHTML='<h4 class="cc-pick-h">'+esc(T.ccMoveTitle)+'</h4>'+html;
+  m.style.display='flex';
+}
+function ccMoveModalClose(){
+  CH_MOVE=false; CH_MOVE_PICK=null; CH_MOVE_REG=null;
+  ccMoveModalSync(null);
+  careerRenderHub('shop');
+}
 function careerMoveOpen(){
-  CH_MOVE=!CH_MOVE;
+  CH_MOVE=true;
   CH_MOVE_PICK=null;
   CH_MOVE_REG=null;
   careerRenderHub('shop');
@@ -149478,10 +149528,10 @@ function careerMoveHTML(){
     <div class="ch-hint">${L().ccMoveOnlyBuilt}</div>
     <div class="ch-row"><em>${L().ccMoveRegion}</em><b>${
       esc(regionName(ccCareerRegion()))}</b></div>
-    ${careerRegionRowsHTML()}
-    ${CH_MOVE_REG ? (ccMapsReady(function(){ careerRenderHub('shop'); })
+    <button class="ch-swap" onclick="careerMoveOpen()">${L().ccMoveOpen}</button>
+    ${ccMoveModalLater(CH_MOVE ? careerRegionRowsHTML()+(CH_MOVE_REG ? (ccMapsReady(function(){ careerRenderHub('shop'); })
         ? `<div class="cc-movemap">${ccBuildMap('ccMoveMapClick(event)', CH_MOVE_REG)}</div>` : '')+
-        `<div id="ccMovePanel">${CH_MOVE_PICK ? careerMovePanelHTML() : careerMoveGoHTML()}</div>` : ''}
+        `<div id="ccMovePanel">${CH_MOVE_PICK ? careerMovePanelHTML() : careerMoveGoHTML()}</div>` : '') : null)}
   </div>`;
   const cr=CAREER.career, pl=CAREER.player;
   const here=ccLivesIn(), ping=ccPingNow(), rent=ccRentNow();
@@ -149500,9 +149550,8 @@ function careerMoveHTML(){
       ccNum((cr.rent||0))}</b></div>` : ''}
     <div class="ch-row"><em>${L().ccMoveRegion}</em><b>${esc(regionName(ccCareerRegion()))}</b></div>
     <button class="ch-swap" onclick="careerMoveOpen()">${
-      CH_MOVE ? L().ccMoveClose : away ? L().ccMoveAgain : L().ccMoveOpen}</button>
-    ${CH_MOVE ? careerRegionRowsHTML() : ''}
-    ${CH_MOVE ? (function(){
+      away ? L().ccMoveAgain : L().ccMoveOpen}</button>
+    ${ccMoveModalLater(CH_MOVE ? careerRegionRowsHTML()+(function(){
       /* Looking at your own region is looking at home, not planning to leave it.
 
          The region rows were given a map on 19 August so that choosing where to
@@ -149527,7 +149576,7 @@ function careerMoveHTML(){
         : `<div class="cc-note">${L().ccMapLoading}</div>`;
       return map + `<div id="ccMovePanel">${
         (elsewhere && !CH_MOVE_PICK) ? careerMoveGoHTML() : careerMovePanelHTML()}</div>`;
-    })() : ''}
+    })() : null)}
   </div>`;
 }
 /* The other continents, under the map of this one.
