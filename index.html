@@ -154729,7 +154729,11 @@ function ccRegionTable(tables){
 // prizeTableFor, which branches on CARD_SET — a global the career does not set.
 // Showdown 2025: на игрока №1 $3 000, №2 $1 000, №3 $750, 4–10 $300, 11–15 $250, 16–25 $150 — на трио втрое.
 const CC_SHOWDOWN_PAY=[[1,3000],[2,1000],[3,750],[10,300],[15,250],[25,150]];
-function showdownPrize(place){ const row=CC_SHOWDOWN_PAY.find(r=>place<=r[0]); return row ? row[1]*careerSquadSize() : 0; }
+// По регионам (Tracker 20.10): EU и NAC — таблица выше, NAW/BR/ASIA/ME/OCE — №1 $600, №2 $300, №3 $200, 4–25 $100.
+const CC_SHOWDOWN_PAYR={EU:CC_SHOWDOWN_PAY, NAC:CC_SHOWDOWN_PAY,
+  NAW:[[1,600],[2,300],[3,200],[25,100]]};
+['BR','ASIA','ME','OCE'].forEach(r=>{ CC_SHOWDOWN_PAYR[r]=CC_SHOWDOWN_PAYR.NAW; });
+function showdownPrize(place){ return ccPay24(CC_SHOWDOWN_PAYR, place)*careerSquadSize(); }
 /* День, за который платят: мир, доигрывая пропущенный финал, считает деньги в день того финала,
    а не в день, с которого ушёл игрок (иначе таблица бралась у другого Мейджора — аудит 29.09). */
 let CC_PRIZE_DAY=null;
@@ -155253,20 +155257,36 @@ const CC_WF_PAY_2025=[[1,7500],[2,4500],[3,3000],[4,2100],[5,1650],[10,1200],[15
 // Финал недели Elite, 2023-й (Tracker, S23_DivisionalCups_Elite_Finals, на игрока); NA — NA East.
 const CC_WF_PAY_2023={EU:[[1,5000],[2,2700],[3,1800],[10,900],[25,450],[40,300]], NAC:[[1,2500],[2,1200],[3,800],[10,400],[40,200]],
   BR:[[1,1250],[2,600],[3,400],[40,200]], ASIA:[[1,1250],[2,600],[3,400],[40,200]], ME:[[1,1250],[2,600],[3,400],[40,200]], OCE:[[1,1250],[2,600],[3,400],[40,200]]};
+/* ПО РЕГИОНАМ (его слово 20.10: «посмотри у каждого региона призы и сравнивай с Европой»). Таблицы 2025/2026 стояли
+   одни на все регионы — европейские: Азия за первое место Финала недели получала $5 000 на игрока, как Европа. Снято с
+   Tracker 20.10 (imp_event.Windows[].PayoutTable, окна S39/S40/S41/S42_FNCSDivisionalCup_Division1_Week1Final_<рег>,
+   S33/S34/S36 — то же у 2025-го), на ИГРОКА, «до места N — сумма». NAW и BR платят одной таблицей, ASIA/ME/OCE — другой
+   (группировка Epic). Европа совпадает с прежними числами до доллара (CC_WF_PAY ×2 у дуо). Практика S42 раньше платила
+   свою сумму на всю команду — у Epic это сумма на игрока, теперь ×размер состава, как везде. */
+const CC_WF_PAY_2026R={
+  EU:  [[1,5000],[2,2500],[3,1500],[4,1000],[5,750],[7,500],[10,400],[20,300],[40,200]],
+  NAC: [[1,3000],[2,1500],[3,900],[4,600],[5,450],[7,375],[10,300],[20,225],[40,150]],
+  NAW: [[1,1500],[2,1000],[3,500],[4,300],[5,200],[10,150],[20,100]],
+  ASIA:[[1,1000],[2,500],[3,250],[4,200],[5,150],[20,100]]};
+CC_WF_PAY_2026R.BR=CC_WF_PAY_2026R.NAW; CC_WF_PAY_2026R.ME=CC_WF_PAY_2026R.ASIA; CC_WF_PAY_2026R.OCE=CC_WF_PAY_2026R.ASIA;
+const CC_WF_PAY_S42R={
+  EU:  [[1,2500],[2,1250],[3,625],[4,500],[5,375],[7,250],[10,200],[20,150],[40,100]],
+  NAC: [[1,1500],[2,750],[3,450],[4,300],[5,225],[7,188],[10,150],[20,113],[40,75]],
+  NAW: [[1,750],[2,500],[3,250],[4,150],[5,100],[10,75],[20,50]],
+  ASIA:[[1,500],[2,250],[3,125],[4,100],[5,75],[20,50]]};
+CC_WF_PAY_S42R.BR=CC_WF_PAY_S42R.NAW; CC_WF_PAY_S42R.ME=CC_WF_PAY_S42R.ASIA; CC_WF_PAY_S42R.OCE=CC_WF_PAY_S42R.ASIA;
+const CC_WF_PAY_2025R={
+  EU:  [[1,7500],[2,4500],[3,3000],[4,2100],[5,1650],[10,1200],[15,600],[20,300],[25,150]],
+  NAC: [[1,5000],[2,3000],[3,2000],[4,1400],[5,1100],[10,800],[15,400],[20,200],[25,100]],
+  NAW: [[1,2500],[2,1500],[3,1000],[4,850],[5,650],[10,400],[15,200],[20,100]],
+  ASIA:[[1,2100],[2,1050],[3,700],[4,595],[5,455],[10,280],[15,140]]};
+CC_WF_PAY_2025R.BR=CC_WF_PAY_2025R.NAW; CC_WF_PAY_2025R.ME=CC_WF_PAY_2025R.ASIA; CC_WF_PAY_2025R.OCE=CC_WF_PAY_2025R.ASIA;
 function wfPrize(place){
   if(ccIs2023()) return ccPay24(CC_WF_PAY_2023, place)*careerSquadSize();
   if(ccIs2022()) return ccPay24(CC_WF_PAY_2022, place)*careerSquadSize();
-  if(ccIs2025()){ const row=CC_WF_PAY_2025.find(r=>place<=r[0]); return row ? row[1]*careerSquadSize() : 0; }
-  if(ccWfIsPractice()){
-    if(CC_WF_PAY_S42[place]!=null) return CC_WF_PAY_S42[place];
-    if(place<=20) return 150;
-    if(place<=40) return 100;
-    return 0;
-  }
-  if(CC_WF_PAY[place]!=null) return CC_WF_PAY[place];
-  if(place<=20) return 600;
-  if(place<=40) return 400;
-  return 0;
+  if(ccIs2025()) return ccPay24(CC_WF_PAY_2025R, place)*careerSquadSize();
+  if(ccWfIsPractice()) return ccPay24(CC_WF_PAY_S42R, place)*careerSquadSize();
+  return ccPay24(CC_WF_PAY_2026R, place)*careerSquadSize();
 }
 // Whether this Saturday is yours: the cut you cleared is stamped with the Monday
 // of its own week, so a final can never be played on the back of last week's.
@@ -164479,7 +164499,13 @@ const CC_SOLO_ORDER=['qual','heats','final'];
    что FNCS Solos: sc<n>r1 — открытый раунд (десять игр, топ-600 дальше),
    sc<n>r2 — раунд на 600 (десять игр, деньги). Таблица — с Tracker. */
 const CC_SOLO_CASH_PAY=[[1,8000],[2,4800],[3,3200],[4,2240],[5,1760],[10,1280],[15,640],[20,320],[25,160]];
-function soloCashPrize(place){ const row=CC_SOLO_CASH_PAY.find(r=>place<=r[0]); return row ? row[1] : 0; }
+// По регионам (Tracker 20.10, S33_SoloCashCup_Event<n>Round2_<рег>); Европа — прежняя таблица выше.
+const CC_SOLO_CASH_PAYR={EU:CC_SOLO_CASH_PAY,
+  NAC: [[1,5000],[2,3000],[3,2000],[4,1400],[5,1100],[10,800],[15,400],[20,200],[25,100]],
+  NAW: [[1,3000],[2,1800],[3,1200],[4,1020],[5,780],[10,480],[15,240],[20,120]],
+  ASIA:[[1,2400],[2,1200],[3,800],[4,680],[5,520],[10,320],[15,160]]};
+CC_SOLO_CASH_PAYR.BR=CC_SOLO_CASH_PAYR.NAW; CC_SOLO_CASH_PAYR.ME=CC_SOLO_CASH_PAYR.ASIA; CC_SOLO_CASH_PAYR.OCE=CC_SOLO_CASH_PAYR.ASIA;
+function soloCashPrize(place){ return ccPay24(CC_SOLO_CASH_PAYR, place); }
 for(let n=1; n<=16; n++){
   CC_SOLOS_STAGES['sc'+n+'r1']={games:10, kill:2, open:true, cut:600, pass:'sc'+n+'r2'};
   CC_SOLOS_STAGES['sc'+n+'r2']={games:10, kill:3, field:600, cut:0, prize:soloCashPrize};
