@@ -118215,6 +118215,7 @@ function ccMpGate(kind){
       ccMpSeedOn(m.seed);
       // Гонка: книга мира — от старшего по адресу, до сборки поля (ccRaceWorldSync).
       Promise.resolve(typeof ccRaceWorldSync==='function' ? ccRaceWorldSync(m.n, m.who) : null)
+        .then(function(){ return typeof ccTeamWorldSync==='function' ? ccTeamWorldSync(m.n) : null; }, function(){ return null; })
         .then(function(){ res({seed:m.seed, n:m.n}); }, function(){ res({seed:m.seed, n:m.n}); });
     });
     // Хвост прошлого вечера, если тот оборвался посреди раннера.
@@ -119823,6 +119824,53 @@ function ccRaceWorldApply(w){
   if(CAREER.career && CAREER.career.race && w.cseed) CAREER.career.race.wseed=String(w.cseed);
   try{ ccWorldReset(); }catch(e){}
   return true;
+}
+/* КНИГА МИРА КОМАНДЫ — ОТ ХОЗЯИНА ЛОББИ, НА СТАРТЕ КАЖДОГО ОБЩЕГО ВЕЧЕРА.
+   Командный год вдвоём 20.10 (за Pixie и SwizzY, и двое созданных с 5-го дивизиона): книга развития
+   и пары сцены расходились у двоих после личных вечеров (соло-серия, вечер, который играл один), и
+   следующий общий кубок разъезжался с первой игры на силе одного бота («f1n4ik+zarbeh 88 vs 89 · state
+   dev»), а дальше расходился весь год. Командное состояние уезжает после вечера от обоих, и кто
+   прислал позже, тот и прав, — двое с разными книгами просто менялись ими. Теперь мир одного:
+   хозяин (роль a) шлёт его на старте, второй ставит до сборки поля — как книга мира в гонке
+   (ccRaceWorldSync). Личное (журнал, рейтинг игрока, деньги) не трогается. */
+function ccTeamWorldPack(){
+  try{ if(careerSquadSize()>=3 && typeof careerPools==='function') careerPools(); }catch(e){}
+  const cr=(CAREER && CAREER.career)||{};
+  return {dev:CAREER.dev||{}, devL:CAREER.devL||{}, splits:CAREER.splits||{}, duoStreak:CAREER.duoStreak||{},
+          duoSplits:cr.duoSplits||{}, trios:cr.trios||{},
+          tseed:{seeded:cr.triosSeeded===undefined ? null : cr.triosSeeded, cores:cr.trioCores||null, filled:cr.trioFilled||null}};
+}
+function ccTeamWorldApply(w){
+  if(!w || !CAREER || !CAREER.career) return false;
+  const obj=v=>(v && typeof v==='object') ? v : {};
+  CAREER.dev=obj(w.dev); CAREER.devL=obj(w.devL); CAREER.splits=obj(w.splits); CAREER.duoStreak=obj(w.duoStreak);
+  const c=CAREER.career;
+  c.duoSplits=obj(w.duoSplits); c.trios=obj(w.trios);
+  if(w.tseed && typeof w.tseed==='object'){
+    if(w.tseed.seeded==null) delete c.triosSeeded; else c.triosSeeded=w.tseed.seeded;
+    if(w.tseed.cores) c.trioCores=w.tseed.cores; else delete c.trioCores;
+    if(w.tseed.filled) c.trioFilled=w.tseed.filled; else delete c.trioFilled;
+  }
+  try{ ccWorldReset(); }catch(e){}
+  return true;
+}
+function ccTeamWorldSync(n){
+  if(typeof ccMpOn!=='function' || !ccMpOn() || (typeof ccRaceOn==='function' && ccRaceOn()) || typeof MP==='undefined' || !MP.act) return Promise.resolve(false);
+  const lead=((CAREER.career.mp||{}).role==='a');
+  if(lead){
+    try{ MP.act('tworld', {by:ccMpId(), n:n, w:ccTeamWorldPack()}); }catch(e){}
+    try{ ccWorldReset(); }catch(e){}   // и у хозяина мир собирается заново — одинаково со вторым
+    ccMpMark('tw');
+    return Promise.resolve(true);
+  }
+  return ccMpIdle(new Promise(function(res){
+    let done=false, off=null, t=null;
+    const finish=function(w){ if(done) return; done=true; if(off) off(); if(t) clearTimeout(t); if(w) ccTeamWorldApply(w); ccMpMark(w ? 'tw' : 'tw:none'); res(!!w); };
+    const fit=function(a){ return a && a.payload && a.payload.n===n && a.payload.w && a.payload.by!==ccMpId(); };
+    let x; while((x=MP.take('tworld'))){ if(fit(x)){ finish(x.payload.w); return; } }
+    off=MP.on('act', function(m){ if(m && m.kind==='tworld' && fit(m)){ if(MP.take) MP.take('tworld'); finish(m.payload.w); } });
+    t=setTimeout(function(){ finish(null); }, CC_RACE_WORLD_MS);
+  }));
 }
 /* СТАРШЕГО НАЗЫВАЕТ СЕРВЕР. Он выбирался по СВОЕЙ таблице соседей (ccRaceNightRoom), а она у
    каждого своя и наполняется не одновременно: строка соседа могла ещё не доехать. Тогда один
@@ -133553,6 +133601,12 @@ function ccMpThirdAsk(id){
 function ccMpThirdWire(){
   if(typeof MP==='undefined' || ccMpThirdWire.done) return;
   ccMpThirdWire.done=true;
+  // Одиночный вечер напарника — в свои доски, один раз по ключу (ccEvDeltaSend, ccEvResApply).
+  MP.on('act', function(m){
+    if(!m || m.kind!=='res' || !m.payload || (typeof ccRaceOn==='function' && ccRaceOn()) || !ccMpTeam()) return;
+    if(m.payload.by===ccMpId()) return;
+    if(ccEvResApply(m.payload)){ try{ if(typeof careerRenderHub==='function' && document.getElementById('chBody')) careerRenderHub('centre'); }catch(e){} }
+  });
   // Напарник прислал хеш таблицы — значит вечер у него кончился.
   MP.on('digest', function(){ ccMpPeerDone(); });
   MP.on('start', function(m){
@@ -134345,6 +134399,8 @@ function careerGrowField(field, you){
      и вечер один, поэтому он считается здесь, а не второй раз там. */
   CC_NIGHT_SLOPE=slope;
   const rows=[];
+  let peerKey=null;
+  try{ if(typeof ccMpTeam==='function' && ccMpTeam() && typeof MP!=='undefined' && MP.peer) peerKey=hKey(MP.peer); }catch(e){ peerKey=null; }
   ranked.forEach((t,i)=>{
     if(t===you) return;                       // свой вечер считает careerApplyGrowth
     /* И команду СОПЕРНИКА по гонке тоже: у него самого она «своя» и в книгу не идёт, а у меня
@@ -134352,6 +134408,12 @@ function careerGrowField(field, you){
        и не рос у него. Книга расходилась на этом одном человеке, и следующее поле — на его
        силе (двухсезонная проба 10.09, третий запуск: 15.03 «kiro:85 vs kiro:84 · state dev»). */
     if(t.isRival) return;
+    /* И НАПАРНИКА ПО КОМАНДЕ, который в этом вечере стоит своей командой (соло вдвоём: каждый своим
+       игроком в одной сотне, t.isMate). У него он — «ты» и в книгу не идёт, у меня шёл бы обычным:
+       за настоящих игроков (Pixie и SwizzY, командный год 20.10) книга расходилась на нём после
+       хитов Solo Series 17.01, и Duos Victory Cup 19.01 — на силе бота. */
+    if(t.isMate) return;
+    if(peerKey && (t.squad||[]).some(c=>c && hKey(c)===peerKey)) return;
     const actual=n>1 ? 1-i/(n-1) : 0.5;
     const e=exp.get(t)||0.5;
     const gap=(actual-(0.5+slope*(e-0.5)))*grown*hard;
@@ -135079,7 +135141,11 @@ function careerGrowEvent(place, total, you, field){
     ((typeof CC_RACE_NIGHT_APART!=='undefined' && CC_RACE_NIGHT_APART) ||
      !(typeof CC_RACE_ROOM0!=='undefined' && CC_RACE_ROOM0) ||
      (typeof ccRaceRivals==='function' && Object.keys(CC_RACE_ROOM0).length<ccRaceRivals().length)));
-  if(field && field.length>1 && !raceApart) careerGrowField(field, you);
+  /* В КОМАНДЕ ТО ЖЕ: вечер, который играет один (CC_MP_ALONE — напарнику в этот день играть нечего),
+     двигал книгу развития только у него, и следующее общее поле расходилось на силе бота
+     (командный год за Pixie и SwizzY 20.10: соло 17.01 → Duos Victory Cup 19.01, f1n4ik+zarbeh 88 против 89). */
+  const teamApart=(typeof ccMpTeam==='function' && ccMpTeam() && typeof CC_MP_ALONE!=='undefined' && CC_MP_ALONE);
+  if(field && field.length>1 && !raceApart && !teamApart) careerGrowField(field, you);
   /* И вечер, отыгранный дома, пишется на дом — на ту из трёх точек, где ты
      сидел. Ауру делает не результат турнира, а то, удержал ли ты место: счёт
      стычек за этап против счёта поражений. См. careerSpotNight. */
@@ -154352,6 +154418,16 @@ function ccEvDeltaSend(){
   const d=CC_EV_DELTA; CC_EV_DELTA=null;
   if(!d || !d.key) return;
   ccEvSeenMark(d.key);
+  /* КОМАНДА: вечер, который сыграл один из двоих (CC_MP_ALONE, напарнику в этот день играть нечего),
+     у напарника не считался вовсе — его призовых и рейтинга в досках второго не было (командный год
+     20.10: доски разошлись на 454 строки). Общие вечера оба считают сами, им копилка не нужна. */
+  if(d.alone && typeof ccMpTeam==='function' && ccMpTeam() && !(typeof ccRaceOn==='function' && ccRaceOn())){
+    if(!Object.keys(d.money).length && !Object.keys(d.pr).length) return;
+    let me=''; try{ me=hKey(careerCard()||{handle:''}); }catch(e){}
+    d.key=d.key+'|s'+me; ccEvSeenMark(d.key);
+    try{ if(typeof MP!=='undefined' && MP.act){ d.by=ccMpId(); MP.act('res', d); } }catch(e){}
+    return;
+  }
   if(typeof ccRaceOn!=='function' || !ccRaceOn() || typeof ccRaceLive!=='function' || !ccRaceLive()) return;
   if(!Object.keys(d.money).length && !Object.keys(d.pr).length) return;
   try{ d.by=ccMpId(); MP.act('res', d); }catch(e){}
@@ -154422,6 +154498,7 @@ function careerMoneyAdd(ranked, prize){
          11.09: у себя 58 вечеров и $553k, у соседа тот же человек — 50 и $324k. Свою строку
          от чужой копилки бережёт приёмник (ccEvResApply). */
       if(CC_EV_DELTA){ CC_EV_DELTA.money[h]=(CC_EV_DELTA.money[h]||0)+each; CC_EV_DELTA.yr=k.yr; CC_EV_DELTA.fs=k.fs;
+        if(typeof CC_MP_ALONE!=='undefined' && CC_MP_ALONE && ccMpTeam()) CC_EV_DELTA.alone=true;
         // И сколько выплат: два раунда одного вечера — два турнира в доске (прогон годов 20.10, Solo Cash Cup 2023).
         if(CC_EV_DELTA.ev) CC_EV_DELTA.ev[h]=(CC_EV_DELTA.ev[h]||0)+1; }
     });
@@ -171377,7 +171454,8 @@ function careerPrAdd(ranked, meta){
       row.n++;
       if(idx===yourIdx) row.you=true;
       // И своя строка — тоже (см. careerMoneyAdd): у соседа по гонке она не своя.
-      if(CC_EV_DELTA){ (CC_EV_DELTA.pr[name]=CC_EV_DELTA.pr[name]||[]).push(Math.round(rating)); }
+      if(CC_EV_DELTA){ (CC_EV_DELTA.pr[name]=CC_EV_DELTA.pr[name]||[]).push(Math.round(rating));
+        if(typeof CC_MP_ALONE!=='undefined' && CC_MP_ALONE && ccMpTeam()) CC_EV_DELTA.alone=true; }
       /* И журнал вечеров игрока — для листа статистики (careerPlayerStatsHTML). Игрок,
          10.09: «Add players stats». Компактно: [день, вид[:этап], место, из, VR, килы, очки, див];
          последние CC_PLOG_KEEP вечеров на человека, имён не больше CC_PLOG_NAMES (лишние —

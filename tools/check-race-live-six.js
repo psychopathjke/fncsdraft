@@ -181,6 +181,17 @@ const boot = (who) => `
     out.notes.tw=[]; if(${process.env.CC_RC==="1"}){ let last=''; const th=()=>{ try{ return String(ccHashStr(JSON.stringify((CAREER.career||{}).trios||null))); }catch(e){ return 'x'; } };
       const watch=(name)=>{ const f=window[name]; if(typeof f!=='function') return; window[name]=function(){ const b=th(); const r=f.apply(this, arguments); const a=th(); if(a!==b && out.notes.tw.length<60) out.notes.tw.push(CAREER.career.day+' '+name+' '+b+'>'+a); return r; }; };
       ['ccRaceWorldApply','careerPools','careerLoad','ccApplyTeamState','careerTrioRaids','ccTrioMarket','careerNewSeason','careerEntry','careerCupField','ccContinuityThirds','careerMateSeat','ccEventRosterBegin','ccEventRosterEnd','ccWorldReset'].forEach(watch); }
+    /* ВЕЧЕР ЗА ВЕЧЕРОМ (прогон 2025, 20.10): доски расходятся на сотни долларов, а какой вечер — не видно.
+       Каждый клиент пишет, сколько кому лёг каждый ключ: свой вечер — своим счётом, чужой — копилкой. */
+    window.__km={}; { const ma1=careerMoneyAdd; careerMoneyAdd=function(ranked, prize){
+        const before={}; const m=careerMoney(); Object.keys(m.rows).forEach(h=>before[h]=m.rows[h].usd||0);
+        const r=ma1.apply(this, arguments);
+        try{ const k=(CC_EV_DELTA&&CC_EV_DELTA.key)||('nokey|'+CAREER.career.day); const o=window.__km[k]||(window.__km[k]={});
+          Object.keys(m.rows).forEach(h=>{ const d=(m.rows[h].usd||0)-(before[h]||0); if(d) o[h]=(o[h]||0)+d; }); }catch(e){}
+        return r; };
+      const ra1=ccEvResApply; ccEvResApply=function(d){ const ok=ra1.apply(this, arguments);
+        try{ if(ok && d && d.key){ const o=window.__km[d.key]||(window.__km[d.key]={}); Object.keys(d.money||{}).forEach(h=>{ const v=Math.round(d.money[h]||0); if(v) o[h]=(o[h]||0)+v; }); o.__in=1; } }catch(e){}
+        return ok; }; }
     out.notes.skipped=[]; const cp0=careerCanPlay; careerCanPlay=function(next){ let ok=cp0.apply(this, arguments);
       /* НЕКЕМ ИГРАТЬ — САЖАЕМ НАПАРНИКА ЗДЕСЬ ЖЕ.
          Живой игрок это и делает: увидел «нужен напарник» и позвал кого-то. На перемотке
@@ -367,6 +378,7 @@ const boot = (who) => `
        при одинаковом числе вечеров означает, что где-то один и тот же вечер посчитан
        по-разному, а не пропущен: два списка ключей отвечают, что именно из двух. */
     out.notes.evSeen=Object.keys((cr.evSeen)||{});
+    out.notes.km=window.__km||{};
     out.notes.card=(typeof careerCard==='function' && careerCard()) ? hKey(careerCard()) : null;
     out.notes.money=cr.earnings; out.notes.ovr=CAREER.player.ovr; out.notes.titles=(cr.ewc||[]).length;
     out.notes.mates=careerMates().map(m=>m&&m.handle); out.notes.noMate=(typeof careerNoMate==='function')?careerNoMate('eval'):null; out.notes.form=cr.form; out.notes.energy=cr.energy;
@@ -463,6 +475,7 @@ async function runOne(tag, who, port, phone){
     (MOBILE.size ? ' · телефоны: '+[...MOBILE].join(',') : ''));
   const P0=9400+Math.floor(Math.random()*400);
   const outs=await Promise.all(WHO.map((w,i)=>runOne(w.nick, w, P0+i, MOBILE.has(i+1))));
+  if(process.env.CC_DUMP) try{ fs.writeFileSync(process.env.CC_DUMP, JSON.stringify(outs)); }catch(e){}
   let bad=0;
   outs.forEach((r,i)=>{
     const n=WHO[i].nick;
@@ -519,6 +532,22 @@ async function runOne(tag, who, port, phone){
     const miss=[]; keys.forEach(k=>{ if(skipRow.has(k)) return; const have=boards.map(b=>b.has(k)); if(have.some(x=>!x)) miss.push(k+' ['+have.map(x=>x?1:0).join('')+'] '+(boards.find(b=>b.has(k)).get(k))); });
     console.log('строк не у всех: '+miss.length+(miss.length?': '+miss.slice(0,10).join(' | '):''));
     if(miss.length){ console.log('   FAIL доски: строка есть не у всех'); bad++; } }
+  { const kms=outs.map(r=>r.notes.km||{}); const keys=[...new Set(kms.flatMap(k=>Object.keys(k)))].sort();
+    let shown=0, nBad=0;
+    keys.forEach(k=>{
+      const vals=kms.map(m=>m[k]); const have=vals.map(v=>!!v);
+      const norm=v=>v ? Object.keys(v).filter(h=>h!=='__in' && !skipRow.has(h)).sort().map(h=>h+'='+v[h]).join(',') : null;
+      const ns=vals.map(norm); const present=ns.filter(x=>x!=null);
+      const same=present.every(x=>x===present[0]);
+      if(same && have.every(Boolean)) return;
+      if(same && /^nokey/.test(k)) return;
+      nBad++; if(shown++<12){
+        const a=vals[0]||{}, b=vals.find((v,i)=>i>0 && v)||{};
+        const hs=[...new Set([...Object.keys(a), ...Object.keys(b)])].filter(h=>h!=='__in' && !skipRow.has(h) && a[h]!==b[h]).slice(0,6);
+        console.log('   ключ '+k+' ['+have.map((x,i)=>x?(vals[i].__in?'R':'S'):'-').join('')+'] '+(same?'нет у кого-то':'разные')+': '+hs.map(h=>h+' '+(a[h]||0)+'/'+(b[h]||0)).join(' | '));
+      }
+    });
+    console.log('ключей вечеров: '+keys.length+', не сошлись '+nBad); }
   if(boards.length>1 && boards[0].size){
     const mine=outs.map(r=>new Set([].concat(r.notes.mates||[], (r.notes.dbg&&r.notes.dbg.rivals)||[]).filter(Boolean)));
     let diff=[], nDiff=0;   // строк печатаем шесть, а считаем все: счёт по длине списка трижды соврал 11.09
