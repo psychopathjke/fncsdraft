@@ -3152,6 +3152,12 @@
   :is(#coachPickModal,#agentPickModal,#smmPickModal,#mktPickModal,#staff2PickModal) .cc-buy-in i.cc-buy-who{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   .cc-buy-in .cc-buy-who{display:block;font-style:normal;font-size:11px;color:rgba(255,255,255,.62);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   .cc-buy-chips{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px;}
+  :is(#coachPickModal,#agentPickModal,#smmPickModal,#mktPickModal,#staff2PickModal) .cc-buy-in{flex:1 1 auto;min-width:0;}
+  :is(#coachPickModal,#agentPickModal,#smmPickModal,#mktPickModal,#staff2PickModal) .cc-buy-in > b{display:flex;align-items:center;gap:6px;min-width:0;}
+  .cc-buy-in > b > .cc-buy-nm{min-width:0;overflow:hidden !important;text-overflow:ellipsis !important;white-space:nowrap !important;color:inherit !important;font:inherit !important;margin:0 !important;}
+  :is(#coachPickModal,#agentPickModal,#smmPickModal,#mktPickModal,#staff2PickModal) .cc-buy-in > b .cc-staff-rt{flex:none;}
+  :is(#coachPickModal,#agentPickModal,#smmPickModal,#mktPickModal,#staff2PickModal) .cc-buy-chips em{white-space:normal;max-width:100%;overflow-wrap:anywhere;}
+  #movePickModal .ch-sign{width:100%;margin-top:8px;padding:10px;}
   #movePickModal .cc-move-x{width:100%;margin-top:12px;padding:11px;border:none;border-radius:10px;background:rgba(200,225,220,.18);
     color:#eaf5f3;font-weight:800;font-size:14px;cursor:pointer;letter-spacing:.02em;}
   #movePickModal .cc-move-regions{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:6px;}
@@ -5866,7 +5872,7 @@
      сама, не дожидаясь, пока кто-то вспомнит про этот список. */
   .cc-buys .ch-sign,
   #duoFindModal .ch-sign, #smmPickModal .ch-sign, #coachPickModal .ch-sign,
-  #agentPickModal .ch-sign, #mktPickModal .ch-sign, #clubPickModal .ch-sign,
+  #agentPickModal .ch-sign, #mktPickModal .ch-sign, #clubPickModal .ch-sign, #movePickModal .ch-sign, #staff2PickModal .ch-sign,
   #screen-career-hub .ch-sign{width:100%;border:none;cursor:pointer;background:#ffdd00;
     color:#0b0f12;border-radius:5px;padding:9px;font:inherit;font-weight:900;font-size:12px;
     letter-spacing:.07em;text-transform:uppercase;}
@@ -6693,7 +6699,7 @@
      исходного правила, потому что модалки живут вне #screen-career-hub. */
   .cc-buys .ch-sign,
   #duoFindModal .ch-sign, #smmPickModal .ch-sign, #coachPickModal .ch-sign,
-  #agentPickModal .ch-sign, #mktPickModal .ch-sign, #clubPickModal .ch-sign,
+  #agentPickModal .ch-sign, #mktPickModal .ch-sign, #clubPickModal .ch-sign, #movePickModal .ch-sign, #staff2PickModal .ch-sign,
   #screen-career-hub .ch-sign{border-radius:2px;font-family:var(--font-display);font-weight:600;
     font-size:14px;letter-spacing:.07em;
     clip-path:polygon(0 0,100% 0,100% calc(100% - 9px),calc(100% - 9px) 100%,0 100%);}
@@ -7247,7 +7253,7 @@
   #screen-career-hub .ch-ovr{clip-path:none;border-radius:var(--r-sm);margin:8px 6px;}
   .cc-buys .ch-sign,
   #duoFindModal .ch-sign, #smmPickModal .ch-sign, #coachPickModal .ch-sign,
-  #agentPickModal .ch-sign, #mktPickModal .ch-sign, #clubPickModal .ch-sign,
+  #agentPickModal .ch-sign, #mktPickModal .ch-sign, #clubPickModal .ch-sign, #movePickModal .ch-sign, #staff2PickModal .ch-sign,
   #screen-career-hub .ch-sign{clip-path:none;border-radius:999px;}
   #screen-career-hub .ch-play,.ch-play{clip-path:none;border-radius:999px;}
   #screen-career-create .cc-slab{clip-path:none;border-radius:999px;padding:7px 16px;}
@@ -7305,7 +7311,7 @@
   #screen-career-hub .ch-ovr,#screen-career-create .cc-slab{background:var(--fn-yellow);color:#0b1a3a;}
   .cc-buys .ch-sign,
   #duoFindModal .ch-sign, #smmPickModal .ch-sign, #coachPickModal .ch-sign,
-  #agentPickModal .ch-sign, #mktPickModal .ch-sign, #clubPickModal .ch-sign,
+  #agentPickModal .ch-sign, #mktPickModal .ch-sign, #clubPickModal .ch-sign, #movePickModal .ch-sign, #staff2PickModal .ch-sign,
   #screen-career-hub .ch-sign{background:var(--fn-yellow);color:#0b1a3a;}
   #screen-career-hub .ch-swap,#screen-career-hub .ch-decline,.cc-back{background:var(--fn-btn);color:#fff;
     border:none;border-radius:999px;}
@@ -123815,7 +123821,7 @@ function ccCoachPickOpen(){
            thing is, and a green line saying what it does to a career, in the
            words the shop already uses for it. A coach is a purchase like the
            desk is, so it reads like one. -->
-      <div class="cc-buy-in"><b>${esc(c.name)} ${ccStaffBadge(c.rating||ccCoachRatingOf(c)).replace('cc-staff-rt', 'cc-staff-rt mgf-rt')}</b>
+      <div class="cc-buy-in"><b><span class="cc-buy-nm">${esc(c.name)}</span> ${ccStaffBadge(c.rating||ccCoachRatingOf(c)).replace('cc-staff-rt', 'cc-staff-rt mgf-rt')}</b>
         <i class="cc-buy-who">${CC_COACH_X[c.at] ? '👥 '+ccFollowers(CC_COACH_X[c.at])+' · ' : ''}${c.at?'@'+esc(c.at):''}</i>
         <span class="cc-buy-chips"><em class="up">${L().ccShopTrain} +${Math.round(c.train*100)}%</em>${
           c.chem ? '<em class="up">'+L().ccCoachChem(c.chem)+'</em>' : ''}<em>${what}</em></span></div>
@@ -137755,7 +137761,7 @@ function ccMktPickOpen(){
     return `<div class="cc-buy${mine?' own':''}">
       ${m.photo ? `<img class="cc-buy-img cc-buy-face" src="${PHOTO_DIR}${esc(m.photo)}" alt=""
            loading="lazy" onerror="this.remove()">` : ''}
-      <div class="cc-buy-in"><b>${esc(m.name)} ${ccStaffBadge(ccStaffRating(m)).replace('cc-staff-rt', 'cc-staff-rt mgf-rt')}</b>
+      <div class="cc-buy-in"><b><span class="cc-buy-nm">${esc(m.name)}</span> ${ccStaffBadge(ccStaffRating(m)).replace('cc-staff-rt', 'cc-staff-rt mgf-rt')}</b>
         <i class="cc-buy-who">${m.x ? '👥 '+ccFollowers(m.x)+' · ' : ''}@${esc(m.at)}</i>
         <span class="cc-buy-chips"><em class="up">${L().ccMktRate} +${Math.round((t.rate-1)*100)}%</em></span></div>
       ${mine ? `<span class="cc-owned">${L().ccAgentYours}</span>`
@@ -138396,7 +138402,7 @@ function ccAgentPickOpen(){
     return `<div class="cc-buy${mine?' own':''}">
       ${a.photo ? `<img class="cc-buy-img cc-buy-face" src="${PHOTO_DIR}${esc(a.photo)}" alt=""
            loading="lazy" onerror="this.remove()">` : ''}
-      <div class="cc-buy-in"><b>${esc(a.name)} ${ccStaffBadge(ccStaffRating(a)).replace('cc-staff-rt', 'cc-staff-rt mgf-rt')}</b>
+      <div class="cc-buy-in"><b><span class="cc-buy-nm">${esc(a.name)}</span> ${ccStaffBadge(ccStaffRating(a)).replace('cc-staff-rt', 'cc-staff-rt mgf-rt')}</b>
         <i class="cc-buy-who">${a.x ? '👥 '+ccFollowers(a.x)+' · ' : ''}${a.at ? '@'+esc(a.at) : ''}</i>
         <span class="cc-buy-chips"><em>${L().ccAgentCutRow} ${Math.round(cut*100)}%</em><em class="up">${L().ccAgentReachRow} +${reach}</em><em class="up">${L().ccAgentWageRow} +${Math.round((wage-1)*100)}%</em></span></div>
       ${mine ? `<span class="cc-owned">${L().ccAgentYours}</span>`
@@ -139779,7 +139785,7 @@ function ccSmmPickOpen(){
     return `<div class="cc-buy${on?' own':''}">
       <img class="cc-buy-img cc-buy-face" src="${PHOTO_DIR}${esc(m.photo)}" alt=""
            loading="lazy" onerror="this.remove()">
-      <div class="cc-buy-in"><b>${esc(m.name)} ${ccStaffBadge(ccStaffRating(m)).replace('cc-staff-rt', 'cc-staff-rt mgf-rt')}</b>
+      <div class="cc-buy-in"><b><span class="cc-buy-nm">${esc(m.name)}</span> ${ccStaffBadge(ccStaffRating(m)).replace('cc-staff-rt', 'cc-staff-rt mgf-rt')}</b>
         <i class="cc-buy-who">${m.x ? '👥 '+ccFollowers(m.x)+' · ' : ''}@${esc(m.at)}${m.org ? ' · '+esc(m.org) : ''}</i>
         <span class="cc-buy-chips"><em class="up">${L().ccSmmGain} +${Math.round(t.boost*100)}%</em></span></div>
       ${on ? `<span class="cc-owned">${L().ccShopUntil(ccDayLabel(CAREER.smm.until))}</span>`
@@ -139890,7 +139896,7 @@ function ccStaff2PickOpen(kind){
     const r=ccStaff2Rating(kind, p), paid=ccOrgPays(kind), cost=ccStaff2Cost(kind, p), mine=!!on && on.id===p.id, can=!mine && (paid || (cr.balance||0)>=cost);
     return `<div class="cc-buy${mine?' own':''}">
       ${p.photo ? `<img class="cc-buy-img cc-buy-face" src="${PHOTO_DIR}${esc(p.photo)}" alt="" loading="lazy" onerror="this.remove()">` : ''}
-      <div class="cc-buy-in"><b>${esc(p.name)} ${ccStaffBadge(r).replace('cc-staff-rt', 'cc-staff-rt mgf-rt')}</b>
+      <div class="cc-buy-in"><b><span class="cc-buy-nm">${esc(p.name)}</span> ${ccStaffBadge(r).replace('cc-staff-rt', 'cc-staff-rt mgf-rt')}</b>
         <i class="cc-buy-who">${p.x ? '👥 '+ccFollowers(p.x)+' · ' : ''}${p.at ? '@'+esc(p.at) : ''}</i>
         <span class="cc-buy-chips"><em class="up">${ccStaff2Effect(kind, r)}</em><em>${esc(p.why)}</em></span></div>
       ${mine ? `<span class="cc-owned">${T.ccShopUntil(ccDayLabel(on.until))}</span>`
