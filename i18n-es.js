@@ -4117,3 +4117,17 @@ ccRetiredHint:'Jugadores destacados que dejaron la escena después de 2026, y lo
 ccRetiredWho:'Jugador', ccRetiredYear:'Año', ccRetiredAge:'Edad', ccRetiredReg:'Región', ccRetiredBy:'Regen',
 ccRetiredTag:(y,a,b)=>'Se retiró en '+y+(a!=null ? ' a los '+a : '')+(b ? ' · sustituido por '+b : '')
 }));
+/* Дозаливка «es» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
+Object.assign(I18N.es=I18N.es||{},
+({
+ccMgChoose:'elige el objetivo del mes',
+ccMgPickHint:'El club ofrece tres objetivos para el mes. Elige uno: cuanto más difícil, mayor el bonus. Si no eliges antes del próximo torneo, fija el del medio.',
+ccMgTier:['Seguro','Medio','Ambicioso'],
+ccMgCutOf:{fncsCup:'superar una sesión de la FNCS Divisional Cup', majorQual:'superar una fase de un Major FNCS (Play-In, Heats, Last Chance)', solo:'superar una ronda solo de la FNCS (FNCS Solos, Solo Series)', cash:'pasar el corte en una cash cup', any:'pasar un corte'},
+ccMgPlaceOf:{cash:n=>'top '+n+' en una cash cup (Victory Cup, Perf Eval)', fncsCup:n=>'top '+n+' en una sesión de la FNCS Divisional Cup', fncsFinal:n=>'top '+n+' en la final semanal de la FNCS', majorFinal:n=>'top '+n+' en una final de Major FNCS', any:n=>'top '+n+' en cualquier torneo'},
+ccNewsMgAuto:(o,g)=>o+' fijó tu objetivo del mes: '+g,
+ccNewsSacPromo:(c,p)=>'Post con el código '+c+' contado: pago del mes +'+p+'%',
+ccSacPromoRow:(n,m,p)=>'promo en X '+n+'/'+m+(p ? ' · +'+p+'%' : ''),
+ccGoalReach:{majorFinal:'llegar a una final de Major FNCS', fncsFinal:'llegar a la final semanal de la FNCS'},
+ccOrgGoalPickHint:'Objetivo de la temporada: elige uno antes de que acabe la temporada. Si lo cumples renuevas con aumento (objetivo más difícil, aumento mayor); si fallas, el club te libera. Sin elección queda el del medio.'
+}));

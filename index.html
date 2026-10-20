@@ -22894,7 +22894,49 @@ ccRetiredHint:'Jogadores de destaque que deixaram a cena depois de 2026, e os re
 ccRetiredWho:'Jogador', ccRetiredYear:'Ano', ccRetiredAge:'Idade', ccRetiredReg:'Região', ccRetiredBy:'Regen',
 ccRetiredTag:(y,a,b)=>'Aposentou-se em '+y+(a!=null ? ' aos '+a : '')+(b ? ' · substituído por '+b : '')
 }));
-let CC_I18N_V={de:'ad3ae8ab', es:'e6c6724c'};   // ==== CC_I18N_V (tools/build-i18n.js) ====
+/* Дозаливка «fr» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
+Object.assign(I18N.fr=I18N.fr||{},
+({
+ccMgChoose:"choisis l'objectif du mois",
+ccMgPickHint:"Le club propose trois objectifs pour le mois. Choisis-en un : plus il est dur, plus la prime est grosse. Sans choix avant le prochain tournoi, il fixe celui du milieu.",
+ccMgTier:['Sûr','Moyen','Ambitieux'],
+ccMgCutOf:{fncsCup:'passer une session de la FNCS Divisional Cup', majorQual:"passer une étape d'un Major FNCS (Play-In, Heats, Last Chance)", solo:'passer un tour solo FNCS (FNCS Solos, Solo Series)', cash:"passer la coupure d'une cash cup", any:'passer une coupure'},
+ccMgPlaceOf:{cash:n=>'top '+n+' dans une cash cup (Victory Cup, Perf Eval)', fncsCup:n=>'top '+n+' dans une session de la FNCS Divisional Cup', fncsFinal:n=>'top '+n+' en finale hebdomadaire FNCS', majorFinal:n=>'top '+n+" en finale d'un Major FNCS", any:n=>'top '+n+" dans n'importe quel tournoi"},
+ccNewsMgAuto:(o,g)=>o+' a fixé ton objectif du mois : '+g,
+ccNewsSacPromo:(c,p)=>'Post avec le code '+c+' compté : versement du mois +'+p+'%',
+ccSacPromoRow:(n,m,p)=>'promo X '+n+'/'+m+(p ? ' · +'+p+'%' : ''),
+ccGoalReach:{majorFinal:'atteindre une finale de Major FNCS', fncsFinal:'atteindre la finale hebdomadaire FNCS'},
+ccOrgGoalPickHint:"Objectif de la saison : choisis-en un avant la fin de la saison. Réussi, tu prolonges avec une augmentation (objectif plus dur, augmentation plus grande) ; raté, le club te libère. Sans choix, celui du milieu reste."
+}));
+/* Дозаливка «it» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
+Object.assign(I18N.it=I18N.it||{},
+({
+ccMgChoose:"scegli l'obiettivo del mese",
+ccMgPickHint:'Il club propone tre obiettivi per il mese. Scegline uno: più è difficile, più alto è il bonus. Se non scegli prima del prossimo torneo, fissa quello di mezzo.',
+ccMgTier:['Sicuro','Medio','Ambizioso'],
+ccMgCutOf:{fncsCup:'superare una sessione della FNCS Divisional Cup', majorQual:'superare una fase di un Major FNCS (Play-In, Heats, Last Chance)', solo:'superare un turno solo FNCS (FNCS Solos, Solo Series)', cash:'superare il taglio in una cash cup', any:'superare un taglio'},
+ccMgPlaceOf:{cash:n=>'primi '+n+' in una cash cup (Victory Cup, Perf Eval)', fncsCup:n=>'primi '+n+' in una sessione della FNCS Divisional Cup', fncsFinal:n=>'primi '+n+' nella finale settimanale FNCS', majorFinal:n=>'primi '+n+' in una finale di Major FNCS', any:n=>'primi '+n+' in qualsiasi torneo'},
+ccNewsMgAuto:(o,g)=>o+' ha fissato il tuo obiettivo del mese: '+g,
+ccNewsSacPromo:(c,p)=>'Post con il codice '+c+' contato: pagamento del mese +'+p+'%',
+ccSacPromoRow:(n,m,p)=>'promo X '+n+'/'+m+(p ? ' · +'+p+'%' : ''),
+ccGoalReach:{majorFinal:'arrivare a una finale di Major FNCS', fncsFinal:'arrivare alla finale settimanale FNCS'},
+ccOrgGoalPickHint:'Obiettivo della stagione: scegline uno prima della fine della stagione. Se lo raggiungi rinnovi con un aumento (obiettivo più difficile, aumento più alto); se lo manchi il club ti libera. Senza scelta resta quello di mezzo.'
+}));
+/* Дозаливка «pt» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
+Object.assign(I18N.pt=I18N.pt||{},
+({
+ccMgChoose:'escolha a meta do mês',
+ccMgPickHint:'O clube oferece três metas para o mês. Escolha uma: quanto mais difícil, maior o bônus. Sem escolha antes do próximo torneio, ele define a do meio.',
+ccMgTier:['Segura','Média','Ambiciosa'],
+ccMgCutOf:{fncsCup:'passar de uma sessão da FNCS Divisional Cup', majorQual:'passar de uma fase de um Major FNCS (Play-In, Heats, Last Chance)', solo:'passar de uma rodada solo da FNCS (FNCS Solos, Solo Series)', cash:'passar do corte numa cash cup', any:'passar de um corte'},
+ccMgPlaceOf:{cash:n=>'top '+n+' numa cash cup (Victory Cup, Perf Eval)', fncsCup:n=>'top '+n+' numa sessão da FNCS Divisional Cup', fncsFinal:n=>'top '+n+' na final semanal da FNCS', majorFinal:n=>'top '+n+' numa final de Major FNCS', any:n=>'top '+n+' em qualquer torneio'},
+ccNewsMgAuto:(o,g)=>o+' definiu a sua meta do mês: '+g,
+ccNewsSacPromo:(c,p)=>'Post com o código '+c+' contado: pagamento do mês +'+p+'%',
+ccSacPromoRow:(n,m,p)=>'promo no X '+n+'/'+m+(p ? ' · +'+p+'%' : ''),
+ccGoalReach:{majorFinal:'chegar a uma final de Major FNCS', fncsFinal:'chegar à final semanal da FNCS'},
+ccOrgGoalPickHint:'Meta da temporada: escolha uma antes do fim da temporada. Cumpriu, renova com aumento (meta mais difícil, aumento maior); falhou, o clube te libera. Sem escolha, fica a do meio.'
+}));
+let CC_I18N_V={de:'f05a4118', es:'5036a825'};   // ==== CC_I18N_V (tools/build-i18n.js) ====
 // Версия fn-shop.js (магазин Fortnite по дням, tools/build-fn-shop.js) — для ?v= ленивой загрузки.
 let CC_FN_SHOP_V='0c643ab3';
 const CC_LANG_WAIT={};

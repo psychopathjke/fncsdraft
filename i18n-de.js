@@ -4117,3 +4117,17 @@ ccRetiredHint:'Bekannte Spieler, die die Szene nach 2026 verlassen haben, und di
 ccRetiredWho:'Spieler', ccRetiredYear:'Jahr', ccRetiredAge:'Alter', ccRetiredReg:'Region', ccRetiredBy:'Regen',
 ccRetiredTag:(y,a,b)=>'Karriereende '+y+(a!=null ? ' mit '+a : '')+(b ? ' · Nachfolger '+b : '')
 }));
+/* Дозаливка «de» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
+Object.assign(I18N.de=I18N.de||{},
+({
+ccMgChoose:'Monatsziel wählen',
+ccMgPickHint:'Der Klub bietet drei Ziele für den Monat. Wähle eins: je schwerer, desto höher der Bonus. Ohne Wahl vor dem nächsten Turnier setzt er das mittlere.',
+ccMgTier:['Sicher','Mittel','Ehrgeizig'],
+ccMgCutOf:{fncsCup:'eine Session des FNCS Divisional Cup überstehen', majorQual:'eine Phase eines FNCS-Majors überstehen (Play-In, Heats, Last Chance)', solo:'eine FNCS-Solo-Runde überstehen (FNCS Solos, Solo Series)', cash:'den Cut in einem Cash Cup schaffen', any:'einen Cut schaffen'},
+ccMgPlaceOf:{cash:n=>'Top '+n+' in einem Cash Cup (Victory Cup, Perf Eval)', fncsCup:n=>'Top '+n+' in einer Session des FNCS Divisional Cup', fncsFinal:n=>'Top '+n+' im FNCS-Wochenfinale', majorFinal:n=>'Top '+n+' in einem FNCS-Major-Finale', any:n=>'Top '+n+' in einem beliebigen Turnier'},
+ccNewsMgAuto:(o,g)=>o+' hat dein Monatsziel gesetzt: '+g,
+ccNewsSacPromo:(c,p)=>'Post mit Code '+c+' gezählt: Auszahlung des Monats +'+p+'%',
+ccSacPromoRow:(n,m,p)=>'X-Promo '+n+'/'+m+(p ? ' · +'+p+'%' : ''),
+ccGoalReach:{majorFinal:'ein FNCS-Major-Finale erreichen', fncsFinal:'das FNCS-Wochenfinale erreichen'},
+ccOrgGoalPickHint:'Saisonziel: wähle eins vor Saisonende. Geschafft, verlängerst du mit Gehaltserhöhung (schwereres Ziel, größere Erhöhung); verfehlt, lässt dich der Klub gehen. Ohne Wahl bleibt das mittlere.'
+}));
