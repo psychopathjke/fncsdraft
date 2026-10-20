@@ -149154,8 +149154,11 @@ function careerMoveRegion(code, country, withMates){
      тем, чем и был: жильё и пинг. */
   if(take && ccMpTeam() && cr.region!==to){
     cr.region=to;
-    if(typeof ccWorldReset==='function') ccWorldReset();
   }
+  // Пулы сцены, клубы, лестница — под новый регион и в одиночной карьере тоже (раньше — только в команде), и
+  // замены чужих ников Мейджора (ccMajorRegionSub) считаются заново.
+  cr.majSub=null;
+  if(typeof ccWorldReset==='function') ccWorldReset();
   // Everything that was a relationship with Europe. The duo and the rival are
   // redrawn on the next cup out of the new region's own people; the club is a
   // contract in a place you no longer live.
@@ -154704,9 +154707,14 @@ function careerMajorCan(ev){
    career. A rookie is European by construction (see CC.region), so this changes
    nothing for one; what it fixes is a career played as a real card from one of
    the other six. */
+/* …И ГДЕ ТЫ ИГРАЕШЬ, А НЕ ОТКУДА КАРТОЧКА (Notion 20.10, скрин 13: «я переехал в Азию и куча европейских команд в
+   финале», «и призы в Азии не те»). Регион карточки шёл первым, и карточка Европы после переезда в Азию получала
+   европейские призы и европейские настоящие трио финала (GR2021_TRIOS[регион призов] — они и были на скрине). Теперь
+   регион вечеров карьеры (ccCareerRegion: свой, командный или чужой недели), карточка — только запасной. */
 function careerPrizeRegion(){
+  try{ if(CAREER && CAREER.career && typeof ccCareerRegion==='function') return ccCareerRegion() || 'EU'; }catch(e){}
   const r=CAREER && CAREER.player &&
-          (CAREER.player.cardRegion || CAREER.player.region);
+          (CAREER.player.region || CAREER.player.cardRegion);
   return r || 'EU';
 }
 function ccRegionTable(tables){
@@ -159625,10 +159633,48 @@ function ccMajorSeatRow(t){
       : c.handle;
   });
 }
+/* ПОСЛЕ ПЕРЕЕЗДА (скрин 13): строки Мейджора, набранные на квалах в прошлом регионе, хранят ники того региона — в
+   сцене нового их нет, и они становились безымянными заглушками («AS» вместо флага, рейтинг из полосы). Ник, который
+   живёт в ДРУГОМ регионе, заменяется настоящим игроком сцены этого: по рейтингу сверху, без повторов, замена
+   запоминается в сейве (cr.majSub) — перезагрузка и следующие этапы видят того же человека. Ушедшие из сцены совсем
+   остаются, как были, заглушкой. Сбрасывается при переезде (careerMoveRegion). */
+let CC_HANDLE_REGS=null;
+function ccMajorRegionSub(handle){
+  const cr=CAREER && CAREER.career, reg=ccCareerRegion(); if(!cr) return null;
+  const k=hKey(handle);
+  if(!CC_HANDLE_REGS){ CC_HANDLE_REGS=new Map(); (PLAYERS||[]).forEach(p=>{ const hk=hKey(p); if(!p.region) return; let st=CC_HANDLE_REGS.get(hk); if(!st) CC_HANDLE_REGS.set(hk, st=new Set()); st.add(p.region); }); }
+  const regs=CC_HANDLE_REGS.get(k), elsewhere=!!regs && [...regs].some(r=>r!==reg);
+  if(!elsewhere) return null;
+  if(!cr.majSub || cr.majSub.reg!==reg) cr.majSub={reg:reg, map:{}, used:{}};
+  const S=cr.majSub, roster=ccSceneRoster(reg);
+  let h=S.map[k];
+  if(!h){
+    const taken=new Set(Object.keys(S.used));
+    // И не свои: напарник в чужой команде — тот же человек дважды в лобби.
+    try{ (careerMates()||[]).forEach(m=>taken.add(hKey(m))); taken.add(hKey(CAREER.player.handle||CAREER.player.nick||'')); }catch(e){}
+    // Не тот, кто уже стоит в строках этого сезона живым ником: свой регион их и так покажет.
+    const pick=roster.slice().sort((a,b)=>(b.rating||0)-(a.rating||0)).find(x=>!taken.has(hKey(x)) && !ccMajorRowHas(cr, hKey(x)));
+    if(!pick) return null;
+    h=pick.handle; S.map[k]=h; S.used[hKey(pick)]=1;
+  }
+  return roster.find(x=>hKey(x)===hKey(h)) || null;
+}
+// Стоит ли ник в каком-нибудь сохранённом состоянии Мейджоров сезона (поиском по JSON — состояния небольшие).
+function ccMajorRowHas(cr, key){
+  if(!cr.__majRowsAt || cr.__majRowsAt!==careerToday()){
+    let blob='';
+    Object.keys(cr).forEach(n=>{ if(/^major\d|^m2\d|^gr2|^summit|^gc/i.test(n)) try{ blob+=JSON.stringify(cr[n]); }catch(e){} });
+    Object.defineProperty(cr, '__majRowsBlob', {value:blob.toLowerCase(), writable:true, configurable:true, enumerable:false});
+    Object.defineProperty(cr, '__majRowsAt', {value:careerToday(), writable:true, configurable:true, enumerable:false});
+  }
+  return cr.__majRowsBlob.indexOf('"'+key+'"')>=0;
+}
 function ccMajorCardFrom(rec){
   if(typeof rec==='string'){
     const c=ccSceneRoster(ccCareerRegion()).find(x=>hKey(x)===hKey(rec));
     if(c) return c;
+    const sub=ccMajorRegionSub(rec);
+    if(sub) return sub;
     // Ника больше нет в сцене — человек всё равно играл, и его место не пустует.
     rec={h:rec, n:null, o:ccBand(1), k:null};
   }
