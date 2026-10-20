@@ -80,6 +80,12 @@ const BOOT = `
     if(cutAt('EU')!==10 || cutAt('NAC')!==17 || cutAt('OCE')!==25)
       fail('the Round 2 cut is wrong: EU '+cutAt('EU')+', NAC '+cutAt('NAC')+', OCE '+cutAt('OCE'));
     out.steps.push('round 2 cut: EU 10, NAC 17, the rest 25');
+    // Очки — как в Solo Reload Victory Cup (S42): 60 за победу … 1 за 30-е, 2 за элим, до 10 элимов.
+    const sc=soloReloadScore();
+    if(!sc || soloReloadPoints(1)!==60 || soloReloadPoints(2)!==54 || soloReloadPoints(30)!==1 || soloReloadPoints(31)!==0 || sc.kill!==2)
+      fail('Solo Reload points: '+[1,2,30,31].map(soloReloadPoints).join('/')+' kill '+(sc&&sc.kill));
+    if(Object.keys(CC_SOLOS_STAGES).filter(k=>/^rl/.test(k)).some(k=>CC_SOLOS_STAGES[k].pts!==soloReloadPoints || CC_SOLOS_STAGES[k].killCap!==10)) fail('a Solo Reload stage scores differently');
+    out.steps.push('points: Solo Reload Victory Cup — '+[1,2,10,30].map(soloReloadPoints).join('/')+', 2 per elim, cap 10');
 
     // Epic's finals table (Notion «19.10», screen 35).
     const at=(reg,p)=>{ const keep=CAREER.player.region; CAREER.player.region=reg;
@@ -103,15 +109,15 @@ const BOOT = `
       out.steps.push(st+': '+l.place+' of '+l.of+' over '+games+' to '+((cr.solosRl||{}).seat||'out'));
       return l;
     };
-    await run('rlr2', null, 100, 11);
+    await run('rlr2', null, 100, 10);
     if(cr.solosRl.seat && cr.solosRl.seat!=='rlr3') fail('Round 2 seated outside Round 3');
     if(cr.solos.got!=='final') fail('Solo Reload wrote over the October state');
-    await run('rlr3', {got:'rlr2', seat:'rlr3'}, 100, 11);
+    await run('rlr3', {got:'rlr2', seat:'rlr3'}, 100, 10);
     const lh=await run('rlheats', {got:'rlr3', seat:'rlheats'}, 40, 8);
     const seat=cr.solosRl.seat;
     if(seat==='rllcqf' && (lh.place<16 || lh.place>25)) fail('the LCQ Final took heat place '+lh.place);
     if(seat && seat!=='rllcqf' && seat!=='rlfinal') fail('the heat handed out '+seat);
-    await run('rllcq1', {got:'rlheats', seat:null}, 0, 11);
+    await run('rllcq1', {got:'rlheats', seat:null}, 0, 10);
     await run('rllcqf', {got:'rllcq1', seat:'rllcqf'}, 40, 5);
     const lz=await run('rlfinal', {got:'rllcqf', seat:'rlfinal'}, 40, 10);
     if(lz.prize!==soloReloadPrize(lz.place)) fail('the cheque does not match the table');

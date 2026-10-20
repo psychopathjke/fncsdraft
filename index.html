@@ -163471,10 +163471,15 @@ const CC_SOLOS_STAGES={
    Round 2 — прошедшие Round 1 (4000 EU, 2000 NAC, 1000 остальные) + топ-1000 PR, дальше 500;
    Round 3 — 500, дальше 80; два хита по 40, из каждого 8 побед + 7 по очкам, 16–25-е в LCQ Final;
    LCQ Round 1 — все, кто играл квал, дальше 20; LCQ Final — 40, пять игр, 5 побед + 5 по очкам;
-   финал — 40, десять игр. Число игр квала и цену элиминации Epic ещё не опубликовал — взяты у
-   FNCS Solos. Призовые — его таблица «FNCS Solos Reload Finals Prize Pool» (Notion «19.10», скрин 35):
+   финал — 40, десять игр. Очки — как в последних соло-турнирах Reload у Epic (его слово 20.10, «сделай поинт систему
+   как в последних турнирах соло релоада»): Solo Reload Victory Cup S41/S42, правило ScoringRules ccCupScoreOf —
+   60 за победу … 1 за 30-е, 2 за элим, не больше 10 элимов за матч; квалы — 10 матчей, как Round 1 этих капов. Призовые — его таблица «FNCS Solos Reload Finals Prize Pool» (Notion «19.10», скрин 35):
    NAW и BR здесь снова делят таблицу, ASIA/ME/OCE — одну на троих. */
 const CC_SOLO_RELOAD_R2_FIELD={EU:5000, NAC:3000};
+// Очки Solo Reload Victory Cup (S42, иначе S41) — место и элим; без данных — таблица Victory Cup.
+function soloReloadScore(){ return ccCupScoreOf('S42_ReloadReloadSoloVictoryCup', 1) || ccCupScoreOf('S41_ReloadReloadSoloVictoryCup', 1); }
+function soloReloadPoints(place){ const sc=soloReloadScore(); return sc ? sc.pts(place) : victoryR1Points(place); }
+const CC_SOLO_RELOAD_KILL_CAP=10;
 function soloReloadR2Cut(){ return Math.round(100*500/(CC_SOLO_RELOAD_R2_FIELD[ccCareerRegion()]||2000)); }
 const CC_SOLO_RELOAD_PRIZES={
   EU:  [[1,60000],[2,40000],[3,25000],[4,15000],[5,12500],[6,10000],[7,9000],
@@ -163497,12 +163502,12 @@ function soloReloadPrize(place){
   return row ? row[1] : 0;
 }
 Object.assign(CC_SOLOS_STAGES, {
-  rlr2:  {games:11, kill:2, field:100, cut:soloReloadR2Cut, pass:'rlr3', reload:true},
-  rlr3:  {games:11, kill:2, field:100, cut:16, pass:'rlheats', reload:true},
-  rlheats:{games:8,  kill:3, field:40,  cut:7,  vr:true, pass:'rlfinal', tail:[16,25], tailSeat:'rllcqf', reload:true},
-  rllcq1:{games:11, kill:2, open:true, cut:20, pass:'rllcqf', reload:true},
-  rllcqf:{games:5,  kill:3, field:40,  cut:5,  vr:true, pass:'rlfinal', reload:true},
-  rlfinal:{games:10, kill:4, field:40, cut:0,  prize:soloReloadPrize, reload:true}
+  rlr2:  {games:10, kill:2, field:100, cut:soloReloadR2Cut, pass:'rlr3', reload:true, pts:soloReloadPoints, killCap:CC_SOLO_RELOAD_KILL_CAP},
+  rlr3:  {games:10, kill:2, field:100, cut:16, pass:'rlheats', reload:true, pts:soloReloadPoints, killCap:CC_SOLO_RELOAD_KILL_CAP},
+  rlheats:{games:8,  kill:2, field:40,  cut:7,  vr:true, pass:'rlfinal', tail:[16,25], tailSeat:'rllcqf', reload:true, pts:soloReloadPoints, killCap:CC_SOLO_RELOAD_KILL_CAP},
+  rllcq1:{games:10, kill:2, open:true, cut:20, pass:'rllcqf', reload:true, pts:soloReloadPoints, killCap:CC_SOLO_RELOAD_KILL_CAP},
+  rllcqf:{games:5,  kill:2, field:40,  cut:5,  vr:true, pass:'rlfinal', reload:true, pts:soloReloadPoints, killCap:CC_SOLO_RELOAD_KILL_CAP},
+  rlfinal:{games:10, kill:2, field:40, cut:0,  prize:soloReloadPrize, reload:true, pts:soloReloadPoints, killCap:CC_SOLO_RELOAD_KILL_CAP}
 });
 // Отсечка стадии — число или функция региона (см. solosR2Cut).
 function ccSolosCut(spec){ return typeof spec.cut==='function' ? spec.cut() : spec.cut; }
@@ -164911,8 +164916,9 @@ async function runCareerSoloSeries(){
   const games=spec ? spec.games
             : ev.stage==='qual' ? CC_SOLO_QUAL_GAMES
             : ev.stage==='heats' ? CC_SOLO_HEAT_GAMES : CC_SOLO_FINAL_GAMES;
+  if(spec && spec.killCap) CC_KILL_CAP=spec.killCap;   // Solo Reload: не больше 10 элимов за матч (правило Epic)
   await simulateGamesLive(field, games,
-    ev.stage==='heats' ? soloHeatsPoints : victoryR1Points, spec ? spec.kill : CC_SOLO_KILL,
+    (spec && spec.pts) || (ev.stage==='heats' ? soloHeatsPoints : victoryR1Points), spec ? spec.kill : CC_SOLO_KILL,
     'stage', 0, null, zones,
     {lobbySize:100, stageName:ev.label, mapReplay:true, choices:true, stopOnYourDeath:true,
      /* Виктори в хитах — билет, и вечер на нём для тебя кончается: правило Epic
