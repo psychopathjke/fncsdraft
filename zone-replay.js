@@ -671,10 +671,16 @@
     roster = roster || [];
     var indexOfName = {};
     for(var n=0;n<roster.length;n++) indexOfName[plain(roster[n].name)] = n;
+    // Скин команды перед её именем (карьера: window.CC_FN_SKIN — надетый у своей, у остальных свой постоянный).
+    var skinFor = function(name, you){
+      var src = (typeof window !== 'undefined' && typeof window.CC_FN_SKIN === 'function') ? window.CC_FN_SKIN(name, you) : null;
+      return src ? '<img src="' + esc(src) + '" alt="" style="width:20px;height:20px;flex:none;border-radius:4px;' +
+        'background:rgba(8,12,24,.55);object-fit:cover;filter:drop-shadow(0 1px 2px #000);" onerror="this.remove()">' : '';
+    };
     var pillFor = function(name){
       var idx = indexOfName[name];
-      if(idx == null) return pill(name, '#c9d2e6', false);
-      return pill(name, roster[idx].you ? 'var(--accent)' : colourFor(idx), roster[idx].you);
+      if(idx == null) return skinFor(name, false) + pill(name, '#c9d2e6', false);
+      return skinFor(name, roster[idx].you) + pill(name, roster[idx].you ? 'var(--accent)' : colourFor(idx), roster[idx].you);
     };
     for(var e=0;e<events.length;e++){
       // Strip the markup before splitting, not after. A team name carries a flag

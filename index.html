@@ -149696,6 +149696,35 @@ function ccFnWorn(slot){
 try{ Object.defineProperty(window, 'CC_FN_AXE', {configurable:true, get(){
   const w=(typeof CAREER!=='undefined' && CAREER && CAREER.career) ? ccFnWorn('p') : null;
   return w ? ccFnImg(w.id, true) : null; }}); }catch(e){}
+/* СКИНЫ В ЛЕНТЕ УБИЙСТВ (его слово 20.10: «добавь в килл фиде иконки скинов, которые используют игроки в игре»).
+   Своя команда — надетый образ (шкафчик). Что носят настоящие игроки, не пишет ни один источник, поэтому у каждой
+   команды свой постоянный образ: бросок по имени среди образов, которые к дню карьеры уже выходили в магазине
+   Fortnite (fn-shop.js) — в 2019-м никто не ходит в скине 2026-го. Данные магазина грузятся сами при первом вызове. */
+let CC_FN_SKIN_FIRST=null, CC_FN_SKIN_POOL=null;
+function ccFnSkinPool(){
+  if(typeof CC_FN_SHOP==='undefined'){ try{ ccFnShopLoad(null); }catch(e){} return null; }
+  if(!CC_FN_SKIN_FIRST){
+    if(!CC_FN_DAYS) CC_FN_DAYS=CC_FN_SHOP.days.split(';');
+    const first=new Map();
+    CC_FN_DAYS.forEach((row, n)=>{ if(row) row.split(',').forEach(s=>{ const i=parseInt(s, 36); const x=CC_FN_SHOP.items[i];
+      if(x && x[2]==='o' && !first.has(i)) first.set(i, n); }); });
+    CC_FN_SKIN_FIRST=[...first.entries()].sort((a,b)=>a[1]-b[1]);
+  }
+  // Пул — на начало сезона карьеры: образ команды держится весь сезон, а не меняется с каждым днём магазина.
+  const day=String((CAREER && CAREER.career && typeof ccYearFrom==='function' && ccYearFrom()) || CC_FN_SHOP.last).slice(0, 10);
+  const n=Math.max(0, ccDaysBetween(CC_FN_SHOP.first, day > CC_FN_SHOP.last ? CC_FN_SHOP.last : day));
+  if(!CC_FN_SKIN_POOL || CC_FN_SKIN_POOL.n!==n){
+    const ids=CC_FN_SKIN_FIRST.filter(e=>e[1]<=n).map(e=>CC_FN_SHOP.items[e[0]][0]);
+    CC_FN_SKIN_POOL={n:n, ids:ids.length ? ids : CC_FN_SKIN_FIRST.slice(0, 50).map(e=>CC_FN_SHOP.items[e[0]][0])};
+  }
+  return CC_FN_SKIN_POOL.ids;
+}
+try{ window.CC_FN_SKIN=function(name, you){
+  if(typeof CAREER==='undefined' || !CAREER || !CAREER.career) return null;
+  if(you){ const w=ccFnWorn('o'); if(w) return ccFnImg(w.id, true); }
+  const pool=ccFnSkinPool(); if(!pool || !pool.length) return null;
+  return ccFnImg(pool[Math.abs(ccHashStr('skin|'+String(name||'').toLowerCase()))%pool.length], true);
+}; }catch(e){}
 function ccVbBuy(k){
   const cr=CAREER.career, p=ccVbPacks()[k];
   if(!p || (cr.balance||0)<p.usd) return;
