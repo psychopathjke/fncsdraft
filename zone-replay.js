@@ -679,7 +679,7 @@
     };
     var pillFor = function(name){
       var idx = indexOfName[name];
-      if(idx == null) return skinFor(name, false) + pill(name, '#c9d2e6', false);
+      if(idx == null) return pill(name, '#c9d2e6', false);   // не команда (подсказка хода, «шторм») — без образа
       return skinFor(name, roster[idx].you) + pill(name, roster[idx].you ? 'var(--accent)' : colourFor(idx), roster[idx].you);
     };
     for(var e=0;e<events.length;e++){

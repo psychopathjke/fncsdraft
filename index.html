@@ -8487,7 +8487,7 @@
      tools/check-deploy-folder.js: забыть обновить руками теперь нельзя, папка
      деплоя просто не соберётся зелёной. -->
 <script src="zone-sim.js?v=48a2b31c"></script>
-<script src="zone-replay.js?v=ad85ae3c"></script>
+<script src="zone-replay.js?v=52e30047"></script>
 <!-- Командная карьера: транспорт и склейка. Весь код мультиплеера живёт здесь,
      в index.html только точки врезки. ?v= — тот же кэш-предохранитель, что и
      у соседей: поменял mp.js — переставь хеш, иначе браузер возьмёт старый
@@ -151601,6 +151601,8 @@ function careerPlayRun(next){
 function careerPlayRun0(next){
   CC_TEAM_NIGHT_APART=false;
   if(!next) return;
+  // Магазин Fortnite — до первой строки ленты убийств: в ней образы команд (window.CC_FN_SKIN).
+  try{ ccFnShopLoad(null); }catch(e){}
   CC_NIGHT_RATE=null; CC_NIGHT_SHOWN=null;   // оценка — своя у каждого вечера (ccNightRate)
   ccEvPaletteApply(next);   // таблицы вечера — в цветах турнира (ccEvPalette)
   CC_DRAFT_RUN=false;   // карьерный вечер — не драфт (см. ccMpOn)
