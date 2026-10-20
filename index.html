@@ -132960,6 +132960,8 @@ function careerCupField(cr, mine, size, salt, open, sharp){
      (он этот вечер не играл). Скриншот: Shur4 и Repairs у соседа на три вечера и
      пятнадцать тысяч богаче, чем у себя. Человек комнаты не бот ни в каком вечере. */
   if(typeof ccRaceOn==='function' && ccRaceOn()) mine=(mine||[]).concat(ccRaceAllCards());
+  // Менеджер: люди клуба в поле мира — только составами клуба (см. mgrSeatedTaken).
+  if(typeof mgrSeatedTaken==='function') mine=(mine||[]).concat(mgrSeatedTaken());
   const rnd=careerRng(careerSeed(cr, salt));
   const band=ccBand(cr.division);
   const taken=new Set(mine.map(hKey));
@@ -156261,6 +156263,7 @@ function careerSoloField(cr, mine, size, open, stage){
      напарника как «карточку соперника» — у меня он мог выйти настоящим соло-игроком, у них нет:
      соло Victory Cup 13.06, «diff 4816 of 4900» (проба 9.09 15:11). Одно множество у всех. */
   if(typeof ccRaceOn==='function' && ccRaceOn()) mine=(mine||[]).concat(ccRaceAllCards(), (typeof careerMates==='function' ? careerMates() : []).filter(Boolean));
+  if(typeof mgrSeatedTaken==='function') mine=(mine||[]).concat(mgrSeatedTaken());   // менеджер: см. careerCupField
   const rnd=careerRng(careerSeed(cr,'solo'));
   const band=ccBand(cr.division);
   const taken=new Set((mine||[]).map(hKey));
@@ -171137,7 +171140,11 @@ async function mgrPlay(){
 const MGR_TEAM_KEYS=['log','tokens','major','major21','major22','major23','major24','majorx','majorxs','majorLc','globals','gclc',
   'summit','reload','rc','gc23','gcSim','div22','div23','d1','division','solo','solos','solosBy','solosRl','solosRlBy','soloSpots','soloBy','proam','proamInvs',
   'ewc24','ewc','mxDone','evSeen','evPicked','spots','form','energy','playStyle','table','noDiv','placed','keyGames','medals','lan','vpick',
-  'balance','earnings','orgCut'];
+  'balance','earnings','orgCut',
+  /* Билет на финал недели (cr.wf) — тоже свой у каждого состава (жалоба 20.10: «в финалах дивизиона играет игрок моей
+     команды, который не прошёл»). Его не было в списке, и он лежал в общей теневой карьере: прошёл кубок один состав —
+     в субботу финал играли все составы клуба дивизиона 1. */
+  'wf'];
 const MGR_CAR_KINDS=['cup','final','eval','major','summit','globals','reload','gc'];   // соло, Про-Ам, сборные — у клуба свои
 function mgrTeamIn(tm){
   if(MGR.tswap) mgrTeamOut();
@@ -171154,9 +171161,92 @@ function mgrTeamIn(tm){
   CAREER.player=Object.assign({}, CAREER.player, {handle:c0.handle, nick:c0.handle, cardRegion:c0.region, region:tm.mgrReg||MGR.region, attrs:at,
     ovr:Math.round(ccCardOvr(c0)||50), photo:null, role:null});
   CAREER.partners=sq.slice(1).map(c=>({handle:c.handle, card:c}));
+  try{ mgrSeedIn(tm); mgrCarSeatSync(tm); }catch(e){ console.error('mgrSeedIn', e); }
+}
+/* ОБЩИЕ ЗАПИСИ МИРА И СЛОВО 'you' (жалоба 20.10: «ласт ченс сломан», «в финалах играет тот, кто не прошёл», «прошёл,
+   играет, а в таблице не наш»). Раннер карьеры пишет свою строку в общие записи мира словом 'you': таблица Плей-Ина и
+   прошедшие в финал Мейджора (cr.majorSeed.rows/through/lcq), прошедшие стадию Reload (cr.relSeed.through). В карьере
+   игрока 'you' один. В менеджере эти записи общие на все составы клуба, и 'you' значило «тот, кто вёл вечер». Отсюда:
+   хит у каждого состава считался хитом ведущего (ccMajorMyHeat — все составы клуба играли хит 2 из 3), состав с билетом
+   садился в Ласт Ченс чужой строкой (ccMajorSeatedHandles 'you' не читает), финал собирался из «чужих» строк своих же.
+   Теперь вне вечера в записях только настоящие строки. Когда состав садится (mgrTeamIn), ЕГО строка становится 'you';
+   когда встаёт (mgrTeamOut) — снова его строка: прежняя, если вечера не было, или того, кем раннер закончил вечер
+   (после смены камеры это другой состав). Чья строка — mgrRowOwner: точный состав, иначе состав клуба, в котором больше
+   её игроков (правило подписанного игрока, см. mgrCarSeatSync). Записи старых сейвов с чужим 'you' не трогаются. */
+let MGR_SEED_SWAP=null;
+const mgrRowHs=r=>(Array.isArray(r) ? r : [r]).map(c=>hKey((c && c.h) || c)).filter(Boolean);
+const mgrRowKey=r=>mgrRowHs(r).sort().join('|');
+function mgrSeedLists(cr){
+  const out=[], ms=cr && cr.majorSeed, rs=cr && cr.relSeed;
+  if(ms) ['rows','through','lcq'].forEach(k=>{ if(Array.isArray(ms[k])) out.push({arr:ms[k], fn:ccMajorSeatRow}); });
+  if(rs && Array.isArray(rs.through)) out.push({arr:rs.through, fn:ccStageSeatRow});
+  return out;
+}
+/* Чья это строка мира среди составов клуба: где больше всего её игроков по контракту клуба (гость из другой организации
+   своей квалификации в клуб не приносит); поровну — кто раньше в списке клуба. */
+function mgrRowOwner(row){
+  const hs=new Set(mgrRowHs(row)); let best=null, bn=0;
+  (MGR.teams||[]).forEach(t=>{ const n=(t.cards||[]).filter(h=>hs.has(hKey(h))).length; if(n>bn){ bn=n; best=t.id; } });
+  return best;
+}
+function mgrContracted(tm){ const T=(MGR.teams||[]).find(x=>x.id===(tm && tm.mgrId)); return new Set(((T && T.cards)||[]).map(hKey)); }
+function mgrSeedIn(tm){
+  MGR_SEED_SWAP={id:tm && tm.mgrId, squad:(tm && tm.squad)||[], seeds:[], ran:false};
+  if(!tm || String(tm.mgrId||'').indexOf('s:')===0) return;
+  const key=MGR_SEED_SWAP.squad.map(c=>hKey((c && c.handle) || c)).sort().join('|'), mine=mgrContracted(tm);
+  mgrSeedLists(CAREER.career).forEach(x=>{
+    const arr=x.arr; if(arr.indexOf('you')>=0) return;
+    let at=arr.findIndex(r=>mgrRowKey(r)===key);
+    if(at<0) at=arr.findIndex(r=>mgrRowHs(r).some(h=>mine.has(h)) && mgrRowOwner(r)===tm.mgrId);
+    if(at<0) return;
+    MGR_SEED_SWAP.seeds.push({arr, at, row:arr[at]}); arr[at]='you';
+  });
+}
+function mgrSeedOut(){
+  const sw=MGR_SEED_SWAP; MGR_SEED_SWAP=null; if(!sw) return;
+  sw.seeds.forEach(s=>{ if(s.arr[s.at]==='you') s.arr[s.at]=s.row; });
+  if(!sw.ran) return;
+  const J=MGR_CAR_JOIN, you=(J && J.leadId===sw.id && J.youObj && (J.youObj.squad||[]).length) ? J.youObj : {squad:sw.squad};
+  mgrSeedLists(CAREER.career).forEach(x=>{ for(let i=0; i<x.arr.length; i++) if(x.arr[i]==='you') x.arr[i]=x.fn(you); });
+}
+/* ПОДПИСАННЫЙ ИГРОК СОХРАНЯЕТ КВАЛИФИКАЦИЮ (жалоба 20.10: «игрок прошёл на Reload, я подписал его после квалы, а ЛАН он
+   не сыграл»). Прогресс отборов у клуба свой у каждого состава (MGR.tcar), а квалификация человека, пока он был в
+   другой организации, записана в мире: прошедшие стадию Reload (relSeed.through), места на Reload Championship
+   (relSeats), прошедшие Плей-Ин и билеты финала Мейджора (majorSeed.rows/through). Правило: место в мире принадлежит
+   составу клуба, в котором играет его хозяин (или вся его пара); если игроки строки разошлись по разным составам —
+   составу, где их больше, при равенстве — раньше в списке клуба (mgrRowOwner). Одна строка — один состав. Этот состав
+   получает тот же прогресс, что дала бы квалификация ему самому, и играет турнир вместо прежней пары; прежняя пара
+   из поля уходит (mgrCarStrip заменяет игрока клуба в чужой строке). Тот же путь отдаёт прогресс и составу клуба,
+   который прошёл стадию в лобби ведущего: его строка в записи мира — та же квалификация. Только повышает, никогда не
+   отнимает. */
+function mgrCarSeatSync(tm){
+  if(!tm || String(tm.mgrId||'').indexOf('s:')===0) return;
+  const cr=CAREER.career, size=careerSquadSize();
+  const ms=cr.majorSeed;
+  if(ms && ms.season===cr.season && ms.size===size){
+    const m=cr.major, here=!!(m && m.n===ms.n);
+    if((ms.through||[]).indexOf('you')>=0){
+      if(!(here && (m.ticket || m.got==='final'))) cr.major=Object.assign({}, here ? m : {n:ms.n, got:'heats'}, {pass:(here && m.pass)||'heats', ticket:true});
+    } else if((ms.rows||[]).indexOf('you')>=0){
+      if(!(here && m.pass)) cr.major=Object.assign({}, here ? m : {n:ms.n}, {got:(here && m.got)||'playin', pass:'playin', ticket:!!(here && m.ticket)});
+    }
+  }
+  const rs=cr.relSeed, NX={heat:'Heats', final:'Final'};
+  if(rs && rs.season===cr.season && rs.size===size && NX[rs.next] && (rs.through||[]).indexOf('you')>=0){
+    const series=+String(rs.set||'').slice(1), prev=CC_RELOAD_ORDER[CC_RELOAD_ORDER.indexOf(rs.next)-1], r=cr.reload;
+    const row=series ? ccYearRows().find(x=>x[2]==='ReloadEliteSeries'+series+NX[rs.next]) : null;
+    const ahead=!!(row && row[1]>=cr.day), later=!!(r && r.series>series);
+    if(ahead && !later && !(r && r.series===series && CC_RELOAD_ORDER.indexOf(r.got)>=CC_RELOAD_ORDER.indexOf(prev))) cr.reload={series, got:prev};
+  }
+  if(Array.isArray(cr.relSeats) && !ccRelMySeats(cr).length){
+    const mine=new Set([...mgrContracted(tm)].map(_gcNorm));
+    const seat=cr.relSeats.find(r=>r && (r.s||1)===(cr.season||1) && (r.h||[]).some(h=>mine.has(_gcNorm(h))) && mgrRowOwner(r.h)===tm.mgrId);
+    if(seat) cr.ewc=(cr.ewc||[]).concat([{series:0, place:0, day:cr.day, season:cr.season, kept:true}]);
+  }
 }
 function mgrTeamOut(){
   const sw=MGR.tswap; if(!sw) return null;
+  try{ mgrSeedOut(); }catch(e){ console.error('mgrSeedOut', e); MGR_SEED_SWAP=null; }
   const cr=CAREER.career, st={};
   const rows=(cr.log||[]).slice(sw.log0), got=Math.max(0, (cr.earnings||0)-(sw.earn0||0))*(sw.n||1);
   MGR_TEAM_KEYS.forEach(k=>{ if(cr[k]!==undefined) st[k]=cr[k]; delete cr[k]; });
@@ -171217,7 +171307,7 @@ function mgrCarEvents(from, to){
    него, или наоборот) — свой быстрый вечер раннером только ради прогресса, строка и приз — из общего вечера. */
 let MGR_CAR_JOIN=null;
 const MGR_CAR_COPY=['tokens','major','major21','major22','major23','major24','majorx','majorxs','majorLc','globals','gclc','summit','reload','rc',
-  'gc23','gcSim','div22','div23','d1','division','solo','solos','solosBy','solosRl','solosRlBy','soloSpots','soloBy','proam','proamInvs','ewc24','ewc','mxDone','evSeen','spots','table','noDiv','vpick'];
+  'gc23','gcSim','div22','div23','d1','division','solo','solos','solosBy','solosRl','solosRlBy','soloSpots','soloBy','proam','proamInvs','ewc24','ewc','mxDone','evSeen','spots','table','noDiv','vpick','wf'];
 const mgrCarKey=t=>(t && t.squad || []).map(c=>hKey((c && c.handle) || c)).sort().join('|');
 const mgrCarIsHeat=o=>/heat|хит/i.test(String((o && o.stageName)||''));
 function mgrCarJoinField(field, opts){
@@ -171238,6 +171328,47 @@ function mgrCarJoinField(field, opts){
     const y=Object.assign({}, x); ['stagePts','stageElims','wins','gamesLog','dead'].forEach(p=>{ delete y[p]; });
     y.isClub=true; field[i]=y; J.injected[x.mgrId]=true; J.obj[x.mgrId]=y;
   });
+  mgrCarStrip(field);
+}
+/* ИГРОК КЛУБА ИГРАЕТ ТОЛЬКО ЗА КЛУБ (жалобы 20.10: «в финалах дивизиона играет игрок моей команды, который не прошёл»,
+   «прошёл, играет, а в таблице не как наш»). Поле раннер собирает из ростера мира и записей мира, где люди клуба
+   стоят в своих настоящих парах: из поля исключаются только игроки ведущего состава. Поэтому игрок другого состава
+   клуба (не прошедшего, из соседнего хита, или прошедшего, но другим составом) сидел в поле чужой строкой — без
+   цвета клуба, без приза клубу, иногда вдвоём с самим собой. Теперь после рассадки составов клуба в любой другой
+   строке поля игрок по контракту клуба (составы и запас) и любой, кто уже сидит в составе клуба, заменяется
+   свободным игроком того же региона ближайшей силы, которого в поле нет. */
+/* То же правило у самого источника: пока состав клуба сидит в движке карьеры (MGR.tswap), поля, которые строит мир
+   (careerCupField, careerSoloField — и в вечере клуба, и в вечерах мира вокруг него: соседние хиты, Ласт Ченс мира,
+   финалы недели), людей клуба не выдают вовсе. Иначе мир досчитывал за них чужие строки, и такая строка потом
+   «проходила» туда, куда состав клуба не проходил. Капы мира без клуба (mgrWorldSim) — как были. */
+function mgrSeatedTaken(){
+  if(!MGR || !MGR.tswap || !CAREER || !CAREER._mgr || !MGR.teams) return [];
+  return MGR.teams.flatMap(mgrTeamPeople).concat(MGR.bench||[]);
+}
+function mgrCarStrip(field){
+  if(!MGR || !Array.isArray(field)) return 0;
+  const seated=new Set(), taken=new Set();
+  field.forEach(t=>{ (t && t.squad || []).forEach(c=>{ const k=hKey((c && c.handle) || c); taken.add(k); if(t.isYou || t.isClub) seated.add(k); }); });
+  const club=new Set(mgrAll().map(hKey));
+  const bad=k=>club.has(k) || seated.has(k);
+  let n=0;
+  field.forEach((t, i)=>{
+    if(!t || t.isYou || t.isClub || !(t.squad||[]).some(c=>bad(hKey((c && c.handle) || c)))) return;
+    const sq=t.squad.map(c=>{
+      const k=hKey((c && c.handle) || c); if(!bad(k)) return c;
+      const reg=(c && c.region) || ccCareerRegion(), o=ccCardOvr(c)||0;
+      let best=null, bd=1e9;
+      (ccSceneRoster(reg)||[]).forEach(p=>{ const pk=hKey(p); if(taken.has(pk) || club.has(pk)) return; const d=Math.abs((ccCardOvr(p)||0)-o); if(d<bd){ bd=d; best=p; } });
+      if(!best) return c;
+      taken.add(hKey(best)); return best;
+    });
+    if(sq.every((c, j)=>c===t.squad[j])) return;
+    const keep={}; Object.keys(t).forEach(k=>{ if(/^stage|^_carry|^wins$|^dead$|^gamesLog$|^mpTag$/.test(k)) keep[k]=t[k]; });
+    let nt=null; try{ nt=careerTeam(sq); }catch(e){ nt=null; }
+    if(!nt) return;
+    nt.name=teamLabel(sq); field[i]=Object.assign(nt, keep); n++;
+  });
+  return n;
 }
 /* КАМЕРА — НА ПРОШЕДШИЙ СОСТАВ (его слово 8.10: «ты следишь за командой, она не проходит в финал, а другая из твоего клуба
    прошла — её второй этап не смотрится»). Раннер карьеры играет следующую стадию вечера, только если прошёл тот, за кем он
@@ -171248,8 +171379,13 @@ function mgrCarMaybeSwap(field){
   const J=MGR_CAR_JOIN; if(!J || J.swap || !Array.isArray(field)) return;
   const a=field.find(t=>t && t.isYou); if(!a) return;
   const sorted=field.slice().sort(mgrRankCmp), lp=sorted.indexOf(a)+1;
-  if(lp<=Math.ceil(field.length*0.3)) return;
-  let best=null, bp=lp;
+  /* Ласт Ченс (жалоба 20.10 «ласт ченс сломан»): отсечка открытого этапа — топ-50 из двух с половиной тысяч, а камера
+     менялась, только если ведущий ниже 30% поля. Ведущий на 191-м месте не проходил, лобби не игралось вовсе, и
+     прошедший отсечку состав клуба своего лобби так и не видел. Для этапа с отсечкой (J.cut) — меняемся, когда
+     ведущий за чертой, а другой состав клуба над ней. */
+  const cutN=(J.cut && field.length>J.cut) ? J.cut : 0;
+  if(cutN ? lp<=cutN : lp<=Math.ceil(field.length*0.3)) return;
+  let best=null, bp=cutN ? Math.min(lp, cutN+1) : lp;
   Object.keys(J.obj).forEach(id=>{ const t=J.obj[id], p=sorted.indexOf(t)+1; if(p>0 && p<bp){ bp=p; best=id; } });
   if(!best) return;
   const b=J.obj[best], ta=Object.assign({}, a), tb=Object.assign({}, b);
@@ -171264,7 +171400,10 @@ function mgrCarJoinRecord(field, opts){
   const J=MGR_CAR_JOIN; if(!J || !Array.isArray(field)) return;
   const sorted=field.slice().sort(mgrRankCmp);
   if(J.swap && field.indexOf(J.obj[J.swap.from])>=0) J.fromAlive=true;   // свой состав тоже прошёл — его прогресс не откатывать
-  { const y=field.find(t=>t && t.isYou); if(y){ const i=sorted.indexOf(y); J.rec._you={place:i+1, of:field.length, pts:Math.round(y.stagePts||0), elims:y.stageElims||0, wins:y.wins||0}; } }
+  { const y=field.find(t=>t && t.isYou); if(y){ J.youObj=y; const i=sorted.indexOf(y); J.rec._you={place:i+1, of:field.length, pts:Math.round(y.stagePts||0), elims:y.stageElims||0, wins:y.wins||0}; } }
+  // Таблица последней стадии — для точного исхода составов клуба (mgrCarExact); список прошедших кубок — их билет на финал недели.
+  J.sorted=sorted;
+  if(opts && opts.stageName===L().ccCupLive) J.wfCut=ccWfCutKeys(sorted);
   Object.keys(J.obj).forEach(id=>{ const t=J.obj[id], i=sorted.indexOf(t); if(i<0) return;
     J.rec[id]=Object.assign(J.rec[id]||{}, {place:i+1, of:field.length, pts:Math.round(t.stagePts||0), elims:t.stageElims||0, wins:t.wins||0, stage:(opts && opts.stageName)||''}); });
 }
@@ -171287,6 +171426,10 @@ async function mgrCarNight(ev, teams, you, quiet, fast){
   // В лобби ведущего — составы его региона; составы других регионов играют свой вечер (mgrCarRun ниже, rec пустой).
   const sameReg=t=>(t.mgrReg||MGR.region)===(you.mgrReg||MGR.region);
   MGR_CAR_JOIN={teams:extras.filter(sameReg), obj:{}, rec:{}, injected:{}, before:null, after:null, leadId:you.mgrId};
+  // Отсечка открытого этапа Ласт Ченса — по ней камера переходит к прошедшему составу (mgrCarMaybeSwap).
+  try{ const me=ev.ck==='major' ? careerMajorOn(ev.day) : null;
+    if(me && me.stage==='lcq' && !me.yx && !me.y21 && !me.y22 && !me.y23 && !me.y24)
+      MGR_CAR_JOIN.cut=ccScaleStage(ccMajorStageSpec('lcq', me.n)).cut || ccTeams(CAREER_CUP_CUT); }catch(e){}
   mgrCarHooks(true);
   let lead=null;
   try{ lead=await mgrCarRun(ev, you, quiet, fast); } finally { mgrCarHooks(false); }
@@ -171302,9 +171445,12 @@ async function mgrCarNight(ev, teams, you, quiet, fast){
       if(J.after) MGR_CAR_COPY.forEach(k=>{ if(JSON.stringify(J.before[k])!==JSON.stringify(J.after[k])) stTo[k]=J.after[k]===undefined ? undefined : JSON.parse(JSON.stringify(J.after[k])); });
       stTo.log=(stTo.log||[]).filter(x=>!(x.day===ev.day && x.kind===ev.ck)).concat((lead && lead.rows)||[]).slice(-120);
       const stFrom=MGR.tcar[you.mgrId]||{};
-      if(J.before && !J.fromAlive) MGR_CAR_COPY.forEach(k=>{ if(J.before[k]===undefined) delete stFrom[k]; else stFrom[k]=JSON.parse(JSON.stringify(J.before[k])); });
       const y=J.rec[J.swap.from]||{};
-      const own={season:CAREER.career.season, day:ev.day, place:y.place||0, of:y.of||0, pts:y.pts||0, elims:y.elims||0, wins:y.wins||0, kind:ev.ck, prize:Math.round((y.prize||0)/Math.max(1,(you.squad||[]).length)), passed:J.fromAlive ? undefined : false, shared:true};
+      // Этап, исход которого известен точно (mgrCarExact), — прогресс как до вечера плюс свой исход; иначе как было.
+      const exact=mgrCarExactKind(ev);
+      if(J.before && (exact || !J.fromAlive)) MGR_CAR_COPY.forEach(k=>{ if(J.before[k]===undefined) delete stFrom[k]; else stFrom[k]=JSON.parse(JSON.stringify(J.before[k])); });
+      const exF=exact && y.place ? mgrCarExact(ev, you, y, J, stFrom) : null;
+      const own={season:CAREER.career.season, day:ev.day, place:y.place||0, of:y.of||0, pts:y.pts||0, elims:y.elims||0, wins:y.wins||0, kind:ev.ck, prize:Math.round((y.prize||0)/Math.max(1,(you.squad||[]).length)), passed:exF ? exF.passed : (J.fromAlive ? undefined : false), shared:true};
       stFrom.log=(stFrom.log||[]).filter(x=>!(x.day===ev.day && x.kind===ev.ck)).concat([own]).slice(-120);
       MGR.tcar[you.mgrId]=stFrom;
       parts=[{tm:to, res:lead}, {tm:you, res:{rows:[own], got:y.prize||0}}];
@@ -171313,30 +171459,122 @@ async function mgrCarNight(ev, teams, you, quiet, fast){
     }
   }
   const lrow=lead && (lead.rows||[]).slice(-1)[0];
+  const alone=[];
   for(const tm of rest){
     const rec=J.rec[tm.mgrId];
-    if(!rec){ parts.push({tm, res:await mgrCarRun(ev, tm, true, true)}); continue; }   // в общий вечер не попал — свой
+    if(!rec){ alone.push(tm); continue; }   // в общий вечер не попал — свой (ниже)
     /* Один вечер — одна симуляция (его Notion 8.10: «два раза симулируется кап, надо чтоб один раз»). Ведущий строку не
        записал (сессия отборов Reload пишет итог в конце) или исход спорный — состав НЕ переигрывает вечер: место — из общей
        таблицы, прогресс ведущего копируется, только когда исход тот же. */
     const lp=lrow ? (lrow.place||0) : 0, lpass=lrow ? lrow.passed : undefined;
+    const st=(MGR.tcar=MGR.tcar||{})[tm.mgrId]=(MGR.tcar[tm.mgrId]||{division:(CAREER.career.division||1), log:[], tokens:[]});
+    // Кубок, финал недели, Мейджор, Reload — исход состава считается по его собственному месту и записям мира (mgrCarExact).
+    const ex=mgrCarExact(ev, tm, rec, J, st);
+    let same=false;
+    if(!ex){
     /* Исход ведущего неизвестен (строки нет или без passed) — прогресс копируется, только если состав сыграл не хуже
        ведущего (его слово 8.10: «попадают команды, которые не квалились даже в финалы» — копировали вслепую). */
-    let same=(lpass==null) ? (lp>0 && rec.place<=lp) : ((lpass && rec.place<=lp) || (!lpass && rec.place>=lp));
+    same=(lpass==null) ? (lp>0 && rec.place<=lp) : ((lpass && rec.place<=lp) || (!lpass && rec.place>=lp));
     // Ведущий прошёл, а состав ниже него: прошёл ли и он — видно по таблице следующего раунда в записях ведущего (ники пары
     // появились там после вечера).
     if(!same && lpass!==false && J.after){ const b=JSON.stringify(J.before||{}), a=JSON.stringify(J.after);
       const hs=(tm.squad||[]).map(c=>JSON.stringify(String(c.handle)));
       const occ=(t,h)=>t.split(h).length-1;   // ники были и в таблице прошлого раунда — считаем, прибавились ли
       if(hs.length && hs.every(h=>occ(a,h)>occ(b,h))) same=true; }
-    const st=(MGR.tcar=MGR.tcar||{})[tm.mgrId]=(MGR.tcar[tm.mgrId]||{division:(CAREER.career.division||1), log:[], tokens:[]});
     if(same && J.after){ MGR_CAR_COPY.forEach(k=>{ if(JSON.stringify(J.before[k])!==JSON.stringify(J.after[k])) st[k]=J.after[k]===undefined ? undefined : JSON.parse(JSON.stringify(J.after[k])); }); }
+    }
     const row={season:CAREER.career.season, day:ev.day, place:rec.place, of:rec.of, pts:rec.pts||0, elims:rec.elims||0, wins:rec.wins||0,
-               kind:ev.ck, stage:lrow ? lrow.stage : undefined, passed:same ? lpass : undefined, prize:Math.round((rec.prize||0)/Math.max(1, (tm.squad||[]).length)), shared:true};
+               kind:ev.ck, stage:lrow ? lrow.stage : undefined, passed:ex ? ex.passed : (same ? lpass : undefined), prize:Math.round((rec.prize||0)/Math.max(1, (tm.squad||[]).length)), shared:true};
     const s2=MGR.tcar[tm.mgrId]; s2.log=(s2.log||[]).filter(x=>!(x.day===ev.day && x.kind===ev.ck)).concat([row]).slice(-120);
     parts.push({tm, res:{rows:[row], got:rec.prize||0}});
   }
+  /* Не попавшие в лобби ведущего (другой хит, другой регион) играют свой вечер — и тоже вместе: следующий из них ведёт,
+     составы его хита садятся к нему (раньше каждый играл свой хит отдельно, и два состава одного хита симулировали его
+     дважды, видя друг друга чужими строками). */
+  if(alone.length===1) parts.push({tm:alone[0], res:await mgrCarSolo(ev, alone[0])});
+  else if(alone.length>1) parts.push(...await mgrCarNight(ev, alone, alone[0], true, true));
   return parts;
+}
+/* ТОЧНЫЙ ИСХОД СОСТАВА, КОТОРЫЙ ИГРАЛ В ЛОББИ ВЕДУЩЕГО (жалобы 20.10: «ласт ченс сломан», «в финалах дивизиона играет
+   тот, кто не прошёл»). Раньше прогресс такого состава был копией прогресса ведущего, «если исход тот же», а при
+   спорном исходе не писался вовсе — и состав, сыгравший финал Мейджора, играл его ещё раз назавтра, не прошедший
+   Плей-Ин шёл на второй день Плей-Ина, прошедший кубок без ведущего оставался без финала недели, а победитель игры в
+   лобби Ласт Ченса билета не получал. Для этапов, правила которых известны, исход теперь считается по месту самого
+   состава в общей таблице (J.rec) и по записям мира после вечера (кто записан прошедшим), и пишется так, как написал
+   бы раннер карьеры за него самого. Остальные турниры — прежним правилом. */
+// Свой вечер состава, не попавшего в лобби ведущего (другой хит, другой регион): тоже без чужих строк с людьми клуба.
+async function mgrCarSolo(ev, tm){
+  MGR_CAR_JOIN={teams:[], obj:{}, rec:{}, injected:{}, before:null, after:null, leadId:tm.mgrId};
+  mgrCarHooks(true);
+  try{ return await mgrCarRun(ev, tm, true, true); } finally { mgrCarHooks(false); MGR_CAR_JOIN=null; }
+}
+function mgrCarMajorOf(ev){
+  let me=null; try{ me=careerMajorOn(ev.day); }catch(e){ me=null; }
+  return (me && !me.yx && !me.y21 && !me.y22 && !me.y23 && !me.y24 && CC_MAJOR_ORDER.indexOf(me.stage)>=0) ? me : null;
+}
+function mgrCarExactKind(ev){
+  if(ev.ck==='cup' || ev.ck==='final' || ev.ck==='reload') return true;
+  return ev.ck==='major' && !!mgrCarMajorOf(ev);
+}
+function mgrCarExact(ev, tm, rec, J, st){
+  if(!rec || !st || !mgrCarExactKind(ev)) return null;
+  const cr=CAREER.career, key=mgrCarKey(tm);
+  const inRows=rows=>Array.isArray(rows) && rows.some(r=>r!=='you' && mgrRowKey(r)===key);
+  const topCut=n=>(J.sorted||[]).slice(0, n);
+  cr.day=ev.day;   // сессия кубка, день Мейджора и Reload читаются от сегодняшнего дня
+  if(ev.ck==='final'){ delete st.wf; return {passed:undefined}; }   // билет на финал недели потрачен
+  if(ev.ck==='cup'){
+    if((st.division||1)!==1) return null;
+    // Понедельник дивизиона 1 ничего не решает: очки в банке — таблица всего поля (cr.d1), она одна на всех.
+    if(careerCupSession()===1){ if(J.after && J.after.d1) st.d1=JSON.parse(JSON.stringify(J.after.d1)); return {passed:undefined}; }
+    const passed=rec.place<=careerCupCut(1);
+    if(passed) st.wf={monday:careerMonday(ev.day), cut:J.wfCut||((J.after && J.after.wf && J.after.wf.cut)||'')};
+    else delete st.wf;
+    return {passed};
+  }
+  if(ev.ck==='reload'){
+    const re=careerReloadOn(ev.day); if(!re) return null;
+    if(careerReloadBanking(re)) return {passed:undefined};
+    const cut=ccScaleStage(CC_RELOAD_STAGE[re.stage]).cut, NEXT={playin:'heat', heat:'final'};
+    let passed=rec.place<=cut;
+    if(NEXT[re.stage]){
+      const rs=cr.relSeed, ok=!!(rs && rs.season===cr.season && rs.set===re.set && rs.next===NEXT[re.stage] && Array.isArray(rs.through));
+      if(ok) passed=inRows(rs.through);
+      // Ведущий не прошёл — записи прошедших нет (её пишет только прошедший): пишем её из той же таблицы, чтобы следующую
+      // стадию состав играл с теми, с кем вышел.
+      else if(passed && J.sorted) cr.relSeed={season:cr.season, size:careerSquadSize(), set:re.set, next:NEXT[re.stage], through:topCut(cut).map(ccStageSeatRow), out:null, pending:null};
+    }
+    if(passed) st.reload={series:re.series, got:re.stage};   // не прошёл — раннер ничего не пишет; место на ЛАН — mgrCarSeatSync
+    return {passed};
+  }
+  const me=mgrCarMajorOf(ev); if(!me) return null;
+  const ms=cr.majorSeed, msOk=!!(ms && ms.n===me.n && ms.season===cr.season);
+  const spec=s=>ccScaleStage(ccMajorStageSpec(s, me.n));
+  const prev=(st.major && st.major.n===me.n) ? st.major : null;
+  let passed=false;
+  if(me.stage==='playin'){
+    passed=msOk ? inRows(ms.rows) : rec.place<=spec('playin').cut;
+    // Таблицу Плей-Ина пишет только прошедший ведущий; без неё хиты сеялись бы силой, а не финишем.
+    if(passed && !msOk && J.sorted) cr.majorSeed={n:me.n, season:cr.season, size:careerSquadSize(), rows:topCut(spec('playin').cut).map(ccMajorSeatRow)};
+  } else if(me.stage==='heats'){
+    passed=msOk ? inRows(ms.through) : ((rec.wins||0)>0 || rec.place<=spec('heats').cut);
+  } else if(me.stage==='lcq' && ccIs2025()){
+    // 2025: Ласт Ченс (и раунд 1 Showdown) проходят местом, как у раннера (lcByPlace).
+    passed=rec.place<=spec('lcq').cut;
+    // Прошедшие Ласт Ченс Мейджора играют лобби завтра — список комнаты свой у каждого состава (cr.majorLc, своя строка — 'you').
+    if(passed && ccMajLc2025(me)) st.majorLc={n:me.n, season:cr.season, rows:topCut(spec('lcq').cut).map(t=>mgrCarKey(t)===key ? 'you' : ccMajorSeatRow(t))};
+  } else if(me.stage==='lcq'){
+    // 2026: билет — победа в лобби Ласт Ченса (в Мейджоре 1 — место в лобби по очкам), как у ведущего в раннере.
+    const inLobby=rec.stage===L().ccMajLobby;
+    const seats=Math.max(1, spec('final').field-(msOk ? (ms.through||[]).length-(Array.isArray(ms.lcq) ? ms.lcq.length : 0) : 0));
+    passed=inLobby && (ccLcByPoints(me) ? rec.place<=seats : (rec.wins||0)>0);
+  } else if(me.stage==='lclobby'){
+    passed=(msOk && Array.isArray(ms.lcq)) ? inRows(ms.lcq) : ((rec.wins||0)>0 || rec.place<=spec('lclobby').cut);
+  }
+  if(me.stage==='final'){ st.major={n:me.n, got:'final', pass:'final', ticket:false}; return {passed:undefined}; }
+  st.major={n:me.n, got:me.stage, pass:passed ? me.stage : (prev ? prev.pass||null : null),
+            ticket:(passed && (me.stage==='heats' || me.stage==='lclobby' || (me.stage==='lcq' && !ccMajLc2025(me)))) ? true : !!(prev && prev.ticket)};
+  return {passed};
 }
 // Один вечер одной команды раннером карьеры. quiet — без вопросов; fast — ещё и без анимации (перемотка, вторые команды).
 async function mgrCarRun(ev, tm, quiet, fast){
@@ -171354,6 +171592,7 @@ async function mgrCarRun(ev, tm, quiet, fast){
     CC_MP_NIGHT=String(next.type)+':'+String(next.id||'');
     try{ ccEvDeltaStart(ccEvKey(next, ev.day)); }catch(e){}
     if(MGR_CAR_JOIN) MGR_CAR_JOIN.before=JSON.parse(JSON.stringify(MGR_CAR_COPY.reduce((o,k)=>{ o[k]=cr[k]; return o; }, {})));
+    if(MGR_SEED_SWAP) MGR_SEED_SWAP.ran=true;   // 'you' в записях мира после вечера — строка того, кем раннер закончил
     await careerPlayRun(next);
     if(MGR_CAR_JOIN) MGR_CAR_JOIN.after=JSON.parse(JSON.stringify(MGR_CAR_COPY.reduce((o,k)=>{ o[k]=cr[k]; return o; }, {})));
   } finally {
