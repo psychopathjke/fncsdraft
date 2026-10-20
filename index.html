@@ -10514,6 +10514,8 @@ ccNickLocked:'Имя настоящего игрока не меняется —
 ccNickDone:t=>'Теперь ты '+t+'.',
 ccGoalPromote:d=>'выйти в Дивизион '+d,
 ccGoalPlace:n=>'топ-'+n+' в любом кубке',
+ccGoalReach:{majorFinal:'дойти до финала Мейджора FNCS', fncsFinal:'дойти до Финала недели FNCS'},
+ccOrgGoalPickHint:'Цель на сезон: выбери одну до конца сезона. Выполнишь — продление с прибавкой (сложнее цель, больше прибавка), провалишь — клуб расторгнет контракт. Не выберешь — останется средняя.',
 ccNewsSigned:(n,s)=>'Контракт с '+n+' подписан',
 ccNewsLeftOrg:n=>'Ушёл из '+n+' — свободный агент', ccOrgEndText:(n,was,now)=>'Контракт с '+n+' закончился. Предлагают $'+now+' в месяц вместо $'+was+'.', ccOrgStay:'Продлить', ccOrgLeave:'Искать лучше', ccNewsExtended:(n,s)=>n+' продлевает контракт',
 ccNewsReleased:n=>n+' расторгает контракт: задача не выполнена',
@@ -12618,6 +12620,8 @@ ccNickLocked:'A real player keeps their own name — the photo you can change.',
 ccNickDone:t=>'You are '+t+' now.',
 ccGoalPromote:d=>'reach Division '+d,
 ccGoalPlace:n=>'top '+n+' in any cup',
+ccGoalReach:{majorFinal:'reach an FNCS Major final', fncsFinal:'reach the FNCS Weekly Final'},
+ccOrgGoalPickHint:'Season goal: pick one before the season ends. Hit it and you renew with a raise (harder goal, bigger raise); miss it and the club lets you go. Pick none and the middle one stays.',
 ccNewsSigned:(n,s)=>'Signed for '+n,
 ccNewsLeftOrg:n=>'Left '+n+' — free agent', ccOrgEndText:(n,was,now)=>'The contract with '+n+' is up. They offer $'+now+' a month instead of $'+was+'.', ccOrgStay:'Extend', ccOrgLeave:'Look for better', ccNewsExtended:(n,s)=>n+' extends the deal',
 ccNewsReleased:n=>n+' let you go: objective missed',
@@ -125380,6 +125384,7 @@ function careerOrgTileHTML(){
         ${cell(T.ccGoal, careerOrgGoalText(org.goal)+(met ? ' ✓' : ''), met)}
         ${g ? cell(T.ccMgTitle, careerMonthGoalText(g)+(g.bonus ? ' · '+ccMoney(g.bonus) : '')+(gOk ? ' ✓' : ''), gOk) : ''}
       </div>
+      ${ccOrgGoalPickHTML()}
       ${ccMgPickHTML()}
       <details class="cc-orgc-more"><summary>${esc(T.ccOrgMore)}</summary>
         ${row(T.ccOrgMedia, esc(T.ccOrgMediaRow(ccNum(ccOrgMediaMonth(org.name, org.tier, org.academy)))))}
@@ -137347,15 +137352,56 @@ function careerOrgPayAsk(kind){
 // What they want for it. Below Division 1 a club wants the thing the ladder is
 // for: get up a rung. In Division 1 there is no rung left, so they want a
 // result — a top-20 finish in any cup this season.
+/* ЦЕЛЬ СЕЗОНА — НА ВЫБОР (его слово 20.10, вслед за целями месяца: «сам выбирает реалистичные цели… не в любом кубке,
+   а FNCS»). Клуб предлагает три, выбор — до конца сезона один раз; не выбрал — остаётся средняя. Выполнена —
+   продление с прибавкой по сложности (+10% / +15% / +30%), провал — клуб расторгает, как и было.
+     Дивизион 2+: надёжная — топ-20 в кубке; средняя — подняться на дивизион; амбициозная — на два (со 2-го —
+       подняться и взять топ-5 в сессии FNCS Divisional Cup).
+     Дивизион 1 (и годы без дивизионов): надёжная — топ-20 в Финале недели FNCS (если их в году нет — в кубке);
+       средняя — дойти до финала Мейджора FNCS; амбициозная — топ-10 в финале Мейджора FNCS. */
+const CC_ORG_GOAL_RAISE=[0.10, 0.15, 0.30];
+function careerOrgGoalOpts(div){
+  const noDiv=typeof ccNoDivisions==='function' && ccNoDivisions();
+  if(!noDiv && div>1){
+    return [{type:'place', target:20},
+            {type:'promote', target:div-1},
+            div>2 ? {type:'promote', target:div-2} : {type:'promote', target:div-1, plus:{cat:'fncsCup', how:'place', n:5}}];
+  }
+  let wf=false; try{ careerEvents().forEach(evs=>{ if((evs||[]).some(e=>e.kind==='final')) wf=true; }); }catch(e){}
+  return [wf ? {type:'cat', cat:'fncsFinal', how:'place', n:20} : {type:'place', target:20},
+          {type:'cat', cat:'majorFinal', how:'reach'},
+          {type:'cat', cat:'majorFinal', how:'place', n:10}];
+}
+// Цель по умолчанию — средняя, с вариантами внутри: выбрать можно до конца сезона (careerOrgGoalPick).
 function careerOrgGoal(div){
-  // В годах без дивизионов подниматься некуда — цель по месту, как у Дивизиона 1.
-  if(typeof ccNoDivisions==='function' && ccNoDivisions()) return {type:'place', target:20};
-  return div>1 ? {type:'promote', target:div-1} : {type:'place', target:20};
+  const opts=careerOrgGoalOpts(div).map((o, i)=>Object.assign(o, {tier:i}));
+  return Object.assign({}, opts[1], {opts:opts, pick:null});
+}
+function careerOrgGoalPick(i){
+  const org=CAREER && CAREER.org; if(!org || org.own || !org.goal || !org.goal.opts || org.goal.pick!=null) return;
+  const o=org.goal.opts[i]; if(!o) return;
+  org.goal=Object.assign({}, o, {opts:org.goal.opts, pick:i});
+  careerSave(); if(typeof careerRenderHub==='function') careerRenderHub();
 }
 function careerOrgGoalText(goal){
   // Цели может не быть вовсе: свой клуб задач себе не ставит. См. careerClubFound.
   if(!goal || !goal.type) return '-';
-  return goal.type==='promote' ? L().ccGoalPromote(goal.target) : L().ccGoalPlace(goal.target);
+  const T=L();
+  if(goal.type==='cat'){
+    if(goal.how==='reach') return (T.ccGoalReach||{})[goal.cat] || T.ccGoalPlace(10);
+    const f=(T.ccMgPlaceOf||{})[goal.cat]; return f ? f(goal.n) : T.ccGoalPlace(goal.n);
+  }
+  const base=goal.type==='promote' ? T.ccGoalPromote(goal.target) : T.ccGoalPlace(goal.target);
+  if(goal.plus){ const f=(T.ccMgPlaceOf||{})[goal.plus.cat]; return base+' + '+(f ? f(goal.plus.n) : T.ccGoalPlace(goal.plus.n)); }
+  return base;
+}
+function ccOrgGoalPickHTML(){
+  const org=CAREER && CAREER.org, g=org && org.goal;
+  if(!g || org.own || !g.opts || g.pick!=null) return '';
+  const T=L();
+  return '<div class="cc-mg-pick"><small>'+esc(T.ccOrgGoalPickHint)+'</small>'+g.opts.map((o, i)=>
+    '<button type="button" class="cc-mg-opt cc-mg-t'+i+'" onclick="event.stopPropagation();careerOrgGoalPick('+i+')">'+
+      '<em>'+esc((T.ccMgTier||[])[i]||'')+'</em><b>'+esc(careerOrgGoalText(o))+'</b><i>+'+Math.round(CC_ORG_GOAL_RAISE[i]*100)+'%</i></button>').join('')+'</div>';
 }
 // Whether the season's log has already done it. Promotion is read off the
 // division you are standing in, a placement off the best finish of the season.
@@ -137366,7 +137412,10 @@ function careerOrgGoalMet(){
      careerClubFound ставит CAREER.org сам, без зарплаты, доли и цели. */
   const org=CAREER.org; if(!org || !org.goal) return false;
   const cr=CAREER.career;
-  if(org.goal.type==='promote') return cr.division<=org.goal.target;
+  const rows=(cr.log||[]).filter(e=>e.season===cr.season);
+  const catOk=(c)=>rows.some(r=>ccMgCat(r)===c.cat && (c.how==='reach' ? true : c.how==='cut' ? !!r.passed : (r.place||999)<=c.n));
+  if(org.goal.type==='cat') return catOk(org.goal);
+  if(org.goal.type==='promote') return cr.division<=org.goal.target && (!org.goal.plus || catOk(org.goal.plus));
   const best=(cr.log||[]).filter(e=>e.season===cr.season).reduce((b,e)=>Math.min(b, e.place), 999);
   return best<=org.goal.target;
 }
@@ -139022,7 +139071,7 @@ function careerOrgSeasonEnd(){
     return;
   }
   const was=org.salary;
-  const raise=Math.round(org.salary*1.15/50)*50;
+  const raise=Math.round(org.salary*(1+CC_ORG_GOAL_RAISE[(org.goal && org.goal.tier!=null) ? org.goal.tier : 1])/50)*50;
   const stay=function(){
     org.salary=raise;
     org.goal=careerOrgGoal(CAREER.career.division);
