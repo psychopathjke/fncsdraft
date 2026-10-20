@@ -509,34 +509,38 @@
   }
   /* Своя команда — круглая аватарка (его слово 20.10: «на карту аватарку вместо метки именно команды, за которую ты
      играешь»): картинка в кружке с белым ободком и жёлтым носиком в сторону движения — куда идёт, видно, как у стрелки. */
-  function avatarMarker(svg, x, y, angle, src, scale){
-    var NS = 'http://www.w3.org/2000/svg', k = 1 / (scale || 1), r = 3.1 * k;
-    if(!svg.querySelector('#zrYouClip')){
-      var defs = svg.querySelector('defs') || svg.insertBefore(document.createElementNS(NS, 'defs'), svg.firstChild);
-      var cp = document.createElementNS(NS, 'clipPath'); cp.setAttribute('id', 'zrYouClip'); cp.setAttribute('clipPathUnits', 'objectBoundingBox');
+  /* Узел аватарки строится ОДИН раз на показ и дальше только переезжает: карта перерисовывается каждый кадр
+     (svg.innerHTML=''), и свежие <image> с маской на каждом кадре подтормаживали показ (его слово 20.10). */
+  var AV_SEQ = 0;
+  function avatarMarker(handle, x, y, angle, src, scale){
+    var NS = 'http://www.w3.org/2000/svg', k = 1 / (scale || 1), r = 3.1 * k, A = handle._av;
+    if(!A || A.src !== src){
+      var id = 'zrYouClip' + (++AV_SEQ);
+      var g = document.createElementNS(NS, 'g');
+      var cp = document.createElementNS(NS, 'clipPath'); cp.setAttribute('id', id); cp.setAttribute('clipPathUnits', 'objectBoundingBox');
       var cc = document.createElementNS(NS, 'circle'); cc.setAttribute('cx', '0.5'); cc.setAttribute('cy', '0.5'); cc.setAttribute('r', '0.5');
-      cp.appendChild(cc); defs.appendChild(cp);
+      cp.appendChild(cc); g.appendChild(cp);
+      var nose = document.createElementNS(NS, 'path');
+      nose.setAttribute('fill', 'var(--accent)'); nose.setAttribute('stroke', 'rgba(6,8,16,.92)'); nose.setAttribute('stroke-width', 1.2);
+      nose.setAttribute('vector-effect', 'non-scaling-stroke');
+      var bg = document.createElementNS(NS, 'circle'); bg.setAttribute('fill', '#141a26');
+      var img = document.createElementNS(NS, 'image');
+      img.setAttribute('href', src); img.setAttribute('preserveAspectRatio', 'xMidYMid slice'); img.setAttribute('clip-path', 'url(#' + id + ')');
+      var ring = document.createElementNS(NS, 'circle');
+      ring.setAttribute('fill', 'none'); ring.setAttribute('stroke', '#ffffff'); ring.setAttribute('stroke-width', 2); ring.setAttribute('vector-effect', 'non-scaling-stroke');
+      g.appendChild(nose); g.appendChild(bg); g.appendChild(img); g.appendChild(ring);
+      A = handle._av = {g:g, nose:nose, bg:bg, img:img, ring:ring, src:src, r:-1};
     }
-    var g = document.createElementNS(NS, 'g');
-    g.setAttribute('transform', 'translate(' + x.toFixed(3) + ' ' + y.toFixed(3) + ')');
-    var nose = document.createElementNS(NS, 'path');
-    nose.setAttribute('d', 'M ' + (r + 1.9 * k).toFixed(3) + ' 0 L ' + (r * 0.55).toFixed(3) + ' ' + (-1.5 * k).toFixed(3) + ' L ' + (r * 0.55).toFixed(3) + ' ' + (1.5 * k).toFixed(3) + ' Z');
-    nose.setAttribute('fill', 'var(--accent)'); nose.setAttribute('stroke', 'rgba(6,8,16,.92)'); nose.setAttribute('stroke-width', 1.2);
-    nose.setAttribute('vector-effect', 'non-scaling-stroke'); nose.setAttribute('transform', 'rotate(' + angle.toFixed(1) + ')');
-    g.appendChild(nose);
-    var bg = document.createElementNS(NS, 'circle');
-    bg.setAttribute('r', r.toFixed(3)); bg.setAttribute('fill', '#141a26');
-    g.appendChild(bg);
-    var img = document.createElementNS(NS, 'image');
-    img.setAttribute('href', src); img.setAttribute('x', (-r).toFixed(3)); img.setAttribute('y', (-r).toFixed(3));
-    img.setAttribute('width', (2 * r).toFixed(3)); img.setAttribute('height', (2 * r).toFixed(3));
-    img.setAttribute('preserveAspectRatio', 'xMidYMid slice'); img.setAttribute('clip-path', 'url(#zrYouClip)');
-    g.appendChild(img);
-    var ring = document.createElementNS(NS, 'circle');
-    ring.setAttribute('r', r.toFixed(3)); ring.setAttribute('fill', 'none'); ring.setAttribute('stroke', '#ffffff');
-    ring.setAttribute('stroke-width', 2); ring.setAttribute('vector-effect', 'non-scaling-stroke');
-    g.appendChild(ring);
-    return g;
+    if(Math.abs(A.r - r) > 1e-4){
+      A.r = r;
+      A.nose.setAttribute('d', 'M ' + (r + 1.9 * k).toFixed(3) + ' 0 L ' + (r * 0.55).toFixed(3) + ' ' + (-1.5 * k).toFixed(3) + ' L ' + (r * 0.55).toFixed(3) + ' ' + (1.5 * k).toFixed(3) + ' Z');
+      A.bg.setAttribute('r', r.toFixed(3)); A.ring.setAttribute('r', r.toFixed(3));
+      A.img.setAttribute('x', (-r).toFixed(3)); A.img.setAttribute('y', (-r).toFixed(3));
+      A.img.setAttribute('width', (2 * r).toFixed(3)); A.img.setAttribute('height', (2 * r).toFixed(3));
+    }
+    A.g.setAttribute('transform', 'translate(' + x.toFixed(3) + ' ' + y.toFixed(3) + ')');
+    A.nose.setAttribute('transform', 'rotate(' + angle.toFixed(1) + ')');
+    return A.g;
   }
 
   // --- kill feed, built the way the game's own feed is: a pill for each side
@@ -1273,7 +1277,7 @@
         // Команда клуба (Fortnite Manager, isClub) — своим голубым и крупно, как своя.
         // Своя команда — аватаркой (образ из шкафчика, карьера: window.CC_FN_SKIN), а не стрелкой; нет образа — стрелка.
         var av = (who.you && typeof window !== 'undefined' && typeof window.CC_FN_SKIN === 'function') ? window.CC_FN_SKIN(who.name, true) : null;
-        handle.svg.appendChild(av ? avatarMarker(handle.svg, at[i].x, at[i].y, d.a || 0, av, scale)
+        handle.svg.appendChild(av ? avatarMarker(handle, at[i].x, at[i].y, d.a || 0, av, scale)
           : marker(at[i].x, at[i].y, d.a || 0,
           who.you ? 'var(--accent)' : who.club ? CLUB_COL : colourFor(i), who.you || who.club, scale));
       }
