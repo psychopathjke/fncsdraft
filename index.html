@@ -342,6 +342,16 @@
   .cc-orgc .cc-orgc-id b{font-size:18px;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   .cc-orgc .cc-orgc-id small{font-size:12px;color:#9fb3e6;}
   .cc-orgc .cc-orgc-cells{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;}
+  /* Выбор цели месяца — три кнопки: надёжная, квал FNCS, амбициозная (careerMonthGoalPick). */
+  .cc-mg-pick{display:flex;flex-direction:column;gap:6px;margin:10px 0 4px;}
+  .cc-mg-pick > small{font-size:11px;color:#b7c3e6;line-height:1.3;}
+  .cc-mg-opt{display:grid;grid-template-columns:1fr auto;grid-template-rows:auto auto;column-gap:10px;align-items:center;text-align:left;
+    padding:8px 12px;border-radius:10px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.06);color:#fff;cursor:pointer;font:inherit;}
+  .cc-mg-opt:hover{border-color:#ffe600;background:rgba(255,230,0,.08);}
+  .cc-mg-opt em{grid-column:1;font-style:normal;font-size:10px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:#8fa1cc;}
+  .cc-mg-opt b{grid-column:1;font-size:13px;font-weight:800;line-height:1.25;}
+  .cc-mg-opt i{grid-column:2;grid-row:1 / span 2;font-style:normal;font-weight:900;font-size:15px;color:#ffe600;white-space:nowrap;}
+  .cc-mg-t1 em{color:#6fe3d0;} .cc-mg-t2 em{color:#ff9b5a;}
   .cc-orgc .cc-orgc-cell{display:flex;flex-direction:column;gap:2px;padding:8px 10px;border-radius:10px;background:rgba(8,18,50,.45);min-width:0;}
   .cc-orgc .cc-orgc-cell small{font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#9fb3e6;}
   .cc-orgc .cc-orgc-cell b{font-size:13px;color:#fff;overflow:hidden;text-overflow:ellipsis;}
@@ -10410,6 +10420,11 @@ ccPotential:'Рейтинг / потолок',
 ccTrainCap:'Тренировки до', ccMateLearn:'Учишься у напарника',
 ccForm:'Форма', ccFormHot:'в ходу', ccFormCold:'спад',
 ccMgTitle:'Цель месяца', ccMgCut:'пройти отбор в кубке', ccMgPlace:n=>'топ-'+n+' в кубке',
+ccMgChoose:'выбери цель месяца', ccMgPickHint:'Клуб предлагает три цели на месяц. Выбери одну: чем сложнее, тем больше бонус. Не выберешь до вечера, поставит среднюю.',
+ccMgTier:['Надёжная','Средняя','Амбициозная'],
+ccMgCutOf:{fncsCup:'пройти сессию FNCS Divisional Cup', majorQual:'пройти этап Мейджора FNCS (Play-In, Heats, Last Chance)', solo:'пройти раунд соло FNCS (FNCS Solos, Solo Series)', cash:'пройти отбор в кэш-капе', any:'пройти отбор в кубке'},
+ccMgPlaceOf:{cash:n=>'топ-'+n+' в кэш-капе (Victory Cup, Perf Eval)', fncsCup:n=>'топ-'+n+' в сессии FNCS Divisional Cup', fncsFinal:n=>'топ-'+n+' в Финале недели FNCS', majorFinal:n=>'топ-'+n+' в финале Мейджора FNCS', any:n=>'топ-'+n+' в любом событии'},
+ccNewsMgAuto:(o,g)=>o+' сам поставил цель месяца: '+g,
 ccNewsMonthBonus:(club,v)=>club+' выплатил премию за месяц: $'+v,
 ccDayEvscrimup:'Зовут на скримы', ccDayEvscrimupSub:'Дуо посильнее осталось без игрока на вечер', ccDayEvscrimupSubt:'Трио посильнее осталось без игрока на вечер',
 ccDayEvscrimupYes:'Пойти', ccDayEvscrimupNo:'Отказаться',
@@ -12509,6 +12524,11 @@ ccPotential:'Rating / ceiling',
 ccTrainCap:'Training tops out at', ccMateLearn:'Learning from partner',
 ccForm:'Form', ccFormHot:'flying', ccFormCold:'off it',
 ccMgTitle:'This month', ccMgCut:'make a cut', ccMgPlace:n=>'a top '+n+' finish',
+ccMgChoose:'pick this month\'s goal', ccMgPickHint:'The club offers three goals for the month. Pick one: the harder it is, the bigger the bonus. Pick none before the next event and they set the middle one.',
+ccMgTier:['Safe','Medium','Ambitious'],
+ccMgCutOf:{fncsCup:'get through an FNCS Divisional Cup session', majorQual:'get through an FNCS Major stage (Play-In, Heats, Last Chance)', solo:'get through an FNCS solo round (FNCS Solos, Solo Series)', cash:'make the cut in a cash cup', any:'make a cut'},
+ccMgPlaceOf:{cash:n=>'top '+n+' in a cash cup (Victory Cup, Perf Eval)', fncsCup:n=>'top '+n+' in an FNCS Divisional Cup session', fncsFinal:n=>'top '+n+' in the FNCS Weekly Final', majorFinal:n=>'top '+n+' in an FNCS Major final', any:n=>'top '+n+' in any event'},
+ccNewsMgAuto:(o,g)=>o+' set this month\'s goal for you: '+g,
 ccNewsMonthBonus:(club,v)=>club+' paid the month bonus: $'+v,
 ccDayEvscrimup:'Invited to scrim', ccDayEvscrimupSub:'A stronger duo is a player short tonight', ccDayEvscrimupSubt:'A stronger trio is a player short tonight',
 ccDayEvscrimupYes:'Go', ccDayEvscrimupNo:'Pass',
@@ -125331,8 +125351,9 @@ function careerOrgTileHTML(){
         ${cell(T.ccWage, ccMoney(org.salary)+T.ccPerSeason)}
         ${cell(T.ccOrgCutRow, careerOrgCut() ? Math.round(careerOrgCut()*100)+'%' : '-')}
         ${cell(T.ccGoal, careerOrgGoalText(org.goal)+(met ? ' ✓' : ''), met)}
-        ${g ? cell(T.ccMgTitle, careerMonthGoalText(g)+' · '+ccMoney(g.bonus)+(gOk ? ' ✓' : ''), gOk) : ''}
+        ${g ? cell(T.ccMgTitle, careerMonthGoalText(g)+(g.bonus ? ' · '+ccMoney(g.bonus) : '')+(gOk ? ' ✓' : ''), gOk) : ''}
       </div>
+      ${ccMgPickHTML()}
       <details class="cc-orgc-more"><summary>${esc(T.ccOrgMore)}</summary>
         ${row(T.ccOrgMedia, esc(T.ccOrgMediaRow(ccNum(ccOrgMediaMonth(org.name, org.tier, org.academy)))))}
         ${row(T.ccOrgBonusRow, ccMoney(careerOrgBonus(org)))}
@@ -126743,7 +126764,8 @@ function ccGoalsTileHTML(){
   }
   const mg=careerMonthGoal();
   if(mg){ const met=careerMonthGoalMet();
-    rows.push(row(L().hgMonth, careerMonthGoalText(mg)+' · '+ccMoney(mg.bonus), met ? '✓ '+esc(L().hgDone) : esc(L().hgOpen), met)); }
+    rows.push(row(L().hgMonth, careerMonthGoalText(mg)+(mg.bonus ? ' · '+ccMoney(mg.bonus) : ''), met ? '✓ '+esc(L().hgDone) : esc(L().hgOpen), met));
+    const pick=ccMgPickHTML(); if(pick) rows.push(pick); }
   const g=lf.goal, six=CAREER.player.attrs||ccOwnAttrs();
   if(g && !g.done){
     const v=six[g.k]||0, pct=Math.max(0, Math.min(100, (v-g.from)/Math.max(0.1, g.to-g.from)*100));
@@ -138793,33 +138815,117 @@ function careerAwardSeason(){
   careerSave();
   return win;
 }
+/* ЦЕЛЬ МЕСЯЦА — ВЫБИРАЕТ ИГРОК (его слово 20.10: «может цели от орг пусть сам выбирает реалистичные цели, за
+   которые может получить бонусы, и топ 3 не в любом кубке, а FNCS там например или квал FNCS и т.д.»).
+
+   Было: клуб бросал одну цель на месяц — «топ-3 в кубке», «топ-10», «пройти отбор» — по дивизиону, и годилось любое
+   событие. Теперь клуб предлагает три, и все три — из того, что в этом месяце правда стоит в календаре:
+     надёжная   — кэш-кап (Victory Cup, Perf Eval) или пройти сессию FNCS Divisional Cup;
+     средняя    — квал FNCS: пройти этап Мейджора (Play-In, Heats, Last Chance) или место в Финале недели;
+     амбициозная — место в финале Мейджора или в Финале недели, если нет — высоко в кэш-капе.
+   Планка места — по своим же последним местам в событиях этого вида (доля поля, квантиль 0.7 / 0.4 / 0.15, круглое
+   число из CC_MG_NICE), без истории — по всем вечерам. Бонус растёт со сложностью (×1 / ×2 / ×4). Пока не выбрано, цель
+   не засчитывается; не выбрал до вечера — клуб ставит среднюю сам (и в перемотке). Засчитывается вечер с дня выбора. */
+const CC_MG_NICE=[1,2,3,5,10,15,20,25,30,40,50,75,100,150,200,250,300,500,1000];
+const CC_MG_FIELD={cash:500, fncsCup:180, fncsFinal:50, majorFinal:50};
+const CC_MG_MUL=[1, 2, 4];
+// Вид строки журнала по меркам цели: сессия Divisional Cup пишется без kind.
+function ccMgCat(r){
+  const k=(r && r.kind) || 'cup';
+  if(k==='victory' || k==='eval') return 'cash';
+  if(k==='cup') return 'fncsCup';
+  if(k==='final') return 'fncsFinal';
+  if(k==='major') return r.stage==='final' ? 'majorFinal' : 'majorQual';
+  return k;
+}
+function ccMgNice(x){ for(const v of CC_MG_NICE) if(v>=x) return v; return CC_MG_NICE[CC_MG_NICE.length-1]; }
+// Планка места: доля поля по своим строкам этого вида (последние 12), квантиль q, умноженная на поле вида.
+function ccMgTarget(cat, q){
+  const log=(CAREER.career.log||[]).filter(r=>r && r.place && r.of);
+  let rows=log.filter(r=>ccMgCat(r)===cat).slice(-12);
+  if(rows.length<3) rows=log.slice(-12);
+  // Поле — медиана своих полей этого вида (у кэш-капов это и 19 на ЛАНе, и 2470 в Victory Cup).
+  const own=rows.filter(r=>ccMgCat(r)===cat).map(r=>r.of).sort((a,b)=>a-b);
+  const field=own.length ? own[own.length>>1] : (CC_MG_FIELD[cat]||100);
+  // Пол планки по сложности: «топ-1» в кубке на тысячу — не цель, а лотерея.
+  const floor=q>=0.7 ? 10 : q>=0.4 ? 5 : 3;
+  if(!rows.length) return Math.min(ccMgNice(Math.max(floor, field*q*0.5)), ccMgNice(field/2));
+  const fr=rows.map(r=>r.place/r.of).sort((a,b)=>a-b);
+  const v=fr[Math.min(fr.length-1, Math.floor(q*fr.length))];
+  return Math.min(ccMgNice(Math.max(floor, v*field)), ccMgNice(field/2));
+}
+// Что ещё стоит в календаре карьеры в этом месяце, по видам (с сегодняшнего дня). «Пустят ли» не спрашивается: до квала
+// в Мейджор и Финал недели не пускает никто, а цель как раз в том, чтобы туда пройти.
+function ccMgMonthKinds(key){
+  const out={}, today=careerToday();
+  try{
+    careerEvents().forEach((evs, day)=>{
+      if(ccMonthKey(day)!==key || day<today) return;
+      (evs||[]).forEach(e=>{
+        const fin=e.kind==='major' && /final/i.test(String(e.id||'')) && !/lcq|last/i.test(String(e.id||''));
+        const c=e.kind==='major' ? (fin ? 'majorFinal' : 'majorQual') : ccMgCat({kind:e.kind});
+        out[c]=(out[c]||0)+1;
+      });
+    });
+  }catch(e){}
+  return out;
+}
+function ccMgOptions(key, base){
+  const has=ccMgMonthKinds(key), o=[];
+  const pl=(cat, q)=>({type:'place', cat, n:ccMgTarget(cat, q)});
+  // Надёжная.
+  o.push(has.cash ? pl('cash', 0.7) : has.fncsCup ? {type:'cut', cat:'fncsCup'} : has.fncsFinal ? pl('fncsFinal', 0.7) : {type:'place', cat:'any', n:ccMgTarget('any', 0.7)});
+  // Средняя — квал FNCS.
+  o.push(has.majorQual ? {type:'cut', cat:'majorQual'} : has.fncsFinal ? pl('fncsFinal', 0.4) : has.fncsCup ? pl('fncsCup', 0.4) : has.solo ? {type:'cut', cat:'solo'} : has.cash ? pl('cash', 0.4) : {type:'place', cat:'any', n:ccMgTarget('any', 0.4)});
+  // Амбициозная — FNCS.
+  o.push(has.majorFinal ? pl('majorFinal', 0.15) : has.fncsFinal ? pl('fncsFinal', 0.15) : has.majorQual ? pl('fncsCup', 0.15) : has.cash ? pl('cash', 0.15) : {type:'place', cat:'any', n:ccMgTarget('any', 0.15)});
+  // Одно и то же дважды — не выбор: средняя и амбициозная одного вида должны отличаться планкой.
+  if(o[2].cat===o[1].cat && o[2].type===o[1].type && o[2].n>=o[1].n) o[2].n=Math.max(1, CC_MG_NICE[Math.max(0, CC_MG_NICE.indexOf(o[1].n)-2)]||1);
+  if(o[1].cat===o[0].cat && o[1].type===o[0].type && o[1].n>=o[0].n) o[1].n=Math.max(1, CC_MG_NICE[Math.max(0, CC_MG_NICE.indexOf(o[0].n)-2)]||1);
+  return o.map((g, i)=>Object.assign(g, {tier:i, bonus:Math.round(base*CC_MG_MUL[i]/10)*10}));
+}
 function careerMonthGoal(){
   const cr=CAREER.career, org=CAREER.org;
   // Свой клуб задач хозяину не ставит и премий за месяц не платит.
   if(!org || org.own) return null;
   const key=ccMonthKey();
   if(cr.mg && cr.mg.key===key) return cr.mg;
-  // Seeded on the month and the club, so it cannot be rerolled by reopening
-  // the hub, and two clubs do not ask the same thing in the same month.
-  const rnd=careerRng(ccHashStr('mg|'+key+'|'+org.name));
-  const div=cr.division;
-  const want = div>=4 ? {type:'cut'}
-             : div>=2 ? (rnd()<0.5 ? {type:'cut'} : {type:'place', n:20})
-             : (rnd()<0.5 ? {type:'place', n:10} : {type:'place', n:3});
-  cr.mg={key:key, type:want.type, n:want.n||0,
-         bonus:Math.max(100, Math.round((org.salary||400)/Math.max(1,careerWagePaydays().length)/10)*10),
-         paid:false};
+  const base=Math.max(100, Math.round((org.salary||400)/Math.max(1,careerWagePaydays().length)/10)*10);
+  cr.mg={key:key, opts:ccMgOptions(key, base), pick:null, from:null, type:null, cat:null, n:0, bonus:0, paid:false};
   careerSave();
   return cr.mg;
 }
+// Выбор: цель становится этой (type/cat/n/bonus сверху — их читают ячейки и проверка), засчитывается с сегодняшнего дня.
+function careerMonthGoalPick(i, quiet){
+  const g=careerMonthGoal(); if(!g || g.pick!=null || !g.opts || !g.opts[i]) return;
+  const o=g.opts[i];
+  g.pick=i; g.from=careerToday(); g.type=o.type; g.cat=o.cat; g.n=o.n||0; g.bonus=o.bonus;
+  careerSave();
+  if(!quiet && typeof careerRenderHub==='function') careerRenderHub();
+}
+// Не выбрал до вечера — клуб ставит среднюю (вызывается перед проверкой после вечера и в перемотке).
+function careerMonthGoalAuto(){
+  const g=careerMonthGoal(); if(!g || g.pick!=null || !g.opts) return;
+  careerMonthGoalPick(Math.min(1, g.opts.length-1), true);
+  // Вечер, на котором выбрал клуб, тоже идёт в зачёт — он мог быть первым вечером месяца.
+  const last=(CAREER.career.log||[]).slice(-1)[0];
+  if(last && ccMonthKey(last.day)===g.key && last.day<g.from) g.from=last.day;
+  try{ careerNews('flat', 'ccNewsMgAuto', [CAREER.org.name, careerMonthGoalText(g)], {by:ccOrgBy(CAREER.org.name)}); }catch(e){}
+}
 function careerMonthGoalMet(){
   const g=careerMonthGoal(); if(!g) return false;
-  return (CAREER.career.log||[]).some(r=>ccMonthKey(r.day)===g.key &&
+  // Старые сейвы: цель без вариантов — как раньше, любое событие месяца.
+  if(!g.opts) return (CAREER.career.log||[]).some(r=>ccMonthKey(r.day)===g.key &&
+    (g.type==='cut' ? !!r.passed : (r.place||99)<=g.n));
+  if(g.pick==null) return false;
+  return (CAREER.career.log||[]).some(r=>ccMonthKey(r.day)===g.key && r.day>=(g.from||'') &&
+    (g.cat==='any' || ccMgCat(r)===g.cat) &&
     (g.type==='cut' ? !!r.passed : (r.place||99)<=g.n));
 }
 // Judged where a result lands, so the money arrives with the night that earned
 // it rather than at some later boundary.
 function careerMonthGoalCheck(){
+  careerMonthGoalAuto();
   const g=careerMonthGoal(); if(!g || g.paid) return 0;
   if(!careerMonthGoalMet()) return 0;
   const cr=CAREER.career;
@@ -138830,7 +138936,24 @@ function careerMonthGoalCheck(){
   return g.bonus;
 }
 function careerMonthGoalText(g){
-  return g.type==='cut' ? L().ccMgCut : L().ccMgPlace(g.n);
+  if(!g) return '-';
+  if(g.opts && g.pick==null) return L().ccMgChoose;
+  return ccMgGoalLine(g);
+}
+function ccMgGoalLine(g){
+  const T=L();
+  if(!g.cat) return g.type==='cut' ? T.ccMgCut : T.ccMgPlace(g.n);
+  if(g.type==='cut') return (T.ccMgCutOf||{})[g.cat] || T.ccMgCut;
+  const f=(T.ccMgPlaceOf||{})[g.cat];
+  return f ? f(g.n) : T.ccMgPlace(g.n);
+}
+// Три кнопки выбора: цель, бонус, сложность.
+function ccMgPickHTML(){
+  const g=careerMonthGoal(); if(!g || !g.opts || g.pick!=null) return '';
+  const T=L();
+  return '<div class="cc-mg-pick"><small>'+esc(T.ccMgPickHint)+'</small>'+g.opts.map((o, i)=>
+    '<button type="button" class="cc-mg-opt cc-mg-t'+o.tier+'" onclick="event.stopPropagation();careerMonthGoalPick('+i+')">'+
+      '<em>'+esc(T.ccMgTier[o.tier]||'')+'</em><b>'+esc(ccMgGoalLine(o))+'</b><i>+'+esc(ccMoney(o.bonus))+'</i></button>').join('')+'</div>';
 }
 
 // The season boundary is where a contract is judged. One season, one objective:
