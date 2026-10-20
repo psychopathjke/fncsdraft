@@ -110,7 +110,35 @@ const boot = (who) => `
         try{ const k=(CC_EV_DELTA&&CC_EV_DELTA.key)||('w|'+CAREER.career.day); const o=window.__km[k]||(window.__km[k]={});
           Object.keys(m.rows).forEach(h=>{ const d=(m.rows[h].usd||0)-(before[h]||0); if(d) o[h]=(o[h]||0)+d; }); }catch(e){}
         return r; };
+      /* Входы рейтинга вечера: место, поле, размер по календарю, дивизион, вид, этап — по ключу вечера. */
+      /* ЛОББИ БЕЗ ЛЮДЕЙ В ОБЩЕМ ВЕЧЕРЕ: по ночи — бросок до/после и хеш входов первых шести, плюс хеши мира и
+         глобалов на первом из них. Сверка называет первую ночь, где двое разошлись, и чем. */
+      window.__oth={}; { const hh=x=>{ let t; try{ t=JSON.stringify(x, (k,v)=>(v instanceof Map)?[...v.entries()]:(v instanceof Set)?[...v]:v); }catch(e){ t='!'; } t=String(t).slice(0,300000); let v=0; for(let i=0;i<t.length;i++) v=(v*31+t.charCodeAt(i))|0; return (v>>>0).toString(16); };
+        const sg1=simulateGame; simulateGame=function(teams){
+          const on=(typeof CC_MP_RAND!=='undefined' && CC_MP_RAND) && CC_MP_GAME<=2 && !(teams||[]).some(t=>t && (t.isYou||t.isMate||t.isRival));
+          const k=(CC_EV_DELTA&&CC_EV_DELTA.key)||('w|'+CAREER.career.day);
+          let rec=null;
+          if(on){ const a=window.__oth[k]||(window.__oth[k]={e:[], w:null});
+            if(a.e.length<6){ rec={g:CC_MP_GAME, r0:CC_MP_ROLLS, h:hh((teams||[]).map(t=>[(t.squad||[]).map(c=>c&&c.handle).join('+'), t.pow, t.closeEdge||0, t.landingZone?ALL_LANDING_ZONES.indexOf(t.landingZone):-1, t.attrs?[t.attrs.END,t.attrs.SUR,t.attrs.AIM,t.attrs.CLU].join('.'):'-', t.stagePts||0]))}; a.e.push(rec); }
+            if(!a.w){ const w={}; ['dev','devL','splits','duoStreak','lft'].forEach(x=>{ w['W.'+x]=hh(CAREER[x]); }); ['duoSplits','trios','chemSince','spots'].forEach(x=>{ w['C.'+x]=hh(CAREER.career[x]); });
+              ['CC_SEATS_REMIX','CC_DROP_STAGE','CC_ZB','FORM_SPREAD','CC_EVENT_SIZE','ACTIVE_LANDING_SET','LANDING_TRIM_SIZE','squadSize','CARD_MODE','CC_SPOT_FEAR_MAP','CC_KILL_CAP'].forEach(x=>{ try{ w['L.'+x]=hh(eval(x)); }catch(e){} });
+              w.seats=(typeof CC_DROP_SEATS!=='undefined' && CC_DROP_SEATS) ? CC_DROP_SEATS.size : 0; a.w=w; } }
+          const r=sg1.apply(this, arguments);
+          if(rec) rec.r1=CC_MP_ROLLS;
+          return r; }; }
+      window.__ke={}; { const ep0=ccEventPR; ccEventPR=function(o, trueOf){ const r=ep0.apply(this, arguments);
+        try{ const k=(CC_EV_DELTA&&CC_EV_DELTA.key)||('w|'+CAREER.career.day); const a=window.__ke[k]||(window.__ke[k]=[]);
+          if(a.length<400) a.push([o.place,o.of,trueOf,o.div,o.kind,o.stage||''].join(':')+'='+(r==null?'-':Math.round(r*100)/100)); }catch(e){}
+        return r; }; }
+      window.__kp={}; const pa1=careerPrAdd; careerPrAdd=function(ranked, meta){
+        try{ const k0=(CC_EV_DELTA&&CC_EV_DELTA.key)||""; if(/SoloSeries_Final|FNCSSoloReload_Final/.test(k0)){ (window.__rk=window.__rk||{})[k0+"#"+(meta&&meta.stage||"")]=(ranked||[]).map((t,i)=>(i+1)+":"+((t.squad||[]).map(c=>c&&c.handle).join("+")||t.name)+":"+(t.stagePts||0)+":"+(t.wins||0)+":"+(t.stageElims||0)).join(" "); } }catch(e){}
+        const t=careerPrTally(); const before={}; Object.keys(t.rows).forEach(h=>before[h]=(t.rows[h].v||[]).length+'/'+(t.rows[h].n||0));
+        const r=pa1.apply(this, arguments);
+        try{ const k=(CC_EV_DELTA&&CC_EV_DELTA.key)||('w|'+CAREER.career.day); const o=window.__kp[k]||(window.__kp[k]={});
+          (ranked||[]).forEach(()=>{}); Object.keys(t.rows).forEach(h=>{ const now=(t.rows[h].v||[]).length+'/'+(t.rows[h].n||0); if(now!==before[h]){ const last=(t.rows[h].v||[]).map(x=>Math.round(x[0]*100)/100).sort((a,b)=>b-a).slice(0,3).join(';'); o[h]=(o[h]||0)+1; } }); }catch(e){}
+        return r; };
       const ra1=ccEvResApply; ccEvResApply=function(d){ const ok=ra1.apply(this, arguments);
+        try{ if(ok && d && d.key){ const o=window.__kp['R:'+d.key]||(window.__kp['R:'+d.key]={}); Object.keys(d.pr||{}).forEach(h=>{ o[h]=(o[h]||0)+(d.pr[h]||[]).length; }); } }catch(e){}
         try{ if(ok && d && d.key){ const o=window.__km['R:'+d.key]||(window.__km['R:'+d.key]={}); Object.keys(d.money||{}).forEach(h=>{ const v=Math.round(d.money[h]||0); if(v) o[h]=(o[h]||0)+v; }); } }catch(e){}
         return ok; }; }
     const ok=await ccMpEnter({code:${JSON.stringify(CODE)}, role:${JSON.stringify(who.role_mp)}});
@@ -129,6 +157,11 @@ const boot = (who) => `
         money:careerMoneyRows('year').map(r=>(r.you?'~':'')+strip(r.name)+':'+r.events+':'+r.usd),
         pr:(typeof careerPrRows==='function') ? careerPrRows().slice(0,300).map(r=>(r.you?'~':'')+strip(r.name)+':'+r.pr+':'+r.events) : [],
         earnings:cr.earnings, mates:careerMates().map(m=>m&&m.handle),
+        oth:(function(){ const o=window.__oth||{}; window.__oth={}; return o; })(),
+        rk:(function(){ const o=window.__rk||{}; window.__rk={}; return o; })(),
+        ke:(function(){ const o={}; Object.keys(window.__ke||{}).forEach(k=>{ o[k]=window.__ke[k].join(' '); }); window.__ke={}; return o; })(),
+        kp:(function(){ const o={}; Object.keys(window.__kp||{}).forEach(k=>{ const v=window.__kp[k]; o[k]=Object.keys(v).sort().map(h=>h+'='+v[h]).join(','); }); window.__kp={}; return o; })(),
+        prRaw:(function(){ try{ const t=careerPrTally(); const o={}; Object.keys(t.rows).slice(0,4000).forEach(h=>{ o[h]=(t.rows[h].v||[]).map(x=>Math.round(x[0]*1000)/1000+'@'+x[1]).join(';'); }); return o; }catch(e){ return {}; } })(),
         km:(function(){ const o={}; Object.keys(window.__km||{}).forEach(k=>{ const v=window.__km[k]; o[k]=Object.keys(v).sort().map(h=>h+'='+v[h]).join(','); }); window.__km={}; return o; })()};
     };
     for(let si=0; si<${SEASONS}; si++){
@@ -237,6 +270,7 @@ async function runOne(who, port){
   console.log('лобби '+CODE+' · '+MODE+(MODE==='rookie'?' див '+DIV+(OVR?' ovr '+OVR:''):'')+' · год '+YEAR+' · сезонов до '+SEASONS+' · бюджет '+Math.round(BUDGET_MS/60000)+' мин');
   const P0=9800+Math.floor(Math.random()*150);
   const outs=await Promise.all([runOne(A, P0), new Promise(r=>setTimeout(r, 4000)).then(()=>runOne(B, P0+1))]);
+  if(process.env.CC_DUMP) try{ fs.writeFileSync(process.env.CC_DUMP, JSON.stringify(outs)); }catch(e){}
   let bad=0;
   outs.forEach((r,i)=>{
     const n=[A,B][i].nick;
@@ -276,6 +310,19 @@ async function runOne(who, port){
           const hs=[...new Set([...pa.keys(), ...pb.keys()])].filter(h=>pa.get(h)!==pb.get(h)).slice(0,5);
           console.log('   ключ '+k+' ['+(ka[k]!=null?'A':'-')+(kb[k]!=null?'B':'-')+'] '+hs.map(h=>h+' '+(pa.get(h)||0)+'/'+(pb.get(h)||0)).join(' | ')); } });
       console.log('   сезон '+a.season+': ключей вечеров '+keys.length+', разных '+nb); }
+    { const ra=a.prRaw||{}, rb=b.prRaw||{}; const hs=[...new Set([...Object.keys(ra), ...Object.keys(rb)])].filter(h=>ra[h]!==rb[h]);
+      console.log('   сезон '+a.season+': строк PR с разными вечерами '+hs.length);
+      hs.slice(0,4).forEach(h=>{ const A=(ra[h]||'').split(';'), B=(rb[h]||'').split(';'); const onlyA=A.filter(x=>B.indexOf(x)<0), onlyB=B.filter(x=>A.indexOf(x)<0);
+        console.log('     '+h+': только у A '+onlyA.slice(0,4).join(' ')+' · только у B '+onlyB.slice(0,4).join(' ')); }); }
+    { const ka=a.ke||{}, kb=b.ke||{}; const ks=[...new Set([...Object.keys(ka), ...Object.keys(kb)])].sort().filter(k=>(ka[k]||'')!==(kb[k]||''));
+      console.log('   сезон '+a.season+': ключей с разными входами PR '+ks.length);
+      ks.slice(0,6).forEach(k=>{ const A=(ka[k]||'').split(' '), B=(kb[k]||'').split(' '); let i=0; while(i<A.length && i<B.length && A[i]===B[i]) i++;
+        console.log('     '+k+' [A '+A.length+' / B '+B.length+'] первое разное #'+i+': '+(A[i]||'—')+'  ⇄  '+(B[i]||'—')); }); }
+    { const oa=a.oth||{}, ob=b.oth||{}; const ks=Object.keys(oa).filter(k=>ob[k]).sort();
+      const bad=ks.find(k=>JSON.stringify(oa[k].e)!==JSON.stringify(ob[k].e));
+      console.log('   сезон '+a.season+': общих вечеров с чужими лобби '+ks.length+(bad ? ', первый разный '+bad : ', все одинаковы'));
+      if(bad){ const A=oa[bad], B=ob[bad]; A.e.forEach((x,i)=>{ const y=B.e[i]||{}; if(JSON.stringify(x)!==JSON.stringify(y)) console.log('     #'+i+' '+JSON.stringify(x)+'  ⇄  '+JSON.stringify(y)); });
+        const wk=[...new Set([...Object.keys(A.w||{}), ...Object.keys(B.w||{})])].filter(x=>(A.w||{})[x]!==(B.w||{})[x]); console.log('     разные хеши: '+wk.join(' ')); } }
     const p=diffList(rows(a.pr), rows(b.pr));
     if(p.onlyA.length || p.onlyB.length){ console.log('   FAIL Power Ranking: только у A '+p.onlyA.slice(0,6).join(' | ')+' · только у B '+p.onlyB.slice(0,6).join(' | ')); bad++; }
   }

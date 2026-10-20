@@ -118127,6 +118127,12 @@ function ccTeamSoloNight(){ return ccMpTeam() && ((typeof CC_MP_ALONE!=='undefin
 /* Напарник в моём личном вечере стоит ботом (peerBot, когда он этот день пропустил) — в его собственном
    мире этого вечера нет. Платить ему и писать ему рейтинг здесь значит дать ему вторую жизнь только в моих
    досках (командный год 20.10: строки самих Pixie и SwizzY у двоих разные). */
+/* КУБОК НАЦИЙ В ОНЛАЙНЕ ПИШЕТ В ДОСКИ ТОЛЬКО СВОЮ СТРОКУ. Сборная у каждого своя, квалификацию своей зоны каждый
+   играет сам, поэтому финал (и сыгранный самим, и досчитанный миром) у двоих собран из разных сборных — призовые
+   людей сцены за него у напарника и у соперников по гонке не совпали бы никогда (командный год 20.10, «w|2026-11-28»).
+   В одиночной карьере всё как было. Флаг ставят раннер Кубка наций и мировой финал. */
+let CC_BOARD_ONLY_YOU=false;
+function ccNatBoardsOwnOnly(){ return (typeof ccMpTeam==='function' && ccMpTeam()) || (typeof ccRaceOn==='function' && ccRaceOn()); }
 function ccTeamPeerSkip(h){
   try{ return ccTeamSoloNight() && typeof MP!=='undefined' && MP.peer && hKey(h)===hKey(MP.peer); }catch(e){ return false; }
 }
@@ -135038,6 +135044,14 @@ function careerChem(){
    числа, значит одна и та же сила. Одиночная карьера — как была. */
 let CC_MP_MYCARD=null;
 // Своя карточка этого вечера — та, что уехала напарнику на гейте. Только внутри командного вечера.
+/* СВОЙ ИГРОК В СОЛО ВДВОЁМ — ПО ТОЙ ЖЕ КАРТОЧКЕ, ЧТО ВИДИТ НАПАРНИК (командный год за Pixie и SwizzY 20.10: хиты Solo Series
+   17.01, «swizzy:102 vs 101»). Напарник считает меня по присланной на воротах карточке (MP.card, с formPow), а я себя — по
+   живой и по форме сейчас; сдвинулось что-то между отправкой и вечером — сила на единицу разная. Вне команды — как было. */
+function ccSoloSelf(me){
+  try{ const c=(typeof CC_MP_MYCARD!=='undefined') ? CC_MP_MYCARD : null;
+    if(c && typeof ccMpTeam==='function' && ccMpTeam() && hKey(c)===hKey(me)) return {card:c, form:Number(c.formPow)||0}; }catch(e){}
+  return {card:me, form:careerForm()};
+}
 function ccMpMyCardNow(){
   return (ccMpOn() && CC_MP_MYCARD && typeof CC_MP_RAND!=='undefined' && CC_MP_RAND) ? CC_MP_MYCARD : null;
 }
@@ -147175,10 +147189,14 @@ function careerD1Posts(iso){
   const ranked=careerWorldD1(iso);
   if(!ranked) return;
   careerTableAdd(ranked);
+  // День финала, а не день шага (см. careerPrAdd).
+  const wasDay=CC_PRIZE_DAY; CC_PRIZE_DAY=iso;
+  try{
   careerMoneyAdd(ranked, wfPrize);
   // The room above plays its week whether the player is in it or not, and the
   // board has to move on those weeks too.
   careerPrAdd(ranked, {div:1, kind:'final'});
+  } finally { CC_PRIZE_DAY=wasDay; }
   CC_POST_DAY=iso;
   try{
     // Written before the placements so the placements land above them.
@@ -147391,7 +147409,15 @@ function careerWorldTurns(fromISO, toISO){
   // simulating a second one would put two Division 1 tables on one Saturday and
   // count the week twice in the season standing.
   const played=(CAREER.career.log||[]).some(r=>r.kind==='final' && r.day===lastFinal);
-  if(lastFinal && !played) careerD1Posts(lastFinal);
+  /* ГОНКА: финал недели сыграли соседи — их копилка (ключ этого вечера) уже в досках, мир второй раз его не играет.
+     Копилка уходит в конце вечера, раньше голоса за следующий день, так что к этому шагу она здесь (прогон 2025, 20.10:
+     «nokey|2025-01-11» — мировой финал у того, кто не играл, поверх настоящего у сыгравших). */
+  let byPeers=false;
+  if(lastFinal && !played && typeof ccRaceOn==='function' && ccRaceOn()){
+    const ids=((days.get(lastFinal)||[]).filter(e=>e.kind==='final').map(e=>String(e.id||'final'))).concat(['final']);
+    byPeers=Object.keys(ccEvSeen()).some(k=>{ const p=k.split('|'); return p[0]===lastFinal && ids.indexOf(p[1])>=0; });
+  }
+  if(lastFinal && !played && !byPeers) careerD1Posts(lastFinal);
   // Чужие регионы играют свой финал в любом случае — свой вечер их не отменяет.
   if(lastFinal) careerRegionsWeek(lastFinal);
   // Хиты Мейджора идут по одному в день, и те, что не твои, играет мир.
@@ -147469,8 +147495,7 @@ function careerWorldFinals(fromISO, toISO){
     ccWorldRun('fin|'+key, ()=>simulateGames(room, games, pts, kill));
     const ranked=rank(room);
     CC_PRIZE_DAY=day;
-    try{ careerMoneyAdd(ranked, prize); } finally { CC_PRIZE_DAY=null; }
-    careerPrAdd(ranked, meta);
+    try{ careerMoneyAdd(ranked, prize); careerPrAdd(ranked, meta); } finally { CC_PRIZE_DAY=null; }
     const w=ranked[0];
     // Финал своего Мейджора без игрока — в Историю тем, кем он сыгран (careerArchiveSeason).
     if(kind==='major' && w){
@@ -151186,11 +151211,27 @@ function ccVictoryInvited(ev){
   // EWC 2024 и его отборы: по путёвке, а не по PR (ewc24Invited).
   if(ev && ev.ewc24 && typeof ewc24Invited==='function') return ewc24Invited(ev);
   if(!ev || !ev.invite) return true;
+  /* КОМАНДУ ЗОВУТ, ЕСЛИ ЗОВУТ ХОТЬ ОДНОГО ИЗ ДВОИХ — и решают это одинаково у обоих (командный год за
+     Pixie и SwizzY 20.10: Amar Rohat Pro Invitational, по своему месту в PR одного звали, другого нет, и каждый
+     клиент сыграл вечер по-своему). Место напарника — по той же доске PR (у двоих она одна), флаг — с его карточки. */
+  if(typeof ccMpTeam==='function' && ccMpTeam() && typeof MP!=='undefined' && MP.peer){
+    // Своя сторона — по той же карточке, что видит напарник (MP.card), а не по экранному рейтингу: иначе в начале
+    // года (места в PR ещё нет) двое решали бы по разным числам.
+    let myCard=null; try{ myCard=(typeof CC_MP_MYCARD!=='undefined' && CC_MP_MYCARD) || (MP.card ? MP.card() : null); }catch(e){ myCard=null; }
+    const me=ccVictoryInvitedOne(ev, {nat:(myCard && (myCard.nat || myCard.country)) || (CAREER.player && (CAREER.player.nat || CAREER.player.country)) || '', place:careerPrPlace(), ovr:myCard && myCard.ovr!=null ? Number(myCard.ovr) : null});
+    let peer=false;
+    try{ const pk=hKey(MP.peer); const rows=careerPrRows(); const at=rows.findIndex(r=>hKey(r.name)===pk);
+      peer=ccVictoryInvitedOne(ev, {nat:MP.peer.nat || MP.peer.country, place:at>=0 ? at+1 : null, ovr:Number(MP.peer.ovr)||null}); }catch(e){ peer=false; }
+    return me || peer;
+  }
+  return ccVictoryInvitedOne(ev, null);
+}
+function ccVictoryInvitedOne(ev, who){
   // Региональный ЛАН (Australian Open — только OCE).
   if(ev.region && CAREER.player && CAREER.player.region!==ev.region) return false;
   // Национальный (ESL Katowice Royale Polish Edition — поляки, Ascension — французы): по флагу игрока.
   if(ev.nat && ev.nat.length){
-    const nat=String((CAREER.player && (CAREER.player.nat || CAREER.player.country)) || '').toLowerCase();
+    const nat=String(who ? (who.nat||'') : ((CAREER.player && (CAREER.player.nat || CAREER.player.country)) || '')).toLowerCase();
     if(ev.nat.indexOf(nat)<0) return false;
   }
   if(ev.qualFrom && ev.qualFrom.length){
@@ -151198,13 +151239,13 @@ function ccVictoryInvited(ev){
     if(ev.prInvite==null) return false;
   }
   const lim=(ev.qualFrom && ev.qualFrom.length) ? ev.prInvite : ev.invite;
-  const p=(typeof careerPrPlace==='function') ? careerPrPlace() : null;
+  const p=who ? who.place : ((typeof careerPrPlace==='function') ? careerPrPlace() : null);
   if(p) return p<=lim;
   /* Места в PR ещё нет (начало года, турниров не было) — зовут по силе, как звали по
      результатам прошлого сезона: место по рейтингу среди карточек своего региона этого года. */
   const set={2019:'h1', 2020:'i1', 2021:'j1', 2022:'k1', 2023:'e1', 2024:'f1', 2025:'t1', 2026:'m1'}[ccCalYear()];
   if(!set) return false;
-  const reg=CAREER.player.region, mine=ccMyShownOvr();
+  const reg=CAREER.player.region, mine=(who && who.ovr!=null) ? who.ovr : ccMyShownOvr();
   const ahead=(CARDS_BY_SETREG.get(set+'|'+reg)||[]).filter(q=>q.rating>mine).length;
   return ahead+1<=lim;
 }
@@ -153594,7 +153635,12 @@ function ccMajorStageSpec(stage, n){
 function ccMajorLcRoom(you, ev){
   const cr=CAREER.career, lc=cr.majorLc;
   if(!lc || lc.n!==ev.n || lc.season!==cr.season) return [you];
-  return lc.rows.map(r=>r==='you' ? you : ccMajorTeamFrom(r));
+  const room=lc.rows.map(r=>r==='you' ? you : ccMajorTeamFrom(r)).filter(Boolean);
+  /* Своя строка в записи могла не лечь (гонка 2025, 20.10: лобби 13.02 упало «you.stageLog is not iterable» —
+     своей команды в комнате не было, и прогон её не завёл). Сам вечер открыт тем, кто прошёл, — значит, свой там
+     есть: садится последним, как в хите (см. ccMajorRoom). */
+  if(room.indexOf(you)<0){ if(room.length) room[room.length-1]=you; else room.push(you); }
+  return room;
 }
 
 /* ---- Мейджор 2024-го: своя машина --------------------------------------------
@@ -154430,6 +154476,10 @@ function ccEvSeenMark(key){
    считаю сам, чужой копилки не ждёт, поэтому ключ метится там, где вечер начинается.
    Отмена вечера ничего не ломает: ccEvDeltaSend зовётся и на ошибке, из finally. */
 function ccEvDeltaStart(key){
+  /* Новый вечер (не хвост) — флаг «разошёлся на границе раундов» снимается здесь: перемотка запускает вечера мимо
+     careerPlayRun0, и поднятый с соло-капа флаг делал личными все следующие общие вечера (их итоги ложились у
+     напарника второй раз копилкой — командный год 20.10, Evaluation 29.01: Kami 800 против 400). */
+  if(typeof CC_TEAM_NIGHT_APART!=="undefined" && !(key && /\|t[^|]*$/.test(key))) CC_TEAM_NIGHT_APART=false;
   CC_EV_DELTA=key ? {key:key, money:{}, ev:{}, pr:{}, yr:null, fs:null, day:careerToday()} : null;
   if(key) ccEvSeenMark(key);
 }
@@ -154525,6 +154575,7 @@ function careerMoneyAdd(ranked, prize){
   if(!ranked || !ranked.length) return;
   const m=careerMoney(), k=careerMoneyKeys();
   ranked.forEach(function(t, i){
+    if(CC_BOARD_ONLY_YOU && !t.isYou) return;
     const usd=prize(i+1, t)||0;
     if(!usd) return;
     const name=ccBoardName(t.name);
@@ -163294,7 +163345,7 @@ async function runCareerVictoryNight(){
   };
   let you, soloMate=null;
   if(pc){
-    you=soloYou(me, careerForm(), L().yourTeamPrefix+teamLabel(drafted));
+    { const self=ccSoloSelf(me); you=soloYou(self.card, self.form, L().yourTeamPrefix+teamLabel(drafted)); }
     soloMate=soloYou(pc, Number(pc.formPow)||0, teamLabel([pc]));
     if(typeof ccRaceLock==='function' && ccRaceLock()){ soloMate.isRival=true; soloMate.raceId=(ccRaceRival()||{}).id||null; }
     else soloMate.isMate=true;
@@ -164960,7 +165011,8 @@ async function runCareerNations(){
   // Деньги финала — его фонд: на команду по таблице, тебе четверть.
   let cash=0;
   if(st==='final'){
-    careerMoneyAdd(ranked, nationsPrize);
+    { const only=ccNatBoardsOwnOnly(); if(only) CC_BOARD_ONLY_YOU=true;
+      try{ careerMoneyAdd(ranked, nationsPrize); } finally{ if(only) CC_BOARD_ONLY_YOU=false; } }
     cash=nationsPrize(place);
     if(cash){ ccPayIn(ccShareOf(cash, you)); note+=' · '+L().ccNatCash(ccMoney(ccShareOf(cash, you))); }
   }
@@ -164969,7 +165021,8 @@ async function runCareerNations(){
   finalizeStageCard(shell, place, field.length, you.stagePts, st==='final' ? (place<=3 ? true : null) : through, you.gotVR, note);
   await revealStandings(shell, ranked, you, cut, null, null, st==='final' ? nationsPrize : null, null, st==='final');
   removeSkipButton();
-  careerPrAdd(ranked, {div:cr.division, kind:'nations', stage:st});
+  { const only=ccNatBoardsOwnOnly(); if(only) CC_BOARD_ONLY_YOU=true;
+    try{ careerPrAdd(ranked, {div:cr.division, kind:'nations', stage:st}); } finally{ if(only) CC_BOARD_ONLY_YOU=false; } }
   if(st!=='trial') careerReachAdd(careerReachResult(place, field.length, 1, st==='final' ? 'globals' : 'major'));
   const shot={tbl:ccStageShot(ranked, you, 1, label)};
   if(st==='trial') careerNews(through?'good':'flat', through?'ccNewsNatTrialWon':'ccNewsNatTrialLost', [natDisplay(mine.nat), place, field.length], shot);
@@ -165005,8 +165058,10 @@ function ccNatWorldPlay(day, play, stubOf){
     if(mine && !mine.inSquad) careerNews(q.indexOf(mine.nat)>=0 ? 'flat' : 'bad', q.indexOf(mine.nat)>=0 ? 'ccNewsNatWorldQual' : 'ccNewsNatWorldOut', [natDisplay(mine.nat)]);
     return;
   }
-  play(day, 'nations', 'nations', ev.label||'Nations Cup', ()=>[stubOf(), ...ccNatFinalField(null)],
-       CC_NATIONS.final.games, pointsForPlace, CC_NATIONS.final.kill, nationsPrize, {div:1, kind:'nations', stage:'final'});
+  { const only=ccNatBoardsOwnOnly(); if(only) CC_BOARD_ONLY_YOU=true;
+    try{ play(day, 'nations', 'nations', ev.label||'Nations Cup', ()=>[stubOf(), ...ccNatFinalField(null)],
+       CC_NATIONS.final.games, pointsForPlace, CC_NATIONS.final.kill, nationsPrize, {div:1, kind:'nations', stage:'final'}); }
+    finally{ if(only) CC_BOARD_ONLY_YOU=false; } }
   N.finalDone=true;
 }
 
@@ -165104,7 +165159,7 @@ async function runCareerSoloSeries(){
   };
   let you, mate=null;
   if(two){
-    you=soloYou(me, careerForm(), L().yourTeamPrefix+teamLabel(drafted));
+    { const self=ccSoloSelf(me); you=soloYou(self.card, self.form, L().yourTeamPrefix+teamLabel(drafted)); }
     mate=soloYou(pc, Number(pc.formPow)||0, teamLabel([pc]));
     mate.isMate=true;
   } else {
@@ -171492,8 +171547,13 @@ function careerPrAdd(ranked, meta){
   const t=careerPrTally(), of=ranked.length;
   // Поле турнира спрашивается один раз на вечер, а не на каждую из полутора
   // сотен строк: ccNextShape перебирает календарь.
-  const trueOf=Math.max(of, ccPrField({kind:meta.kind, day:careerToday()}));
-  const day=ccAbsDay(CAREER.career.season, careerToday());
+  /* ДЕНЬ ВЕЧЕРА, А НЕ ДЕНЬ ЗАПИСИ. Мир досчитывает вечера на шаге дня (финалы без игрока, финал недели), и у двоих
+     в команде или гонке шаг идёт по-разному — перемотка одного, присланное состояние у другого: тот же вечер ложился
+     в PR на 350-й день у одного и на 363-й у другого, а поле турнира (ccPrField) читалось с чужого дня (командный год
+     20.10). День — тот, что назвал раннер (CC_PRIZE_DAY), иначе день старта вечера (копилка), иначе сегодня. */
+  const nightDay=(typeof CC_PRIZE_DAY!=='undefined' && CC_PRIZE_DAY) || (CC_EV_DELTA && CC_EV_DELTA.day) || careerToday();
+  const trueOf=Math.max(of, ccPrField({kind:meta.kind, day:nightDay}));
+  const day=ccAbsDay(CAREER.career.season, nightDay);
   /* ПР — на человека, не на состав. Его пункт 13 со страницы «ы», 22 августа
      («ПР ТОЛЬКО ДЛЯ СОЛО»), и скриншот: доска держала «Твой состав:
      BOBRIK & Hris & Scaryy» первой строкой и «Твой состав: BOBRIK» четвёртой —
@@ -171502,6 +171562,7 @@ function careerPrAdd(ranked, meta){
      старых сейвов разъезжаются по людям в careerLoad (prV). */
   const yourKey=hKey((CAREER.player && (CAREER.player.handle || CAREER.player.nick))||'');
   ranked.forEach(function(team, i){
+    if(CC_BOARD_ONLY_YOU && !team.isYou) return;
     const rating=ccEventPR({place:i+1, of:of, div:meta.div,
                             kind:meta.kind, stage:meta.stage}, trueOf);
     if(rating==null) return;

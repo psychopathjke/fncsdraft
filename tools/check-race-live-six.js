@@ -201,6 +201,9 @@ const boot = (who) => `
         return ok; }; }
     /* ЛОББИ БЕЗ ЛЮДЕЙ НА ДНЕ CC_DAY_DUMP: вход каждой команды перед simulateGame и броски до/после.
        Прогон 2026 (20.10): Duos Victory Cup 5.01 расходится на игре 2 в чужом лобби при равном поле. */
+    /* Мировой финал недели (careerWorldD1) — его вход у каждого: кто в поле, кого вычли, хеш мира. */
+    out.notes.wd1={}; { const hh=x=>{ let t; try{ t=JSON.stringify(x); }catch(e){ t="!"; } t=String(t).slice(0,300000); let v=0; for(let i=0;i<t.length;i++) v=(v*31+t.charCodeAt(i))|0; return (v>>>0).toString(16); };
+      const wd0=careerWorldD1; careerWorldD1=function(iso){ const r=wd0.apply(this, arguments); try{ out.notes.wd1[iso]={day:CAREER.career.day, taken:[...ccMyPeople()].sort().join(","), field:hh((r||[]).map(t=>(t.squad||[]).map(c=>c&&c.handle).join("+")+":"+t.pow)), dev:hh(CAREER.dev), devL:hh(CAREER.devL), splits:hh(CAREER.splits), duoSplits:hh(CAREER.career.duoSplits), pools:(typeof CC_POOLS!=="undefined"&&CC_POOLS)?(CC_POOLS.tag+"/"+(CC_POOLS.duos||[]).length):"-", n:(r||[]).length}; }catch(e){} return r; }; }
     out.notes.ws=[]; { const rw0=ccRaceWorldSync; ccRaceWorldSync=function(n, who){ const rec={d:CAREER.career.day, n:n, who:Array.isArray(who)?who.length:String(who), me:ccMpId().slice(-5), lock:(typeof ccRaceLock==="function"&&ccRaceLock())?1:0}; const r=rw0.apply(this, arguments); Promise.resolve(r).then(v=>{ rec.res=v; if(out.notes.ws.length<40) out.notes.ws.push(JSON.stringify(rec)); }); return r; };
       const ra0=ccRaceWorldApply; ccRaceWorldApply=function(w){ if(out.notes.ws.length<40) out.notes.ws.push("apply "+CAREER.career.day); return ra0.apply(this, arguments); }; }
     out.notes.oth=[]; if(${JSON.stringify(process.env.CC_DAY_DUMP||'')}){ const sg1=simulateGame; simulateGame=function(teams){
@@ -541,6 +544,7 @@ async function runOne(tag, who, port, phone){
     console.log('   раздачи #1 vs #'+(ci+1)+': '+A.length+'/'+B.length+(i<Math.max(A.length,B.length) ? ' · первая разная #'+i : ' · одинаковы'));
     if(i<Math.max(A.length,B.length)){ const ra=String(A[i]||'').split(' | '), rb=String(B[i]||'').split(' | '); console.log('     '+ra[0]+'  ⇄  '+rb[0]); const xa=(ra[1]||'').split(' '), xb=(rb[1]||'').split(' '); let k=0; for(let j=0;j<Math.max(xa.length,xb.length)&&k<10;j++){ if(xa[j]!==xb[j]){ console.log('       '+xa[j]+'  ⇄  '+xb[j]); k++; } } } } }
   outs.forEach((r,i)=>console.log('   мир #'+(i+1)+': '+(r.notes.ws||[]).slice(-12).join(' | ')));
+  { const days=[...new Set(outs.flatMap(r=>Object.keys(r.notes.wd1||{})))].sort(); days.forEach(d=>{ const xs=outs.map(r=>(r.notes.wd1||{})[d]); if(xs.some(x=>!x)) return; const ks=Object.keys(xs[0]).filter(k=>xs.some(x=>x[k]!==xs[0][k])); if(ks.length) console.log('   мировой финал недели '+d+': разное '+ks.map(k=>k+' '+xs.map(x=>String(x[k]).slice(0,60)).join(' / ')).join(' | ')); }); }
   if(outs.some(r=>r.notes.glob)){ for(let ci=1;ci<outs.length;ci++){ const A=outs[0].notes.glob||{}, B=outs[ci].notes.glob||{}; const ks=[...new Set([...Object.keys(A),...Object.keys(B)])].filter(k=>A[k]!==B[k]); console.log("   глобалы #1 vs #"+(ci+1)+": разных "+ks.length+": "+ks.slice(0,40).join(" ")); console.log("     книга #1: "+A.marks+"  ⇄  #"+(ci+1)+": "+B.marks); } }
   if(outs.some(r=>(r.notes.oth||[]).length)){
     // Каждый с первым: отличаться может любой (тот, у кого другая история).
@@ -580,19 +584,20 @@ async function runOne(tag, who, port, phone){
     const miss=[]; keys.forEach(k=>{ if(skipRow.has(k)) return; const have=boards.map(b=>b.has(k)); if(have.some(x=>!x)) miss.push(k+' ['+have.map(x=>x?1:0).join('')+'] '+(boards.find(b=>b.has(k)).get(k))); });
     console.log('строк не у всех: '+miss.length+(miss.length?': '+miss.slice(0,10).join(' | '):''));
     if(miss.length){ console.log('   FAIL доски: строка есть не у всех'); bad++; } }
-  { const kms=outs.map(r=>r.notes.km||{}); const keys=[...new Set(kms.flatMap(k=>Object.keys(k)))].sort();
+  { /* Ключи вечеров: свой одиночный вечер — голый ключ, у соседей он же с ником («|s<ник>», «|t<ник>»).
+       Варианты одного ключа складываются по игроку; люди гонки и их напарники не сравниваются. */
+    const norm=km=>{ const o={}; Object.keys(km||{}).forEach(k=>{ const base=k.replace(/\|[st][^|]*$/, ''); const m=o[base]||(o[base]={});
+        const v=km[k]||{}; Object.keys(v).forEach(h=>{ if(h==='__in' || skipRow.has(h)) return; m[h]=(m[h]||0)+v[h]; }); });
+      const out={}; Object.keys(o).forEach(k=>{ out[k]=Object.keys(o[k]).sort().filter(h=>o[k][h]).map(h=>h+'='+o[k][h]).join(','); }); return out; };
+    const kms=outs.map(r=>norm(r.notes.km||{})); const keys=[...new Set(kms.flatMap(k=>Object.keys(k)))].sort();
     let shown=0, nBad=0;
     keys.forEach(k=>{
-      const vals=kms.map(m=>m[k]); const have=vals.map(v=>!!v);
-      const norm=v=>v ? Object.keys(v).filter(h=>h!=='__in' && !skipRow.has(h)).sort().map(h=>h+'='+v[h]).join(',') : null;
-      const ns=vals.map(norm); const present=ns.filter(x=>x!=null);
-      const same=present.every(x=>x===present[0]);
-      if(same && have.every(Boolean)) return;
-      if(same && /^nokey/.test(k)) return;
+      const vals=kms.map(m=>m[k]||''); if(vals.every(v=>v===vals[0])) return;
       nBad++; if(shown++<12){
-        const a=vals[0]||{}, b=vals.find((v,i)=>i>0 && v)||{};
-        const hs=[...new Set([...Object.keys(a), ...Object.keys(b)])].filter(h=>h!=='__in' && !skipRow.has(h) && a[h]!==b[h]).slice(0,6);
-        console.log('   ключ '+k+' ['+have.map((x,i)=>x?(vals[i].__in?'R':'S'):'-').join('')+'] '+(same?'нет у кого-то':'разные')+': '+hs.map(h=>h+' '+(a[h]||0)+'/'+(b[h]||0)).join(' | '));
+        const parse=v=>new Map(String(v).split(',').filter(Boolean).map(x=>{ const i=x.lastIndexOf('='); return [x.slice(0,i), x.slice(i+1)]; }));
+        const ms=vals.map(parse); const bi=vals.findIndex(v=>v!==vals[0]);
+        const hs=[...new Set([...ms[0].keys(), ...ms[bi].keys()])].filter(h=>ms[0].get(h)!==ms[bi].get(h)).slice(0,6);
+        console.log('   ключ '+k+' [#1 vs #'+(bi+1)+'] '+hs.map(h=>h+' '+(ms[0].get(h)||0)+'/'+(ms[bi].get(h)||0)).join(' | '));
       }
     });
     console.log('ключей вечеров: '+keys.length+', не сошлись '+nBad); }
