@@ -10123,7 +10123,7 @@ ccBioPro:'Про по Fortnite', ccBioManager:'Менеджер', ccBioNoManager
 ccNextGames:'Формат', ccNextGamesUnit:'игр', ccNextField:'Команд',
 ccNextCut:'Проходят', ccNextTop:n=>'топ-'+n, ccNextPays:'Платит за 1-е',
 ccNextNoPay:'без призовых', ccNextLocked:'Сегодня не твой турнир — день свободен',
-ccBioMajor:n=>n+'× победитель Мейджора', ccBioCups:n=>n+'× победитель кубка',
+ccBioMajor:n=>n+'× победитель FNCS', ccBioCups:n=>n+'× победитель кубка',
 ccWhoFa:'F/A', ccWhoLft:'LFT', ccCardPr:'Power Ranking', ccCardSeason:'за сезон', ccCardYear:'за год',
 ccBioPrRank:n=>'#'+n+' по PR', ccBioEvents:n=>n+' турниров',
 ccPostLfdWant:(h,d,pr)=>'LFD. Дивизион '+d+' и выше, PR от '+pr+'. Пишите',
@@ -12229,7 +12229,7 @@ ccBioPro:'Pro Fortnite', ccBioManager:'Manager', ccBioNoManager:'No manager',
 ccNextGames:'Format', ccNextGamesUnit:'games', ccNextField:'Teams',
 ccNextCut:'Through', ccNextTop:n=>'top '+n, ccNextPays:'Pays for 1st',
 ccNextNoPay:'no prize money', ccNextLocked:'Not your tournament today — the day is free',
-ccBioMajor:n=>n+'x MAJOR WINNER', ccBioCups:n=>n+'x cup winner',
+ccBioMajor:n=>n+'x FNCS WINNER', ccBioCups:n=>n+'x cup winner',
 ccWhoFa:'F/A', ccWhoLft:'LFT', ccCardPr:'Power Ranking', ccCardSeason:'this season', ccCardYear:'this year',
 ccBioPrRank:n=>'#'+n+' on PR', ccBioEvents:n=>n+' events',
 ccPostLfdWant:(h,d,pr)=>'LFD. Div '+d+' and up, min '+pr+' PR. DMs open',
@@ -14810,7 +14810,7 @@ ccCity:{Dus:'Düsseldorf',Ant:'Anvers',Lyo:'Lyon',Cph:'Copenhague',Ftw:'Fort Wor
 ccCityIn:{Dus:'Düsseldorf',Ant:'Anvers',Lyo:'Lyon',Cph:'Copenhague',Ftw:'Fort Worth',Rdu:'Raleigh',Par:'Paris',Ryd:'Riyad',Nyc:'New York',Tok:'Tokyo',Bel:'Belgrade',Kat:'Katowice',Sto:'Stockholm',Mad:'Madrid',Ams:'Amsterdam',Dal:'Dallas', Sao:'São Paulo',Seo:'Séoul',Tor:'Toronto',Syd:'Sydney',Mex:'Mexico',Dub:'Dubaï',Ist:'Istanbul',Mil:'Milan',Lon:'Londres',Sin:'Singapour'},
 ccAgentFrom:v=>'Les managers écrivent à partir de la note '+v,
 ccNextTop:n=>'top '+n,
-ccBioMajor:n=>n+'x VAINQUEUR DE MAJOR', ccBioRc:n=>n+'x VAINQUEUR DU RELOAD CHAMPIONSHIP (EWC)', ccBioSummit:n=>n+'x VAINQUEUR DU SUMMIT',
+ccBioMajor:n=>n+'x VAINQUEUR FNCS', ccBioRc:n=>n+'x VAINQUEUR DU RELOAD CHAMPIONSHIP (EWC)', ccBioSummit:n=>n+'x VAINQUEUR DU SUMMIT',
 ccBioCups:n=>n+'x vainqueur de coupe',
 ccWhoFa:'F/A', ccWhoLft:'LFT', ccCardPr:'Power Ranking', ccCardSeason:'cette saison', ccCardYear:'cette année',
 ccBioPrRank:n=>'#'+n+' au PR', ccBioEvents:n=>n+' tournois',
@@ -16733,7 +16733,7 @@ dmAgentBrought:(n,who)=>n+' club si sono fatti avanti per te: '+who+'. Le condiz
 dmAgentBroughtOne:(n,who)=>who+' si \u00e8 fatto avanti per te. Le condizioni sono nella scheda Carriera',
 ccAgentFrom:v=>'I manager scrivono dalla valutazione '+v,
 ccNextTop:n=>'primi '+n,
-ccBioMajor:n=>n+'x VINCITORE DI MAJOR', ccBioRc:n=>n+'x VINCITORE DEL RELOAD CHAMPIONSHIP (EWC)', ccBioSummit:n=>n+'x VINCITORE DEL SUMMIT',
+ccBioMajor:n=>n+'x VINCITORE FNCS', ccBioRc:n=>n+'x VINCITORE DEL RELOAD CHAMPIONSHIP (EWC)', ccBioSummit:n=>n+'x VINCITORE DEL SUMMIT',
 ccBioCups:n=>n+'x vincitore di coppa',
 ccWhoFa:'F/A', ccWhoLft:'LFT', ccCardPr:'Power Ranking', ccCardSeason:'in stagione', ccCardYear:"nell'anno",
 ccBioPrRank:n=>'#'+n+' nel PR', ccBioEvents:n=>n+' tornei',
@@ -19284,7 +19284,7 @@ dmAgentBrought:(n,who)=>n+' clubes chegaram atr\u00e1s de voc\u00ea: '+who+'. As
 dmAgentBroughtOne:(n,who)=>who+' chegou atr\u00e1s de voc\u00ea. As condi\u00e7\u00f5es est\u00e3o na aba Carreira',
 ccAgentFrom:v=>'Empres\u00e1rios escrevem a partir do rating '+v,
 ccNextTop:n=>'top '+n,
-ccBioMajor:n=>n+'x CAMPE\u00c3O DE MAJOR', ccBioRc:n=>n+'x CAMPE\u00c3O DO RELOAD CHAMPIONSHIP (EWC)', ccBioSummit:n=>n+'x CAMPE\u00c3O DO SUMMIT',
+ccBioMajor:n=>n+'x CAMPE\u00c3O FNCS', ccBioRc:n=>n+'x CAMPE\u00c3O DO RELOAD CHAMPIONSHIP (EWC)', ccBioSummit:n=>n+'x CAMPE\u00c3O DO SUMMIT',
 ccBioCups:n=>n+'x campe\u00e3o de copa',
 ccWhoFa:'F/A', ccWhoLft:'LFT', ccCardPr:'Power Ranking', ccCardSeason:'na temporada', ccCardYear:'no ano',
 ccBioPrRank:n=>'#'+n+' no PR', ccBioEvents:n=>n+' torneios',
@@ -154516,10 +154516,15 @@ function ccMajorWorldLcq(iso){
   if(!need) { s.lcq=[]; return 0; }
   const st=ccScaleStage(ccMajorStageSpec('lcq'));
   // И у мира то же правило: держащий место в финале Ласт Ченс не играет.
-  const room=ccAsWorld(()=>careerCupField(Object.assign({}, cr, {division:1}),
-                                          drafted.concat(ccMajorSeatedHandles(ev)),
-                                          st.field, 'majLcq', true,
-                                          CC_FIELD_SHARP.heats));
+  /* Ласт Ченс РЕГИОНАЛЬНЫЙ (его слово 20.10: «там же у каждого региона свои, не?»). Комната собиралась через
+     ccAsWorld — пул всего мира, как у Глобалса и Парижа, — и её победители (s.through) садились в финал
+     Мейджора своего региона: в европейском финале 2026-го оказывались команды NAC, BR, ME (проба: 2469 команд
+     семи регионов в одной комнате, лобби 50 — NAC 40 игроков из 100). Теперь — пул своего региона, как у
+     Ласт Ченса, который играет сам игрок. */
+  const room=careerCupField(Object.assign({}, cr, {division:1}),
+                            drafted.concat(ccMajorSeatedHandles(ev)),
+                            st.field, 'majLcq', true,
+                            CC_FIELD_SHARP.heats);
   if(room.length<2){ s.lcq=[]; return 0; }
   simulateGames(room, st.games, st.pts, st.kill);
   const lob=room.slice().sort(heatsRank).slice(0, ccIs2025() ? st.cut : ccTeams(CAREER_CUP_CUT));
