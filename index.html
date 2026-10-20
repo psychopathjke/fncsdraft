@@ -147455,7 +147455,22 @@ function careerWorldTurns(fromISO, toISO){
     const ids=((days.get(lastFinal)||[]).filter(e=>e.kind==='final').map(e=>String(e.id||'final'))).concat(['final']);
     byPeers=Object.keys(ccEvSeen()).some(k=>{ const p=k.split('|'); return p[0]===lastFinal && ids.indexOf(p[1])>=0; });
   }
-  if(lastFinal && !played && !byPeers) careerD1Posts(lastFinal);
+  /* …А ЕСЛИ ФИНАЛ НЕДЕЛИ НЕ ИГРАЛ НИКТО ИЗ ЛЮДЕЙ, его в гонке считает старший комнаты, остальные берут копилку. Комната
+     финала собирается из СВОЕЙ таблицы сезона (cr.table), а она у каждого своя: прогон 2025 (20.10, окно 20.03–10.04) —
+     мировой финал 31.03 у троих с тремя разными полями и деньгами («nokey|2025-03-31»). Ключ копилки — «день|wfinal|d1». */
+  if(lastFinal && !played && !byPeers){
+    const peerIds=(typeof ccRaceOn==='function' && ccRaceOn() && typeof ccRaceLive==='function' && ccRaceLive() && typeof CC_RACE_PEERS!=='undefined')
+      ? Object.keys(CC_RACE_PEERS).filter(k=>CC_RACE_PEERS[k]) : [];
+    if(peerIds.length){
+      const elder=[ccMpId()].concat(peerIds).sort()[0]===ccMpId();
+      if(elder){
+        const was=CC_EV_DELTA;
+        ccEvDeltaStart(lastFinal+'|wfinal|d1');
+        if(CC_EV_DELTA) CC_EV_DELTA.day=lastFinal;   // день PR у соседей — день финала, как у старшего (CC_PRIZE_DAY)
+        try{ careerD1Posts(lastFinal); } finally { ccEvDeltaSend(); CC_EV_DELTA=was; }
+      } else ccEvSeen();   // копилка старшего доедет актом 'res' (ccEvResApply)
+    } else careerD1Posts(lastFinal);
+  }
   // Чужие регионы играют свой финал в любом случае — свой вечер их не отменяет.
   if(lastFinal) careerRegionsWeek(lastFinal);
   // Хиты Мейджора идут по одному в день, и те, что не твои, играет мир.
@@ -147516,6 +147531,15 @@ function careerWorldFinals(fromISO, toISO){
     if(paid[key]) return;
     if(log.some(r=>r.kind===kind && r.season===cr.season && (r.stage==null || r.stage==='final') &&
                    Math.abs(ccDaysBetween(r.day, day))<=3)){ paid[key]=1; return; }
+    /* ГОНКА: этот финал сыграл сосед — его копилка уже в досках (уходит в конце вечера, раньше голоса за день).
+       Мир второй раз его не играет: прогон 2025 (20.10) — финал Мейджора 1 15.02 сыграли двое, третий досчитал
+       его за мир и принял обе копилки сверху, «nokey|2025-02-15» на 50 строк. */
+    if(typeof ccRaceOn==='function' && ccRaceOn()){
+      const days=careerYearDays();
+      const byPeers=Object.keys(ccEvSeen()).some(k=>{ const p=k.split('|'); if(!p[0] || Math.abs(ccDaysBetween(p[0], day))>3) return false;
+        return (days.get(p[0])||[]).some(e=>e && String(e.id||'')===p[1] && e.kind===kind); });
+      if(byPeers){ paid[key]=1; return; }
+    }
     /* Копенгаген-2023: сетки пишут строки 'upper'/'lower', и мир, не найдя 'final', играл второй
        финал с выплатой всем (аудит 29.09). Финал за игроком, пока он в нём (gc23.you 'final'/'done'). */
     if(kind==='globals' && cr.gc23 && cr.gc23.season===cr.season && cr.gc23.you){
