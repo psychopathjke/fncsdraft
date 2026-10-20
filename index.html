@@ -151385,11 +151385,18 @@ function careerPlayRun0(next){
        Раннер капа (runCareerVictory) видит поднятый CC_EVENT_SIZE и второй раз не добирает. */
     let preSwap=null;
     if(CC_RACE_LOCK && next.type==='victory'){ try{ preSwap=ccEventRosterBegin(ccVictoryFormat(careerVictoryOn(careerToday()))); }catch(e){ preSwap=null; } }
+    /* И размер вечера Мейджора 2019-2020 (ccMXSpec: соло-неделя World Cup, соло-FNCS) — тоже до строки.
+       Раннер (runCareerMajorMX) ставил его позже, и строка с меткой вечера уходила ещё с напарником:
+       прогон 2019 (20.10) — у одного соседа Nyhrox в поле вычтен, у другого нет, неделя 1 разошлась с игры 1. */
+    let preSize=null;
+    if(CC_RACE_LOCK && next.type==='major'){ try{ const ev=careerMajorOn(careerToday()); const sp=(ev && ev.yx) ? ccMXSpec(ev.yx, ev.n) : null;
+      if(sp && sp.size){ preSize=CC_EVENT_SIZE; CC_EVENT_SIZE=sp.size; } }catch(e){ preSize=null; } }
+    const sizeBack=function(){ if(preSize!==null){ CC_EVENT_SIZE=preSize; preSize=null; } };
     if(CC_RACE_LOCK){ try{ CC_RACE_ROOM0={}; ccRaceRoom().forEach(p=>{ CC_RACE_ROOM0[p.id]=true; }); careerRaceSend(); if(typeof MP!=='undefined' && MP.sendCard) MP.sendCard(); }catch(e){} }
     let p=null;
     // Сначала строки соседей с их составом на этот вечер, потом поле (ccRaceWaitLock).
-    try{ p=CC_RACE_LOCK ? ccRaceWaitLock(CC_RACE_LOCK_KEY).then(()=>careerNightRun(next)) : careerNightRun(next); }catch(e){ ccEventRosterEnd(preSwap); CC_RACE_LOCK=false; CC_RACE_LOCK_KEY=null; CC_RACE_ROOM0=null; CC_RACE_POW_NOW=null; CC_RACE_EDGE_NOW=null; ccEvDeltaSend(); throw e; }
-    return Promise.resolve(p).finally(function(){ ccEventRosterEnd(preSwap); CC_RACE_LOCK=false; CC_RACE_LOCK_KEY=null; CC_RACE_ROOM0=null; CC_RACE_POW_NOW=null; CC_RACE_EDGE_NOW=null; ccEvDeltaSend(); });
+    try{ p=CC_RACE_LOCK ? ccRaceWaitLock(CC_RACE_LOCK_KEY).then(()=>careerNightRun(next)) : careerNightRun(next); }catch(e){ sizeBack(); ccEventRosterEnd(preSwap); CC_RACE_LOCK=false; CC_RACE_LOCK_KEY=null; CC_RACE_ROOM0=null; CC_RACE_POW_NOW=null; CC_RACE_EDGE_NOW=null; ccEvDeltaSend(); throw e; }
+    return Promise.resolve(p).finally(function(){ sizeBack(); ccEventRosterEnd(preSwap); CC_RACE_LOCK=false; CC_RACE_LOCK_KEY=null; CC_RACE_ROOM0=null; CC_RACE_POW_NOW=null; CC_RACE_EDGE_NOW=null; ccEvDeltaSend(); });
   }
   return Promise.resolve(careerNightRun(next)).finally(function(){ ccEvDeltaSend(); });
 }
