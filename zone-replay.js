@@ -694,6 +694,13 @@
       // and cost the squad its colour.
       var raw = plain(events[e]);
       var cut = raw.indexOf(':');
+      // Имя своей команды само несёт двоеточие («Your squad: Probe & Scroll»), и первое двоеточие резало строку
+      // посреди имени: убийцей выходило «Your squad», жертвой — «Probe & Scroll:…». Берётся то двоеточие, слева от
+      // которого стоит команда из ростера (или шторм/сёрдж); не нашлось — первое, как было.
+      for(var ci0 = raw.indexOf(':'); ci0 >= 0; ci0 = raw.indexOf(':', ci0 + 1)){
+        var left = plain(raw.slice(0, ci0));
+        if(left === 'storm' || left === 'surge' || indexOfName[left] != null){ cut = ci0; break; }
+      }
       var cause = plain(raw.slice(0, cut)), victim = plain(raw.slice(cut + 1));
       // Убийство твоей команды — с иконкой надетой кирки вместо значка (карьера, магазин предметов, 18.10).
       var ci = indexOfName[cause], axe = (ci != null && roster[ci].you && typeof window !== 'undefined') ? window.CC_FN_AXE : null;
