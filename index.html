@@ -114091,6 +114091,12 @@ function dailyAvgFmt(r){ return (r.avg!=null ? r.avg : dailyPowNum(r)-(r.syn||0)
 /* Строка таблицы дня (17.10, его «daily leaderboard додизайнить таблицу»): всё в одну строку не влезало — состав,
    синергия и место резались, сила справа уезжала за край телефона. Теперь: место (топ-3 — золото/серебро/бронза),
    ник с флагом, состав чипами в перенос, под ним место в турнире и очки; справа крупно сила и её разбор. */
+// Медали прошлых дней у ника (сервер считает по браузеру: medals=[1-х, 2-х, 3-х мест]); тот же вид, что в карьере (.cc-medals).
+function dailyMedalsHTML(m){
+  if(!Array.isArray(m) || !(m[0]+m[1]+m[2])) return '';
+  const T=L(), cls=['g','s','b'], tip=[T.ccMedalGold, T.ccMedalSilver, T.ccMedalBronze];
+  return '<span class="cc-medals">'+m.slice(0,3).map((v,i)=>v>0 ? '<i class="'+cls[i]+'" title="'+esc((tip[i]||'')+': '+v)+'">'+(v|0)+'</i>' : '').join('')+'</span>';
+}
 function dailyRowsHTML(rows, from){
   const T=L(), flag=c=>c ? '<img src="flags/w20/'+esc(ccCountryOf(c))+'.png" alt="" onerror="this.remove()">' : '';
   const head='<div class="dy-thead"><span>#</span><span>'+esc(T.dyColPlayer)+'</span><span>'+esc(dailyPowerWord())+'</span></div>';
@@ -114099,7 +114105,7 @@ function dailyRowsHTML(rows, from){
     const team=r.team ? String(r.team).split(',').filter(Boolean).map(h=>'<em>'+esc(h)+'</em>').join('') : '';
     const pow=dailyPowNum(r)>0;
     return '<div class="dy-row'+(r.you ? ' me' : '')+med+'"><i class="dy-rk">'+n+'</i>'+
-      '<div class="dy-who"><b>'+flag(r.country)+esc(r.nick)+(r.you ? ' <u>'+esc(T.dyYou)+'</u>' : '')+'</b>'+
+      '<div class="dy-who"><b>'+flag(r.country)+esc(r.nick)+dailyMedalsHTML(r.medals)+(r.you ? ' <u>'+esc(T.dyYou)+'</u>' : '')+'</b>'+
         (team ? '<div class="dy-team">'+team+'</div>' : '')+
         '<small>#'+r.place+'/'+r.field+' · '+r.score+' '+esc(T.dyPts)+'</small></div>'+
       '<div class="dy-pow"><b>'+(pow ? dailyPowFmt(r) : '-')+'</b>'+

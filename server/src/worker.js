@@ -212,7 +212,16 @@ export class Board {
         day, mine.p100||0, mine.p100||0, mine.score, mine.score, mine.at).toArray()[0].n;
       you={rank:above+1, row:strip(mine)};
     }
-    return json({day, total, rows:rows.map(r=>Object.assign(strip(r), r.id===me ? {you:true} : {})), you});
+    /* МЕДАЛИ (20.10, его слово «медальки давать в таблице рядом с ником… 3 медальки 1 2 3»): сколько раз этот браузер
+       был 1-м, 2-м и 3-м в прошлые дни (до запрошенного, в хранимых 60 днях). Порядок дня — тот же, что у таблицы. */
+    const medals={};
+    try{
+      this.sql.exec('SELECT id, rk FROM (SELECT id, ROW_NUMBER() OVER (PARTITION BY day ORDER BY p100 DESC, score DESC, at ASC) AS rk FROM '+T+' WHERE day < ?) WHERE rk<=3', day)
+        .toArray().forEach(m=>{ const a=medals[m.id]||(medals[m.id]=[0,0,0]); a[m.rk-1]++; });
+    }catch(err){}
+    const med=id=>medals[id] ? {medals:medals[id]} : {};
+    if(you && mine) Object.assign(you.row, med(mine.id));
+    return json({day, total, rows:rows.map(r=>Object.assign(strip(r), med(r.id), r.id===me ? {you:true} : {})), you});
   }
   one(id){ return this.sql.exec('SELECT * FROM rows WHERE id=?', id).toArray()[0]||null; }
   async fetch(req){
