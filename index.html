@@ -104496,8 +104496,13 @@ async function simulateGamesLive(teams, numGames, pointsFn, killMult, fieldPrefi
     }
     /* Лобби с людьми этой игры: в общей комнате гонки — каждое, куда жребий посадил человека
        (см. ccRaceSplitLobbies), иначе только своё. Дроп и матч у них идут в порядке жребия. */
-    const humanLobbies=(gameLobbies && ccRaceSplitLobbies())
-      ? gameLobbies.filter(l=>l.some(t=>t.isYou||t.isRival)) : (myLobby ? [myLobby] : []);
+    /* ДВОЕ В ОДНОЙ СОТНЕ (opts.together, соло в команде): выигравший игру хита выходит из пула (stopOnWin), и лобби
+       напарника у него было «чужим» — считалось одним куском, без вопросов напарника, а у самого напарника тем же
+       движком с остановками. С этой игры таблицы у двоих разъезжались (командный год 20.10: хиты Solo Series 17.01 и
+       Solo Reload 14.11 — 3.5 тысячи бросков против 270). Лобби напарника — тоже лобби с человеком. */
+    const pairLobbies=!!(gameLobbies && opts.together && opts.together.length>1 && ccMpLock());
+    const humanLobbies=(gameLobbies && (ccRaceSplitLobbies() || pairLobbies))
+      ? gameLobbies.filter(l=>l.some(t=>t.isYou||t.isRival||(pairLobbies && t.isMate))) : (myLobby ? [myLobby] : []);
     if(typeof CC_RACE_DBG!=='undefined' && CC_RACE_DBG && gameLobbies) CC_RACE_DBG.split=humanLobbies.length+'/'+gameLobbies.length;
     /* Стиль игры — на КАЖДУЮ игру карьеры, а не только туда, где спрашивают высадку.
        5.10, игрок (Notion «05»): «started a career in 2025 and it won't let me select it… only
@@ -118135,7 +118140,13 @@ let CC_MP_ALONE=false;
    локстеп не трогается (напарник уже закрыл вечер, барьеры отпускает «peer done»). Снимается
    на старте и в конце каждого вечера (careerPlayRun0). */
 let CC_TEAM_NIGHT_APART=false;
-function ccTeamSoloNight(){ return ccMpTeam() && ((typeof CC_MP_ALONE!=='undefined' && CC_MP_ALONE) || CC_TEAM_NIGHT_APART); }
+function ccTeamSoloNight(){ return ccMpTeam() && ((typeof CC_MP_ALONE!=='undefined' && CC_MP_ALONE) || CC_TEAM_NIGHT_APART || ccTeamSplitNight()); }
+/* ОБЩИЙ ВЕЧЕР, РАЗОШЕДШИЙСЯ ПОСРЕДИ (красная строка, CC_MP_SPLIT_AT): дальше каждый доигрывал свой стол, и оба писали в доски
+   СВОЮ таблицу под одним ключом — копилки друг друга отвергались как уже учтённые, и доски расходились навсегда (командный
+   год 20.10: финал FNCS Solo Reload 21.11, 50 строк призовых). Теперь такой вечер — как личный: таблицу мира пишет хозяин
+   лобби (без строки напарника), второй — только свою строку, обе копилки уходят с ником и доезжают. Доски снова одни. */
+function ccTeamSplitNight(){ return typeof CC_MP_SPLIT_AT!=='undefined' && CC_MP_SPLIT_AT!=null && ccMpTeam() && !(typeof ccRaceOn==='function' && ccRaceOn()); }
+function ccBoardOnlyYou(){ return CC_BOARD_ONLY_YOU || (ccTeamSplitNight() && ccMpRole()==='b'); }
 /* Напарник в моём личном вечере стоит ботом (peerBot, когда он этот день пропустил) — в его собственном
    мире этого вечера нет. Платить ему и писать ему рейтинг здесь значит дать ему вторую жизнь только в моих
    досках (командный год 20.10: строки самих Pixie и SwizzY у двоих разные). */
@@ -118426,7 +118437,7 @@ function ccMpMark(name, teams){
       acc+=(t._pf!=null ? Math.round(t._pf*100) : '-')+':'+(t._pc!=null ? Math.round(t._pc*100) : '-')+':'+
            (t.landingZone && typeof ALL_LANDING_ZONES!=='undefined' ? ALL_LANDING_ZONES.indexOf(t.landingZone) : '-')+':'+
            (ta ? ta.END+'.'+ta.SUR+'.'+ta.AIM+'.'+ta.CLU : '-')+':'+Math.round((t.closeEdge||0)*100)+':'+
-           (((t.squad||[]).length)||1)+'|';
+           (((t.squad||[]).length)||1)+':'+(t._mats!=null ? t._mats : '-')+':'+(t._buildMul||1)+':'+(t._rotMul||1)+'|';   // и ресы: вопрос середины задаётся по ним (ccMidQuiet)
     }
     /* И СОСТОЯНИЕ ДВИЖКА — жив, где стоит, сколько хп и щита, сколько выбил.
        Без него расхождение ВНУТРИ игры (кто-то умер на круг раньше) видно
@@ -126462,6 +126473,7 @@ function careerAdvanceTo(iso){
       careerRenderHub('centre');
     return;
   }
+  if(ccPrPruneOnStep()) try{ ccPrPrune(); }catch(e){}
   CC_MP_HOLD=true;
   try{ careerAdvanceBody(iso); }
   finally{ CC_MP_HOLD=false; }
@@ -151580,9 +151592,20 @@ function careerNightRun(next){
 async function ccProAmRunTeamSafe(){
   const alone=ccMpTeam();
   if(alone) CC_MP_ALONE=true;
+  const own=ccTeamOwnRowsOn();
   try{ return await runCareerProAm(); }
-  finally{ if(alone) CC_MP_ALONE=false; }
+  finally{ if(alone) CC_MP_ALONE=false; ccTeamOwnRowsOff(own); }
 }
+/* ОДИН ТУРНИР, ДВА РАСЧЁТА — ОДНА ТАБЛИЦА В ДОСКАХ. Pro-Am и Reshuffle в команде каждый играет сам (личный вечер),
+   и каждый слал напарнику копилку со ВСЕЙ своей таблицей: боты и креаторы этого турнира получали призовые и рейтинг
+   дважды — по разу из каждого расчёта (командный год 20.10: Сан-Паулу, Париж, Сеул, Reshuffle 15.08). Таблицу мира
+   пишет хозяин лобби (роль a), второй — только свою строку; копилки обоих доезжают, и доски у двоих одинаковые. */
+function ccTeamOwnRowsOn(){
+  const on=ccMpTeam() && !(typeof ccRaceOn==='function' && ccRaceOn()) && ccMpRole()==='b' && !CC_BOARD_ONLY_YOU;
+  if(on) CC_BOARD_ONLY_YOU=true;
+  return on;
+}
+function ccTeamOwnRowsOff(on){ if(on) CC_BOARD_ONLY_YOU=false; }
 async function ccNatRunTeamSafe(){
   const alone=ccMpTeam();
   if(alone) CC_MP_ALONE=true;
@@ -154587,7 +154610,7 @@ function careerMoneyAdd(ranked, prize){
   if(!ranked || !ranked.length) return;
   const m=careerMoney(), k=careerMoneyKeys();
   ranked.forEach(function(t, i){
-    if(CC_BOARD_ONLY_YOU && !t.isYou) return;
+    if(ccBoardOnlyYou() && !t.isYou) return;
     const usd=prize(i+1, t)||0;
     if(!usd) return;
     const name=ccBoardName(t.name);
@@ -162354,9 +162377,10 @@ async function runCareerVictory(){
      играет свой, итог уезжает напарнику копилкой (CC_MP_ALONE → ccEvDeltaSend). */
   const resh=!!(ev && ev.reshuffle && ccMpTeam() && !CC_MP_ALONE);
   if(resh) CC_MP_ALONE=true;
+  const own=resh ? ccTeamOwnRowsOn() : false;   // таблица мира — у хозяина лобби, см. ccTeamOwnRowsOn
   const fmtSwap=ccEventRosterBegin(ccVictoryFormat(ev));
   try{ return await runCareerVictoryNight(); }
-  finally{ CC_ZB=false; ccEventRosterEnd(fmtSwap); if(resh) CC_MP_ALONE=false; }
+  finally{ CC_ZB=false; ccEventRosterEnd(fmtSwap); if(resh) CC_MP_ALONE=false; ccTeamOwnRowsOff(own); }
 }
 /* КАП ИГРАЕТСЯ В СВОЁМ ФОРМАТЕ.
 
@@ -171574,7 +171598,7 @@ function careerPrAdd(ranked, meta){
      старых сейвов разъезжаются по людям в careerLoad (prV). */
   const yourKey=hKey((CAREER.player && (CAREER.player.handle || CAREER.player.nick))||'');
   ranked.forEach(function(team, i){
-    if(CC_BOARD_ONLY_YOU && !team.isYou) return;
+    if(ccBoardOnlyYou() && !team.isYou) return;
     const rating=ccEventPR({place:i+1, of:of, div:meta.div,
                             kind:meta.kind, stage:meta.stage}, trueOf);
     if(rating==null) return;
@@ -171612,11 +171636,25 @@ function careerPrAdd(ranked, meta){
     });
   });
   // Prune on the way out, so the save never holds more than the board shows.
-  const names=Object.keys(t.rows);
-  if(names.length>CC_PR_ROWS*1.5){
-    const keep=new Set(careerPrRows().slice(0, CC_PR_ROWS).map(r=>r.name));
-    names.forEach(n=>{ if(!keep.has(n) && !t.rows[n].you) delete t.rows[n]; });
-  }
+  if(!ccPrPruneOnStep()) ccPrPrune();
+}
+/* ОБРЕЗКА ХВОСТА — НА ШАГЕ ДНЯ, КОГДА ДОСКА ОБЩАЯ. Хвост доски резался после каждого своего вечера, а копилки чужих
+   вечеров (ccEvResApply) доезжают в своё время и не режут: у двоих хвост обрезался в разные моменты, и строка, срезанная
+   у одного, потом снова росла с нуля — Hijoe 85 вечеров у одного и 74 у другого (командный год 20.10, 3800 строк PR).
+   В команде и гонке режется на шаге дня — к нему все вечера дня у всех уже записаны, — и при равенстве по нику. */
+function ccPrPruneOnStep(){ return (typeof ccMpTeam==='function' && ccMpTeam()) || (typeof ccRaceOn==='function' && ccRaceOn()); }
+function ccPrPrune(){
+  const t=careerPrTally(), names=Object.keys(t.rows);
+  if(names.length<=CC_PR_ROWS*1.5) return;
+  const rows=careerPrRows().slice().sort((a,b)=>b.pr-a.pr || b.events-a.events || (a.name<b.name ? -1 : a.name>b.name ? 1 : 0));
+  const keep=new Set(rows.slice(0, CC_PR_ROWS).map(r=>r.name));
+  /* Люди онлайна (свой состав, напарник, соперники гонки и их составы) не режутся ни у кого: своя строка у себя
+     помечена «ты», а у соседа она обычная — и у одного жила бы, а у другого срезалась. */
+  const people=new Set();
+  try{ const me=careerCard(); if(me) people.add(hKey(me)); careerMates().forEach(m=>{ if(m) people.add(hKey(m)); }); }catch(e){}
+  try{ if(typeof MP!=='undefined' && MP.peer && ccMpTeam()) people.add(hKey(MP.peer)); }catch(e){}
+  try{ if(typeof ccRaceOn==='function' && ccRaceOn()) ccRaceTakenKeys().forEach(k=>people.add(k)); }catch(e){}
+  names.forEach(n=>{ if(!keep.has(n) && !t.rows[n].you && !people.has(hKey(n))) delete t.rows[n]; });
 }
 // What a row is worth today: its own best twenty, faded by their age, summed
 // over twenty slots — the same arithmetic as ccPrTable, so the player's row

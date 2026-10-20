@@ -127,12 +127,27 @@ const boot = (who) => `
           const r=sg1.apply(this, arguments);
           if(rec) rec.r1=CC_MP_ROLLS;
           return r; }; }
+      window.__bs={}; { const sy0=ccMpSync; ccMpSync=function(kind, sum, qn){
+          try{ if(kind==='game'){ const k=(CC_EV_DELTA&&CC_EV_DELTA.key)||'-'; const a=window.__bs[k]||(window.__bs[k]=[]); const pp=String(sum).split('|'); if(a.length<40) a.push(pp[0]+':'+String(pp[1]).slice(0,6)+':'+pp[2]); } }catch(e){}
+          return sy0.apply(this, arguments); };
+        const dg0=MP.digest; MP.digest=function(h){ try{ const k=(CC_EV_DELTA&&CC_EV_DELTA.key)||'-'; const a=window.__bs[k]||(window.__bs[k]=[]); a.push('C:'+String(h).slice(0,6)); }catch(e){} return dg0.apply(this, arguments); }; }
+      /* Красная строка живёт на экране секунды (перемотка уводит в хаб) — опрос раз в 5 с её пропускал. Ловим сам вызов. */
+      window.__tr=[]; window.CC_MP_TRACE=function(t){ window.__tr.push(String(Date.now()%1000000)+' '+t); if(window.__tr.length>30) window.__tr.shift(); };
+      { const tk0=MP.take; MP.take=function(kind, q){ const r=tk0.apply(MP, arguments); try{ if(r && /@$/.test(String(kind))) CC_MP_TRACE('take '+kind+'#'+q+' got q'+(r.payload||{}).q+' g'+(r.payload||{}).g+' by '+String((r.payload||{}).by).slice(-5)); }catch(e){} return r; };
+        const sy1=ccMpSync; ccMpSync=function(kind, sum, qn){ try{ CC_MP_TRACE('sync '+kind+'#'+qn+' g'+CC_MP_GAME+' done'+(CC_MP_PEER_DONE?1:0)+' seed'+String(CC_MP_SEED).slice(-4)); }catch(e){} return sy1.apply(this, arguments); };
+        MP.on('start', function(m){ try{ CC_MP_TRACE('START n'+(m&&m.n)+' seed'+String(m&&m.seed).slice(-4)+' day '+CAREER.career.day); }catch(e){} });
+        MP.on('digest', function(){ try{ CC_MP_TRACE('DIGEST from peer'); }catch(e){} }); }
+      { const ss0=ccMpSplitSeen; ccMpSplitSeen=function(n, detail){ try{ const k=CAREER.career.day+' split@'+n+' '+String(detail||'').slice(0,900)+' TR['+window.__tr.slice(-14).join(' | ')+'] LG['+(typeof CC_MP_LEDGER!=='undefined' ? CC_MP_LEDGER.slice(0,70).join(',') : '')+']'; if(out.notes.splits.indexOf(k)<0 && out.notes.splits.length<20) out.notes.splits.push(k); }catch(e){} return ss0.apply(this, arguments); }; }
       window.__ke={}; { const ep0=ccEventPR; ccEventPR=function(o, trueOf){ const r=ep0.apply(this, arguments);
         try{ const k=(CC_EV_DELTA&&CC_EV_DELTA.key)||('w|'+CAREER.career.day); const a=window.__ke[k]||(window.__ke[k]=[]);
           if(a.length<400) a.push([o.place,o.of,trueOf,o.div,o.kind,o.stage||''].join(':')+'='+(r==null?'-':Math.round(r*100)/100)); }catch(e){}
         return r; }; }
       window.__kp={}; const pa1=careerPrAdd; careerPrAdd=function(ranked, meta){
-        try{ const k0=(CC_EV_DELTA&&CC_EV_DELTA.key)||""; if(/SoloSeries_Final|FNCSSoloReload_Final/.test(k0)){ (window.__rk=window.__rk||{})[k0+"#"+(meta&&meta.stage||"")]=(ranked||[]).map((t,i)=>(i+1)+":"+((t.squad||[]).map(c=>c&&c.handle).join("+")||t.name)+":"+(t.stagePts||0)+":"+(t.wins||0)+":"+(t.stageElims||0)).join(" "); } }catch(e){}
+        /* ТАБЛИЦА ВЕЧЕРА ЦЕЛИКОМ: хеш всех строк (кто, очки, победы, элимы) по ключу вечера и этапу, плюс где стоят люди и
+           был ли вечер одиночным. Сверка называет вечера, у которых ключ общий, а таблица разная. */
+        try{ const k0=(CC_EV_DELTA&&CC_EV_DELTA.key)||("w|"+((typeof CC_PRIZE_DAY!=="undefined"&&CC_PRIZE_DAY)||CAREER.career.day)); const rows=(ranked||[]).map((t,i)=>(i+1)+":"+((t.squad||[]).map(c=>c&&c.handle).join("+")||String(t.name).replace(/<[^>]*>/g,""))+":"+(t.stagePts||0)+":"+(t.wins||0)+":"+(t.stageElims||0));
+          let v=0; const tx=rows.join(" "); for(let i=0;i<tx.length;i++) v=(v*31+tx.charCodeAt(i))|0;
+          (window.__rk=window.__rk||{})[k0+"#"+(meta&&meta.kind||"")+":"+(meta&&meta.stage||"")]=(v>>>0).toString(16)+" n"+rows.length+" "+(CC_MP_ALONE?"alone ":"")+(ccMpOn()?"on ":"")+(CC_TEAM_NIGHT_APART?"apart ":"")+rows.filter(x=>/:(LiveA|LiveB|Pixie|SwizzY)(:|[+])|[+](LiveA|LiveB|Pixie|SwizzY):/.test(x)).join(" ")+" g["+(ranked||[]).filter(t=>t.isYou||t.isMate).map(t=>(t.stageLog||[]).map(x=>x.place+"/"+x.elims).join(",")).join(" ; ")+"] b["+((window.__bs||{})[k0]||[]).join(",")+"]"+" top "+rows.slice(0,3).join(" "); }catch(e){}
         const t=careerPrTally(); const before={}; Object.keys(t.rows).forEach(h=>before[h]=(t.rows[h].v||[]).length+'/'+(t.rows[h].n||0));
         const r=pa1.apply(this, arguments);
         try{ const k=(CC_EV_DELTA&&CC_EV_DELTA.key)||('w|'+CAREER.career.day); const o=window.__kp[k]||(window.__kp[k]={});
@@ -272,7 +287,7 @@ async function runOne(who, port){
   const P0=9800+Math.floor(Math.random()*150);
   const outs=await Promise.all([runOne(A, P0), new Promise(r=>setTimeout(r, 4000)).then(()=>runOne(B, P0+1))]);
   if(process.env.CC_DUMP) try{ fs.writeFileSync(process.env.CC_DUMP, JSON.stringify(outs)); }catch(e){}
-  let bad=0;
+  let bad=0, badRk=0;
   outs.forEach((r,i)=>{
     const n=[A,B][i].nick;
     console.log(n+': '+(r.fail ? 'FAIL '+r.fail : 'ок')+' · старт '+JSON.stringify(r.notes.start)+' · напарник '+r.notes.peer+' · '+Math.round((r.notes.secs||0)/60)+' мин');
@@ -324,6 +339,14 @@ async function runOne(who, port){
       console.log('   сезон '+a.season+': общих вечеров с чужими лобби '+ks.length+(bad ? ', первый разный '+bad : ', все одинаковы'));
       if(bad){ const A=oa[bad], B=ob[bad]; A.e.forEach((x,i)=>{ const y=B.e[i]||{}; if(JSON.stringify(x)!==JSON.stringify(y)) console.log('     #'+i+' '+JSON.stringify(x)+'  ⇄  '+JSON.stringify(y)); });
         const wk=[...new Set([...Object.keys(A.w||{}), ...Object.keys(B.w||{})])].filter(x=>(A.w||{})[x]!==(B.w||{})[x]); console.log('     разные хеши: '+wk.join(' ')); } }
+    { const ra=a.rk||{}, rb=b.rk||{}; const ks=Object.keys(ra).filter(k=>rb[k]!=null).sort();
+      // Личные вечера, сыгранные каждым своим расчётом (Pro-Am, Reshuffle, своя сборная), — две таблицы по устройству; сверяются доски.
+      const bad=ks.filter(k=>ra[k].split(' ')[0]!==rb[k].split(' ')[0] && !/ alone /.test(ra[k]) && !/ alone /.test(rb[k]));
+      console.log('   сезон '+a.season+': общих таблиц вечеров '+ks.length+', разных '+bad.length);
+      bad.slice(0,12).forEach(k=>{ console.log('     '+k+'\n       A '+ra[k].slice(0,700)+'\n       B '+rb[k].slice(0,700)); });
+      if(bad.length){ console.log('   FAIL таблицы вечеров разные: '+bad.length); }
+      if(bad.length) badRk=bad.length; }
+    if(typeof badRk!=="undefined" && badRk){ bad++; badRk=0; }
     const p=diffList(rows(a.pr), rows(b.pr));
     if(p.onlyA.length || p.onlyB.length){ console.log('   FAIL Power Ranking: только у A '+p.onlyA.slice(0,6).join(' | ')+' · только у B '+p.onlyB.slice(0,6).join(' | ')); bad++; }
   }
