@@ -37,21 +37,11 @@ const bal0=CAREER.career.balance;
 careerAdvanceTo('2026-05-02');
 notes.paid=Math.round((CAREER.career.balance-bal0)*100)/100;
 check('1-го числа выплата за код', CAREER.career.balance>bal0 && (CAREER.career.news||[]).some(n=>n.k==='ccNewsSacPaid'), notes.paid);
-// подарок
-const today=ccFnShopDay(careerToday())||[];
-const g=today.find(x=>!ccFnOwn()[x.id]); const vb0=CAREER.vb, pat0=careerMateRecords()[0].patience;
-ccFnGift(g.i, 'Queasy');
-check('V-Bucks списаны за подарок', CAREER.vb===vb0-ccFnPrice(g), vb0+' → '+CAREER.vb);
-check('у напарника выросло терпение', careerMateRecords()[0].patience===Math.min(100, pat0+8), pat0+' → '+careerMateRecords()[0].patience);
-const t=careerMateThread(); const last=t && t.msgs[t.msgs.length-1];
-check('спасибо в личку', last && last.k.indexOf('dmGiftThanks')===0, last && last.k);
-const vb1=CAREER.vb; ccFnGift(g.i, 'Queasy');
-check('тот же подарок второй раз — нет', CAREER.vb===vb1);
-check('подарок не лёг себе в шкафчик', !ccFnOwn()[g.id]);
+// подарок скинов снят (его слово 20.10)
 // экран
 careerRenderHub('items');
 check('в магазине плитка кода автора', !!document.querySelector('#chBody .cc-sac'));
-check('в магазине кнопка подарка', !!document.querySelector('#chBody .cc-fn-gift'));
+check('кнопки подарка скинов нет (снята 20.10)', !document.querySelector('#chBody .cc-fn-gift'));
 return {fails, notes};
 `;
 const tmp=path.join(fs.mkdtempSync(path.join(os.tmpdir(),'csg-')),'body.js'); fs.writeFileSync(tmp, body);

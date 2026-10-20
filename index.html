@@ -149833,8 +149833,7 @@ function ccFnCardHTML(it, owned, canPay, big){
     '<b>'+esc(it.name)+'</b><em>'+esc(T['ccFnType_'+it.t]||'')+'</em>'+
     (owned ? '<span class="cc-fn-own">'+esc(T.ccFnOwned)+'</span>'
       : '<button class="cc-fn-buy" '+(canPay ? '' : 'disabled title="'+esc(T.ccFnNoVb)+'"')+' onclick="ccFnBuy('+it.i+')">'+
-          '<i class="cc-vb-ic"></i>'+ccNum(ccFnPrice(it))+'</button>')+
-    (canPay ? '<button class="cc-fn-gift" title="'+esc(T.ccFnGiftBtn||'Gift')+'" onclick="ccFnGiftOpen('+it.i+')">🎁</button>' : '')+'</div>';
+          '<i class="cc-vb-ic"></i>'+ccNum(ccFnPrice(it))+'</button>')+'</div>';   // подарок скинов снят (его слово 20.10)
 }
 function ccFnShopHTML(){
   const T=L(), cr=CAREER.career, day=careerToday();
