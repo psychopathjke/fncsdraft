@@ -118128,6 +118128,23 @@ function ccMpOn(){
    за ccMpOn/ccMpTeam. Комната — хозяина: боты хозяина (роль a) едут гостю по
    проводу (ccRaceFieldSync), команды соперников строятся из карточек гонки. */
 let CC_RACE_LOCK=false;
+/* Метка вечера в строке (день|вид): строка с ней ушла ПОСЛЕ того, как состав на вечер сел.
+   Прогон годов 20.10, 2021: третий, посаженный перед вечером, доходил до соседа позже, чем тот
+   собирал поле, и у одного клиента он стоял ботом в чужой тройке («diff 1527 of 1607» на игре 1).
+   Поле вычитает людей комнаты ДО сверки строк, поэтому раннер ждёт строки с этой меткой. */
+let CC_RACE_LOCK_KEY=null;
+const CC_RACE_LOCK_WAIT=30000;
+async function ccRaceWaitLock(key){
+  const t0=Date.now();
+  const fresh=()=>ccRaceRoom().every(p=>p && p.lk===key);
+  while(!fresh() && Date.now()-t0<CC_RACE_LOCK_WAIT){
+    const w=new Promise(r=>setTimeout(r, 100));
+    await ((typeof ccMpIdle==='function') ? ccMpIdle(w) : w);
+  }
+  CC_RACE_LOCK_DBG=ccRaceRoom().map(p=>((p.card||{}).handle||'?')+':'+(p.lk||'-')+':'+(p.mates||[]).length).join(',')+' '+(Date.now()-t0)+'ms';
+  return fresh();
+}
+let CC_RACE_LOCK_DBG='';
 /* Сила своей команды НА ЭТОТ ВЕЧЕР — та, что стоит в поле раннера (teams.isYou.pow).
    Ставит ccRaceFieldSync перед тем, как слать строку с сидом, снимает careerPlay в конце.
    Пока null — строка уходит без сида (не «свежая»): скриншоты «diff 1 of 430:
@@ -119694,6 +119711,7 @@ function ccRaceMyLine(){
           // Свой бот-напарник, отставленный на время пары: соперники вычитают его из пула, как напарников (иначе поле разойдётся).
           bench:undefined,   // бот пары не на скамейке, а свободен (careerRacePairFree) — вычитать нечего
           edge:(ev && CC_RACE_EDGE_NOW!=null) ? CC_RACE_EDGE_NOW : null, kr:CC_RACE_MY_KR,
+          lk:CC_RACE_LOCK ? CC_RACE_LOCK_KEY : null,   // состав на вечер сел (ccRaceWaitLock)
           ps:(typeof ccStyleWire==='function') ? ccStyleWire() : null,   // стиль игры — соперники ставят его нашей команде (ccTeamStyles)
           // Понедельник Дивизиона 1 (cr.d1) — отпечатком: вторник от разных понедельников врозь (ccRaceApartWhy 'table').
           d1h:(CAREER.career.d1 && CAREER.career.d1.monday===careerMonday(careerToday())) ? String(ccHashStr(JSON.stringify(CAREER.career.d1))) : null,
@@ -119758,6 +119776,11 @@ function ccWorldSeed(){
   return ccCareerSeed();
 }
 function ccRaceWorldPack(){
+  /* ТРОЙКИ ГОДА — ДО КНИГИ. Посев третьих (careerPools, cr.triosSeeded) идёт при первой сборке пула,
+     и у старшего она могла случиться ПОСЛЕ отправки: прогон годов 20.10, 2025 — старший слал trios {},
+     соседи затирали им свой посев, а сам он сеял следом. Поле FNCS Trial разошлось с первой игры
+     (пул 279 против 282). Пул собирается здесь, и книга везёт посев целиком. */
+  try{ if(careerSquadSize()>=3 && typeof careerPools==='function') careerPools(); }catch(e){}
   const cr=(CAREER && CAREER.career)||{};
   const seeds={};
   /* И ПУСТО — ТОЖЕ ОТВЕТ. Записи посева ехали только когда они есть: у старшего Мейджора 2
@@ -119768,7 +119791,7 @@ function ccRaceWorldPack(){
      нет: пустая запись едет как null и стирает чужую. */
   CC_RACE_SEED_KEYS.forEach(k=>{ seeds[k]=(cr[k]===undefined ? null : cr[k]); });
   // devL — книга выдуманных; она двигает их рейтинг, значит и поле. Общая, как и dev.
-  return {dev:(CAREER && CAREER.dev)||{}, devL:(CAREER && CAREER.devL)||{}, splits:(CAREER && CAREER.splits)||{}, duoSplits:cr.duoSplits||{}, trios:cr.trios||{}, cseed:ccCareerSeed(), seeds:seeds};
+  return {dev:(CAREER && CAREER.dev)||{}, devL:(CAREER && CAREER.devL)||{}, splits:(CAREER && CAREER.splits)||{}, duoSplits:cr.duoSplits||{}, trios:cr.trios||{}, tseed:{seeded:cr.triosSeeded===undefined ? null : cr.triosSeeded, cores:cr.trioCores||null, filled:cr.trioFilled||null}, cseed:ccCareerSeed(), seeds:seeds};
 }
 function ccRaceWorldApply(w){
   if(!w || !CAREER) return false;
@@ -119778,6 +119801,13 @@ function ccRaceWorldApply(w){
   if(CAREER.career){
     if(w.duoSplits && typeof w.duoSplits==='object') CAREER.career.duoSplits=w.duoSplits;
     if(w.trios && typeof w.trios==='object') CAREER.career.trios=w.trios;
+    // Метка посева едет с тройками: без неё свой careerPools посеял бы поверх присланного.
+    if(w.tseed && typeof w.tseed==='object'){
+      const c=CAREER.career;
+      if(w.tseed.seeded==null) delete c.triosSeeded; else c.triosSeeded=w.tseed.seeded;
+      if(w.tseed.cores) c.trioCores=w.tseed.cores; else delete c.trioCores;
+      if(w.tseed.filled) c.trioFilled=w.tseed.filled; else delete c.trioFilled;
+    }
   }
   /* Записи посева — от старшего: из них собираются поля хитов, финалов, сеток Саммита, Глобалов и
      воскресенья Дивизиона 1. Своё участие они не решают (оно в cr.major/cr.summit/cr.reload и
@@ -151350,10 +151380,16 @@ function careerPlayRun0(next){
   if(typeof ccRaceOn==='function' && ccRaceOn()){
     CC_RACE_LOCK=ccRaceShared(next);
     CC_RACE_ROOM0=null; CC_RACE_NIGHT_APART=false;
+    CC_RACE_LOCK_KEY=CC_RACE_LOCK ? careerToday()+'|'+next.type : null;
+    /* Стэнд-ины капа другого формата садятся ДО строки: соседи вычитают их из поля по ней.
+       Раннер капа (runCareerVictory) видит поднятый CC_EVENT_SIZE и второй раз не добирает. */
+    let preSwap=null;
+    if(CC_RACE_LOCK && next.type==='victory'){ try{ preSwap=ccEventRosterBegin(ccVictoryFormat(careerVictoryOn(careerToday()))); }catch(e){ preSwap=null; } }
     if(CC_RACE_LOCK){ try{ CC_RACE_ROOM0={}; ccRaceRoom().forEach(p=>{ CC_RACE_ROOM0[p.id]=true; }); careerRaceSend(); if(typeof MP!=='undefined' && MP.sendCard) MP.sendCard(); }catch(e){} }
     let p=null;
-    try{ p=careerNightRun(next); }catch(e){ CC_RACE_LOCK=false; CC_RACE_ROOM0=null; CC_RACE_POW_NOW=null; CC_RACE_EDGE_NOW=null; ccEvDeltaSend(); throw e; }
-    return Promise.resolve(p).finally(function(){ CC_RACE_LOCK=false; CC_RACE_ROOM0=null; CC_RACE_POW_NOW=null; CC_RACE_EDGE_NOW=null; ccEvDeltaSend(); });
+    // Сначала строки соседей с их составом на этот вечер, потом поле (ccRaceWaitLock).
+    try{ p=CC_RACE_LOCK ? ccRaceWaitLock(CC_RACE_LOCK_KEY).then(()=>careerNightRun(next)) : careerNightRun(next); }catch(e){ ccEventRosterEnd(preSwap); CC_RACE_LOCK=false; CC_RACE_LOCK_KEY=null; CC_RACE_ROOM0=null; CC_RACE_POW_NOW=null; CC_RACE_EDGE_NOW=null; ccEvDeltaSend(); throw e; }
+    return Promise.resolve(p).finally(function(){ ccEventRosterEnd(preSwap); CC_RACE_LOCK=false; CC_RACE_LOCK_KEY=null; CC_RACE_ROOM0=null; CC_RACE_POW_NOW=null; CC_RACE_EDGE_NOW=null; ccEvDeltaSend(); });
   }
   return Promise.resolve(careerNightRun(next)).finally(function(){ ccEvDeltaSend(); });
 }
@@ -154195,7 +154231,22 @@ function careerMoney(){
       });
     });
   }
+  /* Старые сейвы: «ты» стояло на всём своём составе (напарник, стэнд-ин капа). Остаётся на своём
+     нике, если он среди помеченных; иначе не трогаем — лучше лишняя подсветка, чем никакой. */
+  if(!cr.money.you1){
+    cr.money.you1=1;
+    const yk=ccMoneyYouKey();
+    const marked=Object.keys(cr.money.rows).filter(k=>cr.money.rows[k].you);
+    if(yk && marked.some(k=>hKey(k)===yk)) marked.forEach(function(k){ if(hKey(k)!==yk) delete cr.money.rows[k].you; });
+  }
   return cr.money;
+}
+/* СВОЯ СТРОКА ДОСКИ — ТОЛЬКО СВОЙ НИК, как в Power Ranking (careerPrAdd).
+   Метка «ты» на всём составе прятала напарника и стэнд-ина от чужих копилок (ccEvResApply не трогает
+   свою строку): стэнд-ин, сыгравший с тобой один кап, дальше копил только у соседей. Прогон годов 20.10,
+   2021: у каждого из троих не хватало строки ровно своего стэнд-ина. */
+function ccMoneyYouKey(){
+  return hKey((CAREER && CAREER.player && (CAREER.player.handle || CAREER.player.nick))||'');
 }
 function careerMoneyKeys(){
   const cr=CAREER.career;
@@ -154265,7 +154316,7 @@ function ccEvSeenMark(key){
    считаю сам, чужой копилки не ждёт, поэтому ключ метится там, где вечер начинается.
    Отмена вечера ничего не ломает: ccEvDeltaSend зовётся и на ошибке, из finally. */
 function ccEvDeltaStart(key){
-  CC_EV_DELTA=key ? {key:key, money:{}, pr:{}, yr:null, fs:null, day:careerToday()} : null;
+  CC_EV_DELTA=key ? {key:key, money:{}, ev:{}, pr:{}, yr:null, fs:null, day:careerToday()} : null;
   if(key) ccEvSeenMark(key);
 }
 /* ВЕЧЕР РАЗОШЁЛСЯ ПОСРЕДИ — ЗНАЧИТ У НЕГО ДВЕ ЧАСТИ.
@@ -154318,7 +154369,7 @@ function ccEvResApply(d){
     const each=Math.round(d.money[h]||0); if(!each) return;
     if(mine[hKey(h)] || (m.rows[h] && m.rows[h].you)) return;
     const row=m.rows[h] || (m.rows[h]={usd:0, events:0, yr:{}, fs:{}});
-    row.usd+=each; row.events++;
+    row.usd+=each; row.events+=Math.max(1, Math.round((d.ev && d.ev[h])||1));
     row.yr[k.yr]=(row.yr[k.yr]||0)+each;
     row.fs[k.fs]=(row.fs[k.fs]||0)+each;
   });
@@ -154349,18 +154400,23 @@ function careerMoneyAdd(ranked, prize){
     const who=ccMoneyWho(name);
     const parts=who.length || 1;
     const each=Math.round(usd/parts);
+    // «ты» — свой ник в составе; не нашёлся (имя без людей) — вся строка, как раньше.
+    const yk=t.isYou ? ccMoneyYouKey() : '';
+    const youAll=t.isYou && !(who.length ? who : [name]).some(h=>hKey(h)===yk);
     (who.length ? who : [name]).forEach(function(h){
       const row=m.rows[h] || (m.rows[h]={usd:0, events:0, yr:{}, fs:{}});
       row.usd+=each; row.events++;
       row.yr[k.yr]=(row.yr[k.yr]||0)+each;
       row.fs[k.fs]=(row.fs[k.fs]||0)+each;
-      if(t.isYou) row.you=true;
+      if(t.isYou && (youAll || hKey(h)===yk)) row.you=true;
       /* Копилка вечера — для тех, кто его не играет (см. ccEvDeltaSend). СВОЯ СТРОКА ТОЖЕ:
          своя она только у меня, а у соседа по гонке я — обычный человек сцены, и мои
          призовые за вечер, который он не играл, не попадали к нему ВООБЩЕ. Отсюда скриншот
          11.09: у себя 58 вечеров и $553k, у соседа тот же человек — 50 и $324k. Свою строку
          от чужой копилки бережёт приёмник (ccEvResApply). */
-      if(CC_EV_DELTA){ CC_EV_DELTA.money[h]=(CC_EV_DELTA.money[h]||0)+each; CC_EV_DELTA.yr=k.yr; CC_EV_DELTA.fs=k.fs; }
+      if(CC_EV_DELTA){ CC_EV_DELTA.money[h]=(CC_EV_DELTA.money[h]||0)+each; CC_EV_DELTA.yr=k.yr; CC_EV_DELTA.fs=k.fs;
+        // И сколько выплат: два раунда одного вечера — два турнира в доске (прогон годов 20.10, Solo Cash Cup 2023).
+        if(CC_EV_DELTA.ev) CC_EV_DELTA.ev[h]=(CC_EV_DELTA.ev[h]||0)+1; }
     });
   });
 }
@@ -162120,10 +162176,19 @@ function ccEventRosterBegin(fmt){
   const own=((CAREER.rosters||{})[fmt] || prev).filter(Boolean).slice(0, fmt-1);
   const taken=new Set([hKey(CAREER.player.handle||CAREER.player.nick||'')]);
   own.forEach(r=>{ const c=ccMateCardOf(r); if(c) taken.add(hKey(c)); });
+  // Люди гонки и их напарники стэнд-инами не выходят: в общей комнате они стоят своими командами.
+  if(typeof ccRaceOn==='function' && ccRaceOn()) ccRaceTakenKeys().forEach(k=>taken.add(k));
   const need=fmt-1-own.length, stand=[];
   if(need>0){
     const me=(CAREER.player && CAREER.player.ovr)||80;
-    const pool=ccSceneRoster(ccCareerRegion()).filter(c=>!taken.has(hKey(c)))
+    /* В гонке стэнд-инов берут все разом, и строки соседей ещё не пришли: двое взяли бы одного.
+       Пул делится между людьми комнаты по хешу ника — у каждого своя доля, пересечься нечему. */
+    let part=null;
+    if(typeof ccRaceOn==='function' && ccRaceOn()){ try{
+      const ids=[ccMpId()].concat(ccRaceRoom().map(p=>p.id)).filter(Boolean).sort();
+      if(ids.length>1) part={n:ids.length, i:ids.indexOf(ccMpId())};
+    }catch(e){ part=null; } }
+    const pool=ccSceneRoster(ccCareerRegion()).filter(c=>!taken.has(hKey(c)) && (!part || ccHashStr(hKey(c))%part.n===part.i))
       .sort((a,b)=>Math.abs(ccCardOvr(a)-me)-Math.abs(ccCardOvr(b)-me));
     for(let i=0;i<need && i<pool.length;i++) stand.push({card:{...pool[i]}, patience:60, since:careerToday(), dev:0, standin:true});
   }
