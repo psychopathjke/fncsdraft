@@ -105810,9 +105810,14 @@ let CC_LAND_CHEST_CACHE=null;
 function ccLandingChestEdge(zone){
   if(typeof ccSiteChests!=='function' || !ALL_LANDING_ZONES || !ALL_LANDING_ZONES.length) return 0;
   const set=(typeof ACTIVE_LANDING_SET!=='undefined') ? ACTIVE_LANDING_SET : '';
-  if(!CC_LAND_CHEST_CACHE || CC_LAND_CHEST_CACHE.set!==set || CC_LAND_CHEST_CACHE.zones!==ALL_LANDING_ZONES){
-    const m=new Map(); const all=ALL_LANDING_ZONES.map(z=>{ const c=ccSiteChests(z); m.set(z, c); return c; }).sort((a,b)=>a-b);
-    CC_LAND_CHEST_CACHE={set, zones:ALL_LANDING_ZONES, m, med:all[Math.floor(all.length/2)]||1};
+  /* Кэш — по СОСТАВУ острова, не по массиву: useLandingSet пересобирает точки новыми объектами в тот же массив
+     (и обрезает их под режим), и кэш, ключённый объектами, после соло-вечера на том же острове молча отвечал нулём
+     за каждую точку. У сыгравшего соло один из двоих боты следующего общего капа садились иначе (командный год
+     20.10: хиты Solo Series 17.01 у одного → Duos Victory Cup 19.01, 12 команд из 50 на других точках). */
+  const C=CC_LAND_CHEST_CACHE, Z=ALL_LANDING_ZONES;
+  if(!C || C.set!==set || C.list.length!==Z.length || C.list.some((z,i)=>z!==Z[i])){
+    const m=new Map(); const all=Z.map(z=>{ const c=ccSiteChests(z); m.set(z, c); return c; }).sort((a,b)=>a-b);
+    CC_LAND_CHEST_CACHE={set, list:Z.slice(), m, med:all[Math.floor(all.length/2)]||1};
   }
   const c=CC_LAND_CHEST_CACHE.m.get(zone);
   if(c==null) return 0;
@@ -127816,6 +127821,10 @@ function careerSpotFearOn(you){
      у кого-то выросла аура (годовая проба 8.09: Evaluation 18.12, игра 3, у одного −76 бросков
      на высадке и дальше другой набор вопросов). Своя точка в гонке садится голосом «домой». */
   if(typeof ccRaceLock==='function' && ccRaceLock()){ CC_SPOT_FEAR_MAP=null; CC_SPOT_LOCK_ZONES=null; return; }
+  /* И СОЛО ВДВОЁМ В КОМАНДЕ: соло-метка у каждого своя (четвёртая карта, careerSpotSets 'solo'), и боты общей сотни
+     обходили у двоих разные точки — вечер расходился на первой же высадке (командный год 20.10: хиты Solo Series 17.01,
+     «drop=101/728691 vs drop=101/109494»). Дуо-метка у команды одна, там страх остаётся. */
+  if(typeof ccMpOn==='function' && ccMpOn() && squadSize===1){ CC_SPOT_FEAR_MAP=null; CC_SPOT_LOCK_ZONES=null; CC_BEEF_ZONES=null; CC_BEEF_SET=null; return; }
   /* Дом боятся за две вещи разом: за то, сколько ты его держал (аура), и за то,
      кто ты теперь (careerRenown — гранд-финал и слот на LAN). Оба слагаемых
      живут на одной шкале и вместе упираются в тот же потолок. */

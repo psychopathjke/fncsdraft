@@ -123,7 +123,7 @@ const boot = (who) => `
             if(a.e.length<6){ rec={g:CC_MP_GAME, r0:CC_MP_ROLLS, h:hh((teams||[]).map(t=>[(t.squad||[]).map(c=>c&&c.handle).join('+'), t.pow, t.closeEdge||0, t.landingZone?ALL_LANDING_ZONES.indexOf(t.landingZone):-1, t.attrs?[t.attrs.END,t.attrs.SUR,t.attrs.AIM,t.attrs.CLU].join('.'):'-', t.stagePts||0]))}; a.e.push(rec); }
             if(!a.w){ const w={}; ['dev','devL','splits','duoStreak','lft'].forEach(x=>{ w['W.'+x]=hh(CAREER[x]); }); ['duoSplits','trios','chemSince','spots'].forEach(x=>{ w['C.'+x]=hh(CAREER.career[x]); });
               ['CC_SEATS_REMIX','CC_DROP_STAGE','CC_ZB','FORM_SPREAD','CC_EVENT_SIZE','ACTIVE_LANDING_SET','LANDING_TRIM_SIZE','squadSize','CARD_MODE','CC_SPOT_FEAR_MAP','CC_KILL_CAP'].forEach(x=>{ try{ w['L.'+x]=hh(eval(x)); }catch(e){} });
-              w.seats=(typeof CC_DROP_SEATS!=='undefined' && CC_DROP_SEATS) ? CC_DROP_SEATS.size : 0; a.w=w; } }
+              w.seats=(typeof CC_DROP_SEATS!=='undefined' && CC_DROP_SEATS) ? CC_DROP_SEATS.size : 0; Object.keys(CAREER.career).forEach(x=>{ w['cr.'+x]=hh(CAREER.career[x]); }); Object.keys(CAREER).forEach(x=>{ if(x!=='career') w['C0.'+x]=hh(CAREER[x]); }); ['CC_POOLS','CC_LADDER_POOL','CC_DROP_SEATS','CC_SPOT_FEAR_MAP','CC_STAGE_SEATS'].forEach(x=>{ try{ w['G.'+x]=hh(eval(x)); }catch(e){} }); a.w=w; } }
           const r=sg1.apply(this, arguments);
           if(rec) rec.r1=CC_MP_ROLLS;
           return r; }; }
@@ -181,7 +181,7 @@ const boot = (who) => `
         km:(function(){ const o={}; Object.keys(window.__km||{}).forEach(k=>{ const v=window.__km[k]; o[k]=Object.keys(v).sort().map(h=>h+'='+v[h]).join(','); }); window.__km={}; return o; })()};
     };
     for(let si=0; si<${SEASONS}; si++){
-      const target=ccYearTo();
+      const target=${JSON.stringify(process.env.CC_UNTIL||'')} || ccYearTo();
       careerRenderHub('calendar'); await wait(400);
       careerFfToDay(target);
       let lastDay=CAREER.career.day, lastMove=Date.now(), again=0;
@@ -214,11 +214,12 @@ const boot = (who) => `
       }
       if(out.notes.stall || out.notes.ffErr) { out.notes.seasons.push(seasonSnap()); break; }
       // Конец года: «следующий день» за последним днём закрывает сезон (голос обоих).
-      for(let i=0;Date.now()-t0<${BUDGET_MS} && !CAREER.career.seasonOver && i<2400;i++){ if(i%20===0){ try{ careerNextDay(); }catch(e){} } await wait(250); }
+      for(let i=0;!${JSON.stringify(process.env.CC_UNTIL||"")} && Date.now()-t0<${BUDGET_MS} && !CAREER.career.seasonOver && i<2400;i++){ if(i%20===0){ try{ careerNextDay(); }catch(e){} } await wait(250); }
       // Дать дельтам последнего вечера доехать до снимка.
       await wait(8000);
       const snap=seasonSnap(); out.notes.seasons.push(snap);
-      if(!CAREER.career.seasonOver){ out.notes.notClosed=CAREER.career.day; break; }
+      if(!CAREER.career.seasonOver && !${JSON.stringify(process.env.CC_UNTIL||"")}){ out.notes.notClosed=CAREER.career.day; break; }
+      if(${JSON.stringify(process.env.CC_UNTIL||"")}) break;
       if(snap.won || si===${SEASONS}-1) break;
       careerNewSeason();
       await wait(4000);
