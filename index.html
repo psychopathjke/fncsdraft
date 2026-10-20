@@ -118876,6 +118876,10 @@ function ccSoloTeamSettle(){
   if(!me) return false;
   const mine=ccSoloStateOf(ev, me);
   if(!ccSoloDoneToday(ev, mine)) return false;          // сам ещё не отыграл (или ещё может)
+  /* Шагает только день, когда соло-вечер сыгран СЕГОДНЯ (20.10, онлайн-прогон: вдвоём прошли квал 10.01, день штатно встал на
+     11.01 — там третья сессия, — пришло состояние напарника, и «прошёл квал» читалось как «сегодня отыграно»: день уезжал на 12.01,
+     и 11-е с Reload Opens пропадало. В одиночку такого нет.) */
+  if(!mine || mine.day!==careerToday()) return false;
   const peer=MP.peer;
   if(peer && careerSoloSeriesCanFor(ev, ccSoloStateOf(ev, peer))) return false;   // напарник ещё может сыграть
   CC_MP_ALONE=true;
