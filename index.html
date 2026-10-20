@@ -137481,11 +137481,11 @@ const CC_SHOP_ORDER=[
   'PyraxMGMT','Goalkikermng','KaizenMNG','murlotron',
   // Coaches — ПО РЕЙТИНГУ КОУЧА (его слова 8.10: «по фоловерам твитера» → «или по результатам» → «вот и сделай зп и
   // рейтинг их»): сначала подтверждённые результаты, ниже — по подписчикам. Рейтинг — ccCoachRatingOf, цена от него.
-  'RazZzero0oFN','Thomas5x_','BloodxEU','SvenSE_','Gripeyy','PeanutBrainTS','tallami1','Coach_F0x','Flaireeeee','BoopNL_','stormyrite','diaspaulin_','Rabidfn','At0m_GG','kha0rz','EgeXJerG','ZykomaTV','xpl0t','ValentaynL','spidryx','CoachEsteh','CoachNassimm','coachAchille'
+  'RazZzero0oFN','Thomas5x_','BloodxEU','SvenSE_','Gripeyy','PeanutBrainTS','tallami1','Coach_F0x','Flaireeeee','BoopNL_','stormyrite','diaspaulin_','Rabidfn','At0m_GG','kha0rz','EgeXJerG','ZykomaTV','xpl0t','ValentaynL','spidryx','CoachEsteh','CoachDashura','CoachNassimm','coachAchille'
 ];
 /* Подписчики коучей в X, сняты 8.10.2026 через api.fxtwitter.com по их же адресам (at) — каждый сверен по имени и
    описанию; у Boop, Stormyrite, Gripey, Spidryx, Zykoma тёзки отброшены. */
-const CC_COACH_X={DestinysJesus:112065, RazZzero0oFN:418315, BoopNL_:127598, stormyrite:98460, BloodxEU:82759, SvenSE_:26955, Gripeyy:22316, diaspaulin_:18474, tallami1:17589, Rabidfn:13220, At0m_GG:12350, Coach_F0x:9342, kha0rz:9246, PeanutBrainTS:6675, Thomas5x_:6498, EgeXJerG:4403, ZykomaTV:4329, xpl0t:3852, ValentaynL:3072, spidryx:2609, CoachEsteh:2343, Flaireeeee:742, CoachNassimm:478, coachAchille:56};
+const CC_COACH_X={DestinysJesus:112065, RazZzero0oFN:418315, BoopNL_:127598, stormyrite:98460, BloodxEU:82759, SvenSE_:26955, Gripeyy:22316, diaspaulin_:18474, tallami1:17589, Rabidfn:13220, At0m_GG:12350, Coach_F0x:9342, kha0rz:9246, PeanutBrainTS:6675, Thomas5x_:6498, EgeXJerG:4403, ZykomaTV:4329, xpl0t:3852, ValentaynL:3072, spidryx:2609, CoachEsteh:2343, Flaireeeee:742, CoachDashura:1065, CoachNassimm:478, coachAchille:56};
 const CC_SHOP_RANK=(function(){
   const m={};
   CC_SHOP_ORDER.forEach((h,i)=>{ m[String(h).toLowerCase()]=i; });
@@ -148071,7 +148071,11 @@ const CC_COACHES=[
   /* x.com/coachAchille — сам попросился (Notion 12.10). В описании: «coach 🇮🇹 | Coach for Encar | I work/ed with
      raffabozz_, robymasterato, kijarssf» — Италия, Европа. Чему учит, не сказано — все шесть и без химии, как Flaire
      и Nassim; рейтинг по подписчикам (56 на 12.10.2026). Аватарка 400×400 оттуда же. */
-  {id:'achille', name:'Achille', at:'coachAchille', reg:'EU', cost:2500, train:0.28, keys:ATTR_KEYS.slice(), photo:'coachAchille.jpg'}
+  {id:'achille', name:'Achille', at:'coachAchille', reg:'EU', cost:2500, train:0.28, keys:ATTR_KEYS.slice(), photo:'coachAchille.jpg'},
+  /* x.com/CoachDashura (Notion 20.10, его «ещё нужно добавить коуча»). Описание: «18 · Fortnite Coach @PoyoEsports · @PixelzMNG»,
+     раньше Head Academy во FLC, работал с FataL — Европа. Чему учит, не сказано — все шесть и без химии, как Nassim и Achille;
+     рейтинг по подписчикам (1 065 на 20.10.2026). Аватарка 400×400 оттуда же. */
+  {id:'dashura', name:'Dashura', at:'CoachDashura', reg:'EU', cost:2500, train:0.28, keys:ATTR_KEYS.slice(), photo:'CoachDashura.jpg'}
 ];
 /* The coaches run down their list too.
 
