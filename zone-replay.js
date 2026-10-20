@@ -19,11 +19,25 @@
   // whatever is on screen. The labels have to know: a name for a squad off the
   // left edge is a name nobody can read, and the room the names are competing
   // for is the room in the box, not the room on the island.
+  /* Размер коробки карты — из ResizeObserver, а не clientWidth на каждом кадре: кадр сначала пересобирает svg
+     (innerHTML), а потом спрашивал размер — и браузер пересчитывал раскладку всей страницы каждый кадр (профиль 20.10:
+     13% времени показа уходило в box(), его «симуляция карты подлагивает»). Размер меняется только при ресайзе. */
+  function wrapSize(handle){
+    var w = handle.wrap, c = handle._wh;
+    if(!c){
+      c = handle._wh = {W: w.clientWidth, H: w.clientHeight};
+      if(typeof ResizeObserver !== 'undefined'){
+        try{ handle._ro = new ResizeObserver(function(){ c.W = w.clientWidth; c.H = w.clientHeight; }); handle._ro.observe(w); }
+        catch(e){ handle._wh = null; }
+      } else handle._wh = null;   // без наблюдателя — честное чтение каждый раз, как было
+    }
+    return c;
+  }
   function setView(handle, tx, ty, s){
     if(!handle) return;
-    var vbH = Number(handle.svg.dataset.vbh) || 100;
-    var W = handle.wrap.clientWidth || 520;
-    var H = handle.wrap.clientHeight || (W * vbH / 100);
+    var vbH = Number(handle.svg.dataset.vbh) || 100, sz = wrapSize(handle);
+    var W = sz.W || 520;
+    var H = sz.H || (W * vbH / 100);
     handle.view = {
       x0: (-tx / s) / W * 100,
       y0: (-ty / s) / H * vbH,
@@ -1288,8 +1302,9 @@
     // kill feed in the corner are put down as occupied before a single name is,
     // because a plate behind either of them is a plate nobody can read.
     var view = handle.view || {x0: 0, y0: 0, x1: 100, y1: vbH};
-    var boxW = handle.wrap.clientWidth || 520;
-    var boxH = handle.wrap.clientHeight || (boxW * vbH / 100);
+    var bsz = wrapSize(handle);
+    var boxW = bsz.W || 520;
+    var boxH = bsz.H || (boxW * vbH / 100);
     var ux = (100 / boxW) / scale, uy = (vbH / boxH) / scale;
     var vw = view.x1 - view.x0, vh = view.y1 - view.y0;
     var chrome = [
@@ -1776,9 +1791,9 @@
     var at = null;                      // {cx, cy, r}, where the camera is now
 
     function box(){
-      var vbH = Number(handle.svg.dataset.vbh) || 100;
-      var W = handle.wrap.clientWidth || 520;
-      var H = handle.wrap.clientHeight || (W * vbH / 100);
+      var vbH = Number(handle.svg.dataset.vbh) || 100, sz = wrapSize(handle);
+      var W = sz.W || 520;
+      var H = sz.H || (W * vbH / 100);
       return {vbH: vbH, W: W, H: H};
     }
     function wide(b){ return {cx: 50, cy: b.vbH/2, r: b.vbH/2}; }
@@ -2004,6 +2019,7 @@
     // The settle timer holds the handle and would fire into a stage that is no
     // longer on the page.
     if(handle && handle.settle){ clearTimeout(handle.settle); handle.settle = null; }
+    if(handle && handle._ro){ try{ handle._ro.disconnect(); }catch(e){} handle._ro = null; }
     if(handle && handle.wrap && handle.wrap.parentNode) handle.wrap.parentNode.removeChild(handle.wrap);
   }
 
