@@ -139034,7 +139034,7 @@ function careerMonthGoalAuto(){
   // Вечер, на котором выбрал клуб, тоже идёт в зачёт — он мог быть первым вечером месяца.
   const last=(CAREER.career.log||[]).slice(-1)[0];
   if(last && ccMonthKey(last.day)===g.key && last.day<g.from) g.from=last.day;
-  try{ careerNews('flat', 'ccNewsMgAuto', [CAREER.org.name, careerMonthGoalText(g)], {by:ccOrgBy(CAREER.org.name)}); }catch(e){}
+  // Без поста в ленте (его слово 20.10: «посты про клуб новые не надо»): цель видна в плитке клуба.
 }
 function careerMonthGoalMet(){
   const g=careerMonthGoal(); if(!g) return false;
