@@ -131,13 +131,13 @@ function playerPage(g, others) {
   const e = earnBy.get(g.handle.toLowerCase());
   const ctry = country(g.cc);
   const span = years.length ? (years[0] === years[years.length - 1] ? years[0] : years[0] + '–' + years[years.length - 1]) : '';
-  const title = g.handle + ' — FNCS results, stats and cards | FNCS Draft';
+  const title = g.handle + ': FNCS results, stats and cards | FNCS Draft';
   const desc = g.handle + (ctry ? ' (' + ctry + ')' : '') + ' in FNCS' + (span ? ' ' + span : '') + ': ' + cards.length + ' tournament results' +
     (isFinite(bestPlace) ? ', best finish ' + ord(bestPlace) : '') + (orgs.length ? ', teams: ' + orgs.slice(0, 3).join(', ') : '') +
     '. Draft ' + g.handle + ' in the free FNCS Draft game.';
   const flag = g.cc ? '<img src="/flags/w20/' + esc(g.cc) + '.png" alt="" width="20">' : '';
   const rows = cards.map(c => '<tr><td>' + esc(c.ev) + '<small>' + esc(enDate(c.date)) + (c.org ? ' · ' + esc(c.org) : '') + '</small></td>' +
-    '<td class="n' + (c.place === 1 ? ' p1' : '') + '">' + (c.place ? ord(c.place) : '—') + '</td>' +
+    '<td class="n' + (c.place === 1 ? ' p1' : '') + '">' + (c.place ? ord(c.place) : '-') + '</td>' +
     '<td class="n hide-s">' + (c.pts != null ? esc(c.pts) + ' pts' + (c.matches ? '<small>' + esc(c.matches) + ' games</small>' : '') : '') + '</td>' +
     '<td class="n r"><b' + (c.rating >= 90 ? ' class="hi"' : '') + '>' + esc(c.rating) + '</b></td></tr>').join('\n');
   const body = `<nav class="crumb"><a href="/">FNCS Draft</a> / <a href="/players">Players</a> / ${esc(g.handle)}</nav>
@@ -187,7 +187,7 @@ const idxBody = `<nav class="crumb"><a href="/">FNCS Draft</a> / Players</nav>
 <a class="cta" href="/"><span>Play FNCS Draft</span></a>
 ${order.filter(r => byRegion[r]).map(r => '<h2>' + esc(REGION[r] || 'Other') + '</h2><ul class="links">' +
   byRegion[r].map(g => '<li><a href="/player/' + g.slug + '">' + esc(g.handle) + '</a></li>').join('') + '</ul>').join('\n')}`;
-fs.writeFileSync(path.join(OUT, 'players.html'), page({ title: 'FNCS players — results 2019–2026 | FNCS Draft',
+fs.writeFileSync(path.join(OUT, 'players.html'), page({ title: 'FNCS players: results 2019-2026 | FNCS Draft',
   desc: 'Every Fortnite FNCS player in FNCS Draft: tournament results, best finishes and teams from 2019 to 2026.', canon: SITE + '/players', body: idxBody }));
 
 // sitemap.xml этой папки: свои адреса дописываются к тем, что уже есть.
