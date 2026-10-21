@@ -7707,7 +7707,8 @@
   /* Выбор клуба как в FC: плитки настоящих клубов со звёздами и бюджетами. */
   .mgn-headtile{display:flex;flex-direction:column;gap:8px;color:#fff;margin-bottom:8px;}
   .mgn-headtile h4{margin:0;font-family:Oswald,sans-serif;font-size:22px;text-transform:uppercase;letter-spacing:.02em;}
-  .mgn-reg{font-size:12px;display:flex;gap:6px;align-items:center;color:#fff;}
+  .mgn-reg{font-size:12px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;color:#fff;} .mgn-reg em{font-style:normal;opacity:.8;}
+  .mgn-reg .mgn-regs{margin:0;}
   .mgn-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px;margin-top:8px;}
   .mgn-club{cursor:pointer;display:flex;flex-direction:column;gap:4px;}
   #screen-manager .mgn-club:hover{border-color:#ffd400;}
@@ -167330,7 +167331,8 @@ function mgrOpenNew(year){
   MGR_NEW_LIST=clubs;
   const sub=(on, click, label)=>'<button class="ch-subtab'+(on?' on':'')+'" onclick="'+click+'">'+esc(label)+'</button>';
   const years=[2019,2020,2021,2022,2023,2024,2025,2026].concat(MGR_NEW_YEAR>2026 ? [MGR_NEW_YEAR] : []).map(y=>sub(y===MGR_NEW_YEAR, 'mgrOpenNew('+y+')', String(y))).join('');
-  const regs=['EU','NAC','BR','OCE','ASIA','ME'].map(r=>'<option'+(r===MGR_NEW_REGION?' selected':'')+'>'+r+'</option>').join('');
+  // Регион — кнопками, как годы (Notion «20.10»: белый системный список; см. «без белых системных списков»).
+  const regs=['EU','NAC','BR','OCE','ASIA','ME'].map(r=>sub(r===MGR_NEW_REGION, "MGR_NEW_REGION='"+r+"';mgrOpenNew()", (typeof ccRegShort==='function' ? ccRegShort(r) : r)||r)).join('');
   const side='<div class="ch-subtabs mgn-side">'+sub(MGR_NEW_SIDE==='real', "MGR_NEW_SIDE='real';mgrOpenNew()", T9.real)+
     sub(MGR_NEW_SIDE==='own', "MGR_NEW_SIDE='own';mgrOpenNew()", T9.own)+'</div>';
   // Весь состав лицами (его слово 8.10: «пусть на превью команды будут все игроки»; было — четыре сильнейших).
@@ -167363,7 +167365,7 @@ function mgrOpenNew(year){
   const own=typeof mgrOwnFormHTML==='function' ? mgrOwnFormHTML() : '';
   document.getElementById('mgBody').innerHTML='<div class="mgn-headtile"><h4>'+esc(T.title)+' · '+esc(T.newH)+'</h4>'+
     '<div class="ch-subtabs mgn-years">'+years+'</div>'+
-    '<label class="mgn-reg">'+esc(T.region)+' <select onchange="MGR_NEW_REGION=this.value;mgrOpenNew()">'+regs+'</select></label>'+side+'</div>'+
+    '<div class="mgn-reg"><em>'+esc(T.region)+'</em><div class="ch-subtabs mgn-regs">'+regs+'</div></div>'+side+'</div>'+
     mgrNewOptsHTML()+(MGR_NEW_SIDE==='own' ? own : real)+
     '<div class="ch-foot"><button class="cc-back" onclick="mgrHome()">'+esc(T.home)+'</button>'+(mgrSlotsFilled() ? '<button class="cc-back" onclick="mgrToSlots()">'+esc(mgrSlotT().slots)+'</button>' : '')+'</div>';
   show('screen-manager');
@@ -167855,7 +167857,7 @@ function mgrEvents(){
   if(MGR.teams.some(t=>(t.cards||[]).length)) sizes.add(1);   // соло — каждый игрок клуба
   const fm={solo:1, duo:2, trio:3, squad:4};
   // Календарь капов года — тот же, что у карьеры (ccVictoryList: база года + архив Tracker + плейсмент-капы).
-  let all=[]; try{ all=(ccVictoryList()||[]).concat(mgrFncsDays()); }catch(e){ all=[]; }
+  let all=[]; try{ all=(ccVictoryList()||[]).concat(mgrFncsDays(), mgrSoloWorldDays()); }catch(e){ all=[]; }
   return all.filter(ev=>ev && ev.day>=from && ev.day<=to && !ev.invite && !ev.zb && !ev.ewc24 && !ev.reshuffle &&
     !/Console|Playstation|PlayStation|Mobile|Platform|PC\b|Xbox|Switch|Influencer/i.test(ev.id+' '+(ev.name||'')) &&
     fm[ev.mode] && sizes.has(fm[ev.mode]) && ev.kind!=='fncs' && ev.kind!=='fncsSolo' && (MGR.skipped||[]).indexOf(ev.id+'|'+ev.day)<0)
@@ -168547,7 +168549,7 @@ function mgrWorldDone(ev){ return (MGR.wdone||[]).indexOf(mgrEvKey(ev))>=0; }
 function mgrWorldMark(ev){ const k=mgrEvKey(ev); MGR.wdone=MGR.wdone||[]; if(MGR.wdone.indexOf(k)<0) MGR.wdone.push(k); if(MGR.wdone.length>800) MGR.wdone=MGR.wdone.slice(-800); }
 // Все капы мира в окне дат — и соло, и форматы, которых у клуба нет.
 function mgrWorldEvents(from, to){
-  let all=[]; try{ all=(ccVictoryList()||[]).concat(mgrFncsDays()); }catch(e){ all=[]; }
+  let all=[]; try{ all=(ccVictoryList()||[]).concat(mgrFncsDays(), mgrSoloWorldDays()); }catch(e){ all=[]; }
   return all.filter(ev=>ev && ev.day>=from && ev.day<=to && !ev.invite && !ev.zb && !ev.ewc24 && !ev.reshuffle &&
     !/Console|Playstation|PlayStation|Mobile|Platform|PC|Xbox|Switch|Influencer/i.test(ev.id+' '+(ev.name||'')) && {solo:1, duo:1, trio:1, squad:1}[ev.mode])
     .map(ev=>Object.assign({}, ev, {name:mgrEvName(ev)}))
@@ -169835,7 +169837,7 @@ function mgrSoloWorldDays(){
   return out;
 }
 function mgrFncsDays(){
-  const out=mgrSoloWorldDays(), to=ccYearTo();
+  const out=[], to=ccYearTo();
   for(let d=CAREER.career.day; d<=to; d=ccAddDays(d, 1)){
     let mj=null; try{ mj=careerMajorOn(d); }catch(e){ mj=null; }
     if(mj && mj.stage==='final' && !out.some(x=>x.n===mj.n)) out.push({day:d, kind:'fncs', id:'fncs'+(mj.n||'')+'|'+d, name:(mj.label||'FNCS').replace(/<[^>]+>/g, ''), mode:({2:'duo', 3:'trio', 4:'squad'})[careerSquadSize()]||'duo', n:mj.n});
