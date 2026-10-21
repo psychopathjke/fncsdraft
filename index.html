@@ -120016,7 +120016,8 @@ function ccRaceMyLine(){
   const card=(typeof MP!=='undefined' && MP.card) ? MP.card() : ccRacePackCard(me);
   let canToday=null;
   try{ const nx=(typeof careerNext==='function') ? careerNext() : null; CC_RACE_MY_KR=ccKindRank(nx && nx.type);
-       if(nx && nx.type && nx.type!=='free' && typeof careerCanPlayKind==='function') canToday=!!careerCanPlayKind(nx.type); }catch(e){}
+       // Только допуск по турниру (квал, билет): без проверки состава — в паре бот-напарник отставлен, и «нет напарника» не значит «не играю».
+       if(nx && nx.type && nx.type!=='free' && typeof careerCanPlayKindOn==='function') canToday=!!careerCanPlayKindOn(careerToday(), nx.type, true); }catch(e){}
   return {id:ccMpId(), cp:canToday, card:ccRacePackCard(card||me), mates:mates.map(ccRacePackCard), pow:pow, ev:ev, squad:careerSquadSize(), pair:(typeof ccRacePairId==='function' ? ccRacePairId() : null),
           y:ccNowYear(), rg:ccCareerRegion(),   // год и регион мира — вошедший без ссылки сверяется (ccRaceModeWhy),
           // Свой бот-напарник, отставленный на время пары: соперники вычитают его из пула, как напарников (иначе поле разойдётся).
@@ -120055,7 +120056,7 @@ function ccRaceRoom(){
        в комнату не садится и ответов не ждём. Онлайн-прогон 2019 года, 21.10: Season X 3.11, раунды 2–3; не прошедший
        первый раунд сидел у соседа в открытом втором (красная строка «Your partner never reached the question», чужие
        призовые на доске). */
-    && !(p.day===today && p.cp===false)
+    && !(p.day===today && p.cp===false && !p.pair)
     && !(major!=null && p.day===today && p.kr!=null && p.kr<99 && p.kr!==major));
 }
 // Людей в комнате вечера: я и соперники сегодня (для голосов за пропуск и подписей «n/N»).
