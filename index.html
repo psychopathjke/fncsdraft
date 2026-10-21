@@ -957,7 +957,7 @@
     clip-path:polygon(28% 0, 100% 0, 100% 100%, 0 100%);
     animation:winShard .6s .1s cubic-bezier(.2,.9,.25,1) both;}
   .win-card > *{position:relative;z-index:1;}
-  /* Медали у ника в таблице (ccMedalsHTML): кружок цвета медали с числом подиумов. */
+  /* Медали у ника в таблице дня (dailyMedalsHTML): кружок цвета медали с числом подиумов. */
   .cc-medals{display:inline-flex;gap:2px;margin-left:4px;vertical-align:1px;}
   .cc-medals i{display:inline-flex;align-items:center;justify-content:center;min-width:15px;height:15px;padding:0 3px;border-radius:999px;
     font-style:normal;font-size:9.5px;font-weight:900;line-height:1;color:#1b1300;box-shadow:inset 0 -1px 0 rgba(0,0,0,.25);}
@@ -114106,7 +114106,7 @@ function dailyAvgFmt(r){ return (r.avg!=null ? r.avg : dailyPowNum(r)-(r.syn||0)
 /* Строка таблицы дня (17.10, его «daily leaderboard додизайнить таблицу»): всё в одну строку не влезало — состав,
    синергия и место резались, сила справа уезжала за край телефона. Теперь: место (топ-3 — золото/серебро/бронза),
    ник с флагом, состав чипами в перенос, под ним место в турнире и очки; справа крупно сила и её разбор. */
-// Медали прошлых дней у ника (сервер считает по браузеру: medals=[1-х, 2-х, 3-х мест]); тот же вид, что в карьере (.cc-medals).
+// Медали прошлых дней у ника (сервер считает по браузеру: medals=[1-х, 2-х, 3-х мест]); кружки .cc-medals.
 function dailyMedalsHTML(m){
   if(!Array.isArray(m) || !(m[0]+m[1]+m[2])) return '';
   const T=L(), cls=['g','s','b'], tip=[T.ccMedalGold, T.ccMedalSilver, T.ccMedalBronze];
@@ -165811,7 +165811,7 @@ async function runCareerNations(){
     note=through ? L().ccNatQualThrough(natDisplay(mine.nat)) : L().ccNatQualOut(natDisplay(mine.nat), cut);
   } else {
     N.finalDone=true; through=place<=3;
-    if(place<=3){ N.medal=place; cr.medals=cr.medals||[]; cr.medals.push({season:cr.season, nat:mine.nat, place}); }
+    if(place<=3){ N.medal=place; if(!Array.isArray(cr.medals)) cr.medals=[]; cr.medals.push({season:cr.season, nat:mine.nat, place}); }
     note=place<=3 ? L().ccNatMedal(place) : L().ccNatFinalPlace(place);
   }
   // Деньги финала — его фонд: на команду по таблице, тебе четверть.
@@ -172354,7 +172354,6 @@ function careerPlogAdd(name, meta, place, of, team, you){
   const rows=cr.plog[name] || (cr.plog[name]=[]);
   const kind=String(meta.kind||'cup')+(meta.stage ? ':'+String(meta.stage) : '');
   rows.push([careerToday(), kind, place, of, team.wins||0, ccMemberKills(team, name), Math.round(team.stagePts||0), meta.div||null]);
-  if(place>=1 && place<=3) ccMedalAdd(name, place);
   if(rows.length>CC_PLOG_KEEP) rows.splice(0, rows.length-CC_PLOG_KEEP);
   if(you) cr.plogYou=name;
   const names=Object.keys(cr.plog);
@@ -172470,37 +172469,13 @@ function careerPlayerStatsHTML(h, reg){
   return '<div class="cc-ps"><div class="cc-ps-head">'+esc(T.ccPsTitle)+'</div><div class="cc-ps-grid">'+grid+'</div>'+
     (rows.length ? '<div class="cc-ps-head">'+esc(T.ccPsLast)+'</div><div class="cc-ps-list">'+rows.slice(0, 8).map(line).join('')+'</div>' : '')+fncs+'</div>';
 }
-/* МЕДАЛИ У НИКА (его слово 20.10: «медальки давать в таблице рядом с ником… если он выигрывал — 3 медальки 1 2 3»).
-   Подиумы за всю карьеру по каждому человеку: cr.medals[ник] = [золото, серебро, бронза], пополняются там же, где
-   журнал вечеров (careerPlogAdd — каждая итоговая таблица, свои вечера и мировые). Журнал держит только последние
-   CC_PLOG_KEEP вечеров, поэтому счётчик свой; старый сейв в первый раз собирает его из журнала. В командный state
-   не едет, как и журнал: это витрина, на силу не влияет. */
-function ccMedals(){
-  const cr=CAREER && CAREER.career; if(!cr) return {};
-  if(!cr.medals){
-    cr.medals={};
-    Object.keys(cr.plog||{}).forEach(n=>(cr.plog[n]||[]).forEach(r=>{ const p=r && r[2]; if(p>=1 && p<=3){ const m=cr.medals[n]||(cr.medals[n]=[0,0,0]); m[p-1]++; } }));
-  }
-  return cr.medals;
-}
-function ccMedalAdd(name, place){
-  const M=ccMedals(), m=M[name]||(M[name]=[0,0,0]);
-  m[place-1]++;
-}
-function ccMedalsHTML(handle){
-  const M=ccMedals(); let m=M[handle];
-  if(!m){ const k=hKey(handle); const n=Object.keys(M).find(x=>hKey(x)===k); m=n ? M[n] : null; }
-  if(!m || !(m[0]+m[1]+m[2])) return '';
-  const T=L(), cls=['g','s','b'], tip=[T.ccMedalGold, T.ccMedalSilver, T.ccMedalBronze];
-  return '<span class="cc-medals">'+m.map((v,i)=>v ? '<i class="'+cls[i]+'" title="'+esc((tip[i]||'')+': '+v)+'">'+v+'</i>' : '').join('')+'</span>';
-}
 // Имена команды в таблице вечера — ссылками на лист (только в карьере, только у кого есть карточки).
 function ccNamesPeekHTML(t){
   if(!t) return '';
   const on=(typeof CAREER_RUN!=='undefined' && CAREER_RUN) && CAREER && CAREER.career && Array.isArray(t.squad) && t.squad.length && t.squad.every(c=>c && c.handle);
   if(!on) return String(t.name||'');
   // С флагом, как teamLabel, и span, а не <u>: у <u> в таблице своя рамка (скриншот: «ники вот так выглядят», флагов нет).
-  const links=t.squad.map(c=>flagFor(c)+'<span class="cc-peek-nick" title="'+esc(L().cardPeekHint)+'" onclick="event.stopPropagation();ccPeekByHandle(\''+esc(String(c.handle)).replace(/'/g,"\\'")+'\')">'+esc(String(c.handle))+'</span>'+ccMedalsHTML(c.handle)).join(' &amp; ');
+  const links=t.squad.map(c=>flagFor(c)+'<span class="cc-peek-nick" title="'+esc(L().cardPeekHint)+'" onclick="event.stopPropagation();ccPeekByHandle(\''+esc(String(c.handle)).replace(/'/g,"\\'")+'\')">'+esc(String(c.handle))+'</span>').join(' &amp; ');
   // Свой состав подписан («Твой состав: …») — подпись остаётся, имена — ссылками.
   const m=String(t.name||'').match(/^([^:<]{1,40}:)\s*/);
   return (m ? esc(m[1])+' ' : '')+links;
