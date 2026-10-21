@@ -4572,6 +4572,9 @@
   #screen-career-hub.ch-themed .ch-stage{background:linear-gradient(160deg,var(--th-a) 0%,var(--th-b) 46%,var(--th-c) 100%);}
   #screen-career-hub.ch-themed .cc-lobby .cc-lb-top{background:linear-gradient(90deg,var(--th-top),var(--th-b) 60%,var(--th-top));}
   #screen-career-hub.ch-themed .cc-lobby{--lb-panel:inherit;--lb-deep:inherit;}
+  /* Верхняя панель (ник, рейтинг, энергия, баланс) — в цвет сезона, как полоса вкладок под ней (Notion «20.10»:
+     «панельку сверху сделать в дизайне карьеры, смотря какой сезон»). */
+  #screen-career-hub.ch-themed .ch-top{background:linear-gradient(96deg,var(--th-top) 0%,var(--th-b) 55%,var(--th-c) 100%);box-shadow:inset 0 -1px 0 var(--fn-line);}
   /* Всё остальное синее — тем же оттенком (Notion «20.10», последний скрин: «цвета не те» — панели в цвет сезона,
      а шапка SEASON, уровень, заголовок заданий и правая панель дня оставались синими). */
   #screen-career-hub.ch-themed .cc-lb-season,#screen-career-hub.ch-themed .cc-lb-famA .cc-lb-qs h5{background:var(--th-hi);}
@@ -8907,7 +8910,7 @@
       /* Таблица дня — сразу из прошлого ответа (его «с делеем таблица появляется», 16.10): homeDailyDraw кладёт
          строки в fd_daily_home, здесь они встают до app.js, свежие приходят следом. Только за сегодня. */
       var t=JSON.parse(localStorage.getItem("fd_daily_home")||"null");
-      if(t&&t.day===d&&t.html){document.getElementById("homeDailyRows").innerHTML=t.html;if(t.total)document.getElementById("dyTotal").textContent=" · "+t.total;}
+      var sl=localStorage.getItem("fncsdraft_lang");if(t&&t.day===d&&t.html&&(!sl||!t.lang||t.lang===sl)){document.getElementById("homeDailyRows").innerHTML=t.html;if(t.total)document.getElementById("dyTotal").textContent=" · "+t.total;}
     }catch(e){}})();</script>
 
     <!-- Результаты 2026, календарь и игроки сайта — одним блоком с вкладками (homeLiveTabs), под драфтом. -->
@@ -24309,6 +24312,8 @@ function setLang(lang, persist){
   }
   // Выбор года драфта на главной — подписи на языке, который включили.
   if(typeof homeDraftInit==='function') try{ homeDraftInit(); }catch(e){}
+  // Таблица дня на главной — тоже (Notion «20.10»: английская главная с русской шапкой таблицы).
+  if(typeof homeDailyDraw==='function' && document.getElementById('homeDaily') && !document.getElementById('homeDaily').hidden) try{ homeDailyDraw(); }catch(e){}
   document.documentElement.classList.remove('i18n-wait');   // язык стоит — страницу можно показать (см. <head>)
 }
 
@@ -114180,7 +114185,7 @@ function homeDailyDraw(){
     el.innerHTML=(d.rows||[]).length ? '<div>'+dailyRowsHTML(d.rows.slice(0, 5))+'</div>'+(d.you ? '<div class="hb-me">'+esc(T.dyRank(d.you.rank, d.total))+'</div>' : '')
                                      : '<p class="home-sub">'+esc(T.dyEmpty)+'</p>';
     // Для оболочки: при следующем заходе эти строки встанут до app.js (скрипт сразу за #homeDaily).
-    try{ localStorage.setItem('fd_daily_home', JSON.stringify({day:d.day, total:d.total||0, html:el.innerHTML})); }catch(e){}
+    try{ localStorage.setItem('fd_daily_home', JSON.stringify({day:d.day, lang:LANG, total:d.total||0, html:el.innerHTML})); }catch(e){}
   });
 }
 
@@ -122578,9 +122583,8 @@ function ccTabsSide(){
   let s=t.querySelector('.ch-tabs-side');
   if(!s){ s=document.createElement('div'); s.className='ch-tabs-side'; t.appendChild(s); }
   let note=''; try{ note=careerNoteBarHTML(); }catch(e){}
-  s.innerHTML=(note ? '<div class="cc-lb-note">'+note+'</div>' : '')+
-    '<div class="cc-lb-wallet"><span onclick="ccFnShopOpen()"><i class="cc-vb-ic"></i>'+ccNum(CAREER.vb||0)+'</span>'+
-    '<span onclick="careerTab(\'shop\')">'+ccMoney(CAREER.career.balance||0)+'</span></div>';
+  // Кошелёк здесь снят (Notion «20.10»: «одна и та же информация» — баланс и V-Bucks уже в верхней панели, там же выплаты).
+  s.innerHTML=(note ? '<div class="cc-lb-note">'+note+'</div>' : '');
 }
 /* ЦВЕТ ХАБА — ПО СЕЗОНУ (19.10, его «мб дизайн хаба под каждый сезон под их цвета»). Оттенок берётся из картинки
    лобби сезона (ccLobbyBg): средний цвет по насыщенным пикселям, вектором по кругу оттенков. Из него — фон панели,
