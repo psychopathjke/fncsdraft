@@ -148018,14 +148018,17 @@ function careerWorldFinals(fromISO, toISO){
     /* ГОНКА: этот финал сыграл сосед — его копилка уже в досках (уходит в конце вечера, раньше голоса за день).
        Мир второй раз его не играет: прогон 2025 (20.10) — финал Мейджора 1 15.02 сыграли двое, третий досчитал
        его за мир и принял обе копилки сверху, «nokey|2025-02-15» на 50 строк. */
-    if(typeof ccRaceOn==='function' && ccRaceOn()){
+    /* И В КОМАНДЕ: соло-финал Мейджора 2020 года сыграл один из двоих (личный вечер, копилка напарнику), а второй
+       досчитывал тот же финал за мир сам — со своим полем, и Power Ranking у двоих разошёлся на сотню строк (онлайн-прогон
+       2020 года, 21.10, Major 2 16.08). */
+    if((typeof ccRaceOn==='function' && ccRaceOn()) || (typeof ccMpTeam==='function' && ccMpTeam())){
       const days=careerYearDays();
       const byPeers=Object.keys(ccEvSeen()).some(k=>{ const p=k.split('|'); if(!p[0] || Math.abs(ccDaysBetween(p[0], day))>3) return false;
         /* У Мейджора — только сам финал: хиты и недели той же недели — тоже 'major', и сыгранный соседом хит выдавал
            финал за сыгранный (онлайн-прогон 2019 года, 21.10: финал Season X 22.09 мир досчитал только у одного —
            «nokey|2019-09-22», 63 строки досок). */
         return (days.get(p[0])||[]).some(e=>e && String(e.id||'')===p[1] && e.kind===kind &&
-          (kind!=='major' || e.stage==='final' || /Final|_GF|Grand/i.test(String(e.id||'')))); });
+          (['globals','gclc','rc'].indexOf(kind)>=0 || e.stage==='final' || /Final|_GF|Grand/i.test(String(e.id||'')))); });   // Саммит: верхняя/нижняя сетка за день-два до финала тоже не финал
       if(byPeers){ paid[key]=1; return; }
     }
     /* Копенгаген-2023: сетки пишут строки 'upper'/'lower', и мир, не найдя 'final', играл второй
@@ -164385,7 +164388,9 @@ async function runCareerVictoryNight(){
      прошедшего был только у него в досках). Общая часть уже посчитана обоими, хвост — его. */
   if(soloMate && ccMpTeam() && !(typeof ccRaceOn==='function' && ccRaceOn())){
     const mateOut=!ranked1.slice(0, vCut).includes(soloMate);
-    if(through && mateOut) ccTeamNightApart();
+    /* Врозь — оба, как в гонке: вылетевший тоже не ждёт общего закрытия вечера, которого у прошедшего уже нет
+       (онлайн-прогон 2020 года, 21.10: DreamHack Online Open 23.08 — вылетевший стоял на экране итогов, перемотка встала). */
+    if(through===mateOut) ccTeamNightApart();
   }
   if(through){
     const r2=ranked1.slice(0, vCut);
