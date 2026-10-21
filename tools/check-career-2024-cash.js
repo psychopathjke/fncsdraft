@@ -90,7 +90,9 @@ const BOOT = `
     check('кап записан как victory, дуо', r1 && r1.kind==='victory' && !r1.solo, JSON.stringify(r1 && {kind:r1.kind, games:r1.games, place:r1.place, of:r1.of, prize:r1.prize}));
     check('карточка вечера зовёт кап по имени', /Duos Cash Cup/.test(h1), h1);
     if(r1 && r1.passed){
-      check('второй раунд — 12 игр всего (6+6)', r1.games===12, String(r1.games));
+      // Игры раундов — Epic'ов MatchCap этого капа (CC_CUP_SCORE: S28 Duos Cash Cup — 10 в первом, 6 во втором; сверка 21.10).
+      const sc1=ccCupScore(v9, 1), sc2=ccCupScore(v9, 2), want=((sc1 && sc1.cap) || 6)+((sc2 && sc2.cap) || 6);
+      check('второй раунд — игры по Epic ('+want+' всего)', r1.games===want, String(r1.games));
       check('деньги по месту: топ-50 платит, дальше нет', (r1.place<=50)===((s.earnings||0)>0), 'place '+r1.place+' $'+s.earnings);
     }
     out.steps.push('dcc: '+h1+' · #'+(r1&&r1.place)+' of '+(r1&&r1.of)+' · $'+(s.earnings||0));
