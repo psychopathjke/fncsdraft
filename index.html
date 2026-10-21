@@ -118511,7 +118511,7 @@ function ccMpGate(kind){
       ccMpSeedOn(m.seed);
       // Гонка: книга мира — от старшего по адресу, до сборки поля (ccRaceWorldSync).
       Promise.resolve(typeof ccRaceWorldSync==='function' ? ccRaceWorldSync(m.n, m.who) : null)
-        .then(function(){ return typeof ccTeamWorldSync==='function' ? ccTeamWorldSync(m.n) : null; }, function(){ return null; })
+        .then(function(){ return typeof ccTeamWorldSync==='function' ? ccTeamWorldSync(m.n, m.who) : null; }, function(){ return null; })
         .then(function(){ res({seed:m.seed, n:m.n}); }, function(){ res({seed:m.seed, n:m.n}); });
     });
     // Хвост прошлого вечера, если тот оборвался посреди раннера.
@@ -120178,9 +120178,13 @@ function ccTeamWorldApply(w){
   try{ ccWorldReset(); }catch(e){}
   return true;
 }
-function ccTeamWorldSync(n){
+function ccTeamWorldSync(n, who){
   if(typeof ccMpOn!=='function' || !ccMpOn() || (typeof ccRaceOn==='function' && ccRaceOn()) || typeof MP==='undefined' || !MP.act) return Promise.resolve(false);
-  const lead=((CAREER.career.mp||{}).role==='a');
+  /* Роли ещё нет (первый вечер в день старта карьеры — 2022 начинается 10.01 кап-вечером): оба ждали книгу и
+     играли каждый со своей (онлайн-прогон 2022 года, 21.10: «state duoSplits/dev», поле разошлось с первой игры).
+     Тогда ведущий — наименьший адрес в списке вечера от сервера. */
+  const role=(CAREER.career.mp||{}).role;
+  const lead=role ? role==='a' : (Array.isArray(who) && who.length ? who.slice().filter(Boolean).sort()[0]===ccMpId() : false);
   if(lead){
     try{ MP.act('tworld', {by:ccMpId(), n:n, w:ccTeamWorldPack()}); }catch(e){}
     try{ ccWorldReset(); }catch(e){}   // и у хозяина мир собирается заново — одинаково со вторым
