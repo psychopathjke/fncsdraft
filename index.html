@@ -120014,8 +120014,10 @@ function ccRaceMyLine(){
     try{ if(pairPeer) pow=careerTeam(ccRacePairCards(), true).pow; else if(mates.length>=careerMateSeats()) pow=careerYouTeam([me].concat(mates)).pow; }catch(e){}
   }
   const card=(typeof MP!=='undefined' && MP.card) ? MP.card() : ccRacePackCard(me);
-  try{ const nx=(typeof careerNext==='function') ? careerNext() : null; CC_RACE_MY_KR=ccKindRank(nx && nx.type); }catch(e){}
-  return {id:ccMpId(), card:ccRacePackCard(card||me), mates:mates.map(ccRacePackCard), pow:pow, ev:ev, squad:careerSquadSize(), pair:(typeof ccRacePairId==='function' ? ccRacePairId() : null),
+  let canToday=null;
+  try{ const nx=(typeof careerNext==='function') ? careerNext() : null; CC_RACE_MY_KR=ccKindRank(nx && nx.type);
+       if(nx && nx.type && nx.type!=='free' && typeof careerCanPlayKind==='function') canToday=!!careerCanPlayKind(nx.type); }catch(e){}
+  return {id:ccMpId(), cp:canToday, card:ccRacePackCard(card||me), mates:mates.map(ccRacePackCard), pow:pow, ev:ev, squad:careerSquadSize(), pair:(typeof ccRacePairId==='function' ? ccRacePairId() : null),
           y:ccNowYear(), rg:ccCareerRegion(),   // год и регион мира — вошедший без ссылки сверяется (ccRaceModeWhy),
           // Свой бот-напарник, отставленный на время пары: соперники вычитают его из пула, как напарников (иначе поле разойдётся).
           bench:undefined,   // бот пары не на скамейке, а свободен (careerRacePairFree) — вычитать нечего
@@ -120049,6 +120051,11 @@ function ccRaceRoom(){
   // сосед, ещё не закрывший прошлый год, стоит на «том же» дне другого года.
   return ccRaceRivals().filter(p=>!(p.day && p.day>today) && !(CC_RACE_NEXT.day===today && CC_RACE_NEXT.who[p.id])
     && !(p.season && p.season!==season)
+    /* Сегодня ему играть нечего (cp:false — турнир дня есть, но его не пускают: не прошёл раунд недели, нет билета) —
+       в комнату не садится и ответов не ждём. Онлайн-прогон 2019 года, 21.10: Season X 3.11, раунды 2–3; не прошедший
+       первый раунд сидел у соседа в открытом втором (красная строка «Your partner never reached the question», чужие
+       призовые на доске). */
+    && !(p.day===today && p.cp===false)
     && !(major!=null && p.day===today && p.kr!=null && p.kr<99 && p.kr!==major));
 }
 // Людей в комнате вечера: я и соперники сегодня (для голосов за пропуск и подписей «n/N»).
@@ -152163,7 +152170,8 @@ function careerPlayRun0(next){
     try{ p=CC_RACE_LOCK ? ccRaceWaitLock(CC_RACE_LOCK_KEY).then(()=>careerNightRun(next)) : careerNightRun(next); }catch(e){ sizeBack(); ccEventRosterEnd(preSwap); CC_RACE_LOCK=false; CC_RACE_LOCK_KEY=null; CC_RACE_ROOM0=null; CC_RACE_POW_NOW=null; CC_RACE_EDGE_NOW=null; ccEvDeltaSend(); throw e; }
     return Promise.resolve(p).finally(function(){ sizeBack(); ccEventRosterEnd(preSwap); CC_RACE_LOCK=false; CC_RACE_LOCK_KEY=null; CC_RACE_ROOM0=null; CC_RACE_POW_NOW=null; CC_RACE_EDGE_NOW=null; ccEvDeltaSend(); });
   }
-  return Promise.resolve(careerNightRun(next)).finally(function(){ ccEvDeltaSend(); CC_TEAM_NIGHT_APART=false; });
+  return Promise.resolve(careerNightRun(next)).finally(function(){ ccEvDeltaSend(); CC_TEAM_NIGHT_APART=false;
+    if(CC_TEAM_APART_ALONE){ CC_TEAM_APART_ALONE=false; CC_MP_ALONE=false; } });
 }
 // Раннер вечера по виду — общий для одиночной карьеры, команды и гонки.
 function careerNightRun(next){
@@ -155003,7 +155011,10 @@ function majorPrize(place){
    доски у двоих не сходились никогда. Доска рейтинга подпись снимала (careerPrAdd), доска
    денег — нет. Скриншот: слева «Твой состав: Malibuca» 58 вечеров $553k, справа
    «Malibuca» 50 вечеров $324k. */
-const ccBoardName=n=>String(n||'').replace(/<[^>]*>/g, '').replace(/^[^:&+]{1,40}:\s*/, '').trim();
+/* Значок региона (cardFlag без страны: <span class="reg-badge">EU</span>) уходит ЦЕЛИКОМ, с текстом. Иначе снятие
+   тегов оставляло «EU» перед ником: у соседа по гонке я был «EULive2», у себя «Live2» — две строки одного человека
+   (онлайн-прогон 2019 года, 21.10, «строка есть не у всех»). */
+const ccBoardName=n=>String(n||'').replace(/<span class="reg-badge"[^>]*>[^<]*<\/span>/g, '').replace(/<[^>]*>/g, '').replace(/^[^:&+]{1,40}:\s*/, '').trim();
 /* Люди за именем состава. Сборная Кубка наций зовётся «Польша (Darm, demus, Pixx, FRANEK)», и
    доска делила имя только по «+»/«&» — сборная вставала строкой среди людей, а каждый новый
    порядок четвёрки давал ещё одну («Польша» трижды; Notion 13.10). Скобки со списком — это люди. */
@@ -155157,8 +155168,13 @@ function ccRaceNightApart(){
   let me=''; try{ me=hKey(careerCard()||{handle:''}); }catch(e){}
   ccEvDeltaStart(key+'|t'+me);
 }
+/* И вопросы врозь: хвост вечера — одиночный (CC_MP_ALONE), иначе прошедший ждал ответа на высадку от вылетевшего (онлайн-
+   прогон 2020 года, 21.10: Platform Cash Cup 11.05, «peer done · q drop#1» на первой игре второго раунда — красная строка).
+   Снимается в конце вечера (careerPlayRun). */
+let CC_TEAM_APART_ALONE=false;
 function ccTeamNightApart(){
   CC_TEAM_NIGHT_APART=true;
+  if(!CC_MP_ALONE){ CC_MP_ALONE=true; CC_TEAM_APART_ALONE=true; }
   const d=CC_EV_DELTA; if(!d || !d.key) return;
   const key=d.key;
   ccEvDeltaSend();
