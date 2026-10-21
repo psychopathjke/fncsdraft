@@ -4056,7 +4056,7 @@ Object.assign(I18N.de=I18N.de||{},
 ({ chTabLocker:'Spind', ccFnToLocker:'Im Spind anziehen' }));
 /* Дозаливка «de» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
 Object.assign(I18N.de=I18N.de||{},
-({ccFnEra:n=>'Kapitel '+n, ccFnFeatured:'Empfohlen', ccFnDaily:'Täglich'}));
+({ccFnEra:n=>'Kapitel '+n, ccFnFeatured:'Empfohlen', ccFnDaily:'Täglich', ccFnNew:'NEU!', ccFnNote:'Diese kosmetischen Gegenstände verschaffen keinen Wettbewerbsvorteil.', ccFnBundleN:n=>n+'-teiliges Paket', ccFnView:'Angebot ansehen'}));
 /* Дозаливка «de» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
 Object.assign(I18N.de=I18N.de||{},
 ({ccFnCatChar:'Charakter'}));
