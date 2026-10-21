@@ -148021,7 +148021,11 @@ function careerWorldFinals(fromISO, toISO){
     if(typeof ccRaceOn==='function' && ccRaceOn()){
       const days=careerYearDays();
       const byPeers=Object.keys(ccEvSeen()).some(k=>{ const p=k.split('|'); if(!p[0] || Math.abs(ccDaysBetween(p[0], day))>3) return false;
-        return (days.get(p[0])||[]).some(e=>e && String(e.id||'')===p[1] && e.kind===kind); });
+        /* У Мейджора — только сам финал: хиты и недели той же недели — тоже 'major', и сыгранный соседом хит выдавал
+           финал за сыгранный (онлайн-прогон 2019 года, 21.10: финал Season X 22.09 мир досчитал только у одного —
+           «nokey|2019-09-22», 63 строки досок). */
+        return (days.get(p[0])||[]).some(e=>e && String(e.id||'')===p[1] && e.kind===kind &&
+          (kind!=='major' || e.stage==='final' || /Final|_GF|Grand/i.test(String(e.id||'')))); });
       if(byPeers){ paid[key]=1; return; }
     }
     /* Копенгаген-2023: сетки пишут строки 'upper'/'lower', и мир, не найдя 'final', играл второй
