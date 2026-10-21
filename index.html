@@ -120162,6 +120162,9 @@ function ccTeamWorldPack(){
   const cr=(CAREER && CAREER.career)||{};
   return {dev:CAREER.dev||{}, devL:CAREER.devL||{}, splits:CAREER.splits||{}, duoStreak:CAREER.duoStreak||{}, lft:CAREER.lft||{},
           duoSplits:cr.duoSplits||{}, trios:cr.trios||{},
+          /* И посевы стадий (онлайн-прогон 2025 года, 21.10: финал Мейджора 1 15.02 разошёлся на первой игре, «state majorSeed» —
+             прошедших через Last Chance мир досчитывал у каждого сам). Хозяин везёт свои, второй ставит до сборки поля. */
+          seeds:{majorSeed:cr.majorSeed||null, summitSeed:cr.summitSeed||null, relSeed:cr.relSeed||null, gcSeed:cr.gcSeed||null},
           tseed:{seeded:cr.triosSeeded===undefined ? null : cr.triosSeeded, cores:cr.trioCores||null, filled:cr.trioFilled||null}};
 }
 function ccTeamWorldApply(w){
@@ -120170,6 +120173,7 @@ function ccTeamWorldApply(w){
   CAREER.dev=obj(w.dev); CAREER.devL=obj(w.devL); CAREER.splits=obj(w.splits); CAREER.duoStreak=obj(w.duoStreak); CAREER.lft=obj(w.lft);
   const c=CAREER.career;
   c.duoSplits=obj(w.duoSplits); c.trios=obj(w.trios);
+  if(w.seeds && typeof w.seeds==='object') ['majorSeed','summitSeed','relSeed','gcSeed'].forEach(k=>{ if(w.seeds[k]) c[k]=JSON.parse(JSON.stringify(w.seeds[k])); else delete c[k]; });
   if(w.tseed && typeof w.tseed==='object'){
     if(w.tseed.seeded==null) delete c.triosSeeded; else c.triosSeeded=w.tseed.seeded;
     if(w.tseed.cores) c.trioCores=w.tseed.cores; else delete c.trioCores;
