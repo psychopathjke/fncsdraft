@@ -59,8 +59,10 @@ function cleanNick(raw) {
   return n;
 }
 /* Попросились сами (Notion 21.10, игрок в личке: «i want to get put div 2») — выборка страниц 1/5/10/15/20 их не
-   задела. Дивизион и флаг сверены с профилем Tracker: TNK micha (EGO Esports, Италия, ME), кубки Division 2 сентября 2026. */
-const REQUESTED = [['ME', 'Micha', 'italy', 2]];
+   задела. Дивизион и флаг сверены с профилем Tracker: TNK micha (EGO Esports, Италия, ME), кубки Division 2 сентября 2026.
+   Fiuzさ. (его друг, «he is on div 2 eu»): Europe, FNCS Division 2 июль–сентябрь 2026; страны в профиле нет — без флага,
+   ник без «さ.» (cleanNick не пускает латиницу вперемешку с японским). */
+const REQUESTED = [['ME', 'Micha', 'italy', 2], ['EU', 'Fiuz', '', 2]];
 for (const [reg, nick, g, div] of src.names.concat(REQUESTED)) {
   const name = cleanNick(nick);
   if (!name || name.length < 3 || name.length > 16) continue;
