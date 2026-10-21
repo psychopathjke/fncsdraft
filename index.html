@@ -135398,8 +135398,15 @@ function careerYouTeam(cards){
      августа (check-mp-live-two): та же сила, тот же сид, те же броски на
      старте — и разные первые игры. MP.teamOf сортирует по нику — тем же
      ключом здесь. Одиночная карьера порядок не меняет. */
-  const ordered=(ccMpOn() && typeof MP!=='undefined' && MP.teamOf && cards && cards.length===2)
+  let ordered=(ccMpOn() && typeof MP!=='undefined' && MP.teamOf && cards && cards.length===2)
     ? MP.teamOf(cards[0], cards[1]) : cards;
+  /* Тройка и сквад — то же правило (онлайн-прогон 2019 года, 21.10: в трио Season X у A «Pixie+SwizzY+Aqua», у B
+     «SwizzY+Pixie+Aqua» — 29 таблиц с разным составом при одинаковых очках): двое живых — по нику, как MP.teamOf,
+     остальные следом в своём порядке. */
+  if(ccMpOn() && typeof MP!=='undefined' && MP.teamOf && MP.peer && cards && cards.length>2){
+    const pk=hKey(MP.peer), mk=snap ? hKey(snap) : (cards[0] ? hKey(cards[0]) : null), mi=cards.findIndex(c=>c && hKey(c)===mk), pi=cards.findIndex(c=>c && hKey(c)===pk);
+    if(mi>=0 && pi>=0){ const two=MP.teamOf(cards[mi], cards[pi]); ordered=two.concat(cards.filter((c, i)=>i!==mi && i!==pi)); }
+  }
   const t=careerTeam(ordered, true);
   /* В команде форма — ОБЩАЯ, среднее из двух. См. ccTeamFormPow. */
   /* И эфир, если вечер идёт в эфир: −CC_STREAM_POW к силе своей команды.
