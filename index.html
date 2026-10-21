@@ -167858,7 +167858,7 @@ function mgrEvents(){
   let all=[]; try{ all=(ccVictoryList()||[]).concat(mgrFncsDays()); }catch(e){ all=[]; }
   return all.filter(ev=>ev && ev.day>=from && ev.day<=to && !ev.invite && !ev.zb && !ev.ewc24 && !ev.reshuffle &&
     !/Console|Playstation|PlayStation|Mobile|Platform|PC\b|Xbox|Switch|Influencer/i.test(ev.id+' '+(ev.name||'')) &&
-    fm[ev.mode] && sizes.has(fm[ev.mode]) && ev.kind!=='fncs' && (MGR.skipped||[]).indexOf(ev.id+'|'+ev.day)<0)
+    fm[ev.mode] && sizes.has(fm[ev.mode]) && ev.kind!=='fncs' && ev.kind!=='fncsSolo' && (MGR.skipped||[]).indexOf(ev.id+'|'+ev.day)<0)
     .map(ev=>Object.assign({}, ev, {name:mgrEvName(ev)}))
     .concat(mgrEwcEvents(all, from, to))
     .concat(mgrCarEvents(from, to))
@@ -168556,7 +168556,8 @@ function mgrWorldEvents(from, to){
 // Капы мира, которые пора сыграть: раньше lim, ещё не сыграны и не ждут клуб (их играет матчевый день).
 function mgrWorldPending(lim){
   if(!MGR.wfrom) MGR.wfrom=CAREER.career.day;   // старый сейв: прошлое не пересчитываем
-  const club=new Set(mgrEvents().map(e=>e.id+'|'+e.day));
+  // Соло-стадия, куда клуб вышел своим игроком (car:<id>), миром второй раз не считается.
+  const club=new Set(mgrEvents().flatMap(e=>[e.id+'|'+e.day].concat(e.cid ? [e.cid+'|'+e.day] : [])));
   return mgrWorldEvents(MGR.wfrom, ccAddDays(lim, -1)).filter(ev=>!mgrWorldDone(ev) && !club.has(ev.id+'|'+ev.day));
 }
 function mgrRankCmp(a, b){ return (b.stagePts||0)-(a.stagePts||0) || (b.wins||0)-(a.wins||0) || (b.stageElims||0)-(a.stageElims||0); }
@@ -168588,6 +168589,7 @@ function mgrCupPrize(ev, place, size, wins){
   return Math.round((wins||0)*rate);
 }
 function mgrWorldPrize(ev, place, size, stage, wins){
+  if(ev.kind==='fncsSolo'){ const sp=CC_SOLOS_STAGES[ev.stage]; try{ return Math.round((sp && sp.prize ? sp.prize(place) : 0)||0); }catch(e){ return 0; } }
   if(ev.kind==='fncs'){ if(stage) return 0; try{ return Math.round(majorPrize(place)/Math.max(1, careerSquadSize())*size); }catch(e){ return 0; } }
   return mgrCupPrize(ev, place, size, wins);
 }
@@ -168645,6 +168647,10 @@ function mgrWorldSim(ev){
         const fin=q.slice(0, ccTeams(33)); simulateGames(fin, 10, majorPoints, CC_M24_KILL);
         const pDay=CC_PRIZE_DAY; CC_PRIZE_DAY=ev.day; mgrWorldStore(ev, fin.slice().sort(mgrRankCmp), false); CC_PRIZE_DAY=pDay;
       }
+    } else if(ev.kind==='fncsSolo'){
+      const sp=CC_SOLOS_STAGES[ev.stage]||{}, n=sp.field||100;
+      const field=careerSoloField(cr, [], n+1, false, 'final')||[];   // отдаёт size-1 (место под «тебя»)
+      if(field.length) mgrWorldStore(ev, mgrEngineRank(field.slice(0, n), sp.games||10, sp.pts||victoryR1Points, sp.kill||2, sp.reload ? ccReloadLobby(1) : 100, seed, []), false);
     } else {
       const field=mgrCupFieldOf(ev, Math.max(20, careerVictoryField(size===1)||50), 'mgrw|'+ev.id+'|'+MGR.year);
       if(field.length) mgrWorldStore(ev, mgrEngineRank(field, CC_VICTORY_R1_GAMES, victoryR1Points, CC_VICTORY_R1_KILL, ccVictoryLobby(ev, size===1)||50, seed, []), false);
@@ -169815,8 +169821,21 @@ function mgrNextSeason(){
 }
 
 // ---- FNCS: дни финалов сезона
+/* Денежные соло-стадии карьеры в мире менеджера (его вопрос 21.10 «почему соло не входят»): финал FNCS Solos, финал
+   FNCS Solo Reload, второй раунд Solo Cash Cup 2025. Клуб их играет своими игроками (mgrCarEvents); таблицы мира их не
+   видели — мир брал только капы ccVictoryList и финалы Мейджоров. Здесь — один раз за событие, правилами стадии карьеры. */
+function mgrSoloWorldDays(){
+  const out=[], from=CAREER.career.day, to=ccYearTo();
+  let days=null; try{ days=careerYearDays(); }catch(e){ return out; }
+  days.forEach((list, d)=>{ if(d<from || d>to) return; (list||[]).forEach(e=>{
+    const st=e.kind==='solo' && CC_SOLOS_BY_ID[e.id], spec=st && CC_SOLOS_STAGES[st];
+    if(!spec || !spec.prize || out.some(x=>x.id===e.id)) return;
+    out.push({day:d, kind:'fncsSolo', id:e.id, stage:st, name:String(e.label||e.id).replace(/<[^>]+>/g, ''), mode:'solo'});
+  }); });
+  return out;
+}
 function mgrFncsDays(){
-  const out=[], to=ccYearTo();
+  const out=mgrSoloWorldDays(), to=ccYearTo();
   for(let d=CAREER.career.day; d<=to; d=ccAddDays(d, 1)){
     let mj=null; try{ mj=careerMajorOn(d); }catch(e){ mj=null; }
     if(mj && mj.stage==='final' && !out.some(x=>x.n===mj.n)) out.push({day:d, kind:'fncs', id:'fncs'+(mj.n||'')+'|'+d, name:(mj.label||'FNCS').replace(/<[^>]+>/g, ''), mode:({2:'duo', 3:'trio', 4:'squad'})[careerSquadSize()]||'duo', n:mj.n});
@@ -171429,6 +171448,7 @@ async function mgrSimWorld(key){
 }
 async function mgrWatchWorld(key){
   const ev=mgrWorldFind(key); if(!ev) return;
+  if(ev.kind==='fncsSolo') return mgrSimWorld(key);
   if(!(await mgrGoToDay(ev.day))) return;
   if(mgrWorldDone(ev)){ MGR_SUB.tables='events'; mgrOpenHub(); mgrRenderHub('tables'); return; }
   const W=mgrTW(), T2=mgrT2(), size=mgrEvSize(ev), seed=ev.id+'|'+ev.day+'|'+MGR.year, cr=CAREER.career;
