@@ -4056,7 +4056,7 @@ Object.assign(I18N.es=I18N.es||{},
 ({ chTabLocker:'Taquilla', ccFnToLocker:'Equipar en la taquilla' }));
 /* Дозаливка «es» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
 Object.assign(I18N.es=I18N.es||{},
-({ccFnEra:n=>'Capítulo '+n, ccFnFeatured:'Destacados', ccFnDaily:'Diarios', ccFnNew:'¡NUEVO!', ccFnNote:'Estos objetos cosméticos no dan ventaja competitiva.', ccFnFeatItems:'Objetos destacados', ccFnDailyItems:'Objetos diarios', ccFnSacSup:'Creador apoyado', ccFnSacNone:'Ninguno', ccFnBundleN:n=>'Lote de '+n+' objetos', ccFnView:'Ver oferta'}));
+({ccFnEra:n=>'Capítulo '+n, ccFnFeatured:'Destacados', ccFnDaily:'Diarios', ccFnNew:'¡NUEVO!', ccFnNote:'Estos objetos cosméticos no dan ventaja competitiva.', ccFnOff:n=>ccNum(n)+' paVos de descuento', ccFnStylesN:n=>n+' estilos seleccionables', ccFnFeatItems:'Objetos destacados', ccFnDailyItems:'Objetos diarios', ccFnSacSup:'Creador apoyado', ccFnSacNone:'Ninguno', ccFnBundleN:n=>'Lote de '+n+' objetos', ccFnView:'Ver oferta'}));
 /* Дозаливка «es» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
 Object.assign(I18N.es=I18N.es||{},
 ({ccFnCatChar:'Personaje'}));
