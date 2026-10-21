@@ -118274,7 +118274,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='765592b7';
+const CC_BUILD='079a487d';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -131706,7 +131706,37 @@ function careerTeam(cards, keepRoles, strangers){
       ? Math.round((t.ovrAvg+after+t.roleBonus)*t.regionMult + ageEdge)
       : Math.round((cards.reduce((s,p)=>s+p.rating,0)/cards.length+after)*t.regionMult + ageEdge);
   }
+  if(!keepRoles && !lad.size) ccBotEdge(t, cards, already);
   return t;
+}
+/* ФОРМА, ХИМИЯ И АНАЛИТИК У БОТОВ (21.10, его слово: «может ботам добавить это всё», потом «форму, химию тоже
+   сделай»). Игрок спросил, почему при средних рейтингах и слабой локе у него сила больше почти всех: своей команде
+   careerYouTeam прибавляет форму (±CC_FORM_MAX), химию (до CC_CHEM_MAX) и аналитика (1..3), а ботам — ничего.
+   Теперь те же три слагаемых есть и у них, по тем же шкалам:
+   - форма: ±CC_FORM_MAX, своя у каждого игрока на неделю (сид ник+понедельник), среднее по составу;
+   - химия: пара, игравшая вместе по-настоящему, — полная; собранная сценой — растёт с начала сезона FNCS, как у игрока;
+   - аналитик: у клуба, по его призовым (тот же 1+2k, что у нанятого игрока), клуб без призовых — 1, без клуба — 0.
+   Всё от ника и даты, без Math.random: у двоих онлайн одно и то же. Выдуманных (лестница опена) не трогает — у них
+   и синергию срезают, и замер опена держится на этом. Не для своей команды (keepRoles) и не в менеджере. */
+function ccBotEdge(t, cards, hist){
+  if(typeof MGR_ACTIVE!=='undefined' && MGR_ACTIVE) return;
+  if(!CAREER || !CAREER.career || !cards || !cards.length) return;
+  const today=careerToday(), wk=careerMonday(today);
+  const formOf=c=>{ const h=hashStr('form|'+hKey(c)+'|'+wk); const u1=(h&0xffff)/65535, u2=(h>>>16)/65535;
+                    return (u1+u2-1)*CC_FORM_MAX; };
+  const form=Math.round(cards.reduce((s,c)=>s+formOf(c),0)/cards.length*10)/10;
+  let chem=0;
+  if(cards.length>=2){
+    if(hist) chem=CC_CHEM_MAX;
+    else { const s=careerFncsSeason(today); const days=s && s.from ? ccDaysBetween(s.from, today) : 0;
+           chem=Math.round(Math.min(1, days/CC_CHEM_DAYS)*CC_CHEM_MAX*10)/10; }
+  }
+  const org=(cards.find(c=>c && c.org)||{}).org;
+  let an=0;
+  if(org){ const usd=ccOrgEarn(org);
+           an=usd==null ? 1 : Math.round(1+2*Math.max(0, Math.min(1, (ccOrgEarnLevel(usd)-60)/35))); }
+  t.botEdge={form, chem, an};
+  t.pow=Math.round(t.pow+form+chem+an);
 }
 
 /* ---- The ladder the year is played out of ---------------------------------

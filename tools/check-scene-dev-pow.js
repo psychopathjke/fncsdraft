@@ -53,7 +53,9 @@ const BOOT = `
     // Поднимаем того, кто выиграл вечер: настоящий человек своего же поля.
     const host=before.find(t=>(t.squad||[]).every(c=>c && c.handle) && !t.isYou);
     const who=host.squad[0].handle;
-    const powWas=host.pow, ovrWas=attrsFor(host.squad[0]).ovr;
+    // Ниже «после» меряется голым buildTeam — и «до» без формы/химии/аналитика ботов (ccBotEdge, 21.10).
+    const be=host.botEdge||{form:0, chem:0, an:0};
+    const powWas=Math.round(host.pow-be.form-be.chem-be.an), ovrWas=attrsFor(host.squad[0]).ovr;
     out.notes.before={who:who, ovr:ovrWas, pow:powWas};
 
     // Вечер, в котором эта команда первая, а игрок последний: careerGrowField

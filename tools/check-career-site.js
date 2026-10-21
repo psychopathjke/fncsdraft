@@ -227,7 +227,11 @@ const BOOT = `
     }
 
     // Чужие на точке: садимся на коробку соседа.
-    const contested=()=>{ const gg=mk(); const rival=gg.teams[1]; gg.you.landingZone=rival.landingZone;
+    // Стычка идёт с сильнейшим на коробке (ccAskSite) — сосед должен им быть, иначе дерётся другой
+    // (с формой/химией ботов, ccBotEdge 21.10, сильнее бывает второй на той же коробке).
+    const contested=()=>{ const gg=mk(); const rival=gg.teams[1];
+      const top=Math.max(...gg.teams.slice(1).filter(t=>t.landingZone===rival.landingZone).map(t=>t._pc||t.pow||0));
+      rival._pc=top+1; gg.you.landingZone=rival.landingZone;
       gg.you._sq.x=gg.you._sq.x; return {gg, rival}; };
     let c=contested(); seen=null; WANT='leave';
     await ccAskSite(c.gg.you, null);
