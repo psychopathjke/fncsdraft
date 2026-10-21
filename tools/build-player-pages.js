@@ -136,7 +136,7 @@ function playerPage(g, others) {
     (isFinite(bestPlace) ? ', best finish ' + ord(bestPlace) : '') + (orgs.length ? ', teams: ' + orgs.slice(0, 3).join(', ') : '') +
     '. Draft ' + g.handle + ' in the free FNCS Draft game.';
   const flag = g.cc ? '<img src="/flags/w20/' + esc(g.cc) + '.png" alt="" width="20">' : '';
-  const rows = cards.map(c => '<tr><td>' + esc(c.ev) + '<small>' + esc(enDate(c.date)) + (c.org ? ' · ' + esc(c.org) : '') + '</small></td>' +
+  const rows = cards.map(c => '<tr><td>' + esc(String(c.ev || '').replace(/\s+—\s+/g, ' · ')) + '<small>' + esc(enDate(c.date)) + (c.org ? ' · ' + esc(c.org) : '') + '</small></td>' +
     '<td class="n' + (c.place === 1 ? ' p1' : '') + '">' + (c.place ? ord(c.place) : '-') + '</td>' +
     '<td class="n hide-s">' + (c.pts != null ? esc(c.pts) + ' pts' + (c.matches ? '<small>' + esc(c.matches) + ' games</small>' : '') : '') + '</td>' +
     '<td class="n r"><b' + (c.rating >= 90 ? ' class="hi"' : '') + '>' + esc(c.rating) + '</b></td></tr>').join('\n');
