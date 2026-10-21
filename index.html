@@ -148040,15 +148040,34 @@ function careerWorldFinals(fromISO, toISO){
       let lastGc=null; careerYearDays().forEach((l, iso)=>{ if(l.some(x=>x.kind==='globals') && (!lastGc || iso>lastGc)) lastGc=iso; });
       if(g!=='out' && day!==lastGc) return;
     }
+    /* ОДИН РАСЧЁТ НА ВСЕХ ЛЮДЕЙ. Поле финала собирается из личной таблицы недель (ccMXGfRows и др.), и у каждого клиента
+       выходил свой финал мира (онлайн-прогон 2019 года, 21.10: Season X 22.09, «nokey» — разные чемпионы и деньги). Как у
+       финала недели Д1: в гонке считает старший по адресу, в команде — хозяин лобби (роль a), итог уезжает копилкой
+       (ccEvResApply), остальные отмечают финал и ждут её. */
+    let shareKey=null;
+    { const raceIds=(typeof ccRaceOn==='function' && ccRaceOn() && typeof ccRaceLive==='function' && ccRaceLive() && typeof CC_RACE_PEERS!=='undefined')
+        ? Object.keys(CC_RACE_PEERS).filter(k=>CC_RACE_PEERS[k]) : [];
+      const team=!raceIds.length && typeof ccMpTeam==='function' && ccMpTeam() && !(typeof ccRaceOn==='function' && ccRaceOn());
+      // Финал с раскладкой после себя (Саммит → места на Глобалы, summitDone) считает каждый: раскладка нужна всем.
+      if((raceIds.length || team) && !done){
+        const lead=raceIds.length ? [ccMpId()].concat(raceIds).sort()[0]===ccMpId() : ccMpRole()==='a';
+        if(!lead){ paid[key]=1; return; }
+        shareKey=day+'|wfin|'+id;
+      } }
     let room=null;
     try{ room=(build()||[]).filter(t=>t && !t._stub); }catch(e){ room=null; }
     if(!room || room.length<2) return;
     paid[key]=1;
-    room.forEach(t=>{ t.stagePts=0; t.wins=0; t.stageElims=0; });
-    ccWorldRun('fin|'+key, ()=>simulateGames(room, games, pts, kill));
-    const ranked=rank(room);
-    CC_PRIZE_DAY=day;
-    try{ careerMoneyAdd(ranked, prize); careerPrAdd(ranked, meta); } finally { CC_PRIZE_DAY=null; }
+    const wasDelta=CC_EV_DELTA;
+    if(shareKey){ ccEvDeltaStart(shareKey); if(CC_EV_DELTA){ CC_EV_DELTA.day=day; if(typeof ccMpTeam==='function' && ccMpTeam()) CC_EV_DELTA.alone=true; } }
+    let ranked=null;
+    try{
+      room.forEach(t=>{ t.stagePts=0; t.wins=0; t.stageElims=0; });
+      ccWorldRun('fin|'+key, ()=>simulateGames(room, games, pts, kill));
+      ranked=rank(room);
+      CC_PRIZE_DAY=day;
+      try{ careerMoneyAdd(ranked, prize); careerPrAdd(ranked, meta); } finally { CC_PRIZE_DAY=null; }
+    } finally { if(shareKey){ ccEvDeltaSend(); CC_EV_DELTA=wasDelta; } }
     const w=ranked[0];
     // Финал своего Мейджора без игрока — в Историю тем, кем он сыгран (careerArchiveSeason).
     if(kind==='major' && w){
