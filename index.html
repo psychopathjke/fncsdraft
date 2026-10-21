@@ -168632,7 +168632,9 @@ function mgrWorldStore(ev, ranked, played, stage){
 function mgrWorldSim(ev){
   if(!ev || ev.kind==='ewc' || mgrWorldDone(ev)) return;
   const size=mgrEvSize(ev), seed=ev.id+'|'+ev.day+'|'+MGR.year, cr=CAREER.career, d0=cr.day;
-  const pm=CARD_MODE, ps=squadSize, pd=drafted; CARD_MODE=true; squadSize=size; drafted=[];
+  /* Размер команды капа — и для сборки поля: careerCupField собирает составы по careerSquadSize(), то есть по году карьеры
+     (аудит 21.10: трио- и сквад-капы мира 2024 шли парами — «Trios Cash Cup» с «TaySon & Veno»). */
+  const pm=CARD_MODE, ps=squadSize, pd=drafted, pes=CC_EVENT_SIZE; CARD_MODE=true; squadSize=size; drafted=[]; CC_EVENT_SIZE=size;
   if(ev.day>d0) cr.day=ev.day;   // поле — тем днём, когда кап идёт
   try{
     if(ev.kind==='fncs'){
@@ -168648,7 +168650,7 @@ function mgrWorldSim(ev){
       if(field.length) mgrWorldStore(ev, mgrEngineRank(field, CC_VICTORY_R1_GAMES, victoryR1Points, CC_VICTORY_R1_KILL, ccVictoryLobby(ev, size===1)||50, seed, []), false);
     }
   }catch(e){ console.error('mgrWorldSim', e); }
-  finally{ cr.day=d0; CARD_MODE=pm; squadSize=ps; drafted=pd; }
+  finally{ cr.day=d0; CARD_MODE=pm; squadSize=ps; drafted=pd; CC_EVENT_SIZE=pes; }
   mgrWorldMark(ev);
 }
 function mgrWorldCatchUp(lim){ mgrWorldPending(lim).slice(0, 200).forEach(ev=>{ try{ mgrWorldSim(ev); }catch(e){ mgrWorldMark(ev); } }); }
@@ -171430,8 +171432,8 @@ async function mgrWatchWorld(key){
   if(!(await mgrGoToDay(ev.day))) return;
   if(mgrWorldDone(ev)){ MGR_SUB.tables='events'; mgrOpenHub(); mgrRenderHub('tables'); return; }
   const W=mgrTW(), T2=mgrT2(), size=mgrEvSize(ev), seed=ev.id+'|'+ev.day+'|'+MGR.year, cr=CAREER.career;
-  const pm=CARD_MODE, ps=squadSize, pd=drafted, pSet=ACTIVE_LANDING_SET, pDay=CC_PRIZE_DAY;
-  CARD_MODE=true; squadSize=size; drafted=[];
+  const pm=CARD_MODE, ps=squadSize, pd=drafted, pSet=ACTIVE_LANDING_SET, pDay=CC_PRIZE_DAY, pes=CC_EVENT_SIZE;
+  CARD_MODE=true; squadSize=size; drafted=[]; CC_EVENT_SIZE=size;
   try{ useLandingSet(/Reload/.test(ev.id) ? ccReloadSetOfYear() : careerBrSet()); }catch(e){}
   mgrScreenReset(); MGR_WATCH=true;
   let focus=null, ranked=[];
@@ -171461,7 +171463,7 @@ async function mgrWatchWorld(key){
   }catch(e){ console.error('mgrWatchWorld', e); }
   if(focus) focus.isYou=false;
   MGR_WATCH=false; CC_PRIZE_DAY=pDay;
-  CARD_MODE=pm; squadSize=ps; drafted=pd; try{ useLandingSet(pSet); }catch(e){}
+  CARD_MODE=pm; squadSize=ps; drafted=pd; CC_EVENT_SIZE=pes; try{ useLandingSet(pSet); }catch(e){}
   mgrWorldMark(ev);
   removeSkipButton();
   const box=document.createElement('div'); box.className='mg-report';
