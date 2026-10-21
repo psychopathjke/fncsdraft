@@ -163287,9 +163287,20 @@ async function runCareerVictory(){
   const resh=!!(ev && ev.reshuffle && ccMpTeam() && !CC_MP_ALONE);
   if(resh) CC_MP_ALONE=true;
   const own=resh ? ccTeamOwnRowsOn() : false;   // таблица мира — у хозяина лобби, см. ccTeamOwnRowsOn
+  /* И В ГОНКЕ — личный вечер (онлайн-прогон 2026 года, 21.10: Red Bull Reshuffle 15.08 — синхронизация комнаты сажала
+     соперника его строкой, с его ботом-напарником, а не парой жребия: у одного «live1+wox», у другого «live1+sky», и
+     команда без пары жребия роняла вечер — «Cannot read properties of undefined (reading 'forEach')», перемотка вставала).
+     Каждый играет свой, всю таблицу пишет старший по адресу (копилка), остальные — только свою строку. */
+  let raceOwn=false;
+  if(ev && ev.reshuffle && typeof ccRaceOn==='function' && ccRaceOn() && typeof ccRaceLock==='function' && ccRaceLock()){
+    ccRaceNightApart();
+    const ids=(typeof CC_RACE_PEERS!=='undefined') ? Object.keys(CC_RACE_PEERS).filter(k=>CC_RACE_PEERS[k]) : [];
+    const elder=[ccMpId()].concat(ids).sort()[0]===ccMpId();
+    if(!elder && !CC_BOARD_ONLY_YOU){ CC_BOARD_ONLY_YOU=true; raceOwn=true; }
+  }
   const fmtSwap=ccEventRosterBegin(ccVictoryFormat(ev));
   try{ return await runCareerVictoryNight(); }
-  finally{ CC_ZB=false; ccEventRosterEnd(fmtSwap); if(resh) CC_MP_ALONE=false; ccTeamOwnRowsOff(own); }
+  finally{ CC_ZB=false; ccEventRosterEnd(fmtSwap); if(resh) CC_MP_ALONE=false; ccTeamOwnRowsOff(own); if(raceOwn) CC_BOARD_ONLY_YOU=false; }
 }
 /* КАП ИГРАЕТСЯ В СВОЁМ ФОРМАТЕ.
 
@@ -164352,7 +164363,7 @@ async function runCareerVictoryNight(){
       await simulateGamesLive(duos, 1, victoryR1Points, CC_VICTORY_R1_KILL, 'stage', 0, null, null,
         {lobbySize:duos.length, stageName:ev.lan+' · '+(g+1)+'/'+games,
          mapReplay:true, choices:true, stopOnYourDeath:true});
-      duos.forEach(t=>t._of.forEach(p=>{
+      duos.forEach(t=>(t._of||[]).forEach(p=>{
         // Элимы пары — по долям, как в катке (Notion 13.10: «общие киллы просто на 2 делятся»).
         p.stagePts+=t.stagePts||0; p.stageElims+=Math.round(ccMemberKills(t, p.squad[0]));
         if(t.wins) p.wins=(p.wins||0)+t.wins;
