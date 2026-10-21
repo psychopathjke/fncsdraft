@@ -58,7 +58,10 @@ function cleanNick(raw) {
   if (latin && n.length >= 8 && (n.match(/[aeiouyAEIOUY]/g) || []).length / n.length < 0.15) return null;  // «8b3v9bpkw7cgm»
   return n;
 }
-for (const [reg, nick, g, div] of src.names) {
+/* Попросились сами (Notion 21.10, игрок в личке: «i want to get put div 2») — выборка страниц 1/5/10/15/20 их не
+   задела. Дивизион и флаг сверены с профилем Tracker: TNK micha (EGO Esports, Италия, ME), кубки Division 2 сентября 2026. */
+const REQUESTED = [['ME', 'Micha', 'italy', 2]];
+for (const [reg, nick, g, div] of src.names.concat(REQUESTED)) {
   const name = cleanNick(nick);
   if (!name || name.length < 3 || name.length > 16) continue;
   const key = reg + '|' + name.toLowerCase(); if (seenName.has(key)) continue; seenName.add(key);

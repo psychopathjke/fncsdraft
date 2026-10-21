@@ -14,7 +14,8 @@ try{
   const by=at=>CC_COACHES.find(c=>c.at===at);
   out.notes.top=CC_COACHES.slice().sort((x,y)=>y.rating-x.rating).slice(0,5).map(c=>c.name+' '+c.rating+' $'+c.cost);
   check('у каждого коуча рейтинг 60–95', CC_COACHES.every(c=>c.rating>=60 && c.rating<=95), CC_COACHES.map(c=>c.rating).join(','));
-  check('с результатами выше всех без них', Math.min(...CC_COACHES.filter(c=>CC_COACH_RES[c.at]).map(c=>c.rating))>Math.max(...CC_COACHES.filter(c=>!CC_COACH_RES[c.at]).map(c=>c.rating)));
+  // «Без результатов не встаёт ВЫШЕ того, у кого они есть» (ccCoachRatingOf): ничья допустима — Dashura 73 = Boop 73 (21.10).
+  check('с результатами не ниже всех без них', Math.min(...CC_COACHES.filter(c=>CC_COACH_RES[c.at]).map(c=>c.rating))>=Math.max(...CC_COACHES.filter(c=>!CC_COACH_RES[c.at]).map(c=>c.rating)));
   check('выше рейтинг — дороже и сильнее', by('RazZzero0oFN').cost>by('CoachNassimm').cost && by('RazZzero0oFN').train>by('CoachNassimm').train);
   check('цена в прежних пределах', CC_COACHES.every(c=>c.cost>=CC_COACH_LOW.cost && c.cost<=CC_COACH_TOP.cost));
   check('порядок списка — по рейтингу', ccByHand(CC_COACHES).every((c,i,a)=>!i || a[i-1].rating>=c.rating), ccByHand(CC_COACHES).map(c=>c.rating).join(','));

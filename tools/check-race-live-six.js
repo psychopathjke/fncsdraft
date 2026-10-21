@@ -77,7 +77,7 @@ const boot = (who) => `
             ledger:(typeof CC_MP_LEDGER!=='undefined' ? CC_MP_LEDGER.slice(-400) : []), raw:(window.__raw||[]).slice(), seats:(window.__seats||[]).slice(), ls:(window.__ls||[]).slice()}; } }
       out.notes.nights=out.notes.nights||[]; while(out.notes.nights.length<(cr.log||[]).length){ const r=cr.log[out.notes.nights.length]; out.notes.nights.push([r.day, r.kind||'cup', 'r'+CC_MP_ROLLS, 'lock'+(CC_RACE_LOCK?1:0), 'seed'+(CC_MP_SEED?1:0), 'alone'+(CC_MP_ALONE?1:0), 'field'+(CC_RACE_DBG?CC_RACE_DBG.n+'/'+CC_RACE_DBG.humans.length:'-'), 'link '+MP.state].join(' ')); }
       [...document.querySelectorAll('.cc-mp-split')].map(e=>e.textContent).forEach(s=>{ if(out.notes.splits.indexOf(s)<0) out.notes.splits.push(cr.day+' '+s); });
-      document.getElementById('__prog').textContent=[cr.day, 'див '+cr.division, 'журнал '+(cr.log||[]).length, 'броски '+CC_MP_ROLLS,
+      document.getElementById('__prog').textContent=[cr.day, 'див '+cr.division, ...(out.notes.ffErr ? ['FFERR '+JSON.stringify(out.notes.ffErr).slice(0,1500)] : []), 'журнал '+(cr.log||[]).length, 'броски '+CC_MP_ROLLS,
         'связь '+MP.state, 'ff '+(CC_FF?'идёт':'-'), 'split '+(typeof CC_MP_SPLIT_AT!=='undefined'?CC_MP_SPLIT_AT:'-'), 'гонка '+JSON.stringify(typeof CC_RACE_DBG!=='undefined'?CC_RACE_DBG:null),
         'соперники '+(typeof ccRaceRivals==='function'?ccRaceRivals().length:'-'), 'комната '+(typeof ccRaceRoom==='function'?ccRaceRoom().length:'-'), 'wait['+((typeof CC_MP_WAIT!=='undefined'&&CC_MP_WAIT)?CC_MP_WAIT.map(w=>w.t).join(';'):'')+']', 'acts '+JSON.stringify((out.notes.marks||[]).slice(-3)), 'hold '+(typeof CC_MP_HOLD!=='undefined'?CC_MP_HOLD:'-'), 'game '+(typeof CC_MP_GAME!=='undefined'?CC_MP_GAME:'-'), 'qn '+JSON.stringify(typeof CC_MP_QN!=='undefined'?CC_MP_QN:null), 'title '+((document.getElementById('finalsLiveTitle')||{}).textContent||'').trim().slice(0,60), 'run '+(typeof CAREER_RUN!=='undefined' && CAREER_RUN ? 1 : 0), 'ask '+(function(){ const am=document.getElementById('ccAskModal'); if(!am || am.style.display!=='flex') return '-'; return String(am.textContent||'').replace(/\s+/g,' ').trim().slice(0,90); })(), 'ffuntil '+(CC_FF ? (CC_FF.until+(CC_FF.err?' ERR':'')+(CC_FF.stop?' STOP':'')) : '-'), 'peers '+JSON.stringify(Object.keys(CC_RACE_PEERS).map(k=>(CC_RACE_PEERS[k].card||{}).handle+':'+CC_RACE_PEERS[k].day)), 'врозь '+(typeof ccRaceApartWhy==='function'?ccRaceApartWhy(careerNext()):'-')].join(' · ');
     }catch(e){}
@@ -232,12 +232,16 @@ const boot = (who) => `
          CC_PLAYABLE.indexOf(next.type)>=0 && careerNoMate(next.type) && careerMatesShort()>0){
         try{
           const taken=(typeof ccRaceTakenKeys==='function') ? ccRaceTakenKeys() : new Set();
-          const pick=(careerDuoSearchPool(true)||[]).find(p=>p && p.handle && !taken.has(hKey(p.handle)));
-          if(pick && careerMateSeat({handle:pick.handle, cardRegion:(pick.card&&pick.card.region)||'EU',
-                                     dev:0, since:CAREER.career.day}, 0)){
+          /* В ПУСТОЕ кресло, и пока состав не полон (прогон 2020 21.10: в трио ушёл третий, проба сажала в кресло 0 —
+             то есть меняла второго, третье оставалось пустым, перемотка вставала «Trios need one more player»). */
+          for(let g=0; g<3 && careerMatesShort()>0; g++){
+            const mine=new Set((careerMates()||[]).filter(Boolean).map(c=>hKey(c)));
+            const pick=(careerDuoSearchPool(true)||[]).find(p=>p && p.handle && !taken.has(hKey(p.handle)) && !mine.has(hKey(p.handle)));
+            if(!pick || !careerMateSeat({handle:pick.handle, cardRegion:(pick.card&&pick.card.region)||'EU',
+                                     dev:0, since:CAREER.career.day}, (CAREER.partners||[]).filter(Boolean).length)) break;
             out.notes.mateTakes=(out.notes.mateTakes||[]).concat(CAREER.career.day+' '+pick.handle);
-            ok=cp0.apply(this, arguments);
           }
+          ok=cp0.apply(this, arguments);
         }catch(e){ out.notes.mateErr=String(e && e.message || e); }
       } if(!ok && next && next.type && next.type!=='free' && CC_PLAYABLE.indexOf(next.type)>=0 && out.notes.skipped.length<60) out.notes.skipped.push([CAREER.career.day, next.type, 'live'+(ccMpLive()?1:0), 'link '+MP.state, 'noMate'+(careerNoMate(next.type)?1:0), 'mates'+careerMates().length, 'mode '+(ccRaceModeWhy()||'-'), 'div'+CAREER.career.division].join(' ')); return ok; };
     /* СЛЕД ДОСКИ ПО ВЕЧЕРАМ. Доски расходятся при одинаковом списке вечеров, значит один и
