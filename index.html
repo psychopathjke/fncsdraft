@@ -10111,7 +10111,7 @@ ccSaveFail:v=>'Карьера не сохраняется ('+v+'). В брауз
 ccEnergyMark:'⚡', ccRingEnergy:'Энергия', ccRingFatigue:'Усталость', ccRingMood:'Настрой',
 ccActtrAim:'KovaaK\'s', ccActtrSur:'Паблики', ccActtrCon:'Зал и режим',
 ccActtrClu:'1v1', ccActtrExp:'Разбор реплеев', ccActtrEnd:'Кастомки Noble',
-ccActscrim:'Скримы', ccActtalk:'Поговорить', ccActstream:'Стрим', ccActrest:'Отдых',
+ccActscrim:'Креатив', ccActtalk:'Поговорить', ccActstream:'Стрим', ccActrest:'Отдых',
 ccActhost:'Своя кастомка', ccHostLine:(w,p)=>'$'+w+' за победу · фонд $'+p+' из своих', ccHostNeedReach:n=>'нужно '+n+' подписчиков, свой клуб или PR на кастомки', ccHostNeedCash:n=>'на фонд не хватает $'+n, ccHostReport:(w,c,who)=>'Провёл кастомку: своих побед '+w+' из 5 ('+(c?'+$'+c:'без денег')+'), победы взяли '+who, ccPostHosted:(w,who,m)=>'провёл кастомки, $'+w+' за победу. забрали: '+who+(m?'. одну я себе оставил':''),
 ccGiveReach:'+ медийка', ccGiveMood:'+ настрой напарника', ccGiveRest:'+ энергия',
 ccGiveNoImprove:'без прокачки, минус фокус',
@@ -12220,7 +12220,7 @@ ccSaveFail:v=>'This career is not being saved ('+v+'). The browser is out of roo
 ccEnergyMark:'⚡', ccRingEnergy:'Energy', ccRingFatigue:'Fatigue', ccRingMood:'Morale',
 ccActtrAim:'KovaaK\'s', ccActtrSur:'Pubs', ccActtrCon:'Gym and routine',
 ccActtrClu:'1v1s', ccActtrExp:'Watch replays', ccActtrEnd:'Noble endgames',
-ccActscrim:'Scrims', ccActtalk:'Talk it over', ccActstream:'Stream', ccActrest:'Rest',
+ccActscrim:'Creative', ccActtalk:'Talk it over', ccActstream:'Stream', ccActrest:'Rest',
 ccActhost:'Host customs', ccHostLine:(w,p)=>'$'+w+' per win · $'+p+' pot out of your pocket', ccHostNeedReach:n=>'takes '+n+' followers, your own club or the customs PR', ccHostNeedCash:n=>'$'+n+' short of the pot', ccHostReport:(w,c,who)=>'Hosted customs: '+w+' wins of 5 yourself ('+(c?'+$'+c:'no cash')+'), wins went to '+who, ccPostHosted:(w,who,m)=>'ran customs tonight, $'+w+' a win. taken by: '+who+(m?'. kept one myself':''),
 ccGiveReach:'+ reach', ccGiveMood:'+ partner morale', ccGiveRest:'+ energy',
 ccGiveNoImprove:'no improvement, focus down',
@@ -15369,7 +15369,7 @@ ccActtrCon:'Sport et routine',
 ccActtrClu:'1v1',
 ccActtrExp:'Regarder des replays',
 ccActtrEnd:'Endgames Noble',
-ccActscrim:'Scrims',
+ccActscrim:'Créatif',
 ccActtalk:'En parler',
 ccActstream:'Stream',
 ccActhost:'Mes customs', ccHostLine:(w,p)=>w+' $ par win · cagnotte '+p+' $ de ta poche', ccHostNeedReach:n=>'il faut '+n+' abonnés, ton propre club ou le PR des customs', ccHostNeedCash:n=>'il manque '+n+' $ pour la cagnotte', ccHostReport:(w,c,who)=>'Customs organisées : '+w+' wins sur 5 pour toi ('+(c?'+'+c+' $':'sans argent')+'), wins prises par '+who, ccPostHosted:(w,who,m)=>'customs ce soir, '+w+' $ la win. prises par : '+who+(m?'. j’en ai gardé une':''),
@@ -17710,7 +17710,7 @@ ccActtrCon:"Palestra e routine",
 ccActtrClu:"1v1",
 ccActtrExp:"Guarda i replay",
 ccActtrEnd:"Endgame Noble",
-ccActscrim:"Scrim",
+ccActscrim:"Creativa",
 ccActtalk:"Parlarne",
 ccActstream:"Stream",
 ccActhost:"Le mie customs", ccHostLine:(w,p)=>w+' $ a vittoria · montepremi '+p+' $ di tasca tua', ccHostNeedReach:n=>'servono '+n+' follower, un club tuo o il PR delle customs', ccHostNeedCash:n=>'mancano '+n+' $ per il montepremi', ccHostReport:(w,c,who)=>'Customs organizzate: '+w+' vittorie su 5 per te ('+(c?'+'+c+' $':'senza soldi')+'), vittorie prese da '+who, ccPostHosted:(w,who,m)=>'customs stasera, '+w+' $ a vittoria. prese da: '+who+(m?'. una me la sono tenuta':''),
@@ -20261,7 +20261,7 @@ ccActtrCon:"Academia e rotina",
 ccActtrClu:"1v1",
 ccActtrExp:"Assistir replays",
 ccActtrEnd:"Endgames Noble",
-ccActscrim:"Scrims",
+ccActscrim:"Criativo",
 ccActtalk:"Conversar",
 ccActstream:"Stream",
 ccActhost:"Minhas customs", ccHostLine:(w,p)=>'$'+w+' por win · pote $'+p+' do seu bolso', ccHostNeedReach:n=>'precisa de '+n+' seguidores, clube próprio ou o PR das customs', ccHostNeedCash:n=>'faltam $'+n+' para o pote', ccHostReport:(w,c,who)=>'Customs organizadas: '+w+' wins de 5 suas ('+(c?'+$'+c:'sem dinheiro')+'), wins levadas por '+who, ccPostHosted:(w,who,m)=>'customs hoje, $'+w+' por win. levaram: '+who+(m?'. uma ficou comigo':''),
@@ -125816,10 +125816,11 @@ const CC_DAY_ACTS=[
 
      His tester, 20 August, found the hole from the inside: stuck on one rung,
      morale falling, nothing to do about it. */
-  {id:'scrim',   energy:38, morale:6, versus:true,
+  // Его слово 21.10: «вместо скримов сделай креатив», энергия 40 у креатива, Noble и стрима (было 38/32/30).
+  {id:'scrim',   energy:40, morale:6, versus:true,
    gain:{aim:ccStep('aim')/4, sur:ccStep('sur')/4, clu:ccStep('clu')/4, con:ccStep('con')/4}},
   // Сессия Noble Pro Scrims (сервер — по уровню, см. ccNobleServer): игра на сотню, таблица недели.
-  {id:'noble',   energy:32, noble:true,
+  {id:'noble',   energy:40, noble:true,
    gain:{end:ccStep('end')/3, sur:ccStep('sur')/3, clu:ccStep('clu')/3}},
   /* Поговорить — второй способ держать настрой, и он не про тренировку.
    *
@@ -125838,7 +125839,7 @@ const CC_DAY_ACTS=[
      становится — повторный разговор в CC_TALK_GAP всё так же режется вдвое и
      вчетверо. */
   {id:'talk',    energy:20, gain:{}, talk:true, morale:1},
-  {id:'stream',  energy:30, gain:{}, reach:1, focus:-1},
+  {id:'stream',  energy:40, gain:{}, reach:1, focus:-1},
   {id:'rest',    energy:0,  gain:{}, rest:CC_ENERGY_REST}
 ];
 /* Чего стоит разговор — и почему не всегда одного и того же.
