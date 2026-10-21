@@ -4567,6 +4567,19 @@
   #screen-career-hub.ch-themed .ch-stage{background:linear-gradient(160deg,var(--th-a) 0%,var(--th-b) 46%,var(--th-c) 100%);}
   #screen-career-hub.ch-themed .cc-lobby .cc-lb-top{background:linear-gradient(90deg,var(--th-top),var(--th-b) 60%,var(--th-top));}
   #screen-career-hub.ch-themed .cc-lobby{--lb-panel:inherit;--lb-deep:inherit;}
+  /* Всё остальное синее — тем же оттенком (Notion «20.10», последний скрин: «цвета не те» — панели в цвет сезона,
+     а шапка SEASON, уровень, заголовок заданий и правая панель дня оставались синими). */
+  #screen-career-hub.ch-themed .cc-lb-season,#screen-career-hub.ch-themed .cc-lb-famA .cc-lb-qs h5{background:var(--th-hi);}
+  #screen-career-hub.ch-themed .cc-lb-lvl,#screen-career-hub.ch-themed .cc-lb-famA .cc-lb-panel{background:var(--lb-panel);}
+  #screen-career-hub.ch-themed .cc-lb-famA .cc-lb-nav button{background:var(--th-hi);}
+  #screen-career-hub.ch-themed .cc-lb-famA .cc-lb-top,#screen-career-hub.ch-themed .cc-lb-famA .cc-lb-bar-btns{background:var(--lb-deep);}
+  #screen-career-hub.ch-themed .cc-lobby .cc-lb-playbox .ch-art{background-color:var(--th-c);}
+  #screen-career-hub.ch-themed .cc-lobby .cc-lb-playbox .ch-art::after{background:linear-gradient(180deg,var(--th-soft),var(--lb-deep));}
+  #screen-career-hub.ch-themed .cc-lobby .cc-lb-playbox .cc-act,#screen-career-hub.ch-themed .cc-lobby .cc-lb-playbox .cc-six-t,
+  #screen-career-hub.ch-themed .cc-lobby .cc-lb-playbox .cc-job,#screen-career-hub.ch-themed .cc-lobby.cc-lb-full .cc-lb-sched .ch-day{background:var(--th-tint);}
+  #screen-career-hub.ch-themed .cc-lb-famB .cc-lb-panel,#screen-career-hub.ch-themed .cc-lb-news{background:var(--lb-deep);border-color:var(--th-hi);}
+  #screen-career-hub.ch-themed .cc-lb-quests{background:var(--th-hi);border-color:var(--th-tint);}
+  #screen-career-hub.ch-themed .cc-lb-famC .cc-lb-hex{background:var(--th-hi);}
   /* Фон с нарисованными подиумами (ccLobbyPads) — свои подиумы не рисуются. */
   .cc-lobby.cc-lb-painted .cc-lb-ped{display:none;}
   /* Ник над фигурой — без подложки (скрин 22): номер, ник и устройство белым с тенью, как в лобби игры. */
@@ -122567,7 +122580,7 @@ function ccTabsSide(){
 const CC_HUB_THEME={};
 function ccHubThemeApply(h){
   const el=document.getElementById('screen-career-hub'); if(!el) return;
-  const props=['--fn-panel','--fn-deep','--fn-line','--lb-panel','--lb-deep','--th-a','--th-b','--th-c','--th-top'];
+  const props=['--fn-panel','--fn-deep','--fn-line','--lb-panel','--lb-deep','--th-a','--th-b','--th-c','--th-top','--th-hi','--th-soft','--th-tint'];
   const root=document.documentElement;
   if(h==null){ el.classList.remove('ch-themed'); props.forEach(p=>el.style.removeProperty(p)); ['--cc-th-a','--cc-th-b','--cc-th-c'].forEach(p=>root.style.removeProperty(p)); return; }
   const hsl=(s, l, a)=>'hsla('+Math.round(h)+','+s+'%,'+l+'%,'+(a==null ? 1 : a)+')';
@@ -122576,6 +122589,8 @@ function ccHubThemeApply(h){
   el.style.setProperty('--lb-panel', hsl(58, 38, .8)); el.style.setProperty('--lb-deep', hsl(68, 16, .84));
   el.style.setProperty('--th-a', hsl(62, 33)); el.style.setProperty('--th-b', hsl(66, 22)); el.style.setProperty('--th-c', hsl(70, 13));
   el.style.setProperty('--th-top', hsl(62, 30));
+  // Яркий акцент (шапка сезона, вкладки), полупрозрачный верх правой панели и светлая подложка плиток в ней.
+  el.style.setProperty('--th-hi', hsl(68, 50)); el.style.setProperty('--th-soft', hsl(62, 30, .72)); el.style.setProperty('--th-tint', hsl(60, 70, .2));
   /* Окна выбора штаба и переезда лежат вне хаба (#coachPickModal и т.д. на body) и цвета сезона не видели — синие
      в любой карьере (его слово 20.10: «дизайн стафа не меняется на разных карьерах»). Те же три оттенка — на html. */
   root.style.setProperty('--cc-th-a', hsl(62, 33)); root.style.setProperty('--cc-th-b', hsl(66, 22)); root.style.setProperty('--cc-th-c', hsl(70, 13));
