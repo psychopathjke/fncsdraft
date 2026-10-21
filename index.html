@@ -941,6 +941,13 @@
     clip-path:polygon(28% 0, 100% 0, 100% 100%, 0 100%);
     animation:winShard .6s .1s cubic-bezier(.2,.9,.25,1) both;}
   .win-card > *{position:relative;z-index:1;}
+  /* Медали у ника в таблице дня (dailyMedalsHTML): кружок цвета медали с числом подиумов. */
+  .cc-medals{display:inline-flex;gap:2px;margin-left:4px;vertical-align:1px;}
+  .cc-medals i{display:inline-flex;align-items:center;justify-content:center;min-width:15px;height:15px;padding:0 3px;border-radius:999px;
+    font-style:normal;font-size:9.5px;font-weight:900;line-height:1;color:#1b1300;box-shadow:inset 0 -1px 0 rgba(0,0,0,.25);}
+  .cc-medals i.g{background:linear-gradient(180deg,#ffe58a,#d6a019);}
+  .cc-medals i.s{background:linear-gradient(180deg,#f4f6f9,#a7afbb);color:#1c2128;}
+  .cc-medals i.b{background:linear-gradient(180deg,#f2bb86,#a8642a);color:#2a1406;}
   /* Sits in the teal wedge above the panel; the white strip below would
      otherwise paint straight over it. */
   .win-figs{position:absolute;right:20px;top:12px;z-index:2;display:flex;align-items:flex-start;gap:8px;
@@ -9646,6 +9653,7 @@ ccNewSeason:'Новый сезон',
 ccPotential:'Рейтинг / потолок',
 ccTrainCap:'Тренировки до', ccMateLearn:'Учишься у напарника',
 ccForm:'Форма', ccFormHot:'в ходу', ccFormCold:'спад',
+ccMedalGold:'Золото', ccMedalSilver:'Серебро', ccMedalBronze:'Бронза',
 ccMgTitle:'Цель месяца', ccMgCut:'пройти отбор в кубке', ccMgPlace:n=>'топ-'+n+' в кубке',
 ccNewsMonthBonus:(club,v)=>club+' выплатил премию за месяц: $'+v,
 ccDayEvscrimup:'Зовут на скримы', ccDayEvscrimupSub:'Дуо посильнее осталось без игрока на вечер', ccDayEvscrimupSubt:'Трио посильнее осталось без игрока на вечер',
@@ -11735,6 +11743,7 @@ ccNewSeason:'New season',
 ccPotential:'Rating / ceiling',
 ccTrainCap:'Training tops out at', ccMateLearn:'Learning from partner',
 ccForm:'Form', ccFormHot:'flying', ccFormCold:'off it',
+ccMedalGold:'Gold', ccMedalSilver:'Silver', ccMedalBronze:'Bronze',
 ccMgTitle:'This month', ccMgCut:'make a cut', ccMgPlace:n=>'a top '+n+' finish',
 ccNewsMonthBonus:(club,v)=>club+' paid the month bonus: $'+v,
 ccDayEvscrimup:'Invited to scrim', ccDayEvscrimupSub:'A stronger duo is a player short tonight', ccDayEvscrimupSubt:'A stronger trio is a player short tonight',
@@ -112972,6 +112981,12 @@ function dailyAvgFmt(r){ return (r.avg!=null ? r.avg : dailyPowNum(r)-(r.syn||0)
 /* Строка таблицы дня (17.10, его «daily leaderboard додизайнить таблицу»): всё в одну строку не влезало — состав,
    синергия и место резались, сила справа уезжала за край телефона. Теперь: место (топ-3 — золото/серебро/бронза),
    ник с флагом, состав чипами в перенос, под ним место в турнире и очки; справа крупно сила и её разбор. */
+// Медали прошлых дней у ника (сервер считает по браузеру: medals=[1-х, 2-х, 3-х мест]); кружки .cc-medals.
+function dailyMedalsHTML(m){
+  if(!Array.isArray(m) || !(m[0]+m[1]+m[2])) return '';
+  const T=L(), cls=['g','s','b'], tip=[T.ccMedalGold, T.ccMedalSilver, T.ccMedalBronze];
+  return '<span class="cc-medals">'+m.slice(0,3).map((v,i)=>v>0 ? '<i class="'+cls[i]+'" title="'+esc((tip[i]||'')+': '+v)+'">'+(v|0)+'</i>' : '').join('')+'</span>';
+}
 function dailyRowsHTML(rows, from){
   const T=L(), flag=c=>c ? '<img src="flags/w20/'+esc(ccCountryOf(c))+'.png" alt="" onerror="this.remove()">' : '';
   const head='<div class="dy-thead"><span>#</span><span>'+esc(T.dyColPlayer)+'</span><span>'+esc(dailyPowerWord())+'</span></div>';
@@ -112980,7 +112995,7 @@ function dailyRowsHTML(rows, from){
     const team=r.team ? String(r.team).split(',').filter(Boolean).map(h=>'<em>'+esc(h)+'</em>').join('') : '';
     const pow=dailyPowNum(r)>0;
     return '<div class="dy-row'+(r.you ? ' me' : '')+med+'"><i class="dy-rk">'+n+'</i>'+
-      '<div class="dy-who"><b>'+flag(r.country)+esc(r.nick)+(r.you ? ' <u>'+esc(T.dyYou)+'</u>' : '')+'</b>'+
+      '<div class="dy-who"><b>'+flag(r.country)+esc(r.nick)+dailyMedalsHTML(r.medals)+(r.you ? ' <u>'+esc(T.dyYou)+'</u>' : '')+'</b>'+
         (team ? '<div class="dy-team">'+team+'</div>' : '')+
         '<small>#'+r.place+'/'+r.field+' · '+r.score+' '+esc(T.dyPts)+'</small></div>'+
       '<div class="dy-pow"><b>'+(pow ? dailyPowFmt(r) : '-')+'</b>'+
