@@ -379,6 +379,11 @@
   .mg-sp-offer .mg-sp-need{white-space:nowrap;text-align:right;}
 </style>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- Язык с первого кадра (Notion «20.10»: «сайт сразу на языке, на котором играл игрок, а не англ, а потом русский»).
+     Разметка первого экрана — английская, перевод ставит setLang после app.js. Если язык не английский (сохранённый
+     или язык браузера — то же правило, что LANG), страница прячется до первого setLang; страховка — 3 с. -->
+<style>html.i18n-wait body{visibility:hidden;}</style>
+<script>(function(){try{var L=['ru','fr','it','pt','de','es'],s=localStorage.getItem('fncsdraft_lang'),l=null;if(s==='en'||L.indexOf(s)>=0)l=s;else{var n=String(navigator.language||'').toLowerCase();for(var i=0;i<L.length;i++)if(n.indexOf(L[i])===0){l=L[i];break;}}if(l&&l!=='en'){var h=document.documentElement;h.lang=l;h.className+=' i18n-wait';setTimeout(function(){h.classList.remove('i18n-wait');},3000);}}catch(e){}})();</script>
 <!-- Заголовок вкладки — он же главное слово поиска. Просьба:
      «хочу чтоб мой сайт появлялся в браузере при вводе fortnite career».
      Стояло «fncsdraft»: ни «Fortnite», ни «career», и слова Fortnite не было
@@ -24304,6 +24309,7 @@ function setLang(lang, persist){
   }
   // Выбор года драфта на главной — подписи на языке, который включили.
   if(typeof homeDraftInit==='function') try{ homeDraftInit(); }catch(e){}
+  document.documentElement.classList.remove('i18n-wait');   // язык стоит — страницу можно показать (см. <head>)
 }
 
 const REGIONS=[
