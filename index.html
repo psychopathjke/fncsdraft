@@ -2759,6 +2759,13 @@
   .ch-mood .ch-en-bar i{background:linear-gradient(180deg,#bcd0ff 0%,#7aa2ff 50%,#4c6fd6 100%);box-shadow:0 0 7px rgba(122,162,255,.45);}
   .ch-mood .ch-en-bar.low i{background:linear-gradient(180deg,#ffb0a8 0%,#ff6b5e 55%,#c23b30 100%);}
   #chPurseNow .ch-en-row{justify-content:flex-start;}
+  /* Подсказка показателя шапки (ccTipToggle): наведение или нажатие. */
+  .ch-tipw{position:relative;cursor:help;outline:none;}
+  #screen-career-hub .ch-top:has(.ch-tipw:hover),#screen-career-hub .ch-top:has(.ch-tipw:focus),#screen-career-hub .ch-top:has(.ch-tipw.open){z-index:6;}
+  .ch-tipw .ch-tip{display:none;position:absolute;top:calc(100% + 8px);left:0;z-index:40;width:300px;max-width:80vw;padding:10px 12px;border-radius:10px;
+    background:#0b1430;border:1px solid rgba(255,255,255,.16);box-shadow:0 10px 30px rgba(0,0,0,.5);color:#dfe8ff;
+    font-size:12px;font-weight:600;line-height:1.45;text-align:left;white-space:normal;text-transform:none;letter-spacing:0;}
+  .ch-tipw:hover .ch-tip,.ch-tipw:focus .ch-tip,.ch-tipw.open .ch-tip{display:block;}
   .ch-go{cursor:pointer;transition:filter .15s;} .ch-go:hover{filter:brightness(1.15);}
   .ch-ovr-side{display:flex;flex-direction:column;align-items:flex-start;gap:2px;margin-left:7px;}
   .ch-ovr-side small{margin-left:0 !important;}
@@ -4584,6 +4591,7 @@
     #screen-career-hub .ch-purse > div.ch-go:hover{background:rgba(0,0,0,.34);filter:none;}
     #screen-career-hub .ch-purse em{margin-bottom:2px;letter-spacing:.08em;}
     #screen-career-hub .ch-purse b{font-size:17px;line-height:1.1;}
+    #screen-career-hub .ch-purse b small{font-size:10px;font-weight:700;color:rgba(255,255,255,.55);margin-left:2px;}
     #screen-career-hub .ch-purse-now .ch-pend{display:inline-block;align-self:flex-start;margin-top:3px;padding:1px 7px;border-radius:999px;
       background:rgba(126,240,221,.14);color:#bff6ec;font-size:10px;}
   }
@@ -10131,7 +10139,10 @@ ccSaveFail:v=>'Карьера не сохраняется ('+v+'). В брауз
 ccEnergyMark:'⚡', ccRingEnergy:'Энергия', ccRingFatigue:'Усталость', ccRingMood:'Настрой',
 ccActtrAim:'KovaaK\'s', ccActtrSur:'Паблики', ccActtrCon:'Зал и режим',
 ccActtrClu:'1v1', ccActtrExp:'Разбор реплеев', ccActtrEnd:'Кастомки Noble',
-ccActscrim:'Креатив', ccActtalk:'Поговорить', ccActstream:'Стрим', ccActrest:'Отдых',
+ccActscrim:'Креатив',
+ccOfRange:n=>'из ±'+n,
+ccFormTip:m=>'Форма: как ты играешь в последнее время. Прибавляется к силе команды на турнире: +1 формы = +1 к силе. Растёт за хорошие места (верхние 10% поля: +1, верхняя треть: +0,5), падает за плохие (нижняя половина: −0,5, последние 10%: −1). Без турниров каждый день сдвигается к нулю на 0,15. Снижают её выгорание (больше 9 дней подряд без отдыха) и незнакомая мета нового сезона. Предел от −'+m+' до +'+m+'.',
+ccRepTip:(m,k,T)=>'Репутация: как к тебе относится сцена. Влияет на то, согласятся ли игроки на твоё предложение в личке: '+k+' очка репутации весят как 1 очко рейтинга. Растёт за удачные ответы в интервью и постах, падает за скандалы, уход от напарника (−2) и выгнанного тиммейта (−1). Ступени: от +10 «'+T.ccRepLoved+'», от +3 «'+T.ccRepLiked+'», от −3 «'+T.ccRepAwkward+'», от −10 «'+T.ccRepToxic+'». Предел от −'+m+' до +'+m+'.', ccActtalk:'Поговорить', ccActstream:'Стрим', ccActrest:'Отдых',
 ccActhost:'Своя кастомка', ccHostLine:(w,p)=>'$'+w+' за победу · фонд $'+p+' из своих', ccHostNeedReach:n=>'нужно '+n+' подписчиков, свой клуб или PR на кастомки', ccHostNeedCash:n=>'на фонд не хватает $'+n, ccHostReport:(w,c,who)=>'Провёл кастомку: своих побед '+w+' из 5 ('+(c?'+$'+c:'без денег')+'), победы взяли '+who, ccPostHosted:(w,who,m)=>'провёл кастомки, $'+w+' за победу. забрали: '+who+(m?'. одну я себе оставил':''),
 ccGiveReach:'+ медийка', ccGiveMood:'+ настрой напарника', ccGiveRest:'+ энергия',
 ccGiveNoImprove:'без прокачки, минус фокус',
@@ -12240,6 +12251,9 @@ ccSaveFail:v=>'This career is not being saved ('+v+'). The browser is out of roo
 ccEnergyMark:'⚡', ccRingEnergy:'Energy', ccRingFatigue:'Fatigue', ccRingMood:'Morale',
 ccActtrAim:'KovaaK\'s', ccActtrSur:'Pubs', ccActtrCon:'Gym and routine',
 ccActtrClu:'1v1s', ccActtrExp:'Watch replays', ccActtrEnd:'Noble endgames',
+ccOfRange:n=>'of ±'+n,
+ccFormTip:m=>'Form: how you have been playing lately. It adds to your team power at a tournament: +1 form = +1 power. It goes up for good finishes (top 10% of the field: +1, top third: +0.5) and down for bad ones (bottom half: -0.5, bottom 10%: -1). Without tournaments it drifts back to zero by 0.15 a day. Burnout (more than 9 days in a row without rest) and an unfamiliar new-season meta pull it down. Range -'+m+' to +'+m+'.',
+ccRepTip:(m,k,T)=>'Reputation: how the scene sees you. It decides whether players accept your offer in DMs: '+k+' reputation points weigh as much as 1 rating point. It rises with good interview and post answers and drops with scandals, leaving a partner (-2) and kicking a teammate (-1). Bands: +10 "'+T.ccRepLoved+'", +3 "'+T.ccRepLiked+'", -3 "'+T.ccRepAwkward+'", -10 "'+T.ccRepToxic+'". Range -'+m+' to +'+m+'.',
 ccActscrim:'Creative', ccActtalk:'Talk it over', ccActstream:'Stream', ccActrest:'Rest',
 ccActhost:'Host customs', ccHostLine:(w,p)=>'$'+w+' per win · $'+p+' pot out of your pocket', ccHostNeedReach:n=>'takes '+n+' followers, your own club or the customs PR', ccHostNeedCash:n=>'$'+n+' short of the pot', ccHostReport:(w,c,who)=>'Hosted customs: '+w+' wins of 5 yourself ('+(c?'+$'+c:'no cash')+'), wins went to '+who, ccPostHosted:(w,who,m)=>'ran customs tonight, $'+w+' a win. taken by: '+who+(m?'. kept one myself':''),
 ccGiveReach:'+ reach', ccGiveMood:'+ partner morale', ccGiveRest:'+ energy',
@@ -122983,18 +122997,22 @@ function careerRenderHubBody(tab){
        burnout in particular is a penalty — the one number this file refuses to
        let move silently. Each is drawn only when it is not zero, so a career
        with nothing wrong with it does not carry three empty labels. */
-    (()=>{ const f=careerForm(); if(!f) return '';
-      return `<div><em>${L().ccForm}</em><b class="${f>0?'ch-goal-met':'cc-pen bad'}">${
-        L()[f>0?'ccFormHot':'ccFormCold']} ${(f>0?'+':'')+(Math.round(f*10)/10)}</b></div>`; })()+
+    /* Форма и репутация — всегда, с пределом и подсказкой (его слово 21.10: «не понятно, как работает, мб когда
+       наводишься — говорит», «не понятно, сколько максимум, минимум»). Наведение на ПК, нажатие на телефоне. */
+    (()=>{ const f=careerForm(), T=L(), v=Math.round(f*10)/10;
+      return `<div class="ch-tipw" tabindex="0" onclick="ccTipToggle(this, event)"><em>${T.ccForm} ⓘ</em><b class="${f>0?'ch-goal-met':f<0?'cc-pen bad':''}">${
+        f ? T[f>0?'ccFormHot':'ccFormCold']+' ' : ''}${(v>0?'+':'')+v} <small>${esc(T.ccOfRange(CC_FORM_MAX))}</small></b>${
+        '<div class="ch-tip">'+esc(T.ccFormTip(CC_FORM_MAX))+'</div>'}</div>`; })()+
     // The garage, said where the form is said — confidence is the floor under
     // it, and a number nobody can see is a number that does not exist. His
     // report, 20 August: confidence нигде не пишется.
     (()=>{ const c=(CAREER.gear && CAREER.gear.conf)||0; if(!c) return '';
       return `<div><em>${L().ccShopConf}</em><b class="ch-goal-met">+${c} · ${
         L().ccConfFloor(Math.round((CC_FORM_MAX-c)*10)/10)}</b></div>`; })()+
-    (()=>{ const r=careerRep(); if(!r) return '';
-      return `<div><em>${L().ccRep}</em><b class="${r>0?'ch-goal-met':'cc-pen bad'}">${
-        L()[careerRepKey()]} ${r>0?'+':''}${r}</b></div>`; })()+
+    (()=>{ const r=careerRep(), T=L();
+      return `<div class="ch-tipw" tabindex="0" onclick="ccTipToggle(this, event)"><em>${T.ccRep} ⓘ</em><b class="${r>0?'ch-goal-met':r<0?'cc-pen bad':''}">${
+        T[careerRepKey()]} ${r>0?'+':''}${r} <small>${esc(T.ccOfRange(CC_REP_MAX))}</small></b>${
+        '<div class="ch-tip">'+esc(T.ccRepTip(CC_REP_MAX, CC_REP_PER_OVR, T))+'</div>'}</div>`; })()+
     (()=>{ const b=careerBurnout(); if(!b) return '';
       return `<div><em>${L().ccBurnout}</em><b class="cc-pen bad">${
         L().ccBurnoutDays(cr.grind||0)} · -${b}</b></div>`; })();
@@ -135179,6 +135197,12 @@ const CC_FORM_MAX=3, CC_FORM_DECAY=0.15;
    a career reading "cold -1.8" after three weeks without a break has been told
    what happened in the words the mode already uses. */
 const CC_GRIND_FREE=9, CC_GRIND_STEP=0.2, CC_GRIND_MAX=2;
+function ccTipToggle(el, ev){
+  if(ev) ev.stopPropagation();
+  const was=el.classList.contains('open');
+  document.querySelectorAll('.ch-tipw.open').forEach(x=>x.classList.remove('open'));
+  if(!was){ el.classList.add('open'); setTimeout(()=>document.addEventListener('click', function off(){ el.classList.remove('open'); document.removeEventListener('click', off); }), 0); }
+}
 function careerBurnout(){
   const over=(CAREER.career.grind||0)-CC_GRIND_FREE;
   return over>0 ? Math.min(CC_GRIND_MAX, Math.round(over*CC_GRIND_STEP*10)/10) : 0;
