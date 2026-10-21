@@ -139003,7 +139003,39 @@ function ccMgCat(r){
 }
 function ccMgNice(x){ for(const v of CC_MG_NICE) if(v>=x) return v; return CC_MG_NICE[CC_MG_NICE.length-1]; }
 // Планка места: доля поля по своим строкам этого вида (последние 12), квантиль q, умноженная на поле вида.
+/* Где ты по силе в поле кэш-капа (Notion «20.10»: «очень слабые цели для игрока у которого рейтинг 95» — без истории
+   планка бралась от размера поля, топ-200 из 2470 для 95-го). Поле региона той же сборкой, что у Victory Cup
+   (careerCupField), твой состав — careerYouTeam; место = сколько составов сильнее + 1. Считается раз в месяц. */
+function ccMgExpect(){
+  const cr=CAREER.career, key=ccMonthKey(careerToday())+'|'+Math.round((CAREER.player&&CAREER.player.ovr)||0);
+  if(cr._mgExp && cr._mgExp.key===key) return cr._mgExp;
+  let out=null;
+  try{
+    const solo=careerSquadSize()===1, mine=[careerCard()].concat(solo ? [] : (careerMates()||[]).filter(Boolean)), n=careerVictoryField(solo);
+    const pm=CARD_MODE, ps=squadSize, pd=drafted; CARD_MODE=true; squadSize=careerSquadSize(); drafted=mine;
+    let field=[], you=null;
+    try{ field=careerCupField(Object.assign({}, cr), mine, n, 'mgexp|'+key, true)||[]; you=careerYouTeam(mine); }
+    finally{ CARD_MODE=pm; squadSize=ps; drafted=pd; }
+    if(field.length && you && you.pow!=null){ const better=field.filter(t=>(t.pow||0)>you.pow).length; out={key, rank:better+1, n:field.length+1}; }
+  }catch(e){ out=null; }
+  Object.defineProperty(cr, '_mgExp', {value:out||{key, rank:0, n:0}, enumerable:false, configurable:true, writable:true});
+  return cr._mgExp;
+}
+// Множитель к ожидаемому месту по сложности: надёжная — в 2.5 раза хуже ожидания, средняя — само ожидание, амбициозная — в 2.5 раза лучше.
+function ccMgPriorMul(q){ return q>=0.7 ? 2.5 : q>=0.4 ? 1 : 0.4; }
 function ccMgTarget(cat, q){
+  const tHist=ccMgTargetHist(cat, q);
+  if(cat!=='cash' && cat!=='any') return tHist;
+  const ex=ccMgExpect(); if(!ex || !ex.rank) return tHist;
+  const prior=ccMgNice(Math.max(1, Math.round(ex.rank*ccMgPriorMul(q))));
+  // Своя история есть — середина между ней и силой (геометрически), нет — по силе.
+  const log=(CAREER.career.log||[]).filter(r=>r && r.place && r.of && ccMgCat(r)===cat);
+  const v=log.length>=3 ? Math.sqrt(prior*tHist) : prior;
+  // Амбициозная — круглое число вниз (6 → 5), остальные — вверх.
+  const r=Math.max(1, Math.round(v)), dn=CC_MG_NICE.filter(x=>x<=r).pop()||1;
+  return Math.min(tHist, q<0.4 ? dn : ccMgNice(r));
+}
+function ccMgTargetHist(cat, q){
   const log=(CAREER.career.log||[]).filter(r=>r && r.place && r.of);
   let rows=log.filter(r=>ccMgCat(r)===cat).slice(-12);
   if(rows.length<3) rows=log.slice(-12);
