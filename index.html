@@ -118274,7 +118274,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='079a487d';
+const CC_BUILD='81b9ce7b';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -131733,7 +131733,8 @@ function ccBotEdge(t, cards, hist){
   }
   const org=(cards.find(c=>c && c.org)||{}).org;
   let an=0;
-  if(org){ const usd=ccOrgEarn(org);
+  // Онлайн аналитика нет и у живых (ccAnalystPow → 0 при ccMpOn) — и у ботов нет: на равных.
+  if(org && !ccMpOn()){ const usd=ccOrgEarn(org);
            an=usd==null ? 1 : Math.round(1+2*Math.max(0, Math.min(1, (ccOrgEarnLevel(usd)-60)/35))); }
   t.botEdge={form, chem, an};
   t.pow=Math.round(t.pow+form+chem+an);
