@@ -171960,10 +171960,18 @@ function mgrCarStrip(field){
   const seated=new Set(), taken=new Set();
   field.forEach(t=>{ (t && t.squad || []).forEach(c=>{ const k=hKey((c && c.handle) || c); taken.add(k); if(t.isYou || t.isClub) seated.add(k); }); });
   const club=new Set(mgrAll().map(hKey));
-  const bad=k=>club.has(k) || seated.has(k);
+  /* Один человек — одна строка (check-mgr-quals 21.10: «kami×2» в финале Reload). Клуб подписал charyy из пары
+     charyy & Kami после отбора: строка отбора осталась с Kami, а сцена уже собрала Kami новую пару — и он вышел в поле
+     дважды. Повтор не-клубного игрока в следующей строке меняется так же, как человек клуба. Порядок — порядок поля. */
+  const once=new Set();
+  field.forEach(t=>{ if(t && (t.isYou || t.isClub)) (t.squad||[]).forEach(c=>once.add(hKey((c && c.handle) || c))); });
+  const dupIn=t=>{ const ks=(t.squad||[]).map(c=>hKey((c && c.handle) || c)); const d=new Set(ks.filter(k=>once.has(k) && !club.has(k) && !seated.has(k))); ks.forEach(k=>once.add(k)); return d; };
   let n=0;
   field.forEach((t, i)=>{
-    if(!t || t.isYou || t.isClub || !(t.squad||[]).some(c=>bad(hKey((c && c.handle) || c)))) return;
+    if(!t || t.isYou || t.isClub) return;
+    const dup=dupIn(t);
+    const bad=k=>club.has(k) || seated.has(k) || dup.has(k);
+    if(!(t.squad||[]).some(c=>bad(hKey((c && c.handle) || c)))) return;
     const sq=t.squad.map(c=>{
       const k=hKey((c && c.handle) || c); if(!bad(k)) return c;
       const reg=(c && c.region) || ccCareerRegion(), o=ccCardOvr(c)||0;
