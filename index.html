@@ -159948,6 +159948,17 @@ function ccMajorCardFrom(rec){
           rating:r, _targetOvr:r, _attrs:ccRookieAttrs(r, rec.k||'roleFRG')};
 }
 // Тем же правилом, что ccStageTeamFrom: сборка из записи не берёт бросков вечера.
+/* Записи прошедших -> команды раунда. В гонке своя строка пишется никами, а не 'you' (ccSeedRow при ccRaceSeeds:
+   запись общая на всех), и при сборке следующего раунда она становилась отдельной командой-копией меня, а я добавлялся
+   ещё раз: у каждого гонщика свой двойник, разная раскладка комнат, и сосед ждал ответов того, кого у себя не посадил
+   (онлайн-прогон 2019 года, 21.10: Season X 3.11, третий раунд, «Your partner never reached the question»).
+   Строка с моим ником — я, один раз. */
+function ccStageRowsOf(rows, you){
+  let mk=''; try{ mk=hKey(careerCard()||{handle:''}); }catch(e){}
+  const mine=r=>!!mk && Array.isArray(r) && r.some(x=>hKey(typeof x==='string' ? x : (x && x.h) || '')===mk);
+  let used=false;
+  return (rows||[]).map(r=>{ if(r==='you' || mine(r)){ if(used) return null; used=true; return you; } return ccMajorTeamFrom(r); }).filter(Boolean);
+}
 function ccMajorTeamFrom(row){
   return ccRaceUnseeded(function(){
     const cards=row.map(ccMajorCardFrom);
@@ -160407,7 +160418,7 @@ async function ccMXRun(ev, sp, soloTeam){
   you.name=L().yourTeamPrefix+teamLabel(drafted); you.isYou=true;
   const m=ccMXState(ev.yx, ev.n);
   const F=ccMXLobby(sp.size);
-  const rowsOf=rows=>(rows||[]).map(r=>r==='you' ? you : ccMajorTeamFrom(r));
+  const rowsOf=rows=>ccStageRowsOf(rows, you);
   const seedOf=t=>ccSeedRow(t, you, ccMajorSeatRow);
   let field, spec, stageLabel=ev.label, through=false, note='', games=0;
   let ranked=[], place=0, heatPay=null, wildOut=false;
@@ -160927,7 +160938,7 @@ async function runCareerMajor2021(){
   you.name=L().yourTeamPrefix+teamLabel(drafted); you.isYou=true;
   const m=ccM21State(ev.n);
   const F=ccM21Field();
-  const rowsOf=rows=>(rows||[]).map(r=>r==='you' ? you : ccMajorTeamFrom(r));
+  const rowsOf=rows=>ccStageRowsOf(rows, you);
   const seedOf=t=>ccSeedRow(t, you, ccMajorSeatRow);
   let field, spec, stageLabel=ev.label, through=false, note='', games=0;
   let ranked=[], place=0, shownOut=false, alive=false;
@@ -161301,7 +161312,7 @@ async function runCareerMajor2022(){
   const you=careerYouTeam(drafted);
   you.name=L().yourTeamPrefix+teamLabel(drafted); you.isYou=true;
   const m=ccM22State(ev.n);
-  const rowsOf=rows=>(rows||[]).map(r=>r==='you' ? you : ccMajorTeamFrom(r));
+  const rowsOf=rows=>ccStageRowsOf(rows, you);
   const seedOf=t=>ccSeedRow(t, you, ccMajorSeatRow);
   let field, spec, stageLabel=ev.label, through=false, note='', games=0;
   let ranked=[], place=0, shownOut=false, alive=false;
@@ -161529,7 +161540,7 @@ async function runCareerMajor2024(){
   const you=careerYouTeam(drafted);
   you.name=L().yourTeamPrefix+teamLabel(drafted); you.isYou=true;
   const m=ccM24State(ev.n);
-  const rowsOf=rows=>(rows||[]).map(r=>r==='you' ? you : ccMajorTeamFrom(r));
+  const rowsOf=rows=>ccStageRowsOf(rows, you);
   const seedOf=t=>ccSeedRow(t, you, ccMajorSeatRow);
   let spec=ccM24Spec(ev);
   let field, stageLabel=ev.label;
@@ -161902,7 +161913,7 @@ async function runCareerMajor2023(){
   const you=careerYouTeam(drafted);
   you.name=L().yourTeamPrefix+teamLabel(drafted); you.isYou=true;
   const m=ccM23State(ev.n);
-  const rowsOf=rows=>(rows||[]).map(r=>r==='you' ? you : ccMajorTeamFrom(r));
+  const rowsOf=rows=>ccStageRowsOf(rows, you);
   const seedOf=t=>ccSeedRow(t, you, ccMajorSeatRow);
   const spec=ccM23Spec(ev);
   const wk=(ev.w ? (m.wk[ev.w]=m.wk[ev.w]||{}) : null);
