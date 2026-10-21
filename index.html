@@ -160419,6 +160419,15 @@ async function ccMXRun(ev, sp, soloTeam){
     spec={games:sp.finalGames||12, cut:0};
     field=rowsOf(ccMXGfRows(ev.yx, ev.n, m));
     if(field.indexOf(you)<0) field.unshift(you);
+    /* Недобор путёвок (квоты недель World Cup округляются — соло-финал 2019 был 93 из 100, 21.10) —
+       добираем сильнейшими, как в финале без тебя (ccMXWorldFinalRoom). */
+    if(field.length<F){
+      const seen=new Set(field.map(ccSeatKey));
+      careerCupField(cr, drafted, F+20, null, false, CC_FIELD_SHARP.final).forEach(t=>{
+        if(field.length>=F || seen.has(ccSeatKey(t))) return;
+        seen.add(ccSeatKey(t)); field.push(t);
+      });
+    }
     field=field.slice(0, F);
     if(field.indexOf(you)<0) field[field.length-1]=you;
     ranked=await play(field, spec, stageLabel, false);
@@ -164141,7 +164150,7 @@ async function runCareerVictoryNight(){
   const vG1=(vSc1 && capOk(vSc1.cap)) ? vSc1.cap : CC_VICTORY_R1_GAMES;
   const vSize=lanN || careerVictoryField(solo), vCut=(lanN || ev.single || oneRound) ? 0 : careerVictoryCut(solo);
   const field=[...humans, ...(lanN ? (solo ? careerSoloField(cr, pc ? [me, pc] : drafted, vSize-(humans.length-1), false, 'final')
-                                           : careerCupField(cr, drafted, vSize-1, 'lan|'+ev.id, false, CC_FIELD_SHARP.lan))
+                                           : careerCupField(cr, drafted, vSize, 'lan|'+ev.id, false, CC_FIELD_SHARP.lan))   // size — вместе со мной (было vSize-1: Katowice 49 пар из 50, 21.10)
                              : solo ? careerSoloField(cr, pc ? [me, pc] : drafted, vSize-(humans.length-1), true)
                                     : careerCupField(cr, drafted, vSize, null, true))];
 
