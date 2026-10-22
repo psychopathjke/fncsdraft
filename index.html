@@ -120383,7 +120383,18 @@ function ccTeamWorldPack(){
           wseed:cr.teamWseed||null,
           /* И квал-симуляция ЛАНа сезона (cr.lanSim, ccLanSimRanked): считается лениво, у двоих в разные дни — зал ЛАНа
              расходился (онлайн-прогон 2022, DreamHack Winter 27.11). Нет у хозяина — нет и у второго: посчитают в вечере. */
-          lanSim:cr.lanSim||null};
+          lanSim:cr.lanSim||null,
+          /* И состояние командных Мейджоров 2019–2020 (cr.majorxs, трио и сквады): поле хитов и его добор из мира
+             (ccMXHeats) считаются лениво и кэшируются — у двоих в разные моменты. Онлайн-прогон 2019 (22.10): финал
+             FNCS Season X 22.09 — 15 строк поля из 33 разные. Соло-недели личные (свой «ты» у каждого) и не едут. */
+          mx:ccTeamMXPack(cr)};
+}
+function ccTeamMXPack(cr){
+  const out={}, all=(cr && cr.majorxs)||{};
+  Object.keys(all).forEach(k=>{ const m=all[k]; if(!m) return;
+    const sp=(typeof ccMXSpec==='function') ? ccMXSpec(m.y, m.n) : null;
+    if(sp && sp.size>1) out[k]=m; });
+  return out;
 }
 function ccTeamWorldApply(w){
   if(!w || !CAREER || !CAREER.career) return false;
@@ -120394,6 +120405,16 @@ function ccTeamWorldApply(w){
   if('orphanMate' in w) c.orphanMate=JSON.parse(JSON.stringify(obj(w.orphanMate)));
   if(w.wseed) c.teamWseed=String(w.wseed);
   if('lanSim' in w){ if(w.lanSim) c.lanSim=JSON.parse(JSON.stringify(w.lanSim)); else delete c.lanSim; }
+  // Командные Мейджоры 2019–2020 — как у хозяина (см. ccTeamMXPack); своих соло-недель это не касается.
+  if(w.mx && typeof w.mx==='object'){
+    c.majorxs=c.majorxs||{};
+    const mine=ccTeamMXPack(c);
+    Object.keys(mine).forEach(k=>{ if(!(k in w.mx)) delete c.majorxs[k]; });
+    Object.keys(w.mx).forEach(k=>{ c.majorxs[k]=JSON.parse(JSON.stringify(w.mx[k])); });
+    // Указатель на текущий Мейджор — на новую запись; на снятую — убрать (ccMXOf вернул бы её обратно в книгу).
+    if(c.majorx && c.majorx.y!=null){ const mk=c.majorx.y+'|'+c.majorx.n;
+      if(mk in w.mx) c.majorx=c.majorxs[mk]; else if(mk in mine) c.majorx=null; }
+  }
   if(w.seeds && typeof w.seeds==='object') ['majorSeed','summitSeed','relSeed','gcSeed'].forEach(k=>{ if(w.seeds[k]) c[k]=JSON.parse(JSON.stringify(w.seeds[k])); else delete c[k]; });
   if(w.tseed && typeof w.tseed==='object'){
     if(w.tseed.seeded==null) delete c.triosSeeded; else c.triosSeeded=w.tseed.seeded;
@@ -161002,6 +161023,10 @@ async function runCareerMajorMX(){
     if(soloTeam){
       CC_MX_SOLO_RUN=false; CC_MP_ALONE=false; CC_MP_HOLD=false; CC_MX_SHARED=false;
       if(shared) CC_MP_DAY_DUE=false;   // общий вечер закрыт сервером, но день и тут двигает ccMXTeamSettle
+      /* Разошлись посреди общего квала (прошёл один из двоих) — сервер вечер не закрывал (ccMpClose врозь пропускается),
+         и сид вечера оставался включён: ccMXTeamSettle при нём не шагает, перемотка вставала (онлайн-прогон 2020, 22.10:
+         FNCS C2S3 квал 1, раунды 1–2 в один вечер, 1.08). Вечер кончен — генератор вкладки возвращается себе. */
+      if(shared) ccMpSeedOff();
       const cr=CAREER.career, me=hKey(careerCard());
       // Ворота отменены (напарник сыграл свой квал врозь) — вечера не было, отметки нет: «Играть» ещё раз — лично.
       if(!CC_MX_GATE_OFF) (cr.mxDone=cr.mxDone||{})[me]=careerToday();
@@ -161045,6 +161070,10 @@ async function ccMXPeerFlagWait(){
 // Квал соло-недели сегодня играют оба — вечер общий. Решают одни и те же общие отметки у обоих (mxCan, mxDone).
 function ccMXSharedOk(ev){
   if(!ev || ev.stage!=='q' || !ccMpTeam() || (typeof ccRaceOn==='function' && ccRaceOn())) return false;
+  /* Только вечер в один раунд (недели World Cup Solo 2019). Два раунда за вечер (соло-FNCS 2020, «round 1–2») — личным,
+     как было: расход посреди такого вечера оставлял вылетевшего в общем вечере без закрытия, перемотка вставала
+     (онлайн-прогон 2020, 22.10: FNCS C2S3 квал 1, 1.08). */
+  if(!Array.isArray(ev.rounds) || ev.rounds.length!==1) return false;
   if(typeof MP==='undefined' || MP.state!=='live' || !MP.peer) return false;
   const me=careerCard(); if(!me || hKey(MP.peer)===hKey(me)) return false;
   ccMXCanStamp();
