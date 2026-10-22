@@ -120389,11 +120389,17 @@ function ccTeamWorldPack(){
              FNCS Season X 22.09 — 15 строк поля из 33 разные. Соло-недели личные (свой «ты» у каждого) и не едут. */
           mx:ccTeamMXPack(cr)};
 }
+let CC_TW_APPLIED=0;   // сколько раз второй принял книгу мира (видно в отпечатке поля финала Мейджора 2019–2020)
 function ccTeamMXPack(cr){
   const out={}, all=(cr && cr.majorxs)||{};
   Object.keys(all).forEach(k=>{ const m=all[k]; if(!m) return;
     const sp=(typeof ccMXSpec==='function') ? ccMXSpec(m.y, m.n) : null;
-    if(sp && sp.size>1) out[k]=m; });
+    if(!(sp && sp.size>1)) return;
+    /* Досчитанное — до отправки. Итоги чужих хитов (heatRes) второй досчитывал сам после книги, на своих лениво
+       закэшированных рейтингах: онлайн-прогон 2019 (22.10) — хиты и серия одни, итоги хитов разные (r386858 / r176420),
+       поле финала Season X 22.09 — 6 строк из 33. Сравнение — по отпечатку «mx …» в красной строке. */
+    if(m.season===cr.season){ try{ ccMXSettleWeeks(m); ccMXSettleHeats(m); }catch(e){} }
+    out[k]=m; });
   return out;
 }
 function ccTeamWorldApply(w){
@@ -120405,6 +120411,7 @@ function ccTeamWorldApply(w){
   if('orphanMate' in w) c.orphanMate=JSON.parse(JSON.stringify(obj(w.orphanMate)));
   if(w.wseed) c.teamWseed=String(w.wseed);
   if('lanSim' in w){ if(w.lanSim) c.lanSim=JSON.parse(JSON.stringify(w.lanSim)); else delete c.lanSim; }
+  CC_TW_APPLIED++;
   // Командные Мейджоры 2019–2020 — как у хозяина (см. ccTeamMXPack); своих соло-недель это не касается.
   if(w.mx && typeof w.mx==='object'){
     c.majorxs=c.majorxs||{};
@@ -148406,6 +148413,9 @@ function careerWorldFinals(fromISO, toISO){
     if((typeof ccRaceOn==='function' && ccRaceOn()) || (typeof ccMpTeam==='function' && ccMpTeam())){
       const days=careerYearDays();
       const byPeers=Object.keys(ccEvSeen()).some(k=>{ const p=k.split('|'); if(!p[0] || Math.abs(ccDaysBetween(p[0], day))>3) return false;
+        if(p[1]==='wfin') return false;
+        // Reload Championship: в календаре 'gc', у мира 'rc' — сравнение видом её не узнавало (гонка 2026, 21.08).
+        if(kind==='rc') return ccFinalKindOf(p[0], p[1])==='rc';
         /* У Мейджора — только сам финал: хиты и недели той же недели — тоже 'major', и сыгранный соседом хит выдавал
            финал за сыгранный (онлайн-прогон 2019 года, 21.10: финал Season X 22.09 мир досчитал только у одного —
            «nokey|2019-09-22», 63 строки досок). */
@@ -148426,30 +148436,33 @@ function careerWorldFinals(fromISO, toISO){
        выходил свой финал мира (онлайн-прогон 2019 года, 21.10: Season X 22.09, «nokey» — разные чемпионы и деньги). Как у
        финала недели Д1: в гонке считает старший по адресу, в команде — хозяин лобби (роль a), итог уезжает копилкой
        (ccEvResApply), остальные отмечают финал и ждут её. */
-    let shareKey=null;
+    let shareKey=null, payNo=false;
     { const raceIds=(typeof ccRaceOn==='function' && ccRaceOn() && typeof ccRaceLive==='function' && ccRaceLive() && typeof CC_RACE_PEERS!=='undefined')
         ? Object.keys(CC_RACE_PEERS).filter(k=>CC_RACE_PEERS[k]) : [];
       const team=!raceIds.length && typeof ccMpTeam==='function' && ccMpTeam() && !(typeof ccRaceOn==='function' && ccRaceOn());
-      // Финал с раскладкой после себя (Саммит → места на Глобалы, summitDone) считает каждый: раскладка нужна всем.
-      if((raceIds.length || team) && !done){
+      if(raceIds.length || team){
         const lead=raceIds.length ? [ccMpId()].concat(raceIds).sort()[0]===ccMpId() : ccMpRole()==='a';
-        if(!lead){ paid[key]=1; return; }
-        shareKey=day+'|wfin|'+id;
+        /* Финал с раскладкой после себя (Саммит → места на Глобалы, summitDone) считает каждый — раскладка нужна всем,
+           но платит, как и любой финал мира, только ведущий (копилкой). Платили все, каждый своим полем: онлайн-прогон
+           гонки 2026 (22.10), Summit 31.05 — oSydd $125000 у одного и ничего у другого. */
+        if(!lead){ if(!done){ paid[key]=1; return; } payNo=true; }
+        else shareKey=day+'|wfin|'+id;
       } }
     let room=null;
     try{ room=(build()||[]).filter(t=>t && !t._stub); }catch(e){ room=null; }
     if(!room || room.length<2) return;
     paid[key]=1;
     const wasDelta=CC_EV_DELTA;
-    if(shareKey){ ccEvDeltaStart(shareKey); if(CC_EV_DELTA){ CC_EV_DELTA.day=day; if(typeof ccMpTeam==='function' && ccMpTeam()) CC_EV_DELTA.alone=true; } }
+    if(shareKey){ ccEvDeltaStart(shareKey); if(CC_EV_DELTA){ CC_EV_DELTA.day=day; CC_EV_DELTA.wkind=kind; if(typeof ccMpTeam==='function' && ccMpTeam()) CC_EV_DELTA.alone=true; } }
     let ranked=null;
     try{
       room.forEach(t=>{ t.stagePts=0; t.wins=0; t.stageElims=0; });
       ccWorldRun('fin|'+key, ()=>simulateGames(room, games, pts, kill));
       ranked=rank(room);
       CC_PRIZE_DAY=day;
-      try{ careerMoneyAdd(ranked, prize); careerPrAdd(ranked, meta); } finally { CC_PRIZE_DAY=null; }
-    } finally { if(shareKey){ ccEvDeltaSend(); CC_EV_DELTA=wasDelta; } }
+      if(!payNo) try{ careerMoneyAdd(ranked, prize); careerPrAdd(ranked, meta); } finally { CC_PRIZE_DAY=null; }
+      CC_PRIZE_DAY=null;
+    } finally { if(shareKey){ if(CC_EV_DELTA) ccWfinKeep(CC_EV_DELTA); ccEvDeltaSend(); CC_EV_DELTA=wasDelta; } }
     const w=ranked[0];
     // Финал своего Мейджора без игрока — в Историю тем, кем он сыгран (careerArchiveSeason).
     if(kind==='major' && w){
@@ -155877,9 +155890,58 @@ function ccEvMine(){
   try{ const me=careerCard(); if(me && me.handle) s[hKey(me)]=1; }catch(e){}
   return s;
 }
+/* ФИНАЛ МИРА ПРОТИВ СЫГРАННОГО ФИНАЛА (гонка, онлайн-прогон 2026, 22.10). Финал, который сыграл один из людей,
+   второй мог досчитать за мир раньше, чем пришла копилка сыгравшего (в гонке день у каждого свой) — и призы всего поля
+   ложились дважды: Summit 31.05, 50 лишних строк. Выплату мира за финал помним (cr.wfinPaid); пришла копилка
+   сыгранного финала того же вида в те же дни — сначала снимаем выплату мира. И наоборот: копилку мира за финал,
+   который здесь уже сыгран (своим вечером или копилкой соседа), не принимаем. */
+function ccFinalKindOf(day, id){
+  const e=(careerYearDays().get(day)||[]).find(x=>x && String(x.id||'')===String(id||''));
+  if(!e) return null;
+  // Reload Championship в календаре идёт видом 'gc' (общая краска с Last Chance), а мир платит её видом 'rc' (ccLanKindOf).
+  if(String(e.id||'')==='ReloadChampionshipParis') return 'rc';
+  return (['globals','gclc','rc'].indexOf(e.kind)>=0 || e.stage==='final' || /Final|_GF|Grand/i.test(String(e.id||''))) ? e.kind : null;
+}
+function ccWfinKeep(d){
+  try{
+    if(!d || !d.wkind || !CAREER || !CAREER.career) return;
+    const cr=CAREER.career, w=cr.wfinPaid=cr.wfinPaid||{};
+    w[d.key]={kind:d.wkind, day:d.day||careerToday(), money:Object.assign({}, d.money||{}), ev:Object.assign({}, d.ev||{}), pr:JSON.parse(JSON.stringify(d.pr||{})), yr:d.yr||null, fs:d.fs||null};
+    const ks=Object.keys(w); if(ks.length>40) ks.slice(0, ks.length-40).forEach(k=>{ delete w[k]; });
+  }catch(e){}
+}
+function ccWfinPlayedHere(kind, day){
+  const cr=CAREER.career;
+  if((cr.log||[]).some(r=>r && r.kind===kind && r.season===cr.season && (r.stage==null || r.stage==='final') && Math.abs(ccDaysBetween(r.day, day))<=3)) return true;
+  return Object.keys(ccEvSeen()).some(k=>{ if(/\|wfin\|/.test(k)) return false; const p=k.split('|');
+    return p[0] && Math.abs(ccDaysBetween(p[0], day))<=3 && ccFinalKindOf(p[0], p[1])===kind; });
+}
+function ccWfinUndo(key){
+  const cr=CAREER.career, w=cr.wfinPaid||{};
+  const p=String(key||'').split('|'); if(!p[0] || /\|wfin\|/.test(key)) return;
+  const kind=ccFinalKindOf(p[0], p[1]); if(!kind) return;
+  Object.keys(w).forEach(wk=>{
+    const r=w[wk]; if(!r || r.kind!==kind || Math.abs(ccDaysBetween(r.day, p[0]))>3) return;
+    const m=careerMoney();
+    Object.keys(r.money||{}).forEach(h=>{ const each=Math.round(r.money[h]||0), row=m.rows[h]; if(!each || !row || row.you) return;
+      row.usd-=each; row.events=Math.max(0, (row.events||0)-Math.max(1, Math.round((r.ev && r.ev[h])||1)));
+      if(r.yr && row.yr) row.yr[r.yr]=(row.yr[r.yr]||0)-each;
+      if(r.fs && row.fs) row.fs[r.fs]=(row.fs[r.fs]||0)-each;
+      if(row.usd<=0 && !row.events) delete m.rows[h]; });
+    const t=careerPrTally(), ad=ccAbsDay(cr.season, r.day);
+    Object.keys(r.pr||{}).forEach(name=>{ const row=t.rows[name]; if(!row || row.you) return;
+      (r.pr[name]||[]).forEach(rating=>{
+        let i=row.v.findIndex(v=>v[0]===rating && v[1]===ad); if(i<0) i=row.v.findIndex(v=>v[0]===rating);
+        if(i>=0){ row.v.splice(i, 1); row.n=Math.max(0, (row.n||0)-1); } });
+      if(!row.v.length && !row.n) delete t.rows[name]; });
+    delete w[wk];
+  });
+}
 function ccEvResApply(d){
   if(!d || !d.key || !CAREER || !CAREER.career) return false;
+  if(d.wkind && ccWfinPlayedHere(d.wkind, d.day||careerToday())){ ccEvSeenMark(d.key); return false; }
   if(!ccEvSeenMark(d.key)) return false;
+  if(d.wkind) ccWfinKeep(d); else try{ ccWfinUndo(d.key); }catch(e){}
   const mine=ccEvMine();
   const m=careerMoney(), k={yr:d.yr||careerMoneyKeys().yr, fs:d.fs||careerMoneyKeys().fs};
   Object.keys(d.money||{}).forEach(function(h){
@@ -161325,6 +161387,9 @@ async function ccMXRun(ev, sp, soloTeam){
   if(ev.stage==='final' && !wildOut){
     spec={games:sp.finalGames||12, cut:0};
     field=rowsOf(ccMXGfRows(ev.yx, ev.n, m));
+    // Отпечаток записи Мейджора — в сверку поля: разошлось поле финала — видно, на чём (хиты, их итоги, серия).
+    try{ const h=v=>String(ccHashStr(JSON.stringify(v||null))).slice(0,6);
+      CC_MP_FIELD_FP='mx h'+h(m.heats)+' r'+h(m.heatRes)+' s'+h(m.series)+' q'+h(m.q)+' w'+h(m.wf)+' tw'+CC_TW_APPLIED; }catch(e){}
     if(field.indexOf(you)<0) field.unshift(you);
     /* Недобор путёвок (квоты недель World Cup округляются — соло-финал 2019 был 93 из 100, 21.10) —
        добираем сильнейшими, как в финале без тебя (ccMXWorldFinalRoom). */
