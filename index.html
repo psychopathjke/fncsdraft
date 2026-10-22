@@ -124992,13 +124992,21 @@ function ccRostersTileHTML(){
   /* Всегда три строки — дуо, трио, сквад (его слово 29.09: «в карьере нет трио-состава, непонятно, с кем
      играешь»): кто в составе, сколько из скольких, и у неполного — «Позвать» (поиск с личкой, ccDuoFindOpen(fmt)). */
   const me=CAREER.player.nick||CAREER.player.handle||'';
+  const mpNow=(typeof ccMpOn==='function' && ccMpOn());
   const rows=[2,3,4].map(s=>{
-    const who=(all[s]||[]).filter(Boolean).map(r=>{ const c=ccMateCardOf(r); return c && c.handle; }).filter(Boolean).slice(0, s-1);
+    // Онлайн трио/сквад — те же двое живых (+ филл на вечер), а не пустой одиночный состав формата (скрин 22.10: «трио · 1/3»).
+    const src=(mpNow && s!==now) ? (CAREER.partners||[]).slice(0, 1) : (all[s]||[]);
+    const who=src.filter(Boolean).map(r=>{ const c=ccMateCardOf(r); return c && c.handle; }).filter(Boolean).slice(0, s-1);
     const full=who.length>=s-1;
     // Сбор не текущего формата — за неделю до его первого вечера (его слово 8.10: «во вкладке карьера можно уже трио и
     // сквад собрать, хотя турниры ещё не скоро»), как и метка на карте (ccFmtOpenFrom). Нет вечеров формата — нет кнопки.
     const from=(s!==now) ? ccFmtOpenFrom(s) : null, plays=s===now || (typeof ccFormatNext==='function' && !!ccFormatNext(s));
-    const btn=(full || s===now || !plays) ? ''
+    /* ОНЛАЙН — не «Позвать» (Telegram 22.10: «в трио чела позвать невозможно»): в командной карьере поиск по личкам
+       закрыт (ccDuoFindOpen), третий и четвёртый садятся на вечер филлом у обоих (ccMpFmtBegin). Кнопка была мёртвой —
+       жмёшь, ничего. Теперь та же подпись, что в Центре (ccRostersStripHTML). */
+    const mpFill=(typeof ccMpOn==='function' && ccMpOn() && s!==now && s>2 && plays);
+    const btn=mpFill ? (CC_MP_FMT_ON && L().roMpFill ? ` <small class="cc-rost-from">${esc(L().roMpFill(s-2))}</small>` : '')
+      : (full || s===now || !plays) ? ''
       : from ? ` <small class="cc-rost-from">${esc(L().roSpotFrom(ccDayLabel(from)))}</small>`
       : ` <button class="cc-rost-ask" onclick="ccDuoFindOpen(null, ${s})">${esc(L().lfRosterAsk)}</button>`;
     return `<div class="ch-row"><em>${names[s]}${s===now?' · '+L().lfRosterNow:''} · ${who.length+1}/${s}</em><b>${esc([me].concat(who).join(', '))}${btn}</b></div>`;
@@ -146934,7 +146942,11 @@ function ccDuoFindOpen(seat, fmt){
   /* Открыта ОБОИМ: третий садится только на два «да» (ccMpThirdAsk), так что
      предложить его может любой из двоих — раньше список молча не открывался
      у второго в лобби, и если роли перепутались, то и у владельца. */
-  if(ccMpOn() && ccMpMateRecs().length >= ccMpBotSeats()) return;
+  if(ccMpOn() && ccMpMateRecs().length >= ccMpBotSeats()){
+    // Не молча (Telegram 22.10): в команде состав другого формата добирается филлом на вечер — так и сказать.
+    try{ if(fmt && fmt>2 && CC_MP_FMT_ON && L().roMpFill) ccTell(L().roMpFill(fmt-2)); }catch(e){}
+    return;
+  }
   CC_DUO_Q=''; CC_DUO_NAT=''; CC_DUO_NAT_OPEN=false; CC_DUO_REG=''; CC_DUO_SORT='near'; CC_DUO_PAIRS=false;
   CC_DUO_SEAT=(typeof seat==='number' && seat>=0 && seat<careerMateSeats()) ? seat : null;
   CC_DUO_ROLE='';
