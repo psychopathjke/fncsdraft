@@ -26,3 +26,7 @@ shot-*.png
 # Локальное состояние wrangler (кэш, miniflare) — не код.
 .wrangler/
 server/.wrangler/
+
+# Сторонний скил Impeccable (pbakaus/impeccable 570ca4f, Apache-2.0) — ставится заново, в git не хранится; хуки его НЕ включены
+.claude/skills/impeccable/
+.claude/agents/impeccable-*.md
