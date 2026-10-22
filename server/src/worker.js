@@ -179,6 +179,9 @@ export class Board {
     try{ this.sql.exec('ALTER TABLE daily ADD COLUMN p100 INTEGER DEFAULT 0'); }catch(e){}    // 16.10: точная сила (сотые) с синергией
     try{ this.sql.exec('ALTER TABLE daily ADD COLUMN syn INTEGER DEFAULT 0'); }catch(e){}
     // Журнал ошибок игроков (22.10, см. errlog.js): одинаковые — одной строкой со счётчиком n.
+    // Реестр кодов облака (22.10): объекты Vault по одному на код, перечислить их у Cloudflare нельзя — для резервной
+    // копии код записывается здесь при каждом сохранении. Только внутренний путь /vreg, снаружи сюда не попасть.
+    this.sql.exec('CREATE TABLE IF NOT EXISTS vcodes(code TEXT PRIMARY KEY, at INTEGER)');
     this.sql.exec('CREATE TABLE IF NOT EXISTS errs(k TEXT PRIMARY KEY, kind TEXT, build TEXT, msg TEXT, src TEXT, ctx TEXT, ua TEXT, n INTEGER, first INTEGER, at INTEGER)');
     this.sql.exec('CREATE TABLE IF NOT EXISTS daily_dbg(day TEXT, id TEXT, nick TEXT, country TEXT, score INTEGER, place INTEGER, field INTEGER, team TEXT, at INTEGER, power INTEGER DEFAULT 0, p100 INTEGER DEFAULT 0, syn INTEGER DEFAULT 0, PRIMARY KEY(day, id))');
   }
@@ -250,6 +253,14 @@ export class Board {
     const url=new URL(req.url);
     if(url.pathname==='/daily') return this.daily(req, url);
     if(url.pathname==='/errlog') return this.errlog(req, url);
+    // Внутренние пути (зовёт только воркер, см. /vault и /backup в fetch ниже): наружу маршрута нет.
+    if(url.pathname==='/vreg'){ let e=null; try{ e=await req.json(); }catch(err){ return json({err:'json'}, 400); }
+      if(e && CODE_RE.test(String(e.code||''))) this.sql.exec('INSERT OR REPLACE INTO vcodes(code, at) VALUES(?,?)', String(e.code), Date.now());
+      return json({ok:true}); }
+    if(url.pathname==='/vcodes') return json({codes:this.sql.exec('SELECT code, at FROM vcodes ORDER BY at DESC').toArray()});
+    if(url.pathname==='/bdump') return json({at:Date.now(),
+      rows:this.sql.exec('SELECT * FROM rows').toArray(), daily:this.sql.exec('SELECT * FROM daily').toArray(),
+      rejects:this.sql.exec('SELECT * FROM rejects').toArray(), errs:this.sql.exec('SELECT * FROM errs').toArray()});
     if(req.method==='POST'){
       let e=null; try{ e=await req.json(); }catch(err){ return json({err:'json'}, 400); }
       if(e && e.del){
@@ -302,6 +313,9 @@ export class Vault {
     this.sql.exec('CREATE TABLE IF NOT EXISTS parts(key TEXT, n INTEGER, data TEXT, PRIMARY KEY(key, n))');
   }
   async fetch(req){
+    // Резервная копия (только из /backup воркера): все сейвы кода как есть — куски и подписи.
+    if(new URL(req.url).pathname==='/vdump') return json({meta:this.sql.exec('SELECT key, at, size, info FROM meta').toArray(),
+      parts:this.sql.exec('SELECT key, n, data FROM parts ORDER BY key, n').toArray()});
     let b=null; try{ b=await req.json(); }catch(e){ return json({err:'json'}, 400); }
     const r=checkReq(b);
     if(r.err) return json({err:r.err}, 400);
@@ -363,7 +377,25 @@ export default {
       let code=''; try{ code=String(JSON.parse(text).code||''); }catch(e){ return json({err:'json'}, 400); }
       if(!CODE_RE.test(code)) return json({err:'code'}, 400);
       const stub=env.VAULT.get(env.VAULT.idFromName('v:'+code));
-      return stub.fetch(new Request(req.url, {method:'POST', body:text, headers:{'Content-Type':'application/json'}}));
+      const res=await stub.fetch(new Request(req.url, {method:'POST', body:text, headers:{'Content-Type':'application/json'}}));
+      // Код — в реестр для резервной копии (после удачного put; ошибка реестра ответ игроку не портит).
+      try{ let op=''; try{ op=String(JSON.parse(text).op||''); }catch(e){}
+        if(res.ok && op==='put'){ const board=env.BOARD.get(env.BOARD.idFromName('global'));
+          await board.fetch(new Request('https://do/vreg', {method:'POST', body:JSON.stringify({code}), headers:{'Content-Type':'application/json'}})); } }catch(e){}
+      return res;
+    }
+    /* РЕЗЕРВНАЯ КОПИЯ (22.10): таблица карьер, драфт дня, журналы и облачные сейвы — на его ПК ночью (tools/backup-pull.js).
+       Только с ключом BACKUP_KEY (секрет воркера, wrangler secret put); без ключа или с чужим — 404, как будто пути нет. */
+    if(url.pathname==='/backup'){
+      const key=env.BACKUP_KEY||'', got=req.headers.get('X-Fd-Key')||'';
+      if(key.length<24 || got!==key) return new Response('no', {status:404});
+      const part=url.searchParams.get('part');
+      const board=env.BOARD.get(env.BOARD.idFromName('global'));
+      if(part==='board') return board.fetch(new Request('https://do/bdump'));
+      if(part==='vaults') return board.fetch(new Request('https://do/vcodes'));
+      if(part==='vault'){ const code=String(url.searchParams.get('code')||''); if(!CODE_RE.test(code)) return json({err:'code'}, 400);
+        return env.VAULT.get(env.VAULT.idFromName('v:'+code)).fetch(new Request('https://do/vdump')); }
+      return json({err:'part'}, 400);
     }
     const m=url.pathname.match(/^\/lobby\/([A-Z0-9]{6})$/);
     if(!m) return new Response('no', {status:404});

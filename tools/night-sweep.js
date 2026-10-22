@@ -36,6 +36,19 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
   execFileSync('git', ['worktree', 'add', '--detach', WT, 'HEAD'], { cwd: ROOT, stdio: 'ignore' });
   const head = execFileSync('git', ['log', '--oneline', '-1'], { cwd: WT, encoding: 'utf8' }).trim();
   say('ночной прогон ' + day + ' · ' + head);
+  // Резервная копия данных сервера (tools/backup-pull.js) — до прогона, она быстрая.
+  try { say(execFileSync(process.execPath, [path.join(ROOT, 'tools', 'backup-pull.js')], { encoding: 'utf8' }).trim()); }
+  catch (e) { say('FAIL резервная копия: ' + String((e.stderr || e.message || e)).trim().slice(0, 300)); }
+  // Сервер жив? Тот же адрес, что у игроков: таблица карьер и журнал поломок за ночь.
+  try {
+    const one = u => new Promise(res => require('https').get(u, r => { let b = ''; r.on('data', d => b += d); r.on('end', () => res({ c: r.statusCode, b })); }).on('error', e => res({ c: 0, b: String(e.message) })));
+    const b = await one('https://mp.fncsdraft.com/board'), e = await one('https://mp.fncsdraft.com/errlog?limit=200');
+    say((b.c === 200 ? 'OK  ' : 'FAIL') + ' сервер mp.fncsdraft.com /board ' + b.c);
+    let errs = []; try { errs = JSON.parse(e.b).errs || []; } catch (x) {}
+    const since = Date.now() - 864e5, fresh = errs.filter(r => r.at >= since);
+    say('журнал поломок за сутки: ' + fresh.length + ' видов, ' + fresh.reduce((s, r) => s + (r.n || 1), 0) + ' раз' +
+      fresh.slice(0, 5).map(r => '\n    ' + r.kind + ' ×' + r.n + ' ' + r.build + ' ' + r.msg.slice(0, 120) + (r.src ? ' @' + r.src : '')).join(''));
+  } catch (e) { say('FAIL проверка сервера: ' + String(e.message || e).slice(0, 200)); }
 
   let worker = null;
   if (!(await alive())) {
