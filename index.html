@@ -696,6 +696,37 @@
     color:#fff;font-size:14px;padding:9px 14px 8px;}
   .hero .hero-team .hero-seg .cstrip-btn:hover{background:rgba(255,255,255,.2);border-color:#fff;}
   .hero-pair:has(.hero-mgr:not([hidden]))>.hero::after{background:linear-gradient(90deg,rgba(10,20,60,.95) 0%,rgba(10,20,60,.85) 55%,rgba(10,20,60,.4) 100%);}
+  /* ГЛАВНАЯ, ВАРИАНТ A — ПЛИТКИ «DISCOVER» FORTNITE (его выбор 23.10 из трёх макетов после «дизайн всё равно не то»).
+     Картинка режима — на всю карточку, снизу тёмный градиент, внизу: метка режима, название, две строки описания,
+     жёлтая кнопка; «С другом» — одна кнопка, раскрывает три двери (Вдвоём / Завести гонку / Войти по коду).
+     Список фактов убран, NEW — плашкой в левом верхнем углу. */
+  #screen-mode .hero-pair:has(.hero-mgr:not([hidden]))>.hero{min-height:440px;display:flex;flex-direction:column;justify-content:flex-end;}
+  #screen-mode .hero-pair:has(.hero-mgr:not([hidden]))>.hero>.hero-art{display:block !important;position:absolute;inset:0;z-index:0;min-height:0;
+    margin:0;width:auto;height:auto;clip-path:none;border-radius:0;opacity:1;background-size:cover;background-position:center 30%;}
+  #screen-mode .hero-pair:has(.hero-mgr:not([hidden]))>.hero-draft-main>.hero-art.hd-logos{opacity:.95;}
+  #screen-mode .hero-pair:has(.hero-mgr:not([hidden]))>.hero .hero-collage{display:none !important;}
+  #screen-mode .hero-pair:has(.hero-mgr:not([hidden]))>.hero::after{background:linear-gradient(180deg,rgba(6,12,40,.05) 15%,rgba(6,12,40,.62) 46%,rgba(6,12,40,.96) 72%);}
+  #screen-mode .hero-pair:has(.hero-mgr:not([hidden]))>.hero .hero-body{position:static;justify-content:flex-end;gap:8px;padding:0 20px 20px;}
+  #screen-mode .hero-pair:has(.hero-mgr:not([hidden]))>.hero .hero-body>*{position:relative;z-index:2;}
+  #screen-mode .hero-pair:has(.hero-mgr:not([hidden]))>.hero .hero-title{font-size:34px;line-height:1;max-width:none;margin:0;}
+  #screen-mode .hero-pair:has(.hero-mgr:not([hidden]))>.hero .hero-sub{font-size:14px;line-height:1.4;color:#d6e2ff;
+    display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+  #screen-mode .hero-pair:has(.hero-mgr:not([hidden]))>.hero .hero-chips{display:contents;}
+  #screen-mode .hero-pair:has(.hero-mgr:not([hidden]))>.hero .hero-chips .cstrip-chip{display:none;}
+  #screen-mode .hero-pair:has(.hero-mgr:not([hidden]))>.hero .hero-chips .cstrip-tag{position:absolute;top:14px;left:14px;z-index:3;margin:0;font-size:13px;padding:4px 9px;}
+  #screen-mode .hero-pair:has(.hero-mgr:not([hidden]))>.hero .hero-body{flex:1 1 auto;}
+  #screen-mode .hero-pair:has(.hero-mgr:not([hidden]))>.hero .hero-mode-tag{margin-top:auto;}
+  #screen-mode .hero-pair:has(.hero-mgr:not([hidden]))>.hero .hero-cta{margin-top:6px;}
+  #screen-mode .hero-pair:has(.hero-mgr:not([hidden]))>.hero .hero-mode-tag,#screen-mode .hero-pair:has(.hero-mgr:not([hidden]))>.hero .hero-sub{text-shadow:0 1px 6px rgba(0,0,0,.75);}
+  #screen-mode .hero .hero-team{order:9;margin:0;}
+  #screen-mode .hero .hero-team .hero-team-lbl{cursor:pointer;font-family:var(--font-display);font-weight:700;font-size:14px;letter-spacing:.04em;text-transform:uppercase;
+    color:#fff;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.5);border-radius:10px;padding:10px 14px 9px;}
+  #screen-mode .hero .hero-team .hero-team-lbl::after{content:' ▾';}
+  #screen-mode .hero .hero-team.open .hero-team-lbl::after{content:' ▴';}
+  #screen-mode .hero .hero-team .hero-seg{display:none;}
+  #screen-mode .hero .hero-team.open .hero-seg{display:inline-flex;}
+  #screen-mode .hero .hero-about{order:10;margin:0;}
+  @media (max-width:700px){ #screen-mode .hero-pair:has(.hero-mgr:not([hidden]))>.hero{min-height:380px;} }
   /* Строка «с другом»: три командные двери мельче главных, одной строкой. */
   .hero-about{margin:10px 0 0;text-align:left}
 /* Тихая третья кнопка ряда: та же таблетка и тот же узкий капс, что у
@@ -8991,7 +9022,7 @@
              кнопки трёх колонок стояли на одной линии внизу. Id кнопок «с другом» прежние (check-mp-doors, setLang).
              Видно сразу, а не после app.js (правка 29.09); CC_MP_OPEN=false по-прежнему прячет ряд из setLang. -->
         <div class="hero-team" id="heroTeam">
-          <span class="hero-team-lbl" data-i18n="heroTeamLbl"></span>
+          <button type="button" class="hero-team-lbl" data-i18n="heroTeamLbl" onclick="this.parentNode.classList.toggle('open')" aria-expanded="false"></button>
           <span class="hero-seg">
             <button class="cstrip-btn cstrip-btn-duo" id="cstripDuo" type="button" onclick="careerMpNew()" data-i18n="heroDuo"></button>
             <button class="cstrip-btn cstrip-btn-duo" id="cstripRace" type="button" onclick="careerRaceNew()" data-i18n="ccRaceMake"></button>
@@ -10004,7 +10035,7 @@ resetConfirmNo:'Отмена',
 tagline:'Задрафть сквад из реальных игроков FNCS и разыграй турнир. Или начни карьеру: сезон за сезоном по настоящему календарю, дивизионы, Мейджоры, Reload, ЛАНы. Один или вдвоём с другом.',
 heroTitle:'Задрафть настоящих про. <em>Разыграй сезон.</em>',
 heroCareerCont:'Продолжить карьеру', heroCareer:'Начать карьеру',
-heroTeamLbl:'С другом:', heroDuo:'Вдвоём',
+heroTeamLbl:'С другом', heroDuo:'Вдвоём',
 navCareer:'Карьера', navDraft:'Драфт', navHistory:'История',
 ccActGrpTrain:'Тренировки', ccActGrpTeam:'Команда', ccActGrpLife:'Стрим и отдых',
 heroCode:'Есть код от напарника? Войти по коду',
@@ -12166,7 +12197,7 @@ major3GcSlotNote:n=>'The top '+n+' of this region fly to the Global Championship
 tagline:'Draft a squad of real FNCS players and run the tournament. Or start a career: season after season on the real calendar, divisions, Majors, Reload and LANs. Solo or with a friend.',
 heroTitle:'Draft real pros. <em>Play the season.</em>',
 heroCareerCont:'Continue career', heroCareer:'Start a career',
-heroTeamLbl:'With a friend:', heroDuo:'Play as a duo',
+heroTeamLbl:'With a friend', heroDuo:'Play as a duo',
 navCareer:'Career', navDraft:'Draft', navHistory:'History',
 ccActGrpTrain:'Training', ccActGrpTeam:'Team', ccActGrpLife:'Stream and rest',
 heroCode:'Got a code from your partner? Join by code',
@@ -16259,7 +16290,7 @@ supportBtn:'Soutenir',
 tagline:'Compose une équipe de vrais joueurs FNCS et lance le tournoi. Ou commence une carrière : saison après saison sur le vrai calendrier, divisions, Majors, Reload et LAN. Seul ou avec un ami.',
 heroTitle:'Drafte de vrais pros. <em>Joue la saison.</em>',
 heroCareerCont:'Continuer la carrière', heroCareer:'Lancer une carrière',
-heroTeamLbl:'Avec un ami :', hmChipClubs:'Vrais clubs', hmChipMatch:'Jour de match', ccMpFmtAsk:(h,f)=>'Ton coéquipier veut '+h+' dans le '+(f===4?'squad':'trio')+' pour les cups. On le prend ?', roMpSwap:'Changer', cstripChipDivs:'Divisions 5 → 1', cstripChipMajors:'Majors et LAN', cstripChipReload:'Le circuit Reload', cstripChipLife:'Clubs, argent, forme', heroDuo:'Jouer à deux',
+heroTeamLbl:'Avec un ami', hmChipClubs:'Vrais clubs', hmChipMatch:'Jour de match', ccMpFmtAsk:(h,f)=>'Ton coéquipier veut '+h+' dans le '+(f===4?'squad':'trio')+' pour les cups. On le prend ?', roMpSwap:'Changer', cstripChipDivs:'Divisions 5 → 1', cstripChipMajors:'Majors et LAN', cstripChipReload:'Le circuit Reload', cstripChipLife:'Clubs, argent, forme', heroDuo:'Jouer à deux',
 navCareer:'Carrière', navDraft:'Draft', navHistory:'Historique',
 ccActGrpTrain:'Entraînement', ccActGrpTeam:'Équipe', ccActGrpLife:'Stream et repos',
 heroCode:'Tu as un code de ton coéquipier ? Rejoindre par code',
@@ -16626,7 +16657,7 @@ supportBtn:"Sostieni",
 tagline:"Crea una squadra di veri giocatori FNCS e gioca il torneo. Oppure inizia una carriera: stagione dopo stagione sul calendario reale, divisioni, Major, Reload e LAN. Da solo o con un amico.",
 heroTitle:"Scegli veri pro. <em>Gioca la stagione.</em>",
 heroCareerCont:"Continua la carriera", heroCareer:"Inizia la carriera",
-heroTeamLbl:"Con un amico:", hmChipClubs:"Club veri", hmChipMatch:"Giorno di gara", ccMpFmtAsk:(h,f)=>"Il tuo compagno vuole "+h+" nel "+(f===4?"squad":"trio")+" per le cup. Lo prendiamo?", roMpSwap:"Cambia", cstripChipDivs:"Divisioni 5 → 1", cstripChipMajors:"Major e LAN", cstripChipReload:"Il circuito Reload", cstripChipLife:"Club, soldi, forma", heroDuo:"In due",
+heroTeamLbl:"Con un amico", hmChipClubs:"Club veri", hmChipMatch:"Giorno di gara", ccMpFmtAsk:(h,f)=>"Il tuo compagno vuole "+h+" nel "+(f===4?"squad":"trio")+" per le cup. Lo prendiamo?", roMpSwap:"Cambia", cstripChipDivs:"Divisioni 5 → 1", cstripChipMajors:"Major e LAN", cstripChipReload:"Il circuito Reload", cstripChipLife:"Club, soldi, forma", heroDuo:"In due",
 navCareer:"Carriera", navDraft:"Draft", navHistory:"Storico",
 ccActGrpTrain:"Allenamento", ccActGrpTeam:"Squadra", ccActGrpLife:"Stream e riposo",
 heroCode:"Hai un codice dal compagno? Entra con il codice",
@@ -19177,7 +19208,7 @@ supportBtn:"Apoiar",
 tagline:"Monte um time de jogadores reais da FNCS e rode o torneio. Ou comece uma carreira: temporada após temporada no calendário real, divisões, Majors, Reload e LANs. Sozinho ou com um amigo.",
 heroTitle:"Convoque os pros. <em>Jogue a temporada.</em>",
 heroCareerCont:"Continuar carreira", heroCareer:"Começar carreira",
-heroTeamLbl:"Com um amigo:", hmChipClubs:"Clubes reais", hmChipMatch:"Dia de jogo", ccMpFmtAsk:(h,f)=>"Teu parceiro quer "+h+" no "+(f===4?"squad":"trio")+" para os cups. Levamos?", roMpSwap:"Trocar", cstripChipDivs:"Divisões 5 → 1", cstripChipMajors:"Majors e LANs", cstripChipReload:"O circuito Reload", cstripChipLife:"Clubes, dinheiro, forma", heroDuo:"Em dupla",
+heroTeamLbl:"Com um amigo", hmChipClubs:"Clubes reais", hmChipMatch:"Dia de jogo", ccMpFmtAsk:(h,f)=>"Teu parceiro quer "+h+" no "+(f===4?"squad":"trio")+" para os cups. Levamos?", roMpSwap:"Trocar", cstripChipDivs:"Divisões 5 → 1", cstripChipMajors:"Majors e LANs", cstripChipReload:"O circuito Reload", cstripChipLife:"Clubes, dinheiro, forma", heroDuo:"Em dupla",
 navCareer:"Carreira", navDraft:"Draft", navHistory:"Histórico",
 ccActGrpTrain:"Treino", ccActGrpTeam:"Time", ccActGrpLife:"Stream e descanso",
 heroCode:"Tem um código do parceiro? Entrar com código",
