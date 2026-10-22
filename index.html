@@ -8025,6 +8025,10 @@
   .mgs-act .hg-go{width:auto;flex:1 1 140px;margin-top:0;}
   .mgs-move{flex:1 1 140px;font:inherit;font-size:12px;padding:8px;border-radius:10px;background:rgba(255,255,255,.06);color:#fff;border:1px solid rgba(255,255,255,.18);}
   .mgs-move option{color:#000;}
+  .mgs-moves{display:flex;flex-wrap:wrap;align-items:center;gap:6px;flex:1 1 100%;}
+  .mgs-moves em{font-style:normal;font-size:12px;opacity:.7;margin-right:2px;}
+  .mgs-moves .hg-go{flex:0 0 auto;padding:6px 12px;font-size:12px;}
+  .mgs-moves .hg-go.on{opacity:.45;cursor:default;}
   .mgs-bad{border-color:rgba(255,90,90,.6)!important;color:#ffb3b3!important;}
   @media (max-width:520px){ .mgs-card{width:calc(50% - 5px);} .mgs-big{width:100%;max-width:240px;margin:0 auto;} }
   .hd-tile .mgn-row b.up{color:#1f9d55;} .hd-tile .mgn-row b.down{color:#d64545;}
@@ -118500,7 +118504,7 @@ const CC_BUILD='813598d1';
    это оно: биф рождается в стычке дома (careerBeefNight). */
 // year/year0 — общие (30.09): друг по ссылке хозяина, который уже перешёл в следующий год, оставался
 // в году начала — день приезжал 2021-й, а календарь года стоял 2019-й.
-const CC_TEAM_KEYS=['seed','day','year','year0','mxDone','vpick','season','division','diff','tokens','seasonOver','chemSince','beefs',
+const CC_TEAM_KEYS=['seed','day','year','year0','mxDone','mxCan','vpick','season','division','diff','tokens','seasonOver','chemSince','beefs',
                     'sizes','trios','log','mp','region','mates','spots','seasonTurn',
                     'majorSeed','summitSeed','relSeed','gcSeed','duoSplits','exMates','table',
                     'events','d1','major','summit','globals','reload','rel','wf','rc',
@@ -121815,7 +121819,14 @@ function ccMpApplyRemote(team){
   // Идёт вечер — чужое состояние подождёт: применить его сейчас значит
   // выбросить кэши мира посреди игры. См. careerSave.
   if(CC_MP_RAND) return;
-  if(CC_MX_SOLO_RUN){ CC_MX_PENDING=team; return; }
+  if(CC_MX_SOLO_RUN){
+    CC_MX_PENDING=team;
+    /* Ждём у ворот общего квала, а напарник свой уже сыграл врозь (его отметка mxDone пришла) — ворота не откроются:
+       отменяем, «Играть» ещё раз пойдёт личным вечером. См. ccMXSharedOk. */
+    try{ if(CC_MX_SHARED && MP.gate && MP.gateCancel && MP.peer && team.mxDone && team.mxDone[hKey(MP.peer)]===careerToday()){
+      CC_MX_GATE_OFF=true; MP.gateCancel('peer played the solo qualifier apart'); } }catch(e){}
+    return;
+  }
   /* День команды идёт только вперёд. Отзыв: «после перемотки
      моргает 3 и 4 день туда-сюда… и пятница-суббота у двоих». Перемотку по
      двум подтверждениям крутят ОБА клиента, каждый шаг уезжает напарнику, и
@@ -121911,6 +121922,14 @@ function ccApplyTeamState(t){
            const u=Object.assign({}, CAREER.career.mxDone||{}, t.mxDone), o={};
            Object.keys(u).sort().forEach(x=>{ o[x]=u[x]; });   // порядок ключей один у обоих
            CAREER.career.mxDone=o;
+           return;
+         }
+         // «Могу ли играть квал соло-недели сегодня» (ccMXCanStamp) — по нику, объединением; своя отметка — своя.
+         if(k==='mxCan' && t.mxCan && typeof t.mxCan==='object'){
+           const own=CAREER.career.mxCan||{}, u=Object.assign({}, own, t.mxCan), o={};
+           try{ const me=hKey(careerCard()||{handle:''}); if(own[me]!=null) u[me]=own[me]; }catch(e){}
+           Object.keys(u).sort().forEach(x=>{ o[x]=u[x]; });
+           CAREER.career.mxCan=o;
            return;
          }
          CAREER.career[k]=t[k];
@@ -122100,6 +122119,7 @@ function careerSave(){
 
      Признак «идёт вечер» — подменённый генератор: он ставится на старте и
      снимается на закрытии (CC_MP_RAND). */
+  if(!CC_MP_RAND && typeof ccMXCanStamp==='function') ccMXCanStamp();
   if(ccMpOn() && !CC_MP_ADVANCE && !CC_MP_RAND && !CC_MP_HOLD && typeof MP!=='undefined' && MP.push)
     MP.push(ccTeamState());
   try{ ccBoardSoon(); }catch(e){}
@@ -160914,19 +160934,51 @@ async function runCareerMajorMX(){
      вечер вставал). Открытые квалы World Cup и соло-FNCS 2020 каждый играет сам, как в жизни —
      в разных лобби; в хитах двое и так в разных комнатах. Итог (журнал, рост, деньги) — свой, день
      шагает, когда отыграли оба или второму сегодня нечего (ccMXTeamSettle). */
+  /* КВАЛЫ СОЛО-НЕДЕЛИ ВДВОЁМ — ОДНО ЛОББИ (Notion 21.10, двое играли командой: «на квалах соло ворлд кап нет
+     реализма, кнопка 0/2 не работает, ты соло запускаешься, таблицы всегда разные и непонятно, кто квальнулся»).
+     Если сегодня квал недели могут играть оба (ccMXSharedOk), вечер общий, как соло-кап вдвоём: гейт «0/2», один сид,
+     оба в одной сотне своими адресами, у каждого своя высадка; прошёл раунд один — дальше врозь (ccTeamNightApart).
+     Хиты и финал Мейджора, и день, когда второму играть нечего, — как было, личным вечером. День после вечера
+     шагает по-прежнему через mxDone (ccMXTeamSettle). */
   const soloTeam=sp.size===1 && ccMpTeam();
-  if(soloTeam){ CC_MP_ALONE=true; CC_MX_SOLO_RUN=true; }
+  const shared=soloTeam && ccMXSharedOk(ev);
+  if(soloTeam){ if(!shared) CC_MP_ALONE=true; CC_MX_SOLO_RUN=true; CC_MX_SHARED=shared; CC_MX_GATE_OFF=false; }
   try{ await ccMXRun(ev, sp, soloTeam); }
   finally{
     CC_EVENT_SIZE=prevEv;
     if(soloTeam){
-      CC_MX_SOLO_RUN=false; CC_MP_ALONE=false; CC_MP_HOLD=false;
+      CC_MX_SOLO_RUN=false; CC_MP_ALONE=false; CC_MP_HOLD=false; CC_MX_SHARED=false;
+      if(shared) CC_MP_DAY_DUE=false;   // общий вечер закрыт сервером, но день и тут двигает ccMXTeamSettle
       const cr=CAREER.career, me=hKey(careerCard());
-      (cr.mxDone=cr.mxDone||{})[me]=careerToday();
+      // Ворота отменены (напарник сыграл свой квал врозь) — вечера не было, отметки нет: «Играть» ещё раз — лично.
+      if(!CC_MX_GATE_OFF) (cr.mxDone=cr.mxDone||{})[me]=careerToday();
+      CC_MX_GATE_OFF=false;
       careerSave();
       ccMXTeamSettle();
     }
   }
+}
+let CC_MX_SHARED=false, CC_MX_GATE_OFF=false;
+// Своя отметка «сегодня могу играть квал соло-недели» — в командное состояние (mxCan), чтобы напарник знал до «Играть».
+function ccMXCanStamp(){
+  try{
+    if(!ccMpTeam() || (typeof ccRaceOn==='function' && ccRaceOn()) || !ccMXSoloTeamDay()) return;
+    const ev=careerMajorOn(careerToday()), card=careerCard(); if(!card) return;
+    const v=careerToday()+'|'+((ev && ev.stage==='q' && careerMajorCan(ev)) ? 1 : 0);
+    const cr=CAREER.career, me=hKey(card);
+    cr.mxCan=cr.mxCan||{};
+    if(cr.mxCan[me]!==v) cr.mxCan[me]=v;
+  }catch(e){}
+}
+// Квал соло-недели сегодня играют оба — вечер общий. Решают одни и те же общие отметки у обоих (mxCan, mxDone).
+function ccMXSharedOk(ev){
+  if(!ev || ev.stage!=='q' || !ccMpTeam() || (typeof ccRaceOn==='function' && ccRaceOn())) return false;
+  if(typeof MP==='undefined' || MP.state!=='live' || !MP.peer) return false;
+  const me=careerCard(); if(!me || hKey(MP.peer)===hKey(me)) return false;
+  ccMXCanStamp();
+  const cr=CAREER.career, today=careerToday(), mk=hKey(me), pk=hKey(MP.peer), done=cr.mxDone||{}, can=cr.mxCan||{};
+  if(done[mk]===today || done[pk]===today) return false;
+  return can[mk]===today+'|1' && can[pk]===today+'|1';
 }
 /* Личные соло-вечера Мейджора в команде: кто сегодня отыграл (или играть нечего) — cr.mxDone по нику;
    день шагает, когда отмечены оба. Состояние напарника, приехавшее посреди своего вечера, ждёт
@@ -160998,12 +161050,37 @@ async function ccMXRun(ev, sp, soloTeam){
   show('screen-results');
   ensureSkipButton();
 
-  const you=careerYouTeam(drafted);
-  you.name=L().yourTeamPrefix+teamLabel(drafted); you.isYou=true;
+  /* Общий квал соло-недели (CC_MX_SHARED, см. runCareerMajorMX): оба человека — своими соло-командами, как в соло-капе
+     вдвоём (runCareerVictoryNight): карточка с провода, своя форма, свой адрес вопросов (mpTag), порядок — по нику. */
+  const pc=(CC_MX_SHARED && typeof MP!=='undefined' && MP.peer && hKey(MP.peer)!==hKey(me)) ? MP.peer : null;
+  const soloYouMX=function(card, form, label){
+    const t=careerTeam([card], true);
+    t.pow=Math.round(t.pow+form);
+    t.summitRegion=ccCareerRegion();
+    t.name=label; t.mpTag=':'+hKey(card);
+    return t;
+  };
+  let you, mxMate=null;
+  if(pc){
+    { const self=ccSoloSelf(me); you=soloYouMX(self.card, self.form, L().yourTeamPrefix+teamLabel(drafted)); }
+    mxMate=soloYouMX(pc, Number(pc.formPow)||0, teamLabel([pc])); mxMate.isMate=true;
+  } else {
+    you=careerYouTeam(drafted);
+    you.name=L().yourTeamPrefix+teamLabel(drafted);
+  }
+  you.isYou=true;
+  let humans=mxMate ? (hKey(me)<hKey(pc) ? [you, mxMate] : [mxMate, you]) : [you];
   const m=ccMXState(ev.yx, ev.n);
   const F=ccMXLobby(sp.size);
   const rowsOf=rows=>ccStageRowsOf(rows, you);
   const seedOf=t=>ccSeedRow(t, you, ccMajorSeatRow);
+  // Закрытый раунд из своих записей: напарник в них — строкой своей карточки; на его место садится он сам.
+  const mateIn=fld=>{
+    if(!mxMate) return;
+    const pk=hKey(pc), i=fld.findIndex(t=>t && t!==you && (t.squad||[]).some(c=>c && hKey(c)===pk));
+    if(i>=0) fld[i]=mxMate;
+    else { ccTeamNightApart(); mxMate=null; humans=[you]; }
+  };
   let field, spec, stageLabel=ev.label, through=false, note='', games=0;
   let ranked=[], place=0, heatPay=null, wildOut=false;
   const play=async (room, sp2, label, open)=>{
@@ -161012,7 +161089,8 @@ async function ccMXRun(ev, sp, soloTeam){
     const pS=ccPastMajorScore(ev);
     await simulateGamesLive(room, sp2.games, pS ? pS.pts : ccM24Points, pS ? pS.kill : CC_M24_KILL, 'stage', 0, null, null,
       {lobbySize:F, stageName:label, mapReplay:true, choices:true, stopOnYourDeath:true, roomOnly:!open,
-       dropEachGame:(g,rm)=>{ CC_M24_GAME=g; return open ? null : careerLandingPick(rm||room, you, label, ['major']); }});
+       together: mxMate ? humans : null,
+       dropEachGame:(g,rm)=>{ CC_M24_GAME=g; return open ? null : mxMate ? ccSoloDrops(rm||room, humans, label, ['major']) : careerLandingPick(rm||room, you, label, ['major']); }});
     games+=sp2.games;
     return ccM24Rank(room);
   };
@@ -161025,8 +161103,10 @@ async function ccMXRun(ev, sp, soloTeam){
       const wc=sp.kind==='wc' && r===R;
       if(wc) spec.cut=ccMXWcQuota(sp);
       const open=!!spec.open;
-      field=open ? [you, ...careerCupField(cr, drafted, careerLadderEntrants(), 'mx|'+ev.yx+'|'+ev.n+'|'+ev.w+'|'+r, true, 0)]
+      // Вдвоём из поля вычитаются оба (и тёзки обоих), людей — столько же, сколько мест: поле того же размера.
+      field=open ? [...humans, ...careerCupField(cr, mxMate ? [me, pc] : drafted, careerLadderEntrants()-(humans.length-1), 'mx|'+ev.yx+'|'+ev.n+'|'+ev.w+'|'+r, true, 0)]
                  : rowsOf(Q['r'+(r-1)]);
+      if(!open) mateIn(field);
       if(!open){
         const want=Math.min(sp.rounds[r-2].cut, F*2), seen=new Set(field.map(ccSeatKey));
         if(field.indexOf(you)<0) field.push(you);
@@ -161086,6 +161166,9 @@ async function ccMXRun(ev, sp, soloTeam){
         finalizeStageCard(sh, place, field.length, you.stagePts, through, false, note);
         await revealStandings(sh, ranked, you, spec.cut||0, null, null, pf, null, !!pf);
         careerPrAdd(ranked, {div:cr.division, kind:'major', stage:'q'});
+        /* Следующий раунд — только у прошедших. Прошёл один из двоих — дальше врозь, как соло-кап вдвоём (общая часть уже
+           посчитана обоими и закрыта общим ключом, хвост — свой). Не прошёл никто — оба заканчивают здесь. */
+        if(mxMate && (ranked.indexOf(mxMate)+1<=spec.cut)!==through){ ccTeamNightApart(); mxMate=null; humans=[you]; }
         if(!through) break;
       }
     }
@@ -169143,8 +169226,11 @@ function mgrSheetOpen(h){
   const inAcad=(MGR.academy||[]).indexOf(h)>=0, team=MGR.teams.findIndex(t=>t.cards.indexOf(h)>=0);
   const row=(k,v)=>'<div class="mgn-row"><em>'+esc(k)+'</em><b>'+v+'</b></div>';
   const move=inAcad ? '<button class="hg-go" onclick="mgrSheetClose();mgrPromote(\''+hq+'\')">'+esc(T.promote)+'</button>'
-    : '<select class="mgs-move" onchange="mgrSheetClose();mgrMove(\''+hq+'\', this.value)"><option value="">'+esc(T9.moveTo)+'</option>'+
-      MGR.teams.map((t,i)=>'<option value="'+i+'">'+esc(T2.teamWord)+' '+(i+1)+'</option>').join('')+'<option value="-1">'+esc(mgrT9().newRoster)+'</option></select>';
+    /* Кнопками, а не системным списком (отзыв игрока 20.10: «I wish the CEO could split his player» — перенос был, но
+       белым выпадающим списком его не видели). Свой состав — отмечен и не жмётся; «новый состав» — отделить игрока. */
+    : '<div class="mgs-moves"><em>'+esc(T9.moveTo)+'</em>'+
+      MGR.teams.map((t,i)=>'<button class="hg-go'+(i===team ? ' on' : '')+'"'+(i===team ? ' disabled' : '')+' onclick="mgrSheetClose();mgrMove(\''+hq+'\', '+i+')">'+esc(T2.teamWord)+' '+(i+1)+'</button>').join('')+
+      '<button class="hg-go" onclick="mgrSheetClose();mgrMove(\''+hq+'\', -1)">'+esc(mgrT9().newRoster)+'</button></div>';
   const el=document.getElementById('mgSheet');
   el.innerHTML='<div class="ch-tile mgs-in"><h4>'+esc(h)+'</h4><button class="mgs-x" onclick="mgrSheetClose()">✕</button>'+
     '<div class="mgs-top"><div class="mgs-big">'+futCardHTML(cd, {wide:true, noEvent:true})+'</div><div class="mgs-facts">'+
@@ -169723,8 +169809,10 @@ function mgrCalendarHTML(){
 }
 function mgrClubHTML(evs){
   const T=mgrT(), T2=mgrT2(), nx=evs[0];
-  const opts=(h)=>'<select class="mg-move" onchange="mgrMove(\''+esc(String(h).replace(/'/g, ''))+'\', this.value)"><option value="">'+T2.to+'</option>'+
-    MGR.teams.map((t,i)=>'<option value="'+i+'">'+T2.teamWord+' '+(i+1)+'</option>').join('')+'<option value="-1">'+mgrT9().newRoster+'</option></select>';
+  // Перенос — кнопками «→ 2», «＋ новый», без системного списка (см. mgrSheetOpen).
+  const opts=(h)=>{ const hq=esc(String(h).replace(/'/g, '')), own=MGR.teams.findIndex(t=>t.cards.indexOf(h)>=0);
+    return MGR.teams.map((t,i)=>i===own ? '' : '<button class="mg-mini2" title="'+esc(T2.to+' '+T2.teamWord+' '+(i+1))+'" onclick="mgrMove(\''+hq+'\', '+i+')">→ '+(i+1)+'</button>').join('')+
+      '<button class="mg-mini2" title="'+esc(mgrT9().newRoster)+'" onclick="mgrMove(\''+hq+'\', -1)">＋ '+esc(mgrT9().newRoster)+'</button>'; };
   const pl=h=>{ const cd=mgrCard(h); const a=cd ? (attrsFor(cd)||{}) : {}; const mor=mgrMorale(h);
     return '<span class="mg-pl"><span><b>'+(cd && cd.nat ? flagImg(cd.nat, 13)+' ' : '')+esc(h)+'</b>'+(mor ? ' <i class="mg-mor'+(mor>0?' up':' dn')+'">'+(mor>0?'+':'')+mor+'</i>' : '')+'</span>'+
       '<small>'+(cd ? Math.round(ccCardOvr(cd)||0) : '–')+(MGR.dev && MGR.dev[hKey(h)] ? ' <i class="mg-up">'+(MGR.dev[hKey(h)]>0 ? '+' : '')+MGR.dev[hKey(h)]+'</i>' : '')+' · '+esc(L()[a.roleKey]||'')+' · '+mgrMoney(mgrWage(h))+' · '+esc(mgrT4().contractTo(mgrUntil(h)))+' · '+mgrT4().pot+' '+mgrPotText(h)+'</small>'+
