@@ -1,5 +1,8 @@
 # Claude Code's local settings — machine-specific permission rules and temp paths.
-.claude/
+# .claude: в git только скилы и агенты проекта (Мак, вторая машина), остальное — локальное
+.claude/*
+!.claude/skills/
+!.claude/agents/
 
 # Generated list of clubs whose crest file is missing from logos/. Regenerate it
 # rather than tracking it; it changes every time a logo is added.
