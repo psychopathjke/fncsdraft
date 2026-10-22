@@ -20,7 +20,9 @@ try{
   check('цена в прежних пределах', CC_COACHES.every(c=>c.cost>=CC_COACH_LOW.cost && c.cost<=CC_COACH_TOP.cost));
   check('порядок списка — по рейтингу', ccByHand(CC_COACHES).every((c,i,a)=>!i || a[i-1].rating>=c.rating), ccByHand(CC_COACHES).map(c=>c.rating).join(','));
   // Менеджеры, SMM, маркетинг (его «может и с другими так сделать»): клиенты выше аудитории, условия от рейтинга.
-  for(const L0 of [CC_AGENTS, CC_SMM, CC_MARKETING]){ const res=L0.filter(x=>CC_STAFF_RES[x.at]), no=L0.filter(x=>!CC_STAFF_RES[x.at]);
+  // 23.10: слабые клиенты честно дают низкий рейтинг (Loïcmng, aCE), поэтому «выше без клиентов» держат только
+  // те, у кого четыре лучших клиента в среднем от 90.
+  for(const L0 of [CC_AGENTS, CC_SMM, CC_MARKETING]){ const res=L0.filter(x=>CC_STAFF_RES[x.at] && CC_STAFF_RES[x.at].p>=90 && (CC_STAFF_RES[x.at].who||[]).length>=4), no=L0.filter(x=>!CC_STAFF_RES[x.at]);
     if(res.length && no.length) check('с клиентами выше без них', Math.min(...res.map(ccStaffRating))>Math.max(...no.map(ccStaffRating)), L0.map(x=>x.at+':'+ccStaffRating(x)).join(' '));
     check('порядок окна по рейтингу', ccByHand(L0).every((x,i,a)=>!i || ccStaffRating(a[i-1])>=ccStaffRating(x))); }
   check('менеджер выше — условия лучше', ccAgentTermsOf(ccByHand(CC_AGENTS)[0]).reach>=ccAgentTermsOf(ccByHand(CC_AGENTS).slice(-1)[0]).reach && ccSmmTermsOf(ccByHand(CC_SMM)[0]).boost>ccSmmTermsOf(ccByHand(CC_SMM).slice(-1)[0]).boost);

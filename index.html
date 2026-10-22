@@ -118631,7 +118631,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='9ffbf2a4';
+const CC_BUILD='4d9df35a';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -125230,12 +125230,13 @@ function careerClubTabHTML(){
   const org=careerOrgTileHTML(), i=org.lastIndexOf('</div>');
   const btn=org.indexOf('<button'), at=btn>0 ? btn : i;
   const orgFull=at>0 ? org.slice(0,at)+ccContractRowsHTML()+org.slice(at) : org+ccContractRowsHTML();
-  return `<div class="cc-club-top">
+  // Штаб первым (его слово 23.10: «хочу стафф видеть сразу на вкладке»), клуб строкой под ним.
+  return `${careerStaffPanelHTML()}
+    <div class="cc-club-top">
       ${orgFull}
       ${ccSponsorMiniHTML()}
       ${ccIncomeTileHTML()}
-    </div>
-    ${careerStaffPanelHTML()}`;
+    </div>`;
 }
 /* ===== Ник и аватарка внутри карьеры =====================================
 
@@ -138158,6 +138159,9 @@ function careerOrgGoalText(goal){
   return base;
 }
 function ccOrgGoalPickHTML(){
+  /* 23.10, его слово (Notion): «про проценты можно убрать». Выбор цели сезона с +10/+15/+30% больше не показывается:
+     цель остаётся средней, как и было без выбора. careerOrgGoalPick оставлен для старых сейвов. */
+  return '';
   const org=CAREER && CAREER.org, g=org && org.goal;
   if(!g || org.own || !g.opts || g.pick!=null) return '';
   const T=L();
@@ -138467,20 +138471,23 @@ function ccShopKey(x){ return String((x&&x.at)||(x&&x.id)||'').toLowerCase(); }
    ведёт, по его же описанию в X (сняты 8.10.2026) и картам этой базы; рейтинг = p − 6, от 60 до 95. У кого клиенты
    не названы или их нет в базе — по подписчикам: 60 + 6·lg(подписчики/1000), не выше 76. Условия (доля, охват,
    прибавка, цена) идут от рейтинга, а не от места в списке; порядок окна — по рейтингу. Формула — оценка режима. */
-const CC_STAFF_X={"roxogg":2989, "JoaovEU":2868, "ElyxxM":16747, "50taruns":18989, "alhasarda":3166, "OliverChesses":1459, "NaaxoMNG":846, "PixelzMNG":2441, "Kiinywz0":821, "Yeekzie7":3078, "F0C8S":4584, "ClapMNG":4127, "AlybiSaCE":3315, "IdziU97":3204, "Th0masNL":2361, "RemssMNG":2157, "DamlosMNG":1667, "ZedroxMNG":1367, "errieMNG":1304, "Raziaa_":954, "LC7_MNG":922, "ArtinMNG":846, "yaleblan":768, "DrazoxMNG":703, "Skyforcemng272":464, "Zerkomng":503, "askebott":276, "v1nteroFN":2137, "SweetyyFN":1991, "SandoraFN":1014, "baderwtw":885, "Pyp4ingS":613, "UgoComm":548, "Lair_Fn":594, "veltrixx10":481, "CmLumos":357, "MetiDark_":49, "murlotron":3007, "Goalkikermng":1104, "KaizenMNG":785, "PyraxMGMT":433};
+const CC_STAFF_X={"roxogg":3007, "JoaovEU":2874, "ElyxxM":16729, "50taruns":18992, "alhasarda":3166, "OliverChesses":1453, "NaaxoMNG":853, "PixelzMNG":2439, "Kiinywz0":822, "Yeekzie7":3076, "F0C8S":4581, "ClapMNG":4144, "AlybiSaCE":3366, "IdziU97":3200, "Th0masNL":2363, "RemssMNG":2150, "DamlosMNG":1674, "ZedroxMNG":1364, "errieMNG":1304, "Raziaa_":953, "LC7_MNG":931, "ArtinMNG":866, "yaleblan":787, "DrazoxMNG":702, "Skyforcemng272":525, "Zerkomng":516, "askebott":294, "v1nteroFN":2137, "SweetyyFN":1991, "SandoraFN":1014, "baderwtw":885, "Pyp4ingS":613, "UgoComm":548, "Lair_Fn":594, "veltrixx10":481, "CmLumos":357, "MetiDark_":49, "murlotron":3007, "Goalkikermng":1104, "KaizenMNG":785, "PyraxMGMT":433, "loicmng_":565};
 const CC_STAFF_RES={
-  "roxogg":{p:86, who:["Phzin","Seeyun","edson","pardal"]},   // 8.10: его описание в X — Phzin, edson, 916Gon, Seeyun, pardal и др.; четыре лучших
-  "PixelzMNG":{p:81, who:["matice","Shadox","Seili"]},
-  "ClapMNG":{p:90, who:["Kyzen","Salko","Twek","Turtl3"]},
-  "IdziU97":{p:92, who:["Shadow","Nxthan","G13ras","Blacha"]},
-  "ArtinMNG":{p:79.3, who:["Karmy","3R8","Pligz","Trikshotz"]},
-  "askebott":{p:84, who:["jax"]},
+  "roxogg":{p:91, who:["Phzin","Edson","916Gon","Night"]},   // 23.10: в X — phzin, edson, 916gon, blxckoutz, night, seeyun, pardal; четыре лучшие карты
+  "PixelzMNG":{p:77, who:["Matice","Shadox","Seili","Th3ioF"]},   // 23.10: matice, Shadox, Seili, Th3io, Sobyy, Berre (двух последних в базе нет)
+  "ClapMNG":{p:90.5, who:["Twek","Salko","Kyzen","Artskill"]},   // 23.10: Kyzen, Lame (BR, не EU Lame), Girlybella, Artskill, salko, twek, Turtl3
+  "IdziU97":{p:92.5, who:["Shadow","Blacha","Nxthan","G13ras"]},   // 23.10: Nathan, Shadow, Blacha, Kombek, Pixovsky, Predage, cheatiin, G13ras
+  "ArtinMNG":{p:79.5, who:["karmy","glubfnbr","3R8","TrikShotz"]},   // 23.10: Glub — это glubfnbr (79), не Glubschi
   "SweetyyFN":{p:95.8, who:["Flickzy","Pixie","MariusCOW","Tjino"]},
   "SandoraFN":{p:96, who:["Vanyak3kk"]},
   "baderwtw":{p:95, who:["Eomzo","PXMP"]},
   "veltrixx10":{p:89.7, who:["SkyJump","Werex","Akiira"]},
   "Goalkikermng":{p:89.7, who:["Upl","F1n4ik","Predage"]},
-  "PyraxMGMT":{p:92, who:["SkyJump"]}};
+  "PyraxMGMT":{p:92, who:["SkyJump"]},
+  "JoaovEU":{p:96, who:["Vanyak3kk","Ajerss"]},   // 23.10: JV Agency — Vanyak3kk и Ajerss
+  "AlybiSaCE":{p:77, who:["EpikWhale","crylix"]},   // 23.10: Proxy — EpikWhale, anonzr (нет в базе), Crylix
+  "loicmng_":{p:52, who:["Galaxyache 32"]}   // 23.10: Galaxyache, Gabusg67, 7destroyy, Rezpaaaan, FnKeran — в базе только Galaxyache
+};
 function ccStaffRating(x){
   if(!x) return 60;
   // Коуч узнаётся по своим полям: обращение к CC_COACHES отсюда падает на загрузке (константа ниже по файлу, TDZ).
@@ -138874,7 +138881,7 @@ const CC_AGENTS=[
   {name:'Roxo',         at:'roxogg',        nat:null, photo:'roxogg.jpg',        x:2989},
   {name:'Th0masNL',     at:'Th0masNL',      nat:'nl', photo:'Th0masNL.jpg',      x:2311},
   // Head of Fortnite for Lyost.
-  {name:'Lyost Remss',  at:'RemssMNG',      nat:null, photo:'RemssMNG.jpg',      x:2085},
+  {name:'Remss',        at:'RemssMNG',      nat:null, photo:'RemssMNG.jpg',      x:2085},
   // Founder of AL Management, Lille.
   {name:'Adam',         at:'DamlosMNG',     nat:'fr', photo:'DamlosMNG.jpg',     x:1654},
   // Head of Fortnite at MGA.
@@ -138899,19 +138906,23 @@ const CC_AGENTS=[
      портрет — аватарка оттуда же, круглым кропом на белом (в интерфейсе она
      всё равно режется в круг). Имя — хендл, как у Kiinywz0 выше, и по той же
      причине: профиля с именем сюда не приезжало, а выдумывать его нельзя. */
-  {name:'yaleblan',     at:'yaleblan',      nat:null, photo:'yaleblan.jpg',      x:749},
+  {name:'X6 Yaleblan',  at:'yaleblan',      nat:null, photo:'yaleblan.jpg',      x:749},
   /* Ссылка и его число, 25 сентября: x.com/DrazoxMNG, 681 фолловер, то
      есть он встаёт последним — список отсортирован по ним, и ccRankPull
      ранжирует менеджеров по месту в нём. Тег организации перед именем — как у
      GLORE errie и CLD Razia выше; FLC — бельгийский клан. Страны в профиле
      нет, поэтому nat пустой, как у yaleblan. Портрет — аватарка оттуда же. */
-  {name:'FLC Drazox',   at:'DrazoxMNG',     nat:null, photo:'DrazoxMNG.jpg',     x:681},
+  {name:'Drazox',       at:'DrazoxMNG',     nat:null, photo:'DrazoxMNG.jpg',     x:681},
   /* x.com/Apolinmng2, 601 фолловер, 27 сентября. «Management at ✧» — клуб в
      шапке не назван, поэтому имя без тега; агент crunkezz, jayzfnn «& more».
      Страны в профиле нет — nat пустой. Между Drazox и Vira Askey: у новичков
      вне ручного порядка таблица идёт по фолловерам. */
   // Тег — @apolinmng: так он сам попросил 29.09 («for the @, you can just use apolinmng»).
   {name:'Apolin',       at:'apolinmng',     nat:null, photo:'Apolinmng2.jpg',    x:601},
+  /* x.com/loicmng_, 565 фолловеров, 23 октября (сам попросил в ЛС, страница Notion 22–23.10). «Loïcmng» —
+     Head of Fortnite в @NafeOfficiel, менеджер Galaxyache, Gabusg67, 7destroyy, Rezpaaaan, FnKeran «& more».
+     Флаг 🇫🇷 в шапке. Между Apolin и BS Skyforce по фолловерам. */
+  {name:'Loïcmng',      at:'loicmng_',      nat:'fr', photo:'loicmng_.jpg',      x:565},
   /* x.com/Skyforcemng272, 463 фолловера, 29 сентября. «BS Skyforce» — Head of Fortnite
      в Team Blindspot (@_Team_BS), агент joyyfnrr, NATEKFN1, Karotek_ «& more», staff
      @REC_2027. Страны в профиле нет — nat пустой. Между Apolin и FA ZERKO по фолловерам. */
@@ -138925,7 +138936,7 @@ const CC_AGENTS=[
      названы у него в шапке поимённо (zbidak3kk, CyranKids, Litr07, 2Kixu,
      kylxz8, ROITFN, phrygienfnbr) — то же, чем João выше заслужил первую
      строку: человек приезжает внутрь сцены, которую мод уже описывает. */
-  {name:'Vira Askey',   at:'askebott',      nat:'ma', photo:'askebott.jpg',      x:252}
+  {name:'Askey',        at:'askebott',      nat:'ma', photo:'askebott.jpg',      x:252}
 ];
 // The fallback, for a row added before anybody has read its account: fifteen per
 // cent, which is the middle of the real range, and one draw like everybody else.
