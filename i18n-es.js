@@ -4142,3 +4142,6 @@ ccOrgGoalPickHint:'Objetivo de la temporada: elige uno antes de que acabe la tem
 /* Дозаливка «es» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
 Object.assign(I18N.es=I18N.es||{},
 ({hmChipClubs:'Clubes reales', hmChipMatch:'Día de partido'}));
+/* Дозаливка «es» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
+Object.assign(I18N.es=I18N.es||{},
+({ccMpFmtAsk:(h,f)=>'Tu compañero quiere a '+h+' en el '+(f===4?'squad':'trío')+' para las copas. ¿Lo cogemos?', roMpSwap:'Cambiar'}));

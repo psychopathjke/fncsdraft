@@ -4142,3 +4142,6 @@ ccOrgGoalPickHint:'Saisonziel: wähle eins vor Saisonende. Geschafft, verlänger
 /* Дозаливка «de» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
 Object.assign(I18N.de=I18N.de||{},
 ({hmChipClubs:'Echte Clubs', hmChipMatch:'Spieltag'}));
+/* Дозаливка «de» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
+Object.assign(I18N.de=I18N.de||{},
+({ccMpFmtAsk:(h,f)=>'Dein Teamkollege will '+h+' im '+(f===4?'Squad':'Trio')+' für die Cups. Nehmen wir ihn?', roMpSwap:'Ändern'}));
