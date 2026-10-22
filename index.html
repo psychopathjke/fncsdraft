@@ -696,6 +696,16 @@
     color:#fff;font-size:14px;padding:9px 14px 8px;}
   .hero .hero-team .hero-seg .cstrip-btn:hover{background:rgba(255,255,255,.2);border-color:#fff;}
   .hero-pair:has(.hero-mgr:not([hidden]))>.hero::after{background:linear-gradient(90deg,rgba(10,20,60,.95) 0%,rgba(10,20,60,.85) 55%,rgba(10,20,60,.4) 100%);}
+  /* ПАНЕЛЬКИ — ВАРИАНТ 3 (его выбор 23.10 из трёх макетов, «только те панельки»): плашек фактов нет — всё это уже в тексте
+     описания; «С другом» — тонкая строка ссылок ПОД главной кнопкой, отделённая линией. Остальное в карточке как было. */
+  #screen-mode .hero .hero-chips{display:none;}
+  #screen-mode .hero .hero-cta{order:5;}
+  #screen-mode .hero .hero-team{order:6;margin:4px 0 0;padding-top:12px;border-top:1px solid rgba(255,255,255,.14);gap:10px;align-items:baseline;}
+  #screen-mode .hero .hero-team .hero-seg{display:inline-flex;gap:14px;border:0;background:none;border-radius:0;overflow:visible;}
+  #screen-mode .hero .hero-team .hero-seg .cstrip-btn{background:none;border:0;border-bottom:2px solid #7ef0dd;border-radius:0;padding:0 0 1px;
+    font-size:14px;color:#fff;letter-spacing:.03em;}
+  #screen-mode .hero .hero-team .hero-seg .cstrip-btn:hover{color:#7ef0dd;background:none;}
+  #screen-mode .hero .hero-about{order:7;}
   /* Строка «с другом»: три командные двери мельче главных, одной строкой. */
   .hero-about{margin:10px 0 0;text-align:left}
 /* Тихая третья кнопка ряда: та же таблетка и тот же узкий капс, что у
