@@ -671,6 +671,16 @@
   .hero-chips{align-items:center;margin-top:-2px;}
   .hero-chips .cstrip-tag{margin-right:2px;}
   .hero-chips .cstrip-chip{border-color:rgba(126,240,221,.32);background:rgba(126,240,221,.08);color:#dff6f1;}
+  /* ПЛАШКИ ПОД FORTNITE (Notion 22.10, его рамки на главной: «странно выглядит»). Круглые «таблетки» другим шрифтом
+     выбивались рядом с заголовками Fira: теперь тот же шрифт заголовков, капс, почти прямые углы — как теги в Fortnite.
+     И «С другом» — тем же видом, одним блоком. */
+  .hero-chips .cstrip-chip,#screen-mode .home-daily .cstrip-chip{font-family:var(--font-display);font-weight:700;font-size:13px;letter-spacing:.03em;text-transform:uppercase;
+    border-radius:4px;padding:5px 10px 4px;line-height:1.1;}
+  .hero-chips .cstrip-tag{border-radius:4px;}
+  #screen-mode .home-daily .cstrip-chip{border-radius:4px;padding:5px 10px 4px;line-height:1.1;}
+  #screen-mode .dy-top-h{font-weight:700;font-size:20px;text-transform:uppercase;transform:skewX(-7deg);transform-origin:left;}
+  .hero .hero-team .hero-seg .cstrip-btn{border-radius:0;}
+  .hero .hero-team .hero-seg{border-radius:5px;}
   /* Строка «с другом»: три командные двери мельче главных, одной строкой. */
   .hero-about{margin:10px 0 0;text-align:left}
 /* Тихая третья кнопка ряда: та же таблетка и тот же узкий капс, что у
@@ -8976,7 +8986,7 @@
         <span class="dp-tag hero-mode-tag" id="mgHeroTag" data-i18n="hmMgrTag"></span>
         <h2 class="hero-title" id="heroMgrTitle" data-i18n="hmMgrTitle"></h2>
         <p class="hero-sub" id="mgHeroSub" data-i18n="hmMgrSub"></p>
-        <div class="cstrip-chips hero-chips"><span class="cstrip-chip">2019 – 2026</span><span class="cstrip-chip">Real clubs</span><span class="cstrip-chip">Match day</span></div>
+        <div class="cstrip-chips hero-chips"><span class="cstrip-chip">2019 – 2026</span><span class="cstrip-chip" data-i18n="hmChipClubs">Real clubs</span><span class="cstrip-chip" data-i18n="hmChipMatch">Match day</span></div>
         <div class="hero-cta"><button class="hero-btn hero-btn-go" type="button" onclick="mgrStart()"><span id="mgHeroBtn" data-i18n="hmMgrBtn"></span></button></div>
       </div>
       <div class="hero-art" style="background:url(art/mode-major1.jpg) center/cover;cursor:pointer" role="img" aria-label="Fortnite Manager" onclick="mgrStart()"></div>
@@ -9972,7 +9982,7 @@ ccActGrpTrain:'Тренировки', ccActGrpTeam:'Команда', ccActGrpLif
 heroCode:'Есть код от напарника? Войти по коду',
 cstripSub:'Один игрок, один сезон, настоящий календарь. Тренируйся днём, играй вечерами, поднимайся из пятого дивизиона в первый.',
 cstripChipDivs:'Дивизионы 5 → 1', cstripChipMajors:'Мейджоры и ЛАНы',
-cstripChipReload:'Круг Reload', cstripChipLife:'Клуб, деньги, форма',
+cstripChipReload:'Круг Reload', cstripChipLife:'Клуб, деньги, форма', hmChipClubs:'Настоящие клубы', hmChipMatch:'День матча',
 heroDraft:'К драфту',
 supportBtn:'Поддержать',
 dataCreditText:'Флаги, составы и данные игроков взяты с', dataCreditAnd:'и',
@@ -12134,7 +12144,7 @@ ccActGrpTrain:'Training', ccActGrpTeam:'Team', ccActGrpLife:'Stream and rest',
 heroCode:'Got a code from your partner? Join by code',
 cstripSub:'One player, one season, the real calendar. Train by day, play the nights, climb from Division 5 to Division 1.',
 cstripChipDivs:'Divisions 5 → 1', cstripChipMajors:'Majors and LANs',
-cstripChipReload:'The Reload circuit', cstripChipLife:'Clubs, money, form',
+cstripChipReload:'The Reload circuit', cstripChipLife:'Clubs, money, form', hmChipClubs:'Real clubs', hmChipMatch:'Match day',
 heroDraft:'Go to draft',
 supportBtn:'Support',
 dataCreditText:'Flags, squads and player data sourced from', dataCreditAnd:'and',
@@ -16221,7 +16231,7 @@ supportBtn:'Soutenir',
 tagline:'Compose une équipe de vrais joueurs FNCS et lance le tournoi. Ou commence une carrière : saison après saison sur le vrai calendrier, divisions, Majors, Reload et LAN. Seul ou avec un ami.',
 heroTitle:'Drafte de vrais pros. <em>Joue la saison.</em>',
 heroCareerCont:'Continuer la carrière', heroCareer:'Lancer une carrière',
-heroTeamLbl:'Avec un ami :', cstripChipDivs:'Divisions 5 → 1', cstripChipMajors:'Majors et LAN', cstripChipReload:'Le circuit Reload', cstripChipLife:'Clubs, argent, forme', heroDuo:'Jouer à deux',
+heroTeamLbl:'Avec un ami :', hmChipClubs:'Vrais clubs', hmChipMatch:'Jour de match', cstripChipDivs:'Divisions 5 → 1', cstripChipMajors:'Majors et LAN', cstripChipReload:'Le circuit Reload', cstripChipLife:'Clubs, argent, forme', heroDuo:'Jouer à deux',
 navCareer:'Carrière', navDraft:'Draft', navHistory:'Historique',
 ccActGrpTrain:'Entraînement', ccActGrpTeam:'Équipe', ccActGrpLife:'Stream et repos',
 heroCode:'Tu as un code de ton coéquipier ? Rejoindre par code',
@@ -16588,7 +16598,7 @@ supportBtn:"Sostieni",
 tagline:"Crea una squadra di veri giocatori FNCS e gioca il torneo. Oppure inizia una carriera: stagione dopo stagione sul calendario reale, divisioni, Major, Reload e LAN. Da solo o con un amico.",
 heroTitle:"Scegli veri pro. <em>Gioca la stagione.</em>",
 heroCareerCont:"Continua la carriera", heroCareer:"Inizia la carriera",
-heroTeamLbl:"Con un amico:", cstripChipDivs:"Divisioni 5 → 1", cstripChipMajors:"Major e LAN", cstripChipReload:"Il circuito Reload", cstripChipLife:"Club, soldi, forma", heroDuo:"In due",
+heroTeamLbl:"Con un amico:", hmChipClubs:"Club veri", hmChipMatch:"Giorno di gara", cstripChipDivs:"Divisioni 5 → 1", cstripChipMajors:"Major e LAN", cstripChipReload:"Il circuito Reload", cstripChipLife:"Club, soldi, forma", heroDuo:"In due",
 navCareer:"Carriera", navDraft:"Draft", navHistory:"Storico",
 ccActGrpTrain:"Allenamento", ccActGrpTeam:"Squadra", ccActGrpLife:"Stream e riposo",
 heroCode:"Hai un codice dal compagno? Entra con il codice",
@@ -19139,7 +19149,7 @@ supportBtn:"Apoiar",
 tagline:"Monte um time de jogadores reais da FNCS e rode o torneio. Ou comece uma carreira: temporada após temporada no calendário real, divisões, Majors, Reload e LANs. Sozinho ou com um amigo.",
 heroTitle:"Convoque os pros. <em>Jogue a temporada.</em>",
 heroCareerCont:"Continuar carreira", heroCareer:"Começar carreira",
-heroTeamLbl:"Com um amigo:", cstripChipDivs:"Divisões 5 → 1", cstripChipMajors:"Majors e LANs", cstripChipReload:"O circuito Reload", cstripChipLife:"Clubes, dinheiro, forma", heroDuo:"Em dupla",
+heroTeamLbl:"Com um amigo:", hmChipClubs:"Clubes reais", hmChipMatch:"Dia de jogo", cstripChipDivs:"Divisões 5 → 1", cstripChipMajors:"Majors e LANs", cstripChipReload:"O circuito Reload", cstripChipLife:"Clubes, dinheiro, forma", heroDuo:"Em dupla",
 navCareer:"Carreira", navDraft:"Draft", navHistory:"Histórico",
 ccActGrpTrain:"Treino", ccActGrpTeam:"Time", ccActGrpLife:"Stream e descanso",
 heroCode:"Tem um código do parceiro? Entrar com código",
@@ -23237,7 +23247,7 @@ ccSacPromoRow:(n,m,p)=>'promo no X '+n+'/'+m+(p ? ' · +'+p+'%' : ''),
 ccGoalReach:{majorFinal:'chegar a uma final de Major FNCS', fncsFinal:'chegar à final semanal da FNCS'},
 ccOrgGoalPickHint:'Meta da temporada: escolha uma antes do fim da temporada. Cumpriu, renova com aumento (meta mais difícil, aumento maior); falhou, o clube te libera. Sem escolha, fica a do meio.'
 }));
-let CC_I18N_V={de:'f05a4118', es:'5036a825'};   // ==== CC_I18N_V (tools/build-i18n.js) ====
+let CC_I18N_V={de:'06985cd6', es:'4dc139bf'};   // ==== CC_I18N_V (tools/build-i18n.js) ====
 // Версия fn-shop.js (магазин Fortnite по дням, tools/build-fn-shop.js) — для ?v= ленивой загрузки.
 let CC_FN_SHOP_V='bebf56cb';
 const CC_LANG_WAIT={};
