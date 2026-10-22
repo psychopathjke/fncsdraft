@@ -4139,3 +4139,9 @@ ccSacPromoRow:(n,m,p)=>'promo en X '+n+'/'+m+(p ? ' · +'+p+'%' : ''),
 ccGoalReach:{majorFinal:'llegar a una final de Major FNCS', fncsFinal:'llegar a la final semanal de la FNCS'},
 ccOrgGoalPickHint:'Objetivo de la temporada: elige uno antes de que acabe la temporada. Si lo cumples renuevas con aumento (objetivo más difícil, aumento mayor); si fallas, el club te libera. Sin elección queda el del medio.'
 }));
+/* Дозаливка «es» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
+Object.assign(I18N.es=I18N.es||{},
+({hmChipClubs:'Clubes reales', hmChipMatch:'Día de partido'}));
+/* Дозаливка «es» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
+Object.assign(I18N.es=I18N.es||{},
+({ccMpFmtAsk:(h,f)=>'Tu compañero quiere a '+h+' en el '+(f===4?'squad':'trío')+' para las copas. ¿Lo cogemos?', roMpSwap:'Cambiar'}));
