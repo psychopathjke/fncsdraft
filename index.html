@@ -7525,6 +7525,19 @@
   .hero-btn,.hero-btn:hover,.hero-btn:focus-visible{transform:none;border-radius:999px;padding:12px 26px 11px;}
   .hero-btn-go:hover,.hero-btn-go:focus-visible{transform:translateY(-1px);}
   .hero-btn>span{transform:none;}
+  /* КНОПКИ КАК В FORTNITE (22.10, его «в стиле фортнайт»): не таблетка, а прямоугольник со скруглением, жёлтый с тёмной
+     «ступенькой» снизу — как «Играть» в лобби игры. Та же форма у кнопки вечера в хабе. */
+  .hero-btn,.hero-btn:hover,.hero-btn:focus-visible{border-radius:10px;padding:13px 28px 12px;font-weight:700;font-size:18px;letter-spacing:.04em;}
+  .hero-btn-go{box-shadow:0 4px 0 #b59c00,0 8px 18px rgba(0,0,0,.35);}
+  .hero-btn-go:active{transform:translateY(2px);box-shadow:0 2px 0 #b59c00,0 4px 10px rgba(0,0,0,.35);}
+  #screen-career-hub .cc-lobby .cc-lb-playbox .ch-play:not(:disabled){border-radius:10px;font-size:20px;letter-spacing:.04em;
+    box-shadow:0 4px 0 #b59c00,0 8px 18px rgba(0,0,0,.35);}
+  #screen-career-hub .cc-lobby .cc-lb-playbox .ch-play:not(:disabled):active{transform:translateY(2px);box-shadow:0 2px 0 #b59c00;}
+  /* Подписи разделов панели дня — разделитель меню Fortnite: шрифт заголовков, белый капс, тонкие линии по бокам. */
+  #screen-career-hub .cc-day .cc-act-grp{display:flex;align-items:center;gap:10px;font-family:var(--font-display);font-weight:700;
+    font-size:14px;letter-spacing:.08em;text-transform:uppercase;color:#fff;}
+  #screen-career-hub .cc-day .cc-act-grp::before,#screen-career-hub .cc-day .cc-act-grp::after{content:"";flex:1;height:2px;background:rgba(255,255,255,.35);}
+  #screen-career-hub .cc-lobby .cc-lb-playbox .cc-day .cc-act-grp{font-size:14px;color:#fff;}
   .mode-card{clip-path:none;border-radius:var(--r);}
   .ec-art{border-radius:var(--r) var(--r) 0 0;}
   .ec-cup{border-radius:var(--r-sm);}
