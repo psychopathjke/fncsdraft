@@ -7669,6 +7669,10 @@
   .hero-art::after{background:linear-gradient(90deg,rgba(19,38,95,.62) 0%,rgba(19,38,95,.18) 30%,rgba(19,38,95,0) 55%);}
   .hero-title em{color:#9fe1ff;}
   .hero-sub{color:#c9d5f0;}
+  /* 23.10 «главное меню выглядит ai?» → «можешь переделать»: без надписи «Режим 1 · …» над заголовком
+     и заголовок одним цветом. Таблетки и «С другом» не трогаются. */
+  #screen-mode .hero .hero-mode-tag{display:none !important;}
+  #screen-mode .hero .hero-title em{color:inherit !important;}
   .hero-btn-alt{background:rgba(150,180,255,.22);border-color:transparent;}
   .hero-btn-duo{background:rgba(150,180,255,.14);border-color:#9fe1ff;color:#9fe1ff;}
   .hero-link{color:#9fe1ff;text-decoration-color:rgba(159,225,255,.5);}
@@ -118627,7 +118631,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='8272e76f';
+const CC_BUILD='9ffbf2a4';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -168015,7 +168019,7 @@ function homeSceneDraw(){
       return '<li'+(live ? ' class="live"' : '')+'><b>'+esc(stage)+'</b><span><i>'+esc(when)+'</i> · '+esc(dates)+'</span></li>';
     }).join('');
     return '<div class="hs-ev"><img src="'+esc(art)+'" alt="" loading="lazy" onerror="this.remove()"><div>'+
-      '<b class="hs-t">'+esc(title)+'</b>'+money.map(m=>'<span class="hs-money">💰 '+esc(m)+'</span>').join('')+'<ul class="hs-st">'+stages+'</ul></div></div>';
+      '<b class="hs-t">'+esc(title)+'</b>'+money.map(m=>'<span class="hs-money">'+esc(m)+'</span>').join('')+'<ul class="hs-st">'+stages+'</ul></div></div>';
   }).join('');
   // Другие турниры с призовыми — Liquipedia; только те, что ещё не кончились.
   // Только турниры Epic (16.10: «пусть будут турниры от Epic только»): капы Epic и FNCS; сторонние лиги, лестницы и кубки — нет.
@@ -168028,7 +168032,7 @@ function homeSceneDraw(){
     // Постер капа — тот же, что у капов этого вида в карьере (CAREER_EV_ART_ID: c41r — Reload, c38d — Victory Cup, c25d — Cash Cup).
     const art=/Reload/i.test(x.n) ? 'art/cups/c41r.jpg' : /Victory/i.test(x.n) ? 'art/cups/c38d.jpg' : 'art/cups/c25d.jpg';
     return '<li class="hs-li'+(live ? ' live' : '')+'"><img src="'+art+'" alt="" onerror="this.remove()"><div><b>'+esc(x.n)+(x.tier ? ' <em>'+esc(x.tier)+'</em>' : '')+'</b>'+
-      '<span><i>'+esc(when)+'</i> · '+esc(dates)+(x.loc ? ' · '+esc(x.loc) : '')+'</span><span class="hs-pm">💰 '+esc(money)+'</span></div></li>';
+      '<span><i>'+esc(when)+'</i> · '+esc(dates)+(x.loc ? ' · '+esc(x.loc) : '')+'</span><span class="hs-pm">'+esc(money)+'</span></div></li>';
   }).join('');
   // Таймер до ближайшего турнира — здесь же, в колонке сцены (16.10: «пусть таймер будет где scene»); заполняет homeTimerDraw.
   box.innerHTML='<h2 class="home-h">'+esc(T.hmSceneTitle)+'</h2><p class="home-sub">'+esc(T.hmSceneSub2)+'</p><div class="home-timer" id="homeTimer" hidden></div>'+
