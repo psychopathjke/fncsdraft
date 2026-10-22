@@ -118631,7 +118631,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='4d9df35a';
+const CC_BUILD='02c7f085';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -138705,7 +138705,14 @@ function ccSponsor(){
    твой пост с брендом и #ad и платит CC_SP_POST_SHARE ставки за стрим. Числа — оценка режима, не замер. */
 const CC_SP_POST_DAYS=7, CC_SP_POST_SHARE=0.6;
 function ccSpPostPay(x){ return Math.max(10, Math.round((x.pay||0)*CC_SP_POST_SHARE)); }
-function ccSpPostWait(x){ if(!x || !x.postDay) return 0; return Math.max(0, CC_SP_POST_DAYS-ccDaysBetween(x.postDay, careerToday())); }
+/* 23.10, баг от игрока (Notion): «подпиши бренд, сделай пост, расторгни, подпиши снова — и так бесконечно». День поста
+   жил только в записи контракта и пропадал вместе с ней. Теперь он ещё и в cr.spPost[бренд], который расторжение не трогает:
+   один пост на бренд в CC_SP_POST_DAYS дней, сколько ни переподписывай. */
+function ccSpPostDay(x){
+  const m=CAREER && CAREER.career && CAREER.career.spPost, d=m && x && m[x.id];
+  return [x && x.postDay, d].filter(Boolean).sort().slice(-1)[0] || null;
+}
+function ccSpPostWait(x){ const d=ccSpPostDay(x); if(!x || !d) return 0; return Math.max(0, CC_SP_POST_DAYS-ccDaysBetween(d, careerToday())); }
 function ccSpPostsReady(){ return ccSponsorsAll().filter(x=>!ccSpPostWait(x)).length; }
 function careerSponsorPost(id){
   const x=ccSponsorsAll().find(y=>y.id===id); if(!x || ccSpPostWait(x)) return;
@@ -138714,6 +138721,7 @@ function careerSponsorPost(id){
   const k=Math.abs(hashStr(id+'|'+careerToday()))%lines.length;
   careerNews('flat', null, null, {text:lines[k](name)+' #ad', sp:id});
   x.postDay=careerToday(); x.paid=(x.paid||0)+pay;
+  cr.spPost=Object.assign({}, cr.spPost, {[id]:careerToday()});
   cr.balance=(cr.balance||0)+pay; cr.sponsored=(cr.sponsored||0)+pay;
   careerSave();
   try{ ccSpPickRefresh(); }catch(e){}
