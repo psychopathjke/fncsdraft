@@ -681,6 +681,21 @@
   #screen-mode .dy-top-h{font-weight:700;font-size:20px;text-transform:uppercase;transform:skewX(-7deg);transform-origin:left;}
   .hero .hero-team .hero-seg .cstrip-btn{border-radius:0;}
   .hero .hero-team .hero-seg{border-radius:5px;}
+  /* ОПИСАНИЕ РЕЖИМА — ВТОРОЙ ЗАХОД (Notion 23.10: «всё равно не нравится дизайн этого описания», рамка вокруг плашек и
+     «С другом»). Плашки-факты и кнопки выглядели одинаково — восемь одинаковых коробок, и непонятно, что нажимается.
+     Теперь факты — строкой текста через точку (без рамок), а «С другом» — настоящие кнопки. Коллаж под текстом темнее. */
+  .hero-chips{gap:2px 0;}
+  .hero-chips .cstrip-chip,#screen-mode .home-daily .cstrip-chip{background:none;border:0;border-radius:0;padding:0;
+    font-size:14px;letter-spacing:.03em;color:#bfe9e2;}
+  .hero-chips .cstrip-chip:not(:last-child)::after,#screen-mode .home-daily .cstrip-chip:not(:last-child)::after{content:'·';margin:0 9px 0 9px;color:rgba(191,233,226,.55);}
+  .hero-chips .cstrip-tag{margin-right:10px;}
+  .hero .hero-team{gap:8px;margin-top:4px;}
+  .hero .hero-team .hero-team-lbl{font-family:var(--font-display);font-weight:700;font-size:14px;letter-spacing:.05em;color:#bfe9e2;}
+  .hero .hero-team .hero-seg{display:inline-flex;gap:8px;border:0;background:none;border-radius:0;overflow:visible;}
+  .hero .hero-team .hero-seg .cstrip-btn{border-radius:8px;border:1px solid rgba(255,255,255,.45);background:rgba(255,255,255,.1);
+    color:#fff;font-size:14px;padding:9px 14px 8px;}
+  .hero .hero-team .hero-seg .cstrip-btn:hover{background:rgba(255,255,255,.2);border-color:#fff;}
+  .hero-pair:has(.hero-mgr:not([hidden]))>.hero::after{background:linear-gradient(90deg,rgba(10,20,60,.95) 0%,rgba(10,20,60,.85) 55%,rgba(10,20,60,.4) 100%);}
   /* Строка «с другом»: три командные двери мельче главных, одной строкой. */
   .hero-about{margin:10px 0 0;text-align:left}
 /* Тихая третья кнопка ряда: та же таблетка и тот же узкий капс, что у
