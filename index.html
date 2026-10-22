@@ -120297,7 +120297,10 @@ function ccRaceWorldPack(){
      и у старшего она могла случиться ПОСЛЕ отправки: прогон годов 20.10, 2025 — старший слал trios {},
      соседи затирали им свой посев, а сам он сеял следом. Поле FNCS Trial разошлось с первой игры
      (пул 279 против 282). Пул собирается здесь, и книга везёт посев целиком. */
-  ccWorldPoolsSeed();
+  /* Только в трио-год, как и было: посев по формату вечера (ccWorldPoolsSeed) нужен команде с добором третьего, а гонке
+     ломал поле трио-капа в дуо-год — онлайн-прогон гонки 2025 (22.10): FNCS Trial 7.12, поле 1707 у одного и 1700 у другого
+     (на сборке до этой правки 3 из 3 чисто). */
+  try{ if(careerSquadSize()>=3 && typeof careerPools==='function') careerPools(); }catch(e){}
   const cr=(CAREER && CAREER.career)||{};
   const seeds={};
   /* И ПУСТО — ТОЖЕ ОТВЕТ. Записи посева ехали только когда они есть: у старшего Мейджора 2
@@ -120311,7 +120314,9 @@ function ccRaceWorldPack(){
   /* И серии провалов пар (duoStreak) с объявлениями «ищем третьего» (lft): мир, который досчитал вечер
      без людей у одного (LAN 18.12 у того, кто играл Evaluation), двигал их только у него, и Duos Victory
      Cup 5.01 расходился на чужом лобби (прогон 2026, 20.10: «state duoSplits/duoStreak»). */
-  return {dev:(CAREER && CAREER.dev)||{}, devL:(CAREER && CAREER.devL)||{}, splits:(CAREER && CAREER.splits)||{}, duoSplits:cr.duoSplits||{}, trios:cr.trios||{},
+  // И напарники сирот (cr.orphanMate) — память личная, как в команде (см. ccTeamWorldPack).
+  return {orphanMate:cr.orphanMate||{},
+          dev:(CAREER && CAREER.dev)||{}, devL:(CAREER && CAREER.devL)||{}, splits:(CAREER && CAREER.splits)||{}, duoSplits:cr.duoSplits||{}, trios:cr.trios||{},
           duoStreak:(CAREER && CAREER.duoStreak)||{}, lft:(CAREER && CAREER.lft)||{}, tseed:{seeded:cr.triosSeeded===undefined ? null : cr.triosSeeded, cores:cr.trioCores||null, filled:cr.trioFilled||null}, cseed:ccCareerSeed(), seeds:seeds};
 }
 function ccRaceWorldApply(w){
@@ -120322,6 +120327,7 @@ function ccRaceWorldApply(w){
   if(w.duoStreak && typeof w.duoStreak==='object') CAREER.duoStreak=w.duoStreak;
   if(w.lft && typeof w.lft==='object') CAREER.lft=w.lft;
   if(CAREER.career){
+    if(w.orphanMate && typeof w.orphanMate==='object') CAREER.career.orphanMate=JSON.parse(JSON.stringify(w.orphanMate));
     if(w.duoSplits && typeof w.duoSplits==='object') CAREER.career.duoSplits=w.duoSplits;
     if(w.trios && typeof w.trios==='object') CAREER.career.trios=w.trios;
     // Метка посева едет с тройками: без неё свой careerPools посеял бы поверх присланного.
@@ -132796,6 +132802,14 @@ function ccRealTeamBroken(d, cr){
   const when=c && (c.duoSplits||{})[key];
   return !!(when && String(when)>=ccYearFrom());
 }
+/* Размер состава в ключе кэша пула — только в команде: там пул капа другого формата сеется книгой мира хозяина
+   (ccWorldPoolsSeed) до сборки поля. В гонке и в одиночной — как было: кап другого формата берёт пул года из кэша.
+   С размером в ключе гонка пересобирала пул под тройки посреди сборки поля, у каждого в своё время — онлайн-прогон
+   гонки 2025 (22.10): FNCS Trial 7.12, поле 1707 у одного и 1700 у другого. */
+function ccPoolSizeOk(p){
+  const team=typeof ccMpTeam==='function' && ccMpTeam() && !(typeof ccRaceOn==='function' && ccRaceOn());
+  return !team || p.size===careerSquadSize();
+}
 function careerPools(){
   const snap0=ccSnapshotNow();
   // Карьера, перешедшая в следующий год: составы — года календаря (ccRealTeamDuos).
@@ -132810,8 +132824,8 @@ function careerPools(){
   if(!CC_POOLS) CC_POOLS_AWAY={};
   if(CC_REGION_AS){
     const away=CC_POOLS_AWAY[reg];
-    if(away && away.tag===snap.tag && away.size===careerSquadSize()) return away;
-  } else if(CC_POOLS && CC_POOLS.tag===snap.tag && CC_POOLS.reg===reg && CC_POOLS.size===careerSquadSize()) return CC_POOLS;
+    if(away && away.tag===snap.tag && ccPoolSizeOk(away)) return away;
+  } else if(CC_POOLS && CC_POOLS.tag===snap.tag && CC_POOLS.reg===reg && ccPoolSizeOk(CC_POOLS)) return CC_POOLS;
   const seated=new Set();
   const duos=real ? ccSeat(ccRealTeamDuos(ccCalYear(), real), seated)
                   : ccSeat(ccDuosOf(snap.playIn, ccPeopleOf(snap.playIn)), seated);
@@ -160969,9 +160983,20 @@ async function runCareerMajorMX(){
      Хиты и финал Мейджора, и день, когда второму играть нечего, — как было, личным вечером. День после вечера
      шагает по-прежнему через mxDone (ccMXTeamSettle). */
   const soloTeam=sp.size===1 && ccMpTeam();
+  // Отметка напарника на сегодня могла ещё не доехать (перемотка у одного быстрее) — решаем, дождавшись её.
+  if(soloTeam && ev.stage==='q') await ccMXPeerFlagWait();
   const shared=soloTeam && ccMXSharedOk(ev);
   if(soloTeam){ if(!shared) CC_MP_ALONE=true; CC_MX_SOLO_RUN=true; CC_MX_SHARED=shared; CC_MX_GATE_OFF=false; }
-  try{ await ccMXRun(ev, sp, soloTeam); }
+  try{
+    try{ await ccMXRun(ev, sp, soloTeam); }
+    catch(e){
+      /* Ворота общего квала отменены — напарник свой уже сыграл врозь (см. ccMpApplyRemote). Вечер не начинался
+         (ворота — первая строка раннера): играем его тут же, лично. */
+      if(!(shared && CC_MX_GATE_OFF)) throw e;
+      CC_MX_GATE_OFF=false; CC_MX_SHARED=false; CC_MP_ALONE=true;
+      await ccMXRun(ev, sp, soloTeam);
+    }
+  }
   finally{
     CC_EVENT_SIZE=prevEv;
     if(soloTeam){
@@ -160995,7 +161020,26 @@ function ccMXCanStamp(){
     const v=careerToday()+'|'+((ev && ev.stage==='q' && careerMajorCan(ev)) ? 1 : 0);
     const cr=CAREER.career, me=hKey(card);
     cr.mxCan=cr.mxCan||{};
-    if(cr.mxCan[me]!==v) cr.mxCan[me]=v;
+    if(cr.mxCan[me]!==v){
+      cr.mxCan[me]=v;
+      // Напарнику — сразу, а не со следующим сохранением: он может решать прямо сейчас (ccMXPeerFlagWait).
+      if(!CC_MP_RAND && typeof MP!=='undefined' && MP.push && MP.state==='live') setTimeout(function(){ try{ if(!CC_MP_RAND) MP.push(ccTeamState()); }catch(e){} }, 0);
+    }
+  }catch(e){}
+}
+// Ждём отметку напарника «могу/не могу» на сегодня (или его «сыграл») — не дольше CC_MX_FLAG_MS.
+const CC_MX_FLAG_MS=8000;
+async function ccMXPeerFlagWait(){
+  try{
+    if(typeof MP==='undefined' || MP.state!=='live' || !MP.peer) return;
+    ccMXCanStamp();
+    const pk=hKey(MP.peer), t0=Date.now();
+    const known=()=>{ const cr=CAREER.career, today=careerToday();
+      return String((cr.mxCan||{})[pk]||'').indexOf(today+'|')===0 || (cr.mxDone||{})[pk]===today; };
+    while(!known() && Date.now()-t0<CC_MX_FLAG_MS){
+      const w=new Promise(r=>setTimeout(r, 150));
+      await ((typeof ccMpIdle==='function') ? ccMpIdle(w) : w);
+    }
   }catch(e){}
 }
 // Квал соло-недели сегодня играют оба — вечер общий. Решают одни и те же общие отметки у обоих (mxCan, mxDone).
@@ -161197,6 +161241,13 @@ async function ccMXRun(ev, sp, soloTeam){
         /* Следующий раунд — только у прошедших. Прошёл один из двоих — дальше врозь, как соло-кап вдвоём (общая часть уже
            посчитана обоими и закрыта общим ключом, хвост — свой). Не прошёл никто — оба заканчивают здесь. */
         if(mxMate && (ranked.indexOf(mxMate)+1<=spec.cut)!==through){ ccTeamNightApart(); mxMate=null; humans=[you]; }
+        /* И в гонке — как второй раунд соло-капа (runCareerVictoryNight): кого-то из людей комнаты нет среди прошедших —
+           дальше врозь. Онлайн-прогон гонки 2020 (22.10): неделя 2 Мейджора 2, 1.08 — прошедший играл раунд 2 один, а
+           вылетевший ждал его ответа на вопрос («Your partner never reached the question»), доски разошлись. */
+        if(typeof ccRaceLock==='function' && ccRaceLock()){
+          const rivalOut=ranked.some((t, i)=>t && t.isRival && i>=spec.cut);
+          if(!through || rivalOut) ccRaceNightApart();
+        }
         if(!through) break;
       }
     }
@@ -164016,7 +164067,7 @@ function ccEventRosterBegin(fmt){
    рейтингу двоих (огрублённому до двух, чтобы десятые не развели), равные — по нику. Общий состав не трогается. */
 /* Выключено, пока поле не сходится у двоих: онлайн-прогон 2019 (22.10) — Trios Cash Cup 14.07 всё ещё 25 строк из 1593
    (свободные сводятся в пары по-разному). Разошедшийся вечер хуже, чем кап парами, как было. */
-const CC_MP_FMT_ON=false;
+const CC_MP_FMT_ON=true;
 function ccMpFmtBegin(fmt){
   if(!CC_MP_FMT_ON) return null;
   if(typeof ccRaceOn==='function' && ccRaceOn()) return null;
