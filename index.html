@@ -4626,7 +4626,9 @@
     #screen-career-hub .cc-lobby .cc-lb-top{display:none;}
     #screen-career-hub .cc-lobby.cc-lb-full .cc-lb-bottom{top:8px;}
     #screen-career-hub .cc-lobby.cc-lb-full .cc-lb-left,#screen-career-hub .cc-lobby.cc-lb-full .cc-lb-right{top:150px;}
-    #screen-career-hub .cc-lobby.cc-lb-full .cc-lb-stage{inset:104px 0 auto 0;}
+    /* Сцена — от НИЗА лобби (Notion 22.10: «почему так высоко модельки»): от верха (104px) на высоком меню под
+       подиумами оставалось 214px пустоты. Низкое окно — сцена ниже ростом, под вкладки не лезет. */
+    #screen-career-hub .cc-lobby.cc-lb-full .cc-lb-stage{inset:auto 0 0 0;height:min(770px, calc(100% - 104px));}
     #screen-career-hub.ch-lobby-on .ch-tabs{padding-bottom:10px;}
   }
   .ch-tabs-side{display:none;}
@@ -118451,7 +118453,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='38e70eaf';
+const CC_BUILD='184bb3bc';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
