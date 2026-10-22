@@ -118505,7 +118505,7 @@ const CC_BUILD='813598d1';
 // year/year0 — общие (30.09): друг по ссылке хозяина, который уже перешёл в следующий год, оставался
 // в году начала — день приезжал 2021-й, а календарь года стоял 2019-й.
 const CC_TEAM_KEYS=['seed','day','year','year0','mxDone','mxCan','vpick','season','division','diff','tokens','seasonOver','chemSince','beefs',
-                    'sizes','trios','log','mp','region','mates','spots','seasonTurn',
+                    'sizes','trios','orphanMate','log','mp','region','mates','spots','seasonTurn',
                     'majorSeed','summitSeed','relSeed','gcSeed','duoSplits','exMates','table',
                     'events','d1','major','summit','globals','reload','rel','wf','rc',
                     'gclc','solo','soloBy','solos','solosBy','solosRl','solosRlBy','gifts','ewc'];
@@ -120360,8 +120360,16 @@ function ccTeamWorldPack(){
   const cr=(CAREER && CAREER.career)||{};
   // Сид мира команды — хозяина; ставит его себе и везёт второму (см. freeRnd в careerCupField).
   if(CAREER && CAREER.career) cr.teamWseed=String(ccCareerSeed());
+  // У себя — то же, что получит второй: пустая книга объектом, а не undefined (второй ставит {} в ccTeamWorldApply).
+  if(CAREER){ ['dev','devL','splits','duoStreak','lft'].forEach(k=>{ if(!CAREER[k] || typeof CAREER[k]!=='object') CAREER[k]={}; });
+    if(CAREER.career && (!cr.duoSplits || typeof cr.duoSplits!=='object')) cr.duoSplits={};
+    if(CAREER.career && (!cr.trios || typeof cr.trios!=='object')) cr.trios={}; }
   return {dev:CAREER.dev||{}, devL:CAREER.devL||{}, splits:CAREER.splits||{}, duoStreak:CAREER.duoStreak||{}, lft:CAREER.lft||{},
           duoSplits:cr.duoSplits||{}, trios:cr.trios||{},
+          /* И напарники сирот (ccOrphanPairs: игрок забрал карточку — его бывший напарник садится к свободному, и выбор
+             помнится весь сезон). Память была личной: второй выбирал и запоминал своего — онлайн-прогон 2022 (22.10),
+             Duos Cash Cup 10.01: «demon diocese» (в записи пара Pixie) у одного с thomasww9, у другого с amg reyed. */
+          orphanMate:cr.orphanMate||{},
           /* И посевы стадий (онлайн-прогон 2025 года, 21.10: финал Мейджора 1 15.02 разошёлся на первой игре, «state majorSeed» —
              прошедших через Last Chance мир досчитывал у каждого сам). Хозяин везёт свои, второй ставит до сборки поля. */
           seeds:{majorSeed:cr.majorSeed||null, summitSeed:cr.summitSeed||null, relSeed:cr.relSeed||null, gcSeed:cr.gcSeed||null},
@@ -120377,6 +120385,7 @@ function ccTeamWorldApply(w){
   CAREER.dev=obj(w.dev); CAREER.devL=obj(w.devL); CAREER.splits=obj(w.splits); CAREER.duoStreak=obj(w.duoStreak); CAREER.lft=obj(w.lft);
   const c=CAREER.career;
   c.duoSplits=obj(w.duoSplits); c.trios=obj(w.trios);
+  if('orphanMate' in w) c.orphanMate=JSON.parse(JSON.stringify(obj(w.orphanMate)));
   if(w.wseed) c.teamWseed=String(w.wseed);
   if('lanSim' in w){ if(w.lanSim) c.lanSim=JSON.parse(JSON.stringify(w.lanSim)); else delete c.lanSim; }
   if(w.seeds && typeof w.seeds==='object') ['majorSeed','summitSeed','relSeed','gcSeed'].forEach(k=>{ if(w.seeds[k]) c[k]=JSON.parse(JSON.stringify(w.seeds[k])); else delete c[k]; });
@@ -130299,6 +130308,9 @@ function ccWorldReset(){
   CC_POOLS=null; CC_REC_MATES=null;
   CC_NOW_CARDS={}; CC_NOW_TAG=null; CC_ARC_PAIRS={};
   CC_EU_ALL={};
+  /* И ростер региона с готовыми рейтингами (_ovr на момент сборки) и ники сцены над ним: мир сменился (книга мира,
+     новый год) — собираются заново, как остальные снимки. */
+  CC_EU_CARDS={}; CC_REAL_NAMES={};
   CC_NAT_POOL={};
   CC_ORG_POOL={}; CC_ORG_NAMES={}; CC_LADDER_POOL={};
   CC_YEAR_DAYS=null;
@@ -131249,8 +131261,11 @@ function careerGauss(rnd){
    Built once off the roster and kept, because this is asked a thousand times
    filling a Division 5 room. */
 let CC_REAL_NAMES={};
+/* Ключ — тот же, что у ростера (регион и год, careerRosterEU). Был только регион: список запоминался на первом же
+   году, где его спросили (экран создания стоит на 2026-м), и в карьере другого года отсеивал ники лестницы по людям
+   чужого года. */
 function ccRealNames(){
-  const reg=ccCareerRegion();
+  const reg=ccCareerRegion()+(ccNowYear()<2026 ? '|'+ccNowYear() : '');
   if(CC_REAL_NAMES[reg]) return CC_REAL_NAMES[reg];
   CC_REAL_NAMES[reg]=new Set();
   careerRosterEU().forEach(p=>{
