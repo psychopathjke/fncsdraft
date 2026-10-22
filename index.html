@@ -671,41 +671,6 @@
   .hero-chips{align-items:center;margin-top:-2px;}
   .hero-chips .cstrip-tag{margin-right:2px;}
   .hero-chips .cstrip-chip{border-color:rgba(126,240,221,.32);background:rgba(126,240,221,.08);color:#dff6f1;}
-  /* ПЛАШКИ ПОД FORTNITE (Notion 22.10, его рамки на главной: «странно выглядит»). Круглые «таблетки» другим шрифтом
-     выбивались рядом с заголовками Fira: теперь тот же шрифт заголовков, капс, почти прямые углы — как теги в Fortnite.
-     И «С другом» — тем же видом, одним блоком. */
-  .hero-chips .cstrip-chip,#screen-mode .home-daily .cstrip-chip{font-family:var(--font-display);font-weight:700;font-size:13px;letter-spacing:.03em;text-transform:uppercase;
-    border-radius:4px;padding:5px 10px 4px;line-height:1.1;}
-  .hero-chips .cstrip-tag{border-radius:4px;}
-  #screen-mode .home-daily .cstrip-chip{border-radius:4px;padding:5px 10px 4px;line-height:1.1;}
-  #screen-mode .dy-top-h{font-weight:700;font-size:20px;text-transform:uppercase;transform:skewX(-7deg);transform-origin:left;}
-  .hero .hero-team .hero-seg .cstrip-btn{border-radius:0;}
-  .hero .hero-team .hero-seg{border-radius:5px;}
-  /* ОПИСАНИЕ РЕЖИМА — ВТОРОЙ ЗАХОД (Notion 23.10: «всё равно не нравится дизайн этого описания», рамка вокруг плашек и
-     «С другом»). Плашки-факты и кнопки выглядели одинаково — восемь одинаковых коробок, и непонятно, что нажимается.
-     Теперь факты — строкой текста через точку (без рамок), а «С другом» — настоящие кнопки. Коллаж под текстом темнее. */
-  .hero-chips{gap:2px 0;}
-  .hero-chips .cstrip-chip,#screen-mode .home-daily .cstrip-chip{background:none;border:0;border-radius:0;padding:0;
-    font-size:14px;letter-spacing:.03em;color:#bfe9e2;}
-  .hero-chips .cstrip-chip:not(:last-child)::after,#screen-mode .home-daily .cstrip-chip:not(:last-child)::after{content:'·';margin:0 9px 0 9px;color:rgba(191,233,226,.55);}
-  .hero-chips .cstrip-tag{margin-right:10px;}
-  .hero .hero-team{gap:8px;margin-top:4px;}
-  .hero .hero-team .hero-team-lbl{font-family:var(--font-display);font-weight:700;font-size:14px;letter-spacing:.05em;color:#bfe9e2;}
-  .hero .hero-team .hero-seg{display:inline-flex;gap:8px;border:0;background:none;border-radius:0;overflow:visible;}
-  .hero .hero-team .hero-seg .cstrip-btn{border-radius:8px;border:1px solid rgba(255,255,255,.45);background:rgba(255,255,255,.1);
-    color:#fff;font-size:14px;padding:9px 14px 8px;}
-  .hero .hero-team .hero-seg .cstrip-btn:hover{background:rgba(255,255,255,.2);border-color:#fff;}
-  .hero-pair:has(.hero-mgr:not([hidden]))>.hero::after{background:linear-gradient(90deg,rgba(10,20,60,.95) 0%,rgba(10,20,60,.85) 55%,rgba(10,20,60,.4) 100%);}
-  /* ПАНЕЛЬКИ — ВАРИАНТ 3 (его выбор 23.10 из трёх макетов, «только те панельки»): плашек фактов нет — всё это уже в тексте
-     описания; «С другом» — тонкая строка ссылок ПОД главной кнопкой, отделённая линией. Остальное в карточке как было. */
-  #screen-mode .hero .hero-chips{display:none;}
-  #screen-mode .hero .hero-cta{order:5;}
-  #screen-mode .hero .hero-team{order:6;margin:4px 0 0;padding-top:12px;border-top:1px solid rgba(255,255,255,.14);gap:10px;align-items:baseline;}
-  #screen-mode .hero .hero-team .hero-seg{display:inline-flex;gap:14px;border:0;background:none;border-radius:0;overflow:visible;}
-  #screen-mode .hero .hero-team .hero-seg .cstrip-btn{background:none;border:0;border-bottom:2px solid #7ef0dd;border-radius:0;padding:0 0 1px;
-    font-size:14px;color:#fff;letter-spacing:.03em;}
-  #screen-mode .hero .hero-team .hero-seg .cstrip-btn:hover{color:#7ef0dd;background:none;}
-  #screen-mode .hero .hero-about{order:7;}
   /* Строка «с другом»: три командные двери мельче главных, одной строкой. */
   .hero-about{margin:10px 0 0;text-align:left}
 /* Тихая третья кнопка ряда: та же таблетка и тот же узкий капс, что у
