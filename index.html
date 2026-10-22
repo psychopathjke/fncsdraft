@@ -118142,6 +118142,7 @@ function ccStart(){
     if(!save.partners.length) delete save.partners;
     CAREER=was; }
   try{ localStorage.setItem(LS_SLOT(ccSlotMine()), JSON.stringify(save)); }catch(e){}
+  try{ ccSaveMarkAdopt(); }catch(e){}
   openCareerHub();
   /* И если карьеру заводили ради команды — сразу в лобби. Намерение ставит
      кнопка на карточке карьеры (careerMpNew / careerMpJoinNew) и сбрасывает
@@ -118295,6 +118296,7 @@ function careerLoad(){
   CC_LOAD_BAD=null;
   let raw=null;
   try{ raw=localStorage.getItem(LS_SLOT(CC_SLOT_TAB)); CAREER=ccSaveParse(raw); }catch(e){ CAREER=null; }
+  try{ ccSaveMarkAdopt(); }catch(e){}   // отметка записи слота — своя с этой загрузки (см. ccSaveStale)
   if(raw && !CAREER){
     CC_LOAD_BAD={slot:CC_SLOT_TAB};
     console.error('career save in slot '+CC_SLOT_TAB+' could not be read; kept as '+LS_SLOT(CC_SLOT_TAB)+'_unread');
@@ -119204,6 +119206,15 @@ let CC_MP_DIV_BAD=null;
 function ccMpStateOk(team, known){
   const cr=CAREER && CAREER.career;
   if(typeof ccUndoGoSkip==='function' && ccUndoGoSkip(team)) return false;   // только что откатились вдвоём
+  /* Состояние команды СТАРШЕ своего дня при входе не берётся (Notion 22.10, игрок: «вышел и зашёл — карьеру отбросило
+     к началу сезона»). «Своя команда — истина» писалось для сейва, который отстал от сервера; когда отстал сервер
+     (отправка не дошла), вход откатывал карьеру назад. Тот же порог, что у ccMpApplyRemote: день команды идёт только
+     вперёд. Серверу уходит своё, более новое. */
+  if(cr && team && team.day && cr.day && team.day<cr.day && team.seed && cr.seed===team.seed){
+    CC_MP_DIV_BAD=null;
+    try{ if(typeof MP!=='undefined' && MP.push) setTimeout(function(){ try{ MP.push(ccTeamState()); }catch(e){} }, 0); }catch(e){}
+    return false;
+  }
   if(!cr || !team || !team.division || !cr.division){ CC_MP_DIV_BAD=null; return true; }
   /* Свой же в своё лобби заходит всегда.
 
@@ -122141,9 +122152,34 @@ async function ccCloudRestore(){
   }catch(e){ CC_CLOUD_MSG=String(e && e.message || e); }
   ccCloudDraw();
 }
+/* ВКЛАДКА СО СТАРОЙ КАРЬЕРОЙ НЕ ПИШЕТ ПОВЕРХ НОВОЙ (Notion 22.10, игрок: «вышел и зашёл — карьеру отбросило к началу
+   сезона»). Две вкладки одного слота (или проснувшаяся из кэша страница телефона) держат каждая свой CAREER, и
+   любое сохранение старой стирало прогресс новой. Каждая запись ставит рядом с сейвом отметку <слот>_w (вкладка и
+   счётчик); вкладка помнит свою. Отметка в хранилище чужая — слот переписан другой вкладкой: эта не пишет, а
+   перечитывает сейв (перезагрузка), как только не идёт вечер. */
+// var без значений: careerLoad может прийти раньше этой строки, а let/const там бросили бы (TDZ) и отметка не встала бы.
+var CC_TAB_ID, CC_SAVE_MARK, CC_SAVE_N, CC_TAB_STALE;
+function ccSaveMarkKey(){ return LS_SLOT(ccSlotMine())+'_w'; }
+function ccSaveMarkAdopt(){ try{ CC_SAVE_MARK=localStorage.getItem(ccSaveMarkKey()); }catch(e){ CC_SAVE_MARK=null; } CC_TAB_STALE=false; }
+function ccSaveStale(){
+  if(CC_TAB_STALE) return true;
+  let now=null; try{ now=localStorage.getItem(ccSaveMarkKey()); }catch(e){ return false; }
+  if(now && CC_SAVE_MARK!==undefined && now!==CC_SAVE_MARK) CC_TAB_STALE=true;
+  return CC_TAB_STALE;
+}
+function ccSaveStaleReload(){
+  if(!CAREER || CAREER._mgr || !ccSaveStale()) return;
+  if(typeof CAREER_RUN!=='undefined' && CAREER_RUN) return;
+  location.reload();
+}
+try{
+  document.addEventListener('visibilitychange', ()=>{ if(document.visibilityState==='visible') ccSaveStaleReload(); });
+  window.addEventListener('pageshow', ()=>{ ccSaveStaleReload(); });
+}catch(e){}
 function careerSave(){
   if(!CAREER) return;
   if(CAREER._mgr){ if(typeof mgrSave==='function') mgrSave(); return; }   // теневая карьера Fortnite Manager
+  if(ccSaveStale()){ if(typeof console!=='undefined') console.warn('career save skipped: the slot was written by another tab'); ccSaveStaleReload(); return; }
   try{ if(typeof ccLockerCheck==='function') ccLockerCheck(); }catch(e){}
   // Экран карьер читает сейв не загружая его — пусть знает, есть ли у карьеры дивизионы сейчас.
   try{ if(CAREER.career) CAREER.career.noDiv=!!ccNoDivisions(); }catch(e){}
@@ -122181,6 +122217,8 @@ function careerSave(){
       if(!lz){ try{ localStorage.setItem(key, json); }
                catch(e1){ if(!/quota|exceed/i.test(String(e1&&e1.name||e1)) || typeof LZString==='undefined') throw e1; lz=true; } }
       if(lz) localStorage.setItem(key, CC_SAVE_LZ+LZString.compressToUTF16(json));
+      try{ if(!CC_TAB_ID) CC_TAB_ID=Math.random().toString(36).slice(2, 10); CC_SAVE_N=(CC_SAVE_N||0)+1;
+           const mk=CC_TAB_ID+':'+CC_SAVE_N; localStorage.setItem(ccSaveMarkKey(), mk); CC_SAVE_MARK=mk; }catch(e){}
       CC_SAVE_FAIL=null;
       careerSaveWarn();
       try{ ccCloudSoon(); }catch(e){}
@@ -146711,6 +146749,12 @@ let CC_DUO_Q='';
    остались кнопками. */
 let CC_DUO_SORT='near';
 function ccDuoFindSort(v){ CC_DUO_SORT=(v==='pr' ? 'pr' : v==='ovr' ? 'ovr' : 'near'); ccDuoFindRender(); }
+/* Роль в списке (Telegram 22.10: «невозможно найти 3 или 4 в трио и скваде», «все иглят»). Список показывает всех,
+   и рядом с твоим рейтингом ИГЛов почти две трети (2025: 566 из 917): ИГЛ в составе уже есть, и каждое письмо
+   упиралось в «кто-то из нас должен пересесть». Теперь окно открывается на роли, которой не хватает
+   (ccSeatRoleWanted), а «все» — одной кнопкой рядом. '' — все. */
+let CC_DUO_ROLE='';
+function ccDuoFindRole(v){ CC_DUO_ROLE=(v==='roleIGL' || v==='roleFRG') ? v : ''; ccDuoFindRender(); }
 /* Отбор по флагу. Пусто — все; иначе код страны, как его знает FLAG_CODE.
    Живёт рядом с сортировкой и сбрасывается там же, где строка поиска. */
 let CC_DUO_NAT='', CC_DUO_NAT_OPEN=false;
@@ -146748,6 +146792,8 @@ function ccDuoFindOpen(seat, fmt){
   if(ccMpOn() && ccMpMateRecs().length >= ccMpBotSeats()) return;
   CC_DUO_Q=''; CC_DUO_NAT=''; CC_DUO_NAT_OPEN=false; CC_DUO_REG=''; CC_DUO_SORT='near'; CC_DUO_PAIRS=false;
   CC_DUO_SEAT=(typeof seat==='number' && seat>=0 && seat<careerMateSeats()) ? seat : null;
+  CC_DUO_ROLE='';
+  try{ if(!CC_DUO_FMT) CC_DUO_ROLE=ccSeatRoleWanted(CC_DUO_SEAT)||''; }catch(e){}
   ccDuoFindRender();
   document.getElementById('duoFindModal').style.display='flex';
   document.addEventListener('keydown', ccDuoFindKey);
@@ -146921,7 +146967,8 @@ function ccDuoFindRender(keepFocus){
     all.sort((a,b)=>Math.abs((a.ovr||0)-me)-Math.abs((b.ovr||0)-me) || (b.ovr||0)-(a.ovr||0));
   }
   // Сначала флаг, потом набранное имя: флаг сужает, строка ищет внутри.
-  const byNat=CC_DUO_NAT ? all.filter(w=>ccDuoNatCode(w)===CC_DUO_NAT) : all;
+  const byRole=CC_DUO_ROLE ? all.filter(w=>w.role===CC_DUO_ROLE) : all;
+  const byNat=CC_DUO_NAT ? byRole.filter(w=>ccDuoNatCode(w)===CC_DUO_NAT) : byRole;
   const list=(q ? byNat.filter(w=>String(w.handle).toLowerCase().indexOf(q)>=0) : byNat).slice(0, 120);
   /* Флаги — те, что в списке есть, с числом людей у каждого. Десять самых
      населённых: строка фильтров шире экрана телефона бесполезна, а хвост из
@@ -147004,7 +147051,8 @@ function ccDuoFindRender(keepFocus){
        </div>${ccRealNamesHere() ? `<select class="cc-duo-regsel" aria-label="${esc(L().ccDuoReg)}" onchange="ccDuoFindReg(this.value)">${
          ((typeof ccYearRegions==='function' ? ccYearRegions() : CC_REGIONS)||[]).map(r=>`<option value="${r}"${r===ccDuoRegNow()?' selected':''}>${esc(L().ccDuoReg)}: ${esc(regionName(r))}</option>`).join('')}</select>` : ''}</div>
      <div class="ch-hint cc-duo-n">${pairsView ? (pairsList.length ? esc(L().ccDuoViewPairs)+': '+pairsList.length : esc(L().ccJoinPairNone)) : list.length ? L().ccDuoFound(list.length) : L().ccDuoNobody}
-       <span class="cc-duo-sort">${esc(L().ccDuoSortBy)}: <button class="cc-job-h${CC_DUO_SORT==='near'?' on':''}" onclick="ccDuoFindSort('near')">${esc(L().ccDuoSortNear)}</button> <button class="cc-job-h${CC_DUO_SORT==='ovr'?' on':''}" onclick="ccDuoFindSort('ovr')">${esc(L().ccDuoSortOvr)}</button> <button class="cc-job-h${CC_DUO_SORT==='pr'?' on':''}" onclick="ccDuoFindSort('pr')">${esc(L().ccDuoSortPr)}</button></span></div>
+       <span class="cc-duo-sort">${esc(L().ccDuoSortBy)}: <button class="cc-job-h${CC_DUO_SORT==='near'?' on':''}" onclick="ccDuoFindSort('near')">${esc(L().ccDuoSortNear)}</button> <button class="cc-job-h${CC_DUO_SORT==='ovr'?' on':''}" onclick="ccDuoFindSort('ovr')">${esc(L().ccDuoSortOvr)}</button> <button class="cc-job-h${CC_DUO_SORT==='pr'?' on':''}" onclick="ccDuoFindSort('pr')">${esc(L().ccDuoSortPr)}</button></span>${pairsView ? '' :
+       ` <span class="cc-duo-sort cc-duo-role">${['', 'roleIGL', 'roleFRG'].map(r=>`<button class="cc-job-h${CC_DUO_ROLE===r?' on':''}" onclick="ccDuoFindRole('${r}')">${esc(r ? (L()[r]||r) : L().ccDuoNatAll)}</button>`).join(' ')}</span>`}</div>
      <div class="cc-buys">${pairsView ? pairRows : rows}</div>`;
   if(keepFocus){
     const f=document.getElementById('duoFindQ');
@@ -160551,9 +160599,13 @@ async function runCareerGlobals(){
   // Форт-Уэрт 2024: «points multiplied by 1.5x on the second day» (Liquipedia, сверка 7.10) — как Гранд-финалы 2024-го.
   const gc24=ccCalYear()===2024;
   CC_M24_GAME=0;
+  /* Финал — один на оба дня, все двенадцать игр разом. Метка календаря второго дня несёт «· Сессия 2», и над игрой
+     читалось «Session 2: partie 12 sur 12» — как будто это вторая сессия по двенадцать (игрок, Notion 22.10). */
+  const sessCut=' · '+L().calSession.split('{N}')[0];
+  const stageNm=ev.label.lastIndexOf(sessCut)>0 ? ev.label.slice(0, ev.label.lastIndexOf(sessCut)) : ev.label;
   await simulateGamesLive(field, CC_GLOB_GAMES, gc24 ? ccM24PointsGf : majorPoints, gc24 ? ccM24KillGf : CC_GLOB_KILL,
     'stage', 0, null, zones,
-    {lobbySize:ccTeams(50), stageName:ev.label, mapReplay:true, choices:true, stopOnYourDeath:true,
+    {lobbySize:ccTeams(50), stageName:stageNm, mapReplay:true, choices:true, stopOnYourDeath:true,
      dropEachGame:(g,room)=>{ CC_M24_GAME=g; return careerLandingPick(room||field, you, ev.label, kindsForDrop); }});
   const ranked=field.slice().sort((a,b)=>b.stagePts-a.stagePts || (b.wins||0)-(a.wins||0) || b.stageElims-a.stageElims);
   const place=ranked.indexOf(you)+1;
@@ -164176,16 +164228,23 @@ function ccMpFmtBegin(fmt){
   const me=careerCard(), taken=new Set([hKey(me||CAREER.player.handle||CAREER.player.nick||''), hKey(MP.peer)]);
   shared.forEach(r=>{ const c=ccMateCardOf(r); if(c) taken.add(hKey(c)); });
   const ovr=c=>{ try{ return (attrsFor(c)||{}).ovr || c.rating || 80; }catch(e){ return 80; } };
-  const target=Math.round(((me ? ovr(me) : 80)+ovr(MP.peer))/4)*2;
+  /* Средний рейтинг двоих — из сцены (она у обоих одна), а не из карточек: добор идёт до ворот вечера, своя
+     карточка у каждого свежая, а напарника — с прошлой отправки. 99 и 98 против 99 и 99 давали цель 98 и 100,
+     и третьим у одного выходил JOE (98), у другого Kami (99): онлайн-прогон 2022, 22.10, Trios Quick Cash Cup 26.08. */
+  const scene=ccSceneRoster(ccCareerRegion());
+  const sceneOvr=h=>{ const k=hKey(h), c=scene.find(x=>x && hKey(x)===k); return c ? ccCardOvr(c) : 80; };
+  const target=Math.round((sceneOvr(me||CAREER.player.handle||CAREER.player.nick||'')+sceneOvr(MP.peer))/4)*2;
   const stand=[];
+  let fpPool='';
   if(need>shared.length){
-    const pool=ccSceneRoster(ccCareerRegion()).filter(c=>c && c.handle && !taken.has(hKey(c)))
+    const pool=scene.filter(c=>c && c.handle && !taken.has(hKey(c)))
       .sort((a,b)=>Math.abs(ccCardOvr(a)-target)-Math.abs(ccCardOvr(b)-target) || (hKey(a)<hKey(b) ? -1 : hKey(a)>hKey(b) ? 1 : 0));
     for(let i=0;i<need-shared.length && i<pool.length;i++) stand.push({card:{...pool[i]}, patience:60, since:careerToday(), dev:0, standin:true});
+    try{ fpPool=' tg'+target+' me'+(me ? ovr(me) : '-')+' pe'+ovr(MP.peer)+' top '+pool.slice(0, 5).map(c=>c.handle+':'+ccCardOvr(c)+':'+careerDevOf(c)).join(',')+' dev '+ccHashStr(JSON.stringify(CAREER.dev||{}))+' tag '+CC_NOW_TAG; }catch(e){}
   }
   CC_MP_FMT_MATES=shared.concat(stand); CC_MP_FMT_PICKS=0;
   // Отпечаток памяти троек и пула на входе — в журнал вечера: расхождение видно у обоих рядом.
-  try{ CC_MP_FMT_FP='f'+fmt+' trios '+ccHashStr(JSON.stringify(cr.trios||{}))+'/'+Object.keys(cr.trios||{}).length+' seeded '+String(cr.triosSeeded||'-').slice(0,16)+' pools '+(CC_POOLS ? CC_POOLS.tag : '-')+' fill '+stand.map(r=>r.card.handle).join('+'); }catch(e){}
+  try{ CC_MP_FMT_FP='f'+fmt+' trios '+ccHashStr(JSON.stringify(cr.trios||{}))+'/'+Object.keys(cr.trios||{}).length+' seeded '+String(cr.triosSeeded||'-').slice(0,16)+' pools '+(CC_POOLS ? CC_POOLS.tag : '-')+' fill '+stand.map(r=>r.card.handle).join('+')+fpPool; }catch(e){}
   const was=CC_EVENT_SIZE; CC_EVENT_SIZE=fmt;
   /* Пул под размер вечера собирается ЗДЕСЬ, у обоих в одной точке (онлайн-прогон 2019 года, 22.10). Собранный лениво
      посреди вечера, он засевал третьих у двоих в разное время: Trios Cash Cup 14.07 расходился на 19…1327 строк поля
