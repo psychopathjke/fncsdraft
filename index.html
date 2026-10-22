@@ -742,6 +742,10 @@
     opacity:.6;border-left:1px solid currentColor;padding-left:7px;margin-left:2px;}
   /* Ko-fi своим цветом, как X и телеграм — своими. */
   .kofi-top{color:#fff;background:#ff5e5b;}
+  .support-top{background:rgba(255,221,0,.1);color:#ffe774;box-shadow:inset 0 0 0 1px rgba(255,221,0,.5);}
+  .support-top.kofi-top{background:rgba(255,94,91,.12);color:#ffa3a1;box-shadow:inset 0 0 0 1px rgba(255,94,91,.55);}
+  .support-top:hover,.support-top:focus-visible{background:var(--go);color:var(--go-ink);filter:none;}
+  .support-top.kofi-top:hover,.support-top.kofi-top:focus-visible{background:#ff5e5b;color:#fff;}
   /* Фирменные цвета — отзыв: X в своём чёрном, телеграм в
      своём синем. Белая обводка на ховере вместо акцента сайта: кнопка бренда
      подсвечивается собой, а не нашей бирюзой. */
@@ -4795,11 +4799,18 @@
      22.10: «very hard to read because of the colors» — серое стекло, логотип FNCS насквозь). Плотная тёмная подложка
      и тёмные плитки; картинка остаётся едва видна. */
   #screen-career-hub .cc-lobby .cc-lb-playbox .ch-art.cc-day::after,
-  #screen-career-hub.ch-themed .cc-lobby .cc-lb-playbox .ch-art.cc-day::after{background:linear-gradient(180deg,rgba(8,12,24,.86),rgba(8,12,24,.94));}
+  #screen-career-hub.ch-themed .cc-lobby .cc-lb-playbox .ch-art.cc-day::after{background:linear-gradient(180deg,rgba(12,28,84,.9),rgba(8,18,58,.96));}
   #screen-career-hub .cc-lobby .cc-lb-playbox .cc-day .cc-act,#screen-career-hub .cc-lobby .cc-lb-playbox .cc-day .cc-six-t,
   #screen-career-hub .cc-lobby .cc-lb-playbox .cc-day .cc-job,
   #screen-career-hub.ch-themed .cc-lobby .cc-lb-playbox .cc-day .cc-act,#screen-career-hub.ch-themed .cc-lobby .cc-lb-playbox .cc-day .cc-six-t,
-  #screen-career-hub.ch-themed .cc-lobby .cc-lb-playbox .cc-day .cc-job{background:rgba(255,255,255,.07);}
+  #screen-career-hub.ch-themed .cc-lobby .cc-lb-playbox .cc-day .cc-job{background:rgba(120,150,235,.14);}
+  /* ЦВЕТА ХАБА (22.10, после аудита ПК): жёлтый — только у главного (рейтинг и кнопка вечера), как «Играть» в Fortnite;
+     кнопка дня стояла синей на синем и терялась. Кнопки поддержки в шапке — контуром, заливка по наведению: они
+     перетягивали глаз с кнопки вечера. */
+  #screen-career-hub .cc-lobby .cc-lb-playbox .ch-play:not(:disabled),
+  #screen-career-hub .cc-lobby .cc-lb-playbox .ch-play.ch-skipto:not(:disabled){background:var(--go);color:var(--go-ink);text-shadow:none;}
+  #screen-career-hub .cc-lobby .cc-lb-playbox .ch-play:not(:disabled):hover,
+  #screen-career-hub .cc-lobby .cc-lb-playbox .ch-play.ch-skipto:not(:disabled):hover{background:#fff27a;color:var(--go-ink);}
   /* НИЖНЯЯ ПЛАНКА ШРИФТА 11px (22.10, аудит Impeccable хаба: телефон 390px после «very hard to read» из X, потом ПК
      1440×900 — те же 8–10px). Подписи плиток прокачки, подработки, кошелька, дней недели, «Сыграть за меня», квадратиков
      недель сезона — на всех ширинах. */
