@@ -103688,15 +103688,57 @@ function ccErrSelect(box){
   try{ const r=document.createRange(); r.selectNodeContents(el);
        const s=window.getSelection(); s.removeAllRanges(); s.addRange(r); }catch(e){}
 }
+/* ЖУРНАЛ ПОЛОМОК НА СЕРВЕР (22.10). Баги приходили скриншотами, и половина «не воспроизвелась»: на картинке не было
+   ни сборки, ни дня карьеры, ни режима. Теперь поломка, красная строка онлайна и несохранившийся сейв сами уходят
+   на mp.fncsdraft.com/errlog (смотреть: GET /errlog?limit=100). Только сборка, вид, текст, место и контекст карьеры —
+   ни ника, ни id. Не больше восьми записей за загрузку, одинаковые — один раз. text/plain — без предзапроса CORS. */
+var CC_ERRLOG_SENT;
+function ccErrLogBase(){
+  try{
+    const h=(typeof MP!=='undefined' && MP.host) || '';
+    if(!h && location.protocol==='file:') return null;
+    return String(h||'wss://mp.fncsdraft.com').replace(/^wss:/, 'https:').replace(/^ws:/, 'http:')+'/errlog';
+  }catch(e){ return null; }
+}
+function ccErrLogCtx(){
+  const p=[];
+  try{ p.push('lang '+(typeof LANG!=='undefined' ? LANG : '?')); }catch(e){}
+  try{ const a=document.querySelector('.screen.active'); if(a) p.push('scr '+a.id); }catch(e){}
+  try{ if(typeof CAREER!=='undefined' && CAREER && CAREER.career){ const c=CAREER.career;
+    p.push('day '+c.day, 'y '+(c.year0||c.year||''), 's '+(c.season||''), 'div '+(c.division||''),
+      CAREER._mgr ? 'mgr' : (typeof ccMpTeam==='function' && ccMpTeam()) ? 'team' : (typeof ccRaceOn==='function' && ccRaceOn()) ? 'race' : 'solo');
+    if(typeof CH_TAB!=='undefined') p.push('tab '+CH_TAB);
+    if(typeof CAREER_RUN!=='undefined' && CAREER_RUN) p.push('run');
+  } }catch(e){}
+  try{ p.push(innerWidth+'px'); }catch(e){}
+  return p.join(' · ');
+}
+function ccErrLog(kind, msg, src){
+  try{
+    const m=String(msg==null ? '' : msg).slice(0, 300);
+    if(!m || (typeof RUN_ABANDONED!=='undefined' && msg===RUN_ABANDONED)) return;
+    CC_ERRLOG_SENT=CC_ERRLOG_SENT||{};
+    const k=kind+'|'+m;
+    if(CC_ERRLOG_SENT[k] || Object.keys(CC_ERRLOG_SENT).length>=8) return;
+    CC_ERRLOG_SENT[k]=1;
+    const base=ccErrLogBase(); if(!base) return;
+    let build='-'; try{ build=CC_BUILD; }catch(e){}
+    const ua=String(navigator.userAgent||'').replace(/^Mozilla\/5\.0 /, '').slice(0, 80);
+    fetch(base, {method:'POST', keepalive:true, headers:{'Content-Type':'text/plain'},
+      body:JSON.stringify({kind, msg:m, src:String(src||'').slice(0, 200), build, ctx:ccErrLogCtx(), ua})}).catch(()=>{});
+  }catch(e){}
+}
 window.addEventListener('error', function(e){
   // Не отдавшийся файл — это тоже событие error, но у него есть target и нет
   // message: картинка, которой нет в папке, не должна выглядеть как поломка.
   if(!e || !e.message) return;
   ccErrShow(e.message + (e.lineno ? ' @' + e.lineno : ''));
+  ccErrLog('err', e.message, (e.filename ? String(e.filename).split('/').pop().split('?')[0] : '')+(e.lineno ? ':'+e.lineno+':'+(e.colno||0) : ''));
 });
 window.addEventListener('unhandledrejection', function(e){
   const r=e && e.reason;
   ccErrShow((r && (r.stack || r.message)) || r);
+  ccErrLog('rej', (r && r.message) || r, r && r.stack ? String(r.stack).split('\n').slice(1, 3).join(' < ').replace(/\s+/g, ' ') : '');
 });
 let runGeneration=0, currentRunGen=0;
 function abandonRun(){ runGeneration++; }
@@ -121360,6 +121402,7 @@ function ccMpSplitSeen(n, detail){
   if(CC_MP_SPLIT_AT!=null) return;      // первое расхождение и есть нужное
   CC_MP_SPLIT_AT=n||0;
   try{ careerNews('bad', 'ccNewsMpSplit', [String(n||'?')]); }catch(e){}
+  try{ ccErrLog('split', 'game '+(n||'?')+' · '+String(detail||'').slice(0, 260)); }catch(e){}
   /* В ГОНКЕ разошедшиеся столы уже не сойдутся: комната распадается на группы с разными
      наборами вопросов, и барьеры ждут приходов, которых не будет (год 9.09: кубок 9.02, две
      группы, 15 минут стоя). Дальше вечер идёт врозь — как после «напарник не дошёл». */
@@ -122252,6 +122295,7 @@ function careerSave(){
 function careerSaveWarn(){
   const old=document.getElementById('ccSaveFail');
   if(!CC_SAVE_FAIL){ if(old) old.remove(); return; }
+  try{ ccErrLog('save', CC_SAVE_FAIL); }catch(e){}
   const box=old || document.createElement('div');
   box.id='ccSaveFail'; box.className='cc-save-fail';
   box.textContent=L().ccSaveFail(CC_SAVE_FAIL);

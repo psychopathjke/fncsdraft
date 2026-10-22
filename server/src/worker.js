@@ -21,6 +21,7 @@ import { createLobby } from './lobby.js';
 import { createBoard, REGIONS, TOP } from './board.js';
 import { CODE_RE, MAX_ONE, MAX_ALL, MAX_KEYS, checkReq, parts } from './vault.js';
 import { normalize as dailyRow, dayOf, DAY_RE, TOP as DAILY_TOP, badNick, bannedNick } from './daily.js';
+import { normalize as errRow, keyOf as errKey, KEEP as ERR_KEEP } from './errlog.js';
 
 export class Lobby {
   // Тридцать дней тишины — и лобби убирается. См. touch/alarm ниже.
@@ -177,6 +178,8 @@ export class Board {
     try{ this.sql.exec('ALTER TABLE daily ADD COLUMN power INTEGER DEFAULT 0'); }catch(e){}   // 16.10: самый сильный состав дня
     try{ this.sql.exec('ALTER TABLE daily ADD COLUMN p100 INTEGER DEFAULT 0'); }catch(e){}    // 16.10: точная сила (сотые) с синергией
     try{ this.sql.exec('ALTER TABLE daily ADD COLUMN syn INTEGER DEFAULT 0'); }catch(e){}
+    // Журнал ошибок игроков (22.10, см. errlog.js): одинаковые — одной строкой со счётчиком n.
+    this.sql.exec('CREATE TABLE IF NOT EXISTS errs(k TEXT PRIMARY KEY, kind TEXT, build TEXT, msg TEXT, src TEXT, ctx TEXT, ua TEXT, n INTEGER, first INTEGER, at INTEGER)');
     this.sql.exec('CREATE TABLE IF NOT EXISTS daily_dbg(day TEXT, id TEXT, nick TEXT, country TEXT, score INTEGER, place INTEGER, field INTEGER, team TEXT, at INTEGER, power INTEGER DEFAULT 0, p100 INTEGER DEFAULT 0, syn INTEGER DEFAULT 0, PRIMARY KEY(day, id))');
   }
   /* /daily: POST — строка дня, GET ?day=&me= — верх дня и своё место. Старше 60 дней — стираются. */
@@ -223,10 +226,30 @@ export class Board {
     if(you && mine) Object.assign(you.row, med(mine.id));
     return json({day, total, rows:rows.map(r=>Object.assign(strip(r), med(r.id), r.id===me ? {you:true} : {})), you});
   }
+  /* /errlog: POST — запись о поломке; GET — последние (?kind=, ?build=, ?limit= до 200). */
+  async errlog(req, url){
+    if(req.method==='POST'){
+      let e=null; try{ e=JSON.parse(await req.text()); }catch(err){ return json({err:'json'}, 400); }
+      const r=errRow(e, Date.now()); if(r.err) return json({err:r.err}, 400);
+      const w=r.row, k=errKey(w);
+      const had=this.sql.exec('SELECT n FROM errs WHERE k=?', k).toArray()[0];
+      if(had) this.sql.exec('UPDATE errs SET n=n+1, at=?, ctx=?, ua=? WHERE k=?', w.at, w.ctx, w.ua, k);
+      else this.sql.exec('INSERT INTO errs(k,kind,build,msg,src,ctx,ua,n,first,at) VALUES(?,?,?,?,?,?,?,1,?,?)', k, w.kind, w.build, w.msg, w.src, w.ctx, w.ua, w.at, w.at);
+      this.sql.exec('DELETE FROM errs WHERE at < (SELECT MIN(at) FROM (SELECT at FROM errs ORDER BY at DESC LIMIT '+ERR_KEEP+'))');
+      return json({ok:true});
+    }
+    const where=[], args=[];
+    const kind=String(url.searchParams.get('kind')||''); if(/^[a-z]{2,6}$/.test(kind)){ where.push('kind=?'); args.push(kind); }
+    const build=String(url.searchParams.get('build')||''); if(/^[0-9a-f]{6,12}$/.test(build)){ where.push('build=?'); args.push(build); }
+    const lim=Math.max(1, Math.min(200, Number(url.searchParams.get('limit'))||50));
+    const rows=this.sql.exec('SELECT kind,build,msg,src,ctx,ua,n,first,at FROM errs'+(where.length?' WHERE '+where.join(' AND '):'')+' ORDER BY at DESC LIMIT '+lim, ...args).toArray();
+    return json({errs:rows});
+  }
   one(id){ return this.sql.exec('SELECT * FROM rows WHERE id=?', id).toArray()[0]||null; }
   async fetch(req){
     const url=new URL(req.url);
     if(url.pathname==='/daily') return this.daily(req, url);
+    if(url.pathname==='/errlog') return this.errlog(req, url);
     if(req.method==='POST'){
       let e=null; try{ e=await req.json(); }catch(err){ return json({err:'json'}, 400); }
       if(e && e.del){
@@ -315,7 +338,7 @@ function json(o, status){
 export default {
   async fetch(req, env){
     const url=new URL(req.url);
-    if(url.pathname==='/board' || url.pathname==='/daily'){
+    if(url.pathname==='/board' || url.pathname==='/daily' || url.pathname==='/errlog'){
       if(req.method==='OPTIONS') return new Response(null, {status:204, headers:CORS});
       if(req.method!=='GET' && req.method!=='POST') return new Response('no', {status:405, headers:CORS});
       // Тело не больше пары килобайт: строка карьеры столько и весит.
