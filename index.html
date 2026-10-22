@@ -4791,6 +4791,15 @@
   #screen-career-hub .cc-lobby .cc-lb-playbox .ch-art::after{background:linear-gradient(180deg,rgba(14,32,96,.55),rgba(10,24,72,.88));}
   #screen-career-hub .cc-lobby .cc-lb-playbox .cc-act,#screen-career-hub .cc-lobby .cc-lb-playbox .cc-six-t,
   #screen-career-hub .cc-lobby .cc-lb-playbox .cc-job{background:rgba(120,150,235,.2);}
+  /* Панель ДНЯ — не превью турнира: под ней мелкий текст прокачки, и афиша сезона сквозь тень его съедала (X, blazek293,
+     22.10: «very hard to read because of the colors» — серое стекло, логотип FNCS насквозь). Плотная тёмная подложка
+     и тёмные плитки; картинка остаётся едва видна. */
+  #screen-career-hub .cc-lobby .cc-lb-playbox .ch-art.cc-day::after,
+  #screen-career-hub.ch-themed .cc-lobby .cc-lb-playbox .ch-art.cc-day::after{background:linear-gradient(180deg,rgba(8,12,24,.86),rgba(8,12,24,.94));}
+  #screen-career-hub .cc-lobby .cc-lb-playbox .cc-day .cc-act,#screen-career-hub .cc-lobby .cc-lb-playbox .cc-day .cc-six-t,
+  #screen-career-hub .cc-lobby .cc-lb-playbox .cc-day .cc-job,
+  #screen-career-hub.ch-themed .cc-lobby .cc-lb-playbox .cc-day .cc-act,#screen-career-hub.ch-themed .cc-lobby .cc-lb-playbox .cc-day .cc-six-t,
+  #screen-career-hub.ch-themed .cc-lobby .cc-lb-playbox .cc-day .cc-job{background:rgba(255,255,255,.07);}
   #screen-career-hub .cc-lobby .cc-lb-playbox .cc-acts > *,#screen-career-hub .cc-lobby .cc-lb-playbox .cc-six > *{min-width:0;}
   #screen-career-hub .cc-lobby .cc-lb-playbox .cc-acts{grid-template-columns:minmax(0,1fr) minmax(0,1fr);}
   #screen-career-hub .cc-lobby .cc-lb-playbox .cc-six{grid-template-columns:repeat(6,minmax(0,1fr));}
