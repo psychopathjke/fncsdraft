@@ -11502,7 +11502,7 @@ ccNightSpotCap:'Садимся сегодня',
 ccSimCap:'Кто играет этот вечер',
 ccSimSelf:'Играю сам', ccSimSelfHint:'Матч идёт на карте, и по ходу игры спрашивают: где сесть, что подобрать и как играть восьмую зону.',
 ccSimAuto:'Только смотрю', ccSimAutoHint:'Матч идёт на карте, но вопросов нет: где сесть, что подобрать и как играть восьмую зону, выбирается тем же броском, что и у остальных команд лобби. Дойти до результата сразу — кнопкой «Пропустить».',
-ccFfCap:'Сыграть за меня', ccUndoBtn:d=>'Переиграть '+d, ccUndoHint:'Вернуть карьеру к началу последнего сыгранного дня и сыграть его заново', ccUndoAsk:d=>'Вернуть карьеру к началу дня '+d+' и переиграть его? Всё, что было после, пропадёт', ccFfWeek:'Неделю', ccFfMonth:'Месяц', ccFfConfirm:d=>'Прожить '+d+' дн. за один раз? Турниры будут отыграны, дни потрачены, предложения могут протухнуть.',
+ccFfCap:'Сыграть за меня', ccUndoBtn:d=>'Переиграть '+d, ccUndoPeer:d=>'Предлагают переиграть '+d+': карьера вернётся к началу этого дня у всех в комнате', ccUndoWait:d=>'Переиграть '+d+': 1/2, ждём остальных', ccUndoYes:'Переиграть', ccUndoNoSnap:'Переиграть не вышло: не у всех есть снимок этого дня', ccUndoHint:'Вернуть карьеру к началу последнего сыгранного дня и сыграть его заново', ccUndoAsk:d=>'Вернуть карьеру к началу дня '+d+' и переиграть его? Всё, что было после, пропадёт', ccFfWeek:'Неделю', ccFfMonth:'Месяц', ccFfConfirm:d=>'Прожить '+d+' дн. за один раз? Турниры будут отыграны, дни потрачены, предложения могут протухнуть.',
 ccFfHint:'Сыграет турниры за тебя и потратит свободные дни на лучшую тренировку. Предложения от клубов и дуо останутся ждать в почте',
 ccFfRunning:'Перемотка', ccFfDays:(d,t)=>d+' из '+ruDays(t),
 ccFfTime:s=>s<60 ? s+' с' : Math.round(s/60)+' мин', ccFfEta:t=>'Займёт ≈ '+t+'. Вкладку можно свернуть — в фоне перемотка не тормозит.', ccFfLeft:t=>'осталось ≈ '+t,
@@ -13610,7 +13610,7 @@ ccNightSpotCap:'Tonight we land',
 ccSimCap:'Who plays tonight',
 ccSimSelf:'I play it', ccSimSelfHint:'The match runs on the map and asks as it goes: where to land, what to pick up and how to play zone eight.',
 ccSimAuto:'I just watch', ccSimAutoHint:'The match runs on the map and asks nothing: where to land, what to pick up and how to play zone eight are rolled the same way the rest of the lobby rolls theirs. Straight to the result — press Skip.',
-ccFfCap:'Play it for me', ccUndoBtn:d=>'Replay '+d, ccUndoHint:'Take the career back to the start of the last day you played and play it again', ccUndoAsk:d=>'Take the career back to the start of '+d+' and replay it? Everything since will be lost', ccFfWeek:'A week', ccFfMonth:'A month', ccFfConfirm:d=>'Live through '+d+' days in one press? The tournaments get played, the days get spent, and offers can expire.',
+ccFfCap:'Play it for me', ccUndoBtn:d=>'Replay '+d, ccUndoPeer:d=>'Someone wants to replay '+d+': everyone in the room goes back to the start of that day', ccUndoWait:d=>'Replay '+d+': 1/2, waiting for the others', ccUndoYes:'Replay', ccUndoNoSnap:'Can’t replay: not everyone has a snapshot of that day', ccUndoHint:'Take the career back to the start of the last day you played and play it again', ccUndoAsk:d=>'Take the career back to the start of '+d+' and replay it? Everything since will be lost', ccFfWeek:'A week', ccFfMonth:'A month', ccFfConfirm:d=>'Live through '+d+' days in one press? The tournaments get played, the days get spent, and offers can expire.',
 ccFfHint:'Plays the tournaments for you and spends the free days on the best training. Offers from clubs and duos stay in the inbox',
 ccFfRunning:'Fast-forward', ccFfDays:(d,t)=>d+' of '+t+' days',
 ccFfTime:s=>s<60 ? s+' s' : Math.round(s/60)+' min', ccFfEta:t=>'Takes about '+t+'. You can switch tabs — it does not slow down in the background.', ccFfLeft:t=>'about '+t+' left',
@@ -14711,7 +14711,7 @@ ccNightSpotCap:'On atterrit ce soir',
 ccSimCap:'Qui joue ce soir',
 ccSimSelf:'Je joue', ccSimSelfHint:'Le match se déroule sur la carte et te demande en cours de route : où atterrir, quoi ramasser et comment jouer la zone huit.',
 ccSimAuto:'Je regarde', ccSimAutoHint:'Le match se déroule sur la carte mais ne demande rien : où atterrir, quoi ramasser et la zone huit sont tirés comme pour le reste du lobby. Pour le résultat tout de suite — le bouton « Passer ».',
-ccFfCap:'Joue à ma place', ccUndoBtn:d=>'Rejouer le '+d, ccUndoHint:'Ramener la carrière au début du dernier jour joué et le rejouer', ccUndoAsk:d=>'Ramener la carrière au début du '+d+' et le rejouer ? Tout ce qui a suivi sera perdu',
+ccFfCap:'Joue à ma place', ccUndoBtn:d=>'Rejouer le '+d, ccUndoPeer:d=>'Proposition : rejouer le '+d+'. Tout le monde revient au début de ce jour', ccUndoWait:d=>'Rejouer le '+d+' : 1/2, on attend les autres', ccUndoYes:'Rejouer', ccUndoNoSnap:'Impossible de rejouer : tout le monde n’a pas la sauvegarde de ce jour', ccUndoHint:'Ramener la carrière au début du dernier jour joué et le rejouer', ccUndoAsk:d=>'Ramener la carrière au début du '+d+' et le rejouer ? Tout ce qui a suivi sera perdu',
 ccFfConfirm:d=>'Vivre '+d+' jours d’un coup ? Les tournois seront joués, les jours dépensés, et des offres peuvent expirer.',
 ccFfWeek:'Une semaine',
 ccFfMonth:'Un mois',
@@ -18888,7 +18888,7 @@ ccSimSelf:"Gioco io",
 ccSimSelfHint:"La partita gira sulla mappa e chiede strada facendo: dove atterrare, cosa raccogliere e come giocare la zona otto.",
 ccSimAuto:"Guardo e basta",
 ccSimAutoHint:"La partita gira sulla mappa e non chiede nulla: dove atterrare, cosa raccogliere e come giocare la zona otto vengono tirati come li tira il resto della lobby. Dritto al risultato — premi Salta.",
-ccFfCap:"Giocala per me", ccUndoBtn:d=>'Rigioca il '+d, ccUndoHint:'Riporta la carriera all’inizio dell’ultimo giorno giocato e rigiocalo', ccUndoAsk:d=>'Riportare la carriera all’inizio del '+d+' e rigiocarlo? Tutto ciò che è venuto dopo andrà perso',
+ccFfCap:"Giocala per me", ccUndoBtn:d=>'Rigioca il '+d, ccUndoPeer:d=>'Proposta: rigiocare il '+d+'. Tutti tornano all’inizio di quel giorno', ccUndoWait:d=>'Rigiocare il '+d+': 1/2, si aspettano gli altri', ccUndoYes:'Rigioca', ccUndoNoSnap:'Impossibile rigiocare: non tutti hanno il salvataggio di quel giorno', ccUndoHint:'Riporta la carriera all’inizio dell’ultimo giorno giocato e rigiocalo', ccUndoAsk:d=>'Riportare la carriera all’inizio del '+d+' e rigiocarlo? Tutto ciò che è venuto dopo andrà perso',
 ccFfWeek:"Una settimana",
 ccFfMonth:"Un mese",
 ccFfHint:"Gioca i tornei al posto tuo e spende i giorni liberi nel miglior allenamento. Le offerte di club e duo restano nella posta",
@@ -21439,7 +21439,7 @@ ccSimSelf:"Eu jogo",
 ccSimSelfHint:"A partida roda no mapa e vai perguntando: onde pousar, o que pegar e como jogar a zona oito.",
 ccSimAuto:"Eu só assisto",
 ccSimAutoHint:"A partida roda no mapa e não pergunta nada: onde pousar, o que pegar e como jogar a zona oito são sorteados do mesmo jeito que o resto do lobby. Direto ao resultado — aperte Pular.",
-ccFfCap:"Jogue por mim", ccUndoBtn:d=>'Rejogar '+d, ccUndoHint:'Voltar a carreira ao início do último dia jogado e jogá-lo de novo', ccUndoAsk:d=>'Voltar a carreira ao início de '+d+' e rejogar? Tudo o que veio depois será perdido',
+ccFfCap:"Jogue por mim", ccUndoBtn:d=>'Rejogar '+d, ccUndoPeer:d=>'Proposta: rejogar '+d+'. Todos voltam ao início desse dia', ccUndoWait:d=>'Rejogar '+d+': 1/2, à espera dos outros', ccUndoYes:'Rejogar', ccUndoNoSnap:'Não dá para rejogar: nem todos têm o salvamento desse dia', ccUndoHint:'Voltar a carreira ao início do último dia jogado e jogá-lo de novo', ccUndoAsk:d=>'Voltar a carreira ao início de '+d+' e rejogar? Tudo o que veio depois será perdido',
 ccFfWeek:"Uma semana",
 ccFfMonth:"Um mês",
 ccFfHint:"Joga os torneios no seu lugar e gasta os dias livres no melhor treino. Propostas de clubes e duplas ficam na caixa de entrada",
@@ -118447,7 +118447,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='d9fba782';
+const CC_BUILD='9295900a';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -119197,6 +119197,7 @@ function ccMpPeerCheck(){
 let CC_MP_DIV_BAD=null;
 function ccMpStateOk(team, known){
   const cr=CAREER && CAREER.career;
+  if(typeof ccUndoGoSkip==='function' && ccUndoGoSkip(team)) return false;   // только что откатились вдвоём
   if(!cr || !team || !team.division || !cr.division){ CC_MP_DIV_BAD=null; return true; }
   /* Свой же в своё лобби заходит всегда.
 
@@ -119834,6 +119835,7 @@ function careerRaceWire(){
     if(m.kind==='ffno'){ if(ccRaceOn() && !ccMpOn()) ccMpFfNoSaw(m.payload); return; }
     if(m.kind==='fferr'){ if(ccRaceOn() && !ccMpOn()) ccMpFfErrSaw(m.payload); return; }
     if(m.kind==='leave'){ if(ccRaceOn() && !ccMpOn() && m.payload && m.payload.by!==ccMpId()) ccMpSplitLeave(true); return; }
+    if(m.kind==='undo' || m.kind==='undono'){ if(ccRaceOn() && !ccMpOn()) ccUndoSaw(m.kind, m.payload); return; }
     // Договор пары: приглашение, согласие, отказ, разрыв. См. ccRacePairSaw.
     if(m.kind==='pair' || m.kind==='pairok' || m.kind==='pairno' || m.kind==='unpair'){ if(ccRaceOn()) ccRacePairSaw(m); return; }
     if(m.kind!=='race') return;
@@ -134268,6 +134270,7 @@ function ccMpThirdWire(){
     if(m.kind==='ff'){ ccMpFfSaw(m.payload); return; }
     if(m.kind==='fferr'){ ccMpFfErrSaw(m.payload); return; }
     if(m.kind==='leave'){ if(m.payload.by!==ccMpId()) ccMpSplitLeave(true); return; }
+    if(m.kind==='undo' || m.kind==='undono'){ ccUndoSaw(m.kind, m.payload); return; }
     if(m.kind==='ffskip'){
       if(m.payload.by!==ccMpId() && m.payload.day){
         CC_MP_PEER_SKIPS.add(m.payload.day);
@@ -151774,10 +151777,15 @@ function careerSimRowHTML(){
 /* ПЕРЕИГРАТЬ ДЕНЬ (Notion 21.10, игроки: «добавь возможность на игровой день назад откатиться» — на финале
    World Cup зависла игра, и весь финал проскипался). Перед каждым вечером одиночной карьеры — сжатый снимок
    сейва (один на слот, первый за день, lz как у большого сейва); кнопка возвращает карьеру к нему и
-   перезагружает страницу, чтобы кэши мира собрались заново. В команде и в гонке нет: день там общий, откат
-   одного развёл бы двоих. */
+   перезагружает страницу, чтобы кэши мира собрались заново.
+   ОНЛАЙН (его слово 22.10: «можно онлайн сделать тоже»): день там общий, поэтому откат — голос, как
+   перемотка (ccMpFfSaw): предложение уходит всем в комнате, и когда согласились все, каждый возвращается к
+   СВОЕМУ снимку того же дня. Снимок у каждого свой, но снят в начале одного и того же общего дня. После
+   перезагрузки сервер прислал бы командное состояние новее отката — метка _undogo велит его не брать, а
+   хозяину (роль a) отправить своё (ccUndoGoSkip). */
 function ccUndoKey(){ return LS_SLOT(ccSlotMine())+'_undo'; }
-function ccUndoOk(){ return !ccMpOn() && !(typeof ccRaceOn==='function' && ccRaceOn()) && !(CAREER && CAREER._mgr); }
+function ccUndoOk(){ return !(CAREER && CAREER._mgr); }
+function ccUndoShared(){ return ccMpTeam() || (typeof ccRaceOn==='function' && ccRaceOn()); }
 function ccUndoSnap(){
   if(!CAREER || !CAREER.career || !ccUndoOk() || typeof LZString==='undefined') return;
   if((typeof CC_FF!=='undefined' && CC_FF) || CC_SKIP_ALL) return;
@@ -151793,12 +151801,64 @@ function ccUndoInfo(){
 }
 // Вечер этого дня уже в журнале — откатывать есть что, даже если день ещё не сменился.
 function ccUndoPlayed(day){ try{ return (CAREER.career.log||[]).some(x=>x && x.day===day); }catch(e){ return false; } }
+function ccUndoRestore(u){
+  try{ localStorage.setItem(LS_SLOT(ccSlotMine()), u.data); }catch(e){ return; }
+  if(ccUndoShared()) try{ localStorage.setItem(ccUndoKey()+'go', u.day); }catch(e){}
+  location.reload();
+}
 function ccUndoAskRestore(){
   const u=ccUndoInfo(); if(!u) return;
-  ccAsk(L().ccUndoAsk(ccDayLabel(u.day)), ()=>{
-    try{ localStorage.setItem(LS_SLOT(ccSlotMine()), u.data); }catch(e){ return; }
-    location.reload();
-  });
+  if(ccUndoShared() && typeof MP!=='undefined' && MP.act){
+    ccAsk(L().ccUndoAsk(ccDayLabel(u.day)), ()=>{ CC_MP_UNDO.err=false; MP.act('undo', {by:ccMpId(), day:u.day, at:careerToday()}); });
+    return;
+  }
+  ccAsk(L().ccUndoAsk(ccDayLabel(u.day)), ()=>ccUndoRestore(u));
+}
+// Голоса за откат: day — день снимка, mine — свой голос, who — чужие.
+let CC_MP_UNDO={day:null, mine:false, who:{}, err:false};
+function ccUndoVotes(){ return (CC_MP_UNDO.mine?1:0)+Object.keys(CC_MP_UNDO.who||{}).length; }
+function ccUndoSaw(kind, p){
+  if(!p || !p.day) return;
+  if(kind==='undono'){
+    if(CC_MP_UNDO.day===p.day) CC_MP_UNDO={day:null, mine:false, who:{}, err:!!p.nosnap};
+    try{ careerRenderHub(); }catch(e){}
+    return;
+  }
+  const u=ccUndoInfo();
+  // Своего снимка этого дня нет (не играл его или уже перемотал дальше) — откатываться не к чему.
+  if(!u || u.day!==p.day){
+    if(p.by!==ccMpId()) MP.act('undono', {by:ccMpId(), day:p.day, nosnap:true});
+    return;
+  }
+  if(CC_MP_UNDO.day!==p.day) CC_MP_UNDO={day:p.day, mine:false, who:{}, err:false};
+  if(p.by===ccMpId()) CC_MP_UNDO.mine=true; else CC_MP_UNDO.who[p.by]=true;
+  if(CC_MP_UNDO.mine && ccUndoVotes()>=ccMpFfHumans()){ ccUndoRestore(u); return; }
+  try{ careerRenderHub(); }catch(e){}
+}
+function ccUndoDecline(){
+  if(CC_MP_UNDO.day && typeof MP!=='undefined' && MP.act) MP.act('undono', {by:ccMpId(), day:CC_MP_UNDO.day});
+}
+function ccUndoOfferHTML(){
+  if(CC_MP_UNDO.err && !CC_MP_UNDO.day) return '<div class="cal-ask cc-mp-ff"><span>'+esc(L().ccUndoNoSnap)+'</span></div>';
+  const u=ccUndoInfo();
+  if(!CC_MP_UNDO.day || !u || u.day!==CC_MP_UNDO.day) return '';
+  const d=ccDayLabel(CC_MP_UNDO.day);
+  if(!CC_MP_UNDO.mine)
+    return '<div class="cal-ask cc-mp-ff"><span>'+esc(L().ccUndoPeer(d))+'</span>'+
+           '<button class="ch-sign" onclick="ccUndoAskRestore()">'+esc(L().ccUndoYes)+'</button>'+
+           '<button class="cc-back" onclick="ccUndoDecline()">'+esc(L().ccMpFfNo)+'</button></div>';
+  const txt=String(L().ccUndoWait(d)).replace('1/2', ccUndoVotes()+'/'+ccMpFfHumans());
+  return '<div class="cal-ask cc-mp-ff"><span>'+esc(txt)+'</span>'+
+         '<button class="cc-back" onclick="ccUndoDecline()">'+esc(L().ccDecline)+'</button></div>';
+}
+/* Первое состояние от сервера после онлайн-отката: оно новее снимка — не брать. Хозяин отдаёт своё
+   (снимок того же дня), второй дождётся его обычным 'team'. Метка живёт одну загрузку. */
+function ccUndoGoSkip(team){
+  let go=null; try{ go=localStorage.getItem(ccUndoKey()+'go'); localStorage.removeItem(ccUndoKey()+'go'); }catch(e){}
+  const cr=CAREER && CAREER.career;
+  if(!go || !cr || cr.day!==go || !team || !team.day || !(team.day>cr.day)) return false;
+  if(ccMpRole()==='a') setTimeout(function(){ try{ if(typeof MP!=='undefined' && MP.push) MP.push(ccTeamState()); }catch(e){} }, 0);
+  return true;
 }
 function ccUndoBtnHTML(){
   const u=ccUndoInfo(); if(!u) return '';
@@ -151811,8 +151871,8 @@ function careerFfButtonsHTML(){
   const btn=(days, label)=>'<button class="ch-ffbtn" onclick="careerFfConfirm('+days+')" title="'+
     esc(shared ? L().ccMpFfHint : L().ccFfHint)+'"><i>'+CC_BTN_ICON.ff+'</i>'+label+'</button>';
   return '<div class="ch-ffwrap"><span class="ch-ffcap">'+L().ccFfCap+'</span>'+
-    (shared ? ccMpFfOfferHTML() : '')+
-    '<div class="ch-ff">'+btn('CC_FF_WEEK', L().ccFfWeek)+btn('CC_FF_MONTH', L().ccFfMonth)+(shared ? '' : ccUndoBtnHTML())+
+    (shared ? ccMpFfOfferHTML() : '')+(ccUndoShared() ? ccUndoOfferHTML() : '')+
+    '<div class="ch-ff">'+btn('CC_FF_WEEK', L().ccFfWeek)+btn('CC_FF_MONTH', L().ccFfMonth)+(ccUndoShared() && CC_MP_UNDO.mine ? '' : ccUndoBtnHTML())+
     '</div>'+(shared ? '<div class="ch-ffnote"><i>&#128101;</i><span>'+esc(L().ccMpFfHint)+'</span></div>' : '')+'</div>';
 }
 // The best rating a day's energy can buy, by the same weighting the card is
