@@ -210,6 +210,10 @@ var MP={
     /* Стиль игры (спокойно / обычно / W-key) — напарник ставит его нашей общей команде
        так же, как мы (среднее по людям, см. ccTeamStyles в index.html). */
     out.ps = (typeof ccStyleWire==='function') ? ccStyleWire() : null;
+    /* Надетый скин (шкафчик) — чтобы напарник видел в лобби тот же образ, что и я (Notion 21.10: «разные скины у
+       тиммейтов показывают» — у каждого свой стоял на себе, а напарник в стандартном). Силы не двигает. */
+    var eq=(typeof CAREER!=='undefined' && CAREER && CAREER.fnEq)||{}, own=(typeof CAREER!=='undefined' && CAREER && CAREER.fnOwn)||{};
+    out.fnSkin = (eq.o && own[eq.o]) ? eq.o : null;
     return out;
   },
 

@@ -19,11 +19,25 @@
   // whatever is on screen. The labels have to know: a name for a squad off the
   // left edge is a name nobody can read, and the room the names are competing
   // for is the room in the box, not the room on the island.
+  /* Размер коробки карты — из ResizeObserver, а не clientWidth на каждом кадре: кадр сначала пересобирает svg
+     (innerHTML), а потом спрашивал размер — и браузер пересчитывал раскладку всей страницы каждый кадр (профиль 20.10:
+     13% времени показа уходило в box(), его «симуляция карты подлагивает»). Размер меняется только при ресайзе. */
+  function wrapSize(handle){
+    var w = handle.wrap, c = handle._wh;
+    if(!c){
+      c = handle._wh = {W: w.clientWidth, H: w.clientHeight};
+      if(typeof ResizeObserver !== 'undefined'){
+        try{ handle._ro = new ResizeObserver(function(){ c.W = w.clientWidth; c.H = w.clientHeight; }); handle._ro.observe(w); }
+        catch(e){ handle._wh = null; }
+      } else handle._wh = null;   // без наблюдателя — честное чтение каждый раз, как было
+    }
+    return c;
+  }
   function setView(handle, tx, ty, s){
     if(!handle) return;
-    var vbH = Number(handle.svg.dataset.vbh) || 100;
-    var W = handle.wrap.clientWidth || 520;
-    var H = handle.wrap.clientHeight || (W * vbH / 100);
+    var vbH = Number(handle.svg.dataset.vbh) || 100, sz = wrapSize(handle);
+    var W = sz.W || 520;
+    var H = sz.H || (W * vbH / 100);
     handle.view = {
       x0: (-tx / s) / W * 100,
       y0: (-ty / s) / H * vbH,
@@ -507,6 +521,41 @@
     g.appendChild(p);
     return g;
   }
+  /* Своя команда — круглая аватарка (его слово 20.10: «на карту аватарку вместо метки именно команды, за которую ты
+     играешь»): картинка в кружке с белым ободком и жёлтым носиком в сторону движения — куда идёт, видно, как у стрелки. */
+  /* Узел аватарки строится ОДИН раз на показ и дальше только переезжает: карта перерисовывается каждый кадр
+     (svg.innerHTML=''), и свежие <image> с маской на каждом кадре подтормаживали показ (его слово 20.10). */
+  var AV_SEQ = 0;
+  function avatarMarker(handle, x, y, angle, src, scale){
+    var NS = 'http://www.w3.org/2000/svg', k = 1 / (scale || 1), r = 3.1 * k, A = handle._av;
+    if(!A || A.src !== src){
+      var id = 'zrYouClip' + (++AV_SEQ);
+      var g = document.createElementNS(NS, 'g');
+      var cp = document.createElementNS(NS, 'clipPath'); cp.setAttribute('id', id); cp.setAttribute('clipPathUnits', 'objectBoundingBox');
+      var cc = document.createElementNS(NS, 'circle'); cc.setAttribute('cx', '0.5'); cc.setAttribute('cy', '0.5'); cc.setAttribute('r', '0.5');
+      cp.appendChild(cc); g.appendChild(cp);
+      var nose = document.createElementNS(NS, 'path');
+      nose.setAttribute('fill', 'var(--accent)'); nose.setAttribute('stroke', 'rgba(6,8,16,.92)'); nose.setAttribute('stroke-width', 1.2);
+      nose.setAttribute('vector-effect', 'non-scaling-stroke');
+      var bg = document.createElementNS(NS, 'circle'); bg.setAttribute('fill', '#141a26');
+      var img = document.createElementNS(NS, 'image');
+      img.setAttribute('href', src); img.setAttribute('preserveAspectRatio', 'xMidYMid slice'); img.setAttribute('clip-path', 'url(#' + id + ')');
+      var ring = document.createElementNS(NS, 'circle');
+      ring.setAttribute('fill', 'none'); ring.setAttribute('stroke', '#ffffff'); ring.setAttribute('stroke-width', 2); ring.setAttribute('vector-effect', 'non-scaling-stroke');
+      g.appendChild(nose); g.appendChild(bg); g.appendChild(img); g.appendChild(ring);
+      A = handle._av = {g:g, nose:nose, bg:bg, img:img, ring:ring, src:src, r:-1};
+    }
+    if(Math.abs(A.r - r) > 1e-4){
+      A.r = r;
+      A.nose.setAttribute('d', 'M ' + (r + 1.9 * k).toFixed(3) + ' 0 L ' + (r * 0.55).toFixed(3) + ' ' + (-1.5 * k).toFixed(3) + ' L ' + (r * 0.55).toFixed(3) + ' ' + (1.5 * k).toFixed(3) + ' Z');
+      A.bg.setAttribute('r', r.toFixed(3)); A.ring.setAttribute('r', r.toFixed(3));
+      A.img.setAttribute('x', (-r).toFixed(3)); A.img.setAttribute('y', (-r).toFixed(3));
+      A.img.setAttribute('width', (2 * r).toFixed(3)); A.img.setAttribute('height', (2 * r).toFixed(3));
+    }
+    A.g.setAttribute('transform', 'translate(' + x.toFixed(3) + ' ' + y.toFixed(3) + ')');
+    A.nose.setAttribute('transform', 'rotate(' + angle.toFixed(1) + ')');
+    return A.g;
+  }
 
   // --- kill feed, built the way the game's own feed is: a pill for each side
   // with a badge between them. A name is far easier to find in a coloured pill
@@ -671,10 +720,16 @@
     roster = roster || [];
     var indexOfName = {};
     for(var n=0;n<roster.length;n++) indexOfName[plain(roster[n].name)] = n;
+    // Скин команды перед её именем (карьера: window.CC_FN_SKIN — надетый у своей, у остальных свой постоянный).
+    var skinFor = function(name, you){
+      var src = (typeof window !== 'undefined' && typeof window.CC_FN_SKIN === 'function') ? window.CC_FN_SKIN(name, you) : null;
+      return src ? '<img src="' + esc(src) + '" alt="" style="width:20px;height:20px;flex:none;border-radius:4px;' +
+        'background:rgba(8,12,24,.55);object-fit:cover;filter:drop-shadow(0 1px 2px #000);" onerror="this.remove()">' : '';
+    };
     var pillFor = function(name){
       var idx = indexOfName[name];
-      if(idx == null) return pill(name, '#c9d2e6', false);
-      return pill(name, roster[idx].you ? 'var(--accent)' : colourFor(idx), roster[idx].you);
+      if(idx == null) return pill(name, '#c9d2e6', false);   // не команда (подсказка хода, «шторм») — без образа
+      return skinFor(name, roster[idx].you) + pill(name, roster[idx].you ? 'var(--accent)' : colourFor(idx), roster[idx].you);
     };
     for(var e=0;e<events.length;e++){
       // Strip the markup before splitting, not after. A team name carries a flag
@@ -688,10 +743,20 @@
       // and cost the squad its colour.
       var raw = plain(events[e]);
       var cut = raw.indexOf(':');
+      // Имя своей команды само несёт двоеточие («Your squad: Probe & Scroll»), и первое двоеточие резало строку
+      // посреди имени: убийцей выходило «Your squad», жертвой — «Probe & Scroll:…». Берётся то двоеточие, слева от
+      // которого стоит команда из ростера (или шторм/сёрдж); не нашлось — первое, как было.
+      for(var ci0 = raw.indexOf(':'); ci0 >= 0; ci0 = raw.indexOf(':', ci0 + 1)){
+        var left = plain(raw.slice(0, ci0));
+        if(left === 'storm' || left === 'surge' || indexOfName[left] != null){ cut = ci0; break; }
+      }
       var cause = plain(raw.slice(0, cut)), victim = plain(raw.slice(cut + 1));
+      // Убийство твоей команды — с иконкой надетой кирки вместо значка (карьера, магазин предметов, 18.10).
+      var ci = indexOfName[cause], axe = (ci != null && roster[ci].you && typeof window !== 'undefined') ? window.CC_FN_AXE : null;
       var row = (cause === 'storm' || cause === 'surge')
         ? badge(cause) + pillFor(victim)
-        : pillFor(cause) + badge('kill') + pillFor(victim);
+        : pillFor(cause) + (axe ? '<img src="' + esc(axe) + '" alt="" style="width:22px;height:22px;flex:none;' +
+            'filter:drop-shadow(0 1px 2px #000);" onerror="this.remove()">' : badge('kill')) + pillFor(victim);
       handle.lines.push(feedRow(row));
     }
     while(handle.lines.length > 4) handle.lines.shift();
@@ -1224,7 +1289,10 @@
         var off = fanTo(handle.fan, i, offsetIn(grp, m, scale), since, handle.fanEase);
         at[i] = {x: d.x + off.dx, y: d.y + off.dy};
         // Команда клуба (Fortnite Manager, isClub) — своим голубым и крупно, как своя.
-        handle.svg.appendChild(marker(at[i].x, at[i].y, d.a || 0,
+        // Своя команда — аватаркой (образ из шкафчика, карьера: window.CC_FN_SKIN), а не стрелкой; нет образа — стрелка.
+        var av = (who.you && typeof window !== 'undefined' && typeof window.CC_FN_SKIN === 'function') ? window.CC_FN_SKIN(who.name, true) : null;
+        handle.svg.appendChild(av ? avatarMarker(handle, at[i].x, at[i].y, d.a || 0, av, scale)
+          : marker(at[i].x, at[i].y, d.a || 0,
           who.you ? 'var(--accent)' : who.club ? CLUB_COL : colourFor(i), who.you || who.club, scale));
       }
     }
@@ -1234,8 +1302,9 @@
     // kill feed in the corner are put down as occupied before a single name is,
     // because a plate behind either of them is a plate nobody can read.
     var view = handle.view || {x0: 0, y0: 0, x1: 100, y1: vbH};
-    var boxW = handle.wrap.clientWidth || 520;
-    var boxH = handle.wrap.clientHeight || (boxW * vbH / 100);
+    var bsz = wrapSize(handle);
+    var boxW = bsz.W || 520;
+    var boxH = bsz.H || (boxW * vbH / 100);
     var ux = (100 / boxW) / scale, uy = (vbH / boxH) / scale;
     var vw = view.x1 - view.x0, vh = view.y1 - view.y0;
     var chrome = [
@@ -1276,7 +1345,7 @@
     if(handle.side){
       var listed = frame.alive <= SIDE_MAX ? spare : [];
       if(!listed.length){
-        handle.side.style.display = 'none'; handle.side.innerHTML = '';
+        if(handle._sideHtml !== ''){ handle.side.style.display = 'none'; handle.side.innerHTML = ''; handle._sideHtml = ''; }
       } else {
         var rows = [];
         for(var kk=0;kk<listed.length;kk++){
@@ -1308,8 +1377,9 @@
               'border-width:4px 0 4px 7px;border-color:transparent transparent transparent ' + col +
               ';filter:drop-shadow(0 0 1px rgba(0,0,0,.9));"></span></div>');
         }
-        handle.side.innerHTML = rows.join('');
-        handle.side.style.display = 'flex';
+        // Пишется, только если список другой: запись разметки на каждом кадре гнала пересчёт стилей (профиль 20.10).
+        var sideHtml = rows.join('');
+        if(sideHtml !== handle._sideHtml){ handle.side.innerHTML = sideHtml; handle._sideHtml = sideHtml; handle.side.style.display = 'flex'; }
       }
     }
 
@@ -1318,7 +1388,7 @@
     var totP = roster.totalPlayers || totS;
     var mine = placeOf(frame, roster);
     var myKills = killsOf(frame, roster);
-    handle.head.innerHTML =
+    var headHtml =
       '<span style="display:flex;align-items:center;gap:7px;">' +
         '<span>' + esc(labels.zone) + ' ' + frame.zone + '</span>' +
         '<span style="opacity:.8;font-variant-numeric:tabular-nums;">' +
@@ -1328,6 +1398,7 @@
         (myKills != null ? killChip(myKills.you, myKills.team) : '') +
         counter(ICON_PLAYER, (frame.players != null ? frame.players : frame.alive), totP) +
         counter(ICON_SQUAD, frame.alive, totS) + '</span>';
+    if(headHtml !== handle._headHtml){ handle.head.innerHTML = headHtml; handle._headHtml = headHtml; }
 
     pushEvents(handle, frame.events, roster);
   }
@@ -1441,6 +1512,13 @@
       return (typeof matchMedia === 'function' && matchMedia('(max-width: 820px)').matches) ? 32 : 0;
     }catch(e){ return 0; }
   })();
+  /* ПОТОЛОК — ТОЛЬКО КОГДА КАДР ДОРОГОЙ (его слово 20.10: «лагает во время ротаций зон»). Тридцать картинок в
+     секунду на iPhone 15 Pro Max с экраном 120 Гц — это рывки ровно тогда, когда все бегут: пока зона стоит,
+     маркеры почти не двигаются и разницы не видно. Замер под эмуляцией телефона: кадр показа (карта + таблица,
+     всё, что делает шаг) — 0.8 мс медиана на ПК, 4.3 при процессоре вчетверо медленнее (p99 1.6 и 25). Поэтому шаг меряется
+     сам (скользящее среднее), и пол в FRAME_FLOOR держится, только пока шаг дороже FRAME_COSTLY_MS: слабому
+     телефону — тридцать кадров, как решили 20 августа, сильному — каждое обновление экрана. */
+  var FRAME_COSTLY_MS = 6, stepCost = 0;
   var lastDrawAt = 0;
   function drawClock(){
     return (typeof performance !== 'undefined' && performance.now) ? performance.now() : Date.now();
@@ -1477,8 +1555,9 @@
          returning on the strength of one would leave the promise unresolved and
          a tournament waiting on it for ever. */
       var now = drawClock();
-      var wait = FRAME_FLOOR - (now - lastDrawAt);
-      if(FRAME_FLOOR && wait > 0){
+      var floor = stepCost > FRAME_COSTLY_MS ? FRAME_FLOOR : 0;
+      var wait = floor - (now - lastDrawAt);
+      if(floor && wait > 0){
         clearTimeout(timer);
         timer = setTimeout(go, Math.max(2, wait));
         if(typeof requestAnimationFrame === 'function') requestAnimationFrame(go);
@@ -1487,7 +1566,9 @@
       done = true;
       lastDrawAt = now;
       clearTimeout(timer);
+      var t0 = drawClock();
       fn();
+      stepCost += (drawClock() - t0 - stepCost) * 0.1;
     }
     timer = setTimeout(go, MIN_DRAW_MS);
     if(typeof requestAnimationFrame === 'function') requestAnimationFrame(go);
@@ -1722,9 +1803,9 @@
     var at = null;                      // {cx, cy, r}, where the camera is now
 
     function box(){
-      var vbH = Number(handle.svg.dataset.vbh) || 100;
-      var W = handle.wrap.clientWidth || 520;
-      var H = handle.wrap.clientHeight || (W * vbH / 100);
+      var vbH = Number(handle.svg.dataset.vbh) || 100, sz = wrapSize(handle);
+      var W = sz.W || 520;
+      var H = sz.H || (W * vbH / 100);
       return {vbH: vbH, W: W, H: H};
     }
     function wide(b){ return {cx: 50, cy: b.vbH/2, r: b.vbH/2}; }
@@ -1818,7 +1899,7 @@
     // them out before the first frame even drew. So clearing the feed is the
     // caller's job now, via clearFeed(), done before anything is noted for
     // the game about to play.
-    if(handle.side){ handle.side.innerHTML = ''; handle.side.style.display = 'none'; }
+    if(handle.side){ handle.side.innerHTML = ''; handle.side.style.display = 'none'; handle._sideHtml = ''; }
 
     // Whether the page is allowed to animate anything of its own.
     //
@@ -1950,6 +2031,7 @@
     // The settle timer holds the handle and would fire into a stage that is no
     // longer on the page.
     if(handle && handle.settle){ clearTimeout(handle.settle); handle.settle = null; }
+    if(handle && handle._ro){ try{ handle._ro.disconnect(); }catch(e){} handle._ro = null; }
     if(handle && handle.wrap && handle.wrap.parentNode) handle.wrap.parentNode.removeChild(handle.wrap);
   }
 
@@ -1984,8 +2066,8 @@
     handle.svg.innerHTML = '';
     handle.dead = {};
     // И шапка: 'ЗОНА 12 0:00' над пустым островом — это счёт прошлой игры.
-    if(handle.head) handle.head.innerHTML = '';
-    if(handle.side){ handle.side.innerHTML = ''; handle.side.style.display = 'none'; }
+    if(handle.head){ handle.head.innerHTML = ''; handle._headHtml = ''; }
+    if(handle.side){ handle.side.innerHTML = ''; handle.side.style.display = 'none'; handle._sideHtml = ''; }
     handle.painted = null;
     paint(handle, 0, 0, 1);
     setView(handle, 0, 0, 1);

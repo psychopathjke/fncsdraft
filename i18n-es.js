@@ -840,7 +840,7 @@ Object.assign(I18N.es=I18N.es||{},
   "ccActtrClu": "1v1s",
   "ccActtrExp": "Ver replays",
   "ccActtrEnd": "Endgames nobles",
-  "ccActscrim": "Scrims",
+  "ccActscrim": "Creativo",
   "ccActtalk": "Hablarlo",
   "ccActstream": "Hacer stream",
   "ccActrest": "Descansar",
@@ -885,7 +885,7 @@ Object.assign(I18N.es=I18N.es||{},
   "ccNextPays": "Paga al 1.º",
   "ccNextNoPay": "sin premio",
   "ccNextLocked": "Hoy no es tu torneo — el día está libre",
-  "ccBioMajor": n=>n+'x CAMPEÓN DE MAJOR',
+  "ccBioMajor": n=>n+'x CAMPEÓN FNCS',
   "ccBioCups": n=>n+'x campeón de cup',
   "ccWhoFa": "F/A",
   "ccWhoLft": "LFT",
@@ -1056,7 +1056,7 @@ Object.assign(I18N.es=I18N.es||{},
   "ccNewsVicCash": (w,c)=>'Victory Cup: '+w+(w===1?' victoria':' victorias')+', $'+c+' ganados',
   "ccNewsVicNoWin": "Victory Cup: Ronda 2 sin victoria",
   "ccNewsVicOut": (p,of)=>'Victory Cup: '+ccTop(p)+' de '+of+', sin Ronda 2',
-  "ccYearNames": {"ReloadEliteSeries1Opens": "Reload · cup 1 opens", "ReloadEliteSeries1PlayIn": "Reload · cup 1 play-in", "ReloadEliteSeries1Heats": "Reload · cup 1 heats", "ReloadEliteSeries1Final": "Reload · cup 1 final", "ReloadEliteSeries2Opens": "Reload · cup 2 opens", "ReloadEliteSeries2PlayIn": "Reload · cup 2 play-in", "ReloadEliteSeries2Heats": "Reload · cup 2 heats", "ReloadEliteSeries2Final": "Reload · cup 2 final", "ReloadEliteSeries3Opens": "Reload · cup 3 opens", "ReloadEliteSeries3PlayIn": "Reload · cup 3 play-in", "ReloadEliteSeries3Heats": "Reload · cup 3 heats", "ReloadEliteSeries3Final": "Reload · cup 3 final", "ReloadEliteSeries4Opens": "Reload · cup 4 opens", "ReloadEliteSeries4PlayIn": "Reload · cup 4 play-in", "ReloadEliteSeries4Heats": "Reload · cup 4 heats", "ReloadEliteSeries4Final": "Reload · cup 4 final", "Major1_PlayIn": "Major 1 · Play-In", "Major1_Heats": "Major 1 · Heats", "Major1_LCQ": "Major 1 · Last Chance", "Major1_Final": "Major 1 · Final", "Summit_Upper": "Summit · Upper Bracket", "Summit_Lower": "Summit · Lower Bracket", "Summit_Final": "Summit · Grand Finals", "Major2_PlayIn": "Major 2 · Play-In", "Major2_Heats": "Major 2 · Heats", "Major2_LCQ": "Major 2 · Last Chance", "Major2_Final": "Major 2 · Final", "GlobalChampionshipLastChance": "Global Championship · Last Chance", "ReloadChampionshipParis": "Reload Championship · {CITY}", "GlobalChampionship": "Global Championship · {CITY}", "SoloSeries_Qualifier": "Solo Series · Clasificatorias", "SoloSeries_Heats": "Solo Series · Heats", "SoloSeries_Final": "Solo Series · Finals", "FNCSSolos_Q1Round2": "FNCS Solos · Clasificatoria 1, Ronda 2", "FNCSSolos_Q1Round3": "FNCS Solos · Clasificatoria 1, Ronda 3", "FNCSSolos_FastTrack": "FNCS Solos · Fast Track", "FNCSSolos_Q2Round2": "FNCS Solos · Clasificatoria 2, Ronda 2", "FNCSSolos_Q2Round3": "FNCS Solos · Clasificatoria 2, Ronda 3", "FNCSSolos_Heats": "FNCS Solos · Heats", "FNCSSolos_LCQRound1": "FNCS Solos · Last Chance, Ronda 1", "FNCSSolos_LCQFinal": "FNCS Solos · Last Chance, Final", "FNCSSolos_Final": "FNCS Solos · Finals", "ProAm_Dallas": "Pro-Am · Dallas", "ProAm_SaoPaulo": "Pro-Am · São Paulo", "ProAm_Paris": "Pro-Am · París", "ProAm_Seoul": "Pro-Am · Seúl", "NationsTrial": "Nations Cup · prueba nacional", "NationsQual": "Nations Cup · clasificatoria", "NationsFinal": "Nations Cup · final · {CITY}"},
+  "ccYearNames": {"ReloadEliteSeries1Opens": "Reload · cup 1 opens", "ReloadEliteSeries1PlayIn": "Reload · cup 1 play-in", "ReloadEliteSeries1Heats": "Reload · cup 1 heats", "ReloadEliteSeries1Final": "Reload · cup 1 final", "ReloadEliteSeries2Opens": "Reload · cup 2 opens", "ReloadEliteSeries2PlayIn": "Reload · cup 2 play-in", "ReloadEliteSeries2Heats": "Reload · cup 2 heats", "ReloadEliteSeries2Final": "Reload · cup 2 final", "ReloadEliteSeries3Opens": "Reload · cup 3 opens", "ReloadEliteSeries3PlayIn": "Reload · cup 3 play-in", "ReloadEliteSeries3Heats": "Reload · cup 3 heats", "ReloadEliteSeries3Final": "Reload · cup 3 final", "ReloadEliteSeries4Opens": "Reload · cup 4 opens", "ReloadEliteSeries4PlayIn": "Reload · cup 4 play-in", "ReloadEliteSeries4Heats": "Reload · cup 4 heats", "ReloadEliteSeries4Final": "Reload · cup 4 final", "Major1_PlayIn": "Major 1 · Play-In", "Major1_Heats": "Major 1 · Heats", "Major1_LCQ": "Major 1 · Last Chance", "Major1_Final": "Major 1 · Final", "Summit_SCQPlay": "Second Chance · abierto", "Summit_SCQ": "Second Chance · final", "Summit_Upper": "Summit · Upper Bracket", "Summit_Lower": "Summit · Lower Bracket", "Summit_Final": "Summit · Grand Finals", "Major2_PlayIn": "Major 2 · Play-In", "Major2_Heats": "Major 2 · Heats", "Major2_LCQ": "Major 2 · Last Chance", "Major2_Final": "Major 2 · Final", "GlobalChampionshipLastChance": "Global Championship · Last Chance", "ReloadChampionshipParis": "Reload Championship · {CITY}", "GlobalChampionship": "Global Championship · {CITY}", "SoloSeries_Qualifier": "Solo Series · Clasificatorias", "SoloSeries_Heats": "Solo Series · Heats", "SoloSeries_Final": "Solo Series · Finals", "FNCSSolos_Q1Round2": "FNCS Solos · Clasificatoria 1, Ronda 2", "FNCSSolos_Q1Round3": "FNCS Solos · Clasificatoria 1, Ronda 3", "FNCSSolos_FastTrack": "FNCS Solos · Fast Track", "FNCSSolos_Q2Round2": "FNCS Solos · Clasificatoria 2, Ronda 2", "FNCSSolos_Q2Round3": "FNCS Solos · Clasificatoria 2, Ronda 3", "FNCSSolos_Heats": "FNCS Solos · Heats", "FNCSSolos_LCQRound1": "FNCS Solos · Last Chance, Ronda 1", "FNCSSolos_LCQFinal": "FNCS Solos · Last Chance, Final", "FNCSSolos_Final": "FNCS Solos · Finals", "FNCSSoloReload_Round2": "FNCS Solo Reload · Qualifier, Round 2", "FNCSSoloReload_Round3": "FNCS Solo Reload · Qualifier, Round 3", "FNCSSoloReload_Heats": "FNCS Solo Reload · Heats", "FNCSSoloReload_LCQRound1": "FNCS Solo Reload · Last Chance, Round 1", "FNCSSoloReload_LCQFinal": "FNCS Solo Reload · Last Chance, Final", "FNCSSoloReload_Final": "FNCS Solo Reload · Finals", "ProAm_Dallas": "Pro-Am · Dallas", "ProAm_SaoPaulo": "Pro-Am · São Paulo", "ProAm_Paris": "Pro-Am · París", "ProAm_Seoul": "Pro-Am · Seúl", "NationsTrial": "Nations Cup · prueba nacional", "NationsQual": "Nations Cup · clasificatoria", "NationsFinal": "Nations Cup · final · {CITY}"},
   "ccNatZoneNA": "Norteamérica",
   "ccNatCash": v=>'Premio: '+v+' para ti',
   "ccNatCongrats": "Nations Cup",
@@ -1112,6 +1112,7 @@ Object.assign(I18N.es=I18N.es||{},
   "roGather": "Armar plantilla",
   "roFind": "Buscar compañero",
   "roWeek": "Puedes armarla una semana antes",
+  "roMpFill": n=>(n>1?'Dos más':'El tercero')+' entra de suplente esa noche, elegido cerca de vuestro nivel',
   "roSpot": "Spot",
   "roSpotNone": "sin elegir — elige uno",
   "roNat": "Selección nacional",
@@ -2492,6 +2493,13 @@ Object.assign(I18N.es=I18N.es||{},
   "ccSimAuto": "Solo miro",
   "ccSimAutoHint": "La partida corre en el mapa y no pregunta nada: dónde aterrizar, qué recoger y cómo jugar la zona ocho se sortean igual que para el resto de la lobby. Directo al resultado — pulsa Saltar.",
   "ccFfCap": "Jugarlo por mí",
+  "ccUndoBtn": d=>'Volver al '+d,
+  "ccUndoPeer": d=>'Propuesta: volver al '+d+'. Todos vuelven al inicio de ese día',
+  "ccUndoWait": d=>'Volver al '+d+': 1/2, esperando a los demás',
+  "ccUndoYes": 'Volver',
+  "ccUndoNoSnap": 'No se puede volver: no todos tienen el guardado de ese día',
+  "ccUndoHint": 'Retroceder la carrera un día de juego, al inicio del último día jugado',
+  "ccUndoAsk": d=>'¿Retroceder la carrera un día de juego, al inicio del '+d+'? Se perderá todo lo posterior',
   "ccFfWeek": "Una semana",
   "ccFfMonth": "Un mes",
   "ccFfConfirm": d=>'¿Vivir '+d+' días de una sola vez? Los torneos se juegan, los días se gastan y las ofertas pueden caducar.',
@@ -3844,7 +3852,7 @@ Object.assign(I18N.es, {hmSceneRecent:'Últimos ganadores'});
 Object.assign(I18N.es, {ccNewsMpPaySync:d=>'Premios igualados con tu compañero según la tabla común: '+d, ccCoachLeans:t=>'yo iría con «'+t+'»', ccCoachTag:'coach', ccRetCoachTitle:'Los clubes te quieren como coach', ccRetCoachSub:'Tu carrera como jugador terminó, pero la escena te conoce. Toma un club: plantilla, calendario, decisiones entre partidas.', ccRetCoachBtn:'Ser coach de un club'});
 Object.assign(I18N.es, {ccPlanTitle:n=>'El plan de '+n+' para hoy', ccPlanOk:'Entendido', ccPlanDrop:'Drop:', ccPlanDrop_home:'nuestro spot, sin contest', ccPlanDrop_contest:'contest — tomar el spot por la fuerza', ccPlanRot:'Rotación:', ccPlanRot_early:'pronto, antes de que cierre', ccPlanRot_with:'con la tormenta', ccPlanFight:'Fights:', ccPlanFight_fight:'los aceptamos cuando llegan', ccPlanFight_avoid:'nos quedamos fuera, protegemos la posición', ccPlanLate:'Endgame:', ccPlanLate_mid:'centro de la zona', ccPlanLate_edge:'borde de la zona', evTitle:'Análisis de la noche', evBest:'Mejor partida', evBestGame:(g,p,e)=>'partida '+g+': '+p+'.º, '+e+' bajas', evKills:'Bajas', evPerGame:x=>x+' por partida', evDeaths:'Muertes', evDeathKill:n=>'contra jugadores ×'+n, evDeathDrop:n=>'en el drop ×'+n, evDeathStorm:n=>'tormenta ×'+n, evDeathSurge:n=>'surge ×'+n, evNemesis:'Quien más te mató', evPlan:'Plan del coach', evPlanDone:(a,b)=>a+' de '+b+' seguidos', evTip_kill:'Mueres sobre todo en fights — entrena puntería y build esta semana.', evTip_drop:'Mueres en el drop — entrena la apertura y elige un spot más tranquilo.', evTip_storm:'La tormenta te cuesta partidas — entrena rotaciones y supervivencia.', evTip_surge:'El surge te saca — necesitas daño: fights a mitad de partida.', ccPostEvKilled:(h,n,m)=>['@'+m+', '+n+' veces contra nosotros hoy. Nada personal','nos cruzamos con @'+m+' '+n+' veces hoy — siempre a nuestro favor','@'+m+' en el lobby = bajas gratis ('+n+' hoy)'][n%3], ccPostEvVR:(g,e,n)=>['Victory Royale en la partida '+g+' de '+n+', '+e+' bajas. Seguimos','partida '+g+': corona y '+e+' bajas 👑','nos llevamos la partida '+g+'. '+e+' bajas, fue ruidoso'][g%3], ccPostEvKills:(k,n)=>[k+' bajas en '+n+' partidas. El lobby lo recordará',k+' bajas hoy, sin corona pero ruidoso'][k%2]});
 Object.assign(I18N.es, {clTitle:'Nube', clOn:'activada', clOffNow:'desactivada — las carreras solo están en este navegador', clWhy:'Activa la nube y recibirás un código. Con él tus carreras y el mánager se abren en cualquier dispositivo, aunque se borre este navegador.', clEnable:'Activar la nube', clHave:'Tengo un código', clKeep:'Apunta este código: abre tus carreras en otro dispositivo.', clSent:w=>'Último envío: '+w, clBusy:'enviando…', clPushNow:'Enviar ahora', clOther:'Introducir otro código', clOff:'Desactivar', clOpen:'Abrir', clFound:n=>'Partidas con este código: '+n, clCareer:'carrera', clMgr:'mánager', clTake:'Traerlas a este navegador', clSure:'Reemplaza los mismos huecos aquí — toca otra vez', clErr:m=>'La nube no respondió ('+m+'). Tu carrera está guardada en el navegador; lo reintentaremos.', clBad:'El código tiene 16 caracteres, p. ej. K7QM-2XPA-9RTD-WH4C'});
-Object.assign(I18N.es, {dyTitleW:'Draft del día', dyTag:'Cada día', dyTitle:n=>'Draft del día #'+n, dySub:'Una temporada al azar cada día: packs propios, pero solo jugadores de ese periodo. Un intento, la clasificación del día va por la fuerza del squad.', dyRules:'squad · todas las regiones · 12 partidas', dyPlayers:y=>'jugadores de '+y, dyOnce:'Un solo intento: tras empezar el torneo no hay revancha.', dyPlay:'Jugar', dyBoard:'Clasificación del día', dyShare:'Compartir', dyCopied:'Copiado', dyPts:'pts', dyNick:'Nombre para la clasificación', dySend:'Enviar', dySent:n=>'Estás en la clasificación del día como '+n, dyLeft:'Torneo sin terminar, intento usado', dyNext:t=>'Nuevo draft en '+t, dyH:'h', dyM:'min', dyRank:(r,t)=>'Tu puesto: '+r+' de '+t, dyEmpty:'Hoy aún no ha jugado nadie. Sé el primero.', dyHonest:'El resultado lo envía el navegador del jugador; el servidor no lo recalcula.'});
+Object.assign(I18N.es, {dyNickBad:"Ese nombre no se admite en la clasificación, elige otro", dyTitleW:'Draft del día', dyTag:'Cada día', dyTitle:n=>'Draft del día #'+n, dySub:'Una temporada al azar cada día: packs propios, pero solo jugadores de ese periodo. Un intento, la clasificación del día va por la fuerza del squad.', dyRules:'squad · todas las regiones · 12 partidas', dyPlayers:y=>'jugadores de '+y, dyOnce:'Un solo intento: tras empezar el torneo no hay revancha.', dyPlay:'Jugar', dyBoard:'Clasificación del día', dyShare:'Compartir', dyCopied:'Copiado', dyPts:'pts', dyNick:'Nombre para la clasificación', dySend:'Enviar', dySent:n=>'Estás en la clasificación del día como '+n, dyLeft:'Torneo sin terminar, intento usado', dyNext:t=>'Nuevo draft en '+t, dyH:'h', dyM:'min', dyRank:(r,t)=>'Tu puesto: '+r+' de '+t, dyEmpty:'Hoy aún no ha jugado nadie. Sé el primero.', dyHonest:'El resultado lo envía el navegador del jugador; el servidor no lo recalcula.'});
 Object.assign(I18N.es, {formWhyLanwin:'campeón de LAN', formWhyPoty:'jugador del año'});
 /* Дозаливка «es» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
 Object.assign(I18N.es=I18N.es||{},
@@ -4048,3 +4056,86 @@ Object.assign(I18N.es=I18N.es||{},
 /* Дозаливка «es» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
 Object.assign(I18N.es=I18N.es||{},
 ({ ccEdgeTitle:'Bonus por ping y edad', ccEdgeOn:'Con bonus', ccEdgeOff:'Sin bonus', ccEdgeNote:'Sin bonus tu jugador tiene exactamente el rating que armaste: el ping y la edad no suman nada y mudarte no lo cambia.' }));
+/* Дозаливка «es» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
+Object.assign(I18N.es=I18N.es||{},
+({ ccSecItems:'Tienda de objetos', ccSecHint_items:'La tienda real de Fortnite de ese día: trajes, picos, planeadores, gestos. Se paga en paVos, y los paVos cuestan dinero de la carrera al precio de Epic de tu región. Lo que compras se equipa en la taquilla.', ccVbPacksH:'paVos', ccVbNote:r=>'Precios de Epic de la época para '+r+'. Salen del saldo de la carrera.', ccFnShopH:d=>'Tienda del '+d, ccFnTomorrow:'cambia mañana', ccFnOwned:'Comprado', ccFnNoVb:'Faltan paVos', ccFnLoading:'Cargando la tienda…', ccFnEmpty:'No hay tienda en los datos para este día.', ccFnType_o:'Traje', ccFnType_b:'Mochila', ccFnType_p:'Pico', ccFnType_g:'Planeador', ccFnType_e:'Gesto', ccFnType_w:'Envoltorio', ccFnTypes_o:'Trajes', ccFnTypes_b:'Mochilas', ccFnTypes_p:'Picos', ccFnTypes_g:'Planeadores', ccFnTypes_e:'Gestos', ccFnTypes_w:'Envoltorios', ccFnLoadout:'Equipamiento', ccFnTakeOff:'Quitar', ccFnNone:'Todavía no hay nada que ponerse.', ccFnToShop:'A la tienda' }));
+/* Дозаливка «es» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
+Object.assign(I18N.es=I18N.es||{},
+({ chTabLocker:'Taquilla', ccFnToLocker:'Equipar en la taquilla' }));
+/* Дозаливка «es» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
+Object.assign(I18N.es=I18N.es||{},
+({ccFnEra:n=>'Capítulo '+n, ccFnFeatured:'Destacados', ccFnDaily:'Diarios', ccFnNew:'¡NUEVO!', ccFnNote:'Estos objetos cosméticos no dan ventaja competitiva.', ccFnOff:n=>ccNum(n)+' paVos de descuento', ccFnStylesN:n=>n+' estilos seleccionables', ccFnFeatItems:'Objetos destacados', ccFnDailyItems:'Objetos diarios', ccFnSacSup:'Creador apoyado', ccFnSacNone:'Ninguno', ccFnBundleN:n=>'Lote de '+n+' objetos', ccFnView:'Ver oferta'}));
+/* Дозаливка «es» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
+Object.assign(I18N.es=I18N.es||{},
+({ccFnCatChar:'Personaje'}));
+/* Дозаливка «es» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
+Object.assign(I18N.es=I18N.es||{},
+({chTabItems:'Tienda de objetos'}));
+/* Дозаливка «es» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
+Object.assign(I18N.es=I18N.es||{},
+({dmAskq:'Hola. Armo un squad para la copa, ¿te apuntas?', dmAskBtnq:'Escribir: «¿squad?»'}));
+/* Дозаливка «es» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
+Object.assign(I18N.es=I18N.es||{},
+({lbMore:'Más', lbAlertMp:'Equipo', lbAlertRace:'Carrera', lbAlertTalk:'Entrevista', lbAlertRoster:'Plantilla'}));
+/* Дозаливка «es» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
+Object.assign(I18N.es=I18N.es||{},
+({ccRoleNoIgl:'Sin IGL en el equipo: sin +4 de fuerza por roles.'}));
+/* Дозаливка «es» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
+Object.assign(I18N.es=I18N.es||{},
+({ccInput:'Dispositivo', ccInput_kbm:'Teclado y ratón', ccInput_pad:'Mando'}));
+/* Дозаливка «es» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
+Object.assign(I18N.es=I18N.es||{},
+({
+roClubWait:d=>'Tu mánager se está encargando · respuesta '+d,
+dmClubAskMe:(h,o)=>'¿Puedes traer a '+h+' a '+o+'? Quiero que juguemos en el mismo club',
+dmClubAskOk:(o,h)=>'Entendido. Hablo con '+o+' sobre '+h+', dame un par de días',
+dmClubAskYes:(h,o)=>'Hecho: '+o+' ficha a '+h+'. Contrato firmado',
+dmClubAskNo:(h,o)=>'Hablé con '+o+': '+h+' aún no es de su nivel. Vuelvo a preguntar en un mes',
+dmClubAskMeOrg:(h,o)=>'Quiero que '+h+' juegue conmigo en '+o+'. ¿Lo fichan?',
+dmClubAskOrgOk:(o,h)=>'Vamos a mirar a '+h+' y te respondemos en un par de días',
+dmClubAskOrgYes:(h,o)=>'Decidido: fichamos a '+h+'. Bienvenido a '+o,
+dmClubAskOrgNo:(h,o)=>'Hemos visto a '+h+': aún no es nuestro nivel. Lo hablamos en un mes',
+ccSacTitle:'Apoya a un creador',
+ccSacEnter:'Introducir código',
+ccSacChange:'Cambiar',
+ccSacOff:'Quitar código',
+ccSacGiven:n=>'ya '+n+' V-Bucks para él',
+ccSacOwn:'Tu código',
+ccSacOwnPay:n=>'≈ $'+n+' al mes por compras de fans',
+ccSacOwnLock:n=>'se desbloquea con '+n+' seguidores',
+ccSacCreate:'Crear código',
+ccSacOwnEarned:n=>'$'+n+' en total',
+ccNewsSacOwn:c=>'Tu código de creador está activo: '+c,
+ccNewsSacPaid:(n,c)=>'El código de creador '+c+' ha generado $'+n+' este mes',
+ccFnGiftBtn:'Regalar',
+ccFnGiftTitle:(n,c)=>'Regalar «'+n+'» · '+c+' V-Bucks',
+ccFnGiftDone:'ya regalado',
+ccFnGiftMate:'compañero',
+ccFnGiftNobody:'Aún no hay a quién regalar: escribe primero a alguien',
+ccNewsFnGift:(i,h)=>'Has regalado «'+i+'» a '+h,
+dmGiftThanks:i=>'¡Vaya, «'+i+'»! Gracias, qué detalle 🙏',
+ccLock_glider:'planeador',
+ccFnStyles:'Estilos'
+}));
+/* Дозаливка «es» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
+Object.assign(I18N.es=I18N.es||{},
+({
+ccRetiredTitle:'Retirados',
+ccRetiredHint:'Jugadores destacados que dejaron la escena después de 2026, y los regens que los sustituyeron',
+ccRetiredWho:'Jugador', ccRetiredYear:'Año', ccRetiredAge:'Edad', ccRetiredReg:'Región', ccRetiredBy:'Regen',
+ccRetiredTag:(y,a,b)=>'Se retiró en '+y+(a!=null ? ' a los '+a : '')+(b ? ' · sustituido por '+b : '')
+}));
+/* Дозаливка «es» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
+Object.assign(I18N.es=I18N.es||{},
+({
+ccMgChoose:'elige el objetivo del mes',
+ccMgPickHint:'El club ofrece tres objetivos para el mes. Elige uno: cuanto más difícil, mayor el bonus. Si no eliges antes del próximo torneo, fija el del medio.',
+ccMgTier:['Seguro','Medio','Ambicioso'],
+ccMgCutOf:{fncsCup:'superar una sesión de la FNCS Divisional Cup', majorQual:'superar una fase de un Major FNCS (Play-In, Heats, Last Chance)', solo:'superar una ronda solo de la FNCS (FNCS Solos, Solo Series)', cash:'pasar el corte en una cash cup', any:'pasar un corte'},
+ccMgPlaceOf:{cash:n=>'top '+n+' en una cash cup (Victory Cup, Perf Eval)', fncsCup:n=>'top '+n+' en una sesión de la FNCS Divisional Cup', fncsFinal:n=>'top '+n+' en la final semanal de la FNCS', majorFinal:n=>'top '+n+' en una final de Major FNCS', any:n=>'top '+n+' en cualquier torneo'},
+ccNewsMgAuto:(o,g)=>o+' fijó tu objetivo del mes: '+g,
+ccNewsSacPromo:(c,p)=>'Post con el código '+c+' contado: pago del mes +'+p+'%',
+ccSacPromoRow:(n,m,p)=>'promo en X '+n+'/'+m+(p ? ' · +'+p+'%' : ''),
+ccGoalReach:{majorFinal:'llegar a una final de Major FNCS', fncsFinal:'llegar a la final semanal de la FNCS'},
+ccOrgGoalPickHint:'Objetivo de la temporada: elige uno antes de que acabe la temporada. Si lo cumples renuevas con aumento (objetivo más difícil, aumento mayor); si fallas, el club te libera. Sin elección queda el del medio.'
+}));
