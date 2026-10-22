@@ -4800,10 +4800,22 @@
   #screen-career-hub .cc-lobby .cc-lb-playbox .cc-day .cc-job,
   #screen-career-hub.ch-themed .cc-lobby .cc-lb-playbox .cc-day .cc-act,#screen-career-hub.ch-themed .cc-lobby .cc-lb-playbox .cc-day .cc-six-t,
   #screen-career-hub.ch-themed .cc-lobby .cc-lb-playbox .cc-day .cc-job{background:rgba(255,255,255,.07);}
-  /* ТЕЛЕФОН: НИЖНЯЯ ПЛАНКА ШРИФТА 11px (22.10, аудит Impeccable хаба на 390px после «very hard to read» из X). Подписи
-     плиток прокачки, подработки, кошелька, дней недели и «Сыграть за меня» стояли 8–10px — меньше 3 мм на экране iPhone.
-     Только узкий экран: на ПК плотность та же. */
-  @media (max-width:700px){
+  /* НИЖНЯЯ ПЛАНКА ШРИФТА 11px (22.10, аудит Impeccable хаба: телефон 390px после «very hard to read» из X, потом ПК
+     1440×900 — те же 8–10px). Подписи плиток прокачки, подработки, кошелька, дней недели, «Сыграть за меня», квадратиков
+     недель сезона — на всех ширинах. */
+  #screen-career-hub .ch-season .ch-sq{font-size:11px;}
+  /* ПК: кнопка дня («К турниру» / «Следующий день») — сразу под шапкой дня, а не под всеми занятиями. На 1440×900 она
+     стояла на 1037px при экране 900 — без прокрутки её не было видно (его правка 19.10: «сразу видно PLAY»). */
+  @media (min-width:701px){
+    #screen-career-hub .cc-lobby .cc-lb-playbox .cc-day-in > *{order:2;}
+    #screen-career-hub .cc-lobby .cc-lb-playbox .cc-day-in > .cc-rings{order:0;}
+    #screen-career-hub .cc-lobby .cc-lb-playbox .cc-day-in > .ch-play{order:1;margin:2px 0 8px;}
+  }
+  /* Широкий экран: колонки меню шире (подписи занятий обрезались многоточием при пустой середине). */
+  @media (min-width:1300px){
+    #screen-career-hub .cc-lobby.cc-lb-full .cc-lb-left,#screen-career-hub .cc-lobby.cc-lb-full .cc-lb-right{width:380px;}
+  }
+  @media (min-width:0px){
     #screen-career-hub .cc-six-t b,#screen-career-hub .cc-six-t em{font-size:11px;}
     #screen-career-hub .cc-six-t small{font-size:10.5px;}
     #screen-career-hub .cc-act-g i,#screen-career-hub .cc-lobby .cc-lb-playbox .cc-act-g i{font-size:11px;}
@@ -123609,7 +123621,9 @@ function ccLobbyHTML(card, btn, next, when, strip, ex){
       '<img class="full" src="'+ccFnFull(p.id)+'" data-id="'+esc(p.id)+'" alt="" loading="lazy" crossorigin="anonymous" onload="ccLbFigCut(this)" onerror="ccFnHeroErr(this)">'+
       '<div class="cc-lb-plate">'+(p.me ? '<i class="cc-lb-crown">♛</i>' : '')+'<span class="cc-lb-hex">'+p.ovr+'</span><b>'+esc(p.name)+' <u>'+p.ovr+'</u></b>'+
       '<span class="cc-lb-in">'+ccInputIcon(p.input)+'</span>'+
-      '<em class="'+(ready ? 'ok' : '')+'">'+(ready ? 'Ready' : 'Not Ready')+'</em></div></div>';
+      /* В свободный день метки нет вовсе: красное «Not Ready» без турнира читалось как ошибка (аудит ПК 22.10).
+         Not Ready — только в день турнира, когда играть правда нельзя (нет напарника, кресло пустое). */
+      ((next && next.day===today && next.type!=='free') ? '<em class="'+(ready ? 'ok' : '')+'">'+(ready ? 'Ready' : 'Not Ready')+'</em>' : '')+'</div></div>';
   };
   const stage='<div class="cc-lb-stage">'+[1,2,3,0].map(slot).join('')+'</div>';
   // Кнопка — та же, что в панели (первая .ch-play из btn): действие, подпись, запрет.
