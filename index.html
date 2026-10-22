@@ -8779,7 +8779,7 @@
      в index.html только точки врезки. ?v= — тот же кэш-предохранитель, что и
      у соседей: поменял mp.js — переставь хеш, иначе браузер возьмёт старый
      файл и разойдётся с напарником. -->
-<script src="mp.js?v=066b92f3"></script>
+<script src="mp.js?v=f45a7ab2"></script>
 <!-- Дополнительные реплики лички и реплаев (tools/build-lines-more.js), грузятся после страницы. -->
 <script src="lines-more.js?v=5aebca09" defer></script>
 <!-- lz-string 1.5.0 (MIT, (c) 2013 pieroxy) — сжатие сейва карьеры, когда браузеру не хватает места (Safari: 5 МБ на сайт). -->
@@ -10508,7 +10508,7 @@ chSquad:'Дуо', ccDuoFindTitle:'Кому написать',
 ccDuoFindHint:'Любому игроку своего региона можно написать первым. Ответит он сам — и не всякий согласится.',
 ccDuoSearchPh:'Поиск по нику',
 ccDuoSortBy:'Сортировать', ccDuoSortNear:'мой уровень', ccDuoSortOvr:'рейтинг', ccDuoSortPr:'PR', ccDuoPrOf:(pr,rank)=>'PR '+pr+' · #'+rank,
-ccDuoNat:'Флаг', ccVAltH:'Капы дня', roFirst:d=>'первый турнир — '+d, roGather:'Собрать состав', roFind:'Найти напарника', roWeek:'Собрать можно за неделю до турнира', roSpot:'Спот', roSpotNone:'не выбран — поставить', roNat:'Сборная', roCaptain:'ты капитан', roNatTrial:'Место в сборной — через отбор страны', ccDuoNatAll:'все', ccDuoReg:'Регион',
+ccDuoNat:'Флаг', ccVAltH:'Капы дня', roFirst:d=>'первый турнир — '+d, roGather:'Собрать состав', roFind:'Найти напарника', roWeek:'Собрать можно за неделю до турнира', roMpFill:n=>(n>1?'Ещё двоих':'Третьего')+' на вечер возьмёте филлом: игра подберёт по вашему рейтингу', roSpot:'Спот', roSpotNone:'не выбран — поставить', roNat:'Сборная', roCaptain:'ты капитан', roNatTrial:'Место в сборной — через отбор страны', ccDuoNatAll:'все', ccDuoReg:'Регион',
 ccDuoWrite:'Написать',
 ccDuoFree:'без дуо',
 ccDuoWith:n=>'дуо с '+n,
@@ -11502,7 +11502,7 @@ ccNightSpotCap:'Садимся сегодня',
 ccSimCap:'Кто играет этот вечер',
 ccSimSelf:'Играю сам', ccSimSelfHint:'Матч идёт на карте, и по ходу игры спрашивают: где сесть, что подобрать и как играть восьмую зону.',
 ccSimAuto:'Только смотрю', ccSimAutoHint:'Матч идёт на карте, но вопросов нет: где сесть, что подобрать и как играть восьмую зону, выбирается тем же броском, что и у остальных команд лобби. Дойти до результата сразу — кнопкой «Пропустить».',
-ccFfCap:'Сыграть за меня', ccFfWeek:'Неделю', ccFfMonth:'Месяц', ccFfConfirm:d=>'Прожить '+d+' дн. за один раз? Турниры будут отыграны, дни потрачены, предложения могут протухнуть.',
+ccFfCap:'Сыграть за меня', ccUndoBtn:d=>'Переиграть '+d, ccUndoHint:'Вернуть карьеру к началу последнего сыгранного дня и сыграть его заново', ccUndoAsk:d=>'Вернуть карьеру к началу дня '+d+' и переиграть его? Всё, что было после, пропадёт', ccFfWeek:'Неделю', ccFfMonth:'Месяц', ccFfConfirm:d=>'Прожить '+d+' дн. за один раз? Турниры будут отыграны, дни потрачены, предложения могут протухнуть.',
 ccFfHint:'Сыграет турниры за тебя и потратит свободные дни на лучшую тренировку. Предложения от клубов и дуо останутся ждать в почте',
 ccFfRunning:'Перемотка', ccFfDays:(d,t)=>d+' из '+ruDays(t),
 ccFfTime:s=>s<60 ? s+' с' : Math.round(s/60)+' мин', ccFfEta:t=>'Займёт ≈ '+t+'. Вкладку можно свернуть — в фоне перемотка не тормозит.', ccFfLeft:t=>'осталось ≈ '+t,
@@ -12618,7 +12618,7 @@ chSquad:'Duo', ccDuoFindTitle:'Who to write to',
 ccDuoFindHint:'You can write first to anybody in your region. They answer for themselves, and not everybody says yes.',
 ccDuoSearchPh:'Search by name',
 ccDuoSortBy:'Sort by', ccDuoSortNear:'my level', ccDuoSortOvr:'rating', ccDuoSortPr:'PR', ccDuoPrOf:(pr,rank)=>'PR '+pr+' · #'+rank,
-ccDuoNat:'Flag', ccVAltH:'Cups today', roFirst:d=>'first event — '+d, roGather:'Build roster', roFind:'Find a partner', roWeek:'You can build it a week before', roSpot:'Spot', roSpotNone:'not set — pick one', roNat:'National team', roCaptain:'you are captain', roNatTrial:'Your seat comes through the country trial', ccDuoNatAll:'all', ccDuoReg:'Region',
+ccDuoNat:'Flag', ccVAltH:'Cups today', roFirst:d=>'first event — '+d, roGather:'Build roster', roFind:'Find a partner', roWeek:'You can build it a week before', roMpFill:n=>(n>1?'Two more':'The third')+' will be a fill for the night, picked near your rating', roSpot:'Spot', roSpotNone:'not set — pick one', roNat:'National team', roCaptain:'you are captain', roNatTrial:'Your seat comes through the country trial', ccDuoNatAll:'all', ccDuoReg:'Region',
 ccDuoWrite:'Write',
 ccDuoFree:'no duo',
 ccDuoWith:n=>'duo with '+n,
@@ -13610,7 +13610,7 @@ ccNightSpotCap:'Tonight we land',
 ccSimCap:'Who plays tonight',
 ccSimSelf:'I play it', ccSimSelfHint:'The match runs on the map and asks as it goes: where to land, what to pick up and how to play zone eight.',
 ccSimAuto:'I just watch', ccSimAutoHint:'The match runs on the map and asks nothing: where to land, what to pick up and how to play zone eight are rolled the same way the rest of the lobby rolls theirs. Straight to the result — press Skip.',
-ccFfCap:'Play it for me', ccFfWeek:'A week', ccFfMonth:'A month', ccFfConfirm:d=>'Live through '+d+' days in one press? The tournaments get played, the days get spent, and offers can expire.',
+ccFfCap:'Play it for me', ccUndoBtn:d=>'Replay '+d, ccUndoHint:'Take the career back to the start of the last day you played and play it again', ccUndoAsk:d=>'Take the career back to the start of '+d+' and replay it? Everything since will be lost', ccFfWeek:'A week', ccFfMonth:'A month', ccFfConfirm:d=>'Live through '+d+' days in one press? The tournaments get played, the days get spent, and offers can expire.',
 ccFfHint:'Plays the tournaments for you and spends the free days on the best training. Offers from clubs and duos stay in the inbox',
 ccFfRunning:'Fast-forward', ccFfDays:(d,t)=>d+' of '+t+' days',
 ccFfTime:s=>s<60 ? s+' s' : Math.round(s/60)+' min', ccFfEta:t=>'Takes about '+t+'. You can switch tabs — it does not slow down in the background.', ccFfLeft:t=>'about '+t+' left',
@@ -14711,7 +14711,7 @@ ccNightSpotCap:'On atterrit ce soir',
 ccSimCap:'Qui joue ce soir',
 ccSimSelf:'Je joue', ccSimSelfHint:'Le match se déroule sur la carte et te demande en cours de route : où atterrir, quoi ramasser et comment jouer la zone huit.',
 ccSimAuto:'Je regarde', ccSimAutoHint:'Le match se déroule sur la carte mais ne demande rien : où atterrir, quoi ramasser et la zone huit sont tirés comme pour le reste du lobby. Pour le résultat tout de suite — le bouton « Passer ».',
-ccFfCap:'Joue à ma place',
+ccFfCap:'Joue à ma place', ccUndoBtn:d=>'Rejouer le '+d, ccUndoHint:'Ramener la carrière au début du dernier jour joué et le rejouer', ccUndoAsk:d=>'Ramener la carrière au début du '+d+' et le rejouer ? Tout ce qui a suivi sera perdu',
 ccFfConfirm:d=>'Vivre '+d+' jours d’un coup ? Les tournois seront joués, les jours dépensés, et des offres peuvent expirer.',
 ccFfWeek:'Une semaine',
 ccFfMonth:'Un mois',
@@ -15641,7 +15641,7 @@ ccDuoFindTitle:'À qui écrire',
 ccDuoFindHint:'Tu peux écrire en premier à n’importe qui de ta région. Chacun répond pour soi, et tout le monde ne dit pas oui.',
 ccDuoSearchPh:'Chercher par nom',
 ccDuoSortBy:'Trier par', ccDuoSortNear:'mon niveau', ccDuoSortOvr:'note', ccDuoSortPr:'PR', ccDuoPrOf:(pr,rank)=>'PR '+pr+' · #'+rank,
-ccDuoNat:'Drapeau', ccVAltH:'Cups du jour', roFirst:d=>'premier tournoi — '+d, roGather:'Former l’équipe', roFind:'Trouver un coéquipier', roWeek:'À former une semaine avant', roSpot:'Spot', roSpotNone:'pas choisi — en poser un', roNat:'Sélection', roCaptain:'tu es capitaine', roNatTrial:'Ta place passe par la sélection du pays', ccDuoNatAll:'tous', ccDuoReg:'Région',
+ccDuoNat:'Drapeau', ccVAltH:'Cups du jour', roFirst:d=>'premier tournoi — '+d, roGather:'Former l’équipe', roFind:'Trouver un coéquipier', roWeek:'À former une semaine avant', roMpFill:n=>(n>1?'Deux autres joueurs':'Le troisième')+' viendront en remplaçants pour la soirée, choisis selon votre niveau', roSpot:'Spot', roSpotNone:'pas choisi — en poser un', roNat:'Sélection', roCaptain:'tu es capitaine', roNatTrial:'Ta place passe par la sélection du pays', ccDuoNatAll:'tous', ccDuoReg:'Région',
 ccDuoWrite:'Écrire',
 ccDuoFree:'sans duo',
 ccDuoNobody:'Personne trouvé',
@@ -17977,7 +17977,7 @@ ccNewsVicNoWin:"Victory Cup: Round 2 senza vittorie",
 ccDuoFindTitle:"A chi scrivere",
 ccDuoSearchPh:"Cerca per nome",
 ccDuoSortBy:'Ordina per', ccDuoSortNear:'mio livello', ccDuoSortOvr:'valutazione', ccDuoSortPr:'PR', ccDuoPrOf:(pr,rank)=>'PR '+pr+' · #'+rank,
-ccDuoNat:'Bandiera', ccVAltH:'Cup di oggi', roFirst:d=>'primo torneo — '+d, roGather:'Forma la squadra', roFind:'Trova un compagno', roWeek:'Si forma una settimana prima', roSpot:'Spot', roSpotNone:'non scelto — sceglilo', roNat:'Nazionale', roCaptain:'sei il capitano', roNatTrial:'Il posto passa dalla selezione del paese', ccDuoNatAll:'tutti', ccDuoReg:'Regione',
+ccDuoNat:'Bandiera', ccVAltH:'Cup di oggi', roFirst:d=>'primo torneo — '+d, roGather:'Forma la squadra', roFind:'Trova un compagno', roWeek:'Si forma una settimana prima', roMpFill:n=>(n>1?'Altri due':'Il terzo')+' sarà un sostituto per la serata, scelto vicino al vostro livello', roSpot:'Spot', roSpotNone:'non scelto — sceglilo', roNat:'Nazionale', roCaptain:'sei il capitano', roNatTrial:'Il posto passa dalla selezione del paese', ccDuoNatAll:'tutti', ccDuoReg:'Regione',
 ccDuoWrite:"Scrivi",
 ccDuoFree:"senza duo",
 ccDuoNobody:"Nessun risultato",
@@ -18888,7 +18888,7 @@ ccSimSelf:"Gioco io",
 ccSimSelfHint:"La partita gira sulla mappa e chiede strada facendo: dove atterrare, cosa raccogliere e come giocare la zona otto.",
 ccSimAuto:"Guardo e basta",
 ccSimAutoHint:"La partita gira sulla mappa e non chiede nulla: dove atterrare, cosa raccogliere e come giocare la zona otto vengono tirati come li tira il resto della lobby. Dritto al risultato — premi Salta.",
-ccFfCap:"Giocala per me",
+ccFfCap:"Giocala per me", ccUndoBtn:d=>'Rigioca il '+d, ccUndoHint:'Riporta la carriera all’inizio dell’ultimo giorno giocato e rigiocalo', ccUndoAsk:d=>'Riportare la carriera all’inizio del '+d+' e rigiocarlo? Tutto ciò che è venuto dopo andrà perso',
 ccFfWeek:"Una settimana",
 ccFfMonth:"Un mese",
 ccFfHint:"Gioca i tornei al posto tuo e spende i giorni liberi nel miglior allenamento. Le offerte di club e duo restano nella posta",
@@ -20528,7 +20528,7 @@ ccNewsVicNoWin:"Victory Cup: Rodada 2 sem vitória",
 ccDuoFindTitle:"Para quem escrever",
 ccDuoSearchPh:"Buscar por nome",
 ccDuoSortBy:'Ordenar por', ccDuoSortNear:'meu nível', ccDuoSortOvr:'rating', ccDuoSortPr:'PR', ccDuoPrOf:(pr,rank)=>'PR '+pr+' · #'+rank,
-ccDuoNat:'Bandeira', ccVAltH:'Cups do dia', roFirst:d=>'primeiro torneio — '+d, roGather:'Montar o time', roFind:'Achar parceiro', roWeek:'Monte uma semana antes', roSpot:'Spot', roSpotNone:'não escolhido — escolher', roNat:'Seleção', roCaptain:'você é o capitão', roNatTrial:'A vaga vem pela seletiva do país', ccDuoNatAll:'todos', ccDuoReg:'Região',
+ccDuoNat:'Bandeira', ccVAltH:'Cups do dia', roFirst:d=>'primeiro torneio — '+d, roGather:'Montar o time', roFind:'Achar parceiro', roWeek:'Monte uma semana antes', roMpFill:n=>(n>1?'Mais dois':'O terceiro')+' entra como substituto na noite, escolhido perto do seu nível', roSpot:'Spot', roSpotNone:'não escolhido — escolher', roNat:'Seleção', roCaptain:'você é o capitão', roNatTrial:'A vaga vem pela seletiva do país', ccDuoNatAll:'todos', ccDuoReg:'Região',
 ccDuoWrite:"Escrever",
 ccDuoFree:"sem dupla",
 ccDuoNobody:"Ninguém encontrado",
@@ -21439,7 +21439,7 @@ ccSimSelf:"Eu jogo",
 ccSimSelfHint:"A partida roda no mapa e vai perguntando: onde pousar, o que pegar e como jogar a zona oito.",
 ccSimAuto:"Eu só assisto",
 ccSimAutoHint:"A partida roda no mapa e não pergunta nada: onde pousar, o que pegar e como jogar a zona oito são sorteados do mesmo jeito que o resto do lobby. Direto ao resultado — aperte Pular.",
-ccFfCap:"Jogue por mim",
+ccFfCap:"Jogue por mim", ccUndoBtn:d=>'Rejogar '+d, ccUndoHint:'Voltar a carreira ao início do último dia jogado e jogá-lo de novo', ccUndoAsk:d=>'Voltar a carreira ao início de '+d+' e rejogar? Tudo o que veio depois será perdido',
 ccFfWeek:"Uma semana",
 ccFfMonth:"Um mês",
 ccFfHint:"Joga os torneios no seu lugar e gasta os dias livres no melhor treino. Propostas de clubes e duplas ficam na caixa de entrada",
@@ -118447,7 +118447,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='34177879';
+const CC_BUILD='d9fba782';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -118532,10 +118532,14 @@ const CC_MP_HUMANS=2;
 function ccMpBotSeats(){
   return ccMpOn() ? Math.max(0, careerSquadSize()-CC_MP_HUMANS) : careerMateSeats();
 }
+/* Взятые на один вечер другого формата (трио-кап в дуо-год, сквад-кап): филлы, одинаковые у обоих. Ставит
+   ccMpFmtBegin, снимает ccEventRosterEnd; общий состав команды (cr.mates) не трогается. */
+let CC_MP_FMT_MATES=null, CC_MP_FMT_FP='', CC_MP_FMT_PICKS=0;   // FP — отпечаток памяти троек на входе, в строке расхождения
 // Записи взятых: в команде они общие, в одиночной — свои.
 function ccMpMateRecs(){
   const cr=(CAREER && CAREER.career) || {};
   if(!ccMpOn()) return careerMateRecords();
+  if(CC_MP_FMT_MATES) return CC_MP_FMT_MATES.slice(0, ccMpBotSeats());
   if(!Array.isArray(cr.mates)) cr.mates=[];
   return cr.mates.filter(Boolean).slice(0, ccMpBotSeats());
 }
@@ -120267,12 +120271,27 @@ function ccWorldSeed(){
   if(cr && cr.race && cr.race.code && cr.race.wseed) return String(cr.race.wseed);
   return ccCareerSeed();
 }
+/* Посев троек до книги мира — по формату СЕГОДНЯШНЕГО вечера, а не года (онлайн-прогон 2019 года, 21.10: трио-кап
+   14.07 в дуо-год, ccMpFmtBegin. Книга сеяла пул только в трио-год, хозяин слал пустые тройки, и каждый сеял свои:
+   «blax+mitr0+oslo vs kinstaar+mitr0+oslo», поле разошлось с первой игры). */
+function ccWorldPoolsSeed(){
+  try{
+    const base=careerSquadSize(); let f=base;
+    try{ const v=ccVictoryFormat(careerVictoryOn(careerToday())); if(v>f) f=v; }catch(e){}
+    if(!(f>=3) || typeof careerPools!=='function') return;
+    if(f===base){ careerPools(); return; }
+    /* Кап другого формата: пул кэшируется без размера (CC_POOLS по снимку), и собранный дуо-днём он вернулся бы
+       из кэша, не посеяв третьих. Собирается заново под размер вечера и сбрасывается — дальше дуо-дни соберут свой. */
+    CC_POOLS=null;
+    try{ ccWithEventSize(f, ()=>careerPools()); } finally { CC_POOLS=null; }
+  }catch(e){}
+}
 function ccRaceWorldPack(){
   /* ТРОЙКИ ГОДА — ДО КНИГИ. Посев третьих (careerPools, cr.triosSeeded) идёт при первой сборке пула,
      и у старшего она могла случиться ПОСЛЕ отправки: прогон годов 20.10, 2025 — старший слал trios {},
      соседи затирали им свой посев, а сам он сеял следом. Поле FNCS Trial разошлось с первой игры
      (пул 279 против 282). Пул собирается здесь, и книга везёт посев целиком. */
-  try{ if(careerSquadSize()>=3 && typeof careerPools==='function') careerPools(); }catch(e){}
+  ccWorldPoolsSeed();
   const cr=(CAREER && CAREER.career)||{};
   const seeds={};
   /* И ПУСТО — ТОЖЕ ОТВЕТ. Записи посева ехали только когда они есть: у старшего Мейджора 2
@@ -120331,14 +120350,20 @@ function ccRaceWorldApply(w){
    хозяин (роль a) шлёт его на старте, второй ставит до сборки поля — как книга мира в гонке
    (ccRaceWorldSync). Личное (журнал, рейтинг игрока, деньги) не трогается. */
 function ccTeamWorldPack(){
-  try{ if(careerSquadSize()>=3 && typeof careerPools==='function') careerPools(); }catch(e){}
+  ccWorldPoolsSeed();
   const cr=(CAREER && CAREER.career)||{};
+  // Сид мира команды — хозяина; ставит его себе и везёт второму (см. freeRnd в careerCupField).
+  if(CAREER && CAREER.career) cr.teamWseed=String(ccCareerSeed());
   return {dev:CAREER.dev||{}, devL:CAREER.devL||{}, splits:CAREER.splits||{}, duoStreak:CAREER.duoStreak||{}, lft:CAREER.lft||{},
           duoSplits:cr.duoSplits||{}, trios:cr.trios||{},
           /* И посевы стадий (онлайн-прогон 2025 года, 21.10: финал Мейджора 1 15.02 разошёлся на первой игре, «state majorSeed» —
              прошедших через Last Chance мир досчитывал у каждого сам). Хозяин везёт свои, второй ставит до сборки поля. */
           seeds:{majorSeed:cr.majorSeed||null, summitSeed:cr.summitSeed||null, relSeed:cr.relSeed||null, gcSeed:cr.gcSeed||null},
-          tseed:{seeded:cr.triosSeeded===undefined ? null : cr.triosSeeded, cores:cr.trioCores||null, filled:cr.trioFilled||null}};
+          tseed:{seeded:cr.triosSeeded===undefined ? null : cr.triosSeeded, cores:cr.trioCores||null, filled:cr.trioFilled||null},
+          wseed:cr.teamWseed||null,
+          /* И квал-симуляция ЛАНа сезона (cr.lanSim, ccLanSimRanked): считается лениво, у двоих в разные дни — зал ЛАНа
+             расходился (онлайн-прогон 2022, DreamHack Winter 27.11). Нет у хозяина — нет и у второго: посчитают в вечере. */
+          lanSim:cr.lanSim||null};
 }
 function ccTeamWorldApply(w){
   if(!w || !CAREER || !CAREER.career) return false;
@@ -120346,6 +120371,8 @@ function ccTeamWorldApply(w){
   CAREER.dev=obj(w.dev); CAREER.devL=obj(w.devL); CAREER.splits=obj(w.splits); CAREER.duoStreak=obj(w.duoStreak); CAREER.lft=obj(w.lft);
   const c=CAREER.career;
   c.duoSplits=obj(w.duoSplits); c.trios=obj(w.trios);
+  if(w.wseed) c.teamWseed=String(w.wseed);
+  if('lanSim' in w){ if(w.lanSim) c.lanSim=JSON.parse(JSON.stringify(w.lanSim)); else delete c.lanSim; }
   if(w.seeds && typeof w.seeds==='object') ['majorSeed','summitSeed','relSeed','gcSeed'].forEach(k=>{ if(w.seeds[k]) c[k]=JSON.parse(JSON.stringify(w.seeds[k])); else delete c[k]; });
   if(w.tseed && typeof w.tseed==='object'){
     if(w.tseed.seeded==null) delete c.triosSeeded; else c.triosSeeded=w.tseed.seeded;
@@ -121425,7 +121452,7 @@ function ccMpSumSeen(mine, theirs, theirsList, theirsSt, theirsYp){
   var stDiff=ccMpStateDiff(CC_MP_STATE_KEYS, theirsSt);
   // Расхождение — это таблица, броски или поле. Всё остальное в сумме (книга, верх таблицы) — только пояснение.
   if(a[1]===b[1] && a[2]===b[2] && a[3]===b[3]) return;
-  var flags=' · skip '+(typeof skipAnimation!=='undefined' && skipAnimation ? 1 : 0)+' hid '+(typeof document!=='undefined' && document.hidden ? 1 : 0)+(CC_MP_FOREIGN ? ' · foreign '+CC_MP_FOREIGN+(CC_MP_FOREIGN_AT ? ' @ '+CC_MP_FOREIGN_AT : '') : '');
+  var flags=' · skip '+(typeof skipAnimation!=='undefined' && skipAnimation ? 1 : 0)+' hid '+(typeof document!=='undefined' && document.hidden ? 1 : 0)+(CC_MP_FMT_FP ? ' · fmt '+CC_MP_FMT_FP : '')+(CC_MP_FOREIGN ? ' · foreign '+CC_MP_FOREIGN+(CC_MP_FOREIGN_AT ? ' @ '+CC_MP_FOREIGN_AT : '') : '');
   ccMpSplitSeen(a[0], (what.length ? what.join(',')+' · ' : '')+'me '+short(a)+' · mate '+short(b)+flags+stDiff+youDiff+' · '+String(typeof CC_BUILD!=='undefined' ? CC_BUILD : ''));
 }
 function ccMpSync(kind, sum, qn){
@@ -122813,12 +122840,12 @@ function ccTabsSide(){
    стекло плашек, тёмные полосы и полоса вкладок меню; яркость и насыщенность свои, чтобы текст читался на любом
    сезоне. Картинка без цвета (серый бункер s12) оставляет привычный синий. Один расчёт на картинку (CC_HUB_THEME). */
 const CC_HUB_THEME={};
-function ccHubThemeApply(h){
+function ccHubThemeApply(h, k){
   const el=document.getElementById('screen-career-hub'); if(!el) return;
   const props=['--fn-panel','--fn-deep','--fn-line','--lb-panel','--lb-deep','--th-a','--th-b','--th-c','--th-top','--th-hi','--th-soft','--th-tint'];
   const root=document.documentElement;
   if(h==null){ el.classList.remove('ch-themed'); props.forEach(p=>el.style.removeProperty(p)); ['--cc-th-a','--cc-th-b','--cc-th-c'].forEach(p=>root.style.removeProperty(p)); return; }
-  const hsl=(s, l, a)=>'hsla('+Math.round(h)+','+s+'%,'+l+'%,'+(a==null ? 1 : a)+')';
+  const hsl=(s, l, a)=>'hsla('+Math.round(h)+','+Math.round(s*(k==null ? 1 : k))+'%,'+l+'%,'+(a==null ? 1 : a)+')';
   el.style.setProperty('--fn-panel', hsl(55, 66, .22)); el.style.setProperty('--fn-deep', hsl(65, 12, .72));
   el.style.setProperty('--fn-line', hsl(80, 85, .2));
   el.style.setProperty('--lb-panel', hsl(58, 38, .8)); el.style.setProperty('--lb-deep', hsl(68, 16, .84));
@@ -122831,8 +122858,12 @@ function ccHubThemeApply(h){
   root.style.setProperty('--cc-th-a', hsl(62, 33)); root.style.setProperty('--cc-th-b', hsl(66, 22)); root.style.setProperty('--cc-th-c', hsl(70, 13));
   el.classList.add('ch-themed');
 }
+/* Оттенок хаба — от эпохи магазина, той же, что фон (ccHubEraBg). Отдельно взятый с картинки сезона, он красил шапку
+   и плашки в коричневый поверх синего фона эпохи (Notion 22.10: «почему разные дизайны» — шапка одна, вкладки другие). */
+const CC_ERA_HUE={a:[300, .22], b:[212, 1], c:[220, 1], d:[212, 1], e:[220, 1], og:[228, .7], f:[210, 1], g:[210, 1]};   // [оттенок, доля насыщенности]
 function ccHubTheme(){
   if(typeof CAREER==='undefined' || !CAREER || !CAREER.career) return;
+  try{ const v=ccFnShopEra(careerToday()).v; if(v in CC_ERA_HUE){ ccHubThemeApply(CC_ERA_HUE[v][0], CC_ERA_HUE[v][1]); return; } }catch(e){}
   const src=ccLobbyBg(careerToday());
   if(src in CC_HUB_THEME){ ccHubThemeApply(CC_HUB_THEME[src]); return; }
   const img=new Image();
@@ -123383,6 +123414,8 @@ function ccLobbyHTML(card, btn, next, when, strip, ex){
   used.add(mySkin);
   // Скин напарника: своя icon-скин, если уже вышла; иначе популярный у про-игроков, вышедший к этому дню; без повторов.
   const skinOf=c=>{
+    // Живой напарник онлайн — в том, что надел сам (mp.js MP.card, fnSkin).
+    if(c && c.fnSkin && !used.has(c.fnSkin)){ used.add(c.fnSkin); return c.fnSkin; }
     const icon=CC_LB_ICON[hKey(c)];
     if(icon && icon[1]<=today && !used.has(icon[0])){ used.add(icon[0]); return icon[0]; }
     const pool=CC_LB_POPULAR.filter(p=>p[1]<=today && !used.has(p[0]));
@@ -125009,6 +125042,8 @@ function ccRostersStripHTML(){
   const NAME={2:T.lfRosterDuo, 3:T.lfRosterTrio, 4:T.lfRosterSquad};
   const cardsOf=f=>{
     if(f===cur) return careerMates().filter(c=>c && c.handle);
+    // Онлайн состав другого формата — тот же живой напарник (+ филлы на вечер), а не одиночный список.
+    if(ccMpOn()) return careerMates().filter(c=>c && c.handle).slice(0, 1);
     return (((CAREER.rosters||{})[f])||[]).map(r=>ccMateCardOf(r)).filter(c=>c && c.handle);
   };
   /* Тиммейт — не одним ником (его слово 30.09: «мало информации о тимейте»): фото, флаг, ник,
@@ -125075,6 +125110,7 @@ function ccRostersStripHTML(){
     const who=mates.length ? '<span class="ch-ro-ms">'+mates.map(c=>mateHTML(c, f)).join('')+'</span>' : '<b><i>'+esc(T.lfRosterEmpty)+'</i></b>';
     const when=f===cur ? esc(T.lfRosterNow) : esc(T.roFirst(ccDayLabel(next)));
     const act=(f===cur && !full) ? '<button onclick="ccDuoFindOpen(null)">'+esc(T.roFind)+'</button>'
+            : (f!==cur && f>2 && ccMpOn()) ? (CC_MP_FMT_ON ? '<small>'+esc(T.roMpFill ? T.roMpFill(f-2) : '')+'</small>' : '')   // онлайн: филлы на вечер (ccMpFmtBegin)
             : (soon && !full) ? '<button onclick="ccDuoFindOpen(null, '+f+')">'+esc(T.roGather)+'</button>'
             : (f!==cur && !full) ? '<small>'+esc(T.roWeek)+'</small>' : '';
     const spot=spotOf(f, next), card=spot.indexOf('ch-ro-spotcard')>=0;
@@ -132737,8 +132773,8 @@ function careerPools(){
   if(!CC_POOLS) CC_POOLS_AWAY={};
   if(CC_REGION_AS){
     const away=CC_POOLS_AWAY[reg];
-    if(away && away.tag===snap.tag) return away;
-  } else if(CC_POOLS && CC_POOLS.tag===snap.tag && CC_POOLS.reg===reg) return CC_POOLS;
+    if(away && away.tag===snap.tag && away.size===careerSquadSize()) return away;
+  } else if(CC_POOLS && CC_POOLS.tag===snap.tag && CC_POOLS.reg===reg && CC_POOLS.size===careerSquadSize()) return CC_POOLS;
   const seated=new Set();
   const duos=real ? ccSeat(ccRealTeamDuos(ccCalYear(), real), seated)
                   : ccSeat(ccDuosOf(snap.playIn, ccPeopleOf(snap.playIn)), seated);
@@ -132925,7 +132961,9 @@ function careerPools(){
     c._k=k;
     players.push(c);
   });
-  const built={tag:snap.tag, reg:reg, duos:duosLive, players};
+  /* Размер состава — в ключе кэша (онлайн-прогон 2019 года, 22.10: трио-кап в дуо-год командой — у одного пул остался
+     собранным дуо-днём и третьих не посеял, другой собрал его под трио; «blax+issa+mitr0 vs kinstaar+mitr0+oslo»). */
+  const built={tag:snap.tag, reg:reg, duos:duosLive, players, size:careerSquadSize()};
   if(CC_REGION_AS){ CC_POOLS_AWAY[reg]=built; return built; }
   CC_POOLS=built;
   return CC_POOLS;
@@ -133592,7 +133630,11 @@ function careerCupField(cr, mine, size, salt, open, sharp){
        Явка дуо остаётся недельной, как и задумано («честная случайная явка
        недели»): меняется только порядок свободных, из которых ядро набирает
        третьего. Сезон, мир и дивизион — и больше ничего. */
-    const freeRnd=careerRng(ccHashStr('free|'+ccWorldSeed()+'|'+(cr.season||1)+
+    /* В команде — сид хозяина (cr.teamWseed, едет книгой мира ccTeamWorldPack): ccWorldSeed там — сид карьеры
+       каждого, и свободные у двоих перемешивались по-разному (онлайн-прогон 2019, 22.10: «mitr0+issa» у одного,
+       «mitr0+kinstaar» у другого на Trios Cash Cup). */
+    const fws=(typeof ccMpTeam==='function' && ccMpTeam() && CAREER.career.teamWseed) ? CAREER.career.teamWseed : ccWorldSeed();
+    const freeRnd=careerRng(ccHashStr('free|'+fws+'|'+(cr.season||1)+
                                       '|'+(cr.division||1)+'|'+(open?1:0)));
     careerRealPlayers(taken, freeRnd, open ? 'all' : cr.division).forEach(c=>{
       if(!paired.has(c._k||hKey(c))) extras.push(c);
@@ -135545,7 +135587,9 @@ function ccChemBump(n){
 /* Ты и тиммейт бок о бок: шесть атрибутов зеркальными полосами и рейтинг. Кто сильнее
    в строке — подсвечен. По тиммейту на блок (в трио — двое). */
 function ccMateCompareHTML(){
-  const recs=careerMateRecords().filter(Boolean); if(!recs.length) return '';
+  /* Онлайн рядом — живой напарник (careerMates: MP.peer и общие взятые), а не бот, оставшийся в сейве с одиночных
+     времён (Notion 21.10, двое играли командой: «в пункте карьера указан не твой тиммейт», стоял Misery 57). */
+  const recs=(ccMpOn() ? (careerMates()||[]) : careerMateRecords()).filter(Boolean); if(!recs.length) return '';
   /* Числа — те же, что на карточках (Notion «27» скрин 23: «некрасиво и цифры не точные» —
      здесь стояли сырые статы с десятыми, 98.8 при 99 на карточке). Своя сторона — с карточки
      игрока (attrsFor(careerCard())), чужая — с карточки напарника; целыми, как на карточках. */
@@ -135553,7 +135597,7 @@ function ccMateCompareHTML(){
   const mine=mineA || CAREER.player.attrs || ccOwnAttrs(), myOvr=ccMyShownOvr();
   const num=v=>String(Math.round(v));
   const blocks=recs.map(p=>{
-    const c=ccMateCardOf(p); if(!c) return '';
+    const c=ccMpOn() ? p : ccMateCardOf(p); if(!c || !c.handle) return '';
     const a=attrsFor(c), mo=Math.round(a.ovr||c.rating||0);
     const rows=ATTR_KEYS.map(k=>{
       const x=Math.round(mine[k]!=null ? mine[k] : 50), y=Math.round(a[k]!=null ? a[k] : 50);
@@ -135568,11 +135612,13 @@ function ccMateCompareHTML(){
   return '<div class="ch-tile"><h4>'+esc(L().lfCompare)+'</h4>'+blocks+'</div>';
 }
 function ccChemTileHTML(){
-  const recs=careerMateRecords().filter(Boolean);
+  // Онлайн — напарник по команде, стаж от создания команды (careerChemDays), как и сила считает.
+  const mp=ccMpOn();
+  const recs=(mp ? (careerMates()||[]) : careerMateRecords()).filter(Boolean);
   if(!recs.length) return '';
   const rows=recs.map(p=>{
-    const c=ccMateCardOf(p); if(!c) return '';
-    const d=(p.since ? Math.max(0, ccDaysBetween(p.since, careerToday())) : 0)+(p.chemX||0);
+    const c=mp ? p : ccMateCardOf(p); if(!c || !c.handle) return '';
+    const d=mp ? careerChemDays() : (p.since ? Math.max(0, ccDaysBetween(p.since, careerToday())) : 0)+(p.chemX||0);
     const pct=Math.min(100, Math.round(d/CC_CHEM_DAYS*100));
     return '<div class="chem-row"><span>'+esc(c.handle)+'</span><u><s style="width:'+pct+'%"></s></u><b>'+pct+'%</b></div>';
   }).join('');
@@ -146268,7 +146314,13 @@ function careerSocialHTML(){
      региона, а посты приходят по воскресеньям — см. careerRegionsWeek. */
   const homeReg=ccCareerRegion();
   const sugReg=(CH_SUG_REG && CH_SUG_REG!==homeReg && CC_REGIONS.indexOf(CH_SUG_REG)>=0) ? CH_SUG_REG : null;
-  const sugList=sugReg ? ccAwaySuggest(sugReg) : pool.slice(0,4);
+  let sugList=sugReg ? ccAwaySuggest(sugReg) : pool.slice(0,4);
+  /* Онлайн напарник — первым в своём регионе (Notion 21.10: «своего друга нельзя добавить в друзья в твиттере»). */
+  if(!sugReg && ccMpOn() && typeof MP!=='undefined' && MP.peer && MP.peer.handle){
+    const ph=MP.peer.handle, pa=attrsFor(MP.peer)||{};
+    sugList=[{handle:ph, ovr:Math.round(pa.ovr||MP.peer.rating||0), nat:MP.peer.nat, role:pa.roleKey}]
+      .concat(sugList.filter(w=>hKey(w.handle)!==hKey(ph))).slice(0, 4);
+  }
   const sugRows=sugList.map(w=>{
     const h=esc(w.handle).replace(/'/g,"\\'");
     return `<div class="x-sug">${avatar(w,32)}
@@ -150774,7 +150826,10 @@ function ccFnGift(i, handle){
 function ccFnEquip(slot, id){
   if(id && !(ccFnOwn()[id] && ccFnOwn()[id].t===slot)) return;
   if(id) ccFnEq()[slot]=id; else delete ccFnEq()[slot];
-  CC_FN_PICK=null; careerSave(); careerRenderHub(CH_TAB);
+  CC_FN_PICK=null; careerSave();
+  // Новый образ — напарнику сразу, его лобби рисует меня в нём (MP.card, fnSkin).
+  if(slot==='o' && ccMpOn() && typeof MP!=='undefined' && MP.sendCard) MP.sendCard();
+  careerRenderHub(CH_TAB);
 }
 function ccFnPick(slot){ CC_FN_PICK=CC_FN_PICK===slot ? null : slot; careerRenderHub(CH_TAB); }
 function ccFnShopOpen(){ careerTab('items'); }
@@ -151716,6 +151771,39 @@ function careerSimRowHTML(){
       b(true,  '&#128065;', L().ccSimAuto, L().ccSimAutoHint)+
     '</div>'+mate+bad+'</div>';
 }
+/* ПЕРЕИГРАТЬ ДЕНЬ (Notion 21.10, игроки: «добавь возможность на игровой день назад откатиться» — на финале
+   World Cup зависла игра, и весь финал проскипался). Перед каждым вечером одиночной карьеры — сжатый снимок
+   сейва (один на слот, первый за день, lz как у большого сейва); кнопка возвращает карьеру к нему и
+   перезагружает страницу, чтобы кэши мира собрались заново. В команде и в гонке нет: день там общий, откат
+   одного развёл бы двоих. */
+function ccUndoKey(){ return LS_SLOT(ccSlotMine())+'_undo'; }
+function ccUndoOk(){ return !ccMpOn() && !(typeof ccRaceOn==='function' && ccRaceOn()) && !(CAREER && CAREER._mgr); }
+function ccUndoSnap(){
+  if(!CAREER || !CAREER.career || !ccUndoOk() || typeof LZString==='undefined') return;
+  if((typeof CC_FF!=='undefined' && CC_FF) || CC_SKIP_ALL) return;
+  const day=careerToday(), key=ccUndoKey();
+  try{ const old=JSON.parse(localStorage.getItem(key)||'null'); if(old && old.day===day) return; }catch(e){}
+  try{ localStorage.removeItem(key); localStorage.setItem(key, JSON.stringify({day:day, data:CC_SAVE_LZ+LZString.compressToUTF16(JSON.stringify(CAREER))})); }
+  catch(e){ try{ localStorage.removeItem(key); }catch(e2){} }
+}
+function ccUndoInfo(){
+  if(!CAREER || !CAREER.career || !ccUndoOk()) return null;
+  try{ const u=JSON.parse(localStorage.getItem(ccUndoKey())||'null');
+       return (u && u.day && u.data && u.day<=careerToday() && (u.day<careerToday() || ccUndoPlayed(u.day))) ? u : null; }catch(e){ return null; }
+}
+// Вечер этого дня уже в журнале — откатывать есть что, даже если день ещё не сменился.
+function ccUndoPlayed(day){ try{ return (CAREER.career.log||[]).some(x=>x && x.day===day); }catch(e){ return false; } }
+function ccUndoAskRestore(){
+  const u=ccUndoInfo(); if(!u) return;
+  ccAsk(L().ccUndoAsk(ccDayLabel(u.day)), ()=>{
+    try{ localStorage.setItem(LS_SLOT(ccSlotMine()), u.data); }catch(e){ return; }
+    location.reload();
+  });
+}
+function ccUndoBtnHTML(){
+  const u=ccUndoInfo(); if(!u) return '';
+  return '<button class="ch-ffbtn" onclick="ccUndoAskRestore()" title="'+esc(L().ccUndoHint)+'"><i>&#8634;</i>'+esc(L().ccUndoBtn(ccDayLabel(u.day)))+'</button>';
+}
 function careerFfButtonsHTML(){
   if(CAREER.career.seasonOver) return '';
   // В команде день идёт вдвоём — перематывать его в одиночку нечем.
@@ -151724,7 +151812,7 @@ function careerFfButtonsHTML(){
     esc(shared ? L().ccMpFfHint : L().ccFfHint)+'"><i>'+CC_BTN_ICON.ff+'</i>'+label+'</button>';
   return '<div class="ch-ffwrap"><span class="ch-ffcap">'+L().ccFfCap+'</span>'+
     (shared ? ccMpFfOfferHTML() : '')+
-    '<div class="ch-ff">'+btn('CC_FF_WEEK', L().ccFfWeek)+btn('CC_FF_MONTH', L().ccFfMonth)+
+    '<div class="ch-ff">'+btn('CC_FF_WEEK', L().ccFfWeek)+btn('CC_FF_MONTH', L().ccFfMonth)+(shared ? '' : ccUndoBtnHTML())+
     '</div>'+(shared ? '<div class="ch-ffnote"><i>&#128101;</i><span>'+esc(L().ccMpFfHint)+'</span></div>' : '')+'</div>';
 }
 // The best rating a day's energy can buy, by the same weighting the card is
@@ -152318,6 +152406,7 @@ function careerCanPlay(next){ return !!next && careerCanPlayKind(next.type); }
 async function careerPlay(){
   const next=careerNext();
   if(!next) return;
+  ccUndoSnap();   // снимок до вечера — для «Переиграть день»
   // Кап другого формата с неполным составом — сначала вопрос: позвать людей в личке или стэнд-ины на вечер.
   if(next.type==='victory'){
     const ev0=careerVictoryOn(careerToday()), f0=ccPickFormat(ev0);
@@ -163691,9 +163780,12 @@ async function runCareerVictory(){
   /* И В ГОНКЕ — личный вечер (онлайн-прогон 2026 года, 21.10: Red Bull Reshuffle 15.08 — синхронизация комнаты сажала
      соперника его строкой, с его ботом-напарником, а не парой жребия: у одного «live1+wox», у другого «live1+sky», и
      команда без пары жребия роняла вечер — «Cannot read properties of undefined (reading 'forEach')», перемотка вставала).
-     Каждый играет свой, всю таблицу пишет старший по адресу (копилка), остальные — только свою строку. */
+     Каждый играет свой, всю таблицу пишет старший по адресу (копилка), остальные — только свою строку.
+     И ESL 4 на 4 2024 (DreamHack Dallas, EWC; онлайн-прогон 2024 года, 21.10): четвёрка (ewc24MyTeam) и путёвки у каждого
+     свои, ewc24Team вырезает её людей из настоящих команд — Karmine Corp у одного вчетвером, у другого втроём, и под общим
+     ключом ЛАНа доски расходились на десятки строк. */
   let raceOwn=false;
-  if(ev && ev.reshuffle && typeof ccRaceOn==='function' && ccRaceOn() && typeof ccRaceLock==='function' && ccRaceLock()){
+  if(ev && (ev.reshuffle || ev.ewc24) && typeof ccRaceOn==='function' && ccRaceOn() && typeof ccRaceLock==='function' && ccRaceLock()){
     ccRaceNightApart();
     const ids=(typeof CC_RACE_PEERS!=='undefined') ? Object.keys(CC_RACE_PEERS).filter(k=>CC_RACE_PEERS[k]) : [];
     const elder=[ccMpId()].concat(ids).sort()[0]===ccMpId();
@@ -163717,7 +163809,7 @@ function ccVictoryFormat(ev){
 }
 function ccEventRosterBegin(fmt){
   if(!fmt || fmt===1 || !CAREER || CC_EVENT_SIZE) return null;
-  if(typeof ccMpOn==='function' && ccMpOn()) return null;
+  if(typeof ccMpOn==='function' && ccMpOn()) return ccMpFmtBegin(fmt);
   if(typeof ccRacePairOn==='function' && ccRacePairOn()) return null;
   const base=careerSquadSize();
   if(fmt===base) return null;
@@ -163746,8 +163838,54 @@ function ccEventRosterBegin(fmt){
   if(stand.length) careerNews('flat', 'lfNewsStandin', [stand.map(r=>r.card.handle).join(', ')]);
   return {prev, was};
 }
+/* КАП ДРУГОГО ФОРМАТА В КОМАНДЕ (Notion 21.10, двое играли командой: «когда начался трио турнир, нельзя добавить
+   трио игрока при игре в онлайне», и Trios Cash Cup прошёл парами у всего лобби). Раньше команда играла такой кап
+   в формате года. Теперь — в своём: двое живых плюс филлы на вечер, как в одиночной (стэнд-ины), но выбранные так,
+   чтобы у обоих вышли одни и те же люди: тот же пул сцены, заняты оба живых и общие взятые, близость к среднему
+   рейтингу двоих (огрублённому до двух, чтобы десятые не развели), равные — по нику. Общий состав не трогается. */
+/* Выключено, пока поле не сходится у двоих: онлайн-прогон 2019 (22.10) — Trios Cash Cup 14.07 всё ещё 25 строк из 1593
+   (свободные сводятся в пары по-разному). Разошедшийся вечер хуже, чем кап парами, как было. */
+const CC_MP_FMT_ON=false;
+function ccMpFmtBegin(fmt){
+  if(!CC_MP_FMT_ON) return null;
+  if(typeof ccRaceOn==='function' && ccRaceOn()) return null;
+  /* Только кап КРУПНЕЕ состава года (трио/сквад в дуо-год) — о нём просили. Дуо-кап в трио-год онлайн по-прежнему
+     играется составом года: своим форматом он разводил сгенерированные дуо лестницы (онлайн-прогон 2022, 22.10). */
+  if(fmt<=careerSquadSize() || typeof MP==='undefined' || !MP.peer) return null;
+  const cr=CAREER.career, need=fmt-CC_MP_HUMANS;
+  if(need<0) return null;
+  const shared=(Array.isArray(cr.mates) ? cr.mates : []).filter(Boolean).slice(0, need);
+  const me=careerCard(), taken=new Set([hKey(me||CAREER.player.handle||CAREER.player.nick||''), hKey(MP.peer)]);
+  shared.forEach(r=>{ const c=ccMateCardOf(r); if(c) taken.add(hKey(c)); });
+  const ovr=c=>{ try{ return (attrsFor(c)||{}).ovr || c.rating || 80; }catch(e){ return 80; } };
+  const target=Math.round(((me ? ovr(me) : 80)+ovr(MP.peer))/4)*2;
+  const stand=[];
+  if(need>shared.length){
+    const pool=ccSceneRoster(ccCareerRegion()).filter(c=>c && c.handle && !taken.has(hKey(c)))
+      .sort((a,b)=>Math.abs(ccCardOvr(a)-target)-Math.abs(ccCardOvr(b)-target) || (hKey(a)<hKey(b) ? -1 : hKey(a)>hKey(b) ? 1 : 0));
+    for(let i=0;i<need-shared.length && i<pool.length;i++) stand.push({card:{...pool[i]}, patience:60, since:careerToday(), dev:0, standin:true});
+  }
+  CC_MP_FMT_MATES=shared.concat(stand); CC_MP_FMT_PICKS=0;
+  // Отпечаток памяти троек и пула на входе — в журнал вечера: расхождение видно у обоих рядом.
+  try{ CC_MP_FMT_FP='f'+fmt+' trios '+ccHashStr(JSON.stringify(cr.trios||{}))+'/'+Object.keys(cr.trios||{}).length+' seeded '+String(cr.triosSeeded||'-').slice(0,16)+' pools '+(CC_POOLS ? CC_POOLS.tag : '-')+' fill '+stand.map(r=>r.card.handle).join('+'); }catch(e){}
+  const was=CC_EVENT_SIZE; CC_EVENT_SIZE=fmt;
+  /* Пул под размер вечера собирается ЗДЕСЬ, у обоих в одной точке (онлайн-прогон 2019 года, 22.10). Собранный лениво
+     посреди вечера, он засевал третьих у двоих в разное время: Trios Cash Cup 14.07 расходился на 19…1327 строк поля
+     из 1593. С этой сборкой — 0. */
+  /* И рейтинги всех карт пула считаются здесь же (ccCardOvr кэширует карту сцены лениво): прогон с этим прогревом
+     зелёный, без него — 12 строк поля из 1593 (третьи mitr0+oslo — robabz у одного, kinstaar у другого). */
+  try{
+    const p=careerPools();
+    const sig=(p.duos||[]).map(d=>(d.cards||[]).map(c=>hKey(c)+':'+ccCardOvr(c)).join('+')+(d.third ? '/'+d.third : '')).join(',');
+    const pl=(p.players||[]).map(c=>hKey(c)+':'+ccCardOvr(c)).join(',');
+    CC_MP_FMT_FP+=' · pool '+(p.duos||[]).length+'/'+ccHashStr(sig)+' pl '+(p.players||[]).length+'/'+ccHashStr(pl)+' trios '+Object.keys(cr.trios||{}).length+'/'+ccHashStr(JSON.stringify(cr.trios||{}));
+  }catch(e){ CC_MP_FMT_FP+=' · pool ERR '+String(e).slice(0,60); }
+  if(stand.length) careerNews('flat', 'lfNewsStandin', [stand.map(r=>r.card.handle).join(', ')]);
+  return {mp:true, was};
+}
 function ccEventRosterEnd(sw){
   if(!sw) return;
+  if(sw.mp){ CC_MP_FMT_MATES=null; CC_MP_FMT_FP=''; CC_EVENT_SIZE=sw.was; careerSave(); return; }
   CC_EVENT_SIZE=sw.was;
   CAREER.partners=sw.prev;
   careerSave();
