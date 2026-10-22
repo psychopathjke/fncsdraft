@@ -577,7 +577,6 @@
       /* Диагональные лучи на всю страницу — те же полосы света, что на герое
          (.hero::before) и на экранах лобби в игре, только реже и тусклее:
          редизайн под Fortnite, 30 августа. Под осколками, над свечениями. */
-      repeating-linear-gradient(112deg, transparent 0 260px, rgba(126,240,221,.035) 260px 340px),
       /* The three ambient glows are the only part of the backdrop that moves
          with the mode — the shards above stay put, so the page keeps its
          identity while the light in the room changes. */
@@ -4868,6 +4867,28 @@
     #screen-career-hub .cc-lobby .ch-tile-ros .ch-ro-av{font-size:10px;}
   }
   #screen-career-hub .cc-lobby .cc-lb-playbox .cc-acts > *,#screen-career-hub .cc-lobby .cc-lb-playbox .cc-six > *{min-width:0;}
+  /* ХАБ БЕЗ «ИИ-ПРИЗНАКОВ» (22.10, твит «Vibecoded UI of doom» и детектор Impeccable: 233 места; его «делай все» на список из 8).
+     1) цветная полоса сбоку у плиток занятий — снята; 2) толстые цветные полоски сверху у квадратиков недель — точкой цвета
+     турнира; 3) карточки в карточках в шапке (кошелёк, форма, энергия) — без своей подложки; 4) цветное свечение у полосы
+     энергии — снято; 7) серые подписи на цветном фоне — светлее. Подиум под игроком в лобби — это Fortnite, не трогается. */
+  #screen-career-hub .cc-act{border-left-width:0 !important;}
+  #screen-career-hub .ch-ro.on{box-shadow:none !important;}
+  #screen-career-hub .ch-season .ch-sq{border-top-width:0 !important;position:relative;}
+  #screen-career-hub .ch-season .ch-sq::before{content:'';position:absolute;top:3px;left:50%;width:5px;height:5px;margin-left:-2.5px;border-radius:50%;background:var(--pip,transparent);}
+  #screen-career-hub .ch-season .ch-sq.ch-pip-eval{--pip:#7aa2ff;}
+  #screen-career-hub .ch-season .ch-sq.ch-pip-cup,#screen-career-hub .ch-season .ch-sq.ch-pip-proam,#screen-career-hub .ch-season .ch-sq.ch-pip-nations{--pip:#00b090;}
+  #screen-career-hub .ch-season .ch-sq.ch-pip-major{--pip:#b07dff;}
+  #screen-career-hub .ch-season .ch-sq.ch-pip-summit,#screen-career-hub .ch-season .ch-sq.ch-pip-gc,#screen-career-hub .ch-season .ch-sq.ch-pip-globals{--pip:#ff5a5a;}
+  #screen-career-hub .ch-season .ch-sq.ch-pip-final{--pip:#ffd400;}
+  #screen-career-hub .ch-season .ch-sq.ch-pip-reload{--pip:#ff8a3d;}
+  #screen-career-hub .ch-season .ch-sq.ch-pip-victory{--pip:#ffd166;}
+  #screen-career-hub .ch-season .ch-sq.ch-pip-solo{--pip:#8be9fd;}
+  /* 8) последние подписи в 9px — до 10–11px. */
+  #screen-career-hub .ch-week em,#screen-career-hub .ch-day em,#screen-career-hub .ch-day .ch-day-sub,#screen-career-hub .ch-hnext em,#screen-career-hub .ch-purse em,#screen-career-hub .cc-lb-week em{font-size:10.5px !important;}
+  #screen-career-hub .ch-week span,#screen-career-hub .ch-day .ch-day-what,#screen-career-hub .ch-row em{font-size:11px !important;}
+  #screen-career-hub .ch-en,#screen-career-hub .ch-tipw,#screen-career-hub #chPurse > div,#screen-career-hub #chPurseNow > div{background:none !important;box-shadow:none !important;border-color:transparent !important;}
+  #screen-career-hub .ch-en-bar > i{box-shadow:none !important;}
+  #screen-career-hub .ch-go em,#screen-career-hub .ch-tipw em,#screen-career-hub .ch-en > em,#screen-career-hub .ch-sub,#screen-career-hub #chPurse > div > em{color:#c3d3e6 !important;}
   #screen-career-hub .cc-lobby .cc-lb-playbox .cc-acts{grid-template-columns:minmax(0,1fr) minmax(0,1fr);}
   #screen-career-hub .cc-lobby .cc-lb-playbox .cc-six{grid-template-columns:repeat(6,minmax(0,1fr));}
   /* Панель свободного дня в окошке капа: кольца в строку, шесть статов, занятия строкой с приростом в одну линию,
@@ -10386,12 +10407,12 @@ ccHubCopy:'Скопировать ошибку', ccHubCopied:'Скопирова
 ccDayOver:v=>'День уже потрачен: '+v+'. Энергия останется до завтра — жми «Следующий день»',
 ccDayOverAny:'День уже потрачен. Энергия останется до завтра — жми «Следующий день»',
 ccRestFull:'энергия и так полная',
-ccNeedEnergy:n=>'не хватает '+n+'⚡', ccNeedCash:v=>'Не хватает денег: нужно $'+v+' на счету',
+ccNeedEnergy:n=>'не хватает '+n+'ϟ', ccNeedCash:v=>'Не хватает денег: нужно $'+v+' на счету',
 ccNoGain:'сессия уже ничего не даёт',
 ccSaveUnread:'Сейв этой карьеры не прочитался. Он отложен в сторону, а не стёрт — новую карьеру начни в другом слоте.',
 ccSaveFail:v=>'Карьера не сохраняется ('+v+'). В браузере кончилось место под сохранения — '+
   'очисти данные сайта или удали лишний слот карьеры, иначе всё сыгранное пропадёт при перезагрузке',
-ccEnergyMark:'⚡', ccRingEnergy:'Энергия', ccRingFatigue:'Усталость', ccRingMood:'Настрой',
+ccEnergyMark:'ϟ', ccRingEnergy:'Энергия', ccRingFatigue:'Усталость', ccRingMood:'Настрой',
 ccActtrAim:'KovaaK\'s', ccActtrSur:'Паблики', ccActtrCon:'Зал и режим',
 ccActtrClu:'1v1', ccActtrExp:'Разбор реплеев', ccActtrEnd:'Кастомки Noble',
 ccActscrim:'Креатив',
@@ -12498,12 +12519,12 @@ ccHubCopy:'Copy the error', ccHubCopied:'Copied — send it over',
 ccDayOver:v=>'The day is already spent: '+v+'. The energy keeps until tomorrow — press Next day',
 ccDayOverAny:'The day is already spent. The energy keeps until tomorrow — press Next day',
 ccRestFull:'energy is already full',
-ccNeedEnergy:n=>n+'⚡ short', ccNeedCash:v=>'Not enough money: you need $'+v+' in the bank',
+ccNeedEnergy:n=>n+'ϟ short', ccNeedCash:v=>'Not enough money: you need $'+v+' in the bank',
 ccNoGain:'this session no longer moves anything',
 ccSaveUnread:'This career save could not be read. It is kept aside, not deleted — start a new career in another slot.',
 ccSaveFail:v=>'This career is not being saved ('+v+'). The browser is out of room for saves — '+
   'clear this site\'s data or delete a career slot you are not using, or everything played will be gone on reload',
-ccEnergyMark:'⚡', ccRingEnergy:'Energy', ccRingFatigue:'Fatigue', ccRingMood:'Morale',
+ccEnergyMark:'ϟ', ccRingEnergy:'Energy', ccRingFatigue:'Fatigue', ccRingMood:'Morale',
 ccActtrAim:'KovaaK\'s', ccActtrSur:'Pubs', ccActtrCon:'Gym and routine',
 ccActtrClu:'1v1s', ccActtrExp:'Watch replays', ccActtrEnd:'Noble endgames',
 ccOfRange:n=>'of ±'+n,
@@ -15121,7 +15142,7 @@ ccEvalTop5Cash:c=>'Top 5 — $'+c, ccVicPlaceCash:(p,c)=>'Place '+p+' — $'+c,
 ccNewsEvalCash:(w,c)=>'Évaluation : '+w+(w===1?' victoire':' victoires')+', '+c,
 ccNewsEvalOut:p=>'Évaluation : '+ccTop(p)+' en Manche 1, pas plus loin',
 ccDayOver:v=>'La journée est déjà passée : '+v+'. L’énergie reste jusqu’à demain — appuie sur Jour suivant',
-ccNeedEnergy:n=>'il manque '+n+'⚡', ccNeedCash:v=>'Pas assez d’argent : il faut '+v+' $ sur le compte',
+ccNeedEnergy:n=>'il manque '+n+'ϟ', ccNeedCash:v=>'Pas assez d’argent : il faut '+v+' $ sur le compte',
 ccSaveFail:v=>'Cette carrière n’est pas sauvegardée ('+v+'). Le navigateur n’a plus de place — '+
   'vide les données du site ou supprime un emplacement de carrière inutilisé, sinon tout ce qui a été joué disparaîtra au rechargement',
 ccCity:{Dus:'Düsseldorf',Ant:'Anvers',Lyo:'Lyon',Cph:'Copenhague',Ftw:'Fort Worth',Rdu:'Raleigh',Par:'Paris',Ryd:'Riyad',Nyc:'New York',Tok:'Tokyo',Bel:'Belgrade',Kat:'Katowice',Sto:'Stockholm',Mad:'Madrid',Ams:'Amsterdam',Dal:'Dallas', Sao:'São Paulo',Seo:'Séoul',Tor:'Toronto',Syd:'Sydney',Mex:'Mexico',Dub:'Dubaï',Ist:'Istanbul',Mil:'Milan',Lon:'Londres',Sin:'Singapour'},
@@ -15648,7 +15669,7 @@ ccDayDone:'Jour suivant', ccDayBusy:'Calcul du jour…', ccDayBroke:d=>'Le jour 
 ccDayOverAny:'La journée est déjà passée. L’énergie reste jusqu’à demain — appuie sur Jour suivant',
 ccRestFull:'l’énergie est déjà pleine',
 ccNoGain:'cette séance ne fait plus rien bouger',
-ccEnergyMark:'⚡',
+ccEnergyMark:'ϟ',
 ccRingEnergy:'Énergie',
 ccRingFatigue:'Fatigue',
 ccRingMood:'Moral',
@@ -17989,7 +18010,7 @@ ccDayDone:"Giorno successivo", ccDayBusy:"Calcolo del giorno…", ccDayBroke:d=>
 ccDayOverAny:"La giornata è già spesa. L'energia resta per domani — premi Giorno successivo",
 ccRestFull:"l'energia è già piena",
 ccNoGain:"questa sessione non muove più nulla",
-ccEnergyMark:"⚡",
+ccEnergyMark:"ϟ",
 ccRingEnergy:"Energia",
 ccRingFatigue:"Stanchezza",
 ccRingMood:"Morale",
@@ -20540,7 +20561,7 @@ ccDayDone:"Próximo dia", ccDayBusy:"Calculando o dia…", ccDayBroke:d=>"O dia 
 ccDayOverAny:"O dia já foi gasto. A energia fica para amanhã — aperte Próximo dia",
 ccRestFull:"a energia já está cheia",
 ccNoGain:"esta sessão não muda mais nada",
-ccEnergyMark:"⚡",
+ccEnergyMark:"ϟ",
 ccRingEnergy:"Energia",
 ccRingFatigue:"Cansaço",
 ccRingMood:"Moral",
@@ -118606,7 +118627,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='a42bd556';
+const CC_BUILD='8272e76f';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -125354,7 +125375,7 @@ function ccRostersStripHTML(){
       if(from && !careerSpotList(key)[0]) return '<span class="ch-ro-spot ch-ro-spot-lock"><em>'+esc(T.roSpot)+'</em><i>'+esc(T.roSpotFrom(ccDayLabel(from)))+'</i></span>'; }
     const sp=careerSpotList(key)[0];
     const myth=sp ? (CC_MYTHIC_POI[careerSpotGrid(key)]||{})[sp.i] : null;
-    const txt=sp ? esc(L().landingZoneSuffix(sp.i+1))+(myth ? ' · ⚡ '+esc(myth) : '') : '<i>'+esc(T.roSpotNone)+'</i>';
+    const txt=sp ? esc(L().landingZoneSuffix(sp.i+1))+(myth ? ' · ϟ '+esc(myth) : '') : '<i>'+esc(T.roSpotNone)+'</i>';
     const go='careerTab(\'me\');careerSpotOpenFor(\''+esc(key)+'\')';
     /* Картинкой справа (его скрин в Notion 8.10: «мб тут спот картинку где-то красиво написать» — справа в карточке
        было пусто). Кусок острова той же careerSpotShotHTML, что и в плитке «Своя точка», подпись поверх: зона крупно,
@@ -125367,7 +125388,7 @@ function ccRostersStripHTML(){
       lastSpot={sp, key, chests, myth};
       if(shot) return '<div class="ch-ro-spotcard" onclick="'+go+'">'+shot+
         '<span class="ch-ro-spotcap"><em>'+esc(T.roSpot)+'</em><b>'+esc(L().landingZoneSuffix(sp.i+1))+'</b>'+
-        (myth ? '<small>⚡ '+esc(myth)+'</small>' : '')+'</span></div>';
+        (myth ? '<small>ϟ '+esc(myth)+'</small>' : '')+'</span></div>';
     }
     return '<span class="ch-ro-spot" onclick="'+go+'"><em>'+esc(T.roSpot)+'</em>'+txt+'</span>';
   };
@@ -146763,7 +146784,7 @@ function careerSocialHTML(){
         const fr=(CAREER.career.friends||[]);
         return `<div class="ch-tile"><h4>${L().ccFriends}</h4>
           ${fr.length ? fr.map(h=>`<div class="ch-row"><em>${esc(h)}</em>
-              <b><button class="cc-job-h" onclick="careerFriend1v1('${esc(h).replace(/'/g,"\\'")}')">1v1 · 20⚡</button></b></div>`).join('')
+              <b><button class="cc-job-h" onclick="careerFriend1v1('${esc(h).replace(/'/g,"\\'")}')">1v1 · 20ϟ</button></b></div>`).join('')
             : `<div class="ch-empty">${ccSay('ccFriendsNone')}</div>`}
         </div>`;
       })()}
@@ -147347,9 +147368,9 @@ function careerJobHTML(closed, left){
        — «пусть пишет, сколько энергии тратится». */
     return '<button class="cc-job-h'+(can?'':' off')+'"'+
       (can ? ' onclick="careerJobWork('+h+')"' : ' disabled')+
-      '>'+h+esc(L().ccJobH)+' · $'+(wage*h)+' · '+ccJobCost(h)+'⚡</button>';
+      '>'+h+esc(L().ccJobH)+' · $'+(wage*h)+' · '+ccJobCost(h)+'ϟ</button>';
   }).join('');
-  return '<div class="cc-job"><span class="cc-job-m">🍟</span><em>'+esc(L().ccJobTitle)+
+  return '<div class="cc-job"><span class="cc-job-m">$</span><em>'+esc(L().ccJobTitle)+
     ' · $'+wage+esc(L().ccJobPerH)+'</em><div class="cc-job-btns">'+hrs+'</div></div>';
 }
 function careerJobWork(h){
