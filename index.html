@@ -147672,13 +147672,19 @@ function ccStatWho(t){
   const sp=sq.length>=2 ? ccStatSeat(t) : null;
   return sp ? sq[sp.seat] : sq.slice().sort((a,b)=>((b.rating||b._ovr)||0)-((a.rating||a._ovr)||0))[0];
 }
+/* ДОСКА ЛИДЕРОВ В КОМАНДЕ — ОДНА НА ДВОИХ (Notion 21.10, двое играли командой: «кинч у всех не одинаковые статы
+   пишет»). Строку своей команды каждый подписывал собой и считал долю элимов и урона по своему месту в составе — у одного
+   «64 @wolfixx», у другого «64 @gzabor». Пока считается доска (ccStatLeaders), своя команда в командной карьере — как
+   любая: главный по дракам, при равенстве — меньший ник. Личная карточка (ccStatMine) остаётся своей. */
+let CC_STAT_NEUTRAL=false;
+function ccStatYouSeat(t){ return !!(t && t.isYou) && !(CC_STAT_NEUTRAL && typeof ccMpTeam==='function' && ccMpTeam()); }
 function ccStatNat(t){
   const best=ccStatWho(t);
-  if(t && t.isYou){ const c=(typeof careerCard==='function') ? careerCard() : null; return (c && c.nat) || (best && best.nat) || null; }
+  if(ccStatYouSeat(t)){ const c=(typeof careerCard==='function') ? careerCard() : null; return (c && c.nat) || (best && best.nat) || null; }
   return (best && best.nat) || null;
 }
 function ccStatFace(t){
-  if(t && t.isYou) return ccHandle(CAREER.player.nick);
+  if(ccStatYouSeat(t)) return ccHandle(CAREER.player.nick);
   const best=ccStatWho(t);
   return ccHandle((best && best.handle) || ccOneOf(t && t.name) || '');
 }
@@ -147702,9 +147708,13 @@ function ccStatSeat(t){
   const sq=((t && (t.squad||t._cards||t.cards))||[]).filter(Boolean);
   if(sq.length<2) return null;
   let seat=-1;
-  if(t.isYou){ const sp=ccYouKillSplit(t); seat=sp ? sp.seat : -1; }
-  let w=null; try{ w=ccKillWeights(sq); }catch(e){ return null; }
-  if(seat<0) w.forEach((v,i)=>{ if(seat<0 || v>w[seat]) seat=i; });
+  if(ccStatYouSeat(t)){ const sp=ccYouKillSplit(t); seat=sp ? sp.seat : -1; }
+  /* Своя команда на общей доске в команде: веса — по составу в порядке ников (вес зависит от места в составе, а у двоих
+     своя карточка стоит первой), потом обратно в порядок команды. Равные веса — тоже по нику. */
+  const canon=(t.isYou && !ccStatYouSeat(t)) ? sq.slice().sort((a,b)=>hKey(a)<hKey(b) ? -1 : hKey(a)>hKey(b) ? 1 : 0) : sq;
+  let w=null; try{ w=ccKillWeights(canon); }catch(e){ return null; }
+  if(canon!==sq) w=sq.map(c=>w[canon.indexOf(c)]);
+  if(seat<0) w.forEach((v,i)=>{ if(seat<0 || v>w[seat] || (v===w[seat] && hKey(sq[i])<hKey(sq[seat]))) seat=i; });
   return {seat:Math.max(0, seat), w};
 }
 function ccStatMetrics(){
@@ -147742,12 +147752,15 @@ function ccStatLeaders(ranked){
   const rows=[];
   const P=ccStatPools(ranked);
   if(P.all.length<3) return rows;
-  ccStatMetrics().forEach(m=>{
-    let best=null, bv=-Infinity;
-    (m.deep ? P.deep : P.all).forEach(t=>{ const v=m.val(t.mstats, t); if(v!=null && isFinite(v) && v>bv){ bv=v; best=t; } });
-    if(!best || bv<=0) return;
-    rows.push([m.key, m.fmt(bv), ccStatFace(best), ccStatNat(best)||'']);
-  });
+  const was=CC_STAT_NEUTRAL; CC_STAT_NEUTRAL=true;
+  try{
+    ccStatMetrics().forEach(m=>{
+      let best=null, bv=-Infinity;
+      (m.deep ? P.deep : P.all).forEach(t=>{ const v=m.val(t.mstats, t); if(v!=null && isFinite(v) && v>bv){ bv=v; best=t; } });
+      if(!best || bv<=0) return;
+      rows.push([m.key, m.fmt(bv), ccStatFace(best), ccStatNat(best)||'']);
+    });
+  } finally { CC_STAT_NEUTRAL=was; }
   return rows;
 }
 /* Своя карточка. Отзыв: «after every grands and cash cup, ewc etc
