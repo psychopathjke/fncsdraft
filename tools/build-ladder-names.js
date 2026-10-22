@@ -23,7 +23,9 @@ for (let a = 65; a <= 90; a++) for (let b = 65; b <= 90; b++) {
 Object.assign(geo, { unitedkingdom: 'gb', england: 'gb', scotland: 'gb', wales: 'gb', northernireland: 'gb',
   unitedstates: 'us', czechrepublic: 'cz', turkey: 'tr', southkorea: 'kr', russia: 'ru', vietnam: 'vn',
   bosniaandherzegovina: 'ba', ivorycoast: 'ci', macedonia: 'mk', northmacedonia: 'mk', uae: 'ae',
-  unitedarabemirates: 'ae', hongkong: 'hk', taiwan: 'tw', palestine: 'ps', kosovo: 'xk' });
+  unitedarabemirates: 'ae', hongkong: 'hk', taiwan: 'tw', palestine: 'ps', kosovo: 'xk',
+  // FX (Metropolitan France) Intl тоже называет «France» и шёл после FR — 514 французов лестницы стояли с флагом «fx».
+  france: 'fr' });
 const noFlag = new Set(['', 'global', 'fortnite', 'rainbow', 'pride']);
 
 // Грубое и 18+ — мимо: ники настоящие, но сайт не для этого (корни, без учёта регистра и
@@ -61,8 +63,10 @@ function cleanNick(raw) {
 /* Попросились сами (Notion 21.10, игрок в личке: «i want to get put div 2») — выборка страниц 1/5/10/15/20 их не
    задела. Дивизион и флаг сверены с профилем Tracker: TNK micha (EGO Esports, Италия, ME), кубки Division 2 сентября 2026.
    Fiuzさ. (его друг, «he is on div 2 eu»): Europe, FNCS Division 2 июль–сентябрь 2026; страны в профиле нет — без флага,
-   ник без «さ.» (cleanNick не пускает латиницу вперемешку с японским). */
-const REQUESTED = [['ME', 'Micha', 'italy', 2], ['EU', 'Fiuz', '', 2]];
+   ник без «さ.» (cleanNick не пускает латиницу вперемешку с японским).
+   K13 Zukiriǃ (Notion 22.10): Europe, Франция, FNCS Division 1 (дни 2 марта–мая 2026, Div 1 Practice август–сентябрь);
+   тег K13 снимает cleanNick. Дивизион 1 в своём регионе — ключ «1»; дивизионы EU меньше квоты, отбор других не меняется. */
+const REQUESTED = [['ME', 'Micha', 'italy', 2], ['EU', 'Fiuz', '', 2], ['EU', 'K13 Zukiri', 'france', 1]];
 for (const [reg, nick, g, div] of src.names.concat(REQUESTED)) {
   const name = cleanNick(nick);
   if (!name || name.length < 3 || name.length > 16) continue;
