@@ -8,4 +8,9 @@ for t in check-career-trio check-career-trio-room check-career-trio-carry check-
   [ $c -ne 0 ] && bad=1
   echo "$t: exit $c $(echo "$out" | grep -v '^\[' | tail -1 | cut -c1-110)"
 done
+# Телефон (WebKit) — если Playwright с WebKit стоит (см. шапку tools/check-iphone.js).
+if [ -d "${FD_PW:-/c/Users/FoxOS_User/fd-webkit/node_modules/playwright}" ]; then
+  out=$(timeout 600 node tools/check-iphone.js 2>&1); c=$?; [ $c -ne 0 ] && bad=1
+  echo "check-iphone: exit $c $(echo "$out" | tail -1 | cut -c1-110)"
+fi
 exit $bad
