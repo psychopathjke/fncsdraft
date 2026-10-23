@@ -10452,7 +10452,7 @@ dmAgentBrought:(n,who)=>'На тебя вышли '+n+' клуба: '+who+'. У�
 dmAgentBroughtOne:(n,who)=>'На тебя вышли из '+who+'. Условия в разделе Карьера',
 ccAgentNone:'Тебя ещё никто не ведёт. Напишут сами, когда будет за что',
 ccAgentWrote:'Тебе написали — ответ в личке',
-ccAgentFrom:v=>'Менеджеры пишут с рейтинга '+v,
+ccAgentFrom:v=>'Менеджеры пишут с рейтинга '+v, ccAgentNeed:v=>'С рейтинга '+v,
 ccBioPro:'Про по Fortnite', ccBioManager:'Менеджер', ccBioNoManager:'Без менеджера',
 ccNextGames:'Формат', ccNextGamesUnit:'игр', ccNextField:'Команд',
 ccNextCut:'Проходят', ccNextTop:n=>'топ-'+n, ccNextPays:'Платит за 1-е',
@@ -12564,7 +12564,7 @@ dmAgentBrought:(n,who)=>n+' clubs came in for you: '+who+'. The terms are on the
 dmAgentBroughtOne:(n,who)=>who+' came in for you. The terms are on the Career tab',
 ccAgentNone:'Nobody represents you yet. They write first, when there is something to represent',
 ccAgentWrote:'Somebody wrote — the answer is in the inbox',
-ccAgentFrom:v=>'Managers write from rating '+v,
+ccAgentFrom:v=>'Managers write from rating '+v, ccAgentNeed:v=>'From rating '+v,
 ccBioPro:'Pro Fortnite', ccBioManager:'Manager', ccBioNoManager:'No manager',
 ccNextGames:'Format', ccNextGamesUnit:'games', ccNextField:'Teams',
 ccNextCut:'Through', ccNextTop:n=>'top '+n, ccNextPays:'Pays for 1st',
@@ -15151,7 +15151,7 @@ ccSaveFail:v=>'Cette carrière n’est pas sauvegardée ('+v+'). Le navigateur n
   'vide les données du site ou supprime un emplacement de carrière inutilisé, sinon tout ce qui a été joué disparaîtra au rechargement',
 ccCity:{Dus:'Düsseldorf',Ant:'Anvers',Lyo:'Lyon',Cph:'Copenhague',Ftw:'Fort Worth',Rdu:'Raleigh',Par:'Paris',Ryd:'Riyad',Nyc:'New York',Tok:'Tokyo',Bel:'Belgrade',Kat:'Katowice',Sto:'Stockholm',Mad:'Madrid',Ams:'Amsterdam',Dal:'Dallas', Sao:'São Paulo',Seo:'Séoul',Tor:'Toronto',Syd:'Sydney',Mex:'Mexico',Dub:'Dubaï',Ist:'Istanbul',Mil:'Milan',Lon:'Londres',Sin:'Singapour'},
 ccCityIn:{Dus:'Düsseldorf',Ant:'Anvers',Lyo:'Lyon',Cph:'Copenhague',Ftw:'Fort Worth',Rdu:'Raleigh',Par:'Paris',Ryd:'Riyad',Nyc:'New York',Tok:'Tokyo',Bel:'Belgrade',Kat:'Katowice',Sto:'Stockholm',Mad:'Madrid',Ams:'Amsterdam',Dal:'Dallas', Sao:'São Paulo',Seo:'Séoul',Tor:'Toronto',Syd:'Sydney',Mex:'Mexico',Dub:'Dubaï',Ist:'Istanbul',Mil:'Milan',Lon:'Londres',Sin:'Singapour'},
-ccAgentFrom:v=>'Les managers écrivent à partir de la note '+v,
+ccAgentFrom:v=>'Les managers écrivent à partir de la note '+v, ccAgentNeed:v=>'Dès la note '+v,
 ccNextTop:n=>'top '+n,
 ccBioMajor:n=>n+'x VAINQUEUR FNCS', ccBioRc:n=>n+'x VAINQUEUR DU RELOAD CHAMPIONSHIP (EWC)', ccBioSummit:n=>n+'x VAINQUEUR DU SUMMIT',
 ccBioCups:n=>n+'x vainqueur de coupe',
@@ -17074,7 +17074,7 @@ ccSaveFail:v=>'Questa carriera non viene salvata ('+v+'). Il browser non ha pi\u
 dmAgent:(cut,r)=>'Rappresento giocatori. Prendo il '+cut+'% di montepremi e stipendi, e i club '+r+' sopra di te cominciano a guardarti, e a pagare di pi\u00f9. Lavoriamo insieme?',
 dmAgentBrought:(n,who)=>n+' club si sono fatti avanti per te: '+who+'. Le condizioni sono nella scheda Carriera — dai un\u2019occhiata',
 dmAgentBroughtOne:(n,who)=>who+' si \u00e8 fatto avanti per te. Le condizioni sono nella scheda Carriera',
-ccAgentFrom:v=>'I manager scrivono dalla valutazione '+v,
+ccAgentFrom:v=>'I manager scrivono dalla valutazione '+v, ccAgentNeed:v=>'Dalla valutazione '+v,
 ccNextTop:n=>'primi '+n,
 ccBioMajor:n=>n+'x VINCITORE FNCS', ccBioRc:n=>n+'x VINCITORE DEL RELOAD CHAMPIONSHIP (EWC)', ccBioSummit:n=>n+'x VINCITORE DEL SUMMIT',
 ccBioCups:n=>n+'x vincitore di coppa',
@@ -19625,7 +19625,7 @@ ccSaveFail:v=>'Esta carreira n\u00e3o est\u00e1 sendo salva ('+v+'). O navegador
 dmAgent:(cut,r)=>'Eu represento jogadores. Fico com '+cut+'% da premia\u00e7\u00e3o e do sal\u00e1rio, e clubes '+r+' acima de voc\u00ea come\u00e7am a olhar, e a pagar mais. Vamos trabalhar?',
 dmAgentBrought:(n,who)=>n+' clubes chegaram atr\u00e1s de voc\u00ea: '+who+'. As condi\u00e7\u00f5es est\u00e3o na aba Carreira — d\u00ea uma olhada',
 dmAgentBroughtOne:(n,who)=>who+' chegou atr\u00e1s de voc\u00ea. As condi\u00e7\u00f5es est\u00e3o na aba Carreira',
-ccAgentFrom:v=>'Empres\u00e1rios escrevem a partir do rating '+v,
+ccAgentFrom:v=>'Empres\u00e1rios escrevem a partir do rating '+v, ccAgentNeed:v=>'A partir do rating '+v,
 ccNextTop:n=>'top '+n,
 ccBioMajor:n=>n+'x CAMPE\u00c3O FNCS', ccBioRc:n=>n+'x CAMPE\u00c3O DO RELOAD CHAMPIONSHIP (EWC)', ccBioSummit:n=>n+'x CAMPE\u00c3O DO SUMMIT',
 ccBioCups:n=>n+'x campe\u00e3o de copa',
@@ -23275,7 +23275,7 @@ ccSacPromoRow:(n,m,p)=>'promo no X '+n+'/'+m+(p ? ' · +'+p+'%' : ''),
 ccGoalReach:{majorFinal:'chegar a uma final de Major FNCS', fncsFinal:'chegar à final semanal da FNCS'},
 ccOrgGoalPickHint:'Meta da temporada: escolha uma antes do fim da temporada. Cumpriu, renova com aumento (meta mais difícil, aumento maior); falhou, o clube te libera. Sem escolha, fica a do meio.'
 }));
-let CC_I18N_V={de:'c975604a', es:'54157b6d'};   // ==== CC_I18N_V (tools/build-i18n.js) ====
+let CC_I18N_V={de:'d6299d77', es:'c2b02124'};   // ==== CC_I18N_V (tools/build-i18n.js) ====
 // Версия fn-shop.js (магазин Fortnite по дням, tools/build-fn-shop.js) — для ?v= ленивой загрузки.
 let CC_FN_SHOP_V='bebf56cb';
 const CC_LANG_WAIT={};
@@ -118631,7 +118631,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='9d5a3f55';
+const CC_BUILD='f93df41e';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -138796,6 +138796,11 @@ function ccSponsorOffer(){
    Ending it is free and immediate: an agent nobody wants is not a contract, it
    is a relationship. */
 const CC_AGENT_CUT=0.1, CC_AGENT_REACH=3, CC_AGENT_WAGE=1.2, CC_AGENT_FROM=68;
+/* Сильный менеджер берёт не всех (его «1» 23.10 на «агент Kami и SwizzY не возьмёт игрока 70»): с рейтинга игрока
+   на 10 ниже своего, но не ниже общего порога CC_AGENT_FROM. Менеджеры на 60–65 берут всех от 68. Слабому игроку
+   остаются слабые менеджеры, и к сильному он дорастает. */
+function ccAgentMinOvr(a){ return Math.max(CC_AGENT_FROM, ccStaffRating(a)-10); }
+function ccAgentTakes(a, ovr){ return ovr>=ccAgentMinOvr(a); }
 function careerAgent(){ return (CAREER && CAREER.agent) || null; }
 /* Who writes, and it is somebody real.
 
@@ -139145,10 +139150,12 @@ function ccAgentPick(){
   const rnd=careerRng(ccHashStr('agent|'+(CAREER.career.season||1)));
   if(!CC_AGENTS.length)
     return {name:careerLadderPlayer(rnd, 60, new Set()).handle, at:null, nat:null};
-  const total=CC_AGENTS.reduce((s,a)=>s+ccAgentWeight(a), 0);
+  const ovr=CAREER.player.ovrExact!=null ? CAREER.player.ovrExact : CAREER.player.ovr;
+  const pool=CC_AGENTS.filter(a=>ccAgentTakes(a, ovr)), list=pool.length ? pool : CC_AGENTS;
+  const total=list.reduce((s,a)=>s+ccAgentWeight(a), 0);
   let n=rnd()*total;
-  for(const a of CC_AGENTS){ n-=ccAgentWeight(a); if(n<0) return a; }
-  return CC_AGENTS[0];
+  for(const a of list){ n-=ccAgentWeight(a); if(n<0) return a; }
+  return list[0];
 }
 function careerAgentDm(){
   if(careerAgent()) return null;
@@ -139224,8 +139231,8 @@ function careerSignAgent(name){
   if(!who) return false;
   const ovr=CAREER.player.ovrExact!=null ? CAREER.player.ovrExact : CAREER.player.ovr;
   // Nobody represents a career nobody is looking at — the same line the letter
-  // is gated on, see careerAgentDm.
-  if(ovr<CC_AGENT_FROM) return false;
+  // is gated on, see careerAgentDm. И свой порог у каждого: ccAgentMinOvr.
+  if(ovr<CC_AGENT_FROM || !ccAgentTakes(who, ovr)) return false;
   const terms=ccAgentTermsOf(who);
   CAREER.agent={name:who.name, at:who.at||null, photo:who.photo||null,
                 cut:terms.cut, reach:terms.reach, wage:terms.wage,
@@ -139249,7 +139256,7 @@ function ccAgentPickOpen(){
     const t=ccAgentTermsOf(a);
     const cut=t.cut, reach=t.reach, wage=t.wage;
     const mine=on && on.name===a.name;
-    const can=!on && ovr>=CC_AGENT_FROM;
+    const need=ccAgentMinOvr(a), can=!on && ovr>=CC_AGENT_FROM && ovr>=need;
     return `<div class="cc-buy${mine?' own':''}">
       ${a.photo ? `<img class="cc-buy-img cc-buy-face" src="${PHOTO_DIR}${esc(a.photo)}" alt=""
            loading="lazy" onerror="this.remove()">` : ''}
@@ -139258,7 +139265,7 @@ function ccAgentPickOpen(){
         <span class="cc-buy-chips"><em>${L().ccAgentCutRow} ${Math.round(cut*100)}%</em><em class="up">${L().ccAgentReachRow} +${reach}</em><em class="up">${L().ccAgentWageRow} +${Math.round((wage-1)*100)}%</em></span></div>
       ${mine ? `<span class="cc-owned">${L().ccAgentYours}</span>`
              : `<button class="ch-sign"${can?'':' disabled'} onclick="careerSignAgent('${
-                 esc(a.name).replace(/'/g,"\\'")}')">${L().ccAgentSign}</button>`}
+                 esc(a.name).replace(/'/g,"\\'")}')">${!on && ovr<need && need>CC_AGENT_FROM ? esc(L().ccAgentNeed(need)) : L().ccAgentSign}</button>`}
     </div>`;
   }).join('');
   document.getElementById('agentPickBody').innerHTML=
