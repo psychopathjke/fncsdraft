@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8"><link rel="alternate" hreflang="en" href="https://fncsdraft.com/about"><link rel="alternate" hreflang="ru" href="https://fncsdraft.com/ru/about"><link rel="alternate" hreflang="fr" href="https://fncsdraft.com/fr/about"><link rel="alternate" hreflang="it" href="https://fncsdraft.com/it/about"><link rel="alternate" hreflang="pt" href="https://fncsdraft.com/pt/about"><link rel="alternate" hreflang="de" href="https://fncsdraft.com/de/about"><link rel="alternate" hreflang="es" href="https://fncsdraft.com/es/about"><link rel="alternate" hreflang="x-default" href="https://fncsdraft.com/about">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Режим карьеры Fortnite в браузере | FNCS Draft</title>
+<meta name="description" content="Что такое FNCS Draft: бесплатный режим карьеры Fortnite и симулятор драфта FNCS в браузере. Сезоны по настоящему календарю FNCS, дивизионы, Мейджоры, Reload, ЛАНы и Кубок наций, а карточки собраны из настоящих турниров.">
+<meta name="theme-color" content="#0e1116">
+<link rel="canonical" href="https://fncsdraft.com/ru/about">
+<link rel="icon" type="image/png" sizes="96x96" href="/favicon-96.png">
+<link rel="apple-touch-icon" href="/favicon-192.png">
+
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="FNCS Draft">
+<meta property="og:title" content="Режим карьеры Fortnite в браузере | FNCS Draft">
+<meta property="og:description" content="Бесплатный режим карьеры Fortnite и симулятор драфта FNCS: сезоны по настоящему календарю FNCS, дивизионы, Мейджоры, Reload, ЛАНы и Кубок наций.">
+<meta property="og:url" content="https://fncsdraft.com/ru/about">
+<meta property="og:image" content="https://fncsdraft.com/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Режим карьеры Fortnite в браузере | FNCS Draft">
+<meta name="twitter:description" content="Бесплатный режим карьеры Fortnite и симулятор драфта FNCS на настоящих результатах FNCS.">
+<meta name="twitter:image" content="https://fncsdraft.com/og-image.png">
+
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+ {"@type":"Question","name":"Есть ли в Fortnite режим карьеры?",
+  "acceptedAnswer":{"@type":"Answer","text":"В самом Fortnite режима карьеры нет. FNCS Draft это бесплатная фанатская карьера: ты проходишь соревновательный Fortnite сезон за сезоном по настоящему календарю FNCS, через дивизионы, Мейджоры, Reload и ЛАНы."}},
+ {"@type":"Question","name":"FNCS Draft бесплатный?",
+  "acceptedAnswer":{"@type":"Answer","text":"Да. Он работает в браузере, регистрации нет, ничего не нужно устанавливать или покупать."}},
+ {"@type":"Question","name":"Игроки настоящие?",
+  "acceptedAnswer":{"@type":"Answer","text":"Да. Карточки взяты с настоящих турниров FNCS, и каждый рейтинг посчитан по результатам игрока в этом сезоне."}},
+ {"@type":"Question","name":"Можно играть карьеру с другом?",
+  "acceptedAnswer":{"@type":"Answer","text":"Да. Двое могут вместе сыграть один и тот же турнирный вечер, и оба видят одинаковую таблицу."}},
+ {"@type":"Question","name":"Можно продолжить карьеру на другом устройстве?",
+  "acceptedAnswer":{"@type":"Answer","text":"Да. Включи Облако на экране карьер, получи код и введи его на другом устройстве."}}]}
+</script>
+
+<style>
+/* Шрифт и палитра: те же файлы и те же токены, что у самой игры: страница
+   должна читаться её продолжением, а не соседним сайтом. Значения скопированы
+   из :root в index.html, четыре подмножества Oswald лежат в fonts/. */
+@font-face{font-family:'Oswald';font-style:normal;font-weight:200 700;font-display:swap;
+  src:url(/fonts/oswald-latin.woff2) format('woff2');
+  unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;}
+@font-face{font-family:'Oswald';font-style:normal;font-weight:200 700;font-display:swap;
+  src:url(/fonts/oswald-latin-ext.woff2) format('woff2');
+  unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;}
+@font-face{font-family:'Oswald';font-style:normal;font-weight:200 700;font-display:swap;
+  src:url(/fonts/oswald-cyrillic-ext.woff2) format('woff2');
+  unicode-range:U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;}
+@font-face{font-family:'Oswald';font-style:normal;font-weight:200 700;font-display:swap;
+  src:url(/fonts/oswald-cyrillic.woff2) format('woff2');
+  unicode-range:U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;}
+:root{
+  --go:#ffdd00; --go-ink:#0b0f12;
+  --bg:#0e1116; --panel:#161b22; --panel2:#1d232c;
+  --ink:#eef2f6; --ink-dim:#7d8a9a; --ink-dimmer:#4d5866;
+  --accent:#00b090; --line:#262e39;
+  --page-base:linear-gradient(180deg,#0d141a 0%,#0e1116 45%,#0b0e13 100%);
+  --cut:polygon(0 0,100% 0,100% calc(100% - 16px),calc(100% - 16px) 100%,0 100%);
+  --font-display:'Oswald','Arial Narrow','Helvetica Neue Condensed','Roboto Condensed',Impact,sans-serif;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0; background:var(--page-base); background-attachment:fixed; color:var(--ink);
+  font:16px/1.7 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+}
+.wrap{max-width:820px;margin:0 auto;padding:28px 20px 80px}
+
+.crumb{font-family:var(--font-display);text-transform:uppercase;letter-spacing:.06em;
+  font-size:13px;color:var(--ink-dim);margin:0 0 26px}
+.crumb a{color:var(--accent);text-decoration:none}
+.crumb a:hover{color:var(--ink)}
+
+h1,h2,h3{font-family:var(--font-display);font-weight:600;letter-spacing:.03em;line-height:1.1;margin:0}
+h1{font-size:clamp(30px,7vw,52px);text-transform:uppercase;margin:0 0 14px}
+h2{font-size:clamp(20px,4.4vw,30px);text-transform:uppercase;letter-spacing:.05em;
+  color:var(--accent);margin:2.2em 0 .6em}
+h3{font-size:18px;text-transform:uppercase;letter-spacing:.05em;margin:0 0 .5em}
+p{margin:0 0 1em}
+.lead{font-size:18px;color:var(--ink-dim);margin-bottom:1.6em}
+a{color:var(--accent)}
+ul{margin:0 0 1em;padding-left:1.1em}
+li{margin:.45em 0}
+li b{color:var(--ink);font-weight:600}
+strong{color:var(--ink)}
+
+/* Жёлтая кнопка со скосом: подпись сайта, один в один как на первом экране. */
+.cta{display:inline-block;background:var(--go);border:1.5px solid var(--go);color:var(--go-ink);
+  font-family:var(--font-display);font-weight:600;font-size:17px;letter-spacing:.06em;
+  text-transform:uppercase;line-height:1;padding:13px 26px 12px;text-decoration:none;
+  transform:skewX(-8deg);transition:filter .15s,transform .15s}
+.cta span{display:inline-block;transform:skewX(8deg)}
+.cta:hover{filter:brightness(1.08)}
+.cta-row{margin:1.4em 0 .4em}
+
+/* Карточка: тот же бирюзовый градиент и тот же срез угла, что у плиток режимов. */
+.card{border:1px solid rgba(126,240,221,.28);border-radius:3px;clip-path:var(--cut);
+  background:linear-gradient(112deg,#06222a 0%,#0a3a3a 52%,#0d3542 100%);
+  padding:22px 24px;margin:1.5em 0}
+.card p:last-child{margin-bottom:0}
+
+.facts{display:flex;flex-wrap:wrap;gap:8px;margin:1.4em 0 0;padding:0;list-style:none}
+.facts li{margin:0;border:1px solid rgba(126,240,221,.32);background:rgba(126,240,221,.08);
+  color:#dff6f1;border-radius:3px;padding:7px 13px;font-size:13px;
+  font-family:var(--font-display);letter-spacing:.04em;text-transform:uppercase}
+.facts b{color:var(--go);font-size:15px}
+
+.qa{border-top:1px solid var(--line);padding-top:1.1em;margin-top:1.4em}
+.qa:first-of-type{border-top:0}
+
+footer{margin-top:3.4em;padding-top:1.4em;border-top:1px solid var(--line);
+  color:var(--ink-dimmer);font-size:13px;
+  font-family:var(--font-display);letter-spacing:.05em;text-transform:uppercase}
+footer a{color:var(--ink-dim);text-decoration:none}
+footer a:hover{color:var(--accent)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<p class="crumb"><a href="/ru/">FNCS Draft</a> · О сайте · <a href="/players">Игроки FNCS</a></p>
+
+<h1>Режим карьеры Fortnite<br>в браузере</h1>
+
+<p class="lead">FNCS Draft это бесплатный фанатский режим карьеры Fortnite и симулятор
+драфта FNCS. Он работает в браузере, без установки и регистрации. Все игроки
+настоящие игроки FNCS, а их рейтинги посчитаны по результатам турниров.</p>
+
+<p class="cta-row"><a class="cta" href="/ru/"><span>Играть сейчас</span></a></p>
+
+<ul class="facts">
+  <li><b>8</b> лет</li>
+  <li><b>7</b> регионов</li>
+  <li><b>76</b> достижений</li>
+  <li><b>7</b> языков</li>
+  <li><b>0</b> регистраций</li>
+</ul>
+
+<h2>Режим карьеры</h2>
+
+<p>Ты начинаешь новичком и играешь сезон за сезоном по настоящему календарю FNCS.
+Соперники в твоих лобби это те, кто играл FNCS в тот год.</p>
+
+<ul>
+  <li><b>Годы.</b> Каждый год с 2019 по 2026, и у каждого тот формат команд,
+      что был на самом деле.</li>
+  <li><b>Дивизионы.</b> Хорошие недели на капах поднимают тебя выше, плохие опускают.
+      В 2024 дивизионов не было, поэтому и тут их в этом году нет.</li>
+  <li><b>Мейджоры.</b> Открытые квалификации, хиты, ласт ченс и гранд-финал,
+      по правилам Epic для каждого сезона.</li>
+  <li><b>Reload Championship</b> и <b>ЛАНы</b>: Дюссельдорф, Антверпен и
+      Esports World Cup.</li>
+  <li><b>Кубок наций</b> и соло-турниры, где сборные собраны из лучших игроков
+      каждой страны.</li>
+  <li><b>Вне сервера.</b> Напарники в дуо и трио, клубы и контракты, менеджеры,
+      тренеры, энергия и форма, а ещё лента.</li>
+</ul>
+
+<div class="card">
+<h3>Играй карьеру с другом</h3>
+<p>Двое могут вместе сыграть один и тот же турнирный вечер. Оба браузера считают
+одну и ту же симуляцию и передают друг другу только ваши решения, поэтому
+таблица у вас одинаковая.</p>
+</div>
+
+<h2>Fortnite Manager</h2>
+
+<p>Управляй клубом, а не игроком: подписывай игроков, распределяй бюджет, тренируй
+команду и проведи её через сезон FNCS.</p>
+
+<h2>Настоящая сцена</h2>
+
+<p>Главная следит за настоящим FNCS: отсчёт до следующего события Epic, ближайшие
+этапы и капы FNCS с призовыми, призовые этого года по игрокам с флагами и медалями
+и собственная таблица карьер сайта.</p>
+
+<h2>Режим драфта</h2>
+
+<p>Собери команду из настоящих игроков FNCS и пройди турнир, в котором они играли:
+плей-ин, хиты, ласт ченс, гранд-финал и ЛАН. Ты сам выбираешь, где высадиться.
+Спорные точки дают больше, но и рискованнее.</p>
+
+<h2>Откуда карточки</h2>
+
+<p>Рейтинги считаются по результатам. Карточка учитывает весь сезон игрока,
+а крупные этапы весят больше, так что гранд-финал важнее хита.</p>
+
+<p>Всего около 87 000 карточек с более чем 600 турниров, от World Cup 2019
+до текущего сезона, в Европе, NA Central, NA West, Бразилии, Азии, на Ближнем
+Востоке и в Океании.</p>
+
+<h2>Вопросы и ответы</h2>
+
+<div class="qa">
+<h3>Есть ли в Fortnite режим карьеры?</h3>
+<p>В самой игре нет. FNCS Draft это фанатская карьера по соревновательному
+календарю.</p>
+</div>
+
+<div class="qa">
+<h3>Это платно?</h3>
+<p>Нет. Ни регистрации, ни аккаунта. Карьера сохраняется в твоём браузере.</p>
+</div>
+
+<div class="qa">
+<h3>Можно играть на другом устройстве?</h3>
+<p>Да. Включи Облако на экране карьер, и ты получишь код из 16 символов. Введи
+его на другом телефоне или компьютере, и твои карьеры и менеджер перейдут туда.
+Никому не показывай код: он работает как пароль.</p>
+</div>
+
+<div class="qa">
+<h3>На каких языках сайт?</h3>
+<p>Английский, русский, французский, итальянский, португальский, немецкий и испанский.</p>
+</div>
+
+<div class="qa">
+<h3>Это сделали Epic Games?</h3>
+<p>Нет. Это независимый фанатский проект, он не связан с Epic Games и не одобрен
+ими. Fortnite и FNCS это товарные знаки Epic Games.</p>
+</div>
+
+<p class="cta-row"><a class="cta" href="/ru/"><span>Начать карьеру</span></a></p>
+
+<footer><a href="/ru/">fncsdraft.com</a></footer>
+
+</div>
+</body>
+</html>
