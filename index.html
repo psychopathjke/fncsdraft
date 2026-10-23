@@ -118631,7 +118631,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='0168ea22';
+const CC_BUILD='d1aeb3da';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -158830,7 +158830,10 @@ async function careerLandingPick(field, you, title, kinds, o){
       pre=new Map();
       const seated=[];
       // В гонке никого не досаживаем заранее: чей дом известен, у каждого клиента своё (см. careerSpotFearOn).
-      ((typeof ccRaceLock==='function' && ccRaceLock()) ? [] : field.filter(t=>t.isYou||t.isMate))
+      /* И в команде вдвоём (23.10, прогон 2022: DreamHack Winter 20.11 и 27.11, игра 2 — Pixie на 56 у себя и на 9 у
+         напарника, бот teeq садился на её точку). Дом напарника должен был ехать в MP.peer.soloHome, но его никто
+         не пишет: в игре 1 дома ещё нет у обоих, а после первого выбора он есть только у хозяина. */
+      ((typeof ccRaceLock==='function' && ccRaceLock()) || (typeof ccMpOn==='function' && ccMpOn()) ? [] : field.filter(t=>t.isYou||t.isMate))
            .sort((a,b)=>String(a.mpTag||'')<String(b.mpTag||'') ? -1 : 1)
            .forEach(h=>{
              const hz=ccSoloHomeZoneOf(h); if(!hz) return;
