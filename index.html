@@ -10900,6 +10900,7 @@ ccNewsRcMvp:(n,m)=>'MVP Reload Championship — '+n+', $'+m,
 ccMajLobby:'Ласт ченс лобби',
 ccMajTicket:'Победа в матче — билет в финал мейджора',
 ccMajNoTicket:'Ни одной победы в лобби — билета нет',
+ccMajLcqDiv:'Last Chance мейджора открыт только Дивизионам 1–3',
 ccMajLocked:'Плей-ин мейджора открыт только Дивизиону 1; в хиты и финал надо пройти',
 ccMajHaveTicket:'Ты уже в финале мейджора — последний шанс не для тебя',
 ccNewsMajThrough:(what,p,of)=>what+': '+ccTop(p)+' из '+of+', проход дальше',
@@ -13010,6 +13011,7 @@ ccNewsRcMvp:(n,m)=>'RELOAD CHAMPIONSHIP MVP — '+n+', $'+m,
 ccMajLobby:'Last Chance Lobby',
 ccMajTicket:'A win in the lobby — a ticket to the Major Finals',
 ccMajNoTicket:'No win in the lobby — no ticket',
+ccMajLcqDiv:'The Major Last Chance is open to Divisions 1–3 only',
 ccMajLocked:'The Major Play-In is Division 1 only; the Heats and the Final have to be earned',
 ccMajHaveTicket:'You are already in the Major Final — the Last Chance is not for you',
 ccNewsMajThrough:(what,p,of)=>what+': '+ccTop(p)+' of '+of+', through',
@@ -15636,6 +15638,7 @@ ccSolosNoSeat:'Tu ne t’es pas qualifié pour cette session des FNCS Solos', cc
 ccMajLobby:'Last Chance Lobby',
 ccMajTicket:'Une victoire dans le lobby — un ticket pour les Finales du Major',
 ccMajNoTicket:'Pas de victoire dans le lobby — pas de ticket',
+ccMajLcqDiv:'Le Last Chance du Major est réservé aux Divisions 1 à 3',
 ccMajLocked:'Le Play-In du Major est réservé à la Division 1 ; les Heats et la Finale se méritent',
 ccMajHaveTicket:'Tu es déjà en Finale du Major — le Last Chance n’est pas pour toi',
 ccMoneyTitle:'Gains',
@@ -18617,6 +18620,7 @@ ccSolosNoSeat:"Non ti sei qualificato per questa sessione degli FNCS Solos", ccS
 ccMajLobby:"Lobby della Last Chance",
 ccMajTicket:"Vittoria nella lobby — biglietto per le Major Finals",
 ccMajNoTicket:"Nessuna vittoria nella lobby — nessun biglietto",
+ccMajLcqDiv:"La Last Chance del Major è solo per le Divisioni 1–3",
 ccMajLocked:"Il Play-In del Major è solo per la Divisione 1; Heat e Finale vanno guadagnati",
 ccMajHaveTicket:"Sei già nella Finale del Major — la Last Chance non è per te",
 ccMoneyTitle:"Montepremi",
@@ -21168,6 +21172,7 @@ ccSolosNoSeat:"Você não se classificou para esta sessão do FNCS Solos", ccSol
 ccMajLobby:"Lobby da Last Chance",
 ccMajTicket:"Vitória no lobby — passagem para as Major Finals",
 ccMajNoTicket:"Sem vitória no lobby — sem passagem",
+ccMajLcqDiv:"A Last Chance do Major é só para as Divisões 1 a 3",
 ccMajLocked:"O Play-In do Major é só para a Divisão 1; os Heats e a Final têm que ser conquistados",
 ccMajHaveTicket:"Você já está na Final do Major — a Last Chance não é para você",
 ccMoneyTitle:"Premiação",
@@ -23284,7 +23289,7 @@ ccSacPromoRow:(n,m,p)=>'promo no X '+n+'/'+m+(p ? ' · +'+p+'%' : ''),
 ccGoalReach:{majorFinal:'chegar a uma final de Major FNCS', fncsFinal:'chegar à final semanal da FNCS'},
 ccOrgGoalPickHint:'Meta da temporada: escolha uma antes do fim da temporada. Cumpriu, renova com aumento (meta mais difícil, aumento maior); falhou, o clube te libera. Sem escolha, fica a do meio.'
 }));
-let CC_I18N_V={de:'15f8b355', es:'7f812570'};   // ==== CC_I18N_V (tools/build-i18n.js) ====
+let CC_I18N_V={de:'6b7b621b', es:'ad5c9a50'};   // ==== CC_I18N_V (tools/build-i18n.js) ====
 // Версия fn-shop.js (магазин Fortnite по дням, tools/build-fn-shop.js) — для ?v= ленивой загрузки.
 let CC_FN_SHOP_V='bebf56cb';
 const CC_LANG_WAIT={};
@@ -155911,8 +155916,9 @@ function ccMajWhyLocked(){
     const d=CAREER.career.mxDone||{};
     if(d[hKey(careerCard())]===careerToday()) return L().ccMpSoloWait;
   }
-  return (ev && ev.stage==='lcq' && m && m.n===ev.n && m.ticket)
-    ? L().ccMajHaveTicket : L().ccMajLocked;
+  if(ev && ev.stage==='lcq' && m && m.n===ev.n && m.ticket) return L().ccMajHaveTicket;
+  if(ev && ev.stage==='lcq' && ccMajLc2025(ev) && (CAREER.career.division||1)>3) return L().ccMajLcqDiv||L().ccMajLocked;
+  return L().ccMajLocked;
 }
 function careerMajorCan(ev){
   if(!ev) return false;
@@ -155953,6 +155959,9 @@ function careerMajorCan(ev){
   if(ev.stage==='playin') return cr.division===1;
   if(ev.stage==='lcq'){
     if(ccMajorIsShowdown(ev.n) && cr.division>2) return false;   // Showdown — дивизионы 1–2
+    /* 2025: LCQ Мейджора у Epic открыт дивизионам 1, 2 и 3 (Notion 23.10, скрин 8: «в 6 главе почему-то все
+       могут играть последний шанс»). В Европе и NA Central у карьеры пять ступеней, 4 и 5 сюда не входят. */
+    if(ccMajLc2025(ev) && (cr.division||1)>3) return false;
     return !ticket && !(ccMajLc2025(ev) && m && m.n===ev.n && m.pass==='lcq');
   }
   // 2025: лобби — на следующий день после LCQ, для тех, кто прошёл его отсечку.
