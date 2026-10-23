@@ -122088,9 +122088,15 @@ function ccMpApplyRemote(team){
   // Приехал итог напарника по соло — и мой уже есть: день шагает отсюда.
   if(typeof ccSoloTeamSettle==='function') try{ ccSoloTeamSettle(); }catch(e){}
   if(typeof ccMXTeamSettle==='function') try{ ccMXTeamSettle(); }catch(e){}
-  if(typeof careerRenderHub==='function' && document.getElementById('chBody'))
+  /* Магазин, предметы и шкафчик командного не читают, кроме дня: перерисовка на каждое сохранение напарника сбрасывала
+     там прокрутку и открытую карточку (Notion 23.10: «in duo mode it bugs with item shop and Locker when the other guy
+     is doing things»). Там — только когда сменился день. */
+  const quiet=/^(shop|items|locker)$/.test(CH_TAB||'') && CC_MP_REDRAW_DAY===CAREER.career.day;
+  CC_MP_REDRAW_DAY=CAREER.career.day;
+  if(!quiet && typeof careerRenderHub==='function' && document.getElementById('chBody'))
     careerRenderHub(CH_TAB||'centre');
 }
+var CC_MP_REDRAW_DAY=null;
 /* Сид лобби — истина для cr.seed. Ставится из каждого 'state' сервера (см.
    mp.js), помнится отдельно (lobbySeed, личное поле — у обоих одно и то же
    значение от одного сервера) и после ЛЮБОГО применения командного состояния

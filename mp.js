@@ -72,9 +72,17 @@ var BACKOFF=[1500, 3000, 6000, 12000, 30000];
 
 // Плитка команды и панель дня читают состояние на отрисовке — значит после
 // каждой перемены надо перерисовать то, что открыто.
+// Магазин, предметы и шкафчик командного не читают — кроме дня (витрина по дню). Перерисовка их на каждое действие
+// напарника сбрасывала прокрутку и открытую карточку (Notion 23.10: «in duo mode it bugs sometimes with item shop
+// and Locker when the other guy is doing things»), поэтому там она только на смене дня.
+var REDRAW_DAY=null;
 function redraw(){
-  try{ if(typeof careerRenderHub==='function' && document.getElementById('chBody'))
-         careerRenderHub(typeof CH_TAB!=='undefined' ? (CH_TAB||'centre') : 'centre'); }catch(e){}
+  try{ if(typeof careerRenderHub==='function' && document.getElementById('chBody')){
+         var tab=typeof CH_TAB!=='undefined' ? (CH_TAB||'centre') : 'centre';
+         var day=(typeof CAREER!=='undefined' && CAREER && CAREER.career) ? CAREER.career.day : null;
+         if(/^(shop|items|locker)$/.test(tab) && day===REDRAW_DAY) return;
+         REDRAW_DAY=day;
+         careerRenderHub(tab); } }catch(e){}
 }
 function setState(s){
   if(MP.state===s) return;
