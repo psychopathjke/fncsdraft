@@ -118631,7 +118631,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='12707dee';
+const CC_BUILD='9d5a3f55';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -138426,7 +138426,7 @@ const CC_SHOP_ORDER=[
   // there is no hand-written order for a new row: his account is larger than the
   // two under him and smaller than the one over him. Move him if he belongs
   // somewhere else — the position is the whole price.
-  'alhasarda','JoaovEU','ElyxxM','OliverChesses','F0C8S','IdziU97','RemssMNG','AlybiSaCE',
+  'alhasarda','JoaovEU','ElyxxM','F0C8S','IdziU97','RemssMNG','AlybiSaCE',
   'Th0masNL','ZedroxMNG','DamlosMNG','ClapMNG','errieMNG','PixelzMNG',
   'Raziaa_','NaaxoMNG','Kiinywz0','Yeekzie7',
   // Socials. Sweety second and Lumos beside Ugo under Sandora, both his call:
@@ -138471,7 +138471,7 @@ function ccShopKey(x){ return String((x&&x.at)||(x&&x.id)||'').toLowerCase(); }
    ведёт, по его же описанию в X (сняты 8.10.2026) и картам этой базы; рейтинг = p − 6, от 60 до 95. У кого клиенты
    не названы или их нет в базе — по подписчикам: 60 + 6·lg(подписчики/1000), не выше 76. Условия (доля, охват,
    прибавка, цена) идут от рейтинга, а не от места в списке; порядок окна — по рейтингу. Формула — оценка режима. */
-const CC_STAFF_X={"roxogg":3007, "JoaovEU":2874, "ElyxxM":16729, "alhasarda":3166, "OliverChesses":1453, "NaaxoMNG":853, "PixelzMNG":2439, "Kiinywz0":822, "Yeekzie7":3076, "F0C8S":4581, "ClapMNG":4144, "AlybiSaCE":3366, "IdziU97":3200, "Th0masNL":2363, "RemssMNG":2150, "DamlosMNG":1674, "ZedroxMNG":1364, "errieMNG":1304, "Raziaa_":953, "LC7_MNG":931, "ArtinMNG":866, "yaleblan":787, "DrazoxMNG":702, "Skyforcemng272":525, "Zerkomng":516, "askebott":294, "v1nteroFN":2137, "SweetyyFN":1991, "SandoraFN":1014, "baderwtw":885, "Pyp4ingS":613, "UgoComm":548, "Lair_Fn":594, "veltrixx10":481, "CmLumos":357, "MetiDark_":49, "murlotron":3007, "Goalkikermng":1104, "KaizenMNG":785, "PyraxMGMT":433, "loicmng_":565};
+const CC_STAFF_X={"roxogg":3007, "JoaovEU":2874, "ElyxxM":16729, "alhasarda":3166, "NaaxoMNG":853, "PixelzMNG":2439, "Kiinywz0":822, "Yeekzie7":3076, "F0C8S":4581, "ClapMNG":4144, "AlybiSaCE":3366, "IdziU97":3200, "Th0masNL":2363, "RemssMNG":2150, "DamlosMNG":1674, "ZedroxMNG":1364, "errieMNG":1304, "Raziaa_":953, "LC7_MNG":931, "ArtinMNG":866, "yaleblan":787, "DrazoxMNG":702, "Skyforcemng272":525, "Zerkomng":516, "askebott":294, "v1nteroFN":2137, "SweetyyFN":1991, "SandoraFN":1014, "baderwtw":885, "Pyp4ingS":613, "UgoComm":548, "Lair_Fn":594, "veltrixx10":481, "CmLumos":357, "MetiDark_":49, "murlotron":3007, "Goalkikermng":1104, "KaizenMNG":785, "PyraxMGMT":433, "loicmng_":565};
 const CC_STAFF_RES={
   "roxogg":{p:91, who:["Phzin","Edson","916Gon","Night"]},   // 23.10: в X — phzin, edson, 916gon, blxckoutz, night, seeyun, pardal; четыре лучшие карты
   "PixelzMNG":{p:77, who:["Matice","Shadox","Seili","Th3ioF"]},   // 23.10: matice, Shadox, Seili, Th3io, Sobyy, Berre (двух последних в базе нет)
@@ -138877,7 +138877,6 @@ const CC_AGENTS=[
   // Raphael Di Giuseppe, Global Partnerships at G2. X prints 16.3K and no more.
   {name:'G2 Elyxx',     at:'ElyxxM',        nat:null, photo:'ElyxxM.jpg',        x:16300},
   {name:'Arda A',       at:'alhasarda',     nat:null, photo:'alhasarda.jpg',     x:3115},
-  {name:'AgentChesses', at:'OliverChesses', nat:null, photo:'OliverChesses.jpg', x:1462},
   // Head of Fortnite for Poyo Esports, Bordeaux.
   {name:'Poyo Naaxo',   at:'NaaxoMNG',      nat:null, photo:'NaaxoMNG.jpg',      x:749},
   // Fortnite manager for Lyost, agent of Belgian talent, Marseille.
