@@ -156700,13 +156700,13 @@ function careerWeeklyFinalOn(iso){
    The cut is Epic's, carried as a share: see ccReloadOpenCut below. */
 // Kept per region, because Division 1's rung is the region's own roster and a
 // career that moves across the map takes a different ladder with it.
-const CC_LADDER_ENTRANTS={};
+/* БЕЗ ВЕЧНОГО КЭША (errlog 23.10, команда на 23.10f: «field … n2470 vs n2390», «n2470 vs n2330» каждый вечер).
+   Дивизион 1 в сумме — живой размер пула сезона (ccDiv1Size), а кэш был по одному региону: вкладка, где раньше
+   открывали карьеру другого года, держала его лестницу (проба t-hist.js: сразу 2026 — 2470, сначала 2025 — 2560),
+   и двое в одной команде садились в открытые поля разного размера. Сумма пяти чисел — считаем каждый раз. */
 function careerLadderEntrants(){
-  const reg=ccCareerRegion();
-  if(CC_LADDER_ENTRANTS[reg]) return CC_LADDER_ENTRANTS[reg];
   let n=0;
   Object.keys(CC_CUP_ENTRANTS).forEach(d=>{ n+=CC_CUP_ENTRANTS[d]; });
-  CC_LADDER_ENTRANTS[reg]=n;
   return n;
 }
 /* A Reload match holds forty players.
