@@ -4145,3 +4145,6 @@ Object.assign(I18N.de=I18N.de||{},
 /* Дозаливка «de» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
 Object.assign(I18N.de=I18N.de||{},
 ({ccMpFmtAsk:(h,f)=>'Dein Teamkollege will '+h+' im '+(f===4?'Squad':'Trio')+' für die Cups. Nehmen wir ihn?', roMpSwap:'Ändern'}));
+/* Дозаливка «de» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
+Object.assign(I18N.de=I18N.de||{},
+({ ccAgentNeed: v=>'Ab Rating '+v }));
