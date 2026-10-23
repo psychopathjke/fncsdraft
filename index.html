@@ -150152,6 +150152,7 @@ function careerMoveRegion(code, country, withMates){
   const seat=(!take && careerSlotHeld()) ? careerSlotGiveUp() : null;
   if(seat) careerNews('bad', 'ccNewsSlotRegion', [seat.what, regionName(from)]);
   pl.region=to;
+  cr.relSeed=null;   // прошедшие хит Reload — люди старого региона (см. ccRelRoom)
   // The city inside the continent, when one was named. See the note above.
   pl.livesIn=place;
   /* В команде регион ВЕЧЕРОВ — командный (cr.region, см. ccCareerRegion), и
@@ -150208,7 +150209,7 @@ function careerMoveEvict(){
   const home=ccCareerHomeRegion();
   if((pl.region||'EU')!==home){
     const was=pl.region;
-    pl.region=home; pl.livesIn=null;
+    pl.region=home; pl.livesIn=null; CAREER.career.relSeed=null;
     CAREER.partners=[]; CAREER.offers=null; CAREER.career.rival=null;
     if(CAREER.org) CAREER.org=null;
     careerNews('bad', 'ccNewsRentGoneRegion', [regionName(was)]);
@@ -159923,8 +159924,11 @@ function ccRelWorldHeats(){
 }
 function ccRelRoom(you, drafted, lobbyCr, ev, st, open, sharp){
   const s=CAREER.career.relSeed;
+  /* И того же региона (Notion 23.10: в европейском финале капа 2 Peterbot & Bylah, Clix & Higgs, Magma & Pollo).
+     Переезд посреди капа оставлял прошедших хит старого региона, а добор шёл из нового: проба — хит EU, переезд в
+     NAC, финал 5 пар EU + 14 NAC. Старый сейв без reg — по-прежнему (переезд его теперь и так стирает). */
   const ok=s && s.season===CAREER.career.season && s.size===careerSquadSize() &&
-           s.set===ev.set && s.next===ev.stage &&
+           s.set===ev.set && s.next===ev.stage && (!s.reg || s.reg===ccPoolRegion()) &&
            Array.isArray(s.through) && s.through.length;
   /* Кого в доборе быть не может — тех, кто этот отбор уже проиграл.
 
@@ -164362,7 +164366,7 @@ async function runCareerReload(){
                       .filter(rows=>rows.length>=2);
           }
         }
-        cr.relSeed={season:cr.season, size:careerSquadSize(), set:ev.set,
+        cr.relSeed={season:cr.season, size:careerSquadSize(), set:ev.set, reg:ccPoolRegion(),
                     next:NEXT[ev.stage],
                     through:ranked.filter(t=>q.has(t))
                                   .map(t=>ccSeedRow(t, you, ccStageSeatRow)),
