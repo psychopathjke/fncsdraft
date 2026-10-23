@@ -122183,7 +122183,7 @@ function ccApplyTeamState(t){
    вкладки, только изменившиеся слоты (подпись длина+хеш); удалённый тут слот удаляется и там. */
 const CC_CLOUD_LS='fd_cloud_code', CC_CLOUD_SENT='fd_cloud_sent', CC_CLOUD_ALPH='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
 const CC_CLOUD_KEY=/^fncsdraft_(career|manager)(_s\d{1,2})?$/;
-let CC_CLOUD_T=null, CC_CLOUD_BUSY=false, CC_CLOUD_MSG='', CC_CLOUD_LIST=null, CC_CLOUD_ENTER=false, CC_CLOUD_ARM=false;
+let CC_CLOUD_T=null, CC_CLOUD_AGAIN=false, CC_CLOUD_BUSY=false, CC_CLOUD_MSG='', CC_CLOUD_LIST=null, CC_CLOUD_ENTER=false, CC_CLOUD_ARM=false;
 function ccCloudBase(){
   const h=(typeof MP!=='undefined' && MP.host) || '';
   if(!h && location.protocol==='file:') return null;
@@ -122250,8 +122250,13 @@ async function ccCloudPush(){
     }
     sent._at=Date.now();
     try{ localStorage.setItem(CC_CLOUD_SENT, JSON.stringify(sent)); }catch(e){}
-    CC_CLOUD_MSG='';
-  }catch(e){ CC_CLOUD_MSG=String(e && e.message || e); }
+    CC_CLOUD_MSG=''; CC_CLOUD_AGAIN=false;
+  }catch(e){
+    /* iPhone обрывает запрос свёрнутой вкладки («Load failed», Notion 23.10): это не отказ облака. Ошибку не
+       показываем, а при возврате на вкладку отправляем снова (CC_CLOUD_AGAIN), как и обещает надпись. */
+    CC_CLOUD_AGAIN=true;
+    if(!(typeof document!=='undefined' && document.visibilityState==='hidden')) CC_CLOUD_MSG=String(e && e.message || e);
+  }
   finally{ CC_CLOUD_BUSY=false; ccCloudDraw(); }
 }
 function ccCloudSoon(){
@@ -122259,7 +122264,10 @@ function ccCloudSoon(){
   clearTimeout(CC_CLOUD_T);
   CC_CLOUD_T=setTimeout(()=>{ ccCloudPush(); }, 45000);
 }
-try{ document.addEventListener('visibilitychange', ()=>{ if(document.visibilityState==='hidden' && CC_CLOUD_T){ clearTimeout(CC_CLOUD_T); CC_CLOUD_T=null; ccCloudPush(); } }); }catch(e){}
+try{ document.addEventListener('visibilitychange', ()=>{
+  if(document.visibilityState==='hidden' && CC_CLOUD_T){ clearTimeout(CC_CLOUD_T); CC_CLOUD_T=null; ccCloudPush(); }
+  else if(document.visibilityState==='visible' && CC_CLOUD_AGAIN){ CC_CLOUD_AGAIN=false; ccCloudPush(); }
+}); }catch(e){}
 // Панель на экране выбора карьеры.
 function ccCloudDraw(){
   const box=document.getElementById('ccCloud'); if(!box) return;
