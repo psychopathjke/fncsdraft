@@ -118631,7 +118631,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='6905baff';
+const CC_BUILD='0168ea22';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -132277,7 +132277,9 @@ function ccBotEdge(t, cards, hist){
   const org=(cards.find(c=>c && c.org)||{}).org;
   let an=0;
   // Онлайн аналитика нет и у живых (ccAnalystPow → 0 при ccMpOn) — и у ботов нет: на равных.
-  if(org && !ccMpOn()){ const usd=ccOrgEarn(org);
+  /* И в гонке (23.10, прогон: Глобалы 26.09.2026, поле у двоих 111 против 113 у braydz+visxals): призовые клуба —
+     у каждого гонщика свои (своя карьера), и аналитик ботов разводил одну комнату. */
+  if(org && !ccMpOn() && !ccRaceOn()){ const usd=ccOrgEarn(org);
            an=usd==null ? 1 : Math.round(1+2*Math.max(0, Math.min(1, (ccOrgEarnLevel(usd)-60)/35))); }
   t.botEdge={form, chem, an};
   t.pow=Math.round(t.pow+form+chem+an);
@@ -140743,7 +140745,7 @@ function ccStaff2K(kind, p){ return Math.max(0, Math.min(1, (ccStaff2Rating(kind
 function ccStaff2Cost(kind, p){ const c=CC_STAFF2[kind].cost; return ccStaffCostCurve(c[0], c[1], ccStaff2K(kind, p)); }
 function ccStaff2List(kind){ return CC_STAFF2[kind].list.slice().sort((a,b)=>ccStaff2Rating(kind, b)-ccStaff2Rating(kind, a) || (b.x||0)-(a.x||0)); }
 function ccStaff2(kind){ const m=CAREER && CAREER[kind]; return (!m || careerToday()>m.until) ? null : m; }
-function ccAnalystPow(){ const m=ccStaff2('analyst'); return (!m || ccMpOn()) ? 0 : Math.round(1+2*Math.max(0, Math.min(1, (m.rating-60)/35))); }
+function ccAnalystPow(){ const m=ccStaff2('analyst'); return (!m || ccMpOn() || ccRaceOn()) ? 0 : Math.round(1+2*Math.max(0, Math.min(1, (m.rating-60)/35))); }
 function ccPsychSoft(){ const m=ccStaff2('psych'); return !m ? 0 : Math.round((0.25+0.25*Math.max(0, Math.min(1, (m.rating-60)/35)))*100)/100; }
 function careerHireStaff2(kind, id, months){
   months=months>=CC_STAFF_YEAR ? CC_STAFF_YEAR : 1;
