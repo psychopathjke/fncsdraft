@@ -106756,7 +106756,10 @@ function buildBotLandingAssignment(bots, opts){
     /* Люди комнаты гонки (isRival) — как свой (isYou): их сажает голос, не место прошлого этапа.
        Иначе у соседа моя команда садилась на «своё место», у меня — нет, и число соседей на
        коробке расходилось на единицу (годовая проба 9.09: play-in 23.01, live1+sky:113 vs 114). */
-    const seated=(seats && !t.isYou && !t.isRival) ? ccSeatZone(seats.get(ccSeatMapKey(t))) : null;
+    /* И напарник в команде вдвоём (isMate) — тоже человек: у себя он isYou и место этапа/книга его не трогали, а у
+       соседа трогали (23.10, прогон 2022: DreamHack Winter 27.11, игра 2 — Pixie на 56 у себя и на 57 у напарника,
+       MrSavage 48 против 56). Обмены ниже (movable) напарника и так обходили. */
+    const seated=(seats && !t.isYou && !t.isRival && !t.isMate) ? ccSeatZone(seats.get(ccSeatMapKey(t))) : null;
     t._stageSeated=!!seated;   // уже сидит на точке этапа — обмен «слабые не на сильных» его не трогает
     if(seated){
       t.landingZone=seated; t.landingResult=null; t.landingRival=null;
@@ -106782,7 +106785,7 @@ function buildBotLandingAssignment(bots, opts){
        постоянные хозяева, а у игрока — постоянные соседи. */
     /* Книга высадок сезона (ccDropBook): где команда села на этом острове в первый раз,
        туда и падает весь сезон — контест так контест, как у настоящих дуо. */
-    const bookKey=(book && !t.isYou && !t.isRival) ? ccHashStr(ccSeatMapKey(t)).toString(36) : null;   // хеш: в кубке тысячи дуо, сейв не резиновый
+    const bookKey=(book && !t.isYou && !t.isRival && !t.isMate) ? ccHashStr(ccSeatMapKey(t)).toString(36) : null;   // хеш: в кубке тысячи дуо, сейв не резиновый
     const booked=bookKey ? ccSeatZone(book.at[bookKey]) : null;
     const moving=booked ? ccDropBookMoves(bookKey) : false;
     // Плотность держится во ВСЕХ лобби (тестер 7.10: «баг не до конца пофиксился» — в финале FNCS без перемешивания
@@ -106795,7 +106798,7 @@ function buildBotLandingAssignment(bots, opts){
       applyLandingPow(t, booked.points);
       if(!zoneGroups.has(booked)) zoneGroups.set(booked,[]);
       zoneGroups.get(booked).push(t);
-      if(seats && !t.isYou && !t.isRival) seats.set(ccSeatMapKey(t), ccSeatKeyOf(booked));
+      if(seats && !t.isYou && !t.isRival && !t.isMate) seats.set(ccSeatMapKey(t), ccSeatKeyOf(booked));
       return;
     }
     /* Своя точка в этом перемешанном лобби уже занята хозяевами из книги — значит, сегодня
@@ -106816,7 +106819,7 @@ function buildBotLandingAssignment(bots, opts){
         t.avgRating=Math.round(t.squad.reduce((s,p)=>s+p.rating,0)/t.squad.length);
         applyLandingPow(t, free.points);
         zoneGroups.set(free,[t]);
-        if(seats && !t.isYou && !t.isRival) seats.set(ccSeatMapKey(t), ccSeatKeyOf(free));
+        if(seats && !t.isYou && !t.isRival && !t.isMate) seats.set(ccSeatMapKey(t), ccSeatKeyOf(free));
         /* В постоянном составе (финал, не перемешанное лобби) точку не поделили — опоздавший хозяин переезжает на сезон,
            как на настоящей дроп-карте финала (9.10, «как в реальной жизни»). В перемешанных капах — нет: там в другом
            лобби он снова у себя, и дроп-карты у открытых капов не бывает. */
@@ -106868,7 +106871,7 @@ function buildBotLandingAssignment(bots, opts){
     applyLandingPow(t, zone.points);
     if(!zoneGroups.has(zone)) zoneGroups.set(zone,[]);
     zoneGroups.get(zone).push(t);
-    if(seats && !t.isYou && !t.isRival) seats.set(ccSeatMapKey(t), ccSeatKeyOf(zone));   // люди комнаты — как свой (см. выше)
+    if(seats && !t.isYou && !t.isRival && !t.isMate) seats.set(ccSeatMapKey(t), ccSeatKeyOf(zone));   // люди комнаты — как свой (см. выше)
     // В книгу — только свой выбор: страх и приказ менеджера на один вечер, переполненный дом не переписывается.
     // И уступивший точку хозяин в постоянном составе, которому не нашлось пустой коробки, — тоже переезд на сезон (9.10, см. bumped).
     if(bookKey && (!booked || moving || (bumped && !CC_SEATS_REMIX)) &&
@@ -106888,7 +106891,7 @@ function buildBotLandingAssignment(bots, opts){
      у себя. Точка страха (аура игрока) не заполняется — её обходят нарочно. Люди, напарник по
      гонке и приказ менеджера на высадку не трогаются. */
   {
-    const keyOfT=t=>(book && !t.isYou && !t.isRival) ? ccHashStr(ccSeatMapKey(t)).toString(36) : null;
+    const keyOfT=t=>(book && !t.isYou && !t.isRival && !t.isMate) ? ccHashStr(ccSeatMapKey(t)).toString(36) : null;
     const movable=t=>t && !t.isYou && !t.isRival && !t.isMate && !(t._mgrDrop==='quiet' || t._mgrDrop==='hot');
     const feared=z=>CC_SPOT_FEAR_MAP && (CC_SPOT_FEAR_MAP.get(z)||0)>0;
     const d2=(a,b)=>((a.x||0)-(b.x||0))**2+((a.y||0)-(b.y||0))**2;
@@ -106912,10 +106915,10 @@ function buildBotLandingAssignment(bots, opts){
       t.landingZone=to; t.landingResult=null; t.landingRival=null;
       applyLandingPow(t, to.points);
       zoneGroups.set(to, [t]);
-      if(seats && !t.isYou && !t.isRival) seats.set(ccSeatMapKey(t), ccSeatKeyOf(to));
+      if(seats && !t.isYou && !t.isRival && !t.isMate) seats.set(ccSeatMapKey(t), ccSeatKeyOf(to));
       // Хозяина пересадили вынужденно — он переезжает на сезон (9.10, «как в реальной жизни»: дроп-карту финала договаривают
       // один раз, уступивший точку держит новую весь турнир). Без записи он каждый вечер летел к себе и его снова пересаживали.
-      { const kb=(book && !t.isYou && !t.isRival) ? ccHashStr(ccSeatMapKey(t)).toString(36) : null; if(kb && book.at[kb]===ccSeatKeyOf(from)) book.at[kb]=ccSeatKeyOf(to); }
+      { const kb=(book && !t.isYou && !t.isRival && !t.isMate) ? ccHashStr(ccSeatMapKey(t)).toString(36) : null; if(kb && book.at[kb]===ccSeatKeyOf(from)) book.at[kb]=ccSeatKeyOf(to); }
     }
   }
 
@@ -106924,7 +106927,7 @@ function buildBotLandingAssignment(bots, opts){
      переходит в ближайшую коробку, где стоит меньше плотности. Тестер 7.10: «там уже 6 команд —
      придётся победить всех». Сторож tools/check-drop-crowd.js. */
   {
-    const keyOfT=t=>(book && !t.isYou && !t.isRival) ? ccHashStr(ccSeatMapKey(t)).toString(36) : null;
+    const keyOfT=t=>(book && !t.isYou && !t.isRival && !t.isMate) ? ccHashStr(ccSeatMapKey(t)).toString(36) : null;
     const movable=t=>t && !t.isYou && !t.isRival && !t.isMate && !(t._mgrDrop==='quiet' || t._mgrDrop==='hot');
     const feared=z=>CC_SPOT_FEAR_MAP && (CC_SPOT_FEAR_MAP.get(z)||0)>0;
     const d2=(a,b)=>((a.x||0)-(b.x||0))**2+((a.y||0)-(b.y||0))**2;
@@ -106950,10 +106953,10 @@ function buildBotLandingAssignment(bots, opts){
       applyLandingPow(t, to.points);
       if(!zoneGroups.has(to)) zoneGroups.set(to, []);
       zoneGroups.get(to).push(t);
-      if(seats && !t.isYou && !t.isRival) seats.set(ccSeatMapKey(t), ccSeatKeyOf(to));
+      if(seats && !t.isYou && !t.isRival && !t.isMate) seats.set(ccSeatMapKey(t), ccSeatKeyOf(to));
       // Хозяина пересадили вынужденно — он переезжает на сезон (9.10, «как в реальной жизни»: дроп-карту финала договаривают
       // один раз, уступивший точку держит новую весь турнир). Без записи он каждый вечер летел к себе и его снова пересаживали.
-      { const kb=(book && !t.isYou && !t.isRival) ? ccHashStr(ccSeatMapKey(t)).toString(36) : null; if(kb && book.at[kb]===ccSeatKeyOf(from)) book.at[kb]=ccSeatKeyOf(to); }
+      { const kb=(book && !t.isYou && !t.isRival && !t.isMate) ? ccHashStr(ccSeatMapKey(t)).toString(36) : null; if(kb && book.at[kb]===ccSeatKeyOf(from)) book.at[kb]=ccSeatKeyOf(to); }
     }
   }
 
@@ -106966,7 +106969,7 @@ function buildBotLandingAssignment(bots, opts){
   {
     // Точку внутри этапа не меняют (ccStageSeats): меняются местами только те, кто садится в этом этапе впервые.
     const movable=t=>t && !t.isYou && !t.isRival && !t.isMate && !t._stageSeated && !(t._mgrDrop==='quiet' || t._mgrDrop==='hot');
-    const keyOfT=t=>(book && !t.isYou && !t.isRival) ? ccHashStr(ccSeatMapKey(t)).toString(36) : null;
+    const keyOfT=t=>(book && !t.isYou && !t.isRival && !t.isMate) ? ccHashStr(ccSeatMapKey(t)).toString(36) : null;
     const str=t=>((t.pow||0)-(t._landingPow||0))+(t.closeEdge||0);
     const all=[]; zoneGroups.forEach(g=>g.forEach(t=>all.push(t)));
     if(all.length>=8){
@@ -107001,7 +107004,7 @@ function buildBotLandingAssignment(bots, opts){
         [[w, z2], [x, z]].forEach(([t, to])=>{
           t.landingZone=to; t.landingResult=null; t.landingRival=null;
           applyLandingPow(t, to.points);
-          if(seats && !t.isYou && !t.isRival) seats.set(ccSeatMapKey(t), ccSeatKeyOf(to));
+          if(seats && !t.isYou && !t.isRival && !t.isMate) seats.set(ccSeatMapKey(t), ccSeatKeyOf(to));
         });
       }
     }
@@ -107014,7 +107017,7 @@ function buildBotLandingAssignment(bots, opts){
      коробки без топа; число команд в коробках то же. Хозяин точки по книге не двигается. */
   {
     const movable=t=>t && !t.isYou && !t.isRival && !t.isMate && !t._stageSeated && !(t._mgrDrop==='quiet' || t._mgrDrop==='hot');
-    const keyOfT=t=>(book && !t.isYou && !t.isRival) ? ccHashStr(ccSeatMapKey(t)).toString(36) : null;
+    const keyOfT=t=>(book && !t.isYou && !t.isRival && !t.isMate) ? ccHashStr(ccSeatMapKey(t)).toString(36) : null;
     const str=t=>((t.pow||0)-(t._landingPow||0))+(t.closeEdge||0);
     const all=[]; zoneGroups.forEach(g=>g.forEach(t=>all.push(t)));
     if(all.length>=8){
@@ -107055,7 +107058,7 @@ function buildBotLandingAssignment(bots, opts){
         [[w, z2], [x, z]].forEach(([t, to])=>{
           t.landingZone=to; t.landingResult=null; t.landingRival=null;
           applyLandingPow(t, to.points);
-          if(seats && !t.isYou && !t.isRival) seats.set(ccSeatMapKey(t), ccSeatKeyOf(to));
+          if(seats && !t.isYou && !t.isRival && !t.isMate) seats.set(ccSeatMapKey(t), ccSeatKeyOf(to));
         });
       }
     }
@@ -107079,7 +107082,7 @@ function buildBotLandingAssignment(bots, opts){
       targetGroup.push(t);
       // Переезд по расчистке — тоже место в комнате, иначе следующая игра
       // вернула бы команду в коробку, которую только что освободили.
-      if(seats && !t.isYou && !t.isRival) seats.set(ccSeatMapKey(t), ccSeatKeyOf(targetZone));
+      if(seats && !t.isYou && !t.isRival && !t.isMate) seats.set(ccSeatMapKey(t), ccSeatKeyOf(targetZone));
     });
     zoneGroups.delete(zoneToClear);
   }
