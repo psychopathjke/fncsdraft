@@ -62,6 +62,8 @@ for (const l of LANGS) {
   h = setMeta(h, 'property="og:url"', SITE + '/' + l + '/');
   h = setMeta(h, 'name="twitter:title"', seo.t);
   h = setMeta(h, 'name="twitter:description"', seo.d);
+  // Ссылка «О сайте» с главной языка ведёт на /about того же языка (если перевод есть).
+  if (fs.existsSync(path.join(ROOT, 'i18n-about', 'about.' + l + '.html'))) h = h.split('href="about.html"').join('href="/' + l + '/about"');
   h = h.replace(/<meta property="og:locale" content="[^"]*">/, '');
   // Текст первого экрана: английский, вшитый prefillI18n, меняется на снимок этого языка ключ в ключ.
   const tr = DUMPS[l] || {};
