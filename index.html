@@ -384,6 +384,17 @@
      или язык браузера — то же правило, что LANG), страница прячется до первого setLang; страховка — 3 с. -->
 <style>html.i18n-wait body{visibility:hidden;}</style>
 <script>try{if(localStorage.getItem('fd_ui_classic')==='1')document.documentElement.classList.add('ui-classic');}catch(e){}</script>
+<!-- ОТКЛИК НА КАСАНИЕ (Notion 23.10, скрин 9: «кнопки нажимаются так, будто у меня огромный пинг»). Код нажатия
+     быстрый (замер ×4: 20–90 мс), но кнопка в момент касания не менялась никак: :active во всём файле было два, а iOS
+     Safari не включает :active вовсе, пока на странице нет слушателя touchstart. Палец лёг — ничего, экран сменился
+     позже. Теперь кнопка темнеет/светлеет сразу под пальцем, без двойного тапа-зума (touch-action). -->
+<style>
+  button, [role=button], .ch-tab, .cc-nb{touch-action:manipulation;}
+  button:not(:disabled):active, [role=button]:active, .ch-tab:active, .cc-nb:active{filter:brightness(1.3);transition:filter 0s;}
+  .ch-play:not(:disabled):active, .cc-back:active, .cc-act:active, .ch-simbtn:active, .ch-end:active{transform:scale(.97);transition:transform 0s;}
+  @media (prefers-reduced-motion: reduce){ .ch-play:not(:disabled):active, .cc-back:active, .cc-act:active, .ch-simbtn:active, .ch-end:active{transform:none;} }
+</style>
+<script>try{document.addEventListener('touchstart',function(){},{passive:true});}catch(e){}</script>
 <script>(function(){try{var L=['ru','fr','it','pt','de','es'],s=localStorage.getItem('fncsdraft_lang'),l=null;if(s==='en'||L.indexOf(s)>=0)l=s;else{var n=String(navigator.language||'').toLowerCase();for(var i=0;i<L.length;i++)if(n.indexOf(L[i])===0){l=L[i];break;}}if(l&&l!=='en'){var h=document.documentElement;h.lang=l;h.className+=' i18n-wait';setTimeout(function(){h.classList.remove('i18n-wait');},3000);}}catch(e){}})();</script>
 <!-- Заголовок вкладки — он же главное слово поиска. Просьба:
      «хочу чтоб мой сайт появлялся в браузере при вводе fortnite career».
