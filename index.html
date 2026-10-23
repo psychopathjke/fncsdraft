@@ -167376,6 +167376,9 @@ async function runCareerSoloSeries(){
 
   const prevMode=CARD_MODE, prevSize=squadSize, prevDrafted=drafted;
   const prevSet=ACTIVE_LANDING_SET;
+  /* СОЛО-СОСТОЯНИЕ ВКЛАДКИ — ВОЗВРАЩАЕТСЯ ВСЕГДА (errlog 23.10: после соло-квалов Solo Series командный
+     Victory Cup одного из двоих шёл одиночками на соло-острове — «n100h94+99 m1.60» против дуо «n2470 m1.39»). */
+  try{
   CARD_MODE=true;
   squadSize=1;
   drafted=[me];
@@ -167577,6 +167580,10 @@ async function runCareerSoloSeries(){
   careerRenderHub('centre');
   careerTwoRoundResultCard({title:ev.label, place:place, through:through||cash>0,
     wins:you.wins||0, cash:cash, cut:cut});
+  }finally{
+    // Ошибка посреди соло-вечера не должна оставлять вкладке состав из одного и соло-остров.
+    try{ CARD_MODE=prevMode; squadSize=prevSize; drafted=prevDrafted; useLandingSet(prevSet); CC_KILL_CAP=0; ccNightSpotOff(); }catch(e){}
+  }
 }
 /* Дроп двоих в одном лобби — по очереди, в порядке ников, каждый на свой
    вопрос; комната после первого передаётся второму как есть. */
