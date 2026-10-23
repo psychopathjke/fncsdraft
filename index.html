@@ -383,6 +383,7 @@
      Разметка первого экрана — английская, перевод ставит setLang после app.js. Если язык не английский (сохранённый
      или язык браузера — то же правило, что LANG), страница прячется до первого setLang; страховка — 3 с. -->
 <style>html.i18n-wait body{visibility:hidden;}</style>
+<script>try{if(localStorage.getItem('fd_ui_classic')==='1')document.documentElement.classList.add('ui-classic');}catch(e){}</script>
 <script>(function(){try{var L=['ru','fr','it','pt','de','es'],s=localStorage.getItem('fncsdraft_lang'),l=null;if(s==='en'||L.indexOf(s)>=0)l=s;else{var n=String(navigator.language||'').toLowerCase();for(var i=0;i<L.length;i++)if(n.indexOf(L[i])===0){l=L[i];break;}}if(l&&l!=='en'){var h=document.documentElement;h.lang=l;h.className+=' i18n-wait';setTimeout(function(){h.classList.remove('i18n-wait');},3000);}}catch(e){}})();</script>
 <!-- Заголовок вкладки — он же главное слово поиска. Просьба:
      «хочу чтоб мой сайт появлялся в браузере при вводе fortnite career».
@@ -769,10 +770,10 @@
     opacity:.6;border-left:1px solid currentColor;padding-left:7px;margin-left:2px;}
   /* Ko-fi своим цветом, как X и телеграм — своими. */
   .kofi-top{color:#fff;background:#ff5e5b;}
-  .support-top{background:rgba(255,221,0,.1);color:#ffe774;box-shadow:inset 0 0 0 1px rgba(255,221,0,.5);}
-  .support-top.kofi-top{background:rgba(255,94,91,.12);color:#ffa3a1;box-shadow:inset 0 0 0 1px rgba(255,94,91,.55);}
-  .support-top:hover,.support-top:focus-visible{background:var(--go);color:var(--go-ink);filter:none;}
-  .support-top.kofi-top:hover,.support-top.kofi-top:focus-visible{background:#ff5e5b;color:#fff;}
+  html:not(.ui-classic) .support-top{background:rgba(255,221,0,.1);color:#ffe774;box-shadow:inset 0 0 0 1px rgba(255,221,0,.5);}
+  html:not(.ui-classic) .support-top.kofi-top{background:rgba(255,94,91,.12);color:#ffa3a1;box-shadow:inset 0 0 0 1px rgba(255,94,91,.55);}
+  html:not(.ui-classic) .support-top:hover,html:not(.ui-classic) .support-top:focus-visible{background:var(--go);color:var(--go-ink);filter:none;}
+  html:not(.ui-classic) .support-top.kofi-top:hover,html:not(.ui-classic) .support-top.kofi-top:focus-visible{background:#ff5e5b;color:#fff;}
   /* Фирменные цвета — отзыв: X в своём чёрном, телеграм в
      своём синем. Белая обводка на ховере вместо акцента сайта: кнопка бренда
      подсвечивается собой, а не нашей бирюзой. */
@@ -4826,18 +4827,24 @@
      22.10: «very hard to read because of the colors» — серое стекло, логотип FNCS насквозь). Плотная тёмная подложка
      и тёмные плитки; картинка остаётся едва видна. */
   #screen-career-hub .cc-lobby .cc-lb-playbox .ch-art.cc-day::after,
-  #screen-career-hub.ch-themed .cc-lobby .cc-lb-playbox .ch-art.cc-day::after{background:linear-gradient(180deg,rgba(12,28,84,.9),rgba(8,18,58,.96));}
+  html:not(.ui-classic) #screen-career-hub.ch-themed .cc-lobby .cc-lb-playbox .ch-art.cc-day::after{background:linear-gradient(180deg,rgba(12,28,84,.9),rgba(8,18,58,.96));}
   #screen-career-hub .cc-lobby .cc-lb-playbox .cc-day .cc-act,#screen-career-hub .cc-lobby .cc-lb-playbox .cc-day .cc-six-t,
   #screen-career-hub .cc-lobby .cc-lb-playbox .cc-day .cc-job,
   #screen-career-hub.ch-themed .cc-lobby .cc-lb-playbox .cc-day .cc-act,#screen-career-hub.ch-themed .cc-lobby .cc-lb-playbox .cc-day .cc-six-t,
-  #screen-career-hub.ch-themed .cc-lobby .cc-lb-playbox .cc-day .cc-job{background:rgba(120,150,235,.14);}
+  html:not(.ui-classic) #screen-career-hub.ch-themed .cc-lobby .cc-lb-playbox .cc-day .cc-job{background:rgba(120,150,235,.14);}
+  /* КЛАССИЧЕСКИЙ ВИД (23.10, blazek293 в X: «switch button to the old one»): кнопка в подвале хаба вешает html.ui-classic,
+     и правила 22–23.10 (стекло дня, жёлтые кнопки, хаб без полос, главная без «Режим N») не применяются. Здесь — то,
+     что эти правила заменили, а не дополнили. */
+  html.ui-classic #screen-career-hub.ch-themed .cc-lobby .cc-lb-playbox .ch-art.cc-day::after{background:linear-gradient(180deg,rgba(8,12,24,.86),rgba(8,12,24,.94));}
+  html.ui-classic #screen-career-hub.ch-themed .cc-lobby .cc-lb-playbox .cc-day .cc-job{background:rgba(255,255,255,.07);}
+  html.ui-classic #uiClassicBtn::before{content:'✓ ';}
   /* ЦВЕТА ХАБА (22.10, после аудита ПК): жёлтый — только у главного (рейтинг и кнопка вечера), как «Играть» в Fortnite;
      кнопка дня стояла синей на синем и терялась. Кнопки поддержки в шапке — контуром, заливка по наведению: они
      перетягивали глаз с кнопки вечера. */
-  #screen-career-hub .cc-lobby .cc-lb-playbox .ch-play:not(:disabled),
-  #screen-career-hub .cc-lobby .cc-lb-playbox .ch-play.ch-skipto:not(:disabled){background:var(--go);color:var(--go-ink);text-shadow:none;}
-  #screen-career-hub .cc-lobby .cc-lb-playbox .ch-play:not(:disabled):hover,
-  #screen-career-hub .cc-lobby .cc-lb-playbox .ch-play.ch-skipto:not(:disabled):hover{background:#fff27a;color:var(--go-ink);}
+  html:not(.ui-classic) #screen-career-hub .cc-lobby .cc-lb-playbox .ch-play:not(:disabled),
+  html:not(.ui-classic) #screen-career-hub .cc-lobby .cc-lb-playbox .ch-play.ch-skipto:not(:disabled){background:var(--go);color:var(--go-ink);text-shadow:none;}
+  html:not(.ui-classic) #screen-career-hub .cc-lobby .cc-lb-playbox .ch-play:not(:disabled):hover,
+  html:not(.ui-classic) #screen-career-hub .cc-lobby .cc-lb-playbox .ch-play.ch-skipto:not(:disabled):hover{background:#fff27a;color:var(--go-ink);}
   /* НИЖНЯЯ ПЛАНКА ШРИФТА 11px (22.10, аудит Impeccable хаба: телефон 390px после «very hard to read» из X, потом ПК
      1440×900 — те же 8–10px). Подписи плиток прокачки, подработки, кошелька, дней недели, «Сыграть за меня», квадратиков
      недель сезона — на всех ширинах. */
@@ -4871,24 +4878,24 @@
      1) цветная полоса сбоку у плиток занятий — снята; 2) толстые цветные полоски сверху у квадратиков недель — точкой цвета
      турнира; 3) карточки в карточках в шапке (кошелёк, форма, энергия) — без своей подложки; 4) цветное свечение у полосы
      энергии — снято; 7) серые подписи на цветном фоне — светлее. Подиум под игроком в лобби — это Fortnite, не трогается. */
-  #screen-career-hub .cc-act{border-left-width:0 !important;}
-  #screen-career-hub .ch-ro.on{box-shadow:none !important;}
-  #screen-career-hub .ch-season .ch-sq{border-top-width:0 !important;position:relative;}
-  #screen-career-hub .ch-season .ch-sq::before{content:'';position:absolute;top:3px;left:50%;width:5px;height:5px;margin-left:-2.5px;border-radius:50%;background:var(--pip,transparent);}
-  #screen-career-hub .ch-season .ch-sq.ch-pip-eval{--pip:#7aa2ff;}
-  #screen-career-hub .ch-season .ch-sq.ch-pip-cup,#screen-career-hub .ch-season .ch-sq.ch-pip-proam,#screen-career-hub .ch-season .ch-sq.ch-pip-nations{--pip:#00b090;}
-  #screen-career-hub .ch-season .ch-sq.ch-pip-major{--pip:#b07dff;}
-  #screen-career-hub .ch-season .ch-sq.ch-pip-summit,#screen-career-hub .ch-season .ch-sq.ch-pip-gc,#screen-career-hub .ch-season .ch-sq.ch-pip-globals{--pip:#ff5a5a;}
-  #screen-career-hub .ch-season .ch-sq.ch-pip-final{--pip:#ffd400;}
-  #screen-career-hub .ch-season .ch-sq.ch-pip-reload{--pip:#ff8a3d;}
-  #screen-career-hub .ch-season .ch-sq.ch-pip-victory{--pip:#ffd166;}
-  #screen-career-hub .ch-season .ch-sq.ch-pip-solo{--pip:#8be9fd;}
+  html:not(.ui-classic) #screen-career-hub .cc-act{border-left-width:0 !important;}
+  html:not(.ui-classic) #screen-career-hub .ch-ro.on{box-shadow:none !important;}
+  html:not(.ui-classic) #screen-career-hub .ch-season .ch-sq{border-top-width:0 !important;position:relative;}
+  html:not(.ui-classic) #screen-career-hub .ch-season .ch-sq::before{content:'';position:absolute;top:3px;left:50%;width:5px;height:5px;margin-left:-2.5px;border-radius:50%;background:var(--pip,transparent);}
+  html:not(.ui-classic) #screen-career-hub .ch-season .ch-sq.ch-pip-eval{--pip:#7aa2ff;}
+  html:not(.ui-classic) #screen-career-hub .ch-season .ch-sq.ch-pip-cup,html:not(.ui-classic) #screen-career-hub .ch-season .ch-sq.ch-pip-proam,html:not(.ui-classic) #screen-career-hub .ch-season .ch-sq.ch-pip-nations{--pip:#00b090;}
+  html:not(.ui-classic) #screen-career-hub .ch-season .ch-sq.ch-pip-major{--pip:#b07dff;}
+  html:not(.ui-classic) #screen-career-hub .ch-season .ch-sq.ch-pip-summit,html:not(.ui-classic) #screen-career-hub .ch-season .ch-sq.ch-pip-gc,html:not(.ui-classic) #screen-career-hub .ch-season .ch-sq.ch-pip-globals{--pip:#ff5a5a;}
+  html:not(.ui-classic) #screen-career-hub .ch-season .ch-sq.ch-pip-final{--pip:#ffd400;}
+  html:not(.ui-classic) #screen-career-hub .ch-season .ch-sq.ch-pip-reload{--pip:#ff8a3d;}
+  html:not(.ui-classic) #screen-career-hub .ch-season .ch-sq.ch-pip-victory{--pip:#ffd166;}
+  html:not(.ui-classic) #screen-career-hub .ch-season .ch-sq.ch-pip-solo{--pip:#8be9fd;}
   /* 8) последние подписи в 9px — до 10–11px. */
-  #screen-career-hub .ch-week em,#screen-career-hub .ch-day em,#screen-career-hub .ch-day .ch-day-sub,#screen-career-hub .ch-hnext em,#screen-career-hub .ch-purse em,#screen-career-hub .cc-lb-week em{font-size:10.5px !important;}
-  #screen-career-hub .ch-week span,#screen-career-hub .ch-day .ch-day-what,#screen-career-hub .ch-row em{font-size:11px !important;}
-  #screen-career-hub .ch-en,#screen-career-hub .ch-tipw,#screen-career-hub #chPurse > div,#screen-career-hub #chPurseNow > div{background:none !important;box-shadow:none !important;border-color:transparent !important;}
-  #screen-career-hub .ch-en-bar > i{box-shadow:none !important;}
-  #screen-career-hub .ch-go em,#screen-career-hub .ch-tipw em,#screen-career-hub .ch-en > em,#screen-career-hub .ch-sub,#screen-career-hub #chPurse > div > em{color:#c3d3e6 !important;}
+  html:not(.ui-classic) #screen-career-hub .ch-week em,html:not(.ui-classic) #screen-career-hub .ch-day em,html:not(.ui-classic) #screen-career-hub .ch-day .ch-day-sub,html:not(.ui-classic) #screen-career-hub .ch-hnext em,html:not(.ui-classic) #screen-career-hub .ch-purse em,html:not(.ui-classic) #screen-career-hub .cc-lb-week em{font-size:10.5px !important;}
+  html:not(.ui-classic) #screen-career-hub .ch-week span,html:not(.ui-classic) #screen-career-hub .ch-day .ch-day-what,html:not(.ui-classic) #screen-career-hub .ch-row em{font-size:11px !important;}
+  html:not(.ui-classic) #screen-career-hub .ch-en,html:not(.ui-classic) #screen-career-hub .ch-tipw,html:not(.ui-classic) #screen-career-hub #chPurse > div,html:not(.ui-classic) #screen-career-hub #chPurseNow > div{background:none !important;box-shadow:none !important;border-color:transparent !important;}
+  html:not(.ui-classic) #screen-career-hub .ch-en-bar > i{box-shadow:none !important;}
+  html:not(.ui-classic) #screen-career-hub .ch-go em,html:not(.ui-classic) #screen-career-hub .ch-tipw em,html:not(.ui-classic) #screen-career-hub .ch-en > em,html:not(.ui-classic) #screen-career-hub .ch-sub,html:not(.ui-classic) #screen-career-hub #chPurse > div > em{color:#c3d3e6 !important;}
   #screen-career-hub .cc-lobby .cc-lb-playbox .cc-acts{grid-template-columns:minmax(0,1fr) minmax(0,1fr);}
   #screen-career-hub .cc-lobby .cc-lb-playbox .cc-six{grid-template-columns:repeat(6,minmax(0,1fr));}
   /* Панель свободного дня в окошке капа: кольца в строку, шесть статов, занятия строкой с приростом в одну линию,
@@ -7538,17 +7545,17 @@
   .hero-btn>span{transform:none;}
   /* КНОПКИ КАК В FORTNITE (22.10, его «в стиле фортнайт»): не таблетка, а прямоугольник со скруглением, жёлтый с тёмной
      «ступенькой» снизу — как «Играть» в лобби игры. Та же форма у кнопки вечера в хабе. */
-  .hero-btn,.hero-btn:hover,.hero-btn:focus-visible{border-radius:10px;padding:13px 28px 12px;font-weight:700;font-size:18px;letter-spacing:.04em;}
-  .hero-btn-go{box-shadow:0 4px 0 #b59c00,0 8px 18px rgba(0,0,0,.35);}
-  .hero-btn-go:active{transform:translateY(2px);box-shadow:0 2px 0 #b59c00,0 4px 10px rgba(0,0,0,.35);}
-  #screen-career-hub .cc-lobby .cc-lb-playbox .ch-play:not(:disabled){border-radius:10px;font-size:20px;letter-spacing:.04em;
+  html:not(.ui-classic) .hero-btn,html:not(.ui-classic) .hero-btn:hover,html:not(.ui-classic) .hero-btn:focus-visible{border-radius:10px;padding:13px 28px 12px;font-weight:700;font-size:18px;letter-spacing:.04em;}
+  html:not(.ui-classic) .hero-btn-go{box-shadow:0 4px 0 #b59c00,0 8px 18px rgba(0,0,0,.35);}
+  html:not(.ui-classic) .hero-btn-go:active{transform:translateY(2px);box-shadow:0 2px 0 #b59c00,0 4px 10px rgba(0,0,0,.35);}
+  html:not(.ui-classic) #screen-career-hub .cc-lobby .cc-lb-playbox .ch-play:not(:disabled){border-radius:10px;font-size:20px;letter-spacing:.04em;
     box-shadow:0 4px 0 #b59c00,0 8px 18px rgba(0,0,0,.35);}
-  #screen-career-hub .cc-lobby .cc-lb-playbox .ch-play:not(:disabled):active{transform:translateY(2px);box-shadow:0 2px 0 #b59c00;}
+  html:not(.ui-classic) #screen-career-hub .cc-lobby .cc-lb-playbox .ch-play:not(:disabled):active{transform:translateY(2px);box-shadow:0 2px 0 #b59c00;}
   /* Подписи разделов панели дня — разделитель меню Fortnite: шрифт заголовков, белый капс, тонкие линии по бокам. */
-  #screen-career-hub .cc-day .cc-act-grp{display:flex;align-items:center;gap:10px;font-family:var(--font-display);font-weight:700;
+  html:not(.ui-classic) #screen-career-hub .cc-day .cc-act-grp{display:flex;align-items:center;gap:10px;font-family:var(--font-display);font-weight:700;
     font-size:14px;letter-spacing:.08em;text-transform:uppercase;color:#fff;}
-  #screen-career-hub .cc-day .cc-act-grp::before,#screen-career-hub .cc-day .cc-act-grp::after{content:"";flex:1;height:2px;background:rgba(255,255,255,.35);}
-  #screen-career-hub .cc-lobby .cc-lb-playbox .cc-day .cc-act-grp{font-size:14px;color:#fff;}
+  html:not(.ui-classic) #screen-career-hub .cc-day .cc-act-grp::before,html:not(.ui-classic) #screen-career-hub .cc-day .cc-act-grp::after{content:"";flex:1;height:2px;background:rgba(255,255,255,.35);}
+  html:not(.ui-classic) #screen-career-hub .cc-lobby .cc-lb-playbox .cc-day .cc-act-grp{font-size:14px;color:#fff;}
   .mode-card{clip-path:none;border-radius:var(--r);}
   .ec-art{border-radius:var(--r) var(--r) 0 0;}
   .ec-cup{border-radius:var(--r-sm);}
@@ -7671,8 +7678,8 @@
   .hero-sub{color:#c9d5f0;}
   /* 23.10 «главное меню выглядит ai?» → «можешь переделать»: без надписи «Режим 1 · …» над заголовком
      и заголовок одним цветом. Таблетки и «С другом» не трогаются. */
-  #screen-mode .hero .hero-mode-tag{display:none !important;}
-  #screen-mode .hero .hero-title em{color:inherit !important;}
+  html:not(.ui-classic) #screen-mode .hero .hero-mode-tag{display:none !important;}
+  html:not(.ui-classic) #screen-mode .hero .hero-title em{color:inherit !important;}
   .hero-btn-alt{background:rgba(150,180,255,.22);border-color:transparent;}
   .hero-btn-duo{background:rgba(150,180,255,.14);border-color:#9fe1ff;color:#9fe1ff;}
   .hero-link{color:#9fe1ff;text-decoration-color:rgba(159,225,255,.5);}
@@ -9479,6 +9486,7 @@
       <div class="ch-foot">
         <button class="cc-back" onclick="show('screen-mode')" data-i18n="ccBack"></button>
         <button class="cc-back" onclick="openCareerSlots()" data-i18n="ccSlots"></button>
+        <button class="cc-back" id="uiClassicBtn" onclick="uiClassicToggle()" data-i18n="uiClassic"></button>
         <button class="ch-end" onclick="careerEndAsk()" data-i18n="chEnd"></button>
       </div>
     </div>
@@ -11587,7 +11595,7 @@ ccGalaAwardsH:'Награды года', ccGalaAwardsNone:'Наград в эт�
 ccGalaMonthWon:m=>'Игрок месяца — '+m,
 ccGalaGotyYou:'Игрок года — это ты 🏆',
 ccGalaNext:'Дальше', ccGalaBack:'Назад', ccGalaSkip:'Закрыть',
-ccSlots:'Карьеры', ccSlotsTitle:'Карьеры', ccSlotsSub:'Выбери, в какую вернуться, или заведи новую',
+uiClassic:'Классический вид', ccSlots:'Карьеры', ccSlotsTitle:'Карьеры', ccSlotsSub:'Выбери, в какую вернуться, или заведи новую',
 ccSlotEmpty:'Пусто', ccSlotStart:'Начать', ccSlotOpen:'Продолжить', ccSlotDelete:'Удалить',
 ccSlotsNew:'Новая карьера', ccSlotsFree:n=>n===1?'свободен один слот':'свободно слотов: '+n,
 ccSlotDropSure:'Точно удалить?', ccSlotHere:'открыта', ccSlotSeason:'Сезон', ccChapterSeason:(c,n)=>'Глава '+c+', сезон '+n, ccChapterName:(c,nm)=>'Глава '+c+' · '+nm,
@@ -13695,7 +13703,7 @@ ccGalaAwardsH:'Awards of the year', ccGalaAwardsNone:'No awards this year',
 ccGalaMonthWon:m=>'Player of the Month — '+m,
 ccGalaGotyYou:'Player of the Year — that is you 🏆',
 ccGalaNext:'Next', ccGalaBack:'Back', ccGalaSkip:'Close',
-ccSlots:'Careers', ccSlotsTitle:'Careers', ccSlotsSub:'Pick the one to go back to, or start a new one',
+uiClassic:'Classic look', ccSlots:'Careers', ccSlotsTitle:'Careers', ccSlotsSub:'Pick the one to go back to, or start a new one',
 ccSlotEmpty:'Empty', ccSlotStart:'Start', ccSlotOpen:'Continue', ccSlotDelete:'Delete',
 ccSlotsNew:'New career', ccSlotsFree:n=>n===1?'one slot free':n+' slots free',
 ccSlotDropSure:'Delete for good?', ccSlotHere:'open', ccSlotSeason:'Season', ccChapterSeason:(c,n)=>'Chapter '+c+', Season '+n, ccChapterName:(c,nm)=>'Chapter '+c+' · '+nm,
@@ -16546,7 +16554,7 @@ ccDayEvtiltRblame:'La faute au coéquipier : plus facile pour toi, pas pour lui'
 ccDayEvorgQuit:'Le club quitte Fortnite', ccDayEvorgQuitSub:'Le club ferme son roster. Le contrat se termine aujourd\'hui',
 ccDayEvorgQuitOfa:'Annoncer la recherche', ccDayEvorgQuitOquiet:'Partir discrètement',
 ccDayEvorgQuitRfa:'Le club a fermé le roster. Annoncé que je cherche', ccDayEvorgQuitRquiet:'Le club a fermé le roster. Parti discrètement',
-ccSlots:'Carrières',
+uiClassic:'Look classique', ccSlots:'Carrières',
 chEnd:'Terminer la carrière',
 ccSlotsTitle:'Carrières',
 ccSlotsSub:'Choisis celle où revenir, ou lances-en une nouvelle',
@@ -16893,7 +16901,7 @@ ccDayEvtiltRblame:"Colpa data al compagno: più facile per te, non per lui", ccD
 ccDayEvorgQuit:"Il club lascia Fortnite", ccDayEvorgQuitSub:"Il club chiude il roster. Il contratto finisce oggi",
 ccDayEvorgQuitOfa:"Annunciare la ricerca", ccDayEvorgQuitOquiet:"Andarsene in silenzio",
 ccDayEvorgQuitRfa:"Il club ha chiuso il roster. Annunciato che cerco", ccDayEvorgQuitRquiet:"Il club ha chiuso il roster. Andato via in silenzio",
-ccSlots:"Carriere",
+uiClassic:"Aspetto classico", ccSlots:"Carriere",
 chEnd:"Chiudi la carriera",
 ccSlotsTitle:"Carriere",
 ccSlotsSub:"Scegli dove tornare, o avviane una nuova",
@@ -19444,7 +19452,7 @@ ccDayEvtiltRblame:"Culpa jogada no parceiro: mais fácil para você, não para e
 ccDayEvorgQuit:"O clube está saindo do Fortnite", ccDayEvorgQuitSub:"O clube fecha o elenco. O contrato termina hoje",
 ccDayEvorgQuitOfa:"Anunciar a busca", ccDayEvorgQuitOquiet:"Sair em silêncio",
 ccDayEvorgQuitRfa:"O clube fechou o elenco. Anunciei que estou procurando", ccDayEvorgQuitRquiet:"O clube fechou o elenco. Saí em silêncio",
-ccSlots:"Carreiras",
+uiClassic:"Visual clássico", ccSlots:"Carreiras",
 chEnd:"Encerrar carreira",
 ccSlotsTitle:"Carreiras",
 ccSlotsSub:"Seis saves. O bloco abre a última que você jogou",
@@ -23275,7 +23283,7 @@ ccSacPromoRow:(n,m,p)=>'promo no X '+n+'/'+m+(p ? ' · +'+p+'%' : ''),
 ccGoalReach:{majorFinal:'chegar a uma final de Major FNCS', fncsFinal:'chegar à final semanal da FNCS'},
 ccOrgGoalPickHint:'Meta da temporada: escolha uma antes do fim da temporada. Cumpriu, renova com aumento (meta mais difícil, aumento maior); falhou, o clube te libera. Sem escolha, fica a do meio.'
 }));
-let CC_I18N_V={de:'d6299d77', es:'c2b02124'};   // ==== CC_I18N_V (tools/build-i18n.js) ====
+let CC_I18N_V={de:'89304a8c', es:'3ac0d03f'};   // ==== CC_I18N_V (tools/build-i18n.js) ====
 // Версия fn-shop.js (магазин Fortnite по дням, tools/build-fn-shop.js) — для ?v= ленивой загрузки.
 let CC_FN_SHOP_V='bebf56cb';
 const CC_LANG_WAIT={};
@@ -123104,6 +123112,15 @@ function ccHubErrCopyOld(text, done){
    «Медиа» 250–430 мс на КАЖДОЕ нажатие, из них ~90% — careerDmPool → careerDuoBeatsYou → ccDuoForm, который на каждого
    кандидата заново строил всю таблицу сезона. Внутри одной отрисовки таблица не меняется — считается один раз. */
 let CC_RENDER_MEMO=null;
+/* Классический вид (см. html.ui-classic в стилях): выбор живёт в браузере, не в сейве — это вид, а не карьера. */
+function ccUiClassic(){ try{ return document.documentElement.classList.contains('ui-classic'); }catch(e){ return false; } }
+function uiClassicToggle(){
+  const on=!ccUiClassic();
+  document.documentElement.classList.toggle('ui-classic', on);
+  try{ if(on) localStorage.setItem('fd_ui_classic', '1'); else localStorage.removeItem('fd_ui_classic'); }catch(e){}
+  try{ if(CAREER) careerRenderHub(); }catch(e){}
+  try{ homeSceneDraw(); }catch(e){}
+}
 function careerRenderHub(tab){
   const outer=!CC_RENDER_MEMO;
   if(outer) CC_RENDER_MEMO=new Map();
@@ -147434,7 +147451,7 @@ function careerJobHTML(closed, left){
       (can ? ' onclick="careerJobWork('+h+')"' : ' disabled')+
       '>'+h+esc(L().ccJobH)+' · $'+(wage*h)+' · '+ccJobCost(h)+'⚡</button>';
   }).join('');
-  return '<div class="cc-job"><span class="cc-job-m">$</span><em>'+esc(L().ccJobTitle)+
+  return '<div class="cc-job"><span class="cc-job-m">'+(ccUiClassic() ? '🍟' : '$')+'</span><em>'+esc(L().ccJobTitle)+
     ' · $'+wage+esc(L().ccJobPerH)+'</em><div class="cc-job-btns">'+hrs+'</div></div>';
 }
 function careerJobWork(h){
@@ -168082,7 +168099,7 @@ function homeSceneDraw(){
       return '<li'+(live ? ' class="live"' : '')+'><b>'+esc(stage)+'</b><span><i>'+esc(when)+'</i> · '+esc(dates)+'</span></li>';
     }).join('');
     return '<div class="hs-ev"><img src="'+esc(art)+'" alt="" loading="lazy" onerror="this.remove()"><div>'+
-      '<b class="hs-t">'+esc(title)+'</b>'+money.map(m=>'<span class="hs-money">'+esc(m)+'</span>').join('')+'<ul class="hs-st">'+stages+'</ul></div></div>';
+      '<b class="hs-t">'+esc(title)+'</b>'+money.map(m=>'<span class="hs-money">'+(ccUiClassic() ? '💰 ' : '')+esc(m)+'</span>').join('')+'<ul class="hs-st">'+stages+'</ul></div></div>';
   }).join('');
   // Другие турниры с призовыми — Liquipedia; только те, что ещё не кончились.
   // Только турниры Epic (16.10: «пусть будут турниры от Epic только»): капы Epic и FNCS; сторонние лиги, лестницы и кубки — нет.
@@ -168095,7 +168112,7 @@ function homeSceneDraw(){
     // Постер капа — тот же, что у капов этого вида в карьере (CAREER_EV_ART_ID: c41r — Reload, c38d — Victory Cup, c25d — Cash Cup).
     const art=/Reload/i.test(x.n) ? 'art/cups/c41r.jpg' : /Victory/i.test(x.n) ? 'art/cups/c38d.jpg' : 'art/cups/c25d.jpg';
     return '<li class="hs-li'+(live ? ' live' : '')+'"><img src="'+art+'" alt="" onerror="this.remove()"><div><b>'+esc(x.n)+(x.tier ? ' <em>'+esc(x.tier)+'</em>' : '')+'</b>'+
-      '<span><i>'+esc(when)+'</i> · '+esc(dates)+(x.loc ? ' · '+esc(x.loc) : '')+'</span><span class="hs-pm">'+esc(money)+'</span></div></li>';
+      '<span><i>'+esc(when)+'</i> · '+esc(dates)+(x.loc ? ' · '+esc(x.loc) : '')+'</span><span class="hs-pm">'+(ccUiClassic() ? '💰 ' : '')+esc(money)+'</span></div></li>';
   }).join('');
   // Таймер до ближайшего турнира — здесь же, в колонке сцены (16.10: «пусть таймер будет где scene»); заполняет homeTimerDraw.
   box.innerHTML='<h2 class="home-h">'+esc(T.hmSceneTitle)+'</h2><p class="home-sub">'+esc(T.hmSceneSub2)+'</p><div class="home-timer" id="homeTimer" hidden></div>'+
