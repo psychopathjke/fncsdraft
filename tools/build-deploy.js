@@ -195,6 +195,8 @@ fs.writeFileSync(path.join(OUT, 'index.html'),
  * Снимается ИЗ ЖИВОЙ СТРАНИЦЫ, а не разбором словаря: значения бывают с
  * подстановками ({CARDS}) и пересобираются после (ccModeCountPills), и
  * повторять эту логику здесь значило бы завести вторую правду. */
+const LANGS = ['en', 'ru', 'fr', 'it', 'pt', 'de', 'es'];
+let DUMPS = null;   // {en:{ключ:текст}, ru:{…}, …} — снимок prefillI18n, нужен страницам языков
 function prefillI18n(dir) {
   const { execFileSync } = require('child_process');
   const CHROME = [process.env.CHROME,
@@ -208,15 +210,21 @@ function prefillI18n(dir) {
   // Копия рядом с приложением, чтобы app.js и его файлы нашлись по своим путям.
   const probePath = path.join(dir, '__prefill.html');
   fs.writeFileSync(probePath, shell +
+    // Снимаются все языки за один заход: английский — в эту оболочку, остальные — в /ru/, /fr/, …
+    // (tools/build-lang-pages.js). de и es — ленивые файлы, их ждём, пока словарь не появится.
     '<pre id="__p" style="display:none"></pre><script>' +
-    'window.addEventListener("load",function(){var o={};try{' +
-    'setLang("en",false);applyStaticI18n();' +
-    'document.querySelectorAll("[data-i18n]").forEach(function(el){' +
+    'window.addEventListener("load",function(){var o={},LS=' + JSON.stringify(LANGS) + ',i=0;' +
+    'function grab(l){var g={};document.querySelectorAll("[data-i18n]").forEach(function(el){' +
     'var k=el.getAttribute("data-i18n");var v=el.innerHTML;' +
-    'if(v&&v.trim()&&!(k in o)) o[k]=v;});' +
-    '}catch(e){o.__err=String(e&&e.message||e);}' +
-    'document.getElementById("__p").textContent="PB"+"EGIN"+' +
-    'encodeURIComponent(JSON.stringify(o))+"PE"+"ND";});<' + '/script>', 'utf8');
+    'if(v&&v.trim()&&!(k in g)) g[k]=v;});o[l]=g;}' +
+    'function done(){document.getElementById("__p").textContent="PB"+"EGIN"+' +
+    'encodeURIComponent(JSON.stringify(o))+"PE"+"ND";}' +
+    'function next(){if(i>=LS.length)return done();var l=LS[i++],n=0;' +
+    'try{setLang(l,false);}catch(e){o.__err=String(e&&e.message||e);return done();}' +
+    '(function wait(){if(l==="en"||(typeof I18N!=="undefined"&&I18N[l])||n++>100){' +
+    'try{setLang(l,false);applyStaticI18n();grab(l);}catch(e){o.__err=String(e&&e.message||e);return done();}' +
+    'setTimeout(next,50);}else setTimeout(wait,100);})();}' +
+    'next();});<' + '/script>', 'utf8');
   let dump = null;
   try {
     const dom = execFileSync(CHROME, ['--headless=new', '--disable-gpu', '--no-sandbox',
@@ -231,10 +239,11 @@ function prefillI18n(dir) {
     (dump && dump.__err ? ': ' + dump.__err : '')); return 0; }
   // Заполняются только ПУСТЫЕ элементы — те, что в разметке стоят как
   // <span data-i18n="x"></span>. Всё, у чего содержимое своё, не трогаем.
+  DUMPS = dump;
   let filled = 0;
   const out = shell.replace(/<([a-zA-Z][\w-]*)([^>]*\sdata-i18n="([^"]+)"[^>]*)><\/\1>/g,
     (all, tag, attrs, key) => {
-      const v = dump[key];
+      const v = (dump.en || {})[key];
       if (typeof v !== 'string' || !v) return all;
       filled++;
       return '<' + tag + attrs + '>' + v + '</' + tag + '>';
@@ -307,6 +316,15 @@ const prefilled = prefillI18n(OUT);
 
 /* Страницы игроков (/player/<ник>, /players) и их адреса в sitemap.xml — см. build-player-pages.js. */
 require('child_process').execFileSync(process.execPath, [path.join(__dirname, 'build-player-pages.js'), OUT], { stdio: 'inherit' });
+
+/* Главная на каждом языке (/ru/, /fr/, …) с hreflang и строками в sitemap.xml — см. build-lang-pages.js.
+   Снимок текста передаётся файлом и удаляется: на сайт он не едет. */
+(function langPages() {
+  const dumpPath = path.join(OUT, '__i18n-dumps.json');
+  fs.writeFileSync(dumpPath, JSON.stringify(DUMPS || {}), 'utf8');
+  try { require('child_process').execFileSync(process.execPath, [path.join(__dirname, 'build-lang-pages.js'), OUT, dumpPath], { stdio: 'inherit' }); }
+  finally { fs.rmSync(dumpPath, { force: true }); }
+})();
 
 const count = (function walk(d) {
   return fs.readdirSync(d, { withFileTypes: true })

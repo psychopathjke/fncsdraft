@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Modo carrera de Fortnite en el navegador | FNCS Draft</title>
+<meta name="description" content="Qué es FNCS Draft: un modo carrera de Fortnite y simulador de draft de la FNCS, gratis y en el navegador. Temporadas con el calendario real de la FNCS, divisiones, Majors, Reload, LANs y la Nations Cup, con cartas sacadas de torneos reales.">
+<meta name="theme-color" content="#0e1116">
+<link rel="canonical" href="https://fncsdraft.com/es/about">
+<link rel="icon" type="image/png" sizes="96x96" href="/favicon-96.png">
+<link rel="apple-touch-icon" href="/favicon-192.png">
+
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="FNCS Draft">
+<meta property="og:title" content="Modo carrera de Fortnite en el navegador | FNCS Draft">
+<meta property="og:description" content="Un modo carrera de Fortnite y simulador de draft de la FNCS, gratis: temporadas con el calendario real de la FNCS, divisiones, Majors, Reload, LANs y la Nations Cup.">
+<meta property="og:url" content="https://fncsdraft.com/es/about">
+<meta property="og:image" content="https://fncsdraft.com/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Modo carrera de Fortnite en el navegador | FNCS Draft">
+<meta name="twitter:description" content="Un modo carrera de Fortnite y simulador de draft de la FNCS, gratis y hecho con resultados reales de la FNCS.">
+<meta name="twitter:image" content="https://fncsdraft.com/og-image.png">
+
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+ {"@type":"Question","name":"¿Fortnite tiene modo carrera?",
+  "acceptedAnswer":{"@type":"Answer","text":"Fortnite en sí no tiene modo carrera. FNCS Draft es uno gratis y hecho por fans: juegas una carrera competitiva de Fortnite temporada tras temporada con el calendario real de la FNCS, pasando por divisiones, Majors, Reload y LANs."}},
+ {"@type":"Question","name":"¿FNCS Draft es gratis?",
+  "acceptedAnswer":{"@type":"Answer","text":"Sí. Funciona en el navegador, sin registro y sin nada que instalar ni pagar."}},
+ {"@type":"Question","name":"¿Los jugadores son reales?",
+  "acceptedAnswer":{"@type":"Answer","text":"Sí. Las cartas salen de torneos reales de la FNCS, y cada valoración se calcula con los resultados de ese jugador en esa temporada."}},
+ {"@type":"Question","name":"¿Puedo jugar la carrera con un amigo?",
+  "acceptedAnswer":{"@type":"Answer","text":"Sí. Dos personas pueden jugar juntas la misma noche de torneo y las dos ven la misma clasificación."}},
+ {"@type":"Question","name":"¿Puedo seguir mi carrera en otro dispositivo?",
+  "acceptedAnswer":{"@type":"Answer","text":"Sí. Activa la Nube en la pantalla de carreras para recibir un código y luego ingrésalo en el otro dispositivo."}}]}
+</script>
+
+<style>
+/* Шрифт и палитра: те же файлы и те же токены, что у самой игры: страница
+   должна читаться её продолжением, а не соседним сайтом. Значения скопированы
+   из :root в index.html, четыре подмножества Oswald лежат в fonts/. */
+@font-face{font-family:'Oswald';font-style:normal;font-weight:200 700;font-display:swap;
+  src:url(/fonts/oswald-latin.woff2) format('woff2');
+  unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;}
+@font-face{font-family:'Oswald';font-style:normal;font-weight:200 700;font-display:swap;
+  src:url(/fonts/oswald-latin-ext.woff2) format('woff2');
+  unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;}
+:root{
+  --go:#ffdd00; --go-ink:#0b0f12;
+  --bg:#0e1116; --panel:#161b22; --panel2:#1d232c;
+  --ink:#eef2f6; --ink-dim:#7d8a9a; --ink-dimmer:#4d5866;
+  --accent:#00b090; --line:#262e39;
+  --page-base:linear-gradient(180deg,#0d141a 0%,#0e1116 45%,#0b0e13 100%);
+  --cut:polygon(0 0,100% 0,100% calc(100% - 16px),calc(100% - 16px) 100%,0 100%);
+  --font-display:'Oswald','Arial Narrow','Helvetica Neue Condensed','Roboto Condensed',Impact,sans-serif;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0; background:var(--page-base); background-attachment:fixed; color:var(--ink);
+  font:16px/1.7 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+}
+.wrap{max-width:820px;margin:0 auto;padding:28px 20px 80px}
+
+.crumb{font-family:var(--font-display);text-transform:uppercase;letter-spacing:.06em;
+  font-size:13px;color:var(--ink-dim);margin:0 0 26px}
+.crumb a{color:var(--accent);text-decoration:none}
+.crumb a:hover{color:var(--ink)}
+
+h1,h2,h3{font-family:var(--font-display);font-weight:600;letter-spacing:.03em;line-height:1.1;margin:0}
+h1{font-size:clamp(30px,7vw,52px);text-transform:uppercase;margin:0 0 14px}
+h2{font-size:clamp(20px,4.4vw,30px);text-transform:uppercase;letter-spacing:.05em;
+  color:var(--accent);margin:2.2em 0 .6em}
+h3{font-size:18px;text-transform:uppercase;letter-spacing:.05em;margin:0 0 .5em}
+p{margin:0 0 1em}
+.lead{font-size:18px;color:var(--ink-dim);margin-bottom:1.6em}
+a{color:var(--accent)}
+ul{margin:0 0 1em;padding-left:1.1em}
+li{margin:.45em 0}
+li b{color:var(--ink);font-weight:600}
+strong{color:var(--ink)}
+
+/* Жёлтая кнопка со скосом: подпись сайта, один в один как на первом экране. */
+.cta{display:inline-block;background:var(--go);border:1.5px solid var(--go);color:var(--go-ink);
+  font-family:var(--font-display);font-weight:600;font-size:17px;letter-spacing:.06em;
+  text-transform:uppercase;line-height:1;padding:13px 26px 12px;text-decoration:none;
+  transform:skewX(-8deg);transition:filter .15s,transform .15s}
+.cta span{display:inline-block;transform:skewX(8deg)}
+.cta:hover{filter:brightness(1.08)}
+.cta-row{margin:1.4em 0 .4em}
+
+/* Карточка: тот же бирюзовый градиент и тот же срез угла, что у плиток режимов. */
+.card{border:1px solid rgba(126,240,221,.28);border-radius:3px;clip-path:var(--cut);
+  background:linear-gradient(112deg,#06222a 0%,#0a3a3a 52%,#0d3542 100%);
+  padding:22px 24px;margin:1.5em 0}
+.card p:last-child{margin-bottom:0}
+
+.facts{display:flex;flex-wrap:wrap;gap:8px;margin:1.4em 0 0;padding:0;list-style:none}
+.facts li{margin:0;border:1px solid rgba(126,240,221,.32);background:rgba(126,240,221,.08);
+  color:#dff6f1;border-radius:3px;padding:7px 13px;font-size:13px;
+  font-family:var(--font-display);letter-spacing:.04em;text-transform:uppercase}
+.facts b{color:var(--go);font-size:15px}
+
+.qa{border-top:1px solid var(--line);padding-top:1.1em;margin-top:1.4em}
+.qa:first-of-type{border-top:0}
+
+footer{margin-top:3.4em;padding-top:1.4em;border-top:1px solid var(--line);
+  color:var(--ink-dimmer);font-size:13px;
+  font-family:var(--font-display);letter-spacing:.05em;text-transform:uppercase}
+footer a{color:var(--ink-dim);text-decoration:none}
+footer a:hover{color:var(--accent)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<p class="crumb"><a href="/es/">FNCS Draft</a> · Acerca de · <a href="/players">Jugadores de la FNCS</a></p>
+
+<h1>Modo carrera de Fortnite<br>en el navegador</h1>
+
+<p class="lead">FNCS Draft es un modo carrera de Fortnite y simulador de draft de la FNCS,
+gratis y hecho por fans. Funciona en el navegador, sin instalar nada y sin registro.
+Todos los jugadores son jugadores reales de la FNCS, y su valoración sale de sus
+resultados en torneos.</p>
+
+<p class="cta-row"><a class="cta" href="/es/"><span>Jugar ahora</span></a></p>
+
+<ul class="facts">
+  <li><b>8</b> años</li>
+  <li><b>7</b> regiones</li>
+  <li><b>76</b> logros</li>
+  <li><b>7</b> idiomas</li>
+  <li><b>0</b> registro</li>
+</ul>
+
+<h2>Modo carrera</h2>
+
+<p>Empiezas como novato y juegas una temporada tras otra con el calendario real de
+la FNCS. Los demás jugadores de tus lobbies son las personas que jugaron la FNCS ese
+año.</p>
+
+<ul>
+  <li><b>Años.</b> Cada año de 2019 a 2026, cada uno con el formato de equipo que
+      se usó de verdad.</li>
+  <li><b>Divisiones.</b> Las buenas semanas en las copas te hacen subir, las malas te
+      hacen bajar. En 2024 no hubo divisiones, así que ese año tampoco las tiene.</li>
+  <li><b>Majors.</b> Clasificatorias abiertas, heats, Last Chance y la Grand Final,
+      con las reglas de Epic para cada temporada.</li>
+  <li><b>Reload Championship</b> y los <b>LANs</b>: Düsseldorf, Amberes y la
+      Esports World Cup.</li>
+  <li><b>Nations Cup</b> y los eventos solo, con selecciones nacionales formadas por
+      los mejores jugadores de cada país.</li>
+  <li><b>Fuera del servidor.</b> Compañeros de duo y trío, clubes y contratos, managers,
+      coaches, energía y forma, y un feed social.</li>
+</ul>
+
+<div class="card">
+<h3>Juega la carrera con un amigo</h3>
+<p>Dos personas pueden jugar juntas la misma noche de torneo. Los dos navegadores
+corren la misma simulación y solo se envían sus decisiones, así que los dos ven la
+misma clasificación.</p>
+</div>
+
+<h2>Fortnite Manager</h2>
+
+<p>Dirige un club en lugar de un jugador: ficha jugadores, define el presupuesto,
+entrena al equipo y llévalo por la temporada de la FNCS.</p>
+
+<h2>La escena real</h2>
+
+<p>La página principal sigue a la FNCS real: una cuenta regresiva para el próximo
+evento de Epic, las próximas fases y copas de la FNCS con sus premios, las ganancias
+del año por jugador con banderas y medallas, y la clasificación de carreras del
+propio sitio.</p>
+
+<h2>Modo draft</h2>
+
+<p>Arma un equipo de jugadores reales de la FNCS y juega el torneo en el que
+estuvieron: play-in, heats, Last Chance, Grand Finals y el LAN. Tú eliges dónde
+aterrizar. Los puntos disputados valen más, pero son más arriesgados.</p>
+
+<h2>De dónde salen las cartas</h2>
+
+<p>La valoración se calcula con los resultados. Una carta usa toda la temporada del
+jugador, y las fases más grandes cuentan más, así que una Grand Final pesa más que un
+heat.</p>
+
+<p>Hay unas 87 000 cartas de más de 600 torneos, desde la World Cup de 2019 hasta la
+temporada actual, en Europa, NA Central, NA West, Brasil, Asia, Medio Oriente y
+Oceanía.</p>
+
+<h2>Preguntas frecuentes</h2>
+
+<div class="qa">
+<h3>¿Fortnite tiene modo carrera?</h3>
+<p>No dentro del juego. FNCS Draft es uno hecho por fans, basado en el calendario
+competitivo.</p>
+</div>
+
+<div class="qa">
+<h3>¿Cuesta algo?</h3>
+<p>No. No hay registro ni cuenta. Tu carrera se guarda en tu navegador.</p>
+</div>
+
+<div class="qa">
+<h3>¿Puedo jugar en otro dispositivo?</h3>
+<p>Sí. Activa la Nube en la pantalla de carreras y recibes un código de 16 caracteres.
+Ingrésalo en otro celular o computadora y tus carreras y tu manager se vienen
+contigo. No compartas el código: funciona como una contraseña.</p>
+</div>
+
+<div class="qa">
+<h3>¿En qué idiomas está?</h3>
+<p>Inglés, ruso, francés, italiano, portugués, alemán y español.</p>
+</div>
+
+<div class="qa">
+<h3>¿Esto lo hizo Epic Games?</h3>
+<p>No. Es un proyecto independiente de fans, sin relación con Epic Games y sin su
+respaldo. Fortnite y FNCS son marcas registradas de Epic Games.</p>
+</div>
+
+<p class="cta-row"><a class="cta" href="/es/"><span>Empezar carrera</span></a></p>
+
+<footer><a href="/es/">fncsdraft.com</a></footer>
+
+</div>
+</body>
+</html>

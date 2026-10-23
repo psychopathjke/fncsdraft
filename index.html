@@ -395,7 +395,7 @@
   @media (prefers-reduced-motion: reduce){ .ch-play:not(:disabled):active, .cc-back:active, .cc-act:active, .ch-simbtn:active, .ch-end:active{transform:none;} }
 </style>
 <script>try{document.addEventListener('touchstart',function(){},{passive:true});}catch(e){}</script>
-<script>(function(){try{var L=['ru','fr','it','pt','de','es'],s=localStorage.getItem('fncsdraft_lang'),l=null;if(s==='en'||L.indexOf(s)>=0)l=s;else{var n=String(navigator.language||'').toLowerCase();for(var i=0;i<L.length;i++)if(n.indexOf(L[i])===0){l=L[i];break;}}if(l&&l!=='en'){var h=document.documentElement;h.lang=l;h.className+=' i18n-wait';setTimeout(function(){h.classList.remove('i18n-wait');},3000);}}catch(e){}})();</script>
+<script>(function(){try{var L=['ru','fr','it','pt','de','es'],s=localStorage.getItem('fncsdraft_lang'),l=null,p=location.pathname.match(/^\/(ru|fr|it|pt|de|es)(\/|$)/);if(p)l=p[1];else if(s==='en'||L.indexOf(s)>=0)l=s;else{var n=String(navigator.language||'').toLowerCase();for(var i=0;i<L.length;i++)if(n.indexOf(L[i])===0){l=L[i];break;}}if(l&&l!=='en'){var h=document.documentElement;h.lang=l;h.className+=' i18n-wait';setTimeout(function(){h.classList.remove('i18n-wait');},3000);}}catch(e){}})();</script>
 <!-- Заголовок вкладки — он же главное слово поиска. Просьба:
      «хочу чтоб мой сайт появлялся в браузере при вводе fortnite career».
      Стояло «fncsdraft»: ни «Fortnite», ни «career», и слова Fortnite не было
@@ -21773,6 +21773,20 @@ const CC_LANGS=['en','ru','fr','it','pt','de','es'];
    Аргентина 50 тыс.). Словари — отдельными файлами i18n-de.js / i18n-es.js (tools/build-i18n.js): app.js упирается в 9 МБ,
    а словарь нужен только тем, кто выбрал язык. Пока файл не пришёл, L() показывает английский (он и так под каждым языком). */
 const CC_LANG_FILES={de:1, es:1};
+/* ЯЗЫКОВЫЕ АДРЕСА (23.10, его «поиск в гугле со всех языков»): Google видел только английскую страницу, и по-русски,
+   по-французски, по-немецки сайт не находился. Теперь у каждого языка свой адрес /ru/, /fr/, … (их собирает
+   tools/build-lang-pages.js из этой же оболочки), язык адреса главнее сохранённого и языка браузера — но не сохраняется.
+   Заголовок и описание для поиска — отсюда же, сборка читает этот объект. */
+const CC_SEO={
+  en:{t:'FNCS Draft: Fortnite career mode and FNCS draft simulator', d:'Play a Fortnite career on the real FNCS calendar: divisions, Majors, Reload and LANs, solo or with a friend. Or draft a squad of real FNCS players and run the whole tournament. Free, no signup.'},
+  ru:{t:'FNCS Draft: режим карьеры Fortnite и симулятор драфта FNCS', d:'Карьера в Fortnite по настоящему календарю FNCS: дивизионы, Мейджоры, Reload и ЛАНы, в одиночку или с другом. Или собери состав из реальных игроков FNCS и пройди весь турнир. Бесплатно, без регистрации.'},
+  fr:{t:'FNCS Draft : mode carrière Fortnite et simulateur de draft FNCS', d:'Joue une carrière Fortnite sur le vrai calendrier FNCS : divisions, Majors, Reload et LAN, en solo ou avec un ami. Ou drafte une équipe de vrais joueurs FNCS et joue tout le tournoi. Gratuit, sans inscription.'},
+  it:{t:'FNCS Draft: modalità carriera di Fortnite e simulatore di draft FNCS', d:'Gioca una carriera di Fortnite sul vero calendario FNCS: divisioni, Major, Reload e LAN, da solo o con un amico. Oppure scegli una squadra di veri giocatori FNCS e gioca tutto il torneo. Gratis, senza registrazione.'},
+  pt:{t:'FNCS Draft: modo carreira de Fortnite e simulador de draft da FNCS', d:'Jogue uma carreira de Fortnite no calendário real da FNCS: divisões, Majors, Reload e LANs, sozinho ou com um amigo. Ou monte um time com jogadores reais da FNCS e jogue o torneio inteiro. Grátis, sem cadastro.'},
+  de:{t:'FNCS Draft: Fortnite-Karrieremodus und FNCS-Draft-Simulator', d:'Spiele eine Fortnite-Karriere im echten FNCS-Kalender: Divisionen, Majors, Reload und LANs, allein oder mit einem Freund. Oder stell ein Team aus echten FNCS-Spielern zusammen und spiel das ganze Turnier. Kostenlos, ohne Anmeldung.'},
+  es:{t:'FNCS Draft: modo carrera de Fortnite y simulador de draft de la FNCS', d:'Juega una carrera de Fortnite en el calendario real de la FNCS: divisiones, Majors, Reload y LAN, solo o con un amigo. O arma un equipo con jugadores reales de la FNCS y juega todo el torneo. Gratis, sin registro.'}
+};
+const CC_PATH_LANG=(function(){ try{ const m=location.pathname.match(/^\/(ru|fr|it|pt|de|es)(\/|$)/); return m ? m[1] : null; }catch(e){ return null; } })();
 /* Дозаливка «fr» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
 Object.assign(I18N.fr=I18N.fr||{},
 ({
@@ -23315,6 +23329,7 @@ function ccLangLoad(lang, done){
 }
 let CC_L_CACHE={};
 let LANG=(function(){
+  if(CC_PATH_LANG) return CC_PATH_LANG;
   try{
     const saved=localStorage.getItem(LS_LANG);
     if(CC_LANGS.indexOf(saved)>=0) return saved;
@@ -24597,11 +24612,17 @@ function setLang(lang, persist){
                  if(b) b.hidden=!CC_MP_OPEN;
                }); })();
   if(persist!==false){ try{ localStorage.setItem(LS_LANG, lang); }catch(e){} }
+  // Сменил язык руками на /ru/ и т.п. — адрес следом, иначе перезагрузка вернула бы язык адреса.
+  if(persist!==false && CC_PATH_LANG && lang!==CC_PATH_LANG){
+    try{ history.replaceState(null, '', '/' + (lang==='en' ? '' : lang + '/') + location.search + location.hash); }catch(e){}
+  }
   try{ if(typeof homeRender==='function') homeRender(); }catch(e){}
   // Keep the declared language honest, otherwise search engines and screen
   // readers go on trusting whatever <html lang> said at load.
   document.documentElement.lang=lang;
-  document.title = L().pageTitle;
+  // Заголовок — тот, что ищут (CC_SEO), а не pageTitle 'fncsdraft': Google берёт заголовок ОТРИСОВАННОЙ страницы,
+  // и после setLang он был просто «fncsdraft» на всех языках.
+  document.title = (CC_SEO[lang] || CC_SEO.en).t;
   // The career hub is built as innerHTML through L() at the moment it is drawn,
   // so it keeps whatever language it was drawn in. data-i18n nodes get swept by
   // the loop below and the tabs change; the body does not, and a player who
