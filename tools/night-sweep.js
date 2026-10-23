@@ -49,6 +49,9 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
     say('журнал поломок за сутки: ' + fresh.length + ' видов, ' + fresh.reduce((s, r) => s + (r.n || 1), 0) + ' раз' +
       fresh.slice(0, 5).map(r => '\n    ' + r.kind + ' ×' + r.n + ' ' + r.build + ' ' + r.msg.slice(0, 120) + (r.src ? ' @' + r.src : '')).join(''));
   } catch (e) { say('FAIL проверка сервера: ' + String(e.message || e).slice(0, 200)); }
+  // Люди за вчера и ошибки воркеров (tools/cf-stats.js, без токена — пропуск).
+  try { say(execFileSync(process.execPath, [path.join(ROOT, 'tools', 'cf-stats.js'), '--short'], { encoding: 'utf8' }).trim()); }
+  catch (e) { say(String(e.stdout || e.message || e).trim().slice(0, 300) || 'FAIL статистика'); }
 
   let worker = null;
   if (!(await alive())) {
