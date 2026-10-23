@@ -116792,6 +116792,9 @@ function ccDivCount(reg){
   const r=reg || (typeof ccCareerRegion==='function' ? ccCareerRegion() : 'EU');
   // 2023-й: Elite, Contender, Challenger — три везде.
   if(typeof ccIs2023==='function' && (ccIs2023() || ccIs2022())) return 3;
+  /* 2025-й: трио-лестница FNCS (S33–S37) — Д1–Д3 во всех семи регионах, FNCS Trial садил только в них
+     (его слово 23.10: «делай как в фортнайте 25 год»). Д4–Д5 у Epic появились с дуо-капами S37 и в 2026-м. */
+  if(typeof ccIs2025==='function' && ccIs2025()) return 3;
   return CC_DIV_DEEP.indexOf(r)>=0 ? 5 : 3;
 }
 /* Три ступени держат ту же полосу, что и пять: верх остаётся верхом, низ —
