@@ -118631,7 +118631,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='98b05ef8';
+const CC_BUILD='edc589d8';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -138498,7 +138498,14 @@ const CC_STAFF_RES={
   "ArtinMNG":{p:83, who:["karmy","Akiira","glubfnbr","3R8"]},   // Beyond Agency (konect.gg/Artin, теги агентства)
   "DamlosMNG":{p:81, who:["Noia","Ve1ryy","Seekk","Zyyron"]},   // almanagement.fr/talents
   "NaaxoMNG":{p:77, who:["Tisma","Skyz"]},   // naaxo.netlify.app, konect.gg/NaaxoMNG
-  "askebott":{p:67, who:["noah","Poweer","DANYA"]}   // konect.gg/AskeyMNG
+  "askebott":{p:67, who:["noah","Poweer","DANYA"]},   // konect.gg/AskeyMNG
+  // Игроки названы, а карт в базе нет (или только тёзки) — рейтинг 65.
+  "Zerkomng":{p:null, who:["insaneebtw","cuhkifn","eonshh","snekgery"]},   // шапка X
+  "LC7_MNG":{p:null, who:["toryzenfv","maddingooo"]},   // шапка X
+  "yaleblan":{p:null, who:["rexivski","Hugo","Linqish","dkay","arvid","Meltz","ozarxo","Atome","Da1ko","dzeq"]},   // linktr.ee/YaleblanFN
+  "Raziaa_":{p:null, who:["Noaggs","Hazyache","squadir23","noa"]},   // шапка X 21.08, konect.gg/raziaa
+  "Skyforcemng272":{p:null, who:["joyyfnrr","NATEKFN1","Karotek_"]},   // шапка X 29.09
+  "apolinmng":{p:null, who:["crunkezz","jayzfnn"]}   // шапка X 27.09 (аккаунт 23.10 заблокирован)
 };
 function ccStaffRating(x){
   if(!x) return 60;
@@ -138506,7 +138513,8 @@ function ccStaffRating(x){
   if(x.train!=null && x.keys){ try{ return ccCoachRatingOf(x); }catch(e){ return x.rating||60; } }
   const r=CC_STAFF_RES[x.at];
   // Один-два клиента — ещё не результат: −2 за каждого недостающего до четырёх.
-  if(r) return Math.max(60, Math.min(95, Math.round(r.p-6-2*Math.max(0, 4-(r.who||[]).length))));
+  // Есть хоть один свой игрок — не ниже 65 (его слово 23.10); p:null — игроки названы, но карт в базе нет.
+  if(r) return r.p==null ? 65 : Math.max(65, Math.min(95, Math.round(r.p-6-2*Math.max(0, 4-(r.who||[]).length))));
   /* Менеджер — только от игроков (его слово 23.10: «пусть от игроков зависит рейтинг, а не от подписчиков»). Без найденных
      игроков — низ шкалы; подписчики решают лишь порядок равных (ccByHand). SMM и маркетинг — по-прежнему по аудитории. */
   let agent=false; try{ agent=CC_AGENTS.some(a=>a.at===x.at); }catch(e){}
