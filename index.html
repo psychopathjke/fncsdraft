@@ -118631,7 +118631,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='02c7f085';
+const CC_BUILD='98b05ef8';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -138477,7 +138477,6 @@ const CC_STAFF_RES={
   "PixelzMNG":{p:77, who:["Matice","Shadox","Seili","Th3ioF"]},   // 23.10: matice, Shadox, Seili, Th3io, Sobyy, Berre (двух последних в базе нет)
   "ClapMNG":{p:90.5, who:["Twek","Salko","Kyzen","Artskill"]},   // 23.10: Kyzen, Lame (BR, не EU Lame), Girlybella, Artskill, salko, twek, Turtl3
   "IdziU97":{p:92.5, who:["Shadow","Blacha","Nxthan","G13ras"]},   // 23.10: Nathan, Shadow, Blacha, Kombek, Pixovsky, Predage, cheatiin, G13ras
-  "ArtinMNG":{p:79.5, who:["karmy","glubfnbr","3R8","TrikShotz"]},   // 23.10: Glub — это glubfnbr (79), не Glubschi
   "SweetyyFN":{p:95.8, who:["Flickzy","Pixie","MariusCOW","Tjino"]},
   "SandoraFN":{p:96, who:["Vanyak3kk"]},
   "baderwtw":{p:95, who:["Eomzo","PXMP"]},
@@ -138485,8 +138484,21 @@ const CC_STAFF_RES={
   "Goalkikermng":{p:89.7, who:["Upl","F1n4ik","Predage"]},
   "PyraxMGMT":{p:92, who:["SkyJump"]},
   "JoaovEU":{p:96, who:["Vanyak3kk","Ajerss"]},   // 23.10: JV Agency — Vanyak3kk и Ajerss
-  "AlybiSaCE":{p:77, who:["EpikWhale","crylix"]},   // 23.10: Proxy — EpikWhale, anonzr (нет в базе), Crylix
-  "loicmng_":{p:52, who:["Galaxyache 32"]}   // 23.10: Galaxyache, Gabusg67, 7destroyy, Rezpaaaan, FnKeran — в базе только Galaxyache
+  "loicmng_":{p:52, who:["Galaxyache 32"]},   // 23.10: konect.gg/loicmng — 23 клиента; в базе только Galaxyache (Louis 92 и voz OCE — тёзки)
+  /* 23.10 вечер (его слово: «пусть от игроков зависит рейтинг, а не от подписчиков»): составы агентств — сайты агентств,
+     konect.gg, linktree, твиты игроков «contact @…». Тёзки из чужого региона отброшены (Magma NAC, Raz ME, Noa ASIA,
+     Jax OCE, Hugo OCE, Centro NAW). Четыре лучшие карты базы. */
+  "alhasarda":{p:98, who:["Kami","SwizzY","JannisZ","Flickzy"]},   // onlygrp.com/clients: + charyy, Chap, Kaan
+  "ElyxxM":{p:97, who:["Setty","Sky","Scroll","TaySon"]},   // «agent for Sky and Scroll» (24.09), TaySon и Setty — contact в твитах
+  "AlybiSaCE":{p:92.8, who:["EpikWhale","Braydz","Aoxy","Kraez"]},   // Proxy: + Vazen, Twunti, crylix (contact в твитах 2026)
+  "Yeekzie7":{p:92.3, who:["P1ng","Howly","1Lusha","Minori"]},   // questmind.gg/fr/esport: + Darkos, Syaaz, Ghonzo, iFr0zi, Aiden, NeFrizi, Tylio
+  "RemssMNG":{p:92, who:["Momsy","Izzi","Darkos","Minori"]},   // konect.gg/RemssMNG: + Tisma, Tylio, Frost, Th3ioF, Sweey
+  "F0C8S":{p:92, who:["Bacca","Curve","Ozone","Dolzeur"]},   // CreedTalent: + Channce, Wolvax, Wheat, Hedra, catman
+  "Th0masNL":{p:87.5, who:["Repairs","Robin"]},   // contact в твитах 2026; Hiizix в базе нет
+  "ArtinMNG":{p:83, who:["karmy","Akiira","glubfnbr","3R8"]},   // Beyond Agency (konect.gg/Artin, теги агентства)
+  "DamlosMNG":{p:81, who:["Noia","Ve1ryy","Seekk","Zyyron"]},   // almanagement.fr/talents
+  "NaaxoMNG":{p:77, who:["Tisma","Skyz"]},   // naaxo.netlify.app, konect.gg/NaaxoMNG
+  "askebott":{p:67, who:["noah","Poweer","DANYA"]}   // konect.gg/AskeyMNG
 };
 function ccStaffRating(x){
   if(!x) return 60;
@@ -138495,6 +138507,10 @@ function ccStaffRating(x){
   const r=CC_STAFF_RES[x.at];
   // Один-два клиента — ещё не результат: −2 за каждого недостающего до четырёх.
   if(r) return Math.max(60, Math.min(95, Math.round(r.p-6-2*Math.max(0, 4-(r.who||[]).length))));
+  /* Менеджер — только от игроков (его слово 23.10: «пусть от игроков зависит рейтинг, а не от подписчиков»). Без найденных
+     игроков — низ шкалы; подписчики решают лишь порядок равных (ccByHand). SMM и маркетинг — по-прежнему по аудитории. */
+  let agent=false; try{ agent=CC_AGENTS.some(a=>a.at===x.at); }catch(e){}
+  if(agent) return 60;
   const f=CC_STAFF_X[x.at]!=null ? CC_STAFF_X[x.at] : (x.x||500);
   return Math.max(60, Math.min(76, Math.round(60+6*Math.log10(Math.max(1000, f)/1000))));
 }
