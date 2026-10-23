@@ -173,6 +173,10 @@ const BOOT = `
     const rl=(s.log||[]).slice(-1)[0];
     check('LCQ записан: 10 игр', rl && rl.stage==='lcq' && rl.games===10, JSON.stringify(rl && {stage:rl.stage, games:rl.games, place:rl.place, of:rl.of}));
     check('в LCQ нет лобби в тот же день', !/лобби|lobby/i.test(pl.head), pl.head);
+    // Notion 23.10, скрин 8: без своего Плей-Ина мир сажает финал групп, и в LCQ этих людей нет.
+    const ws=s.majorSeed, fin=ccScaleStage(ccMajorStageSpec('final'));
+    check('без Плей-Ина мир посадил финал групп', ws && ws.world && ws.n===1 && (ws.through||[]).length>=fin.field-ccLcLobbyGames(),
+          JSON.stringify(ws && {world:ws.world, n:ws.n, through:(ws.through||[]).length, fin:fin.field}));
     out.steps.push('lcq: '+pl.head+' · #'+(rl&&rl.place)+' of '+(rl&&rl.of));
     if(s.major && s.major.pass==='lcq'){
       check('прошёл LCQ — билета ещё нет', !s.major.ticket);

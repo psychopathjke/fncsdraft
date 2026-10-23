@@ -155782,6 +155782,7 @@ function ccMajorWorldLcq(iso){
   const ev=careerMajorOn(iso);
   if(!ev || ev.stage!=='lcq') return 0;
   const cr=CAREER && CAREER.career;
+  ccMajorWorldSeat(ev);
   const s=cr && cr.majorSeed;
   if(!s || s.n!==ev.n || s.season!==cr.season) return 0;
   if(s.lcq) return 0;
@@ -155826,7 +155827,28 @@ function ccMajorWorldLcq(iso){
    собирается зал финала. Отдаётся он ровно тем же аргументом, которым
    careerCupField не выдаёт тебе тебя самого, — одними никами. Тот же приём,
    что у круга Reload, см. ccRelRoom. */
+/* МИР САЖАЕТ ФИНАЛ, КОГДА ИГРОК ПЛЕЙ-ИН НЕ ПРОШЁЛ (Notion 23.10, скрин 8: «в 6 главе почему-то все могут
+   играть последний шанс»). Запись прошедших пишет только свой Плей-Ин, а Ласт Ченс как раз для тех, кто
+   его не играл или не прошёл (2025: Д2–Д3 и выбывшие; 2026: все). Без записи комната LCQ собиралась из всей лестницы: Veno, Pixie, Queasy, Malibuca играли
+   последний шанс рядом с игроком (проба t-lcqfield.js). Теперь в день LCQ мир один раз сажает в финал
+   сильнейших региона (места групп: финал минус победы лобби), и их нет ни в LCQ, ни в добор финала. */
+function ccMajorWorldSeat(ev){
+  const cr=CAREER && CAREER.career;
+  if(!cr || !ev || ev.stage!=='lcq' || ev.yx || ev.y21 || ev.y22 || ev.y23 || ev.y24 || ccMajorIsShowdown(ev.n)) return;
+  const s=cr.majorSeed;
+  if(s && s.n===ev.n && s.season===cr.season) return;
+  const me=careerCard();
+  if(!me) return;
+  const drafted=[me].concat(careerMates().filter(Boolean));
+  const fin=ccScaleStage(ccMajorStageSpec('final', ev.n));
+  // Места финала минус те, что разыграет лобби Ласт Ченса (игра = место: 3 в 2025-м, 5 в 2026-м).
+  const n=Math.max(0, fin.field-ccLcLobbyGames());
+  const room=careerCupField(Object.assign({}, cr, {division:1}), drafted, n+1, 'majSeat', false, CC_FIELD_SHARP.heats);
+  cr.majorSeed={n:ev.n, season:cr.season, size:careerSquadSize(), rows:[], world:true,
+                through:room.slice().sort((a,b)=>(b.pow||0)-(a.pow||0)).slice(0, n).map(ccMajorSeatRow)};
+}
 function ccMajorSeatedHandles(ev){
+  ccMajorWorldSeat(ev);
   const cr=CAREER && CAREER.career, s=cr && cr.majorSeed;
   if(!s || !ev || s.n!==ev.n || s.season!==cr.season) return [];
   if(!Array.isArray(s.through)) return [];
@@ -161105,13 +161127,15 @@ function ccMajorTeamFrom(row){
 function ccMajorFinalRoom(you, lobbyCr, drafted, ev, st, sharp){
   const s=CAREER.career.majorSeed;
   const rows=ccMajorSeedRows(ev);
-  if(!rows) return [you, ...careerCupField(lobbyCr, drafted, st.field, null, false, sharp)];
+  // Финал, куда пришёл через Ласт Ченс без Плей-Ина: сидят те, кого мир посадил (ccMajorWorldSeat).
+  const world=!rows && s && s.world && s.n===ev.n && s.season===CAREER.career.season;
+  if(!rows && !world) return [you, ...careerCupField(lobbyCr, drafted, st.field, null, false, sharp)];
   const seen=new Set([ccSeatKey(you)]);
   const take=[];
   const add=t=>{ const k=ccSeatKey(t); if(seen.has(k)) return; seen.add(k); take.push(t); };
   ((s && s.through) || []).forEach(r=>{ if(r!=='you') add(ccMajorTeamFrom(r)); });
   const qual=take.length;
-  rows.filter(r=>r!=='you').map(ccMajorTeamFrom)
+  (rows||[]).filter(r=>r!=='you').map(ccMajorTeamFrom)
       .sort((a,b)=>(b.pow||0)-(a.pow||0))
       .forEach(t=>{ if(take.length<st.field-1) add(t); });
   // Полуторасотни на пятьдесят мест хватает с запасом; если запись короче
