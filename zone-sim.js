@@ -710,6 +710,38 @@
   // index.html uses.
   var CHAIN_CHANCE = 0.7;
 
+  /* КИЛЛЫ ПО ОДНОМУ, А НЕ ВАЙПОМ. Бой в движке идёт отряд на отряд, и победитель забирал весь размер
+     побеждённого разом: в трио счёт команды за игру был только 0, 3, 6, 9… — у Epic так не бывает, там
+     каждый килл свой (Notion 24.10.26: «some teams top 1 with full kills, some without any kills», окна
+     истории партий 6/0/0/3/0/30). Теперь каждый из элимов вайпа идёт победителю, а с долей THIRD_PARTY_SHARE
+     его добирает ближайший живой отряд рядом (третья сторона, добив). Сумма киллов лобби та же до штуки —
+     меняется только, у кого они. Доля — оценка, не замер: поигровых киллов трио в данных нет. */
+  var THIRD_PARTY_SHARE = 0.22;
+  var THIRD_PARTY_RANGE = 2 * CONTACT_RANGE;
+  function creditKills(winner, loser, size, alive, rng){
+    var near = null, best = THIRD_PARTY_RANGE * THIRD_PARTY_RANGE;
+    if(size > 1 && alive){
+      for(var i=0;i<alive.length;i++){
+        var q = alive[i];
+        if(q === winner || q === loser || !q.alive) continue;
+        var dx = q.x - loser.x, dy = q.y - loser.y, d = dx*dx + dy*dy;
+        if(d <= best){ best = d; near = q; }
+      }
+    }
+    var mine = size;
+    if(near){
+      for(var k=0;k<size;k++) if(rng() < THIRD_PARTY_SHARE) mine--;
+      if(mine < size){
+        near.elims += size - mine;
+        near.team._gElims = near.elims;
+        near.dealt += KILL_DAMAGE * (size - mine);
+      }
+    }
+    winner.elims += mine;
+    winner.team._gElims = winner.elims;
+    winner.dealt += KILL_DAMAGE * mine;
+  }
+
   // How many kills a streak can run to. index.html caps it at three, and that
   // is right for a final. An open stage is not a final: its leader takes 9.8 to
   // 12.8 eliminations a match, which is six squads a game, and no amount of
@@ -1092,9 +1124,7 @@
         var loser  = (winner === s) ? o : s;
         var loserSize = elimsFor(loser);
 
-        winner.elims += loserSize;
-        winner.team._gElims = winner.elims;
-        winner.dealt += KILL_DAMAGE * loserSize;
+        creditKills(winner, loser, loserSize, alive, rng);
         loser.taken += KILL_DAMAGE * loserSize;
         loser.alive = false;
         loser.hp = 0;
@@ -1132,9 +1162,7 @@
           var cw = (cwTeam === streaker.team) ? streaker : victim;
           var cl = (cw === streaker) ? victim : streaker;
           var clSize = elimsFor(cl);
-          cw.elims += clSize;
-          cw.team._gElims = cw.elims;
-          cw.dealt += KILL_DAMAGE * clSize;
+          creditKills(cw, cl, clSize, alive, rng);
           cl.taken += KILL_DAMAGE * clSize;
           cl.alive = false; cl.hp = 0; cl.deathCause = cw.team.name; cl.busy = true;
           onDeath(cl);
