@@ -3018,6 +3018,12 @@
   .cc-ask-btns{display:flex;gap:8px;margin-top:14px;justify-content:flex-end;}
   .cc-ask-btns button{border:none;border-radius:10px;padding:10px 22px;font-weight:800;
     font-size:13px;cursor:pointer;letter-spacing:.02em;}
+  #ccFmtModal{display:flex;position:fixed;inset:0;background:rgba(0,0,0,.72);
+    z-index:260;align-items:center;justify-content:center;padding:16px;}
+  .cc-fmt-btns{display:flex;gap:8px;margin-top:14px;}
+  .cc-fmt-btns button{flex:1;border:none;border-radius:10px;padding:12px 8px;font-weight:800;font-size:13px;
+    cursor:pointer;letter-spacing:.02em;background:rgba(200,225,220,.18);color:#eaf5f3;}
+  .cc-fmt-btns button.on{background:#ffd400;color:#151515;}
   #ccAskNo{background:rgba(200,225,220,.18);color:#eaf5f3;}
   #ccAskYes{background:#ffd400;color:#151515;}
 
@@ -4320,7 +4326,10 @@
   .cc-lk5-slot.on{outline:3px solid #fff;}
   .cc-lk5-slot:hover{filter:brightness(1.12);}
   .cc-lk5-stage{position:relative;min-height:520px;}
-  .cc-lk5-stage img.full{position:absolute;right:0;top:-10px;height:100%;width:auto;aspect-ratio:1/1;max-width:none;object-fit:contain;filter:drop-shadow(0 10px 18px rgba(0,0,0,.35));}
+  /* 24.10 (Notion «24.10.26», игрок на ПК: «скин на весь экран и не нажимается ничего»): квадрат по высоте сцены рос с
+     плиткой шкафчика (чем больше куплено, тем выше), без max-width вылезал влево поверх плиток, и его прозрачные края
+     забирали клики (1366×768: модель 929 px, пять плиток выбора под ней). */
+  .cc-lk5-stage img.full{position:absolute;right:0;top:-10px;height:100%;width:auto;aspect-ratio:1/1;max-width:100%;object-fit:contain;pointer-events:none;filter:drop-shadow(0 10px 18px rgba(0,0,0,.35));}
   .cc-lk5-stage img.icon{position:absolute;right:10%;top:10%;width:60%;object-fit:contain;}
   .cc-lk5-info{position:absolute;left:0;bottom:0;max-width:70%;text-shadow:0 2px 6px rgba(0,0,40,.5);}
   .cc-lk5-info em{display:block;font-family:var(--font-display);font-style:italic;font-size:20px;color:#e6f0ff;text-transform:uppercase;}
@@ -4418,7 +4427,8 @@
   .cc-lb-plate em{font-style:normal;font-size:12px;font-weight:800;color:#ff6b6b;}
   .cc-lb-plate em.ok{color:#5bff8a;}
   .cc-lb-crown{position:absolute;left:0;top:2px;font-style:normal;font-size:20px;color:#ffd84d;}
-  .cc-lb-plus{position:absolute;z-index:2;transform:translateX(-50%);width:30px;height:30px;padding:0;border:2px dashed rgba(255,255,255,.85);
+  /* «+» соседнего кресла — над коробкой своей фигуры (.cc-lb-fig.me, z-index 3): та ложилась поверх и открывала шкафчик (24.10). */
+  .cc-lb-plus{position:absolute;z-index:4;transform:translateX(-50%);width:30px;height:30px;padding:0;border:2px dashed rgba(255,255,255,.85);
     background:rgba(0,0,0,.15);color:#fff;font-size:20px;line-height:24px;cursor:pointer;}
   .cc-lb-top{position:absolute;left:0;right:0;top:0;z-index:5;display:flex;align-items:center;gap:8px;padding:6px 10px;}
   .cc-lb-nav{display:flex;gap:2px;flex:1;min-width:0;justify-content:center;overflow-x:auto;scrollbar-width:none;}
@@ -10660,6 +10670,7 @@ chSquadHint:'Ты и напарник', chSquadHintTrio:'Ты и два напа
 chNoPartner:'Напарника пока нет',
 ccSeatEmpty:'Место свободно', ccSeasonDuos:'Сезон в дуо', ccSeasonTrios:'Сезон в трио',
 ccSeasonFormat:'Формат',
+ccFmtYearQ:(y,c)=>'Новый год '+y+(c ? ', Глава '+c : '')+'. В каком формате играешь этот год?', ccFmtDuo:'Дуо', ccFmtTrio:'Трио', ccFmtSquad:'Сквад',
 ccWordDuos:'дуо', ccWordTrios:'трио', calVictoryTrio:'Трио Виктори Кап',
 ccMateKeep:'Оставить', chToday:'сегодня', ccShopConf:'Уверенность', ccConfFloor:n=>'форма не ниже −'+n,
 arcTitle:'Сезоны', arcSoon:'ещё впереди', arcLive:'Сезон ещё идёт — показано то, что уже разыграно', arcYou:'это ты',
@@ -12771,6 +12782,7 @@ chSquadHint:'You and your partner', chSquadHintTrio:'You and your two partners',
 chNoPartner:'No partner yet',
 ccSeatEmpty:'Seat open', ccSeasonDuos:'A duos season', ccSeasonTrios:'A trios season',
 ccSeasonFormat:'Format',
+ccFmtYearQ:(y,c)=>'New year '+y+(c ? ', Chapter '+c : '')+'. Which format do you play this year?', ccFmtDuo:'Duos', ccFmtTrio:'Trios', ccFmtSquad:'Squads',
 ccWordDuos:'duos', ccWordTrios:'trios', calVictoryTrio:'Trios Victory Cup',
 ccMateKeep:'Keep', chToday:'today', ccShopConf:'Confidence', ccConfFloor:n=>'form never below −'+n,
 arcTitle:'Seasons', arcSoon:'still to come', arcLive:'The season is still running — only what has been played is shown', arcYou:'that is you',
@@ -15792,6 +15804,7 @@ ccDuoYouWrote:'Déjà écrit',
 ccMateReplace:'En trouver un nouveau',
 ccFindDuo:'Trouver un partenaire',
 ccSeatEmpty:'Place libre',
+ccFmtYearQ:(y,c)=>'Nouvelle année '+y+(c ? ', Chapitre '+c : '')+'. Dans quel format joues-tu cette année ?', ccFmtDuo:'Duos', ccFmtTrio:'Trios', ccFmtSquad:'Squads',
 ccWordDuos:'duos', ccWordTrios:'trios', calVictoryTrio:'Victory Cup trios',
 ccMateKeep:'Garder', chToday:'aujourd’hui', ccShopConf:'Confiance', ccConfFloor:n=>'forme jamais sous −'+n,
 arcTitle:'Saisons', arcSoon:'à venir', arcLive:'La saison est en cours — seul ce qui est joué est affiché', arcYou:'c’est toi',
@@ -18131,6 +18144,7 @@ ccSeatEmpty:"Posto libero",
 ccSeasonDuos:"Una stagione in duo",
 ccSeasonTrios:"Una stagione in trio",
 ccSeasonFormat:"Formato",
+ccFmtYearQ:(y,c)=>'Nuovo anno '+y+(c ? ', Capitolo '+c : '')+'. In che formato giochi quest’anno?', ccFmtDuo:'Duo', ccFmtTrio:'Trio', ccFmtSquad:'Squadre',
 ccWordDuos:"duo",
 ccWordTrios:"trio",
 ccMateKeep:"Tieni",
@@ -20683,6 +20697,7 @@ ccSeatEmpty:"Vaga aberta",
 ccSeasonDuos:"Uma temporada de duplas",
 ccSeasonTrios:"Uma temporada de trios",
 ccSeasonFormat:"Formato",
+ccFmtYearQ:(y,c)=>'Novo ano '+y+(c ? ', Capítulo '+c : '')+'. Em que formato você joga este ano?', ccFmtDuo:'Duplas', ccFmtTrio:'Trios', ccFmtSquad:'Squads',
 ccWordDuos:"duplas",
 ccWordTrios:"trios",
 ccMateKeep:"Manter",
@@ -23314,7 +23329,7 @@ ccSacPromoRow:(n,m,p)=>'promo no X '+n+'/'+m+(p ? ' · +'+p+'%' : ''),
 ccGoalReach:{majorFinal:'chegar a uma final de Major FNCS', fncsFinal:'chegar à final semanal da FNCS'},
 ccOrgGoalPickHint:'Meta da temporada: escolha uma antes do fim da temporada. Cumpriu, renova com aumento (meta mais difícil, aumento maior); falhou, o clube te libera. Sem escolha, fica a do meio.'
 }));
-let CC_I18N_V={de:'6b7b621b', es:'ad5c9a50'};   // ==== CC_I18N_V (tools/build-i18n.js) ====
+let CC_I18N_V={de:'be6b760c', es:'43c65749'};   // ==== CC_I18N_V (tools/build-i18n.js) ====
 // Версия fn-shop.js (магазин Fortnite по дням, tools/build-fn-shop.js) — для ?v= ленивой загрузки.
 let CC_FN_SHOP_V='bebf56cb';
 const CC_LANG_WAIT={};
@@ -102607,7 +102622,10 @@ const CC_CHESTS_SRC={s42:'fortnite.gg', s42solo:'fortnite.gg', t1:'wiki', t2:'wi
    и кто выжил на высадке, уходит с мификом (прибавка к силе на игру). */
 const CC_MYTHIC_POW=3;
 const CC_MYTHIC_POI={
-  f1:{6:'Oscar', 7:'Nisha', 14:'Montague', 15:'Valeria'},
+  // f1 24.10.2026 (Notion «24.10.26», тестер: «медальки в локах где кружок, забыли помп с петей
+  // грифином, в корту не было медальки»): Oscar стоял на Classy Courts, Nisha на Lavish Lair.
+  // По вики: Oscar Lavish Lair (8), Nisha Fencing Fields (31), Peter Griffin Snooty Steppes (34).
+  f1:{7:'Oscar', 14:'Montague', 15:'Valeria', 30:'Nisha', 33:'Peter Griffin'},
   f2:{10:'Hades', 15:'Cerberus', 30:'Zeus', 39:'Ares'},
   f3:{28:'Ringmaster Scarr', 36:'The Machinist', 37:'Megalo Don'},
   f4:{5:'Mysterio', 7:'Doctor Doom', 23:'Emma Frost'},
@@ -102622,7 +102640,8 @@ const CC_MYTHIC_DROP={
   f1:{"Oscar":[["Oscar's Frenzy Auto Shotgun","modular-frenzy-auto-shotgun"],["Oscar's Medallion","oscar-s-medallion",1]],
       "Nisha":[["Nisha's Striker AR","striker-ar"],["Nisha's Medallion","nisha-s-medallion",1]],
       "Montague":[["Montague's Nemesis AR","nemesis-ar"],["Montague's Medallion","montague-s-medallion",1]],
-      "Valeria":[["Valeria's Hyper SMG","hyper-smg"],["Valeria's Medallion","valeria-s-medallion",1]]},
+      "Valeria":[["Valeria's Hyper SMG","hyper-smg"],["Valeria's Medallion","valeria-s-medallion",1]],
+      "Peter Griffin":[["Peter Griffin's Hammer Pump Shotgun","modular-hammer-pump-shotgun"],["Peter Griffin's Medallion","peter-griffin-s-medallion",1]]},
   f2:{"Hades":[["Hades' Harbinger SMG","modular-harbinger-smg"],["Chains of Hades","chains-of-hades"],["Aspect of Siphon","aspect-of-siphon",1]],
       "Cerberus":[["Cerberus' Gatekeeper Shotgun","modular-gatekeeper-shotgun"],["Aspect of Agility","aspect-of-agility",1]],
       "Zeus":[["Zeus' Huntress DMR","modular-huntress-dmr"],["Thunderbolt of Zeus","thunderbolt-of-zeus"],["Aspect of Speed","aspect-of-speed",1]],
@@ -118600,8 +118619,7 @@ function careerLoad(){
                     who.forEach(function(h){
                       const row=t.rows[h] || (t.rows[h]={v:[], n:0});
                       row.v=(row.v||[]).concat(src.v||[]);
-                      row.v.sort((a,b)=>b[0]-a[0]);
-                      if(row.v.length>CC_PR_KEEP) row.v.length=CC_PR_KEEP;
+                      ccPrRowTrim(row);
                       row.n+=src.n||0;
                       if(src.you && hKey(h)===yk) row.you=true;
                     });
@@ -123312,6 +123330,7 @@ function careerRenderHubRaw(tab){
   }
   CH_DREW=CH_TAB;
   if(typeof ccNatNudge==='function') ccNatNudge();
+  if(typeof ccFmtYearNudge==='function') ccFmtYearNudge();
   if(at) try{
     const b=document.getElementById('chBody');
     if(b && at.b) b.scrollTop=at.b;
@@ -127896,7 +127915,13 @@ function ccPhaseFillSeats(size){
     const own=[me].concat(mates).filter(Boolean);
     const avg=own.reduce((s,c)=>s+ccCardOvr(c), 0)/Math.max(1, own.length);
     // Рейтинг — один раз на карточку: сравнение внутри sort звало ccCardOvr n·log n раз и вешало стык этапа.
-    careerRosterNowEU().map(c=>({c, d:Math.abs(ccCardOvr(c)-avg)})).sort((x,y)=>x.d-y.d).forEach(x=>take(x.c));
+    const near=careerRosterNowEU().map(c=>({c, d:Math.abs(ccCardOvr(c)-avg)})).sort((x,y)=>x.d-y.d);
+    near.forEach(x=>take(x.c));
+    /* Состав, который уже не проходит по ролям (два ИГЛа: ты и напарник), правило ролей отсекает каждого — и кресло
+       оставалось пустым, а пустое кресло закрывает все вечера (24.10, сквад-год на выбор, ccFmtYearSet). Тогда — ближайшие
+       по силе без правила ролей: пустое кресло хуже лишнего ИГЛа. */
+    if(picks.length<need) near.forEach(x=>{ const c=x.c; if(picks.length>=need) return; const k=hKey(c);
+      if(team.has(k) || taken.has(k)) return; team.add(k); picks.push(c); });
   }
   picks.forEach(c=>careerMateSeat({handle:c.handle, cardRegion:c.region||ccCareerRegion(), patience:CAREER_PATIENCE_START, since:careerToday()}));
   if(picks.length){
@@ -127945,7 +127970,53 @@ function careerSeasonSize(sn){
   if(!cr) return 2;
   if(sn===cr.season) return careerSquadSize();
   const rec=cr.sizes && cr.sizes[sn];
-  return rec===3 ? 3 : 2;
+  return rec===3 ? 3 : rec===4 ? 4 : 2;
+}
+/* ФОРМАТ ГОДА НА ВЫБОР ПОСЛЕ 2026 (24.10, Notion «24.10.26», его ответ игроку: «следующие года сделаю, чтоб игрок
+   выбирал мод, в котором играть»). До этого год после 2026 брал формат по чётности: дуо, трио, дуо… Теперь на
+   стыке года открывается окно: дуо, трио или сквад; по умолчанию стоит прежний (чётность). Выбрать можно, пока в
+   новом году не сыграно ни одного вечера; дальше состав живёт как у 2019-го на стыке этапа (ccRosterSwap +
+   ccPhaseFillSeats садит пустые кресла). Соло-года нет: вечера карьеры командные, соло — только свои турниры.
+   Онлайн (команда, гонка) и менеджер формат не выбирают: он общий и решается правилом. */
+function ccFmtYearCan(){
+  const cr=CAREER && CAREER.career;
+  if(!cr || cr.fmtOpen!==cr.season || CAREER._mgr) return false;
+  if((typeof ccMpTeam==='function' && ccMpTeam()) || (typeof ccRaceOn==='function' && ccRaceOn())) return false;
+  return !(cr.log||[]).some(e=>e && e.season===cr.season);
+}
+function ccFmtYearSet(n){
+  const cr=CAREER && CAREER.career; if(!cr || !ccFmtYearCan() || [2,3,4].indexOf(n)<0) return;
+  delete cr.fmtOpen;
+  ccFmtYearClose();
+  if(cr.size!==n){
+    cr.size=n; (cr.sizes=cr.sizes||{})[cr.season]=n;
+    CC_POOLS=null; CC_NOW_CARDS={}; CC_YEAR_DAYS=null;
+    try{ ccTrioMarket(cr, true); }catch(e){}
+    ccRosterSwap();
+    try{ ccPhaseFillSeats(n); }catch(e){}
+  }
+  careerSave();
+  careerRenderHub('centre');
+}
+function ccFmtYearClose(){ const m=document.getElementById('ccFmtModal'); if(m) m.remove(); }
+function ccFmtYearOpen(){
+  if(!ccFmtYearCan() || document.getElementById('ccFmtModal')) return;
+  const T=L(), cr=CAREER.career, now=careerSquadSize();
+  let ch=null; try{ ch=ccChapterOf(ccSeasonNumOn(careerToday())); }catch(e){}
+  const m=document.createElement('div');
+  m.id='ccFmtModal';
+  m.innerHTML='<div class="cc-ask-box"><p>'+esc(T.ccFmtYearQ(ccSeasonYear(), ch && ch.c ? ch.c : ''))+'</p><div class="cc-fmt-btns">'+
+    [[2, T.ccFmtDuo], [3, T.ccFmtTrio], [4, T.ccFmtSquad]].map(([n, w])=>
+      '<button class="'+(n===now ? 'on' : '')+'" onclick="ccFmtYearSet('+n+')">'+esc(w)+'</button>').join('')+
+    '</div></div>';
+  document.body.appendChild(m);
+}
+function ccFmtYearNudge(){
+  try{
+    if((typeof CC_FF!=='undefined' && CC_FF) || CAREER_RUN) return;
+    const hub=document.getElementById('screen-career-hub'); if(!hub || !hub.classList.contains('active')) return;
+    if(ccFmtYearCan()) ccFmtYearOpen();
+  }catch(e){}
 }
 /* Everybody who sat beside the player that night, and not the first seat alone.
 
@@ -128066,8 +128137,40 @@ function ccPastYearIsland(){
     return ZONE_SETS['e'+k] ? 'e'+k : 'f'+k; }
   return null;
 }
+/* ГЛАВЫ ПО КРУГУ ПОСЛЕ 2026 (24.10, Notion «24.10.26», игрок: «после 7 главы главы (карты) идут по кругу 6-7-6-7»,
+   просил по кругу с первой главы; его ответ игроку: «после 7 главы были другие карты, а не чередовались две»). Год после
+   2026 — тот же календарь 2026-го, и остров выбирался по размеру команды: дуо-год на седьмой главе, трио-год на шестой.
+   Теперь год берёт главу по кругу: 2027 — Глава 1, 2028 — Глава 2 (S1–S4), 2029 — Глава 2 (S5–S8), 2030 — Глава 3,
+   2031 — Глава 4, 2032 — Глава 5, 2033 — Глава 6, 2034 — Глава 7, 2035 — снова Глава 1. Внутри года четыре окна по
+   стыкам сезонов 2026-го (19.03, 6.06, 21.08), остров при любом размере команды, как у прошлых лет (ccPastYearIsland).
+   Второе число — номер сезона Fortnite этого острова: по нему подпись лобби, фон и всё, что читает ccSeasonNumOn.
+   Острова C6S4 и мини-сезонов (Galactic Battle, Simpsons) в сборке нет — их окна стоят на соседнем острове главы. */
+const CC_CYCLE_CUTS=['2026-03-19', '2026-06-06', '2026-08-21'];
+const CC_CYCLE=[
+  [['g5',5], ['g6',6], ['g7',7], ['h1',9]],
+  [['h4',11], ['i1',12], ['i2',13], ['i3',14]],
+  [['j1',15], ['j2',16], ['j3',17], ['j4',18]],
+  [['k1',19], ['k2',20], ['k3',21], ['k4',22]],
+  [['e1',23], ['e2',24], ['e3',25], ['e4',26]],
+  [['f1',28], ['f2',29], ['f3',30], ['f4',31]],
+  [['t1',33], ['t2',34], ['t3',36], ['t3',36]],
+  [['m1',39], ['m1',40], ['m2',41], ['s42',42]]
+];
+function ccCycleSlot(day){
+  const k=(typeof ccYearShift==='function') ? ccYearShift() : 0;
+  if(!(k>0) || ccPastYearIsland()) return null;
+  const d=String(day||careerToday());
+  // Только дни календаря года (2026-го, по которому идут все годы после него): даты прошлых лет (кирки FNCS, журналы)
+  // остаются своими сезонами.
+  if(d<'2025-11-29' || d>='2027-01-01') return null;
+  let w=0; CC_CYCLE_CUTS.forEach(c=>{ if(d>=c) w++; });
+  const slot=CC_CYCLE[(k-1)%CC_CYCLE.length][w];
+  return (slot && ZONE_SETS[slot[0]]) ? slot : null;
+}
+function ccCycleIsland(day){ const s=ccCycleSlot(day); return s ? s[0] : null; }
 function careerBrSet(){
   const py=ccPastYearIsland(); if(py) return py;
+  const cy=ccCycleIsland(careerToday()); if(cy) return cy;
   if(careerSquadSize()!==3){
     /* Остров дуо-года — по сезону Fortnite, как у трио-года. Тестер, 16.09:
        «начинается сезон S40, и карта меняется только в соло, а в дуо меняется
@@ -128114,7 +128217,7 @@ function careerBrSet(){
    сыграет careerNightSet. Один ответ на вкладку метки, карточку вечера и дом
    в раздаче (ccSoloHomeZone). */
 function careerSoloSet(){
-  if(careerSquadSize()!==3 || ccPastYearIsland()) return careerBrSet();
+  if(careerSquadSize()!==3 || ccPastYearIsland() || ccCycleIsland(careerToday())) return careerBrSet();
   const days=(typeof careerYearDays==='function') ? careerYearDays() : null;
   if(days && typeof careerNightSet==='function' && typeof careerNightSolo==='function'){
     const today=careerToday();
@@ -129006,6 +129109,8 @@ const CC_EV_COL={"Acrocanthosaurus_Official":0,"ArchitectPopUpDuoEU":1,"Architec
 // Номер сезона Fortnite на дату — по спискам сезонов всех лет, а не только года карьеры.
 function ccSeasonNumOn(day){
   const d=String(day||'');
+  // Год главы по кругу (2027+, ccCycleSlot): сезон — тот, чей остров стоит в этот день.
+  try{ if(typeof ccCycleSlot==='function' && d){ const cy=ccCycleSlot(d); if(cy) return cy[1]; } }catch(e){}
   const lists=[typeof CC_SEASONS_2019!=='undefined'?CC_SEASONS_2019:[], typeof CC_SEASONS_2020!=='undefined'?CC_SEASONS_2020:[],
     typeof CC_SEASONS_2021!=='undefined'?CC_SEASONS_2021:[], typeof CC_SEASONS_2022!=='undefined'?CC_SEASONS_2022:[],
     typeof CC_SEASONS_2023!=='undefined'?CC_SEASONS_2023:[], typeof CC_SEASONS_2024!=='undefined'?CC_SEASONS_2024:[],
@@ -147303,6 +147408,10 @@ function ccAdOf(handle){
 // Проходит ли игрок по объявлению. PR своей строки — тот же, что видит доска.
 function ccAdFits(ad){
   if(!ad || !ad.pr) return true;
+  /* С кем уже играл, тот зовёт без порога PR (24.10, Notion «24.10.26»: «тиммейты на первом месте по PR и в некст
+     главе ты не можешь им предложить играть»). Напарник набирает PR и в вечерах без тебя, и через год его порог
+     выше твоей строки, хотя играли вы вместе. Книга бывших — cr.exMates (ccMateParted). */
+  try{ const ex=CAREER.career.exMates; if(ex && ex[hKey({handle:ad.handle})]) return true; }catch(e){}
   /* Своя строка доски — по метке you, а не по нику карточки (17.10, Notion «fncsdraft 15.10»: «не могу играть хотя
      pr есть» — PR 218 883 в шапке, а объявление просило 82 239: у построенного игрока handle нет, ccPrCardOf(null)
      давал ноль, и ни одно объявление с порогом не открывалось). */
@@ -152121,7 +152230,8 @@ function careerFfConfirm(days){
 function ccSoloFncsSet(ev){
   // FNCS Solo Reload — на острове Reload своего года, как релоадные Victory Cup.
   if(ev && ev.spec && ev.spec.reload) return ccReloadSetOfYear();
-  return (ev && ev.spec && ZONE_SETS.s42 && !ccIs2025() && !ccIs2024() && !ccIs2023() && !ccIs2022() && !ccIs2021() && !ccIs2020() && !ccIs2019()) ? 's42' : careerBrSet();
+  // Год главы по кругу (ccCycleIsland): FNCS Solos — на острове этого года, как в прошлых годах.
+  return (ev && ev.spec && ZONE_SETS.s42 && !ccCycleIsland(careerToday()) && !ccIs2025() && !ccIs2024() && !ccIs2023() && !ccIs2022() && !ccIs2021() && !ccIs2020() && !ccIs2019()) ? 's42' : careerBrSet();
 }
 function careerNightSet(next){
   const day=next && next.day;
@@ -153768,6 +153878,8 @@ function careerNewSeason(){
   if(cr.year0===2020) cr.size = cr.season<=2 ? 3 : cr.season<=5 ? 2 : cr.season===6 ? 3 : (cr.season%2 ? 2 : 3);
   if(cr.year0===2019) cr.size = cr.season<=3 ? 3 : cr.season<=6 ? 2 : cr.season===7 ? 3 : (cr.season%2 ? 3 : 2);
   sizes[cr.season]=cr.size;
+  // После 2026 формат года выбирает игрок (ccFmtYearOpen); чётность выше — то, что стоит по умолчанию.
+  if(ccYearShift()>0) cr.fmtOpen=cr.season; else delete cr.fmtOpen;
   /* И рынок трио — после того, как размер года известен: пересобирается сцена
      только в трио-год. См. careerTrioRaids и ccTrioMarket. */
   ccTrioMarket(cr, true);
@@ -156391,8 +156503,7 @@ function ccEvResApply(d){
       if(!(rating>0)) return;
       const row=t.rows[name] || (t.rows[name]={v:[], n:0});
       row.v.push([rating, day]);
-      row.v.sort((a,b)=>b[0]-a[0]);
-      if(row.v.length>CC_PR_KEEP) row.v.length=CC_PR_KEEP;
+      ccPrRowTrim(row);
       row.n++;
     });
   });
@@ -174139,11 +174250,10 @@ function careerPrAdd(ranked, meta){
       if(ccTeamPeerSkip(name)) return;
       const row=t.rows[name] || (t.rows[name]={v:[], n:0});
       row.v.push([rating, day]);
-      row.v.sort((a,b)=>b[0]-a[0]);
       // Резать до лучших двадцати больше нечего: считается всё сыгранное.
       // Хвост всё же ограничен, чтобы сейв не рос без края, — но щедро и по
       // сумме, а не по «двадцати лучшим».
-      if(row.v.length>CC_PR_KEEP) row.v.length=CC_PR_KEEP;
+      ccPrRowTrim(row);
       row.n++;
       if(idx===yourIdx) row.you=true;
       // И своя строка — тоже (см. careerMoneyAdd): у соседа по гонке она не своя.
@@ -174245,6 +174355,18 @@ function careerPrHTML(){
    длинной она не станет. Двести результатов это пять карьерных лет плотной
    игры. */
 const CC_PR_KEEP=200;
+/* Хвост строки режется по тому, сколько результат стоит СЕГОДНЯ, а не по сырому рейтингу (24.10, Notion «24.10.26», 2035:
+   «самому себе PR не зачисляются или очень слабо, а тиммейты на первом месте»). Сортировка по сырому держала в двухстах
+   местах старые сильные вечера, которые затухание уже обнулило, и новый вечер ниже двухсотого выпадал целиком: кто играл
+   всё подряд годами (сам игрок), упирался в потолок первым и переставал набирать. Сумма (careerPrOf) порядка не читает. */
+function ccPrRowTrim(row){
+  if(!row || !Array.isArray(row.v)) return;
+  let now=null;
+  try{ now=ccAbsDay(CAREER.career.season, careerToday()); }catch(e){}
+  const worth=e=>now==null ? e[0] : e[0]*ccPrDecay(Math.max(0, now-e[1]));
+  row.v.sort((a,b)=>worth(b)-worth(a) || b[0]-a[0] || b[1]-a[1]);
+  if(row.v.length>CC_PR_KEEP) row.v.length=CC_PR_KEEP;
+}
 /* ===== Power Rankings — по модели Fortnite Tracker ========================
 
    До 2 сентября 2026 это была модель Epic: рейтинг события против рейтинга
