@@ -856,8 +856,8 @@ Object.assign(I18N.de=I18N.de||{},
   "ccGiveNoImprove": "keine Verbesserung, Fokus sinkt",
   "ccAttrMaxed": "99 — mehr geht nicht",
   "ccChem": "Chemie",
-  "ccCity": {"Dus": "Düsseldorf", "Ant": "Antwerpen", "Lyo": "Lyon", "Cph": "Kopenhagen", "Ftw": "Fort Worth", "Rdu": "Raleigh", "Par": "Paris", "Ryd": "Riad", "Nyc": "New York", "Tok": "Tokio", "Bel": "Belgrad", "Kat": "Kattowitz", "Sto": "Stockholm", "Mad": "Madrid", "Ams": "Amsterdam", "Dal": "Dallas", "Sao": "São Paulo", "Seo": "Seoul", "Tor": "Toronto", "Syd": "Sydney", "Mex": "Mexiko-Stadt", "Dub": "Dubai", "Ist": "Istanbul", "Mil": "Mailand", "Lon": "London", "Sin": "Singapur"},
-  "ccCityIn": {"Dus": "Düsseldorf", "Ant": "Antwerpen", "Lyo": "Lyon", "Cph": "Kopenhagen", "Ftw": "Fort Worth", "Rdu": "Raleigh", "Par": "Paris", "Ryd": "Riad", "Nyc": "New York", "Tok": "Tokio", "Bel": "Belgrad", "Kat": "Kattowitz", "Sto": "Stockholm", "Mad": "Madrid", "Ams": "Amsterdam", "Dal": "Dallas", "Sao": "São Paulo", "Seo": "Seoul", "Tor": "Toronto", "Syd": "Sydney", "Mex": "Mexiko-Stadt", "Dub": "Dubai", "Ist": "Istanbul", "Mil": "Mailand", "Lon": "London", "Sin": "Singapur"},
+  "ccCity": {"Dus": "Düsseldorf", "Ant": "Antwerpen", "Lyo": "Lyon", "Cph": "Kopenhagen", "Ftw": "Fort Worth", "Rdu": "Raleigh", "Par": "Paris", "Ryd": "Riad", "Nyc": "New York", "Tok": "Tokio", "Bel": "Belgrad", "Kat": "Kattowitz", "Sto": "Stockholm", "Mad": "Madrid", "Ams": "Amsterdam", "Dal": "Dallas", "Sao": "São Paulo", "Seo": "Seoul", "Tor": "Toronto", "Syd": "Sydney", "Mex": "Mexiko-Stadt", "Dub": "Dubai", "Ist": "Istanbul", "Mil": "Mailand", "Lon": "London", "Sin": "Singapur", "Bue": "Buenos Aires", "Alm": "Almaty", "Scl": "Santiago"},
+  "ccCityIn": {"Dus": "Düsseldorf", "Ant": "Antwerpen", "Lyo": "Lyon", "Cph": "Kopenhagen", "Ftw": "Fort Worth", "Rdu": "Raleigh", "Par": "Paris", "Ryd": "Riad", "Nyc": "New York", "Tok": "Tokio", "Bel": "Belgrad", "Kat": "Kattowitz", "Sto": "Stockholm", "Mad": "Madrid", "Ams": "Amsterdam", "Dal": "Dallas", "Sao": "São Paulo", "Seo": "Seoul", "Tor": "Toronto", "Syd": "Sydney", "Mex": "Mexiko-Stadt", "Dub": "Dubai", "Ist": "Istanbul", "Mil": "Mailand", "Lon": "London", "Sin": "Singapur", "Bue": "Buenos Aires", "Alm": "Almaty", "Scl": "Santiago"},
   "dmAgent": (cut,r)=>'Ich vertrete Spieler. Ich nehme '+cut+'% von Preisgeld und Gehalt, dafür schauen Clubs '+r+' über dir auf dich und zahlen mehr. Sollen wir zusammenarbeiten?',
   "dmAgentYes": "Gut. Ab heute führe ich die Gespräche mit den Clubs.",
   "dmAgentEnd": "Ich übernehme ab hier.",
@@ -4154,3 +4154,6 @@ Object.assign(I18N.de=I18N.de||{},
 /* Дозаливка «de» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
 Object.assign(I18N.de=I18N.de||{},
 ({ccFmtYearQ:(y,c)=>'Neues Jahr '+y+(c ? ', Kapitel '+c : '')+'. In welchem Format spielst du dieses Jahr?', ccFmtDuo:'Duos', ccFmtTrio:'Trios', ccFmtSquad:'Squads'}));
+/* Дозаливка «de» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
+Object.assign(I18N.de=I18N.de||{},
+({dyReveal:'Aufdecken'}));
