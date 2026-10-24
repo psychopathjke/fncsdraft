@@ -133511,7 +133511,23 @@ function careerPools(){
   // И после 2026-го (регены, ccRegenSync): напарник ушёл из сцены — половинка и новички сходятся по силе так же.
   if(careerSquadSize()!==3 && (ccChapterMoved() || ccRegenOn())) ccContinuityDuos(duosLive);
   // Трио-год такой карьеры: ядра троек, собранных на стыке из свободных (ccContinuityThirds).
-  if(careerSquadSize()===3 && real && !CC_REGION_AS) ccContinuityCores(duosLive);
+  /* ТРИО-ГОД ПОСЛЕ 2026-ГО У КАРЬЕРЫ, НАЧАТОЙ В 2026-М (25.10, его «что ещё может быть не так с чаптером, мб потом
+     распадаются триосы»). Рассадка третьих на стыке (ccContinuityThirds) стояла только у карьеры, перешедшей из
+     прошлого года (ccChapterMoved): у начатой в 2026-м третьи садились лениво — когда пара впервые попадала в комнату
+     трио-капа. Проба (трио-год 2027, день за днём): с 15.12 до 13.02 полных троек 3 из 136 пар, без состава в топ-40
+     шестеро (PabloWingu 94, Sky 93, Tjino 92, panzer, Pixx, Momsy) — «команды сломались» на старте года.
+     Теперь раз за сезон, после рынка трио (тот собирает пул мира — CC_WORLD, здесь не сеем) и по ЖИВЫМ парам пула:
+     развод и «жизнь пары» (ccDuoBroken) к этому месту уже отработали. По сырым парам снимка рассадка сажала третьего к
+     паре, которую пул тут же выбрасывал, и её люди стояли без состава весь год (PabloWingu в той же пробе). */
+  if(!real && !CC_WORLD && ccYearShift()>0 && careerSquadSize()===3 && !CC_REGION_AS && CAREER && CAREER.career
+     && CAREER.career.triosSeeded!=='Y'+CAREER.career.season){
+    const cr=CAREER.career; cr.trios=cr.trios||{};
+    const took=new Set(); duosLive.forEach(d=>d.cards.forEach(c=>took.add(hKey(c)))); Object.values(cr.trios).forEach(k=>took.add(k));
+    ccContinuityThirds(duosLive, took, cr);
+    cr.triosSeeded='Y'+cr.season;
+    if(typeof careerSave==='function') careerSave();
+  }
+  if(careerSquadSize()===3 && (real || ccYearShift()>0) && !CC_REGION_AS) ccContinuityCores(duosLive);
   duosLive.forEach(d=>{ if(d && d.cards) d.cards=d.cards.map(liftOne); });
   /* И все остальные имена ростера — свободными агентами.
 
