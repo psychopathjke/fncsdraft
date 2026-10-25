@@ -23,10 +23,12 @@ const qOf=f=>{ const v=f.res.map(r=>1-(r.r-1)/100); return v.reduce((a,b)=>a+b,0
 for(const reg of REGS){
   const t0=performance.now();
   const fin=DATA.regions[reg].finalists;
+  // Рейтинг за весь 2026 год, как у сцены карьеры (ccSceneRoster: свежая карточка, число — ccSeasonOvr по всем вечерам
+  // года), а не лучшая карточка одного турнира (25.10, его «просто весь рейтинг за год учитывай»: Malibuca брался с хита Reload).
   const byK=new Map();
-  PLAYERS_BASE.forEach(p=>{ if(!p || !p.handle || yearOf(p)!==2026) return; const k=hKey(p); const o=attrsFor(p).ovr;
-    const prev=byK.get(k); const same=p.region===reg;
-    if(!prev || (same && !prev.same) || (same===prev.same && o>prev.o)) byK.set(k, {p, o, same}); });
+  [reg].concat({NAC:['NAW'], NAW:['NAC']}[reg]||[]).forEach(r=>ccSceneRoster(r).forEach(p=>{ if(!p || !p.handle) return; const k=hKey(p);
+    const same=r===reg, prev=byK.get(k);
+    if(!prev || (same && !prev.same)) byK.set(k, {p, o:attrsFor(p).ovr, same}); }));
   const rows=fin.map(f=>{ const m=byK.get(f.n.toLowerCase().trim()); return {f, card:m && (m.same || ({NAC:'NAW', NAW:'NAC'}[reg]===m.p.region)) ? m.p : null, ovr:m ? m.o : null, q:qOf(f)}; });
   // Ненайденным — рейтинг по квалификации: линия по найденным этого региона (мало найденных — общий наклон).
   const known=rows.filter(r=>r.card);
