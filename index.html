@@ -133356,7 +133356,9 @@ function careerPools(){
      карьеру, потому что читает их комната оттуда (careerCupField). То же в
      трио-году карьеры, перешедшей из 2024-го: третьи — настоящие 2025-го, и
      память троек прошлых лет им не мешает (стирается при посеве). */
+  let triSeed=false;
   if((ccNowYear()<2026 || real) && careerSquadSize()>=3 && CAREER && CAREER.career && !CC_REGION_AS && CAREER.career.triosSeeded!==seedTag){
+    triSeed=true;
     const cr=CAREER.career; cr.trios=(real || ccNowYear()<2025) ? {} : (cr.trios||{});
     duos.forEach(d=>{ if(d.third && !seated.has(d.third)){ cr.trios[d.cards.map(c=>hKey(c)).sort().join('+')]=d.third; seated.add(d.third); } });
     if(real) ccContinuityThirds(duos, seated, cr);
@@ -133398,6 +133400,21 @@ function careerPools(){
   // из года календаря (ccRealTeamDuos); прошлогодние пары сюда не идут.
   if(snap.lcq && !real) ccSeat(ccDuosOf(snap.lcq, ccPeopleOf(snap.lcq)), seated)
                  .forEach(d=>duos.push(d));
+  /* Третьи с ПОЛУФИНАЛОВ и отборочных — тоже (25.10, его «посмотри в других сезонах все норм ли»). Посев выше видел
+     только пары гранд-финала, а у 2019–2024 карточки гранд-финала составов не несут или не находятся регуляркой
+     снимка вовсе («FNCS Chapter 2 Season 5 — Grand Finals» против /2021 C2S5 . Grand Finals/). Пары сцены приходили
+     отсюда, с третьими (2021 C2S5: 137 пар, у 130 записан третий), а в cr.trios не попадал ни один: трио-сезоны
+     2019–2021 стояли без троек, топы — без состава (2021: rezon ay, Chapix, Th0masHD, Mongraal… 17 из топ-40). */
+  if(triSeed){
+    const cr=CAREER.career, used=new Set(Object.values(cr.trios||{}));
+    duos.forEach(d=>{
+      if(!d.third || seated.has(d.third) || used.has(d.third)) return;
+      const key=d.cards.map(c=>hKey(c)).sort().join('+');
+      if(cr.trios[key]) return;
+      cr.trios[key]=d.third; used.add(d.third); seated.add(d.third);
+    });
+    if(typeof careerSave==='function') careerSave();
+  }
   /* И финалы недели самого дивизиона.
 
      Правило: в дивизионе 1 остаются только игроки — те, кто
@@ -133509,7 +133526,10 @@ function careerPools(){
      не ниже полосы Дивизиона 1 собираются в пары сами — сначала те, кто играл
      вместе на записи (ccRemadeDuos), остальные — сосед по силе с соседом. */
   // И после 2026-го (регены, ccRegenSync): напарник ушёл из сцены — половинка и новички сходятся по силе так же.
-  if(careerSquadSize()!==3 && (ccChapterMoved() || ccRegenOn())) ccContinuityDuos(duosLive);
+  /* И в прошлых годах, начатых с них (25.10): снимок там — сквады C2S1 (2020 до 19.02) или соло/дуо World Cup (2019), и
+     из четвёрок и одиночек пары складываются не у всех — без пары в топ-40 стояли 23 (2020: aqua 96, nayte, nyhrox…)
+     и 16 (2019: Tchub, Domentos, Skailer…), в 2024-м трое (Mikson 91, dyox, Flickzy). */
+  if(careerSquadSize()!==3 && (ccChapterMoved() || ccRegenOn() || ccPastYear(ccCalYear()))) ccContinuityDuos(duosLive);
   // Трио-год такой карьеры: ядра троек, собранных на стыке из свободных (ccContinuityThirds).
   /* ТРИО-ГОД ПОСЛЕ 2026-ГО У КАРЬЕРЫ, НАЧАТОЙ В 2026-М (25.10, его «что ещё может быть не так с чаптером, мб потом
      распадаются триосы»). Рассадка третьих на стыке (ccContinuityThirds) стояла только у карьеры, перешедшей из
@@ -133519,15 +133539,20 @@ function careerPools(){
      Теперь раз за сезон, после рынка трио (тот собирает пул мира — CC_WORLD, здесь не сеем) и по ЖИВЫМ парам пула:
      развод и «жизнь пары» (ccDuoBroken) к этому месту уже отработали. По сырым парам снимка рассадка сажала третьего к
      паре, которую пул тут же выбрасывал, и её люди стояли без состава весь год (PabloWingu в той же пробе). */
-  if(!real && !CC_WORLD && ccYearShift()>0 && careerSquadSize()===3 && !CC_REGION_AS && CAREER && CAREER.career
-     && CAREER.career.triosSeeded!=='Y'+CAREER.career.season){
+  /* Трио-этапы прошлых лет (2019 Season X, 2020 C2S4, 2021, 2022): записанные третьи садятся посевом снимка выше
+     (triSeed), а сильные свободные, кому пары с записью не хватило, оставались без состава весь этап — 2019 с 1.08:
+     Tchub 90, Skailer, Vato, Deadra…; 2020 с 27.08: Snayzy, Twainz, FrenzyFishy, Klusia. Добор тот же — в тот же
+     проход, что посев снимка, поэтому метка посева остаётся его. */
+  const pastFill=triSeed && !real && ccPastYear(ccCalYear()) && !(ccIs2025() && ccNowYear()===2025);
+  const cycleFill=!real && ccYearShift()>0 && CAREER && CAREER.career && CAREER.career.triosSeeded!=='Y'+CAREER.career.season;
+  if((pastFill || cycleFill) && !CC_WORLD && careerSquadSize()===3 && !CC_REGION_AS && CAREER && CAREER.career){
     const cr=CAREER.career; cr.trios=cr.trios||{};
     const took=new Set(); duosLive.forEach(d=>d.cards.forEach(c=>took.add(hKey(c)))); Object.values(cr.trios).forEach(k=>took.add(k));
     ccContinuityThirds(duosLive, took, cr);
-    cr.triosSeeded='Y'+cr.season;
+    if(cycleFill) cr.triosSeeded='Y'+cr.season;
     if(typeof careerSave==='function') careerSave();
   }
-  if(careerSquadSize()===3 && (real || ccYearShift()>0) && !CC_REGION_AS) ccContinuityCores(duosLive);
+  if(careerSquadSize()===3 && (real || ccYearShift()>0 || ccPastYear(ccCalYear())) && !CC_REGION_AS) ccContinuityCores(duosLive);
   duosLive.forEach(d=>{ if(d && d.cards) d.cards=d.cards.map(liftOne); });
   /* И все остальные имена ростера — свободными агентами.
 
