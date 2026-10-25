@@ -316,6 +316,8 @@ const prefilled = prefillI18n(OUT);
 
 /* Страницы игроков (/player/<ник>, /players) и их адреса в sitemap.xml — см. build-player-pages.js. */
 require('child_process').execFileSync(process.execPath, [path.join(__dirname, 'build-player-pages.js'), OUT], { stdio: 'inherit' });
+/* Прогноз финала FNCS Solos 2026 (/predict/fncs-solos-2026) — см. build-solos-predict.js. */
+require('child_process').execFileSync(process.execPath, [path.join(__dirname, 'build-solos-predict.js'), OUT], { stdio: 'inherit' });
 
 /* Главная на каждом языке (/ru/, /fr/, …) с hreflang и строками в sitemap.xml — см. build-lang-pages.js.
    Снимок текста передаётся файлом и удаляется: на сайт он не едет. */
