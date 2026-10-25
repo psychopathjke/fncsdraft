@@ -96,8 +96,10 @@ const smPath = path.join(OUT, 'sitemap.xml');
 const today = new Date().toISOString().slice(0, 10);
 const extra = LANGS.map(l => '<url><loc>' + SITE + '/' + l + '/</loc><lastmod>' + today + '</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>' +
   (fs.existsSync(path.join(OUT, l, 'about.html')) ? '<url><loc>' + SITE + '/' + l + '/about</loc><lastmod>' + today + '</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>' : '')).join('\n');
-const sm = fs.readFileSync(smPath, 'utf8');
+let sm = fs.readFileSync(smPath, 'utf8');
 if (!sm.includes('</urlset>')) throw new Error('sitemap.xml без </urlset>');
+// Главная и /about меняются с каждой выкладкой, а в исходном sitemap.xml дата стояла руками (25.09 до 25.10).
+sm = sm.replace(/(<loc>https:\/\/fncsdraft\.com\/(?:about)?<\/loc>\s*<lastmod>)[^<]*(<\/lastmod>)/g, '$1' + today + '$2');
 fs.writeFileSync(smPath, sm.replace('</urlset>', extra + '\n</urlset>'), 'utf8');
 
 console.log('языки: ' + LANGS.map(l => '/' + l + '/').join(' ') + ' · текста первого экрана переведено: ' + texts +
