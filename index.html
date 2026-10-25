@@ -133360,7 +133360,10 @@ function careerPools(){
   if((ccNowYear()<2026 || real) && careerSquadSize()>=3 && CAREER && CAREER.career && !CC_REGION_AS && CAREER.career.triosSeeded!==seedTag){
     triSeed=true;
     const cr=CAREER.career; cr.trios=(real || ccNowYear()<2025) ? {} : (cr.trios||{});
-    duos.forEach(d=>{ if(d.third && !seated.has(d.third)){ cr.trios[d.cards.map(c=>hKey(c)).sort().join('+')]=d.third; seated.add(d.third); } });
+    duos.forEach(d=>{ if(d.third && !seated.has(d.third)){
+      // Третий с записи садится поверх добранного (pastFill ниже): прошлым снимком он мог стоять третьим у другой пары.
+      Object.keys(cr.trios).forEach(k=>{ if(cr.trios[k]===d.third) delete cr.trios[k]; });
+      cr.trios[d.cards.map(c=>hKey(c)).sort().join('+')]=d.third; seated.add(d.third); } });
     if(real) ccContinuityThirds(duos, seated, cr);
     cr.triosSeeded=seedTag;
     if(typeof careerSave==='function') careerSave();
@@ -133542,8 +133545,10 @@ function careerPools(){
   /* Трио-этапы прошлых лет (2019 Season X, 2020 C2S4, 2021, 2022): записанные третьи садятся посевом снимка выше
      (triSeed), а сильные свободные, кому пары с записью не хватило, оставались без состава весь этап — 2019 с 1.08:
      Tchub 90, Skailer, Vato, Deadra…; 2020 с 27.08: Snayzy, Twainz, FrenzyFishy, Klusia. Добор тот же — в тот же
-     проход, что посев снимка, поэтому метка посева остаётся его. */
-  const pastFill=triSeed && !real && ccPastYear(ccCalYear()) && !(ccIs2025() && ccNowYear()===2025);
+     проход, что посев снимка, поэтому метка посева остаётся его.
+     И 2025 (25.10, его «пусть с первого дня будут полными»): снимок 7.12 даёт третьих не всем — у 8 из топ-30 пар
+     (Nebs+Pinq, Scroll+Sky, Mongraal+MrSavage…) третьего не было до снимка 21.02, Kiro стоял без состава. */
+  const pastFill=triSeed && !real && ccPastYear(ccCalYear());
   const cycleFill=!real && ccYearShift()>0 && CAREER && CAREER.career && CAREER.career.triosSeeded!=='Y'+CAREER.career.season;
   if((pastFill || cycleFill) && !CC_WORLD && careerSquadSize()===3 && !CC_REGION_AS && CAREER && CAREER.career){
     const cr=CAREER.career; cr.trios=cr.trios||{};
