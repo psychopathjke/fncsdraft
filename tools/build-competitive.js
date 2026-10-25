@@ -132,7 +132,6 @@ a{color:var(--cyan)}
 .nav-pill.on{background:#e4ebf7;color:#0b1a3a}
 h1,h2,h3,h4{font-family:var(--font-display);font-weight:700;margin:0;line-height:1.08}
 .glass{position:relative;overflow:hidden;border-radius:var(--r);background:linear-gradient(160deg,#1d3b8c 0%,#13265f 46%,#0b1640 100%);box-shadow:inset 0 0 0 1px rgba(180,200,255,.18)}
-.glass::before{content:'';position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(112deg,transparent 0 150px,rgba(150,180,255,.05) 150px 220px)}
 .glass>*{position:relative}
 .head{padding:26px 28px}
 .head h1{font-size:clamp(38px,6vw,64px);font-weight:900;font-style:italic;text-transform:uppercase;letter-spacing:-.01em}

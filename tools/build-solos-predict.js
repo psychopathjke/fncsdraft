@@ -105,7 +105,6 @@ a{color:var(--cyan)}
 .nav-pill.on{background:#e4ebf7;color:#0b1a3a}
 h1,h2,h3{font-family:var(--font-display);font-weight:700;margin:0;line-height:1.08}
 .glass{position:relative;overflow:hidden;border-radius:var(--r);background:linear-gradient(160deg,#1d3b8c 0%,#13265f 46%,#0b1640 100%);box-shadow:inset 0 0 0 1px rgba(180,200,255,.18)}
-.glass::before{content:'';position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(112deg,transparent 0 150px,rgba(150,180,255,.05) 150px 220px)}
 .glass>*{position:relative}
 .head{padding:24px 28px 26px}
 .crumb{font:700 13px var(--font-display);text-transform:uppercase;letter-spacing:.08em;color:var(--dim);margin:0 0 10px}
