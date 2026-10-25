@@ -68,16 +68,21 @@ if (TRK) {
   });
 }
 
-// ---- Календарь: всё от «сейчас» на три недели вперёд
-const until = NOW + 21 * 86400e3;
-const upcoming = CAL.events.filter(e => Date.parse(e.end || e.begin) > NOW - 3 * 3600e3 && Date.parse(e.begin) < until && REGS.includes(regOf(e)))
+// ---- Календарь как в карьере (26.10, его «календарь в виде календаря как в карьере»): сетка месяца с понедельника,
+// в клетке — плашки серий дня цветом вида, у дня FNCS — обложка; клик по дню — список окон с временем зрителя.
+// В страницу едет только сам список окон с начала прошлого месяца (строки — таблицей, окна — массивами).
+const from = new Date(NOW); from.setUTCDate(1); from.setUTCMonth(from.getUTCMonth() - 1); from.setUTCHours(0, 0, 0, 0);
+const upcoming = CAL.events.filter(e => Date.parse(e.begin) >= from.getTime() && REGS.includes(regOf(e)))
   .sort((a, b) => a.begin < b.begin ? -1 : a.begin > b.begin ? 1 : 0);
-const byDay = new Map();
-upcoming.forEach(e => { const d = e.begin.slice(0, 10); if (!byDay.has(d)) byDay.set(d, []); byDay.get(d).push(e); });
-const calHTML = [...byDay.entries()].map(([d, list]) => `<div class="day" data-day="${d}"><h4><time datetime="${d}">${d}</time></h4><ul>` +
-  list.map(e => `<li class="ev k-${kind(e.w)}" data-reg="${esc(regOf(e))}" data-t="${esc(e.begin)}" data-end="${esc(e.end || e.begin)}">` +
-    `<time datetime="${esc(e.begin)}">${esc(e.begin.slice(11, 16))}</time><i>${esc(regOf(e))}</i>` +
-    `<span>${esc(e.pretty ? e.name : pretty(e.name))}</span><em>${KIND[kind(e.w)]}</em></li>`).join('') + '</ul></div>').join('');
+const series = n => n.replace(/ · (Week|Round|Session|Heat) \d+/g, '').replace(/ · Qualifier \d+ ·/g, ' ·').replace(/ · (Day \d+ )?Round \d+$/, '').trim();
+const STR = [], strIx = new Map();
+const sid = v => { if (!strIx.has(v)) { strIx.set(v, STR.length); STR.push(v); } return strIx.get(v); };
+const KINDS = ['fncs', 'cash', 'ranked', 'other'];
+const ART = { fncs: '/art/fncs-solo.jpg' };
+const CALDATA = upcoming.map(e => {
+  const nm = e.pretty ? e.name : pretty(e.name);
+  return [Math.round(Date.parse(e.begin) / 60000), Math.round(Date.parse(e.end || e.begin) / 60000), REGS.indexOf(regOf(e)), KINDS.indexOf(kind(e.w)), sid(series(nm)), sid(nm)];
+});
 
 // ---- Призы за месяц и последние результаты
 let earnHTML = '', resHTML = '', monthName = '', paid = 0;
@@ -158,7 +163,7 @@ h1,h2,h3,h4{font-family:var(--font-display);font-weight:700;margin:0;line-height
 .regs button{font:700 15px var(--font-display);letter-spacing:.05em;color:#fff;background:rgba(150,180,255,.18);border:none;border-radius:999px;padding:8px 16px;cursor:pointer;min-height:38px}
 .regs button:hover{background:rgba(150,180,255,.32)}
 .regs button[aria-pressed="true"]{background:#e4ebf7;color:#0b1a3a}
-.grid{display:grid;grid-template-columns:1.05fr .95fr;gap:22px;align-items:start}
+.grid{display:grid;grid-template-columns:1fr;gap:22px;align-items:start}
 @media(max-width:900px){.grid{grid-template-columns:1fr}}
 .panel{padding:16px 18px 18px}
 .panel>h3{font:700 18px var(--font-display);letter-spacing:.08em;text-transform:uppercase;margin:0 0 4px}
@@ -202,6 +207,37 @@ h1,h2,h3,h4{font-family:var(--font-display);font-weight:700;margin:0;line-height
 .foot{margin-top:34px;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
 @media(max-width:620px){.wrap{padding:14px 14px 64px}.head,.hero{padding:20px 18px}.logo b{font-size:24px}.nav-pill{padding:7px 12px;font-size:14px}
   .ev{grid-template-columns:auto 34px 1fr;row-gap:2px}.ev em{grid-column:3;justify-self:start}}
+.cal-bar{display:flex;align-items:center;gap:8px;margin:6px 0 10px}
+.cal-bar h4{font:italic 900 24px var(--font-display);text-transform:uppercase;margin:0 4px;min-width:0}
+.cal-nav{width:38px;height:36px;border:none;border-radius:10px;background:#fff;color:#0b0f12;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;padding:0}
+.cal-nav svg{width:16px;height:16px;fill:currentColor}
+.cal-nav:hover{background:var(--go)}
+.cal-nav:disabled{background:rgba(255,255,255,.14);color:var(--dimmer);cursor:default}
+.cal-today{margin-left:auto;border:none;border-radius:10px;background:#fff;color:#0b0f12;font:700 14px var(--font-display);letter-spacing:.06em;text-transform:uppercase;padding:10px 16px;cursor:pointer}
+.cal-today:hover{background:var(--go)}
+.cal-dow,.cal-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}
+.cal-dow span{font:700 11px var(--font-display);letter-spacing:.08em;text-transform:uppercase;color:#8094c4;text-align:center;padding:2px 0 4px}
+.cal-day{position:relative;aspect-ratio:4/3;min-width:0;border:none;border-radius:8px;background:rgba(255,255,255,.045);padding:5px;display:flex;flex-direction:column;gap:3px;overflow:hidden;
+  text-align:left;color:inherit;font:inherit;cursor:pointer;background-size:cover;background-position:center}
+.cal-void{background:none;cursor:default}
+.cal-day.has{background-color:rgba(255,255,255,.1);box-shadow:inset 0 0 0 1px rgba(150,185,255,.22)}
+.cal-day.art::before{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(96,72,0,.35) 0%,rgba(40,30,10,.7) 50%,rgba(14,14,40,.92) 100%)}
+.cal-day>*{position:relative}
+.cal-day:not(.cal-void):hover{box-shadow:inset 0 0 0 2px var(--cyan)}
+.cal-day.now{box-shadow:inset 0 0 0 2px #35e0ff;background-color:rgba(53,224,255,.13)}
+.cal-day.picked{box-shadow:inset 0 0 0 2px var(--go)}
+.cal-day.past{opacity:.55}
+.cal-day.live .cal-n::after{content:' LIVE';color:var(--hot);font-size:9px;letter-spacing:.06em}
+.cal-n{font:900 13px/1 var(--font-display);color:#6d7fae}
+.cal-day.has .cal-n,.cal-day.art .cal-n{color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.8)}
+.cal-ev{display:block;font:700 12px/1.25 var(--font-display);letter-spacing:.02em;padding:2px 4px;border-radius:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#0b1a3a;background:rgba(228,235,247,.9)}
+.cal-ev.k-fncs{background:var(--go)}.cal-ev.k-cash{background:var(--lime)}.cal-ev.k-ranked{background:var(--cyan)}
+.cal-more{font:700 10px var(--font-display);color:var(--dim)}
+.calday{margin-top:14px}
+.calday h4{font:700 15px var(--font-display);letter-spacing:.1em;text-transform:uppercase;color:var(--cyan);margin:0 0 8px}
+.calday ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:5px}
+.ev.done{opacity:.5}
+@media(max-width:620px){#earn th:nth-child(3),#earn td:nth-child(3),#earn th:nth-child(5),#earn td:nth-child(5){display:none}.tbl td{padding:8px 7px}.cal-day{padding:3px;aspect-ratio:auto;min-height:46px}.cal-ev{font-size:0;height:4px;padding:0;border-radius:2px}.cal-more{display:none}.cal-bar h4{font-size:19px}}
 [hidden]{display:none!important}`;
 
 const JS = `(function(){
@@ -214,16 +250,51 @@ var reg=saved||guess;
 var fmtT=new Intl.DateTimeFormat(undefined,{hour:'2-digit',minute:'2-digit'}), fmtD=new Intl.DateTimeFormat(undefined,{weekday:'long',day:'numeric',month:'long'});
 var fmtDT=new Intl.DateTimeFormat(undefined,{weekday:'short',day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
 var now=Date.now();
-document.querySelectorAll('.ev').forEach(function(li){var t=Date.parse(li.dataset.t),e=Date.parse(li.dataset.end);
- li.querySelector('time').textContent=fmtT.format(t); if(e<now) li.remove(); else if(t<=now) li.classList.add('live');});
 document.querySelectorAll('.when li').forEach(function(li){var t=Date.parse(li.dataset.t); li.querySelector('time').textContent=fmtDT.format(t);
  if(t<=now && now<t+3*3600e3) li.classList.add('live');});
-document.querySelectorAll('.day').forEach(function(d){ if(!d.querySelector('.ev')) { d.remove(); return; }
- var h=d.querySelector('h4 time'); h.textContent=fmtD.format(Date.parse(d.dataset.day+'T12:00:00Z')); });
+var D=${JSON.stringify(CALDATA)},S=${JSON.stringify(STR)},R=${JSON.stringify(REGS)},K=${JSON.stringify(KINDS)},KL=${JSON.stringify(KINDS.map(k => KIND[k]))},ART=${JSON.stringify(ART)};
+var DOW=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+var fmtM=new Intl.DateTimeFormat(undefined,{month:'long',year:'numeric'});
+function dk(d){return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();}
+var today=new Date(), cur={y:today.getFullYear(),m:today.getMonth()}, pick=dk(today);
+var first=D.length?new Date(D[0][0]*60000):today, last=D.length?new Date(D[D.length-1][0]*60000):today;
+function byDay(){var m={}; D.forEach(function(e){ if(reg!=='ALL'&&R[e[2]]!==reg) return; var k=dk(new Date(e[0]*60000)); (m[k]=m[k]||[]).push(e);}); return m;}
+function esc(x){return String(x).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+function renderCal(){
+ var by=byDay(), y=cur.y, m=cur.m, days=new Date(y,m+1,0).getDate(), lead=(new Date(y,m,1).getDay()+6)%7;
+ var atStart=y*12+m<=first.getFullYear()*12+first.getMonth(), atEnd=y*12+m>=last.getFullYear()*12+last.getMonth();
+ var h='<div class="cal-bar"><button class="cal-nav" data-d="-1" aria-label="Previous month"'+(atStart?' disabled':'')+'><svg viewBox="0 0 16 16"><path d="M10.5 2.5L5 8l5.5 5.5 1.5-1.5-4-4 4-4z"/></svg></button>'+
+  '<h4>'+esc(fmtM.format(new Date(y,m,1)))+'</h4><button class="cal-nav" data-d="1" aria-label="Next month"'+(atEnd?' disabled':'')+'><svg viewBox="0 0 16 16"><path d="M5.5 2.5L11 8l-5.5 5.5L4 12l4-4-4-4z"/></svg></button>'+
+  '<button class="cal-today">Today</button></div><div class="cal-dow">'+DOW.map(function(d){return '<span>'+d+'</span>';}).join('')+'</div><div class="cal-grid">';
+ for(var i=0;i<lead;i++) h+='<div class="cal-day cal-void"></div>';
+ for(var d=1;d<=days;d++){
+  var k=y+'-'+(m+1)+'-'+d, list=by[k]||[], seen={}, chips=[], fncs=false;
+  list.forEach(function(e){ if(K[e[3]]==='fncs' && /Final/.test(S[e[4]])) fncs=true; if(seen[e[4]]) return; seen[e[4]]=1; chips.push(e); });
+  chips.sort(function(a,b){return a[3]-b[3];});
+  var past=new Date(y,m,d+1)<today, live=list.some(function(e){return e[0]*60000<=now&&now<e[1]*60000;});
+  h+='<button class="cal-day'+(list.length?' has':'')+(fncs?' art':'')+(k===dk(today)?' now':'')+(k===pick?' picked':'')+(past?' past':'')+(live?' live':'')+'" data-k="'+k+'"'+
+   (fncs&&ART.fncs?' style="background-image:url('+ART.fncs+')"':'')+'><span class="cal-n">'+d+'</span>'+
+   chips.slice(0,3).map(function(e){return '<span class="cal-ev k-'+K[e[3]]+'">'+esc(S[e[4]])+'</span>';}).join('')+
+   (chips.length>3?'<span class="cal-more">+'+(chips.length-3)+'</span>':'')+'</button>';
+ }
+ h+='</div>';
+ var el=document.getElementById('cal'); el.innerHTML=h;
+ el.querySelectorAll('.cal-nav').forEach(function(b){b.onclick=function(){var t=new Date(cur.y,cur.m+(+b.dataset.d),1); cur={y:t.getFullYear(),m:t.getMonth()}; renderCal();};});
+ el.querySelector('.cal-today').onclick=function(){cur={y:today.getFullYear(),m:today.getMonth()}; pick=dk(today); renderCal();};
+ el.querySelectorAll('.cal-day:not(.cal-void)').forEach(function(b){b.onclick=function(){pick=b.dataset.k; renderCal();};});
+ renderDay(by);
+}
+function renderDay(by){
+ var p=pick.split('-'), list=(by[pick]||[]).slice().sort(function(a,b){return a[0]-b[0];}), el=document.getElementById('calDay');
+ el.innerHTML='<h4>'+esc(fmtD.format(new Date(+p[0],p[1]-1,+p[2])))+'</h4>'+(list.length?'<ul>'+list.map(function(e){
+  var t=e[0]*60000, end=e[1]*60000, cls='ev k-'+K[e[3]]+(t<=now&&now<end?' live':'')+(end<now?' done':'');
+  return '<li class="'+cls+'"><time>'+fmtT.format(t)+'</time><i>'+R[e[2]]+'</i><span>'+esc(S[e[5]])+'</span><em>'+KL[e[3]]+'</em></li>';
+ }).join('')+'</ul>':'<p class="note">No cups on this day'+(reg==='ALL'?'':' in '+reg)+'.</p>');
+}
 function apply(){
  document.querySelectorAll('.regs button').forEach(function(b){b.setAttribute('aria-pressed',b.dataset.r===reg?'true':'false');});
- document.querySelectorAll('.ev,.res').forEach(function(x){x.hidden=reg!=='ALL'&&x.dataset.reg!==reg;});
- document.querySelectorAll('.day').forEach(function(d){d.hidden=!d.querySelector('.ev:not([hidden])');});
+ document.querySelectorAll('.res').forEach(function(x){x.hidden=reg!=='ALL'&&x.dataset.reg!==reg;});
+ renderCal();
  var n=0; document.querySelectorAll('#earn tbody tr').forEach(function(tr){var on=reg==='ALL'||tr.dataset.reg===reg; tr.classList.toggle('hide',!on);
   if(on){n++; tr.classList.toggle('more',n>25); tr.firstChild.textContent=n;}});
  try{localStorage.setItem('compReg',reg);}catch(e){}
@@ -250,8 +321,8 @@ ${heroHTML}
 <h2 class="sec">Region</h2>
 ${regButtons}
 <div class="grid">
-<section class="glass panel" aria-label="Calendar"><h3>Calendar</h3><p class="small">Next three weeks, in your time zone. Live cups are marked.</p>
-${calHTML || '<p class="note">No tournaments in the next three weeks.</p>'}</section>
+<section class="glass panel" aria-label="Calendar"><h3>Calendar</h3><p class="small">In your time zone. Pick a day to see every cup on it.</p>
+<div id="cal" class="cal"></div><div id="calDay" class="calday"></div></section>
 <section class="glass panel" aria-label="Prize money"><h3>Prize money · ${esc(monthName)}</h3>
 <p class="small">${paid ? money(paid) + ' paid in cash cups and FNCS so far. ' : ''}Duos: each player gets the payout.</p>
 ${earnHTML || '<p class="note">No paid cups yet this month.</p>'}
