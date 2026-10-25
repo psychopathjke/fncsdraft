@@ -53,10 +53,12 @@ for(const reg of REGS){
     const dist=(a,b)=>Math.hypot(a.x+a.w/2-b.x-b.w/2, a.y+a.h/2-b.y-b.h/2);
     const zs=real.boxes.map(b=>{ const src=base.slice().sort((p,q)=>over(q,b)-over(p,b) || dist(p,b)-dist(q,b))[0];
       const z={...src, x:b.x, y:b.y, w:b.w, h:b.h, _real:true}; b.ids.forEach(id=>seatOf.set(id, z)); return z; });
+    // Кого на карте нет (точку не отметили) — один, на точку острова, меньше всего задетую чужими коробками.
+    // Не в «самую пустую коробку»: там уже кто-то стоит, и выходил выдуманный контест (OCE: 7 без точки → 46 делят вместо 32).
+    const freeBase=base.slice().sort((p,q)=>zs.reduce((s,z)=>s+over(p,z),0)-zs.reduce((s,z)=>s+over(q,z),0));
+    rows.forEach(r=>{ if(seatOf.has(r.f.id)) return; const src=freeBase.shift(); if(!src) return;
+      const z={...src, _real:true}; zs.push(z); seatOf.set(r.f.id, z); });
     ALL_LANDING_ZONES.length=0; zs.forEach(z=>ALL_LANDING_ZONES.push(z));
-    // Кого на карте нет — в самую пустую коробку.
-    rows.forEach(r=>{ if(seatOf.has(r.f.id)) return; const cnt=z=>[...seatOf.values()].filter(v=>v===z).length;
-      seatOf.set(r.f.id, zs.slice().sort((a,b)=>cnt(a)-cnt(b))[0]); });
     out.realRects=out.realRects||{}; out.realRects[reg]={day:real.day, updated:real.updated, rects:zs.map(z=>({x:z.x,y:z.y,w:z.w,h:z.h,loot:z.loot,chests:z.chests}))};
   }
   const stat=new Map(rows.map(r=>[r.f.id, {mates:{}, n:r.f.n, c:r.f.c, via:r.f.via, ovr:r.ovr, real:!!r.card, wins:0, top3:0, top10:0, places:0, pts:0, vr:0, elims:0, zones:{}, contest:0, games:0}]));

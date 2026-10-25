@@ -23,6 +23,37 @@ const CYR = { 'а': 'a', 'е': 'e', 'о': 'o', 'р': 'p', 'с': 'c', 'х': 'x', 
 const norm = s => String(s).replace(/[а-яі]/gi, c => CYR[c.toLowerCase()] || c).toUpperCase().normalize('NFKD').replace(/[^A-Z0-9]/g, '');
 const prefix = (a, b) => { let i = 0; while (i < a.length && a[i] === b[i]) i++; return i; };
 
+/* Vital Scrims (25.10, его «найди карты других регионов»): у них карты гранд-финалов NAC, NAW, ME, OCE.
+   Страница за проверкой Cloudflare, поэтому снимок берётся браузером (Playwright: snapshotData в пропсах React
+   на vitalscrims.com/competitive/<id>) и кладётся в tools/measured/solos-2026-vital-raw.json — {REG:{players:
+   [{id, users, marker:{coordinates:[[lat,lng]…]}}], contested:[id…]}}. id — аккаунт Epic без дефисов, ники не нужны.
+   Их мир 256×256 (lng вправо, lat вниз с минусом), на нашу карту — по тем же пяти ориентирам (остаток 1–7 px).
+   У каждого игрока свой контур; кто в списке contested и чьи контуры пересекаются — одна коробка. */
+const VITAL = path.join(ROOT, 'tools/measured/solos-2026-vital-raw.json');
+const VFIT = { ax: 0.9712 * 4, bx: 30.24, ay: -0.9591 * 4, by: -68.41 };
+function vitalRegion(reg, fin) {
+  if (!fs.existsSync(VITAL)) return null;
+  const V = JSON.parse(fs.readFileSync(VITAL, 'utf8'))[reg];
+  if (!V || !V.players) return null;
+  const byId = new Map(fin.map(f => [String(f.id).replace(/-/g, ''), f]));
+  const hot = new Set(V.contested || []);
+  const items = V.players.filter(p => p.marker && p.marker.coordinates && p.marker.coordinates.length && byId.has(p.id)).map(p => {
+    const xs = p.marker.coordinates.map(c => (VFIT.ax * c[1] + VFIT.bx) / FIT.W * 100), ys = p.marker.coordinates.map(c => (VFIT.ay * c[0] + VFIT.by) / FIT.H * 100);
+    return { id: p.id, f: byId.get(p.id), tag: (p.users && p.users[0] && p.users[0].name) || byId.get(p.id).n,
+      x0: Math.min(...xs), x1: Math.max(...xs), y0: Math.min(...ys), y1: Math.max(...ys) };
+  });
+  const cross = (a, b) => a.x0 < b.x1 && b.x0 < a.x1 && a.y0 < b.y1 && b.y0 < a.y1;
+  const root = items.map((_, i) => i), find = i => root[i] === i ? i : (root[i] = find(root[i]));
+  items.forEach((a, i) => items.forEach((b, j) => { if (j > i && hot.has(a.id) && hot.has(b.id) && cross(a, b)) root[find(j)] = find(i); }));
+  const groups = new Map(); items.forEach((it, i) => { const r = find(i); if (!groups.has(r)) groups.set(r, []); groups.get(r).push(it); });
+  const boxes = [...groups.values()].map(g => {
+    const x0 = Math.min(...g.map(t => t.x0)), x1 = Math.max(...g.map(t => t.x1)), y0 = Math.min(...g.map(t => t.y0)), y1 = Math.max(...g.map(t => t.y1));
+    return { x: +x0.toFixed(2), y: +y0.toFixed(2), w: +(x1 - x0).toFixed(2), h: +(y1 - y0).toFixed(2), ids: g.map(t => t.f.id), tags: g.map(t => t.tag) };
+  });
+  const seated = new Set(items.map(t => t.f.id));
+  return { day: 1, updated: null, source: 'vitalscrims', boxes, unmatched: [], missing: fin.filter(f => !seated.has(f.id)).map(f => f.n) };
+}
+
 async function get(url) {
   const r = await fetch(url, { headers: { 'User-Agent': 'Mozilla/5.0 fncsdraft' } });
   if (!r.ok) throw new Error(url + ': ' + r.status);
@@ -44,7 +75,12 @@ async function get(url) {
       const s = j && j.data && j.data.shapes;
       if (s && s.length) { day = d; shapes = s; updated = j.data.lastUpdated || null; break; }
     }
-    if (!shapes) { console.log(reg + ': карты нет'); continue; }
+    if (!shapes) {
+      const v = vitalRegion(reg, fin);
+      if (v) { out.regions[reg] = v; console.log(reg + ': Vital Scrims, коробок ' + v.boxes.length + ', на карте ' + v.boxes.reduce((s, b) => s + b.ids.length, 0) + (v.missing.length ? ', без точки: ' + v.missing.join(' | ') : '')); }
+      else console.log(reg + ': карты нет');
+      continue;
+    }
     const left = new Set(fin), seat = new Map();   // ник на карте → финалист
     const names = []; shapes.forEach(s => (s.teams || []).forEach(t => names.push(t)));
     const byId = new Map(fin.map(f => [String(f.id).replace(/-/g, ''), f]));
@@ -69,7 +105,7 @@ async function get(url) {
       tags: s.teams,
     }));
     const lost = names.filter(t => !seat.has(t));
-    out.regions[reg] = { day, updated, boxes, unmatched: lost, missing: [...left].map(f => f.n) };
+    out.regions[reg] = { day, updated, source: 'eucompetitive', boxes, unmatched: lost, missing: [...left].map(f => f.n) };
     console.log(reg + ': день ' + day + ', коробок ' + boxes.length + ', игроков ' + names.length +
       (lost.length ? ', не узнаны: ' + lost.join(' ') : '') + (left.size ? ', без точки: ' + [...left].map(f => f.n).join(' | ') : ''));
   }

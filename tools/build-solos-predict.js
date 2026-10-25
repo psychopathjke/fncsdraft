@@ -36,7 +36,8 @@ function mapHTML(reg, rows) {
   const real = P.realRects && P.realRects[reg];
   const Z = (real && real.rects) || P.zoneRects || [];
   // Ники с самой карты (коробки в том же порядке, что rects прогона).
-  const tags = real && DROPS && DROPS.regions[reg] && DROPS.regions[reg].boxes.length === Z.length ? DROPS.regions[reg].boxes.map(b => b.tags) : null;
+  const vital = !!(real && DROPS && DROPS.regions[reg] && DROPS.regions[reg].source === 'vitalscrims');
+  const tags = real && DROPS && DROPS.regions[reg] && DROPS.regions[reg].boxes.length <= Z.length ? DROPS.regions[reg].boxes.map(b => b.tags) : null;
   const at = new Map();
   rows.forEach((r, i) => { if (r.drop === '' || r.dropShare < 0.5) return; const k = +r.drop; (at.get(k) || at.set(k, []).get(k)).push({ r, i }); });
   const boxes = [...at.entries()].map(([k, list]) => {
@@ -49,7 +50,7 @@ function mapHTML(reg, rows) {
       shown.map(n => '<i>' + esc(String(n).toUpperCase()) + '</i>').join('') + '</div>';
   }).join('');
   return '<div class="map"><img src="/' + esc(P.mapImg || 'art/map-s42.jpg') + '" alt="Landing spots, ' + esc(REGION[reg]) + ' final" loading="lazy">' + boxes + '</div>' +
-    '<p class="note">' + (real ? 'Real drops: the Day ' + real.day + ' drop map by <a href="https://eucompetitive.com/maps" rel="noopener">eucompetitive.com</a>, every player on the spot they actually land on.'
+    '<p class="note">' + (real ? 'Real drops: the ' + (vital ? '' : 'Day ' + real.day + ' ') + 'drop map by ' + (vital ? '<a href="https://vitalscrims.com/competitive" rel="noopener">Vital Scrims</a>' : '<a href="https://eucompetitive.com/maps" rel="noopener">eucompetitive.com</a>') + ', every player on the spot they actually land on.'
       : 'No public drop map for this region yet, so boxes are where each player drops in our runs.') + ' <b class="k hot">Red</b> boxes are shared drops: two or more players land there and fight for the loot.</p>';
 }
 
