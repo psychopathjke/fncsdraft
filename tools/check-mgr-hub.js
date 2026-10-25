@@ -948,8 +948,7 @@ const SECTIONS=[
     check('рядом: виден на debug/локально', iMgr>=0 && !secs[iMgr].hidden);
     const btn=secs[iCar] && secs[iCar].querySelector('.hero-mgr-btn');
     check('рядом: кнопка «Карьера менеджера» в блоке карьеры', !!btn && !btn.hidden && /mgrStart/.test(btn.getAttribute('onclick')||''));
-    const nav=document.querySelector('.nav-pill[data-nav="manager"]');
-    check('рядом: пункт в верхнем меню', !!nav && !nav.hidden);
+    // Пункта «менеджер» в верхнем меню нет с 26.10: шапка — две вкладки «Карьера» / «Компетитив» (его слово), дверь — на главной.
     check('рядом: открыт и на проде (8.10)', mgrAllowed('fncsdraft.com')===true);
   `},
   {name:'вечер', once:true, code:String.raw`

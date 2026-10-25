@@ -30,7 +30,7 @@ const BOOT = `
   try {
     const w = window.innerWidth;
     const logo = box('.top .logo'), nav = box('.top .site-nav'),
-          pill = box('.top .nav-pill[data-nav="career"]'), langs = box('#langEn');
+          pill = box('.top .nav-pill.nav-main'), langs = box('#langEn');
     out.notes.w = w;
     out.notes.rows = {logo: logo && Math.round(logo.top), nav: nav && Math.round(nav.top),
                       langs: langs && Math.round(langs.top)};
