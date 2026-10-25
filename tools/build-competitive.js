@@ -110,7 +110,7 @@ if (RES && RES.windows.length) {
   }));
   const top = [...P.values()].sort((a, b) => b.usd - a.usd);
   earnHTML = `<table class="tbl" id="earn"><thead><tr><th>#</th><th>Player</th><th>Region</th><th class="n">Cups paid</th><th class="n">Wins</th><th class="n">Earned</th></tr></thead><tbody>` +
-    top.slice(0, 300).map((p, i) => `<tr data-reg="${esc(p.reg)}"${i >= 25 ? ' class="more"' : ''}><td class="n">${i + 1}</td><td>${flag(p.c)}<b>${esc(p.n)}</b></td><td>${esc(p.reg)}</td>` +
+    top.slice(0, 300).map((p, i) => `<tr data-reg="${esc(p.reg)}"${i >= 15 ? ' class="more"' : ''}><td class="n">${i + 1}</td><td>${flag(p.c)}<b>${esc(p.n)}</b></td><td>${esc(p.reg)}</td>` +
       `<td class="n">${p.cups}</td><td class="n">${p.wins || ''}</td><td class="n p1">${money(p.usd)}</td></tr>`).join('') + '</tbody></table>';
   const latest = RES.windows.slice().sort((a, b) => a.begin > b.begin ? -1 : 1).slice(0, 60);
   resHTML = latest.map(w => {
@@ -138,7 +138,7 @@ body{margin:0;color:var(--ink);font:15px/1.55 -apple-system,BlinkMacSystemFont,'
   background-image:radial-gradient(900px 520px at 12% -6%,rgba(60,100,220,.5),rgba(60,100,220,0)),radial-gradient(700px 480px at 92% 8%,rgba(150,180,255,.3),rgba(150,180,255,0)),
   radial-gradient(1100px 700px at 50% 110%,rgba(30,50,140,.6),rgba(30,50,140,0));background-attachment:fixed;min-height:100vh}
 a{color:var(--cyan)}
-.wrap{max-width:1180px;margin:0 auto;padding:18px 20px 80px}
+.wrap{max-width:1320px;margin:0 auto;padding:18px 20px 80px}
 .top{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;border-bottom:2px solid rgba(180,200,255,.15);padding-bottom:14px;margin-bottom:22px}
 .logo{display:flex;align-items:center;gap:10px;text-decoration:none;color:#fff}
 .logo b{font:italic 900 30px/1 var(--font-display);letter-spacing:-.01em;text-transform:uppercase}
@@ -175,8 +175,12 @@ h1,h2,h3,h4{font-family:var(--font-display);font-weight:700;margin:0;line-height
 .regs button{font:700 15px var(--font-display);letter-spacing:.05em;color:#fff;background:rgba(150,180,255,.18);border:none;border-radius:999px;padding:8px 16px;cursor:pointer;min-height:38px}
 .regs button:hover{background:rgba(150,180,255,.32)}
 .regs button[aria-pressed="true"]{background:#e4ebf7;color:#0b1a3a}
-.grid{display:grid;grid-template-columns:1fr;gap:22px;align-items:start}
-@media(max-width:900px){.grid{grid-template-columns:1fr}}
+/* Календарь и призовые рядом (26.10, его «пусть рядом с календарем будет лидерборд с призовыми»); уже 1100 — друг под другом. */
+.grid{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(300px,1fr);gap:18px;align-items:start}
+@media(max-width:1100px){.grid{grid-template-columns:1fr}}
+#earn th:nth-child(3),#earn td:nth-child(3){display:none}
+.grid #earn{font-size:13px}.grid #earn td{padding:7px 8px}
+
 .panel{padding:16px 18px 18px}
 .panel>h3{font:700 18px var(--font-display);letter-spacing:.08em;text-transform:uppercase;margin:0 0 4px}
 .panel>p.small{color:var(--dim);font-size:13px;margin:0 0 10px}
@@ -315,7 +319,7 @@ function apply(){
  document.querySelectorAll('.res').forEach(function(x){x.hidden=reg!=='ALL'&&x.dataset.reg!==reg;});
  renderCal();
  var n=0; document.querySelectorAll('#earn tbody tr').forEach(function(tr){var on=reg==='ALL'||tr.dataset.reg===reg; tr.classList.toggle('hide',!on);
-  if(on){n++; tr.classList.toggle('more',n>25); tr.firstChild.textContent=n;}});
+  if(on){n++; tr.classList.toggle('more',n>15); tr.firstChild.textContent=n;}});
  try{localStorage.setItem('compReg',reg);}catch(e){}
 }
 document.querySelectorAll('.regs button').forEach(function(b){b.addEventListener('click',function(){reg=b.dataset.r;apply();});});
