@@ -78,10 +78,22 @@ const series = n => n.replace(/ · (Week|Round|Session|Heat) \d+/g, '').replace(
 const STR = [], strIx = new Map();
 const sid = v => { if (!strIx.has(v)) { strIx.set(v, STR.length); STR.push(v); } return strIx.get(v); };
 const KINDS = ['fncs', 'cash', 'ranked', 'other'];
-const ART = { fncs: '/art/fncs-solo.jpg' };
+// Обложка дня (26.10, его «добавь логотипы в календаре и пусть высший кап показывает»): плитка Epic самого старшего
+// окна дня (tools/fetch-comp-art.js кладёт их в art/comp). У окон без своей картинки (ноябрь с Tracker) — плитка той же
+// серии (id события без сезона и региона), у FNCS без неё — общая плитка FNCS.
+const artFile = u => 'art/comp/' + String(u).split('/').pop().split('?')[0].replace(/^[0-9a-f]{8}-/, '').replace(/\.(png|jpeg)$/i, '.jpg');
+const hasArt = u => u && fs.existsSync(path.join(__dirname, '..', artFile(u)));
+const famOf = ev => String(ev || '').replace(/^epicgames_S\d+_/, '').replace(/_(EU|NAC|NAW|BR|ASIA|ME|OCE)$/, '').replace(/(Reload)?(Qualifiers|_HeatsStage|_LastChanceQualifier|_Final|FastTracks)$/, '');
+const famArt = new Map();
+CAL.events.forEach(e => { if (hasArt(e.img) && !famArt.has(famOf(e.ev))) famArt.set(famOf(e.ev), '/' + artFile(e.img)); });
+const fncsArt = [...CAL.events].reverse().find(e => /FNCSSolo/.test(e.w) && hasArt(e.img));
+const artOf = e => hasArt(e.img) ? '/' + artFile(e.img) : famArt.get(famOf(e.ev)) || (kind(e.w) === 'fncs' && fncsArt ? '/' + artFile(fncsArt.img) : '');
+// Старшинство окна дня: финал FNCS, остальной FNCS, призовые серии (Performance, Nick Eh 30), кэш-капы, ranked, прочее.
+const rankOf = (e, nm) => kind(e.w) === 'fncs' ? (/Final/.test(nm) ? 100 : 80) : /PerformanceEvaluation|NickEh30/.test(e.w) ? 60 : kind(e.w) === 'cash' ? 50 : kind(e.w) === 'ranked' ? 30 : 10;
+const ART = {};
 const CALDATA = upcoming.map(e => {
   const nm = e.pretty ? e.name : pretty(e.name);
-  return [Math.round(Date.parse(e.begin) / 60000), Math.round(Date.parse(e.end || e.begin) / 60000), REGS.indexOf(regOf(e)), KINDS.indexOf(kind(e.w)), sid(series(nm)), sid(nm)];
+  return [Math.round(Date.parse(e.begin) / 60000), Math.round(Date.parse(e.end || e.begin) / 60000), REGS.indexOf(regOf(e)), KINDS.indexOf(kind(e.w)), sid(series(nm)), sid(nm), sid(artOf(e)), rankOf(e, nm)];
 });
 
 // ---- Призы за месяц и последние результаты
@@ -221,7 +233,13 @@ h1,h2,h3,h4{font-family:var(--font-display);font-weight:700;margin:0;line-height
   text-align:left;color:inherit;font:inherit;cursor:pointer;background-size:cover;background-position:center}
 .cal-void{background:none;cursor:default}
 .cal-day.has{background-color:rgba(255,255,255,.1);box-shadow:inset 0 0 0 1px rgba(150,185,255,.22)}
-.cal-day.art::before{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(96,72,0,.35) 0%,rgba(40,30,10,.7) 50%,rgba(14,14,40,.92) 100%)}
+.cal-day.art{justify-content:flex-end}
+.cal-day.art::before{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(8,12,32,.15) 0%,rgba(8,12,32,.35) 45%,rgba(8,12,32,.9) 100%)}
+.cal-day.art .cal-n{position:absolute;top:6px;left:7px}
+.cal-day.r100{box-shadow:inset 0 0 0 2px var(--go)}
+.cal-top{display:block;font:700 12px/1.2 var(--font-display);letter-spacing:.02em;padding:3px 6px;border-radius:4px;color:#0b1a3a;background:rgba(228,235,247,.92);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cal-top.k-fncs{background:var(--go)}.cal-top.k-cash{background:var(--lime)}.cal-top.k-ranked{background:var(--cyan)}
 .cal-day>*{position:relative}
 .cal-day:not(.cal-void):hover{box-shadow:inset 0 0 0 2px var(--cyan)}
 .cal-day.now{box-shadow:inset 0 0 0 2px #35e0ff;background-color:rgba(53,224,255,.13)}
@@ -232,12 +250,12 @@ h1,h2,h3,h4{font-family:var(--font-display);font-weight:700;margin:0;line-height
 .cal-day.has .cal-n,.cal-day.art .cal-n{color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.8)}
 .cal-ev{display:block;font:700 12px/1.25 var(--font-display);letter-spacing:.02em;padding:2px 4px;border-radius:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#0b1a3a;background:rgba(228,235,247,.9)}
 .cal-ev.k-fncs{background:var(--go)}.cal-ev.k-cash{background:var(--lime)}.cal-ev.k-ranked{background:var(--cyan)}
-.cal-more{font:700 10px var(--font-display);color:var(--dim)}
+.cal-more{font:700 11px var(--font-display);color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.8);letter-spacing:.03em}
 .calday{margin-top:14px}
 .calday h4{font:700 15px var(--font-display);letter-spacing:.1em;text-transform:uppercase;color:var(--cyan);margin:0 0 8px}
 .calday ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:5px}
 .ev.done{opacity:.5}
-@media(max-width:620px){#earn th:nth-child(3),#earn td:nth-child(3),#earn th:nth-child(5),#earn td:nth-child(5){display:none}.tbl td{padding:8px 7px}.cal-day{padding:3px;aspect-ratio:auto;min-height:46px}.cal-ev{font-size:0;height:4px;padding:0;border-radius:2px}.cal-more{display:none}.cal-bar h4{font-size:19px}}
+@media(max-width:620px){#earn th:nth-child(3),#earn td:nth-child(3),#earn th:nth-child(5),#earn td:nth-child(5){display:none}.tbl td{padding:8px 7px}.cal-day{padding:3px;aspect-ratio:auto;min-height:46px}.cal-top{font-size:0;height:5px;padding:0;border-radius:2px}.cal-more{display:none}.cal-bar h4{font-size:19px}}
 [hidden]{display:none!important}`;
 
 const JS = `(function(){
@@ -269,13 +287,14 @@ function renderCal(){
  for(var i=0;i<lead;i++) h+='<div class="cal-day cal-void"></div>';
  for(var d=1;d<=days;d++){
   var k=y+'-'+(m+1)+'-'+d, list=by[k]||[], seen={}, chips=[], fncs=false;
-  list.forEach(function(e){ if(K[e[3]]==='fncs' && /Final/.test(S[e[4]])) fncs=true; if(seen[e[4]]) return; seen[e[4]]=1; chips.push(e); });
-  chips.sort(function(a,b){return a[3]-b[3];});
+  list.forEach(function(e){ if(seen[e[4]]) return; seen[e[4]]=1; chips.push(e); });
+  chips.sort(function(a,b){return b[7]-a[7];});
+  var top=chips[0], img=top?S[top[6]]:'';
   var past=new Date(y,m,d+1)<today, live=list.some(function(e){return e[0]*60000<=now&&now<e[1]*60000;});
-  h+='<button class="cal-day'+(list.length?' has':'')+(fncs?' art':'')+(k===dk(today)?' now':'')+(k===pick?' picked':'')+(past?' past':'')+(live?' live':'')+'" data-k="'+k+'"'+
-   (fncs&&ART.fncs?' style="background-image:url('+ART.fncs+')"':'')+'><span class="cal-n">'+d+'</span>'+
-   chips.slice(0,3).map(function(e){return '<span class="cal-ev k-'+K[e[3]]+'">'+esc(S[e[4]])+'</span>';}).join('')+
-   (chips.length>3?'<span class="cal-more">+'+(chips.length-3)+'</span>':'')+'</button>';
+  h+='<button class="cal-day'+(list.length?' has':'')+(img?' art':'')+(top?' r'+top[7]:'')+(k===dk(today)?' now':'')+(k===pick?' picked':'')+(past?' past':'')+(live?' live':'')+'" data-k="'+k+'"'+
+   (img?' style="background-image:url('+img+')"':'')+'><span class="cal-n">'+d+'</span>'+
+   (top?'<span class="cal-top k-'+K[top[3]]+'">'+esc(S[top[4]])+'</span>':'')+
+   (chips.length>1?'<span class="cal-more">+'+(chips.length-1)+' more</span>':'')+'</button>';
  }
  h+='</div>';
  var el=document.getElementById('cal'); el.innerHTML=h;

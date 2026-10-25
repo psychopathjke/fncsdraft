@@ -85,5 +85,7 @@ function payout(table, rank, pts) {
   results.sort((a, b) => a.begin < b.begin ? -1 : 1);
   fs.writeFileSync(path.join(M, 'comp-results.json'), JSON.stringify({ month: MONTH, fetched: new Date().toISOString(), windows: results }));
   const total = results.reduce((s, r) => s + r.top.reduce((a, x) => a + x.usd * x.ids.length, 0), 0);
+  // Обложки новых серий календаря (art/comp) — см. fetch-comp-art.js.
+  try { require('child_process').execFileSync(process.execPath, [path.join(__dirname, 'fetch-comp-art.js')], { stdio: 'inherit' }); } catch (e) { console.log('обложки: не обновились'); }
   console.log('результаты ' + MONTH + ': ' + results.length + ' окон с призами, выплачено $' + total.toLocaleString('en-US'));
 })().catch(e => { console.error(e); process.exit(1); });
