@@ -8983,10 +8983,11 @@
         <span class="nav-grp-l" id="navGrpCareerL" data-i18n="navGrpCareer"></span>
         <button class="nav-pill" data-nav="career" type="button" onclick="careerStart()" data-i18n="navCareerPlayer"></button>
         <button class="nav-pill" data-nav="manager" type="button" onclick="mgrStart()"><span id="mgNavBtn" data-i18n="hmMgrNav"></span></button>
+        <!-- Драфт — тоже игра, а не новости сцены: в группе «Карьера» (26.10, его «драфт тоже во вкладке карьеры должен быть»). -->
+        <button class="nav-pill on" data-nav="draft" type="button" onclick="requestReset()" data-i18n="navDraft"></button>
       </div>
       <div class="nav-grp nav-grp-comp" role="group" aria-labelledby="navGrpCompL">
         <span class="nav-grp-l" id="navGrpCompL" data-i18n="navGrpComp"></span>
-        <button class="nav-pill on" data-nav="draft" type="button" onclick="requestReset()" data-i18n="navDraft"></button>
         <button class="nav-pill" data-nav="history" type="button" onclick="openHistoryScreen()" data-i18n="navHistory"></button>
         <a class="nav-pill nav-comp" href="/competitive" data-i18n="navComp"></a>
       </div>
