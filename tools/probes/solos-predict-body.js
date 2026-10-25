@@ -1,4 +1,4 @@
-const DATA=__DATA__, REGS=__REGS__, N=__N__;
+const DATA=__DATA__, REGS=__REGS__, N=__N__, DROPS=__DROPS__;
 localStorage.setItem('fncsdraft_career', JSON.stringify({v:1, player:{nick:'Pred', age:20, source:'rookie', country:'de', countryPing:15,
   closeRangeEdge:6, region:'EU', ovr:80, role:'roleIGL', attrs:null, ageEdge:4, photo:null, handle:null, cardRegion:null, nat:null},
   career:{season:2, year:2026, year0:2026, day:'2026-10-26', division:1, earnings:0, balance:0, reach:0, tokens:[], log:[], news:[]}, partner:null}));
@@ -8,7 +8,13 @@ CARD_MODE=true; squadSize=1; drafted=[];
 useLandingSet('s42');
 // Точка держится весь финал: первая раздача запоминается на команде, дальше та же коробка.
 const BBLA=buildBotLandingAssignment;
-buildBotLandingAssignment=function(l, o){ if(l.every(t=>t._fixedZone)){ l.forEach(t=>{ t.landingZone=t._fixedZone; }); return; }
+buildBotLandingAssignment=function(l, o){
+  // Настоящая карта дропов (fetch-solos-drops.js): каждый на своей коробке, лут коробки как у точки острова под ней.
+  if(l.some(t=>t._realZone)){ clearLandingPow(l); const g=new Map();
+    l.forEach(t=>{ const z=t._realZone; t.landingZone=z; t.landingResult=null; t.landingRival=null; applyLandingPow(t, z.points);
+      if(!g.has(z)) g.set(z,[]); g.get(z).push(t); });
+    return {zoneGroups:g}; }
+  if(l.every(t=>t._fixedZone)){ l.forEach(t=>{ t.landingZone=t._fixedZone; }); return; }
   BBLA(l, o); l.forEach(t=>{ t._fixedZone=t.landingZone; }); };
 const out={set:ACTIVE_LANDING_SET, zones:ALL_LANDING_ZONES.length, regions:{}, ms:{}};
 const yearOf=p=>+String(p.date||'').slice(0,4)||0;
@@ -35,9 +41,25 @@ for(const reg of REGS){
     const c=careerLadderPlayer(rnd, o, taken, null, null, null, false);
     c.handle=r.f.n; c.region=reg; c._fake=true; r.ovr=o; r.c=c;
   });
+  // Регион с настоящей картой дропов: коробки карты становятся точками острова на этот финал.
+  useLandingSet('s42');
+  const real=DROPS.regions && DROPS.regions[reg];
+  const seatOf=new Map();
+  if(real && real.boxes && real.boxes.length){
+    const base=ALL_LANDING_ZONES.slice();
+    const over=(a,b)=>Math.max(0, Math.min(a.x+a.w,b.x+b.w)-Math.max(a.x,b.x))*Math.max(0, Math.min(a.y+a.h,b.y+b.h)-Math.max(a.y,b.y));
+    const dist=(a,b)=>Math.hypot(a.x+a.w/2-b.x-b.w/2, a.y+a.h/2-b.y-b.h/2);
+    const zs=real.boxes.map(b=>{ const src=base.slice().sort((p,q)=>over(q,b)-over(p,b) || dist(p,b)-dist(q,b))[0];
+      const z={...src, x:b.x, y:b.y, w:b.w, h:b.h, _real:true}; b.ids.forEach(id=>seatOf.set(id, z)); return z; });
+    ALL_LANDING_ZONES.length=0; zs.forEach(z=>ALL_LANDING_ZONES.push(z));
+    // Кого на карте нет — в самую пустую коробку.
+    rows.forEach(r=>{ if(seatOf.has(r.f.id)) return; const cnt=z=>[...seatOf.values()].filter(v=>v===z).length;
+      seatOf.set(r.f.id, zs.slice().sort((a,b)=>cnt(a)-cnt(b))[0]); });
+    out.realRects=out.realRects||{}; out.realRects[reg]={day:real.day, updated:real.updated, rects:zs.map(z=>({x:z.x,y:z.y,w:z.w,h:z.h,loot:z.loot,chests:z.chests}))};
+  }
   const stat=new Map(rows.map(r=>[r.f.id, {mates:{}, n:r.f.n, c:r.f.c, via:r.f.via, ovr:r.ovr, real:!!r.card, wins:0, top3:0, top10:0, places:0, pts:0, vr:0, elims:0, zones:{}, contest:0, games:0}]));
   for(let run=0; run<N; run++){
-    const field=rows.map(r=>{ const t=careerTeam([r.c]); t.name=r.f.n; t._pid=r.f.id; return t; });
+    const field=rows.map(r=>{ const t=careerTeam([r.c]); t.name=r.f.n; t._pid=r.f.id; if(seatOf.has(r.f.id)) t._realZone=seatOf.get(r.f.id); return t; });
     await simulateGamesLive(field, 12, victoryR1Points, 4, 'stage', 0, null, null,
       {lobbySize:100, stageName:'pred', mapReplay:false, stopOnYourDeath:false,
        dropEachGame:async (g, room)=>{ const l=room||field;
@@ -57,5 +79,6 @@ for(const reg of REGS){
     .sort((x,y)=>y.win-x.win || x.avgPlace-y.avgPlace);
   out.ms[reg]=Math.round(performance.now()-t0);
 }
+useLandingSet('s42');
 out.zoneRects=ALL_LANDING_ZONES.map(z=>({x:z.x,y:z.y,w:z.w,h:z.h,loot:z.loot,chests:z.chests}));
 return out;

@@ -22,7 +22,9 @@ const via = v => { const [st, r] = String(v || '').split(':'); return ({ fast: '
 const flag = c => c ? '<img src="/flags/w20/' + esc(String(c).toLowerCase()) + '.png" alt="" width="16" loading="lazy">' : '';
 
 function mapHTML(reg, rows) {
-  const Z = P.zoneRects || [];
+  // Регион с настоящей картой дропов (fetch-solos-drops.js) рисует её коробки, остальные — точки движка.
+  const real = P.realRects && P.realRects[reg];
+  const Z = (real && real.rects) || P.zoneRects || [];
   const at = new Map();
   rows.forEach((r, i) => { if (r.drop === '' || r.dropShare < 0.5) return; const k = +r.drop; (at.get(k) || at.set(k, []).get(k)).push({ r, i }); });
   const boxes = [...at.entries()].map(([k, list]) => {
@@ -35,7 +37,8 @@ function mapHTML(reg, rows) {
       (fav || hot ? '<span>' + lab + '</span>' : '') + '</div>';
   }).join('');
   return '<div class="map"><img src="/' + esc(P.mapImg || 'art/map-s42.jpg') + '" alt="Landing spots, ' + esc(REGION[reg]) + ' final" loading="lazy">' + boxes + '</div>' +
-    '<p class="note">Boxes are where each player drops in our runs. <b class="k hot">Red</b> boxes are shared drops: two or more players land there and fight for the loot. Yellow outline: a top-10 favourite lands there.</p>';
+    '<p class="note">' + (real ? 'Real drops: the Day ' + real.day + ' drop map by <a href="https://eucompetitive.com/maps" rel="noopener">eucompetitive.com</a>, every player on the spot they actually land on.'
+      : 'No public drop map for this region yet, so boxes are where each player drops in our runs.') + ' <b class="k hot">Red</b> boxes are shared drops: two or more players land there and fight for the loot. Yellow outline: a top-10 favourite lands there.</p>';
 }
 
 function regionHTML(reg) {
@@ -100,6 +103,7 @@ a{color:var(--accent)}
 .how b{color:var(--ink)}
 @media(max-width:560px){.tbl .hide-s{display:none}.fav{grid-template-columns:1fr}.fav li{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}.fav strong{font-size:26px}.z span{font-size:9px}}`;
 
+const REALS = REGS.filter(r => P.realRects && P.realRects[r]);
 const total = REGS.reduce((s, r) => s + P.regions[r].length, 0);
 const top = REGS.map(r => P.regions[r][0] && P.regions[r][0].n + ' (' + r + ')').filter(Boolean).slice(0, 4).join(', ');
 const title = 'FNCS Solos 2026 Finals prediction: win chances for every region | FNCS Draft';
@@ -110,7 +114,7 @@ const body = `<p class="crumb"><a href="/">FNCS Draft</a> / Predictions</p>
 <p class="sub">${total} real finalists, ${REGS.length} regions. Every final played ${P.runs} times in the FNCS Draft engine: 12 games, Epic scoring (placement points + 4 per elimination), each player holding the same drop all final. Day 1 on 26 October, Day 2 on 27 October 2026, 18:00 UTC.</p>
 <div class="tabs" role="tablist">${REGS.map((r, i) => '<button role="tab" aria-selected="' + (i ? 'false' : 'true') + '" data-tab="' + r + '">' + r + '</button>').join('')}</div>
 ${REGS.map(regionHTML).join('\n')}
-<div class="how"><b>How it works.</b> Finalists come from Epic's own leaderboards (Fast Track top 8, both Heats top 35, Last Chance top 22). A player who is in FNCS Draft plays with their 2026 rating, built from the whole year: Majors, Global Championship, cups. A player who is not gets a rating from their qualifier results, scaled against the players we do know in the same region. Drops are dealt by the game: stronger players pick the richer spots first, and a spot two players want becomes a fight at the landing. It is a simulation, not a promise.</div>
+<div class="how"><b>How it works.</b> Finalists come from Epic's own leaderboards (Fast Track top 8, both Heats top 35, Last Chance top 22). A player who is in FNCS Draft plays with their 2026 rating, built from the whole year: Majors, Global Championship, cups. A player who is not gets a rating from their qualifier results, scaled against the players we do know in the same region. ${REALS.length ? 'Drops in ' + REALS.join(', ') + ' are real, taken from the community drop map: each player lands on their own spot every game, and a shared spot is a fight at the landing. ' + (REALS.length < REGS.length ? 'Where no drop map is out yet, the game deals the drops: stronger players pick the richer spots first.' : '') : 'Drops are dealt by the game: stronger players pick the richer spots first, and a spot two players want becomes a fight at the landing.'} It is a simulation, not a promise.</div>
 <a class="cta" href="/"><span>Play the FNCS career</span></a>
 <script>
 (function(){var b=document.querySelectorAll('.tabs button'),s=document.querySelectorAll('.reg');
