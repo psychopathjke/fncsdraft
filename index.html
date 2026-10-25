@@ -133763,6 +133763,11 @@ function ccOrphanPairs(pool, taken, rnd, spare, seats){
     const memo=cr ? (cr.orphanMate=cr.orphanMate||{}) : null;
     const pairedNow=new Set();
     pool.duos.forEach(d=>d.cards.forEach(c=>pairedNow.add(c._k||hKey(c))));
+    /* В трио-год запомненный третий целой пары тоже занят: иначе сирота уводил его к себе,
+       и уже та тройка на каждом капе искала замену (отзыв 25.10: «из других триосов
+       воровать по игроку»). Третий распавшейся пары свободен. */
+    if(cr && cr.trios && typeof careerSquadSize==='function' && careerSquadSize()===3)
+      Object.keys(cr.trios).forEach(key=>{ if(!key.split('+').some(k=>taken.has(k))) pairedNow.add(cr.trios[key]); });
     const freeOnes=(pool.players||[]).filter(c=>{
       const k=c._k||hKey(c);
       // Только что брошенный игроком — ещё на рынке (ccMateParted, 16.09).
@@ -133771,6 +133776,15 @@ function ccOrphanPairs(pool, taken, rnd, spare, seats){
     let take=null;
     const want=memo ? memo[oddKey] : null;
     if(want) take=freeOnes.find(c=>(c._k||hKey(c))===want) || null;
+    /* Трио-год: двое, что остались от тройки, играют дальше вместе, а третьего добирают
+       (отзыв 25.10: «чтобы она со своим рейтингом примерно тиммейта нового находила»).
+       Раньше сирота брал ближайшего свободного, а свободные в верху сцены на десять-пятнадцать
+       слабее: vic0 95 остался с Kyto 76, хотя его третий t3eny 94 был свободен. */
+    if(!take && !want && cr && cr.trios && careerSquadSize()===3){
+      const was=Object.keys(cr.trios).find(key=>{ const p=key.split('+'); return p.indexOf(oddKey)>=0 && p.some(k=>taken.has(k)); });
+      if(was) take=freeOnes.find(c=>(c._k||hKey(c))===cr.trios[was]) || null;
+      if(take && memo) memo[oddKey]=take._k||hKey(take);
+    }
     if(!take){
       /* Один из трёх ближайших по силе, а не строго ближайший: при двух-трёх
          сильных свободных на весь пул «ближайший» — это всегда один и тот же
@@ -134105,6 +134119,7 @@ function careerCupField(cr, mine, size, salt, open, sharp){
      пробы зовут careerCupField с Object.assign({}, cr, {...}), и разводы,
      записанные в копию, не увидит ни careerPools, ни следующая комната. */
   if(per>2 && typeof ccTrioMarket==='function') ccTrioMarket(null);
+  if(per>2 && typeof ccTrioRefill==='function') ccTrioRefill(mine);
   /* Where the third comes from.
 
      Not out of the pool of everybody left, which was the first thing I tried and
@@ -134246,6 +134261,13 @@ function careerCupField(cr, mine, size, salt, open, sharp){
      войти, — не комната. */
   if(!cr.trios || typeof cr.trios!=="object") cr.trios={};
   const trioMemo=cr.trios;
+  /* Третьего забрал к себе игрок (или он в комнате человеком): запись о нём неисполнима,
+     пока он у тебя, и её стираем. Раньше она оставалась — новый третий не записывался
+     («пишется один раз»), и тройка на каждом капе брала нового из остатков или
+     выдуманного слабого. Отзыв 25.10: «команда, у которой я забрал игрока, начинает либо
+     с каким-то слабым играть, либо на каждый турнир из других триосов воровать по
+     игроку». Теперь она один раз выбирает по силе среди свободных, и это запоминается. */
+  const mineKeys=new Set((mine||[]).map(c=>c && (c._k||hKey(c))).filter(Boolean));
   const coreKey=core=>core.map(c=>hKey(c)).sort().join('+');
   const coreRnd=core=>careerRng(hashStr('t'+cr.season+'d'+cr.division+'|'+coreKey(core)));
   /* Память рассаживается раньше любых свежих выборов.
@@ -134280,7 +134302,7 @@ function careerCupField(cr, mine, size, salt, open, sharp){
          человек встал в записанную пару года. «Занят на этой неделе» — не
          повод стирать память: на следующей он снова свободен, а состав уже
          развалился. См. pairedPool выше. */
-      if(want && pairedPool.has(want)){ delete trioMemo[key]; return; }
+      if(want && (pairedPool.has(want) || mineKeys.has(want))){ delete trioMemo[key]; return; }
       if(!want) return;
       const at=extras.findIndex(c=>(c._k||hKey(c))===want);
       const c=at>=0 ? extras[at]
@@ -134292,6 +134314,16 @@ function careerCupField(cr, mine, size, salt, open, sharp){
         taken.add(c._k||hKey(c));
       }
     });
+  }
+  /* Запомненный третий пары года, которая сегодня не приехала, — всё равно её третий: свежий
+     выбор его не берёт. Иначе он уходил к той паре, что разбирала раньше, она его записывала, а
+     его собственная тройка на следующем капе искала замену (25.10: «из других триосов воровать
+     по игроку»; проба: vic0 и t3eny брали Momsy, записанного за другой парой). */
+  if(per>2 && trioMemo){
+    const held=new Set();
+    Object.keys(trioMemo).forEach(key=>{ const p=key.split('+');
+      if(p.length===2 && p.every(k=>!mineKeys.has(k))) held.add(trioMemo[key]); });
+    for(let i=extras.length-1; i>=0; i--) if(held.has(extras[i]._k||hKey(extras[i]))) extras.splice(i, 1);
   }
   /* А свежие тройки раздаются ПО СИЛЕ ПАРЫ, а не по очереди недели.
 
@@ -134357,7 +134389,7 @@ function careerCupField(cr, mine, size, salt, open, sharp){
        ту, что в резервном проходе; эта — в takeExtra, то есть в том проходе,
        который разбирает большинство ядер, — осталась недельной, и состав
        продолжал ехать. См. pairedPool. */
-    if(trioMemo && trioMemo[key] && pairedPool.has(trioMemo[key])) delete trioMemo[key];
+    if(trioMemo && trioMemo[key] && (pairedPool.has(trioMemo[key]) || mineKeys.has(trioMemo[key]))) delete trioMemo[key];
     const want=trioMemo ? trioMemo[key] : null;
     if(want){
       const at=extras.findIndex(c=>(c._k||hKey(c))===want);
@@ -153822,6 +153854,84 @@ function careerTrioRaids(cr){
     }
   });
   if(made){ CC_POOLS=null; CC_NOW_CARDS={}; }
+  return made;
+}
+/* Ты забрал игрока из тройки — она добирает замену ПО СИЛЕ, один раз, и дальше играет с ней.
+
+   Отзыв 25.10: «команда, у которой я забрал игрока, начинает либо с каким-то слабым игроком
+   играть, либо на каждый турнир из других триосов воровать по игроку… чтобы она со своим
+   рейтингом примерно тиммейта нового находила». Свободные в верху сцены на 15–20 слабее
+   (проба: Pixie 96 & SwizzY 95 без Shxrk получали Eclipse 76), поэтому здесь то же, что
+   делает рынок трио на старте сезона (careerTrioRaids): если рынок не даёт никого в
+   CC_RAID_BAND, тройка зовёт ближайшего по силе из пары ниже, та пара распадается
+   (cr.duoSplits), брошенный выходит на рынок. Запись в cr.trios делает это однократным.
+
+   Два случая: забрал третьего — ядро то же; забрал одного из ядра — ядром становятся
+   оставшийся и бывший третий (они и сядут вместе, см. ccOrphanPairs). */
+function ccTrioRefill(mine){
+  const cr=CAREER && CAREER.career;
+  if(!cr || careerSquadSize()!==3 || !cr.trios) return 0;
+  if(ccIs2025() && ccNowYear()===2025) return 0;
+  if(ccChapterMoved()) return 0;
+  const mk=new Set((mine||[]).map(c=>c && (c._k||hKey(c))).filter(Boolean));
+  if(!mk.size) return 0;
+  const memo=cr.trios, keyOf=cards=>cards.map(c=>hKey(c)).sort().join('+');
+  const need=[];
+  Object.keys(memo).forEach(key=>{
+    const p=key.split('+'), t=memo[key];
+    if(p.length!==2 || p.some(k=>mk.has(k))) return;
+    if(mk.has(t)) need.push({key, keys:p});
+  });
+  (careerPools().duos||[]).forEach(d=>{
+    const ks=d.cards.map(c=>hKey(c)), out=ks.filter(k=>mk.has(k));
+    if(out.length!==1) return;
+    const left=ks.find(k=>!mk.has(k)), t=memo[ks.slice().sort().join('+')];
+    if(!t || mk.has(t)) return;
+    const key=[left, t].sort().join('+');
+    if(memo[key]) return;
+    cr.orphanMate=cr.orphanMate||{};
+    if(!cr.orphanMate[left]) cr.orphanMate[left]=t;
+    if(cr.orphanMate[left]===t) need.push({key, keys:[left, t]});
+  });
+  if(!need.length) return 0;
+  CC_POOLS=null;
+  const pool=ccAsWorld(()=>careerPools());
+  const cardOf=new Map();
+  (pool.players||[]).forEach(c=>cardOf.set(hKey(c), c));
+  (pool.duos||[]).forEach(d=>d.cards.forEach(c=>cardOf.set(hKey(c), c)));
+  const paired=new Set(), held=new Set(Object.values(memo));
+  (pool.duos||[]).forEach(d=>d.cards.forEach(c=>paired.add(hKey(c))));
+  const regOf=c=>String((c && (c.region||c.cardRegion)) || 'EU');
+  cr.duoSplits=cr.duoSplits||{};
+  let made=0;
+  need.forEach(n=>{
+    const core=n.keys.map(k=>cardOf.get(k)).filter(Boolean);
+    delete memo[n.key];
+    if(core.length!==2) return;
+    const reg=regOf(core[0]), avg=ccDuoOvr({cards:core});
+    const busy=k=>mk.has(k) || n.keys.indexOf(k)>=0;
+    const free=(pool.players||[]).filter(c=>{ const k=hKey(c); return regOf(c)===reg && !paired.has(k) && !held.has(k) && !busy(k); })
+      .sort((a,b)=>ccCardOvr(b)-ccCardOvr(a));
+    if(free.length && avg-ccCardOvr(free[0])<=CC_RAID_BAND){ memo[n.key]=hKey(free[0]); held.add(memo[n.key]); return; }
+    const bar=free.length ? ccCardOvr(free[0]) : 0;
+    let best=null;
+    (pool.duos||[]).forEach(v=>{
+      if(regOf(v.cards[0])!==reg || ccDuoOvr(v)>=avg) return;
+      if(v.cards.some(c=>busy(hKey(c)))) return;
+      v.cards.forEach(c=>{
+        const o=ccCardOvr(c); if(o<=bar) return;
+        const dist=Math.abs(avg-o);
+        if(!best || dist<best.dist) best={card:c, duo:v, dist};
+      });
+    });
+    if(!best) return;
+    cr.duoSplits[keyOf(best.duo.cards)]=careerToday();
+    memo[n.key]=hKey(best.card); held.add(memo[n.key]);
+    best.duo.cards.forEach(c=>paired.delete(hKey(c)));
+    paired.add(hKey(best.card));
+    made++;
+  });
+  CC_POOLS=null; CC_NOW_CARDS={};
   return made;
 }
 /* Рынок открывается РАЗ ЗА СЕЗОН — и сам, если сезон уже идёт.
