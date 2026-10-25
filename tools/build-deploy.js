@@ -318,6 +318,11 @@ const prefilled = prefillI18n(OUT);
 require('child_process').execFileSync(process.execPath, [path.join(__dirname, 'build-player-pages.js'), OUT], { stdio: 'inherit' });
 /* Прогноз финала FNCS Solos 2026 (/predict/fncs-solos-2026) — см. build-solos-predict.js. */
 require('child_process').execFileSync(process.execPath, [path.join(__dirname, 'build-solos-predict.js'), OUT], { stdio: 'inherit' });
+/* Вкладка Competitive (/competitive) — см. build-competitive.js. Свежий календарь и результаты месяца тянет
+   fetch-competitive.js; нет сети — страница собирается из того, что уже лежит в tools/measured. */
+try { require('child_process').execFileSync(process.execPath, [path.join(__dirname, 'fetch-competitive.js')], { stdio: 'inherit' }); }
+catch (e) { console.log('competitive: данные не обновились, беру прежние'); }
+require('child_process').execFileSync(process.execPath, [path.join(__dirname, 'build-competitive.js'), OUT], { stdio: 'inherit' });
 
 /* Главная на каждом языке (/ru/, /fr/, …) с hreflang и строками в sitemap.xml — см. build-lang-pages.js.
    Снимок текста передаётся файлом и удаляется: на сайт он не едет. */

@@ -7733,6 +7733,10 @@
     white-space:nowrap;transition:background .12s;}
   .nav-pill:hover{background:rgba(255,255,255,.12);outline:3px solid rgba(255,255,255,.92);}
   .nav-pill.on{background:#e4ebf7;color:#0b1a3a;}
+  /* Competitive — ссылка, не кнопка: жёлтая, как главная дверь сайта, чтобы её было видно среди пилюль игры. */
+  a.nav-pill{text-decoration:none;display:inline-flex;align-items:center;}
+  .nav-pill.nav-comp{background:var(--go,#ffdd00);color:#0b0f12;margin-left:6px;}
+  .nav-pill.nav-comp:hover{background:#fff27a;outline-color:#fff27a;}
   /* Драфт и прогон. */
   .rating-explainer,.pack-panel,.squad-panel,.stage-card,.sim-btn{background:rgba(126,150,224,.18);border-color:rgba(180,200,255,.2);}
   .pcard{background:rgba(8,18,50,.5);border-color:rgba(180,200,255,.2);}
@@ -8970,6 +8974,9 @@
       <button class="nav-pill" data-nav="manager" type="button" onclick="mgrStart()"><span id="mgNavBtn" data-i18n="hmMgrNav"></span></button>
       <button class="nav-pill on" data-nav="draft" type="button" onclick="requestReset()" data-i18n="navDraft"></button>
       <button class="nav-pill" data-nav="history" type="button" onclick="openHistoryScreen()" data-i18n="navHistory"></button>
+      <!-- Вторая половина сайта (25.10, его «2 вкладки: карьера и компетитив»): календарь турниров, призы месяца,
+           результаты и прогнозы — отдельная страница /competitive (tools/build-competitive.js). -->
+      <a class="nav-pill nav-comp" href="/competitive">Competitive</a>
     </nav>
     <div style="display:flex;align-items:center;gap:10px;">
       <div class="badge" id="topBadge" data-i18n="badgeMode"></div>

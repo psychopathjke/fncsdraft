@@ -147,7 +147,7 @@ const top = REGS.map(r => P.regions[r][0] && P.regions[r][0].n + ' (' + r + ')')
 const title = 'FNCS Solos 2026 Finals prediction: win chances for every region | FNCS Draft';
 const desc = 'Who wins the FNCS Solos 2026 Finals? ' + total + ' finalists in ' + REGS.length + ' regions, each final simulated ' + P.runs +
   ' times with real drops and Epic scoring. Favourites: ' + top + '.';
-const body = `<p class="crumb"><a href="/">FNCS Draft</a> / Predictions</p>
+const body = `<p class="crumb"><a href="/">FNCS Draft</a> / <a href="/competitive">Competitive</a> / Predictions</p>
 <h1>FNCS Solos 2026 Finals prediction</h1>
 <p class="sub">${total} real finalists, ${REGS.length} regions. Every final played ${P.runs} times in the FNCS Draft engine: 12 games, Epic scoring (placement points + 4 per elimination), each player holding the same drop all final. Day 1 on 26 October, Day 2 on 27 October 2026, 18:00 UTC.</p>
 <div class="tabs" role="tablist">${REGS.map((r, i) => '<button role="tab" aria-selected="' + (i ? 'false' : 'true') + '" data-tab="' + r + '">' + r + '</button>').join('')}</div>
