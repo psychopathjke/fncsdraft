@@ -37,6 +37,16 @@ function pretty(name) {
 const kind = w => /FNCS/.test(w) ? 'fncs' : /VCC|VictoryCup|CashCup|PerformanceEvaluation|NickEh30/.test(w) ? 'cash' : /Ranked/.test(w) ? 'ranked' : 'other';
 const KIND = { fncs: 'FNCS', cash: 'Cash cup', ranked: 'Ranked cup', other: 'Cup' };
 const regOf = e => REGS.includes(e.region) ? e.region : (String(e.w).split('_').pop());
+// Страна → соревновательный регион Epic (по серверам, где играет сцена этой страны). 'NA' — потом NAC или NAW.
+const COUNTRY_REG = {};
+['gb','ie','fr','de','at','ch','nl','be','lu','es','pt','it','mt','dk','se','no','fi','is','ee','lv','lt','pl','cz','sk','hu','si','hr','ba','rs','me','mk','al',
+ 'xk','ro','bg','gr','cy','tr','ua','by','md','ru','ge','am','az','kz','uz','kg','tj','tm','il','ma','dz','tn','za','ng','ke'].forEach(c => COUNTRY_REG[c] = 'EU');
+['us','ca','pr','mx','gt','sv','hn','ni','cr','pa','do','cu','jm','tt','bs','ht'].forEach(c => COUNTRY_REG[c] = 'NA');
+['br','ar','cl','uy','py','bo','pe','co','ve','ec'].forEach(c => COUNTRY_REG[c] = 'BR');
+['sa','ae','kw','qa','bh','om','jo','lb','iq','sy','ye','eg','ps','ly','sd','ir'].forEach(c => COUNTRY_REG[c] = 'ME');
+['jp','kr','cn','tw','hk','mo','th','vn','ph','sg','my','id','in','pk','bd','lk','mn','kh','la','mm'].forEach(c => COUNTRY_REG[c] = 'ASIA');
+['au','nz','fj','pg'].forEach(c => COUNTRY_REG[c] = 'OCE');
+const homeRegion = c => c ? COUNTRY_REG[String(c).toLowerCase()] || null : null;
 
 // ---- Главное событие: финал FNCS Solos с прогнозом
 const finals = CAL.events.filter(e => /FNCSSolo_Final_Day1_/.test(e.w)).map(e => ({ reg: regOf(e), begin: e.begin }))
@@ -100,14 +110,25 @@ const CALDATA = upcoming.map(e => {
 let earnHTML = '', resHTML = '', monthName = '', paid = 0;
 if (RES && RES.windows.length) {
   monthName = new Date(RES.month + '-01T00:00:00Z').toLocaleString('en-US', { month: 'long', year: 'numeric', timeZone: 'UTC' });
+  // Регион игрока — его домашний, а не региона капа (26.10: «PANZER топ-1 NAC — ошибка, он европеец, взял призовые на
+  // Америке»). Страна → регион; США и Канада делятся на NAC/NAW по тому, где больше капов; страны нет — где больше
+  // капов. Деньги считаются все, где бы ни выиграны.
   const P = new Map();
   RES.windows.forEach(w => w.top.forEach(x => {
-    if (!x.usd) return;
     x.ids.forEach((id, i) => {
-      const o = P.get(id) || { n: x.n[i] || x.epic[i] || '?', c: x.c[i], reg: regOf(w), usd: 0, cups: 0, wins: 0 };
-      o.usd += x.usd; o.cups++; if (x.rank === 1) o.wins++; P.set(id, o); paid += x.usd;
+      const nm0 = x.n[i] || x.epic[i] || ''; const o = P.get(id) || { n: !nm0 || /^[0-9a-f]{32}$/i.test(nm0) ? 'Unknown player' : nm0, c: x.c[i], at: {}, usd: 0, cups: 0, wins: 0 };
+      if (!o.c && x.c[i]) o.c = x.c[i];
+      o.at[regOf(w)] = (o.at[regOf(w)] || 0) + 1;
+      if (x.usd) { o.usd += x.usd; o.cups++; if (x.rank === 1) o.wins++; paid += x.usd; }
+      P.set(id, o);
     });
   }));
+  P.forEach((o, id) => {
+    if (!o.usd) { P.delete(id); return; }
+    const most = (list) => Object.entries(o.at).filter(([r]) => !list || list.includes(r)).sort((a, b) => b[1] - a[1])[0];
+    const home = homeRegion(o.c);
+    o.reg = home === 'NA' ? ((most(['NAC', 'NAW']) || ['NAC'])[0]) : home || most()[0];
+  });
   const top = [...P.values()].sort((a, b) => b.usd - a.usd);
   earnHTML = `<table class="tbl" id="earn"><thead><tr><th>#</th><th>Player</th><th>Region</th><th class="n">Cups paid</th><th class="n">Wins</th><th class="n">Earned</th></tr></thead><tbody>` +
     top.slice(0, 300).map((p, i) => `<tr data-reg="${esc(p.reg)}"${i >= 15 ? ' class="more"' : ''}><td class="n">${i + 1}</td><td>${flag(p.c)}<b>${esc(p.n)}</b></td><td>${esc(p.reg)}</td>` +
