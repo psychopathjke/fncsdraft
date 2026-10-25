@@ -12,6 +12,8 @@ if (!process.argv[2] || !fs.existsSync(path.join(OUT, 'index.html'))) throw new 
 const SRC = path.join(__dirname, 'measured', 'solos-2026-predict.json');
 if (!fs.existsSync(SRC)) { console.log('прогноз: нет ' + SRC + ', пропуск'); process.exit(0); }
 const P = JSON.parse(fs.readFileSync(SRC, 'utf8'));
+const DSRC = path.join(__dirname, 'measured', 'solos-2026-drops.json');
+const DROPS = fs.existsSync(DSRC) ? JSON.parse(fs.readFileSync(DSRC, 'utf8')) : null;
 const SITE = 'https://fncsdraft.com', SLUG = 'fncs-solos-2026', URL = SITE + '/predict/' + SLUG;
 const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const pct = v => v >= 0.995 ? '99%' : v > 0 && v < 0.005 ? '<1%' : Math.round(v * 100) + '%';
@@ -25,20 +27,22 @@ function mapHTML(reg, rows) {
   // Регион с настоящей картой дропов (fetch-solos-drops.js) рисует её коробки, остальные — точки движка.
   const real = P.realRects && P.realRects[reg];
   const Z = (real && real.rects) || P.zoneRects || [];
+  // Ники с самой карты (коробки в том же порядке, что rects прогона).
+  const tags = real && DROPS && DROPS.regions[reg] && DROPS.regions[reg].boxes.length === Z.length ? DROPS.regions[reg].boxes.map(b => b.tags) : null;
   const at = new Map();
   rows.forEach((r, i) => { if (r.drop === '' || r.dropShare < 0.5) return; const k = +r.drop; (at.get(k) || at.set(k, []).get(k)).push({ r, i }); });
   const boxes = [...at.entries()].map(([k, list]) => {
     const z = Z[k]; if (!z) return '';
-    const top = list.slice().sort((a, b) => a.i - b.i);
-    const hot = top.length > 1;
-    const lab = top.slice(0, 2).map(x => esc(x.r.n)).join(' · ') + (top.length > 2 ? ' +' + (top.length - 2) : '');
-    const fav = top.some(x => x.i < 10);
-    return '<div class="z' + (hot ? ' hot' : '') + (fav ? ' fav' : '') + '" style="left:' + z.x + '%;top:' + z.y + '%;width:' + z.w + '%;height:' + z.h + '%">' +
-      (fav || hot ? '<span>' + lab + '</span>' : '') + '</div>';
+    // Как на карте eucompetitive (25.10, его «сделай такой же как референс»): все ники коробки столбиком, капсом,
+    // белым с чёрной обводкой; общая точка — красная. На настоящей карте — их же короткие ники (без клана).
+    const names = list.slice().sort((a, b) => a.i - b.i).map(x => (tags && tags[k] && tags[k].length === list.length) ? null : x.r.n);
+    const shown = names.includes(null) ? tags[k] : names;
+    return '<div class="z' + (list.length > 1 ? ' hot' : '') + '" style="left:' + z.x + '%;top:' + z.y + '%;width:' + z.w + '%;height:' + z.h + '%">' +
+      shown.map(n => '<i>' + esc(String(n).toUpperCase()) + '</i>').join('') + '</div>';
   }).join('');
   return '<div class="map"><img src="/' + esc(P.mapImg || 'art/map-s42.jpg') + '" alt="Landing spots, ' + esc(REGION[reg]) + ' final" loading="lazy">' + boxes + '</div>' +
     '<p class="note">' + (real ? 'Real drops: the Day ' + real.day + ' drop map by <a href="https://eucompetitive.com/maps" rel="noopener">eucompetitive.com</a>, every player on the spot they actually land on.'
-      : 'No public drop map for this region yet, so boxes are where each player drops in our runs.') + ' <b class="k hot">Red</b> boxes are shared drops: two or more players land there and fight for the loot. Yellow outline: a top-10 favourite lands there.</p>';
+      : 'No public drop map for this region yet, so boxes are where each player drops in our runs.') + ' <b class="k hot">Red</b> boxes are shared drops: two or more players land there and fight for the loot.</p>';
 }
 
 function regionHTML(reg) {
@@ -83,10 +87,11 @@ a{color:var(--accent)}
 .fav span{font-size:13px;color:var(--dim)}
 .map{position:relative;border-radius:12px;overflow:hidden;border:1px solid var(--line);aspect-ratio:${P.mapAspect || '921/843'};background:#0b1640}
 .map img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-.z{position:absolute;border:1px solid rgba(255,255,255,.35);border-radius:4px;background:rgba(0,0,0,.18)}
-.z.hot{border-color:var(--hot);background:rgba(255,77,94,.28)}
-.z.fav{outline:2px solid var(--go);outline-offset:-1px}
-.z span{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);white-space:nowrap;font:600 11px/1.2 var(--font-display);letter-spacing:.02em;background:rgba(8,10,14,.82);color:#fff;padding:2px 5px;border-radius:4px;pointer-events:none}
+.map{container-type:inline-size}
+.z{position:absolute;border:2px solid #000;background:rgba(0,0,0,.4);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.z.hot{border-color:#d32f2f;background:rgba(255,0,0,.4)}
+.z i{font-style:normal;font-weight:700;font-size:max(6px,1.35cqw);line-height:1.15;color:#fff;white-space:nowrap;pointer-events:none;position:relative;z-index:1;
+  text-shadow:-1px -1px 0 #000,1px -1px 0 #000,-1px 1px 0 #000,1px 1px 0 #000,0 0 2px rgba(0,0,0,.5)}
 .k.hot{color:var(--hot)}
 .tbl{width:100%;border-collapse:collapse;font-size:14px;margin-top:14px}
 .tbl th{text-align:left;font-family:var(--font-display);font-weight:500;text-transform:uppercase;letter-spacing:.05em;font-size:12px;color:var(--dim);padding:6px 8px;border-bottom:1px solid var(--line)}
@@ -101,7 +106,7 @@ a{color:var(--accent)}
 .note{color:var(--dim);font-size:13px;margin:8px 0 0}
 .how{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-top:30px;font-size:14px;color:var(--dim)}
 .how b{color:var(--ink)}
-@media(max-width:560px){.tbl .hide-s{display:none}.fav{grid-template-columns:1fr}.fav li{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}.fav strong{font-size:26px}.z span{font-size:9px}}`;
+@media(max-width:560px){.tbl .hide-s{display:none}.fav{grid-template-columns:1fr}.fav li{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}.fav strong{font-size:26px}}`;
 
 const REALS = REGS.filter(r => P.realRects && P.realRects[r]);
 const total = REGS.reduce((s, r) => s + P.regions[r].length, 0);
