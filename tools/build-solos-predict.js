@@ -21,7 +21,15 @@ const REGS = ['EU', 'NAC', 'NAW', 'BR', 'ASIA', 'ME', 'OCE'].filter(r => P.regio
 const REGION = { EU: 'Europe', NAC: 'NA Central', NAW: 'NA West', BR: 'Brazil', ASIA: 'Asia', ME: 'Middle East', OCE: 'Oceania' };
 const PRIZE = { EU: '$60,000', NAC: '$50,000' };
 const via = v => { const [st, r] = String(v || '').split(':'); return ({ fast: 'Fast Track', heats: 'Heats', lcq: 'Last Chance' }[st] || st) + (r ? ' #' + r : ''); };
-const flag = c => c ? '<img src="/flags/w20/' + esc(String(c).toLowerCase()) + '.png" alt="" width="16" loading="lazy">' : '';
+// Флаг каждому (25.10, его «флаги добавь всем»): страна Epic, иначе solos-2026-nat.json (страна из базы eucompetitive
+// по id аккаунта, потом национальность из игры), а у кого её нет нигде — значок региона, как cardFlag в игре.
+const NSRC = path.join(__dirname, 'measured', 'solos-2026-nat.json');
+const NAT = fs.existsSync(NSRC) ? JSON.parse(fs.readFileSync(NSRC, 'utf8')) : {};
+const flag = (r, reg) => {
+  const c = r.c || NAT[reg + '|' + r.n];
+  return c ? '<img src="/flags/w20/' + esc(String(c).toLowerCase()) + '.png" alt="" width="16" loading="lazy">'
+    : '<span class="rb">' + esc(reg) + '</span>';
+};
 
 function mapHTML(reg, rows) {
   // Регион с настоящей картой дропов (fetch-solos-drops.js) рисует её коробки, остальные — точки движка.
@@ -48,10 +56,10 @@ function mapHTML(reg, rows) {
 function regionHTML(reg) {
   const rows = P.regions[reg];
   const fav = rows.slice(0, 3);
-  const cards = fav.map((r, i) => '<li><em>' + (i + 1) + '</em><b>' + flag(r.c) + esc(r.n) + '</b><strong>' + pct(r.win) + '</strong><span>to win · top 10 ' + pct(r.top10) + '</span></li>').join('');
+  const cards = fav.map((r, i) => '<li><em>' + (i + 1) + '</em><b>' + flag(r, reg) + esc(r.n) + '</b><strong>' + pct(r.win) + '</strong><span>to win · top 10 ' + pct(r.top10) + '</span></li>').join('');
   const table = rows.map((r, i) => {
     const mates = (r.mates || []).filter(m => m[1] >= 0.25).map(m => esc(m[0])).join(', ');
-    return '<tr><td class="n">' + (i + 1) + '</td><td>' + flag(r.c) + '<b>' + esc(r.n) + '</b><small>' + via(r.via) + (r.real ? '' : ' · rating from qualifiers') + '</small></td>' +
+    return '<tr><td class="n">' + (i + 1) + '</td><td>' + flag(r, reg) + '<b>' + esc(r.n) + '</b><small>' + via(r.via) + (r.real ? '' : ' · rating from qualifiers') + '</small></td>' +
       '<td class="n">' + r.ovr + '</td><td class="n' + (i < 3 ? ' p1' : '') + '">' + pct(r.win) + '</td><td class="n">' + pct(r.top10) + '</td><td class="n hide-s">' + r.avgPlace + '</td>' +
       '<td class="hide-s">' + (r.contest >= 0.5 ? (mates ? 'shared with ' + mates : 'shared drop') : 'solo drop') + '</td></tr>';
   }).join('');
@@ -98,6 +106,7 @@ a{color:var(--accent)}
 .tbl th.n,.tbl td.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
 .tbl td{padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:top}
 .tbl td img{vertical-align:-2px;margin-right:6px}
+.rb{display:inline-block;min-width:16px;height:12px;line-height:12px;padding:0 2px;font:700 7px/12px sans-serif;text-align:center;border-radius:2px;background:#2a3442;color:#cfd8e3;margin-right:6px;vertical-align:1px}
 .tbl small{display:block;color:var(--dim);font-size:12px}
 .p1{color:var(--go);font-weight:700}
 .cta{display:inline-block;background:var(--go);color:var(--go-ink);font-family:var(--font-display);font-weight:600;font-size:17px;letter-spacing:.06em;
