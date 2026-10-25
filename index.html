@@ -7735,8 +7735,14 @@
   .nav-pill.on{background:#e4ebf7;color:#0b1a3a;}
   /* Competitive — ссылка, не кнопка: жёлтая, как главная дверь сайта, чтобы её было видно среди пилюль игры. */
   a.nav-pill{text-decoration:none;display:inline-flex;align-items:center;}
-  .nav-pill.nav-comp{background:var(--go,#ffdd00);color:#0b0f12;margin-left:6px;}
+  .nav-pill.nav-comp{background:var(--go,#ffdd00);color:#0b0f12;}
   .nav-pill.nav-comp:hover{background:#fff27a;outline-color:#fff27a;}
+  /* Две группы навбара: «Карьера» и «Компетитив» — каждая своей подложкой с подписью (Notion 25.10.26, скрин 9). */
+  .site-nav{gap:10px;align-items:center;}
+  .nav-grp{display:flex;align-items:center;gap:2px;padding:4px 4px 4px 12px;border-radius:999px;background:rgba(150,180,255,.12);box-shadow:inset 0 0 0 1px rgba(180,200,255,.18);}
+  .nav-grp-l{font-family:var(--font-display);font-weight:700;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#9fe1ff;margin-right:6px;white-space:nowrap;}
+  @media(max-width:1180px){ .nav-grp-l{font-size:10px;margin-right:4px;} .nav-grp{padding-left:9px;} }
+  @media(max-width:760px){ .site-nav{flex-wrap:wrap;gap:6px;} .nav-grp{padding-left:10px;} }
   /* Драфт и прогон. */
   .rating-explainer,.pack-panel,.squad-panel,.stage-card,.sim-btn{background:rgba(126,150,224,.18);border-color:rgba(180,200,255,.2);}
   .pcard{background:rgba(8,18,50,.5);border-color:rgba(180,200,255,.2);}
@@ -8969,14 +8975,21 @@
     <!-- Навбар, как в лобби игры (PLAY · SHOP · COMPETE…): три двери сайта
          пилюлями, активная светлая — ставит show(). Отзыв:
          «давай» на «шапка сайта как навбар игры». -->
+    <!-- Две вкладки сайта (Notion 25.10.26, скрин 9: рамки «Карьера + Менеджер» и «Драфт + История»; его «2 вкладки
+         карьера и компетитив»): группа «Карьера» — режимы-игры про себя, группа «Компетитив» — драфт настоящих
+         игроков, история FNCS и страница турниров /competitive (tools/build-competitive.js). Кнопки и data-nav прежние. -->
     <nav class="site-nav" aria-label="site">
-      <button class="nav-pill" data-nav="career" type="button" onclick="careerStart()" data-i18n="navCareer"></button>
-      <button class="nav-pill" data-nav="manager" type="button" onclick="mgrStart()"><span id="mgNavBtn" data-i18n="hmMgrNav"></span></button>
-      <button class="nav-pill on" data-nav="draft" type="button" onclick="requestReset()" data-i18n="navDraft"></button>
-      <button class="nav-pill" data-nav="history" type="button" onclick="openHistoryScreen()" data-i18n="navHistory"></button>
-      <!-- Вторая половина сайта (25.10, его «2 вкладки: карьера и компетитив»): календарь турниров, призы месяца,
-           результаты и прогнозы — отдельная страница /competitive (tools/build-competitive.js). -->
-      <a class="nav-pill nav-comp" href="/competitive">Competitive</a>
+      <div class="nav-grp" role="group" aria-labelledby="navGrpCareerL">
+        <span class="nav-grp-l" id="navGrpCareerL" data-i18n="navGrpCareer"></span>
+        <button class="nav-pill" data-nav="career" type="button" onclick="careerStart()" data-i18n="navCareerPlayer"></button>
+        <button class="nav-pill" data-nav="manager" type="button" onclick="mgrStart()"><span id="mgNavBtn" data-i18n="hmMgrNav"></span></button>
+      </div>
+      <div class="nav-grp nav-grp-comp" role="group" aria-labelledby="navGrpCompL">
+        <span class="nav-grp-l" id="navGrpCompL" data-i18n="navGrpComp"></span>
+        <button class="nav-pill on" data-nav="draft" type="button" onclick="requestReset()" data-i18n="navDraft"></button>
+        <button class="nav-pill" data-nav="history" type="button" onclick="openHistoryScreen()" data-i18n="navHistory"></button>
+        <a class="nav-pill nav-comp" href="/competitive" data-i18n="navComp"></a>
+      </div>
     </nav>
     <div style="display:flex;align-items:center;gap:10px;">
       <div class="badge" id="topBadge" data-i18n="badgeMode"></div>
@@ -10043,7 +10056,7 @@ tagline:'Задрафть сквад из реальных игроков FNCS �
 heroTitle:'Задрафть настоящих про. <em>Разыграй сезон.</em>',
 heroCareerCont:'Продолжить карьеру', heroCareer:'Начать карьеру',
 heroTeamLbl:'С другом:', heroDuo:'Вдвоём',
-navCareer:'Карьера', navDraft:'Драфт', navHistory:'История',
+navCareer:'Карьера', navDraft:'Драфт', navHistory:'История', navGrpCareer:'Карьера', navCareerPlayer:'Игрок', navGrpComp:'Компетитив', navComp:'Турниры',
 ccActGrpTrain:'Тренировки', ccActGrpTeam:'Команда', ccActGrpLife:'Стрим и отдых',
 heroCode:'Есть код от напарника? Войти по коду',
 cstripSub:'Один игрок, один сезон, настоящий календарь. Тренируйся днём, играй вечерами, поднимайся из пятого дивизиона в первый.',
@@ -12207,7 +12220,7 @@ tagline:'Draft a squad of real FNCS players and run the tournament. Or start a c
 heroTitle:'Draft real pros. <em>Play the season.</em>',
 heroCareerCont:'Continue career', heroCareer:'Start a career',
 heroTeamLbl:'With a friend:', heroDuo:'Play as a duo',
-navCareer:'Career', navDraft:'Draft', navHistory:'History',
+navCareer:'Career', navDraft:'Draft', navHistory:'History', navGrpCareer:'Career', navCareerPlayer:'Player', navGrpComp:'Competitive', navComp:'Tournaments',
 ccActGrpTrain:'Training', ccActGrpTeam:'Team', ccActGrpLife:'Stream and rest',
 heroCode:'Got a code from your partner? Join by code',
 cstripSub:'One player, one season, the real calendar. Train by day, play the nights, climb from Division 5 to Division 1.',
@@ -16304,7 +16317,7 @@ tagline:'Compose une équipe de vrais joueurs FNCS et lance le tournoi. Ou comme
 heroTitle:'Drafte de vrais pros. <em>Joue la saison.</em>',
 heroCareerCont:'Continuer la carrière', heroCareer:'Lancer une carrière',
 heroTeamLbl:'Avec un ami :', hmChipClubs:'Vrais clubs', hmChipMatch:'Jour de match', ccMpFmtAsk:(h,f)=>'Ton coéquipier veut '+h+' dans le '+(f===4?'squad':'trio')+' pour les cups. On le prend ?', roMpSwap:'Changer', cstripChipDivs:'Divisions 5 → 1', cstripChipMajors:'Majors et LAN', cstripChipReload:'Le circuit Reload', cstripChipLife:'Clubs, argent, forme', heroDuo:'Jouer à deux',
-navCareer:'Carrière', navDraft:'Draft', navHistory:'Historique',
+navCareer:'Carrière', navDraft:'Draft', navHistory:'Historique', navGrpCareer:'Carrière', navCareerPlayer:'Joueur', navGrpComp:'Compétitif', navComp:'Tournois',
 ccActGrpTrain:'Entraînement', ccActGrpTeam:'Équipe', ccActGrpLife:'Stream et repos',
 heroCode:'Tu as un code de ton coéquipier ? Rejoindre par code',
 heroDraft:'Vers le draft',
@@ -16671,7 +16684,7 @@ tagline:"Crea una squadra di veri giocatori FNCS e gioca il torneo. Oppure inizi
 heroTitle:"Scegli veri pro. <em>Gioca la stagione.</em>",
 heroCareerCont:"Continua la carriera", heroCareer:"Inizia la carriera",
 heroTeamLbl:"Con un amico:", hmChipClubs:"Club veri", hmChipMatch:"Giorno di gara", ccMpFmtAsk:(h,f)=>"Il tuo compagno vuole "+h+" nel "+(f===4?"squad":"trio")+" per le cup. Lo prendiamo?", roMpSwap:"Cambia", cstripChipDivs:"Divisioni 5 → 1", cstripChipMajors:"Major e LAN", cstripChipReload:"Il circuito Reload", cstripChipLife:"Club, soldi, forma", heroDuo:"In due",
-navCareer:"Carriera", navDraft:"Draft", navHistory:"Storico",
+navCareer:"Carriera", navDraft:"Draft", navHistory:"Storico", navGrpCareer:"Carriera", navCareerPlayer:"Giocatore", navGrpComp:"Competitivo", navComp:"Tornei",
 ccActGrpTrain:"Allenamento", ccActGrpTeam:"Squadra", ccActGrpLife:"Stream e riposo",
 heroCode:"Hai un codice dal compagno? Entra con il codice",
 heroDraft:"Al draft",
@@ -19224,7 +19237,7 @@ tagline:"Monte um time de jogadores reais da FNCS e rode o torneio. Ou comece um
 heroTitle:"Convoque os pros. <em>Jogue a temporada.</em>",
 heroCareerCont:"Continuar carreira", heroCareer:"Começar carreira",
 heroTeamLbl:"Com um amigo:", hmChipClubs:"Clubes reais", hmChipMatch:"Dia de jogo", ccMpFmtAsk:(h,f)=>"Teu parceiro quer "+h+" no "+(f===4?"squad":"trio")+" para os cups. Levamos?", roMpSwap:"Trocar", cstripChipDivs:"Divisões 5 → 1", cstripChipMajors:"Majors e LANs", cstripChipReload:"O circuito Reload", cstripChipLife:"Clubes, dinheiro, forma", heroDuo:"Em dupla",
-navCareer:"Carreira", navDraft:"Draft", navHistory:"Histórico",
+navCareer:"Carreira", navDraft:"Draft", navHistory:"Histórico", navGrpCareer:"Carreira", navCareerPlayer:"Jogador", navGrpComp:"Competitivo", navComp:"Torneios",
 ccActGrpTrain:"Treino", ccActGrpTeam:"Time", ccActGrpLife:"Stream e descanso",
 heroCode:"Tem um código do parceiro? Entrar com código",
 heroDraft:"Ir ao draft",
@@ -23337,7 +23350,7 @@ ccSacPromoRow:(n,m,p)=>'promo no X '+n+'/'+m+(p ? ' · +'+p+'%' : ''),
 ccGoalReach:{majorFinal:'chegar a uma final de Major FNCS', fncsFinal:'chegar à final semanal da FNCS'},
 ccOrgGoalPickHint:'Meta da temporada: escolha uma antes do fim da temporada. Cumpriu, renova com aumento (meta mais difícil, aumento maior); falhou, o clube te libera. Sem escolha, fica a do meio.'
 }));
-let CC_I18N_V={de:'82a83ad4', es:'30a3f3e6'};   // ==== CC_I18N_V (tools/build-i18n.js) ====
+let CC_I18N_V={de:'07557185', es:'37abd7b0'};   // ==== CC_I18N_V (tools/build-i18n.js) ====
 // Версия fn-shop.js (магазин Fortnite по дням, tools/build-fn-shop.js) — для ?v= ленивой загрузки.
 let CC_FN_SHOP_V='bebf56cb';
 const CC_LANG_WAIT={};
