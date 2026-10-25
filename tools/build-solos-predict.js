@@ -49,12 +49,16 @@ function mapHTML(reg, rows) {
     // белым с чёрной обводкой; общая точка — красная. На настоящей карте — их же короткие ники (без клана).
     const names = list.slice().sort((a, b) => a.i - b.i).map(x => (tags && tags[k] && tags[k].length === list.length) ? null : x.r.n);
     const shown = names.includes(null) ? tags[k] : names;
-    return '<div class="z' + (list.length > 1 ? ' hot' : '') + '" style="left:' + z.x + '%;top:' + z.y + '%;width:' + z.w + '%;height:' + z.h + '%">' +
-      shown.map(n => '<i>' + esc(String(n).toUpperCase()) + '</i>').join('') + '</div>';
+    // Цвета сайта (25.10, его «дизайн и цвет прямоугольников можешь изменить»): одиночная — светлая рамка,
+    // общая — красная заливка с числом игроков, точка топ-10 прогноза — жёлтая рамка.
+    const fav = list.some(x => x.i < 10), hot = list.length > 1;
+    return '<div class="z' + (hot ? ' hot' : '') + (fav ? ' fav' : '') + '" style="left:' + z.x + '%;top:' + z.y + '%;width:' + z.w + '%;height:' + z.h + '%">' +
+      (hot ? '<b>' + list.length + '</b>' : '') + shown.map(n => '<i>' + esc(String(n).toUpperCase()) + '</i>').join('') + '</div>';
   }).join('');
-  return '<div class="map"><img src="/' + esc(P.mapImg || 'art/map-s42.jpg') + '" alt="Landing spots, ' + esc(REGION[reg]) + ' final" loading="lazy">' + boxes + '</div>' +
+  const legend = '<div class="lg"><span><s class="l-solo"></s>Solo drop</span><span><s class="l-hot"></s>Shared drop</span><span><s class="l-fav"></s>Top-10 favourite</span></div>';
+  return '<div class="map"><img src="/' + esc(P.mapImg || 'art/map-s42.jpg') + '" alt="Landing spots, ' + esc(REGION[reg]) + ' final" loading="lazy">' + boxes + '</div>' + legend +
     '<p class="note">' + (real ? 'Real drops: the ' + (vital ? '' : 'Day ' + real.day + ' ') + 'drop map by ' + (vital ? CREDIT[src] : '<a href="https://eucompetitive.com/maps" rel="noopener">eucompetitive.com</a>') + ', every player on the spot they actually land on.'
-      : 'No public drop map for this region yet, so boxes are where each player drops in our runs.') + ' <b class="k hot">Red</b> boxes are shared drops: two or more players land there and fight for the loot.</p>';
+      : 'No public drop map for this region yet, so boxes are where each player drops in our runs.') + ' On a shared drop two or more players land together and fight for the loot; the number is how many.</p>';
 }
 
 function regionHTML(reg) {
@@ -98,12 +102,22 @@ a{color:var(--accent)}
 .fav strong{display:block;font:600 34px/1.1 var(--font-display);color:var(--go)}
 .fav span{font-size:13px;color:var(--dim)}
 .map{position:relative;border-radius:12px;overflow:hidden;border:1px solid var(--line);aspect-ratio:${P.mapAspect || '921/843'};background:#0b1640}
-.map img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.map img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:brightness(.72) saturate(.85)}
 .map{container-type:inline-size}
-.z{position:absolute;border:2px solid #000;background:rgba(0,0,0,.4);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
-.z.hot{border-color:#d32f2f;background:rgba(255,0,0,.4)}
-.z i{font-style:normal;font-weight:700;font-size:max(6px,1.35cqw);line-height:1.15;color:#fff;white-space:nowrap;pointer-events:none;position:relative;z-index:1;
-  text-shadow:-1px -1px 0 #000,1px -1px 0 #000,-1px 1px 0 #000,1px 1px 0 #000,0 0 2px rgba(0,0,0,.5)}
+.z{position:absolute;border:1.5px solid rgba(238,242,246,.55);border-radius:5px;background:rgba(11,15,18,.38);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;box-shadow:inset 0 0 0 1px rgba(0,0,0,.35)}
+.z.hot{border-color:var(--hot);background:rgba(255,77,94,.30);box-shadow:0 0 0 1px rgba(255,77,94,.35),0 0 12px rgba(255,77,94,.35)}
+.z.fav{border-color:var(--go);border-width:2px;box-shadow:0 0 10px rgba(255,221,0,.45)}
+.z.fav i{color:var(--go)}
+.z i{font-style:normal;font-family:var(--font-display);font-weight:600;letter-spacing:.02em;font-size:max(6px,1.3cqw);line-height:1.15;color:#fff;white-space:nowrap;pointer-events:none;position:relative;z-index:1;
+  text-shadow:0 1px 2px rgba(0,0,0,.9),0 0 3px rgba(0,0,0,.8)}
+.z b{position:absolute;top:-1px;right:-1px;transform:translate(35%,-35%);min-width:max(12px,1.9cqw);height:max(12px,1.9cqw);padding:0 3px;border-radius:999px;background:var(--hot);color:#fff;font:700 max(7px,1.15cqw)/max(12px,1.9cqw) var(--font-display);text-align:center;z-index:2;box-shadow:0 1px 3px rgba(0,0,0,.6)}
+.z.fav b{background:var(--go);color:var(--go-ink)}
+.lg{display:flex;flex-wrap:wrap;gap:6px 16px;margin:10px 0 0;font-size:13px;color:var(--dim)}
+.lg span{display:inline-flex;align-items:center;gap:6px}
+.lg s{display:inline-block;width:16px;height:11px;border-radius:3px;text-decoration:none}
+.l-solo{border:1.5px solid rgba(238,242,246,.55);background:rgba(11,15,18,.38)}
+.l-hot{border:1.5px solid var(--hot);background:rgba(255,77,94,.30)}
+.l-fav{border:2px solid var(--go)}
 .k.hot{color:var(--hot)}
 .tbl{width:100%;border-collapse:collapse;font-size:14px;margin-top:14px}
 .tbl th{text-align:left;font-family:var(--font-display);font-weight:500;text-transform:uppercase;letter-spacing:.05em;font-size:12px;color:var(--dim);padding:6px 8px;border-bottom:1px solid var(--line)}
