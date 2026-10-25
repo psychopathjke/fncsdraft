@@ -36,7 +36,10 @@ function mapHTML(reg, rows) {
   const real = P.realRects && P.realRects[reg];
   const Z = (real && real.rects) || P.zoneRects || [];
   // Ники с самой карты (коробки в том же порядке, что rects прогона).
-  const vital = !!(real && DROPS && DROPS.regions[reg] && DROPS.regions[reg].source === 'vitalscrims');
+  // Чья карта: eucompetitive (EU), Vital Scrims (NAC/NAW/ME/OCE), сводка LYNX Zet в X (ASIA).
+  const src = real && DROPS && DROPS.regions[reg] && DROPS.regions[reg].source;
+  const CREDIT = { vitalscrims: '<a href="https://vitalscrims.com/competitive" rel="noopener">Vital Scrims</a>', zet_fnsub: '<a href="https://x.com/zet_fnsub" rel="noopener">LYNX Zet</a> and <a href="https://x.com/AC_Bird1" rel="noopener">Bird</a>' };
+  const vital = !!CREDIT[src];
   const tags = real && DROPS && DROPS.regions[reg] && DROPS.regions[reg].boxes.length <= Z.length ? DROPS.regions[reg].boxes.map(b => b.tags) : null;
   const at = new Map();
   rows.forEach((r, i) => { if (r.drop === '' || r.dropShare < 0.5) return; const k = +r.drop; (at.get(k) || at.set(k, []).get(k)).push({ r, i }); });
@@ -50,7 +53,7 @@ function mapHTML(reg, rows) {
       shown.map(n => '<i>' + esc(String(n).toUpperCase()) + '</i>').join('') + '</div>';
   }).join('');
   return '<div class="map"><img src="/' + esc(P.mapImg || 'art/map-s42.jpg') + '" alt="Landing spots, ' + esc(REGION[reg]) + ' final" loading="lazy">' + boxes + '</div>' +
-    '<p class="note">' + (real ? 'Real drops: the ' + (vital ? '' : 'Day ' + real.day + ' ') + 'drop map by ' + (vital ? '<a href="https://vitalscrims.com/competitive" rel="noopener">Vital Scrims</a>' : '<a href="https://eucompetitive.com/maps" rel="noopener">eucompetitive.com</a>') + ', every player on the spot they actually land on.'
+    '<p class="note">' + (real ? 'Real drops: the ' + (vital ? '' : 'Day ' + real.day + ' ') + 'drop map by ' + (vital ? CREDIT[src] : '<a href="https://eucompetitive.com/maps" rel="noopener">eucompetitive.com</a>') + ', every player on the spot they actually land on.'
       : 'No public drop map for this region yet, so boxes are where each player drops in our runs.') + ' <b class="k hot">Red</b> boxes are shared drops: two or more players land there and fight for the loot.</p>';
 }
 
