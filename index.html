@@ -403,7 +403,7 @@
      «fncsdraft.com» его показывает и берёт заголовок из og:title), то есть
      вопрос был не в индексации, а в том, по каким словам его искать.
      25.10: «fncsdraft» одним словом вернулось в скобках — после 23.10 по нему главная выпала из выдачи. -->
-<title>FNCS Draft (fncsdraft): Fortnite career mode and FNCS draft simulator</title>
+<title>fncsdraft</title>
 <!-- Заголовочный шрифт — правка: «может, шрифт ещё в фортнайт
      стиле сделать красиво». Fortnite набран Burbank Big Condensed, лицензии на
      него у нас нет. Сначала стоял Bebas Neue, но у него нет кириллицы: русские
@@ -24636,9 +24636,9 @@ function setLang(lang, persist){
   // Keep the declared language honest, otherwise search engines and screen
   // readers go on trusting whatever <html lang> said at load.
   document.documentElement.lang=lang;
-  // Заголовок — тот, что ищут (CC_SEO), а не pageTitle 'fncsdraft': Google берёт заголовок ОТРИСОВАННОЙ страницы,
-  // и после setLang он был просто «fncsdraft» на всех языках.
-  document.title = (CC_SEO[lang] || CC_SEO.en).t;
+  // Во вкладке просто «fncsdraft» (25.10, его слово: «хочу чтоб просто fncsdraft было»). Описание для поиска
+  // (CC_SEO) остаётся в description, og:title и twitter:title.
+  document.title = 'fncsdraft';
   // The career hub is built as innerHTML through L() at the moment it is drawn,
   // so it keeps whatever language it was drawn in. data-i18n nodes get swept by
   // the loop below and the tabs change; the body does not, and a player who
