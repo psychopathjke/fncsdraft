@@ -100,6 +100,44 @@ function asiaRegion(fin) {
   return { day: 1, updated: null, source: 'zet_fnsub', boxes, unmatched: names.filter(t => !seat.has(t)), missing: [...left].map(f => f.n) };
 }
 
+/* Бразилия (25.10, X → @Ment0sbtw → majorscrims.com/tournaments/fncs-solo-finals-2026): карта Major Scrims, игроки
+   отмечают свой спот сами. Данные — в RSC страницы (zones: контур points в долях картинки 2048×2048, teams: names +
+   zoneId); снимок в tools/measured/solos-2026-br-raw.json (разбор: объект с teams и zones из self.__next_f).
+   Ники там — Epic с кланом («LEV RomeroFDP»), сверка как у остальных; перевод по пяти ориентирам (остаток до 8 px). */
+const BR_RAW = path.join(ROOT, 'tools/measured/solos-2026-br-raw.json');
+const BFIT = { ax: 998.53, bx: 28.51, ay: 977.48, by: -63.92 };
+// Ники с кириллицей вместо латиницы (mаck, КINGBR, Nіght, ViniziИ) и ники без общего куска с Epic.
+const LOOKALIKE = { 'а': 'a', 'е': 'e', 'о': 'o', 'р': 'p', 'с': 'c', 'х': 'x', 'у': 'y', 'к': 'k', 'К': 'K', 'і': 'i', 'И': 'N', 'м': 'm', 'т': 't', 'в': 'b', 'н': 'h',
+  'А': 'A', 'Е': 'E', 'О': 'O', 'Р': 'P', 'С': 'C', 'Т': 'T', 'М': 'M', 'Н': 'H', '0': 'o' };   // и ноль за букву: renаto = renat0
+const BR_ALIAS = { '53x pietriin7': 'Pietriinnn', 'Pietro Betrayed': 'pietrofn6', 'Frosty Betrayed': 'TGA Frostyǃ', 'cheto betrayed': 'PRG chetoǃ',
+  'BLD marin x N': 'Marinn', 'specreall': 'Spectral', 'jpfk1ng 受祝福': 'JPFK1NG' };
+function brRegion(fin) {
+  if (!fs.existsSync(BR_RAW)) return null;
+  const B = JSON.parse(fs.readFileSync(BR_RAW, 'utf8'));
+  const nn = s => String(s).replace(/./g, c => LOOKALIKE[c] || c).toUpperCase().normalize('NFKC').replace(/[\s.\-_ǃ!·]/g, '');
+  const left = new Set(fin), seat = new Map(), names = [];
+  B.teams.forEach(t => (t.names || []).forEach(n => names.push(n)));
+  names.forEach(t => { const f = BR_ALIAS[t] && fin.find(x => x.n === BR_ALIAS[t]); if (f && left.has(f)) { seat.set(t, f); left.delete(f); } });
+  [(t, f) => nn(f.n) === nn(t), (t, f) => nn(f.n) === nn(t.split(' ').pop()),
+   (t, f) => { const T = nn(t), F = nn(f.n), W = nn(t.split(' ').pop()); return (W.length >= 3 && F.includes(W)) || (F.length >= 3 && T.includes(F)) || (T.length >= 3 && F.includes(T)); },
+  ].forEach(test => names.forEach(t => {
+    if (seat.has(t)) return;
+    const c = [...left].filter(f => test(t, f));
+    if (c.length === 1) { seat.set(t, c[0]); left.delete(c[0]); }
+  }));
+  const zone = new Map(B.zones.map(z => [z.id, z]));
+  const groups = new Map();
+  B.teams.forEach(t => { if (!t.zoneId || !zone.has(t.zoneId)) return; if (!groups.has(t.zoneId)) groups.set(t.zoneId, []); (t.names || []).forEach(n => groups.get(t.zoneId).push(n)); });
+  const boxes = [...groups.entries()].map(([id, tags]) => {
+    const p = zone.get(id).points, xs = p.map(q => (BFIT.ax * q.x + BFIT.bx) / FIT.W * 100), ys = p.map(q => (BFIT.ay * q.y + BFIT.by) / FIT.H * 100);
+    const x0 = Math.min(...xs), y0 = Math.min(...ys);
+    return { x: +x0.toFixed(2), y: +y0.toFixed(2), w: +(Math.max(...xs) - x0).toFixed(2), h: +(Math.max(...ys) - y0).toFixed(2),
+      ids: tags.filter(t => seat.has(t)).map(t => seat.get(t).id), tags };
+  });
+  const placed = new Set(boxes.flatMap(b => b.ids));
+  return { day: 1, updated: null, source: 'majorscrims', boxes, unmatched: names.filter(t => !seat.has(t)), missing: fin.filter(f => !placed.has(f.id)).map(f => f.n) };
+}
+
 async function get(url) {
   const r = await fetch(url, { headers: { 'User-Agent': 'Mozilla/5.0 fncsdraft' } });
   if (!r.ok) throw new Error(url + ': ' + r.status);
@@ -122,7 +160,7 @@ async function get(url) {
       if (s && s.length) { day = d; shapes = s; updated = j.data.lastUpdated || null; break; }
     }
     if (!shapes) {
-      const v = reg === 'ASIA' ? asiaRegion(fin) : vitalRegion(reg, fin);
+      const v = reg === 'ASIA' ? asiaRegion(fin) : reg === 'BR' ? brRegion(fin) : vitalRegion(reg, fin);
       if (v) { out.regions[reg] = v; console.log(reg + ': ' + v.source + ', коробок ' + v.boxes.length + ', на карте ' + v.boxes.reduce((s, b) => s + b.ids.length, 0) + (v.missing.length ? ', без точки: ' + v.missing.join(' | ') : '')); }
       else console.log(reg + ': карты нет');
       continue;

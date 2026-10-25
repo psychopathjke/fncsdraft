@@ -38,13 +38,18 @@ function mapHTML(reg, rows) {
   // Ники с самой карты (коробки в том же порядке, что rects прогона).
   // Чья карта: eucompetitive (EU), Vital Scrims (NAC/NAW/ME/OCE), сводка LYNX Zet в X (ASIA).
   const src = real && DROPS && DROPS.regions[reg] && DROPS.regions[reg].source;
-  const CREDIT = { vitalscrims: '<a href="https://vitalscrims.com/competitive" rel="noopener">Vital Scrims</a>', zet_fnsub: '<a href="https://x.com/zet_fnsub" rel="noopener">LYNX Zet</a> and <a href="https://x.com/AC_Bird1" rel="noopener">Bird</a>' };
+  const CREDIT = { vitalscrims: '<a href="https://vitalscrims.com/competitive" rel="noopener">Vital Scrims</a>', zet_fnsub: '<a href="https://x.com/zet_fnsub" rel="noopener">LYNX Zet</a> and <a href="https://x.com/AC_Bird1" rel="noopener">Bird</a>',
+    majorscrims: '<a href="https://www.majorscrims.com/tournaments/fncs-solo-finals-2026" rel="noopener">Major Scrims</a>' };
   const vital = !!CREDIT[src];
   const tags = real && DROPS && DROPS.regions[reg] && DROPS.regions[reg].boxes.length <= Z.length ? DROPS.regions[reg].boxes.map(b => b.tags) : null;
   const at = new Map();
   rows.forEach((r, i) => { if (r.drop === '' || r.dropShare < 0.5) return; const k = +r.drop; (at.get(k) || at.set(k, []).get(k)).push({ r, i }); });
+  // Кто на настоящей карте точку не отметил, тому прогон дал свободную точку (коробки после карты) — на карте его не рисуем,
+  // иначе он ложится поверх чужих коробок (BR 25.10: FAZER, IMEYFISHY на чужих спотах); перечисляем под картой.
+  const unmarked = [];
   const boxes = [...at.entries()].map(([k, list]) => {
     const z = Z[k]; if (!z) return '';
+    if (tags && k >= tags.length) { list.forEach(x => unmarked.push(x.r.n)); return ''; }
     // Как на карте eucompetitive (25.10, его «сделай такой же как референс»): все ники коробки столбиком, капсом,
     // белым с чёрной обводкой; общая точка — красная. На настоящей карте — их же короткие ники (без клана).
     const names = list.slice().sort((a, b) => a.i - b.i).map(x => (tags && tags[k] && tags[k].length === list.length) ? null : x.r.n);
@@ -58,7 +63,8 @@ function mapHTML(reg, rows) {
   const legend = '<div class="lg"><span><s class="l-solo"></s>Solo drop</span><span><s class="l-hot"></s>Shared drop</span><span><s class="l-fav"></s>Top-10 favourite</span></div>';
   return '<div class="map"><img src="/' + esc(P.mapImg || 'art/map-s42.jpg') + '" alt="Landing spots, ' + esc(REGION[reg]) + ' final" loading="lazy">' + boxes + '</div>' + legend +
     '<p class="note">' + (real ? 'Real drops: the ' + (vital ? '' : 'Day ' + real.day + ' ') + 'drop map by ' + (vital ? CREDIT[src] : '<a href="https://eucompetitive.com/maps" rel="noopener">eucompetitive.com</a>') + ', every player on the spot they actually land on.'
-      : 'No public drop map for this region yet, so boxes are where each player drops in our runs.') + ' On a shared drop two or more players land together and fight for the loot; the number is how many.</p>';
+      : 'No public drop map for this region yet, so boxes are where each player drops in our runs.') + ' On a shared drop two or more players land together and fight for the loot; the number is how many.' +
+      (unmarked.length ? ' Not found on the drop map, so they land alone in our runs: ' + unmarked.map(esc).join(', ') + '.' : '') + '</p>';
 }
 
 function regionHTML(reg) {
