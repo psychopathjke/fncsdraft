@@ -84130,6 +84130,11 @@ var RATING_FLOOR={};
     if(club){ q.org=club; clubbed++; }
   });
   if(typeof console!=='undefined' && console.debug) console.debug('club cross-fill:', clubbed);
+  /* Клуб не носят карты годов ДО его основания. Notion 25.10 (hvkfan): «Havok was created in 2024 not in 2022» —
+     у карт 2022-го клуб доливался с карт 2026-го (Liquipedia и cross-fill не знают года), и менеджер 2022-го
+     собирал Team HavoK из Pixie и Tjino. */
+  const CLUB_FROM={'Team HavoK':2024};
+  PLAYERS_BASE.forEach(q=>{ const f=q.org && CLUB_FROM[q.org], y=f && _oyYear(q); if(y && y<f) q.org=null; });
 
   // The same organisation reaches the base under two spellings, because the
   // rosters were scraped from pages written years apart ("Virtus Pro" on one,
@@ -155397,6 +155402,10 @@ const CC_MAJOR_LC_GAMES=11, CC_MAJOR_LC_LOBBY_GAMES=5;   // Liquipedia 2026: «T
    а не отдают места топу таблицы LCQ, как было. */
 function ccLcByPoints(ev){ return !ccIs2025() && !!ev && ev.n===1; }
 function ccLcLobbyGames(){ return ccIs2025() ? CC_MAJOR_STAGE_2025.lclobby.games : CC_MAJOR_LC_LOBBY_GAMES; }
+/* Сколько мест даёт лобби по очкам — «The top 5 teams qualify», ровно пять. Считалось остатком зала (финал минус
+   записанные), а победители хитов проходят СВЕРХ отсечки, и остаток падал до одного: Notion 25.10, #2 лобби с 241
+   очком — «пас де тикет». */
+function ccLcLobbySeats(ev, need){ return ccLcByPoints(ev) ? ccTeams(ccLcLobbyGames()) : need; }
 function ccLcLobbySim(lobby, ev, kill){
   lobby.forEach(t=>{ t.stagePts=0; t.wins=0; t.stageElims=0; });
   if(ccLcByPoints(ev)) simulateGames(lobby, ccLcLobbyGames(), majorPoints, kill);
@@ -156018,7 +156027,7 @@ function ccMajorWorldLcq(iso){
   const fin=ccScaleStage(ccMajorStageSpec('final'));
   const seatsTaken=(s.through||[]).length;
   const need=Math.max(0, fin.field-seatsTaken);
-  if(!need) { s.lcq=[]; return 0; }
+  if(!ccLcLobbySeats(ev, need)) { s.lcq=[]; return 0; }
   const st=ccScaleStage(ccMajorStageSpec('lcq'));
   // И у мира то же правило: держащий место в финале Ласт Ченс не играет.
   /* Ласт Ченс РЕГИОНАЛЬНЫЙ (его слово 20.10: «там же у каждого региона свои, не?»). Комната собиралась через
@@ -156034,7 +156043,7 @@ function ccMajorWorldLcq(iso){
   simulateGames(room, st.games, st.pts, st.kill);
   const lob=room.slice().sort(heatsRank).slice(0, ccIs2025() ? st.cut : ccTeams(CAREER_CUP_CUT));
   ccLcLobbySim(lob, ev, st.kill);
-  const rows=ccLcLobbyPick(lob, need, ev).map(ccMajorSeatRow);
+  const rows=ccLcLobbyPick(lob, ccLcLobbySeats(ev, need), ev).map(ccMajorSeatRow);
   s.through=(s.through||[]).concat(rows);
   s.lcq=rows;
   return rows.length;
@@ -163955,7 +163964,7 @@ async function runCareerMajor(){
 
   // The Last Chance Lobby: the fifty who came through, four matches, and only a
   // win is worth anything.
-  let ticket=false, lobbyPlace=null, lcLobby=null;
+  let ticket=false, lobbyPlace=null, lcLobby=null, lcSeats=0;
   /* 2025: Ласт Ченс Мейджора и раунд 1 FNCS Showdown проходят местом (топ-33), без лобби «только
      победа» из 2026-го. Showdown попадал в то лобби, и без победы в нём раунд 2 не открывался;
      LCQ Мейджора писал «не прошёл» по пустому билету (аудит 29.09). */
@@ -164000,13 +164009,15 @@ async function runCareerMajor(){
        только победа, порядок — победы, потом очки. */
     const lr=ccLcLobbySort(lobby, ev);
     lobbyPlace=lr.indexOf(you)+1;
-    const lcSeats=Math.max(1, ccScaleStage(ccMajorStageSpec('final', ev.n)).field-((cr.majorSeed && cr.majorSeed.through)||[]).length);
+    lcSeats=lcPts ? ccLcLobbySeats(ev, 1) : 0;
     ticket=lcPts ? lobbyPlace<=lcSeats : (you.wins||0)>0;
     const sh2=createStageCardShell(L().ccMajLobby+' — '+lobby.length);
     await revealStageLog(you, sh2, true);
+    // По очкам — строка про топ-5, не «ни одной победы»: победа там ничего не решает.
     finalizeStageCard(sh2, lobbyPlace, lobby.length, you.stagePts, ticket, false,
-      ticket ? L().ccMajTicket : L().ccMajNoTicket);
-    await revealStandings(sh2, lr, you, 0);
+      lcPts ? (ticket ? L().ccRelPass(lcSeats) : L().ccRelFail(lcSeats))
+            : (ticket ? L().ccMajTicket : L().ccMajNoTicket));
+    await revealStandings(sh2, lr, you, lcPts ? lcSeats : 0);
   }
 
   let cash=0;
@@ -164111,7 +164122,7 @@ async function runCareerMajor(){
       // Места — из лобби: сыгранного (своего), а без тебя в нём — досчитанного тем же правилом.
       let lobT=ev.stage==='lclobby' ? ranked.slice() : lcLobby;
       if(!lobT){ lobT=ranked.slice(0, ccIs2025() ? st.cut : ccTeams(CAREER_CUP_CUT)).filter(t=>t!==you); ccLcLobbySim(lobT, ev, st.kill); }
-      const add=ccLcLobbyPick(lobT, need, ev).map(t=>ccSeedRow(t, you, ccMajorSeatRow));
+      const add=ccLcLobbyPick(lobT, ccLcLobbySeats(ev, need), ev).map(t=>ccSeedRow(t, you, ccMajorSeatRow));
       cr.majorSeed.through=(cr.majorSeed.through||[]).concat(add);
       cr.majorSeed.lcq=add;
     }
@@ -164184,9 +164195,13 @@ async function runCareerMajor(){
     ? (ev.n===2 ? ((ccGlobalsSeat()||{}).via==='major2' ? L().ccRelSeatGc(ccLanCity('globals')) : null)
                 : (ccSummitSeat()==='main' ? L().ccRelSeatLan : null))
     : null;
+  /* Место — из лобби, значит и строка про лобби: «топ-2 · мимо топ-50» (Notion 25.10) мешал место в лобби с
+     отсечкой LCQ. */
   careerReloadResultCard({label:ev.label, place:lobbyPlace||place, of:field.length,
     through: (ev.stage==='lcq' && !lcByPlace) ? ticket : (ev.stage==='final' ? cash>0 : through),
     cut:st.cut||CAREER_CUP_CUT,
+    note: lobbyPlace ? (lcSeats ? (ticket ? L().ccRelPass(lcSeats) : L().ccRelFail(lcSeats))
+                                : (ticket ? L().ccMajTicket : L().ccMajNoTicket)) : null,
     /* 16.09, тестер: «после квала на какой-то турнир всегда пишет "место на
        Esports World Cup"». Хиты и LCQ ставили seat без текста, а запасной текст
        карточки — про Reload. Билет в следующую стадию карточка и так называет
@@ -166406,6 +166421,33 @@ function ccSoloStateOf(ev, card){
 function ccSoloStateSet(ev, card, v){
   if(ev && ev.series==='solos') ccSolosSet(card, v, ev.stage); else ccSoloSet(card, v);
 }
+/* ПРОШЕДШИЕ ИЗ ТВОЕЙ СОТНИ ЕДУТ ДАЛЬШЕ ВМЕСТЕ С ТОБОЙ (Notion 25.10: «FNCS Solo… only one player can make it
+   to the finals/heat/fast track»). Каждый этап собирал комнату заново из сцены, и из сотни, где ты прошёл,
+   дальше оказывался один ты: те, кто был выше тебя, в хитах и финале пропадали. Теперь вечер пишет, кто куда
+   сел (cr.soloCarry: турнир, сезон, этап → строки), и следующий этап сажает их первыми, добирая сцену. Как у
+   Мейджора majorSeed.through. */
+function ccSoloCarryTour(ev){ return ev && ev.series==='solos' ? ccSolosKey(ev.stage) : 'solo'; }
+function ccSoloCarryPut(ev, seats){
+  const cr=CAREER.career, tour=ccSoloCarryTour(ev);
+  if(!cr.soloCarry || cr.soloCarry.tour!==tour || cr.soloCarry.season!==cr.season) cr.soloCarry={tour:tour, season:cr.season, by:{}};
+  seats.forEach(function(p){
+    const at=p[0], row=ccStageSeatRow(p[1]);
+    if(!at || !row.length) return;
+    const list=cr.soloCarry.by[at]=cr.soloCarry.by[at]||[];
+    if(!list.some(r=>hKey(r[0].h)===hKey(row[0].h))) list.push(row);
+  });
+}
+function ccSoloCarryTake(ev, skip, size){
+  const cr=CAREER.career, c=cr.soloCarry;
+  if(!c || c.tour!==ccSoloCarryTour(ev) || c.season!==cr.season) return [];
+  const no=new Set(skip.map(hKey)), out=[];
+  (c.by[ev.stage]||[]).forEach(function(row){
+    if(out.length>=size || no.has(hKey(row[0].h))) return;
+    no.add(hKey(row[0].h));
+    out.push(ccStageTeamFrom(row));
+  });
+  return out;
+}
 function careerSoloSeriesCanFor(ev, s){
   if(!ev) return false;
   if(ev.series==='solos') return careerSolosCanFor(ev.stage, s);
@@ -167674,9 +167716,14 @@ async function runCareerSoloSeries(){
      августа): если исключить только себя, у каждого клиента в поле останется
      тёзка напарника, и это одна разная строка из 4900 — «diff 1 of 4900:
      #278 scroll:96 vs sky:96». Сторож — live-two с CC_NICK_A=Sky CC_NICK_B=Scroll. */
-  const field=[...humans, ...(peerBot ? [peerBot] : []),
-               ...careerSoloField(lobbyCr, mate ? [me, pc] : peerBot ? [me, peerCard] : drafted,
-                                  size-(humans.length-1)-(peerBot ? 1 : 0), open, ev.stage)];
+  const fieldMine=mate ? [me, pc] : peerBot ? [me, peerCard] : drafted;
+  // Прошедшие прошлого этапа из твоей сотни — первыми, сцена добирает остальное. См. ccSoloCarryPut.
+  const carried=open ? [] : ccSoloCarryTake(ev,
+    fieldMine.concat((typeof ccRaceOn==='function' && ccRaceOn()) ? ccRaceAllCards() : []),
+    size-humans.length-(peerBot ? 1 : 0));
+  const field=[...humans, ...(peerBot ? [peerBot] : []), ...carried,
+               ...careerSoloField(lobbyCr, fieldMine.concat(...carried.map(t=>t.squad||[])),
+                                  size-(humans.length-1)-(peerBot ? 1 : 0)-carried.length, open, ev.stage)];
 
   const kindsForDrop=['solo'];
   const zones=null;
@@ -167744,6 +167791,9 @@ async function runCareerSoloSeries(){
     };
     ccSoloStateSet(ev, me, next(me, you));
     if(mate) ccSoloStateSet(ev, pc, next(pc, mate));
+    const soloNext={qual:'heats', heats:'final'};
+    ccSoloCarryPut(ev, ranked.filter(t=>humans.indexOf(t)<0 && t!==peerBot)
+      .map(t=>[spec ? seatOf(t) : (passOf(t) ? soloNext[ev.stage] : null), t]));
     /* Из Fast Track «не прошёл» не бывает: топ-8 едет в финал, остальные в
        хиты, и это всё равно проход дальше. Строка ленты — по месту, а не по
        отсечке. */
@@ -173792,7 +173842,7 @@ function mgrCarExact(ev, tm, rec, J, st){
   } else if(me.stage==='lcq'){
     // 2026: билет — победа в лобби Ласт Ченса (в Мейджоре 1 — место в лобби по очкам), как у ведущего в раннере.
     const inLobby=rec.stage===L().ccMajLobby;
-    const seats=Math.max(1, spec('final').field-(msOk ? (ms.through||[]).length-(Array.isArray(ms.lcq) ? ms.lcq.length : 0) : 0));
+    const seats=ccLcLobbySeats(me, 1);
     passed=inLobby && (ccLcByPoints(me) ? rec.place<=seats : (rec.wins||0)>0);
   } else if(me.stage==='lclobby'){
     passed=(msOk && Array.isArray(ms.lcq)) ? inRows(ms.lcq) : ((rec.wins||0)>0 || rec.place<=spec('lclobby').cut);

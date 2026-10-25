@@ -167,11 +167,22 @@ const BOOT = `
     if(lf.place<=8 ? cr.solos.seat!=='final' : cr.solos.seat!=='heats')
       fail('Fast Track seated '+lf.place+' as '+cr.solos.seat);
     out.steps.push('fast track: '+lf.place+' of 100 over 4 matches to '+cr.solos.seat);
+    // Notion 25.10: «only one player can make it to the finals/heat» — прошедшие из твоей сотни едут дальше с тобой.
+    const carry=(cr.soloCarry && cr.soloCarry.by) || {};
+    const toHeats=(carry.heats||[]).length, toFinal=(carry.final||[]).length;
+    if(toHeats+toFinal!==99) fail('Fast Track carried '+toHeats+' to the heats and '+toFinal+' to the final, all 99 others should move on');
+    const sim0=simulateGamesLive; let heatField=null;
+    simulateGamesLive=function(teams){ if(!heatField) heatField=teams.slice(); return sim0.apply(this, arguments); };
 
     // ---- the Heats: three exits, and the 29 counted among the winless ------
     cr.solos={got:'fast', seat:'heats'};
     cr.day='2026-10-17'; careerSave();
     await runCareerSoloSeries();
+    simulateGamesLive=sim0;
+    const carried=new Set((carry.heats||[]).map(r=>hKey(r[0].h)));
+    const sat=(heatField||[]).filter(t=>(t.squad||[]).some(c=>carried.has(hKey(c)))).length;
+    if(sat<Math.min(carried.size, 99)) fail('the heat seated '+sat+' of the '+carried.size+' who came through Fast Track with you');
+    out.steps.push('carried on: '+toHeats+' to the heats ('+sat+' seated), '+toFinal+' to the final');
     const lh=cr.log[cr.log.length-1];
     if(!lh || lh.stage!=='heats' || lh.of!==100) fail('the heat was not a room of 100');
     if(lh.games!==6) fail('the heat played '+lh.games+' matches, Epic says 6');
