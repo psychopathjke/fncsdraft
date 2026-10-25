@@ -42,7 +42,7 @@ const regOf = e => REGS.includes(e.region) ? e.region : (String(e.w).split('_').
 const finals = CAL.events.filter(e => /FNCSSolo_Final_Day1_/.test(e.w)).map(e => ({ reg: regOf(e), begin: e.begin }))
   .filter(f => REGS.includes(f.reg)).sort((a, b) => a.begin < b.begin ? -1 : 1);
 const finalsLive = finals.length && Date.parse(finals[finals.length - 1].begin) + 2 * 86400e3 > NOW;
-const heroHTML = finalsLive ? `<section class="hero">
+const heroHTML = finalsLive ? `<section class="glass hero">
   <span class="tag">Next up · Finals</span>
   <h2>FNCS Solos 2026 Finals</h2>
   <p class="sub">The first solo FNCS in years. 100 players per region, two days, six games a night.</p>
@@ -51,19 +51,33 @@ const heroHTML = finalsLive ? `<section class="hero">
     return `<li data-t="${esc(f.begin)}"><b>${esc(f.reg)}</b><time datetime="${esc(f.begin)}">${esc(f.begin.slice(5, 16).replace('T', ' '))} UTC</time>` +
       (fav ? `<span>Fav: ${esc(fav.n)} ${Math.round(fav.win * 100)}%</span>` : '') + '</li>';
   }).join('')}</ul>
-  <a class="cta" href="/predict/fncs-solos-2026"><span>Win chances and drop maps</span></a>
+  <a class="btn" href="/predict/fncs-solos-2026">Win chances and drop maps</a>
 </section>` : '';
 
-// ---- Календарь: всё от «сейчас» на 14 дней вперёд
-const until = NOW + 14 * 86400e3;
+// Окна, которых у eucompetitive нет (26.10: их сезон S43 пуст, а FNCS Solos Reload с 3 ноября уже в календаре Tracker) —
+// из comp-calendar-tracker.json (imp_calendar страниц fortnitetracker.com/events, снят Playwright'ом). Конца окна Tracker
+// не даёт — три часа от начала, как у обычного капа.
+const TRK = read('comp-calendar-tracker.json');
+if (TRK) {
+  const have = new Set(CAL.events.map(e => e.w));
+  TRK.windows.forEach(x => {
+    if (!x.w || have.has(x.w)) return;
+    const reg = String(x.w).split('_').pop();
+    CAL.events.push({ w: x.w, ev: x.ev, name: x.title + (x.sub ? ' · ' + x.sub : ''), region: reg, begin: x.begin.replace('+00:00', 'Z'),
+      end: new Date(Date.parse(x.begin) + 3 * 3600e3).toISOString(), status: 'tracker', pretty: true });
+  });
+}
+
+// ---- Календарь: всё от «сейчас» на три недели вперёд
+const until = NOW + 21 * 86400e3;
 const upcoming = CAL.events.filter(e => Date.parse(e.end || e.begin) > NOW - 3 * 3600e3 && Date.parse(e.begin) < until && REGS.includes(regOf(e)))
   .sort((a, b) => a.begin < b.begin ? -1 : a.begin > b.begin ? 1 : 0);
 const byDay = new Map();
 upcoming.forEach(e => { const d = e.begin.slice(0, 10); if (!byDay.has(d)) byDay.set(d, []); byDay.get(d).push(e); });
-const calHTML = [...byDay.entries()].map(([d, list]) => `<div class="day" data-day="${d}"><h3><time datetime="${d}">${d}</time></h3><ul>` +
+const calHTML = [...byDay.entries()].map(([d, list]) => `<div class="day" data-day="${d}"><h4><time datetime="${d}">${d}</time></h4><ul>` +
   list.map(e => `<li class="ev k-${kind(e.w)}" data-reg="${esc(regOf(e))}" data-t="${esc(e.begin)}" data-end="${esc(e.end || e.begin)}">` +
     `<time datetime="${esc(e.begin)}">${esc(e.begin.slice(11, 16))}</time><i>${esc(regOf(e))}</i>` +
-    `<span>${esc(pretty(e.name))}</span><em>${KIND[kind(e.w)]}</em></li>`).join('') + '</ul></div>').join('');
+    `<span>${esc(e.pretty ? e.name : pretty(e.name))}</span><em>${KIND[kind(e.w)]}</em></li>`).join('') + '</ul></div>').join('');
 
 // ---- Призы за месяц и последние результаты
 let earnHTML = '', resHTML = '', monthName = '', paid = 0;
@@ -84,79 +98,111 @@ if (RES && RES.windows.length) {
   const latest = RES.windows.slice().sort((a, b) => a.begin > b.begin ? -1 : 1).slice(0, 60);
   resHTML = latest.map(w => {
     const t3 = w.top.slice(0, 3);
-    return `<article class="res" data-reg="${esc(regOf(w))}"><header><i>${esc(regOf(w))}</i><time datetime="${esc(w.begin)}">${esc(w.begin.slice(0, 10))}</time></header>` +
-      `<h4>${esc(pretty(w.name))}</h4><ol>` + t3.map(x => `<li>${x.ids.map((id, i) => flag(x.c[i]) + esc(x.n[i] || x.epic[i] || '?')).join(' + ')}` +
+    return `<article class="glass res" data-reg="${esc(regOf(w))}"><header><i>${esc(regOf(w))}</i><time datetime="${esc(w.begin)}">${esc(w.begin.slice(0, 10))}</time></header>` +
+      `<h4>${esc(pretty(w.name))}</h4><ol>` + t3.map(x => `<li><div>${x.ids.map((id, i) => flag(x.c[i]) + esc(x.n[i] || x.epic[i] || '?')).join(' + ')}</div>` +
       `<span>${x.pts} pts${x.usd ? ' · ' + money(x.usd) : ''}</span></li>`).join('') + '</ol></article>';
   }).join('');
 }
 
-// ---- Шапка: две вкладки сайта
-const NAV = `<header class="top"><a class="logo" href="/"><img src="/logo.png" alt="" width="34" height="34">FNCS <span>DRAFT</span></a>
-<nav class="tabs" aria-label="site"><a href="/">Career</a><a href="/competitive" aria-current="page" class="on">Competitive</a></nav></header>`;
+// ---- Шапка как у главной (26.10, его «сделай дизайн компетитив как главный экран»): логотип, пилюли навбара.
+const NAV = `<header class="top"><a class="logo" href="/"><img src="/logo.png" alt="" width="40" height="40"><b><i>FNCS</i> DRAFT</b></a>
+<nav class="site-nav" aria-label="site"><a class="nav-pill" href="/">Career</a><a class="nav-pill on" href="/competitive" aria-current="page">Competitive</a></nav></header>`;
 
-const CSS = `@font-face{font-family:'Oswald';font-style:normal;font-weight:200 700;font-display:swap;src:url(/fonts/oswald-latin.woff2) format('woff2');unicode-range:U+0000-00FF,U+2000-206F;}
-:root{--go:#ffdd00;--go-ink:#0b0f12;--panel:#161b22;--ink:#eef2f6;--dim:#8b98a8;--accent:#00c9a7;--line:#262e39;--hot:#ff4d5e;--font-display:'Oswald','Arial Narrow',Impact,sans-serif;}
-*{box-sizing:border-box}html{-webkit-text-size-adjust:100%;background:#0b0e13}
-body{margin:0;background:linear-gradient(180deg,#0d141a 0%,#0e1116 45%,#0b0e13 100%) fixed;color:var(--ink);font:15px/1.55 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;}
-a{color:var(--accent)}
-.wrap{max-width:1040px;margin:0 auto;padding:16px 16px 72px}
-.top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;border-bottom:1px solid var(--line);padding-bottom:12px;margin-bottom:20px}
-.logo{display:flex;align-items:center;gap:8px;font:italic 700 22px var(--font-display);color:var(--ink);text-decoration:none;letter-spacing:.02em}
-.logo span{color:var(--go)}
-.tabs{display:flex;gap:4px;background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:4px}
-.tabs a{font:600 15px var(--font-display);letter-spacing:.06em;text-transform:uppercase;color:var(--ink);text-decoration:none;padding:8px 18px;border-radius:999px}
-.tabs a.on{background:var(--go);color:var(--go-ink)}
-h1,h2,h3,h4{font-family:var(--font-display);font-weight:600;letter-spacing:.03em;margin:0;line-height:1.15}
-h1{font-size:clamp(30px,6vw,48px);text-transform:uppercase}
-h2.sec{font-size:22px;text-transform:uppercase;letter-spacing:.05em;color:var(--accent);margin:34px 0 12px;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
-h2.sec small{font:400 13px/1.4 -apple-system,Segoe UI,Roboto,sans-serif;color:var(--dim);letter-spacing:0;text-transform:none}
-.lead{color:var(--dim);margin:6px 0 0}
-.hero{margin-top:22px;background:linear-gradient(135deg,rgba(255,221,0,.10),rgba(0,201,167,.08));border:1px solid var(--line);border-radius:16px;padding:18px 18px 20px}
-.hero .tag{display:inline-block;font:600 12px var(--font-display);letter-spacing:.1em;text-transform:uppercase;background:var(--hot);color:#fff;padding:3px 8px;border-radius:4px}
-.hero h2{font-size:clamp(26px,5vw,38px);text-transform:uppercase;margin:8px 0 4px}
-.hero .sub{color:var(--dim);margin:0 0 12px}
+// Синее стекло главной: фон #0b1640 с подсветкой, панели-градиенты с лучами, Fira Sans Extra Condensed в заголовках,
+// пилюли навбара, жёлтая кнопка со «ступенькой», заголовки разделов — разделитель меню Fortnite (линии по бокам).
+const CSS = `@font-face{font-family:'Fira Sans Extra Condensed';font-style:normal;font-weight:700;font-display:swap;src:url(/fonts/fira-xc-700-latin.woff2) format('woff2');unicode-range:U+0000-00FF,U+2000-206F;}
+@font-face{font-family:'Fira Sans Extra Condensed';font-style:normal;font-weight:900;font-display:swap;src:url(/fonts/fira-xc-900-latin.woff2) format('woff2');unicode-range:U+0000-00FF,U+2000-206F;}
+:root{--go:#ffdd00;--go-ink:#0b0f12;--ink:#eaf0ff;--dim:#b7c3e6;--dimmer:#8fa0cc;--cyan:#9fe1ff;--lime:#d7ff3a;--hot:#ff4d5e;
+  --line:rgba(180,200,255,.2);--row:rgba(126,150,224,.18);--row-h:rgba(150,180,255,.3);--r:16px;--r-sm:10px;
+  --font-display:'Fira Sans Extra Condensed','Oswald','Arial Narrow',Impact,sans-serif;}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;background:#0b1640}
+body{margin:0;color:var(--ink);font:15px/1.55 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;background-color:#0b1640;
+  background-image:radial-gradient(900px 520px at 12% -6%,rgba(60,100,220,.5),rgba(60,100,220,0)),radial-gradient(700px 480px at 92% 8%,rgba(150,180,255,.3),rgba(150,180,255,0)),
+  radial-gradient(1100px 700px at 50% 110%,rgba(30,50,140,.6),rgba(30,50,140,0));background-attachment:fixed;min-height:100vh}
+a{color:var(--cyan)}
+.wrap{max-width:1180px;margin:0 auto;padding:18px 20px 80px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;border-bottom:2px solid rgba(180,200,255,.15);padding-bottom:14px;margin-bottom:22px}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none;color:#fff}
+.logo b{font:italic 900 30px/1 var(--font-display);letter-spacing:-.01em;text-transform:uppercase}
+.logo i{font-style:inherit;background:linear-gradient(180deg,#e9fbff 0%,#9fe1ff 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.site-nav{display:flex;gap:4px}
+.nav-pill{font:600 15px var(--font-display);letter-spacing:.06em;text-transform:uppercase;color:#e6ecff;text-decoration:none;padding:8px 16px;border-radius:999px;white-space:nowrap}
+.nav-pill:hover{background:rgba(255,255,255,.12);outline:3px solid rgba(255,255,255,.92)}
+.nav-pill.on{background:#e4ebf7;color:#0b1a3a}
+h1,h2,h3,h4{font-family:var(--font-display);font-weight:700;margin:0;line-height:1.08}
+.glass{position:relative;overflow:hidden;border-radius:var(--r);background:linear-gradient(160deg,#1d3b8c 0%,#13265f 46%,#0b1640 100%);box-shadow:inset 0 0 0 1px rgba(180,200,255,.18)}
+.glass::before{content:'';position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(112deg,transparent 0 150px,rgba(150,180,255,.05) 150px 220px)}
+.glass>*{position:relative}
+.head{padding:26px 28px}
+.head h1{font-size:clamp(38px,6vw,64px);font-weight:900;font-style:italic;text-transform:uppercase;letter-spacing:-.01em}
+.head p{color:#c9d5f0;margin:8px 0 0;max-width:640px}
+.hero{margin-top:16px;padding:24px 28px 26px}
+.tag{display:inline-block;font-size:11px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:#0b1a3a;background:var(--lime);padding:3px 9px;border-radius:999px}
+.hero h2{font-size:clamp(30px,5vw,48px);font-style:italic;font-weight:900;text-transform:uppercase;margin:10px 0 4px}
+.hero .sub{color:#c9d5f0;margin:0 0 16px}
 .when{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
-.when li{background:rgba(11,15,18,.55);border:1px solid var(--line);border-radius:10px;padding:8px 10px;display:flex;flex-direction:column;gap:1px}
-.when b{font:600 16px var(--font-display);letter-spacing:.05em}
-.when time{font-size:13px}
+.when li{background:var(--row);border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;gap:2px}
+.when b{font:700 20px var(--font-display);letter-spacing:.04em}
+.when time{font-size:13px;color:#fff}
 .when span{font-size:12px;color:var(--dim)}
-.when li.live{border-color:var(--hot)}
-.cta{display:inline-block;background:var(--go);color:var(--go-ink);font:600 16px/1 var(--font-display);letter-spacing:.06em;text-transform:uppercase;padding:13px 22px 12px;text-decoration:none;transform:skewX(-8deg);margin-top:14px}
-.cta span{display:inline-block;transform:skewX(8deg)}
-.regs{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 12px}
-.regs button{font:600 14px var(--font-display);letter-spacing:.06em;background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:7px 12px;cursor:pointer;min-height:38px}
-.regs button[aria-pressed="true"]{background:var(--go);color:var(--go-ink);border-color:var(--go)}
-.grid{display:grid;grid-template-columns:1.1fr .9fr;gap:22px;align-items:start}
-@media(max-width:860px){.grid{grid-template-columns:1fr}}
-.day h3{font-size:15px;text-transform:uppercase;letter-spacing:.08em;color:var(--dim);margin:14px 0 6px}
-.day ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:4px}
-.ev{display:grid;grid-template-columns:auto 40px 1fr auto;gap:8px;align-items:center;background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--line);border-radius:8px;padding:7px 10px;font-size:14px}
-.ev time{font-variant-numeric:tabular-nums;font-weight:600;white-space:nowrap;min-width:46px}
-.ev i,.res i{font:600 12px var(--font-display);font-style:normal;letter-spacing:.05em;color:var(--dim)}
-.ev em{font-style:normal;font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:.05em;white-space:nowrap}
-.ev.k-fncs{border-left-color:var(--go)}.ev.k-fncs span{font-weight:700}
-.ev.k-cash{border-left-color:var(--accent)}
-.ev.k-ranked{border-left-color:#7d8cff}
-.ev.live{border-color:var(--hot);box-shadow:0 0 0 1px rgba(255,77,94,.35)}
-.ev.live em::before{content:'LIVE · ';color:var(--hot);font-weight:700}
-.tbl{width:100%;border-collapse:collapse;font-size:14px}
-.tbl th{text-align:left;font:500 12px var(--font-display);text-transform:uppercase;letter-spacing:.05em;color:var(--dim);padding:6px 8px;border-bottom:1px solid var(--line)}
-.tbl td{padding:7px 8px;border-bottom:1px solid var(--line)}
+.when li.live{box-shadow:inset 0 0 0 2px var(--hot)}
+.btn{display:inline-block;font:700 18px/1 var(--font-display);letter-spacing:.04em;text-transform:uppercase;text-decoration:none;border-radius:10px;padding:13px 28px 12px;margin-top:18px;
+  background:var(--go);color:var(--go-ink);box-shadow:0 4px 0 #b59c00,0 8px 18px rgba(0,0,0,.35)}
+.btn:hover{transform:translateY(-1px);filter:brightness(1.06)}
+.btn:active{transform:translateY(2px);box-shadow:0 2px 0 #b59c00,0 4px 10px rgba(0,0,0,.35)}
+.sec{display:flex;align-items:center;gap:12px;font:700 20px var(--font-display);letter-spacing:.08em;text-transform:uppercase;color:#fff;margin:34px 0 14px}
+.sec::before,.sec::after{content:'';flex:1;height:2px;background:rgba(255,255,255,.35)}
+.sec::before{flex:0 0 24px}
+.sec small{font:400 13px/1.3 -apple-system,Segoe UI,Roboto,sans-serif;letter-spacing:0;text-transform:none;color:var(--dim);order:3}
+.regs{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 14px}
+.regs button{font:700 15px var(--font-display);letter-spacing:.05em;color:#fff;background:rgba(150,180,255,.18);border:none;border-radius:999px;padding:8px 16px;cursor:pointer;min-height:38px}
+.regs button:hover{background:rgba(150,180,255,.32)}
+.regs button[aria-pressed="true"]{background:#e4ebf7;color:#0b1a3a}
+.grid{display:grid;grid-template-columns:1.05fr .95fr;gap:22px;align-items:start}
+@media(max-width:900px){.grid{grid-template-columns:1fr}}
+.panel{padding:16px 18px 18px}
+.panel>h3{font:700 18px var(--font-display);letter-spacing:.08em;text-transform:uppercase;margin:0 0 4px}
+.panel>p.small{color:var(--dim);font-size:13px;margin:0 0 10px}
+.day h4{font:700 14px var(--font-display);letter-spacing:.1em;text-transform:uppercase;color:var(--cyan);margin:14px 0 6px}
+.day:first-child h4{margin-top:4px}
+.day ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:5px}
+.ev{display:grid;grid-template-columns:auto 38px 1fr auto;gap:10px;align-items:center;background:var(--row);border-radius:12px;padding:9px 12px;font-size:14px;border-left:4px solid transparent}
+.ev:hover{background:var(--row-h)}
+.ev time{font:700 16px var(--font-display);font-variant-numeric:tabular-nums;white-space:nowrap;min-width:46px;color:#fff}
+.ev i,.res i{font:700 12px var(--font-display);font-style:normal;letter-spacing:.06em;color:var(--dim)}
+.ev em{font-style:normal;font:700 11px var(--font-display);letter-spacing:.08em;text-transform:uppercase;color:#0b1a3a;background:rgba(228,235,247,.85);border-radius:999px;padding:2px 8px;white-space:nowrap}
+.ev.k-fncs{border-left-color:var(--go)}.ev.k-fncs span{font-weight:700;color:#fff}.ev.k-fncs em{background:var(--go)}
+.ev.k-cash{border-left-color:var(--lime)}.ev.k-cash em{background:var(--lime)}
+.ev.k-ranked{border-left-color:var(--cyan)}.ev.k-ranked em{background:var(--cyan)}
+.ev.live{box-shadow:inset 0 0 0 2px var(--hot)}
+.ev.live em{background:var(--hot);color:#fff}.ev.live em::before{content:'LIVE · '}
+.tbl{width:100%;border-collapse:separate;border-spacing:0 4px;font-size:14px}
+.tbl th{text-align:left;font:700 12px var(--font-display);text-transform:uppercase;letter-spacing:.08em;color:var(--dimmer);padding:2px 10px}
+.tbl td{padding:8px 10px;background:var(--row)}
+.tbl td:first-child{border-radius:10px 0 0 10px}.tbl td:last-child{border-radius:0 10px 10px 0}
+.tbl tr:hover td{background:var(--row-h)}
 .tbl .n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
-.tbl td img,.res img{vertical-align:-2px;margin-right:5px}
-.p1{color:var(--go);font-weight:700}
+.tbl td img,.res img{vertical-align:-2px;margin-right:6px}
+.tbl tbody tr:nth-child(-n+3):not(.hide) td:first-child{color:var(--go);font-weight:900}
+.p1{color:var(--go);font:700 16px var(--font-display);letter-spacing:.02em}
 .tbl tr.more,.tbl tr.hide{display:none}
 .tbl.all tr.more:not(.hide){display:table-row}
-.morebtn{margin-top:10px;background:none;border:1px solid var(--line);color:var(--ink);border-radius:8px;padding:8px 14px;cursor:pointer;font:600 14px var(--font-display);letter-spacing:.05em}
-.results{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px}
-.res{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+.morebtn{margin-top:8px;font:700 15px var(--font-display);letter-spacing:.06em;text-transform:uppercase;color:#fff;background:rgba(150,180,255,.22);border:none;border-radius:10px;padding:10px 18px;cursor:pointer}
+.morebtn:hover{background:rgba(150,180,255,.36)}
+.results{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
+.res{padding:14px 16px}
 .res header{display:flex;justify-content:space-between;font-size:12px;color:var(--dim)}
-.res h4{font-size:16px;margin:4px 0 6px}
-.res ol{margin:0;padding-left:18px;font-size:13px}
-.res li{margin:2px 0}
-.res li span{display:block;color:var(--dim);font-size:12px}
-.res li:first-child{color:var(--go)}
-.note{color:var(--dim);font-size:13px;margin:10px 0 0}
+.res h4{font-size:19px;margin:6px 0 8px;text-transform:uppercase;letter-spacing:.02em}
+.res ol{margin:0;padding:0;list-style:none;font-size:14px;counter-reset:p}
+.res li{counter-increment:p;display:grid;grid-template-columns:22px 1fr;column-gap:4px;padding:5px 0;border-top:1px solid rgba(180,200,255,.12)}
+.res li::before{content:counter(p);font:900 16px var(--font-display);color:var(--dim);grid-row:span 2}
+.res li:first-child::before{color:var(--go)}
+.res li span{color:var(--dim);font-size:12px}
+.note{color:var(--dimmer);font-size:13px;margin:12px 0 0}
+.foot{margin-top:34px;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
+@media(max-width:620px){.wrap{padding:14px 14px 64px}.head,.hero{padding:20px 18px}.logo b{font-size:24px}.nav-pill{padding:7px 12px;font-size:14px}
+  .ev{grid-template-columns:auto 34px 1fr;row-gap:2px}.ev em{grid-column:3;justify-self:start}}
 [hidden]{display:none!important}`;
 
 const JS = `(function(){
@@ -174,7 +220,7 @@ document.querySelectorAll('.ev').forEach(function(li){var t=Date.parse(li.datase
 document.querySelectorAll('.when li').forEach(function(li){var t=Date.parse(li.dataset.t); li.querySelector('time').textContent=fmtDT.format(t);
  if(t<=now && now<t+3*3600e3) li.classList.add('live');});
 document.querySelectorAll('.day').forEach(function(d){ if(!d.querySelector('.ev')) { d.remove(); return; }
- var h=d.querySelector('h3 time'); h.textContent=fmtD.format(Date.parse(d.dataset.day+'T12:00:00Z')); });
+ var h=d.querySelector('h4 time'); h.textContent=fmtD.format(Date.parse(d.dataset.day+'T12:00:00Z')); });
 function apply(){
  document.querySelectorAll('.regs button').forEach(function(b){b.setAttribute('aria-pressed',b.dataset.r===reg?'true':'false');});
  document.querySelectorAll('.ev,.res').forEach(function(x){x.hidden=reg!=='ALL'&&x.dataset.reg!==reg;});
@@ -199,23 +245,23 @@ const html = `<!doctype html>
 <meta property="og:url" content="${SITE}/competitive"><meta property="og:type" content="website"><meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="/favicon.ico"><style>${CSS}</style></head>
 <body><div class="wrap">${NAV}
-<h1>Competitive</h1>
-<p class="lead">Fortnite tournaments in your time zone, prize money and results for every region. Updated with every site build.</p>
+<section class="glass head"><h1>Competitive</h1>
+<p>Fortnite tournaments in your time zone, prize money and results for every region. Updated with every site build.</p></section>
 ${heroHTML}
-<h2 class="sec">This week <small>Times in your time zone. Live cups are marked.</small></h2>
+<h2 class="sec">Region</h2>
 ${regButtons}
 <div class="grid">
-<section aria-label="Calendar">${calHTML || '<p class="note">No tournaments in the next two weeks.</p>'}</section>
-<section aria-label="Prize money">
-<h2 class="sec" style="margin-top:14px">Prize money · ${esc(monthName)} <small>${paid ? money(paid) + ' paid in cash cups and FNCS' : ''}</small></h2>
+<section class="glass panel" aria-label="Calendar"><h3>Calendar</h3><p class="small">Next three weeks, in your time zone. Live cups are marked.</p>
+${calHTML || '<p class="note">No tournaments in the next three weeks.</p>'}</section>
+<section class="glass panel" aria-label="Prize money"><h3>Prize money · ${esc(monthName)}</h3>
+<p class="small">${paid ? money(paid) + ' paid in cash cups and FNCS so far. ' : ''}Duos: each player gets the payout.</p>
 ${earnHTML || '<p class="note">No paid cups yet this month.</p>'}
 ${earnHTML ? '<button class="morebtn" type="button">Show more</button>' : ''}
-<p class="note">From Epic's own leaderboards and payout tables. Duos: each player gets the payout.</p>
 </section></div>
 <h2 class="sec">Latest results</h2>
 <div class="results">${resHTML || '<p class="note">No results yet.</p>'}</div>
-<p class="note">Calendar and leaderboards: Epic Games via <a href="https://eucompetitive.com" rel="noopener">eucompetitive.com</a>. Payout tables: Epic, via Fortnite Tracker.</p>
-<a class="cta" href="/"><span>Play the FNCS career</span></a>
+<div class="foot"><p class="note">Calendar and leaderboards: Epic Games via <a href="https://eucompetitive.com" rel="noopener">eucompetitive.com</a> and Fortnite Tracker. Payout tables: Epic, via Fortnite Tracker.</p>
+<a class="btn" href="/">Play the FNCS career</a></div>
 </div><script>${JS}</script></body></html>`;
 fs.writeFileSync(path.join(OUT, 'competitive.html'), html, 'utf8');
 
