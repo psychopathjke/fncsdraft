@@ -4154,6 +4154,3 @@ Object.assign(I18N.de=I18N.de||{},
 /* Дозаливка «de» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
 Object.assign(I18N.de=I18N.de||{},
 ({ccFmtYearQ:(y,c)=>'Neues Jahr '+y+(c ? ', Kapitel '+c : '')+'. In welchem Format spielst du dieses Jahr?', ccFmtDuo:'Duos', ccFmtTrio:'Trios', ccFmtSquad:'Squads'}));
-/* Дозаливка «de» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
-Object.assign(I18N.de=I18N.de||{},
-({dyReveal:'Aufdecken'}));

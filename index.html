@@ -8335,28 +8335,6 @@
   .home-daily .hero-mode-tag{margin-bottom:6px;display:inline-block;}
   .home-daily .cstrip-chips{margin:0 0 12px;}
   .dy-acts{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:10px;}
-  .dy-pk .dy-flip{position:relative;perspective:900px;}
-  .dy-pk .dy-flip>.fut-card{transition:opacity .25s ease .18s, transform .35s ease .18s;}
-  .dy-pk:not(.open) .dy-flip>.fut-card{opacity:0;transform:rotateY(-90deg);pointer-events:none;}
-  .dy-pk:not(.open) .dy-hint{visibility:hidden;}
-  .dy-back{position:absolute;inset:0;z-index:2;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;
-    border:2px solid color-mix(in srgb, var(--r-color) 70%, #fff);border-radius:14px;cursor:pointer;overflow:hidden;padding:0;
-    background:radial-gradient(120% 80% at 50% 20%, color-mix(in srgb, var(--r-color) 85%, #fff) 0%, var(--r-color) 38%, color-mix(in srgb, var(--r-color) 45%, #060a1c) 100%);
-    box-shadow:0 0 24px color-mix(in srgb, var(--r-color) 55%, transparent);transition:opacity .2s ease, transform .35s ease;font:inherit;color:#fff;}
-  .dy-back i{font-style:normal;font-family:var(--font-display);font-weight:700;font-size:72px;line-height:1;text-shadow:0 4px 0 rgba(0,0,0,.25);}
-  .dy-back b{font-family:var(--font-display);font-weight:700;font-size:15px;letter-spacing:.08em;text-transform:uppercase;
-    padding:4px 12px;border-radius:999px;background:rgba(6,10,28,.35);}
-  .dy-back .dy-shine{position:absolute;inset:-40% -60%;background:linear-gradient(115deg,transparent 42%,rgba(255,255,255,.35) 50%,transparent 58%);
-    animation:dyShine 2.4s ease-in-out infinite;pointer-events:none;}
-  .dy-epic .dy-back,.dy-legendary .dy-back,.dy-mythic .dy-back{box-shadow:0 0 34px 4px color-mix(in srgb, var(--r-color) 70%, transparent);}
-  .dy-pk.open .dy-back{opacity:0;transform:rotateY(90deg);pointer-events:none;}
-  .dy-back:hover{filter:brightness(1.08);}
-  @keyframes dyShine{0%{transform:translateX(-30%)}60%,100%{transform:translateX(30%)}}
-  @media (prefers-reduced-motion: reduce){
-    .dy-pk .dy-flip>.fut-card,.dy-back{transition:none;}
-    .dy-pk:not(.open) .dy-flip>.fut-card,.dy-pk.open .dy-back{transform:none;}
-    .dy-back .dy-shine{animation:none;}
-  }
   .dy-acts .hero-btn{min-height:44px;}
   .dy-mine{display:flex;align-items:baseline;gap:10px;margin:2px 0 0;}
   .dy-mine b{font-family:var(--font-display);font-size:30px;font-weight:700;color:#ffdd00;line-height:1;}
@@ -23695,11 +23673,11 @@ Object.assign(I18N.it, {clTitle:'Cloud', clOn:'attivo', clOffNow:'spento — le 
 Object.assign(I18N.pt, {clTitle:'Nuvem', clOn:'ligada', clOffNow:'desligada — as carreiras ficam só neste navegador', clWhy:'Ligue a nuvem para receber um código. Com ele, suas carreiras e o manager abrem em qualquer aparelho, mesmo se este navegador for limpo.', clEnable:'Ligar a nuvem', clHave:'Tenho um código', clKeep:'Anote este código: ele abre suas carreiras em outro aparelho.', clSent:w=>'Último envio: '+w, clBusy:'enviando…', clPushNow:'Enviar agora', clOther:'Digitar outro código', clOff:'Desligar', clOpen:'Abrir', clFound:n=>'Saves neste código: '+n, clCareer:'carreira', clMgr:'manager', clTake:'Trazer para este navegador', clSure:'Substitui os mesmos slots aqui — toque de novo', clErr:m=>'A nuvem não respondeu ('+m+'). Sua carreira está salva no navegador; tentaremos de novo.', clBad:'O código tem 16 caracteres, ex. K7QM-2XPA-9RTD-WH4C'});
 /* Драфт дня (16.10). */
 Object.assign(I18N.ru, {playersLink:'Игроки FNCS'}); Object.assign(I18N.en, {playersLink:'FNCS players'}); Object.assign(I18N.fr, {playersLink:'Joueurs FNCS'}); Object.assign(I18N.it, {playersLink:'Giocatori FNCS'}); Object.assign(I18N.pt, {playersLink:'Jogadores FNCS'});
-Object.assign(I18N.ru, {dyReveal:'Открыть', dyNickBad:"Такой ник в таблицу не пускаем, выбери другой", dyTitleW:'Драфт дня', dyTag:'Каждый день', dyTitle:n=>'Драфт дня #'+n, dySub:'Каждый день случайный сезон: паки у всех свои, но только из игроков того периода. Одна попытка, таблица дня по силе состава.', dyRules:'сквад · все регионы · 12 игр', dyPlayers:y=>'игроки '+y, dyOnce:'Попытка одна: после «Выйти на турнир» переиграть нельзя.', dyPlay:'Играть', dyBoard:'Таблица дня', dyShare:'Поделиться', dyCopied:'Скопировано', dyPts:'очк.', dyNick:'Ник для таблицы', dySend:'В таблицу', dySent:n=>'Ты в таблице дня как '+n, dyLeft:'Турнир не доигран, попытка сгорела', dyNext:t=>'Новый драфт через '+t, dyH:'ч', dyM:'мин', dyRank:(r,t)=>'Твоё место: '+r+' из '+t, dyEmpty:'Сегодня ещё никто не сыграл. Будь первым.', dyHonest:'Результат присылает браузер игрока, сервер его не пересчитывает.'});
-Object.assign(I18N.en, {dyReveal:'Reveal', dyNickBad:"This name is not allowed on the board, pick another", dyTitleW:'Daily Draft', dyTag:'Every day', dyTitle:n=>'Daily Draft #'+n, dySub:'A random season every day: your own packs, but only players from that period. One try, the daily board ranks squad power.', dyRules:'squad · all regions · 12 games', dyPlayers:y=>'players of '+y, dyOnce:'One try: once you hit “Enter tournament” there is no replay.', dyPlay:'Play', dyBoard:'Daily leaderboard', dyShare:'Share', dyCopied:'Copied', dyPts:'pts', dyNick:'Name for the leaderboard', dySend:'Submit', dySent:n=>'You are on today’s board as '+n, dyLeft:'Tournament not finished, the try is used', dyNext:t=>'Next draft in '+t, dyH:'h', dyM:'min', dyRank:(r,t)=>'Your place: '+r+' of '+t, dyEmpty:'Nobody has played today yet. Be the first.', dyHonest:'Results are sent by the player’s browser; the server does not recompute them.'});
-Object.assign(I18N.fr, {dyReveal:'Révéler', dyNickBad:"Ce pseudo n’est pas accepté au classement, choisis-en un autre", dyTitleW:'Draft du jour', dyTag:'Chaque jour', dyTitle:n=>'Draft du jour #'+n, dySub:'Une saison au hasard chaque jour : tes propres packs, mais seulement des joueurs de cette période. Un seul essai, le classement du jour se fait à la force de la squad.', dyRules:'squad · toutes les régions · 12 parties', dyPlayers:y=>'joueurs de '+y, dyOnce:'Un seul essai : après « Entrer dans le tournoi », pas de revanche.', dyPlay:'Jouer', dyBoard:'Classement du jour', dyShare:'Partager', dyCopied:'Copié', dyPts:'pts', dyNick:'Pseudo pour le classement', dySend:'Envoyer', dySent:n=>'Tu es dans le classement du jour : '+n, dyLeft:'Tournoi non terminé, l’essai est perdu', dyNext:t=>'Prochain draft dans '+t, dyH:'h', dyM:'min', dyRank:(r,t)=>'Ta place : '+r+' sur '+t, dyEmpty:'Personne n’a encore joué aujourd’hui. Sois le premier.', dyHonest:'Le résultat est envoyé par le navigateur du joueur ; le serveur ne le recalcule pas.'});
-Object.assign(I18N.it, {dyReveal:'Rivela', dyNickBad:"Questo nome non è ammesso in classifica, scegline un altro", dyTitleW:'Draft del giorno', dyTag:'Ogni giorno', dyTitle:n=>'Draft del giorno #'+n, dySub:'Ogni giorno una stagione a caso: pack tuoi, ma solo giocatori di quel periodo. Un solo tentativo, la classifica del giorno va per forza della squad.', dyRules:'squad · tutte le regioni · 12 partite', dyPlayers:y=>'giocatori del '+y, dyOnce:'Un solo tentativo: dopo «Entra nel torneo» non si rigioca.', dyPlay:'Gioca', dyBoard:'Classifica del giorno', dyShare:'Condividi', dyCopied:'Copiato', dyPts:'pt', dyNick:'Nome per la classifica', dySend:'Invia', dySent:n=>'Sei nella classifica del giorno come '+n, dyLeft:'Torneo non finito, tentativo usato', dyNext:t=>'Nuovo draft tra '+t, dyH:'h', dyM:'min', dyRank:(r,t)=>'Il tuo posto: '+r+' su '+t, dyEmpty:'Oggi non ha ancora giocato nessuno. Sii il primo.', dyHonest:'Il risultato lo invia il browser del giocatore; il server non lo ricalcola.'});
-Object.assign(I18N.pt, {dyReveal:'Revelar', dyNickBad:"Esse nick não é aceito no ranking, escolha outro", dyTitleW:'Draft do dia', dyTag:'Todo dia', dyTitle:n=>'Draft do dia #'+n, dySub:'Uma temporada aleatória por dia: packs só seus, mas apenas jogadores daquele período. Uma tentativa, o ranking do dia é pela força do squad.', dyRules:'squad · todas as regiões · 12 partidas', dyPlayers:y=>'jogadores de '+y, dyOnce:'Uma tentativa só: depois de “Entrar no torneio” não dá para jogar de novo.', dyPlay:'Jogar', dyBoard:'Ranking do dia', dyShare:'Compartilhar', dyCopied:'Copiado', dyPts:'pts', dyNick:'Nick para o ranking', dySend:'Enviar', dySent:n=>'Você está no ranking do dia como '+n, dyLeft:'Torneio não terminado, tentativa usada', dyNext:t=>'Próximo draft em '+t, dyH:'h', dyM:'min', dyRank:(r,t)=>'Sua posição: '+r+' de '+t, dyEmpty:'Ninguém jogou hoje ainda. Seja o primeiro.', dyHonest:'O resultado é enviado pelo navegador do jogador; o servidor não o recalcula.'});
+Object.assign(I18N.ru, {dyNickBad:"Такой ник в таблицу не пускаем, выбери другой", dyTitleW:'Драфт дня', dyTag:'Каждый день', dyTitle:n=>'Драфт дня #'+n, dySub:'Каждый день случайный сезон: паки у всех свои, но только из игроков того периода. Одна попытка, таблица дня по силе состава.', dyRules:'сквад · все регионы · 12 игр', dyPlayers:y=>'игроки '+y, dyOnce:'Попытка одна: после «Выйти на турнир» переиграть нельзя.', dyPlay:'Играть', dyBoard:'Таблица дня', dyShare:'Поделиться', dyCopied:'Скопировано', dyPts:'очк.', dyNick:'Ник для таблицы', dySend:'В таблицу', dySent:n=>'Ты в таблице дня как '+n, dyLeft:'Турнир не доигран, попытка сгорела', dyNext:t=>'Новый драфт через '+t, dyH:'ч', dyM:'мин', dyRank:(r,t)=>'Твоё место: '+r+' из '+t, dyEmpty:'Сегодня ещё никто не сыграл. Будь первым.', dyHonest:'Результат присылает браузер игрока, сервер его не пересчитывает.'});
+Object.assign(I18N.en, {dyNickBad:"This name is not allowed on the board, pick another", dyTitleW:'Daily Draft', dyTag:'Every day', dyTitle:n=>'Daily Draft #'+n, dySub:'A random season every day: your own packs, but only players from that period. One try, the daily board ranks squad power.', dyRules:'squad · all regions · 12 games', dyPlayers:y=>'players of '+y, dyOnce:'One try: once you hit “Enter tournament” there is no replay.', dyPlay:'Play', dyBoard:'Daily leaderboard', dyShare:'Share', dyCopied:'Copied', dyPts:'pts', dyNick:'Name for the leaderboard', dySend:'Submit', dySent:n=>'You are on today’s board as '+n, dyLeft:'Tournament not finished, the try is used', dyNext:t=>'Next draft in '+t, dyH:'h', dyM:'min', dyRank:(r,t)=>'Your place: '+r+' of '+t, dyEmpty:'Nobody has played today yet. Be the first.', dyHonest:'Results are sent by the player’s browser; the server does not recompute them.'});
+Object.assign(I18N.fr, {dyNickBad:"Ce pseudo n’est pas accepté au classement, choisis-en un autre", dyTitleW:'Draft du jour', dyTag:'Chaque jour', dyTitle:n=>'Draft du jour #'+n, dySub:'Une saison au hasard chaque jour : tes propres packs, mais seulement des joueurs de cette période. Un seul essai, le classement du jour se fait à la force de la squad.', dyRules:'squad · toutes les régions · 12 parties', dyPlayers:y=>'joueurs de '+y, dyOnce:'Un seul essai : après « Entrer dans le tournoi », pas de revanche.', dyPlay:'Jouer', dyBoard:'Classement du jour', dyShare:'Partager', dyCopied:'Copié', dyPts:'pts', dyNick:'Pseudo pour le classement', dySend:'Envoyer', dySent:n=>'Tu es dans le classement du jour : '+n, dyLeft:'Tournoi non terminé, l’essai est perdu', dyNext:t=>'Prochain draft dans '+t, dyH:'h', dyM:'min', dyRank:(r,t)=>'Ta place : '+r+' sur '+t, dyEmpty:'Personne n’a encore joué aujourd’hui. Sois le premier.', dyHonest:'Le résultat est envoyé par le navigateur du joueur ; le serveur ne le recalcule pas.'});
+Object.assign(I18N.it, {dyNickBad:"Questo nome non è ammesso in classifica, scegline un altro", dyTitleW:'Draft del giorno', dyTag:'Ogni giorno', dyTitle:n=>'Draft del giorno #'+n, dySub:'Ogni giorno una stagione a caso: pack tuoi, ma solo giocatori di quel periodo. Un solo tentativo, la classifica del giorno va per forza della squad.', dyRules:'squad · tutte le regioni · 12 partite', dyPlayers:y=>'giocatori del '+y, dyOnce:'Un solo tentativo: dopo «Entra nel torneo» non si rigioca.', dyPlay:'Gioca', dyBoard:'Classifica del giorno', dyShare:'Condividi', dyCopied:'Copiato', dyPts:'pt', dyNick:'Nome per la classifica', dySend:'Invia', dySent:n=>'Sei nella classifica del giorno come '+n, dyLeft:'Torneo non finito, tentativo usato', dyNext:t=>'Nuovo draft tra '+t, dyH:'h', dyM:'min', dyRank:(r,t)=>'Il tuo posto: '+r+' su '+t, dyEmpty:'Oggi non ha ancora giocato nessuno. Sii il primo.', dyHonest:'Il risultato lo invia il browser del giocatore; il server non lo ricalcola.'});
+Object.assign(I18N.pt, {dyNickBad:"Esse nick não é aceito no ranking, escolha outro", dyTitleW:'Draft do dia', dyTag:'Todo dia', dyTitle:n=>'Draft do dia #'+n, dySub:'Uma temporada aleatória por dia: packs só seus, mas apenas jogadores daquele período. Uma tentativa, o ranking do dia é pela força do squad.', dyRules:'squad · todas as regiões · 12 partidas', dyPlayers:y=>'jogadores de '+y, dyOnce:'Uma tentativa só: depois de “Entrar no torneio” não dá para jogar de novo.', dyPlay:'Jogar', dyBoard:'Ranking do dia', dyShare:'Compartilhar', dyCopied:'Copiado', dyPts:'pts', dyNick:'Nick para o ranking', dySend:'Enviar', dySent:n=>'Você está no ranking do dia como '+n, dyLeft:'Torneio não terminado, tentativa usada', dyNext:t=>'Próximo draft em '+t, dyH:'h', dyM:'min', dyRank:(r,t)=>'Sua posição: '+r+' de '+t, dyEmpty:'Ninguém jogou hoje ainda. Seja o primeiro.', dyHonest:'O resultado é enviado pelo navegador do jogador; o servidor não o recalcula.'});
 /* Пресс-конференции (16.10): строки ленты — тексты в PRESS_TXT на открытом языке, ключ один (английский словарь лежит
    под каждым языком в L()). */
 Object.assign(I18N.en, {ccPostPress:(me,sit,ai,p,n,r,mate,g)=>ccPressPostText(me,sit,ai,p,n,r,mate,g),
@@ -103067,44 +103045,19 @@ function synPickHint(p){
   if(has(after, 'language') && !has(before, 'language')) why.push(W[1]);
   return '<div class="syn-hint" title="'+esc(L().synergyLabel||'')+'">🔗 +'+d+(why.length ? ' · '+esc(why.join(' · ')) : '')+'</div>';
 }
-/* ПАК ДНЯ ОТКРЫВАЕТСЯ (24.10, «сделал бы как-то интересней»): в драфте дня карточки приходят рубашкой вверх, и рубашка
-   уже горит цветом редкости — как выпадение игрока в паке. Тап по карточке или «Открыть» переворачивает её, «Взять» —
-   только у открытой. Открытые помнятся за паком (DY_OPEN.list — тот же массив currentCandidates), поэтому смена фильтра
-   региона их не закрывает, а реролл приносит новый закрытый пак. При reduced motion переворот без движения. */
-const DY_OPEN={list:null, keys:new Set()};
-function dyPackOpen(list, p){ if(DY_OPEN.list!==list){ DY_OPEN.list=list; DY_OPEN.keys=new Set(); } DY_OPEN.keys.add(hKey(p)); }
-function dyPackIsOpen(list, p){ return DY_OPEN.list===list && DY_OPEN.keys.has(hKey(p)); }
 function renderCandidates(list){
   const el=document.getElementById('candidates');
   el.innerHTML='';
   const filtered = activeRegion==='ALL' ? list : list.filter(p=>p.region===activeRegion);
   const shown = filtered.length>0 ? filtered : list;
-  const dy=typeof DAILY!=='undefined' && !!DAILY;
   shown.forEach(p=>{
     {
       const c=document.createElement('div');
       c.style.cssText='display:flex;flex-direction:column;gap:2px;';
       const rar=shownRarity(p);
       c.style.setProperty('--r-color', RARITY_COLOR[rar]);
-      if(!dy){
-        c.innerHTML=futCardHTML(p)+synPickHint(p)+`<button class="pick-btn" style="width:100%;">${L().pickBtn}</button>`;
-        c.querySelector('.pick-btn').onclick=()=>pick(p);
-        wireCardPeek(c, p);
-        el.appendChild(c);
-        return;
-      }
-      const T=L(), open=dyPackIsOpen(list, p);
-      c.className='dy-pk dy-'+rar+(open ? ' open' : '');
-      c.innerHTML='<div class="dy-flip">'+futCardHTML(p)+
-          '<button class="dy-back" type="button" aria-label="'+esc(T.dyReveal||'Reveal')+'"><span class="dy-shine"></span>'+
-            '<i>?</i><b>'+esc(T['ccRarity'+rar]||rar)+'</b></button></div>'+
-        '<div class="dy-hint">'+synPickHint(p)+'</div>'+
-        '<button class="pick-btn" style="width:100%;">'+esc(open ? T.pickBtn : (T.dyReveal||'Reveal'))+'</button>';
-      const btn=c.querySelector('.pick-btn');
-      const reveal=ev=>{ if(ev) ev.stopPropagation();
-        dyPackOpen(list, p); c.classList.add('open'); btn.textContent=T.pickBtn; btn.onclick=()=>pick(p); };
-      c.querySelector('.dy-back').onclick=reveal;
-      btn.onclick=open ? ()=>pick(p) : reveal;
+      c.innerHTML=futCardHTML(p)+synPickHint(p)+`<button class="pick-btn" style="width:100%;">${L().pickBtn}</button>`;
+      c.querySelector('.pick-btn').onclick=()=>pick(p);
       wireCardPeek(c, p);
       el.appendChild(c);
       return;
