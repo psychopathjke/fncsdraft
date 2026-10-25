@@ -115218,7 +115218,7 @@ function openCardPeek(pl){
   const gone=(inCareer && pl && typeof ccRetiredOf==='function') ? ccRetiredOf(pl.handle) : null;
   body.innerHTML=(gone ? '<div class="cc-regen-tag cc-retired-tag">'+esc(L().ccRetiredTag ? L().ccRetiredTag(2026+gone.y, gone.age, gone.by||'') : 'Retired '+(2026+gone.y))+'</div>' : '')+
     (pl && pl._regen ? '<div class="cc-regen-tag">'+esc((pl.regenOf ? L().ccRegenOf(pl.regenOf) : L().ccRegenNew)+(ccAgeNow(pl.handle)!=null ? ' · '+ccAgeNow(pl.handle) : ''))+'</div>' : '')+
-    playerStatSheetHTML(team, idx, pl && pl._regen ? ccRegenShown(pl) : pl)+(inCareer && typeof careerPlayerStatsHTML==='function' ? careerPlayerStatsHTML(pl.handle, pl.region) : '');
+    playerStatSheetHTML(team, idx, pl && pl._regen ? ccRegenShown(pl) : pl)+cardShareBtnHTML(pl)+(inCareer && typeof careerPlayerStatsHTML==='function' ? careerPlayerStatsHTML(pl.handle, pl.region) : '');
   document.getElementById('cardPeekModal').style.display='flex';
 }
 function closeCardPeek(){
@@ -154792,7 +154792,7 @@ async function ccGalaShare(season){
   catch(e){ console.warn('gala share', e); }
   ccGalaShareModal(blob, name);
 }
-function ccGalaShareModal(blob, name){
+function ccGalaShareModal(blob, name, title){
   const T=L();
   if(CC_GALA_FILE && CC_GALA_FILE.url) URL.revokeObjectURL(CC_GALA_FILE.url);
   CC_GALA_FILE=blob ? {blob:blob, name:name, url:URL.createObjectURL(blob), file:null} : null;
@@ -154803,7 +154803,7 @@ function ccGalaShareModal(blob, name){
   if(!el){ el=document.createElement('div'); el.id='ccGalaShareModal'; el.className='cc-gala-wrap cc-share-wrap';
     el.addEventListener('click', e=>{ if(e.target===el) ccGalaShareClose(); }); document.body.appendChild(el); }
   el.innerHTML=`<div class="cc-share" role="dialog" aria-modal="true">
-    <h4>${esc(T.ccGalaShare)}</h4>
+    <h4>${esc(title||T.ccGalaShare)}</h4>
     ${CC_GALA_FILE ? `<img class="cc-share-img" src="${CC_GALA_FILE.url}" alt="">` : `<div class="cc-gala-hint">${esc(T.ccShareFail||'Could not draw the picture')}</div>`}
     <div class="cc-share-cta">
       ${canSend ? `<button class="cstrip-btn cstrip-btn-go" onclick="ccGalaShareSend()">${esc(T.ccShareSend||'Send')}</button>` : ''}
@@ -154827,6 +154827,122 @@ function ccGalaShareCopy(){
   navigator.clipboard.write([new ClipboardItem({'image/png':f.blob})])
     .then(()=>{ if(n) n.textContent=L().ccShareCopied||'Copied'; })
     .catch(()=>{ if(n) n.textContent=L().ccShareSendFail||'Sharing did not open. Save the image instead'; });
+}
+/* Картинка карточки для X/Twitter (25.10, его «делай» на «кнопка "Скачать карточку", PNG 1200×675»):
+   про отмечают и ретвитят свою карточку, ссылка ведёт на /player/<ник>. Окно то же, что у итогов года
+   (ccGalaShareModal): отправить, сохранить, скопировать. */
+let CARD_SHARE_PL=null;
+function cardShareWord(k){
+  const W={btn:{ru:'Поделиться карточкой', fr:'Partager la carte', it:'Condividi la carta', pt:'Compartilhar carta', de:'Karte teilen', es:'Compartir carta', en:'Share card'},
+    earn:{ru:'Призовые 2026', fr:'Gains 2026', it:'Guadagni 2026', pt:'Ganhos 2026', de:'Preisgeld 2026', es:'Ganancias 2026', en:'2026 earnings'},
+    cards:{ru:'Карточек в игре', fr:'Cartes dans le jeu', it:'Carte nel gioco', pt:'Cartas no jogo', de:'Karten im Spiel', es:'Cartas en el juego', en:'Cards in the game'},
+    sub:{ru:'Симулятор карьеры и драфта FNCS', fr:'Simulateur de carrière et de draft FNCS', it:'Simulatore di carriera e draft FNCS', pt:'Simulador de carreira e draft FNCS', de:'FNCS Karriere- und Draft-Simulator', es:'Simulador de carrera y draft FNCS', en:'FNCS career & draft simulator'}};
+  return (W[k] && (W[k][LANG] || W[k].en)) || '';
+}
+function cardShareBtnHTML(pl){
+  if(!pl || !pl.handle) return '';
+  CARD_SHARE_PL=pl;
+  return '<div style="text-align:center;margin:12px 0 2px;"><button class="cstrip-btn cstrip-btn-go" type="button" onclick="cardShareOpen()">'+esc(cardShareWord('btn'))+'</button></div>';
+}
+// Адрес страницы игрока — по тем же правилам, что build-player-pages.js (≥3 карточки, фото или призовые 2026).
+function cardShareLink(pl){
+  const h=String(pl.handle||'').trim(), k=h.toLowerCase();
+  if(pl._regen || pl._photo || (typeof CAREER!=='undefined' && CAREER && CAREER.player && pl===careerCard())) return 'fncsdraft.com';
+  const n=PLAYERS_BASE.filter(p=>p && p.tier!=='qualifier' && hKey(p)===k).length;
+  const earn=(typeof HOME_EARN_LQ!=='undefined' ? HOME_EARN_LQ : []).some(r=>String(r.n).toLowerCase()===k);
+  const slug=h.normalize('NFKD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+  return (slug && (n>=3 || photoURLReal(pl) || earn)) ? 'fncsdraft.com/player/'+slug : 'fncsdraft.com';
+}
+function cardShareImg(src){
+  return new Promise(r=>{ if(!src) return r(null);
+    const im=new Image(); const t=setTimeout(()=>r(null), 4000);
+    im.onload=()=>{ clearTimeout(t); r(im); }; im.onerror=()=>{ clearTimeout(t); r(null); }; im.src=src; });
+}
+async function cardShareBlob(pl){
+  const W=1200, H=675, c=document.createElement('canvas'); c.width=W; c.height=H;
+  const x=c.getContext('2d'), font=(w, s)=>w+' '+s+'px Oswald, "Segoe UI", Roboto, sans-serif';
+  try{ if(document.fonts && document.fonts.ready) await document.fonts.ready; }catch(e){}
+  const shown=pl._regen && typeof ccRegenShown==='function' ? ccRegenShown(pl) : pl;
+  const a=attrsFor(shown), skin=CARD_SKIN[shownRarity(shown)]||CARD_SKIN.common;
+  const cols=(String(skin.bg).match(/#[0-9a-f]{6}/gi)||['#7c838c', '#3d424a']);
+  const [photo, flag]=await Promise.all([cardShareImg(photoURLReal(shown)), cardShareImg(FLAG_CODE[shown.nat] ? 'flags/w40/'+FLAG_CODE[shown.nat]+'.png' : null)]);
+  const g=x.createLinearGradient(0, 0, W, H); g.addColorStop(0, '#141a2e'); g.addColorStop(1, '#07090f');
+  x.fillStyle=g; x.fillRect(0, 0, W, H);
+  const glow=x.createRadialGradient(260, 340, 40, 260, 340, 420); glow.addColorStop(0, skin.glow+'55'); glow.addColorStop(1, skin.glow+'00');
+  x.fillStyle=glow; x.fillRect(0, 0, W, H);
+  // Карточка слева.
+  const cx=70, cy=58, cw=380, ch=560;
+  const cg=x.createLinearGradient(cx, cy, cx+cw, cy+ch);
+  cols.forEach((col, i)=>cg.addColorStop(cols.length>1 ? i/(cols.length-1) : 0, col));
+  roundRect(x, cx, cy, cw, ch, 26); x.fillStyle=cg; x.fill();
+  x.save(); roundRect(x, cx, cy, cw, ch, 26); x.clip();
+  if(photo){ const s=Math.max(330/photo.width, 400/photo.height), pw=photo.width*s, ph=photo.height*s, px=cx+cw-pw;
+    x.drawImage(photo, px, cy, pw, ph);
+    // Низ фото растворяется в карточке, а угол под рейтингом темнее, чтобы цифры читались на любом фото.
+    const fb=x.createLinearGradient(0, cy+ph-120, 0, cy+ph); fb.addColorStop(0, cols[cols.length-1]+'00'); fb.addColorStop(1, cols[cols.length-1]);
+    x.fillStyle=fb; x.fillRect(cx, cy+ph-120, cw, 120);
+    const fl=x.createRadialGradient(cx, cy, 30, cx, cy, 300); fl.addColorStop(0, 'rgba(0,0,0,.6)'); fl.addColorStop(1, 'rgba(0,0,0,0)');
+    x.fillStyle=fl; x.fillRect(cx, cy, cw, ch); }
+  else{ x.fillStyle='rgba(255,255,255,.18)'; x.font=font(800, 260); x.textAlign='right'; x.fillText(String(shown.handle||'?').trim().charAt(0).toUpperCase(), cx+cw-24, cy+300); x.textAlign='left'; }
+  const shade=x.createLinearGradient(0, cy+250, 0, cy+ch); shade.addColorStop(0, 'rgba(0,0,0,0)'); shade.addColorStop(.35, 'rgba(0,0,0,.55)'); shade.addColorStop(1, 'rgba(0,0,0,.8)');
+  x.fillStyle=shade; x.fillRect(cx, cy+250, cw, ch-250);
+  x.restore();
+  x.fillStyle='#fff'; x.font=font(800, 104); x.fillText(String(a.ovr), cx+26, cy+112);
+  x.font=font(700, 26); x.fillStyle='rgba(255,255,255,.85)'; x.fillText(String(shown.region||'').toUpperCase(), cx+30, cy+150);
+  if(flag) x.drawImage(flag, cx+30, cy+166, 48, 36);
+  let nm=String(shown.handle||'').trim(), ns=54; x.font=font(800, ns);
+  while(ns>28 && x.measureText(nm).width>cw-40){ ns-=2; x.font=font(800, ns); }
+  x.textAlign='center'; x.fillStyle='#fff'; x.fillText(nm, cx+cw/2, cy+392);
+  x.fillStyle='rgba(255,255,255,.35)'; x.fillRect(cx+40, cy+412, cw-80, 2);
+  ATTR_KEYS.forEach((k, i)=>{
+    const col=i%3, row=Math.floor(i/3), ax=cx+70+col*120, ay=cy+462+row*58;
+    x.fillStyle='#fff'; x.font=font(800, 34); x.fillText(String(a[k]!=null ? a[k] : ''), ax, ay);
+    x.fillStyle='rgba(255,255,255,.7)'; x.font=font(600, 18); x.fillText(String(L()[ATTR_LABEL[k]]||k).toUpperCase(), ax, ay+22);
+  });
+  x.textAlign='left';
+  // Справа: ник, турнир, цифры, адрес.
+  const rx=510, rw=W-rx-60;
+  x.fillStyle='#ffd23f'; x.fillRect(rx, 78, 10, 150);
+  x.font=font(700, 30); x.fillText('FNCS DRAFT', rx+30, 108);
+  let big=String(shown.handle||'').trim(), bs=84; x.font=font(800, bs);
+  while(bs>40 && x.measureText(big).width>rw-30){ bs-=4; x.font=font(800, bs); }
+  x.fillStyle='#f2f4fa'; x.fillText(big, rx+30, 214);
+  const ev=String(shown.event||'').trim().replace(/\s*[—–]\s*/g, ' · '), yr=String(shown.date||'').slice(0, 4);
+  const evFull=(shown.placement ? '#'+shown.placement+' · ' : '')+ev+(yr && ev.indexOf(yr)<0 ? ' '+yr : '');
+  let evl=evFull;
+  x.font=font(500, 28); x.fillStyle='#9aa3b8';
+  while(evl.length>8 && x.measureText(evl+'…').width>rw-30) evl=evl.slice(0, -1);
+  if(evl!==evFull) evl=evl.trim()+'…';
+  x.fillText(evl, rx+30, 266);
+  const rows=[], r=shown.real;
+  if(r){ const lb=realStageLabel(r);
+    if(r.rank!=null) rows.push([lb.rank, '#'+r.rank]);
+    if(r.pts!=null) rows.push([L().realPts, fmtNum(r.pts)]);
+    if(r.wins!=null) rows.push([L().realWins, String(r.wins)]); }
+  const earn=(typeof HOME_EARN_LQ!=='undefined' ? HOME_EARN_LQ : []).find(e=>String(e.n).toLowerCase()===String(shown.handle||'').trim().toLowerCase());
+  if(earn) rows.push([cardShareWord('earn'), '$'+fmtNum(earn.e)]);
+  const nCards=shown._regen ? 0 : PLAYERS_BASE.filter(p=>p && p.tier!=='qualifier' && hKey(p)===hKey(shown)).length;
+  if(nCards>1 && rows.length<4) rows.push([cardShareWord('cards'), String(nCards)]);
+  rows.slice(0, 4).forEach((row, i)=>{
+    const bx=rx+30+(i%2)*(rw/2), by=356+Math.floor(i/2)*112;
+    x.fillStyle='rgba(255,255,255,.06)'; x.fillRect(bx, by-52, rw/2-24, 96);
+    x.fillStyle='#f2f4fa'; x.font=font(800, 42); x.fillText(String(row[1]), bx+20, by);
+    x.fillStyle='#9aa3b8'; x.font=font(600, 20); x.fillText(String(row[0]).toUpperCase().slice(0, 30), bx+20, by+30);
+  });
+  x.fillStyle='#ffd23f'; x.font=font(700, 36); x.fillText(cardShareLink(shown), rx+30, H-104);
+  x.fillStyle='#5b6378'; x.font=font(600, 24); x.fillText(cardShareWord('sub'), rx+30, H-66);
+  const blob=await new Promise(res=>c.toBlob(res, 'image/png'));
+  if(!blob) throw new Error('toBlob gave nothing');
+  const slug=String(shown.handle||'card').trim().toLowerCase().replace(/[^a-z0-9]+/g, '-') || 'card';
+  return {blob, name:'fncsdraft-'+slug+'.png'};
+}
+async function cardShareOpen(){
+  const pl=CARD_SHARE_PL; if(!pl) return;
+  let blob=null, name='';
+  try{ ({blob, name}=await cardShareBlob(pl)); }
+  catch(e){ console.warn('card share', e); }
+  ccGalaShareModal(blob, name, cardShareWord('btn'));
+  const el=document.getElementById('ccGalaShareModal'); if(el) el.style.zIndex='240';   // поверх окна карточки (220)
 }
 function ccGalaShareClose(){
   const el=document.getElementById('ccGalaShareModal'); if(el) el.remove();
