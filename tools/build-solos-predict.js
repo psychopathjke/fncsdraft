@@ -77,44 +77,65 @@ function regionHTML(reg) {
       '<td class="n">' + r.ovr + '</td><td class="n' + (i < 3 ? ' p1' : '') + '">' + pct(r.win) + '</td><td class="n">' + pct(r.top10) + '</td><td class="n hide-s">' + r.avgPlace + '</td>' +
       '<td class="hide-s">' + (r.contest >= 0.5 ? (mates ? 'shared with ' + mates : 'shared drop') : 'solo drop') + '</td></tr>';
   }).join('');
-  return '<section class="reg" id="' + reg + '" data-reg="' + reg + '"><h2>' + esc(REGION[reg]) + (PRIZE[reg] ? ' <small>1st place ' + PRIZE[reg] + '</small>' : '') + '</h2>' +
+  return '<section class="glass reg" id="' + reg + '" data-reg="' + reg + '"><h2>' + esc(REGION[reg]) + (PRIZE[reg] ? ' <small>1st place ' + PRIZE[reg] + '</small>' : '') + '</h2>' +
     '<ul class="fav">' + cards + '</ul>' + mapHTML(reg, rows) +
     '<table class="tbl"><thead><tr><th>#</th><th>Player</th><th class="n">Rating</th><th class="n">Win</th><th class="n">Top 10</th><th class="n hide-s">Avg place</th><th class="hide-s">Drop</th></tr></thead><tbody>' + table + '</tbody></table></section>';
 }
 
-const CSS = `@font-face{font-family:'Oswald';font-style:normal;font-weight:200 700;font-display:swap;src:url(/fonts/oswald-latin.woff2) format('woff2');unicode-range:U+0000-00FF,U+2000-206F;}
-:root{--go:#ffdd00;--go-ink:#0b0f12;--bg:#0e1116;--panel:#161b22;--ink:#eef2f6;--dim:#8b98a8;--accent:#00c9a7;--line:#262e39;--hot:#ff4d5e;
-  --font-display:'Oswald','Arial Narrow',Impact,sans-serif;}
-*{box-sizing:border-box}html{-webkit-text-size-adjust:100%;background:#0b0e13}
-body{margin:0;background:linear-gradient(180deg,#0d141a 0%,#0e1116 45%,#0b0e13 100%) fixed;color:var(--ink);font:16px/1.6 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;}
-.wrap{max-width:900px;margin:0 auto;padding:22px 16px 72px}
-.crumb{font-family:var(--font-display);text-transform:uppercase;letter-spacing:.06em;font-size:13px;color:var(--dim);margin:0 0 22px}
-.crumb a{color:var(--accent);text-decoration:none}
-h1,h2{font-family:var(--font-display);font-weight:600;letter-spacing:.03em;line-height:1.1;margin:0}
-h1{font-size:clamp(32px,7vw,54px);text-transform:uppercase}
-h2{font-size:24px;text-transform:uppercase;letter-spacing:.05em;color:var(--accent);margin:26px 0 12px}
-h2 small{font-size:14px;color:var(--dim);letter-spacing:.04em;margin-left:8px}
-a{color:var(--accent)}
-.sub{color:var(--dim);margin:8px 0 0;font-size:15px}
-.tabs{display:flex;flex-wrap:wrap;gap:6px;margin:22px 0 0;padding:0;list-style:none}
-.tabs button{font:600 15px var(--font-display);letter-spacing:.06em;text-transform:uppercase;background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:8px 14px;cursor:pointer;min-height:40px}
-.tabs button[aria-selected="true"]{background:var(--go);color:var(--go-ink);border-color:var(--go)}
+// Дизайн главного экрана (26.10, его «предикты тож дизайн измени» — как /competitive): синее стекло, Fira XC, пилюли.
+const CSS = `@font-face{font-family:'Fira Sans Extra Condensed';font-style:normal;font-weight:700;font-display:swap;src:url(/fonts/fira-xc-700-latin.woff2) format('woff2');unicode-range:U+0000-00FF,U+2000-206F;}
+@font-face{font-family:'Fira Sans Extra Condensed';font-style:normal;font-weight:900;font-display:swap;src:url(/fonts/fira-xc-900-latin.woff2) format('woff2');unicode-range:U+0000-00FF,U+2000-206F;}
+:root{--go:#ffdd00;--go-ink:#0b0f12;--ink:#eaf0ff;--dim:#b7c3e6;--dimmer:#8fa0cc;--cyan:#9fe1ff;--lime:#d7ff3a;--hot:#ff4d5e;
+  --line:rgba(180,200,255,.2);--row:rgba(126,150,224,.18);--row-h:rgba(150,180,255,.3);--r:16px;
+  --font-display:'Fira Sans Extra Condensed','Oswald','Arial Narrow',Impact,sans-serif;}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;background:#0b1640}
+body{margin:0;color:var(--ink);font:15px/1.55 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;background-color:#0b1640;
+  background-image:radial-gradient(900px 520px at 12% -6%,rgba(60,100,220,.5),rgba(60,100,220,0)),radial-gradient(700px 480px at 92% 8%,rgba(150,180,255,.3),rgba(150,180,255,0)),
+  radial-gradient(1100px 700px at 50% 110%,rgba(30,50,140,.6),rgba(30,50,140,0));background-attachment:fixed;min-height:100vh}
+a{color:var(--cyan)}
+.wrap{max-width:1000px;margin:0 auto;padding:18px 20px 80px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;border-bottom:2px solid rgba(180,200,255,.15);padding-bottom:14px;margin-bottom:22px}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none;color:#fff}
+.logo b{font:italic 900 30px/1 var(--font-display);letter-spacing:-.01em;text-transform:uppercase}
+.logo i{font-style:inherit;background:linear-gradient(180deg,#e9fbff 0%,#9fe1ff 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.site-nav{display:flex;gap:4px}
+.nav-pill{font:600 15px var(--font-display);letter-spacing:.06em;text-transform:uppercase;color:#e6ecff;text-decoration:none;padding:8px 16px;border-radius:999px;white-space:nowrap}
+.nav-pill:hover{background:rgba(255,255,255,.12);outline:3px solid rgba(255,255,255,.92)}
+.nav-pill.on{background:#e4ebf7;color:#0b1a3a}
+h1,h2,h3{font-family:var(--font-display);font-weight:700;margin:0;line-height:1.08}
+.glass{position:relative;overflow:hidden;border-radius:var(--r);background:linear-gradient(160deg,#1d3b8c 0%,#13265f 46%,#0b1640 100%);box-shadow:inset 0 0 0 1px rgba(180,200,255,.18)}
+.glass::before{content:'';position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(112deg,transparent 0 150px,rgba(150,180,255,.05) 150px 220px)}
+.glass>*{position:relative}
+.head{padding:24px 28px 26px}
+.crumb{font:700 13px var(--font-display);text-transform:uppercase;letter-spacing:.08em;color:var(--dim);margin:0 0 10px}
+.crumb a{color:var(--cyan);text-decoration:none}
+.head h1{font-size:clamp(34px,6vw,58px);font-weight:900;font-style:italic;text-transform:uppercase;letter-spacing:-.01em}
+.sub{color:#c9d5f0;margin:10px 0 0;font-size:15px;max-width:760px}
+.tabs{display:flex;flex-wrap:wrap;gap:6px;margin:22px 0 14px;padding:0;list-style:none}
+.tabs button{font:700 15px var(--font-display);letter-spacing:.05em;color:#fff;background:rgba(150,180,255,.18);border:none;border-radius:999px;padding:8px 18px;cursor:pointer;min-height:40px}
+.tabs button:hover{background:rgba(150,180,255,.32)}
+.tabs button[aria-selected="true"]{background:#e4ebf7;color:#0b1a3a}
+.reg{padding:20px 22px 22px}
 .reg[hidden]{display:none}
+.reg h2{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;font-size:clamp(26px,4vw,36px);font-weight:900;font-style:italic;text-transform:uppercase;margin:0 0 14px}
+.reg h2 small{font:700 13px var(--font-display);font-style:normal;letter-spacing:.08em;color:#0b1a3a;background:var(--lime);border-radius:999px;padding:3px 10px}
 .fav{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:0 0 16px;padding:0;list-style:none}
-.fav li{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 14px;position:relative;min-width:0}
-.fav em{position:absolute;top:8px;right:12px;font:600 14px var(--font-display);color:var(--dim);font-style:normal}
-.fav b{display:block;font-family:var(--font-display);font-size:20px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fav li{background:var(--row);border-radius:12px;padding:12px 14px;position:relative;min-width:0}
+.fav li:first-child{box-shadow:inset 0 0 0 2px var(--go)}
+.fav em{position:absolute;top:8px;right:12px;font:900 18px var(--font-display);color:var(--dim);font-style:normal}
+.fav li:first-child em{color:var(--go)}
+.fav b{display:block;font:700 22px var(--font-display);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .fav b img{vertical-align:-1px;margin-right:6px}
-.fav strong{display:block;font:600 34px/1.1 var(--font-display);color:var(--go)}
+.fav strong{display:block;font:900 40px/1.05 var(--font-display);color:var(--go)}
 .fav span{font-size:13px;color:var(--dim)}
-.map{position:relative;border-radius:12px;overflow:hidden;border:1px solid var(--line);aspect-ratio:${P.mapAspect || '921/843'};background:#0b1640}
+.map{position:relative;border-radius:12px;overflow:hidden;box-shadow:inset 0 0 0 1px rgba(180,200,255,.2);aspect-ratio:${P.mapAspect || '921/843'};background:#0b1640;container-type:inline-size}
 .map img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:brightness(.72) saturate(.85)}
-.map{container-type:inline-size}
 .z{position:absolute;border:1.5px solid rgba(238,242,246,.55);border-radius:5px;background:rgba(11,15,18,.38);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;box-shadow:inset 0 0 0 1px rgba(0,0,0,.35)}
 .z.hot{border-color:var(--hot);background:rgba(255,77,94,.30);box-shadow:0 0 0 1px rgba(255,77,94,.35),0 0 12px rgba(255,77,94,.35)}
 .z.fav{border-color:var(--go);border-width:2px;box-shadow:0 0 10px rgba(255,221,0,.45)}
 .z.fav i{color:var(--go)}
-.z i{font-style:normal;font-family:var(--font-display);font-weight:600;letter-spacing:.02em;font-size:max(6px,1.3cqw);line-height:1.15;color:#fff;white-space:nowrap;pointer-events:none;position:relative;z-index:1;
+.z i{font-style:normal;font-family:var(--font-display);font-weight:700;letter-spacing:.02em;font-size:max(6px,1.3cqw);line-height:1.15;color:#fff;white-space:nowrap;pointer-events:none;position:relative;z-index:1;
   text-shadow:0 1px 2px rgba(0,0,0,.9),0 0 3px rgba(0,0,0,.8)}
 .z b{position:absolute;top:-1px;right:-1px;transform:translate(35%,-35%);min-width:max(12px,1.9cqw);height:max(12px,1.9cqw);padding:0 3px;border-radius:999px;background:var(--hot);color:#fff;font:700 max(7px,1.15cqw)/max(12px,1.9cqw) var(--font-display);text-align:center;z-index:2;box-shadow:0 1px 3px rgba(0,0,0,.6)}
 .z.fav b{background:var(--go);color:var(--go-ink)}
@@ -125,21 +146,26 @@ a{color:var(--accent)}
 .l-hot{border:1.5px solid var(--hot);background:rgba(255,77,94,.30)}
 .l-fav{border:2px solid var(--go)}
 .k.hot{color:var(--hot)}
-.tbl{width:100%;border-collapse:collapse;font-size:14px;margin-top:14px}
-.tbl th{text-align:left;font-family:var(--font-display);font-weight:500;text-transform:uppercase;letter-spacing:.05em;font-size:12px;color:var(--dim);padding:6px 8px;border-bottom:1px solid var(--line)}
+.tbl{width:100%;border-collapse:separate;border-spacing:0 4px;font-size:14px;margin-top:14px}
+.tbl th{text-align:left;font:700 12px var(--font-display);text-transform:uppercase;letter-spacing:.08em;color:var(--dimmer);padding:2px 10px}
 .tbl th.n,.tbl td.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
-.tbl td{padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+.tbl td{padding:8px 10px;background:var(--row);vertical-align:top}
+.tbl td:first-child{border-radius:10px 0 0 10px}.tbl td:last-child{border-radius:0 10px 10px 0}
+.tbl tr:hover td{background:var(--row-h)}
 .tbl td img{vertical-align:-2px;margin-right:6px}
-.rb{display:inline-block;min-width:16px;height:12px;line-height:12px;padding:0 2px;font:700 7px/12px sans-serif;text-align:center;border-radius:2px;background:#2a3442;color:#cfd8e3;margin-right:6px;vertical-align:1px}
+.rb{display:inline-block;min-width:16px;height:12px;line-height:12px;padding:0 2px;font:700 7px/12px sans-serif;text-align:center;border-radius:2px;background:#2a3f80;color:#dfe8fb;margin-right:6px;vertical-align:1px}
 .tbl small{display:block;color:var(--dim);font-size:12px}
-.p1{color:var(--go);font-weight:700}
-.cta{display:inline-block;background:var(--go);color:var(--go-ink);font-family:var(--font-display);font-weight:600;font-size:17px;letter-spacing:.06em;
-  text-transform:uppercase;line-height:1;padding:14px 24px 13px;text-decoration:none;transform:skewX(-8deg);margin:18px 0 4px}
-.cta span{display:inline-block;transform:skewX(8deg)}
+.p1{color:var(--go);font:700 16px var(--font-display)}
+.btn{display:inline-block;font:700 18px/1 var(--font-display);letter-spacing:.04em;text-transform:uppercase;text-decoration:none;border-radius:10px;padding:13px 28px 12px;margin-top:22px;
+  background:var(--go);color:var(--go-ink);box-shadow:0 4px 0 #b59c00,0 8px 18px rgba(0,0,0,.35)}
+.btn:hover{transform:translateY(-1px);filter:brightness(1.06)}
+.btn:active{transform:translateY(2px);box-shadow:0 2px 0 #b59c00,0 4px 10px rgba(0,0,0,.35)}
+.btn.alt{background:rgba(150,180,255,.22);color:#fff;box-shadow:none;margin-left:8px}
 .note{color:var(--dim);font-size:13px;margin:8px 0 0}
-.how{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-top:30px;font-size:14px;color:var(--dim)}
-.how b{color:var(--ink)}
-@media(max-width:560px){.tbl .hide-s{display:none}.fav{grid-template-columns:1fr}.fav li{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}.fav strong{font-size:26px}}`;
+.how{padding:16px 20px;margin-top:22px;font-size:14px;color:var(--dim)}
+.how b{color:#fff;font-family:var(--font-display);font-size:16px;letter-spacing:.04em;text-transform:uppercase}
+@media(max-width:620px){.wrap{padding:14px 14px 64px}.head{padding:20px 18px}.reg{padding:16px 14px 18px}.logo b{font-size:24px}.nav-pill{padding:7px 12px;font-size:14px}
+  .tbl .hide-s{display:none}.fav{grid-template-columns:1fr}.fav li{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}.fav strong{font-size:30px}.btn.alt{margin-left:0}}`;
 
 const REALS = REGS.filter(r => P.realRects && P.realRects[r]);
 const total = REGS.reduce((s, r) => s + P.regions[r].length, 0);
@@ -147,13 +173,15 @@ const top = REGS.map(r => P.regions[r][0] && P.regions[r][0].n + ' (' + r + ')')
 const title = 'FNCS Solos 2026 Finals prediction: win chances for every region | FNCS Draft';
 const desc = 'Who wins the FNCS Solos 2026 Finals? ' + total + ' finalists in ' + REGS.length + ' regions, each final simulated ' + P.runs +
   ' times with real drops and Epic scoring. Favourites: ' + top + '.';
-const body = `<p class="crumb"><a href="/">FNCS Draft</a> / <a href="/competitive">Competitive</a> / Predictions</p>
+const body = `<header class="top"><a class="logo" href="/"><img src="/logo.png" alt="" width="40" height="40"><b><i>FNCS</i> DRAFT</b></a>
+<nav class="site-nav" aria-label="site"><a class="nav-pill" href="/">Career</a><a class="nav-pill on" href="/competitive">Competitive</a></nav></header>
+<section class="glass head"><p class="crumb"><a href="/competitive">Competitive</a> / Predictions</p>
 <h1>FNCS Solos 2026 Finals prediction</h1>
-<p class="sub">${total} real finalists, ${REGS.length} regions. Every final played ${P.runs} times in the FNCS Draft engine: 12 games, Epic scoring (placement points + 4 per elimination), each player holding the same drop all final. Day 1 on 26 October, Day 2 on 27 October 2026, 18:00 UTC.</p>
+<p class="sub">${total} real finalists, ${REGS.length} regions. Every final played ${P.runs} times in the FNCS Draft engine: 12 games, Epic scoring (placement points + 4 per elimination), each player holding the same drop all final. Day 1 on 26 October, Day 2 on 27 October 2026, 18:00 UTC.</p></section>
 <div class="tabs" role="tablist">${REGS.map((r, i) => '<button role="tab" aria-selected="' + (i ? 'false' : 'true') + '" data-tab="' + r + '">' + r + '</button>').join('')}</div>
 ${REGS.map(regionHTML).join('\n')}
-<div class="how"><b>How it works.</b> Finalists come from Epic's own leaderboards (Fast Track top 8, both Heats top 35, Last Chance top 22). A player who is in FNCS Draft plays with their 2026 rating, built from the whole year: Majors, Global Championship, cups. A player who is not gets a rating from their qualifier results, scaled against the players we do know in the same region. ${REALS.length ? 'Drops in ' + REALS.join(', ') + ' are real, taken from the community drop map: each player lands on their own spot every game, and a shared spot is a fight at the landing. ' + (REALS.length < REGS.length ? 'Where no drop map is out yet, the game deals the drops: stronger players pick the richer spots first.' : '') : 'Drops are dealt by the game: stronger players pick the richer spots first, and a spot two players want becomes a fight at the landing.'} It is a simulation, not a promise.</div>
-<a class="cta" href="/"><span>Play the FNCS career</span></a>
+<div class="glass how"><b>How it works.</b> Finalists come from Epic's own leaderboards (Fast Track top 8, both Heats top 35, Last Chance top 22). A player who is in FNCS Draft plays with their 2026 rating, built from the whole year: Majors, Global Championship, cups. A player who is not gets a rating from their qualifier results, scaled against the players we do know in the same region. ${REALS.length ? 'Drops in ' + REALS.join(', ') + ' are real, taken from the community drop map: each player lands on their own spot every game, and a shared spot is a fight at the landing. ' + (REALS.length < REGS.length ? 'Where no drop map is out yet, the game deals the drops: stronger players pick the richer spots first.' : '') : 'Drops are dealt by the game: stronger players pick the richer spots first, and a spot two players want becomes a fight at the landing.'} It is a simulation, not a promise.</div>
+<a class="btn" href="/">Play the FNCS career</a><a class="btn alt" href="/competitive">Tournament calendar</a>
 <script>
 (function(){var b=document.querySelectorAll('.tabs button'),s=document.querySelectorAll('.reg');
 function show(r){b.forEach(function(x){x.setAttribute('aria-selected',x.getAttribute('data-tab')===r?'true':'false');});s.forEach(function(x){x.hidden=x.getAttribute('data-reg')!==r;});}
@@ -169,7 +197,7 @@ const html = `<!DOCTYPE html>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>${esc(title)}</title>
 <meta name="description" content="${esc(desc)}">
-<meta name="theme-color" content="#0e1116">
+<meta name="theme-color" content="#0b1640">
 <link rel="canonical" href="${URL}">
 <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
