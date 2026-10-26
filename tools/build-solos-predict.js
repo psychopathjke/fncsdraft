@@ -105,7 +105,7 @@ function regionHTML(reg) {
       '<td class="hide-s">' + (r.contest >= 0.5 ? (mates ? 'shared with ' + mates : 'shared drop') : 'solo drop') + '</td></tr>';
   }).join('');
   return '<section class="glass reg" id="' + reg + '" data-reg="' + reg + '"><h2>' + esc(REGION[reg]) + (PRIZE[reg] ? ' <small>1st place ' + PRIZE[reg] + '</small>' : '') + '</h2>' +
-    (A ? vsHTML(reg, rows, A) : '') + '<ul class="fav">' + cards + '</ul>' + mapHTML(reg, rows) +
+    (A ? vsHTML(reg, rows, A) : '') + '<p class="live"><a href="/competitive#calendar">Calendar</a>' + [1, 2].map(d => ' <button type="button" class="lvp" data-ev="epicgames_S42_FNCSSolo_Final_' + reg + '" data-w="S42_FNCSSolo_Final_Day' + d + '_' + reg + '">Day ' + d + ' standings</button>').join('') + '</p><div class="lvbox" hidden></div><ul class="fav">' + cards + '</ul>' + mapHTML(reg, rows) +
     '<table class="tbl"><thead><tr><th>#</th>' + (A ? '<th class="n">Result</th>' : '') + '<th>Player</th><th class="n">Rating</th><th class="n">Win</th><th class="n">Top 10</th><th class="n hide-s">Avg place</th><th class="hide-s">Drop</th></tr></thead><tbody>' + table + '</tbody></table></section>';
 }
 
@@ -192,6 +192,9 @@ h1,h2,h3{font-family:var(--font-display);font-weight:700;margin:0;line-height:1.
 .vs b{font-family:var(--font-display);letter-spacing:.05em;text-transform:uppercase;color:var(--lime)}
 .fav .act{display:block;font-style:normal;font:700 14px var(--font-display);color:var(--lime);margin-top:4px}
 .tbl td.act{color:var(--lime);font-weight:700}
+.live{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:0 0 12px;font-size:14px}
+.lvp{font:700 13px var(--font-display);letter-spacing:.06em;text-transform:uppercase;border:none;border-radius:999px;padding:7px 14px;background:var(--hot);color:#fff;cursor:pointer}
+.lvbox{margin:0 0 14px}
 .how{padding:16px 20px;margin-top:22px;font-size:14px;color:var(--dim)}
 .how b{color:#fff;font-family:var(--font-display);font-size:16px;letter-spacing:.04em;text-transform:uppercase}
 @media(max-width:620px){.wrap{padding:14px 14px 64px}.head{padding:20px 18px}.reg{padding:16px 14px 18px}.logo b{font-size:24px}.nav-pill{padding:7px 12px;font-size:14px}
@@ -213,6 +216,10 @@ ${REGS.map(regionHTML).join('\n')}
 <div class="glass how"><b>How it works.</b> Finalists come from Epic's own leaderboards (Fast Track top 8, both Heats top 35, Last Chance top 22). A player who is in FNCS Draft plays with their 2026 rating, built from the whole year: Majors, Global Championship, cups. A player who is not gets a rating from their qualifier results, scaled against the players we do know in the same region. ${REALS.length ? 'Drops in ' + REALS.join(', ') + ' are real, taken from the community drop map: each player lands on their own spot every game, and a shared spot is a fight at the landing. ' + (REALS.length < REGS.length ? 'Where no drop map is out yet, the game deals the drops: stronger players pick the richer spots first.' : '') : 'Drops are dealt by the game: stronger players pick the richer spots first, and a spot two players want becomes a fight at the landing.'} It is a simulation, not a promise.</div>
 <a class="btn" href="/">Play the FNCS career</a><a class="btn alt" href="/competitive">Tournament calendar</a>
 <script>
+document.addEventListener('click',function(e){var x=e.target.closest('.lvp'); if(!x) return; var box=x.closest('.reg').querySelector('.lvbox'), tm=box._t; clearInterval(tm);
+ function load(){fetch('/api/live?ev='+x.dataset.ev+'&w='+x.dataset.w).then(function(r){return r.json();}).then(function(j){var r=j.rows||[];
+  box.innerHTML=r.some(function(q){return q.pts>0;})?'<table class="tbl"><thead><tr><th>#</th><th>Player</th><th class="n">Points</th></tr></thead><tbody>'+r.slice(0,15).map(function(q){return '<tr><td class="n">'+q.rank+'</td><td>'+q.n.join(' + ').replace(/[<>&]/g,'')+'</td><td class="n">'+q.pts+'</td></tr>';}).join('')+'</tbody></table>':'<p class="note">No points yet for this day.</p>';}).catch(function(){box.innerHTML='<p class="note">Live table unavailable.</p>';});}
+ box.hidden=false; box.innerHTML='<p class="note">Loading…</p>'; load(); box._t=setInterval(load,60000);});
 (function(){var b=document.querySelectorAll('.tabs button'),s=document.querySelectorAll('.reg');
 function show(r){b.forEach(function(x){x.setAttribute('aria-selected',x.getAttribute('data-tab')===r?'true':'false');});s.forEach(function(x){x.hidden=x.getAttribute('data-reg')!==r;});}
 b.forEach(function(x){x.addEventListener('click',function(){show(x.getAttribute('data-tab'));try{history.replaceState(null,'','#'+x.getAttribute('data-tab'));}catch(e){}});});

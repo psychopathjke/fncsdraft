@@ -67,6 +67,38 @@ const heroHTML = finalsLive ? `<section class="glass hero">
   <a class="btn" href="/predict/fncs-solos-2026">Win chances and drop maps</a>
 </section>` : '';
 
+// ---- FNCS Solo Reload (ноябрь): финалистов до квалификаций нет, поэтому пока фавориты по Reload-окнам 2026 года в
+// регионе: призовые Reload (соло-окна в полную силу, дуо пополам), +$500 за каждую победу. Полный прогноз с картами
+// дропа — когда станут известны финалисты.
+const RL_FINAL = {}, RL_TRK = read('comp-calendar-tracker.json');
+(RL_TRK && RL_TRK.windows || []).forEach(w => { const m = /^S43_FNCSSoloReload_Final_(\w+)$/.exec(w.w); if (m && !RL_FINAL[m[1]]) RL_FINAL[m[1]] = w.begin; });
+const RL_Q = {};
+(RL_TRK && RL_TRK.windows || []).forEach(w => { const m = /^S43_FNCSSoloReloadQualifiers_Qual1Round1Day1_(\w+)$/.exec(w.w); if (m && !RL_Q[m[1]]) RL_Q[m[1]] = w.begin; });
+const RL = {};
+(RES && RES.windows || []).filter(w => /Reload/i.test(w.w) && !/Ranked/i.test(w.w) && REGS.includes(w.region)).forEach(w => (w.top || []).forEach(t => {
+  const share = (t.ids || []).length > 1 ? 0.5 : 1;
+  (t.ids || []).forEach((id, i) => {
+    const R = RL[w.region] || (RL[w.region] = new Map());
+    const p = R.get(id) || { n: t.n[i], c: t.c && t.c[i], usd: 0, wins: 0, ev: 0 };
+    p.usd += (t.usd || 0) / (t.ids.length || 1); p.wins += t.rank === 1 ? 1 : 0; p.ev++;
+    p.score = (p.score || 0) + share * ((t.usd || 0) / (t.ids.length || 1) + (t.rank === 1 ? 500 : 0));
+    if (t.c && t.c[i]) p.c = t.c[i];
+    R.set(id, p);
+  });
+}));
+const rlDay = d => d ? new Date(d).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', timeZone: 'UTC' }) : 'November';
+const reloadHTML = Object.keys(RL_FINAL).length ? `<section class="glass panel rlp"><span class="tag">Early favourites</span>
+<h2>FNCS Solos Reload 2026</h2>
+<p class="sub">Qualifiers from ${rlDay(RL_Q.EU)}, finals ${rlDay(RL_FINAL.EU)}. Until the finalists are known, this ranks players by their 2026 Reload results in each region: Reload prize money (solo events count in full, duos at half) plus $500 per win. The full prediction with drop maps follows once the finals line-up is set.</p>
+<div class="rlr">${REGS.map(r => `<button type="button" data-rr="${r}">${r}</button>`).join('')}</div>
+${REGS.map(r => {
+  const top = [...(RL[r] || new Map()).values()].sort((a, b) => b.score - a.score).slice(0, 10);
+  return `<div class="rlt" data-rr="${r}" hidden>` + (top.length ? '<table class="tbl"><thead><tr><th>#</th><th>Player</th><th class="n">Reload cups</th><th class="n">Wins</th><th class="n">Reload $</th></tr></thead><tbody>' +
+    top.map((p, i) => `<tr><td class="n">${i + 1}</td><td class="pl">${flag(p.c)}${esc(p.n)}</td><td class="n">${p.ev}</td><td class="n">${p.wins || ''}</td><td class="n p1">${money(Math.round(p.usd))}</td></tr>`).join('') +
+    '</tbody></table>' : '<p class="note">No Reload results in this region yet.</p>') + (RL_FINAL[r] ? `<p class="small">Finals: ${esc(RL_FINAL[r].slice(0, 16).replace('T', ' '))} UTC</p>` : '') + '</div>';
+}).join('')}
+</section>` : '';
+
 // Окна, которых у eucompetitive нет (26.10: их сезон S43 пуст, а FNCS Solos Reload с 3 ноября уже в календаре Tracker) —
 // из comp-calendar-tracker.json (imp_calendar страниц fortnitetracker.com/events, снят Playwright'ом). Конца окна Tracker
 // не даёт — три часа от начала, как у обычного капа.
@@ -133,7 +165,8 @@ const rankOf = (e, nm) => kind(e.w) === 'fncs' ? (/Final|Summit|Championship/.te
 const ART = {};
 const CALDATA = upcoming.map(e => {
   const nm = e.pretty ? e.name : pretty(e.name);
-  return [Math.round(Date.parse(e.begin) / 60000), Math.round(Date.parse(e.end || e.begin) / 60000), REGS.indexOf(regOf(e)), KINDS.indexOf(kind(e.w)), sid(series(nm)), sid(nm), sid(artOf(e)), rankOf(e, nm)];
+  return [Math.round(Date.parse(e.begin) / 60000), Math.round(Date.parse(e.end || e.begin) / 60000), REGS.indexOf(regOf(e)), KINDS.indexOf(kind(e.w)), sid(series(nm)), sid(nm), sid(artOf(e)), rankOf(e, nm),
+    (Math.abs(Date.parse(e.begin) - NOW) < 16 * 86400e3 && /^epicgames_/.test(e.ev || '')) ? sid(e.ev) : -1, (Math.abs(Date.parse(e.begin) - NOW) < 16 * 86400e3 && /^epicgames_/.test(e.ev || '')) ? sid(e.w) : -1];
 });
 
 // ---- Призы по месяцам и последние результаты
@@ -295,7 +328,6 @@ h1,h2,h3,h4{font-family:var(--font-display);font-weight:700;margin:0;line-height
 .regs button{font:700 15px var(--font-display);letter-spacing:.05em;color:#fff;background:rgba(150,180,255,.18);border:none;border-radius:999px;padding:8px 16px;cursor:pointer;min-height:38px}
 .regs button:hover{background:rgba(150,180,255,.32)}
 .regs button[aria-pressed="true"]{background:#e4ebf7;color:#0b1a3a}
-/* Календарь и призовые рядом (26.10, его «пусть рядом с календарем будет лидерборд с призовыми»); уже 1100 — друг под другом. */
 .grid{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(300px,1fr);gap:18px;align-items:start}
 @media(max-width:1100px){.grid{grid-template-columns:1fr}}
 #earn{table-layout:fixed}#earn th:nth-child(1){width:34px}#earn th:nth-child(3){width:52px}#earn th:nth-child(4){width:46px}#earn th:nth-child(5){width:86px}
@@ -422,6 +454,12 @@ h1,h2,h3,h4{font-family:var(--font-display);font-weight:700;margin:0;line-height
 .cmpin{display:flex;gap:8px;margin:10px 0}.cmpin input{flex:1;min-width:0;padding:10px 12px;border-radius:10px;border:none;background:rgba(255,255,255,.1);color:#fff;font:600 15px var(--font-display)}
 .lg2{font-size:13px;color:var(--dim)}.lg2 span{display:inline-block;width:12px;height:12px;border-radius:3px;margin:0 6px -1px 12px}
 @media(max-width:620px){.week .wkgrid{grid-template-columns:1fr}.pstats b{font-size:18px}}
+.lvb{margin-left:8px;font:700 11px var(--font-display);letter-spacing:.06em;text-transform:uppercase;border:none;border-radius:999px;padding:3px 9px;background:var(--hot);color:#fff;cursor:pointer;vertical-align:1px}
+.lvdot{color:var(--hot);font-family:var(--font-display);letter-spacing:.08em}
+.rlp{margin-top:16px;padding:20px 24px}.rlp h2{margin:6px 0}.rlr{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0}
+.rlr button{font:700 14px var(--font-display);letter-spacing:.05em;color:#fff;background:rgba(150,180,255,.18);border:none;border-radius:999px;padding:7px 14px;cursor:pointer}
+.rlr button[aria-pressed="true"]{background:#e4ebf7;color:#0b1a3a}
+#liveNow{margin-bottom:16px}#liveNow .lvregs{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 0}#liveNow .lvb{font-size:13px;padding:8px 14px;margin:0}
 [hidden]{display:none!important}`;
 
 const JS = `(function(){
@@ -430,7 +468,7 @@ var guess=/^Europe|^Africa/.test(tz)?'EU':/Sao_Paulo|Argentina|Santiago|Montevid
  /Los_Angeles|Vancouver|Phoenix|Denver|Tijuana/.test(tz)?'NAW':/^America/.test(tz)?'NAC':/Australia|Auckland|Pacific/.test(tz)?'OCE':
  /Dubai|Riyadh|Qatar|Kuwait|Bahrain|Baghdad|Tehran|Muscat|Amman|Beirut|Jerusalem/.test(tz)?'ME':/^Asia/.test(tz)?'ASIA':'EU';
 var saved=null; try{saved=localStorage.getItem('compReg');}catch(e){}
-var reg=saved||guess;
+var reg=/^(ALL|EU|NAC|NAW|BR|ASIA|ME|OCE)$/.test(saved||'')?saved:guess;
 var fmtT=new Intl.DateTimeFormat(undefined,{hour:'2-digit',minute:'2-digit'}), fmtD=new Intl.DateTimeFormat(undefined,{weekday:'long',day:'numeric',month:'long'});
 var fmtDT=new Intl.DateTimeFormat(undefined,{weekday:'short',day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
 var now=Date.now();
@@ -487,7 +525,8 @@ function renderDay(by){
  var p=pick.split('-'), list=(by[pick]||[]).slice().sort(function(a,b){return a[0]-b[0];}), el=document.getElementById('calDay');
  el.innerHTML='<h4>'+esc(fmtD.format(new Date(+p[0],p[1]-1,+p[2])))+'</h4>'+(list.length?'<ul>'+list.map(function(e){
   var t=e[0]*60000, end=e[1]*60000, cls='ev k-'+K[e[3]]+(t<=now&&now<end?' live':'')+(end<now?' done':'');
-  return '<li class="'+cls+'"><time>'+fmtT.format(t)+'</time><i>'+(e[2]>=0?R[e[2]]:'LAN')+'</i><span>'+esc(S[e[5]])+'</span><em>'+KL[e[3]]+'</em></li>';
+  var lv=e[8]>=0&&t<=now&&now<end+12*3600e3?'<button type="button" class="lvb" data-ev="'+S[e[8]]+'" data-w="'+S[e[9]]+'" data-t="'+esc(S[e[5]])+'" data-end="'+end+'">'+(now<end?'Live':'Standings')+'</button>':'';
+  return '<li class="'+cls+'"><time>'+fmtT.format(t)+'</time><i>'+(e[2]>=0?R[e[2]]:'LAN')+'</i><span>'+esc(S[e[5]])+lv+'</span><em>'+KL[e[3]]+'</em></li>';
  }).join('')+'</ul>':'<p class="note">No cups on this day'+(reg==='ALL'?'':' in '+reg)+'.</p>');
 }
 var bigKey='2026', bigAll=false;
@@ -512,7 +551,6 @@ function renderBig(){
   cc.slice(0,20).map(function(r,i){return '<tr><td class="n">'+(i+1)+'</td><td><img src="/flags/w20/'+r[0]+'.png" alt="" width="16"><b>'+(CN[r[0]]||r[0].toUpperCase())+'</b></td><td class="n">'+r[2]+'</td><td class="n p1">'+money(r[1])+'</td></tr>';}).join('')+'</tbody></table>':'<p class="note">No data.</p>';
 }
 var CN=(function(){try{var d=new Intl.DisplayNames(['en'],{type:'region'});return new Proxy({},{get:function(_,k){try{return d.of(String(k).toUpperCase());}catch(e){return null;}}});}catch(e){return {};}})();
-// ---- окно игрока и сравнение (comp-players.json грузится один раз)
 var PLS=null;
 function loadPL(cb){ if(PLS) return cb(PLS); fetch('/comp-players.json').then(function(r){return r.json();}).then(function(j){PLS=j; cb(j);}).catch(function(){cb([]);}); }
 function byId(id){ return (PLS||[]).find(function(p){return p.id===id;}); }
@@ -540,7 +578,25 @@ function openCompare(a,b){ loadPL(function(L){ var el=document.getElementById('p
    '<p class="lg2"><span class="b0"></span>'+esc(pa.n)+' <span class="b1"></span>'+esc(pb.n)+'</p>'; }
  document.getElementById('cmpA').oninput=draw; document.getElementById('cmpB').oninput=draw; draw();
  document.getElementById('pm').hidden=false; }); }
-document.querySelector('#pm .mx').onclick=function(){document.getElementById('pm').hidden=true;};
+var liveTimer=null;
+function openLive(ev,w,title,end){ var el=document.getElementById('pmB'); clearInterval(liveTimer);
+ function load(){ fetch('/api/live?ev='+encodeURIComponent(ev)+'&w='+encodeURIComponent(w)).then(function(r){return r.json();}).then(function(j){
+  var rows=j.rows||[], liveNow=Date.now()<end;
+  el.innerHTML='<h3>'+esc(title)+'</h3><p class="small">'+(liveNow?'<b class="lvdot">LIVE</b> refreshes every minute':'Final standings')+(j.synced?' · synced '+new Date(j.synced).toLocaleTimeString():'')+'</p>'+
+   (rows.length&&rows.some(function(r){return r.pts>0;})?'<table class="tbl"><thead><tr><th>#</th><th>Player</th><th class="n">Games</th><th class="n">Points</th></tr></thead><tbody>'+rows.map(function(r){return '<tr><td class="n">'+r.rank+'</td><td class="pl">'+r.n.map(function(n,i){return (r.c[i]?'<img src="/flags/w20/'+r.c[i]+'.png" alt="" width="16">':'')+esc(n);}).join(' + ')+'</td><td class="n">'+(r.g||'')+'</td><td class="n p1">'+r.pts+'</td></tr>';}).join('')+'</tbody></table>':'<p class="note">No points yet. The table fills in once the first game ends.</p>');
+  if(!liveNow) clearInterval(liveTimer); }).catch(function(){ el.innerHTML='<h3>'+esc(title)+'</h3><p class="note">Live table is unavailable right now.</p>'; }); }
+ el.innerHTML='<h3>'+esc(title)+'</h3><p class="note">Loading…</p>'; document.getElementById('pm').hidden=false; load();
+ if(Date.now()<end) liveTimer=setInterval(function(){ if(document.getElementById('pm').hidden){clearInterval(liveTimer);return;} load(); },60000); }
+document.addEventListener('click',function(e){ var b=e.target.closest('.lvb'); if(b){ e.preventDefault(); openLive(b.dataset.ev,b.dataset.w,b.dataset.t,+b.dataset.end); } });
+(function(){ var box=document.getElementById('liveNow'); if(!box) return;
+ var L=D.filter(function(e){return e[8]>=0&&K[e[3]]==='fncs'&&e[0]*60000-30*60000<=now&&now<e[1]*60000+6*3600e3;});
+ if(!L.length) return;
+ box.innerHTML='<h3><b class="lvdot">LIVE</b> FNCS now</h3><div class="lvregs">'+L.map(function(e){return '<button type="button" class="lvb" data-ev="'+S[e[8]]+'" data-w="'+S[e[9]]+'" data-t="'+esc(S[e[5]])+' · '+(e[2]>=0?R[e[2]]:'LAN')+'" data-end="'+e[1]*60000+'">'+(e[2]>=0?R[e[2]]:'LAN')+' · '+esc(S[e[5]].replace(/^.*·\s*/,''))+'</button>';}).join('')+'</div>';
+ box.hidden=false; })();
+function rlShow(r){ document.querySelectorAll('.rlr button').forEach(function(b){b.setAttribute('aria-pressed',b.dataset.rr===r?'true':'false');}); document.querySelectorAll('.rlt').forEach(function(t){t.hidden=t.dataset.rr!==r;}); }
+document.querySelectorAll('.rlr button').forEach(function(b){b.onclick=function(){rlShow(b.dataset.rr);};});
+if(document.querySelector('.rlr')) rlShow(reg==='ALL'?'EU':reg);
+document.querySelector('#pm .mx').onclick=function(){document.getElementById('pm').hidden=true; clearInterval(liveTimer);};
 document.getElementById('pm').onclick=function(e){ if(e.target.id==='pm') e.target.hidden=true; };
 document.getElementById('cmpBtn').onclick=function(){ openCompare(); };
 document.addEventListener('click',function(e){ var t=e.target.closest('[data-pid]'); if(t){ e.preventDefault(); openPlayer(t.dataset.pid); } });
@@ -554,12 +610,12 @@ function showTab(t){ tab=t;
 document.querySelectorAll('.subnav button').forEach(function(b){b.onclick=function(){showTab(b.dataset.tab);};});
 showTab(tab);
 function apply(){
- document.querySelectorAll('.regs button').forEach(function(b){b.setAttribute('aria-pressed',b.dataset.r===reg?'true':'false');});
+ document.querySelectorAll('.regs button[data-r]').forEach(function(b){b.setAttribute('aria-pressed',b.dataset.r===reg?'true':'false');});
  document.querySelectorAll('.res').forEach(function(x){x.hidden=reg!=='ALL'&&x.dataset.reg!==reg&&x.dataset.reg!=='LAN';});
  renderCal(); renderBig();
  try{localStorage.setItem('compReg',reg);}catch(e){}
 }
-document.querySelectorAll('.regs button').forEach(function(b){b.addEventListener('click',function(){reg=b.dataset.r;apply();});});
+document.querySelectorAll('.regs button[data-r]').forEach(function(b){b.addEventListener('click',function(){reg=b.dataset.r;apply();});});
 
 apply();
 })();`;
@@ -596,9 +652,9 @@ ${regButtons}
   WEEK.top.map(t => '<p>' + flag(t[1]) + '<b>' + esc(t[0]) + '</b> <span class="p1">' + money(t[2]) + '</span></p>').join('') + '</div><div><i>Biggest wins</i>' +
   WEEK.wins.map(t => '<p><b>' + esc(t[0]) + '</b> won ' + esc(t[1]) + ' <span class="p1">' + money(t[2]) + '</span></p>').join('') + '</div></div></section>' : ''}
 <div class="results">${resHTML || '<p class="note">No results yet.</p>'}</div></div>
-<div class="tabp" data-tab="predictions" hidden>${heroHTML}
+<div class="tabp" data-tab="predictions" hidden><section class="glass panel" id="liveNow" hidden></section>${heroHTML}
 <a class="glass predcard" href="/predict/fncs-solos-2026"><span class="tag">Prediction</span><b>FNCS Solos 2026 Finals</b>
-<span>Win chances for all 698 finalists, real drop maps for every region, 500 simulated finals each.</span></a></div>
+<span>Win chances for all 698 finalists, real drop maps for every region, 500 simulated finals each.</span></a>${reloadHTML}</div>
 <div class="modal" id="pm" hidden><div class="glass mbox"><button type="button" class="mx" aria-label="Close">×</button><div id="pmB"></div></div></div>
 <div class="foot"><p class="note">Calendar and leaderboards: Epic Games via <a href="https://eucompetitive.com" rel="noopener">eucompetitive.com</a> and Fortnite Tracker. Payout tables: Epic, via Fortnite Tracker.</p>
 <a class="btn" href="/">Play the FNCS career</a></div>

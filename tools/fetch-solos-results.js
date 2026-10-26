@@ -17,7 +17,7 @@ async function get(url) {
     for (const day of [2, 1]) {
       const w = 'S42_FNCSSolo_Final_Day' + day + '_' + reg;
       const j = await get(API + '?eventId=epicgames_S42_FNCSSolo_Final_' + reg + '&eventWindowId=' + w);
-      const e = j && j.entries || [];
+      const e = (j && j.entries || []).filter(x => x.eventWindowId === w); // посев до старта — строки чужих окон
       // До начала дня таблица уже есть — список участников с нулями; это не итог.
       if (!e.length || !e.some(x => x.pointsEarned > 0)) continue;
       out[reg] = { day, window: w, fetched: new Date().toISOString(), synced: j.syncedAt || null,
