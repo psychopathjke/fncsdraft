@@ -1,6 +1,6 @@
 /* Кирки в карьере (Notion «19.10», скрины 37–38).
    1) Дефолты в шкафчике у всех: Default Pickaxe и Recruit; Recruit Главы 2 — только с её начала.
-   2) Победа в FNCS даёт кирку чемпиона своего сезона (ccFncsAxeFor) и надевает её; строка в шкафчике своя.
+   2) Победа в FNCS даёт кирку чемпиона своего сезона (ccFncsAxeFor) в шкафчик и Axe of Champions 3.0 в руки (26.10.26).
    3) Сейв со старой строкой «Axe of Champions» перечитывается молча, кирка своего сезона в шкафчике, баннеры не двоятся.
    4) В матче слот кирки — надетая кирка, без неё — дефолтная.
    Запуск: node tools/check-career-fncs-axe.js */
@@ -39,11 +39,13 @@ cr.log.push({season:1, day:'2026-04-26', kind:'major', stage:'final', place:1, o
 careerRenderHub('centre');
 const want=ccFncsAxeFor('2026-04-26'); notes.won=want.name;
 check('кирка в шкафчике', CAREER.fnOwn[want.id] && CAREER.fnOwn[want.id].t==='p');
-check('кирка надета', CAREER.fnEq.p===want.id, CAREER.fnEq.p);
+check('кирка сезона не в руках', CAREER.fnEq.p!==want.id, CAREER.fnEq.p);
+check('Axe of Champions 3.0 в шкафчике и в руках', CAREER.fnOwn.Pickaxe_FNCSChampion && CAREER.fnEq.p==='Pickaxe_FNCSChampion', CAREER.fnEq.p);
+check('строка 3.0 в шкафчике', cr.locker.some(x=>x.id==='axe|Pickaxe_FNCSChampion'));
 check('строка шкафчика своя', cr.locker.some(x=>x.id==='axe|'+want.id && x.name===want.name));
 check('пост о награде', (cr.news||[]).some(n=>n.k==='ccNewsLocker'));
 k=kitAxe(); notes.kitWon=k;
-check('в матче — кирка из шкафчика', k.indexOf(want.name)===0 && k.toLowerCase().indexOf(want.id.toLowerCase())>=0, k);
+check('в матче — Axe of Champions 3.0', k.indexOf('The Axe of Champions 3.0')===0, k);
 // Victory Umbrella: первая победа сезона — зонтик сезона, один на сезон.
 cr.log.push({season:1, day:'2026-05-10', kind:'victory', place:3, of:100, div:1, pts:200, wins:1});
 cr.log.push({season:1, day:'2026-05-11', kind:'victory', place:1, of:100, div:1, pts:250, wins:2});
@@ -62,7 +64,8 @@ careerRenderHub('centre');
 const L2=CAREER.career.locker;
 notes.migrated=L2.map(x=>x.id+' x'+x.x);
 check('старая строка снята', !L2.some(x=>x.id==='axe'));
-check('кирки сезонов выданы', L2.filter(x=>x.kind==='pickaxe').length===2, L2.filter(x=>x.kind==='pickaxe').length);
+// Глобалы 30.08.2025 — сезон, чья кирка и есть 3.0: одна строка 3.0 на две победы, плюс кирка сезона Мейджора 2026.
+check('кирки выданы', L2.filter(x=>x.kind==='pickaxe').length===2 && (L2.find(x=>x.id==='axe|Pickaxe_FNCSChampion')||{}).x===2, notes.migrated.join(','));
 check('баннер не задвоен', (L2.find(x=>x.id==='gf1')||{x:0}).x===1, JSON.stringify(L2.find(x=>x.id==='gf1')));
 check('перечитано молча', !(CAREER.career.news||[]).some(n=>n.k==='ccNewsLocker'));
 CAREER_RUN=false;
