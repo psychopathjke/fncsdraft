@@ -901,6 +901,19 @@ const SECTIONS=[
     MGR_SUB.transfers='market'; mgrRenderHub('transfers'); const st=getComputedStyle(document.querySelector('#mgBody select.mgs-move')||document.body);
     check('списки в тёмной теме', /dark/.test(st.colorScheme||'') , st.colorScheme);
   `},
+  // Notion 26.10.26: «all player They are in a trio, while the mode is for duos, so none of my players are actually playing».
+  {name:'трио в дуо-сезоне', code:String.raw`
+    MGR_NEW_YEAR=2024; MGR_NEW_REGION='EU'; MGR_NEW_SIDE='real'; MGR_NEW_SORT='stars'; mgrOpenNew(2024); { const k=MGR_NEW_LIST.findIndex(c=>c.n===3); mgrTake(k>=0 ? k : 0); }
+    const own=mgrAll(), size=careerSquadSize();
+    check('трио в дуо-сезоне: год дуо и три своих игрока', size===2 && own.length>=3, size+' / '+own.length);
+    MGR.teams=[{id:'t1', cards:own.slice(0,3)}]; MGR.bench=own.slice(3);
+    check('трио в дуо-сезоне: до правки ни одного дуо', !MGR.teams.some(x=>mgrTeamSize(x)===size));
+    check('трио в дуо-сезоне: дуо собрано без окна', mgrFillShort(size)===true && MGR.teams.some(x=>mgrTeamSize(x)===size), JSON.stringify(MGR.teams.map(t=>t.cards)));
+    const t=MGR.teams.find(x=>mgrTeamSize(x)===size), ovr=h=>ccCardOvr(mgrCard(h))||0;
+    const third=own.slice(0,3).find(h=>t.cards.indexOf(h)<0);
+    check('трио в дуо-сезоне: в запас ушёл слабейший', third && t.cards.every(h=>ovr(h)>=ovr(third)) && (MGR.bench||[]).indexOf(third)>=0, third);
+    check('трио в дуо-сезоне: игроки не потерялись', mgrAll().length===own.length, mgrAll().length+' vs '+own.length);
+  `},
   {name:'неполный состав', code:String.raw`
     MGR_NEW_YEAR=2024; MGR_NEW_REGION='EU'; MGR_NEW_SIDE='real'; MGR_NEW_SORT='stars'; mgrOpenNew(2024); { const k=MGR_NEW_LIST.findIndex(c=>c.n===3); mgrTake(k>=0 ? k : 0); }   // одна команда + запасной: не зависит от того, кто первый в списке
     { const own=mgrAll(); MGR.teams=[{id:'t1', cards:own.slice(0,2)}]; MGR.bench=own.slice(2); }   // раскладка «состав + запасной» — механика запаса
