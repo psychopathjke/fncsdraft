@@ -136,7 +136,7 @@ if (LQY) Object.entries(LQY).forEach(([page, L]) => {
   // Весь список A/B-Tier (26.10, пункт 8): и без мест — будущий (Coupe de France) и клубный (Saudi eLeague) — днём в календаре.
   const w = 'LQ_' + page.replace(/[^A-Za-z0-9]+/g, '_');
   if (CAL.events.some(e => e.w === w)) return;
-  CAL.events.push({ w, ev: 'liquipedia', name: L.name + (L.city && !/^(Online|Europe|North America|Middle East|World|Brazil|Asia|Oceania)$/.test(L.city) ? ' · ' + L.city.split(/s{2,}/)[0] : ''), region: 'LAN',
+  CAL.events.push({ w, ev: 'liquipedia', name: L.name + (L.city && !/^(Online|Europe|North America|Middle East|World|Brazil|Asia|Oceania)$/.test(L.city) ? ' · ' + L.city.split(/\s{2,}/)[0] : ''), region: 'LAN',
     begin: L.day + 'T12:00:00Z', end: (L.end || L.day) + 'T20:00:00Z', img: null, status: 'liquipedia', pretty: true });
 });
 

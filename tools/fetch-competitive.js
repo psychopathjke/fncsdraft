@@ -142,7 +142,7 @@ function payout(table, rank, pts) {
       const w = 'LQ_' + page.replace(/[^A-Za-z0-9]+/g, '_');
       const i = results.findIndex(r => r.w === w); if (i >= 0) results.splice(i, 1);
       if (!L.top || !L.top.length) return;
-      results.push({ w, ev: 'liquipedia:' + page, name: L.name + (L.city && !/^(Online|Europe|North America|Middle East|World|Brazil|Asia|Oceania)$/.test(L.city) ? ' · ' + L.city.split(/s{2,}/)[0] : ''), pretty: true, region: 'LAN',
+      results.push({ w, ev: 'liquipedia:' + page, name: L.name + (L.city && !/^(Online|Europe|North America|Middle East|World|Brazil|Asia|Oceania)$/.test(L.city) ? ' · ' + L.city.split(/\s{2,}/)[0] : ''), pretty: true, region: 'LAN',
         begin: L.day + 'T12:00:00Z', top: L.top.map(x => ({ rank: x.rank, pts: 0, usd: x.usd,
           ids: x.names.map(n => idOf.get(String(n).toLowerCase().trim()) || 'lq:' + n), n: x.names, epic: x.names, c: x.c || x.names.map(() => null) })) });
     });
