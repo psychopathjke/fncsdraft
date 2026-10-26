@@ -1369,6 +1369,8 @@
     var pendingEvents = [];
     var timeline = [];
     var currentZone = 1;
+    // Круг этого тика — куда Reload высаживает возрождённых (см. onDeath).
+    var liveCircle = null;
     // The surge threshold of the phase being played, for the frame. Infinity
     // while surge is off (zone 1), and a frame carries 0 for that.
     var currentSurgeAt = Infinity;
@@ -1408,6 +1410,16 @@
       if(opts.respawnUntilZone && currentZone < opts.respawnUntilZone){
         sq.alive = true; sq.hp = 100; sq.shield = 100; sq.deathCause = null; sq.busy = true;
         sq.respawns = (sq.respawns || 0) + 1;
+        /* И ВОЗРОЖДАЕТСЯ С НЕБА, А НЕ НА МЕСТЕ СМЕРТИ (Notion 26.10.26, Pro-Am Dallas: «очень много киллов, хотя умер
+           в топ-20»). Отряд вставал там же, с полным HP, рядом с убийцей, и две команды на одной точке фармили друг
+           друга до девятого круга. В игре убитый прыгает заново с неба в другое место круга — здесь точка выбирается
+           тем же правилом, что и ротация (chooseTarget: внутри круга, где пусто). Замер вечера Pro-Am с настройкой
+           Reload (tools/check-career-proam-elims.js): без переноса 65–67 элимов на лобби и 2.9–4.0 у пяти последних,
+           с ним 54–57 и 1.6–2.6 — середина реплеев Reload Elite Series (51–68). */
+        if(liveCircle){
+          var spot = chooseTarget(sq, liveCircle, squads, rng);
+          if(spot){ sq.x = spot.x; sq.y = spot.y; sq.target = chooseTarget(sq, liveCircle, squads, rng) || spot; }
+        }
         return;
       }
       sq.zoneReached = currentZone;
@@ -1578,6 +1590,7 @@
       var t;
       for(t = 0; t < phase.waitSec; t += TICK_SEC){
         inDrop = phase.zone === 1 && t < DROP_SEC;
+        liveCircle = from;
         holdLate(squads, t);
         stepMovement(squads, TICK_SEC, from);
         applyHealing(squads, from, TICK_SEC);
@@ -1596,6 +1609,7 @@
           cy: from.cy + (to.cy - from.cy) * k,
           radius: from.radius + (to.radius - from.radius) * k
         };
+        liveCircle = cur;
         stepMovement(squads, TICK_SEC, cur);
         applyHealing(squads, cur, TICK_SEC);
         applyStorm(squads, cur, phase.dps, TICK_SEC, onDeath);
