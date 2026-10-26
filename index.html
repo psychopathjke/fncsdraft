@@ -4295,6 +4295,8 @@
   .cc-fn-hero-l em{font-style:italic;text-transform:uppercase;font-size:13px;color:rgba(255,255,255,.75);}
   .cc-fn-hero-its{display:flex;gap:6px;flex-wrap:wrap;}
   .cc-fn-hero-its img{width:46px;height:46px;border-radius:8px;background:rgba(255,255,255,.14);object-fit:contain;}
+  .cc-fn-pack-its{display:flex;gap:4px;flex-wrap:wrap;margin:4px 0;}
+  .cc-fn-pack-its img{width:30px;height:30px;border-radius:6px;background:rgba(255,255,255,.14);object-fit:contain;}
   .cc-fn-hero-buy{display:flex;align-items:center;gap:8px;margin-top:6px;font:800 20px var(--font-display);}
   .cc-fn-hero-buy button{padding:8px 18px;border:0;border-radius:999px;background:#f5f000;color:#111;font:800 13px var(--font-display);text-transform:uppercase;cursor:pointer;}
   @media (max-width:560px){ .cc-fn-hero-l{max-width:none;padding:16px;} .cc-fn-hero-art{opacity:.45;max-width:80%;} .cc-fn-hero-l b{font-size:24px;} }
@@ -23343,7 +23345,7 @@ ccOrgGoalPickHint:'Meta da temporada: escolha uma antes do fim da temporada. Cum
 }));
 let CC_I18N_V={de:'07557185', es:'37abd7b0'};   // ==== CC_I18N_V (tools/build-i18n.js) ====
 // Версия fn-shop.js (магазин Fortnite по дням, tools/build-fn-shop.js) — для ?v= ленивой загрузки.
-let CC_FN_SHOP_V='bebf56cb';
+let CC_FN_SHOP_V='be7040d6';
 const CC_LANG_WAIT={};
 function ccLangLoad(lang, done){
   if(!CC_LANG_FILES[lang] || (typeof I18N!=='undefined' && I18N[lang])){ done && done(); return; }
@@ -151535,6 +151537,50 @@ function ccFnBuyBundle(k){
   ccFnPeekClose();
   careerSave(); careerRenderHub('items');
 }
+/* ПАКИ ЗА ДЕНЬГИ (Notion «26.10.26», тестер: «add packs for money example: polar legends pack, agency renegades pack»;
+   его «паки за деньги пусть будут, какие были в игре»). Настоящие паки Epic (Starter, Legends, Quest Packs) — вики,
+   tools/fetch-fn-packs.js + build-fn-packs.js → CC_FN_SHOP.packs: [имя, день выхода, цена $, V-Bucks внутри, предметы].
+   Покупаются с баланса карьеры, как V-Bucks: цена США той даты × множитель региона (CC_VB_REGION). Сколько пак стоял
+   в магазине, вики не пишет — у нас CC_FN_PACK_DAYS дней с выхода (наша мерка). Уже купленные предметы пака не дешевят:
+   у Epic пак за деньги продаётся одной ценой. */
+const CC_FN_PACK_DAYS=30;
+let CC_FN_PACK_TODAY=[];
+function ccFnPackT(){
+  return ({ru:{h:'Паки', n:n=>'предметов: '+n, own:'Куплен', note:'Паки Epic за деньги: с баланса карьеры, цена своего региона. Каждый пак стоит в магазине 30 дней с выхода.'},
+    fr:{h:'Packs', n:n=>n+' objets', own:'Acheté', note:'Packs Epic en argent réel : payés avec le solde de la carrière, au prix de ta région. Chaque pack reste 30 jours en boutique.'},
+    it:{h:'Pacchetti', n:n=>n+' oggetti', own:'Acquistato', note:'Pacchetti Epic a pagamento: si pagano col saldo della carriera, al prezzo della tua regione. Ogni pacchetto resta 30 giorni nel negozio.'},
+    pt:{h:'Pacotes', n:n=>n+' itens', own:'Comprado', note:'Pacotes da Epic pagos em dinheiro: saem do saldo da carreira, pelo preço da sua região. Cada pacote fica 30 dias na loja.'},
+    de:{h:'Packs', n:n=>n+' Gegenstände', own:'Gekauft', note:'Echtgeld-Packs von Epic: bezahlt mit dem Karriere-Guthaben, zum Preis deiner Region. Jedes Pack bleibt 30 Tage im Shop.'},
+    es:{h:'Packs', n:n=>n+' objetos', own:'Comprado', note:'Packs de Epic con dinero real: se pagan con el saldo de la carrera, al precio de tu región. Cada pack está 30 días en la tienda.'}})[LANG]
+    || {h:'Packs', n:n=>n+' items', own:'Owned', note:'Epic real-money packs: paid from the career balance at your region’s price. Each pack stays in the shop for 30 days after release.'};
+}
+function ccFnPacksToday(day){
+  const P=(typeof CC_FN_SHOP!=='undefined' && CC_FN_SHOP.packs) || [], d=ccFnDataDay(day), m=CC_VB_REGION[ccCareerRegion()] || 1;
+  return P.filter(p=>p[1]<=d && d<ccAddDays(p[1], CC_FN_PACK_DAYS)).map((p, k)=>({k:k, name:p[0], usd:Math.round(p[2]*m*100)/100, vb:p[3]||0,
+    its:p[4].map(x=>({id:x[0], t:x[1], r:x[2], name:x[3]}))}));
+}
+function ccFnPackOwned(p){ const own=ccFnOwn(); return p.its.every(it=>own[it.id]); }
+function ccFnPackHTML(p, era){
+  const T=ccFnPackT(), all=ccFnPackOwned(p), hero=p.its.find(it=>it.t==='o') || p.its[0];
+  const bg=(era && era.noRar) ? ccFnSetHue(hero) : (CC_FN_RAR[hero.r] || CC_FN_RAR.rare);
+  return '<div class="cc-fn-it big bun cc-fn-pack'+(all ? ' own' : '')+'" data-t="o" style="--fn-bg:'+bg+'">'+
+    '<span class="cc-fn-img"><img src="'+ccFnImg(hero.id)+'" alt="" loading="lazy" onerror="this.remove()"></span>'+
+    '<b>'+esc(p.name)+'</b><em>'+esc(T.n(p.its.length))+(p.vb ? ' · +'+ccNum(p.vb)+' V-Bucks' : '')+'</em>'+
+    '<span class="cc-fn-pack-its">'+p.its.slice(0, 6).map(it=>'<img src="'+ccFnImg(it.id, true)+'" alt="" title="'+esc(it.name)+'" loading="lazy" onerror="this.remove()">').join('')+'</span>'+
+    (all ? '<span class="cc-fn-own">'+esc(T.own)+'</span>'
+      : '<button class="cc-fn-buy" '+(((CAREER.career.balance||0)>=p.usd) ? '' : 'disabled')+' onclick="ccFnBuyPack('+p.k+')">$'+p.usd.toFixed(2)+'</button>')+'</div>';
+}
+function ccFnBuyPack(k){
+  const cr=CAREER.career, day=careerToday();
+  const p=ccFnPacksToday(day).find(x=>x.k===k);
+  if(!p || ccFnPackOwned(p) || (cr.balance||0)<p.usd) return;
+  cr.balance=Math.round(((cr.balance||0)-p.usd)*100)/100;
+  if(p.vb) CAREER.vb=(CAREER.vb||0)+p.vb;
+  const own=ccFnOwn(), eq=ccFnEq();
+  p.its.forEach(it=>{ if(!own[it.id]){ own[it.id]={t:it.t, n:it.name, r:it.r, d:day}; if(!eq[it.t]) eq[it.t]=it.id; } });
+  CC_FN_JUST={name:p.name, t:'o'};
+  careerSave(); careerRenderHub('items');
+}
 /* ПОКАЗ ПРЕДМЕТА (там же, пункт 3): нажатие на плитку — большая картинка (скин в полный рост, featured.png), имя, тип,
    набор, стили и покупка, как панель справа в магазине Глав 5–7. Нажатие на саму цену — сразу покупка, как было. */
 function ccFnPeekClose(){ const o=document.getElementById('ccFnPeek'); if(o) o.remove(); }
@@ -151788,7 +151834,11 @@ function ccFnShopHTML(){
   const grid='<div class="ch-tile cc-fn-shop cc-fs-'+era.v+(era.noRar ? ' norar' : '')+'"><h4><span class="cc-fn-ttl">'+esc(T.ccFnShopH(ccHdrDate(day)))+'</span>'+
     ' <span class="cc-fn-era">'+esc(T.ccFnEra(era.ch))+'</span></h4>'+
     (list.length ? top+body+foot : '<div class="ch-empty">'+esc(T.ccFnEmpty)+'</div>')+'</div>';
-  return vbTile+grid;
+  // Паки за деньги дня — своей плиткой под V-Bucks (ccFnPacksToday).
+  const pk=ccFnPacksToday(day), PT=ccFnPackT();
+  const packTile=pk.length ? '<div class="ch-tile cc-fn-shop cc-fn-packs cc-fs-'+era.v+(era.noRar ? ' norar' : '')+'"><h4>'+esc(PT.h)+'</h4>'+
+    '<div class="cc-fn-grid">'+pk.map(p=>ccFnPackHTML(p, era)).join('')+'</div><div class="ch-hint">'+esc(PT.note)+'</div></div>' : '';
+  return vbTile+packTile+grid;
 }
 function ccFnTabTo(n){
   const s=document.getElementById('ccFnSec'+n); if(!s) return;
