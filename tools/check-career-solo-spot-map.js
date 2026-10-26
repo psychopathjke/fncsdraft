@@ -90,8 +90,9 @@ const BOOT = `
     // place on chapter 7 map». Метка и вечер должны сидеть на одном острове.
     start();
     CAREER.career.size = 3;
-    if(careerBrSet() === 's42solo' || careerBrSet() === 's42')
-      fail('a trio year is not on a trio island: ' + careerBrSet());
+    // Notion 26.10.26: трио-год 2026-го на острове сезона, как дуо (а не на шестой главе).
+    if(careerBrSet() === 's42solo' || /^t\d$/.test(careerBrSet()))
+      fail('a trio year sits on the season island, not Chapter 6 or the solo one: ' + careerBrSet());
     if(careerSpotGrid('solo') !== 's42')
       fail('trio year: the solo spot is drawn on ' + careerSpotGrid('solo') + ', the solos are played on s42');
     if(careerNightSet(soloNext) !== 's42')

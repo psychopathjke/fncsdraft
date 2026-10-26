@@ -128198,7 +128198,10 @@ function ccCycleIsland(day){ const s=ccCycleSlot(day); return s ? s[0] : null; }
 function careerBrSet(){
   const py=ccPastYearIsland(); if(py) return py;
   const cy=ccCycleIsland(careerToday()); if(cy) return cy;
-  if(careerSquadSize()!==3){
+  /* Notion «26.10.26», тестер: «we don't have the 2 same map for duo and trio» — в игре один остров на сезон, какой
+     ни будь формат. Трио-год на календаре 2026-го сидел на шестой главе (t1–t3), а дуо в те же дни — на седьмой.
+     Теперь остров по сезону для обоих; шестая глава — только у 2025-го, где она и была сезоном. */
+  if(careerSquadSize()!==3 || !ccIs2025()){
     /* Остров дуо-года — по сезону Fortnite, как у трио-года. Тестер, 16.09:
        «начинается сезон S40, и карта меняется только в соло, а в дуо меняется
        только в сезоне S42». Так и было: до 21 августа дуо-год весь жил на m2.
@@ -128215,7 +128218,7 @@ function careerBrSet(){
   }
   const day=careerToday();
   let set='t1';
-  (ccIs2025() ? CC_TRIO_ISLANDS_2025 : CC_TRIO_ISLANDS).forEach(r=>{ if(day>=r.from) set=r.set; });
+  CC_TRIO_ISLANDS_2025.forEach(r=>{ if(day>=r.from) set=r.set; });
   return set;
 }
 /* ОСТРОВ СОЛО-ВЕЧЕРА — не сезонный. Репорт игрока 6 сентября: «If it's a trio
@@ -128244,7 +128247,7 @@ function careerBrSet(){
    сыграет careerNightSet. Один ответ на вкладку метки, карточку вечера и дом
    в раздаче (ccSoloHomeZone). */
 function careerSoloSet(){
-  if(careerSquadSize()!==3 || ccPastYearIsland() || ccCycleIsland(careerToday())) return careerBrSet();
+  if(careerSquadSize()!==3 || !ccIs2025() || ccPastYearIsland() || ccCycleIsland(careerToday())) return careerBrSet();
   const days=(typeof careerYearDays==='function') ? careerYearDays() : null;
   if(days && typeof careerNightSet==='function' && typeof careerNightSolo==='function'){
     const today=careerToday();
@@ -146325,7 +146328,10 @@ function ccLockerPlain(s){ return String(s||'').replace(/<[^>]*>/g, '').replace(
 function ccLockerRules(e){
   const out=[], name=()=>ccLockerPlain(ccLogName(e));
   if(e.place===1 && ((e.kind==='major' && e.stage==='final') || e.kind==='globals' || (e.kind==='summit' && e.stage==='final') || (e.kind==='rc' && e.stage==='final')))
-    out.push({id:'axe', kind:'pickaxe', name:'Axe of Champions', fncs:true});
+  { // Notion «26.10.26», тестер: «if you win a major, a summit or a lan you get the fncs pickaxe, the 3.0 one» — за титул
+    // всегда The Axe of Champions 3.0 (она и в руки); кирка чемпиона сезона ложится рядом, если это не она же.
+    if(ccFncsAxeFor(e.day).id!==CC_FNCS_AXE3[0]) out.push({id:'axe', kind:'pickaxe', name:'Axe of Champions', fncs:true});
+    out.push({id:'axe3', kind:'pickaxe', name:CC_FNCS_AXE3[1], fncs3:true}); }
   // Первая Victory Royale сезона — зонтик сезона (одна строка на сезон, см. ccUmbrellaFor).
   if((e.wins||0)>0) out.push({umb:true, kind:'glider'});
   if(e.kind==='major' && e.stage==='final') out.push({id:'gf'+e.season, kind:'banner', name:'FNCS Grand Finalist · '+ccSeasonYearOf(e.season)});
@@ -146371,7 +146377,8 @@ function ccLockerCheck(){
     const e=cr.log[i]; if(!e || e.who) continue;
     ccLockerRules(e).forEach(g=>{
       // Победа в FNCS — кирка чемпиона того сезона: своя строка в шкафчике и в руках (см. ccFncsAxeFor).
-      if(g.fncs){ const ax=ccFncsAxeGive(e.day, quiet); g={id:'axe|'+ax.id, kind:'pickaxe', name:ax.name, fn:ax.id}; }
+      if(g.fncs){ const ax=ccFncsAxeGive(e.day, true); g={id:'axe|'+ax.id, kind:'pickaxe', name:ax.name, fn:ax.id}; }
+      if(g.fncs3){ const ax=ccFncsAxeGive(e.day, quiet, true); g={id:'axe|'+ax.id, kind:'pickaxe', name:ax.name, fn:ax.id}; }
       if(g.umb){ const u=ccUmbrellaGive(e.day); g={id:'umb|'+u.id, kind:'glider', name:u.name, fn:u.id, once:true}; }
       const have=cr.locker.find(x=>x.id===g.id);
       if(have){ if(!g.once) have.x=(have.x||1)+1; return; }
@@ -151280,9 +151287,11 @@ function ccUmbrellaGive(day){
   if(!own[u.id]) own[u.id]={t:'g', n:u.name, r:'rare', d:day, umb:true};
   return u;
 }
+const CC_FNCS_AXE3=['Pickaxe_FNCSChampion', 'The Axe of Champions 3.0'];
 // Выдать кирку чемпиона: в шкафчик и сразу в руки (quiet — старый сейв задним числом: только в шкафчик).
-function ccFncsAxeGive(day, quiet){
-  const ax=ccFncsAxeFor(day), own=ccFnOwn();
+// three — Axe of Champions 3.0 (за Мейджор, Саммит, ЛАН), иначе кирка чемпиона сезона.
+function ccFncsAxeGive(day, quiet, three){
+  const ax=three ? {id:CC_FNCS_AXE3[0], name:CC_FNCS_AXE3[1]} : ccFncsAxeFor(day), own=ccFnOwn();
   if(!own[ax.id]) own[ax.id]={t:'p', n:ax.name, r:'rare', d:day, fncs:true};
   if(!quiet) ccFnEq().p=ax.id;
   return ax;
