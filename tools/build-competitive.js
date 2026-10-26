@@ -78,10 +78,27 @@ if (TRK) {
   });
 }
 
+// Весь 2026 год (26.10, его «сделай весь 2026 год»): окна событий со страниц Tracker (comp-events-2026.json:
+// imp_event — время окон, название, обложка). Январь–май есть только там.
+const EVY = read('comp-events-2026.json');
+if (EVY) {
+  const have = new Set(CAL.events.map(e => e.w));
+  Object.entries(EVY).forEach(([ev, e]) => {
+    if (!e || !e.w) return;
+    const reg = String(ev).split('_').pop();
+    e.w.forEach(w => {
+      if (!w.w || have.has(w.w) || w.ex || !w.b) return;
+      have.add(w.w);
+      CAL.events.push({ w: w.w, ev, name: [e.t1, e.t2].filter(Boolean).join(' ').trim() + (w.n ? ' · ' + w.n : ''), region: reg,
+        begin: String(w.b).replace('+00:00', 'Z'), end: String(w.e || w.b).replace('+00:00', 'Z'), img: e.poster || null, status: 'tracker', pretty: true });
+    });
+  });
+}
+
 // ---- Календарь как в карьере (26.10, его «календарь в виде календаря как в карьере»): сетка месяца с понедельника,
 // в клетке — плашки серий дня цветом вида, у дня FNCS — обложка; клик по дню — список окон с временем зрителя.
 // В страницу едет только сам список окон с начала прошлого месяца (строки — таблицей, окна — массивами).
-const from = new Date(NOW); from.setUTCDate(1); from.setUTCMonth(from.getUTCMonth() - 1); from.setUTCHours(0, 0, 0, 0);
+const from = new Date(Date.UTC(2026, 0, 1));   // весь 2026 год
 const upcoming = CAL.events.filter(e => Date.parse(e.begin) >= from.getTime() && REGS.includes(regOf(e)))
   .sort((a, b) => a.begin < b.begin ? -1 : a.begin > b.begin ? 1 : 0);
 const series = n => n.replace(/ · (Week|Round|Session|Heat) \d+/g, '').replace(/ · Qualifier \d+ ·/g, ' ·').replace(/ · (Day \d+ )?Round \d+$/, '').trim();
@@ -106,38 +123,55 @@ const CALDATA = upcoming.map(e => {
   return [Math.round(Date.parse(e.begin) / 60000), Math.round(Date.parse(e.end || e.begin) / 60000), REGS.indexOf(regOf(e)), KINDS.indexOf(kind(e.w)), sid(series(nm)), sid(nm), sid(artOf(e)), rankOf(e, nm)];
 });
 
-// ---- Призы за месяц и последние результаты
-let earnHTML = '', resHTML = '', monthName = '', paid = 0;
+// ---- Призы по месяцам и последние результаты
+// Призовые идут за месяцем календаря (26.10, его «когда листаешь календарь, призовые должны меняться смотря какой
+// месяц» и «сделай весь 2026 год»): в страницу едет топ каждого месяца (40 лучших каждого региона + 100 лучших всех),
+// таблицу рисует скрипт под месяц, открытый в календаре.
+// Регион игрока — его домашний, а не региона капа (26.10: «PANZER топ-1 NAC — ошибка, он европеец, взял призовые на
+// Америке»): страна → регион; США и Канада — NAC/NAW по тому, где больше капов за год; страны нет — где больше капов.
+// Деньги считаются все, где бы ни выиграны.
+let resHTML = '';
+const EARN = {};
 if (RES && RES.windows.length) {
-  monthName = new Date(RES.month + '-01T00:00:00Z').toLocaleString('en-US', { month: 'long', year: 'numeric', timeZone: 'UTC' });
-  // Регион игрока — его домашний, а не региона капа (26.10: «PANZER топ-1 NAC — ошибка, он европеец, взял призовые на
-  // Америке»). Страна → регион; США и Канада делятся на NAC/NAW по тому, где больше капов; страны нет — где больше
-  // капов. Деньги считаются все, где бы ни выиграны.
-  const P = new Map();
-  RES.windows.forEach(w => w.top.forEach(x => {
-    x.ids.forEach((id, i) => {
-      const nm0 = x.n[i] || x.epic[i] || ''; const o = P.get(id) || { n: !nm0 || /^[0-9a-f]{32}$/i.test(nm0) ? 'Unknown player' : nm0, c: x.c[i], at: {}, usd: 0, cups: 0, wins: 0 };
-      if (!o.c && x.c[i]) o.c = x.c[i];
-      o.at[regOf(w)] = (o.at[regOf(w)] || 0) + 1;
-      if (x.usd) { o.usd += x.usd; o.cups++; if (x.rank === 1) o.wins++; paid += x.usd; }
-      P.set(id, o);
-    });
-  }));
-  P.forEach((o, id) => {
-    if (!o.usd) { P.delete(id); return; }
-    const most = (list) => Object.entries(o.at).filter(([r]) => !list || list.includes(r)).sort((a, b) => b[1] - a[1])[0];
+  const who = new Map();   // id → { n, c, at }
+  RES.windows.forEach(w => w.top.forEach(x => x.ids.forEach((id, i) => {
+    const nm0 = x.n[i] || x.epic[i] || '';
+    const o = who.get(id) || { n: !nm0 || /^[0-9a-f]{32}$/i.test(nm0) ? 'Unknown player' : nm0, c: null, at: {} };
+    if (!o.c && x.c[i]) o.c = x.c[i];
+    o.at[regOf(w)] = (o.at[regOf(w)] || 0) + 1;
+    who.set(id, o);
+  })));
+  who.forEach(o => {
+    const most = list => Object.entries(o.at).filter(([r]) => !list || list.includes(r)).sort((a, b) => b[1] - a[1])[0];
     const home = homeRegion(o.c);
     o.reg = home === 'NA' ? ((most(['NAC', 'NAW']) || ['NAC'])[0]) : home || most()[0];
+    o.f = o.c && fs.existsSync(path.join(__dirname, '..', 'flags', 'w20', String(o.c).toLowerCase() + '.png')) ? String(o.c).toLowerCase() : '';
   });
-  const top = [...P.values()].sort((a, b) => b.usd - a.usd);
-  earnHTML = `<table class="tbl" id="earn"><thead><tr><th>#</th><th>Player</th><th>Region</th><th class="n">Cups paid</th><th class="n">Wins</th><th class="n">Earned</th></tr></thead><tbody>` +
-    top.slice(0, 300).map((p, i) => `<tr data-reg="${esc(p.reg)}"${i >= 15 ? ' class="more"' : ''}><td class="n">${i + 1}</td><td>${flag(p.c)}<b>${esc(p.n)}</b></td><td>${esc(p.reg)}</td>` +
-      `<td class="n">${p.cups}</td><td class="n">${p.wins || ''}</td><td class="n p1">${money(p.usd)}</td></tr>`).join('') + '</tbody></table>';
+  const byMonth = new Map();
+  RES.windows.forEach(w => {
+    const m = w.begin.slice(0, 7);
+    if (!byMonth.has(m)) byMonth.set(m, { paid: 0, p: new Map() });
+    const M = byMonth.get(m);
+    w.top.forEach(x => {
+      if (!x.usd) return;
+      x.ids.forEach(id => {
+        const o = M.p.get(id) || { id, usd: 0, cups: 0, wins: 0 };
+        o.usd += x.usd; o.cups++; if (x.rank === 1) o.wins++; M.paid += x.usd; M.p.set(id, o);
+      });
+    });
+  });
+  byMonth.forEach((M, m) => {
+    const all = [...M.p.values()].sort((a, b) => b.usd - a.usd);
+    const keep = new Set(all.slice(0, 100).map(x => x.id));
+    REGS.forEach(r => all.filter(x => who.get(x.id).reg === r).slice(0, 40).forEach(x => keep.add(x.id)));
+    const byReg = {}; all.forEach(x => { const r = who.get(x.id).reg; byReg[r] = (byReg[r] || 0) + x.usd; });
+    EARN[m] = { paid: M.paid, reg: byReg, rows: all.filter(x => keep.has(x.id)).map(x => { const o = who.get(x.id); return [o.n, o.f, REGS.indexOf(o.reg), x.usd, x.cups, x.wins]; }) };
+  });
   const latest = RES.windows.slice().sort((a, b) => a.begin > b.begin ? -1 : 1).slice(0, 60);
   resHTML = latest.map(w => {
     const t3 = w.top.slice(0, 3);
     return `<article class="glass res" data-reg="${esc(regOf(w))}"><header><i>${esc(regOf(w))}</i><time datetime="${esc(w.begin)}">${esc(w.begin.slice(0, 10))}</time></header>` +
-      `<h4>${esc(pretty(w.name))}</h4><ol>` + t3.map(x => `<li><div>${x.ids.map((id, i) => flag(x.c[i]) + esc(x.n[i] || x.epic[i] || '?')).join(' + ')}</div>` +
+      `<h4>${esc(w.pretty ? w.name : pretty(w.name))}</h4><ol>` + t3.map(x => `<li><div>${x.ids.map((id, i) => flag(x.c[i]) + esc(x.n[i] || x.epic[i] || '?')).join(' + ')}</div>` +
       `<span>${x.pts} pts${x.usd ? ' · ' + money(x.usd) : ''}</span></li>`).join('') + '</ol></article>';
   }).join('');
 }
@@ -199,7 +233,8 @@ h1,h2,h3,h4{font-family:var(--font-display);font-weight:700;margin:0;line-height
 /* Календарь и призовые рядом (26.10, его «пусть рядом с календарем будет лидерборд с призовыми»); уже 1100 — друг под другом. */
 .grid{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(300px,1fr);gap:18px;align-items:start}
 @media(max-width:1100px){.grid{grid-template-columns:1fr}}
-#earn th:nth-child(3),#earn td:nth-child(3){display:none}
+#earn{table-layout:fixed}#earn th:nth-child(1){width:34px}#earn th:nth-child(3){width:52px}#earn th:nth-child(4){width:46px}#earn th:nth-child(5){width:86px}
+#earn td.pl{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .grid #earn{font-size:13px}.grid #earn td{padding:7px 8px}
 
 .panel{padding:16px 18px 18px}
@@ -280,7 +315,7 @@ h1,h2,h3,h4{font-family:var(--font-display);font-weight:700;margin:0;line-height
 .calday h4{font:700 15px var(--font-display);letter-spacing:.1em;text-transform:uppercase;color:var(--cyan);margin:0 0 8px}
 .calday ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:5px}
 .ev.done{opacity:.5}
-@media(max-width:620px){#earn th:nth-child(3),#earn td:nth-child(3),#earn th:nth-child(5),#earn td:nth-child(5){display:none}.tbl td{padding:8px 7px}.cal-day{padding:3px;aspect-ratio:auto;min-height:46px}.cal-top{font-size:0;height:5px;padding:0;border-radius:2px}.cal-more{display:none}.cal-bar h4{font-size:19px}}
+@media(max-width:620px){#earn th:nth-child(4),#earn td:nth-child(4){display:none}.tbl td{padding:8px 7px}.cal-day{padding:3px;aspect-ratio:auto;min-height:46px}.cal-top{font-size:0;height:5px;padding:0;border-radius:2px}.cal-more{display:none}.cal-bar h4{font-size:19px}}
 [hidden]{display:none!important}`;
 
 const JS = `(function(){
@@ -323,10 +358,24 @@ function renderCal(){
  }
  h+='</div>';
  var el=document.getElementById('cal'); el.innerHTML=h;
- el.querySelectorAll('.cal-nav').forEach(function(b){b.onclick=function(){var t=new Date(cur.y,cur.m+(+b.dataset.d),1); cur={y:t.getFullYear(),m:t.getMonth()}; renderCal();};});
+ el.querySelectorAll('.cal-nav').forEach(function(b){b.onclick=function(){var t=new Date(cur.y,cur.m+(+b.dataset.d),1); cur={y:t.getFullYear(),m:t.getMonth()}; var bd=byDay(), n=new Date(cur.y,cur.m+1,0).getDate(); pick=cur.y+'-'+(cur.m+1)+'-1'; for(var d=1;d<=n;d++){ if(bd[cur.y+'-'+(cur.m+1)+'-'+d]){ pick=cur.y+'-'+(cur.m+1)+'-'+d; break; } } if(cur.y===today.getFullYear()&&cur.m===today.getMonth()) pick=dk(today); renderCal();};});
  el.querySelector('.cal-today').onclick=function(){cur={y:today.getFullYear(),m:today.getMonth()}; pick=dk(today); renderCal();};
  el.querySelectorAll('.cal-day:not(.cal-void)').forEach(function(b){b.onclick=function(){pick=b.dataset.k; renderCal();};});
- renderDay(by);
+ renderDay(by); renderEarn();
+}
+var EARN=${JSON.stringify(EARN)}, earnAll=false;
+function money(v){return '$'+Math.round(v).toLocaleString('en-US');}
+function renderEarn(){
+ var mk=cur.y+'-'+String(cur.m+1).padStart(2,'0'), M=EARN[mk], name=fmtM.format(new Date(cur.y,cur.m,1));
+ document.getElementById('earnH').textContent='Prize money · '+name;
+ var rows=M?M.rows.filter(function(r){return reg==='ALL'||R[r[2]]===reg;}):[];
+ var paid=M?(reg==='ALL'?M.paid:(M.reg[reg]||0)):0;
+ document.getElementById('earnP').textContent=(paid?money(paid)+(reg==='ALL'?' paid in cash cups and FNCS':' to '+reg+' players')+(mk===today.getFullYear()+'-'+String(today.getMonth()+1).padStart(2,'0')?' so far':'')+'. ':'')+'Duos: each player gets the payout.';
+ var show=earnAll?rows.slice(0,100):rows.slice(0,15);
+ document.getElementById('earnT').innerHTML=rows.length?'<table class="tbl" id="earn"><thead><tr><th>#</th><th>Player</th><th class="n">Cups</th><th class="n">Wins</th><th class="n">Earned</th></tr></thead><tbody>'+
+  show.map(function(r,i){return '<tr><td class="n">'+(i+1)+'</td><td class="pl">'+(r[1]?'<img src="/flags/w20/'+r[1]+'.png" alt="" width="16">':'')+'<b>'+esc(r[0])+'</b></td><td class="n">'+r[4]+'</td><td class="n">'+(r[5]||'')+'</td><td class="n p1">'+money(r[3])+'</td></tr>';}).join('')+
+  '</tbody></table>'+(rows.length>15&&!earnAll?'<button class="morebtn" type="button">Show more</button>':''):'<p class="note">No prize money '+(new Date(cur.y,cur.m,1)>today?'yet':'recorded')+' for '+name+(reg==='ALL'?'':' in '+reg)+'.</p>';
+ var mb=document.querySelector('#earnT .morebtn'); if(mb) mb.onclick=function(){earnAll=true; renderEarn();};
 }
 function renderDay(by){
  var p=pick.split('-'), list=(by[pick]||[]).slice().sort(function(a,b){return a[0]-b[0];}), el=document.getElementById('calDay');
@@ -339,18 +388,17 @@ function apply(){
  document.querySelectorAll('.regs button').forEach(function(b){b.setAttribute('aria-pressed',b.dataset.r===reg?'true':'false');});
  document.querySelectorAll('.res').forEach(function(x){x.hidden=reg!=='ALL'&&x.dataset.reg!==reg;});
  renderCal();
- var n=0; document.querySelectorAll('#earn tbody tr').forEach(function(tr){var on=reg==='ALL'||tr.dataset.reg===reg; tr.classList.toggle('hide',!on);
-  if(on){n++; tr.classList.toggle('more',n>15); tr.firstChild.textContent=n;}});
+
  try{localStorage.setItem('compReg',reg);}catch(e){}
 }
 document.querySelectorAll('.regs button').forEach(function(b){b.addEventListener('click',function(){reg=b.dataset.r;apply();});});
-var mb=document.querySelector('.morebtn'); if(mb) mb.addEventListener('click',function(){document.getElementById('earn').classList.add('all'); mb.remove();});
+
 apply();
 })();`;
 
 const regButtons = '<div class="regs" role="group" aria-label="Region">' + ['ALL'].concat(REGS).map(r => `<button type="button" data-r="${r}">${r === 'ALL' ? 'All' : r}</button>`).join('') + '</div>';
 const title = 'Fortnite Competitive: tournament calendar, prize money and results | FNCS Draft';
-const desc = 'Every Fortnite tournament this week in your time zone, who earned the most prize money in ' + (monthName || 'the month') +
+const desc = 'Every Fortnite tournament this week in your time zone, who earned the most prize money in ' + 'every month of 2026' +
   ', the latest cup results and FNCS predictions. All regions.';
 const html = `<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
@@ -367,10 +415,8 @@ ${regButtons}
 <div class="grid">
 <section class="glass panel" aria-label="Calendar"><h3>Calendar</h3><p class="small">In your time zone. Pick a day to see every cup on it.</p>
 <div id="cal" class="cal"></div><div id="calDay" class="calday"></div></section>
-<section class="glass panel" aria-label="Prize money"><h3>Prize money · ${esc(monthName)}</h3>
-<p class="small">${paid ? money(paid) + ' paid in cash cups and FNCS so far. ' : ''}Duos: each player gets the payout.</p>
-${earnHTML || '<p class="note">No paid cups yet this month.</p>'}
-${earnHTML ? '<button class="morebtn" type="button">Show more</button>' : ''}
+<section class="glass panel" aria-label="Prize money"><h3 id="earnH">Prize money</h3>
+<p class="small" id="earnP"></p><div id="earnT"></div>
 </section></div>
 <h2 class="sec">Latest results</h2>
 <div class="results">${resHTML || '<p class="note">No results yet.</p>'}</div>

@@ -21,7 +21,9 @@ function shrink(file) {
 
 (async () => {
   fs.mkdirSync(DIR, { recursive: true });
-  const urls = [...new Set(CAL.events.map(e => e.img).filter(Boolean))];
+  const EVF = path.join(ROOT, 'tools/measured/comp-events-2026.json');
+  const EV = fs.existsSync(EVF) ? JSON.parse(fs.readFileSync(EVF, 'utf8')) : {};
+  const urls = [...new Set(CAL.events.map(e => e.img).concat(Object.values(EV).map(e => e && e.poster)).filter(Boolean))];
   let got = 0;
   for (const u of urls) {
     const name = fileOf(u).replace(/\.(png|jpeg)$/i, '.jpg');
