@@ -35,6 +35,8 @@ const SETS = {
   t1: {map: 'Map:Chapter 6: Season 1 (33.20)', art: 'art/map-t1.jpg'},
   t2: {map: 'Map:Chapter 6: Season 2 (34.30)', art: 'art/map-t2.jpg'},
   t3: {map: 'Map:Chapter 6: Season 3 (36.30)', art: 'art/map-t3.jpg'},
+  // Лион (Global Championship, 6–7 сентября 2025) — Chapter 6 Season 4, патч 37.10 (37.20 вышел позже финала).
+  t4: {map: 'Map:Chapter 6: Season 4 (37.10)', art: 'art/map-t4.jpg'},
   /* Остров нынешнего сезона. Его правка 2 сентября 2026: «забалансить не по
      квадрату размера, а по луту» — и он прав: у s42 рейтинг стоял на глаз с
      картинки, а сотня соло-клеток унаследовала его от ближайшей из тридцати

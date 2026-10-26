@@ -94812,7 +94812,7 @@ var RATING_FLOOR={};
       {t:2022.87, set:'k3', ev:INV2022_EVENT, rows:INV2022_RANKED.map(e=>({names:split(e.duo), rank:e.rank}))},
       {t:2023.78, set:'e3', ev:GC2023_EVENT, rows:GC2023_RANKED.map(e=>({names:split(e.duo), rank:e.rank}))},
       {t:2024.69, set:'f3', ev:GC2024_EVENT, rows:GC2024_RANKED.map(e=>({names:split(e.duo), rank:e.rank}))},
-      {t:2025.68, set:'t3', ev:GC2025_EVENT, rows:GC2025_RANKED.map(e=>({names:split(e.trio), rank:e.rank}))},
+      {t:2025.68, set:'t4', ev:GC2025_EVENT, rows:GC2025_RANKED.map(e=>({names:split(e.trio), rank:e.rank}))},
       {t:2026.25, set:'m1', ev:'FNCS 2026 Summit', rows:Object.entries(SUMMIT_RANK).map(([h,r])=>({names:[h], rank:r}))},
       {t:2026.64, set:'m2', ev:'Reload Championship 2026', rows:Object.entries(RC_RANK).flatMap(([reg,m])=>Object.entries(m).map(([h,r])=>({names:[h], rank:r, reg:reg})))},
       {t:2026.74, set:'m2', ev:'FNCS Global Championship 2026', rows:Object.entries(GC26_RANK).flatMap(([reg,m])=>Object.entries(m).map(([h,r])=>({names:[h], rank:r, reg:reg})))}
@@ -95431,7 +95431,10 @@ Object.keys(SEASON_LOOT).forEach(y=>{
    сезона должно быть»): World Cup Duos 2019 (h2) — Season 9, как World Cup Solo (h1). Без этого h2
    падал на остров и лут 2026-го. */
 const SET_ISLAND={h2:'h1'};
+// Остров этапа поверх острова набора карточек: Лион играется на C6S4, хотя карточки — Мейджора 3 (t3). См. runGlobalChampionship2025.
+var LOOT_ISLAND_NOW=null;
 function activeIslandSet(){
+  if(LOOT_ISLAND_NOW) return LOOT_ISLAND_NOW;
   const k=CARD_MODE ? CARD_SET : (typeof pendingMapSet==='undefined' ? null : pendingMapSet);
   return (k && SET_ISLAND[k]) || k;
 }
@@ -95872,8 +95875,27 @@ const T3_WEAPON_NAMES=[
 // and the three 2025 modes have to be balanced against each other -- giving one
 // of them the wiki's exact per-weapon ladder and the others a flat six would
 // make their packs worth different amounts for no measured reason.
-const T2_WEAPON_POOL=[], T3_WEAPON_POOL=[];
-[[T2_WEAPON_NAMES, T2_WEAPON_POOL], [T3_WEAPON_NAMES, T3_WEAPON_POOL]].forEach(pair=>{
+// ---------- FNCS 2025 loot: Chapter 6 Season 4, Shock 'N Awesome (Лион) ----------
+// Global Championship, 6–7 сентября 2025 (Notion 26.10.26: «карта не того сезона»). Пул вики «Chapter 6: Season 4/Loot
+// Pool»: в игре оба дня финала, без возвращений одной недели 5–8 сентября (экзотики, Boom Bow, легендарный Pump) и без
+// Holo Twister, который до 5.09 падал только с NPC. Hammer AR убран 2.09, MK-Seven и Frenzy пришли 12.09 — их нет.
+const T4_WEAPON_NAMES=[
+  ["O.X.R. Rifle",'rifle'],
+  ["Fury Assault Rifle",'rifle'],
+  ["Leadspitter 3000",'rifle'],
+  ["Deadeye DMR",'rifle'],
+  ["Falcon Eye Sniper",'rifle'],
+  ["Sentinel Pump Shotgun",'shotgun'],
+  ["Sweeper Shotgun",'shotgun'],
+  ["Twinfire Auto Shotgun",'shotgun'],
+  ["Veiled Precision SMG",'smg'],
+  ["Stinger SMG",'smg'],
+  ["Hyperburst Pistol",'pistol'],
+  ["Wrecker Revolver",'pistol'],
+  ["Hand Cannon",'pistol']
+];
+const T2_WEAPON_POOL=[], T3_WEAPON_POOL=[], T4_WEAPON_POOL=[];
+[[T2_WEAPON_NAMES, T2_WEAPON_POOL], [T3_WEAPON_NAMES, T3_WEAPON_POOL], [T4_WEAPON_NAMES, T4_WEAPON_POOL]].forEach(pair=>{
   pair[0].forEach(([name,icon])=>{
     ['common','uncommon','rare','epic','legendary','mythic'].forEach(rarity=>{
       pair[1].push({name, rarity, icon, mod:RARITY_MOD[rarity]});
@@ -95921,6 +95943,26 @@ const T3_CONSUMABLE_POOL=[
   {name:"Shield Potion", rarity:"blue", icon:'shield'},
   {name:"Shield Fish", rarity:"blue", icon:'heal'},
   {name:"Shield Bubble Jr.", rarity:"green", icon:'shield'},
+  {name:"Port-A-Bunker", rarity:"green", icon:'shield'},
+  {name:"Med Kit", rarity:"green", icon:'heal'},
+  {name:"Med-Mist", rarity:"green", icon:'heal'},
+  {name:"Small Shield Potion", rarity:"green", icon:'shield'},
+  {name:"Flopper", rarity:"green", icon:'heal'},
+  {name:"Bandage", rarity:"grey", icon:'heal'},
+  {name:"Small Fries", rarity:"grey", icon:'heal'}
+].map(w=>({...w, mod:CONSUMABLE_MOD[w.rarity]}));
+// Лион (C6S4): мифики боссов и POI, утилита и хилки того же пула вики, в игре 6–7 сентября.
+const T4_CONSUMABLE_POOL=[
+  {name:"Enhanced Wrecker Revolver", rarity:"gold", icon:'shield'},
+  {name:"Precision Air Strike", rarity:"legendary", icon:'shield'},
+  {name:"Shockwave Grenade", rarity:"purple", icon:'shield'},
+  {name:"Shockwave Hammer", rarity:"purple", icon:'shield'},
+  {name:"Chug Splash", rarity:"blue", icon:'drink'},
+  {name:"FlowBerry Fizz", rarity:"blue", icon:'drink'},
+  {name:"Shield Potion", rarity:"blue", icon:'shield'},
+  {name:"Shield Fish", rarity:"blue", icon:'heal'},
+  {name:"Flare Gun", rarity:"blue", icon:'shield'},
+  {name:"Crash Pad Jr.", rarity:"green", icon:'shield'},
   {name:"Port-A-Bunker", rarity:"green", icon:'shield'},
   {name:"Med Kit", rarity:"green", icon:'heal'},
   {name:"Med-Mist", rarity:"green", icon:'heal'},
@@ -96623,8 +96665,8 @@ const I3_CONSUMABLE_POOL=[
   {name:"Stark Jetpack", rarity:"purple", icon:'shield'}
 ].map(w=>({...w, mod:CONSUMABLE_MOD[w.rarity]}));
 // ==== /FNCS 2019–2020 loot ====
-const T_WEAPON_POOLS={t1:T1_WEAPON_POOL, t2:T2_WEAPON_POOL, t3:T3_WEAPON_POOL, f1:F1_WEAPON_POOL, f2:F2_WEAPON_POOL, f3:F3_WEAPON_POOL, f4:F4_WEAPON_POOL, e1:E1_WEAPON_POOL, e2:E2_WEAPON_POOL, e3:E3_WEAPON_POOL, e4:E4_WEAPON_POOL, k1:K1_WEAPON_POOL, k2:K2_WEAPON_POOL, k3:K3_WEAPON_POOL, k4:K4_WEAPON_POOL, j1:J1_WEAPON_POOL, j2:J2_WEAPON_POOL, j3:J3_WEAPON_POOL, j4:J4_WEAPON_POOL, h1:H1_WEAPON_POOL, h3:H3_WEAPON_POOL, h4:H4_WEAPON_POOL, i1:I1_WEAPON_POOL, i2:I2_WEAPON_POOL, i3:I3_WEAPON_POOL};
-const T_CONSUMABLE_POOLS={t1:T1_CONSUMABLE_POOL, t2:T2_CONSUMABLE_POOL, t3:T3_CONSUMABLE_POOL, f1:F1_CONSUMABLE_POOL, f2:F2_CONSUMABLE_POOL, f3:F3_CONSUMABLE_POOL, f4:F4_CONSUMABLE_POOL, e1:E1_CONSUMABLE_POOL, e2:E2_CONSUMABLE_POOL, e3:E3_CONSUMABLE_POOL, e4:E4_CONSUMABLE_POOL, k1:K1_CONSUMABLE_POOL, k2:K2_CONSUMABLE_POOL, k3:K3_CONSUMABLE_POOL, k4:K4_CONSUMABLE_POOL, j1:J1_CONSUMABLE_POOL, j2:J2_CONSUMABLE_POOL, j3:J3_CONSUMABLE_POOL, j4:J4_CONSUMABLE_POOL, h1:H1_CONSUMABLE_POOL, h3:H3_CONSUMABLE_POOL, h4:H4_CONSUMABLE_POOL, i1:I1_CONSUMABLE_POOL, i2:I2_CONSUMABLE_POOL, i3:I3_CONSUMABLE_POOL};
+const T_WEAPON_POOLS={t1:T1_WEAPON_POOL, t2:T2_WEAPON_POOL, t3:T3_WEAPON_POOL, t4:T4_WEAPON_POOL, f1:F1_WEAPON_POOL, f2:F2_WEAPON_POOL, f3:F3_WEAPON_POOL, f4:F4_WEAPON_POOL, e1:E1_WEAPON_POOL, e2:E2_WEAPON_POOL, e3:E3_WEAPON_POOL, e4:E4_WEAPON_POOL, k1:K1_WEAPON_POOL, k2:K2_WEAPON_POOL, k3:K3_WEAPON_POOL, k4:K4_WEAPON_POOL, j1:J1_WEAPON_POOL, j2:J2_WEAPON_POOL, j3:J3_WEAPON_POOL, j4:J4_WEAPON_POOL, h1:H1_WEAPON_POOL, h3:H3_WEAPON_POOL, h4:H4_WEAPON_POOL, i1:I1_WEAPON_POOL, i2:I2_WEAPON_POOL, i3:I3_WEAPON_POOL};
+const T_CONSUMABLE_POOLS={t1:T1_CONSUMABLE_POOL, t2:T2_CONSUMABLE_POOL, t3:T3_CONSUMABLE_POOL, t4:T4_CONSUMABLE_POOL, f1:F1_CONSUMABLE_POOL, f2:F2_CONSUMABLE_POOL, f3:F3_CONSUMABLE_POOL, f4:F4_CONSUMABLE_POOL, e1:E1_CONSUMABLE_POOL, e2:E2_CONSUMABLE_POOL, e3:E3_CONSUMABLE_POOL, e4:E4_CONSUMABLE_POOL, k1:K1_CONSUMABLE_POOL, k2:K2_CONSUMABLE_POOL, k3:K3_CONSUMABLE_POOL, k4:K4_CONSUMABLE_POOL, j1:J1_CONSUMABLE_POOL, j2:J2_CONSUMABLE_POOL, j3:J3_CONSUMABLE_POOL, j4:J4_CONSUMABLE_POOL, h1:H1_CONSUMABLE_POOL, h3:H3_CONSUMABLE_POOL, h4:H4_CONSUMABLE_POOL, i1:I1_CONSUMABLE_POOL, i2:I2_CONSUMABLE_POOL, i3:I3_CONSUMABLE_POOL};
 const T_SEASON_NAME={h1:['Сезон 9','Season 9'], g5:['OG · Сезон 5','OG · Season 5'], g6:['OG · Сезон 6','OG · Season 6'], g7:['OG · Сезон 7','OG · Season 7'], h3:['Сезон X','Season X'], h4:['Глава 2, сезон 1','Chapter 2, Season 1'],
                      i1:['Глава 2, сезон 2','Chapter 2, Season 2'], i2:['Глава 2, сезон 3','Chapter 2, Season 3'], i3:['Глава 2, сезон 4','Chapter 2, Season 4'],
                      j1:['Глава 2, сезон 5','Chapter 2, Season 5'], j2:['Глава 2, сезон 6','Chapter 2, Season 6'],
@@ -96639,7 +96681,8 @@ const T_SEASON_NAME={h1:['Сезон 9','Season 9'], g5:['OG · Сезон 5','O
                      f4:['Глава 5, сезон 4','Chapter 5, Season 4'],
                      t1:['Глава 6, сезон 1','Chapter 6, Season 1'],
                      t2:['Глава 6, сезон 2','Chapter 6, Season 2'],
-                     t3:['Глава 6, сезон 3','Chapter 6, Season 3']};
+                     t3:['Глава 6, сезон 3','Chapter 6, Season 3'],
+                     t4:['Глава 6, сезон 4','Chapter 6, Season 4']};
 
 const M1_CONSUMABLE_POOL=[
   {name:"Mythic Goldfish", rarity:"gold"},
@@ -100707,7 +100750,7 @@ let pendingMapSet='m2';
 // backdrop.
 const MAP_CHOICES=[{key:'m1', label:'Chapter 7 Season 2'}, {key:'m2', label:'Chapter 7 Season 3'},
                    {key:'t1', label:'Chapter 6 Season 1'}, {key:'t2', label:'Chapter 6 Season 2'},
-                   {key:'t3', label:'Chapter 6 Season 3'},
+                   {key:'t3', label:'Chapter 6 Season 3'}, {key:'t4', label:'Chapter 6 Season 4'},
                    // Chapter 5 (2024): острова финалов трёх Мейджоров и Форт-Уэрта, со своим лутом.
                    {key:'f1', label:'Chapter 5 Season 1'}, {key:'f2', label:'Chapter 5 Season 2'},
                    {key:'f3', label:'Chapter 5 Season 3'}, {key:'f4', label:'Chapter 5 Season 4'},
@@ -101347,6 +101390,7 @@ const MAP_ART={
   // rectangles need no fitting: they are percentages of this exact picture.
   t2:"art/map-t2.jpg",
   t3:"art/map-t3.jpg",
+  t4:"art/map-t4.jpg",   // Chapter 6 Season 4: карта eucompetitive ch6s4map, остров Лиона
   // Reload is not the Battle Royale island, and the circuit played two of them:
   // cups 1 and 2 on the green island, cups 3 and 4 on the frozen one. These are
   // the season maps themselves — no drop boxes, no team names printed on them —
@@ -101455,6 +101499,8 @@ const ZONE_STATS={
   t1:[{r:25,loot:25,chests:16,ammo:9},{r:99,loot:99,chests:46,ammo:53},{r:70,loot:70,chests:33,ammo:37},{r:15,loot:15,chests:8,ammo:7},{r:84,loot:84,chests:57,ammo:27},{r:77,loot:77,chests:37,ammo:40},{r:90,loot:90,chests:43,ammo:47},{r:40,loot:40,chests:18,ammo:22},{r:48,loot:48,chests:29,ammo:19},{r:20,loot:20,chests:12,ammo:8},{r:71,loot:71,chests:39,ammo:32},{r:34,loot:34,chests:19,ammo:15},{r:51,loot:51,chests:45,ammo:6},{r:60,loot:60,chests:38,ammo:22},{r:51,loot:51,chests:33,ammo:18},{r:122,loot:122,chests:71,ammo:51},{r:159,loot:159,chests:87,ammo:72},{r:71,loot:71,chests:39,ammo:32},{r:46,loot:46,chests:22,ammo:24},{r:0,loot:0,chests:0,ammo:0},{r:97,loot:97,chests:59,ammo:38},{r:42,loot:42,chests:33,ammo:9},{r:73,loot:73,chests:44,ammo:29},{r:92,loot:92,chests:64,ammo:28},{r:78,loot:78,chests:42,ammo:36},{r:77,loot:77,chests:43,ammo:34},{r:0,loot:0,chests:0,ammo:0}],
   t2:[{r:25,loot:25,chests:16,ammo:9},{r:99,loot:99,chests:46,ammo:53},{r:19,loot:19,chests:12,ammo:7},{r:95,loot:95,chests:44,ammo:51},{r:84,loot:84,chests:57,ammo:27},{r:77,loot:77,chests:37,ammo:40},{r:90,loot:90,chests:43,ammo:47},{r:48,loot:48,chests:29,ammo:19},{r:15,loot:15,chests:7,ammo:8},{r:35,loot:35,chests:24,ammo:11},{r:71,loot:71,chests:34,ammo:37},{r:34,loot:34,chests:19,ammo:15},{r:73,loot:73,chests:57,ammo:16},{r:15,loot:15,chests:7,ammo:8},{r:39,loot:39,chests:28,ammo:11},{r:46,loot:46,chests:26,ammo:20},{r:121,loot:121,chests:68,ammo:53},{r:42,loot:42,chests:31,ammo:11},{r:133,loot:133,chests:78,ammo:55},{r:9,loot:9,chests:7,ammo:2},{r:97,loot:97,chests:59,ammo:38},{r:27,loot:27,chests:26,ammo:1},{r:70,loot:70,chests:44,ammo:26},{r:0,loot:0,chests:0,ammo:0},{r:15,loot:15,chests:11,ammo:4},{r:111,loot:111,chests:77,ammo:34},{r:78,loot:78,chests:42,ammo:36},{r:85,loot:85,chests:51,ammo:34},{r:0,loot:0,chests:0,ammo:0}],
   t3:[{r:25,loot:25,chests:16,ammo:9},{r:0,loot:0,chests:0,ammo:0},{r:99,loot:99,chests:46,ammo:53},{r:0,loot:0,chests:0,ammo:0},{r:0,loot:0,chests:0,ammo:0},{r:90,loot:90,chests:43,ammo:47},{r:71,loot:71,chests:43,ammo:28},{r:20,loot:20,chests:12,ammo:8},{r:40,loot:40,chests:18,ammo:22},{r:71,loot:71,chests:34,ammo:37},{r:34,loot:34,chests:19,ammo:15},{r:73,loot:73,chests:57,ammo:16},{r:56,loot:56,chests:31,ammo:25},{r:42,loot:42,chests:31,ammo:11},{r:93,loot:93,chests:53,ammo:40},{r:72,loot:72,chests:40,ammo:32},{r:63,loot:63,chests:46,ammo:17},{r:90,loot:90,chests:55,ammo:35},{r:35,loot:35,chests:26,ammo:9},{r:70,loot:70,chests:44,ammo:26},{r:11,loot:11,chests:8,ammo:3},{r:97,loot:97,chests:73,ammo:24},{r:78,loot:78,chests:42,ammo:36},{r:38,loot:38,chests:23,ammo:15},{r:69,loot:69,chests:44,ammo:25}],
+  // Лион (C6S4, патч 37.10): лут вики по клеткам дроп-карты Глобалов (build-2025-zone-loot.js t4).
+  t4:[{r:25,loot:25,chests:16,ammo:9},{r:0,loot:0,chests:0,ammo:0},{r:12,loot:12,chests:10,ammo:2},{r:0,loot:0,chests:0,ammo:0},{r:20,loot:20,chests:11,ammo:9},{r:71,loot:71,chests:43,ammo:28},{r:20,loot:20,chests:12,ammo:8},{r:62,loot:62,chests:47,ammo:15},{r:47,loot:47,chests:23,ammo:24},{r:0,loot:0,chests:0,ammo:0},{r:73,loot:73,chests:57,ammo:16},{r:45,loot:45,chests:30,ammo:15},{r:56,loot:56,chests:31,ammo:25},{r:59,loot:59,chests:35,ammo:24},{r:0,loot:0,chests:0,ammo:0},{r:63,loot:63,chests:46,ammo:17},{r:42,loot:42,chests:31,ammo:11},{r:0,loot:0,chests:0,ammo:0},{r:90,loot:90,chests:55,ammo:35},{r:35,loot:35,chests:26,ammo:9},{r:70,loot:70,chests:44,ammo:26},{r:11,loot:11,chests:8,ammo:3},{r:0,loot:0,chests:0,ammo:0},{r:78,loot:78,chests:42,ammo:36},{r:38,loot:38,chests:23,ammo:15},{r:36,loot:36,chests:23,ammo:13}],
   m1:[
     {r:29,loot:68,teams:3.46,surv:51},{r:16,loot:23,teams:1.68,surv:58},{r:37,loot:53,teams:1.96,surv:57},
     {r:29,loot:33,teams:1.38,surv:58},{r:55,loot:49,teams:1.74,surv:65},{r:48,loot:28,teams:0.78,surv:60},
@@ -102340,6 +102386,36 @@ const ZONE_SETS={
     {x:9.52,y:74.67,w:14.38,h:13.88},
     {x:58.68,y:75.96,w:26.38,h:16.63},
     {x:24.69,y:80.2,w:21.63,h:10.63},
+  ],
+  /* Остров Лиона (Global Championship 2025, 6–7 сентября, Chapter 6 Season 4, патч 37.10): клетки — дроп-карта
+     eucompetitive.com ch6s4-fncs-global-2025 (tools/measured/eucomp-2025-gc-dropmap.json), кадр 800 → проценты делением на 8. */
+  t4:[
+    {x:44.61,y:8.42,w:24.38,h:10.38},
+    {x:72.52,y:8.55,w:11.13,h:13.5},
+    {x:27.2,y:10.79,w:14.63,h:12.63},
+    {x:10.63,y:12.75,w:15.13,h:12.75},
+    {x:58.07,y:20.78,w:10.63,h:22},
+    {x:42.97,y:20.99,w:12.5,h:7.88},
+    {x:71.58,y:23.52,w:18.63,h:16.25},
+    {x:27.87,y:24.77,w:12.88,h:12},
+    {x:9.55,y:26.34,w:16.63,h:8.88},
+    {x:47.23,y:30.01,w:9.88,h:17.5},
+    {x:6.62,y:36.88,w:20,h:12},
+    {x:31.97,y:38.16,w:13.63,h:10.63},
+    {x:73.68,y:43.35,w:15,h:13.63},
+    {x:61.29,y:49.18,w:9.5,h:11},
+    {x:24.38,y:49.9,w:10.13,h:10.13},
+    {x:5.79,y:49.95,w:16.75,h:22.63},
+    {x:36.84,y:52.74,w:11.13,h:8.63},
+    {x:49.01,y:54.02,w:8.13,h:10.75},
+    {x:78.17,y:58.58,w:11,h:16.5},
+    {x:58.09,y:61.37,w:18.5,h:12.88},
+    {x:24.47,y:61.42,w:9.88,h:14.38},
+    {x:35.23,y:64.51,w:9.75,h:14.5},
+    {x:47.5,y:67.98,w:9.13,h:10.38},
+    {x:9.52,y:74.67,w:13.88,h:13.38},
+    {x:59.44,y:77.13,w:25.13,h:13.38},
+    {x:24.69,y:80.07,w:27.75,h:10.25},
   ],
   m1:[
     {x:24.92,y:8.0,w:20.87,h:11.73},
@@ -110640,14 +110716,20 @@ async function runGlobalChampionship2025(you, regionRank, region, regionalFinal)
   if(!skipAnimation) await sleep(900);
 
   // Лион — то же самое: маршрут (m1/m2/m3) уже стоит на каждом дуо.
-  // Лион — то же самое: маршрут (m1/m2/m3) уже стоит на каждом дуо.
-  const zones=await showFinalsLandingPicker(field, you);
-  const shell=createStageCardShell(L().gc2025StageTitle(GC2025_GAMES));
+  /* Лион играли на Chapter 6 Season 4 (с 7.08), а Мейджор 3 — ещё на третьем сезоне (Notion 26.10.26: «карта не того сезона»).
+     Остров, пул оружия и расходников — на время Лиона, потом прежний. */
+  const prevSet=ACTIVE_LANDING_SET;
+  if(ZONE_SETS.t4){ useLandingSet('t4'); LOOT_ISLAND_NOW='t4'; }
+  let zones, shell;
+  try{
+  zones=await showFinalsLandingPicker(field, you);
+  shell=createStageCardShell(L().gc2025StageTitle(GC2025_GAMES));
   // Four points an elimination — the value measured on all seven of the season's
   // Grand Finals (T1_KILL.G). The LAN's own payload was never imported, so this
   // is the season's final-stage ladder rather than a number read off Lyon.
   await simulateGamesLive(field, GC2025_GAMES, pointsForPlace, T1_KILL.G, 'stage', 0, null, zones,
     {mapReplay:true, choices:true, stageName:L().liveWorlds2025});
+  } finally { LOOT_ISLAND_NOW=null; useLandingSet(prevSet); }
   const ranked=summitStandings(field);
   const rank=ranked.indexOf(you)+1;
   await revealStageLog(you, shell, true);
@@ -114150,6 +114232,7 @@ const CC_LOOT_BY_SET={
   t1:{weapons:T1_WEAPON_POOL, heals:T1_CONSUMABLE_POOL},
   t2:{weapons:T2_WEAPON_POOL, heals:T2_CONSUMABLE_POOL},
   t3:{weapons:T3_WEAPON_POOL, heals:T3_CONSUMABLE_POOL},
+  t4:{weapons:T4_WEAPON_POOL, heals:T4_CONSUMABLE_POOL},
   f1:{weapons:F1_WEAPON_POOL, heals:F1_CONSUMABLE_POOL},
   f2:{weapons:F2_WEAPON_POOL, heals:F2_CONSUMABLE_POOL},
   f3:{weapons:F3_WEAPON_POOL, heals:F3_CONSUMABLE_POOL},
@@ -124872,7 +124955,7 @@ function ccOrgAt(name){ return CC_ORG_AT[String(name||'')] || null; }
    answer instead of all of them. */
 function careerTopHonour(){
   const log=CAREER.career.log||[];
-  const maj=log.filter(r=>r.kind==='major' && r.stage==='final' && r.place===1).length;
+  const maj=log.filter(r=>!r.who && ccFncsTitle(r)).length;
   if(maj) return L().ccBioMajor(maj);
   /* Отзыв: «я выиграл EWC, и в bio сошиал не пишет 1x EWC
      Reload». Выигранный ЛАН — титул не ниже Мейджора; считается тем же
@@ -124944,7 +125027,7 @@ function careerBioHTML(){
   // What it has won, counted off the log the history screen reads.
   const log=cr.log||[];
   const cupWins=log.filter(r=>r.kind==null && r.place===1).length;
-  const majWins=log.filter(r=>r.kind==='major' && r.stage==='final' && r.place===1).length;
+  const majWins=log.filter(r=>!r.who && ccFncsTitle(r)).length;
   const best=log.filter(r=>r.kind==='globals').map(r=>r.place).sort((a,b)=>a-b)[0];
   if(majWins) bits.push(L().ccBioMajor(majWins));
   const lan=careerTrophies();
@@ -127524,7 +127607,7 @@ function ccIconDue(){
   const cr=CAREER.career, lf=ccLife(); if(lf.icon) return false;
   const log=cr.log||[];
   const gc=log.some(e=>e.kind==='globals' && e.place===1);
-  const mj=log.filter(e=>e.kind==='major' && e.stage==='final' && e.place===1).length;
+  const mj=log.filter(e=>!e.who && ccFncsTitle(e)).length;
   return gc || mj>=2 || (cr.earnings||0)>=1000000;
 }
 
@@ -128168,7 +128251,7 @@ const CC_TRIO_ISLANDS=[{from:'2026-05-01', set:'t2'}, {from:'2026-07-01', set:'t
 /* 2025-й: остров меняется в день нового сезона Fortnite (CC_SEASONS: S34 с 21.02, S36 с 7.06). Стояло «с Плей-Ином
    следующего Мейджора» (9.04 и 16.07): сезон, магазин и новости уже новые, а карта полтора месяца старая — «сезон
    поменялся карта не обновилась» (Notion 24.10.26, скрин острова C6S1). Острова C6S4 (S37, с 7.08) в сборке нет — стоит C6S3. */
-const CC_TRIO_ISLANDS_2025=[{from:'2025-02-21', set:'t2'}, {from:'2025-06-07', set:'t3'}];
+const CC_TRIO_ISLANDS_2025=[{from:'2025-02-21', set:'t2'}, {from:'2025-06-07', set:'t3'}, {from:'2025-08-07', set:'t4'}];   // C6S4 с 7.08 — Лион (Notion 26.10.26)
 /* Остров прошлого года (2019–2024) — по дате, при любом размере команды: трио-годы (2020,
    2021) и вечера в своём формате (2019) иначе проваливались в острова 2025–2026. */
 function ccPastYearIsland(){
@@ -128212,7 +128295,7 @@ const CC_CYCLE=[
   [['k1',19], ['k2',20], ['k3',21], ['k4',22]],
   [['e1',23], ['e2',24], ['e3',25], ['e4',26]],
   [['f1',28], ['f2',29], ['f3',30], ['f4',31]],
-  [['t1',33], ['t2',34], ['t3',36], ['t3',36]],
+  [['t1',33], ['t2',34], ['t3',36], ['t4',37]],
   [['m1',39], ['m1',40], ['m2',41], ['s42',42]]
 ];
 function ccCycleSlot(day){
@@ -146342,6 +146425,11 @@ function careerDmOpen(id){
    Считается по журналу, ничего нового не хранится: первое место в вечере того
    вида — это и есть титул. Строка с нулём не печатается: пустая плитка на
    экране, где всё остальное живое, читается как поломка. */
+/* Титул FNCS — гранд-финал Мейджора И финалы соло-FNCS (FNCS Solos 'final', FNCS Solo Reload 'rlfinal'). Notion 26.10.26,
+   тестер: «when you win solo fncs or solo reload fncs it doesnt add to your fncs wins in the top section». */
+function ccFncsTitle(e){
+  return !!(e && e.place===1 && ((e.kind==='major' && e.stage==='final') || (e.kind==='solo' && (e.stage==='final' || e.stage==='rlfinal'))));
+}
 function careerTrophies(){
   const cr=(CAREER && CAREER.career) || {};
   const log=cr.log||[];
@@ -146350,7 +146438,7 @@ function careerTrophies(){
   const summit=won('summit','final'), paris=won('rc','final'), gc=won('globals');
   return {seats:(cr.ewc||[]).length, relFinals:won('reload','final'),
           lans:summit+paris+gc, summit:summit, paris:paris, globals:gc,
-          majors:won('major','final'), weekly:won('final')};
+          majors:log.filter(e=>!e.who && ccFncsTitle(e)).length, weekly:won('final')};
 }
 /* ШКАФЧИК (17.10, его «10»): косметика за то, за что её дают в настоящем Fortnite — кирка чемпиона FNCS (Axe of Champions),
    спреи за победы, баннеры за гранд-финалы и ЛАНы. Выдаётся по журналу вечеров (cr.log) — ничего отдельно не копится,
@@ -146359,7 +146447,7 @@ const CC_LOCKER_ICON={pickaxe:'⛏️', glider:'☂️', spray:'🎨', banner:'�
 function ccLockerPlain(s){ return String(s||'').replace(/<[^>]*>/g, '').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#39;/g, "'").trim(); }
 function ccLockerRules(e){
   const out=[], name=()=>ccLockerPlain(ccLogName(e));
-  if(e.place===1 && ((e.kind==='major' && e.stage==='final') || e.kind==='globals' || (e.kind==='summit' && e.stage==='final') || (e.kind==='rc' && e.stage==='final')))
+  if(e.place===1 && (ccFncsTitle(e) || e.kind==='globals' || (e.kind==='summit' && e.stage==='final') || (e.kind==='rc' && e.stage==='final')))
   { // Notion «26.10.26», тестер: «if you win a major, a summit or a lan you get the fncs pickaxe, the 3.0 one» — за титул
     // всегда The Axe of Champions 3.0 (она и в руки); кирка чемпиона сезона ложится рядом, если это не она же.
     if(ccFncsAxeFor(e.day).id!==CC_FNCS_AXE3[0]) out.push({id:'axe', kind:'pickaxe', name:'Axe of Champions', fncs:true});
