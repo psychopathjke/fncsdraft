@@ -67,19 +67,46 @@ function mapHTML(reg, rows) {
       (unmarked.length ? ' Not found on the drop map, so they land alone in our runs: ' + unmarked.map(esc).join(', ') + '.' : '') + '</p>';
 }
 
+// ПРОГНОЗ ПРОТИВ ФАКТА (26.10, его пункт 2): итоги дней из solos-2026-results.json (fetch-solos-results.js). Игрок — по
+// id аккаунта из solos-2026-final.json (имена у Epic и у нас могут расходиться).
+const RES_F = path.join(__dirname, 'measured', 'solos-2026-results.json');
+const RESULTS = fs.existsSync(RES_F) ? JSON.parse(fs.readFileSync(RES_F, 'utf8')) : {};
+const FINAL = JSON.parse(fs.readFileSync(path.join(__dirname, 'measured', 'solos-2026-final.json'), 'utf8'));
+const ord = n => n + (n % 10 === 1 && n % 100 !== 11 ? 'st' : n % 10 === 2 && n % 100 !== 12 ? 'nd' : n % 10 === 3 && n % 100 !== 13 ? 'rd' : 'th');
+function actualOf(reg) {
+  const R = RESULTS[reg]; if (!R) return null;
+  const byId = new Map(R.rows.map(x => [String(x.id).replace(/-/g, ''), x]));
+  const idOf = new Map(FINAL.regions[reg].finalists.map(f => [f.n, String(f.id).replace(/-/g, '')]));
+  return { day: R.day, done: R.day === 2 && Date.now() > Date.parse(FINAL.regions[reg].day2End || '2026-10-28T00:00:00Z'), get: n => byId.get(idOf.get(n)) || null };
+}
+function vsHTML(reg, rows, A) {
+  const act = rows.map((r, i) => ({ r, i, a: A.get(r.n) })).filter(x => x.a);
+  if (!act.length) return '';
+  const lead = act.slice().sort((a, b) => a.a.rank - b.a.rank)[0];
+  const top10 = act.filter(x => x.i < 10 && x.a.rank <= 10).length;
+  const t3 = rows.slice(0, 3).map(r => { const a = A.get(r.n); return esc(r.n) + (a ? ' ' + ord(a.rank) : ''); }).join(', ');
+  const stage = A.day === 2 ? 'Final standings' : 'After Day 1';
+  return '<div class="vs"><b>' + stage + ':</b> ' + esc(lead.r.n) + ' is ' + (A.day === 2 ? 'the champion' : 'leading') + ' (we gave ' + pct(lead.r.win) + ', our #' + (lead.i + 1) + ' pick). ' +
+    (A.day === 2 ? 'Our top 3 finished ' : 'Our top 3 are ') + t3 + '. ' + top10 + ' of our top-10 picks are in the real top 10.</div>';
+}
+
 function regionHTML(reg) {
   const rows = P.regions[reg];
+  const A = actualOf(reg);
   const fav = rows.slice(0, 3);
-  const cards = fav.map((r, i) => '<li><em>' + (i + 1) + '</em><b>' + flag(r, reg) + esc(r.n) + '</b><strong>' + pct(r.win) + '</strong><span>to win · top 10 ' + pct(r.top10) + '</span></li>').join('');
+  const cards = fav.map((r, i) => { const a = A && A.get(r.n);
+    return '<li><em>' + (i + 1) + '</em><b>' + flag(r, reg) + esc(r.n) + '</b><strong>' + pct(r.win) + '</strong><span>to win · top 10 ' + pct(r.top10) + '</span>' +
+      (a ? '<i class="act">' + (A.day === 2 ? 'Finished ' : 'Day 1: ') + ord(a.rank) + '</i>' : '') + '</li>'; }).join('');
   const table = rows.map((r, i) => {
     const mates = (r.mates || []).filter(m => m[1] >= 0.25).map(m => esc(m[0])).join(', ');
-    return '<tr><td class="n">' + (i + 1) + '</td><td>' + flag(r, reg) + '<b>' + esc(r.n) + '</b><small>' + via(r.via) + (r.real ? '' : ' · rating from qualifiers') + '</small></td>' +
+    const a = A && A.get(r.n);
+    return '<tr><td class="n">' + (i + 1) + '</td>' + (A ? '<td class="n act">' + (a ? a.rank : '·') + '</td>' : '') + '<td>' + flag(r, reg) + '<b>' + esc(r.n) + '</b><small>' + via(r.via) + (r.real ? '' : ' · rating from qualifiers') + '</small></td>' +
       '<td class="n">' + r.ovr + '</td><td class="n' + (i < 3 ? ' p1' : '') + '">' + pct(r.win) + '</td><td class="n">' + pct(r.top10) + '</td><td class="n hide-s">' + r.avgPlace + '</td>' +
       '<td class="hide-s">' + (r.contest >= 0.5 ? (mates ? 'shared with ' + mates : 'shared drop') : 'solo drop') + '</td></tr>';
   }).join('');
   return '<section class="glass reg" id="' + reg + '" data-reg="' + reg + '"><h2>' + esc(REGION[reg]) + (PRIZE[reg] ? ' <small>1st place ' + PRIZE[reg] + '</small>' : '') + '</h2>' +
-    '<ul class="fav">' + cards + '</ul>' + mapHTML(reg, rows) +
-    '<table class="tbl"><thead><tr><th>#</th><th>Player</th><th class="n">Rating</th><th class="n">Win</th><th class="n">Top 10</th><th class="n hide-s">Avg place</th><th class="hide-s">Drop</th></tr></thead><tbody>' + table + '</tbody></table></section>';
+    (A ? vsHTML(reg, rows, A) : '') + '<ul class="fav">' + cards + '</ul>' + mapHTML(reg, rows) +
+    '<table class="tbl"><thead><tr><th>#</th>' + (A ? '<th class="n">Result</th>' : '') + '<th>Player</th><th class="n">Rating</th><th class="n">Win</th><th class="n">Top 10</th><th class="n hide-s">Avg place</th><th class="hide-s">Drop</th></tr></thead><tbody>' + table + '</tbody></table></section>';
 }
 
 // Дизайн главного экрана (26.10, его «предикты тож дизайн измени» — как /competitive): синее стекло, Fira XC, пилюли.
@@ -161,6 +188,10 @@ h1,h2,h3{font-family:var(--font-display);font-weight:700;margin:0;line-height:1.
 .btn:active{transform:translateY(2px);box-shadow:0 2px 0 #b59c00,0 4px 10px rgba(0,0,0,.35)}
 .btn.alt{background:rgba(150,180,255,.22);color:#fff;box-shadow:none;margin-left:8px}
 .note{color:var(--dim);font-size:13px;margin:8px 0 0}
+.vs{margin:0 0 14px;padding:12px 16px;border-radius:12px;background:rgba(215,255,58,.12);box-shadow:inset 0 0 0 1px rgba(215,255,58,.45);font-size:14px;color:#eaf0ff}
+.vs b{font-family:var(--font-display);letter-spacing:.05em;text-transform:uppercase;color:var(--lime)}
+.fav .act{display:block;font-style:normal;font:700 14px var(--font-display);color:var(--lime);margin-top:4px}
+.tbl td.act{color:var(--lime);font-weight:700}
 .how{padding:16px 20px;margin-top:22px;font-size:14px;color:var(--dim)}
 .how b{color:#fff;font-family:var(--font-display);font-size:16px;letter-spacing:.04em;text-transform:uppercase}
 @media(max-width:620px){.wrap{padding:14px 14px 64px}.head{padding:20px 18px}.reg{padding:16px 14px 18px}.logo b{font-size:24px}.nav-pill{padding:7px 12px;font-size:14px}

@@ -317,6 +317,8 @@ const prefilled = prefillI18n(OUT);
 /* Страницы игроков (/player/<ник>, /players) и их адреса в sitemap.xml — см. build-player-pages.js. */
 require('child_process').execFileSync(process.execPath, [path.join(__dirname, 'build-player-pages.js'), OUT], { stdio: 'inherit' });
 /* Прогноз финала FNCS Solos 2026 (/predict/fncs-solos-2026) — см. build-solos-predict.js. */
+// Итоги финала для «прогноз против факта» — см. fetch-solos-results.js; нет сети — без них.
+try { require('child_process').execFileSync(process.execPath, [path.join(__dirname, 'fetch-solos-results.js')], { stdio: 'inherit' }); } catch (e) {}
 require('child_process').execFileSync(process.execPath, [path.join(__dirname, 'build-solos-predict.js'), OUT], { stdio: 'inherit' });
 /* Вкладка Competitive (/competitive) — см. build-competitive.js. Свежий календарь и результаты месяца тянет
    fetch-competitive.js; нет сети — страница собирается из того, что уже лежит в tools/measured. */
