@@ -34,9 +34,12 @@ function pretty(name) {
   WORDS.forEach(([re, to]) => { s = s.replace(re, to); });
   return s.replace(/\s+/g, ' ').replace(/· ·/g, '·').replace(/\s·\s*$/, '').trim();
 }
-const kind = w => /FNCS/.test(w) ? 'fncs' : /VCC|VictoryCup|CashCup|PerformanceEvaluation|NickEh30/.test(w) ? 'cash' : /Ranked/.test(w) ? 'ranked' : 'other';
+const kind = w => /FNCS|^Bratwurst_|^MannekenPis_/.test(w) ? 'fncs' : /VCC|VictoryCup|CashCup|PerformanceEvaluation|NickEh30/.test(w) ? 'cash' : /Ranked/.test(w) ? 'ranked' : 'other';
 const KIND = { fncs: 'FNCS', cash: 'Cash cup', ranked: 'Ranked cup', other: 'Cup' };
-const regOf = e => REGS.includes(e.region) ? e.region : (String(e.w).split('_').pop());
+// LAN-ивенты Epic (события …_Official: FNCS Major 1 Summit «Bratwurst», Global Championship «MannekenPis», мобильный «BOG»)
+// региона не имеют — «LAN», видны при любом выбранном регионе (26.10, его «почему в мае нет лан фнкса»).
+const LAN_W = /^(Bratwurst|MannekenPis|BOG)_/i;
+const regOf = e => LAN_W.test(e.w) || e.region === 'LAN' ? 'LAN' : REGS.includes(e.region) ? e.region : (String(e.w).split('_').pop());
 // Страна → соревновательный регион Epic (по серверам, где играет сцена этой страны). 'NA' — потом NAC или NAW.
 const COUNTRY_REG = {};
 ['gb','ie','fr','de','at','ch','nl','be','lu','es','pt','it','mt','dk','se','no','fi','is','ee','lv','lt','pl','cz','sk','hu','si','hr','ba','rs','me','mk','al',
@@ -85,7 +88,7 @@ if (EVY) {
   const have = new Set(CAL.events.map(e => e.w));
   Object.entries(EVY).forEach(([ev, e]) => {
     if (!e || !e.w) return;
-    const reg = String(ev).split('_').pop();
+    const reg = /_Official$/.test(ev) ? 'LAN' : String(ev).split('_').pop();
     e.w.forEach(w => {
       if (!w.w || have.has(w.w) || w.ex || !w.b) return;
       have.add(w.w);
@@ -99,7 +102,7 @@ if (EVY) {
 // в клетке — плашки серий дня цветом вида, у дня FNCS — обложка; клик по дню — список окон с временем зрителя.
 // В страницу едет только сам список окон с начала прошлого месяца (строки — таблицей, окна — массивами).
 const from = new Date(Date.UTC(2026, 0, 1));   // весь 2026 год
-const upcoming = CAL.events.filter(e => Date.parse(e.begin) >= from.getTime() && REGS.includes(regOf(e)))
+const upcoming = CAL.events.filter(e => Date.parse(e.begin) >= from.getTime() && (REGS.includes(regOf(e)) || regOf(e) === 'LAN'))
   .sort((a, b) => a.begin < b.begin ? -1 : a.begin > b.begin ? 1 : 0);
 const series = n => n.replace(/ · (Week|Round|Session|Heat) \d+/g, '').replace(/ · Qualifier \d+ ·/g, ' ·').replace(/ · (Day \d+ )?Round \d+$/, '').trim();
 const STR = [], strIx = new Map();
@@ -116,7 +119,7 @@ CAL.events.forEach(e => { if (hasArt(e.img) && !famArt.has(famOf(e.ev))) famArt.
 const fncsArt = [...CAL.events].reverse().find(e => /FNCSSolo/.test(e.w) && hasArt(e.img));
 const artOf = e => hasArt(e.img) ? '/' + artFile(e.img) : famArt.get(famOf(e.ev)) || (kind(e.w) === 'fncs' && fncsArt ? '/' + artFile(fncsArt.img) : '');
 // Старшинство окна дня: финал FNCS, остальной FNCS, призовые серии (Performance, Nick Eh 30), кэш-капы, ranked, прочее.
-const rankOf = (e, nm) => kind(e.w) === 'fncs' ? (/Final/.test(nm) ? 100 : 80) : /PerformanceEvaluation|NickEh30/.test(e.w) ? 60 : kind(e.w) === 'cash' ? 50 : kind(e.w) === 'ranked' ? 30 : 10;
+const rankOf = (e, nm) => kind(e.w) === 'fncs' ? (/Final|Summit|Championship/.test(nm) ? 100 : 80) : /PerformanceEvaluation|NickEh30/.test(e.w) ? 60 : kind(e.w) === 'cash' ? 50 : kind(e.w) === 'ranked' ? 30 : 10;
 const ART = {};
 const CALDATA = upcoming.map(e => {
   const nm = e.pretty ? e.name : pretty(e.name);
@@ -138,13 +141,13 @@ if (RES && RES.windows.length) {
     const nm0 = x.n[i] || x.epic[i] || '';
     const o = who.get(id) || { n: !nm0 || /^[0-9a-f]{32}$/i.test(nm0) ? 'Unknown player' : nm0, c: null, at: {} };
     if (!o.c && x.c[i]) o.c = x.c[i];
-    o.at[regOf(w)] = (o.at[regOf(w)] || 0) + 1;
+    if (regOf(w) !== 'LAN') o.at[regOf(w)] = (o.at[regOf(w)] || 0) + 1;
     who.set(id, o);
   })));
   who.forEach(o => {
     const most = list => Object.entries(o.at).filter(([r]) => !list || list.includes(r)).sort((a, b) => b[1] - a[1])[0];
     const home = homeRegion(o.c);
-    o.reg = home === 'NA' ? ((most(['NAC', 'NAW']) || ['NAC'])[0]) : home || most()[0];
+    o.reg = home === 'NA' ? ((most(['NAC', 'NAW']) || ['NAC'])[0]) : home || (most() || ['EU'])[0];
     o.f = o.c && fs.existsSync(path.join(__dirname, '..', 'flags', 'w20', String(o.c).toLowerCase() + '.png')) ? String(o.c).toLowerCase() : '';
   });
   const byMonth = new Map();
@@ -336,7 +339,7 @@ var fmtM=new Intl.DateTimeFormat(undefined,{month:'long',year:'numeric'});
 function dk(d){return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();}
 var today=new Date(), cur={y:today.getFullYear(),m:today.getMonth()}, pick=dk(today);
 var first=D.length?new Date(D[0][0]*60000):today, last=D.length?new Date(D[D.length-1][0]*60000):today;
-function byDay(){var m={}; D.forEach(function(e){ if(reg!=='ALL'&&R[e[2]]!==reg) return; var k=dk(new Date(e[0]*60000)); (m[k]=m[k]||[]).push(e);}); return m;}
+function byDay(){var m={}; D.forEach(function(e){ if(reg!=='ALL'&&e[2]>=0&&R[e[2]]!==reg) return; var k=dk(new Date(e[0]*60000)); (m[k]=m[k]||[]).push(e);}); return m;}
 function esc(x){return String(x).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
 function renderCal(){
  var by=byDay(), y=cur.y, m=cur.m, days=new Date(y,m+1,0).getDate(), lead=(new Date(y,m,1).getDay()+6)%7;
@@ -381,12 +384,12 @@ function renderDay(by){
  var p=pick.split('-'), list=(by[pick]||[]).slice().sort(function(a,b){return a[0]-b[0];}), el=document.getElementById('calDay');
  el.innerHTML='<h4>'+esc(fmtD.format(new Date(+p[0],p[1]-1,+p[2])))+'</h4>'+(list.length?'<ul>'+list.map(function(e){
   var t=e[0]*60000, end=e[1]*60000, cls='ev k-'+K[e[3]]+(t<=now&&now<end?' live':'')+(end<now?' done':'');
-  return '<li class="'+cls+'"><time>'+fmtT.format(t)+'</time><i>'+R[e[2]]+'</i><span>'+esc(S[e[5]])+'</span><em>'+KL[e[3]]+'</em></li>';
+  return '<li class="'+cls+'"><time>'+fmtT.format(t)+'</time><i>'+(e[2]>=0?R[e[2]]:'LAN')+'</i><span>'+esc(S[e[5]])+'</span><em>'+KL[e[3]]+'</em></li>';
  }).join('')+'</ul>':'<p class="note">No cups on this day'+(reg==='ALL'?'':' in '+reg)+'.</p>');
 }
 function apply(){
  document.querySelectorAll('.regs button').forEach(function(b){b.setAttribute('aria-pressed',b.dataset.r===reg?'true':'false');});
- document.querySelectorAll('.res').forEach(function(x){x.hidden=reg!=='ALL'&&x.dataset.reg!==reg;});
+ document.querySelectorAll('.res').forEach(function(x){x.hidden=reg!=='ALL'&&x.dataset.reg!==reg&&x.dataset.reg!=='LAN';});
  renderCal();
 
  try{localStorage.setItem('compReg',reg);}catch(e){}

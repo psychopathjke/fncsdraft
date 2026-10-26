@@ -78,7 +78,7 @@ function payout(table, rank, pts) {
   Object.entries(EV).forEach(([ev, e]) => e && e.w && e.w.forEach(w => {
     if (byW.has(w.w) || w.ex || !w.b || String(w.b).slice(0, 4) !== YEAR || Date.parse(w.e || w.b) > now) return;
     byW.set(w.w, { w: w.w, ev, name: [e.t1, e.t2].filter(Boolean).join(' ') + (w.n ? ' · ' + w.n : ''), pretty: true,
-      region: String(ev).split('_').pop(), begin: String(w.b).replace('+00:00', 'Z') });
+      region: /_Official$/.test(ev) ? 'LAN' : String(ev).split('_').pop(), begin: String(w.b).replace('+00:00', 'Z') });
   }));
   const RF = path.join(M, 'comp-results.json');
   const old = fs.existsSync(RF) ? JSON.parse(fs.readFileSync(RF, 'utf8')) : {};
@@ -99,7 +99,9 @@ function payout(table, rank, pts) {
       }));
       // eucompetitive синхронизирует не все окна (25.10: 57 пустых, свежие недели Reload/VCC) — тогда таблица мест
       // с Tracker (imp_leaderboard, снята Playwright'ом в comp-lb-tracker.json: rank, pts, ids, n, c).
-      if (!top.length && TRK[e.w] && TRK[e.w].length) top = TRK[e.w].map(x => ({ ...x, epic: x.n, usd: payout(table, x.rank, x.pts) }));
+      // На ЛАНах (…_Official) играют с турнирных аккаунтов «[FNCS2026] BIG Malibuca» — у eucompetitive они отдельные люди,
+      // а Tracker сводит их к основному аккаунту. Для ЛАНа таблица мест с Tracker в приоритете.
+      if ((!top.length || /^(Bratwurst|MannekenPis|BOG)_/i.test(e.w)) && TRK[e.w] && TRK[e.w].length) top = TRK[e.w].map(x => ({ ...x, epic: x.n, usd: payout(table, x.rank, x.pts) }));
       if (!top.length) { missing.push([e.ev, e.w]); return; }
       results.push({ w: e.w, ev: e.ev, name: e.name, pretty: !!e.pretty, region: e.region, begin: e.begin, top });
     }));
