@@ -127,7 +127,11 @@ function payout(table, rank, pts) {
   const dayKey = w => /_Day\d+/.test(w) ? w.replace(/_Day\d+/, '_DayN') : null;
   const lastDay = new Map();
   results.forEach(r => { const k = dayKey(r.w); if (!k || !r.top.some(x => x.usd)) return; const d = +r.w.match(/_Day(\d+)/)[1]; if (!lastDay.has(k) || d > lastDay.get(k)) lastDay.set(k, d); });
-  results.forEach(r => { const k = dayKey(r.w); if (k && lastDay.has(k) && +r.w.match(/_Day(\d+)/)[1] < lastDay.get(k)) r.top.forEach(x => { x.usd = 0; }); });
+  // Только если у раннего дня та же таблица, что у последнего (общая cumulative): у Reload Elite Championship каждый
+  // день платит своим вылетевшим (группы — 18–20-е, выживание — 7–9-е), это разные деньги.
+  const lastW = new Map();
+  results.forEach(r => { const k = dayKey(r.w); if (k && lastDay.has(k) && +r.w.match(/_Day(\d+)/)[1] === lastDay.get(k)) lastW.set(k, r.w); });
+  results.forEach(r => { const k = dayKey(r.w); if (k && lastW.has(k) && r.w !== lastW.get(k) && JSON.stringify(payTable(r.w)) === JSON.stringify(payTable(lastW.get(k)))) r.top.forEach(x => { x.usd = 0; }); });
   results.sort((a, b) => a.begin < b.begin ? -1 : 1);
   // Хранится только нужное странице: кто получил деньги, и первая тройка (карточки результатов) — 12 МБ → ~1 МБ.
   results.forEach(r => { r.top = r.top.filter(x => x.usd > 0 || x.rank <= 3); });
