@@ -171339,6 +171339,29 @@ function mgrFfAsk(day){ ccAsk(mgrT9().ffAsk(ccDayLabel(day)), ()=>mgrFastForward
    организации (лучший кандидат, ★ настоящий тиммейт первым), открыть состав или пропустить турнир. */
 function mgrAutoFill(size){
   if(MGR.teams.some(t=>mgrTeamSize(t)===size)) return true;
+  /* СОСТАВЫ БОЛЬШЕ ФОРМАТА СЕЗОНА (Notion 26.10.26, игрок: «all player they are in a trio, while the mode is for duos, so none
+     of my players are actually playing… I had to go through an entire season»). Трио, собранные в трио-год, в дуо-году не
+     подходили ни под один турнир, а добор умел только доставлять игроков. Как у настоящих клубов при смене формата: гости
+     уходят первыми, затем слабейший свой — в запас; сильнейшие остаются вместе. Только под формат сезона: дуо-кап посреди
+     трио-года трио не режет. */
+  if(size===careerSquadSize() && MGR.teams.some(t=>mgrTeamSize(t)>size)){
+    const ovr=h=>ccCardOvr(mgrCard(h))||0, moved=[];
+    MGR.teams.forEach(t=>{
+      while(mgrTeamSize(t)>size && (t.guests||[]).length) t.guests.pop();
+      if(mgrTeamSize(t)<=size) return;
+      const keep=t.cards.slice().sort((a,b)=>ovr(b)-ovr(a)).slice(0, Math.max(0, size-(t.guests||[]).length));
+      const out=t.cards.filter(h=>keep.indexOf(h)<0);
+      t.cards=t.cards.filter(h=>keep.indexOf(h)>=0);
+      MGR.bench=(MGR.bench||[]).concat(out); moved.push(...out);
+      out.forEach(h=>{ try{ mgrToast(({ru:h+' уходит в запас: формат сезона меньше состава', fr:h+' passe sur le banc : le format de la saison est plus petit', it:h+' va in panchina: il formato della stagione è più piccolo', pt:h+' vai para o banco: o formato da temporada é menor', de:h+' geht auf die Bank: das Saisonformat ist kleiner', es:h+' pasa al banquillo: el formato de la temporada es más pequeño'})[LANG]||(h+' moves to the bench: the season format is smaller than the team')); }catch(e){} });
+    });
+    // Выведенные — ещё составами нужного размера, сильнейшие вместе (свой запас менеджера не трогается).
+    const bench=moved.slice().sort((a,b)=>ovr(b)-ovr(a));
+    while(bench.length>=size){ const cards=bench.splice(0, size); MGR.bench=MGR.bench.filter(x=>cards.indexOf(x)<0);
+      MGR.teams.push({id:'t'+(MGR.sid=(MGR.sid||0)+1), cards}); }
+    mgrSave();
+    if(MGR.teams.some(t=>mgrTeamSize(t)===size)) return true;
+  }
   const t=MGR.teams.filter(x=>mgrTeamSize(x)<size).sort((a,b)=>mgrTeamSize(b)-mgrTeamSize(a))[0];
   // Без запаса (8.10): в неполную команду встают «вне состава» и игроки других неполных составов, сильнейшие первыми.
   const others=MGR.teams.filter(x=>x!==t && mgrTeamSize(x)<size).flatMap(x=>x.cards);
