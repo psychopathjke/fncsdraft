@@ -25844,7 +25844,7 @@ const NEW_NATIONALITY_2025={
   FKS:'Саудовская Аравия', Hero:'Саудовская Аравия', EpikWhale:'США', PXMP:'США',
   Eomzo:'Канада', Chico:'Босния и Герцеговина', IDrop:'Норвегия', 'rezon ay':'Германия'
 };
-const FLAG_CODE_EXTRA={'Франция':'fr','Норвегия':'no','Саудовская Аравия':'sa','Аргентина':'ar',
+const FLAG_CODE_EXTRA={'Сенегал':'sn','Франция':'fr','Норвегия':'no','Саудовская Аравия':'sa','Аргентина':'ar',
   'Украина':'ua','Латвия':'lv','Сербия':'rs','Северная Македония':'mk','Эстония':'ee',
   'Босния и Герцеговина':'ba','Новая Зеландия':'nz','Оман':'om','Кувейт':'kw','Австралия':'au',
   'Япония':'jp','Индия':'in','Бразилия':'br'};
@@ -83621,6 +83621,53 @@ pushCard({handle:'Lix', nat:'Франция', natSource:'x', region:'EU',
 pushCard({handle:'Ariaa', nat:'Франция', natSource:'x', region:'EU',
           event:'FNCS 2026 Solos (Europe)', date:'6 окт 2026', placement:null, note:'',
           tier:'cardmode', cardSet:'d4', org:'Shimo', rarity:rarityForRating(62), rating:62});
+/* Kraven Esport — его просьба 26.10 (Notion «26.10.26», «организация»: x.com/kravenesport и десять профилей Tracker; его
+   «да это их игроки, открой ссылки»). Клуб: «structure esport basée sur fortnite», Франция, X с 30.09.2026, герб — аватар X
+   (logos/Kraven_Esport.jpg). Профили Tracker прочитаны руками 26.10 (tools/measured/kraven-roster.json): ни у кого нет
+   призовых и финалов, поэтому рейтинг — полоса своего дивизиона (CC_DIV_RATING: D3 68, D4 61, D5 54; в трёхдивизионных
+   регионах D3 — 54) и место в ней, по правилу Team Eldia и Shimo. Ники без клубных тегов (KRVN, SRN, twitter/twtr).
+     Z3fv — Франция, PR 376 (#18 309 EU), Division 3 Practice #816 и #2 021, Division 4 Practice #10: низ D3 — 67.
+     spixxin — Франция, PR 396 (#17 770 EU), Division 4 Practice #493, LCQ Мейджора 2 #2 679: верх D4 — 63.
+     Akash7FN — Италия, PR 363 (#18 668 EU), Division 4 Practice #1 049, GC Last Chance R1 #581: 63.
+     SnфдX — страны нет, PR 345 (#19 266 EU), Division 4, FNCS Solos LCQ #1 934: 62.
+     Rayan 14 y — Сенегал, PR 99 (#37 931 EU), Division 4 Practice #628…#2 852, разок D5: 61.
+     Tr1ckz — страны нет, PR 208 (#25 691 EU), между D4 (#1 284) и D5: 60.
+     212 AKS — Европа, консоль, без дивизиона: PlayStation Cup #3 486 — пол D5, 54.
+     SLAZZY — Ближний Восток (3 дивизиона), PR 53, Division 3 Practice #2 112 — низ ME D3: 54.
+     MAYZSKI — консоль, Zero Build, NA West (3 дивизиона): FNCS-дивизионов нет, PR 510 (#2 383 ZB NAW консоль), Icon Cup ZB #215,
+       Duos ZB Cash Cup #409 — ОЦЕНКА уровня D3 региона с плюсом: 56.
+     Artox_ツ — консоль, Zero Build, Ближний Восток: PR 69, Solo Victory Cup ZB #1 186 — ОЦЕНКА ниже пола: 52 (Artox уже занят).
+   Zero Build-игроки сидят на сцене своего региона, как все: отдельной ZB-лестницы в карьере нет. */
+pushCard({handle:'Z3fv', nat:'Франция', natSource:'tracker', region:'EU',
+          event:'FNCS 2026 Division 3 Practice — Event 4 (Europe)', date:'14 сен 2026', placement:816, note:'',
+          tier:'cardmode', cardSet:'d4', org:'Kraven Esport', rarity:rarityForRating(67), rating:67});
+pushCard({handle:'spixxin', nat:'Франция', natSource:'tracker', region:'EU',
+          event:'FNCS 2026 Division 4 Practice — Event 2 (Europe)', date:'31 авг 2026', placement:493, note:'',
+          tier:'cardmode', cardSet:'d4', org:'Kraven Esport', rarity:rarityForRating(63), rating:63});
+pushCard({handle:'Akash7FN', nat:'Италия', natSource:'tracker', region:'EU',
+          event:'FNCS 2026 Global Championship Last Chance — Round 1 (Europe)', date:'3 авг 2026', placement:581, note:'',
+          tier:'cardmode', cardSet:'d4', org:'Kraven Esport', rarity:rarityForRating(63), rating:63});
+pushCard({handle:'SnфдX', nat:null, natSource:'tracker', region:'EU',
+          event:'FNCS 2026 Solos Last Chance Qualifier (Europe)', date:'19 окт 2026', placement:1934, note:'',
+          tier:'cardmode', cardSet:'d4', org:'Kraven Esport', rarity:rarityForRating(62), rating:62});
+pushCard({handle:'Rayan 14 y', nat:'Сенегал', natSource:'tracker', region:'EU',
+          event:'FNCS 2026 Division 4 Practice — Event 2 (Europe)', date:'31 авг 2026', placement:628, note:'',
+          tier:'cardmode', cardSet:'d4', org:'Kraven Esport', rarity:rarityForRating(61), rating:61});
+pushCard({handle:'Tr1ckz', nat:null, natSource:'tracker', region:'EU',
+          event:'FNCS 2026 Division 4 — Event 8 (Europe)', date:'18 июл 2026', placement:1284, note:'',
+          tier:'cardmode', cardSet:'d4', org:'Kraven Esport', rarity:rarityForRating(60), rating:60});
+pushCard({handle:'212 AKS', nat:null, natSource:'tracker', region:'EU',
+          event:'PlayStation Cup 2026 (Europe)', date:'31 янв 2026', placement:3486, note:'',
+          tier:'cardmode', cardSet:'d4', org:'Kraven Esport', rarity:rarityForRating(54), rating:54});
+pushCard({handle:'SLAZZY', nat:null, natSource:'tracker', region:'ME',
+          event:'FNCS 2026 Division 3 Practice — Event 4 (Middle East)', date:'14 сен 2026', placement:2112, note:'',
+          tier:'cardmode', cardSet:'d4', org:'Kraven Esport', rarity:rarityForRating(54), rating:54});
+pushCard({handle:'MAYZSKI', nat:null, natSource:'tracker', region:'NAW',
+          event:'PlayStation Typical Gamer Icon Cup Zero Build (NA West)', date:'30 июл 2026', placement:215, note:'',
+          tier:'cardmode', cardSet:'d4', org:'Kraven Esport', rarity:rarityForRating(56), rating:56});
+pushCard({handle:'Artox_ツ', nat:null, natSource:'tracker', region:'ME',
+          event:'Console Solo Victory Cup Zero Build (Middle East)', date:'9 авг 2026', placement:1186, note:'',
+          tier:'cardmode', cardSet:'d4', org:'Kraven Esport', rarity:rarityForRating(52), rating:52});
 
 /* Один человек — одно написание.
 
@@ -95023,7 +95070,7 @@ function modePool(){
 const NAT_EN={
 'Австралия':'Australia','Австрия':'Austria','Аргентина':'Argentina','Бахрейн':'Bahrain','Беларусь':'Belarus',
 'Босния и Герцеговина':'Bosnia and Herzegovina','Бразилия':'Brazil','Великобритания':'United Kingdom','Германия':'Germany',
-'Дания':'Denmark','Израиль':'Israel','Индия':'India','Ирландия':'Ireland','Испания':'Spain','Италия':'Italy',
+'Дания':'Denmark','Израиль':'Israel','Индия':'India','Ирландия':'Ireland','Испания':'Spain','Италия':'Italy','Сенегал':'Senegal',
 'Канада':'Canada','Кувейт':'Kuwait','Латвия':'Latvia','Литва':'Lithuania','Мексика':'Mexico','Нидерланды':'Netherlands',
 'Новая Зеландия':'New Zealand','Норвегия':'Norway','Оман':'Oman','Пакистан':'Pakistan','Польша':'Poland','Россия':'Russia',
 'Румыния':'Romania','США':'USA','Саудовская Аравия':'Saudi Arabia','Северная Македония':'North Macedonia',
@@ -100079,7 +100126,8 @@ const CLUB_LOGO={
   'Aspect Esports':'Aspect_Esport.png',
   'Knights of Shadows':'KoS_Esports.png',
   'Falcons Esport':'Team_Falcons.png',
-  'Team Eldia':'Team_Eldia.jpg'   // аватар x.com/Team_Eldia (30.09)
+  'Team Eldia':'Team_Eldia.jpg',   // аватар x.com/Team_Eldia (30.09)
+  'Kraven Esport':'Kraven_Esport.jpg'   // аватар x.com/kravenesport (26.10)
 };
 function clubLogoFile(org){
   if(CLUB_LOGO[org]) return CLUB_LOGO[org];
@@ -124935,7 +124983,7 @@ function careerLeaveOrg(){
    himself, written by the clubs and players on their own profiles. Deriving the
    rest from the club's name would be inventing a real organisation's handle. */
 const CC_ORG_AT={'Gentle Mates':'GentleMates', 'Geekay Esports':'geekay_esports',
-                 'BIG':'BIGCLANgg', 'BIG Clan':'BIGCLANgg', 'Loyalty Gamer':'TeamLG__'};
+                 'BIG':'BIGCLANgg', 'BIG Clan':'BIGCLANgg', 'Loyalty Gamer':'TeamLG__', 'Kraven Esport':'kravenesport'};
 function ccOrgAt(name){ return CC_ORG_AT[String(name||'')] || null; }
 /* The one line a career leads with, for the strip under the name.
 
@@ -136785,7 +136833,7 @@ const CAREER_CRESTS=new Set([
   'Lynox_Esport.png','Lyost_Esport.png','MGA_Esport.png','MOUZ.png','Matrix.png','NEXUS.png',
   'NOM_eSports.png','NTO_Corp.png','Natare_Six.png','Natus_Vincere.png',
   'Northern_Star_Gaming.png','OCE5N.png','ORA_Esport.png','PARIVISION.png','PWR.png',
-  'Drayko_Esport.png','Poyo_Esports.png','QT_DIG.png','R8_Esports.png','ROC_Esports.png','SORIN.png','Shimo.png','Team_Eldia.jpg',
+  'Drayko_Esport.png','Poyo_Esports.png','QT_DIG.png','R8_Esports.png','ROC_Esports.png','SORIN.png','Shimo.png','Team_Eldia.jpg','Kraven_Esport.jpg',
   'ShindeN.png','Solary.png','T1.png','TRKF_E-Sport.png','TSM.png','TYT_Esports.png',
   'Team_Falcons.png','Team_HavoK.png','Team_Liquid.png','Team_STM.png','Team_Spirit.png',
   'Team_Vitality.png','Twisted_Minds.png','Virtus.pro.png','Void_Esports.png','Vulcan_Esport.png',
@@ -136966,6 +137014,8 @@ const CC_ORG_NEW=[
      Состав из их же анонсов: Chainsaw mag (@magmafavelado, Бразилия) и Chapofn1 (@emilfn12, Дания); с 8.10 — ещё
      serkkovv, luk3, Vicens; с 18.10 Buedelupro вместо Infinix (см. pushCard Team Eldia). */
   {name:'Team Eldia',     tier:78, n:0, newcomer:true},   // герб logos/Team_Eldia.jpg с аватара
+  // Kraven Esport — просьба 26.10 (x.com/kravenesport, Франция, с 30.09.2026): любительский клуб без призовых — пол списка.
+  {name:'Kraven Esport',  tier:78, n:0, newcomer:true},
   /* Его четыре, 30 августа («на рабочем столе орги, добавил новые»): гербы
      легли в logos/. Уровни — по тому же ряду призовых esportsearnings, что и
      выше: TSM (~$15M за историю) рядом с Vitality/Cloud9, Gambit (~$18M, но
@@ -169279,7 +169329,7 @@ function mgrClubsFor(year, region){
   /* Только организации, которые в этом году уже были (его слово 8.10: «пусть в каждом те организации, которые были в этих
      годах»): год основания (BetBoom 2022, PARIVISION 2023, Tundra 2021, Drayko и Eldia 2026 — из их профилей и открытых
      данных); любительские (уровень ≤80) — только в годах, где у них есть игроки в данных. */
-  const MGR_ORG_FROM={'BetBoom Team':2022, 'PARIVISION':2026, 'Team Spirit':2026, 'Tundra Esports':2021, 'Drayko Esport':2026, 'Team Eldia':2026};
+  const MGR_ORG_FROM={'BetBoom Team':2022, 'PARIVISION':2026, 'Team Spirit':2026, 'Tundra Esports':2021, 'Drayko Esport':2026, 'Team Eldia':2026, 'Kraven Esport':2026};
   try{ (typeof CC_ORG_NEW!=='undefined' ? CC_ORG_NEW : []).forEach(o=>{
     if(!o || !o.name || list.some(c=>c.name===o.name)) return;
     // Ещё не было в этом году — не прячем, а в отдельный раздел «вне истории» (его слово 8.10: «для клубов, которых нет, — отдельный режим»).

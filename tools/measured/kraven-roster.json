@@ -1,0 +1,17 @@
+{
+  "source": "fortnitetracker.com profile pages (Epic Events overview), read by hand in the owner's browser on 2026-10-26; roster from the Notion page 26.10.26 (organisation Kraven Esport, x.com/kravenesport)",
+  "org": "Kraven Esport",
+  "tag": "KRVN",
+  "players": [
+    {"handle": "KRVN Z3fv!", "epic": "KRVN Z3fvǃ", "country": "fr", "region": "EU", "mode": "build", "pr": 376, "prRank": 18309, "div": 3, "earn": 0, "best": "FNCS Division 4 Practice #10 (Aug 31, 2026)"},
+    {"handle": "Rayan 14 y", "epic": "Rayan 14 y", "country": "sn", "region": "EU", "mode": "build", "pr": 99, "prRank": 37931, "div": 4, "earn": 0, "best": "Duos Ranked Cup #534"},
+    {"handle": "KRVN Tr1ckz", "epic": "KRVN Tr1ckz", "country": null, "region": "EU", "mode": "build", "pr": 208, "prRank": 25691, "div": 4, "earn": 0, "best": "FNCS Division 4 #1,284"},
+    {"handle": "SnфдX", "epic": "SnфдX", "country": null, "region": "EU", "mode": "build", "pr": 345, "prRank": 19266, "div": 4, "earn": 0, "best": "FNCS Solos LCQ #1,934"},
+    {"handle": "spixxin", "epic": "twitter spixxin", "country": "fr", "region": "EU", "mode": "build", "pr": 396, "prRank": 17770, "div": 4, "earn": 0, "best": "FNCS Division 4 Practice #493"},
+    {"handle": "MAYZSKI", "epic": "SRN MAYZSKI", "country": null, "region": "NAW", "mode": "zb-console", "pr": 510, "prRank": 2383, "div": null, "earn": 0, "best": "PlayStation Typical Gamer Icon Cup ZB #215"},
+    {"handle": "Akash7FN", "epic": "twtr Akash7FN", "country": "it", "region": "EU", "mode": "build", "pr": 363, "prRank": 18668, "div": 4, "earn": 0, "best": "GC Last Chance Finals R1 #581"},
+    {"handle": "Artox", "epic": "Artox_ツ", "country": null, "region": "ME", "mode": "zb-console", "pr": 69, "prRank": 14139, "div": null, "earn": 0, "best": "Console ZB Solo Victory Cup #1,186"},
+    {"handle": "SLAZZY 699", "epic": "S L A Z Z Y 699", "country": null, "region": "ME", "mode": "build", "pr": 53, "prRank": 36627, "div": 3, "earn": 0, "best": "Reload Duos Victory Cup #1,378"},
+    {"handle": "212 AKS", "epic": "212 AKS", "country": null, "region": "EU", "mode": "console", "pr": 44, "prRank": 13636, "div": null, "earn": 0, "best": "PlayStation Cup #3,486"}
+  ]
+}
