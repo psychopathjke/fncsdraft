@@ -139,7 +139,8 @@ if (RES && RES.windows.length) {
   const who = new Map();   // id → { n, c, at }
   RES.windows.forEach(w => w.top.forEach(x => x.ids.forEach((id, i) => {
     const nm0 = x.n[i] || x.epic[i] || '';
-    const o = who.get(id) || { n: !nm0 || /^[0-9a-f]{32}$/i.test(nm0) ? 'Unknown player' : nm0, c: null, at: {} };
+    const nm1 = String(nm0).replace(/\s*\[[^\]]*\]\s*/g, ' ').trim();   // «hylnd amp [MES2026]», «[FNCS2026] BIG Vico» → без турнирной приписки
+    const o = who.get(id) || { n: !nm1 || /^[0-9a-f]{32}$/i.test(nm1) ? 'Unknown player' : nm1, c: null, at: {} };
     if (!o.c && x.c[i]) o.c = x.c[i];
     if (regOf(w) !== 'LAN') o.at[regOf(w)] = (o.at[regOf(w)] || 0) + 1;
     who.set(id, o);
@@ -147,7 +148,7 @@ if (RES && RES.windows.length) {
   who.forEach(o => {
     const most = list => Object.entries(o.at).filter(([r]) => !list || list.includes(r)).sort((a, b) => b[1] - a[1])[0];
     const home = homeRegion(o.c);
-    o.reg = home === 'NA' ? ((most(['NAC', 'NAW']) || ['NAC'])[0]) : home || (most() || ['EU'])[0];
+    o.reg = home === 'NA' ? ((most(['NAC', 'NAW']) || ['NAC'])[0]) : home || (most() || [null])[0];   // ни страны, ни региональных капов (мобильный ЛАН, Notion 25.10.26 скрин 11) — без региона, только во «All»
     o.f = o.c && fs.existsSync(path.join(__dirname, '..', 'flags', 'w20', String(o.c).toLowerCase() + '.png')) ? String(o.c).toLowerCase() : '';
   });
   const byMonth = new Map();
@@ -167,7 +168,7 @@ if (RES && RES.windows.length) {
     const all = [...M.p.values()].sort((a, b) => b.usd - a.usd);
     const keep = new Set(all.slice(0, 100).map(x => x.id));
     REGS.forEach(r => all.filter(x => who.get(x.id).reg === r).slice(0, 40).forEach(x => keep.add(x.id)));
-    const byReg = {}; all.forEach(x => { const r = who.get(x.id).reg; byReg[r] = (byReg[r] || 0) + x.usd; });
+    const byReg = {}; all.forEach(x => { const r = who.get(x.id).reg; if (r) byReg[r] = (byReg[r] || 0) + x.usd; });
     EARN[m] = { paid: M.paid, reg: byReg, rows: all.filter(x => keep.has(x.id)).map(x => { const o = who.get(x.id); return [o.n, o.f, REGS.indexOf(o.reg), x.usd, x.cups, x.wins]; }) };
   });
   const latest = RES.windows.slice().sort((a, b) => a.begin > b.begin ? -1 : 1).slice(0, 60);
