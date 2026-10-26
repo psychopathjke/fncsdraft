@@ -321,7 +321,12 @@ require('child_process').execFileSync(process.execPath, [path.join(__dirname, 'b
 try { require('child_process').execFileSync(process.execPath, [path.join(__dirname, 'fetch-solos-results.js')], { stdio: 'inherit' }); } catch (e) {}
 require('child_process').execFileSync(process.execPath, [path.join(__dirname, 'build-solos-predict.js'), OUT], { stdio: 'inherit' });
 /* Вкладка Competitive (/competitive) — см. build-competitive.js. Свежий календарь и результаты месяца тянет
-   fetch-competitive.js; нет сети — страница собирается из того, что уже лежит в tools/measured. */
+   fetch-competitive.js; нет сети — страница собирается из того, что уже лежит в tools/measured.
+   Перед ним Liquipedia: список сторонних турниров года (раз в сутки), их места и призы (только свежие), трансферы. */
+['fetch-lan-list.js', 'fetch-lan-lq.js', 'fetch-transfers.js'].forEach(f => {
+  try { require('child_process').execFileSync(process.execPath, [path.join(__dirname, f)], { stdio: 'inherit' }); }
+  catch (e) { console.log('competitive: ' + f + ' не обновился, беру прежнее'); }
+});
 try { require('child_process').execFileSync(process.execPath, [path.join(__dirname, 'fetch-competitive.js')], { stdio: 'inherit' }); }
 catch (e) { console.log('competitive: данные не обновились, беру прежние'); }
 require('child_process').execFileSync(process.execPath, [path.join(__dirname, 'build-competitive.js'), OUT], { stdio: 'inherit' });

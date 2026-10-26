@@ -130,14 +130,14 @@ if (EVY) {
   });
 }
 
-// Сторонние ЛАНы и шоу-матчи (Liquipedia, comp-lan-lq.json) — днём турнира в календаре.
+// Сторонние ЛАНы, шоу-матчи и онлайн-турниры не Epic (Liquipedia, comp-lan-lq.json) — днём турнира в календаре.
 const LQY = read('comp-lan-lq.json');
 if (LQY) Object.entries(LQY).forEach(([page, L]) => {
-  if (!L.top || !L.top.length) return;
+  // Весь список A/B-Tier (26.10, пункт 8): и без мест — будущий (Coupe de France) и клубный (Saudi eLeague) — днём в календаре.
   const w = 'LQ_' + page.replace(/[^A-Za-z0-9]+/g, '_');
   if (CAL.events.some(e => e.w === w)) return;
-  CAL.events.push({ w, ev: 'liquipedia', name: L.name + (L.city && L.city !== 'Online' ? ' · ' + L.city : ''), region: 'LAN',
-    begin: L.day + 'T12:00:00Z', end: L.day + 'T20:00:00Z', img: null, status: 'liquipedia', pretty: true });
+  CAL.events.push({ w, ev: 'liquipedia', name: L.name + (L.city && !/^(Online|Europe|North America|Middle East|World|Brazil|Asia|Oceania)$/.test(L.city) ? ' · ' + L.city.split(/s{2,}/)[0] : ''), region: 'LAN',
+    begin: L.day + 'T12:00:00Z', end: (L.end || L.day) + 'T20:00:00Z', img: null, status: 'liquipedia', pretty: true });
 });
 
 // ---- Календарь как в карьере (26.10, его «календарь в виде календаря как в карьере»): сетка месяца с понедельника,
@@ -176,17 +176,69 @@ const CALDATA = upcoming.map(e => {
 // Регион игрока — его домашний, а не региона капа (26.10: «PANZER топ-1 NAC — ошибка, он европеец, взял призовые на
 // Америке»): страна → регион; США и Канада — NAC/NAW по тому, где больше капов за год; страны нет — где больше капов.
 // Деньги считаются все, где бы ни выиграны.
-let resHTML = '', WEEK = null, RECS = [];
+let resHTML = '', WEEK = null, RECS = [], NEWS = null;
 const EARN = {};
 if (RES && RES.windows.length) {
-  const who = new Map();   // id → { n, c, at }
+  // Ники Epic и ники игры расходятся: тег клана впереди («DIG Synth»), кириллица вместо латиницы, «ǃ», точка в конце, диакритика.
+  const HOMO = { 'а': 'a', 'е': 'e', 'о': 'o', 'р': 'p', 'с': 'c', 'у': 'y', 'х': 'x', 'к': 'k', 'м': 'm', 'т': 't', 'н': 'h', 'в': 'b', 'і': 'i', 'ѕ': 's' };
+  const foldN = n => String(n).toLowerCase().replace(/[а-яёіѕ]/g, c => HOMO[c] || c).normalize('NFKD').replace(/[̀-ͯ]/g, '').replace(/[ǃ!]+/g, '').replace(/^[\s._\-]+|[\s._\-]+$/g, '').trim();
+  const strip = n => String(n || '').replace(/\s*\[[^\]]*\]\s*/g, ' ').trim();   // «hylnd amp [MES2026]», «[FNCS2026] BIG Vico» → без турнирной приписки
+  const isHex = n => /^[0-9a-f]{32}$/i.test(n);
+  // Все ники аккаунта за год (пункт 9, 26.10): один и тот же id в таблицах зовётся по-разному — vic0 был «VICO»,
+  // «big vicoraga», «[EWC2026] BIG vic0». Раньше бралось первое попавшееся имя, и у vic0 не находилась карточка.
+  const names = new Map();   // id → Map(ник → сколько раз)
+  const lanOnly = new Map();   // id → играл только ЛАНы и сторонние турниры
   RES.windows.forEach(w => w.top.forEach(x => x.ids.forEach((id, i) => {
-    const nm0 = x.n[i] || x.epic[i] || '';
-    const nm1 = String(nm0).replace(/\s*\[[^\]]*\]\s*/g, ' ').trim();   // «hylnd amp [MES2026]», «[FNCS2026] BIG Vico» → без турнирной приписки
-    const o = who.get(id) || { n: !nm1 || /^[0-9a-f]{32}$/i.test(nm1) ? 'Unknown player' : nm1, c: null, at: {} };
+    const N = names.get(id) || new Map(); names.set(id, N);
+    [x.n[i], x.epic[i]].forEach(n => { const s = strip(n); if (s && !isHex(s)) N.set(s, (N.get(s) || 0) + 1); });
+    lanOnly.set(id, (lanOnly.has(id) ? lanOnly.get(id) : true) && regOf(w) === 'LAN');
+  })));
+  // Один человек — один id. ЛАН-аккаунт («[FNCS2026] BIG Malibuca», мобильный ЛАН «DIG Arsenic») и ники с Liquipedia
+  // (lq:…, gc:…) сводятся к основному аккаунту, если ник (целиком или без тега клана) есть ровно у одного игрока капов.
+  const full = new Map(), tail = new Map();
+  const add = (M, k, id) => { if (!k) return; if (!M.has(k)) M.set(k, new Set()); M.get(k).add(id); };
+  const tailOf = f => { const w = f.split(/\s+/); return w.length > 1 && w[w.length - 1].length >= 3 ? w[w.length - 1] : null; };
+  names.forEach((N, id) => { if (lanOnly.get(id)) return; N.forEach((c, n) => { const f = foldN(n); add(full, f, id); add(tail, tailOf(f) || f, id); }); });
+  const alias = new Map();
+  names.forEach((N, id) => {
+    if (!lanOnly.get(id)) return;
+    for (const n of N.keys()) {
+      const f = foldN(n), one = S => S && S.size === 1 ? [...S][0] : null;
+      const to = one(full.get(f)) || one(tail.get(f)) || one(full.get(tailOf(f))) || one(tail.get(tailOf(f)));
+      if (to && to !== id) { alias.set(id, to); break; }
+    }
+  });
+  // Ники с Liquipedia без пары у Epic — между собой без учёта регистра («ByTobi» и «byTobi» — один человек).
+  const lqBy = new Map();
+  names.forEach((N, id) => { if (!/^(lq|gc):/.test(id) || alias.has(id)) return; const f = foldN(id.slice(3)); if (lqBy.has(f)) alias.set(id, lqBy.get(f)); else lqBy.set(f, id); });
+  RES.windows.forEach(w => w.top.forEach(x => { x.ids = x.ids.map(id => alias.get(id) || id); }));
+  alias.forEach((to, id) => { const N = names.get(to); names.get(id).forEach((c, n) => N.set(n, (N.get(n) || 0) + c)); names.delete(id); });
+  // Рейтинг карточки — по всем никам, начиная с самого частого; показывается ник, по которому нашлась карточка,
+  // иначе самый частый.
+  const RT = read('player-ratings.json') || {};
+  const RTF = new Map();
+  Object.entries(RT).forEach(([k, v]) => { const f = foldN(k); if (!RTF.has(f) || RTF.get(f).r < v.r) RTF.set(f, v); });
+  // Клан у карточки другой, чем в капах («Mask Fridge» в игре, «UN1Q Fridge» у Epic): ник без тега, если он у карточек один.
+  const RTT = new Map();
+  RTF.forEach((v, f) => { const t = tailOf(f); if (t && t.length >= 4) RTT.set(t, RTT.has(t) ? null : v); });
+  const rtOf = n => {
+    const f = foldN(n), w = f.split(/\s+/);
+    const c = [f, w.length > 1 ? w.slice(1).join(' ') : null, w[w.length - 1], f.replace(/\s+/g, '')].filter(Boolean);
+    for (const k of c) { const v = RT[k] || RTF.get(k); if (v) return v.r; }
+    const t = w.length > 1 ? w[w.length - 1] : f, v = t.length >= 4 && !RTF.has(t) && RTT.get(t);
+    return v ? v.r : 0;
+  };
+  const who = new Map();   // id → { n, v, c, at }
+  names.forEach((N, id) => {
+    const byUse = [...N.entries()].sort((a, b) => b[1] - a[1]).map(e => e[0]);
+    let n = byUse[0] || 'Unknown player', v = 0;
+    for (const k of byUse) { const r = rtOf(k); if (r) { n = k; v = r; break; } }
+    who.set(id, { n, v, c: null, at: {} });
+  });
+  RES.windows.forEach(w => w.top.forEach(x => x.ids.forEach((id, i) => {
+    const o = who.get(id);
     if (x.c[i]) { o.cs = o.cs || {}; o.cs[x.c[i]] = (o.cs[x.c[i]] || 0) + 1; }
     if (regOf(w) !== 'LAN') o.at[regOf(w)] = (o.at[regOf(w)] || 0) + 1;
-    who.set(id, o);
   })));
   // Страна игрока — та, что чаще у него в таблицах (у одного и того же аккаунта eucompetitive и Tracker бывают разные:
   // PANZER — то ru, то rs). Ручные поправки — COUNTRY_FIX (его слово «panzer флаг россии», 26.10).
@@ -211,18 +263,6 @@ if (RES && RES.windows.length) {
       });
     });
   });
-  const RT = read('player-ratings.json') || {};
-  // Ники Epic и ники игры расходятся: тег клана впереди («DIG Synth»), кириллица вместо латиницы, «ǃ» и диакритика.
-  const HOMO = { 'а': 'a', 'е': 'e', 'о': 'o', 'р': 'p', 'с': 'c', 'у': 'y', 'х': 'x', 'к': 'k', 'м': 'm', 'т': 't', 'н': 'h', 'в': 'b', 'і': 'i', 'ѕ': 's' };
-  const foldN = n => String(n).toLowerCase().replace(/[а-яёіѕ]/g, c => HOMO[c] || c).normalize('NFKD').replace(/[̀-ͯ]/g, '').replace(/[ǃ!]+/g, '').trim();
-  const RTF = new Map();
-  Object.entries(RT).forEach(([k, v]) => { const f = foldN(k); if (!RTF.has(f) || RTF.get(f).r < v.r) RTF.set(f, v); });
-  const rtOf = n => {
-    const f = foldN(n), w = f.split(/\s+/);
-    const c = [f, w.length > 1 ? w.slice(1).join(' ') : null, w[w.length - 1], f.replace(/\s+/g, '')].filter(Boolean);
-    for (const k of c) { const v = RT[k] || RTF.get(k); if (v) return v.r; }
-    return 0;
-  };
   // Весь год одной строкой — для подвкладки «Prize money» (26.10, его «может подпункты сделать в компетитив»).
   const Y = { paid: 0, p: new Map() };
   byMonth.forEach(M => { Y.paid += M.paid; M.p.forEach((o, id) => { const y = Y.p.get(id) || { id, usd: 0, cups: 0, wins: 0 }; y.usd += o.usd; y.cups += o.cups; y.wins += o.wins; Y.p.set(id, y); }); });
@@ -232,19 +272,56 @@ if (RES && RES.windows.length) {
     const keep = new Set(all.slice(0, 100).map(x => x.id));
     REGS.forEach(r => all.filter(x => who.get(x.id).reg === r).slice(0, 40).forEach(x => keep.add(x.id)));
     const byReg = {}; all.forEach(x => { const r = who.get(x.id).reg; if (r) byReg[r] = (byReg[r] || 0) + x.usd; });
-    EARN[m] = { paid: M.paid, reg: byReg, rows: all.filter(x => keep.has(x.id)).map(x => { const o = who.get(x.id); return [o.n, o.f, REGS.indexOf(o.reg), x.usd, x.cups, x.wins, x.id.slice(0, 12), rtOf(o.n)]; }) };
+    EARN[m] = { paid: M.paid, reg: byReg, rows: all.filter(x => keep.has(x.id)).map(x => { const o = who.get(x.id); return [o.n, o.f, REGS.indexOf(o.reg), x.usd, x.cups, x.wins, x.id.slice(0, 12), o.v]; }) };
   });
   // ---- Год игрока (26.10, его пункты 1 и 7: страница игрока и сравнение двух): 2000 лучших по году — деньги по
   // месяцам и все призовые капы; отдельным файлом comp-players.json, страница грузит его по клику.
   const Yp = byMonth.get('2026');
   const PL = [...Yp.p.values()].sort((a, b) => b.usd - a.usd).slice(0, 2000);
-  const plIdx = new Map(PL.map(x => [x.id, { id: x.id.slice(0, 12), n: who.get(x.id).n, f: who.get(x.id).f, r: who.get(x.id).reg || '', v: rtOf(who.get(x.id).n), t: x.usd, k: x.cups, w: x.wins, m: Array(12).fill(0), c: [] }]));
+  const plIdx = new Map(PL.map(x => [x.id, { id: x.id.slice(0, 12), n: who.get(x.id).n, f: who.get(x.id).f, r: who.get(x.id).reg || '', v: who.get(x.id).v, t: x.usd, k: x.cups, w: x.wins, m: Array(12).fill(0), c: [] }]));
   const prettyW = w => w.pretty ? w.name : pretty(w.name);
   RES.windows.forEach(w => w.top.forEach(x => { if (!x.usd) return; x.ids.forEach(id => { const p = plIdx.get(id); if (!p) return;
     p.m[+w.begin.slice(5, 7) - 1] += x.usd; p.c.push([w.begin.slice(0, 10), prettyW(w), x.rank, x.usd, regOf(w)]); }); }));
   const slugBase = h => String(h).normalize('NFKD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
   plIdx.forEach(p => { p.c.sort((a, b) => a[0] < b[0] ? 1 : -1); const sl = slugBase(p.n); if (sl && fs.existsSync(path.join(OUT, 'player', sl + '.html'))) p.page = '/player/' + sl; });
   fs.writeFileSync(path.join(OUT, 'comp-players.json'), JSON.stringify([...plIdx.values()]));
+
+  // ---- Новости (пункт 6, 26.10): трансферы с Liquipedia (fetch-transfers.js) и заголовки из своих данных: кто выиграл
+  // крупное за месяц, что большое впереди. Игрок трансфера ищется среди 2000 из «Prize money» по всем его никам
+  // (целиком, потом без тега клана, только однозначно); «известный» — нашёлся там или у его ника карточка 85+.
+  const nFull = new Map(), nTail = new Map();
+  const put = (Mp, k, id) => { if (k) Mp.set(k, Mp.has(k) && Mp.get(k) !== id ? null : id); };
+  plIdx.forEach((p, id) => (names.get(id) || new Map()).forEach((c, n) => { const f = foldN(n); put(nFull, f, id); put(nTail, tailOf(f), id); }));
+  const plOf = n => { const f = foldN(n), id = nFull.has(f) ? nFull.get(f) : f.length >= 5 ? nTail.get(f) : null; return id ? plIdx.get(id) : null; };
+  const TR = read('comp-transfers.json');
+  const day = d => new Date(d + 'T12:00:00Z').toLocaleDateString('en-GB', { day: 'numeric', month: 'short', timeZone: 'UTC' });
+  const team = (t, r) => t ? esc(t) + (r ? ' <i>(' + esc(r) + ')</i>' : '') : '<i>No team</i>';
+  const trRows = (TR && TR.rows || []).filter(t => Date.parse(t.d) > NOW - 45 * 86400e3).slice(0, 150).map(t => {
+    let big = false;
+    const ppl = t.who.map(([n, f]) => {
+      const p = plOf(n), v = p ? p.v : rtOf(n);
+      if (p || v >= 85) big = true;
+      const fl = f || (p && p.f);
+      return (fl ? flag(fl) : '') + (p ? `<a href="#" data-pid="${esc(p.id)}">${esc(n)}</a>` : '<b>' + esc(n) + '</b>') + (v ? '<span class="ovr' + (v >= 90 ? ' hi' : '') + '">' + v + '</span>' : '') +
+        (p && p.t ? ' <span class="p1">' + money(p.t) + '</span>' : '');
+    }).join('<span class="sep">, </span>');
+    return `<li class="tr${big ? ' big' : ''}"><time datetime="${esc(t.d)}">${esc(day(t.d))}</time><div class="trw">${ppl}</div>` +
+      `<div class="trt">${team(t.from, t.r1)} <span class="arr">→</span> ${team(t.to, t.r2)}</div>` + (t.ref ? `<a class="src" href="${esc(t.ref)}" rel="noopener nofollow" target="_blank">Source</a>` : '') + '</li>';
+  });
+  // Заголовки: победы месяца (финалы FNCS, ЛАНы, сторонние турниры) и крупное впереди (3 недели).
+  const heads = RES.windows.filter(w => Date.parse(w.begin) > NOW - 30 * 86400e3).map(w => ({ w, x: w.top.find(t => t.rank === 1) }))
+    .filter(o => o.x && o.x.usd && (regOf(o.w) === 'LAN' || (kind(o.w.w) === 'fncs' && o.x.usd >= 1000) || o.x.usd >= 5000))
+    .sort((a, b) => a.w.begin < b.w.begin ? 1 : -1).slice(0, 12)
+    .map(o => `<li><time datetime="${esc(o.w.begin)}">${esc(day(o.w.begin.slice(0, 10)))}</time><div>${o.x.ids.map((id, i) => flag(who.get(id).f) + (plIdx.has(id) ? `<a href="#" data-pid="${esc(plIdx.get(id).id)}">${esc(who.get(id).n)}</a>` : '<b>' + esc(who.get(id).n) + '</b>')).join(' + ')}` +
+      ` won <b>${esc(prettyW(o.w))}</b>${/^LQ_/.test(o.w.w) || regOf(o.w) === 'LAN' ? '' : ' (' + esc(regOf(o.w)) + ')'} <span class="p1">${money(o.x.usd)}${o.x.ids.length > 1 ? ' each' : ''}</span></div></li>`);
+  const POOL = new Map(((read('comp-lan-list.json') || [])).map(l => [l.name, l.usd]));
+  const seenS = new Set();
+  const ahead = upcoming.filter(e => Date.parse(e.begin) > NOW && Date.parse(e.begin) < NOW + 21 * 86400e3)
+    .map(e => ({ e, nm: e.pretty ? e.name : pretty(e.name) })).filter(o => rankOf(o.e, o.nm) >= 70)
+    .filter(o => { const k = series(o.nm).replace(/ · (EU|NAC|NAW|BR|ASIA|ME|OCE)\b.*$/, '').replace(/ · .*$/, ''); if (seenS.has(k)) return false; seenS.add(k); o.k = k; return true; })
+    .slice(0, 8).map(o => { const pool = POOL.get(o.e.name.split(' · ')[0]);
+      return `<li><time datetime="${esc(o.e.begin)}">${esc(day(o.e.begin.slice(0, 10)))}</time><div><b>${esc(o.k)}</b>${pool ? ' <span class="p1">' + money(pool) + ' prize pool</span>' : ''}</div></li>`; });
+  NEWS = { tr: trRows, heads, ahead, big: trRows.filter(r => r.startsWith('<li class="tr big')).length };
 
   // ---- Рекорды года (пункт 3)
   let bigPay = null, bestMonth = null;
@@ -280,7 +357,7 @@ if (RES && RES.windows.length) {
   const latest = RES.windows.slice().sort((a, b) => a.begin > b.begin ? -1 : 1).slice(0, 60);
   resHTML = latest.map(w => {
     const t3 = w.top.slice(0, 3);
-    return `<article class="glass res" data-reg="${esc(regOf(w))}"><header><i>${esc(regOf(w))}</i><time datetime="${esc(w.begin)}">${esc(w.begin.slice(0, 10))}</time></header>` +
+    return `<article class="glass res" data-reg="${esc(regOf(w))}"><header><i>${/^LQ_/.test(w.w) ? 'Non-Epic' : esc(regOf(w))}</i><time datetime="${esc(w.begin)}">${esc(w.begin.slice(0, 10))}</time></header>` +
       `<h4>${esc(w.pretty ? w.name : pretty(w.name))}</h4><ol>` + t3.map(x => `<li><div>${x.ids.map((id, i) => flag(x.c[i]) + esc(x.n[i] || x.epic[i] || '?')).join(' + ')}</div>` +
       `<span>${x.pts} pts${x.usd ? ' · ' + money(x.usd) : ''}</span></li>`).join('') + '</ol></article>';
   }).join('');
@@ -437,7 +514,7 @@ h1,h2,h3,h4{font-family:var(--font-display);font-weight:700;margin:0;line-height
 .predcard b{display:block;font:italic 900 30px var(--font-display);text-transform:uppercase;margin:8px 0 4px}
 .predcard span:last-child{color:#c9d5f0}
 .predcard:hover{box-shadow:inset 0 0 0 2px var(--go)}
-@media(max-width:620px){.subnav button{font-size:14px;padding:9px 10px}#big th:nth-child(3),#big td:nth-child(3),#big th:nth-child(5),#big td:nth-child(5){display:none}}
+@media(max-width:620px){.subnav{flex-wrap:nowrap;overflow-x:auto;gap:2px;scrollbar-width:none}.subnav button{font-size:13px;letter-spacing:.03em;padding:9px 7px;flex:0 0 auto}#big th:nth-child(3),#big td:nth-child(3),#big th:nth-child(5),#big td:nth-child(5){display:none}}
 .tabp>.panel+.panel{margin-top:16px}
 [data-pid]{cursor:pointer;text-decoration:underline;text-decoration-color:rgba(159,225,255,.35);text-underline-offset:3px}
 [data-pid]:hover{color:var(--go)}
@@ -491,6 +568,21 @@ h1,h2,h3,h4{font-family:var(--font-display);font-weight:700;margin:0;line-height
 .rlr button{font:700 14px var(--font-display);letter-spacing:.05em;color:#fff;background:rgba(150,180,255,.18);border:none;border-radius:999px;padding:7px 14px;cursor:pointer}
 .rlr button[aria-pressed="true"]{background:#e4ebf7;color:#0b1a3a}
 #liveNow{margin-bottom:16px}#liveNow .lvregs{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 0}#liveNow .lvb{font-size:13px;padding:8px 14px;margin:0}
+.news{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+.nl{list-style:none;margin:0;padding:0}
+.nl li{display:grid;grid-template-columns:58px 1fr;gap:10px;padding:8px 0;border-top:1px solid rgba(180,200,255,.12);font-size:14px;align-items:baseline}
+.nl li:first-child{border-top:none}
+.nl time,.tr time{font:700 13px var(--font-display);letter-spacing:.04em;color:var(--dim);text-transform:uppercase}
+.nl a,.tr a[data-pid]{color:#fff;font-weight:700;text-decoration:none;border-bottom:1px solid rgba(255,255,255,.3)}
+.nl img,.tr img{vertical-align:-2px;margin-right:5px}
+.trs{list-style:none;margin:0;padding:0}
+.tr{display:grid;grid-template-columns:58px 1fr auto;column-gap:10px;row-gap:2px;padding:10px 0;border-top:1px solid rgba(180,200,255,.12);font-size:14px}
+.tr time{grid-row:span 2}.tr .trw{font-size:15px}.tr .trt{grid-column:2;color:var(--dim)}.tr .trt i{font-style:normal;color:var(--dimmer)}
+.tr .src{grid-row:1/3;grid-column:3;align-self:center;font:700 12px var(--font-display);letter-spacing:.06em;text-transform:uppercase;color:var(--cyan);text-decoration:none}
+.tr .arr{color:var(--go);margin:0 4px}.tr .ovr{margin-left:6px}.tr .sep{color:var(--dim)}
+.trs.only .tr:not(.big){display:none}
+.trtools{display:flex;align-items:center;gap:8px;margin:0 0 6px;font-size:14px;color:var(--dim)}.trtools input{accent-color:var(--go);width:18px;height:18px}
+@media(max-width:700px){.news{grid-template-columns:1fr}.tr{grid-template-columns:50px 1fr}.tr .src{grid-row:auto;grid-column:2;justify-self:start}}
 [hidden]{display:none!important}`;
 
 const JS = `(function(){
@@ -648,15 +740,16 @@ document.getElementById('pm').onclick=function(e){ if(e.target.id==='pm') e.targ
 document.getElementById('cmpBtn').onclick=function(){ openCompare(); };
 pickWire('plFind',function(p){ openPlayer(p.id); });
 document.addEventListener('click',function(e){ var t=e.target.closest('[data-pid]'); if(t){ e.preventDefault(); openPlayer(t.dataset.pid); } });
-var TABS=['calendar','prizes','results','predictions'], tab=(location.hash||'').slice(1); if(TABS.indexOf(tab)<0) tab='calendar';
+var TABS=['calendar','prizes','results','news','predictions'], tab=(location.hash||'').slice(1); if(TABS.indexOf(tab)<0) tab='calendar';
 function showTab(t){ tab=t;
  document.querySelectorAll('.subnav button').forEach(function(b){b.setAttribute('aria-selected',b.dataset.tab===t?'true':'false');});
  document.querySelectorAll('.tabp').forEach(function(p){p.hidden=p.dataset.tab!==t;});
- document.querySelector('.regs').hidden=t==='predictions';
+ document.querySelector('.regs').hidden=t==='predictions'||t==='news';
  try{history.replaceState(null,'','#'+t);}catch(e){}
 }
 document.querySelectorAll('.subnav button').forEach(function(b){b.onclick=function(){showTab(b.dataset.tab);};});
 showTab(tab);
+var trO=document.getElementById('trOnly'); if(trO) trO.onchange=function(){ document.getElementById('trs').classList.toggle('only',trO.checked); };
 function apply(){
  document.querySelectorAll('.regs button[data-r]').forEach(function(b){b.setAttribute('aria-pressed',b.dataset.r===reg?'true':'false');});
  document.querySelectorAll('.res').forEach(function(x){x.hidden=reg!=='ALL'&&x.dataset.reg!==reg&&x.dataset.reg!=='LAN';});
@@ -682,7 +775,7 @@ const html = `<!doctype html>
 <section class="glass head"><h1>Competitive</h1>
 <p>Fortnite tournaments in your time zone, prize money and results for every region. Updated with every site build.</p></section>
 <nav class="subnav" role="tablist" aria-label="Competitive">
-<button role="tab" data-tab="calendar">Calendar</button><button role="tab" data-tab="prizes">Prize money</button><button role="tab" data-tab="results">Results</button><button role="tab" data-tab="predictions">Predictions</button>
+<button role="tab" data-tab="calendar">Calendar</button><button role="tab" data-tab="prizes">Prize money</button><button role="tab" data-tab="results">Results</button><button role="tab" data-tab="news">News</button><button role="tab" data-tab="predictions">Predictions</button>
 </nav>
 ${regButtons}
 <div class="tabp" data-tab="calendar">
@@ -700,11 +793,15 @@ ${regButtons}
   WEEK.top.map(t => '<p>' + flag(t[1]) + '<b>' + esc(t[0]) + '</b> <span class="p1">' + money(t[2]) + '</span></p>').join('') + '</div><div><i>Biggest wins</i>' +
   WEEK.wins.map(t => '<p><b>' + esc(t[0]) + '</b> won ' + esc(t[1]) + ' <span class="p1">' + money(t[2]) + '</span></p>').join('') + '</div></div></section>' : ''}
 <div class="results">${resHTML || '<p class="note">No results yet.</p>'}</div></div>
+<div class="tabp" data-tab="news" hidden>${NEWS ? '<div class="news"><section class="glass panel"><h3>Latest wins</h3><p class="small">Biggest wins of the last 30 days: FNCS, LANs and non-Epic tournaments.</p><ul class="nl">' + (NEWS.heads.join('') || '<li><span></span><span class="note">Nothing big this month yet.</span></li>') + '</ul></section>' +
+  '<section class="glass panel"><h3>Coming up</h3><p class="small">The biggest events of the next three weeks.</p><ul class="nl">' + (NEWS.ahead.join('') || '<li><span></span><span class="note">Nothing big on the calendar yet.</span></li>') + '</ul></section></div>' +
+  '<section class="glass panel"><h3>Transfers</h3><p class="small">Roster moves of the last 45 days, from Liquipedia. Click a player to see their 2026.</p>' +
+  '<label class="trtools"><input type="checkbox" id="trOnly" checked> Known players only (' + NEWS.big + ' of ' + NEWS.tr.length + ')</label><ul class="trs only" id="trs">' + NEWS.tr.join('') + '</ul></section>' : '<p class="note">No news yet.</p>'}</div>
 <div class="tabp" data-tab="predictions" hidden><section class="glass panel" id="liveNow" hidden></section>${heroHTML}
 <a class="glass predcard" href="/predict/fncs-solos-2026"><span class="tag">Prediction</span><b>FNCS Solos 2026 Finals</b>
 <span>Win chances for all 698 finalists, real drop maps for every region, 500 simulated finals each.</span></a>${reloadHTML}</div>
 <div class="modal" id="pm" hidden><div class="glass mbox"><button type="button" class="mx" aria-label="Close">×</button><div id="pmB"></div></div></div>
-<div class="foot"><p class="note">Calendar and leaderboards: Epic Games via <a href="https://eucompetitive.com" rel="noopener">eucompetitive.com</a> and Fortnite Tracker. Payout tables: Epic, via Fortnite Tracker.</p>
+<div class="foot"><p class="note">Calendar and leaderboards: Epic Games via <a href="https://eucompetitive.com" rel="noopener">eucompetitive.com</a> and Fortnite Tracker. Payout tables: Epic, via Fortnite Tracker. Non-Epic tournaments and transfers: <a href="https://liquipedia.net/fortnite" rel="noopener">Liquipedia</a> (CC BY-SA 3.0).</p>
 <a class="btn" href="/">Play the FNCS career</a></div>
 </div><script>${JS}</script></body></html>`;
 fs.writeFileSync(path.join(OUT, 'competitive.html'), html, 'utf8');
