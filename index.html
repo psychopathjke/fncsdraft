@@ -153626,7 +153626,10 @@ function ccZoneTuneSpec(next){
     const stage=next.stage || (mj && mj.stage);
     return stage==='playin' ? {units:CC_ZONE_OPEN_DUO, profile:'finals'} : {units:CC_ZONE_D1, profile:'finals'};
   }
-  if(t==='final' || t==='gc' || t==='summit' || t==='globals' || t==='reload') return {units:CC_ZONE_D1, profile:'finals'};
+  /* Pro-Am — тоже Reload, 20 дуо в одном лобби (Notion 26.10.26: «очень много киллов, хотя умер в топ-20»). Без своей
+     настройки он играл движком по умолчанию, не по реплеям Reload: проба вечера — 84–102 элима на лобби за игру
+     (Reload Elite Series 51–68) и команды с 10–16 киллами на 18–20-х местах. */
+  if(t==='final' || t==='gc' || t==='summit' || t==='globals' || t==='reload' || t==='proam') return {units:CC_ZONE_D1, profile:'finals'};
   return none;
 }
 function ccZoneWeakFor(next){ return ccZoneTuneSpec(next).units; }
