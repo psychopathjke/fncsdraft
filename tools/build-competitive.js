@@ -157,7 +157,7 @@ if (RES && RES.windows.length) {
   })));
   // Страна игрока — та, что чаще у него в таблицах (у одного и того же аккаунта eucompetitive и Tracker бывают разные:
   // PANZER — то ru, то rs). Ручные поправки — COUNTRY_FIX (его слово «panzer флаг россии», 26.10).
-  const COUNTRY_FIX = { panzer: 'ru' };
+  const COUNTRY_FIX = { panzer: 'ru', t3eny: 'si' };   // t3eny в профиле Epic — Россия, на деле Словения
   who.forEach(o => {
     o.c = COUNTRY_FIX[String(o.n).toLowerCase()] || (o.cs ? Object.entries(o.cs).sort((a, b) => b[1] - a[1])[0][0] : null);
     const most = list => Object.entries(o.at).filter(([r]) => !list || list.includes(r)).sort((a, b) => b[1] - a[1])[0];
@@ -178,6 +178,10 @@ if (RES && RES.windows.length) {
       });
     });
   });
+  // Весь год одной строкой — для подвкладки «Prize money» (26.10, его «может подпункты сделать в компетитив»).
+  const Y = { paid: 0, p: new Map() };
+  byMonth.forEach(M => { Y.paid += M.paid; M.p.forEach((o, id) => { const y = Y.p.get(id) || { id, usd: 0, cups: 0, wins: 0 }; y.usd += o.usd; y.cups += o.cups; y.wins += o.wins; Y.p.set(id, y); }); });
+  byMonth.set('2026', Y);
   byMonth.forEach((M, m) => {
     const all = [...M.p.values()].sort((a, b) => b.usd - a.usd);
     const keep = new Set(all.slice(0, 100).map(x => x.id));
@@ -334,6 +338,19 @@ h1,h2,h3,h4{font-family:var(--font-display);font-weight:700;margin:0;line-height
 .calday ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:5px}
 .ev.done{opacity:.5}
 @media(max-width:620px){#earn th:nth-child(4),#earn td:nth-child(4){display:none}.tbl td{padding:8px 7px}.cal-day{padding:3px;aspect-ratio:auto;min-height:46px}.cal-top{font-size:0;height:5px;padding:0;border-radius:2px}.cal-more{display:none}.cal-bar h4{font-size:19px}}
+.subnav{display:flex;flex-wrap:wrap;gap:6px;margin:18px 0 12px;padding:5px;border-radius:14px;background:rgba(150,180,255,.12);box-shadow:inset 0 0 0 1px rgba(180,200,255,.18)}
+.subnav button{flex:1 1 auto;font:700 16px var(--font-display);letter-spacing:.06em;text-transform:uppercase;color:#e6ecff;background:none;border:none;border-radius:10px;padding:11px 16px;cursor:pointer;min-height:44px}
+.subnav button:hover{background:rgba(255,255,255,.1)}
+.subnav button[aria-selected="true"]{background:var(--go);color:var(--go-ink);box-shadow:0 3px 0 #b59c00}
+.periods{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 12px}
+.periods button{font:700 14px var(--font-display);letter-spacing:.05em;color:#fff;background:rgba(150,180,255,.18);border:none;border-radius:999px;padding:7px 14px;cursor:pointer}
+.periods button[aria-pressed="true"]{background:#e4ebf7;color:#0b1a3a}
+#big{table-layout:fixed}#big th:nth-child(1){width:40px}#big th:nth-child(3){width:70px}#big th:nth-child(4){width:84px}#big th:nth-child(5){width:60px}#big th:nth-child(6){width:100px}
+.predcard{display:block;padding:20px 24px;margin-top:16px;text-decoration:none;color:var(--ink)}
+.predcard b{display:block;font:italic 900 30px var(--font-display);text-transform:uppercase;margin:8px 0 4px}
+.predcard span:last-child{color:#c9d5f0}
+.predcard:hover{box-shadow:inset 0 0 0 2px var(--go)}
+@media(max-width:620px){.subnav button{font-size:14px;padding:9px 10px}#big th:nth-child(3),#big td:nth-child(3),#big th:nth-child(5),#big td:nth-child(5){display:none}}
 [hidden]{display:none!important}`;
 
 const JS = `(function(){
@@ -402,11 +419,36 @@ function renderDay(by){
   return '<li class="'+cls+'"><time>'+fmtT.format(t)+'</time><i>'+(e[2]>=0?R[e[2]]:'LAN')+'</i><span>'+esc(S[e[5]])+'</span><em>'+KL[e[3]]+'</em></li>';
  }).join('')+'</ul>':'<p class="note">No cups on this day'+(reg==='ALL'?'':' in '+reg)+'.</p>');
 }
+var bigKey='2026', bigAll=false;
+function renderBig(){
+ var keys=Object.keys(EARN).filter(function(k){return k!=='2026';}).sort();
+ document.getElementById('periods').innerHTML=['2026'].concat(keys).map(function(k){var lbl=k==='2026'?'Year 2026':new Intl.DateTimeFormat(undefined,{month:'short'}).format(new Date(+k.slice(0,4),+k.slice(5)-1,1));
+  return '<button type="button" data-k="'+k+'" aria-pressed="'+(k===bigKey)+'">'+lbl+'</button>';}).join('');
+ document.querySelectorAll('#periods button').forEach(function(b){b.onclick=function(){bigKey=b.dataset.k; bigAll=false; renderBig();};});
+ var M=EARN[bigKey], name=bigKey==='2026'?'2026':fmtM.format(new Date(+bigKey.slice(0,4),+bigKey.slice(5)-1,1));
+ var rows=M?M.rows.filter(function(r){return reg==='ALL'||R[r[2]]===reg;}):[];
+ var paid=M?(reg==='ALL'?M.paid:(M.reg[reg]||0)):0;
+ document.getElementById('bigH').textContent='Prize money · '+name+(reg==='ALL'?'':' · '+reg);
+ document.getElementById('bigP').textContent=(paid?money(paid)+(reg==='ALL'?' paid in Epic cups, FNCS and LANs':' to '+reg+' players')+'. ':'')+'Duos and squads: each player gets the payout.';
+ var show=bigAll?rows.slice(0,100):rows.slice(0,30);
+ document.getElementById('bigT').innerHTML=rows.length?'<table class="tbl" id="big"><thead><tr><th>#</th><th>Player</th><th>Region</th><th class="n">Cups paid</th><th class="n">Wins</th><th class="n">Earned</th></tr></thead><tbody>'+
+  show.map(function(r,i){return '<tr><td class="n">'+(i+1)+'</td><td class="pl">'+(r[1]?'<img src="/flags/w20/'+r[1]+'.png" alt="" width="16">':'')+'<b>'+esc(r[0])+'</b></td><td>'+(r[2]>=0?R[r[2]]:'')+'</td><td class="n">'+r[4]+'</td><td class="n">'+(r[5]||'')+'</td><td class="n p1">'+money(r[3])+'</td></tr>';}).join('')+
+  '</tbody></table>'+(rows.length>30&&!bigAll?'<button class="morebtn" type="button">Show more</button>':''):'<p class="note">No prize money for '+name+(reg==='ALL'?'':' in '+reg)+'.</p>';
+ var mb=document.querySelector('#bigT .morebtn'); if(mb) mb.onclick=function(){bigAll=true; renderBig();};
+}
+var TABS=['calendar','prizes','results','predictions'], tab=(location.hash||'').slice(1); if(TABS.indexOf(tab)<0) tab='calendar';
+function showTab(t){ tab=t;
+ document.querySelectorAll('.subnav button').forEach(function(b){b.setAttribute('aria-selected',b.dataset.tab===t?'true':'false');});
+ document.querySelectorAll('.tabp').forEach(function(p){p.hidden=p.dataset.tab!==t;});
+ document.querySelector('.regs').hidden=t==='predictions';
+ try{history.replaceState(null,'','#'+t);}catch(e){}
+}
+document.querySelectorAll('.subnav button').forEach(function(b){b.onclick=function(){showTab(b.dataset.tab);};});
+showTab(tab);
 function apply(){
  document.querySelectorAll('.regs button').forEach(function(b){b.setAttribute('aria-pressed',b.dataset.r===reg?'true':'false');});
  document.querySelectorAll('.res').forEach(function(x){x.hidden=reg!=='ALL'&&x.dataset.reg!==reg&&x.dataset.reg!=='LAN';});
- renderCal();
-
+ renderCal(); renderBig();
  try{localStorage.setItem('compReg',reg);}catch(e){}
 }
 document.querySelectorAll('.regs button').forEach(function(b){b.addEventListener('click',function(){reg=b.dataset.r;apply();});});
@@ -427,17 +469,23 @@ const html = `<!doctype html>
 <body><div class="wrap">${NAV}
 <section class="glass head"><h1>Competitive</h1>
 <p>Fortnite tournaments in your time zone, prize money and results for every region. Updated with every site build.</p></section>
-${heroHTML}
-<h2 class="sec">Region</h2>
+<nav class="subnav" role="tablist" aria-label="Competitive">
+<button role="tab" data-tab="calendar">Calendar</button><button role="tab" data-tab="prizes">Prize money</button><button role="tab" data-tab="results">Results</button><button role="tab" data-tab="predictions">Predictions</button>
+</nav>
 ${regButtons}
+<div class="tabp" data-tab="calendar">
 <div class="grid">
 <section class="glass panel" aria-label="Calendar"><h3>Calendar</h3><p class="small">In your time zone. Pick a day to see every cup on it.</p>
 <div id="cal" class="cal"></div><div id="calDay" class="calday"></div></section>
 <section class="glass panel" aria-label="Prize money"><h3 id="earnH">Prize money</h3>
 <p class="small" id="earnP"></p><div id="earnT"></div>
-</section></div>
-<h2 class="sec">Latest results</h2>
-<div class="results">${resHTML || '<p class="note">No results yet.</p>'}</div>
+</section></div></div>
+<div class="tabp" data-tab="prizes" hidden><section class="glass panel"><h3 id="bigH">Prize money</h3><p class="small" id="bigP"></p>
+<div class="periods" id="periods"></div><div id="bigT"></div></section></div>
+<div class="tabp" data-tab="results" hidden><div class="results">${resHTML || '<p class="note">No results yet.</p>'}</div></div>
+<div class="tabp" data-tab="predictions" hidden>${heroHTML}
+<a class="glass predcard" href="/predict/fncs-solos-2026"><span class="tag">Prediction</span><b>FNCS Solos 2026 Finals</b>
+<span>Win chances for all 698 finalists, real drop maps for every region, 500 simulated finals each.</span></a></div>
 <div class="foot"><p class="note">Calendar and leaderboards: Epic Games via <a href="https://eucompetitive.com" rel="noopener">eucompetitive.com</a> and Fortnite Tracker. Payout tables: Epic, via Fortnite Tracker.</p>
 <a class="btn" href="/">Play the FNCS career</a></div>
 </div><script>${JS}</script></body></html>`;
