@@ -122453,6 +122453,33 @@ try{
   document.addEventListener('visibilitychange', ()=>{ if(document.visibilityState==='visible') ccSaveStaleReload(); });
   window.addEventListener('pageshow', ()=>{ ccSaveStaleReload(); });
 }catch(e){}
+/* МЕСТО ПОД СЕЙВ — СНАЧАЛА БЕЗ ПОТЕРЬ (Notion 26.10, игрок: «3 дня не играли… в карьере 1 сентября закончили, сейчас
+   17 августа»; журнал поломок 22.10 — QuotaExceededError, командная 2019, день 08-18). Сжатие своего сейва не спасало:
+   квоту съели ДРУГИЕ слоты — карьеры и менеджеры, лежащие обычным JSON, — и снимки отмены каждого слота. Уровень 1:
+   чужие слоты пересжимаются (без потерь, с проверкой распаковкой) и убираются чужие снимки отмены; уровень 2 — свой
+   снимок отмены. Резать своё (CC_SAVE_TRIM) — только после этого. Сторож tools/check-career-save-room.js. */
+function ccSaveMakeRoom(own, level){
+  if(typeof LZString==='undefined') return false;
+  let freed=false;
+  const keys=[];
+  try{ for(let i=0;i<localStorage.length;i++) keys.push(localStorage.key(i)); }catch(e){ return false; }
+  keys.forEach(k=>{
+    if(!k || k===own) return;
+    try{
+      if(/_undo$/.test(k)){
+        if(level>=2 || k!==own+'_undo'){ localStorage.removeItem(k); freed=true; }
+        return;
+      }
+      if(!/^fncsdraft_(career|manager)/.test(k) || /_(w|unread|undo)$/.test(k)) return;
+      const raw=localStorage.getItem(k);
+      if(!raw || raw.length<60000 || raw.slice(0, 3)===CC_SAVE_LZ) return;
+      const z=LZString.compressToUTF16(raw);
+      if(z.length+3>=raw.length || LZString.decompressFromUTF16(z)!==raw) return;
+      localStorage.setItem(k, CC_SAVE_LZ+z); freed=true;
+    }catch(e){}
+  });
+  return freed;
+}
 function careerSave(){
   if(!CAREER) return;
   if(CAREER._mgr){ if(typeof mgrSave==='function') mgrSave(); return; }   // теневая карьера Fortnite Manager
@@ -122487,7 +122514,7 @@ function careerSave(){
      миллион символов (журнал игроков, PR, деньги, Мейджор), и слотов несколько. Сжатый сейв (lz-string)
      в ~7 раз меньше; пишется только когда обычный не влез, чтобы пробы и инструменты читали JSON как
      раньше. Обрезка (CC_SAVE_TRIM) — уже после сжатия. */
-  let lz=false;
+  let lz=false, room=0;
   for(let step=0; step<=CC_SAVE_TRIM.length; step++){
     try{
       const json=JSON.stringify(CAREER);
@@ -122504,7 +122531,12 @@ function careerSave(){
       CC_SAVE_FAIL=String(e&&e.name||e);
       // Out of room rather than broken: give something up and write it again.
       // Anything else is not a size problem and trimming will not fix it.
-      if(!/quota|exceed/i.test(CC_SAVE_FAIL) || step===CC_SAVE_TRIM.length) break;
+      if(!/quota|exceed/i.test(CC_SAVE_FAIL)) break;
+      // Сначала место за счёт чужого, без потерь (ccSaveMakeRoom) — тот же шаг ещё раз.
+      let made=false;
+      while(room<2 && !made){ room++; made=ccSaveMakeRoom(key, room); }
+      if(made){ step--; continue; }
+      if(step===CC_SAVE_TRIM.length) break;
       if(!CC_SAVE_TRIM[step](CAREER.career)) continue;
     }
   }
