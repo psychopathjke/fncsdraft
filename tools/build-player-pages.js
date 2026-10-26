@@ -190,6 +190,18 @@ ${order.filter(r => byRegion[r]).map(r => '<h2>' + esc(REGION[r] || 'Other') + '
 fs.writeFileSync(path.join(OUT, 'players.html'), page({ title: 'FNCS players: results 2019-2026 | FNCS Draft',
   desc: 'Every Fortnite FNCS player in FNCS Draft: tournament results, best finishes and teams from 2019 to 2026.', canon: SITE + '/players', body: idxBody }));
 
+// Рейтинг карточки по нику для поиска на /competitive (build-competitive.js): лучшая карточка 2026 года, а нет её —
+// лучшая карточка последнего года игрока. У тёзок — сильнейший.
+const RT = {};
+D.players.forEach(g => {
+  if (!g.cards.length) return;
+  const y = Math.max(...g.cards.map(yearOf));
+  const r = Math.max(...g.cards.filter(c => yearOf(c) === y).map(c => c.rating || 0));
+  const k = g.handle.toLowerCase(), o = RT[k];
+  if (r && (!o || o.r < r)) RT[k] = { r, y, s: g.slug || '' };
+});
+fs.writeFileSync(path.join(__dirname, 'measured', 'player-ratings.json'), JSON.stringify(RT));
+
 // sitemap.xml этой папки: свои адреса дописываются к тем, что уже есть.
 const smPath = path.join(OUT, 'sitemap.xml');
 let sm = fs.readFileSync(smPath, 'utf8');

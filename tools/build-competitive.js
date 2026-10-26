@@ -211,6 +211,18 @@ if (RES && RES.windows.length) {
       });
     });
   });
+  const RT = read('player-ratings.json') || {};
+  // Ники Epic и ники игры расходятся: тег клана впереди («DIG Synth»), кириллица вместо латиницы, «ǃ» и диакритика.
+  const HOMO = { 'а': 'a', 'е': 'e', 'о': 'o', 'р': 'p', 'с': 'c', 'у': 'y', 'х': 'x', 'к': 'k', 'м': 'm', 'т': 't', 'н': 'h', 'в': 'b', 'і': 'i', 'ѕ': 's' };
+  const foldN = n => String(n).toLowerCase().replace(/[а-яёіѕ]/g, c => HOMO[c] || c).normalize('NFKD').replace(/[̀-ͯ]/g, '').replace(/[ǃ!]+/g, '').trim();
+  const RTF = new Map();
+  Object.entries(RT).forEach(([k, v]) => { const f = foldN(k); if (!RTF.has(f) || RTF.get(f).r < v.r) RTF.set(f, v); });
+  const rtOf = n => {
+    const f = foldN(n), w = f.split(/\s+/);
+    const c = [f, w.length > 1 ? w.slice(1).join(' ') : null, w[w.length - 1], f.replace(/\s+/g, '')].filter(Boolean);
+    for (const k of c) { const v = RT[k] || RTF.get(k); if (v) return v.r; }
+    return 0;
+  };
   // Весь год одной строкой — для подвкладки «Prize money» (26.10, его «может подпункты сделать в компетитив»).
   const Y = { paid: 0, p: new Map() };
   byMonth.forEach(M => { Y.paid += M.paid; M.p.forEach((o, id) => { const y = Y.p.get(id) || { id, usd: 0, cups: 0, wins: 0 }; y.usd += o.usd; y.cups += o.cups; y.wins += o.wins; Y.p.set(id, y); }); });
@@ -220,13 +232,13 @@ if (RES && RES.windows.length) {
     const keep = new Set(all.slice(0, 100).map(x => x.id));
     REGS.forEach(r => all.filter(x => who.get(x.id).reg === r).slice(0, 40).forEach(x => keep.add(x.id)));
     const byReg = {}; all.forEach(x => { const r = who.get(x.id).reg; if (r) byReg[r] = (byReg[r] || 0) + x.usd; });
-    EARN[m] = { paid: M.paid, reg: byReg, rows: all.filter(x => keep.has(x.id)).map(x => { const o = who.get(x.id); return [o.n, o.f, REGS.indexOf(o.reg), x.usd, x.cups, x.wins, x.id.slice(0, 12)]; }) };
+    EARN[m] = { paid: M.paid, reg: byReg, rows: all.filter(x => keep.has(x.id)).map(x => { const o = who.get(x.id); return [o.n, o.f, REGS.indexOf(o.reg), x.usd, x.cups, x.wins, x.id.slice(0, 12), rtOf(o.n)]; }) };
   });
   // ---- Год игрока (26.10, его пункты 1 и 7: страница игрока и сравнение двух): 2000 лучших по году — деньги по
   // месяцам и все призовые капы; отдельным файлом comp-players.json, страница грузит его по клику.
   const Yp = byMonth.get('2026');
   const PL = [...Yp.p.values()].sort((a, b) => b.usd - a.usd).slice(0, 2000);
-  const plIdx = new Map(PL.map(x => [x.id, { id: x.id.slice(0, 12), n: who.get(x.id).n, f: who.get(x.id).f, r: who.get(x.id).reg || '', t: x.usd, k: x.cups, w: x.wins, m: Array(12).fill(0), c: [] }]));
+  const plIdx = new Map(PL.map(x => [x.id, { id: x.id.slice(0, 12), n: who.get(x.id).n, f: who.get(x.id).f, r: who.get(x.id).reg || '', v: rtOf(who.get(x.id).n), t: x.usd, k: x.cups, w: x.wins, m: Array(12).fill(0), c: [] }]));
   const prettyW = w => w.pretty ? w.name : pretty(w.name);
   RES.windows.forEach(w => w.top.forEach(x => { if (!x.usd) return; x.ids.forEach(id => { const p = plIdx.get(id); if (!p) return;
     p.m[+w.begin.slice(5, 7) - 1] += x.usd; p.c.push([w.begin.slice(0, 10), prettyW(w), x.rank, x.usd, regOf(w)]); }); }));
@@ -451,7 +463,26 @@ h1,h2,h3,h4{font-family:var(--font-display);font-weight:700;margin:0;line-height
 .bars .b{flex:1;min-height:2px;border-radius:3px 3px 0 0}.b0,.bars .b0{background:var(--go)}.b1,.bars .b1{background:var(--cyan)}
 .bcol em{font-style:normal;font-size:10px;color:var(--dim);text-align:center;margin-top:3px}
 .pact{display:flex;gap:8px;margin-bottom:12px}.pact a{text-decoration:none;display:inline-block}
-.cmpin{display:flex;gap:8px;margin:10px 0}.cmpin input{flex:1;min-width:0;padding:10px 12px;border-radius:10px;border:none;background:rgba(255,255,255,.1);color:#fff;font:600 15px var(--font-display)}
+.cmpin{display:flex;gap:8px;margin:10px 0}.cmpin .pk{flex:1;min-width:0}
+.pk{position:relative}
+.pk input{width:100%;box-sizing:border-box;padding:11px 14px 11px 38px;border-radius:999px;border:none;background:rgba(150,180,255,.16) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' stroke='%23b7c3e6' stroke-width='2.2'%3E%3Ccircle cx='7' cy='7' r='5'/%3E%3Cpath d='m11 11 4 4'/%3E%3C/svg%3E") no-repeat 14px 50%;color:#fff;font:600 16px var(--font-display);letter-spacing:.02em;outline:none;-webkit-appearance:none;appearance:none}
+.pk input::placeholder{color:var(--dimmer)}.pk input:focus{box-shadow:inset 0 0 0 2px var(--go)}
+.pk input::-webkit-search-cancel-button{-webkit-appearance:none}
+.pkL{position:absolute;z-index:30;left:0;right:0;top:calc(100% + 6px);list-style:none;margin:0;padding:6px;border-radius:14px;background:#14245c;box-shadow:0 14px 40px rgba(0,0,0,.5),inset 0 0 0 1px var(--line);max-height:360px;overflow:auto}
+.pkL li{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:10px;cursor:pointer;font-size:15px}
+.pkL li.on,.pkL li:hover{background:var(--row-h)}
+.pkL li b{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600}
+.pkL li i{font:700 12px var(--font-display);letter-spacing:.05em;color:var(--dim);font-style:normal}
+.pkL li em{font:700 14px var(--font-display);color:var(--go);font-style:normal;min-width:64px;text-align:right}
+.pkL li img{border-radius:2px}.pkL .nf{display:inline-block;width:20px}
+.pkL li.none{color:var(--dim);cursor:default}
+.ovr{display:inline-block;min-width:28px;margin-left:8px;text-align:center;font:700 13px var(--font-display);border-radius:6px;padding:1px 5px;background:#e4ebf7;color:#0b1a3a;vertical-align:1px}
+.ovr.hi{background:var(--go);color:var(--go-ink)}
+.pkL li .ovr{margin-left:0}
+.bigtools{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.bigtools .pk{flex:1;min-width:220px;max-width:420px}
+.tbl.cmp tbody td:first-child{color:var(--ink)!important;font-weight:600}
+.pkL{overflow-x:hidden}.mbox .pkL{position:static;margin-top:6px;max-height:300px}
+@media(max-width:600px){.cmpin{flex-direction:column}.bigtools .pk{max-width:none;flex-basis:100%}.pkL li i{display:none}.pkL li em{min-width:0}.tbl td.pl .ovr{margin-left:6px}}
 .lg2{font-size:13px;color:var(--dim)}.lg2 span{display:inline-block;width:12px;height:12px;border-radius:3px;margin:0 6px -1px 12px}
 @media(max-width:620px){.week .wkgrid{grid-template-columns:1fr}.pstats b{font-size:18px}}
 .lvb{margin-left:8px;font:700 11px var(--font-display);letter-spacing:.06em;text-transform:uppercase;border:none;border-radius:999px;padding:3px 9px;background:var(--hot);color:#fff;cursor:pointer;vertical-align:1px}
@@ -517,7 +548,7 @@ function renderEarn(){
  document.getElementById('earnP').textContent=(paid?money(paid)+(reg==='ALL'?' paid in cash cups and FNCS':' to '+reg+' players')+(mk===today.getFullYear()+'-'+String(today.getMonth()+1).padStart(2,'0')?' so far':'')+'. ':'')+'Duos: each player gets the payout.';
  var show=earnAll?rows.slice(0,100):rows.slice(0,15);
  document.getElementById('earnT').innerHTML=rows.length?'<table class="tbl" id="earn"><thead><tr><th>#</th><th>Player</th><th class="n">Cups</th><th class="n">Wins</th><th class="n">Earned</th></tr></thead><tbody>'+
-  show.map(function(r,i){return '<tr><td class="n">'+(i+1)+'</td><td class="pl">'+(r[1]?'<img src="/flags/w20/'+r[1]+'.png" alt="" width="16">':'')+'<b data-pid="'+r[6]+'">'+esc(r[0])+'</b></td><td class="n">'+r[4]+'</td><td class="n">'+(r[5]||'')+'</td><td class="n p1">'+money(r[3])+'</td></tr>';}).join('')+
+  show.map(function(r,i){return '<tr><td class="n">'+(i+1)+'</td><td class="pl">'+(r[1]?'<img src="/flags/w20/'+r[1]+'.png" alt="" width="16">':'')+'<b data-pid="'+r[6]+'">'+esc(r[0])+'</b>'+ovr(r[7])+'</td><td class="n">'+r[4]+'</td><td class="n">'+(r[5]||'')+'</td><td class="n p1">'+money(r[3])+'</td></tr>';}).join('')+
   '</tbody></table>'+(rows.length>15&&!earnAll?'<button class="morebtn" type="button">Show more</button>':''):'<p class="note">No prize money '+(new Date(cur.y,cur.m,1)>today?'yet':'recorded')+' for '+name+(reg==='ALL'?'':' in '+reg)+'.</p>';
  var mb=document.querySelector('#earnT .morebtn'); if(mb) mb.onclick=function(){earnAll=true; renderEarn();};
 }
@@ -542,7 +573,7 @@ function renderBig(){
  document.getElementById('bigP').textContent=(paid?money(paid)+(reg==='ALL'?' paid in Epic cups, FNCS and LANs':' to '+reg+' players')+'. ':'')+'Duos and squads: each player gets the payout.';
  var show=bigAll?rows.slice(0,100):rows.slice(0,30);
  document.getElementById('bigT').innerHTML=rows.length?'<table class="tbl" id="big"><thead><tr><th>#</th><th>Player</th><th>Region</th><th class="n">Cups paid</th><th class="n">Wins</th><th class="n">Earned</th></tr></thead><tbody>'+
-  show.map(function(r,i){return '<tr><td class="n">'+(i+1)+'</td><td class="pl">'+(r[1]?'<img src="/flags/w20/'+r[1]+'.png" alt="" width="16">':'')+'<b data-pid="'+r[6]+'">'+esc(r[0])+'</b></td><td>'+(r[2]>=0?R[r[2]]:'')+'</td><td class="n">'+r[4]+'</td><td class="n">'+(r[5]||'')+'</td><td class="n p1">'+money(r[3])+'</td></tr>';}).join('')+
+  show.map(function(r,i){return '<tr><td class="n">'+(i+1)+'</td><td class="pl">'+(r[1]?'<img src="/flags/w20/'+r[1]+'.png" alt="" width="16">':'')+'<b data-pid="'+r[6]+'">'+esc(r[0])+'</b>'+ovr(r[7])+'</td><td>'+(r[2]>=0?R[r[2]]:'')+'</td><td class="n">'+r[4]+'</td><td class="n">'+(r[5]||'')+'</td><td class="n p1">'+money(r[3])+'</td></tr>';}).join('')+
   '</tbody></table>'+(rows.length>30&&!bigAll?'<button class="morebtn" type="button">Show more</button>':''):'<p class="note">No prize money for '+name+(reg==='ALL'?'':' in '+reg)+'.</p>';
  var mb=document.querySelector('#bigT .morebtn'); if(mb) mb.onclick=function(){bigAll=true; renderBig();};
  var cc=M&&M.cc||[];
@@ -557,7 +588,23 @@ function byId(id){ return (PLS||[]).find(function(p){return p.id===id;}); }
 var MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 function bars(ps){ var mx=1; ps.forEach(function(p){p.m.forEach(function(v){if(v>mx)mx=v;});});
  return '<div class="bars">'+MON.map(function(mn,i){return '<div class="bcol"><div class="bstack">'+ps.map(function(p,k){return '<span class="b b'+k+'" style="height:'+Math.round(p.m[i]/mx*100)+'%" title="'+esc(p.n)+' '+mn+': '+money(p.m[i])+'"></span>';}).join('')+'</div><em>'+mn+'</em></div>';}).join('')+'</div>'; }
-function head(p){ return '<div class="ph">'+(p.f?'<img src="/flags/w40/'+p.f+'.png" alt="" width="28">':'')+'<b>'+esc(p.n)+'</b>'+(p.r?'<i>'+p.r+'</i>':'')+'</div>'; }
+function ovr(v){ return v?'<span class="ovr'+(v>=90?' hi':'')+'">'+v+'</span>':''; }
+function head(p){ return '<div class="ph">'+(p.f?'<img src="/flags/w40/'+p.f+'.png" alt="" width="28">':'')+'<b>'+esc(p.n)+'</b>'+ovr(p.v)+(p.r?'<i>'+p.r+'</i>':'')+'</div>'; }
+function fold(x){ return String(x||'').normalize('NFKD').replace(/[\u0300-\u036f]/g,'').toLowerCase(); }
+function pickHTML(id,ph,p){ return '<div class="pk" id="'+id+'"><input type="search" autocomplete="off" spellcheck="false" placeholder="'+ph+'" value="'+(p?esc(p.n):'')+'"><ul class="pkL" hidden></ul></div>'; }
+function pickWire(id,onPick){ var box=document.getElementById(id), inp=box.querySelector('input'), ul=box.querySelector('ul'), hits=[], on=0;
+ function row(p,i){ return '<li data-i="'+i+'"'+(i===on?' class="on"':'')+'>'+(p.f?'<img src="/flags/w20/'+p.f+'.png" alt="" width="20">':'<span class="nf"></span>')+'<b>'+esc(p.n)+'</b>'+(p.r?'<i>'+p.r+'</i>':'')+ovr(p.v)+'<em>'+money(p.t)+'</em></li>'; }
+ function show(){ ul.innerHTML=hits.length?hits.map(row).join(''):'<li class="none">No player with that name in the 2026 prize list</li>'; ul.hidden=false; }
+ function find(){ loadPL(function(L){ var q=fold(inp.value.trim()); if(!q){ hits=L.slice(0,8); } else {
+   var a=[],b=[]; L.forEach(function(p){ var n=fold(p.n), k=n.indexOf(q); if(k===0) a.push(p); else if(k>0) b.push(p); });
+   hits=a.concat(b).slice(0,8); } on=0; show(); }); }
+ function pick(i){ var p=hits[i]; if(!p) return; inp.value=p.n; ul.hidden=true; onPick(p); }
+ inp.addEventListener('input',find); inp.addEventListener('focus',find);
+ inp.addEventListener('keydown',function(e){ if(ul.hidden) return;
+  if(e.key==='ArrowDown'||e.key==='ArrowUp'){ e.preventDefault(); on=(on+(e.key==='ArrowDown'?1:hits.length-1))%Math.max(hits.length,1); show(); }
+  else if(e.key==='Enter'){ e.preventDefault(); pick(on); } else if(e.key==='Escape'){ ul.hidden=true; } });
+ ul.addEventListener('mousedown',function(e){ var li=e.target.closest('li[data-i]'); if(li){ e.preventDefault(); pick(+li.dataset.i); } });
+ inp.addEventListener('blur',function(){ setTimeout(function(){ ul.hidden=true; },120); }); }
 function openPlayer(id){ loadPL(function(){ var p=byId(id); if(!p) return; var el=document.getElementById('pmB');
  el.innerHTML=head(p)+'<div class="pstats"><div><i>Earned 2026</i><b class="p1">'+money(p.t)+'</b></div><div><i>Cups paid</i><b>'+p.k+'</b></div><div><i>Wins</i><b>'+p.w+'</b></div></div>'+bars([p])+
   '<div class="pact">'+(p.page?'<a class="morebtn" href="'+p.page+'">Player page</a>':'')+'<button type="button" class="morebtn" id="pmCmp">Compare</button></div>'+
@@ -565,18 +612,18 @@ function openPlayer(id){ loadPL(function(){ var p=byId(id); if(!p) return; var e
  document.getElementById('pmCmp').onclick=function(){ openCompare(p.id); };
  document.getElementById('pm').hidden=false; }); }
 function openCompare(a,b){ loadPL(function(L){ var el=document.getElementById('pmB');
- var opts=L.map(function(p){return '<option value="'+esc(p.n)+'">';}).join('');
- var A=a&&byId(a), B=b&&byId(b);
- el.innerHTML='<h3>Compare two players</h3><div class="cmpin"><input list="plList" id="cmpA" placeholder="Player 1" value="'+(A?esc(A.n):'')+'"><input list="plList" id="cmpB" placeholder="Player 2" value="'+(B?esc(B.n):'')+'"><datalist id="plList">'+opts+'</datalist></div><div id="cmpOut"></div>';
- function draw(){ var na=document.getElementById('cmpA').value, nb=document.getElementById('cmpB').value;
-  var pa=L.find(function(p){return p.n===na;}), pb=L.find(function(p){return p.n===nb;}), o=document.getElementById('cmpOut');
-  if(!pa||!pb){o.innerHTML='<p class="note">Pick two players from the list (top 2000 by prize money in 2026).</p>';return;}
+ var pa=a&&byId(a), pb=b&&byId(b);
+ el.innerHTML='<h3>Compare two players</h3><div class="cmpin">'+pickHTML('cmpA','Player 1',pa)+pickHTML('cmpB','Player 2',pb)+'</div><div id="cmpOut"></div>';
+ pickWire('cmpA',function(p){pa=p;draw();}); pickWire('cmpB',function(p){pb=p;draw();});
+ function draw(){ var o=document.getElementById('cmpOut');
+  if(!pa||!pb){o.innerHTML='<p class="note">Type a name and pick from the list (top 2000 by prize money in 2026).</p>';return;}
   var row=function(lbl,x,y,fmt){return '<tr><td>'+lbl+'</td><td class="n'+(x>y?' p1':'')+'">'+fmt(x)+'</td><td class="n'+(y>x?' p1':'')+'">'+fmt(y)+'</td></tr>';};
   var best=function(p){return p.c.reduce(function(m,c){return c[3]>m?c[3]:m;},0);};
-  o.innerHTML='<table class="tbl cmp"><thead><tr><th></th><th class="n">'+esc(pa.n)+'</th><th class="n">'+esc(pb.n)+'</th></tr></thead><tbody>'+
-   row('Earned 2026',pa.t,pb.t,money)+row('Cups paid',pa.k,pb.k,String)+row('Wins',pa.w,pb.w,String)+row('Biggest prize',best(pa),best(pb),money)+'</tbody></table>'+bars([pa,pb])+
+  var fl=function(p){return p.f?'<img src="/flags/w20/'+p.f+'.png" alt="" width="16"> ':'';};
+  o.innerHTML='<table class="tbl cmp"><thead><tr><th></th><th class="n">'+fl(pa)+esc(pa.n)+'</th><th class="n">'+fl(pb)+esc(pb.n)+'</th></tr></thead><tbody>'+
+   (pa.v||pb.v?row('Card rating',pa.v||0,pb.v||0,function(v){return v?String(v):'·';}):'')+row('Earned 2026',pa.t,pb.t,money)+row('Cups paid',pa.k,pb.k,String)+row('Wins',pa.w,pb.w,String)+row('Biggest prize',best(pa),best(pb),money)+'</tbody></table>'+bars([pa,pb])+
    '<p class="lg2"><span class="b0"></span>'+esc(pa.n)+' <span class="b1"></span>'+esc(pb.n)+'</p>'; }
- document.getElementById('cmpA').oninput=draw; document.getElementById('cmpB').oninput=draw; draw();
+ draw();
  document.getElementById('pm').hidden=false; }); }
 var liveTimer=null;
 function openLive(ev,w,title,end){ var el=document.getElementById('pmB'); clearInterval(liveTimer);
@@ -599,6 +646,7 @@ if(document.querySelector('.rlr')) rlShow(reg==='ALL'?'EU':reg);
 document.querySelector('#pm .mx').onclick=function(){document.getElementById('pm').hidden=true; clearInterval(liveTimer);};
 document.getElementById('pm').onclick=function(e){ if(e.target.id==='pm') e.target.hidden=true; };
 document.getElementById('cmpBtn').onclick=function(){ openCompare(); };
+pickWire('plFind',function(p){ openPlayer(p.id); });
 document.addEventListener('click',function(e){ var t=e.target.closest('[data-pid]'); if(t){ e.preventDefault(); openPlayer(t.dataset.pid); } });
 var TABS=['calendar','prizes','results','predictions'], tab=(location.hash||'').slice(1); if(TABS.indexOf(tab)<0) tab='calendar';
 function showTab(t){ tab=t;
@@ -645,7 +693,7 @@ ${regButtons}
 <p class="small" id="earnP"></p><div id="earnT"></div>
 </section></div></div>
 <div class="tabp" data-tab="prizes" hidden><section class="glass panel"><h3 id="bigH">Prize money</h3><p class="small" id="bigP"></p>
-<div class="periods" id="periods"></div><div class="bigtools"><button type="button" id="cmpBtn" class="morebtn">Compare two players</button></div><div id="bigT"></div></section>
+<div class="periods" id="periods"></div><div class="bigtools"><div class="pk" id="plFind"><input type="search" autocomplete="off" spellcheck="false" placeholder="Find a player"><ul class="pkL" hidden></ul></div><button type="button" id="cmpBtn" class="morebtn">Compare two players</button></div><div id="bigT"></div></section>
 <section class="glass panel"><h3>Records 2026</h3><div class="recs">${RECS.map(r => '<div class="rec"><i>' + esc(r[0]) + '</i><b>' + esc(r[1]) + '</b><span>' + esc(r[2]) + '</span></div>').join('')}</div></section>
 <section class="glass panel"><h3 id="ccH">Prize money by country</h3><div id="ccT"></div></section></div>
 <div class="tabp" data-tab="results" hidden>${WEEK ? '<section class="glass panel week"><h3>This week</h3><p class="small">' + money(WEEK.paid) + ' paid in the last 7 days.</p><div class="wkgrid"><div><i>Top earners</i>' +
