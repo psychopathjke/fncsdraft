@@ -38,8 +38,14 @@ async function get(url) {
 }
 // Серия окна без номера недели: S42_ConsoleVCC_SolosZB_Event8Round2_EU → S42_ConsoleVCC_SolosZB_EventNRound2_EU.
 const series = w => w.replace(/Event\d+/, 'EventN').replace(/Week\d+/, 'WeekN');
+// Окна, про которые Epic прямо сказал «выплат нет» (пустой payoutTable на странице окна или события). Им таблица серии
+// не подставляется: у Performance Cup Opens выплата была одну неделю (места 1–4 по $400) и расползалась на все недели.
+const NOPAY = new Set();
+Object.entries(PAY).forEach(([w, t]) => { if (Array.isArray(t) && !t.length) NOPAY.add(w); });
+Object.values(EV).forEach(e => e && e.w && e.w.forEach(w => { if (Array.isArray(w.pay) && !w.pay.length && !(Array.isArray(PAY[w.w]) && PAY[w.w].length)) NOPAY.add(w.w); }));
 function payTable(w) {
   if (Array.isArray(PAY[w]) && PAY[w].length) return PAY[w];
+  if (NOPAY.has(w)) return null;
   const s = series(w);
   const k = Object.keys(PAY).find(x => series(x) === s && Array.isArray(PAY[x]) && PAY[x].length);
   return k ? PAY[k] : null;
@@ -86,6 +92,10 @@ function payout(table, rank, pts) {
   const done = [...byW.values()].filter(e => payTable(e.w) && !have.has(e.w));
   console.log('призовых окон за ' + YEAR + ': ' + [...byW.values()].filter(e => payTable(e.w)).length + ', новых к скачиванию: ' + done.length);
   const results = [...have.values()];
+  // Выплаты в кеше — по актуальным таблицам (правила подстановки таблиц меняются, места и очки — нет).
+  // Окна Liquipedia (LQ_) несут свои деньги, их не трогаем.
+  results.forEach(r => { if (/^LQ_/.test(r.w)) return; const t = payTable(r.w); r.top.forEach(x => { x.usd = t ? payout(t, x.rank, x.pts) : 0; }); });
+  for (let i = results.length - 1; i >= 0; i--) if (!/^LQ_/.test(results[i].w) && !payTable(results[i].w)) results.splice(i, 1);
   const missing = [];
   for (let i = 0; i < done.length; i += 8) {
     if (i && i % 200 === 0) console.log('  … ' + i + '/' + done.length);

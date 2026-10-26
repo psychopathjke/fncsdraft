@@ -143,7 +143,7 @@ const CALDATA = upcoming.map(e => {
 // Регион игрока — его домашний, а не региона капа (26.10: «PANZER топ-1 NAC — ошибка, он европеец, взял призовые на
 // Америке»): страна → регион; США и Канада — NAC/NAW по тому, где больше капов за год; страны нет — где больше капов.
 // Деньги считаются все, где бы ни выиграны.
-let resHTML = '';
+let resHTML = '', WEEK = null, RECS = [];
 const EARN = {};
 if (RES && RES.windows.length) {
   const who = new Map();   // id → { n, c, at }
@@ -187,8 +187,51 @@ if (RES && RES.windows.length) {
     const keep = new Set(all.slice(0, 100).map(x => x.id));
     REGS.forEach(r => all.filter(x => who.get(x.id).reg === r).slice(0, 40).forEach(x => keep.add(x.id)));
     const byReg = {}; all.forEach(x => { const r = who.get(x.id).reg; if (r) byReg[r] = (byReg[r] || 0) + x.usd; });
-    EARN[m] = { paid: M.paid, reg: byReg, rows: all.filter(x => keep.has(x.id)).map(x => { const o = who.get(x.id); return [o.n, o.f, REGS.indexOf(o.reg), x.usd, x.cups, x.wins]; }) };
+    EARN[m] = { paid: M.paid, reg: byReg, rows: all.filter(x => keep.has(x.id)).map(x => { const o = who.get(x.id); return [o.n, o.f, REGS.indexOf(o.reg), x.usd, x.cups, x.wins, x.id.slice(0, 12)]; }) };
   });
+  // ---- Год игрока (26.10, его пункты 1 и 7: страница игрока и сравнение двух): 2000 лучших по году — деньги по
+  // месяцам и все призовые капы; отдельным файлом comp-players.json, страница грузит его по клику.
+  const Yp = byMonth.get('2026');
+  const PL = [...Yp.p.values()].sort((a, b) => b.usd - a.usd).slice(0, 2000);
+  const plIdx = new Map(PL.map(x => [x.id, { id: x.id.slice(0, 12), n: who.get(x.id).n, f: who.get(x.id).f, r: who.get(x.id).reg || '', t: x.usd, k: x.cups, w: x.wins, m: Array(12).fill(0), c: [] }]));
+  const prettyW = w => w.pretty ? w.name : pretty(w.name);
+  RES.windows.forEach(w => w.top.forEach(x => { if (!x.usd) return; x.ids.forEach(id => { const p = plIdx.get(id); if (!p) return;
+    p.m[+w.begin.slice(5, 7) - 1] += x.usd; p.c.push([w.begin.slice(0, 10), prettyW(w), x.rank, x.usd, regOf(w)]); }); }));
+  const slugBase = h => String(h).normalize('NFKD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+  plIdx.forEach(p => { p.c.sort((a, b) => a[0] < b[0] ? 1 : -1); const sl = slugBase(p.n); if (sl && fs.existsSync(path.join(OUT, 'player', sl + '.html'))) p.page = '/player/' + sl; });
+  fs.writeFileSync(path.join(OUT, 'comp-players.json'), JSON.stringify([...plIdx.values()]));
+
+  // ---- Рекорды года (пункт 3)
+  let bigPay = null, bestMonth = null;
+  RES.windows.forEach(w => w.top.forEach(x => { if (x.usd && (!bigPay || x.usd > bigPay.usd)) bigPay = { usd: x.usd, n: x.ids.map(id => who.get(id).n).join(' + '), ev: prettyW(w), d: w.begin.slice(0, 10) }; }));
+  byMonth.forEach((M, m) => { if (m === '2026') return; M.p.forEach((o, id) => { if (!bestMonth || o.usd > bestMonth.usd) bestMonth = { usd: o.usd, n: who.get(id).n, m }; }); });
+  const all = [...Yp.p.values()];
+  const mostWins = all.slice().sort((a, b) => b.wins - a.wins || b.usd - a.usd)[0];
+  const mostCups = all.slice().sort((a, b) => b.cups - a.cups || b.usd - a.usd)[0];
+  const pairs = new Map();
+  RES.windows.forEach(w => w.top.forEach(x => { if (!x.usd || x.ids.length !== 2) return; const k = x.ids.slice().sort().join('|'); pairs.set(k, (pairs.get(k) || 0) + x.usd * 2); }));
+  const bestPair = [...pairs.entries()].sort((a, b) => b[1] - a[1])[0];
+  const RECORDS = [
+    bigPay && ['Biggest single payout', bigPay.n, money(bigPay.usd) + ' each · ' + bigPay.ev],
+    mostWins && ['Most cup wins', who.get(mostWins.id).n, mostWins.wins + ' wins · ' + money(mostWins.usd)],
+    mostCups && ['Most paid cups', who.get(mostCups.id).n, mostCups.cups + ' cups in the money'],
+    bestPair && ['Best duo', bestPair[0].split('|').map(id => who.get(id).n).join(' + '), money(bestPair[1]) + ' together'],
+    bestMonth && ['Best month', bestMonth.n, money(bestMonth.usd) + ' in ' + new Date(bestMonth.m + '-01T00:00:00Z').toLocaleString('en-US', { month: 'long', timeZone: 'UTC' })],
+  ].filter(Boolean);
+
+  // ---- Страны (пункт 4): по месяцам и за год
+  byMonth.forEach((M, m) => { const C = {}; M.p.forEach((o, id) => { const c = who.get(id).f; if (!c) return; const e = C[c] || (C[c] = [c, 0, 0]); e[1] += o.usd; e[2]++; });
+    EARN[m].cc = Object.values(C).sort((a, b) => b[1] - a[1]).slice(0, 40); });
+
+  // ---- Неделя (пункт 10): последние 7 дней от сборки
+  const wk = RES.windows.filter(w => Date.parse(w.begin) > NOW - 7 * 86400e3);
+  const wkP = new Map(); let wkPaid = 0;
+  wk.forEach(w => w.top.forEach(x => { if (!x.usd) return; x.ids.forEach(id => { wkP.set(id, (wkP.get(id) || 0) + x.usd); wkPaid += x.usd; }); }));
+  const wkTop = [...wkP.entries()].sort((a, b) => b[1] - a[1]).slice(0, 3);
+  const wkBig = wk.map(w => ({ w, x: w.top.find(t => t.rank === 1) })).filter(o => o.x && o.x.usd).sort((a, b) => b.x.usd - a.x.usd).slice(0, 4);
+  WEEK = wk.length ? { paid: wkPaid, top: wkTop.map(([id, v]) => [who.get(id).n, who.get(id).f, v]), wins: wkBig.map(o => [o.x.ids.map(id => who.get(id).n).join(' + '), prettyW(o.w), o.x.usd, regOf(o.w)]) } : null;
+  RECS = RECORDS;
+
   const latest = RES.windows.slice().sort((a, b) => a.begin > b.begin ? -1 : 1).slice(0, 60);
   resHTML = latest.map(w => {
     const t3 = w.top.slice(0, 3);
@@ -351,6 +394,34 @@ h1,h2,h3,h4{font-family:var(--font-display);font-weight:700;margin:0;line-height
 .predcard span:last-child{color:#c9d5f0}
 .predcard:hover{box-shadow:inset 0 0 0 2px var(--go)}
 @media(max-width:620px){.subnav button{font-size:14px;padding:9px 10px}#big th:nth-child(3),#big td:nth-child(3),#big th:nth-child(5),#big td:nth-child(5){display:none}}
+.tabp>.panel+.panel{margin-top:16px}
+[data-pid]{cursor:pointer;text-decoration:underline;text-decoration-color:rgba(159,225,255,.35);text-underline-offset:3px}
+[data-pid]:hover{color:var(--go)}
+.bigtools{margin:-4px 0 10px}
+.recs{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px}
+.rec{background:var(--row);border-radius:12px;padding:12px 14px}
+.rec i{display:block;font:700 12px var(--font-display);letter-spacing:.08em;text-transform:uppercase;color:var(--cyan);font-style:normal}
+.rec b{display:block;font:700 20px var(--font-display);margin:4px 0 2px}
+.rec span{font-size:13px;color:var(--dim)}
+#cc td img,#cc td b{vertical-align:middle}#cc img{margin-right:8px}
+.week .wkgrid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.week i{display:block;font:700 12px var(--font-display);letter-spacing:.08em;text-transform:uppercase;color:var(--cyan);font-style:normal;margin-bottom:4px}
+.week p{margin:4px 0;font-size:14px}.week img{vertical-align:-2px;margin-right:6px}
+.week{margin-bottom:16px}
+.modal{position:fixed;inset:0;z-index:50;background:rgba(5,10,30,.72);display:flex;align-items:flex-start;justify-content:center;padding:40px 14px;overflow:auto}
+.mbox{width:min(760px,100%);padding:22px 22px 24px;position:relative}
+.mx{position:absolute;top:10px;right:12px;width:36px;height:36px;border:none;border-radius:10px;background:rgba(255,255,255,.12);color:#fff;font-size:22px;cursor:pointer}
+.ph{display:flex;align-items:center;gap:10px;margin-bottom:12px}.ph b{font:italic 900 30px var(--font-display);text-transform:uppercase}.ph i{font-style:normal;color:var(--dim);font:700 14px var(--font-display)}
+.pstats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+.pstats div{background:var(--row);border-radius:10px;padding:8px 12px}.pstats i{display:block;font-style:normal;font-size:12px;color:var(--dim)}.pstats b{font:700 22px var(--font-display)}
+.bars{display:grid;grid-template-columns:repeat(12,1fr);gap:4px;height:120px;margin:6px 0 14px;align-items:end}
+.bcol{display:flex;flex-direction:column;height:100%}.bstack{flex:1;display:flex;align-items:flex-end;gap:2px}
+.bars .b{flex:1;min-height:2px;border-radius:3px 3px 0 0}.b0,.bars .b0{background:var(--go)}.b1,.bars .b1{background:var(--cyan)}
+.bcol em{font-style:normal;font-size:10px;color:var(--dim);text-align:center;margin-top:3px}
+.pact{display:flex;gap:8px;margin-bottom:12px}.pact a{text-decoration:none;display:inline-block}
+.cmpin{display:flex;gap:8px;margin:10px 0}.cmpin input{flex:1;min-width:0;padding:10px 12px;border-radius:10px;border:none;background:rgba(255,255,255,.1);color:#fff;font:600 15px var(--font-display)}
+.lg2{font-size:13px;color:var(--dim)}.lg2 span{display:inline-block;width:12px;height:12px;border-radius:3px;margin:0 6px -1px 12px}
+@media(max-width:620px){.week .wkgrid{grid-template-columns:1fr}.pstats b{font-size:18px}}
 [hidden]{display:none!important}`;
 
 const JS = `(function(){
@@ -408,7 +479,7 @@ function renderEarn(){
  document.getElementById('earnP').textContent=(paid?money(paid)+(reg==='ALL'?' paid in cash cups and FNCS':' to '+reg+' players')+(mk===today.getFullYear()+'-'+String(today.getMonth()+1).padStart(2,'0')?' so far':'')+'. ':'')+'Duos: each player gets the payout.';
  var show=earnAll?rows.slice(0,100):rows.slice(0,15);
  document.getElementById('earnT').innerHTML=rows.length?'<table class="tbl" id="earn"><thead><tr><th>#</th><th>Player</th><th class="n">Cups</th><th class="n">Wins</th><th class="n">Earned</th></tr></thead><tbody>'+
-  show.map(function(r,i){return '<tr><td class="n">'+(i+1)+'</td><td class="pl">'+(r[1]?'<img src="/flags/w20/'+r[1]+'.png" alt="" width="16">':'')+'<b>'+esc(r[0])+'</b></td><td class="n">'+r[4]+'</td><td class="n">'+(r[5]||'')+'</td><td class="n p1">'+money(r[3])+'</td></tr>';}).join('')+
+  show.map(function(r,i){return '<tr><td class="n">'+(i+1)+'</td><td class="pl">'+(r[1]?'<img src="/flags/w20/'+r[1]+'.png" alt="" width="16">':'')+'<b data-pid="'+r[6]+'">'+esc(r[0])+'</b></td><td class="n">'+r[4]+'</td><td class="n">'+(r[5]||'')+'</td><td class="n p1">'+money(r[3])+'</td></tr>';}).join('')+
   '</tbody></table>'+(rows.length>15&&!earnAll?'<button class="morebtn" type="button">Show more</button>':''):'<p class="note">No prize money '+(new Date(cur.y,cur.m,1)>today?'yet':'recorded')+' for '+name+(reg==='ALL'?'':' in '+reg)+'.</p>';
  var mb=document.querySelector('#earnT .morebtn'); if(mb) mb.onclick=function(){earnAll=true; renderEarn();};
 }
@@ -432,10 +503,47 @@ function renderBig(){
  document.getElementById('bigP').textContent=(paid?money(paid)+(reg==='ALL'?' paid in Epic cups, FNCS and LANs':' to '+reg+' players')+'. ':'')+'Duos and squads: each player gets the payout.';
  var show=bigAll?rows.slice(0,100):rows.slice(0,30);
  document.getElementById('bigT').innerHTML=rows.length?'<table class="tbl" id="big"><thead><tr><th>#</th><th>Player</th><th>Region</th><th class="n">Cups paid</th><th class="n">Wins</th><th class="n">Earned</th></tr></thead><tbody>'+
-  show.map(function(r,i){return '<tr><td class="n">'+(i+1)+'</td><td class="pl">'+(r[1]?'<img src="/flags/w20/'+r[1]+'.png" alt="" width="16">':'')+'<b>'+esc(r[0])+'</b></td><td>'+(r[2]>=0?R[r[2]]:'')+'</td><td class="n">'+r[4]+'</td><td class="n">'+(r[5]||'')+'</td><td class="n p1">'+money(r[3])+'</td></tr>';}).join('')+
+  show.map(function(r,i){return '<tr><td class="n">'+(i+1)+'</td><td class="pl">'+(r[1]?'<img src="/flags/w20/'+r[1]+'.png" alt="" width="16">':'')+'<b data-pid="'+r[6]+'">'+esc(r[0])+'</b></td><td>'+(r[2]>=0?R[r[2]]:'')+'</td><td class="n">'+r[4]+'</td><td class="n">'+(r[5]||'')+'</td><td class="n p1">'+money(r[3])+'</td></tr>';}).join('')+
   '</tbody></table>'+(rows.length>30&&!bigAll?'<button class="morebtn" type="button">Show more</button>':''):'<p class="note">No prize money for '+name+(reg==='ALL'?'':' in '+reg)+'.</p>';
  var mb=document.querySelector('#bigT .morebtn'); if(mb) mb.onclick=function(){bigAll=true; renderBig();};
+ var cc=M&&M.cc||[];
+ document.getElementById('ccH').textContent='Prize money by country · '+name;
+ document.getElementById('ccT').innerHTML=cc.length?'<table class="tbl" id="cc"><thead><tr><th>#</th><th>Country</th><th class="n">Players</th><th class="n">Earned</th></tr></thead><tbody>'+
+  cc.slice(0,20).map(function(r,i){return '<tr><td class="n">'+(i+1)+'</td><td><img src="/flags/w20/'+r[0]+'.png" alt="" width="16"><b>'+(CN[r[0]]||r[0].toUpperCase())+'</b></td><td class="n">'+r[2]+'</td><td class="n p1">'+money(r[1])+'</td></tr>';}).join('')+'</tbody></table>':'<p class="note">No data.</p>';
 }
+var CN=(function(){try{var d=new Intl.DisplayNames(['en'],{type:'region'});return new Proxy({},{get:function(_,k){try{return d.of(String(k).toUpperCase());}catch(e){return null;}}});}catch(e){return {};}})();
+// ---- окно игрока и сравнение (comp-players.json грузится один раз)
+var PLS=null;
+function loadPL(cb){ if(PLS) return cb(PLS); fetch('/comp-players.json').then(function(r){return r.json();}).then(function(j){PLS=j; cb(j);}).catch(function(){cb([]);}); }
+function byId(id){ return (PLS||[]).find(function(p){return p.id===id;}); }
+var MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+function bars(ps){ var mx=1; ps.forEach(function(p){p.m.forEach(function(v){if(v>mx)mx=v;});});
+ return '<div class="bars">'+MON.map(function(mn,i){return '<div class="bcol"><div class="bstack">'+ps.map(function(p,k){return '<span class="b b'+k+'" style="height:'+Math.round(p.m[i]/mx*100)+'%" title="'+esc(p.n)+' '+mn+': '+money(p.m[i])+'"></span>';}).join('')+'</div><em>'+mn+'</em></div>';}).join('')+'</div>'; }
+function head(p){ return '<div class="ph">'+(p.f?'<img src="/flags/w40/'+p.f+'.png" alt="" width="28">':'')+'<b>'+esc(p.n)+'</b>'+(p.r?'<i>'+p.r+'</i>':'')+'</div>'; }
+function openPlayer(id){ loadPL(function(){ var p=byId(id); if(!p) return; var el=document.getElementById('pmB');
+ el.innerHTML=head(p)+'<div class="pstats"><div><i>Earned 2026</i><b class="p1">'+money(p.t)+'</b></div><div><i>Cups paid</i><b>'+p.k+'</b></div><div><i>Wins</i><b>'+p.w+'</b></div></div>'+bars([p])+
+  '<div class="pact">'+(p.page?'<a class="morebtn" href="'+p.page+'">Player page</a>':'')+'<button type="button" class="morebtn" id="pmCmp">Compare</button></div>'+
+  '<table class="tbl"><thead><tr><th>Date</th><th>Event</th><th class="n">Place</th><th class="n">Prize</th></tr></thead><tbody>'+p.c.slice(0,60).map(function(c){return '<tr><td>'+c[0].slice(5)+'</td><td class="pl">'+esc(c[1])+'</td><td class="n">'+c[2]+'</td><td class="n p1">'+money(c[3])+'</td></tr>';}).join('')+'</tbody></table>';
+ document.getElementById('pmCmp').onclick=function(){ openCompare(p.id); };
+ document.getElementById('pm').hidden=false; }); }
+function openCompare(a,b){ loadPL(function(L){ var el=document.getElementById('pmB');
+ var opts=L.map(function(p){return '<option value="'+esc(p.n)+'">';}).join('');
+ var A=a&&byId(a), B=b&&byId(b);
+ el.innerHTML='<h3>Compare two players</h3><div class="cmpin"><input list="plList" id="cmpA" placeholder="Player 1" value="'+(A?esc(A.n):'')+'"><input list="plList" id="cmpB" placeholder="Player 2" value="'+(B?esc(B.n):'')+'"><datalist id="plList">'+opts+'</datalist></div><div id="cmpOut"></div>';
+ function draw(){ var na=document.getElementById('cmpA').value, nb=document.getElementById('cmpB').value;
+  var pa=L.find(function(p){return p.n===na;}), pb=L.find(function(p){return p.n===nb;}), o=document.getElementById('cmpOut');
+  if(!pa||!pb){o.innerHTML='<p class="note">Pick two players from the list (top 2000 by prize money in 2026).</p>';return;}
+  var row=function(lbl,x,y,fmt){return '<tr><td>'+lbl+'</td><td class="n'+(x>y?' p1':'')+'">'+fmt(x)+'</td><td class="n'+(y>x?' p1':'')+'">'+fmt(y)+'</td></tr>';};
+  var best=function(p){return p.c.reduce(function(m,c){return c[3]>m?c[3]:m;},0);};
+  o.innerHTML='<table class="tbl cmp"><thead><tr><th></th><th class="n">'+esc(pa.n)+'</th><th class="n">'+esc(pb.n)+'</th></tr></thead><tbody>'+
+   row('Earned 2026',pa.t,pb.t,money)+row('Cups paid',pa.k,pb.k,String)+row('Wins',pa.w,pb.w,String)+row('Biggest prize',best(pa),best(pb),money)+'</tbody></table>'+bars([pa,pb])+
+   '<p class="lg2"><span class="b0"></span>'+esc(pa.n)+' <span class="b1"></span>'+esc(pb.n)+'</p>'; }
+ document.getElementById('cmpA').oninput=draw; document.getElementById('cmpB').oninput=draw; draw();
+ document.getElementById('pm').hidden=false; }); }
+document.querySelector('#pm .mx').onclick=function(){document.getElementById('pm').hidden=true;};
+document.getElementById('pm').onclick=function(e){ if(e.target.id==='pm') e.target.hidden=true; };
+document.getElementById('cmpBtn').onclick=function(){ openCompare(); };
+document.addEventListener('click',function(e){ var t=e.target.closest('[data-pid]'); if(t){ e.preventDefault(); openPlayer(t.dataset.pid); } });
 var TABS=['calendar','prizes','results','predictions'], tab=(location.hash||'').slice(1); if(TABS.indexOf(tab)<0) tab='calendar';
 function showTab(t){ tab=t;
  document.querySelectorAll('.subnav button').forEach(function(b){b.setAttribute('aria-selected',b.dataset.tab===t?'true':'false');});
@@ -481,11 +589,17 @@ ${regButtons}
 <p class="small" id="earnP"></p><div id="earnT"></div>
 </section></div></div>
 <div class="tabp" data-tab="prizes" hidden><section class="glass panel"><h3 id="bigH">Prize money</h3><p class="small" id="bigP"></p>
-<div class="periods" id="periods"></div><div id="bigT"></div></section></div>
-<div class="tabp" data-tab="results" hidden><div class="results">${resHTML || '<p class="note">No results yet.</p>'}</div></div>
+<div class="periods" id="periods"></div><div class="bigtools"><button type="button" id="cmpBtn" class="morebtn">Compare two players</button></div><div id="bigT"></div></section>
+<section class="glass panel"><h3>Records 2026</h3><div class="recs">${RECS.map(r => '<div class="rec"><i>' + esc(r[0]) + '</i><b>' + esc(r[1]) + '</b><span>' + esc(r[2]) + '</span></div>').join('')}</div></section>
+<section class="glass panel"><h3 id="ccH">Prize money by country</h3><div id="ccT"></div></section></div>
+<div class="tabp" data-tab="results" hidden>${WEEK ? '<section class="glass panel week"><h3>This week</h3><p class="small">' + money(WEEK.paid) + ' paid in the last 7 days.</p><div class="wkgrid"><div><i>Top earners</i>' +
+  WEEK.top.map(t => '<p>' + flag(t[1]) + '<b>' + esc(t[0]) + '</b> <span class="p1">' + money(t[2]) + '</span></p>').join('') + '</div><div><i>Biggest wins</i>' +
+  WEEK.wins.map(t => '<p><b>' + esc(t[0]) + '</b> won ' + esc(t[1]) + ' <span class="p1">' + money(t[2]) + '</span></p>').join('') + '</div></div></section>' : ''}
+<div class="results">${resHTML || '<p class="note">No results yet.</p>'}</div></div>
 <div class="tabp" data-tab="predictions" hidden>${heroHTML}
 <a class="glass predcard" href="/predict/fncs-solos-2026"><span class="tag">Prediction</span><b>FNCS Solos 2026 Finals</b>
 <span>Win chances for all 698 finalists, real drop maps for every region, 500 simulated finals each.</span></a></div>
+<div class="modal" id="pm" hidden><div class="glass mbox"><button type="button" class="mx" aria-label="Close">×</button><div id="pmB"></div></div></div>
 <div class="foot"><p class="note">Calendar and leaderboards: Epic Games via <a href="https://eucompetitive.com" rel="noopener">eucompetitive.com</a> and Fortnite Tracker. Payout tables: Epic, via Fortnite Tracker.</p>
 <a class="btn" href="/">Play the FNCS career</a></div>
 </div><script>${JS}</script></body></html>`;
