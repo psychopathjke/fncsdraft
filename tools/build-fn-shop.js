@@ -54,3 +54,5 @@ if (!/let CC_FN_SHOP_V='[0-9a-f]*'/.test(html)) { console.error('в index.html �
 html = html.replace(/let CC_FN_SHOP_V='[0-9a-f]*'/, "let CC_FN_SHOP_V='" + v + "'");
 fs.writeFileSync(path.join(ROOT, 'index.html'), html);
 console.log('предметов', items.length, 'дней', out.length, FIRST + '…' + last, 'файл', Math.round(body.length / 1024) + ' КБ', 'v=' + v);
+// Паки за деньги дописываются отдельной строкой (tools/build-fn-packs.js) — без этого пересборка магазина их стирала бы.
+require('child_process').execFileSync(process.execPath, [path.join(__dirname, 'build-fn-packs.js'), src], { stdio: 'inherit' });
