@@ -122,6 +122,21 @@ function payout(table, rank, pts) {
     results.push({ w: 'MannekenPis_Day2', ev: 'epicgames_MannekenPis_Official', name: 'FNCS Global Championship 2026 · Finals', pretty: true, region: 'LAN', begin: win.begin.replace('+00:00', 'Z'), top });
     console.log('Global Championship: ' + top.length + ' команд, 1-е место $' + (top[0] && top[0].usd));
   }
+  // Сторонние ЛАНы и шоу-матчи (Red Bull Reshuffle, Lost Legends, Virtuocity, Amar x Rohat) — не Epic: места и призы
+  // с Liquipedia (fetch-lan-lq.js → comp-lan-lq.json), приз уже на игрока. id — по нику из таблиц года, иначе «lq:ник».
+  const LQF = path.join(M, 'comp-lan-lq.json');
+  if (fs.existsSync(LQF)) {
+    const idOf = new Map();
+    results.forEach(r => r.top.forEach(x => x.ids.forEach((id, i) => [x.n[i], x.epic[i]].forEach(n => { if (n && !/^lq:|^gc:/.test(id)) idOf.set(String(n).toLowerCase().trim(), id); }))));
+    Object.entries(JSON.parse(fs.readFileSync(LQF, 'utf8'))).forEach(([page, L]) => {
+      const w = 'LQ_' + page.replace(/[^A-Za-z0-9]+/g, '_');
+      const i = results.findIndex(r => r.w === w); if (i >= 0) results.splice(i, 1);
+      if (!L.top || !L.top.length) return;
+      results.push({ w, ev: 'liquipedia:' + page, name: L.name + (L.city && L.city !== 'Online' ? ' · ' + L.city : ''), pretty: true, region: 'LAN',
+        begin: L.day + 'T12:00:00Z', top: L.top.map(x => ({ rank: x.rank, pts: 0, usd: x.usd,
+          ids: x.names.map(n => idOf.get(String(n).toLowerCase().trim()) || 'lq:' + n), n: x.names, epic: x.names, c: x.names.map(() => null) })) });
+    });
+  }
   // Многодневный финал (Major, Global Championship, FNCS Solos): таблица выплат у Epic «cumulative» и висит на окне
   // каждого дня — деньги платятся один раз, по итогу последнего дня. Без этого финалисты получали приз дважды.
   const dayKey = w => /_Day\d+/.test(w) ? w.replace(/_Day\d+/, '_DayN') : null;

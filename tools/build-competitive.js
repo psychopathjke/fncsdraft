@@ -38,7 +38,7 @@ const kind = w => /FNCS|^Bratwurst_|^MannekenPis_/.test(w) ? 'fncs' : /VCC|Victo
 const KIND = { fncs: 'FNCS', cash: 'Cash cup', ranked: 'Ranked cup', other: 'Cup' };
 // LAN-ивенты Epic (события …_Official: FNCS Major 1 Summit «Bratwurst», Global Championship «MannekenPis», мобильный «BOG»)
 // региона не имеют — «LAN», видны при любом выбранном регионе (26.10, его «почему в мае нет лан фнкса»).
-const LAN_W = /^(Bratwurst|MannekenPis|BOG)_/i;
+const LAN_W = /^(Bratwurst|MannekenPis|BOG|LQ)_/i;
 const regOf = e => LAN_W.test(e.w) || e.region === 'LAN' ? 'LAN' : REGS.includes(e.region) ? e.region : (String(e.w).split('_').pop());
 // Страна → соревновательный регион Epic (по серверам, где играет сцена этой страны). 'NA' — потом NAC или NAW.
 const COUNTRY_REG = {};
@@ -98,6 +98,16 @@ if (EVY) {
   });
 }
 
+// Сторонние ЛАНы и шоу-матчи (Liquipedia, comp-lan-lq.json) — днём турнира в календаре.
+const LQY = read('comp-lan-lq.json');
+if (LQY) Object.entries(LQY).forEach(([page, L]) => {
+  if (!L.top || !L.top.length) return;
+  const w = 'LQ_' + page.replace(/[^A-Za-z0-9]+/g, '_');
+  if (CAL.events.some(e => e.w === w)) return;
+  CAL.events.push({ w, ev: 'liquipedia', name: L.name + (L.city && L.city !== 'Online' ? ' · ' + L.city : ''), region: 'LAN',
+    begin: L.day + 'T12:00:00Z', end: L.day + 'T20:00:00Z', img: null, status: 'liquipedia', pretty: true });
+});
+
 // ---- Календарь как в карьере (26.10, его «календарь в виде календаря как в карьере»): сетка месяца с понедельника,
 // в клетке — плашки серий дня цветом вида, у дня FNCS — обложка; клик по дню — список окон с временем зрителя.
 // В страницу едет только сам список окон с начала прошлого месяца (строки — таблицей, окна — массивами).
@@ -119,7 +129,7 @@ CAL.events.forEach(e => { if (hasArt(e.img) && !famArt.has(famOf(e.ev))) famArt.
 const fncsArt = [...CAL.events].reverse().find(e => /FNCSSolo/.test(e.w) && hasArt(e.img));
 const artOf = e => hasArt(e.img) ? '/' + artFile(e.img) : famArt.get(famOf(e.ev)) || (kind(e.w) === 'fncs' && fncsArt ? '/' + artFile(fncsArt.img) : '');
 // Старшинство окна дня: финал FNCS, остальной FNCS, призовые серии (Performance, Nick Eh 30), кэш-капы, ranked, прочее.
-const rankOf = (e, nm) => kind(e.w) === 'fncs' ? (/Final|Summit|Championship/.test(nm) ? 100 : 80) : /PerformanceEvaluation|NickEh30/.test(e.w) ? 60 : kind(e.w) === 'cash' ? 50 : kind(e.w) === 'ranked' ? 30 : 10;
+const rankOf = (e, nm) => kind(e.w) === 'fncs' ? (/Final|Summit|Championship/.test(nm) ? 100 : 80) : /PerformanceEvaluation|NickEh30/.test(e.w) ? 60 : /^LQ_/.test(e.w) ? 70 : kind(e.w) === 'cash' ? 50 : kind(e.w) === 'ranked' ? 30 : 10;
 const ART = {};
 const CALDATA = upcoming.map(e => {
   const nm = e.pretty ? e.name : pretty(e.name);
@@ -141,11 +151,15 @@ if (RES && RES.windows.length) {
     const nm0 = x.n[i] || x.epic[i] || '';
     const nm1 = String(nm0).replace(/\s*\[[^\]]*\]\s*/g, ' ').trim();   // «hylnd amp [MES2026]», «[FNCS2026] BIG Vico» → без турнирной приписки
     const o = who.get(id) || { n: !nm1 || /^[0-9a-f]{32}$/i.test(nm1) ? 'Unknown player' : nm1, c: null, at: {} };
-    if (!o.c && x.c[i]) o.c = x.c[i];
+    if (x.c[i]) { o.cs = o.cs || {}; o.cs[x.c[i]] = (o.cs[x.c[i]] || 0) + 1; }
     if (regOf(w) !== 'LAN') o.at[regOf(w)] = (o.at[regOf(w)] || 0) + 1;
     who.set(id, o);
   })));
+  // Страна игрока — та, что чаще у него в таблицах (у одного и того же аккаунта eucompetitive и Tracker бывают разные:
+  // PANZER — то ru, то rs). Ручные поправки — COUNTRY_FIX (его слово «panzer флаг россии», 26.10).
+  const COUNTRY_FIX = { panzer: 'ru' };
   who.forEach(o => {
+    o.c = COUNTRY_FIX[String(o.n).toLowerCase()] || (o.cs ? Object.entries(o.cs).sort((a, b) => b[1] - a[1])[0][0] : null);
     const most = list => Object.entries(o.at).filter(([r]) => !list || list.includes(r)).sort((a, b) => b[1] - a[1])[0];
     const home = homeRegion(o.c);
     o.reg = home === 'NA' ? ((most(['NAC', 'NAW']) || ['NAC'])[0]) : home || (most() || [null])[0];   // ни страны, ни региональных капов (мобильный ЛАН, Notion 25.10.26 скрин 11) — без региона, только во «All»
