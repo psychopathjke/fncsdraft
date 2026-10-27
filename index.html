@@ -120165,7 +120165,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='5cede7de';
+const CC_BUILD='8c00d9c3';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -143663,21 +143663,25 @@ function ccDropMapHTML(n){
    Всё это у вечера уже посчитано: журнал игр (stageLog) есть у каждой команды,
    очки, победы и киллы тоже. Сводка считается по журналу того, чья строка
    подсвечена, — то есть автора поста. */
+// Строка скрина таблицы: место, имя, очки, матчи, победы, киллы, флаги по картам состава (рисуются при показе, flagImg).
+function ccShotRow(t, i){
+  return {p:i+1, n:String((t&&t.name)||'').replace(/<[^>]*>/g,''), s:Math.round(t.stagePts||0),
+          // Второй вечер кубка: игры первого у остальных лежат в _carryGames, свои уже склеены в лог (Notion 27.10: 11 против 22).
+          m:(t.stageLog||[]).length+(t._carryGames||0), w:t.wins||0, e:Math.round(t.stageElims||0),
+          f:((t&&t.squad)||[]).map(p=>p&&p.nat).filter(Boolean)};
+}
 function ccStageShot(ranked, you, div, cap, cut){
   if(!ranked || !ranked.length || !you) return undefined;
   const bare=t=>String((t&&t.name)||'').replace(/<[^>]*>/g,'');
-  // Флаги — по картам состава, а не по строке: рисуются при показе (flagImg).
-  const nats=t=>((t&&t.squad)||[]).map(p=>p&&p.nat).filter(Boolean);
-  const row=(t,i)=>({p:i+1, n:bare(t), s:Math.round(t.stagePts||0),
-                     // Второй вечер кубка: игры первого у остальных лежат в _carryGames, свои уже склеены в лог (Notion 27.10: 11 против 22).
-                     m:(t.stageLog||[]).length+(t._carryGames||0), w:t.wins||0, e:Math.round(t.stageElims||0), f:nats(t)});
+  const row=ccShotRow;
   const place=ranked.indexOf(you)+1;
   /* Как в таблице самой игры — его твит 3 сентября (Th0masHD на #33, в
      кадре #29–#36, своя строка ещё раз приколота внизу, справа «Points to
      qualify Top 50: 371 pts»). Окно вокруг своей строки, в восьмёрке —
      просто верх; своя строка всегда повторена внизу (pin). */
-  const from=place<=8 ? 0 : Math.max(0, place-5);
-  const rows=ranked.slice(from, from+8).map((t,i)=>row(t, from+i));
+  // Топ-10 (его «пусть топ 10 пишет», 28.10): в десятке просто верх, ниже окно из десяти вокруг своей строки.
+  const from=place<=10 ? 0 : Math.max(0, place-6);
+  const rows=ranked.slice(from, from+10).map((t,i)=>row(t, from+i));
   const pin=place>0 ? row(you, place-1) : null;
   const cutPts=(cut && ranked[cut-1]) ? Math.round(ranked[cut-1].stagePts||0) : undefined;
   const log=(you.stageLog||[]);
@@ -150368,7 +150372,7 @@ function careerCongrats(ranked, you, label){
     handles=(w._cards||w.cards||w.squad||[]).map(c=>c && c.handle);
   }
   const tags=handles.filter(Boolean).map(h=>'@'+ccHandle(h)).join(' ');
-  const rows=ranked.slice(0,5).map((t,i)=>({p:i+1, n:bare(t), s:t.stagePts}));
+  const rows=ranked.slice(0,10).map(ccShotRow);
   /* Взятый титул остаётся в био победителя — тем же способом, каким своё био
      считает выигранные кубки по журналу. Без этого сцена растёт только в
      числах, а читается она именно по строке под ником. См. ccBioLine. */
@@ -150435,7 +150439,7 @@ function careerD1TablePost(){
 function careerCupPosts(ranked, div, v){
   if(!ranked || ranked.length<3) return;
   const bare=t=>String(t.name||'').replace(/<[^>]*>/g,'');
-  const rows=ranked.slice(0,5).map((t,i)=>({p:i+1, n:bare(t), s:t.stagePts}));
+  const rows=ranked.slice(0,10).map(ccShotRow);
   for(let i=2; i>=0; i--){
     const t=ranked[i], pair=(t._cards||t.squad||[]);
     const c=pair[0], mate=pair[1];
