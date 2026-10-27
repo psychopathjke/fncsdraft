@@ -8024,6 +8024,18 @@
   .cc-evpick-auto{background:none;border:0;color:#8fa1cc;font-size:12px;font-weight:800;text-decoration:underline;cursor:pointer;}
   .cc-evpick-go{background:#ffe600;color:#101a44;border:0;border-radius:10px;padding:10px 18px;font-family:var(--font-display);font-weight:700;font-size:15px;text-transform:uppercase;cursor:pointer;}
   .cc-evpick-go:disabled{opacity:.45;cursor:not-allowed;}
+  /* Обучение новичка (ccTourStart): затемнение с окном вокруг одного места и подсказка рядом. */
+  .cc-tour{position:fixed;inset:0;z-index:9700;}
+  .cc-tour-dim{position:absolute;inset:0;background:transparent;}
+  .cc-tour-hole{position:fixed;border-radius:12px;border:2px solid #ffe600;box-shadow:0 0 0 9999px rgba(4,8,24,.74);pointer-events:none;}
+  .cc-tour-tip{position:fixed;background:linear-gradient(180deg,#1b2a66,#101a44);border:1px solid rgba(160,185,255,.35);border-radius:14px;
+    padding:14px 16px;color:#fff;box-shadow:0 18px 44px rgba(0,0,0,.55);}
+  .cc-tour-n{display:block;font-style:normal;font-size:11px;font-weight:800;letter-spacing:.06em;color:#ffe600;margin-bottom:6px;}
+  .cc-tour-t{margin:0 0 12px;font-size:14px;line-height:1.45;color:#e8eeff;}
+  .cc-tour-acts{display:flex;justify-content:space-between;align-items:center;gap:10px;}
+  .cc-tour-skip{background:none;border:0;color:#8fa1cc;font-size:12px;font-weight:800;text-decoration:underline;cursor:pointer;padding:6px 0;}
+  .cc-tour-next{background:#ffe600;color:#101a44;border:0;border-radius:10px;padding:10px 18px;font-family:var(--font-display);font-weight:700;
+    font-size:15px;text-transform:uppercase;cursor:pointer;min-height:44px;}
   .ewc-ask-auto{display:block;margin:8px auto 0;background:none;border:0;color:#8fa1cc;font-size:11px;font-weight:800;text-decoration:underline;cursor:pointer;}
   .ewc-h5{margin:12px 0 4px;font-size:11px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:#8fa1cc;}
   /* Главная: два режима, драфт по годам (29.09). */
@@ -9522,6 +9534,7 @@
       <div class="ch-foot">
         <button class="cc-back" onclick="show('screen-mode')" data-i18n="ccBack"></button>
         <button class="cc-back" onclick="openCareerSlots()" data-i18n="ccSlots"></button>
+        <button class="cc-back cc-tour-btn" onclick="careerTab('centre');ccTourStart()" data-i18n="ccTourBtn"></button>
         <button class="cc-back" id="uiClassicBtn" onclick="uiClassicToggle()" data-i18n="uiClassic"></button>
         <button class="ch-end" onclick="careerEndAsk()" data-i18n="chEnd"></button>
       </div>
@@ -23746,6 +23759,47 @@ Object.assign(I18N.ru, {ccPayPend:'ожидается', ccPayNext:d=>'ближа
   ccPostTechNet:v=>['интернет умирает сегодня 💀 играю на 80 пинге','вайфай выбрал худший день','потеря пакетов в день капа. обожаю'][v%3],
   ccNewsRehost:g=>'Игра '+g+' сегодняшней сессии перехощена из-за проблем с сервером. Очки исходной игры аннулированы.',
   ccNewsTeamingDq:(a,b)=>'@'+a+' и @'+b+' дисквалифицированы с сегодняшнего турнира за тиминг.'});
+/* Обучение новичка (27.10, ccTourStart): семь шагов по хабу карьеры. Немецкий и испанский — английские до доперевода. */
+Object.assign(I18N.en, {ccTourBtn:'How to play', ccTourNext:'Next', ccTourDone:'Got it', ccTourSkip:'Skip the tour',
+  ccTourOvr:'Your rating. A career is about raising it: train every day and do well in tournaments.',
+  ccTourEnergy:'Energy. Training and everything else you do in a day costs energy. A new day gives it back.',
+  ccTourDay:'Today. Pick what the day goes on: train one stat, scrim, stream or work a shift. Do as much as your energy allows, then go to the next day.',
+  ccTourSeason:'Your season on the real FNCS calendar. Highlighted days are tournaments. "A week" and "A month" play the days for you.',
+  ccTourGo:'When you are ready, this takes you to the next tournament day. There you press Play.',
+  ccTourMate:'This is a duos season, so you need a partner to enter team tournaments. Find one here.',
+  ccTourTabs:'Everything else (club, shop, media, locker) can wait. Open this tour again any time with "How to play" at the bottom.'});
+Object.assign(I18N.ru, {ccTourBtn:'Как играть', ccTourNext:'Дальше', ccTourDone:'Понятно', ccTourSkip:'Пропустить',
+  ccTourOvr:'Твой рейтинг. Вся карьера про то, чтобы его поднять: тренироваться каждый день и хорошо играть турниры.',
+  ccTourEnergy:'Энергия. Тренировки и всё остальное за день тратят её. Новый день её возвращает.',
+  ccTourDay:'Сегодня. Выбери, на что уйдёт день: прокачать параметр, скримы, стрим или подработка. Делай, сколько хватит энергии, потом переходи к следующему дню.',
+  ccTourSeason:'Твой сезон по настоящему календарю FNCS. Выделенные дни это турниры. «Неделю» и «Месяц» проигрывают дни за тебя.',
+  ccTourGo:'Когда будешь готов, эта кнопка перенесёт к ближайшему дню турнира. Там жмёшь «Играть».',
+  ccTourMate:'Сезон дуо: на командные турниры нужен напарник. Найди его здесь.',
+  ccTourTabs:'Всё остальное (клуб, магазин, медиа, шкафчик) может подождать. Открыть этот тур снова можно кнопкой «Как играть» внизу.'});
+Object.assign(I18N.fr, {ccTourBtn:'Comment jouer', ccTourNext:'Suivant', ccTourDone:'Compris', ccTourSkip:'Passer',
+  ccTourOvr:'Ta note. Une carrière, c’est la faire monter : t’entraîner chaque jour et bien jouer les tournois.',
+  ccTourEnergy:'L’énergie. L’entraînement et tout ce que tu fais dans la journée en coûtent. Un nouveau jour la rend.',
+  ccTourDay:'Aujourd’hui. Choisis à quoi sert la journée : travailler une stat, scrim, stream ou petit boulot. Fais-en autant que ton énergie le permet, puis passe au jour suivant.',
+  ccTourSeason:'Ta saison sur le vrai calendrier FNCS. Les jours mis en avant sont des tournois. « Une semaine » et « Un mois » jouent les jours pour toi.',
+  ccTourGo:'Quand tu es prêt, ce bouton t’emmène au prochain jour de tournoi. Là, tu appuies sur Jouer.',
+  ccTourMate:'Saison en duo : il te faut un partenaire pour les tournois en équipe. Trouve-le ici.',
+  ccTourTabs:'Tout le reste (club, boutique, médias, casier) peut attendre. Relance ce tour quand tu veux avec « Comment jouer » en bas.'});
+Object.assign(I18N.it, {ccTourBtn:'Come si gioca', ccTourNext:'Avanti', ccTourDone:'Capito', ccTourSkip:'Salta',
+  ccTourOvr:'Il tuo rating. Una carriera serve a farlo salire: allenati ogni giorno e gioca bene i tornei.',
+  ccTourEnergy:'Energia. Allenamenti e tutto ciò che fai in un giorno la consumano. Un nuovo giorno la restituisce.',
+  ccTourDay:'Oggi. Scegli come passare la giornata: allenare una statistica, scrim, stream o un turno di lavoro. Fai quanto ti permette l’energia, poi passa al giorno dopo.',
+  ccTourSeason:'La tua stagione sul vero calendario FNCS. I giorni evidenziati sono tornei. «A week» e «A month» giocano i giorni per te.',
+  ccTourGo:'Quando sei pronto, questo pulsante ti porta al prossimo giorno di torneo. Lì premi Gioca.',
+  ccTourMate:'Stagione in duo: per i tornei a squadre serve un compagno. Trovalo qui.',
+  ccTourTabs:'Tutto il resto (club, negozio, media, armadietto) può aspettare. Riapri questo tour quando vuoi con «Come si gioca» in basso.'});
+Object.assign(I18N.pt, {ccTourBtn:'Como jogar', ccTourNext:'Próximo', ccTourDone:'Entendi', ccTourSkip:'Pular',
+  ccTourOvr:'Seu rating. A carreira é sobre subir ele: treinar todo dia e jogar bem os torneios.',
+  ccTourEnergy:'Energia. Treinos e tudo que você faz no dia gastam energia. Um novo dia devolve.',
+  ccTourDay:'Hoje. Escolha no que o dia vai: treinar um atributo, scrim, live ou um turno de trabalho. Faça o quanto a energia deixar e passe para o próximo dia.',
+  ccTourSeason:'Sua temporada no calendário real da FNCS. Os dias destacados são torneios. "A week" e "A month" jogam os dias por você.',
+  ccTourGo:'Quando estiver pronto, este botão leva ao próximo dia de torneio. Lá você aperta Jogar.',
+  ccTourMate:'Temporada de duos: você precisa de uma dupla para torneios em equipe. Encontre aqui.',
+  ccTourTabs:'Todo o resto (clube, loja, mídia, armário) pode esperar. Abra este tour de novo quando quiser em "Como jogar" lá embaixo.'});
 /* Слухи, опросы, ветки (16.10, careerRumorTick / careerPollTick / ccPostComments). */
 Object.assign(I18N.en, {
   ccPostRumorPair:(a,b,v)=>['sources: @'+a+' and @'+b+' have been scrimming together 👀 duo next season?','hearing @'+a+' x @'+b+' is a thing for next season. thoughts?','👀 @'+a+' and @'+b+' in the same customs again. something is cooking'][v%3],
@@ -118861,7 +118915,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='f679ef70';
+const CC_BUILD='6321dd09';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -123404,7 +123458,112 @@ function careerRenderHub(tab){
   // Дефолты шкафчика и награды за новые вечера (кирка чемпиона FNCS) — до рисования, чтобы хаб и матч их видели.
   if(outer) try{ ccFnDefaults(); ccLockerCheck(); }catch(e){}
   try{ return careerRenderHubRaw(tab); }
-  finally{ if(outer) CC_RENDER_MEMO=null; try{ ccHubTheme(); }catch(e){} try{ ccHubEraBg(); }catch(e){} try{ ccTabsSide(); }catch(e){} }
+  finally{ if(outer) CC_RENDER_MEMO=null; try{ ccHubTheme(); }catch(e){} try{ ccHubEraBg(); }catch(e){} try{ ccTabsSide(); }catch(e){} try{ ccTourMaybe(); }catch(e){} }
+}
+/* ОБУЧЕНИЕ ДЛЯ НОВИЧКА (Notion 27.10, игрок: «слишком много всего сразу, показал сайт брату, он потерялся»; его слово:
+   «обучение для новых игроков сделать, чтоб всё понятно»). На первом экране карьеры 47 кнопок, 12 вкладок и десять
+   чисел, и главная — «к турниру» — среди них теряется. Тур из семи шагов подсвечивает по одному месту и говорит одной
+   фразой, что это. Сам открывается один раз, в свежей карьере (сезон 1, ни одного вечера), на Центре; кнопка «Как
+   играть» внизу хаба открывает его снова. Шаг, чьего места на экране нет (другая раскладка, напарник уже есть), пропускается.
+   Затемнение ловит клики: тур не должен нажать за игрока то, что под ним (см. интервью, тот же день). */
+const CC_TOUR_KEY='fncsdraft_tour1';
+const CC_TOUR_STEPS=[
+  {sel:'#chOvr', k:'ccTourOvr'},
+  {sel:'#screen-career-hub .ch-en', k:'ccTourEnergy'},
+  {sel:'#screen-career-hub .cc-lb-playcol', k:'ccTourDay'},
+  {sel:'#screen-career-hub .cc-lb-next, #screen-career-hub .ch-next', k:'ccTourSeason'},
+  {sel:'#screen-career-hub .ch-skipto, #screen-career-hub .ch-col-play .ch-play', k:'ccTourGo'},
+  {sel:'#screen-career-hub .ch-tile-ros', k:'ccTourMate', need:()=>!(careerMates()||[]).filter(Boolean).length},
+  {sel:'#screen-career-hub .ch-tabs', k:'ccTourTabs'}
+];
+let CC_TOUR=null, CC_TOUR_SOON=false;
+function ccTourSeen(){ try{ return localStorage.getItem(CC_TOUR_KEY)==='1'; }catch(e){ return true; } }
+function ccTourMaybe(){
+  if(CC_TOUR || CC_TOUR_SOON || ccTourSeen()) return;
+  const cr=CAREER && CAREER.career; if(!cr) return;
+  if(typeof CH_TAB!=='undefined' && CH_TAB!=='centre') return;
+  if((cr.season||1)!==1 || (cr.log||[]).length || cr.seasonOver) return;
+  if(typeof CC_FF!=='undefined' && CC_FF) return;
+  CC_TOUR_SOON=true;
+  setTimeout(()=>{ CC_TOUR_SOON=false;
+    const hub=document.getElementById('screen-career-hub');
+    if(!hub || !hub.classList.contains('active') || ccTourSeen() || CC_TOUR) return;
+    ccTourStart(); }, 700);
+}
+function ccTourVisible(el){
+  if(!el) return false;
+  // Полоса вкладок на телефоне — position:fixed, у неё offsetParent пустой при видимой полосе.
+  if(!el.offsetParent && getComputedStyle(el).position!=='fixed') return false;
+  const cs=getComputedStyle(el); if(cs.display==='none' || cs.visibility==='hidden') return false;
+  const r=el.getBoundingClientRect(); return r.width>8 && r.height>8;
+}
+function ccTourTarget(st){
+  if(st.need && !st.need()) return null;
+  return [...document.querySelectorAll(st.sel)].find(ccTourVisible)||null;
+}
+function ccTourStart(){
+  ccTourEnd(true);
+  const steps=CC_TOUR_STEPS.filter(st=>ccTourTarget(st));
+  if(!steps.length) return;
+  const wrap=document.createElement('div');
+  wrap.className='cc-tour'; wrap.setAttribute('role','dialog'); wrap.setAttribute('aria-modal','true');
+  wrap.innerHTML='<div class="cc-tour-dim"></div><div class="cc-tour-hole"></div><div class="cc-tour-tip"><em class="cc-tour-n"></em>'+
+    '<p class="cc-tour-t"></p><div class="cc-tour-acts"><button class="cc-tour-skip" type="button"></button>'+
+    '<button class="cc-tour-next" type="button"></button></div></div>';
+  document.body.appendChild(wrap);
+  CC_TOUR={wrap, steps, i:0};
+  wrap.querySelector('.cc-tour-dim').onclick=()=>ccTourNext();
+  wrap.querySelector('.cc-tour-skip').onclick=()=>ccTourEnd();
+  wrap.querySelector('.cc-tour-next').onclick=()=>ccTourNext();
+  window.addEventListener('resize', ccTourPlace); window.addEventListener('scroll', ccTourPlace, true);
+  document.addEventListener('keydown', ccTourKey);
+  ccTourShow();
+}
+function ccTourKey(e){ if(!CC_TOUR) return; if(e.key==='Escape') ccTourEnd(); else if(e.key==='Enter' || e.key==='ArrowRight'){ e.preventDefault(); ccTourNext(); } }
+function ccTourShow(){
+  const T=CC_TOUR; if(!T) return;
+  const st=T.steps[T.i], el=ccTourTarget(st);
+  if(!el){ return ccTourNext(); }
+  try{ el.scrollIntoView({block:'center', inline:'nearest'}); }catch(e){}
+  T.wrap.querySelector('.cc-tour-n').textContent=(T.i+1)+' / '+T.steps.length;
+  T.wrap.querySelector('.cc-tour-t').textContent=L()[st.k]||'';
+  T.wrap.querySelector('.cc-tour-skip').textContent=L().ccTourSkip;
+  T.wrap.querySelector('.cc-tour-skip').style.visibility=T.i===T.steps.length-1 ? 'hidden' : '';
+  T.wrap.querySelector('.cc-tour-next').textContent=T.i===T.steps.length-1 ? L().ccTourDone : L().ccTourNext;
+  ccTourPlace();
+  try{ T.wrap.querySelector('.cc-tour-next').focus({preventScroll:true}); }catch(e){}
+}
+function ccTourPlace(){
+  const T=CC_TOUR; if(!T) return;
+  const el=ccTourTarget(T.steps[T.i]); if(!el) return;
+  const r=el.getBoundingClientRect(), pad=6, vw=window.innerWidth, vh=window.innerHeight;
+  const hole=T.wrap.querySelector('.cc-tour-hole'), tip=T.wrap.querySelector('.cc-tour-tip');
+  const top=Math.max(4, r.top-pad), left=Math.max(4, r.left-pad);
+  const h=Math.min(vh-8, r.bottom+pad)-top, w=Math.min(vw-8, r.right+pad)-left;
+  Object.assign(hole.style, {top:top+'px', left:left+'px', width:Math.max(0, w)+'px', height:Math.max(0, h)+'px'});
+  const tw=Math.min(340, vw-32);
+  tip.style.width=tw+'px';
+  const th=tip.offsetHeight||140;
+  // Под местом, если влезает; иначе над ним; иначе — внизу экрана поверх (высокая колонка дня на телефоне).
+  let y=top+h+10;
+  if(y+th>vh-12) y=top-th-10;
+  if(y<12) y=Math.max(12, vh-th-16);
+  const x=Math.min(Math.max(16, left+w/2-tw/2), vw-tw-16);
+  tip.style.top=y+'px'; tip.style.left=x+'px';
+}
+function ccTourNext(){
+  const T=CC_TOUR; if(!T) return;
+  if(T.i>=T.steps.length-1) return ccTourEnd();
+  T.i++; ccTourShow();
+}
+function ccTourEnd(quiet){
+  const T=CC_TOUR; if(!T) return;
+  CC_TOUR=null;
+  try{ T.wrap.remove(); }catch(e){}
+  window.removeEventListener('resize', ccTourPlace); window.removeEventListener('scroll', ccTourPlace, true);
+  document.removeEventListener('keydown', ccTourKey);
+  if(!quiet){ try{ localStorage.setItem(CC_TOUR_KEY, '1'); }catch(e){} }
+  try{ window.scrollTo(0, 0); }catch(e){}
 }
 // Фон хаба по эпохе магазина (CSS #screen-career-hub[data-fs=…]); в менеджере свой экран, его не трогаем.
 function ccHubEraBg(){
