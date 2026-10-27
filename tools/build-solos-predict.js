@@ -96,11 +96,13 @@ function regionHTML(reg) {
   const fav = rows.slice(0, 3);
   const cards = fav.map((r, i) => { const a = A && A.get(r.n);
     return '<li><em>' + (i + 1) + '</em><b>' + flag(r, reg) + esc(r.n) + '</b><strong>' + pct(r.win) + '</strong><span>to win · top 10 ' + pct(r.top10) + '</span>' +
-      (a ? '<i class="act">' + (A.day === 2 ? 'Finished ' : 'Day 1: ') + ord(a.rank) + '</i>' : '') + '</li>'; }).join('');
+      (a ? '<i class="act">' + (A.day === 2 ? 'Finished ' : 'Day 1: ') + ord(a.rank) + ' · ' + a.pts + ' pts</i>' : '') + '</li>'; }).join('');
   const table = rows.map((r, i) => {
     const mates = (r.mates || []).filter(m => m[1] >= 0.25).map(m => esc(m[0])).join(', ');
     const a = A && A.get(r.n);
-    return '<tr><td class="n">' + (i + 1) + '</td>' + (A ? '<td class="n act">' + (a ? a.rank : '·') + '</td>' : '') + '<td>' + flag(r, reg) + '<b>' + esc(r.n) + '</b><small>' + via(r.via) + (r.real ? '' : ' · rating from qualifiers') + '</small></td>' +
+    // Место — по сумме двух дней (fetch-solos-results.js), рядом очки: на втором дне «452 = 174 + 278».
+    return '<tr><td class="n">' + (i + 1) + '</td>' + (A ? '<td class="n act"' + (a && a.d2 != null && A.day === 2 ? ' title="' + a.d1 + ' + ' + a.d2 + '"' : '') + '>' +
+      (a ? a.rank + '<small> ' + a.pts + '</small>' : '·') + '</td>' : '') + '<td>' + flag(r, reg) + '<b>' + esc(r.n) + '</b><small>' + via(r.via) + (r.real ? '' : ' · rating from qualifiers') + '</small></td>' +
       '<td class="n">' + r.ovr + '</td><td class="n' + (i < 3 ? ' p1' : '') + '">' + pct(r.win) + '</td><td class="n">' + pct(r.top10) + '</td><td class="n hide-s">' + r.avgPlace + '</td>' +
       '<td class="hide-s">' + (r.contest >= 0.5 ? (mates ? 'shared with ' + mates : 'shared drop') : 'solo drop') + '</td></tr>';
   }).join('');
