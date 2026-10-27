@@ -4877,6 +4877,19 @@
     box-shadow:inset 0 0 0 2px rgba(180,200,255,.45);text-shadow:none;}
   #screen-career-hub .ch-play.ch-nextday:not(:disabled):hover,
   html:not(.ui-classic) #screen-career-hub .cc-lobby .cc-lb-playbox .ch-play.ch-nextday:not(:disabled):hover{background:rgba(255,255,255,.16);color:#fff;}
+  /* День турнира: крупная жёлтая — одна «Играть» (27.10, его «не играть — другой цвет кнопки», «играть в эфире странно
+     выглядело»). Общее правило выше красило жёлтым и «Не играть», а эфир стоял сплошной фиолетовой плашкой того же
+     размера: три одинаковые большие кнопки подряд. Эфир — фиолетовым контуром и ниже ростом, «Не играть» — тёмной. */
+  html:not(.ui-classic) #screen-career-hub .cc-lobby .cc-lb-playbox .ch-play.ch-skipev:not(:disabled),
+  #screen-career-hub .ch-play.ch-skipev{background:rgba(255,255,255,.08) !important;color:#dfe7ff !important;box-shadow:inset 0 0 0 2px rgba(180,200,255,.4);
+    text-shadow:none;font-size:.82em;padding-top:8px;padding-bottom:8px;}
+  html:not(.ui-classic) #screen-career-hub .cc-lobby .cc-lb-playbox .ch-play.ch-skipev:not(:disabled):hover,
+  #screen-career-hub .ch-play.ch-skipev:hover{background:rgba(255,255,255,.16) !important;color:#fff !important;}
+  html:not(.ui-classic) #screen-career-hub .cc-lobby .cc-lb-playbox .ch-play.ch-live-go:not(:disabled),
+  #screen-career-hub .ch-play.ch-live-go:not(:disabled){background:rgba(145,71,255,.12) !important;color:#d4b8ff !important;
+    box-shadow:inset 0 0 0 2px #9147ff;border:0 !important;text-shadow:none;font-size:.82em;padding-top:8px;padding-bottom:8px;}
+  html:not(.ui-classic) #screen-career-hub .cc-lobby .cc-lb-playbox .ch-play.ch-live-go:not(:disabled):hover,
+  #screen-career-hub .ch-play.ch-live-go:not(:disabled):hover{background:#9147ff !important;color:#fff !important;}
   /* НИЖНЯЯ ПЛАНКА ШРИФТА 11px (22.10, аудит Impeccable хаба: телефон 390px после «very hard to read» из X, потом ПК
      1440×900 — те же 8–10px). Подписи плиток прокачки, подработки, кошелька, дней недели, «Сыграть за меня», квадратиков
      недель сезона — на всех ширинах. */
@@ -118979,7 +118992,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='97081921';
+const CC_BUILD='8bfcdac9';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
