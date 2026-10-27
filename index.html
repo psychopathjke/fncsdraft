@@ -118992,7 +118992,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='25461a4b';
+const CC_BUILD='0ff1c1c4';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -148192,7 +148192,7 @@ function ccDayGoHTML(done, closed, left){
     const can=left>=a.energy && v<99;
     return '<button class="cc-qt'+(can?'':' off')+(done.indexOf(id)>=0?' did':'')+'" '+(can?'onclick="careerPickDay(\''+id+'\')"':'disabled')+
       ' title="'+esc(ccActName(id)+' · '+ccAttrFull(k)+(left<a.energy ? ' · '+L().ccNeedEnergy(a.energy-left) : ''))+'">'+
-      '<span>'+esc(L()['ccAttr'+k.toUpperCase()]||k)+'</span><b>'+(Math.round(v*10)/10).toFixed(1)+'</b><em>'+a.energy+mark+'</em></button>';
+      '<span>'+esc(L()['ccAttr'+k.toUpperCase()]||k)+'</span><b>'+ccStatNum(v)+'</b><em>'+a.energy+mark+'</em></button>';
   }).join('');
   const quick=['noble', 'talk', 'stream', 'rest'].map(id=>{
     const a=act(id); if(!a) return '';
@@ -148321,6 +148321,8 @@ function ccActName(id){
 /* Карточка параметра — она же кнопка его тренировки (27.10): имя, значение, шкала 35–99, сколько даст занятие и
    цена. Оценка прошлого занятия — значком, причина серой кнопки — строкой вместо цены. Прирост недели не печатается:
    «+0.0» на шести карточках был шумом. */
+// Значение параметра на плитке: десятая — только когда она есть (27.10, его «может .0 убрать»): 68, но 55.6.
+function ccStatNum(v){ const r=Math.round(v*10)/10; return r%1 ? r.toFixed(1) : String(r); }
 function ccTrainStatHTML(a, o){
   const k=o.keys[0], v=o.six[k]!=null ? o.six[k] : 50;
   const coachOn=!!(o.dayCoach && o.dayCoach.keys.indexOf(k)>=0);
@@ -148333,7 +148335,7 @@ function ccTrainStatHTML(a, o){
     (o.can?'onclick="careerPickDay(\''+a.id+'\')"':'disabled')+'>'+
     '<span class="st-top"><i>'+(CC_ATTR_ICON[k]||'•')+'</i><b>'+esc(ccAttrFull(k))+'</b>'+
       (g ? '<em class="cc-tc-grade g-'+g.replace('+','p')+'" title="'+esc(L().lfGradeLast)+'">'+g+'</em>' : '')+'</span>'+
-    '<span class="st-val"><b>'+num(v)+'</b>'+(by>=0.05 && !o.closed ? '<i>+'+num(by)+'</i>' : '')+'</span>'+
+    '<span class="st-val"><b>'+ccStatNum(v)+'</b>'+(by>=0.05 && !o.closed ? '<i>+'+ccStatNum(by)+'</i>' : '')+'</span>'+
     '<u class="st-bar"><s style="width:'+pct.toFixed(0)+'%"></s></u>'+
     (why ? '<span class="st-why">'+esc(why)+'</span>' : '<span class="st-cost">'+a.energy+L().ccEnergyMark+(coachOn ? ' · '+esc(L().lfCoachBoost(Math.round(o.dayCoach.train*100))) : '')+'</span>')+
     '</button>';
