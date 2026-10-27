@@ -5477,6 +5477,12 @@
   .sq-acts button.go{background:#ffe600 !important;color:#101a44;border-color:#ffe600;}
   .sq-dup{font-size:11px;font-weight:800;color:#ffd0c8;margin-top:4px;}
   body.sq-running #screen-results .new-draft-btn{display:none !important;}
+  /* Сезон FNCS: путь этапов и полоса QP. */
+  .sq-path{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:4px 0 12px;}
+  .sq-path span{padding:6px 12px;border-radius:999px;font-size:12px;font-weight:900;background:rgba(255,255,255,.07);color:#8fa1cc;}
+  .sq-path span.done{color:#00d6a4;} .sq-path span.on{background:#ffe600;color:#101a44;} .sq-path i{font-style:normal;color:#5a6a99;}
+  .sq-qp{display:block;height:10px;border-radius:6px;background:rgba(255,255,255,.1);overflow:hidden;margin:-4px 0 10px;text-decoration:none;}
+  .sq-qp s{display:block;height:100%;background:linear-gradient(90deg,#00d6a4,#ffe600);text-decoration:none;}
   /* Вечер вживую (sqLiveHTML). */
   .sq-live-h{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:10px;}
   .sq-live-h b{font-family:var(--font-display);font-size:22px;text-transform:uppercase;}
@@ -111212,8 +111218,8 @@ const SQ_OBJ=[
   {id:'win',    goal:1, cur:s=>s.stat.wins,     r:{pack:'gold'}},
   {id:'chem',   goal:1, cur:()=>sqRoleOK() ? 1 : 0, r:{coins:1500}},
   {id:'sell',   goal:1, cur:s=>s.stat.sold,     r:{coins:1000}},
-  {id:'promo',  goal:1, cur:s=>s.stat.promos,   r:{pack:'gold'}},
-  {id:'div5',   goal:1, cur:s=>s.div<=5 ? 1 : 0, r:{pack:'elite'}}
+  {id:'qual',   goal:1, cur:s=>(s.stat.best||0)>=1 ? 1 : 0, r:{pack:'gold'}},
+  {id:'final',  goal:1, cur:s=>(s.stat.best||0)>=3 ? 1 : 0, r:{pack:'elite'}}
 ];
 const SQ_I18N={
   en:{title:'FNCS Cards', sub:'Real 2026 pros from packs. Build your squad, climb the divisions.', back:'Back',
@@ -111319,18 +111325,6 @@ function sqMyTeam(){
   return t;
 }
 function sqRoleOK(){ const cards=(SQ && SQ.xi||[]).map(sqCardOf).filter(Boolean); return cards.length===SQ.size && SQ.size>1 && cards.filter(c=>sqRole(c)==='roleIGL').length===1; }
-// Соперники — составы из пула своей полосы: дивизион 10 — нижние карточки, 1 — верхние; кап — на ступень сильнее.
-function sqBots(n, div, harder){
-  const c=Math.min(0.85, 0.12+(SQ_DIVS-div)*0.08+(harder ? 0.08 : 0)), lo=Math.max(0, c-0.12), hi=Math.min(1, c+0.18);
-  const out=[], used=new Set();
-  for(let i=0; i<n; i++){
-    const sq=[], seen=new Set();
-    while(sq.length<SQ.size){ const p=sqDraw(lo, hi); if(!seen.has(p._k)){ seen.add(p._k); sq.push(p); } }
-    // Игроками, не клубами (27.10, его «пусть игроки будут вместо составов»): флаг и ники состава.
-    const t=buildTeam(sq); t.name=teamLabel(sq); out.push(t);
-  }
-  return out;
-}
 /* ВЕЧЕР ВЖИВУЮ (27.10, его «симуляция игр пусть будет с таблицей»): игры по одной, после каждой таблица — место за
    игру, киллы, очки, сдвиг в таблице; «Досчитать до конца» доигрывает разом. Ушёл с экрана — вечер доигрывается сам,
    награды не теряются. Очки как в simulateGames: место по таблице Epic плюс киллы. */
@@ -111418,43 +111412,82 @@ function sqLiveHTML(){
       return '<tr class="'+(t.isYou ? 'you' : '')+(t.lastPlace===1 ? ' vr' : '')+'"><td>'+r+'</td><td class="mv">'+mv(t, r)+'</td><td>'+(t.isYou ? esc(T.you) : t.name)+'</td>'+
         '<td>#'+t.lastPlace+(t.lastPlace===1 ? ' 👑' : '')+'</td><td>'+t.stageElims+'</td><td>'+t.stagePts+'</td></tr>'; }).join('')+'</table></div>';
 }
-function sqPlay(cup){
+/* СЕЗОН FNCS — своя идея режима вместо дивизионов (27.10, его «чет от ультимейт тим и своё»). Сезон — 4 недели по
+   3 капа; капы дают очки квалификации (QP). 120 QP к концу сезона — Мейджор: Плей-Ин (дальше топ-25%), Хиты
+   (топ-30%), Гранд-финал из 12 игр; топ-5 финала едут на Глобалс. Не набрал или вылетел — следующий сезон, соперники
+   на ступень сильнее. Всё остальное от Ultimate Team (клуб, паки, рынок, испытания, драфт, бои) — как было. */
+const SQ_SEASON_WEEKS=4, SQ_CUPS_WEEK=3, SQ_QP_NEED=120, SQ_CUP_GAMES6=6;
+const SQ_STAGES=[
+  {id:'playin',  center:0.55, games:6,  cut:0.25},
+  {id:'heats',   center:0.68, games:6,  cut:0.3},
+  {id:'final',   center:0.8,  games:12, cut:0.1},
+  {id:'globals', center:0.9,  games:12, cut:0}
+];
+function sqSeason(){ if(!SQ.ss) SQ.ss={n:1, week:1, cups:0, qp:0, stage:null}; return SQ.ss; }
+function sqQP(frac){ return frac<=0.02 ? 60 : frac<=0.1 ? 35 : frac<=0.2 ? 20 : frac<=0.5 ? 8 : 2; }
+function sqSeasonCenter(base){ return Math.min(0.95, base+(sqSeason().n-1)*0.03); }
+// Кап сезона или этап Мейджора — что сейчас на очереди.
+function sqPlay(){
   if(SQ_LIVE || SQ.xi.length!==SQ.size) return;
-  const T=sqT(), n=Math.round(100/SQ.size)-1, eveNo=SQ.wk.n+1;
-  const teams=sqWithCards(()=>{ const you=sqMyTeam(); return you ? [you].concat(sqBots(n, SQ.div, cup)) : null; });
-  if(!teams) return;
-  sqLiveStart(teams, cup ? SQ_CUP_GAMES : SQ_EVE_GAMES, SQ.size, cup ? T.cup : T.evening(eveNo, SQ_WEEK), res=>sqPlayDone(cup, eveNo, res));
+  const T=sqT(), S=sqSeason(), st=S.stage ? SQ_STAGES.find(x=>x.id===S.stage) : null;
+  const you=sqWithCards(()=>sqMyTeam()); if(!you) return;
+  const center=sqSeasonCenter(st ? st.center : 0.35), n=Math.round(100/SQ.size)-1;
+  const teams=[you].concat(sqWithCards(()=>{ const lo=Math.max(0, center-0.12), hi=Math.min(1, center+0.15), out=[];
+    for(let i=0; i<n; i++){ const sq=[], seen=new Set();
+      while(sq.length<SQ.size){ const p=sqDraw(lo, hi); if(!seen.has(p._k)){ seen.add(p._k); sq.push(p); } }
+      const t=buildTeam(sq); t.name=teamLabel(sq); out.push(t); }
+    return out; }));
+  const title=st ? T.stageName[st.id] : T.cupOf(S.cups+1, SQ_CUPS_WEEK)+' · '+T.weekOf(S.week, SQ_SEASON_WEEKS);
+  sqLiveStart(teams, st ? st.games : SQ_CUP_GAMES6, SQ.size, title, res=>sqPlayDone(st, title, res));
 }
-function sqPlayDone(cup, eveNo, res){
-  const T=sqT();
-  const place=res.ranked.indexOf(res.you)+1, N=res.ranked.length, frac=place/N;
-  let coins=Math.round((300+2200*Math.pow(1-frac, 2)+res.you.wins*500)/10)*10, pack=null, notes=[];
-  if(cup){
-    coins*=2;
-    pack=frac<=0.04 ? 'elite' : frac<=0.2 ? 'gold' : frac<=0.5 ? 'silver' : 'bronze';
-    SQ.packs.push(pack);
-    SQ.cup=false; sqNewWeek(notes);
+function sqPlayDone(st, title, res){
+  const T=sqT(), S=sqSeason(), notes=[];
+  const place=res.place, N=res.N, frac=place/N;
+  let coins=Math.round((300+2200*Math.pow(1-frac, 2)+res.you.wins*500)/10)*10, pack=null;
+  if(!st){
+    const qp=sqQP(frac); S.qp+=qp; S.cups++; notes.push(T.gotQP(qp, S.qp, SQ_QP_NEED));
+    SQ.stat.evenings++; if(place<=10) SQ.stat.top10++;
+    if(S.cups>=SQ_CUPS_WEEK){
+      S.cups=0; sqNewWeek(notes);
+      if(S.week>=SQ_SEASON_WEEKS){
+        if(S.qp>=SQ_QP_NEED){ S.stage='playin'; S.best=Math.max(S.best||0, 1); SQ.stat.best=Math.max(SQ.stat.best||0, 1); notes.push(T.qualified); }
+        else { notes.push(T.notQual(S.qp)); sqNewSeason(notes); }
+      } else S.week++;
+    }
   } else {
-    const dp=frac<=0.1 ? 3 : frac<=0.3 ? 2 : frac<=0.6 ? 1 : 0;
-    SQ.wk.n++; SQ.wk.pts+=dp;
-    SQ.stat.evenings++;
-    if(place<=10) SQ.stat.top10++;
-    if(SQ.wk.n>=SQ_WEEK){
-      if(SQ.wk.pts>=9 && SQ.div>1){ SQ.div--; SQ.stat.promos++; notes.push(T.up(SQ.div)); }
-      else if(SQ.wk.pts<=2 && SQ.div<SQ_DIVS){ SQ.div++; notes.push(T.down(SQ.div)); }
-      else notes.push(T.stay(SQ.div));
-      // На кап выходных квалифицируются очками недели (как лига выходных по дивизионам в таких режимах): 4+ — пускают.
-      if(SQ.wk.pts>=SQ_CUP_QUAL){ SQ.cup=true; notes.push(T.cupOpen); }
-      else { notes.push(T.noCup(SQ_CUP_QUAL)); sqNewWeek(notes); }
+    coins*=2;
+    const i=SQ_STAGES.indexOf(st), cutN=Math.max(1, Math.ceil(N*st.cut));
+    if(st.id==='final' || st.id==='globals'){
+      const big=st.id==='globals';
+      pack=place===1 ? 'elite' : place<=5 ? 'elite' : 'gold';
+      SQ.packs.push(pack); if(place===1) SQ.packs.push('elite');
+      if(big && place===1) SQ.packs.push('elite');
+      const prize=big ? (place===1 ? 100000 : place<=5 ? 40000 : 15000) : (place===1 ? 30000 : place<=5 ? 15000 : 5000);
+      coins+=prize; notes.push(T.stagePrize(T.stageName[st.id], place, prize.toLocaleString()));
+      if(!big && place<=5){ S.stage='globals'; SQ.stat.best=Math.max(SQ.stat.best||0, 4); notes.push(T.toGlobals); }
+      else sqNewSeason(notes);
+    } else if(place<=cutN){
+      S.stage=SQ_STAGES[i+1].id; SQ.stat.best=Math.max(SQ.stat.best||0, i+2); notes.push(T.through(T.stageName[S.stage]));
+    } else {
+      pack=st.id==='playin' ? 'silver' : 'gold'; SQ.packs.push(pack);
+      notes.push(T.out(T.stageName[st.id], cutN)); sqNewSeason(notes);
     }
   }
   if(res.you.wins) SQ.stat.wins+=res.you.wins;
   SQ.coins+=coins;
-  // Усталость: стартеры устают, остальные отдыхают.
   SQ.cards.forEach(c=>{ if(c.un) return; const on=SQ.xi.indexOf(c.id)>=0; SQ.st[c.id]=Math.max(0, Math.min(100, sqFit(c.id)+(on ? -15 : 25))); });
-  SQ_LAST={kind:'rivals', title:cup ? T.cup : T.evening(eveNo, SQ_WEEK), cup:!!cup, place, N, coins, pack, notes, rows:res.ranked.slice(0, 10).concat(place>10 ? [res.you] : []).map(t=>({
-    name:t.isYou ? T.you : t.name, you:!!t.isYou, place:res.ranked.indexOf(t)+1, pts:t.stagePts, wins:t.wins, elims:t.stageElims}))};
+  SQ_LAST={kind:'season', title, place, N, coins, pack, notes, rows:sqRows(res)};
   sqSave(); sqRender();
+}
+function sqNewSeason(notes){
+  const S=sqSeason();
+  SQ.ss={n:S.n+1, week:1, cups:0, qp:0, stage:null};
+  notes.push(sqT().newSeason(S.n+1));
+}
+// Полоса сезона: Капы → Плей-Ин → Хиты → Гранд-финал → Глобалс; текущее — подсвечено.
+function sqSeasonPath(){
+  const T=sqT(), S=sqSeason(), ids=['cups'].concat(SQ_STAGES.map(s=>s.id)), cur=S.stage || 'cups', ci=ids.indexOf(cur);
+  return '<div class="sq-path">'+ids.map((id, i)=>'<span class="'+(i<ci ? 'done' : i===ci ? 'on' : '')+'">'+esc(T.stageName[id])+'</span>').join('<i>›</i>')+'</div>';
 }
 function sqPackOpen(id, paid){
   const T=sqT(), P=SQ_PACKS.find(p=>p.id===id); if(!P) return;
@@ -111542,6 +111575,17 @@ function sqClaim(oid){
    составов. Карточки из пака сначала «неназначенные»: в клуб, быстро продать или на рынок; дубль в клуб не берётся. */
 Object.assign(SQ_I18N.en, {
   liveGame:(g, n)=>'Game '+g+' of '+n, liveSkip:'Skip to the end', lastGame:'Last game',
+  tabSeason:'FNCS Season', hSeason:'Weekly cups earn qualification points. Enough of them and the Major is yours: Play-In, Heats, Grand Final, then Globals.',
+  majorLbl:'Major', hMajor:'Play-In, Heats and the Grand Final. Top 5 of the final go to Globals.', seasonN:n=>'Season '+n, seasonLbl:'Season',
+  weekOf:(w, n)=>'Week '+w+' of '+n, cupOf:(c, n)=>'Cup '+c+' of '+n, cupsLbl:'Cups this week', qpLbl:'QP',
+  seasonRule:n=>'3 cups a week, 4 weeks. QP per cup: win 60, top 10% 35, top 20% 20, top half 8, rest 2. '+n+' QP by the end of the season = the Major.',
+  playCupN:'Play the cup', playStage:s=>'Play the '+s,
+  stageName:{cups:'Cups', playin:'Play-In', heats:'Heats', final:'Grand Final', globals:'Globals'},
+  stageHint:{playin:'Top 25% go to the Heats.', heats:'Top 30% go to the Grand Final.', final:'12 games. Top 5 go to Globals.', globals:'12 games for the title.'},
+  gotQP:(q, t, n)=>'+'+q+' QP ('+t+' / '+n+')', qualified:'Qualified for the Major!', notQual:q=>'Season over with '+q+' QP: not enough for the Major.',
+  newSeason:n=>'Season '+n+' starts.', through:s=>'Through to the '+s+'!', out:(s, n)=>'Out at the '+s+' (top '+n+' went through).',
+  stagePrize:(s, p, v)=>s+': #'+p+', prize '+v+' V-Bucks', toGlobals:'Qualified for Globals!',
+  obj:Object.assign({}, SQ_I18N.en.obj, {qual:'Qualify for a Major', final:'Reach a Grand Final'}),
   home:'Home', tabRivals:'Divisions', tabBattles:'Bot Battles', tabDraft:'Draft', tabSbc:'Squad Challenges', tabUn:'Unassigned', tabClub:'Club',
   hRivals:'Five evenings a week against squads of your division. Climb from 10 to 1.', hCup:'The big weekend lobby. Qualify with 4+ week points.',
   hBattles:'Short lobbies against bot squads at four difficulties. Weekly points, weekly reward.', hDraft:'Pick a squad from five options per slot, survive four rounds.',
@@ -111560,6 +111604,17 @@ Object.assign(SQ_I18N.en, {
 });
 Object.assign(SQ_I18N.ru, {
   liveGame:(g, n)=>'Игра '+g+' из '+n, liveSkip:'Досчитать до конца', lastGame:'Последняя игра',
+  tabSeason:'Сезон FNCS', hSeason:'Капы каждую неделю дают очки квалификации. Набрал достаточно, и ты на Мейджоре: Плей-Ин, Хиты, Гранд-финал, потом Глобалс.',
+  majorLbl:'Мейджор', hMajor:'Плей-Ин, Хиты и Гранд-финал. Топ-5 финала едут на Глобалс.', seasonN:n=>'Сезон '+n, seasonLbl:'Сезон',
+  weekOf:(w, n)=>'Неделя '+w+' из '+n, cupOf:(c, n)=>'Кап '+c+' из '+n, cupsLbl:'Капов за неделю', qpLbl:'QP',
+  seasonRule:n=>'3 капа в неделю, 4 недели. QP за кап: победа 60, топ-10% 35, топ-20% 20, верхняя половина 8, остальные 2. '+n+' QP к концу сезона = Мейджор.',
+  playCupN:'Сыграть кап', playStage:s=>'Играть: '+s,
+  stageName:{cups:'Капы', playin:'Плей-Ин', heats:'Хиты', final:'Гранд-финал', globals:'Глобалс'},
+  stageHint:{playin:'В Хиты проходят топ-25%.', heats:'В Гранд-финал проходят топ-30%.', final:'12 игр. Топ-5 едут на Глобалс.', globals:'12 игр за титул.'},
+  gotQP:(q, t, n)=>'+'+q+' QP ('+t+' / '+n+')', qualified:'Квалификация на Мейджор!', notQual:q=>'Сезон окончен: '+q+' QP, на Мейджор не хватило.',
+  newSeason:n=>'Начался сезон '+n+'.', through:s=>'Проход дальше: '+s+'!', out:(s, n)=>'Вылет: '+s+' (прошли топ-'+n+').',
+  stagePrize:(s, p, v)=>s+': #'+p+', призовые '+v+' V-Bucks', toGlobals:'Путёвка на Глобалс!',
+  obj:Object.assign({}, SQ_I18N.ru.obj, {qual:'Пройти на Мейджор', final:'Дойти до Гранд-финала'}),
   home:'Главная', tabRivals:'Дивизионы', tabBattles:'Бои с ботами', tabDraft:'Драфт', tabSbc:'Испытания составов', tabUn:'Неназначенные', tabClub:'Клуб',
   hRivals:'Пять вечеров в неделю против составов своего дивизиона. Поднимись с 10-го до 1-го.', hCup:'Большое лобби выходных. Вход: 4+ очка за неделю.',
   hBattles:'Короткие лобби против ботов на четырёх сложностях. Очки недели и награда в конце.', hDraft:'Собери состав из пяти вариантов на место и пройди четыре раунда.',
@@ -111773,8 +111828,9 @@ function sqRender(){
     const xiPhoto=bestPhoto(SQ.xi), clubPhoto=bestPhoto(SQ.cards.filter(c=>!c.un && SQ.xi.indexOf(c.id)<0).map(c=>c.id)) || bestPhoto(SQ.cards.filter(c=>!c.un).map(c=>c.id));
     body=(unN ? '<button class="sq-unbar" onclick="sqTab(\'un\')">'+esc(T.hUn(unN))+' ›</button>' : '')+
       '<div class="sq-home">'+
-      tile('rivals', T.tabRivals, T.hRivals, 'big k-rivals', '<em>'+esc(T.div)+' '+SQ.div+' · '+esc(T.evening(Math.min(SQ.wk.n+1, SQ_WEEK), SQ_WEEK))+'</em>', 'art/fncs-2026.jpg')+
-      tile('rivals', T.cup, T.hCup, 'k-cup'+(SQ.cup ? ' hot' : ''), '<em>'+(SQ.cup ? esc(T.cupOpen) : esc(T.locked))+'</em>', 'art/fncs-2026-major1.jpg')+
+      tile('rivals', T.tabSeason, T.hSeason, 'big k-rivals', '<em>'+esc(T.seasonN(sqSeason().n))+' · '+(sqSeason().stage ? esc(T.stageName[sqSeason().stage])
+        : esc(T.weekOf(sqSeason().week, SQ_SEASON_WEEKS))+' · '+esc(T.qpLbl)+' '+sqSeason().qp+' / '+SQ_QP_NEED)+'</em>', 'art/fncs-2026.jpg')+
+      tile('rivals', T.majorLbl, T.hMajor, 'k-cup'+(sqSeason().stage ? ' hot' : ''), '<em>'+(sqSeason().stage ? esc(T.stageName[sqSeason().stage]) : esc(T.locked))+'</em>', 'art/fncs-2026-major1.jpg')+
       tile('battles', T.tabBattles, T.hBattles, 'k-battles', '<em>'+esc(T.bPlayed(SQ.sb.played, SQ_BATTLE_MAX))+'</em>', 'art/map-m1.jpg')+
       tile('draft', T.tabDraft, T.hDraft, 'k-draft', '<em>'+esc(SQ.dr && !SQ.dr.done ? T.drRound(SQ.dr.round+1) : T.drCost(money(SQ_DRAFT_COST)))+'</em>', 'art/mode-squad.jpg')+
       tile('squad', T.tabSquad, T.hSquad, 'k-squad', myT ? '<em>'+esc(T.pow)+' '+myT.pow+'</em>' : '<em>'+esc(T.needXi(SQ.size))+'</em>', xiPhoto)+
@@ -111819,13 +111875,17 @@ function sqRender(){
           '<button onclick="sqQuickSell(\''+x.id+'\')">'+esc(T.quick)+' '+money(q)+'</button><button onclick="sqList(\''+x.id+'\')">'+esc(T.list)+' '+money(v)+'</button></div>'}); }).join('')+'</div>'
       : '<p class="sq-hint">'+esc(T.unEmpty)+'</p>';
   } else if(SQ_TAB==='rivals'){
-    title=SQ.cup ? T.cup : T.tabRivals;
+    const S=sqSeason(), st=S.stage;
+    title=T.seasonN(S.n);
     const ready=SQ.xi.length===SQ.size;
-    body='<div class="sq-stats"><span><em>'+esc(T.div)+'</em><b>'+SQ.div+'</b></span><span><em>'+esc(T.week)+'</em><b>'+SQ.week+'</b></span>'+
-      '<span><em>'+esc(T.weekPts)+'</em><b>'+SQ.wk.pts+'</b></span>'+(myT ? '<span><em>'+esc(T.pow)+'</em><b>'+myT.pow+'</b></span>' : '')+'</div>'+
-      '<p class="sq-hint">'+esc(SQ.cup ? T.cupOpen : T.evening(SQ.wk.n+1, SQ_WEEK)+' · '+T.promoRule)+'</p>'+
-      (ready ? '<button class="sq-go" onclick="sqPlay('+(SQ.cup ? 'true' : 'false')+')">'+esc(SQ.cup ? T.playCup : T.playEve)+'</button>' : '<p class="sq-warn">'+esc(T.needXi(SQ.size))+'</p>')+
-      (SQ_LAST && (SQ_LAST.kind||'rivals')==='rivals' ? sqResHTML() : '');
+    body=sqSeasonPath()+
+      '<div class="sq-stats"><span><em>'+esc(T.seasonLbl)+'</em><b>'+S.n+'</b></span>'+
+      (st ? '' : '<span><em>'+esc(T.week)+'</em><b>'+S.week+' / '+SQ_SEASON_WEEKS+'</b></span><span><em>'+esc(T.cupsLbl)+'</em><b>'+S.cups+' / '+SQ_CUPS_WEEK+'</b></span>')+
+      '<span><em>'+esc(T.qpLbl)+'</em><b>'+S.qp+' / '+SQ_QP_NEED+'</b></span>'+(myT ? '<span><em>'+esc(T.pow)+'</em><b>'+myT.pow+'</b></span>' : '')+'</div>'+
+      (st ? '' : '<u class="sq-qp"><s style="width:'+Math.min(100, Math.round(S.qp/SQ_QP_NEED*100))+'%"></s></u>')+
+      '<p class="sq-hint">'+esc(st ? T.stageHint[st] : T.seasonRule(SQ_QP_NEED))+'</p>'+
+      (ready ? '<button class="sq-go" onclick="sqPlay()">'+esc(st ? T.playStage(T.stageName[st]) : T.playCupN)+'</button>' : '<p class="sq-warn">'+esc(T.needXi(SQ.size))+'</p>')+
+      (SQ_LAST && SQ_LAST.kind==='season' ? sqResHTML() : '');
   } else if(SQ_TAB==='battles'){
     title=T.tabBattles;
     const left=SQ.sb.played<SQ_BATTLE_MAX, ready=SQ.xi.length===SQ.size;
@@ -111911,7 +111971,7 @@ function sqRender(){
   }
   root.innerHTML='<div class="sq-top">'+(SQ_TAB==='home' ? '<button class="sq-back" onclick="show(\'screen-mode\')">‹ '+esc(T.back)+'</button>' : back)+
     '<h2>'+esc(title)+'</h2><span class="sq-wal"><em>'+esc(T.coins)+'</em><b><i class="cc-vb-ic"></i>'+money(SQ.coins)+'</b></span>'+
-    '<span class="sq-wal"><em>'+esc(T.div)+'</em><b>'+SQ.div+'</b></span></div>'+
+    '<span class="sq-wal"><em>'+esc(T.seasonLbl)+'</em><b>'+sqSeason().n+'</b></span></div>'+
     (SQ_NOTE ? '<div class="sq-flash">'+esc(SQ_NOTE)+'</div>' : '')+
     '<div class="sq-body">'+body+'</div>'+
     (SQ_TAB==='home' ? '<div class="sq-foot"><button class="sq-reset" onclick="sqReset()">'+esc(T.reset)+'</button></div>' : '');
@@ -119854,7 +119914,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='12e36cc2';
+const CC_BUILD='06ec5f50';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
