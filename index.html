@@ -5476,6 +5476,7 @@
   .sq-m .sq-acts{margin-top:6px;} .sq-m .sq-acts button{background:rgba(0,0,0,.3);font-size:11px;padding:6px;}
   .sq-acts button.go{background:#ffe600 !important;color:#101a44;border-color:#ffe600;}
   .sq-dup{font-size:11px;font-weight:800;color:#ffd0c8;margin-top:4px;}
+  body.sq-running #screen-results .new-draft-btn{display:none !important;}
   /* Вечер вживую (sqLiveHTML). */
   .sq-live-h{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:10px;}
   .sq-live-h b{font-family:var(--font-display);font-size:22px;text-transform:uppercase;}
@@ -111336,7 +111337,46 @@ function sqBots(n, div, harder){
 let SQ_LIVE=null;
 const SQ_LIVE_MS=1100;
 function sqRank(ts){ return ts.slice().sort((a, b)=>(b.stagePts-a.stagePts)||(b.wins-a.wins)||(b.stageElims-a.stageElims)); }
-function sqLiveStart(teams, games, size, title, done){
+/* С КАРТОЙ, как в драфте и карьере (27.10, его «я про симуляцию с картой и таблицей как в драфте или карьере»):
+   тот же simulateGamesLive на экране результатов — остров 2026 года, повтор игры на карте, живая таблица, кнопка
+   пропуска. Сломалось — вечер доигрывается текстовой таблицей (sqLiveStartTable), награды не теряются. */
+async function sqLiveStart(teams, games, size, title, done){
+  if(typeof simulateGamesLive!=='function') return sqLiveStartTable(teams, games, size, title, done);
+  SQ_LIVE={map:true};
+  const pm=CARD_MODE, ps=squadSize, pd=drafted, pf=CC_WORLD_FAST, pSet=ACTIVE_LANDING_SET;
+  let ok=false;
+  try{
+    CARD_MODE=true; squadSize=size; CC_WORLD_FAST=false;
+    drafted=(teams.find(t=>t.isYou)||{}).squad||[];
+    resetRunRecord();
+    document.getElementById('majorStages').innerHTML='';
+    const rs=document.getElementById('runSummary'); if(rs) rs.innerHTML='';
+    document.getElementById('lobbyBody').innerHTML='';
+    document.getElementById('lobbyTitle').textContent='';
+    clearEventPanel();
+    document.getElementById('finalBanner').style.display='none';
+    clearLandingResultsMap();
+    skipAnimation=false;
+    try{ useLandingSet(ZONE_SETS.m2 ? 'm2' : ACTIVE_LANDING_SET); }catch(e){}
+    document.body.classList.add('sq-running');   // кнопка драфта «New draft» на экране результатов здесь ни к чему
+    show('screen-results');
+    ensureSkipButton();
+    await simulateGamesLive(teams, games, pointsForPlace, 1, 'stage', 0, null, null, {mapReplay:true, choices:false, stageName:title});
+    ok=true;
+  }catch(e){ console.error('sqLiveStart', e); }
+  finally{
+    try{ removeSkipButton(); }catch(e){}
+    document.body.classList.remove('sq-running');
+    CARD_MODE=pm; squadSize=ps; drafted=pd; CC_WORLD_FAST=pf;
+    try{ useLandingSet(pSet); }catch(e){}
+    SQ_LIVE=null;
+  }
+  show('screen-sq');
+  if(!ok) return sqLiveStartTable(teams, games, size, title, done);
+  const ranked=sqRank(teams), you=teams.find(t=>t.isYou);
+  done({you, ranked, place:ranked.indexOf(you)+1, N:ranked.length});
+}
+function sqLiveStartTable(teams, games, size, title, done){
   sqWithCards(()=>applyStageBias(pointsForPlace), size);
   teams.forEach(t=>{ t.stagePts=0; t.stageElims=0; t.wins=0; t.lastPlace=0; t.lastElims=0; t.prevRank=0; });
   SQ_LIVE={teams, games, g:0, size, title, done, timer:null};
@@ -111721,7 +111761,7 @@ function sqRender(){
   const myT=sqWithCards(()=>sqMyTeam());
   let body='', title=T.title;
   const back='<button class="sq-crumb" onclick="sqTab(\'home\')">‹ '+esc(T.home)+'</button>';
-  if(SQ_LIVE){ body=sqLiveHTML(); title=SQ_LIVE.title; }
+  if(SQ_LIVE && !SQ_LIVE.map){ body=sqLiveHTML(); title=SQ_LIVE.title; }
   else if(SQ_TAB==='home'){
     /* Превью на плитках (27.10, его «превьюхи добавь»): арт FNCS 2026 и Мейджора, остров, эмблема, скин, лобби сезона;
        у «Состава» и «Клуба» — фото своих лучших игроков, если оно есть в photos/. */
@@ -119814,7 +119854,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='3edff756';
+const CC_BUILD='12e36cc2';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
