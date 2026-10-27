@@ -5381,6 +5381,32 @@
      занятия — большими плитками с иконкой. */
   .cc-train-tab{max-width:1100px;margin:0 auto;}
   .tp-plan{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:14px;} @media(max-width:700px){ .tp-plan{grid-template-columns:1fr;} }
+  /* Новость крупно (ccNewsZoom, 28.10). */
+  .cc-nz{position:fixed;inset:0;z-index:9800;display:none;align-items:center;justify-content:center;padding:16px;background:rgba(4,8,24,.78);}
+  .cc-nz-box{position:relative;width:min(600px,100%);max-height:calc(100vh - 32px);overflow:auto;border-radius:16px;color:#fff;
+    background:linear-gradient(180deg,#1b2a66,#101a44);box-shadow:0 24px 60px rgba(0,0,0,.6);border:1px solid rgba(160,185,255,.25);}
+  .cc-nz-x{position:absolute;top:10px;right:10px;z-index:3;width:38px;height:38px;border-radius:50%;border:0;cursor:pointer;
+    background:rgba(0,0,0,.55);color:#fff;font-size:24px;line-height:38px;}
+  .cc-nz-x:hover{background:#ffe600;color:#101a44;}
+  .cc-nz-art{position:relative;aspect-ratio:16/9;background:linear-gradient(0deg,rgba(16,26,68,.95),rgba(16,26,68,0) 45%),var(--card-art,linear-gradient(135deg,#7a1440,#2b1a6a)) center/cover no-repeat;}
+  .cc-nz-art.face{background:linear-gradient(0deg,rgba(16,26,68,.95),rgba(16,26,68,0) 45%),var(--card-art) center 20%/contain no-repeat,radial-gradient(circle at 50% 30%,#2b3f8f,#101a44);}
+  .cc-nz-art em{position:absolute;left:16px;bottom:12px;font-style:normal;font-size:12px;font-weight:900;text-transform:uppercase;letter-spacing:.04em;
+    padding:3px 10px;border-radius:999px;background:rgba(0,0,0,.55);}
+  .cc-nz-art em:empty{display:none;}
+  .cc-nz-nav{position:absolute;top:50%;transform:translateY(-50%);width:40px;height:40px;border-radius:50%;border:0;cursor:pointer;
+    background:rgba(0,0,0,.5);color:#fff;font-size:24px;line-height:40px;}
+  .cc-nz-nav.prev{left:10px;} .cc-nz-nav.next{right:10px;} .cc-nz-nav:hover{background:#ffe600;color:#101a44;}
+  .cc-nz-body{padding:14px 18px 18px;}
+  .cc-nz-meta{display:flex;align-items:center;gap:10px;}
+  .cc-nz-meta b{display:block;font-size:14px;font-weight:900;} .cc-nz-meta i{display:block;font-style:normal;font-size:12px;color:#9fb0e8;}
+  .cc-nz-av{flex:none;}
+  .cc-nz-t{margin:12px 0 4px;font-size:18px;font-weight:700;line-height:1.4;color:#f2f5ff;white-space:pre-wrap;}
+  .cc-nz-ths{display:flex;gap:8px;margin-top:14px;}
+  .cc-nz-th{flex:0 1 104px;aspect-ratio:16/9;border-radius:8px;border:2px solid transparent;cursor:pointer;opacity:.6;
+    background:var(--card-art,linear-gradient(135deg,#7a1440,#2b1a6a)) center/cover no-repeat;}
+  .cc-nz-th.on{border-color:#ffe600;opacity:1;} .cc-nz-th:hover{opacity:1;}
+  .cc-nz-feed{margin-top:14px;background:none;border:1px solid rgba(180,200,255,.35);color:#fff;border-radius:10px;padding:10px 16px;font:inherit;font-weight:800;cursor:pointer;}
+  .cc-nz-feed:hover{border-color:#ffe600;}
   /* FNCS Cards (sqRender, 27.10). */
   .sq-root{max-width:1180px;margin:0 auto;padding:16px;color:#fff;}
   .sq-top{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:10px;}
@@ -120095,7 +120121,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='b0209bc3';
+const CC_BUILD='290d4ef1';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -125446,6 +125472,55 @@ function ccLobbySchedPanel(){
 /* Новости слева сверху, как карусель новостей в лобби Fortnite: пять свежих из ленты карьеры, листаются сами,
    точки снизу; нажатие открывает ленту. */
 let CC_LB_NEWS_T=null;
+/* НОВОСТЬ КРУПНО (28.10, его «когда нажимаешь на новости, побольше приближает, больше подробностей, и закрыть
+   крестиком»). Клик по карточке новостей открывает окно с той новостью, что сейчас на слайде: большая картинка,
+   рубрика и полная дата, текст целиком (на карточке он обрезан до трёх строк), автор с аватаром, таблица мест, если
+   она приложена к посту, стрелки по пяти свежим новостям и миниатюры. «Вся лента» — туда же, куда вела карточка.
+   Закрывается крестиком, Esc и кликом мимо окна. */
+let CC_NZ_I=0;
+function ccNewsZoomFromCard(){
+  const box=document.querySelector('.cc-lb-newsc');
+  const i=box ? [...box.querySelectorAll('.cc-lb-slide')].findIndex(x=>x.classList.contains('on')) : 0;
+  ccNewsZoom(Math.max(0, i));
+}
+function ccNewsZoom(i){
+  const list=((CAREER.career && CAREER.career.news)||[]).slice(0, 5);
+  if(!list.length) return;
+  CC_NZ_I=(i+list.length)%list.length;
+  const n=list[CC_NZ_I], T=L();
+  let art=null; try{ art=ccNewsArtOf(n); }catch(e){}
+  let txt=''; try{ txt=ccText(n); }catch(e){}
+  let cat=''; try{ cat=T['ccNewsCat'+ccNewsCat(n)]||''; }catch(e){}
+  let who=null; try{ who=ccPostAuthor(n); }catch(e){}
+  let day=''; try{ day=n.day ? ccDayFull(n.day) : ccStamp(n); }catch(e){ day=ccStamp(n); }
+  let shot=''; try{ shot=n.tbl ? ccShotHTML(n.tbl) : ''; }catch(e){}
+  let av=''; try{ av=who ? ccAvatar(who) : ''; }catch(e){}
+  const thumbs=list.map((m, k)=>{ let a=null; try{ a=ccNewsArtOf(m); }catch(e){}
+    return '<button type="button" class="cc-nz-th'+(k===CC_NZ_I ? ' on' : '')+'" onclick="ccNewsZoom('+k+')"'+(a ? ' style="--card-art:url('+a.src+')"' : '')+' aria-label="'+(k+1)+'"></button>'; }).join('');
+  let el=document.getElementById('ccNz');
+  if(!el){ el=document.createElement('div'); el.id='ccNz'; el.className='cc-nz'; document.body.appendChild(el);
+    el.addEventListener('click', e=>{ if(e.target===el) ccNewsZoomClose(); });
+    document.addEventListener('keydown', ccNewsZoomKey); }
+  el.innerHTML='<div class="cc-nz-box" role="dialog" aria-modal="true">'+
+    '<button type="button" class="cc-nz-x" onclick="ccNewsZoomClose()" aria-label="Close">×</button>'+
+    '<div class="cc-nz-art'+(art && art.kind!=='art' ? ' face' : '')+'"'+(art ? ' style="--card-art:url('+art.src+')"' : '')+'>'+
+      (list.length>1 ? '<button type="button" class="cc-nz-nav prev" onclick="ccNewsZoom('+(CC_NZ_I-1)+')" aria-label="Prev">‹</button>'+
+                       '<button type="button" class="cc-nz-nav next" onclick="ccNewsZoom('+(CC_NZ_I+1)+')" aria-label="Next">›</button>' : '')+
+      '<em>'+esc(cat || '')+'</em></div>'+
+    '<div class="cc-nz-body"><div class="cc-nz-meta">'+(av ? '<span class="cc-nz-av">'+av+'</span>' : '')+
+      '<span><b>'+esc((who && (who.name || who.handle)) || '')+'</b><i>'+esc(day)+'</i></span></div>'+
+      '<p class="cc-nz-t">'+esc(txt)+'</p>'+shot+
+      (list.length>1 ? '<div class="cc-nz-ths">'+thumbs+'</div>' : '')+
+      '<button type="button" class="cc-nz-feed" onclick="ccNewsZoomClose();careerOpenFeed()">'+esc(T.ccNewsHub||'Feed')+' ›</button></div></div>';
+  el.style.display='flex';
+}
+function ccNewsZoomKey(e){
+  const el=document.getElementById('ccNz'); if(!el || el.style.display==='none') return;
+  if(e.key==='Escape') ccNewsZoomClose();
+  else if(e.key==='ArrowRight') ccNewsZoom(CC_NZ_I+1);
+  else if(e.key==='ArrowLeft') ccNewsZoom(CC_NZ_I-1);
+}
+function ccNewsZoomClose(){ const el=document.getElementById('ccNz'); if(el) el.style.display='none'; }
 function ccLobbyNewsCardHTML(){
   const list=((CAREER.career && CAREER.career.news)||[]).slice(0, 5);
   if(!list.length) return '';
@@ -125465,7 +125540,7 @@ function ccLobbyNewsCardHTML(){
     const k=sl.findIndex(x=>x.classList.contains('on')), nx=(k+1)%sl.length;
     sl.forEach((x, i)=>x.classList.toggle('on', i===nx)); dots.forEach((x, i)=>x.classList.toggle('on', i===nx));
   }, 6000);
-  return '<div class="cc-lb-news cc-lb-card cc-lb-newsc" onclick="careerOpenFeed()" title="'+esc(T.ccNewsHub||'')+'">'+slides+
+  return '<div class="cc-lb-news cc-lb-card cc-lb-newsc" onclick="ccNewsZoomFromCard()" title="'+esc(T.ccNewsHub||'')+'">'+slides+
     '<i class="cc-lb-dots">'+list.map((n, i)=>'<s'+(i===0 ? ' class="on"' : '')+'></s>').join('')+'</i></div>';
 }
 /* Колонка с капом не листается (его «листается кап всё равно»): если карточке вечера мало места (высадка, отборы,
