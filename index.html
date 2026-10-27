@@ -120121,7 +120121,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='cc400900';
+const CC_BUILD='89e7018a';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -143574,7 +143574,8 @@ function ccStageShot(ranked, you, div, cap, cut){
   // Флаги — по картам состава, а не по строке: рисуются при показе (flagImg).
   const nats=t=>((t&&t.squad)||[]).map(p=>p&&p.nat).filter(Boolean);
   const row=(t,i)=>({p:i+1, n:bare(t), s:Math.round(t.stagePts||0),
-                     m:(t.stageLog||[]).length, w:t.wins||0, e:Math.round(t.stageElims||0), f:nats(t)});
+                     // Второй вечер кубка: игры первого у остальных лежат в _carryGames, свои уже склеены в лог (Notion 27.10: 11 против 22).
+                     m:(t.stageLog||[]).length+(t._carryGames||0), w:t.wins||0, e:Math.round(t.stageElims||0), f:nats(t)});
   const place=ranked.indexOf(you)+1;
   /* Как в таблице самой игры — его твит 3 сентября (Th0masHD на #33, в
      кадре #29–#36, своя строка ещё раз приколота внизу, справа «Points to
