@@ -7587,6 +7587,50 @@
   .x-shot-r.pin{border-top:2px solid rgba(255,209,102,.5);background:rgba(255,209,102,.08);}
   .x-shot-r.pin b{color:#ffd166;}
   .x-shot-r b img{vertical-align:-2px;}
+  /* Скрин в виде таблицы вечера (ccShotLookHTML). Селекторы парами — с #screen-career-hub, чтобы перебить тёмный скрин хаба. */
+  .x-shot.x-lk,#screen-career-hub .x-shot.x-lk{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;border:0;border-radius:10px;padding:2px 8px 8px;}
+  .x-lk .x-shot-r,#screen-career-hub .x-lk .x-shot-r{grid-template-columns:30px minmax(0,1fr) 46px 54px 38px 42px;gap:4px;
+    padding:7px 10px;border:0;border-left:0;margin-top:5px;font-size:12.5px;}
+  .x-lk .x-shot-r+.x-shot-r,#screen-career-hub .x-lk .x-shot-r+.x-shot-r{border-top:0;}
+  .x-lk .x-shot-r em,.x-lk .x-shot-r u,#screen-career-hub .x-lk .x-shot-r em,#screen-career-hub .x-lk .x-shot-r u{text-align:right;font-family:inherit;}
+  /* Шрифт — как в живой таблице: весь скрин обычным шрифтом сайта, и место, и шапка (его «с шрифтом чет не то» 28.10). */
+  #screen-career-hub .x-shot .x-shot-r *,#screen-career-hub .x-shot .x-shot-sum b,#screen-career-hub .x-shot .x-shot-pts b,.x-lk .x-shot-r *,.x-lk .x-shot-h,.x-lk .x-shot-h *,#screen-career-hub .x-lk .x-shot-r *,#screen-career-hub .x-lk .x-shot-h,#screen-career-hub .x-lk .x-shot-h *{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;font-style:normal;}
+  .x-lk-cl .x-shot-r.win i,#screen-career-hub .x-lk-cl .x-shot-r.win i{font-style:italic;}
+  .x-lk .x-shot-head,#screen-career-hub .x-lk .x-shot-head{background:transparent;margin-top:0;padding-top:4px;padding-bottom:0;font-size:10px;}
+  .x-lk .x-shot-head *,#screen-career-hub .x-lk .x-shot-head *,#screen-career-hub .x-shot .x-shot-head *{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;font-size:10px;}
+  /* 2026: бирюзовая таблица симуляции (.lobby-wrap / .lobby-table). */
+  .x-lk-sim,#screen-career-hub .x-lk-sim{background:linear-gradient(160deg,#0f6a6d 0%,#0b474c 46%,#07333a 100%);}
+  .x-lk-sim .x-shot-h,#screen-career-hub .x-lk-sim .x-shot-h{background:transparent;color:#eefbfa;padding:8px 4px 4px;}
+  .x-lk-sim .x-shot-h span:last-child,#screen-career-hub .x-lk-sim .x-shot-h span:last-child{color:#9fd6d3;}
+  .x-lk-sim .x-shot-head *,#screen-career-hub .x-lk-sim .x-shot-head *{color:#9fd6d3;text-transform:none;letter-spacing:0;font-weight:800;}
+  .x-lk-sim .x-shot-r:not(.x-shot-head),#screen-career-hub .x-lk-sim .x-shot-r:not(.x-shot-head){background:#12595e;color:#eefbfa;border-radius:8px;}
+  .x-lk-sim .x-shot-r i,.x-lk-sim .x-shot-r b,.x-lk-sim .x-shot-r em,#screen-career-hub .x-lk-sim .x-shot-r i,#screen-career-hub .x-lk-sim .x-shot-r b,#screen-career-hub .x-lk-sim .x-shot-r em{color:#fff;font-weight:900;}
+  .x-lk-sim .x-shot-r u,#screen-career-hub .x-lk-sim .x-shot-r u{color:#bfe4e2;font-size:12px;font-weight:600;}
+  .x-lk-sim .x-shot-r.me,.x-lk-sim .x-shot-r.win,#screen-career-hub .x-lk-sim .x-shot-r.me,#screen-career-hub .x-lk-sim .x-shot-r.win{background:#256a70;box-shadow:inset 0 0 0 2px #ffe600;}
+  .x-lk-sim .x-shot-r.win:not(.me),#screen-career-hub .x-lk-sim .x-shot-r.win:not(.me){background:#1f6267;}
+  .x-lk-sim .x-shot-r.cut,#screen-career-hub .x-lk-sim .x-shot-r.cut{box-shadow:inset 0 -2px 0 #ffd23f;}
+  /* Прошлые годы: экран турнира в игре тех лет — палитра события, название и регион крупно, полосы, лидер и своя белые. */
+  .x-lk-cl,#screen-career-hub .x-lk-cl{background:linear-gradient(120deg,var(--sl) 0%,var(--sr) 100%);border-radius:6px;padding:0 0 8px;}
+  .x-lk-cl.x-lk-lt,#screen-career-hub .x-lk-cl.x-lk-lt{background:linear-gradient(rgba(8,10,20,.34),rgba(8,10,20,.34)),linear-gradient(120deg,var(--sl) 0%,var(--sr) 100%);}
+  .x-lk-cap{padding:12px 12px 10px;color:#fff;font-family:var(--font-display);text-shadow:0 2px 0 rgba(0,0,0,.18);}
+  .x-lk-cap b{display:block;font-weight:700;font-size:21px;line-height:1.05;text-transform:uppercase;}
+  .x-lk-cap span{display:block;font-weight:700;font-size:14px;margin-top:2px;}
+  .x-lk-cap small{display:block;font-size:11px;opacity:.85;margin-top:4px;letter-spacing:.04em;}
+  .x-lk-cl .x-shot-r,#screen-career-hub .x-lk-cl .x-shot-r{margin-top:0;border-radius:0;}
+  .x-lk-cl .x-shot-head *,#screen-career-hub .x-lk-cl .x-shot-head *{color:rgba(255,255,255,.8);text-transform:uppercase;letter-spacing:.06em;font-weight:800;}
+  .x-lk-cl .x-shot-r:not(.x-shot-head),#screen-career-hub .x-lk-cl .x-shot-r:not(.x-shot-head){background:rgba(255,255,255,.13);color:#fff;box-shadow:inset 0 -1px 0 rgba(0,0,0,.07);}
+  .x-lk-cl .x-shot-r:nth-child(odd):not(.x-shot-head),#screen-career-hub .x-lk-cl .x-shot-r:nth-child(odd):not(.x-shot-head){background:rgba(255,255,255,.05);}
+  .x-lk-cl .x-shot-r i,#screen-career-hub .x-lk-cl .x-shot-r i{color:rgba(255,255,255,.72);font-weight:800;}
+  .x-lk-cl .x-shot-r b,.x-lk-cl .x-shot-r em,#screen-career-hub .x-lk-cl .x-shot-r b,#screen-career-hub .x-lk-cl .x-shot-r em{color:#fff;font-weight:800;}
+  .x-lk-cl .x-shot-r u,#screen-career-hub .x-lk-cl .x-shot-r u{color:rgba(255,255,255,.85);font-size:12px;font-weight:700;}
+  .x-lk-cl .x-shot-r.win,.x-lk-cl .x-shot-r.me,#screen-career-hub .x-lk-cl .x-shot-r.win,#screen-career-hub .x-lk-cl .x-shot-r.me{background:#fff!important;}
+  .x-lk-cl .x-shot-r.win b,.x-lk-cl .x-shot-r.win em,.x-lk-cl .x-shot-r.me b,.x-lk-cl .x-shot-r.me em,.x-lk-cl .x-shot-r.me i,
+  #screen-career-hub .x-lk-cl .x-shot-r.win b,#screen-career-hub .x-lk-cl .x-shot-r.win em,#screen-career-hub .x-lk-cl .x-shot-r.me b,#screen-career-hub .x-lk-cl .x-shot-r.me em,#screen-career-hub .x-lk-cl .x-shot-r.me i{color:#11141c;}
+  .x-lk-cl .x-shot-r.win u,.x-lk-cl .x-shot-r.me u,#screen-career-hub .x-lk-cl .x-shot-r.win u,#screen-career-hub .x-lk-cl .x-shot-r.me u{color:#3a4152;}
+  .x-lk-cl .x-shot-r.win i,#screen-career-hub .x-lk-cl .x-shot-r.win i{color:#e0a800;font-style:italic;font-size:15px;}
+  .x-lk-cl .x-shot-r.me,#screen-career-hub .x-lk-cl .x-shot-r.me{box-shadow:inset 5px 0 0 #11141c;}
+  .x-lk-cl .x-shot-r.cut,#screen-career-hub .x-lk-cl .x-shot-r.cut{box-shadow:inset 0 -2px 0 var(--sh);}
+  @media(max-width:520px){.x-lk .x-shot-r,#screen-career-hub .x-lk .x-shot-r{grid-template-columns:24px minmax(0,1fr) 40px 46px 32px 36px;font-size:12px;padding:6px 8px;}}
   /* Отметка «квал на ЛАН» рядом с заработком в профиле. */
   #screen-career-hub .x-lanq{color:#3ee9b8;}
   #screen-career-hub .x-lanq b{color:#3ee9b8;}
@@ -120121,7 +120165,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='89e7018a';
+const CC_BUILD='5cede7de';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -142124,6 +142168,8 @@ function careerNews(kind, key, args, opt){
      под правило не попадает, у неё другие строки. Окно в 24 записи: вечер
      пишет шесть-семь, дальше смотреть незачем. */
   const tbl=(opt&&opt.tbl)||undefined;
+  // Вид таблицы вечера (ccShotLook) — в запись: скрин рисуется так, как таблица выглядела в симуляции.
+  if(tbl && tbl.rows && !tbl.lk){ const lk=ccShotLook(); if(lk) tbl.lk=lk; }
   if(tbl && tbl.rows){
     const sig=t=>((t&&t.rows)||[]).map(r=>r.p+':'+r.n+':'+r.s).join(',');
     const mine=sig(tbl);
@@ -143156,8 +143202,57 @@ function ccLeadHTML(lead){
   return `<div class="x-shot"><div class="x-shot-h"><span>${esc(lead.cap||'')}</span>`+
          `<span>${lead.mine ? '@'+esc(me) : '<span class="x-lead-ico">🔥</span>'+esc(L().ccLeadCap)}</span></div>${rows}</div>`;
 }
+/* ВИД СКРИНА ТАБЛИЦЫ (Notion 27.10, его «сделай эту таблицу как в игре и как в симуляции, смотря какой турнир»).
+   Скрин в посте рисуется тем же видом, что живая таблица этого вечера (ccEvPaletteApply): 2026-й — бирюзовая таблица
+   симуляции, прошлые годы — экран турнира из игры тех лет в палитре события. Вид пишется в запись в момент поста:
+   год карьеры потом сменится, а скрин останется таким, каким был. Старые записи без вида — прежний тёмный скрин. */
+function ccShotLook(){
+  try{
+    if(typeof CAREER==='undefined' || !CAREER || !CAREER.career) return null;
+    if(ccCalYear()>=2026) return {k:'sim'};
+    const root=document.documentElement, s=root.style;
+    let l=s.getPropertyValue('--ev-l').trim(), r=s.getPropertyValue('--ev-r').trim(), h=s.getPropertyValue('--ev-h').trim(),
+        lt=root.classList.contains('ev-light');
+    if(!root.classList.contains('ev-classic') || !l){
+      const d=careerToday(), n=ccSeasonNumOn(d);
+      const p=ccEvPalette({id:''}, d) || (n<=9 ? ccEvPalOf('OnlineOpen_Week1') : null);
+      if(!p) return {k:'sim'};
+      l='#'+p[0]; r='#'+p[1]; h='#'+(p[2]||'FFE600'); lt=ccEvLight(p);
+    }
+    let rg=''; try{ rg=regionName(ccCareerRegion()); }catch(e){}
+    return {k:'cl', l, r, h, lt:lt?1:0, rg};
+  }catch(e){ return null; }
+}
+// Скрин в виде таблицы вечера: колонки как в симуляции (место, команда, очки, матчи, победы, киллы), без сводки Tracker.
+function ccShotLookHTML(tbl){
+  const lk=tbl.lk, cl=lk.k==='cl';
+  const flags=r=>(r.f||[]).map(n=>flagImg(n, 12)).join('');
+  const meK=tbl.me ? hKey(tbl.me) : null;
+  const line=(r, extra)=>{
+    const cls=(r.p===1?' win':'')+(meK && hKey(r.n)===meK ? ' me' : '')+(tbl.cut && r.p===tbl.cut ? ' cut' : '')+(extra||'');
+    return `<div class="x-shot-r${cls}"><i>#${r.p}</i><b>${flags(r)}${esc(r.n)}</b><em>${r.s}</em>`+
+      `<u>${r.m!=null?r.m:''}</u><u>${r.w!=null?r.w:''}</u><u>${r.e!=null?r.e:''}</u></div>`;
+  };
+  // Своя строка внизу — только когда её нет в кадре, как в живой таблице.
+  const pinIn=tbl.pin && tbl.rows.some(r=>r.p===tbl.pin.p);
+  const rows=tbl.rows.map(r=>line(r, '')).join('')+(tbl.pin && !pinIn ? line(tbl.pin, ' pin') : '');
+  const sty=cl ? ` style="--sl:${esc(lk.l)};--sr:${esc(lk.r)};--sh:${esc(lk.h||'#FFE600')}"` : '';
+  const cap=esc(tbl.cap||L().ccShotCap(tbl.div))+(tbl.mode?' · '+esc(tbl.mode):'');
+  const cut=tbl.cut && tbl.cutPts!=null ? esc(L().ccShotCut(tbl.cut, ccNum(tbl.cutPts))) : '';
+  const head=cl
+    ? `<div class="x-lk-cap"><b>${cap}</b>${lk.rg ? `<span>(${esc(lk.rg)})</span>` : ''}${cut ? `<small>${cut}</small>` : ''}</div>`
+    : `<div class="x-shot-h"><span>${cap}</span><span>${cut || L().ccShotPts}</span></div>`;
+  return `<div class="x-shot x-lk x-lk-${cl?'cl':'sim'}${cl && lk.lt?' x-lk-lt':''}"${sty}>${head}
+    <div class="x-shot-rows">
+      <div class="x-shot-r x-shot-head"><i>#</i><b>${L().ccTableTeam}</b><em>${L().ptsHeader}</em>
+        <u>${L().matchesWord}</u><u>${L().winsWord}</u><u>${L().killsHeader}</u></div>
+      ${rows}
+    </div>
+  </div>`;
+}
 function ccShotHTML(tbl){
   if(!tbl || !tbl.rows || !tbl.rows.length) return '';
+  if(tbl.lk && tbl.rows.some(r=>r.m!=null)) return ccShotLookHTML(tbl);
   /* Старые записи в сейве несут только место, имя и очки — у них колонок
      меньше, и таблица просто рисуется без них. */
   const wide=tbl.rows.some(r=>r.m!=null);
