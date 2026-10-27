@@ -5430,6 +5430,62 @@
   .sq-obj button{background:#ffe600;color:#101a44;border:0;border-radius:10px;padding:8px 14px;font:inherit;font-weight:900;cursor:pointer;} .sq-obj button:disabled{opacity:.35;cursor:default;}
   .sq-obj em{font-style:normal;color:#00d6a4;font-weight:900;} .sq-obj.done{opacity:.6;}
   .sq-foot{margin-top:24px;text-align:right;}
+  /* Второй заход (27.10): главная плитками, мини-карточки по уровню, режимы. */
+  .sq-crumb{background:none;border:0;color:#9fb0e8;font:inherit;font-weight:800;cursor:pointer;padding:6px 0;}
+  .sq-home{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;}
+  @media(max-width:900px){ .sq-home{grid-template-columns:repeat(2,minmax(0,1fr));} }
+  .sq-tile{position:relative;display:flex;flex-direction:column;justify-content:flex-end;gap:4px;min-height:130px;padding:16px;border-radius:16px;border:0;cursor:pointer;
+    text-align:left;color:#fff;font:inherit;overflow:hidden;background:linear-gradient(150deg,#22357e,#121d4d);box-shadow:inset 0 0 0 1px rgba(180,200,255,.18);}
+  .sq-tile:hover{box-shadow:inset 0 0 0 2px #ffe600;}
+  .sq-tile b{font-family:var(--font-display);font-size:22px;text-transform:uppercase;line-height:1.05;}
+  .sq-tile span{font-size:12px;color:#d3dcff;line-height:1.35;}
+  .sq-tile em{font-style:normal;font-size:12px;font-weight:900;color:#ffe600;}
+  .sq-tile.big{grid-column:span 2;grid-row:span 2;min-height:272px;background:linear-gradient(150deg,#0a7d6b,#0b2f5c 70%);}
+  .sq-tile.big b{font-size:34px;}
+  .sq-tile.k-cup{background:linear-gradient(150deg,#7a5a00,#2a1f00);} .sq-tile.k-cup.hot{box-shadow:inset 0 0 0 2px #ffe600;}
+  .sq-tile.k-battles{background:linear-gradient(150deg,#7a1f4d,#2b0b1d);} .sq-tile.k-draft{background:linear-gradient(150deg,#4a2fb0,#1a114a);}
+  .sq-tile.k-packs{background:linear-gradient(150deg,#9a7a12,#3d3005);} .sq-tile.k-market{background:linear-gradient(150deg,#1f6fb8,#0d2a4a);}
+  .sq-tile.k-sbc{background:linear-gradient(150deg,#0e7a4a,#06301e);}
+  .sq-unbar{display:block;width:100%;margin-bottom:12px;padding:12px 16px;border-radius:12px;border:0;cursor:pointer;font:inherit;font-weight:900;text-align:left;
+    background:#ffe600;color:#101a44;}
+  .sq-mgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;}
+  .sq-m{display:flex;flex-direction:column;gap:3px;padding:10px;border-radius:12px;min-width:0;color:#fff;
+    background:linear-gradient(160deg,var(--m1),var(--m2));box-shadow:inset 0 0 0 1px rgba(255,255,255,.18);}
+  .sq-m.t-bronze{--m1:#8a5a33;--m2:#3e2614;} .sq-m.t-silver{--m1:#7d8899;--m2:#353d4a;}
+  .sq-m.t-gold{--m1:#b8911a;--m2:#4d3c06;} .sq-m.t-elite{--m1:#7a3fe0;--m2:#24104f;}
+  .sq-m.click{cursor:pointer;} .sq-m.click:hover{box-shadow:inset 0 0 0 2px #ffe600;}
+  .sq-m.sel{box-shadow:inset 0 0 0 3px #00d6a4;}
+  .sq-m.sq-empty{--m1:transparent;--m2:transparent;min-height:110px;align-items:center;justify-content:center;border:2px dashed rgba(180,200,255,.25);color:#8fa1cc;font-weight:800;}
+  .sq-m-top{display:flex;align-items:center;gap:6px;}
+  .sq-m-top b{font-size:24px;font-weight:900;line-height:1;font-variant-numeric:tabular-nums;}
+  .sq-m-top i{font-style:normal;font-size:10px;font-weight:900;padding:2px 6px;border-radius:6px;background:rgba(0,0,0,.35);}
+  .sq-m-top span{margin-left:auto;}
+  .sq-m-h{font-weight:900;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .sq-m-s{font-size:11px;color:rgba(255,255,255,.75);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .sq-m-a{display:grid;grid-template-columns:repeat(3,1fr);gap:1px 6px;margin-top:4px;font-size:11px;font-weight:900;font-variant-numeric:tabular-nums;}
+  .sq-m-a em{font-style:normal;font-size:9px;font-weight:800;opacity:.7;margin-right:3px;}
+  .sq-m .sq-acts{margin-top:6px;} .sq-m .sq-acts button{background:rgba(0,0,0,.3);font-size:11px;padding:6px;}
+  .sq-acts button.go{background:#ffe600 !important;color:#101a44;border-color:#ffe600;}
+  .sq-dup{font-size:11px;font-weight:800;color:#ffd0c8;margin-top:4px;}
+  .sq-tag{margin-top:6px;font-size:11px;font-weight:900;color:#00d6a4;}
+  .sq-go.sm{padding:10px 18px;font-size:15px;} .sq-go:disabled{opacity:.4;cursor:default;}
+  .sq-ghost{background:none;border:1px solid rgba(180,200,255,.35);color:#fff;border-radius:12px;padding:10px 16px;font:inherit;font-weight:800;cursor:pointer;}
+  .sq-row{flex-wrap:wrap;align-items:center;}
+  .sq-pitch{padding:12px 14px 16px;border-radius:16px;background:linear-gradient(180deg,rgba(0,214,164,.1),rgba(0,0,0,.15));box-shadow:inset 0 0 0 1px rgba(0,214,164,.25);}
+  .sq-pitch .sq-h{margin-top:4px;}
+  .sq-diffs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:8px 0 14px;}
+  @media(max-width:600px){ .sq-diffs{grid-template-columns:repeat(2,minmax(0,1fr));} }
+  .sq-diff{display:flex;flex-direction:column;gap:4px;padding:16px;border-radius:14px;border:0;cursor:pointer;color:#fff;font:inherit;text-align:left;}
+  .sq-diff b{font-size:16px;font-weight:900;} .sq-diff span{font-size:12px;font-weight:900;color:#ffe600;}
+  .sq-diff.d0{background:#1f5f4a;} .sq-diff.d1{background:#1f4f8a;} .sq-diff.d2{background:#6a2a9a;} .sq-diff.d3{background:#9a2a3a;}
+  .sq-sbcs{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px;}
+  .sq-sbc{display:flex;flex-direction:column;gap:4px;align-items:flex-start;padding:16px;border-radius:14px;border:0;color:#fff;font:inherit;cursor:pointer;text-align:left;}
+  .sq-sbc b{font-size:17px;font-weight:900;} .sq-sbc span{font-size:12px;color:#e3e9ff;} .sq-sbc em{font-style:normal;font-weight:900;color:#ffe600;}
+  .sq-sbc.p-bronze{background:linear-gradient(135deg,#6b4224,#3a2414);} .sq-sbc.p-silver{background:linear-gradient(135deg,#6f7a8c,#394150);}
+  .sq-sbc.p-gold{background:linear-gradient(135deg,#9a7a12,#4d3c06);} .sq-sbc.p-elite{background:linear-gradient(135deg,#6b2fd0,#2a145a);}
+  .sq-reveal .sq-m{animation:sqIn .45s ease both;} .sq-reveal .sq-m:nth-child(2){animation-delay:.2s;} .sq-reveal .sq-m:nth-child(3){animation-delay:.4s;} .sq-reveal .sq-m:nth-child(4){animation-delay:.6s;}
+  @media(prefers-reduced-motion:reduce){ .sq-reveal .sq-m{animation:none;} }
+  @media(max-width:600px){ .sq-mgrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;} .sq-tile.big{min-height:200px;} }
   @media(max-width:600px){ .sq-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;} .sq-top h2{font-size:22px;} }
   /* Параметр = кнопка его тренировки (ccTrainStatHTML, 27.10). */
   .cc-stgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:6px 0 10px;}
@@ -111204,12 +111260,14 @@ function sqDraw(lo, hi, role){
   return P[a];
 }
 function sqValue(ovr){ return Math.max(100, Math.round(150*Math.pow(1.18, ovr-60)/50)*50); }
-function sqAdd(c){ const id='c'+(SQ.next++); SQ.cards.push({id, k:c._k}); return id; }
+function sqAdd(c, un){ const id='c'+(SQ.next++); SQ.cards.push(un ? {id, k:c._k, un:true} : {id, k:c._k}); return id; }
+// Новая карточка: в клуб, а если такой игрок в клубе уже есть — в «Неназначенные» (дубль можно продать или сдать в испытание).
+function sqGain(k){ const dup=SQ.cards.some(c=>!c.un && c.k===k); const id='c'+(SQ.next++); SQ.cards.push(dup ? {id, k, un:true} : {id, k}); return id; }
 function sqSave(){ try{ localStorage.setItem(SQ_KEY, JSON.stringify(SQ)); }catch(e){} }
 function sqLoad(){ try{ const s=JSON.parse(localStorage.getItem(SQ_KEY)||'null'); if(s && s.v===1) return s; }catch(e){} return null; }
 function sqNew(){
   SQ={v:1, coins:5000, next:1, cards:[], size:2, xi:[], bench:[], div:SQ_DIVS, week:1, wk:{n:0, pts:0}, cup:false, st:{}, claimed:{},
-      packs:[], stat:{packs:0, evenings:0, top10:0, wins:0, sold:0, promos:0}, mkt:{list:[]}, sells:[]};
+      packs:[], stat:{packs:0, evenings:0, top10:0, wins:0, sold:0, promos:0}, mkt:{list:[]}, sells:[], sb:{played:0, pts:0}, dr:null};
   SQ.xi.push(sqAdd(sqDraw(0, 0.4, 'roleIGL')));
   SQ.xi.push(sqAdd(sqDraw(0, 0.4, 'roleFRG')));
   SQ_NOTE=sqT().welcome;
@@ -111217,11 +111275,13 @@ function sqNew(){
 }
 function sqStart(){
   SQ=sqLoad(); if(!SQ) sqNew();
-  SQ_TAB='squad';
+  if(!SQ.sb) SQ.sb={played:0, pts:0};
+  if(SQ.dr===undefined) SQ.dr=null;
+  SQ_TAB='home';
   show('screen-sq');
   sqRender();
 }
-function sqReset(){ ccAsk(sqT().resetAsk, ()=>{ try{ localStorage.removeItem(SQ_KEY); }catch(e){} sqNew(); SQ_TAB='squad'; sqRender(); }); }
+function sqReset(){ ccAsk(sqT().resetAsk, ()=>{ try{ localStorage.removeItem(SQ_KEY); }catch(e){} sqNew(); SQ_TAB='home'; sqRender(); }); }
 function sqFit(id){ const v=SQ.st[id]; return v==null ? 100 : v; }
 // Всё, что считает силу и лобби, — в режиме карточек и под размер состава; глобалы возвращаются как были.
 function sqWithCards(fn){
@@ -111251,7 +111311,7 @@ function sqBots(n, div, harder){
 }
 function sqPlay(cup){
   const me=SQ.xi.length===SQ.size ? true : false; if(!me) return;
-  const T=sqT(), n=Math.round(100/SQ.size)-1;
+  const T=sqT(), n=Math.round(100/SQ.size)-1, eveNo=SQ.wk.n+1;
   const res=sqWithCards(()=>{
     const you=sqMyTeam(); if(!you) return null;
     const teams=[you].concat(sqBots(n, SQ.div, cup));
@@ -111265,7 +111325,7 @@ function sqPlay(cup){
     coins*=2;
     pack=frac<=0.04 ? 'elite' : frac<=0.2 ? 'gold' : frac<=0.5 ? 'silver' : 'bronze';
     SQ.packs.push(pack);
-    SQ.week++; SQ.wk={n:0, pts:0}; SQ.cup=false; notes.push(T.newWeek);
+    SQ.cup=false; sqNewWeek(notes);
   } else {
     const dp=frac<=0.1 ? 3 : frac<=0.3 ? 2 : frac<=0.6 ? 1 : 0;
     SQ.wk.n++; SQ.wk.pts+=dp;
@@ -111277,14 +111337,14 @@ function sqPlay(cup){
       else notes.push(T.stay(SQ.div));
       // На кап выходных квалифицируются очками недели (как лига выходных по дивизионам в таких режимах): 4+ — пускают.
       if(SQ.wk.pts>=SQ_CUP_QUAL){ SQ.cup=true; notes.push(T.cupOpen); }
-      else { SQ.week++; SQ.wk={n:0, pts:0}; notes.push(T.noCup(SQ_CUP_QUAL)); notes.push(T.newWeek); }
+      else { notes.push(T.noCup(SQ_CUP_QUAL)); sqNewWeek(notes); }
     }
   }
   if(res.you.wins) SQ.stat.wins+=res.you.wins;
   SQ.coins+=coins;
   // Усталость: стартеры устают, остальные отдыхают.
-  SQ.cards.forEach(c=>{ const on=SQ.xi.indexOf(c.id)>=0; SQ.st[c.id]=Math.max(0, Math.min(100, sqFit(c.id)+(on ? -15 : 25))); });
-  SQ_LAST={cup:!!cup, place, N, coins, pack, notes, rows:res.ranked.slice(0, 10).concat(place>10 ? [res.you] : []).map(t=>({
+  SQ.cards.forEach(c=>{ if(c.un) return; const on=SQ.xi.indexOf(c.id)>=0; SQ.st[c.id]=Math.max(0, Math.min(100, sqFit(c.id)+(on ? -15 : 25))); });
+  SQ_LAST={kind:'rivals', title:cup ? T.cup : T.evening(eveNo, SQ_WEEK), cup:!!cup, place, N, coins, pack, notes, rows:res.ranked.slice(0, 10).concat(place>10 ? [res.you] : []).map(t=>({
     name:t.isYou ? T.you : t.name, you:!!t.isYou, place:res.ranked.indexOf(t)+1, pts:t.stagePts, wins:t.wins, elims:t.stageElims}))};
   sqSave(); sqRender();
 }
@@ -111295,8 +111355,9 @@ function sqPackOpen(id, paid){
   const got=[];
   for(let i=0; i<P.n; i++) got.push(i===0 && P.top ? sqDraw(P.top, 1) : sqDraw(P.lo, P.hi));
   got.sort((a, b)=>sqOvr(b)-sqOvr(a));
-  SQ_OPENED=got.map(c=>sqAdd(c));
+  SQ_OPENED=got.map(c=>sqAdd(c, true));
   SQ.stat.packs++;
+  SQ_TAB='un';
   sqSave(); sqRender();
 }
 // Состав: переносы между основой, запасом и коллекцией.
@@ -111328,7 +111389,7 @@ function sqMktTick(){
   m.list.forEach(l=>{
     const bot=sqBotBid(l, now);
     if(l.mine && bot>l.mine){ SQ.coins+=l.mine; l.mine=0; }
-    if(now>=l.ends && l.mine){ SQ.cards.push({id:'c'+(SQ.next++), k:l.k}); l.won=true; }
+    if(now>=l.ends && l.mine){ sqGain(l.k); l.won=true; }
   });
   m.list=m.list.filter(l=>now<l.ends && !l.won);
   while(m.list.length<SQ_MKT_N){
@@ -111358,7 +111419,7 @@ function sqBid(lid){
 function sqBuyNow(lid){
   const i=SQ.mkt.list.findIndex(x=>x.id===lid); if(i<0) return;
   const l=SQ.mkt.list[i], cost=l.buy-l.mine; if(SQ.coins<cost){ SQ_NOTE=sqT().noCoins; sqRender(); return; }
-  SQ.coins-=cost; SQ.cards.push({id:'c'+(SQ.next++), k:l.k}); SQ.mkt.list.splice(i, 1);
+  SQ.coins-=cost; sqGain(l.k); SQ.mkt.list.splice(i, 1);
   sqSave(); sqRender();
 }
 function sqClaim(oid){
@@ -111368,85 +111429,347 @@ function sqClaim(oid){
   if(o.r.pack) SQ.packs.push(o.r.pack);
   sqSave(); sqRender();
 }
-function sqTab(t){ SQ_TAB=t; SQ_OPENED=t==='packs' ? SQ_OPENED : null; sqRender(); }
+/* Режимы FNCS Cards, второй заход (27.10, его «забрать / продать карту надо сделать, дизайн получше и режимы всякие,
+   которые есть в фифе»). Названия свои, без брендов EA: Дивизионы, Кап выходных, Бои с ботами, Драфт, Испытания
+   составов. Карточки из пака сначала «неназначенные»: в клуб, быстро продать или на рынок; дубль в клуб не берётся. */
+Object.assign(SQ_I18N.en, {
+  home:'Home', tabRivals:'Divisions', tabBattles:'Bot Battles', tabDraft:'Draft', tabSbc:'Squad Challenges', tabUn:'Unassigned', tabClub:'Club',
+  hRivals:'Five evenings a week against squads of your division. Climb from 10 to 1.', hCup:'The big weekend lobby. Qualify with 4+ week points.',
+  hBattles:'Short lobbies against bot squads at four difficulties. Weekly points, weekly reward.', hDraft:'Pick a squad from five options per slot, survive four rounds.',
+  hSquad:'Starters, subs and format.', hClub:'Every card you own.', hPacks:'Bronze to Elite.', hMkt:'Bid, buy now, list your cards.',
+  hSbc:'Hand in cards that fit the rules, get packs.', hObj:'One-off goals for coins and packs.', hUn:n=>n+' cards waiting: keep or sell.',
+  locked:'Locked', keep:'To club', keepAll:'All to club', sellDupes:'Quick sell duplicates', dup:'Duplicate: already in your club',
+  unEmpty:'Nothing unassigned.', diff:['Beginner', 'Pro', 'World Class', 'Legend'], bPlayed:(n, m)=>'Played this week: '+n+' / '+m,
+  bPts:'Week points', bPlay:'Play', bLeft:'No battles left this week', bReward:'Weekly reward: 300+ points bronze, 700+ silver, 1,200+ gold.',
+  bGot:p=>'Battle points: +'+p, wkReward:(c, p)=>'Bot Battles weekly reward: '+c+' coins'+(p ? ' + '+p+' pack' : ''),
+  drCost:c=>'Entry: '+c+' coins', drStart:'Start a draft', drPickCap:'Pick your captain', drPick:(i, n)=>'Pick player '+i+' of '+n,
+  drRound:(r)=>'Round '+r+' of 4', drPlayRound:'Play the round', drNeed:p=>'Top '+p+' advance', drOut:r=>'Out in round '+r+'.', drWin:'Draft won: all four rounds!',
+  drAdv:'Through to the next round!', drReward:(c, p)=>'Reward: '+c+' coins + '+p+' pack', drDone:'Draft over', drNew:'New draft',
+  sbcReq:{n:n=>n+' players', min:m=>'each OVR '+m+'+', avg:a=>'average OVR '+a+'+', nat:'same country', reg:'same region'},
+  sbcAuto:'Fill cheapest', sbcSubmit:'Hand in', sbcPick:'Tap cards to choose. Squad starters and subs are not offered.', sbcOk:'Done! Pack added.',
+  sbcBad:'The cards do not fit the rules yet', sbc:{basic:'First steps', silver:'Solid four', nation:'One flag', avg80:'Eighty club', region:'Home region', avg85:'Elite five'}
+});
+Object.assign(SQ_I18N.ru, {
+  home:'Главная', tabRivals:'Дивизионы', tabBattles:'Бои с ботами', tabDraft:'Драфт', tabSbc:'Испытания составов', tabUn:'Неназначенные', tabClub:'Клуб',
+  hRivals:'Пять вечеров в неделю против составов своего дивизиона. Поднимись с 10-го до 1-го.', hCup:'Большое лобби выходных. Вход: 4+ очка за неделю.',
+  hBattles:'Короткие лобби против ботов на четырёх сложностях. Очки недели и награда в конце.', hDraft:'Собери состав из пяти вариантов на место и пройди четыре раунда.',
+  hSquad:'Основа, запасные и формат.', hClub:'Все твои карточки.', hPacks:'От бронзы до элиты.', hMkt:'Ставки, покупка сразу, свои лоты.',
+  hSbc:'Сдай карточки под условия и получи паки.', hObj:'Разовые цели за монеты и паки.', hUn:n=>'Ждут решения: '+n+'. Забрать или продать.',
+  locked:'Закрыто', keep:'В клуб', keepAll:'Всё в клуб', sellDupes:'Продать дубли', dup:'Дубль: такой уже в клубе',
+  unEmpty:'Неназначенных нет.', diff:['Новичок', 'Про', 'Мировой класс', 'Легенда'], bPlayed:(n, m)=>'Сыграно за неделю: '+n+' / '+m,
+  bPts:'Очки недели', bPlay:'Играть', bLeft:'На этой неделе боёв больше нет', bReward:'Награда недели: 300+ очков бронза, 700+ серебро, 1 200+ золото.',
+  bGot:p=>'Очки боя: +'+p, wkReward:(c, p)=>'Награда боёв с ботами: '+c+' монет'+(p ? ' и пак ('+p+')' : ''),
+  drCost:c=>'Вход: '+c+' монет', drStart:'Начать драфт', drPickCap:'Выбери капитана', drPick:(i, n)=>'Игрок '+i+' из '+n,
+  drRound:(r)=>'Раунд '+r+' из 4', drPlayRound:'Сыграть раунд', drNeed:p=>'Дальше проходят топ-'+p, drOut:r=>'Вылет в раунде '+r+'.', drWin:'Драфт выигран: все четыре раунда!',
+  drAdv:'Проход в следующий раунд!', drReward:(c, p)=>'Награда: '+c+' монет и пак ('+p+')', drDone:'Драфт окончен', drNew:'Новый драфт',
+  sbcReq:{n:n=>n+' игрока', min:m=>'у каждого OVR '+m+'+', avg:a=>'средний OVR '+a+'+', nat:'одна страна', reg:'один регион'},
+  sbcAuto:'Подобрать', sbcSubmit:'Сдать', sbcPick:'Нажимай на карточки, чтобы выбрать. Основа и запасные не предлагаются.', sbcOk:'Готово! Пак добавлен.',
+  sbcBad:'Карточки пока не подходят под условия', sbc:{basic:'Первые шаги', silver:'Крепкая четвёрка', nation:'Один флаг', avg80:'Клуб 80', region:'Родной регион', avg85:'Элитная пятёрка'}
+});
+const SQ_BATTLE_MAX=6, SQ_BATTLE_BAND=[0.25, 0.5, 0.7, 0.88], SQ_BATTLE_MULT=[1, 1.5, 2.2, 3];
+const SQ_DRAFT_COST=2000, SQ_DRAFT_BAND=[0.45, 0.6, 0.72, 0.85];
+const SQ_DRAFT_PRIZE=[[500, 'bronze'], [1500, 'silver'], [3000, 'silver'], [5000, 'gold'], [8000, 'elite']];
+const SQ_SBC=[
+  {id:'basic',  n:3, req:{},                  r:'bronze'},
+  {id:'silver', n:4, req:{min:75},            r:'silver'},
+  {id:'nation', n:3, req:{nat:true},          r:'gold'},
+  {id:'avg80',  n:5, req:{avg:80},            r:'gold'},
+  {id:'region', n:4, req:{reg:true, min:78},  r:'gold'},
+  {id:'avg85',  n:5, req:{avg:85},            r:'elite'}
+];
+let SQ_SBC_SEL=null;
+function sqInst(id){ return (SQ.cards||[]).find(c=>c.id===id); }
+function sqInUse(id){ return SQ.xi.indexOf(id)>=0 || SQ.bench.indexOf(id)>=0; }
+function sqIsDup(inst){ return SQ.cards.some(c=>c!==inst && !c.un && c.k===inst.k); }
+// Смена недели: награда боёв с ботами по очкам недели, сброс.
+function sqNewWeek(notes){
+  const T=sqT(), p=SQ.sb.pts;
+  const pack=p>=1200 ? 'gold' : p>=700 ? 'silver' : p>=300 ? 'bronze' : null;
+  const coins=p>=1200 ? 5000 : p>=700 ? 2500 : p>=300 ? 1000 : (SQ.sb.played ? 300 : 0);
+  if(coins || pack){ SQ.coins+=coins; if(pack) SQ.packs.push(pack); notes.push(T.wkReward(coins.toLocaleString(), pack ? T.packNames[pack] : '')); }
+  SQ.sb={played:0, pts:0};
+  SQ.week++; SQ.wk={n:0, pts:0};
+  notes.push(T.newWeek);
+}
+function sqKeep(id){
+  const inst=sqInst(id); if(!inst) return;
+  if(sqIsDup(inst)){ SQ_NOTE=sqT().dup; sqRender(); return; }
+  delete inst.un; sqSave(); sqRender();
+}
+function sqKeepAll(){ SQ.cards.filter(c=>c.un).forEach(c=>{ if(!sqIsDup(c)) delete c.un; }); sqSave(); sqRender(); }
+function sqSellDupes(){
+  SQ.cards.filter(c=>c.un && sqIsDup(c)).forEach(c=>{ const p=sqPool().byK.get(c.k); if(p) SQ.coins+=Math.round(sqValue(sqOvr(p))*0.35/10)*10; sqDropCard(c.id); });
+  sqSave(); sqRender();
+}
+// Лобби вне дивизионов: свой состав (или временный — драфт) против ботов своей полосы.
+function sqLobby(cards, center, games){
+  return sqWithCards(()=>{
+    const you=buildTeam(cards); you.isYou=true; you.name=sqT().you;
+    const n=Math.round(100/SQ.size)-1, lo=Math.max(0, center-0.12), hi=Math.min(1, center+0.15), bots=[];
+    for(let i=0; i<n; i++){
+      const sq=[], seen=new Set();
+      while(sq.length<SQ.size){ const p=sqDraw(lo, hi); if(!seen.has(p._k)){ seen.add(p._k); sq.push(p); } }
+      const t=buildTeam(sq); t.name=teamLabel(sq); bots.push(t);
+    }
+    const teams=[you].concat(bots);
+    simulateGames(teams, games, pointsForPlace, 1);
+    const ranked=teams.slice().sort((a, b)=>(b.stagePts-a.stagePts)||(b.wins-a.wins)||(b.stageElims-a.stageElims));
+    return {you, ranked, place:ranked.indexOf(you)+1, N:ranked.length};
+  });
+}
+function sqRows(res){ const T=sqT(); return res.ranked.slice(0, 10).concat(res.place>10 ? [res.you] : []).map(t=>({
+  name:t.isYou ? T.you : t.name, you:!!t.isYou, place:res.ranked.indexOf(t)+1, pts:t.stagePts, wins:t.wins, elims:t.stageElims})); }
+function sqBattle(d){
+  const T=sqT(); if(SQ.sb.played>=SQ_BATTLE_MAX || SQ.xi.length!==SQ.size) return;
+  const cards=SQ.xi.map(sqCardOf).filter(Boolean);
+  const res=sqLobby(cards, SQ_BATTLE_BAND[d], 3);
+  const pts=Math.round((res.N-res.place+1)/res.N*100*SQ_BATTLE_MULT[d]);
+  SQ.sb.played++; SQ.sb.pts+=pts;
+  const coins=Math.round(pts*2/10)*10; SQ.coins+=coins;
+  if(res.you.wins) SQ.stat.wins+=res.you.wins;
+  SQ_LAST={kind:'battle', title:T.diff[d], place:res.place, N:res.N, coins, pack:null, notes:[T.bGot(pts)], rows:sqRows(res)};
+  sqSave(); sqRender();
+}
+// Драфт: капитан из пяти топ-карточек, остальные места — из пяти сильных; четыре раунда, проходит топ-25%.
+function sqDraftOpts(cap){
+  const taken=new Set((SQ.dr.picks||[]));
+  const out=[], seen=new Set();
+  while(out.length<5){ const c=cap ? sqDraw(0.92, 1) : sqDraw(0.55, 1); if(!taken.has(c._k) && !seen.has(c._k)){ seen.add(c._k); out.push(c._k); } }
+  return out;
+}
+function sqDraftStart(){
+  if(SQ.coins<SQ_DRAFT_COST){ SQ_NOTE=sqT().noCoins; sqRender(); return; }
+  SQ.coins-=SQ_DRAFT_COST;
+  SQ.dr={size:SQ.size, picks:[], opts:null, round:0, done:false, res:null};
+  SQ.dr.opts=sqDraftOpts(true);
+  sqSave(); sqRender();
+}
+function sqDraftPick(k){
+  const dr=SQ.dr; if(!dr || !dr.opts || dr.opts.indexOf(k)<0) return;
+  dr.picks.push(k);
+  dr.opts=dr.picks.length<dr.size ? sqDraftOpts(false) : null;
+  sqSave(); sqRender();
+}
+// Выбор по номеру варианта: в никах бывают кавычки, в onclick они ломали кнопку.
+function sqDraftPickI(i){ if(SQ.dr && SQ.dr.opts) sqDraftPick(SQ.dr.opts[i]); }
+function sqDraftRound(){
+  const dr=SQ.dr, T=sqT(); if(!dr || dr.opts || dr.done) return;
+  const prev=SQ.size; SQ.size=dr.size;
+  const cards=dr.picks.map(k=>sqPool().byK.get(k)).filter(Boolean);
+  const res=sqLobby(cards, SQ_DRAFT_BAND[dr.round], 4);
+  SQ.size=prev;
+  const cut=Math.ceil(res.N/4), through=res.place<=cut, notes=[];
+  if(through){ dr.round++; notes.push(dr.round>=4 ? T.drWin : T.drAdv); }
+  else notes.push(T.drOut(dr.round+1));
+  if(!through || dr.round>=4){
+    dr.done=true;
+    const [c, p]=SQ_DRAFT_PRIZE[dr.round];
+    SQ.coins+=c; SQ.packs.push(p); notes.push(T.drReward(c.toLocaleString(), T.packNames[p]));
+  }
+  if(res.you.wins) SQ.stat.wins+=res.you.wins;
+  SQ_LAST={kind:'draft', title:T.drRound(Math.min(4, dr.round+(through ? 0 : 1))), place:res.place, N:res.N, coins:0, pack:null, notes, rows:sqRows(res)};
+  sqSave(); sqRender();
+}
+// Испытания составов.
+function sqSbcCheck(s, ids){
+  const cards=ids.map(sqCardOf).filter(Boolean);
+  if(cards.length!==s.n) return false;
+  const r=s.req;
+  if(r.min && cards.some(c=>sqOvr(c)<r.min)) return false;
+  if(r.avg && cards.reduce((a, c)=>a+sqOvr(c), 0)/cards.length<r.avg) return false;
+  if(r.nat && new Set(cards.map(c=>c.nat||'')).size!==1) return false;
+  if(r.reg && new Set(cards.map(c=>c.region||'')).size!==1) return false;
+  return true;
+}
+function sqSbcPool(){ return SQ.cards.filter(c=>!sqInUse(c.id)).map(c=>({id:c.id, c:sqPool().byK.get(c.k)})).filter(x=>x.c); }
+function sqSbcOpen(id){ SQ_SBC_SEL={id, sel:[]}; SQ_TAB='sbc'; sqRender(); }
+function sqSbcToggle(cid){
+  const S=SQ_SBC_SEL; if(!S) return; const s=SQ_SBC.find(x=>x.id===S.id);
+  const i=S.sel.indexOf(cid); if(i>=0) S.sel.splice(i, 1); else if(S.sel.length<s.n) S.sel.push(cid);
+  sqRender();
+}
+// «Подобрать»: самые дешёвые подходящие — окном подряд по возрастанию OVR внутри страны/региона.
+function sqSbcAuto(){
+  const S=SQ_SBC_SEL; if(!S) return; const s=SQ_SBC.find(x=>x.id===S.id), r=s.req;
+  const pool=sqSbcPool().filter(x=>!r.min || sqOvr(x.c)>=r.min).sort((a, b)=>sqOvr(a.c)-sqOvr(b.c));
+  const groups=r.nat ? Object.values(pool.reduce((m, x)=>{ (m[x.c.nat||'']=m[x.c.nat||'']||[]).push(x); return m; }, {}))
+             : r.reg ? Object.values(pool.reduce((m, x)=>{ (m[x.c.region||'']=m[x.c.region||'']||[]).push(x); return m; }, {})) : [pool];
+  let best=null;
+  groups.forEach(g=>{ for(let i=0; i+s.n<=g.length; i++){ const w=g.slice(i, i+s.n), ids=w.map(x=>x.id);
+    if(sqSbcCheck(s, ids)){ const cost=w.reduce((a, x)=>a+sqValue(sqOvr(x.c)), 0); if(!best || cost<best.cost) best={ids, cost}; break; } } });
+  if(best) S.sel=best.ids; else SQ_NOTE=sqT().sbcBad;
+  sqRender();
+}
+function sqSbcSubmit(){
+  const S=SQ_SBC_SEL; if(!S) return; const s=SQ_SBC.find(x=>x.id===S.id);
+  if(!sqSbcCheck(s, S.sel)){ SQ_NOTE=sqT().sbcBad; sqRender(); return; }
+  S.sel.forEach(id=>sqDropCard(id));
+  SQ.packs.push(s.r); SQ_SBC_SEL=null; SQ_NOTE=sqT().sbcOk;
+  sqSave(); sqRender();
+}
+function sqTab(t){ SQ_TAB=t; if(t!=='un') SQ_OPENED=null; if(t!=='sbc') SQ_SBC_SEL=null; sqRender(); }
 function sqLeft(ms){ const s=Math.max(0, Math.ceil(ms/1000)); return Math.floor(s/60)+':'+String(s%60).padStart(2, '0'); }
-function sqCardHTML(id, c, acts){
-  const fit=id ? sqFit(id) : 100;
-  return '<div class="sq-c">'+futCardHTML(c)+(id && fit<100 ? '<u class="sq-fit" title="'+esc(sqT().fit)+'"><s style="width:'+fit+'%" class="'+(fit<60 ? 'low' : '')+'"></s></u>' : '')+
-    (acts ? '<div class="sq-acts">'+acts+'</div>' : '')+'</div>';
+function sqTier(o){ return o>=90 ? 'elite' : o>=85 ? 'gold' : o>=78 ? 'silver' : 'bronze'; }
+// Мини-карточка: OVR, роль, флаг, ник, регион и клуб, шесть параметров строкой. Цвет — по уровню, как паки.
+function sqMini(c, o){
+  o=o||{}; if(!c) return '';
+  const ov=sqOvr(c), a=attrsFor(c)||{}, role=sqRole(c)==='roleIGL' ? 'IGL' : 'FRG';
+  return '<div class="sq-m t-'+sqTier(ov)+(o.sel ? ' sel' : '')+(o.click ? ' click' : '')+'"'+(o.click ? ' onclick="'+o.click+'"' : '')+
+    ' title="'+esc(c.handle+(c.org ? ' · '+c.org : '')+(c.event ? ' · '+c.event : ''))+'">'+
+    '<div class="sq-m-top"><b>'+ov+'</b><i>'+role+'</i><span>'+cardFlag(c, 14)+'</span></div>'+
+    '<div class="sq-m-h">'+esc(c.handle)+'</div><div class="sq-m-s">'+esc([c.region, c.org].filter(Boolean).join(' · '))+'</div>'+
+    '<div class="sq-m-a">'+['aim', 'end', 'sur', 'exp', 'clu', 'con'].map(k=>'<span><em>'+k.toUpperCase()+'</em>'+Math.round(a[k]||0)+'</span>').join('')+'</div>'+
+    (o.fit!=null && o.fit<100 ? '<u class="sq-fit"><s style="width:'+o.fit+'%" class="'+(o.fit<60 ? 'low' : '')+'"></s></u>' : '')+
+    (o.below||'')+'</div>';
+}
+function sqResHTML(){
+  if(!SQ_LAST) return ''; const T=sqT(), L0=SQ_LAST, money=n=>Number(n||0).toLocaleString();
+  return '<div class="sq-res"><h3 class="sq-h">'+esc(L0.title||'')+' · #'+L0.place+' / '+L0.N+'</h3>'+
+    '<table class="sq-tbl"><tr><th>'+esc(T.place)+'</th><th></th><th>'+esc(T.pts)+'</th><th>'+esc(T.wins)+'</th><th>'+esc(T.elims)+'</th></tr>'+
+    L0.rows.map(r=>'<tr class="'+(r.you ? 'you' : '')+'"><td>'+r.place+'</td><td>'+(r.you ? esc(r.name) : r.name)+'</td><td>'+r.pts+'</td><td>'+r.wins+'</td><td>'+r.elims+'</td></tr>').join('')+'</table>'+
+    (L0.coins ? '<p class="sq-earn">'+esc(T.earned)+': '+money(L0.coins)+' '+esc(T.coins.toLowerCase())+(L0.pack ? ' · '+esc(T.packNames[L0.pack]) : '')+'</p>' : '')+
+    L0.notes.map(n=>'<p class="sq-note">'+esc(n)+'</p>').join('')+'</div>';
 }
 function sqRender(){
   const root=document.getElementById('sqRoot'); if(!root || !SQ) return;
   if(SQ_TIMER){ clearInterval(SQ_TIMER); SQ_TIMER=null; }
   const T=sqT(), money=n=>Number(n||0).toLocaleString();
-  const tabs=[['squad', T.tabSquad], ['play', T.tabPlay], ['packs', T.tabPacks+(SQ.packs.length ? ' · '+SQ.packs.length : '')], ['market', T.tabMkt], ['obj', T.tabObj]];
-  let body='';
-  if(SQ_TAB==='squad'){
-    const t=sqWithCards(()=>sqMyTeam());
-    const inSquad=new Set([...SQ.xi, ...SQ.bench]);
+  const unN=SQ.cards.filter(c=>c.un).length;
+  const myT=sqWithCards(()=>sqMyTeam());
+  let body='', title=T.title;
+  const back='<button class="sq-crumb" onclick="sqTab(\'home\')">‹ '+esc(T.home)+'</button>';
+  if(SQ_TAB==='home'){
+    const tile=(k, name, sub, cls, extra)=>'<button class="sq-tile '+cls+'" onclick="sqTab(\''+k+'\')"><b>'+esc(name)+'</b><span>'+esc(sub)+'</span>'+(extra||'')+'</button>';
+    body=(unN ? '<button class="sq-unbar" onclick="sqTab(\'un\')">'+esc(T.hUn(unN))+' ›</button>' : '')+
+      '<div class="sq-home">'+
+      tile('rivals', T.tabRivals, T.hRivals, 'big k-rivals', '<em>'+esc(T.div)+' '+SQ.div+' · '+esc(T.evening(Math.min(SQ.wk.n+1, SQ_WEEK), SQ_WEEK))+'</em>')+
+      tile('rivals', T.cup, T.hCup, 'k-cup'+(SQ.cup ? ' hot' : ''), '<em>'+(SQ.cup ? esc(T.cupOpen) : esc(T.locked))+'</em>')+
+      tile('battles', T.tabBattles, T.hBattles, 'k-battles', '<em>'+esc(T.bPlayed(SQ.sb.played, SQ_BATTLE_MAX))+'</em>')+
+      tile('draft', T.tabDraft, T.hDraft, 'k-draft', '<em>'+esc(SQ.dr && !SQ.dr.done ? T.drRound(SQ.dr.round+1) : T.drCost(money(SQ_DRAFT_COST)))+'</em>')+
+      tile('squad', T.tabSquad, T.hSquad, 'k-squad', myT ? '<em>'+esc(T.pow)+' '+myT.pow+'</em>' : '<em>'+esc(T.needXi(SQ.size))+'</em>')+
+      tile('club', T.tabClub, T.hClub, 'k-club', '<em>'+SQ.cards.filter(c=>!c.un).length+'</em>')+
+      tile('packs', T.tabPacks, T.hPacks, 'k-packs', SQ.packs.length ? '<em>'+esc(T.yourPacks)+': '+SQ.packs.length+'</em>' : '')+
+      tile('market', T.tabMkt, T.hMkt, 'k-market')+
+      tile('sbc', T.tabSbc, T.hSbc, 'k-sbc')+
+      tile('obj', T.tabObj, T.hObj, 'k-obj', '<em>'+SQ_OBJ.filter(o=>!SQ.claimed[o.id] && o.cur(SQ)>=o.goal).length+' ✓</em>')+
+      '</div>';
+  } else if(SQ_TAB==='squad'){
+    title=T.tabSquad;
     const slot=(arr, i, where)=>{ const id=arr[i];
       if(!id) return '<div class="sq-c sq-empty">'+esc(T.empty)+'</div>';
-      return sqCardHTML(id, sqCardOf(id), (where==='xi'
-        ? '<button onclick="sqMove(\''+id+'\',\'bench\')">'+esc(T.toBench)+'</button>'
-        : '<button onclick="sqMove(\''+id+'\',\'xi\')">'+esc(T.toXi)+'</button>')+
-        '<button onclick="sqMove(\''+id+'\',\'\')">'+esc(T.out)+'</button>'); };
-    const coll=SQ.cards.filter(c=>!inSquad.has(c.id)).map(c=>({id:c.id, c:sqCardOf(c.id)})).filter(x=>x.c).sort((a, b)=>sqOvr(b.c)-sqOvr(a.c));
+      return '<div class="sq-c">'+futCardHTML(sqCardOf(id))+(sqFit(id)<100 ? '<u class="sq-fit" title="'+esc(T.fit)+'"><s style="width:'+sqFit(id)+'%" class="'+(sqFit(id)<60 ? 'low' : '')+'"></s></u>' : '')+
+        '<div class="sq-acts">'+(where==='xi' ? '<button onclick="sqMove(\''+id+'\',\'bench\')">'+esc(T.toBench)+'</button>'
+          : '<button onclick="sqMove(\''+id+'\',\'xi\')">'+esc(T.toXi)+'</button>')+'<button onclick="sqMove(\''+id+'\',\'\')">'+esc(T.out)+'</button></div></div>'; };
+    const coll=SQ.cards.filter(c=>!c.un && !sqInUse(c.id)).map(c=>({id:c.id, c:sqCardOf(c.id)})).filter(x=>x.c).sort((a, b)=>sqOvr(b.c)-sqOvr(a.c));
     body='<div class="sq-row sq-fmt">'+[2, 3, 4].map(n=>'<button class="'+(SQ.size===n ? 'on' : '')+'" onclick="sqSetSize('+n+')">'+esc(T.fmt[n])+'</button>').join('')+'</div>'+
-      '<div class="sq-stats">'+(t ? '<span><em>'+esc(T.pow)+'</em><b>'+t.pow+'</b></span><span><em>'+esc(T.ovr)+'</em><b>'+Math.round(t.ovrAvg||0)+'</b></span>'+
-        '<span><em>'+esc(T.syn)+'</em><b>+'+Math.min(t.syn.bonus, SYN_POW_CAP)+'</b></span>'+
-        '<span class="'+(t.roleBonus ? 'ok' : 'warn')+'">'+esc(t.roleBonus ? T.igl : T.noIgl)+'</span>' : '<span class="warn">'+esc(T.needXi(SQ.size))+'</span>')+'</div>'+
-      '<h3 class="sq-h">'+esc(T.starters)+'</h3><div class="sq-grid">'+Array.from({length:SQ.size}, (_, i)=>slot(SQ.xi, i, 'xi')).join('')+'</div>'+
-      '<h3 class="sq-h">'+esc(T.bench)+'</h3><div class="sq-grid">'+Array.from({length:SQ_BENCH}, (_, i)=>slot(SQ.bench, i, 'bench')).join('')+'</div>'+
-      '<h3 class="sq-h">'+esc(T.club)+' · '+coll.length+'</h3><div class="sq-grid">'+coll.map(x=>sqCardHTML(x.id, x.c,
-        '<button onclick="sqMove(\''+x.id+'\',\'xi\')">'+esc(T.toXi)+'</button><button onclick="sqMove(\''+x.id+'\',\'bench\')">'+esc(T.toBench)+'</button>'+
-        '<button onclick="sqList(\''+x.id+'\')">'+esc(T.list)+' '+money(sqValue(sqOvr(x.c)))+'</button>'+
-        '<button onclick="sqQuickSell(\''+x.id+'\')">'+esc(T.quick)+' '+money(Math.round(sqValue(sqOvr(x.c))*0.35/10)*10)+'</button>')).join('')+'</div>';
-  } else if(SQ_TAB==='play'){
+      '<div class="sq-stats">'+(myT ? '<span><em>'+esc(T.pow)+'</em><b>'+myT.pow+'</b></span><span><em>'+esc(T.ovr)+'</em><b>'+Math.round(myT.ovrAvg||0)+'</b></span>'+
+        '<span><em>'+esc(T.syn)+'</em><b>+'+Math.min(myT.syn.bonus, SYN_POW_CAP)+'</b></span>'+
+        '<span class="'+(myT.roleBonus ? 'ok' : 'warn')+'">'+esc(myT.roleBonus ? T.igl : T.noIgl)+'</span>' : '<span class="warn">'+esc(T.needXi(SQ.size))+'</span>')+'</div>'+
+      '<div class="sq-pitch"><h3 class="sq-h">'+esc(T.starters)+'</h3><div class="sq-grid sq-xi">'+Array.from({length:SQ.size}, (_, i)=>slot(SQ.xi, i, 'xi')).join('')+'</div></div>'+
+      '<h3 class="sq-h">'+esc(T.bench)+'</h3><div class="sq-mgrid">'+Array.from({length:SQ_BENCH}, (_, i)=>{ const id=SQ.bench[i];
+        return id ? sqMini(sqCardOf(id), {fit:sqFit(id), below:'<div class="sq-acts"><button onclick="sqMove(\''+id+'\',\'xi\')">'+esc(T.toXi)+'</button><button onclick="sqMove(\''+id+'\',\'\')">'+esc(T.out)+'</button></div>'})
+          : '<div class="sq-m sq-empty">'+esc(T.empty)+'</div>'; }).join('')+'</div>'+
+      '<h3 class="sq-h">'+esc(T.club)+' · '+coll.length+'</h3><div class="sq-mgrid">'+coll.map(x=>sqMini(x.c, {fit:sqFit(x.id), below:'<div class="sq-acts">'+
+        '<button onclick="sqMove(\''+x.id+'\',\'xi\')">'+esc(T.toXi)+'</button><button onclick="sqMove(\''+x.id+'\',\'bench\')">'+esc(T.toBench)+'</button></div>'})).join('')+'</div>';
+  } else if(SQ_TAB==='club'){
+    title=T.tabClub;
+    const coll=SQ.cards.filter(c=>!c.un).map(c=>({id:c.id, c:sqCardOf(c.id)})).filter(x=>x.c).sort((a, b)=>sqOvr(b.c)-sqOvr(a.c));
+    body='<div class="sq-mgrid">'+coll.map(x=>{ const v=sqValue(sqOvr(x.c)), q=Math.round(v*0.35/10)*10, use=sqInUse(x.id);
+      return sqMini(x.c, {fit:sqFit(x.id), below:use ? '<div class="sq-tag">'+esc(SQ.xi.indexOf(x.id)>=0 ? T.starters : T.bench)+'</div>' :
+        '<div class="sq-acts"><button onclick="sqList(\''+x.id+'\')">'+esc(T.list)+' '+money(v)+'</button><button onclick="sqQuickSell(\''+x.id+'\')">'+esc(T.quick)+' '+money(q)+'</button></div>'}); }).join('')+'</div>';
+  } else if(SQ_TAB==='un'){
+    title=T.tabUn;
+    const un=SQ.cards.filter(c=>c.un).map(c=>({id:c.id, inst:c, c:sqPool().byK.get(c.k)})).filter(x=>x.c).sort((a, b)=>sqOvr(b.c)-sqOvr(a.c));
+    body=un.length ? '<div class="sq-row"><button class="sq-go sm" onclick="sqKeepAll()">'+esc(T.keepAll)+'</button>'+
+        '<button class="sq-ghost" onclick="sqSellDupes()">'+esc(T.sellDupes)+'</button></div>'+
+      '<div class="sq-mgrid'+(SQ_OPENED ? ' sq-reveal' : '')+'">'+un.map(x=>{ const v=sqValue(sqOvr(x.c)), q=Math.round(v*0.35/10)*10, dup=sqIsDup(x.inst);
+        return sqMini(x.c, {below:(dup ? '<div class="sq-dup">'+esc(T.dup)+'</div>' : '')+'<div class="sq-acts">'+
+          (dup ? '' : '<button class="go" onclick="sqKeep(\''+x.id+'\')">'+esc(T.keep)+'</button>')+
+          '<button onclick="sqQuickSell(\''+x.id+'\')">'+esc(T.quick)+' '+money(q)+'</button><button onclick="sqList(\''+x.id+'\')">'+esc(T.list)+' '+money(v)+'</button></div>'}); }).join('')+'</div>'
+      : '<p class="sq-hint">'+esc(T.unEmpty)+'</p>';
+  } else if(SQ_TAB==='rivals'){
+    title=SQ.cup ? T.cup : T.tabRivals;
     const ready=SQ.xi.length===SQ.size;
-    body='<div class="sq-play"><div class="sq-stats"><span><em>'+esc(T.div)+'</em><b>'+SQ.div+'</b></span><span><em>'+esc(T.week)+'</em><b>'+SQ.week+'</b></span>'+
-      '<span><em>'+esc(T.weekPts)+'</em><b>'+SQ.wk.pts+'</b></span></div>'+
+    body='<div class="sq-stats"><span><em>'+esc(T.div)+'</em><b>'+SQ.div+'</b></span><span><em>'+esc(T.week)+'</em><b>'+SQ.week+'</b></span>'+
+      '<span><em>'+esc(T.weekPts)+'</em><b>'+SQ.wk.pts+'</b></span>'+(myT ? '<span><em>'+esc(T.pow)+'</em><b>'+myT.pow+'</b></span>' : '')+'</div>'+
       '<p class="sq-hint">'+esc(SQ.cup ? T.cupOpen : T.evening(SQ.wk.n+1, SQ_WEEK)+' · '+T.promoRule)+'</p>'+
-      (ready ? '<button class="sq-go" onclick="sqPlay('+(SQ.cup ? 'true' : 'false')+')">'+esc(SQ.cup ? T.playCup : T.playEve)+'</button>'
-             : '<p class="sq-warn">'+esc(T.needXi(SQ.size))+'</p>')+'</div>';
-    if(SQ_LAST){
-      const L0=SQ_LAST;
-      body+='<div class="sq-res"><h3 class="sq-h">'+esc(L0.cup ? T.cup : T.evening(Math.max(1, SQ.cup ? SQ_WEEK : SQ.wk.n), SQ_WEEK))+' · #'+L0.place+' / '+L0.N+'</h3>'+
-        '<table class="sq-tbl"><tr><th>'+esc(T.place)+'</th><th></th><th>'+esc(T.pts)+'</th><th>'+esc(T.wins)+'</th><th>'+esc(T.elims)+'</th></tr>'+
-        L0.rows.map(r=>'<tr class="'+(r.you ? 'you' : '')+'"><td>'+r.place+'</td><td>'+(r.you ? esc(r.name) : r.name)+'</td><td>'+r.pts+'</td><td>'+r.wins+'</td><td>'+r.elims+'</td></tr>').join('')+'</table>'+
-        '<p class="sq-earn">'+esc(T.earned)+': '+money(L0.coins)+' '+esc(T.coins.toLowerCase())+(L0.pack ? ' · '+esc(T.packNames[L0.pack]) : '')+'</p>'+
-        L0.notes.map(n=>'<p class="sq-note">'+esc(n)+'</p>').join('')+'</div>';
+      (ready ? '<button class="sq-go" onclick="sqPlay('+(SQ.cup ? 'true' : 'false')+')">'+esc(SQ.cup ? T.playCup : T.playEve)+'</button>' : '<p class="sq-warn">'+esc(T.needXi(SQ.size))+'</p>')+
+      (SQ_LAST && (SQ_LAST.kind||'rivals')==='rivals' ? sqResHTML() : '');
+  } else if(SQ_TAB==='battles'){
+    title=T.tabBattles;
+    const left=SQ.sb.played<SQ_BATTLE_MAX, ready=SQ.xi.length===SQ.size;
+    body='<div class="sq-stats"><span><em>'+esc(T.bPts)+'</em><b>'+SQ.sb.pts+'</b></span><span><em>'+esc(T.week)+'</em><b>'+SQ.week+'</b></span></div>'+
+      '<p class="sq-hint">'+esc(T.bPlayed(SQ.sb.played, SQ_BATTLE_MAX))+' · '+esc(T.bReward)+'</p>'+
+      (!ready ? '<p class="sq-warn">'+esc(T.needXi(SQ.size))+'</p>' : !left ? '<p class="sq-warn">'+esc(T.bLeft)+'</p>' :
+        '<div class="sq-diffs">'+T.diff.map((n, d)=>'<button class="sq-diff d'+d+'" onclick="sqBattle('+d+')"><b>'+esc(n)+'</b><span>×'+SQ_BATTLE_MULT[d]+'</span></button>').join('')+'</div>')+
+      (SQ_LAST && SQ_LAST.kind==='battle' ? sqResHTML() : '');
+  } else if(SQ_TAB==='draft'){
+    title=T.tabDraft;
+    const dr=SQ.dr;
+    if(!dr || dr.done){
+      body=(dr && dr.done ? '<h3 class="sq-h">'+esc(T.drDone)+'</h3><div class="sq-mgrid">'+dr.picks.map(k=>sqMini(sqPool().byK.get(k))).join('')+'</div>' : '')+
+        (SQ_LAST && SQ_LAST.kind==='draft' ? sqResHTML() : '')+
+        '<p class="sq-hint">'+esc(T.hDraft)+' '+esc(T.drCost(money(SQ_DRAFT_COST)))+' · '+esc(T.fmt[SQ.size])+'</p>'+
+        '<button class="sq-go"'+(SQ.coins<SQ_DRAFT_COST ? ' disabled' : '')+' onclick="sqDraftStart()">'+esc(dr ? T.drNew : T.drStart)+'</button>';
+    } else if(dr.opts){
+      const cap=!dr.picks.length;
+      body='<div class="sq-mgrid sq-dpicks">'+dr.picks.map(k=>sqMini(sqPool().byK.get(k))).join('')+Array.from({length:dr.size-dr.picks.length}, ()=>'<div class="sq-m sq-empty">?</div>').join('')+'</div>'+
+        '<h3 class="sq-h">'+esc(cap ? T.drPickCap : T.drPick(dr.picks.length+1, dr.size))+'</h3>'+
+        '<div class="sq-mgrid">'+dr.opts.map((k, i)=>sqMini(sqPool().byK.get(k), {click:'sqDraftPickI('+i+')'})).join('')+'</div>';
+    } else {
+      const cards=dr.picks.map(k=>sqPool().byK.get(k)).filter(Boolean);
+      const prev=SQ.size; SQ.size=dr.size; const t=sqWithCards(()=>buildTeam(cards)); SQ.size=prev;
+      body='<div class="sq-stats"><span><em>'+esc(T.pow)+'</em><b>'+t.pow+'</b></span><span><em>'+esc(T.syn)+'</em><b>+'+Math.min(t.syn.bonus, SYN_POW_CAP)+'</b></span>'+
+        '<span class="'+(t.roleBonus ? 'ok' : 'warn')+'">'+esc(t.roleBonus ? T.igl : T.noIgl)+'</span></div>'+
+        '<div class="sq-mgrid">'+cards.map(c=>sqMini(c)).join('')+'</div>'+
+        '<p class="sq-hint">'+esc(T.drRound(dr.round+1))+' · '+esc(T.drNeed(Math.ceil(Math.round(100/dr.size)/4)))+'</p>'+
+        '<button class="sq-go" onclick="sqDraftRound()">'+esc(T.drPlayRound)+'</button>'+(SQ_LAST && SQ_LAST.kind==='draft' ? sqResHTML() : '');
+    }
+  } else if(SQ_TAB==='sbc'){
+    title=T.tabSbc;
+    const reqTxt=s=>[T.sbcReq.n(s.n)].concat(s.req.min ? [T.sbcReq.min(s.req.min)] : [], s.req.avg ? [T.sbcReq.avg(s.req.avg)] : [], s.req.nat ? [T.sbcReq.nat] : [], s.req.reg ? [T.sbcReq.reg] : []).join(' · ');
+    if(SQ_SBC_SEL){
+      const s=SQ_SBC.find(x=>x.id===SQ_SBC_SEL.id), sel=SQ_SBC_SEL.sel, ok=sqSbcCheck(s, sel);
+      const pool=sqSbcPool().sort((a, b)=>sqOvr(a.c)-sqOvr(b.c));
+      body='<button class="sq-crumb" onclick="sqTab(\'sbc\')">‹ '+esc(T.tabSbc)+'</button><h3 class="sq-h">'+esc(T.sbc[s.id])+' · '+esc(T.packNames[s.r])+'</h3>'+
+        '<p class="sq-hint">'+esc(reqTxt(s))+'. '+esc(T.sbcPick)+'</p>'+
+        '<div class="sq-row"><button class="sq-ghost" onclick="sqSbcAuto()">'+esc(T.sbcAuto)+'</button><button class="sq-go sm"'+(ok ? '' : ' disabled')+' onclick="sqSbcSubmit()">'+esc(T.sbcSubmit)+' ('+sel.length+'/'+s.n+')</button></div>'+
+        '<div class="sq-mgrid">'+pool.map(x=>sqMini(x.c, {sel:sel.indexOf(x.id)>=0, click:'sqSbcToggle(\''+x.id+'\')'})).join('')+'</div>';
+    } else {
+      body='<div class="sq-sbcs">'+SQ_SBC.map(s=>'<button class="sq-sbc p-'+s.r+'" onclick="sqSbcOpen(\''+s.id+'\')"><b>'+esc(T.sbc[s.id])+'</b><span>'+esc(reqTxt(s))+'</span><em>'+esc(T.packNames[s.r])+'</em></button>').join('')+'</div>';
     }
   } else if(SQ_TAB==='packs'){
+    title=T.tabPacks;
     const own=SQ.packs.reduce((m, p)=>{ m[p]=(m[p]||0)+1; return m; }, {});
     body=(Object.keys(own).length ? '<h3 class="sq-h">'+esc(T.yourPacks)+'</h3><div class="sq-packs">'+Object.keys(own).map(p=>
         '<button class="sq-pack p-'+p+'" onclick="sqPackOpen(\''+p+'\', false)"><b>'+esc(T.packNames[p])+' ×'+own[p]+'</b><em>'+esc(T.open)+'</em></button>').join('')+'</div>' : '')+
       '<div class="sq-packs">'+SQ_PACKS.map(P=>'<button class="sq-pack p-'+P.id+'"'+(SQ.coins<P.cost ? ' disabled' : '')+' onclick="sqPackOpen(\''+P.id+'\', true)">'+
-        '<b>'+esc(T.packNames[P.id])+'</b><span>'+esc(T.packDesc[P.id])+'</span><em>'+money(P.cost)+'</em></button>').join('')+'</div>'+
-      (SQ_OPENED ? '<h3 class="sq-h">'+esc(T.gotCards)+'</h3><div class="sq-grid sq-reveal">'+SQ_OPENED.map(id=>sqCardHTML(id, sqCardOf(id), '')).join('')+'</div>' : '');
+        '<b>'+esc(T.packNames[P.id])+'</b><span>'+esc(T.packDesc[P.id])+'</span><em>'+money(P.cost)+'</em></button>').join('')+'</div>';
   } else if(SQ_TAB==='market'){
+    title=T.tabMkt;
     sqMktTick();
     const now=Date.now();
-    body='<p class="sq-hint">'+esc(T.mktHint)+'</p><div class="sq-grid">'+SQ.mkt.list.slice().sort((a, b)=>a.ends-b.ends).map(l=>{
+    body='<p class="sq-hint">'+esc(T.mktHint)+'</p><div class="sq-mgrid">'+SQ.mkt.list.slice().sort((a, b)=>a.ends-b.ends).map(l=>{
       const c=sqPool().byK.get(l.k), bot=sqBotBid(l, now), lead=l.mine && l.mine>=bot;
-      return '<div class="sq-c">'+futCardHTML(c)+'<div class="sq-lot"><span>'+esc(T.curBid)+' <b>'+money(Math.max(bot, l.mine))+'</b>'+(lead ? ' · <i>'+esc(T.youTop)+'</i>' : '')+'</span>'+
-        '<span>'+sqLeft(l.ends-now)+' '+esc(T.left)+'</span></div><div class="sq-acts"><button onclick="sqBid(\''+l.id+'\')">'+esc(T.bid)+'</button>'+
-        '<button onclick="sqBuyNow(\''+l.id+'\')">'+esc(T.buyNow)+' '+money(l.buy)+'</button></div></div>'; }).join('')+'</div>'+
-      (SQ.sells.length ? '<h3 class="sq-h">'+esc(T.mySales)+'</h3><div class="sq-grid">'+SQ.sells.map(s=>'<div class="sq-c">'+futCardHTML(sqPool().byK.get(s.k))+
-        '<div class="sq-lot"><span>'+esc(T.listed)+' <b>'+money(s.price)+'</b></span><span>'+sqLeft(s.ends-now)+' '+esc(T.left)+'</span></div></div>').join('')+'</div>' : '');
+      return sqMini(c, {below:'<div class="sq-lot"><span>'+esc(T.curBid)+' <b>'+money(Math.max(bot, l.mine))+'</b>'+(lead ? ' · <i>'+esc(T.youTop)+'</i>' : '')+'</span>'+
+        '<span>'+sqLeft(l.ends-now)+'</span></div><div class="sq-acts"><button onclick="sqBid(\''+l.id+'\')">'+esc(T.bid)+'</button>'+
+        '<button class="go" onclick="sqBuyNow(\''+l.id+'\')">'+esc(T.buyNow)+' '+money(l.buy)+'</button></div>'}); }).join('')+'</div>'+
+      (SQ.sells.length ? '<h3 class="sq-h">'+esc(T.mySales)+'</h3><div class="sq-mgrid">'+SQ.sells.map(s=>sqMini(sqPool().byK.get(s.k), {below:
+        '<div class="sq-lot"><span>'+esc(T.listed)+' <b>'+money(s.price)+'</b></span><span>'+sqLeft(s.ends-now)+'</span></div>'})).join('')+'</div>' : '');
     SQ_TIMER=setInterval(()=>{ if(SQ_TAB==='market' && document.getElementById('screen-sq').classList.contains('active')) sqRender(); else { clearInterval(SQ_TIMER); SQ_TIMER=null; } }, 5000);
   } else {
+    title=T.tabObj;
     body='<div class="sq-objs">'+SQ_OBJ.map(o=>{ const cur=Math.min(o.goal, o.cur(SQ)), done=SQ.claimed[o.id];
       const rw=o.r.coins ? money(o.r.coins)+' '+T.coins.toLowerCase() : T.packNames[o.r.pack];
       return '<div class="sq-obj'+(done ? ' done' : '')+'"><b>'+esc(T.obj[o.id])+'</b><span>'+cur+' / '+o.goal+' · '+esc(T.reward)+': '+esc(rw)+'</span>'+
         (done ? '<em>'+esc(T.claimed)+'</em>' : '<button'+(cur<o.goal ? ' disabled' : '')+' onclick="sqClaim(\''+o.id+'\')">'+esc(T.claim)+'</button>')+'</div>'; }).join('')+'</div>';
   }
-  root.innerHTML='<div class="sq-top"><button class="sq-back" onclick="show(\'screen-mode\')">‹ '+esc(T.back)+'</button>'+
-    '<h2>'+esc(T.title)+'</h2><span class="sq-wal"><em>'+esc(T.coins)+'</em><b>'+money(SQ.coins)+'</b></span>'+
+  root.innerHTML='<div class="sq-top">'+(SQ_TAB==='home' ? '<button class="sq-back" onclick="show(\'screen-mode\')">‹ '+esc(T.back)+'</button>' : back)+
+    '<h2>'+esc(title)+'</h2><span class="sq-wal"><em>'+esc(T.coins)+'</em><b>'+money(SQ.coins)+'</b></span>'+
     '<span class="sq-wal"><em>'+esc(T.div)+'</em><b>'+SQ.div+'</b></span></div>'+
     (SQ_NOTE ? '<div class="sq-flash">'+esc(SQ_NOTE)+'</div>' : '')+
-    '<nav class="sq-tabs">'+tabs.map(([k, l])=>'<button class="'+(SQ_TAB===k ? 'on' : '')+'" onclick="sqTab(\''+k+'\')">'+esc(l)+'</button>').join('')+'</nav>'+
     '<div class="sq-body">'+body+'</div>'+
-    '<div class="sq-foot"><button class="sq-reset" onclick="sqReset()">'+esc(T.reset)+'</button></div>';
+    (SQ_TAB==='home' ? '<div class="sq-foot"><button class="sq-reset" onclick="sqReset()">'+esc(T.reset)+'</button></div>' : '');
   SQ_NOTE='';
 }
 
@@ -119386,7 +119709,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='67947cf8';
+const CC_BUILD='5482d437';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
