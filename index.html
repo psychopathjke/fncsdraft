@@ -4976,7 +4976,9 @@
   /* Подпись развилки — целиком, в несколько строк (Notion 27.10: «насчёт слива полностью не видно текст» — была одна
      строка с многоточием: «Инсайдер пишет, что ты договариваешься с…»). */
   #screen-career-hub .cc-lobby .cc-lb-playbox .cc-day-ev span{grid-column:1;font-size:11px;line-height:1.3;white-space:normal;overflow-wrap:anywhere;}
-  #screen-career-hub .cc-lobby .cc-lb-playbox .cc-day-ev-btns{grid-column:2;grid-row:1 / span 2;display:flex;gap:4px;margin:0;}
+  /* Кнопки любой развилки — строкой под текстом (27.10): справа они сжимали перенесённый текст до слова в строку. */
+  #screen-career-hub .cc-lobby .cc-lb-playbox .cc-day-ev-btns{grid-column:1 / span 2;grid-row:auto;display:flex;flex-wrap:wrap;gap:4px;margin:6px 0 0;}
+  #screen-career-hub .cc-lobby .cc-lb-playbox .cc-day-ev-btns button{flex:1 1 auto;}
   #screen-career-hub .cc-lobby .cc-lb-playbox .cc-day-ev-btns button{margin:0;padding:5px 10px;min-height:0;font-size:11px;}
   /* День на Центре одной кнопкой (ccDayGoHTML, 27.10). */
   #screen-career-hub .cc-day-go{display:flex;flex-direction:column;gap:6px;margin:6px 0 2px;}
@@ -120093,7 +120095,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='400492c9';
+const CC_BUILD='b0209bc3';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -125414,11 +125416,10 @@ function ccLobbyHTML(card, btn, next, when, strip, ex){
     right=(ex.play ? '' : '<div class="cc-lb-news" onclick="careerTab(\'calendar\')"><em>'+esc(when||'')+'</em><b>'+esc(evName)+'</b></div>'+
       '<div class="cc-lb-modebox"><b>'+esc(fmtWord)+'</b></div>')+playBox;
   } else {
-    /* Лобби как в Fortnite (27.10, его выбор после Notion «слишком много информации»): слева одна карточка вечера с
-       кнопкой (карточку новостей с обложкой ближайшего турнира сняли — тот же турнир стоит в карточке вечера и в
-       полосе дней); справа составы; кнопки Media / Item Shop / Locker повторяли вкладки — сняты, кольцо LVL осталось.
-       Без карточки вечера (старые вызовы) — как было, с новостями. */
-    left=ex.play ? playBox : (ccLobbyNewsCardHTML() || '<div class="cc-lb-news cc-lb-card" onclick="careerTab(\'calendar\')"'+(nextArt ? ' style="--card-art:url('+nextArt+')"' : '')+'>'+
+    /* Лобби как в Fortnite (27.10): справа составы; кнопки Media / Item Shop / Locker повторяли вкладки — сняты, кольцо
+       LVL осталось. Карточка новостей слева сверху — ВОЗВРАЩЕНА (27.10, его «новости в карьере на главной вернуть
+       дизайн, который был, он точно лишним не был»): снимал её как повтор турнира, а она — лента новостей карьеры. */
+    left=(ccLobbyNewsCardHTML() || '<div class="cc-lb-news cc-lb-card" onclick="careerTab(\'calendar\')"'+(nextArt ? ' style="--card-art:url('+nextArt+')"' : '')+'>'+
         '<em>'+esc(newsWhen)+'</em><b>'+esc(newsEv ? (newsEv.label||evName) : (evName||sn.s))+'</b></div>')+playBox;
     right='<div class="cc-lb-stack">'+(ex.side||'')+'</div>'+
       '<div class="cc-lb-ringrow">'+
