@@ -5335,6 +5335,15 @@
      занятия — большими плитками с иконкой. */
   .cc-train-tab{max-width:1100px;margin:0 auto;}
   .tp-plan{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:14px;} @media(max-width:700px){ .tp-plan{grid-template-columns:1fr;} }
+  /* План недели свёрнут (27.10): строка «План недели · что выбрано», по нажатию — фокус и цель в две колонки. */
+  .tp-fold{display:block;}
+  .tp-fold>summary{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;cursor:pointer;list-style:none;}
+  .tp-fold>summary::-webkit-details-marker{display:none;}
+  .tp-fold>summary h4{margin:0;}
+  .tp-fold>summary h4::after{content:' ▾';font-size:.8em;opacity:.7;}
+  .tp-fold[open]>summary h4::after{content:' ▴';}
+  .tp-fold>summary span{font-size:12px;font-weight:800;color:#9fb0e8;}
+  .tp-body{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:12px;} @media(max-width:700px){ .tp-body{grid-template-columns:1fr;} }
   .tp-chips,.tp-goalpick{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;}
   .tp-chip{border:0;cursor:pointer;font:inherit;font-size:12px;font-weight:800;padding:7px 10px;border-radius:9px;color:#dfe7ff;background:rgba(255,255,255,.07);box-shadow:inset 0 0 0 1px rgba(180,200,255,.18);}
   .tp-chip.on{background:#00d6a4;color:#062a22;box-shadow:none;} .tp-chip:disabled:not(.on){opacity:.45;cursor:default;}
@@ -23760,7 +23769,7 @@ Object.assign(I18N.ru, {ccPayPend:'ожидается', ccPayNext:d=>'ближа
   ccNewsRehost:g=>'Игра '+g+' сегодняшней сессии перехощена из-за проблем с сервером. Очки исходной игры аннулированы.',
   ccNewsTeamingDq:(a,b)=>'@'+a+' и @'+b+' дисквалифицированы с сегодняшнего турнира за тиминг.'});
 /* Обучение новичка (27.10, ccTourStart): семь шагов по хабу карьеры. Немецкий и испанский — английские до доперевода. */
-Object.assign(I18N.en, {ccTourBtn:'How to play', ccTourNext:'Next', ccTourDone:'Got it', ccTourSkip:'Skip the tour',
+Object.assign(I18N.en, {lfPlanH:'Week plan', lfPlanOff:p=>'optional: a focus (+'+p+'% to one stat) and a goal', ccTourBtn:'How to play', ccTourNext:'Next', ccTourDone:'Got it', ccTourSkip:'Skip the tour',
   ccTourOvr:'Your rating. A career is about raising it: train every day and do well in tournaments.',
   ccTourEnergy:'Energy. Training and everything else you do in a day costs energy. A new day gives it back.',
   ccTourDay:'Today. Pick what the day goes on: train one stat, scrim, stream or work a shift. Do as much as your energy allows, then go to the next day.',
@@ -23768,7 +23777,7 @@ Object.assign(I18N.en, {ccTourBtn:'How to play', ccTourNext:'Next', ccTourDone:'
   ccTourGo:'When you are ready, this takes you to the next tournament day. There you press Play.',
   ccTourMate:'This is a duos season, so you need a partner to enter team tournaments. Find one here.',
   ccTourTabs:'Everything else (club, shop, media, locker) can wait. Open this tour again any time with "How to play" at the bottom.'});
-Object.assign(I18N.ru, {ccTourBtn:'Как играть', ccTourNext:'Дальше', ccTourDone:'Понятно', ccTourSkip:'Пропустить',
+Object.assign(I18N.ru, {lfPlanH:'План недели', lfPlanOff:p=>'по желанию: фокус (+'+p+'% к одному параметру) и цель', ccTourBtn:'Как играть', ccTourNext:'Дальше', ccTourDone:'Понятно', ccTourSkip:'Пропустить',
   ccTourOvr:'Твой рейтинг. Вся карьера про то, чтобы его поднять: тренироваться каждый день и хорошо играть турниры.',
   ccTourEnergy:'Энергия. Тренировки и всё остальное за день тратят её. Новый день её возвращает.',
   ccTourDay:'Сегодня. Выбери, на что уйдёт день: прокачать параметр, скримы, стрим или подработка. Делай, сколько хватит энергии, потом переходи к следующему дню.',
@@ -23776,7 +23785,7 @@ Object.assign(I18N.ru, {ccTourBtn:'Как играть', ccTourNext:'Дальш�
   ccTourGo:'Когда будешь готов, эта кнопка перенесёт к ближайшему дню турнира. Там жмёшь «Играть».',
   ccTourMate:'Сезон дуо: на командные турниры нужен напарник. Найди его здесь.',
   ccTourTabs:'Всё остальное (клуб, магазин, медиа, шкафчик) может подождать. Открыть этот тур снова можно кнопкой «Как играть» внизу.'});
-Object.assign(I18N.fr, {ccTourBtn:'Comment jouer', ccTourNext:'Suivant', ccTourDone:'Compris', ccTourSkip:'Passer',
+Object.assign(I18N.fr, {lfPlanH:'Plan de la semaine', lfPlanOff:p=>'facultatif : un focus (+'+p+' % sur une stat) et un objectif', ccTourBtn:'Comment jouer', ccTourNext:'Suivant', ccTourDone:'Compris', ccTourSkip:'Passer',
   ccTourOvr:'Ta note. Une carrière, c’est la faire monter : t’entraîner chaque jour et bien jouer les tournois.',
   ccTourEnergy:'L’énergie. L’entraînement et tout ce que tu fais dans la journée en coûtent. Un nouveau jour la rend.',
   ccTourDay:'Aujourd’hui. Choisis à quoi sert la journée : travailler une stat, scrim, stream ou petit boulot. Fais-en autant que ton énergie le permet, puis passe au jour suivant.',
@@ -23784,7 +23793,7 @@ Object.assign(I18N.fr, {ccTourBtn:'Comment jouer', ccTourNext:'Suivant', ccTourD
   ccTourGo:'Quand tu es prêt, ce bouton t’emmène au prochain jour de tournoi. Là, tu appuies sur Jouer.',
   ccTourMate:'Saison en duo : il te faut un partenaire pour les tournois en équipe. Trouve-le ici.',
   ccTourTabs:'Tout le reste (club, boutique, médias, casier) peut attendre. Relance ce tour quand tu veux avec « Comment jouer » en bas.'});
-Object.assign(I18N.it, {ccTourBtn:'Come si gioca', ccTourNext:'Avanti', ccTourDone:'Capito', ccTourSkip:'Salta',
+Object.assign(I18N.it, {lfPlanH:'Piano della settimana', lfPlanOff:p=>'facoltativo: un focus (+'+p+'% a una statistica) e un obiettivo', ccTourBtn:'Come si gioca', ccTourNext:'Avanti', ccTourDone:'Capito', ccTourSkip:'Salta',
   ccTourOvr:'Il tuo rating. Una carriera serve a farlo salire: allenati ogni giorno e gioca bene i tornei.',
   ccTourEnergy:'Energia. Allenamenti e tutto ciò che fai in un giorno la consumano. Un nuovo giorno la restituisce.',
   ccTourDay:'Oggi. Scegli come passare la giornata: allenare una statistica, scrim, stream o un turno di lavoro. Fai quanto ti permette l’energia, poi passa al giorno dopo.',
@@ -23792,7 +23801,7 @@ Object.assign(I18N.it, {ccTourBtn:'Come si gioca', ccTourNext:'Avanti', ccTourDo
   ccTourGo:'Quando sei pronto, questo pulsante ti porta al prossimo giorno di torneo. Lì premi Gioca.',
   ccTourMate:'Stagione in duo: per i tornei a squadre serve un compagno. Trovalo qui.',
   ccTourTabs:'Tutto il resto (club, negozio, media, armadietto) può aspettare. Riapri questo tour quando vuoi con «Come si gioca» in basso.'});
-Object.assign(I18N.pt, {ccTourBtn:'Como jogar', ccTourNext:'Próximo', ccTourDone:'Entendi', ccTourSkip:'Pular',
+Object.assign(I18N.pt, {lfPlanH:'Plano da semana', lfPlanOff:p=>'opcional: um foco (+'+p+'% em um atributo) e uma meta', ccTourBtn:'Como jogar', ccTourNext:'Próximo', ccTourDone:'Entendi', ccTourSkip:'Pular',
   ccTourOvr:'Seu rating. A carreira é sobre subir ele: treinar todo dia e jogar bem os torneios.',
   ccTourEnergy:'Energia. Treinos e tudo que você faz no dia gastam energia. Um novo dia devolve.',
   ccTourDay:'Hoje. Escolha no que o dia vai: treinar um atributo, scrim, live ou um turno de trabalho. Faça o quanto a energia deixar e passe para o próximo dia.',
@@ -118915,7 +118924,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='6321dd09';
+const CC_BUILD='982c1ec7';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -124077,7 +124086,12 @@ function careerRenderHubBody(tab){
   if(CH_TAB==='locker'){ if(!CC_FN_PICK) CC_FN_PICK='o'; body.innerHTML='<div class="ch-grid" style="grid-template-columns:minmax(0,1fr);">'+ccLockerHTML()+'</div>'; return; }
   if(CH_TAB==='club'){ body.innerHTML=careerClubTabHTML(); return; }
   // Цели и развитие — сверху «Тренировки»: с «Центра» они ушли, когда он вернулся к виду прода (29.09).
-  if(CH_TAB==='train'){ body.innerHTML='<div class="ch-grid ch-grid-me ch-train-goals">'+ccGoalsTileHTML()+ccDevTileHTML()+'</div>'+careerTrainTabHTML(); return; }
+  /* Тренировка без повторов (27.10, его «тренировки чет облегчить, слишком много информации»): шесть параметров стояли
+     трижды (Развитие, Фокус/Цель, панель дня), усталость дважды, пустая плитка задач без клуба. Здесь — задачи, только
+     если они есть (без своей цели и фокуса: они в плане недели); параметры — один раз, в панели дня. Плитки «Развитие»
+     нет: рейтинг и его ход за сезон уже стоят в шапке (#chOvr). */
+  if(CH_TAB==='train'){ const goals=ccGoalsTileHTML(true);
+    body.innerHTML=(goals ? '<div class="ch-grid ch-grid-me ch-train-goals">'+goals+'</div>' : '')+careerTrainTabHTML(); return; }
   // The card tab is gone — the centre already wears the card, and a whole tab
   // that repeated it sat between the calendar and the socials for no reason.
   body.innerHTML=careerCentreHTML(card, a);
@@ -127924,7 +127938,7 @@ function ccFmtDay(iso){ return String(iso||'').slice(8,10)+'.'+String(iso||'').s
    справа — цели (клуб, месяц, своя), развитие игрока и новости. Цели были и раньше,
    но жили по разным вкладкам (контракт — в «Клубе», месяц — там же, своя — в
    «Тренировке»); здесь они собраны в одну плитку, как «цели сезона» у тренера в FC. */
-function ccGoalsTileHTML(){
+function ccGoalsTileHTML(inTrain){
   if(!CAREER || !CAREER.career) return '';
   const cr=CAREER.career, org=CAREER.org, lf=ccLife(), rows=[];
   const row=(who, what, state, ok, bar)=>`<div class="hg-row${ok?' ok':''}"><div class="hg-top"><em>${esc(who)}</em>`+
@@ -127942,19 +127956,24 @@ function ccGoalsTileHTML(){
     rows.push(row(L().hgMonth, careerMonthGoalText(mg)+(mg.bonus ? ' · '+ccMoney(mg.bonus) : ''), met ? '✓ '+esc(L().hgDone) : esc(L().hgOpen), met));
     const pick=ccMgPickHTML(); if(pick) rows.push(pick); }
   const g=lf.goal, six=CAREER.player.attrs||ccOwnAttrs();
-  if(g && !g.done){
-    const v=six[g.k]||0, pct=Math.max(0, Math.min(100, (v-g.from)/Math.max(0.1, g.to-g.from)*100));
-    rows.push(row(L().hgOwn, ccAttrFull(g.k)+' → '+g.to, (Math.round(v*10)/10).toFixed(1)+' / '+g.to, false, pct));
-  }
   const wk=ccWeekTag(), f=(lf.focus && lf.focus.wk===wk) ? lf.focus.k : null;
-  if(f) rows.push(row(L().lfFocusH, ccAttrFull(f), '+'+Math.round(CC_FOCUS_BONUS*100)+'%', false));
-  const empty=!rows.length ? `<div class="ch-empty">${esc(org ? L().hgNone : L().hgNoClub)}</div>` : '';
-  const ask=(!g || g.done || !f) ? `<button class="hg-go" onclick="careerTab('train')">${esc(L().hgSet)}</button>` : '';
+  // На вкладке «Тренировка» своя цель и фокус — в плане недели под плиткой (ccTrainPlanHTML), здесь не повторяются.
+  if(!inTrain){
+    if(g && !g.done){
+      const v=six[g.k]||0, pct=Math.max(0, Math.min(100, (v-g.from)/Math.max(0.1, g.to-g.from)*100));
+      rows.push(row(L().hgOwn, ccAttrFull(g.k)+' → '+g.to, (Math.round(v*10)/10).toFixed(1)+' / '+g.to, false, pct));
+    }
+    if(f) rows.push(row(L().lfFocusH, ccAttrFull(f), '+'+Math.round(CC_FOCUS_BONUS*100)+'%', false));
+  }
   // Срочное сверху: закрытый вечер, травма, бан (ccLifeAlertRows).
   const alerts=ccLifeAlertRows();
+  if(inTrain && !rows.length && !alerts.length) return '';
+  const empty=!rows.length ? `<div class="ch-empty">${esc(org ? L().hgNone : L().hgNoClub)}</div>` : '';
+  const ask=(!inTrain && (!g || g.done || !f)) ? `<button class="hg-go" onclick="careerTab('train')">${esc(L().hgSet)}</button>` : '';
   return `<div class="ch-tile hg-tile"><h4>${L().hgTitle}</h4>${alerts.length ? '<div class="hg-alerts">'+alerts.join('')+'</div>' : ''}${rows.join('')}${empty}${ask}</div>`;
 }
 // Развитие: рейтинг и его ход за сезон, ранг, шесть атрибутов с приростом недели и усталость.
+// С 27.10 на вкладке «Тренировка» не рисуется (всё это там уже есть: шапка и панель дня); оставлена, чтобы вернуть одной строкой.
 function ccDevTileHTML(){
   if(!CAREER || !CAREER.career) return '';
   const six=CAREER.player.attrs || ccOwnAttrs();
@@ -148564,11 +148583,19 @@ function ccTrainPlanHTML(){
     goal=done+'<div class="tp-goalpick">'+ATTR_KEYS.map(k=>{ const to=Math.min(99, Math.ceil(((six[k]||50)+0.1)/5)*5);
       return '<button class="tp-chip" onclick="ccGoalSet(\''+k+'\','+to+')">'+(CC_ATTR_ICON[k]||'')+' '+(L()['ccAttr'+k.toUpperCase()]||k)+' → '+to+'</button>'; }).join('')+'</div>';
   }
-  return '<div class="ch-tile tp-plan"><div class="tp-col"><h4>'+esc(L().lfFocusH)+'</h4><div class="ch-hint">'+
+  /* Фокус и цель — по желанию, и двенадцать кнопок всегда раскрытыми были самым шумным местом вкладки (27.10, «слишком
+     много информации»). Свёрнуто в одну строку: что выбрано (или что это вообще), раскрывается по нажатию. */
+  const parts=[];
+  if(f) parts.push(L().lfFocusH+': '+ccAttrFull(f)+' +'+Math.round(CC_FOCUS_BONUS*100)+'%');
+  if(g && !g.done) parts.push(L().lfGoalH+': '+ccAttrFull(g.k)+' '+(Math.round((six[g.k]||0)*10)/10).toFixed(1)+' / '+g.to);
+  return '<details class="ch-tile tp-plan tp-fold"'+(CC_TP_OPEN ? ' open' : '')+' ontoggle="CC_TP_OPEN=this.open">'+
+    '<summary><h4>'+esc(L().lfPlanH)+'</h4><span>'+esc(parts.length ? parts.join(' · ') : L().lfPlanOff(Math.round(CC_FOCUS_BONUS*100)))+'</span></summary>'+
+    '<div class="tp-body"><div class="tp-col"><h4>'+esc(L().lfFocusH)+'</h4><div class="ch-hint">'+
     esc(f ? L().lfFocusOn(ccAttrFull(f), Math.round(CC_FOCUS_BONUS*100)) : L().lfFocusPick(Math.round(CC_FOCUS_BONUS*100)))+'</div>'+
     '<div class="tp-chips">'+chips+'</div></div>'+
-    '<div class="tp-col"><h4>'+esc(L().lfGoalH)+'</h4><div class="ch-hint">'+esc(L().lfGoalHint)+'</div>'+goal+'</div></div>';
+    '<div class="tp-col"><h4>'+esc(L().lfGoalH)+'</h4><div class="ch-hint">'+esc(L().lfGoalHint)+'</div>'+goal+'</div></div></details>';
 }
+let CC_TP_OPEN=false;
 // Карточка-переход в Центре на месте тренировок: итог недели и кнопка.
 function ccTrainPromoHTML(six){
   const lf=(typeof ccLife==='function') ? ccLife() : {};
