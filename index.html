@@ -5379,6 +5379,58 @@
      занятия — большими плитками с иконкой. */
   .cc-train-tab{max-width:1100px;margin:0 auto;}
   .tp-plan{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:14px;} @media(max-width:700px){ .tp-plan{grid-template-columns:1fr;} }
+  /* FNCS Cards (sqRender, 27.10). */
+  .sq-root{max-width:1180px;margin:0 auto;padding:16px;color:#fff;}
+  .sq-top{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:10px;}
+  .sq-top h2{margin:0;flex:1;font-family:var(--font-display);font-size:28px;text-transform:uppercase;}
+  .sq-back,.sq-reset{background:none;border:1px solid rgba(180,200,255,.3);color:#cfd8ff;border-radius:10px;padding:8px 12px;font:inherit;font-weight:800;cursor:pointer;}
+  .sq-wal{display:flex;flex-direction:column;align-items:flex-end;}
+  .sq-wal em{font-style:normal;font-size:11px;font-weight:800;color:#9fb0e8;text-transform:uppercase;}
+  .sq-wal b{font-size:20px;font-weight:900;color:#ffe600;font-variant-numeric:tabular-nums;}
+  .sq-flash{background:rgba(0,214,164,.15);border:1px solid rgba(0,214,164,.5);border-radius:10px;padding:8px 12px;margin-bottom:10px;font-weight:700;}
+  .sq-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;}
+  .sq-tabs button,.sq-fmt button{background:rgba(255,255,255,.07);border:1px solid rgba(180,200,255,.22);color:#fff;border-radius:999px;padding:9px 16px;font:inherit;font-weight:800;cursor:pointer;}
+  .sq-tabs button.on,.sq-fmt button.on{background:#ffe600;color:#101a44;border-color:#ffe600;}
+  .sq-row{display:flex;gap:6px;margin-bottom:10px;}
+  .sq-stats{display:flex;gap:16px;flex-wrap:wrap;align-items:center;margin:8px 0 12px;}
+  .sq-stats span{display:flex;flex-direction:column;}
+  .sq-stats em{font-style:normal;font-size:11px;font-weight:800;color:#9fb0e8;text-transform:uppercase;}
+  .sq-stats b{font-size:22px;font-weight:900;font-variant-numeric:tabular-nums;}
+  .sq-stats .ok{color:#00d6a4;font-weight:800;} .sq-stats .warn,.sq-warn{color:#ffb347;font-weight:800;}
+  .sq-h{margin:14px 0 8px;font-family:var(--font-display);font-size:18px;text-transform:uppercase;}
+  .sq-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:12px;}
+  .sq-c{display:flex;flex-direction:column;gap:6px;min-width:0;}
+  .sq-c > :first-child{max-width:100%;}
+  .sq-empty{min-height:120px;align-items:center;justify-content:center;border:2px dashed rgba(180,200,255,.25);border-radius:12px;color:#8fa1cc;font-weight:800;}
+  .sq-acts{display:flex;flex-wrap:wrap;gap:4px;}
+  .sq-acts button{flex:1 1 auto;background:rgba(255,255,255,.08);border:1px solid rgba(180,200,255,.25);color:#fff;border-radius:8px;padding:6px 8px;font:inherit;font-size:12px;font-weight:800;cursor:pointer;}
+  .sq-acts button:hover{border-color:#00d6a4;}
+  .sq-fit{display:block;height:5px;border-radius:3px;background:rgba(255,255,255,.12);overflow:hidden;text-decoration:none;}
+  .sq-fit s{display:block;height:100%;background:#00d6a4;text-decoration:none;} .sq-fit s.low{background:#ff7d70;}
+  .sq-hint{color:#c3d2ee;font-size:13px;line-height:1.4;}
+  .sq-go{background:#ffe600;color:#101a44;border:0;border-radius:12px;padding:14px 26px;font-family:var(--font-display);font-weight:700;font-size:18px;text-transform:uppercase;cursor:pointer;}
+  .sq-tbl{width:100%;border-collapse:collapse;font-size:13px;}
+  .sq-tbl th,.sq-tbl td{padding:6px 8px;text-align:left;border-bottom:1px solid rgba(255,255,255,.08);}
+  .sq-tbl td:nth-child(n+3),.sq-tbl th:nth-child(n+3){text-align:right;font-variant-numeric:tabular-nums;}
+  .sq-tbl tr.you td{background:rgba(255,230,0,.14);font-weight:900;}
+  .sq-earn{font-weight:900;color:#ffe600;} .sq-note{margin:4px 0;font-weight:800;color:#00d6a4;}
+  .sq-packs{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;margin-bottom:10px;}
+  .sq-pack{display:flex;flex-direction:column;gap:4px;align-items:flex-start;padding:16px;border-radius:14px;border:1px solid rgba(255,255,255,.2);color:#fff;font:inherit;cursor:pointer;text-align:left;}
+  .sq-pack b{font-size:17px;font-weight:900;} .sq-pack span{font-size:12px;color:#dfe7ff;} .sq-pack em{font-style:normal;font-weight:900;color:#ffe600;}
+  .sq-pack:disabled{opacity:.45;cursor:default;}
+  .sq-pack.p-bronze{background:linear-gradient(135deg,#6b4224,#3a2414);} .sq-pack.p-silver{background:linear-gradient(135deg,#6f7a8c,#394150);}
+  .sq-pack.p-gold{background:linear-gradient(135deg,#9a7a12,#4d3c06);} .sq-pack.p-elite{background:linear-gradient(135deg,#6b2fd0,#2a145a);}
+  .sq-reveal .sq-c{animation:sqIn .45s ease both;} .sq-reveal .sq-c:nth-child(2){animation-delay:.25s;} .sq-reveal .sq-c:nth-child(3){animation-delay:.5s;} .sq-reveal .sq-c:nth-child(4){animation-delay:.75s;}
+  @keyframes sqIn{from{opacity:0;transform:translateY(10px) scale(.96);}to{opacity:1;transform:none;}}
+  @media(prefers-reduced-motion:reduce){ .sq-reveal .sq-c{animation:none;} }
+  .sq-lot{display:flex;justify-content:space-between;gap:6px;font-size:12px;color:#c3d2ee;} .sq-lot b{color:#fff;} .sq-lot i{font-style:normal;color:#00d6a4;font-weight:800;}
+  .sq-objs{display:flex;flex-direction:column;gap:8px;}
+  .sq-obj{display:grid;grid-template-columns:1fr auto;gap:2px 12px;align-items:center;padding:12px 14px;border-radius:12px;background:rgba(255,255,255,.06);border:1px solid rgba(180,200,255,.2);}
+  .sq-obj span{grid-column:1;font-size:12px;color:#9fb0e8;} .sq-obj button,.sq-obj em{grid-column:2;grid-row:1 / span 2;}
+  .sq-obj button{background:#ffe600;color:#101a44;border:0;border-radius:10px;padding:8px 14px;font:inherit;font-weight:900;cursor:pointer;} .sq-obj button:disabled{opacity:.35;cursor:default;}
+  .sq-obj em{font-style:normal;color:#00d6a4;font-weight:900;} .sq-obj.done{opacity:.6;}
+  .sq-foot{margin-top:24px;text-align:right;}
+  @media(max-width:600px){ .sq-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;} .sq-top h2{font-size:22px;} }
   /* Параметр = кнопка его тренировки (ccTrainStatHTML, 27.10). */
   .cc-stgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:6px 0 10px;}
   @media(max-width:700px){ .cc-stgrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;} }
@@ -9082,7 +9134,9 @@
     </div>
   </div>
 
-  <div class="screen active" id="screen-mode">
+  <!-- FNCS Cards (27.10): режим карточек, рисуется целиком из sqRender. -->
+<div class="screen" id="screen-sq"><div id="sqRoot" class="sq-root"></div></div>
+<div class="screen active" id="screen-mode">
     <!-- Герой-полоса: ключевой арт сезона, одна строка капсом, описание сайта
          (бывший tagline из шапки) и две двери — жёлтая в карьеру, контурная
          к карточкам ниже. См. .hero в стилях. -->
@@ -9161,6 +9215,7 @@
         <div class="hero-cta">
           <button class="hero-btn hero-btn-go" type="button" onclick="homeOpenDraft()"><span data-i18n="hdPlay"></span></button>
           <button class="hero-btn hero-btn-alt" type="button" onclick="chooseMode(2, true)"><span>All FNCS</span></button>
+          <button class="hero-btn hero-btn-alt hero-sq-btn" type="button" onclick="sqStart()"><span>FNCS Cards</span></button>
         </div>
       </div>
       <!-- Превью драфта — стена логотипов FNCS и World Cup 2019–2026 (его просьба 29.09: «на превью добавить все
@@ -111056,6 +111111,345 @@ function buildTeam(squadArr){
 function flagFor(p){ return cardFlag(p, 15); }
 function teamLabel(squad){ return squad.map(p=>flagFor(p)+p.handle).join(' & '); }
 
+/* ======================= FNCS CARDS (27.10) =======================
+   Режим карточек по идее игрока (Notion 27.10, скрин переписки): паки с настоящими про 2026 года, свой состав дуо /
+   трио / сквад с запасными, роли и сыгранность, будничные вечера в дивизионах 10→1 и кап выходных, задачи за монеты
+   и паки, рынок с аукционами (покупатели и продавцы — боты). Его решения: дивизионы + кап выходных, только 2026,
+   рынок сразу. Всё офлайн, своё сохранение (fncsdraft_sq1); карьеру и драфт не трогает.
+   Сила команды — buildTeam в режиме карточек (OVR, сыгранность, ровно один IGL), лобби — simulateGames быстрым
+   движком. Ролей в данных две (IGL и фраггер): саппорта у настоящих игроков нет, его не выдумываем.
+   Усталость: стартер за вечер теряет 15, запасной и вне состава восстанавливают 25; ниже 60 — минус к силе. Без неё
+   запасные ничего бы не значили. */
+const SQ_KEY='fncsdraft_sq1';
+const SQ_PACKS=[
+  {id:'bronze', cost:1000,  n:3, lo:0,    hi:0.55},
+  {id:'silver', cost:3500,  n:4, lo:0.25, hi:0.85},
+  {id:'gold',   cost:9000,  n:4, lo:0.5,  hi:1,    top:0.85},
+  {id:'elite',  cost:25000, n:3, lo:0.75, hi:1,    top:0.95}
+];
+const SQ_MIN_OVR=70, SQ_CUP_QUAL=4, SQ_WEEK=5, SQ_DIVS=10, SQ_BENCH=3, SQ_MKT_N=12, SQ_MKT_MS=4*60*1000, SQ_SELL_MS=3*60*1000, SQ_EVE_GAMES=6, SQ_CUP_GAMES=10;
+const SQ_OBJ=[
+  {id:'packs3', goal:3, cur:s=>s.stat.packs,    r:{coins:2000}},
+  {id:'eve5',   goal:5, cur:s=>s.stat.evenings, r:{pack:'silver'}},
+  {id:'top10',  goal:1, cur:s=>s.stat.top10,    r:{coins:3000}},
+  {id:'win',    goal:1, cur:s=>s.stat.wins,     r:{pack:'gold'}},
+  {id:'chem',   goal:1, cur:()=>sqRoleOK() ? 1 : 0, r:{coins:1500}},
+  {id:'sell',   goal:1, cur:s=>s.stat.sold,     r:{coins:1000}},
+  {id:'promo',  goal:1, cur:s=>s.stat.promos,   r:{pack:'gold'}},
+  {id:'div5',   goal:1, cur:s=>s.div<=5 ? 1 : 0, r:{pack:'elite'}}
+];
+const SQ_I18N={
+  en:{title:'FNCS Cards', sub:'Real 2026 pros from packs. Build your squad, climb the divisions.', back:'Back',
+    coins:'Coins', div:'Division', week:'Week', tabSquad:'Squad', tabPlay:'Play', tabPacks:'Packs', tabMkt:'Market', tabObj:'Objectives',
+    fmt:{2:'Duo', 3:'Trio', 4:'Squad'}, starters:'Starters', bench:'Subs', club:'Collection', empty:'Empty slot',
+    pow:'Team power', ovr:'Avg OVR', syn:'Synergy', igl:'One IGL: +4', noIgl:'Needs exactly one IGL for the role bonus',
+    toXi:'Start', toBench:'Sub', out:'Remove', list:'List', quick:'Quick sell', fit:'Fitness',
+    needXi:n=>'Put '+n+' players in the starters to play.', evening:(n,w)=>'Evening '+n+' of '+w, playEve:'Play the evening',
+    cup:'Weekend cup', playCup:'Play the weekend cup', weekPts:'Points this week', promoRule:'Points per evening: top 10% 3, top 30% 2, top 60% 1. Week: 9+ up a division, 2 or less down, 4+ qualifies for the weekend cup.',
+    you:'Your squad', place:'Place', pts:'Pts', wins:'Wins', elims:'Elims', earned:'Earned',
+    up:d=>'Promoted to Division '+d+'!', down:d=>'Relegated to Division '+d+'.', stay:d=>'Staying in Division '+d+'.',
+    cupOpen:'Qualified: the weekend cup is open.', newWeek:'A new week starts.', noCup:n=>'Not qualified for the weekend cup (needs '+n+' points).',
+    packNames:{bronze:'Bronze', silver:'Silver', gold:'Gold', elite:'Elite'}, buy:'Buy', open:'Open', yourPacks:'Your packs',
+    noCoins:'Not enough coins', gotCards:'From the pack', packDesc:{bronze:'3 players', silver:'4 players', gold:'4 players, one 85+', elite:'3 players, one 90+'},
+    mktHint:'Bots bid until the timer runs out. Outbid? Your coins come back.', bid:'Bid', buyNow:'Buy now', curBid:'Bid', left:'left',
+    youTop:'You lead', mySales:'Your listings', soldFor:p=>'Sold for '+p, unsold:'Not sold, back in your collection', listed:'Listed',
+    claim:'Claim', claimed:'Done', reward:'Reward',
+    obj:{packs3:'Open 3 packs', eve5:'Play 5 evenings', top10:'Finish top 10 in an evening', win:'Win a game', chem:'Field a squad with exactly one IGL',
+      sell:'Sell a card on the market', promo:'Get promoted', div5:'Reach Division 5'},
+    reset:'Start over', resetAsk:'Start FNCS Cards from scratch? Your cards and coins will be gone.', welcome:'Your starter pack: one IGL and one fragger, plus 5,000 coins.'},
+  ru:{title:'FNCS Cards', sub:'Настоящие про 2026 года из паков. Собери состав и поднимись по дивизионам.', back:'Назад',
+    coins:'Монеты', div:'Дивизион', week:'Неделя', tabSquad:'Состав', tabPlay:'Играть', tabPacks:'Паки', tabMkt:'Рынок', tabObj:'Задачи',
+    fmt:{2:'Дуо', 3:'Трио', 4:'Сквад'}, starters:'Основа', bench:'Запасные', club:'Коллекция', empty:'Пусто',
+    pow:'Сила команды', ovr:'Средний OVR', syn:'Сыгранность', igl:'Один IGL: +4', noIgl:'Для бонуса роли нужен ровно один IGL',
+    toXi:'В основу', toBench:'В запас', out:'Убрать', list:'Выставить', quick:'Быстро продать', fit:'Свежесть',
+    needXi:n=>'Поставь в основу '+n+' игроков, чтобы играть.', evening:(n,w)=>'Вечер '+n+' из '+w, playEve:'Сыграть вечер',
+    cup:'Кап выходных', playCup:'Сыграть кап выходных', weekPts:'Очки недели', promoRule:'Очки за вечер: топ-10% дают 3, топ-30% дают 2, топ-60% дают 1. За неделю: 9 и больше дивизион вверх, 2 и меньше вниз, 4 и больше пускают на кап выходных.',
+    you:'Твой состав', place:'Место', pts:'Очки', wins:'Победы', elims:'Киллы', earned:'Заработано',
+    up:d=>'Повышение: Дивизион '+d+'!', down:d=>'Понижение: Дивизион '+d+'.', stay:d=>'Остаёшься в Дивизионе '+d+'.',
+    cupOpen:'Квалификация есть: открыт кап выходных.', newWeek:'Началась новая неделя.', noCup:n=>'На кап выходных не прошёл (нужно '+n+' очка).',
+    packNames:{bronze:'Бронзовый', silver:'Серебряный', gold:'Золотой', elite:'Элитный'}, buy:'Купить', open:'Открыть', yourPacks:'Твои паки',
+    noCoins:'Не хватает монет', gotCards:'Из пака', packDesc:{bronze:'3 игрока', silver:'4 игрока', gold:'4 игрока, один 85+', elite:'3 игрока, один 90+'},
+    mktHint:'Боты делают ставки, пока идёт таймер. Перебили твою ставку? Монеты вернутся.', bid:'Ставка', buyNow:'Купить сразу', curBid:'Ставка', left:'осталось',
+    youTop:'Ты лидируешь', mySales:'Твои лоты', soldFor:p=>'Продано за '+p, unsold:'Не продалось, карточка вернулась', listed:'Выставлено',
+    claim:'Забрать', claimed:'Готово', reward:'Награда',
+    obj:{packs3:'Открыть 3 пака', eve5:'Сыграть 5 вечеров', top10:'Войти в топ-10 вечера', win:'Выиграть игру', chem:'Выставить состав ровно с одним IGL',
+      sell:'Продать карточку на рынке', promo:'Получить повышение', div5:'Дойти до 5-го дивизиона'},
+    reset:'Начать заново', resetAsk:'Начать FNCS Cards с нуля? Карточки и монеты пропадут.', welcome:'Стартовый пак: один IGL и один фраггер, плюс 5 000 монет.'}
+};
+let SQ=null, SQ_TAB='squad', SQ_POOL=null, SQ_LAST=null, SQ_OPENED=null, SQ_NOTE='', SQ_TIMER=null;
+function sqT(){ return (typeof LANG!=='undefined' && SQ_I18N[LANG]) ? Object.assign({}, SQ_I18N.en, SQ_I18N[LANG]) : SQ_I18N.en; }
+// Пул — сильнейшая карточка 2026 года (наборы m1/m2) у каждого игрока, копиями: attrsFor кэширует на объекте.
+function sqPool(){
+  if(SQ_POOL) return SQ_POOL;
+  const best=new Map();
+  PLAYERS.forEach(p=>{
+    if(!p || p.tier!=='cardmode' || !p.handle || (p.cardSet!=='m1' && p.cardSet!=='m2')) return;
+    const k=String(p.handle).toLowerCase()+'|'+(p.region||'');
+    const b=best.get(k);
+    if(!b || (p.rating||0)>(b.rating||0)) best.set(k, p);
+  });
+  SQ_POOL=[...best.entries()].map(([k, p])=>{ const c=Object.assign({}, p); delete c._attrs; c._k=k; c._sqOvr=(attrsFor(c)||{}).ovr||0; return c; })
+    // От 70 OVR: все в пуле — участники Мейджоров 2026, но нижняя половина (35–69) — безымянный Плей-Ин; с ним
+    // стартовый состав выходил из «Avox Rank 1» на 46. Остаётся ~2 270 карточек: бронза — крепкий Плей-Ин, элита — топ.
+    .filter(c=>c._sqOvr>=SQ_MIN_OVR).sort((a, b)=>a._sqOvr-b._sqOvr);
+  SQ_POOL.byK=new Map(SQ_POOL.map(c=>[c._k, c]));
+  return SQ_POOL;
+}
+function sqCardOf(id){ const inst=(SQ.cards||[]).find(c=>c.id===id); return inst ? sqPool().byK.get(inst.k) : null; }
+function sqOvr(c){ return c ? c._sqOvr : 0; }
+function sqRole(c){ return c ? (attrsFor(c)||{}).roleKey : ''; }
+function sqDraw(lo, hi, role){
+  const P=sqPool(), a=Math.floor(lo*P.length), b=Math.max(a+1, Math.floor(hi*P.length));
+  for(let i=0; i<300; i++){ const c=P[a+Math.floor(Math.random()*(b-a))]; if(c && (!role || sqRole(c)===role)) return c; }
+  return P[a];
+}
+function sqValue(ovr){ return Math.max(100, Math.round(150*Math.pow(1.18, ovr-60)/50)*50); }
+function sqAdd(c){ const id='c'+(SQ.next++); SQ.cards.push({id, k:c._k}); return id; }
+function sqSave(){ try{ localStorage.setItem(SQ_KEY, JSON.stringify(SQ)); }catch(e){} }
+function sqLoad(){ try{ const s=JSON.parse(localStorage.getItem(SQ_KEY)||'null'); if(s && s.v===1) return s; }catch(e){} return null; }
+function sqNew(){
+  SQ={v:1, coins:5000, next:1, cards:[], size:2, xi:[], bench:[], div:SQ_DIVS, week:1, wk:{n:0, pts:0}, cup:false, st:{}, claimed:{},
+      packs:[], stat:{packs:0, evenings:0, top10:0, wins:0, sold:0, promos:0}, mkt:{list:[]}, sells:[]};
+  SQ.xi.push(sqAdd(sqDraw(0, 0.4, 'roleIGL')));
+  SQ.xi.push(sqAdd(sqDraw(0, 0.4, 'roleFRG')));
+  SQ_NOTE=sqT().welcome;
+  sqSave();
+}
+function sqStart(){
+  SQ=sqLoad(); if(!SQ) sqNew();
+  SQ_TAB='squad';
+  show('screen-sq');
+  sqRender();
+}
+function sqReset(){ ccAsk(sqT().resetAsk, ()=>{ try{ localStorage.removeItem(SQ_KEY); }catch(e){} sqNew(); SQ_TAB='squad'; sqRender(); }); }
+function sqFit(id){ const v=SQ.st[id]; return v==null ? 100 : v; }
+// Всё, что считает силу и лобби, — в режиме карточек и под размер состава; глобалы возвращаются как были.
+function sqWithCards(fn){
+  const pm=CARD_MODE, ps=squadSize, pf=CC_WORLD_FAST;
+  CARD_MODE=true; squadSize=SQ.size; CC_WORLD_FAST=true;
+  try{ return fn(); } finally{ CARD_MODE=pm; squadSize=ps; CC_WORLD_FAST=pf; }
+}
+function sqMyTeam(){
+  const cards=SQ.xi.map(sqCardOf).filter(Boolean);
+  if(cards.length!==SQ.size) return null;
+  const t=buildTeam(cards);
+  const tired=SQ.xi.reduce((s, id)=>s+Math.max(0, 60-sqFit(id))/10, 0)/SQ.size;
+  t.pow=Math.round(t.pow-tired); t.isYou=true; t.name=sqT().you; t.tired=tired;
+  return t;
+}
+function sqRoleOK(){ const cards=(SQ && SQ.xi||[]).map(sqCardOf).filter(Boolean); return cards.length===SQ.size && SQ.size>1 && cards.filter(c=>sqRole(c)==='roleIGL').length===1; }
+// Соперники — составы из пула своей полосы: дивизион 10 — нижние карточки, 1 — верхние; кап — на ступень сильнее.
+function sqBots(n, div, harder){
+  const c=Math.min(0.85, 0.12+(SQ_DIVS-div)*0.08+(harder ? 0.08 : 0)), lo=Math.max(0, c-0.12), hi=Math.min(1, c+0.18);
+  const out=[];
+  for(let i=0; i<n; i++){
+    const sq=[], seen=new Set();
+    while(sq.length<SQ.size){ const p=sqDraw(lo, hi); if(!seen.has(p._k)){ seen.add(p._k); sq.push(p); } }
+    const t=buildTeam(sq); t.name=teamLabel(sq); out.push(t);
+  }
+  return out;
+}
+function sqPlay(cup){
+  const me=SQ.xi.length===SQ.size ? true : false; if(!me) return;
+  const T=sqT(), n=Math.round(100/SQ.size)-1;
+  const res=sqWithCards(()=>{
+    const you=sqMyTeam(); if(!you) return null;
+    const teams=[you].concat(sqBots(n, SQ.div, cup));
+    simulateGames(teams, cup ? SQ_CUP_GAMES : SQ_EVE_GAMES, pointsForPlace, 1);
+    return {you, ranked:teams.slice().sort((a, b)=>(b.stagePts-a.stagePts)||(b.wins-a.wins)||(b.stageElims-a.stageElims))};
+  });
+  if(!res) return;
+  const place=res.ranked.indexOf(res.you)+1, N=res.ranked.length, frac=place/N;
+  let coins=Math.round((300+2200*Math.pow(1-frac, 2)+res.you.wins*500)/10)*10, pack=null, notes=[];
+  if(cup){
+    coins*=2;
+    pack=frac<=0.04 ? 'elite' : frac<=0.2 ? 'gold' : frac<=0.5 ? 'silver' : 'bronze';
+    SQ.packs.push(pack);
+    SQ.week++; SQ.wk={n:0, pts:0}; SQ.cup=false; notes.push(T.newWeek);
+  } else {
+    const dp=frac<=0.1 ? 3 : frac<=0.3 ? 2 : frac<=0.6 ? 1 : 0;
+    SQ.wk.n++; SQ.wk.pts+=dp;
+    SQ.stat.evenings++;
+    if(place<=10) SQ.stat.top10++;
+    if(SQ.wk.n>=SQ_WEEK){
+      if(SQ.wk.pts>=9 && SQ.div>1){ SQ.div--; SQ.stat.promos++; notes.push(T.up(SQ.div)); }
+      else if(SQ.wk.pts<=2 && SQ.div<SQ_DIVS){ SQ.div++; notes.push(T.down(SQ.div)); }
+      else notes.push(T.stay(SQ.div));
+      // На кап выходных квалифицируются очками недели (как лига выходных по дивизионам в таких режимах): 4+ — пускают.
+      if(SQ.wk.pts>=SQ_CUP_QUAL){ SQ.cup=true; notes.push(T.cupOpen); }
+      else { SQ.week++; SQ.wk={n:0, pts:0}; notes.push(T.noCup(SQ_CUP_QUAL)); notes.push(T.newWeek); }
+    }
+  }
+  if(res.you.wins) SQ.stat.wins+=res.you.wins;
+  SQ.coins+=coins;
+  // Усталость: стартеры устают, остальные отдыхают.
+  SQ.cards.forEach(c=>{ const on=SQ.xi.indexOf(c.id)>=0; SQ.st[c.id]=Math.max(0, Math.min(100, sqFit(c.id)+(on ? -15 : 25))); });
+  SQ_LAST={cup:!!cup, place, N, coins, pack, notes, rows:res.ranked.slice(0, 10).concat(place>10 ? [res.you] : []).map(t=>({
+    name:t.isYou ? T.you : t.name, you:!!t.isYou, place:res.ranked.indexOf(t)+1, pts:t.stagePts, wins:t.wins, elims:t.stageElims}))};
+  sqSave(); sqRender();
+}
+function sqPackOpen(id, paid){
+  const T=sqT(), P=SQ_PACKS.find(p=>p.id===id); if(!P) return;
+  if(paid){ if(SQ.coins<P.cost){ SQ_NOTE=T.noCoins; sqRender(); return; } SQ.coins-=P.cost; }
+  else { const i=SQ.packs.indexOf(id); if(i<0) return; SQ.packs.splice(i, 1); }
+  const got=[];
+  for(let i=0; i<P.n; i++) got.push(i===0 && P.top ? sqDraw(P.top, 1) : sqDraw(P.lo, P.hi));
+  got.sort((a, b)=>sqOvr(b)-sqOvr(a));
+  SQ_OPENED=got.map(c=>sqAdd(c));
+  SQ.stat.packs++;
+  sqSave(); sqRender();
+}
+// Состав: переносы между основой, запасом и коллекцией.
+function sqMove(id, to){
+  SQ.xi=SQ.xi.filter(x=>x!==id); SQ.bench=SQ.bench.filter(x=>x!==id);
+  const k=(sqCardOf(id)||{})._k;
+  const dupe=[...SQ.xi, ...SQ.bench].some(x=>(sqCardOf(x)||{})._k===k);
+  if(to==='xi' && SQ.xi.length<SQ.size && !dupe) SQ.xi.push(id);
+  else if(to==='bench' && SQ.bench.length<SQ_BENCH && !dupe) SQ.bench.push(id);
+  sqSave(); sqRender();
+}
+function sqSetSize(n){
+  SQ.size=n;
+  while(SQ.xi.length>n){ const id=SQ.xi.pop(); if(SQ.bench.length<SQ_BENCH) SQ.bench.push(id); }
+  sqSave(); sqRender();
+}
+function sqDropCard(id){ SQ.cards=SQ.cards.filter(c=>c.id!==id); SQ.xi=SQ.xi.filter(x=>x!==id); SQ.bench=SQ.bench.filter(x=>x!==id); delete SQ.st[id]; }
+function sqQuickSell(id){ const c=sqCardOf(id); if(!c) return; SQ.coins+=Math.round(sqValue(sqOvr(c))*0.35/10)*10; sqDropCard(id); sqSave(); sqRender(); }
+function sqList(id){
+  const c=sqCardOf(id); if(!c) return;
+  SQ.sells.push({id, k:c._k, price:sqValue(sqOvr(c)), ends:Date.now()+SQ_SELL_MS});
+  sqDropCard(id); sqSave(); sqRender();
+}
+/* Рынок — боты. У лота своя «настоящая цена» (cap): ставки ботов растут к ней по таймеру. Твоя ставка выше их текущей —
+   лидируешь; бот перебил — монеты возвращаются сразу. Таймер кончился, а ты лидер — карточка твоя. Свой лот продаётся,
+   если цена не выше рыночной, с вероятностью 85%; комиссия 5%. Время — настоящее, лоты живут 4 минуты. */
+function sqMktTick(){
+  const now=Date.now(), T=sqT(), m=SQ.mkt;
+  m.list.forEach(l=>{
+    const bot=sqBotBid(l, now);
+    if(l.mine && bot>l.mine){ SQ.coins+=l.mine; l.mine=0; }
+    if(now>=l.ends && l.mine){ SQ.cards.push({id:'c'+(SQ.next++), k:l.k}); l.won=true; }
+  });
+  m.list=m.list.filter(l=>now<l.ends && !l.won);
+  while(m.list.length<SQ_MKT_N){
+    const c=sqDraw(Math.random()<0.7 ? 0.2 : 0.6, 1), v=sqValue(sqOvr(c));
+    const born=now-Math.floor(Math.random()*SQ_MKT_MS*0.6);
+    m.list.push({id:'m'+now+'_'+m.list.length+'_'+Math.floor(Math.random()*1e6), k:c._k, start:Math.round(v*0.55/50)*50,
+      cap:Math.round(v*(0.75+Math.random()*0.4)/50)*50, buy:Math.round(v*(1.1+Math.random()*0.3)/50)*50, born, ends:born+SQ_MKT_MS, mine:0});
+  }
+  SQ.sells=SQ.sells.filter(s=>{
+    if(now<s.ends) return true;
+    if(Math.random()<0.85){ const got=Math.round(s.price*0.95/10)*10; SQ.coins+=got; SQ.stat.sold++; SQ_NOTE=T.soldFor(got.toLocaleString()); }
+    else { SQ.cards.push({id:s.id, k:s.k}); SQ_NOTE=T.unsold; }
+    return false;
+  });
+  sqSave();
+}
+function sqBotBid(l, now){ const pr=Math.max(0, Math.min(1, (now-l.born)/(l.ends-l.born))); return Math.round((l.start+(l.cap-l.start)*Math.pow(pr, 1.5))/50)*50; }
+function sqBid(lid){
+  const l=SQ.mkt.list.find(x=>x.id===lid); if(!l) return;
+  const now=Date.now(), cur=Math.max(l.mine, sqBotBid(l, now)), next=Math.round(cur*1.05/50)*50+50;
+  if(next>=l.buy) return sqBuyNow(lid);
+  const extra=next-l.mine; if(SQ.coins<extra){ SQ_NOTE=sqT().noCoins; sqRender(); return; }
+  SQ.coins-=extra; l.mine=next;
+  // Боты отвечают: если твоя ставка ниже их «настоящей цены», к концу таймера тебя перебьют.
+  sqSave(); sqRender();
+}
+function sqBuyNow(lid){
+  const i=SQ.mkt.list.findIndex(x=>x.id===lid); if(i<0) return;
+  const l=SQ.mkt.list[i], cost=l.buy-l.mine; if(SQ.coins<cost){ SQ_NOTE=sqT().noCoins; sqRender(); return; }
+  SQ.coins-=cost; SQ.cards.push({id:'c'+(SQ.next++), k:l.k}); SQ.mkt.list.splice(i, 1);
+  sqSave(); sqRender();
+}
+function sqClaim(oid){
+  const o=SQ_OBJ.find(x=>x.id===oid); if(!o || SQ.claimed[oid] || o.cur(SQ)<o.goal) return;
+  SQ.claimed[oid]=true;
+  if(o.r.coins) SQ.coins+=o.r.coins;
+  if(o.r.pack) SQ.packs.push(o.r.pack);
+  sqSave(); sqRender();
+}
+function sqTab(t){ SQ_TAB=t; SQ_OPENED=t==='packs' ? SQ_OPENED : null; sqRender(); }
+function sqLeft(ms){ const s=Math.max(0, Math.ceil(ms/1000)); return Math.floor(s/60)+':'+String(s%60).padStart(2, '0'); }
+function sqCardHTML(id, c, acts){
+  const fit=id ? sqFit(id) : 100;
+  return '<div class="sq-c">'+futCardHTML(c)+(id && fit<100 ? '<u class="sq-fit" title="'+esc(sqT().fit)+'"><s style="width:'+fit+'%" class="'+(fit<60 ? 'low' : '')+'"></s></u>' : '')+
+    (acts ? '<div class="sq-acts">'+acts+'</div>' : '')+'</div>';
+}
+function sqRender(){
+  const root=document.getElementById('sqRoot'); if(!root || !SQ) return;
+  if(SQ_TIMER){ clearInterval(SQ_TIMER); SQ_TIMER=null; }
+  const T=sqT(), money=n=>Number(n||0).toLocaleString();
+  const tabs=[['squad', T.tabSquad], ['play', T.tabPlay], ['packs', T.tabPacks+(SQ.packs.length ? ' · '+SQ.packs.length : '')], ['market', T.tabMkt], ['obj', T.tabObj]];
+  let body='';
+  if(SQ_TAB==='squad'){
+    const t=sqWithCards(()=>sqMyTeam());
+    const inSquad=new Set([...SQ.xi, ...SQ.bench]);
+    const slot=(arr, i, where)=>{ const id=arr[i];
+      if(!id) return '<div class="sq-c sq-empty">'+esc(T.empty)+'</div>';
+      return sqCardHTML(id, sqCardOf(id), (where==='xi'
+        ? '<button onclick="sqMove(\''+id+'\',\'bench\')">'+esc(T.toBench)+'</button>'
+        : '<button onclick="sqMove(\''+id+'\',\'xi\')">'+esc(T.toXi)+'</button>')+
+        '<button onclick="sqMove(\''+id+'\',\'\')">'+esc(T.out)+'</button>'); };
+    const coll=SQ.cards.filter(c=>!inSquad.has(c.id)).map(c=>({id:c.id, c:sqCardOf(c.id)})).filter(x=>x.c).sort((a, b)=>sqOvr(b.c)-sqOvr(a.c));
+    body='<div class="sq-row sq-fmt">'+[2, 3, 4].map(n=>'<button class="'+(SQ.size===n ? 'on' : '')+'" onclick="sqSetSize('+n+')">'+esc(T.fmt[n])+'</button>').join('')+'</div>'+
+      '<div class="sq-stats">'+(t ? '<span><em>'+esc(T.pow)+'</em><b>'+t.pow+'</b></span><span><em>'+esc(T.ovr)+'</em><b>'+Math.round(t.ovrAvg||0)+'</b></span>'+
+        '<span><em>'+esc(T.syn)+'</em><b>+'+Math.min(t.syn.bonus, SYN_POW_CAP)+'</b></span>'+
+        '<span class="'+(t.roleBonus ? 'ok' : 'warn')+'">'+esc(t.roleBonus ? T.igl : T.noIgl)+'</span>' : '<span class="warn">'+esc(T.needXi(SQ.size))+'</span>')+'</div>'+
+      '<h3 class="sq-h">'+esc(T.starters)+'</h3><div class="sq-grid">'+Array.from({length:SQ.size}, (_, i)=>slot(SQ.xi, i, 'xi')).join('')+'</div>'+
+      '<h3 class="sq-h">'+esc(T.bench)+'</h3><div class="sq-grid">'+Array.from({length:SQ_BENCH}, (_, i)=>slot(SQ.bench, i, 'bench')).join('')+'</div>'+
+      '<h3 class="sq-h">'+esc(T.club)+' · '+coll.length+'</h3><div class="sq-grid">'+coll.map(x=>sqCardHTML(x.id, x.c,
+        '<button onclick="sqMove(\''+x.id+'\',\'xi\')">'+esc(T.toXi)+'</button><button onclick="sqMove(\''+x.id+'\',\'bench\')">'+esc(T.toBench)+'</button>'+
+        '<button onclick="sqList(\''+x.id+'\')">'+esc(T.list)+' '+money(sqValue(sqOvr(x.c)))+'</button>'+
+        '<button onclick="sqQuickSell(\''+x.id+'\')">'+esc(T.quick)+' '+money(Math.round(sqValue(sqOvr(x.c))*0.35/10)*10)+'</button>')).join('')+'</div>';
+  } else if(SQ_TAB==='play'){
+    const ready=SQ.xi.length===SQ.size;
+    body='<div class="sq-play"><div class="sq-stats"><span><em>'+esc(T.div)+'</em><b>'+SQ.div+'</b></span><span><em>'+esc(T.week)+'</em><b>'+SQ.week+'</b></span>'+
+      '<span><em>'+esc(T.weekPts)+'</em><b>'+SQ.wk.pts+'</b></span></div>'+
+      '<p class="sq-hint">'+esc(SQ.cup ? T.cupOpen : T.evening(SQ.wk.n+1, SQ_WEEK)+' · '+T.promoRule)+'</p>'+
+      (ready ? '<button class="sq-go" onclick="sqPlay('+(SQ.cup ? 'true' : 'false')+')">'+esc(SQ.cup ? T.playCup : T.playEve)+'</button>'
+             : '<p class="sq-warn">'+esc(T.needXi(SQ.size))+'</p>')+'</div>';
+    if(SQ_LAST){
+      const L0=SQ_LAST;
+      body+='<div class="sq-res"><h3 class="sq-h">'+esc(L0.cup ? T.cup : T.evening(Math.max(1, SQ.cup ? SQ_WEEK : SQ.wk.n), SQ_WEEK))+' · #'+L0.place+' / '+L0.N+'</h3>'+
+        '<table class="sq-tbl"><tr><th>'+esc(T.place)+'</th><th></th><th>'+esc(T.pts)+'</th><th>'+esc(T.wins)+'</th><th>'+esc(T.elims)+'</th></tr>'+
+        L0.rows.map(r=>'<tr class="'+(r.you ? 'you' : '')+'"><td>'+r.place+'</td><td>'+(r.you ? esc(r.name) : r.name)+'</td><td>'+r.pts+'</td><td>'+r.wins+'</td><td>'+r.elims+'</td></tr>').join('')+'</table>'+
+        '<p class="sq-earn">'+esc(T.earned)+': '+money(L0.coins)+' '+esc(T.coins.toLowerCase())+(L0.pack ? ' · '+esc(T.packNames[L0.pack]) : '')+'</p>'+
+        L0.notes.map(n=>'<p class="sq-note">'+esc(n)+'</p>').join('')+'</div>';
+    }
+  } else if(SQ_TAB==='packs'){
+    const own=SQ.packs.reduce((m, p)=>{ m[p]=(m[p]||0)+1; return m; }, {});
+    body=(Object.keys(own).length ? '<h3 class="sq-h">'+esc(T.yourPacks)+'</h3><div class="sq-packs">'+Object.keys(own).map(p=>
+        '<button class="sq-pack p-'+p+'" onclick="sqPackOpen(\''+p+'\', false)"><b>'+esc(T.packNames[p])+' ×'+own[p]+'</b><em>'+esc(T.open)+'</em></button>').join('')+'</div>' : '')+
+      '<div class="sq-packs">'+SQ_PACKS.map(P=>'<button class="sq-pack p-'+P.id+'"'+(SQ.coins<P.cost ? ' disabled' : '')+' onclick="sqPackOpen(\''+P.id+'\', true)">'+
+        '<b>'+esc(T.packNames[P.id])+'</b><span>'+esc(T.packDesc[P.id])+'</span><em>'+money(P.cost)+'</em></button>').join('')+'</div>'+
+      (SQ_OPENED ? '<h3 class="sq-h">'+esc(T.gotCards)+'</h3><div class="sq-grid sq-reveal">'+SQ_OPENED.map(id=>sqCardHTML(id, sqCardOf(id), '')).join('')+'</div>' : '');
+  } else if(SQ_TAB==='market'){
+    sqMktTick();
+    const now=Date.now();
+    body='<p class="sq-hint">'+esc(T.mktHint)+'</p><div class="sq-grid">'+SQ.mkt.list.slice().sort((a, b)=>a.ends-b.ends).map(l=>{
+      const c=sqPool().byK.get(l.k), bot=sqBotBid(l, now), lead=l.mine && l.mine>=bot;
+      return '<div class="sq-c">'+futCardHTML(c)+'<div class="sq-lot"><span>'+esc(T.curBid)+' <b>'+money(Math.max(bot, l.mine))+'</b>'+(lead ? ' · <i>'+esc(T.youTop)+'</i>' : '')+'</span>'+
+        '<span>'+sqLeft(l.ends-now)+' '+esc(T.left)+'</span></div><div class="sq-acts"><button onclick="sqBid(\''+l.id+'\')">'+esc(T.bid)+'</button>'+
+        '<button onclick="sqBuyNow(\''+l.id+'\')">'+esc(T.buyNow)+' '+money(l.buy)+'</button></div></div>'; }).join('')+'</div>'+
+      (SQ.sells.length ? '<h3 class="sq-h">'+esc(T.mySales)+'</h3><div class="sq-grid">'+SQ.sells.map(s=>'<div class="sq-c">'+futCardHTML(sqPool().byK.get(s.k))+
+        '<div class="sq-lot"><span>'+esc(T.listed)+' <b>'+money(s.price)+'</b></span><span>'+sqLeft(s.ends-now)+' '+esc(T.left)+'</span></div></div>').join('')+'</div>' : '');
+    SQ_TIMER=setInterval(()=>{ if(SQ_TAB==='market' && document.getElementById('screen-sq').classList.contains('active')) sqRender(); else { clearInterval(SQ_TIMER); SQ_TIMER=null; } }, 5000);
+  } else {
+    body='<div class="sq-objs">'+SQ_OBJ.map(o=>{ const cur=Math.min(o.goal, o.cur(SQ)), done=SQ.claimed[o.id];
+      const rw=o.r.coins ? money(o.r.coins)+' '+T.coins.toLowerCase() : T.packNames[o.r.pack];
+      return '<div class="sq-obj'+(done ? ' done' : '')+'"><b>'+esc(T.obj[o.id])+'</b><span>'+cur+' / '+o.goal+' · '+esc(T.reward)+': '+esc(rw)+'</span>'+
+        (done ? '<em>'+esc(T.claimed)+'</em>' : '<button'+(cur<o.goal ? ' disabled' : '')+' onclick="sqClaim(\''+o.id+'\')">'+esc(T.claim)+'</button>')+'</div>'; }).join('')+'</div>';
+  }
+  root.innerHTML='<div class="sq-top"><button class="sq-back" onclick="show(\'screen-mode\')">‹ '+esc(T.back)+'</button>'+
+    '<h2>'+esc(T.title)+'</h2><span class="sq-wal"><em>'+esc(T.coins)+'</em><b>'+money(SQ.coins)+'</b></span>'+
+    '<span class="sq-wal"><em>'+esc(T.div)+'</em><b>'+SQ.div+'</b></span></div>'+
+    (SQ_NOTE ? '<div class="sq-flash">'+esc(SQ_NOTE)+'</div>' : '')+
+    '<nav class="sq-tabs">'+tabs.map(([k, l])=>'<button class="'+(SQ_TAB===k ? 'on' : '')+'" onclick="sqTab(\''+k+'\')">'+esc(l)+'</button>').join('')+'</nav>'+
+    '<div class="sq-body">'+body+'</div>'+
+    '<div class="sq-foot"><button class="sq-reset" onclick="sqReset()">'+esc(T.reset)+'</button></div>';
+  SQ_NOTE='';
+}
+
 // Who the AI ends up with. This used to weight by 1 + rating/100*3, the same
 // curve the player's packs were moved off years ago because it makes a 96 only
 // about 1.4x likelier than a 60 -- which is to say the field was assembled
@@ -118992,7 +119386,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='0ff1c1c4';
+const CC_BUILD='67947cf8';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
