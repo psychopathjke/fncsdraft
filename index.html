@@ -5437,6 +5437,12 @@
   .sq-tile{position:relative;display:flex;flex-direction:column;justify-content:flex-end;gap:4px;min-height:130px;padding:16px;border-radius:16px;border:0;cursor:pointer;
     text-align:left;color:#fff;font:inherit;overflow:hidden;background:linear-gradient(150deg,#22357e,#121d4d);box-shadow:inset 0 0 0 1px rgba(180,200,255,.18);}
   .sq-tile:hover{box-shadow:inset 0 0 0 2px #ffe600;}
+  /* Превью плитки: картинка под затемнением снизу, текст поверх. */
+  .sq-tile.has-img::before{content:'';position:absolute;inset:0;background:var(--img) center/cover no-repeat;opacity:.75;transition:transform .3s;}
+  .sq-tile.has-img::after{content:'';position:absolute;inset:0;background:linear-gradient(0deg,rgba(6,10,34,.96) 8%,rgba(6,10,34,.55) 48%,rgba(6,10,34,.05) 100%);}
+  .sq-tile.has-img:hover::before{transform:scale(1.04);}
+  .sq-tile > *{position:relative;z-index:1;}
+  @media(prefers-reduced-motion:reduce){ .sq-tile.has-img::before{transition:none;} .sq-tile.has-img:hover::before{transform:none;} }
   .sq-tile b{font-family:var(--font-display);font-size:22px;text-transform:uppercase;line-height:1.05;}
   .sq-tile span{font-size:12px;color:#d3dcff;line-height:1.35;}
   .sq-tile em{font-style:normal;font-size:12px;font-weight:900;color:#ffe600;}
@@ -111639,19 +111645,26 @@ function sqRender(){
   let body='', title=T.title;
   const back='<button class="sq-crumb" onclick="sqTab(\'home\')">‹ '+esc(T.home)+'</button>';
   if(SQ_TAB==='home'){
-    const tile=(k, name, sub, cls, extra)=>'<button class="sq-tile '+cls+'" onclick="sqTab(\''+k+'\')"><b>'+esc(name)+'</b><span>'+esc(sub)+'</span>'+(extra||'')+'</button>';
+    /* Превью на плитках (27.10, его «превьюхи добавь»): арт FNCS 2026 и Мейджора, остров, эмблема, скин, лобби сезона;
+       у «Состава» и «Клуба» — фото своих лучших игроков, если оно есть в photos/. */
+    const tile=(k, name, sub, cls, extra, img)=>'<button class="sq-tile '+cls+(img ? ' has-img' : '')+'"'+(img ? ' style="--img:url(\''+encodeURI(img).replace(/'/g, '%27')+'\')"' : '')+
+      ' onclick="sqTab(\''+k+'\')"><b>'+esc(name)+'</b><span>'+esc(sub)+'</span>'+(extra||'')+'</button>';
+    const bestPhoto=ids=>{ const cs=ids.map(id=>sqCardOf(id)).filter(Boolean).sort((a, b)=>sqOvr(b)-sqOvr(a));
+      for(const c of cs){ const u=photoURLReal(c); if(u) return u; } return null; };
+    // У «Клуба» — лучший вне основы, чтобы две плитки не показывали одно лицо.
+    const xiPhoto=bestPhoto(SQ.xi), clubPhoto=bestPhoto(SQ.cards.filter(c=>!c.un && SQ.xi.indexOf(c.id)<0).map(c=>c.id)) || bestPhoto(SQ.cards.filter(c=>!c.un).map(c=>c.id));
     body=(unN ? '<button class="sq-unbar" onclick="sqTab(\'un\')">'+esc(T.hUn(unN))+' ›</button>' : '')+
       '<div class="sq-home">'+
-      tile('rivals', T.tabRivals, T.hRivals, 'big k-rivals', '<em>'+esc(T.div)+' '+SQ.div+' · '+esc(T.evening(Math.min(SQ.wk.n+1, SQ_WEEK), SQ_WEEK))+'</em>')+
-      tile('rivals', T.cup, T.hCup, 'k-cup'+(SQ.cup ? ' hot' : ''), '<em>'+(SQ.cup ? esc(T.cupOpen) : esc(T.locked))+'</em>')+
-      tile('battles', T.tabBattles, T.hBattles, 'k-battles', '<em>'+esc(T.bPlayed(SQ.sb.played, SQ_BATTLE_MAX))+'</em>')+
-      tile('draft', T.tabDraft, T.hDraft, 'k-draft', '<em>'+esc(SQ.dr && !SQ.dr.done ? T.drRound(SQ.dr.round+1) : T.drCost(money(SQ_DRAFT_COST)))+'</em>')+
-      tile('squad', T.tabSquad, T.hSquad, 'k-squad', myT ? '<em>'+esc(T.pow)+' '+myT.pow+'</em>' : '<em>'+esc(T.needXi(SQ.size))+'</em>')+
-      tile('club', T.tabClub, T.hClub, 'k-club', '<em>'+SQ.cards.filter(c=>!c.un).length+'</em>')+
-      tile('packs', T.tabPacks, T.hPacks, 'k-packs', SQ.packs.length ? '<em>'+esc(T.yourPacks)+': '+SQ.packs.length+'</em>' : '')+
-      tile('market', T.tabMkt, T.hMkt, 'k-market')+
-      tile('sbc', T.tabSbc, T.hSbc, 'k-sbc')+
-      tile('obj', T.tabObj, T.hObj, 'k-obj', '<em>'+SQ_OBJ.filter(o=>!SQ.claimed[o.id] && o.cur(SQ)>=o.goal).length+' ✓</em>')+
+      tile('rivals', T.tabRivals, T.hRivals, 'big k-rivals', '<em>'+esc(T.div)+' '+SQ.div+' · '+esc(T.evening(Math.min(SQ.wk.n+1, SQ_WEEK), SQ_WEEK))+'</em>', 'art/fncs-2026.jpg')+
+      tile('rivals', T.cup, T.hCup, 'k-cup'+(SQ.cup ? ' hot' : ''), '<em>'+(SQ.cup ? esc(T.cupOpen) : esc(T.locked))+'</em>', 'art/fncs-2026-major1.jpg')+
+      tile('battles', T.tabBattles, T.hBattles, 'k-battles', '<em>'+esc(T.bPlayed(SQ.sb.played, SQ_BATTLE_MAX))+'</em>', 'art/map-m1.jpg')+
+      tile('draft', T.tabDraft, T.hDraft, 'k-draft', '<em>'+esc(SQ.dr && !SQ.dr.done ? T.drRound(SQ.dr.round+1) : T.drCost(money(SQ_DRAFT_COST)))+'</em>', 'art/mode-squad.jpg')+
+      tile('squad', T.tabSquad, T.hSquad, 'k-squad', myT ? '<em>'+esc(T.pow)+' '+myT.pow+'</em>' : '<em>'+esc(T.needXi(SQ.size))+'</em>', xiPhoto)+
+      tile('club', T.tabClub, T.hClub, 'k-club', '<em>'+SQ.cards.filter(c=>!c.un).length+'</em>', clubPhoto)+
+      tile('packs', T.tabPacks, T.hPacks, 'k-packs', SQ.packs.length ? '<em>'+esc(T.yourPacks)+': '+SQ.packs.length+'</em>' : '', 'art/mode-ewc.jpg')+
+      tile('market', T.tabMkt, T.hMkt, 'k-market', '', 'art/lobby/s41.webp')+
+      tile('sbc', T.tabSbc, T.hSbc, 'k-sbc', '', 'art/mode-major1.jpg')+
+      tile('obj', T.tabObj, T.hObj, 'k-obj', '<em>'+SQ_OBJ.filter(o=>!SQ.claimed[o.id] && o.cur(SQ)>=o.goal).length+' ✓</em>', 'art/mode-all-fncs.jpg')+
       '</div>';
   } else if(SQ_TAB==='squad'){
     title=T.tabSquad;
@@ -119709,7 +119722,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='5482d437';
+const CC_BUILD='1571e889';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
