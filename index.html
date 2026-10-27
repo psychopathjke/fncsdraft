@@ -5465,7 +5465,10 @@
   .sq-m-top{display:flex;align-items:center;gap:6px;}
   .sq-m-top b{font-size:24px;font-weight:900;line-height:1;font-variant-numeric:tabular-nums;}
   .sq-m-top i{font-style:normal;font-size:10px;font-weight:900;padding:2px 6px;border-radius:6px;background:rgba(0,0,0,.35);}
-  .sq-m-top span{margin-left:auto;}
+  .sq-m{position:relative;}
+  .sq-m-av{position:absolute;top:8px;right:8px;width:52px;height:56px;}
+  .sq-m-top,.sq-m-h,.sq-m-s{padding-right:66px;}
+  .sq-m-h{margin-top:6px;}
   .sq-m-h{font-weight:900;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   .sq-m-s{font-size:11px;color:rgba(255,255,255,.75);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   .sq-m-a{display:grid;grid-template-columns:repeat(3,1fr);gap:1px 6px;margin-top:4px;font-size:11px;font-weight:900;font-variant-numeric:tabular-nums;}
@@ -111257,6 +111260,23 @@ function sqPool(){
   SQ_POOL.byK=new Map(SQ_POOL.map(c=>[c._k, c]));
   return SQ_POOL;
 }
+/* Соперники — клубы ботов, а не «Pollo & Malibuca» (27.10, его выбор «соперники как боты-клубы»): состав внутри тот же
+   (настоящие карточки своей полосы, отсюда и сила), снаружи — название клуба и средний OVR, как у других менеджеров
+   в дивизионе. Название в лобби не повторяется. */
+const SQ_CLUB_A=['Storm', 'Neon', 'Void', 'Royal', 'Night', 'Frost', 'Iron', 'Shadow', 'Lunar', 'Turbo', 'Crimson', 'Toxic', 'Apex', 'Zero',
+  'Nova', 'Hyper', 'Static', 'Blaze', 'Rogue', 'Prime', 'Golden', 'Silent', 'Wild', 'Electric', 'Savage', 'Cobalt', 'Arctic', 'Phantom'];
+const SQ_CLUB_B=['Wolves', 'Kings', 'Raiders', 'Legion', 'Vipers', 'Titans', 'Ghosts', 'Lions', 'Owls', 'Sharks', 'Knights', 'Rebels',
+  'Falcons', 'Reapers', 'Ravens', 'Hunters', 'Dragons', 'Bandits', 'Comets', 'Pirates', 'Panthers', 'Spartans', 'Outlaws', 'Hornets'];
+const SQ_CLUB_C=['', '', '', ' FC', ' Esports', ' Gaming', ' Club', ' Academy'];
+function sqClubName(used, t){
+  let name='';
+  for(let i=0; i<40; i++){
+    name=SQ_CLUB_A[Math.floor(Math.random()*SQ_CLUB_A.length)]+' '+SQ_CLUB_B[Math.floor(Math.random()*SQ_CLUB_B.length)]+SQ_CLUB_C[Math.floor(Math.random()*SQ_CLUB_C.length)];
+    if(!used.has(name)) break;
+  }
+  used.add(name);
+  return name+' · '+Math.round(t.ovrAvg||0);
+}
 function sqCardOf(id){ const inst=(SQ.cards||[]).find(c=>c.id===id); return inst ? sqPool().byK.get(inst.k) : null; }
 function sqOvr(c){ return c ? c._sqOvr : 0; }
 function sqRole(c){ return c ? (attrsFor(c)||{}).roleKey : ''; }
@@ -111307,11 +111327,11 @@ function sqRoleOK(){ const cards=(SQ && SQ.xi||[]).map(sqCardOf).filter(Boolean)
 // Соперники — составы из пула своей полосы: дивизион 10 — нижние карточки, 1 — верхние; кап — на ступень сильнее.
 function sqBots(n, div, harder){
   const c=Math.min(0.85, 0.12+(SQ_DIVS-div)*0.08+(harder ? 0.08 : 0)), lo=Math.max(0, c-0.12), hi=Math.min(1, c+0.18);
-  const out=[];
+  const out=[], used=new Set();
   for(let i=0; i<n; i++){
     const sq=[], seen=new Set();
     while(sq.length<SQ.size){ const p=sqDraw(lo, hi); if(!seen.has(p._k)){ seen.add(p._k); sq.push(p); } }
-    const t=buildTeam(sq); t.name=teamLabel(sq); out.push(t);
+    const t=buildTeam(sq); t.name=sqClubName(used, t); out.push(t);
   }
   return out;
 }
@@ -111511,11 +111531,11 @@ function sqSellDupes(){
 function sqLobby(cards, center, games){
   return sqWithCards(()=>{
     const you=buildTeam(cards); you.isYou=true; you.name=sqT().you;
-    const n=Math.round(100/SQ.size)-1, lo=Math.max(0, center-0.12), hi=Math.min(1, center+0.15), bots=[];
+    const n=Math.round(100/SQ.size)-1, lo=Math.max(0, center-0.12), hi=Math.min(1, center+0.15), bots=[], used=new Set();
     for(let i=0; i<n; i++){
       const sq=[], seen=new Set();
       while(sq.length<SQ.size){ const p=sqDraw(lo, hi); if(!seen.has(p._k)){ seen.add(p._k); sq.push(p); } }
-      const t=buildTeam(sq); t.name=teamLabel(sq); bots.push(t);
+      const t=buildTeam(sq); t.name=sqClubName(used, t); bots.push(t);
     }
     const teams=[you].concat(bots);
     simulateGames(teams, games, pointsForPlace, 1);
@@ -111622,6 +111642,8 @@ function sqMini(c, o){
   const ov=sqOvr(c), a=attrsFor(c)||{}, role=sqRole(c)==='roleIGL' ? 'IGL' : 'FRG';
   return '<div class="sq-m t-'+sqTier(ov)+(o.sel ? ' sel' : '')+(o.click ? ' click' : '')+'"'+(o.click ? ' onclick="'+o.click+'"' : '')+
     ' title="'+esc(c.handle+(c.org ? ' · '+c.org : '')+(c.event ? ' · '+c.event : ''))+'">'+
+    // Аватар (27.10, его «аватарок нет у карточек»): фото, а без него — закреплённый за ником персонаж, как на большой карточке.
+    '<div class="sq-m-av">'+portraitHTML(c, 56)+'</div>'+
     '<div class="sq-m-top"><b>'+ov+'</b><i>'+role+'</i><span>'+cardFlag(c, 14)+'</span></div>'+
     '<div class="sq-m-h">'+esc(c.handle)+'</div><div class="sq-m-s">'+esc([c.region, c.org].filter(Boolean).join(' · '))+'</div>'+
     '<div class="sq-m-a">'+['aim', 'end', 'sur', 'exp', 'clu', 'con'].map(k=>'<span><em>'+k.toUpperCase()+'</em>'+Math.round(a[k]||0)+'</span>').join('')+'</div>'+
@@ -111632,7 +111654,7 @@ function sqResHTML(){
   if(!SQ_LAST) return ''; const T=sqT(), L0=SQ_LAST, money=n=>Number(n||0).toLocaleString();
   return '<div class="sq-res"><h3 class="sq-h">'+esc(L0.title||'')+' · #'+L0.place+' / '+L0.N+'</h3>'+
     '<table class="sq-tbl"><tr><th>'+esc(T.place)+'</th><th></th><th>'+esc(T.pts)+'</th><th>'+esc(T.wins)+'</th><th>'+esc(T.elims)+'</th></tr>'+
-    L0.rows.map(r=>'<tr class="'+(r.you ? 'you' : '')+'"><td>'+r.place+'</td><td>'+(r.you ? esc(r.name) : r.name)+'</td><td>'+r.pts+'</td><td>'+r.wins+'</td><td>'+r.elims+'</td></tr>').join('')+'</table>'+
+    L0.rows.map(r=>'<tr class="'+(r.you ? 'you' : '')+'"><td>'+r.place+'</td><td>'+esc(r.name)+'</td><td>'+r.pts+'</td><td>'+r.wins+'</td><td>'+r.elims+'</td></tr>').join('')+'</table>'+
     (L0.coins ? '<p class="sq-earn">'+esc(T.earned)+': '+money(L0.coins)+' '+esc(T.coins.toLowerCase())+(L0.pack ? ' · '+esc(T.packNames[L0.pack]) : '')+'</p>' : '')+
     L0.notes.map(n=>'<p class="sq-note">'+esc(n)+'</p>').join('')+'</div>';
 }
@@ -119722,7 +119744,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='1571e889';
+const CC_BUILD='5df34429';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
