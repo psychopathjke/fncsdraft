@@ -62,8 +62,13 @@ for(const reg of REGS){
     out.realRects=out.realRects||{}; out.realRects[reg]={day:real.day, updated:real.updated, rects:zs.map(z=>({x:z.x,y:z.y,w:z.w,h:z.h,loot:z.loot,chests:z.chests}))};
   }
   const stat=new Map(rows.map(r=>[r.f.id, {mates:{}, n:r.f.n, c:r.f.c, via:r.f.via, ovr:r.ovr, real:!!r.card, wins:0, top3:0, top10:0, places:0, pts:0, vr:0, elims:0, zones:{}, contest:0, games:0}]));
+  /* ФОРМА ДНЯ (27.10, проверка прогноза против итогов): сила игрока в каждом прогоне сдвигается на N(0, SIG) — в
+     настоящем финале кто-то в ударе, кто-то нет. Без этого фаворит был сильным в каждом из 200 прогонов, и модель
+     давала ему 63% на топ-10 при 25% по факту. SIG подобран по пяти доигранным регионам (см. run-solos-predict.js). */
+  const SIG=__SIG__;
+  const gauss=()=>{ let u=0, v=0; while(!u) u=Math.random(); while(!v) v=Math.random(); return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v); };
   for(let run=0; run<N; run++){
-    const field=rows.map(r=>{ const t=careerTeam([r.c]); t.name=r.f.n; t._pid=r.f.id; if(seatOf.has(r.f.id)) t._realZone=seatOf.get(r.f.id); return t; });
+    const field=rows.map(r=>{ const t=careerTeam([r.c]); t.name=r.f.n; t._pid=r.f.id; if(SIG) t.pow=Math.round(t.pow+SIG*gauss()); if(seatOf.has(r.f.id)) t._realZone=seatOf.get(r.f.id); return t; });
     await simulateGamesLive(field, 12, victoryR1Points, 4, 'stage', 0, null, null,
       {lobbySize:100, stageName:'pred', mapReplay:false, stopOnYourDeath:false,
        dropEachGame:async (g, room)=>{ const l=room||field;

@@ -3,13 +3,16 @@
 // из которого build-solos-predict.js собирает /predict/fncs-solos-2026.
 //   node tools/run-solos-predict.js [N=200] [регионы через запятую]
 const fs=require('fs'), os=require('os'), path=require('path'); const {execFileSync}=require('child_process');
+const SIG_DEFAULT=12;  // подобрано 27.10 по итогам пяти регионов: Brier топ-10 0.0809 против 0.0850 без формы (база «всем по 10%» 0.0890)
 const N=+(process.argv[2]||200), REGS=(process.argv[3]||'EU,NAC,NAW,BR,ASIA,ME,OCE').split(',');
 const DROPS=path.join(__dirname,'measured','solos-2026-drops.json');
 const data=fs.readFileSync(path.join(__dirname,'measured','solos-2026-final.json'),'utf8');
 const body=fs.readFileSync(path.join(__dirname,'probes','solos-predict-body.js'),'utf8')
-  .replace('__DATA__', data).replace('__REGS__', JSON.stringify(REGS)).replace('__N__', String(N))
+  // Форма дня: σ сдвига силы игрока на один прогон (SIG=…; по умолчанию подобранное по итогам 27.10).
+  // Подстановка функциями: в данных финалистов есть «$», и строкой-заменой JS читал его как шаблон ($' $&) — подмешивал лишнее, прогон молча отдавал старые цифры (27.10).
+  .replace('__DATA__', ()=>data).replace('__REGS__', ()=>JSON.stringify(REGS)).replace('__N__', ()=>String(N)).replace('__SIG__', ()=>String(process.env.SIG!=null ? +process.env.SIG : SIG_DEFAULT))
   // Настоящие дропы с eucompetitive (fetch-solos-drops.js); нет файла — все регионы на точках движка.
-  .replace('__DROPS__', fs.existsSync(DROPS) ? fs.readFileSync(DROPS,'utf8') : '{}');
+  .replace('__DROPS__', ()=>fs.existsSync(DROPS) ? fs.readFileSync(DROPS,'utf8') : '{}');
 const tmp=path.join(fs.mkdtempSync(path.join(os.tmpdir(),'spred-')),'body.js'); fs.writeFileSync(tmp, body);
 const o=JSON.parse(execFileSync(process.execPath,[path.join(__dirname,'probe-run.js'), tmp, String(N*7*7500+600000)],{encoding:'utf8',maxBuffer:1<<28,stdio:['ignore','pipe','ignore']}));
 if(o.err) throw new Error(o.err);
