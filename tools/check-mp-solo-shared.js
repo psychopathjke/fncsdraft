@@ -120,7 +120,7 @@ const BOOT = `
     const body=src.slice(at, at+20000);
     check('соло-раннер: локстеп, когда играют оба, одиночный вечер — когда второму нечего', /const alone=ccMpTeam\\(\\) && \\(?!peerIn/.test(body)   /* 673cd19: «|| напарник пропустил день» — тоже в одиночку */ && body.indexOf('ccSoloTeamSettle()')>=0);
     // Из сотни вычитаются ОБА человека (тёзки обоих). Его Sky и Scroll, 29 августа: «diff 1 of 4900: #278 scroll:96 vs sky:96».
-    check('сотня строится без обоих людей', body.indexOf('careerSoloField(lobbyCr, mate ? [me, pc]')>=0);
+    check('сотня строится без обоих людей', body.indexOf('const fieldMine=mate ? [me, pc]')>=0 && body.indexOf('careerSoloField(lobbyCr, fieldMine')>=0);   // 52eca270: список вычитаемых — fieldMine (+ прошедшие прошлого этапа)
     // Соло-Victory Cup в команде — та же схема: оба человека, тёзки обоих вычтены, вопросы адресные.
     const atV=src.indexOf('async function runCareerVictoryNight('); const bodyV=src.slice(atV, atV+20000);
     check('соло-Victory Cup: оба в сотне и тёзки вычтены', bodyV.indexOf('careerSoloField(cr, pc ? [me, pc] : drafted')>=0 && bodyV.indexOf('soloMate.isMate=true')>=0 && bodyV.indexOf('ccSoloDrops(')>=0);

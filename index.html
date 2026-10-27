@@ -101457,7 +101457,7 @@ const MAP_ASPECT={m1:'1100/1142', m2:'1100/970', s42:'921/843', s42solo:'921/843
                   k1:'1600/1600', k2:'1600/1600', k3:'1600/1600', k4:'1600/1600',
                   j1:'1600/1600', j2:'1600/1600', j3:'1600/1600', j4:'1600/1600',
                   h1:'2048/2048', g5:'2048/2048', g6:'2048/2048', g7:'2048/2048', h3:'2048/2048', h4:'2048/2048', i1:'2048/2048', i2:'2048/2048', i3:'2048/2048',
-                  t2:'1600/1600', t3:'1600/1600',
+                  t2:'1600/1600', t3:'1600/1600', t4:'1600/1600',
                   r1:'1062/776', r2:'1062/776', r3:'1034/770', r4:'1034/770'};
 // ---------- Real drop-spot data (Kinch Premium competitive evals) ----------
 // Zone quality used to be guessed from the rectangle: bigger box = more points.
@@ -122268,6 +122268,7 @@ function ccTeamState(){
    браузере. И сразу за этим выбрасывается мир: он построен по прошлому
    состоянию, а сцена только что могла стать другой. См. ccWorldReset. */
 let CC_MP_ADVANCE=false;
+let CC_MP_TURN_FOLLOW=false;   // идёт стык сезона вслед за напарником (см. ccApplyTeamState)
 /* Состояние, пришедшее ОТ НАПАРНИКА посреди дня.
 
    Раньше командное состояние доезжало только при входе и в конце вечера:
@@ -122336,6 +122337,17 @@ function ccApplyTeamState(t){
      Гонка не делит ничего, кроме сводок (см. careerRaceEnter), значит и брать
      ей нечего. */
   if(typeof ccRaceOn==='function' && ccRaceOn() && !ccMpTeam()) return;
+  /* СТЫК СЕЗОНА У ТОГО, КТО ЕГО НЕ ЖАЛ (errlog 26.10). «Новый сезон» жмёт один; второму приезжало только командное
+     состояние, а личная половина careerNewSeason (формат года, обрезка PR, возраст, оборот клуба, предложения) у него
+     не шла никогда: в 2026-м у одного дуо, у другого трио, PR второго сезона расходился на тысячи строк (проба
+     check-mp-team-season с CC_TURN_ONE=1). Теперь второй проходит стык сам — тот же путь, что у нажавшего, — а
+     общее ложится поверх ниже. */
+  if(ccMpTeam() && !CC_MP_TURN_FOLLOW && CAREER.career.seasonOver && t.season===(CAREER.career.season||1)+1){
+    CC_MP_TURN_FOLLOW=true;
+    try{ careerNewSeason(); }catch(e){ console.error('careerNewSeason (напарник начал сезон)', e); }
+    finally{ CC_MP_TURN_FOLLOW=false; }
+    if(!CAREER || !CAREER.career) return;
+  }
   // Единственное окно, в котором командной карьере разрешено двигать день:
   // см. careerAdvanceTo.
   CC_MP_ADVANCE=true;
@@ -122404,6 +122416,12 @@ function ccApplyTeamState(t){
          CAREER.career[k]=t[k];
        });
        CC_TEAM_TOP.forEach(function(k){ if(t[k]!==undefined) CAREER[k]=t[k]; });
+       /* ФОРМАТ СЕЗОНА (errlog 26.10, пара с карьерой 2021-го: в 2026-м у одного дуо, у другого трио «+zandy»).
+          Новый сезон жмёт один, второй берёт его состояние: season и sizes приезжали, а cr.size нет, и у второго
+          оставался формат прошлого года. sizes[сезон] пишет careerNewSeason того, кто жал, — по нему и живёт формат.
+          2019–2020 меняют формат по датам внутри года — там его ставит ccSyncPhaseRoster. */
+       { const cr=CAREER.career, rec=cr.sizes && cr.sizes[cr.season];
+         if((rec===2 || rec===3 || rec===4) && !ccPhaseRoster()) cr.size=rec; }
        // Сид лобби старше присланного. См. ccMpLobbySeed.
        if(CAREER.career.lobbySeed) CAREER.career.seed=CAREER.career.lobbySeed; }
   finally{ CC_MP_ADVANCE=false; }
@@ -174006,6 +174024,7 @@ function mgrCarSeatSync(tm){
 }
 function mgrTeamOut(){
   const sw=MGR.tswap; if(!sw) return null;
+  if(!CAREER || !CAREER.career){ MGR.tswap=null; return null; }   // вышел из менеджера посреди перемотки (errlog 26.10c)
   try{ mgrSeedOut(); }catch(e){ console.error('mgrSeedOut', e); MGR_SEED_SWAP=null; }
   const cr=CAREER.career, st={};
   const rows=(cr.log||[]).slice(sw.log0), got=Math.max(0, (cr.earnings||0)-(sw.earn0||0))*(sw.n||1);

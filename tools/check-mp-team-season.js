@@ -183,12 +183,17 @@ const boot = (who) => `
         prRaw:(function(){ try{ const t=careerPrTally(); const o={}; Object.keys(t.rows).slice(0,4000).forEach(h=>{ o[h]=(t.rows[h].v||[]).map(x=>Math.round(x[0]*1000)/1000+'@'+x[1]).join(';'); }); return o; }catch(e){ return {}; } })(),
         km:(function(){ const o={}; Object.keys(window.__km||{}).forEach(k=>{ const v=window.__km[k]; o[k]=Object.keys(v).sort().map(h=>h+'='+v[h]).join(','); }); window.__km={}; return o; })()};
     };
+    /* CC_TURN_ONE: B проходит стык сам, как только приходит новый сезон A (ccApplyTeamState) — снимок его сезона берётся
+       в ту же секунду, до стыка, иначе он снимает уже пустой новый год. */
+    const turnOneB=!!${JSON.stringify(process.env.CC_TURN_ONE||'')} && ${JSON.stringify(who.role_mp)}!=='a';
+    if(turnOneB){ const orig=careerNewSeason; window.careerNewSeason=function(){ window.__preTurn=seasonSnap(); return orig.apply(this, arguments); }; }
     for(let si=0; si<${SEASONS}; si++){
+      const snS=CAREER.career.season;
       const target=${JSON.stringify(process.env.CC_UNTIL||'')} || ccYearTo();
       careerRenderHub('calendar'); await wait(400);
       careerFfToDay(target);
       let lastDay=CAREER.career.day, lastMove=Date.now(), again=0;
-      while(Date.now()-t0<${BUDGET_MS} && (CAREER.career.day<target || CC_FF) && !CAREER.career.seasonOver){
+      while(Date.now()-t0<${BUDGET_MS} && (CAREER.career.day<target || CC_FF) && !CAREER.career.seasonOver && CAREER.career.season===snS){
         await wait(500);
         if(out.notes.ffErr) break;
         if(!CC_FF && !(typeof CAREER_RUN!=='undefined' && CAREER_RUN) && CAREER.career.day<target){
@@ -217,14 +222,19 @@ const boot = (who) => `
       }
       if(out.notes.stall || out.notes.ffErr) { out.notes.seasons.push(seasonSnap()); break; }
       // Конец года: «следующий день» за последним днём закрывает сезон (голос обоих).
-      for(let i=0;!${JSON.stringify(process.env.CC_UNTIL||"")} && Date.now()-t0<${BUDGET_MS} && !CAREER.career.seasonOver && i<2400;i++){ if(i%20===0){ try{ careerNextDay(); }catch(e){} } await wait(250); }
+      for(let i=0;!${JSON.stringify(process.env.CC_UNTIL||"")} && Date.now()-t0<${BUDGET_MS} && !CAREER.career.seasonOver && CAREER.career.season===snS && i<2400;i++){ if(i%20===0){ try{ careerNextDay(); }catch(e){} } await wait(250); }
       // Дать дельтам последнего вечера доехать до снимка.
-      await wait(8000);
-      const snap=seasonSnap(); out.notes.seasons.push(snap);
-      if(!CAREER.career.seasonOver && !${JSON.stringify(process.env.CC_UNTIL||"")}){ out.notes.notClosed=CAREER.career.day; break; }
+      if(CAREER.career.season===snS) await wait(8000);
+      if(CAREER.career.season===snS && turnOneB) for(let i=0;i<240 && CAREER.career.season===snS;i++) await wait(500);
+      const snap=(turnOneB && window.__preTurn) ? window.__preTurn : seasonSnap(); window.__preTurn=null; out.notes.seasons.push(snap);
+      if(!CAREER.career.seasonOver && CAREER.career.season===snS && !${JSON.stringify(process.env.CC_UNTIL||"")}){ out.notes.notClosed=CAREER.career.day; break; }
       if(${JSON.stringify(process.env.CC_UNTIL||"")}) break;
       if(snap.won || si===${SEASONS}-1) break;
-      careerNewSeason();
+      /* CC_TURN_ONE=1 — стык жмёт только A, B берёт его состояние, как у живых двоих (errlog 26.10: у того, кто не жал,
+         оставался формат прошлого года). Без него оба жмут сами — так проба стык второго не проверяет. */
+      const sn0=CAREER.career.season;
+      if(!${JSON.stringify(process.env.CC_TURN_ONE||"")} || ${JSON.stringify(who.role_mp)}==='a') careerNewSeason();
+      else for(let i=0;i<240 && CAREER.career.season===sn0;i++) await wait(500);
       await wait(4000);
       careerSave(); careerRenderHub('calendar'); await wait(2000);
     }
