@@ -120121,7 +120121,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='464b42ff';
+const CC_BUILD='cc400900';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -147989,8 +147989,9 @@ function ccLockerCheck(){
     cr.log.slice(0, cr.lockSeen||0).forEach(e=>{ if(!e || e.who || !((e.wins||0)>0)) return;
       const u=ccUmbrellaGive(e.day), id='umb|'+u.id;
       if(!cr.locker.some(x=>x.id===id)) cr.locker.push({id, kind:'glider', name:u.name, day:e.day, season:e.season, x:1, ek:e.kind, art:'', fn:u.id}); }); }
-  // И старые посты «В шкафчике новое» из сохранённых карьер — вон из ленты (28.10).
-  if(Array.isArray(cr.news) && cr.news.some(n=>n && n.k==='ccNewsLocker')) cr.news=cr.news.filter(n=>!(n && n.k==='ccNewsLocker'));
+  // И старые посты «В шкафчике новое» и «Ты подарил …» из сохранённых карьер — вон из ленты (28.10).
+  const noFeed=n=>n && (n.k==='ccNewsLocker' || n.k==='ccNewsFnGift');
+  if(Array.isArray(cr.news) && cr.news.some(noFeed)) cr.news=cr.news.filter(n=>!noFeed(n));
   const quiet=cr.lockSeen==null || !!cr.lockAgain;
   const from=cr.lockSeen||0; if(from>=cr.log.length){ if(cr.lockSeen==null) cr.lockSeen=cr.log.length; delete cr.lockAgain; return; }
   for(let i=from;i<cr.log.length;i++){
@@ -153316,7 +153317,7 @@ function ccFnGift(i, handle){
   const p=ccGiftPeople().find(x=>hKey(x.h)===k);
   if(p && p.rec) p.rec.patience=Math.min(100, (p.rec.patience||50)+8);
   try{ const t=careerDmFind(handle) || (p && p.rec ? careerMateThread() : null); if(t) careerDmPush(t, 'them', 'dmGiftThanks', [it.name]); }catch(e){}
-  careerNews('good', 'ccNewsFnGift', [it.name, ccHandle(handle)]);
+  // Поста в Медиа нет (28.10, его «подарки из магазина тоже»): спасибо приходит в личку, этого достаточно.
   CC_FN_JUST={name:it.name};
   ccSacPickClose(); careerSave(); careerRenderHub('items');
 }
