@@ -118861,7 +118861,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='9c5b2d57';
+const CC_BUILD='f679ef70';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -124601,7 +124601,6 @@ function careerCentreHTML(card, a){
       ${typeof ccRosterSoonHTML==='function' ? ccRosterSoonHTML() : ''}
       ${careerMpTileHTML()}
       ${careerRaceTileHTML()}
-      ${cr.seasonOver ? '' : careerInterviewHTML()}
       ${/* Командный вечер, заблокированный СВОЕЙ причиной, остаётся карточкой
            матча и не подменяется панелью дня.
 
@@ -124692,6 +124691,10 @@ function careerCentreHTML(card, a){
             ${btn}
           </div>
         </div>`}
+      ${/* Интервью — ПОД днём, не над ним (Notion 27.10, игрок: «на тренировке спрашивает, тащил ли я команду, и мышку
+           уносит вниз, и запускаются скримы»). Плитка над панелью дня появлялась после вечера и пропадала по ответу, и
+           занятия прыгали на её высоту: следующий клик садился в занятие под курсором. Снизу она ничего не двигает. */
+        cr.seasonOver ? '' : careerInterviewHTML()}
       ${(typeof ccNatSquadHTML==='function') ? ccNatSquadHTML() : ''}
       <!-- At the boundary the shop is shut and the year is the thing worth
            reading: where this career finished at its Grand Finals and its LANs.
@@ -154268,7 +154271,14 @@ function careerNewSeason(){
   else if(cr.year===2021) cr.year=2022;
   else if(cr.year===2019) cr.year=2020;
   else if(cr.year===2020) cr.year=2021;   // после C2S4 — календарь 2021-го (трио), люди прошлых лет   // после FNCS C2S1 — календарь 2020-го (трио), люди 2019-го   // после Grand Royale — календарь 2022-го (дуо), люди 2021-го   // после Роли — календарь 2023-го (дуо), люди 2022-го   // после Копенгагена — календарь 2024-го (дуо), люди 2023-го
+  const payDay0=cr.day;
   cr.season++; cr.day=careerStartDay(); cr.seasonOver=false;
+  /* Ожидаемые призовые (cr.payQ) — по часам нового сезона (Notion 27.10, игрок: «деньги за Кубок наций иногда не
+     приходят — выплата через месяц, а новый год начинается раньше»). Срок стоял датой, а часы со стыка откатываются
+     на начало календаря (2027+ идёт по кругу с 2025-12-15): финал 28.11 ждал выплату до 28.12 следующего круга, почти
+     год. Сколько дней оставалось ждать, столько и остаётся, от первого дня нового сезона. */
+  if(Array.isArray(cr.payQ) && cr.payQ.length && payDay0)
+    cr.payQ=cr.payQ.map(x=>Object.assign({}, x, {due:ccAddDays(cr.day, ccDaysBetween(payDay0, x.due))}));
   /* Календарь — на месяц нового сезона (его слово 9.10: «календарь не обновился в новом сезоне»):
      открытый месяц помнился с конца прошлого года, и вкладка стояла на ноябре старого сезона. */
   CH_MONTH=null; CH_FF_ASK=null;
