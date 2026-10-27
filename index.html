@@ -111205,10 +111205,10 @@ function teamLabel(squad){ return squad.map(p=>flagFor(p)+p.handle).join(' & ');
    запасные ничего бы не значили. */
 const SQ_KEY='fncsdraft_sq1';
 const SQ_PACKS=[
-  {id:'bronze', cost:1000,  n:3, lo:0,    hi:0.55},
-  {id:'silver', cost:3500,  n:4, lo:0.25, hi:0.85},
-  {id:'gold',   cost:9000,  n:4, lo:0.5,  hi:1,    top:0.85},
-  {id:'elite',  cost:25000, n:3, lo:0.75, hi:1,    top:0.95}
+  {id:'bronze', cost:2000,  n:3, lo:0,    hi:0.55},
+  {id:'silver', cost:7500,  n:4, lo:0.25, hi:0.85},
+  {id:'gold',   cost:35000, n:4, lo:0.45, hi:1,    top:0.8},
+  {id:'elite',  cost:80000, n:3, lo:0.65, hi:1,    top:0.92}
 ];
 const SQ_MIN_OVR=70, SQ_CUP_QUAL=4, SQ_WEEK=5, SQ_DIVS=10, SQ_BENCH=3, SQ_MKT_N=12, SQ_MKT_MS=4*60*1000, SQ_SELL_MS=3*60*1000, SQ_EVE_GAMES=6, SQ_CUP_GAMES=10;
 const SQ_OBJ=[
@@ -111233,7 +111233,7 @@ const SQ_I18N={
     up:d=>'Promoted to Division '+d+'!', down:d=>'Relegated to Division '+d+'.', stay:d=>'Staying in Division '+d+'.',
     cupOpen:'Qualified: the weekend cup is open.', newWeek:'A new week starts.', noCup:n=>'Not qualified for the weekend cup (needs '+n+' points).',
     packNames:{bronze:'Bronze', silver:'Silver', gold:'Gold', elite:'Elite'}, buy:'Buy', open:'Open', yourPacks:'Your packs',
-    noCoins:'Not enough V-Bucks', gotCards:'From the pack', packDesc:{bronze:'3 players', silver:'4 players', gold:'4 players, one 85+', elite:'3 players, one 90+'},
+    noCoins:'Not enough V-Bucks', gotCards:'From the pack', packDesc:{bronze:'3 players', silver:'4 players', gold:'4 players, one 83+', elite:'3 players, one 87+'},
     mktHint:'Bots bid until the timer runs out. Outbid? Your V-Bucks come back.', bid:'Bid', buyNow:'Buy now', curBid:'Bid', left:'left',
     youTop:'You lead', mySales:'Your listings', soldFor:p=>'Sold for '+p, unsold:'Not sold, back in your collection', listed:'Listed',
     claim:'Claim', claimed:'Done', reward:'Reward',
@@ -111251,7 +111251,7 @@ const SQ_I18N={
     up:d=>'Повышение: Дивизион '+d+'!', down:d=>'Понижение: Дивизион '+d+'.', stay:d=>'Остаёшься в Дивизионе '+d+'.',
     cupOpen:'Квалификация есть: открыт кап выходных.', newWeek:'Началась новая неделя.', noCup:n=>'На кап выходных не прошёл (нужно '+n+' очка).',
     packNames:{bronze:'Бронзовый', silver:'Серебряный', gold:'Золотой', elite:'Элитный'}, buy:'Купить', open:'Открыть', yourPacks:'Твои паки',
-    noCoins:'Не хватает V-Bucks', gotCards:'Из пака', packDesc:{bronze:'3 игрока', silver:'4 игрока', gold:'4 игрока, один 85+', elite:'3 игрока, один 90+'},
+    noCoins:'Не хватает V-Bucks', gotCards:'Из пака', packDesc:{bronze:'3 игрока', silver:'4 игрока', gold:'4 игрока, один 83+', elite:'3 игрока, один 87+'},
     mktHint:'Боты делают ставки, пока идёт таймер. Перебили твою ставку? V-Bucks вернутся.', bid:'Ставка', buyNow:'Купить сразу', curBid:'Ставка', left:'осталось',
     youTop:'Ты лидируешь', mySales:'Твои лоты', soldFor:p=>'Продано за '+p, unsold:'Не продалось, карточка вернулась', listed:'Выставлено',
     claim:'Забрать', claimed:'Готово', reward:'Награда',
@@ -111286,7 +111286,23 @@ function sqDraw(lo, hi, role){
   for(let i=0; i<300; i++){ const c=P[a+Math.floor(Math.random()*(b-a))]; if(c && (!role || sqRole(c)===role)) return c; }
   return P[a];
 }
-function sqValue(ovr){ return Math.max(100, Math.round(150*Math.pow(1.18, ovr-60)/50)*50); }
+/* ЦЕНЫ КАК НА НАСТОЯЩЕМ РЫНКЕ КАРТОЧЕК (27.10, его «цены реалистичнее, чтоб топовых игроков сложно было купить»):
+   чем выше OVR, тем круче растёт цена — ступенями наклона. 70 → 400, 80 → 2 500, 85 → 11 000, 88 → 27 000,
+   90 → 50 000, 92 → 115 000, 96 → 600 000. Сезон стартового состава приносит ~10–15 тысяч, Глобалс — 100 тысяч:
+   топ-карточка — цель на несколько сезонов. Округление до двух значащих цифр, как пишут цены на рынке. */
+// В паке чаще выпадает низ полосы, верх — изредка (степень 2.2): как в настоящих паках, где джекпот — редкость.
+function sqDrawSkew(lo, hi){
+  const P=sqPool(), a=lo*P.length, b=hi*P.length;
+  return P[Math.min(P.length-1, Math.floor(a+(b-a)*Math.pow(Math.random(), 2.2)))];
+}
+function sqValue(ovr){
+  const d=Math.max(0, ovr-70);
+  const v=400*Math.exp(0.183*Math.min(d, 10)+0.3*Math.max(0, Math.min(d, 20)-10)+0.414*Math.max(0, d-20));
+  const mag=Math.pow(10, Math.max(2, Math.floor(Math.log10(v))-1));
+  return Math.max(100, Math.round(v/mag)*mag);
+}
+// Быстрая продажа — пятая часть цены: дубль почти ничего не стоит, топа не «отмыть» паками.
+function sqQuick(ovr){ return Math.max(50, Math.round(sqValue(ovr)*0.2/10)*10); }
 function sqAdd(c, un){ const id='c'+(SQ.next++); SQ.cards.push(un ? {id, k:c._k, un:true} : {id, k:c._k}); return id; }
 // Новая карточка: в клуб, а если такой игрок в клубе уже есть — в «Неназначенные» (дубль можно продать или сдать в испытание).
 function sqGain(k){ const dup=SQ.cards.some(c=>!c.un && c.k===k); const id='c'+(SQ.next++); SQ.cards.push(dup ? {id, k, un:true} : {id, k}); return id; }
@@ -111494,7 +111510,7 @@ function sqPackOpen(id, paid){
   if(paid){ if(SQ.coins<P.cost){ SQ_NOTE=T.noCoins; sqRender(); return; } SQ.coins-=P.cost; }
   else { const i=SQ.packs.indexOf(id); if(i<0) return; SQ.packs.splice(i, 1); }
   const got=[];
-  for(let i=0; i<P.n; i++) got.push(i===0 && P.top ? sqDraw(P.top, 1) : sqDraw(P.lo, P.hi));
+  for(let i=0; i<P.n; i++) got.push(i===0 && P.top ? sqDrawSkew(P.top, 1) : sqDrawSkew(P.lo, P.hi));
   got.sort((a, b)=>sqOvr(b)-sqOvr(a));
   SQ_OPENED=got.map(c=>sqAdd(c, true));
   SQ.stat.packs++;
@@ -111516,7 +111532,7 @@ function sqSetSize(n){
   sqSave(); sqRender();
 }
 function sqDropCard(id){ SQ.cards=SQ.cards.filter(c=>c.id!==id); SQ.xi=SQ.xi.filter(x=>x!==id); SQ.bench=SQ.bench.filter(x=>x!==id); delete SQ.st[id]; }
-function sqQuickSell(id){ const c=sqCardOf(id); if(!c) return; SQ.coins+=Math.round(sqValue(sqOvr(c))*0.35/10)*10; sqDropCard(id); sqSave(); sqRender(); }
+function sqQuickSell(id){ const c=sqCardOf(id); if(!c) return; SQ.coins+=sqQuick(sqOvr(c)); sqDropCard(id); sqSave(); sqRender(); }
 function sqList(id){
   const c=sqCardOf(id); if(!c) return;
   SQ.sells.push({id, k:c._k, price:sqValue(sqOvr(c)), ends:Date.now()+SQ_SELL_MS});
@@ -111534,7 +111550,8 @@ function sqMktTick(){
   });
   m.list=m.list.filter(l=>now<l.ends && !l.won);
   while(m.list.length<SQ_MKT_N){
-    const c=sqDraw(Math.random()<0.7 ? 0.2 : 0.6, 1), v=sqValue(sqOvr(c));
+    // Топ на рынке — редкость: 70% лотов из середины, 25% сильные, 5% из верхних 10%.
+    const r=Math.random(), c=r<0.7 ? sqDraw(0.1, 0.7) : r<0.95 ? sqDraw(0.6, 0.9) : sqDraw(0.9, 1), v=sqValue(sqOvr(c));
     const born=now-Math.floor(Math.random()*SQ_MKT_MS*0.6);
     m.list.push({id:'m'+now+'_'+m.list.length+'_'+Math.floor(Math.random()*1e6), k:c._k, start:Math.round(v*0.55/50)*50,
       cap:Math.round(v*(0.75+Math.random()*0.4)/50)*50, buy:Math.round(v*(1.1+Math.random()*0.3)/50)*50, born, ends:born+SQ_MKT_MS, mine:0});
@@ -111593,14 +111610,14 @@ Object.assign(SQ_I18N.en, {
   hSbc:'Hand in cards that fit the rules, get packs.', hObj:'One-off goals for V-Bucks and packs.', hUn:n=>n+' cards waiting: keep or sell.',
   locked:'Locked', keep:'To club', keepAll:'All to club', sellDupes:'Quick sell duplicates', dup:'Duplicate: already in your club',
   unEmpty:'Nothing unassigned.', diff:['Beginner', 'Pro', 'World Class', 'Legend'], bPlayed:(n, m)=>'Played this week: '+n+' / '+m,
-  bPts:'Week points', bPlay:'Play', bLeft:'No battles left this week', bReward:'Weekly reward: 300+ points bronze, 700+ silver, 1,200+ gold.',
+  bPts:'Week points', bPlay:'Play', bLeft:'No battles left this week', bReward:'Weekly reward: 300+ points bronze, 700+ silver, 1,200+ silver and 5,000 V-Bucks.',
   bGot:p=>'Battle points: +'+p, wkReward:(c, p)=>'Bot Battles weekly reward: '+c+' V-Bucks'+(p ? ' + '+p+' pack' : ''),
   drCost:c=>'Entry: '+c+' V-Bucks', drStart:'Start a draft', drPickCap:'Pick your captain', drPick:(i, n)=>'Pick player '+i+' of '+n,
   drRound:(r)=>'Round '+r+' of 4', drPlayRound:'Play the round', drNeed:p=>'Top '+p+' advance', drOut:r=>'Out in round '+r+'.', drWin:'Draft won: all four rounds!',
   drAdv:'Through to the next round!', drReward:(c, p)=>'Reward: '+c+' V-Bucks + '+p+' pack', drDone:'Draft over', drNew:'New draft',
   sbcReq:{n:n=>n+' players', min:m=>'each OVR '+m+'+', avg:a=>'average OVR '+a+'+', nat:'same country', reg:'same region'},
   sbcAuto:'Fill cheapest', sbcSubmit:'Hand in', sbcPick:'Tap cards to choose. Squad starters and subs are not offered.', sbcOk:'Done! Pack added.',
-  sbcBad:'The cards do not fit the rules yet', sbc:{basic:'First steps', silver:'Solid four', nation:'One flag', avg80:'Eighty club', region:'Home region', avg85:'Elite five'}
+  sbcBad:'The cards do not fit the rules yet', sbc:{basic:'First steps', silver:'Solid four', nation:'One flag', avg80:'Club 83', region:'Home region', avg85:'Elite five'}
 });
 Object.assign(SQ_I18N.ru, {
   liveGame:(g, n)=>'Игра '+g+' из '+n, liveSkip:'Досчитать до конца', lastGame:'Последняя игра',
@@ -111622,25 +111639,25 @@ Object.assign(SQ_I18N.ru, {
   hSbc:'Сдай карточки под условия и получи паки.', hObj:'Разовые цели за V-Bucks и паки.', hUn:n=>'Ждут решения: '+n+'. Забрать или продать.',
   locked:'Закрыто', keep:'В клуб', keepAll:'Всё в клуб', sellDupes:'Продать дубли', dup:'Дубль: такой уже в клубе',
   unEmpty:'Неназначенных нет.', diff:['Новичок', 'Про', 'Мировой класс', 'Легенда'], bPlayed:(n, m)=>'Сыграно за неделю: '+n+' / '+m,
-  bPts:'Очки недели', bPlay:'Играть', bLeft:'На этой неделе боёв больше нет', bReward:'Награда недели: 300+ очков бронза, 700+ серебро, 1 200+ золото.',
+  bPts:'Очки недели', bPlay:'Играть', bLeft:'На этой неделе боёв больше нет', bReward:'Награда недели: 300+ очков бронза, 700+ серебро, 1 200+ серебро и 5 000 V-Bucks.',
   bGot:p=>'Очки боя: +'+p, wkReward:(c, p)=>'Награда боёв с ботами: '+c+' V-Bucks'+(p ? ' и пак ('+p+')' : ''),
   drCost:c=>'Вход: '+c+' V-Bucks', drStart:'Начать драфт', drPickCap:'Выбери капитана', drPick:(i, n)=>'Игрок '+i+' из '+n,
   drRound:(r)=>'Раунд '+r+' из 4', drPlayRound:'Сыграть раунд', drNeed:p=>'Дальше проходят топ-'+p, drOut:r=>'Вылет в раунде '+r+'.', drWin:'Драфт выигран: все четыре раунда!',
   drAdv:'Проход в следующий раунд!', drReward:(c, p)=>'Награда: '+c+' V-Bucks и пак ('+p+')', drDone:'Драфт окончен', drNew:'Новый драфт',
   sbcReq:{n:n=>n+' игрока', min:m=>'у каждого OVR '+m+'+', avg:a=>'средний OVR '+a+'+', nat:'одна страна', reg:'один регион'},
   sbcAuto:'Подобрать', sbcSubmit:'Сдать', sbcPick:'Нажимай на карточки, чтобы выбрать. Основа и запасные не предлагаются.', sbcOk:'Готово! Пак добавлен.',
-  sbcBad:'Карточки пока не подходят под условия', sbc:{basic:'Первые шаги', silver:'Крепкая четвёрка', nation:'Один флаг', avg80:'Клуб 80', region:'Родной регион', avg85:'Элитная пятёрка'}
+  sbcBad:'Карточки пока не подходят под условия', sbc:{basic:'Первые шаги', silver:'Крепкая четвёрка', nation:'Один флаг', avg80:'Клуб 83', region:'Родной регион', avg85:'Элитная пятёрка'}
 });
 const SQ_BATTLE_MAX=6, SQ_BATTLE_BAND=[0.25, 0.5, 0.7, 0.88], SQ_BATTLE_MULT=[1, 1.5, 2.2, 3];
-const SQ_DRAFT_COST=2000, SQ_DRAFT_BAND=[0.45, 0.6, 0.72, 0.85];
-const SQ_DRAFT_PRIZE=[[500, 'bronze'], [1500, 'silver'], [3000, 'silver'], [5000, 'gold'], [8000, 'elite']];
+const SQ_DRAFT_COST=5000, SQ_DRAFT_BAND=[0.45, 0.6, 0.72, 0.85];
+const SQ_DRAFT_PRIZE=[[1000, 'bronze'], [3000, 'bronze'], [5000, 'silver'], [8000, 'silver'], [15000, 'gold']];
 const SQ_SBC=[
   {id:'basic',  n:3, req:{},                  r:'bronze'},
   {id:'silver', n:4, req:{min:75},            r:'silver'},
-  {id:'nation', n:3, req:{nat:true},          r:'gold'},
-  {id:'avg80',  n:5, req:{avg:80},            r:'gold'},
-  {id:'region', n:4, req:{reg:true, min:78},  r:'gold'},
-  {id:'avg85',  n:5, req:{avg:85},            r:'elite'}
+  {id:'nation', n:3, req:{nat:true},          r:'silver'},
+  {id:'avg80',  n:5, req:{avg:83},            r:'gold'},
+  {id:'region', n:4, req:{reg:true, min:80},  r:'silver'},
+  {id:'avg85',  n:5, req:{avg:86},            r:'elite'}
 ];
 let SQ_SBC_SEL=null;
 function sqInst(id){ return (SQ.cards||[]).find(c=>c.id===id); }
@@ -111649,7 +111666,7 @@ function sqIsDup(inst){ return SQ.cards.some(c=>c!==inst && !c.un && c.k===inst.
 // Смена недели: награда боёв с ботами по очкам недели, сброс.
 function sqNewWeek(notes){
   const T=sqT(), p=SQ.sb.pts;
-  const pack=p>=1200 ? 'gold' : p>=700 ? 'silver' : p>=300 ? 'bronze' : null;
+  const pack=p>=1200 ? 'silver' : p>=700 ? 'silver' : p>=300 ? 'bronze' : null;
   const coins=p>=1200 ? 5000 : p>=700 ? 2500 : p>=300 ? 1000 : (SQ.sb.played ? 300 : 0);
   if(coins || pack){ SQ.coins+=coins; if(pack) SQ.packs.push(pack); notes.push(T.wkReward(coins.toLocaleString(), pack ? T.packNames[pack] : '')); }
   SQ.sb={played:0, pts:0};
@@ -111663,7 +111680,7 @@ function sqKeep(id){
 }
 function sqKeepAll(){ SQ.cards.filter(c=>c.un).forEach(c=>{ if(!sqIsDup(c)) delete c.un; }); sqSave(); sqRender(); }
 function sqSellDupes(){
-  SQ.cards.filter(c=>c.un && sqIsDup(c)).forEach(c=>{ const p=sqPool().byK.get(c.k); if(p) SQ.coins+=Math.round(sqValue(sqOvr(p))*0.35/10)*10; sqDropCard(c.id); });
+  SQ.cards.filter(c=>c.un && sqIsDup(c)).forEach(c=>{ const p=sqPool().byK.get(c.k); if(p) SQ.coins+=sqQuick(sqOvr(p)); sqDropCard(c.id); });
   sqSave(); sqRender();
 }
 // Лобби вне дивизионов: свой состав (или временный — драфт) против ботов своей полосы.
@@ -111861,7 +111878,7 @@ function sqRender(){
   } else if(SQ_TAB==='club'){
     title=T.tabClub;
     const coll=SQ.cards.filter(c=>!c.un).map(c=>({id:c.id, c:sqCardOf(c.id)})).filter(x=>x.c).sort((a, b)=>sqOvr(b.c)-sqOvr(a.c));
-    body='<div class="sq-mgrid">'+coll.map(x=>{ const v=sqValue(sqOvr(x.c)), q=Math.round(v*0.35/10)*10, use=sqInUse(x.id);
+    body='<div class="sq-mgrid">'+coll.map(x=>{ const v=sqValue(sqOvr(x.c)), q=sqQuick(sqOvr(x.c)), use=sqInUse(x.id);
       return sqMini(x.c, {fit:sqFit(x.id), below:use ? '<div class="sq-tag">'+esc(SQ.xi.indexOf(x.id)>=0 ? T.starters : T.bench)+'</div>' :
         '<div class="sq-acts"><button onclick="sqList(\''+x.id+'\')">'+esc(T.list)+' '+money(v)+'</button><button onclick="sqQuickSell(\''+x.id+'\')">'+esc(T.quick)+' '+money(q)+'</button></div>'}); }).join('')+'</div>';
   } else if(SQ_TAB==='un'){
@@ -111869,7 +111886,7 @@ function sqRender(){
     const un=SQ.cards.filter(c=>c.un).map(c=>({id:c.id, inst:c, c:sqPool().byK.get(c.k)})).filter(x=>x.c).sort((a, b)=>sqOvr(b.c)-sqOvr(a.c));
     body=un.length ? '<div class="sq-row"><button class="sq-go sm" onclick="sqKeepAll()">'+esc(T.keepAll)+'</button>'+
         '<button class="sq-ghost" onclick="sqSellDupes()">'+esc(T.sellDupes)+'</button></div>'+
-      '<div class="sq-mgrid'+(SQ_OPENED ? ' sq-reveal' : '')+'">'+un.map(x=>{ const v=sqValue(sqOvr(x.c)), q=Math.round(v*0.35/10)*10, dup=sqIsDup(x.inst);
+      '<div class="sq-mgrid'+(SQ_OPENED ? ' sq-reveal' : '')+'">'+un.map(x=>{ const v=sqValue(sqOvr(x.c)), q=sqQuick(sqOvr(x.c)), dup=sqIsDup(x.inst);
         return sqMini(x.c, {below:(dup ? '<div class="sq-dup">'+esc(T.dup)+'</div>' : '')+'<div class="sq-acts">'+
           (dup ? '' : '<button class="go" onclick="sqKeep(\''+x.id+'\')">'+esc(T.keep)+'</button>')+
           '<button onclick="sqQuickSell(\''+x.id+'\')">'+esc(T.quick)+' '+money(q)+'</button><button onclick="sqList(\''+x.id+'\')">'+esc(T.list)+' '+money(v)+'</button></div>'}); }).join('')+'</div>'
@@ -119914,7 +119931,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='06ec5f50';
+const CC_BUILD='ea627fce';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
