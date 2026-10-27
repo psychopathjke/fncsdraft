@@ -162,6 +162,9 @@ const boot = (who) => `
           if(ev){ ev.click(); await wait(600); continue; }
           const act=[...document.querySelectorAll('#screen-career-hub button')].find(b=>!b.disabled && (b.getAttribute('onclick')||'').indexOf('careerPickDay(')>=0);
           if(act){ act.click(); await wait(600); continue; }
+          // С 27.10 занятия дня во вкладке «Тренировка», на Центре одна кнопка туда (ccDayGoHTML).
+          const goTrain=document.querySelector('#screen-career-hub .cc-day-gotrain');
+          if(goTrain){ goTrain.click(); await wait(600); continue; }
         }
         await wait(200);
       }

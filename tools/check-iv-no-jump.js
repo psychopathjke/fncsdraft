@@ -22,7 +22,8 @@ const BOOT=`
     localStorage.setItem('fncsdraft_career', JSON.stringify(save));
     careerEntry();
     careerRenderHub('centre');
-    const top=()=>{ const b=[...document.querySelectorAll('#screen-career-hub [onclick^="careerPickDay("]')].find(x=>x.offsetParent);
+    // С 27.10 занятия дня на Центре — одной кнопкой «Тренировка и день» (ccDayGoHTML); меряется она.
+    const top=()=>{ const b=[...document.querySelectorAll('#screen-career-hub .cc-day-gotrain, #screen-career-hub [onclick^="careerPickDay("]')].find(x=>x.offsetParent);
       return b ? Math.round(b.getBoundingClientRect().top+window.scrollY) : null; };
     out.iv=!!document.querySelector('#screen-career-hub .cc-iv');
     out.before=top();

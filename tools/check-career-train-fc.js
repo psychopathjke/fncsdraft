@@ -80,6 +80,7 @@ const BOOT = `
     // месяца; «Развитие» снята (рейтинг и ход за сезон в шапке, параметры в панели дня); фокус и цель — свёрнутым планом.
     check('в «Тренировке» плитка «Цели» — только с задачами', !!body.querySelector('.hg-tile')===!!ccGoalsTileHTML(true));
     check('в «Тренировке» нет плитки «Развитие» (повтор шапки и панели дня)', !body.querySelector('.hd-tile'));
+    check('в «Тренировке» параметр и его тренировка — одна карточка (шесть)', body.querySelectorAll('.cc-stat-t').length===6 || !ccCentreDayOpen());
     check('в «Тренировке» фокус и цель свёрнуты в «План недели»', !!body.querySelector('details.tp-fold'));
     careerRenderHub('centre'); body=document.getElementById('chBody');
     check('профиля соцсети на главной больше нет', !body.querySelector('.ch-tile-me'));

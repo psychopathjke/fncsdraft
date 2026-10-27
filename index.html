@@ -4953,10 +4953,19 @@
   #screen-career-hub .cc-lobby .cc-lb-playbox .cc-day-ev{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;column-gap:6px;
     margin:2px 0 4px;padding:5px 8px;font-size:11px;text-align:left;}
   #screen-career-hub .cc-lobby .cc-lb-playbox .cc-day-ev b{grid-column:1;font-size:12px;line-height:1.2;}
-  #screen-career-hub .cc-lobby .cc-lb-playbox .cc-day-ev span{grid-column:1;font-size:10px;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  /* Подпись развилки — целиком, в несколько строк (Notion 27.10: «насчёт слива полностью не видно текст» — была одна
+     строка с многоточием: «Инсайдер пишет, что ты договариваешься с…»). */
+  #screen-career-hub .cc-lobby .cc-lb-playbox .cc-day-ev span{grid-column:1;font-size:11px;line-height:1.3;white-space:normal;overflow-wrap:anywhere;}
   #screen-career-hub .cc-lobby .cc-lb-playbox .cc-day-ev-btns{grid-column:2;grid-row:1 / span 2;display:flex;gap:4px;margin:0;}
   #screen-career-hub .cc-lobby .cc-lb-playbox .cc-day-ev-btns button{margin:0;padding:5px 10px;min-height:0;font-size:11px;}
-  #screen-career-hub .cc-lobby .cc-lb-playbox .cc-day-ev-opts{flex-direction:column;}
+  /* День на Центре одной кнопкой (ccDayGoHTML, 27.10). */
+  #screen-career-hub .cc-day-go{display:flex;flex-direction:column;gap:6px;margin:6px 0 2px;}
+  #screen-career-hub .cc-day-did{font-size:12px;font-weight:700;color:#c3d2ee;line-height:1.3;}
+  #screen-career-hub .cc-day-did em{font-style:normal;font-weight:900;color:#00d6a4;}
+  #screen-career-hub .cc-day-go .cc-day-gotrain{display:block;width:100%;box-sizing:border-box;margin:0;padding:10px 12px;font-size:14px;}
+  /* Три ответа развилки — строкой под текстом, а не столбиком справа: столбик сжимал текст до двух слов в строке. */
+  #screen-career-hub .cc-lobby .cc-lb-playbox .cc-day-ev-btns.cc-day-ev-opts{grid-column:1 / span 2;grid-row:auto;flex-direction:row;flex-wrap:wrap;margin-top:6px;}
+  #screen-career-hub .cc-lobby .cc-lb-playbox .cc-day-ev-opts button{flex:1 1 auto;}
   #screen-career-hub .cc-lobby .cc-lb-playbox .cc-rings .cc-ring{display:flex;flex-direction:row;align-items:center;gap:6px;margin:0;}
   #screen-career-hub .cc-lobby .cc-lb-playbox .cc-rings .cc-ring-dial{width:34px;height:34px;margin:0;}
   /* Телефон: сцена сверху, под ней кнопка и панели столбиком — всё внутри меню. */
@@ -5335,6 +5344,25 @@
      занятия — большими плитками с иконкой. */
   .cc-train-tab{max-width:1100px;margin:0 auto;}
   .tp-plan{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:14px;} @media(max-width:700px){ .tp-plan{grid-template-columns:1fr;} }
+  /* Параметр = кнопка его тренировки (ccTrainStatHTML, 27.10). */
+  .cc-stgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:6px 0 10px;}
+  @media(max-width:700px){ .cc-stgrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;} }
+  .cc-stat-t{display:flex;flex-direction:column;gap:6px;text-align:left;padding:12px 14px;border-radius:14px;cursor:pointer;font:inherit;color:#fff;
+    border:1px solid rgba(180,200,255,.2);background:rgba(255,255,255,.07);transition:border-color .15s,background .15s;min-width:0;}
+  .cc-stat-t:hover:not(:disabled){border-color:#00d6a4;background:rgba(0,214,164,.1);}
+  .cc-stat-t.off{opacity:.5;cursor:default;}
+  .cc-stat-t.did{box-shadow:inset 0 0 0 2px rgba(0,214,164,.55);}
+  .cc-stat-t .st-top{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:800;min-width:0;}
+  .cc-stat-t .st-top i{font-style:normal;flex:none;}
+  .cc-stat-t .st-top b{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .cc-stat-t .st-val{display:flex;align-items:baseline;justify-content:space-between;gap:6px;}
+  .cc-stat-t .st-val b{font-family:var(--font-display);font-size:28px;line-height:1;}
+  .cc-stat-t .st-val i{font-style:normal;font-size:14px;font-weight:900;color:#00d6a4;}
+  .cc-stat-t .st-bar{display:block;height:6px;border-radius:4px;background:rgba(255,255,255,.1);overflow:hidden;text-decoration:none;}
+  .cc-stat-t .st-bar s{display:block;height:100%;background:linear-gradient(90deg,#00d6a4,#7aa2ff);text-decoration:none;}
+  .cc-stat-t .st-cost{font-size:12px;font-weight:800;color:#ffb347;}
+  .cc-stat-t .st-why{font-size:11px;font-weight:800;color:#ff7d70;line-height:1.2;}
+  @media(prefers-reduced-motion:reduce){ .cc-stat-t{transition:none;} }
   /* План недели свёрнут (27.10): строка «План недели · что выбрано», по нажатию — фокус и цель в две колонки. */
   .tp-fold{display:block;}
   .tp-fold>summary{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;cursor:pointer;list-style:none;}
@@ -23772,7 +23800,8 @@ Object.assign(I18N.ru, {ccPayPend:'ожидается', ccPayNext:d=>'ближа
 Object.assign(I18N.en, {lfPlanH:'Week plan', lfPlanOff:p=>'optional: a focus (+'+p+'% to one stat) and a goal', ccTourBtn:'How to play', ccTourNext:'Next', ccTourDone:'Got it', ccTourSkip:'Skip the tour',
   ccTourOvr:'Your rating. A career is about raising it: train every day and do well in tournaments.',
   ccTourEnergy:'Energy. Training and everything else you do in a day costs energy. A new day gives it back.',
-  ccTourDay:'Today. Pick what the day goes on: train one stat, scrim, stream or work a shift. Do as much as your energy allows, then go to the next day.',
+  ccTourDay:'Today. "Training and the day" opens everything a day can go on: training, scrims, stream, rest, a shift. Do as much as your energy allows, then go to the next day.',
+  ccDayGoTrain:'Training and the day', ccDayDid:'Today:', ccActGrpMaps:'Creative maps',
   ccTourSeason:'Your season on the real FNCS calendar. Highlighted days are tournaments. "A week" and "A month" play the days for you.',
   ccTourGo:'When you are ready, this takes you to the next tournament day. There you press Play.',
   ccTourMate:'This is a duos season, so you need a partner to enter team tournaments. Find one here.',
@@ -23780,7 +23809,8 @@ Object.assign(I18N.en, {lfPlanH:'Week plan', lfPlanOff:p=>'optional: a focus (+'
 Object.assign(I18N.ru, {lfPlanH:'План недели', lfPlanOff:p=>'по желанию: фокус (+'+p+'% к одному параметру) и цель', ccTourBtn:'Как играть', ccTourNext:'Дальше', ccTourDone:'Понятно', ccTourSkip:'Пропустить',
   ccTourOvr:'Твой рейтинг. Вся карьера про то, чтобы его поднять: тренироваться каждый день и хорошо играть турниры.',
   ccTourEnergy:'Энергия. Тренировки и всё остальное за день тратят её. Новый день её возвращает.',
-  ccTourDay:'Сегодня. Выбери, на что уйдёт день: прокачать параметр, скримы, стрим или подработка. Делай, сколько хватит энергии, потом переходи к следующему дню.',
+  ccTourDay:'Сегодня. «Тренировка и день» открывает всё, на что может уйти день: тренировки, скримы, стрим, отдых, подработку. Делай, сколько хватит энергии, потом переходи к следующему дню.',
+  ccDayGoTrain:'Тренировка и день', ccDayDid:'Сегодня:', ccActGrpMaps:'Карты Creative',
   ccTourSeason:'Твой сезон по настоящему календарю FNCS. Выделенные дни это турниры. «Неделю» и «Месяц» проигрывают дни за тебя.',
   ccTourGo:'Когда будешь готов, эта кнопка перенесёт к ближайшему дню турнира. Там жмёшь «Играть».',
   ccTourMate:'Сезон дуо: на командные турниры нужен напарник. Найди его здесь.',
@@ -23788,7 +23818,8 @@ Object.assign(I18N.ru, {lfPlanH:'План недели', lfPlanOff:p=>'по же
 Object.assign(I18N.fr, {lfPlanH:'Plan de la semaine', lfPlanOff:p=>'facultatif : un focus (+'+p+' % sur une stat) et un objectif', ccTourBtn:'Comment jouer', ccTourNext:'Suivant', ccTourDone:'Compris', ccTourSkip:'Passer',
   ccTourOvr:'Ta note. Une carrière, c’est la faire monter : t’entraîner chaque jour et bien jouer les tournois.',
   ccTourEnergy:'L’énergie. L’entraînement et tout ce que tu fais dans la journée en coûtent. Un nouveau jour la rend.',
-  ccTourDay:'Aujourd’hui. Choisis à quoi sert la journée : travailler une stat, scrim, stream ou petit boulot. Fais-en autant que ton énergie le permet, puis passe au jour suivant.',
+  ccTourDay:'Aujourd’hui. « Entraînement et journée » ouvre tout ce que peut contenir une journée : entraînement, scrims, stream, repos, petit boulot. Fais-en autant que ton énergie le permet, puis passe au jour suivant.',
+  ccDayGoTrain:'Entraînement et journée', ccDayDid:'Aujourd’hui :', ccActGrpMaps:'Cartes Creative',
   ccTourSeason:'Ta saison sur le vrai calendrier FNCS. Les jours mis en avant sont des tournois. « Une semaine » et « Un mois » jouent les jours pour toi.',
   ccTourGo:'Quand tu es prêt, ce bouton t’emmène au prochain jour de tournoi. Là, tu appuies sur Jouer.',
   ccTourMate:'Saison en duo : il te faut un partenaire pour les tournois en équipe. Trouve-le ici.',
@@ -23796,7 +23827,8 @@ Object.assign(I18N.fr, {lfPlanH:'Plan de la semaine', lfPlanOff:p=>'facultatif :
 Object.assign(I18N.it, {lfPlanH:'Piano della settimana', lfPlanOff:p=>'facoltativo: un focus (+'+p+'% a una statistica) e un obiettivo', ccTourBtn:'Come si gioca', ccTourNext:'Avanti', ccTourDone:'Capito', ccTourSkip:'Salta',
   ccTourOvr:'Il tuo rating. Una carriera serve a farlo salire: allenati ogni giorno e gioca bene i tornei.',
   ccTourEnergy:'Energia. Allenamenti e tutto ciò che fai in un giorno la consumano. Un nuovo giorno la restituisce.',
-  ccTourDay:'Oggi. Scegli come passare la giornata: allenare una statistica, scrim, stream o un turno di lavoro. Fai quanto ti permette l’energia, poi passa al giorno dopo.',
+  ccTourDay:'Oggi. «Allenamento e giornata» apre tutto ciò a cui può andare la giornata: allenamento, scrim, stream, riposo, un turno di lavoro. Fai quanto ti permette l’energia, poi passa al giorno dopo.',
+  ccDayGoTrain:'Allenamento e giornata', ccDayDid:'Oggi:', ccActGrpMaps:'Mappe Creative',
   ccTourSeason:'La tua stagione sul vero calendario FNCS. I giorni evidenziati sono tornei. «A week» e «A month» giocano i giorni per te.',
   ccTourGo:'Quando sei pronto, questo pulsante ti porta al prossimo giorno di torneo. Lì premi Gioca.',
   ccTourMate:'Stagione in duo: per i tornei a squadre serve un compagno. Trovalo qui.',
@@ -23804,7 +23836,8 @@ Object.assign(I18N.it, {lfPlanH:'Piano della settimana', lfPlanOff:p=>'facoltati
 Object.assign(I18N.pt, {lfPlanH:'Plano da semana', lfPlanOff:p=>'opcional: um foco (+'+p+'% em um atributo) e uma meta', ccTourBtn:'Como jogar', ccTourNext:'Próximo', ccTourDone:'Entendi', ccTourSkip:'Pular',
   ccTourOvr:'Seu rating. A carreira é sobre subir ele: treinar todo dia e jogar bem os torneios.',
   ccTourEnergy:'Energia. Treinos e tudo que você faz no dia gastam energia. Um novo dia devolve.',
-  ccTourDay:'Hoje. Escolha no que o dia vai: treinar um atributo, scrim, live ou um turno de trabalho. Faça o quanto a energia deixar e passe para o próximo dia.',
+  ccTourDay:'Hoje. "Treino e dia" abre tudo em que o dia pode ir: treino, scrims, live, descanso, um turno de trabalho. Faça o quanto a energia deixar e passe para o próximo dia.',
+  ccDayGoTrain:'Treino e dia', ccDayDid:'Hoje:', ccActGrpMaps:'Mapas Creative',
   ccTourSeason:'Sua temporada no calendário real da FNCS. Os dias destacados são torneios. "A week" e "A month" jogam os dias por você.',
   ccTourGo:'Quando estiver pronto, este botão leva ao próximo dia de torneio. Lá você aperta Jogar.',
   ccTourMate:'Temporada de duos: você precisa de uma dupla para torneios em equipe. Encontre aqui.',
@@ -118924,7 +118957,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='982c1ec7';
+const CC_BUILD='1e828a88';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -124245,15 +124278,14 @@ function ccLobbyHTML(card, btn, next, when, strip, ex){
     right=(ex.play ? '' : '<div class="cc-lb-news" onclick="careerTab(\'calendar\')"><em>'+esc(when||'')+'</em><b>'+esc(evName)+'</b></div>'+
       '<div class="cc-lb-modebox"><b>'+esc(fmtWord)+'</b></div>')+playBox;
   } else {
-    // Слева сверху — карточка новостей с обложкой ближайшего турнира; под ней — карточка вечера с PLAY.
-    left=(ccLobbyNewsCardHTML() || '<div class="cc-lb-news cc-lb-card" onclick="careerTab(\'calendar\')"'+(nextArt ? ' style="--card-art:url('+nextArt+')"' : '')+'>'+
-        '<em>'+esc(newsWhen)+'</em><b>'+esc(newsEv ? (newsEv.label||evName) : (evName||sn.s))+'</b></div>')+
-      playBox;
-    // Справа — ростер с местом высадки и сборной, новости, тренировка, рейтинг, клуб; ниже кольцо LVL и кнопки.
+    /* Лобби как в Fortnite (27.10, его выбор после Notion «слишком много информации»): слева одна карточка вечера с
+       кнопкой (карточку новостей с обложкой ближайшего турнира сняли — тот же турнир стоит в карточке вечера и в
+       полосе дней); справа составы; кнопки Media / Item Shop / Locker повторяли вкладки — сняты, кольцо LVL осталось.
+       Без карточки вечера (старые вызовы) — как было, с новостями. */
+    left=ex.play ? playBox : (ccLobbyNewsCardHTML() || '<div class="cc-lb-news cc-lb-card" onclick="careerTab(\'calendar\')"'+(nextArt ? ' style="--card-art:url('+nextArt+')"' : '')+'>'+
+        '<em>'+esc(newsWhen)+'</em><b>'+esc(newsEv ? (newsEv.label||evName) : (evName||sn.s))+'</b></div>')+playBox;
     right='<div class="cc-lb-stack">'+(ex.side||'')+'</div>'+
-      '<div class="cc-lb-ringrow"><div class="cc-lb-bar-btns"><button onclick="careerTab(\'social\')">'+esc(T.chTabMedia||'Media')+'</button>'+
-      '<button onclick="careerTab(\'items\')">'+esc(T.chTabItems||'Item Shop')+'</button>'+
-      '<button onclick="careerTab(\'locker\')">'+esc(T.chTabLocker||'Locker')+'</button></div>'+
+      '<div class="cc-lb-ringrow">'+
       '<div class="cc-lb-ring" onclick="careerTab(\'train\')" style="--p:'+Math.round(lvlFrac*100)+'"><em>LVL</em><b>'+myOvr+'</b></div></div>';
   }
   if(ex.play){ setTimeout(ccLobbyFit, 0); setTimeout(ccLobbyFit, 800); }
@@ -124765,7 +124797,8 @@ function careerCentreHTML(card, a){
       // везёт — см. ccRelMySeats.
       ccRelMySeats(cr).length ? `<em class="ch-next-seat">${esc(L().ccEwcSeat)} · ${
         esc(L().ccEwcSeatOn(ccDayLabel(CC_RC_DAY), ccRelMySeats(cr).length))}</em>` : ''}</div>
-    <div class="ch-season">${seasonBar.join('')}</div>
+    ${/* Полосы из 35 недель в лобби нет (27.10, «лобби как в Fortnite»): неделя — плитками дней ниже, год — во вкладке
+         «Календарь». */ ''}
     ${weekPeek}
     ${/* Перемотка «неделя / месяц» — здесь, у полосы сезона, а не в карточке капа (его «сделать аккуратно где-то скип недели/месяца»). */
       careerFfButtonsHTML()}
@@ -124893,8 +124926,9 @@ function careerCentreHTML(card, a){
            career, his call, 18 August: the two swapped places. -->
       <!-- Как на проде: профиль, под ним новости. Цели и развитие — во вкладке «Тренировка». -->
       ${(typeof ccPressHTML==='function') ? ccPressHTML() : ''}
-      ${careerProfileTileHTML()}
-      ${cr.seasonOver ? '' : careerShopPeekHTML()}`;
+      ${/* Справа — только составы (27.10, «лобби как в Fortnite»): витрина магазина снята, магазин — своей вкладкой;
+           сборная — за три недели до своего этапа (ccRostersStripHTML(true)). Пресс-конференция остаётся: это вопрос. */
+        careerProfileTileHTML(true)}`;
   return ccLobbyHTML(card, btn, next, nextWhen, strip, {bar:lbBar, play:lbPlay, side:lbSide, note:careerNoteBarHTML()});
 }
 
@@ -125814,7 +125848,7 @@ function ccFormatNext(f){
   (typeof ccVictoryList==='function' ? ccVictoryList() : []).forEach(v=>{ if(v.mode===MODE[f] && !v.invite) cand(v.day); });
   return best;
 }
-function ccRostersStripHTML(){
+function ccRostersStripHTML(lobby){
   if(!CAREER || !CAREER.career || careerRetired()) return '';
   const T=L(), today=careerToday(), cur=careerSquadSize();
   const NAME={2:T.lfRosterDuo, 3:T.lfRosterTrio, 4:T.lfRosterSquad};
@@ -125921,7 +125955,8 @@ function ccRostersStripHTML(){
     const mine=(typeof ccNationsMine==='function') ? ccNationsMine() : null;
     const N=mine ? ccNatState() : null;
     const nd=mine ? ccNatNextDay() : null;
-    if(mine && nd && !N.finalDone){
+    // В лобби сборная — за три недели до своего этапа, не с первого дня сезона (27.10, «лобби как в Fortnite»).
+    if(mine && nd && !N.finalDone && !(lobby && ccDaysBetween(today, nd)>CC_ROSTER_WEEK*3)){
       const days=ccNatDays(), qd=days.qual, dq=qd ? ccDaysBetween(today, qd) : 99;
       const others=(mine.squad||[]).filter((p,i)=>i>0);
       const chips=others.map(p=>p ? mateHTML(p) : '<span class="ch-ro-m"><span class="ch-ro-av">?</span><span class="ch-ro-t"><b><i>'+esc(T.lfRosterEmpty)+'</i></b></span></span>').join('');
@@ -125936,11 +125971,11 @@ function ccRostersStripHTML(){
   }catch(e){}
   return blocks.length ? '<div class="ch-ros">'+blocks.join('')+'</div>' : '';
 }
-function careerProfileTileHTML(){
+function careerProfileTileHTML(lobby){
   /* Только составы (его слово 30.09: «убери там вообще информацию о игроке, за которого играешь,
      она есть точь-в-точь такая же сверху»). Ник, фото, возраст, флаг, клуб и подписчики — в шапке
      карьеры; смена ника и фото — во вкладке «Профиль», под своей карточкой (ccMeEditHTML). */
-  const ros=ccRostersStripHTML();
+  const ros=ccRostersStripHTML(lobby);
   return ros ? '<div class="ch-tile ch-tile-ros"><h4>'+esc(L().lfRosters)+'</h4>'+ros+'</div>' : '';
 }
 // Смена ника и фото — под своей карточкой во вкладке «Профиль».
@@ -148105,6 +148140,16 @@ function ccJobWage(){
    с болезнью, — каждая ступень короче на четверть дешевле, а
    платится каждый час. Отработавший полный день уже не тренируется. */
 function ccJobCost(h){ return Math.ceil(careerEnergyMax()*h/CC_JOB_MAXH); }
+/* День на Центре одной кнопкой (27.10): что уже сделано сегодня — строкой, и «Тренировка и день · N⚡» во вкладку
+   «Тренировка», где все занятия, командные, стрим, отдых и подработка. Закрытый день кнопку не держит: что его
+   закрыло, панель уже сказала строкой выше. */
+function ccDayGoHTML(done, closed, left){
+  const did=(done||[]).filter(id=>String(id).indexOf('ev:')!==0).map(id=>{ try{ return ccActName(id); }catch(e){ return ''; } }).filter(Boolean);
+  return '<div class="cc-day-go">'+
+    (did.length ? '<div class="cc-day-did"><em>'+esc(L().ccDayDid)+'</em> '+esc([...new Set(did)].join(', '))+'</div>' : '')+
+    (closed ? '' : '<button class="ch-sign cc-day-gotrain" onclick="careerTab(\'train\')">'+esc(L().ccDayGoTrain)+
+      ' · '+Math.round(left)+L().ccEnergyMark+'</button>')+'</div>';
+}
 function careerJobHTML(closed, left){
   const wage=ccJobWage();
   const hrs=[4,8,12,16].map(function(h){
@@ -148217,6 +148262,35 @@ function ccDrillPlace(id){
 function ccActName(id){
   return L()['ccAct'+id]||id;
 }
+/* Карточка параметра — она же кнопка его тренировки (27.10): имя, значение, шкала 35–99, сколько даст занятие и
+   цена. Оценка прошлого занятия — значком, причина серой кнопки — строкой вместо цены. Прирост недели не печатается:
+   «+0.0» на шести карточках был шумом. */
+function ccTrainStatHTML(a, o){
+  const k=o.keys[0], v=o.six[k]!=null ? o.six[k] : 50;
+  const coachOn=!!(o.dayCoach && o.dayCoach.keys.indexOf(k)>=0);
+  const by=Math.max(35, Math.min(99, v+a.gain[k]*o.dayMult*(coachOn ? 1+o.dayCoach.train : 1)*ccFocusMult(k)))-v;
+  const pct=Math.max(0, Math.min(100, (v-35)/(99-35)*100)), num=x=>(Math.round(x*10)/10).toFixed(1);
+  const why = o.closed ? '' : o.maxed ? L().ccAttrMaxed : !o.gainsMove ? L().ccNoGain
+            : o.left<a.energy ? L().ccNeedEnergy(a.energy-o.left) : '';
+  const g=ccDrillLast(a.id);
+  return '<button class="cc-stat-t'+(o.can?'':' off')+(o.did?' did':'')+'" title="'+esc(ccActName(a.id)+' · '+ccAttrFull(k)+' '+num(v)+' → '+num(v+by))+'" '+
+    (o.can?'onclick="careerPickDay(\''+a.id+'\')"':'disabled')+'>'+
+    '<span class="st-top"><i>'+(CC_ATTR_ICON[k]||'•')+'</i><b>'+esc(ccAttrFull(k))+'</b>'+
+      (g ? '<em class="cc-tc-grade g-'+g.replace('+','p')+'" title="'+esc(L().lfGradeLast)+'">'+g+'</em>' : '')+'</span>'+
+    '<span class="st-val"><b>'+num(v)+'</b>'+(by>=0.05 && !o.closed ? '<i>+'+num(by)+'</i>' : '')+'</span>'+
+    '<u class="st-bar"><s style="width:'+pct.toFixed(0)+'%"></s></u>'+
+    (why ? '<span class="st-why">'+esc(why)+'</span>' : '<span class="st-cost">'+a.energy+L().ccEnergyMark+(coachOn ? ' · '+esc(L().lfCoachBoost(Math.round(o.dayCoach.train*100))) : '')+'</span>')+
+    '</button>';
+}
+// Усталость — строкой и только когда она есть: «свежий» на каждом экране ничего не говорил.
+function ccFatigueLineHTML(){
+  const cr=CAREER.career, grind=cr.grind||0, top=CC_GRIND_FREE+CC_GRIND_MAX/CC_GRIND_STEP;
+  const burn=careerBurnout(), state=burn>=1 ? 'lfFatBurn' : grind>CC_GRIND_FREE ? 'lfFatTired' : 'lfFatFresh';
+  if(state==='lfFatFresh') return '';
+  const fat=Math.max(0, Math.min(100, grind/top*100));
+  return '<div class="cc-fat"><span>'+L().lfFatigue+'</span><span class="cc-fat-bar s-'+state+'"><i style="width:'+fat.toFixed(0)+'%"></i></span>'+
+    '<b>'+L()[state]+'</b></div>';
+}
 function ccTrainCardHTML(a, o){
   if(a.map) return ccMapCardHTML(a, o);
   const k=o.keys[0];
@@ -148228,12 +148302,12 @@ function ccTrainCardHTML(a, o){
   const why = o.closed ? '' : o.maxed ? L().ccAttrMaxed
             : (k && !o.gainsMove) ? L().ccNoGain
             : o.left<a.energy ? L().ccNeedEnergy(a.energy-o.left) : '';
-  const tip=k ? ccAttrFull(k)+': '+num(from)+' → '+num(to) : L().lfMetaGive;
+  const tip=(ccDrillPlace(a.id) ? ccDrillPlace(a.id)+' · ' : '')+(k ? ccAttrFull(k)+': '+num(from)+' → '+num(to) : L().lfMetaGive);
   return '<button class="cc-act cc-tcard g-train'+(o.can?'':' off')+(o.did?' did':'')+'" title="'+esc(tip)+'" '+
     (o.can?'onclick="careerPickDay(\''+a.id+'\')"':'disabled')+'>'+
     '<span class="cc-tc-top"><i class="cc-tc-ico">'+(CC_TRAIN_ICON[a.id]||'•')+'</i><b class="cc-tc-name">'+esc(ccActName(a.id))+'</b>'+
       (ccDrillLast(a.id) ? '<i class="cc-tc-grade g-'+ccDrillLast(a.id).replace('+','p')+'" title="'+esc(L().lfGradeLast)+'">'+ccDrillLast(a.id)+'</i>' : '')+'</span>'+
-    (ccDrillPlace(a.id) ? '<span class="cc-tc-map">'+esc(ccDrillPlace(a.id))+'</span>' : '')+
+    // Название карты Creative («Clix Box Fights · Pandvil») — в подсказке, а не строкой: третья строка на карточке была лишней (27.10).
     // Каждый атрибут занятия своим приростом — у карт Creative их два.
     '<span class="cc-tc-row">'+(k ? '<span class="cc-tc-gain">'+o.keys.map(kk=>{
         const f=o.six[kk]!=null ? o.six[kk] : 50;
@@ -148407,23 +148481,33 @@ function careerDayPanelHTML(locked){
         '<span class="cc-act-g">'+gains+extra.join('')+'</span></button>';
     }
     // Тренировки — карточками «Тренировочного центра» (ccTrainCardHTML), с панелью атрибутов сверху.
+    /* Параметр и его тренировка — одна карточка (27.10, его «тренинг сделай получше дизайн и без спама информации»):
+       шесть карточек параметров стояли над шестью карточками занятий на те же параметры. Теперь нажимаешь на сам
+       параметр. Карты Creative (два параметра за раз) — своей группой ниже; усталость — строкой, только когда устал. */
     if(grp==='train'){
       const trains=allActs.filter(x=>String(x.id).indexOf('tr')===0);
-      return (a===trains[0] ? ccTrainPanelHTML(six, true)+'<div class="cc-tgrid">' : '')+
-        ccTrainCardHTML(a, {can, did:done.indexOf(a.id)>=0, keys, six, dayMult, dayCoach, left, maxed, gainsMove, closed})+
-        (a===trains[trains.length-1] ? '</div>' : '');
+      const single=x=>!x.map && !x.meta && Object.keys(x.gain||{}).length===1;
+      const singles=trains.filter(single), rest=trains.filter(x=>!single(x));
+      const o={can, did:done.indexOf(a.id)>=0, keys, six, dayMult, dayCoach, left, maxed, gainsMove, closed};
+      if(single(a)) return (a===singles[0] ? '<div class="cc-act-grp">'+(L().ccActGrpTrain||'')+'</div><div class="cc-stgrid">' : '')+
+        ccTrainStatHTML(a, o)+(a===singles[singles.length-1] ? '</div>'+ccFatigueLineHTML() : '');
+      return (a===rest[0] ? '<div class="cc-act-grp">'+(L().ccActGrpMaps||'')+'</div><div class="cc-tgrid">' : '')+
+        ccTrainCardHTML(a, o)+(a===rest[rest.length-1] ? '</div>' : '');
     }
     /* Команда и жизнь — такими же карточками, как тренировки: сетка своей группы,
        иконка, прирост одной строкой (сумма по атрибутам), энергия, эффекты значками. */
-    if(CC_DAY_VIEW==='train') return '';
+    /* Команда и жизнь — тоже во вкладке «Тренировка» (27.10): Центр теперь одной кнопкой ведёт сюда, и всё, на что
+       уходит день, должно быть здесь. Раньше эти карточки не рисовались нигде (Центр брал строки выше). */
     const grpOf=x=>String(x.id).indexOf('tr')===0 ? 'train' : (x.id==='scrim'||x.id==='talk'||x.id==='noble') ? 'team' : 'life';
     const mates=allActs.filter(x=>grpOf(x)===grp);
     const grpHead=a===mates[0]
       ? '<div class="cc-act-grp">'+(L()['ccActGrp'+grp.charAt(0).toUpperCase()+grp.slice(1)]||'')+'</div><div class="cc-tgrid cc-agrid">' : '';
     const tot=keys.reduce((sum,k)=>sum+a.gain[k]*dayMult*(dayCoach && dayCoach.keys.indexOf(k)>=0 ? 1+dayCoach.train : 1), 0);
+    // Один параметр и «+N» за остальными (27.10, «без спама информации»): полный список — в подсказке кнопки.
     const shortG=keys.length ? '<span class="cc-tc-gain">+'+(Math.round(tot*10)/10).toFixed(1)+' <i>'+
-      keys.map(k=>L()['ccAttr'+k.toUpperCase()]||k).join(' ')+'</i></span>' : '<span class="cc-tc-gain"></span>';
+      (L()['ccAttr'+keys[0].toUpperCase()]||keys[0])+(keys.length>1 ? ' +'+(keys.length-1) : '')+'</i></span>' : '<span class="cc-tc-gain"></span>';
     return grpHead+'<button class="cc-act cc-tcard g-'+grp+(can?'':' off')+(done.indexOf(a.id)>=0?' did':'')+'" '+
+      'title="'+esc(ccActName(a.id)+' · '+gains.replace(/<\/i>/g, ' · ').replace(/<[^>]+>/g, '').replace(/[\s·]+$/, ''))+'" '+
       (can?'onclick="careerPickDay(\''+a.id+'\')"':'disabled')+'>'+
       '<span class="cc-tc-top"><i class="cc-tc-ico">'+(CC_TRAIN_ICON[a.id]||'•')+'</i><b class="cc-tc-name">'+ccActName(a.id)+'</b></span>'+
       '<span class="cc-tc-row">'+shortG+'<em>'+a.energy+L().ccEnergyMark+'</em></span>'+
@@ -148485,8 +148569,12 @@ function careerDayPanelHTML(locked){
             careerRingHTML(L().ccRingEnergy, left, careerEnergyMax(), 'energy')+
             careerRingHTML(L().ccRingMood, (careerMateRec() || (typeof ccMpTeam==='function' && ccMpTeam()))?careerPatience():0, 100, 'mood')+
           '</div>')+
-      '<div class="cc-acts">'+rows+'</div>'+
-      (CC_DAY_VIEW==='train' ? '' : careerJobHTML(closed, left))+
+      /* На Центре день — одной кнопкой (27.10, Notion: скрин панели дня, «слишком много информации будто тут»; его выбор
+         «лобби как в Fortnite»): шесть колонок, команда, стрим, отдых и подработка на четыре тарифа уехали во вкладку
+         «Тренировка». Здесь — что уже сделано сегодня и кнопка туда с остатком энергии. */
+      (CC_DAY_VIEW==='train'
+        ? '<div class="cc-acts">'+rows+'</div>'+careerJobHTML(closed, left)
+        : ccDayGoHTML(done, closed, left))+
       // The day ends when the player says so, and it can be said as soon as
       // anything has been done: a day nobody decided may as well not be in the
       // calendar, and after that it is theirs to keep spending or to close.
