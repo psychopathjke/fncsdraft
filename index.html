@@ -120121,7 +120121,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='290d4ef1';
+const CC_BUILD='464b42ff';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -147989,6 +147989,8 @@ function ccLockerCheck(){
     cr.log.slice(0, cr.lockSeen||0).forEach(e=>{ if(!e || e.who || !((e.wins||0)>0)) return;
       const u=ccUmbrellaGive(e.day), id='umb|'+u.id;
       if(!cr.locker.some(x=>x.id===id)) cr.locker.push({id, kind:'glider', name:u.name, day:e.day, season:e.season, x:1, ek:e.kind, art:'', fn:u.id}); }); }
+  // И старые посты «В шкафчике новое» из сохранённых карьер — вон из ленты (28.10).
+  if(Array.isArray(cr.news) && cr.news.some(n=>n && n.k==='ccNewsLocker')) cr.news=cr.news.filter(n=>!(n && n.k==='ccNewsLocker'));
   const quiet=cr.lockSeen==null || !!cr.lockAgain;
   const from=cr.lockSeen||0; if(from>=cr.log.length){ if(cr.lockSeen==null) cr.lockSeen=cr.log.length; delete cr.lockAgain; return; }
   for(let i=from;i<cr.log.length;i++){
@@ -148001,7 +148003,7 @@ function ccLockerCheck(){
       const have=cr.locker.find(x=>x.id===g.id);
       if(have){ if(!g.once) have.x=(have.x||1)+1; return; }
       cr.locker.push({id:g.id, kind:g.kind, name:g.name, day:e.day, season:e.season, x:1, ek:e.kind, art:ccLockerArtOf(e.day, e.kind), fn:g.fn});
-      if(!quiet) careerNews('good', 'ccNewsLocker', [CC_LOCKER_ICON[g.kind]||'🎁', g.name]);
+      // Поста в Медиа нет (28.10, его «про шкафчик ничего не надо в медиа писать»): награда видна в самом шкафчике.
     });
   }
   cr.lockSeen=cr.log.length; delete cr.lockAgain;
