@@ -5476,6 +5476,15 @@
   .sq-m .sq-acts{margin-top:6px;} .sq-m .sq-acts button{background:rgba(0,0,0,.3);font-size:11px;padding:6px;}
   .sq-acts button.go{background:#ffe600 !important;color:#101a44;border-color:#ffe600;}
   .sq-dup{font-size:11px;font-weight:800;color:#ffd0c8;margin-top:4px;}
+  /* Вечер вживую (sqLiveHTML). */
+  .sq-live-h{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:10px;}
+  .sq-live-h b{font-family:var(--font-display);font-size:22px;text-transform:uppercase;}
+  .sq-live-bar{flex:1;min-width:120px;display:block;height:8px;border-radius:5px;background:rgba(255,255,255,.1);overflow:hidden;text-decoration:none;}
+  .sq-live-bar s{display:block;height:100%;background:linear-gradient(90deg,#00d6a4,#ffe600);text-decoration:none;transition:width .4s;}
+  .sq-live-t td.mv{width:34px;font-size:11px;font-weight:900;} .sq-live-t td.mv .up{color:#00d6a4;font-style:normal;} .sq-live-t td.mv .dn{color:#ff7d70;font-style:normal;}
+  .sq-live-t tr.vr td{color:#ffe600;}
+  .sq-live-t td:nth-child(3),.sq-live-t th:nth-child(3){text-align:left;}
+  @media(prefers-reduced-motion:reduce){ .sq-live-bar s{transition:none;} }
   .sq-dsyn{margin-top:6px;font-size:12px;font-weight:900;color:rgba(255,255,255,.6);} .sq-dsyn.up{color:#00ffb8;}
   .sq-wal b .cc-vb-ic,.sq-pack em .cc-vb-ic{width:18px;height:18px;vertical-align:-3px;}
   .sq-tag{margin-top:6px;font-size:11px;font-weight:900;color:#00d6a4;}
@@ -111262,23 +111271,6 @@ function sqPool(){
   SQ_POOL.byK=new Map(SQ_POOL.map(c=>[c._k, c]));
   return SQ_POOL;
 }
-/* Соперники — клубы ботов, а не «Pollo & Malibuca» (27.10, его выбор «соперники как боты-клубы»): состав внутри тот же
-   (настоящие карточки своей полосы, отсюда и сила), снаружи — название клуба и средний OVR, как у других менеджеров
-   в дивизионе. Название в лобби не повторяется. */
-const SQ_CLUB_A=['Storm', 'Neon', 'Void', 'Royal', 'Night', 'Frost', 'Iron', 'Shadow', 'Lunar', 'Turbo', 'Crimson', 'Toxic', 'Apex', 'Zero',
-  'Nova', 'Hyper', 'Static', 'Blaze', 'Rogue', 'Prime', 'Golden', 'Silent', 'Wild', 'Electric', 'Savage', 'Cobalt', 'Arctic', 'Phantom'];
-const SQ_CLUB_B=['Wolves', 'Kings', 'Raiders', 'Legion', 'Vipers', 'Titans', 'Ghosts', 'Lions', 'Owls', 'Sharks', 'Knights', 'Rebels',
-  'Falcons', 'Reapers', 'Ravens', 'Hunters', 'Dragons', 'Bandits', 'Comets', 'Pirates', 'Panthers', 'Spartans', 'Outlaws', 'Hornets'];
-const SQ_CLUB_C=['', '', '', ' FC', ' Esports', ' Gaming', ' Club', ' Academy'];
-function sqClubName(used, t){
-  let name='';
-  for(let i=0; i<40; i++){
-    name=SQ_CLUB_A[Math.floor(Math.random()*SQ_CLUB_A.length)]+' '+SQ_CLUB_B[Math.floor(Math.random()*SQ_CLUB_B.length)]+SQ_CLUB_C[Math.floor(Math.random()*SQ_CLUB_C.length)];
-    if(!used.has(name)) break;
-  }
-  used.add(name);
-  return name+' · '+Math.round(t.ovrAvg||0);
-}
 function sqCardOf(id){ const inst=(SQ.cards||[]).find(c=>c.id===id); return inst ? sqPool().byK.get(inst.k) : null; }
 function sqOvr(c){ return c ? c._sqOvr : 0; }
 function sqRole(c){ return c ? (attrsFor(c)||{}).roleKey : ''; }
@@ -111312,9 +111304,9 @@ function sqStart(){
 function sqReset(){ ccAsk(sqT().resetAsk, ()=>{ try{ localStorage.removeItem(SQ_KEY); }catch(e){} sqNew(); SQ_TAB='home'; sqRender(); }); }
 function sqFit(id){ const v=SQ.st[id]; return v==null ? 100 : v; }
 // Всё, что считает силу и лобби, — в режиме карточек и под размер состава; глобалы возвращаются как были.
-function sqWithCards(fn){
+function sqWithCards(fn, size){
   const pm=CARD_MODE, ps=squadSize, pf=CC_WORLD_FAST;
-  CARD_MODE=true; squadSize=SQ.size; CC_WORLD_FAST=true;
+  CARD_MODE=true; squadSize=size||SQ.size; CC_WORLD_FAST=true;
   try{ return fn(); } finally{ CARD_MODE=pm; squadSize=ps; CC_WORLD_FAST=pf; }
 }
 function sqMyTeam(){
@@ -111333,20 +111325,68 @@ function sqBots(n, div, harder){
   for(let i=0; i<n; i++){
     const sq=[], seen=new Set();
     while(sq.length<SQ.size){ const p=sqDraw(lo, hi); if(!seen.has(p._k)){ seen.add(p._k); sq.push(p); } }
-    const t=buildTeam(sq); t.name=sqClubName(used, t); out.push(t);
+    // Игроками, не клубами (27.10, его «пусть игроки будут вместо составов»): флаг и ники состава.
+    const t=buildTeam(sq); t.name=teamLabel(sq); out.push(t);
   }
   return out;
 }
+/* ВЕЧЕР ВЖИВУЮ (27.10, его «симуляция игр пусть будет с таблицей»): игры по одной, после каждой таблица — место за
+   игру, киллы, очки, сдвиг в таблице; «Досчитать до конца» доигрывает разом. Ушёл с экрана — вечер доигрывается сам,
+   награды не теряются. Очки как в simulateGames: место по таблице Epic плюс киллы. */
+let SQ_LIVE=null;
+const SQ_LIVE_MS=1100;
+function sqRank(ts){ return ts.slice().sort((a, b)=>(b.stagePts-a.stagePts)||(b.wins-a.wins)||(b.stageElims-a.stageElims)); }
+function sqLiveStart(teams, games, size, title, done){
+  sqWithCards(()=>applyStageBias(pointsForPlace), size);
+  teams.forEach(t=>{ t.stagePts=0; t.stageElims=0; t.wins=0; t.lastPlace=0; t.lastElims=0; t.prevRank=0; });
+  SQ_LIVE={teams, games, g:0, size, title, done, timer:null};
+  sqLiveTick();
+}
+function sqLiveGame(){
+  const L=SQ_LIVE;
+  sqRank(L.teams).forEach((t, i)=>{ t.prevRank=i+1; });
+  sqWithCards(()=>{
+    const order=simulateGame(L.teams);
+    order.forEach((t, i)=>{ const place=i+1, el=t._elims||0;
+      t.stagePts+=pointsForPlace(place)+ccKillPts(el, 1); t.stageElims+=el; t.lastPlace=place; t.lastElims=el; if(place===1) t.wins++; });
+  }, L.size);
+  L.g++;
+}
+function sqLiveTick(){
+  const L=SQ_LIVE; if(!L) return;
+  if(L.g>=L.games) return sqLiveEnd();
+  const scr=document.getElementById('screen-sq');
+  if(!scr || !scr.classList.contains('active')) return sqLiveSkip();
+  sqLiveGame(); sqRender();
+  L.timer=setTimeout(sqLiveTick, SQ_LIVE_MS);
+}
+function sqLiveSkip(){ const L=SQ_LIVE; if(!L) return; clearTimeout(L.timer); while(L.g<L.games) sqLiveGame(); sqLiveEnd(); }
+function sqLiveEnd(){
+  const L=SQ_LIVE; if(!L) return; clearTimeout(L.timer); SQ_LIVE=null;
+  const ranked=sqRank(L.teams), you=L.teams.find(t=>t.isYou);
+  L.done({you, ranked, place:ranked.indexOf(you)+1, N:ranked.length});
+}
+function sqLiveHTML(){
+  const L=SQ_LIVE, T=sqT(), ranked=sqRank(L.teams), you=L.teams.find(t=>t.isYou), yi=ranked.indexOf(you);
+  const rows=ranked.slice(0, 12).concat(yi>=12 ? [you] : []);
+  const mv=(t, r)=>{ if(!t.prevRank || L.g<2) return ''; const d=t.prevRank-r; return d>0 ? '<i class="up">▲'+d+'</i>' : d<0 ? '<i class="dn">▼'+(-d)+'</i>' : ''; };
+  return '<div class="sq-live"><div class="sq-live-h"><b>'+esc(T.liveGame(L.g, L.games))+'</b>'+
+    '<u class="sq-live-bar"><s style="width:'+Math.round(L.g/L.games*100)+'%"></s></u>'+
+    '<button class="sq-ghost" onclick="sqLiveSkip()">'+esc(T.liveSkip)+'</button></div>'+
+    '<table class="sq-tbl sq-live-t"><tr><th>#</th><th></th><th></th><th>'+esc(T.lastGame)+'</th><th>'+esc(T.elims)+'</th><th>'+esc(T.pts)+'</th></tr>'+
+    rows.map(t=>{ const r=ranked.indexOf(t)+1;
+      return '<tr class="'+(t.isYou ? 'you' : '')+(t.lastPlace===1 ? ' vr' : '')+'"><td>'+r+'</td><td class="mv">'+mv(t, r)+'</td><td>'+(t.isYou ? esc(T.you) : t.name)+'</td>'+
+        '<td>#'+t.lastPlace+(t.lastPlace===1 ? ' 👑' : '')+'</td><td>'+t.stageElims+'</td><td>'+t.stagePts+'</td></tr>'; }).join('')+'</table></div>';
+}
 function sqPlay(cup){
-  const me=SQ.xi.length===SQ.size ? true : false; if(!me) return;
+  if(SQ_LIVE || SQ.xi.length!==SQ.size) return;
   const T=sqT(), n=Math.round(100/SQ.size)-1, eveNo=SQ.wk.n+1;
-  const res=sqWithCards(()=>{
-    const you=sqMyTeam(); if(!you) return null;
-    const teams=[you].concat(sqBots(n, SQ.div, cup));
-    simulateGames(teams, cup ? SQ_CUP_GAMES : SQ_EVE_GAMES, pointsForPlace, 1);
-    return {you, ranked:teams.slice().sort((a, b)=>(b.stagePts-a.stagePts)||(b.wins-a.wins)||(b.stageElims-a.stageElims))};
-  });
-  if(!res) return;
+  const teams=sqWithCards(()=>{ const you=sqMyTeam(); return you ? [you].concat(sqBots(n, SQ.div, cup)) : null; });
+  if(!teams) return;
+  sqLiveStart(teams, cup ? SQ_CUP_GAMES : SQ_EVE_GAMES, SQ.size, cup ? T.cup : T.evening(eveNo, SQ_WEEK), res=>sqPlayDone(cup, eveNo, res));
+}
+function sqPlayDone(cup, eveNo, res){
+  const T=sqT();
   const place=res.ranked.indexOf(res.you)+1, N=res.ranked.length, frac=place/N;
   let coins=Math.round((300+2200*Math.pow(1-frac, 2)+res.you.wins*500)/10)*10, pack=null, notes=[];
   if(cup){
@@ -111461,6 +111501,7 @@ function sqClaim(oid){
    которые есть в фифе»). Названия свои, без брендов EA: Дивизионы, Кап выходных, Бои с ботами, Драфт, Испытания
    составов. Карточки из пака сначала «неназначенные»: в клуб, быстро продать или на рынок; дубль в клуб не берётся. */
 Object.assign(SQ_I18N.en, {
+  liveGame:(g, n)=>'Game '+g+' of '+n, liveSkip:'Skip to the end', lastGame:'Last game',
   home:'Home', tabRivals:'Divisions', tabBattles:'Bot Battles', tabDraft:'Draft', tabSbc:'Squad Challenges', tabUn:'Unassigned', tabClub:'Club',
   hRivals:'Five evenings a week against squads of your division. Climb from 10 to 1.', hCup:'The big weekend lobby. Qualify with 4+ week points.',
   hBattles:'Short lobbies against bot squads at four difficulties. Weekly points, weekly reward.', hDraft:'Pick a squad from five options per slot, survive four rounds.',
@@ -111478,6 +111519,7 @@ Object.assign(SQ_I18N.en, {
   sbcBad:'The cards do not fit the rules yet', sbc:{basic:'First steps', silver:'Solid four', nation:'One flag', avg80:'Eighty club', region:'Home region', avg85:'Elite five'}
 });
 Object.assign(SQ_I18N.ru, {
+  liveGame:(g, n)=>'Игра '+g+' из '+n, liveSkip:'Досчитать до конца', lastGame:'Последняя игра',
   home:'Главная', tabRivals:'Дивизионы', tabBattles:'Бои с ботами', tabDraft:'Драфт', tabSbc:'Испытания составов', tabUn:'Неназначенные', tabClub:'Клуб',
   hRivals:'Пять вечеров в неделю против составов своего дивизиона. Поднимись с 10-го до 1-го.', hCup:'Большое лобби выходных. Вход: 4+ очка за неделю.',
   hBattles:'Короткие лобби против ботов на четырёх сложностях. Очки недели и награда в конце.', hDraft:'Собери состав из пяти вариантов на место и пройди четыре раунда.',
@@ -111530,27 +111572,27 @@ function sqSellDupes(){
   sqSave(); sqRender();
 }
 // Лобби вне дивизионов: свой состав (или временный — драфт) против ботов своей полосы.
-function sqLobby(cards, center, games){
+function sqLobbyTeams(cards, center, size){
   return sqWithCards(()=>{
     const you=buildTeam(cards); you.isYou=true; you.name=sqT().you;
-    const n=Math.round(100/SQ.size)-1, lo=Math.max(0, center-0.12), hi=Math.min(1, center+0.15), bots=[], used=new Set();
+    const n=Math.round(100/size)-1, lo=Math.max(0, center-0.12), hi=Math.min(1, center+0.15), bots=[];
     for(let i=0; i<n; i++){
       const sq=[], seen=new Set();
-      while(sq.length<SQ.size){ const p=sqDraw(lo, hi); if(!seen.has(p._k)){ seen.add(p._k); sq.push(p); } }
-      const t=buildTeam(sq); t.name=sqClubName(used, t); bots.push(t);
+      while(sq.length<size){ const p=sqDraw(lo, hi); if(!seen.has(p._k)){ seen.add(p._k); sq.push(p); } }
+      const t=buildTeam(sq); t.name=teamLabel(sq); bots.push(t);
     }
-    const teams=[you].concat(bots);
-    simulateGames(teams, games, pointsForPlace, 1);
-    const ranked=teams.slice().sort((a, b)=>(b.stagePts-a.stagePts)||(b.wins-a.wins)||(b.stageElims-a.stageElims));
-    return {you, ranked, place:ranked.indexOf(you)+1, N:ranked.length};
-  });
+    return [you].concat(bots);
+  }, size);
 }
 function sqRows(res){ const T=sqT(); return res.ranked.slice(0, 10).concat(res.place>10 ? [res.you] : []).map(t=>({
   name:t.isYou ? T.you : t.name, you:!!t.isYou, place:res.ranked.indexOf(t)+1, pts:t.stagePts, wins:t.wins, elims:t.stageElims})); }
 function sqBattle(d){
-  const T=sqT(); if(SQ.sb.played>=SQ_BATTLE_MAX || SQ.xi.length!==SQ.size) return;
+  const T=sqT(); if(SQ_LIVE || SQ.sb.played>=SQ_BATTLE_MAX || SQ.xi.length!==SQ.size) return;
   const cards=SQ.xi.map(sqCardOf).filter(Boolean);
-  const res=sqLobby(cards, SQ_BATTLE_BAND[d], 3);
+  sqLiveStart(sqLobbyTeams(cards, SQ_BATTLE_BAND[d], SQ.size), 3, SQ.size, T.diff[d], res=>sqBattleDone(d, res));
+}
+function sqBattleDone(d, res){
+  const T=sqT();
   const pts=Math.round((res.N-res.place+1)/res.N*100*SQ_BATTLE_MULT[d]);
   SQ.sb.played++; SQ.sb.pts+=pts;
   const coins=Math.round(pts*2/10)*10; SQ.coins+=coins;
@@ -111591,11 +111633,12 @@ function sqDraftPick(k){
 // Выбор по номеру варианта: в никах бывают кавычки, в onclick они ломали кнопку.
 function sqDraftPickI(i){ if(SQ.dr && SQ.dr.opts) sqDraftPick(SQ.dr.opts[i]); }
 function sqDraftRound(){
-  const dr=SQ.dr, T=sqT(); if(!dr || dr.opts || dr.done) return;
-  const prev=SQ.size; SQ.size=dr.size;
+  const dr=SQ.dr, T=sqT(); if(SQ_LIVE || !dr || dr.opts || dr.done) return;
   const cards=dr.picks.map(k=>sqPool().byK.get(k)).filter(Boolean);
-  const res=sqLobby(cards, SQ_DRAFT_BAND[dr.round], 4);
-  SQ.size=prev;
+  sqLiveStart(sqLobbyTeams(cards, SQ_DRAFT_BAND[dr.round], dr.size), 4, dr.size, T.drRound(dr.round+1), res=>sqDraftDone(res));
+}
+function sqDraftDone(res){
+  const dr=SQ.dr, T=sqT();
   const cut=Math.ceil(res.N/4), through=res.place<=cut, notes=[];
   if(through){ dr.round++; notes.push(dr.round>=4 ? T.drWin : T.drAdv); }
   else notes.push(T.drOut(dr.round+1));
@@ -111645,7 +111688,7 @@ function sqSbcSubmit(){
   SQ.packs.push(s.r); SQ_SBC_SEL=null; SQ_NOTE=sqT().sbcOk;
   sqSave(); sqRender();
 }
-function sqTab(t){ SQ_TAB=t; if(t!=='un') SQ_OPENED=null; if(t!=='sbc') SQ_SBC_SEL=null; sqRender(); }
+function sqTab(t){ if(SQ_LIVE) return; SQ_TAB=t; if(t!=='un') SQ_OPENED=null; if(t!=='sbc') SQ_SBC_SEL=null; sqRender(); }
 function sqLeft(ms){ const s=Math.max(0, Math.ceil(ms/1000)); return Math.floor(s/60)+':'+String(s%60).padStart(2, '0'); }
 function sqTier(o){ return o>=90 ? 'elite' : o>=85 ? 'gold' : o>=78 ? 'silver' : 'bronze'; }
 // Мини-карточка: OVR, роль, флаг, ник, регион и клуб, шесть параметров строкой. Цвет — по уровню, как паки.
@@ -111666,7 +111709,7 @@ function sqResHTML(){
   if(!SQ_LAST) return ''; const T=sqT(), L0=SQ_LAST, money=n=>Number(n||0).toLocaleString();
   return '<div class="sq-res"><h3 class="sq-h">'+esc(L0.title||'')+' · #'+L0.place+' / '+L0.N+'</h3>'+
     '<table class="sq-tbl"><tr><th>'+esc(T.place)+'</th><th></th><th>'+esc(T.pts)+'</th><th>'+esc(T.wins)+'</th><th>'+esc(T.elims)+'</th></tr>'+
-    L0.rows.map(r=>'<tr class="'+(r.you ? 'you' : '')+'"><td>'+r.place+'</td><td>'+esc(r.name)+'</td><td>'+r.pts+'</td><td>'+r.wins+'</td><td>'+r.elims+'</td></tr>').join('')+'</table>'+
+    L0.rows.map(r=>'<tr class="'+(r.you ? 'you' : '')+'"><td>'+r.place+'</td><td>'+(r.you ? esc(r.name) : r.name)+'</td><td>'+r.pts+'</td><td>'+r.wins+'</td><td>'+r.elims+'</td></tr>').join('')+'</table>'+
     (L0.coins ? '<p class="sq-earn">'+esc(T.earned)+': '+money(L0.coins)+' '+esc(T.coins)+(L0.pack ? ' · '+esc(T.packNames[L0.pack]) : '')+'</p>' : '')+
     L0.notes.map(n=>'<p class="sq-note">'+esc(n)+'</p>').join('')+'</div>';
 }
@@ -111678,7 +111721,8 @@ function sqRender(){
   const myT=sqWithCards(()=>sqMyTeam());
   let body='', title=T.title;
   const back='<button class="sq-crumb" onclick="sqTab(\'home\')">‹ '+esc(T.home)+'</button>';
-  if(SQ_TAB==='home'){
+  if(SQ_LIVE){ body=sqLiveHTML(); title=SQ_LIVE.title; }
+  else if(SQ_TAB==='home'){
     /* Превью на плитках (27.10, его «превьюхи добавь»): арт FNCS 2026 и Мейджора, остров, эмблема, скин, лобби сезона;
        у «Состава» и «Клуба» — фото своих лучших игроков, если оно есть в photos/. */
     const tile=(k, name, sub, cls, extra, img)=>'<button class="sq-tile '+cls+(img ? ' has-img' : '')+'"'+(img ? ' style="--img:url(\''+encodeURI(img).replace(/'/g, '%27')+'\')"' : '')+
@@ -119770,7 +119814,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='d381d7b1';
+const CC_BUILD='3edff756';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
