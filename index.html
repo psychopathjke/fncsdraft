@@ -637,13 +637,13 @@
   .logo{font-weight:900;font-size:30px;letter-spacing:-0.5px;text-transform:uppercase;
     line-height:1;font-style:italic;}
   .logo span{color:var(--accent);}
+  /* Цвета как в шапке Competitive и прогноза (27.10, его скрин в Notion: «сделай в таких цветах на главной»):
+     «FNCS» — ледяной голубой перелив, «DRAFT» — белый. Было: бирюза у FNCS и зелёно-бирюзовый DRAFT. */
   .logo span:not(.logo-fncs){
-    background:linear-gradient(160deg,#5fe3c0 0%,#00b090 55%,#009a86 100%);
-    -webkit-background-clip:text;background-clip:text;color:transparent;
-    -webkit-text-fill-color:transparent;
+    color:#fff;-webkit-text-fill-color:#fff;
     filter:drop-shadow(0 1px 1px rgba(0,0,0,.35));}
   .logo .logo-fncs{
-    background:linear-gradient(160deg,#ffffff 0%,#d8f7ff 34%,#57d8d0 72%,#2aa8b8 100%);
+    background:linear-gradient(180deg,#e9fbff 0%,#9fe1ff 100%);
     -webkit-background-clip:text;background-clip:text;color:transparent;
     -webkit-text-fill-color:transparent;
     filter:drop-shadow(0 1px 1px rgba(0,0,0,.35));}
@@ -120093,7 +120093,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='97c35ee4';
+const CC_BUILD='400492c9';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
