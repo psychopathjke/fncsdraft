@@ -5476,6 +5476,8 @@
   .sq-m .sq-acts{margin-top:6px;} .sq-m .sq-acts button{background:rgba(0,0,0,.3);font-size:11px;padding:6px;}
   .sq-acts button.go{background:#ffe600 !important;color:#101a44;border-color:#ffe600;}
   .sq-dup{font-size:11px;font-weight:800;color:#ffd0c8;margin-top:4px;}
+  .sq-dsyn{margin-top:6px;font-size:12px;font-weight:900;color:rgba(255,255,255,.6);} .sq-dsyn.up{color:#00ffb8;}
+  .sq-wal b .cc-vb-ic,.sq-pack em .cc-vb-ic{width:18px;height:18px;vertical-align:-3px;}
   .sq-tag{margin-top:6px;font-size:11px;font-weight:900;color:#00d6a4;}
   .sq-go.sm{padding:10px 18px;font-size:15px;} .sq-go:disabled{opacity:.4;cursor:default;}
   .sq-ghost{background:none;border:1px solid rgba(180,200,255,.35);color:#fff;border-radius:12px;padding:10px 16px;font:inherit;font-weight:800;cursor:pointer;}
@@ -111205,7 +111207,7 @@ const SQ_OBJ=[
 ];
 const SQ_I18N={
   en:{title:'FNCS Cards', sub:'Real 2026 pros from packs. Build your squad, climb the divisions.', back:'Back',
-    coins:'Coins', div:'Division', week:'Week', tabSquad:'Squad', tabPlay:'Play', tabPacks:'Packs', tabMkt:'Market', tabObj:'Objectives',
+    coins:'V-Bucks', div:'Division', week:'Week', tabSquad:'Squad', tabPlay:'Play', tabPacks:'Packs', tabMkt:'Market', tabObj:'Objectives',
     fmt:{2:'Duo', 3:'Trio', 4:'Squad'}, starters:'Starters', bench:'Subs', club:'Collection', empty:'Empty slot',
     pow:'Team power', ovr:'Avg OVR', syn:'Synergy', igl:'One IGL: +4', noIgl:'Needs exactly one IGL for the role bonus',
     toXi:'Start', toBench:'Sub', out:'Remove', list:'List', quick:'Quick sell', fit:'Fitness',
@@ -111215,15 +111217,15 @@ const SQ_I18N={
     up:d=>'Promoted to Division '+d+'!', down:d=>'Relegated to Division '+d+'.', stay:d=>'Staying in Division '+d+'.',
     cupOpen:'Qualified: the weekend cup is open.', newWeek:'A new week starts.', noCup:n=>'Not qualified for the weekend cup (needs '+n+' points).',
     packNames:{bronze:'Bronze', silver:'Silver', gold:'Gold', elite:'Elite'}, buy:'Buy', open:'Open', yourPacks:'Your packs',
-    noCoins:'Not enough coins', gotCards:'From the pack', packDesc:{bronze:'3 players', silver:'4 players', gold:'4 players, one 85+', elite:'3 players, one 90+'},
-    mktHint:'Bots bid until the timer runs out. Outbid? Your coins come back.', bid:'Bid', buyNow:'Buy now', curBid:'Bid', left:'left',
+    noCoins:'Not enough V-Bucks', gotCards:'From the pack', packDesc:{bronze:'3 players', silver:'4 players', gold:'4 players, one 85+', elite:'3 players, one 90+'},
+    mktHint:'Bots bid until the timer runs out. Outbid? Your V-Bucks come back.', bid:'Bid', buyNow:'Buy now', curBid:'Bid', left:'left',
     youTop:'You lead', mySales:'Your listings', soldFor:p=>'Sold for '+p, unsold:'Not sold, back in your collection', listed:'Listed',
     claim:'Claim', claimed:'Done', reward:'Reward',
     obj:{packs3:'Open 3 packs', eve5:'Play 5 evenings', top10:'Finish top 10 in an evening', win:'Win a game', chem:'Field a squad with exactly one IGL',
       sell:'Sell a card on the market', promo:'Get promoted', div5:'Reach Division 5'},
-    reset:'Start over', resetAsk:'Start FNCS Cards from scratch? Your cards and coins will be gone.', welcome:'Your starter pack: one IGL and one fragger, plus 5,000 coins.'},
+    reset:'Start over', resetAsk:'Start FNCS Cards from scratch? Your cards and V-Bucks will be gone.', welcome:'Your starter pack: one IGL and one fragger, plus 5,000 V-Bucks.'},
   ru:{title:'FNCS Cards', sub:'Настоящие про 2026 года из паков. Собери состав и поднимись по дивизионам.', back:'Назад',
-    coins:'Монеты', div:'Дивизион', week:'Неделя', tabSquad:'Состав', tabPlay:'Играть', tabPacks:'Паки', tabMkt:'Рынок', tabObj:'Задачи',
+    coins:'V-Bucks', div:'Дивизион', week:'Неделя', tabSquad:'Состав', tabPlay:'Играть', tabPacks:'Паки', tabMkt:'Рынок', tabObj:'Задачи',
     fmt:{2:'Дуо', 3:'Трио', 4:'Сквад'}, starters:'Основа', bench:'Запасные', club:'Коллекция', empty:'Пусто',
     pow:'Сила команды', ovr:'Средний OVR', syn:'Сыгранность', igl:'Один IGL: +4', noIgl:'Для бонуса роли нужен ровно один IGL',
     toXi:'В основу', toBench:'В запас', out:'Убрать', list:'Выставить', quick:'Быстро продать', fit:'Свежесть',
@@ -111233,13 +111235,13 @@ const SQ_I18N={
     up:d=>'Повышение: Дивизион '+d+'!', down:d=>'Понижение: Дивизион '+d+'.', stay:d=>'Остаёшься в Дивизионе '+d+'.',
     cupOpen:'Квалификация есть: открыт кап выходных.', newWeek:'Началась новая неделя.', noCup:n=>'На кап выходных не прошёл (нужно '+n+' очка).',
     packNames:{bronze:'Бронзовый', silver:'Серебряный', gold:'Золотой', elite:'Элитный'}, buy:'Купить', open:'Открыть', yourPacks:'Твои паки',
-    noCoins:'Не хватает монет', gotCards:'Из пака', packDesc:{bronze:'3 игрока', silver:'4 игрока', gold:'4 игрока, один 85+', elite:'3 игрока, один 90+'},
-    mktHint:'Боты делают ставки, пока идёт таймер. Перебили твою ставку? Монеты вернутся.', bid:'Ставка', buyNow:'Купить сразу', curBid:'Ставка', left:'осталось',
+    noCoins:'Не хватает V-Bucks', gotCards:'Из пака', packDesc:{bronze:'3 игрока', silver:'4 игрока', gold:'4 игрока, один 85+', elite:'3 игрока, один 90+'},
+    mktHint:'Боты делают ставки, пока идёт таймер. Перебили твою ставку? V-Bucks вернутся.', bid:'Ставка', buyNow:'Купить сразу', curBid:'Ставка', left:'осталось',
     youTop:'Ты лидируешь', mySales:'Твои лоты', soldFor:p=>'Продано за '+p, unsold:'Не продалось, карточка вернулась', listed:'Выставлено',
     claim:'Забрать', claimed:'Готово', reward:'Награда',
     obj:{packs3:'Открыть 3 пака', eve5:'Сыграть 5 вечеров', top10:'Войти в топ-10 вечера', win:'Выиграть игру', chem:'Выставить состав ровно с одним IGL',
       sell:'Продать карточку на рынке', promo:'Получить повышение', div5:'Дойти до 5-го дивизиона'},
-    reset:'Начать заново', resetAsk:'Начать FNCS Cards с нуля? Карточки и монеты пропадут.', welcome:'Стартовый пак: один IGL и один фраггер, плюс 5 000 монет.'}
+    reset:'Начать заново', resetAsk:'Начать FNCS Cards с нуля? Карточки и V-Bucks пропадут.', welcome:'Стартовый пак: один IGL и один фраггер, плюс 5 000 V-Bucks.'}
 };
 let SQ=null, SQ_TAB='squad', SQ_POOL=null, SQ_LAST=null, SQ_OPENED=null, SQ_NOTE='', SQ_TIMER=null;
 function sqT(){ return (typeof LANG!=='undefined' && SQ_I18N[LANG]) ? Object.assign({}, SQ_I18N.en, SQ_I18N[LANG]) : SQ_I18N.en; }
@@ -111463,14 +111465,14 @@ Object.assign(SQ_I18N.en, {
   hRivals:'Five evenings a week against squads of your division. Climb from 10 to 1.', hCup:'The big weekend lobby. Qualify with 4+ week points.',
   hBattles:'Short lobbies against bot squads at four difficulties. Weekly points, weekly reward.', hDraft:'Pick a squad from five options per slot, survive four rounds.',
   hSquad:'Starters, subs and format.', hClub:'Every card you own.', hPacks:'Bronze to Elite.', hMkt:'Bid, buy now, list your cards.',
-  hSbc:'Hand in cards that fit the rules, get packs.', hObj:'One-off goals for coins and packs.', hUn:n=>n+' cards waiting: keep or sell.',
+  hSbc:'Hand in cards that fit the rules, get packs.', hObj:'One-off goals for V-Bucks and packs.', hUn:n=>n+' cards waiting: keep or sell.',
   locked:'Locked', keep:'To club', keepAll:'All to club', sellDupes:'Quick sell duplicates', dup:'Duplicate: already in your club',
   unEmpty:'Nothing unassigned.', diff:['Beginner', 'Pro', 'World Class', 'Legend'], bPlayed:(n, m)=>'Played this week: '+n+' / '+m,
   bPts:'Week points', bPlay:'Play', bLeft:'No battles left this week', bReward:'Weekly reward: 300+ points bronze, 700+ silver, 1,200+ gold.',
-  bGot:p=>'Battle points: +'+p, wkReward:(c, p)=>'Bot Battles weekly reward: '+c+' coins'+(p ? ' + '+p+' pack' : ''),
-  drCost:c=>'Entry: '+c+' coins', drStart:'Start a draft', drPickCap:'Pick your captain', drPick:(i, n)=>'Pick player '+i+' of '+n,
+  bGot:p=>'Battle points: +'+p, wkReward:(c, p)=>'Bot Battles weekly reward: '+c+' V-Bucks'+(p ? ' + '+p+' pack' : ''),
+  drCost:c=>'Entry: '+c+' V-Bucks', drStart:'Start a draft', drPickCap:'Pick your captain', drPick:(i, n)=>'Pick player '+i+' of '+n,
   drRound:(r)=>'Round '+r+' of 4', drPlayRound:'Play the round', drNeed:p=>'Top '+p+' advance', drOut:r=>'Out in round '+r+'.', drWin:'Draft won: all four rounds!',
-  drAdv:'Through to the next round!', drReward:(c, p)=>'Reward: '+c+' coins + '+p+' pack', drDone:'Draft over', drNew:'New draft',
+  drAdv:'Through to the next round!', drReward:(c, p)=>'Reward: '+c+' V-Bucks + '+p+' pack', drDone:'Draft over', drNew:'New draft',
   sbcReq:{n:n=>n+' players', min:m=>'each OVR '+m+'+', avg:a=>'average OVR '+a+'+', nat:'same country', reg:'same region'},
   sbcAuto:'Fill cheapest', sbcSubmit:'Hand in', sbcPick:'Tap cards to choose. Squad starters and subs are not offered.', sbcOk:'Done! Pack added.',
   sbcBad:'The cards do not fit the rules yet', sbc:{basic:'First steps', silver:'Solid four', nation:'One flag', avg80:'Eighty club', region:'Home region', avg85:'Elite five'}
@@ -111480,14 +111482,14 @@ Object.assign(SQ_I18N.ru, {
   hRivals:'Пять вечеров в неделю против составов своего дивизиона. Поднимись с 10-го до 1-го.', hCup:'Большое лобби выходных. Вход: 4+ очка за неделю.',
   hBattles:'Короткие лобби против ботов на четырёх сложностях. Очки недели и награда в конце.', hDraft:'Собери состав из пяти вариантов на место и пройди четыре раунда.',
   hSquad:'Основа, запасные и формат.', hClub:'Все твои карточки.', hPacks:'От бронзы до элиты.', hMkt:'Ставки, покупка сразу, свои лоты.',
-  hSbc:'Сдай карточки под условия и получи паки.', hObj:'Разовые цели за монеты и паки.', hUn:n=>'Ждут решения: '+n+'. Забрать или продать.',
+  hSbc:'Сдай карточки под условия и получи паки.', hObj:'Разовые цели за V-Bucks и паки.', hUn:n=>'Ждут решения: '+n+'. Забрать или продать.',
   locked:'Закрыто', keep:'В клуб', keepAll:'Всё в клуб', sellDupes:'Продать дубли', dup:'Дубль: такой уже в клубе',
   unEmpty:'Неназначенных нет.', diff:['Новичок', 'Про', 'Мировой класс', 'Легенда'], bPlayed:(n, m)=>'Сыграно за неделю: '+n+' / '+m,
   bPts:'Очки недели', bPlay:'Играть', bLeft:'На этой неделе боёв больше нет', bReward:'Награда недели: 300+ очков бронза, 700+ серебро, 1 200+ золото.',
-  bGot:p=>'Очки боя: +'+p, wkReward:(c, p)=>'Награда боёв с ботами: '+c+' монет'+(p ? ' и пак ('+p+')' : ''),
-  drCost:c=>'Вход: '+c+' монет', drStart:'Начать драфт', drPickCap:'Выбери капитана', drPick:(i, n)=>'Игрок '+i+' из '+n,
+  bGot:p=>'Очки боя: +'+p, wkReward:(c, p)=>'Награда боёв с ботами: '+c+' V-Bucks'+(p ? ' и пак ('+p+')' : ''),
+  drCost:c=>'Вход: '+c+' V-Bucks', drStart:'Начать драфт', drPickCap:'Выбери капитана', drPick:(i, n)=>'Игрок '+i+' из '+n,
   drRound:(r)=>'Раунд '+r+' из 4', drPlayRound:'Сыграть раунд', drNeed:p=>'Дальше проходят топ-'+p, drOut:r=>'Вылет в раунде '+r+'.', drWin:'Драфт выигран: все четыре раунда!',
-  drAdv:'Проход в следующий раунд!', drReward:(c, p)=>'Награда: '+c+' монет и пак ('+p+')', drDone:'Драфт окончен', drNew:'Новый драфт',
+  drAdv:'Проход в следующий раунд!', drReward:(c, p)=>'Награда: '+c+' V-Bucks и пак ('+p+')', drDone:'Драфт окончен', drNew:'Новый драфт',
   sbcReq:{n:n=>n+' игрока', min:m=>'у каждого OVR '+m+'+', avg:a=>'средний OVR '+a+'+', nat:'одна страна', reg:'один регион'},
   sbcAuto:'Подобрать', sbcSubmit:'Сдать', sbcPick:'Нажимай на карточки, чтобы выбрать. Основа и запасные не предлагаются.', sbcOk:'Готово! Пак добавлен.',
   sbcBad:'Карточки пока не подходят под условия', sbc:{basic:'Первые шаги', silver:'Крепкая четвёрка', nation:'Один флаг', avg80:'Клуб 80', region:'Родной регион', avg85:'Элитная пятёрка'}
@@ -111560,7 +111562,17 @@ function sqBattle(d){
 function sqDraftOpts(cap){
   const taken=new Set((SQ.dr.picks||[]));
   const out=[], seen=new Set();
+  /* Два из пяти — земляки уже выбранных (страна), чтобы было из чего строить сыгранность: иначе случайные пятёрки
+     почти никогда не связаны с капитаном и подсказка везде «0». Остальные — как раньше, сильные из пула. */
+  if(!cap){
+    const nats=new Set(SQ.dr.picks.map(k=>(sqPool().byK.get(k)||{}).nat).filter(Boolean));
+    const P=sqPool(), lo=Math.floor(P.length*0.5);
+    const mates=P.slice(lo).filter(c=>nats.has(c.nat) && !taken.has(c._k));
+    for(let i=0; i<40 && out.length<2 && mates.length; i++){ const c=mates[Math.floor(Math.random()*mates.length)]; if(!seen.has(c._k)){ seen.add(c._k); out.push(c._k); } }
+  }
   while(out.length<5){ const c=cap ? sqDraw(0.92, 1) : sqDraw(0.55, 1); if(!taken.has(c._k) && !seen.has(c._k)){ seen.add(c._k); out.push(c._k); } }
+  // Земляки не всегда первыми: порядок перемешан.
+  for(let i=out.length-1; i>0; i--){ const j=Math.floor(Math.random()*(i+1)); [out[i], out[j]]=[out[j], out[i]]; }
   return out;
 }
 function sqDraftStart(){
@@ -111655,7 +111667,7 @@ function sqResHTML(){
   return '<div class="sq-res"><h3 class="sq-h">'+esc(L0.title||'')+' · #'+L0.place+' / '+L0.N+'</h3>'+
     '<table class="sq-tbl"><tr><th>'+esc(T.place)+'</th><th></th><th>'+esc(T.pts)+'</th><th>'+esc(T.wins)+'</th><th>'+esc(T.elims)+'</th></tr>'+
     L0.rows.map(r=>'<tr class="'+(r.you ? 'you' : '')+'"><td>'+r.place+'</td><td>'+esc(r.name)+'</td><td>'+r.pts+'</td><td>'+r.wins+'</td><td>'+r.elims+'</td></tr>').join('')+'</table>'+
-    (L0.coins ? '<p class="sq-earn">'+esc(T.earned)+': '+money(L0.coins)+' '+esc(T.coins.toLowerCase())+(L0.pack ? ' · '+esc(T.packNames[L0.pack]) : '')+'</p>' : '')+
+    (L0.coins ? '<p class="sq-earn">'+esc(T.earned)+': '+money(L0.coins)+' '+esc(T.coins)+(L0.pack ? ' · '+esc(T.packNames[L0.pack]) : '')+'</p>' : '')+
     L0.notes.map(n=>'<p class="sq-note">'+esc(n)+'</p>').join('')+'</div>';
 }
 function sqRender(){
@@ -111748,9 +111760,23 @@ function sqRender(){
         '<button class="sq-go"'+(SQ.coins<SQ_DRAFT_COST ? ' disabled' : '')+' onclick="sqDraftStart()">'+esc(dr ? T.drNew : T.drStart)+'</button>';
     } else if(dr.opts){
       const cap=!dr.picks.length;
-      body='<div class="sq-mgrid sq-dpicks">'+dr.picks.map(k=>sqMini(sqPool().byK.get(k))).join('')+Array.from({length:dr.size-dr.picks.length}, ()=>'<div class="sq-m sq-empty">?</div>').join('')+'</div>'+
+      /* Как в драфте FC, главное — сыгранность: у каждого варианта видно, сколько она прибавит составу и будет ли
+         ровно один IGL (27.10, его «fut draft ещё режим интересный»). Сверху — сила уже выбранных. */
+      const got=dr.picks.map(k=>sqPool().byK.get(k)).filter(Boolean);
+      const synOf=cs=>{ try{ return cs.length>1 ? computeSynergy(cs).bonus : 0; }catch(e){ return 0; } };
+      const syn0=synOf(got), igl0=got.filter(c=>sqRole(c)==='roleIGL').length;
+      const prev=SQ.size; SQ.size=dr.size;
+      const pow0=got.length ? sqWithCards(()=>buildTeam(got)).pow : 0;
+      SQ.size=prev;
+      body=(got.length ? '<div class="sq-stats"><span><em>'+esc(T.pow)+'</em><b>'+pow0+'</b></span><span><em>'+esc(T.syn)+'</em><b>+'+Math.min(syn0, SYN_POW_CAP)+'</b></span></div>' : '')+
+        '<div class="sq-mgrid sq-dpicks">'+got.map(c=>sqMini(c)).join('')+Array.from({length:dr.size-dr.picks.length}, ()=>'<div class="sq-m sq-empty">?</div>').join('')+'</div>'+
         '<h3 class="sq-h">'+esc(cap ? T.drPickCap : T.drPick(dr.picks.length+1, dr.size))+'</h3>'+
-        '<div class="sq-mgrid">'+dr.opts.map((k, i)=>sqMini(sqPool().byK.get(k), {click:'sqDraftPickI('+i+')'})).join('')+'</div>';
+        '<div class="sq-mgrid">'+dr.opts.map((k, i)=>{ const c=sqPool().byK.get(k);
+          const add=got.length ? synOf(got.concat([c]))-syn0 : 0, igl=igl0+(sqRole(c)==='roleIGL' ? 1 : 0);
+          const last=dr.picks.length===dr.size-1;
+          const hint=(got.length ? '<div class="sq-dsyn'+(add>0 ? ' up' : '')+'">'+esc(T.syn)+' '+(add>0 ? '+'+add : '0')+'</div>' : '')+
+            (last && igl!==1 ? '<div class="sq-dup">'+esc(T.noIgl)+'</div>' : '');
+          return sqMini(c, {click:'sqDraftPickI('+i+')', below:hint}); }).join('')+'</div>';
     } else {
       const cards=dr.picks.map(k=>sqPool().byK.get(k)).filter(Boolean);
       const prev=SQ.size; SQ.size=dr.size; const t=sqWithCards(()=>buildTeam(cards)); SQ.size=prev;
@@ -111779,7 +111805,7 @@ function sqRender(){
     body=(Object.keys(own).length ? '<h3 class="sq-h">'+esc(T.yourPacks)+'</h3><div class="sq-packs">'+Object.keys(own).map(p=>
         '<button class="sq-pack p-'+p+'" onclick="sqPackOpen(\''+p+'\', false)"><b>'+esc(T.packNames[p])+' ×'+own[p]+'</b><em>'+esc(T.open)+'</em></button>').join('')+'</div>' : '')+
       '<div class="sq-packs">'+SQ_PACKS.map(P=>'<button class="sq-pack p-'+P.id+'"'+(SQ.coins<P.cost ? ' disabled' : '')+' onclick="sqPackOpen(\''+P.id+'\', true)">'+
-        '<b>'+esc(T.packNames[P.id])+'</b><span>'+esc(T.packDesc[P.id])+'</span><em>'+money(P.cost)+'</em></button>').join('')+'</div>';
+        '<b>'+esc(T.packNames[P.id])+'</b><span>'+esc(T.packDesc[P.id])+'</span><em><i class="cc-vb-ic"></i>'+money(P.cost)+'</em></button>').join('')+'</div>';
   } else if(SQ_TAB==='market'){
     title=T.tabMkt;
     sqMktTick();
@@ -111795,12 +111821,12 @@ function sqRender(){
   } else {
     title=T.tabObj;
     body='<div class="sq-objs">'+SQ_OBJ.map(o=>{ const cur=Math.min(o.goal, o.cur(SQ)), done=SQ.claimed[o.id];
-      const rw=o.r.coins ? money(o.r.coins)+' '+T.coins.toLowerCase() : T.packNames[o.r.pack];
+      const rw=o.r.coins ? money(o.r.coins)+' '+T.coins : T.packNames[o.r.pack];
       return '<div class="sq-obj'+(done ? ' done' : '')+'"><b>'+esc(T.obj[o.id])+'</b><span>'+cur+' / '+o.goal+' · '+esc(T.reward)+': '+esc(rw)+'</span>'+
         (done ? '<em>'+esc(T.claimed)+'</em>' : '<button'+(cur<o.goal ? ' disabled' : '')+' onclick="sqClaim(\''+o.id+'\')">'+esc(T.claim)+'</button>')+'</div>'; }).join('')+'</div>';
   }
   root.innerHTML='<div class="sq-top">'+(SQ_TAB==='home' ? '<button class="sq-back" onclick="show(\'screen-mode\')">‹ '+esc(T.back)+'</button>' : back)+
-    '<h2>'+esc(title)+'</h2><span class="sq-wal"><em>'+esc(T.coins)+'</em><b>'+money(SQ.coins)+'</b></span>'+
+    '<h2>'+esc(title)+'</h2><span class="sq-wal"><em>'+esc(T.coins)+'</em><b><i class="cc-vb-ic"></i>'+money(SQ.coins)+'</b></span>'+
     '<span class="sq-wal"><em>'+esc(T.div)+'</em><b>'+SQ.div+'</b></span></div>'+
     (SQ_NOTE ? '<div class="sq-flash">'+esc(SQ_NOTE)+'</div>' : '')+
     '<div class="sq-body">'+body+'</div>'+
@@ -119744,7 +119770,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='5df34429';
+const CC_BUILD='d381d7b1';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
