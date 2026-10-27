@@ -5477,6 +5477,14 @@
   .sq-acts button.go{background:#ffe600 !important;color:#101a44;border-color:#ffe600;}
   .sq-dup{font-size:11px;font-weight:800;color:#ffd0c8;margin-top:4px;}
   body.sq-running #screen-results .new-draft-btn{display:none !important;}
+  /* Эволюции (sqEvoHTML). */
+  .sq-evo-run{display:grid;grid-template-columns:minmax(150px,200px) 1fr;gap:16px;align-items:start;}
+  @media(max-width:600px){ .sq-evo-run{grid-template-columns:1fr;} }
+  .sq-evo-p > div{display:grid;grid-template-columns:1fr auto;gap:4px 10px;align-items:center;margin-bottom:10px;font-weight:800;font-size:13px;}
+  .sq-evo-p > div .sq-qp{grid-column:1 / span 2;margin:0;}
+  .sq-evo-p > div em{font-style:normal;color:#9fb0e8;font-variant-numeric:tabular-nums;}
+  .sq-m-top i.sq-evo-b{background:#00d6a4;color:#062a22;}
+  .sq-tile.k-evo{background:linear-gradient(150deg,#0e6a7a,#062a33);}
   /* Сезон FNCS: путь этапов и полоса QP. */
   .sq-path{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:4px 0 12px;}
   .sq-path span{padding:6px 12px;border-radius:999px;font-size:12px;font-weight:900;background:rgba(255,255,255,.07);color:#8fa1cc;}
@@ -111278,7 +111286,22 @@ function sqPool(){
   SQ_POOL.byK=new Map(SQ_POOL.map(c=>[c._k, c]));
   return SQ_POOL;
 }
-function sqCardOf(id){ const inst=(SQ.cards||[]).find(c=>c.id===id); return inst ? sqPool().byK.get(inst.k) : null; }
+function sqCardOf(id){ const inst=(SQ.cards||[]).find(c=>c.id===id); if(!inst) return null; const base=sqPool().byK.get(inst.k); return inst.evo ? sqEvoCard(base, inst) : base; }
+/* Эволюция — копия карточки с поднятыми параметрами (27.10): attrsFor берёт готовые _attrs с _floored и не пересчитывает,
+   так что прибавка доходит до силы состава, цены и отрисовки. Кэш — по id и уровню эволюции. */
+const SQ_EVO_CACHE=new Map();
+function sqEvoCard(base, inst){
+  if(!base) return null;
+  const key=inst.id+'|'+JSON.stringify(inst.evo);
+  if(SQ_EVO_CACHE.has(key)) return SQ_EVO_CACHE.get(key);
+  const a=Object.assign({}, attrsFor(base));
+  let ovr=a.ovr;
+  Object.keys(inst.evo.add||{}).forEach(k=>{ if(k==='ovr') ovr+=inst.evo.add[k]; else if(a[k]!=null) a[k]=Math.min(99, a[k]+inst.evo.add[k]); });
+  a.ovr=Math.min(99, ovr); a._floored=true;
+  const c=Object.assign({}, base, {_attrs:a, _sqOvr:a.ovr, _evo:inst.evo.n||1});
+  SQ_EVO_CACHE.set(key, c);
+  return c;
+}
 function sqOvr(c){ return c ? c._sqOvr : 0; }
 function sqRole(c){ return c ? (attrsFor(c)||{}).roleKey : ''; }
 function sqDraw(lo, hi, role){
@@ -111492,6 +111515,7 @@ function sqPlayDone(st, title, res){
   if(res.you.wins) SQ.stat.wins+=res.you.wins;
   SQ.coins+=coins;
   SQ.cards.forEach(c=>{ if(c.un) return; const on=SQ.xi.indexOf(c.id)>=0; SQ.st[c.id]=Math.max(0, Math.min(100, sqFit(c.id)+(on ? -15 : 25))); });
+  sqAfterNight(res, st ? 'stage' : 'cup');
   SQ_LAST={kind:'season', title, place, N, coins, pack, notes, rows:sqRows(res)};
   sqSave(); sqRender();
 }
@@ -111513,7 +111537,7 @@ function sqPackOpen(id, paid){
   for(let i=0; i<P.n; i++) got.push(i===0 && P.top ? sqDrawSkew(P.top, 1) : sqDrawSkew(P.lo, P.hi));
   got.sort((a, b)=>sqOvr(b)-sqOvr(a));
   SQ_OPENED=got.map(c=>sqAdd(c, true));
-  SQ.stat.packs++;
+  SQ.stat.packs++; sqWq('pack', 1);
   SQ_TAB='un';
   sqSave(); sqRender();
 }
@@ -111535,7 +111559,8 @@ function sqDropCard(id){ SQ.cards=SQ.cards.filter(c=>c.id!==id); SQ.xi=SQ.xi.fil
 function sqQuickSell(id){ const c=sqCardOf(id); if(!c) return; SQ.coins+=sqQuick(sqOvr(c)); sqDropCard(id); sqSave(); sqRender(); }
 function sqList(id){
   const c=sqCardOf(id); if(!c) return;
-  SQ.sells.push({id, k:c._k, price:sqValue(sqOvr(c)), ends:Date.now()+SQ_SELL_MS});
+  const inst0=sqInst(id);   // эволюция едет вместе с лотом и возвращается, если не продалось
+  SQ.sells.push({id, k:inst0 ? inst0.k : c._k, evo:inst0 && inst0.evo || null, price:sqValue(sqOvr(c)), ends:Date.now()+SQ_SELL_MS}); sqWq('list', 1);
   sqDropCard(id); sqSave(); sqRender();
 }
 /* Рынок — боты. У лота своя «настоящая цена» (cap): ставки ботов растут к ней по таймеру. Твоя ставка выше их текущей —
@@ -111559,7 +111584,7 @@ function sqMktTick(){
   SQ.sells=SQ.sells.filter(s=>{
     if(now<s.ends) return true;
     if(Math.random()<0.85){ const got=Math.round(s.price*0.95/10)*10; SQ.coins+=got; SQ.stat.sold++; SQ_NOTE=T.soldFor(got.toLocaleString()); }
-    else { SQ.cards.push({id:s.id, k:s.k}); SQ_NOTE=T.unsold; }
+    else { SQ.cards.push(s.evo ? {id:s.id, k:s.k, evo:s.evo} : {id:s.id, k:s.k}); SQ_NOTE=T.unsold; }
     return false;
   });
   sqSave();
@@ -111709,6 +111734,7 @@ function sqBattleDone(d, res){
   SQ.sb.played++; SQ.sb.pts+=pts;
   const coins=Math.round(pts*2/10)*10; SQ.coins+=coins;
   if(res.you.wins) SQ.stat.wins+=res.you.wins;
+  sqAfterNight(res, 'battle');
   SQ_LAST={kind:'battle', title:T.diff[d], place:res.place, N:res.N, coins, pack:null, notes:[T.bGot(pts)], rows:sqRows(res)};
   sqSave(); sqRender();
 }
@@ -111757,9 +111783,11 @@ function sqDraftDone(res){
   if(!through || dr.round>=4){
     dr.done=true;
     const [c, p]=SQ_DRAFT_PRIZE[dr.round];
+    sqWq('draft', 1);
     SQ.coins+=c; SQ.packs.push(p); notes.push(T.drReward(c.toLocaleString(), T.packNames[p]));
   }
   if(res.you.wins) SQ.stat.wins+=res.you.wins;
+  sqAfterNight(res, 'draft');
   SQ_LAST={kind:'draft', title:T.drRound(Math.min(4, dr.round+(through ? 0 : 1))), place:res.place, N:res.N, coins:0, pack:null, notes, rows:sqRows(res)};
   sqSave(); sqRender();
 }
@@ -111797,10 +111825,140 @@ function sqSbcSubmit(){
   const S=SQ_SBC_SEL; if(!S) return; const s=SQ_SBC.find(x=>x.id===S.id);
   if(!sqSbcCheck(s, S.sel)){ SQ_NOTE=sqT().sbcBad; sqRender(); return; }
   S.sel.forEach(id=>sqDropCard(id));
-  SQ.packs.push(s.r); SQ_SBC_SEL=null; SQ_NOTE=sqT().sbcOk;
+  SQ.packs.push(s.r); SQ_SBC_SEL=null; SQ_NOTE=sqT().sbcOk; sqWq('sbc', 1);
   sqSave(); sqRender();
 }
-function sqTab(t){ if(SQ_LIVE) return; SQ_TAB=t; if(t!=='un') SQ_OPENED=null; if(t!=='sbc') SQ_SBC_SEL=null; sqRender(); }
+/* ЭВОЛЮЦИИ И ЗАДАЧИ НЕДЕЛИ (27.10, по плану после выкладки, его «ДЕЛАЙ»).
+   Эволюция: из шести шаблонов на неделе открыты три (по номеру недели). Берёшь подходящую карточку из клуба (OVR не
+   выше порога, у некоторых — роль), играешь ею в основе вечера сезона и бои с ботами; выполнил условия — карточка
+   навсегда получает прибавку к параметрам и OVR (sqEvoCard), на ней значок EVO. Одна эволюция за раз; один шаблон
+   на карточку один раз. Задачи недели: три из девяти, меняются с неделей, награды небольшие. */
+const SQ_EVOS=[
+  {id:'aim',    max:80, role:null,       need:{nights:3, top:1},   add:{aim:4, clu:2, ovr:2}},
+  {id:'end',    max:84, role:null,       need:{nights:4, elims:20}, add:{end:4, sur:3, ovr:2}},
+  {id:'igl',    max:82, role:'roleIGL',  need:{nights:3, top:1},   add:{end:3, exp:3, ovr:2}},
+  {id:'frag',   max:82, role:'roleFRG',  need:{nights:3, elims:15}, add:{aim:3, clu:3, ovr:2}},
+  {id:'grind',  max:78, role:null,       need:{nights:5},          add:{con:4, exp:3, ovr:3}},
+  {id:'clutch', max:86, role:null,       need:{nights:4, top:2},   add:{clu:4, sur:2, ovr:1}}
+];
+const SQ_WQ_POOL=[
+  {id:'cups',    goal:3,  r:{coins:1500}},
+  {id:'top10',   goal:1,  r:{coins:2500}},
+  {id:'win',     goal:1,  r:{pack:'bronze'}},
+  {id:'battles', goal:2,  r:{coins:1500}},
+  {id:'pack',    goal:1,  r:{coins:1000}},
+  {id:'sbc',     goal:1,  r:{pack:'bronze'}},
+  {id:'list',    goal:1,  r:{coins:800}},
+  {id:'draft',   goal:1,  r:{coins:2000}},
+  {id:'elims',   goal:30, r:{coins:2000}}
+];
+let SQ_EVO_PICK=null;
+function sqRot(list, n, salt){ const out=[], w=(SQ.week||1)*7+salt; for(let j=0; out.length<n && j<list.length*3; j++){ const x=list[(w+j*5)%list.length]; if(out.indexOf(x)<0) out.push(x); } return out; }
+function sqEvosNow(){ return sqRot(SQ_EVOS, 3, 1); }
+function sqWqNow(){ return sqRot(SQ_WQ_POOL, 3, 4); }
+function sqWq(key, n){
+  if(!SQ.wq || SQ.wq.wk!==SQ.week) SQ.wq={wk:SQ.week, p:{}, c:{}};
+  SQ.wq.p[key]=(SQ.wq.p[key]||0)+(n||1);
+}
+function sqWqClaim(id){
+  if(!SQ.wq || SQ.wq.wk!==SQ.week) return;
+  const q=SQ_WQ_POOL.find(x=>x.id===id); if(!q || SQ.wq.c[id] || (SQ.wq.p[id]||0)<q.goal || sqWqNow().indexOf(q)<0) return;
+  SQ.wq.c[id]=true;
+  if(q.r.coins) SQ.coins+=q.r.coins;
+  if(q.r.pack) SQ.packs.push(q.r.pack);
+  sqSave(); sqRender();
+}
+// Подходит ли карточка под эволюцию: в клубе, не неназначенная, OVR не выше порога, роль, этот шаблон ещё не проходила.
+function sqEvoFits(e, inst){
+  if(!inst || inst.un) return false;
+  const c=sqCardOf(inst.id); if(!c) return false;
+  if(sqOvr(c)>e.max) return false;
+  if(e.role && sqRole(c)!==e.role) return false;
+  return !((inst.evo && inst.evo.done)||[]).includes(e.id);
+}
+function sqEvoStart(eid, cid){
+  const e=SQ_EVOS.find(x=>x.id===eid), inst=sqInst(cid);
+  if(!e || SQ.ev || !sqEvoFits(e, inst)) return;
+  SQ.ev={eid, cid, prog:{nights:0, top:0, elims:0}};
+  SQ_EVO_PICK=null; sqSave(); sqRender();
+}
+function sqEvoPick(eid){ SQ_EVO_PICK=eid; sqRender(); }
+function sqEvoPickI(i){ const e=SQ_EVOS.find(x=>x.id===SQ_EVO_PICK); if(!e) return; const fit=SQ.cards.filter(c=>sqEvoFits(e, c)); if(fit[i]) sqEvoStart(e.id, fit[i].id); }
+function sqEvoDone(){ if(!SQ.ev) return false; const e=SQ_EVOS.find(x=>x.id===SQ.ev.eid); return !!e && Object.keys(e.need).every(k=>(SQ.ev.prog[k]||0)>=e.need[k]); }
+function sqEvoClaim(){
+  if(!sqEvoDone()) return;
+  const e=SQ_EVOS.find(x=>x.id===SQ.ev.eid), inst=sqInst(SQ.ev.cid);
+  if(inst){
+    const ev=inst.evo||{n:0, add:{}, done:[]};
+    ev.n++; ev.done=(ev.done||[]).concat([e.id]);
+    Object.keys(e.add).forEach(k=>{ ev.add[k]=(ev.add[k]||0)+e.add[k]; });
+    inst.evo=ev;
+  }
+  SQ.ev=null; SQ_NOTE=sqT().evoGot; sqSave(); sqRender();
+}
+function sqEvoCancel(){ SQ.ev=null; sqSave(); sqRender(); }
+// Ход эволюции и задач недели после вечера: только если карточка эволюции в основе.
+function sqAfterNight(res, kind){
+  if(SQ.ev && SQ.xi.indexOf(SQ.ev.cid)>=0 && kind!=='draft'){
+    const p=SQ.ev.prog; p.nights++; if(res.place<=Math.ceil(res.N*0.25)) p.top++; p.elims+=res.you.stageElims||0;
+  }
+  if(kind==='cup') sqWq('cups', 1);
+  if(kind==='battle') sqWq('battles', 1);
+  if(res.place<=10 && kind!=='draft') sqWq('top10', 1);
+  if(res.you.wins) sqWq('win', res.you.wins);
+  sqWq('elims', res.you.stageElims||0);
+}
+function sqEvoHTML(){
+  const T=sqT(), money=n=>Number(n||0).toLocaleString();
+  const needTxt=e=>Object.keys(e.need).map(k=>T.evoNeed[k](e.need[k])).join(' · ');
+  const addTxt=e=>Object.keys(e.add).map(k=>(k==='ovr' ? 'OVR' : k.toUpperCase())+' +'+e.add[k]).join(', ');
+  if(SQ.ev){
+    const e=SQ_EVOS.find(x=>x.id===SQ.ev.eid), id=SQ.ev.cid, done=sqEvoDone();
+    return '<h3 class="sq-h">'+esc(T.evoName[e.id])+'</h3><div class="sq-evo-run">'+sqMini(sqCardOf(id))+'<div class="sq-evo-p">'+
+      Object.keys(e.need).map(k=>{ const v=Math.min(e.need[k], SQ.ev.prog[k]||0); return '<div><span>'+esc(T.evoNeed[k](e.need[k]))+'</span><u class="sq-qp"><s style="width:'+Math.round(v/e.need[k]*100)+'%"></s></u><em>'+v+' / '+e.need[k]+'</em></div>'; }).join('')+
+      '<p class="sq-hint">'+esc(T.evoAdd)+': '+esc(addTxt(e))+'</p>'+
+      (SQ.xi.indexOf(id)<0 ? '<p class="sq-warn">'+esc(T.evoNotXi)+'</p>' : '')+
+      (done ? '<button class="sq-go sm" onclick="sqEvoClaim()">'+esc(T.claim)+'</button>' : '<button class="sq-ghost" onclick="sqEvoCancel()">'+esc(T.evoCancel)+'</button>')+'</div></div>';
+  }
+  if(SQ_EVO_PICK){
+    const e=SQ_EVOS.find(x=>x.id===SQ_EVO_PICK), fit=SQ.cards.filter(c=>sqEvoFits(e, c));
+    return '<button class="sq-crumb" onclick="SQ_EVO_PICK=null;sqRender()">‹ '+esc(T.tabEvo)+'</button><h3 class="sq-h">'+esc(T.evoName[e.id])+'</h3>'+
+      '<p class="sq-hint">'+esc(T.evoPickCard)+'</p>'+
+      (fit.length ? '<div class="sq-mgrid">'+fit.map((c, i)=>sqMini(sqCardOf(c.id), {click:'sqEvoPickI('+i+')'})).join('')+'</div>' : '<p class="sq-warn">'+esc(T.evoNoFit)+'</p>');
+  }
+  return '<p class="sq-hint">'+esc(T.hEvo)+'</p><div class="sq-sbcs">'+sqEvosNow().map(e=>'<button class="sq-sbc p-'+(e.max>=84 ? 'gold' : 'silver')+'" onclick="sqEvoPick(\''+e.id+'\')">'+
+    '<b>'+esc(T.evoName[e.id])+'</b><span>'+esc(T.evoMax(e.max)+(e.role ? ' · '+(e.role==='roleIGL' ? 'IGL' : 'FRG') : ''))+'</span>'+
+    '<span>'+esc(needTxt(e))+'</span><em>'+esc(addTxt(e))+'</em></button>').join('')+'</div>';
+}
+function sqWqHTML(){
+  const T=sqT(), money=n=>Number(n||0).toLocaleString(), wq=(SQ.wq && SQ.wq.wk===SQ.week) ? SQ.wq : {p:{}, c:{}};
+  return '<h3 class="sq-h">'+esc(T.wqTitle(SQ.week))+'</h3><div class="sq-objs">'+sqWqNow().map(q=>{ const cur=Math.min(q.goal, wq.p[q.id]||0), done=wq.c[q.id];
+    const rw=q.r.coins ? money(q.r.coins)+' '+T.coins : T.packNames[q.r.pack];
+    return '<div class="sq-obj'+(done ? ' done' : '')+'"><b>'+esc(T.wq[q.id](q.goal))+'</b><span>'+cur+' / '+q.goal+' · '+esc(T.reward)+': '+esc(rw)+'</span>'+
+      (done ? '<em>'+esc(T.claimed)+'</em>' : '<button'+(cur<q.goal ? ' disabled' : '')+' onclick="sqWqClaim(\''+q.id+'\')">'+esc(T.claim)+'</button>')+'</div>'; }).join('')+'</div>'+
+    '<h3 class="sq-h">'+esc(T.oneOff)+'</h3>';
+}
+Object.assign(SQ_I18N.en, {
+  tabEvo:'Evolutions', hEvo:'Grow a card of your own: pick an evolution, play the card as a starter in season nights and bot battles, and it keeps the boost for good. Three evolutions this week, one at a time.',
+  evoName:{aim:'Sharp Aim', end:'Endgame Mind', igl:'IGL Course', frag:'Fragger Drills', grind:'Grinder', clutch:'Clutch Hour'},
+  evoNeed:{nights:n=>'Play '+n+' nights', top:n=>'Top 25% '+n+' time'+(n>1 ? 's' : ''), elims:n=>n+' team elims'},
+  evoMax:m=>'OVR up to '+m, evoAdd:'Boost', evoPickCard:'Choose a card from your club.', evoNoFit:'No card in your club fits this evolution.',
+  evoNotXi:'Put the card in the starters: nights only count with it playing.', evoCancel:'Cancel the evolution', evoGot:'Evolution complete! The card keeps the boost.',
+  wqTitle:w=>'This week (week '+w+')', oneOff:'One-off goals',
+  wq:{cups:n=>'Play '+n+' season cups', top10:()=>'Finish top 10 in a night', win:()=>'Win a game', battles:n=>'Play '+n+' bot battles', pack:()=>'Open a pack',
+    sbc:()=>'Complete a squad challenge', list:()=>'List a card on the market', draft:()=>'Finish a draft', elims:n=>'Get '+n+' team elims'}
+});
+Object.assign(SQ_I18N.ru, {
+  tabEvo:'Эволюции', hEvo:'Расти свою карточку: выбери эволюцию, играй карточкой в основе вечеров сезона и боёв с ботами, и прибавка останется навсегда. Три эволюции на неделю, одна за раз.',
+  evoName:{aim:'Точный прицел', end:'Голова эндгейма', igl:'Курс IGL', frag:'Тренировки фраггера', grind:'Трудяга', clutch:'Час клатча'},
+  evoNeed:{nights:n=>'Сыграть вечеров: '+n, top:n=>'Топ-25%, раз: '+n, elims:n=>'Киллов команды: '+n},
+  evoMax:m=>'OVR до '+m, evoAdd:'Прибавка', evoPickCard:'Выбери карточку из клуба.', evoNoFit:'В клубе нет карточки под эту эволюцию.',
+  evoNotXi:'Поставь карточку в основу: вечера засчитываются, только когда она играет.', evoCancel:'Отменить эволюцию', evoGot:'Эволюция готова! Прибавка у карточки навсегда.',
+  wqTitle:w=>'Эта неделя (неделя '+w+')', oneOff:'Разовые цели',
+  wq:{cups:n=>'Сыграть капов сезона: '+n, top10:()=>'Войти в топ-10 вечера', win:()=>'Выиграть игру', battles:n=>'Сыграть боёв с ботами: '+n, pack:()=>'Открыть пак',
+    sbc:()=>'Пройти испытание составов', list:()=>'Выставить карточку на рынок', draft:()=>'Доиграть драфт', elims:n=>'Набрать киллов команды: '+n}
+});
+function sqTab(t){ if(SQ_LIVE) return; SQ_TAB=t; if(t!=='un') SQ_OPENED=null; if(t!=='sbc') SQ_SBC_SEL=null; if(t!=='evo') SQ_EVO_PICK=null; sqRender(); }
 function sqLeft(ms){ const s=Math.max(0, Math.ceil(ms/1000)); return Math.floor(s/60)+':'+String(s%60).padStart(2, '0'); }
 function sqTier(o){ return o>=90 ? 'elite' : o>=85 ? 'gold' : o>=78 ? 'silver' : 'bronze'; }
 // Мини-карточка: OVR, роль, флаг, ник, регион и клуб, шесть параметров строкой. Цвет — по уровню, как паки.
@@ -111811,7 +111969,7 @@ function sqMini(c, o){
     ' title="'+esc(c.handle+(c.org ? ' · '+c.org : '')+(c.event ? ' · '+c.event : ''))+'">'+
     // Аватар (27.10, его «аватарок нет у карточек»): фото, а без него — закреплённый за ником персонаж, как на большой карточке.
     '<div class="sq-m-av">'+portraitHTML(c, 56)+'</div>'+
-    '<div class="sq-m-top"><b>'+ov+'</b><i>'+role+'</i><span>'+cardFlag(c, 14)+'</span></div>'+
+    '<div class="sq-m-top"><b>'+ov+'</b><i>'+role+'</i>'+(c._evo ? '<i class="sq-evo-b">EVO'+(c._evo>1 ? ' '+c._evo : '')+'</i>' : '')+'<span>'+cardFlag(c, 14)+'</span></div>'+
     '<div class="sq-m-h">'+esc(c.handle)+'</div><div class="sq-m-s">'+esc([c.region, c.org].filter(Boolean).join(' · '))+'</div>'+
     '<div class="sq-m-a">'+['aim', 'end', 'sur', 'exp', 'clu', 'con'].map(k=>'<span><em>'+k.toUpperCase()+'</em>'+Math.round(a[k]||0)+'</span>').join('')+'</div>'+
     (o.fit!=null && o.fit<100 ? '<u class="sq-fit"><s style="width:'+o.fit+'%" class="'+(o.fit<60 ? 'low' : '')+'"></s></u>' : '')+
@@ -111854,6 +112012,7 @@ function sqRender(){
       tile('club', T.tabClub, T.hClub, 'k-club', '<em>'+SQ.cards.filter(c=>!c.un).length+'</em>', clubPhoto)+
       tile('packs', T.tabPacks, T.hPacks, 'k-packs', SQ.packs.length ? '<em>'+esc(T.yourPacks)+': '+SQ.packs.length+'</em>' : '', 'art/mode-ewc.jpg')+
       tile('market', T.tabMkt, T.hMkt, 'k-market', '', 'art/lobby/s41.webp')+
+      tile('evo', T.tabEvo, T.hEvo.split('.')[0]+'.', 'k-evo', SQ.ev ? '<em>'+esc(T.evoName[SQ.ev.eid])+(sqEvoDone() ? ' ✓' : '')+'</em>' : '', 'art/mode-trio.jpg')+
       tile('sbc', T.tabSbc, T.hSbc, 'k-sbc', '', 'art/mode-major1.jpg')+
       tile('obj', T.tabObj, T.hObj, 'k-obj', '<em>'+SQ_OBJ.filter(o=>!SQ.claimed[o.id] && o.cur(SQ)>=o.goal).length+' ✓</em>', 'art/mode-all-fncs.jpg')+
       '</div>';
@@ -111861,7 +112020,7 @@ function sqRender(){
     title=T.tabSquad;
     const slot=(arr, i, where)=>{ const id=arr[i];
       if(!id) return '<div class="sq-c sq-empty">'+esc(T.empty)+'</div>';
-      return '<div class="sq-c">'+futCardHTML(sqCardOf(id))+(sqFit(id)<100 ? '<u class="sq-fit" title="'+esc(T.fit)+'"><s style="width:'+sqFit(id)+'%" class="'+(sqFit(id)<60 ? 'low' : '')+'"></s></u>' : '')+
+      return '<div class="sq-c">'+(sqCardOf(id)._evo ? '<div class="sq-tag">EVO '+sqCardOf(id)._evo+'</div>' : '')+futCardHTML(sqCardOf(id))+(sqFit(id)<100 ? '<u class="sq-fit" title="'+esc(T.fit)+'"><s style="width:'+sqFit(id)+'%" class="'+(sqFit(id)<60 ? 'low' : '')+'"></s></u>' : '')+
         '<div class="sq-acts">'+(where==='xi' ? '<button onclick="sqMove(\''+id+'\',\'bench\')">'+esc(T.toBench)+'</button>'
           : '<button onclick="sqMove(\''+id+'\',\'xi\')">'+esc(T.toXi)+'</button>')+'<button onclick="sqMove(\''+id+'\',\'\')">'+esc(T.out)+'</button></div></div>'; };
     const coll=SQ.cards.filter(c=>!c.un && !sqInUse(c.id)).map(c=>({id:c.id, c:sqCardOf(c.id)})).filter(x=>x.c).sort((a, b)=>sqOvr(b.c)-sqOvr(a.c));
@@ -111960,6 +112119,9 @@ function sqRender(){
     } else {
       body='<div class="sq-sbcs">'+SQ_SBC.map(s=>'<button class="sq-sbc p-'+s.r+'" onclick="sqSbcOpen(\''+s.id+'\')"><b>'+esc(T.sbc[s.id])+'</b><span>'+esc(reqTxt(s))+'</span><em>'+esc(T.packNames[s.r])+'</em></button>').join('')+'</div>';
     }
+  } else if(SQ_TAB==='evo'){
+    title=T.tabEvo;
+    body=sqEvoHTML();
   } else if(SQ_TAB==='packs'){
     title=T.tabPacks;
     const own=SQ.packs.reduce((m, p)=>{ m[p]=(m[p]||0)+1; return m; }, {});
@@ -111981,7 +112143,7 @@ function sqRender(){
     SQ_TIMER=setInterval(()=>{ if(SQ_TAB==='market' && document.getElementById('screen-sq').classList.contains('active')) sqRender(); else { clearInterval(SQ_TIMER); SQ_TIMER=null; } }, 5000);
   } else {
     title=T.tabObj;
-    body='<div class="sq-objs">'+SQ_OBJ.map(o=>{ const cur=Math.min(o.goal, o.cur(SQ)), done=SQ.claimed[o.id];
+    body=sqWqHTML()+'<div class="sq-objs">'+SQ_OBJ.map(o=>{ const cur=Math.min(o.goal, o.cur(SQ)), done=SQ.claimed[o.id];
       const rw=o.r.coins ? money(o.r.coins)+' '+T.coins : T.packNames[o.r.pack];
       return '<div class="sq-obj'+(done ? ' done' : '')+'"><b>'+esc(T.obj[o.id])+'</b><span>'+cur+' / '+o.goal+' · '+esc(T.reward)+': '+esc(rw)+'</span>'+
         (done ? '<em>'+esc(T.claimed)+'</em>' : '<button'+(cur<o.goal ? ' disabled' : '')+' onclick="sqClaim(\''+o.id+'\')">'+esc(T.claim)+'</button>')+'</div>'; }).join('')+'</div>';
@@ -119931,7 +120093,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='ea627fce';
+const CC_BUILD='97c35ee4';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
