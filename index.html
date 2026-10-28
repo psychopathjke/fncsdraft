@@ -1995,7 +1995,7 @@
   .ytt-hl .ytt-fig{position:absolute;left:30%;bottom:-4%;height:80%;filter:blur(1px) drop-shadow(0 0 6px rgba(0,0,0,.6));}
   .ytt-elim{position:absolute;left:0;right:0;top:56%;z-index:3;text-align:center;font-family:var(--font-display);font-weight:900;font-size:4cqw;color:#fff;text-shadow:0 0 6px #000;}
   .ytt-elim b{color:#ff2a2a;font-size:1.6em;-webkit-text-stroke:.2cqw #300;}
-  .ytt-hl .ytt-title{top:auto;bottom:6%;font-size:6.5cqw;}
+  .ytt-hl .ytt-title{top:auto;bottom:20%;font-size:6.5cqw;}
   .yt-kind{position:absolute;z-index:3;left:8px;top:8px;padding:2px 8px;border-radius:999px;background:rgba(0,0,0,.7);color:#fff;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;}
   .yt-dur{position:absolute;z-index:3;right:8px;bottom:8px;padding:1px 5px;border-radius:4px;background:rgba(0,0,0,.8);color:#fff;font-size:11px;font-weight:700;}
   .yt-title{color:#fff;font-size:13.5px;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
@@ -120468,7 +120468,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='acb73e66';
+const CC_BUILD='7ebb4b11';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -178420,13 +178420,13 @@ function ccLogArtHTML(e){
   return a ? '<img class="ev-thumb" src="'+esc(a)+'" alt="" loading="lazy" onerror="this.style.visibility=\'hidden\'">'
            : '<span class="ev-thumb"></span>';
 }
-function ccLogName(e){
+function ccLogName(e, noLabel){
   if(e.kind && e.kind!=='cup'){
     // Париж и Last Chance делят на календаре один kind 'gc' — различает id.
     const ID={rc:'ReloadChampionshipParis', gclc:'GlobalChampionshipLastChance'};
     const onDay=(careerYearDays().get(e.day)||[])
       .find(x=>ID[e.kind] ? x.id===ID[e.kind] : x.kind===(e.kind==='scq' ? 'summit' : e.kind));
-    if(onDay && onDay.label) return esc(onDay.label);
+    if(onDay && onDay.label && !noLabel) return esc(onDay.label);
     const W={final:L().calWeeklyFinal, eval:L().calPerfEval, victory:ccWkVictoryWord(),
              major:ccWkMajorWord(), gclc:L().chWkGC, globals:L().chWkGC,
              reload:L().chWkReload, summit:L().brk_lan, rc:L().brk_rc,
@@ -180290,8 +180290,16 @@ function ccYtTotal(e, kind, rnd){
 // Имя события на английском — названия у про всегда английские.
 function ccYtEvName(e){
   const keep=LANG; let n='';
-  try{ LANG='en'; n=String(ccLogName(e)).replace(/<[^>]*>/g,''); }catch(x){ n=''; } finally{ LANG=keep; }
+  // Подпись дня из календаря собрана на языке сайта и закэширована (Notion 27.10, скрин 15: «HOW I QUALIFIED IN ПЕРФОМАНС»):
+  // не на английском берётся общее имя события.
+  try{ LANG='en'; n=String(ccLogName(e, keep!=='en')).replace(/<[^>]*>/g,''); }catch(x){ n=''; } finally{ LANG=keep; }
   return n.toUpperCase();
+}
+// Имя у роликов, вышедших до этой правки: подпись пересобирается из события, если в ней не латиница.
+function ccYtFixName(v){
+  if(!v || v.kind==='hl' || v._en || !/[^\x00-\x7F·🏆🥈🥉👑]/.test((v.title||'')+(v.evShort||''))) return;
+  const e={kind:v.ekind, day:v.on, div:v.div, place:v.place, prize:v.prize, mate:v.mate, passed:/QUALIFIED/.test(v.title||'') ? true : undefined};
+  v.title=ccYtMakeTitle(e, v.kind, ''); v.evShort=ccYtShort(ccYtEvName(e)); v._en=1;
 }
 function ccYtTitle(v){
   if(v.title) return v.title;
@@ -180338,17 +180346,23 @@ function ccYtCashShort(n){
    Фон — размытый кадр, голубой свет, стеклянные осколки. Шаблон — от ролика (хеш), соперники в таблице — настоящие
    игроки сцены, записываются в ролик один раз (v.rows). */
 function ccYtRows(v){
-  if(v.rows) return v.rows;
+  if(v.rows && v.rows.some(r=>r[2]>0) && v.rows.every((r,i)=>!i || r[2]<=v.rows[i-1][2]) && (v.pts!=null || v.kind==='hl')) return v.rows;   // ролики до 28.10 с «0» очков — пересобрать
   const rnd=careerRng(ccHashStr('ytrows|'+(v.ev||'')));
   let pool=[]; try{ pool=(careerRosterNowEU()||[]).map(c=>c && c.handle).filter(Boolean); }catch(e){}
   const pick=()=>pool.length ? pool.splice(Math.floor(rnd()*pool.length), 1)[0] : 'player';
   const p=v.place||1, pts=v.pts!=null ? v.pts : 200+Math.round(rnd()*200);
+  // Очков в логе нет — у самого те же оценочные, что легли в основу соседей: иначе соседи с очками, а он без.
+  if(v.pts==null && v.kind!=='hl') v.pts=pts;
   const rows=[];
-  for(let i=1;i<=2;i++){ const n=pick()+(v.mate ? ' & '+pick() : ''); rows.push([p+i, n, Math.max(0, pts-Math.round(i*(4+rnd()*22)))]); }
+  let cur=pts;   // вниз по таблице очки только убывают
+  for(let i=1;i<=2;i++){ const n=pick()+(v.mate ? ' & '+pick() : ''); cur=Math.max(0, cur-Math.round(4+rnd()*22)); rows.push([p+i, n, cur]); }
   v.rows=rows;
   return rows;
 }
 function ccYtThumbHTML(v){
+  ccYtFixName(v);
+  if(!(v.pts>0)) v.pts=null;   // 0 очков — не записаны (скрин 15: «#10 … 0», «0PTS»)
+  ccYtRows(v);
   const p=v.place||0, me=String((CAREER.player||{}).nick||'');
   const mate=v.mate ? String(v.mate) : '';
   const big=v.kind==='hl' ? 'HIGHLIGHTS' : (v.evShort || 'FNCS');
@@ -180364,7 +180378,7 @@ function ccYtThumbHTML(v){
   const names='<span class="ytt-who">'+esc(me)+(mate ? '<small>& '+esc(mate)+'</small>' : '')+'</span>';
   // Сборник: размытый кадр игры и красная строка убийства, как у Peterbot «Highlights #43».
   if(v.kind==='hl') return '<div class="yt-thumb ytt ytt-hl">'+bg+fig+
-    '<span class="ytt-elim">ELIMINATED <b>'+esc(me)+'</b></span><span class="ytt-title ytt-title-c">'+esc(me.toUpperCase())+' HIGHLIGHTS #'+esc(String(v.n||''))+'</span>'+dur+'</div>';
+    '<span class="ytt-elim">ELIMINATED <b>'+esc(String((ccYtRows(v)[0]||[])[1]||'').split(' & ')[0])+'</b></span><span class="ytt-title ytt-title-c">'+esc(me.toUpperCase())+' HIGHLIGHTS #'+esc(String(v.n||''))+'</span>'+dur+'</div>';
   const crown=v.kind==='win' ? '<span class="ytt-crown">👑</span>' : '';
   if(h%2===0){
     const rows=ccYtRows(v).map(r=>'<div class="ytt-row"><b>#'+r[0]+'</b><span>'+esc(r[1])+'</span><em>'+r[2]+'</em></div>').join('');
@@ -180397,7 +180411,7 @@ function ccYtPublish(e, mul){
   const rnd=careerRng(ccHashStr('yt|'+id+'|'+kind+'|'+nick));
   const total=Math.max(5, Math.round(ccYtTotal(e, kind, rnd)*mul));
   ccYtPush(y, {ev:id, day:careerToday(), on:e.day, kind:kind, ekind:e.kind||'cup', div:e.div, place:e.place, of:e.of,
-               title:ccYtMakeTitle(e, kind, nick), skin:ccYtSkin(), prize:e.prize||0, pts:e.pts!=null ? e.pts : null, mate:e.mate||'', evShort:ccYtShort(ccYtEvName(e)), total:total, v:0, likes:0, min:k.min+Math.floor(rnd()*8),
+               title:ccYtMakeTitle(e, kind, nick), skin:ccYtSkin(), prize:e.prize||0, pts:e.pts>0 ? e.pts : null, mate:e.mate||'', evShort:ccYtShort(ccYtEvName(e)), total:total, v:0, likes:0, min:k.min+Math.floor(rnd()*8),
                comments:ccYtComments(y, total, e.place===1 ? 'win' : 'good', rnd), by:(ccSmm()||{}).name||''});
 }
 // Сборник месяца: «<ник> Highlights #N», если месяц был игровым и сборника не было.
