@@ -39,7 +39,7 @@ const BOOT = `
     /* Аудитория — то, чем креаторы отличаются друг от друга, поэтому она стоит
        на карточке вместо клуба. */
     check('the list shows what they are famous for',
-          cards.innerHTML.indexOf(String(L().ccCreatorFollowers(ccNum(ccProAmFollowers('Ibai'))))) >= 0);
+          cards.innerHTML.indexOf('Twitch ' + ccFollowers(ccProAmFollowers('Ibai'))) >= 0);   // плашкой Twitch с 28.10
     check('and says so where no channel is confirmed',
           cards.innerHTML.indexOf(String(L().ccCreatorNoTw)) >= 0);
 
