@@ -1922,6 +1922,33 @@
   .cl-box{margin:0 0 14px;padding:12px 14px;border-radius:12px;background:rgba(255,255,255,.05);border:1px solid rgba(140,175,255,.25);}
   .cl-box[hidden]{display:none;}
   .cl-head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;} .cl-head b{font-size:15px;color:#fff;} .cl-head span{font-size:12px;color:#9fe1ff;font-weight:700;}
+  /* YouTube в карьере (28.10): шапка канала, «новый ролик» из свежего турнира, сетка роликов с комментариями по нажатию. */
+  .yt-wrap{display:flex;flex-direction:column;gap:12px;}
+  .yt-head{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:14px;background:rgba(10,16,40,.55);border:1px solid rgba(255,255,255,.1);}
+  .yt-logo{flex:none;width:40px;height:28px;border-radius:8px;background:#ff0033;color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;}
+  .yt-ch{flex:1;min-width:0;display:flex;flex-direction:column;}
+  .yt-ch b{font-size:17px;color:#fff;} .yt-ch small{color:#aab6d3;font-size:12px;}
+  .yt-earn{text-align:right;} .yt-earn em{display:block;font-style:normal;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:#aab6d3;} .yt-earn b{font-size:17px;color:#7ef0dd;}
+  .yt-mon{display:flex;flex-direction:column;gap:6px;margin:0;padding:10px 14px;border-radius:12px;background:rgba(10,16,40,.4);font-size:12px;color:#c9d6f5;}
+  .yt-mon.on{color:#7ef0dd;}
+  .yt-bar{position:relative;height:18px;border-radius:999px;background:rgba(255,255,255,.08);overflow:hidden;}
+  .yt-bar i{position:absolute;inset:0 auto 0 0;background:#ff0033;opacity:.75;}
+  .yt-bar span{position:relative;display:block;padding:0 10px;line-height:18px;font-size:11px;font-weight:700;color:#fff;}
+  .yt-make h4,.yt-h{margin:0 0 8px;} .yt-err{color:#ff8a8a;font-size:12px;margin:0 0 6px;}
+  .yt-ev{display:flex;align-items:center;gap:10px;padding:8px 0;border-top:1px solid rgba(255,255,255,.07);flex-wrap:wrap;}
+  .yt-ev .ev-thumb{width:64px;height:36px;object-fit:cover;border-radius:6px;flex:none;}
+  .yt-ev-t{flex:1;min-width:140px;display:flex;flex-direction:column;} .yt-ev-t small{color:#aab6d3;font-size:11px;}
+  .yt-ev-b{display:flex;gap:6px;flex-wrap:wrap;} .yt-ev-b small{opacity:.7;}
+  .yt-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;}
+  .yt-vid{cursor:pointer;display:flex;flex-direction:column;gap:4px;min-width:0;}
+  .yt-thumb{position:relative;aspect-ratio:16/9;border-radius:12px;overflow:hidden;background:#0d1730;}
+  .yt-thumb .ev-thumb{width:100%;height:100%;object-fit:cover;display:block;}
+  .yt-kind{position:absolute;left:8px;top:8px;padding:2px 8px;border-radius:999px;background:rgba(0,0,0,.7);color:#fff;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;}
+  .yt-dur{position:absolute;right:8px;bottom:8px;padding:1px 5px;border-radius:4px;background:rgba(0,0,0,.8);color:#fff;font-size:11px;font-weight:700;}
+  .yt-title{color:#fff;font-size:13.5px;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+  .yt-vid>small{color:#aab6d3;font-size:11.5px;}
+  .yt-com{display:flex;flex-direction:column;gap:6px;padding:8px 10px;border-radius:10px;background:rgba(10,16,40,.5);}
+  .yt-com p{margin:0;font-size:12.5px;color:#dfe8fb;} .yt-com b{color:#aab6d3;font-weight:700;} .yt-com small{color:#8ea0c6;}
   .cl-code.cl-hid{user-select:none;-webkit-user-select:none;letter-spacing:.14em;}
   .cl-code{margin:8px 0 4px;font-family:var(--font-display);font-weight:700;font-size:24px;letter-spacing:.08em;color:#ffdd00;user-select:all;-webkit-user-select:all;}
   .cl-sub{margin:4px 0 0;font-size:12.5px;color:#b9c7ea;line-height:1.45;}
@@ -24029,6 +24056,42 @@ Object.assign(I18N.ru, {clShow:'Показать', clHide:'Скрыть', clCopy
 Object.assign(I18N.en, {clShow:'Show', clHide:'Hide', clCopy:'Copy', clCopied:'Copied'});
 Object.assign(I18N.fr, {clShow:'Afficher', clHide:'Masquer', clCopy:'Copier', clCopied:'Copié'});
 Object.assign(I18N.it, {clShow:'Mostra', clHide:'Nascondi', clCopy:'Copia', clCopied:'Copiato'});
+Object.assign(I18N.ru, {chTabYt:'YouTube', ytSubs:n=>n+' подписчиков', ytViews:n=>n+' просмотров', ytEarned:'Заработано', ytSubsW:'подписчиков', ytHoursW:'часов просмотра',
+  ytMonOn:'Партнёрская программа подключена: реклама в роликах платит', ytMonNeed:'Партнёрка YouTube: деньги с рекламы после 1000 подписчиков и 4000 часов просмотра',
+  ytNew:'Новый ролик', ytNoFresh:'Ролик делается из турнира прошлой недели. Сыграй турнир, и он появится здесь.', ytVids:'Ролики канала', ytNoVids:'На канале пока пусто.',
+  ytNoCom:'Комментариев пока нет.', ytNoEnergy:n=>'Не хватает энергии: нужно '+n, ytAgo:d=>d===0 ? 'сегодня' : d===1 ? 'вчера' : d+' дн. назад',
+  ytK_hl:'Хайлайты', ytK_vlog:'Влог', ytK_react:'Разбор',
+  ytTHlWin:n=>'ВЫИГРАЛ '+n+'! Хайлайты', ytTHl:(n,p)=>n+': #'+p+', лучшие моменты', ytTVlog:n=>'Влог: как прошёл '+n, ytTReact:(n,p)=>'Разбираю свои игры на '+n+' (#'+p+')',
+  ytC_win:['ЗАСЛУЖЕННО','легенда','я знал что выиграешь','это было безумно','финальная зона 🔥','GG','лучший в регионе','момент на 6:40 просто жесть'],
+  ytC_good:['хорошая игра','в следующий раз победа','ротации топ','жаль последнюю зону','стабильно','топ 10 это уже сила'],
+  ytC_bad:['бывает','не сдавайся','лобби было жёсткое','что случилось во второй игре?','жду реванш','норм, следующий будет лучше']});
+Object.assign(I18N.en, {chTabYt:'YouTube', ytSubs:n=>n+' subscribers', ytViews:n=>n+' views', ytEarned:'Earned', ytSubsW:'subscribers', ytHoursW:'watch hours',
+  ytMonOn:'Partner Program on: ads in your videos pay', ytMonNeed:'YouTube Partner Program: ad money after 1,000 subscribers and 4,000 watch hours',
+  ytNew:'New video', ytNoFresh:'A video is made from a tournament of the past week. Play one and it shows up here.', ytVids:'Channel videos', ytNoVids:'Nothing on the channel yet.',
+  ytNoCom:'No comments yet.', ytNoEnergy:n=>'Not enough energy: '+n+' needed', ytAgo:d=>d===0 ? 'today' : d===1 ? 'yesterday' : d+' days ago',
+  ytK_hl:'Highlights', ytK_vlog:'Vlog', ytK_react:'Breakdown',
+  ytTHlWin:n=>'I WON '+n+'! Highlights', ytTHl:(n,p)=>n+': #'+p+', best moments', ytTVlog:n=>'Vlog: how '+n+' went', ytTReact:(n,p)=>'Breaking down my '+n+' games (#'+p+')',
+  ytC_win:['DESERVED','goat','knew you would win this','that was insane','endgame 🔥','GG','best in the region','6:40 is crazy'],
+  ytC_good:['good games','win next time','rotations were clean','unlucky last zone','consistent','top 10 is still huge'],
+  ytC_bad:['it happens','keep going','that lobby was stacked','what happened in game 2?','waiting for the comeback','next one will be better']});
+Object.assign(I18N.fr, {chTabYt:'YouTube', ytSubs:n=>n+' abonnés', ytViews:n=>n+' vues', ytEarned:'Gagné', ytSubsW:'abonnés', ytHoursW:'heures de visionnage',
+  ytMonOn:'Programme Partenaire actif : les pubs de tes vidéos paient', ytMonNeed:'Programme Partenaire YouTube : argent des pubs après 1 000 abonnés et 4 000 heures de visionnage',
+  ytNew:'Nouvelle vidéo', ytNoFresh:'Une vidéo se fait à partir d\'un tournoi de la semaine passée. Joue un tournoi et il apparaîtra ici.', ytVids:'Vidéos de la chaîne', ytNoVids:'Rien sur la chaîne pour l\'instant.',
+  ytNoCom:'Pas encore de commentaires.', ytNoEnergy:n=>'Pas assez d\'énergie : il faut '+n, ytAgo:d=>d===0 ? 'aujourd\'hui' : d===1 ? 'hier' : 'il y a '+d+' j',
+  ytK_hl:'Highlights', ytK_vlog:'Vlog', ytK_react:'Analyse',
+  ytTHlWin:n=>'J\'AI GAGNÉ '+n+' ! Highlights', ytTHl:(n,p)=>n+' : #'+p+', meilleurs moments', ytTVlog:n=>'Vlog : mon '+n, ytTReact:(n,p)=>'J\'analyse mes games de '+n+' (#'+p+')'});
+Object.assign(I18N.it, {chTabYt:'YouTube', ytSubs:n=>n+' iscritti', ytViews:n=>n+' visualizzazioni', ytEarned:'Guadagnato', ytSubsW:'iscritti', ytHoursW:'ore di visualizzazione',
+  ytMonOn:'Programma partner attivo: la pubblicità nei video paga', ytMonNeed:'Programma partner YouTube: soldi dalla pubblicità dopo 1.000 iscritti e 4.000 ore di visualizzazione',
+  ytNew:'Nuovo video', ytNoFresh:'Un video si fa da un torneo della settimana scorsa. Gioca un torneo e comparirà qui.', ytVids:'Video del canale', ytNoVids:'Ancora niente sul canale.',
+  ytNoCom:'Ancora nessun commento.', ytNoEnergy:n=>'Energia insufficiente: serve '+n, ytAgo:d=>d===0 ? 'oggi' : d===1 ? 'ieri' : d+' giorni fa',
+  ytK_hl:'Highlights', ytK_vlog:'Vlog', ytK_react:'Analisi',
+  ytTHlWin:n=>'HO VINTO '+n+'! Highlights', ytTHl:(n,p)=>n+': #'+p+', momenti migliori', ytTVlog:n=>'Vlog: com\'è andata a '+n, ytTReact:(n,p)=>'Analizzo le mie partite a '+n+' (#'+p+')'});
+Object.assign(I18N.pt, {chTabYt:'YouTube', ytSubs:n=>n+' inscritos', ytViews:n=>n+' visualizações', ytEarned:'Ganho', ytSubsW:'inscritos', ytHoursW:'horas assistidas',
+  ytMonOn:'Programa de Parcerias ativo: os anúncios nos vídeos pagam', ytMonNeed:'Programa de Parcerias do YouTube: dinheiro de anúncios após 1.000 inscritos e 4.000 horas assistidas',
+  ytNew:'Novo vídeo', ytNoFresh:'Um vídeo é feito de um torneio da semana passada. Jogue um torneio e ele aparece aqui.', ytVids:'Vídeos do canal', ytNoVids:'Nada no canal ainda.',
+  ytNoCom:'Sem comentários ainda.', ytNoEnergy:n=>'Energia insuficiente: precisa de '+n, ytAgo:d=>d===0 ? 'hoje' : d===1 ? 'ontem' : 'há '+d+' dias',
+  ytK_hl:'Destaques', ytK_vlog:'Vlog', ytK_react:'Análise',
+  ytTHlWin:n=>'GANHEI '+n+'! Destaques', ytTHl:(n,p)=>n+': #'+p+', melhores momentos', ytTVlog:n=>'Vlog: como foi '+n, ytTReact:(n,p)=>'Analisando meus jogos em '+n+' (#'+p+')'});
 Object.assign(I18N.pt, {clShow:'Mostrar', clHide:'Ocultar', clCopy:'Copiar', clCopied:'Copiado'});
 /* Драфт дня (16.10). */
 Object.assign(I18N.ru, {playersLink:'Игроки FNCS'}); Object.assign(I18N.en, {playersLink:'FNCS players'}); Object.assign(I18N.fr, {playersLink:'Joueurs FNCS'}); Object.assign(I18N.it, {playersLink:'Giocatori FNCS'}); Object.assign(I18N.pt, {playersLink:'Jogadores FNCS'});
@@ -120296,7 +120359,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='dd0d286e';
+const CC_BUILD='4c31dbf2';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -125283,7 +125346,7 @@ function careerWorldHTML(){
 }
 // Подвкладки объединённых вкладок: «Медиа» = соцсети + стримы, «Таблицы» = PR/призовые + моя статистика + игроки сайта.
 function ccSubTabsHTML(group){
-  const list=group==='media' ? [['social', L().chTabSocial], ['streams', L().chTabStreams]]
+  const list=group==='media' ? [['social', L().chTabSocial], ['streams', L().chTabStreams], ['youtube', L().chTabYt]]
                              : [['table', L().lfSubPrMoney], ['stats', L().chTabStats], ['world', L().lbTab]];
   return '<div class="ch-subtabs">'+list.map(([k,t])=>'<button class="ch-subtab'+(CH_TAB===k?' on':'')+'" onclick="careerTab(\''+k+'\')">'+esc(t)+'</button>').join('')+'</div>';
 }
@@ -125411,7 +125474,7 @@ function careerRenderHubBody(tab){
 
   document.querySelectorAll('#screen-career-hub .ch-tab').forEach(b=>{
     // Стримы живут внутри «Медиа», статистика — внутри «Таблиц».
-    b.classList.toggle('on', b.dataset.tab===({streams:'social', stats:'table', world:'table'}[CH_TAB]||CH_TAB));
+    b.classList.toggle('on', b.dataset.tab===({streams:'social', youtube:'social', stats:'table', world:'table'}[CH_TAB]||CH_TAB));
   });
   // The unread dot is the lobby's own notification mark — it is the only thing
   // on this screen that asks to be clicked.
@@ -125455,6 +125518,7 @@ function careerRenderHubBody(tab){
   }
   if(CH_TAB==='shop'){ body.innerHTML=careerShopHTML(); ccPaintMoveMap(); return; }
   if(CH_TAB==='social'){ body.innerHTML=ccSubTabsHTML('media')+careerSocialHTML(); return; }
+  if(CH_TAB==='youtube'){ body.innerHTML=ccSubTabsHTML('media')+careerYtHTML(); return; }
   /* The career itself, on its own screen.
 
      The centre was doing two jobs — what to do today, and who you have deals
@@ -129597,6 +129661,7 @@ function careerAdvanceBody(iso){
   try{ ccLifeTick(); }catch(e){ if(typeof console!=='undefined') console.warn('life tick', e); }
   if(typeof careerSacTick==='function') careerSacTick();       // код поддержки — за месяц
   if(typeof careerTwSubsTick==='function') careerTwSubsTick(); // подписки на каналы — продление
+  try{ ccYtTick(); }catch(e){ if(typeof console!=='undefined') console.warn('yt tick', e); }   // YouTube: просмотры роликов за день
   if(cr.seasonOver) careerAwardSeason();
 }
 // An old save carries a week and no day, and it is brought forward rather than
@@ -179957,6 +180022,116 @@ function careerMigrateTwitch(){
 function ccStreamViewersNow(){
   const cr=CAREER && CAREER.career; if(!cr) return 0;
   return ccTwViewersOf(cr.twitch||0, careerReach());
+}
+/* ===== YOUTUBE (28.10, его «мб ещё добавить ютуб, как соц сеть»; из трёх вариантов выбран «ролики после турниров») ====
+
+   Свой канал рядом с Twitch. После турнира (неделю, пока тема свежая) из него можно выпустить ОДИН ролик одного из
+   трёх видов, он стоит энергии. Просмотры набегают по дням (первые сутки больше всего, к месяцу ролик почти
+   досмотрен), с просмотров приходят подписчики, деньги с рекламы только после партнёрки YouTube: 1000 подписчиков и
+   4000 часов просмотра (настоящие требования YPP). Числа держатся за размер канала, как у Twitch (ccTwSat): известность
+   в сцене приводит людей, но пустой канал не собирает миллионы. Всё личное (cr.yt), в книгу мира команды не едет. */
+const CC_YT_KINDS={
+  hl:   {views:1.0,  en:15, min:9},    // хайлайты: дольше монтировать, смотрят лучше всего
+  vlog: {views:0.7,  en:10, min:14},   // влог турнира
+  react:{views:0.85, en:8,  min:18}    // разбор своих игр
+};
+const CC_YT_FRESH=7, CC_YT_DECAY=0.6, CC_YT_DAYS=30, CC_YT_RPM=2.5, CC_YT_YPP={subs:1000, hours:4000};
+const CC_YT_BIG=['major','summit','globals','gclc','rc','final','solo','eval'];
+function ccYt(){ const cr=CAREER.career; cr.yt=cr.yt||{subs:0, views:0, hours:0, usd:0, vids:[]}; return cr.yt; }
+function ccYtSat(n, k){ return 1/Math.sqrt(1+Math.max(0, n||0)/k); }
+function ccYtMonet(y){ return (y.subs||0)>=CC_YT_YPP.subs && (y.hours||0)>=CC_YT_YPP.hours; }
+function ccYtKey(e){ return e.day+'|'+(e.kind||'cup')+'|'+(e.stage||''); }
+// Турниры, из которых ещё можно сделать ролик: свежие (неделя) и без ролика.
+function ccYtFresh(){
+  const cr=CAREER.career, y=ccYt(), from=ccAddDays(careerToday(), -CC_YT_FRESH);
+  const used=new Set(y.vids.map(v=>v.ev));
+  return (cr.log||[]).filter(e=>e && e.day && e.day>from && e.day<=careerToday() && e.place && !used.has(ccYtKey(e)))
+    .slice(-4).reverse();
+}
+// Сколько посмотрят ролик за всю жизнь: от канала, известности, места и вида.
+function ccYtTotal(e, kind, rnd){
+  const y=ccYt(), s=y.subs||0, k=CC_YT_KINDS[kind];
+  const base=30 + s*0.35*ccYtSat(s, 200000) + Math.min(careerReach()*0.002, 40+s*0.4);
+  const p=e.place||99, of=e.of||100;
+  const res=p===1 ? 3 : p<=3 ? 2.2 : p<=10 ? 1.5 : (e.passed ? 1.2 : (p<=of/2 ? 0.9 : 0.65));
+  const big=CC_YT_BIG.indexOf(e.kind)>=0 ? 1.6 : 1;
+  return Math.max(5, Math.round(base*res*big*k.views*(0.6+rnd()*0.8)));
+}
+function ccYtTitle(v){
+  const T=L(), p=v.place;
+  if(v.kind==='hl') return p===1 ? T.ytTHlWin(v.name) : T.ytTHl(v.name, p);
+  if(v.kind==='vlog') return T.ytTVlog(v.name);
+  return T.ytTReact(v.name, p);
+}
+let ccYtMsg='', CH_YT_OPEN=null;
+function ccYtMake(i, kind){
+  const k=CC_YT_KINDS[kind], e=ccYtFresh()[i]; if(!k || !e) return;
+  const y=ccYt(), id=ccYtKey(e);
+  if(y.vids.some(v=>v.ev===id)) return;
+  if(careerEnergy()<k.en){ ccYtMsg=L().ytNoEnergy(k.en); careerRenderHub('youtube'); return; }
+  careerSpend(k.en);
+  const rnd=careerRng(ccHashStr('yt|'+id+'|'+kind+'|'+(CAREER.player.nick||'')));
+  const total=ccYtTotal(e, kind, rnd);
+  const who=(careerStreamChat(12)||[]).map(x=>x && x.who).filter(Boolean);
+  const bank=L()['ytC_'+(e.place===1 ? 'win' : e.place<=10 ? 'good' : 'bad')]||[];
+  const nC=Math.max(1, Math.min(6, Math.round(1+Math.log10(total+1)*1.3)));
+  const comments=[];
+  for(let n=0;n<nC && who.length && bank.length;n++)
+    comments.push({who:who.splice(Math.floor(rnd()*who.length), 1)[0], text:bank[Math.floor(rnd()*bank.length)], likes:Math.round(rnd()*total*0.004)});
+  y.vids.unshift({ev:id, day:careerToday(), on:e.day, kind:kind, ekind:e.kind||'cup', div:e.div, place:e.place, of:e.of,
+                  name:String(ccLogName(e)).replace(/<[^>]*>/g,''), total:total, v:0, likes:0, min:k.min, comments:comments});
+  if(y.vids.length>60) y.vids.length=60;
+  ccYtMsg=''; CH_YT_OPEN=null; ccYtTick(); careerSave(); careerRenderHub('youtube');
+}
+// День карьеры: ролики добирают просмотры, канал подписчиков, часы и деньги.
+function ccYtTick(){
+  const cr=CAREER && CAREER.career; if(!cr || !cr.yt) return;
+  const y=cr.yt, today=careerToday();
+  let gotV=0, gotH=0;
+  y.vids.forEach(v=>{
+    const age=Math.max(0, Math.round((new Date(today+'T00:00:00Z')-new Date(v.day+'T00:00:00Z'))/86400000));
+    const want=Math.round(v.total*(1-Math.pow(CC_YT_DECAY, Math.min(CC_YT_DAYS, age)+1)));
+    const add=Math.max(0, want-(v.v||0));
+    if(!add) return;
+    v.v=(v.v||0)+add; v.likes=Math.round(v.v*0.045);
+    gotV+=add; gotH+=add*(v.min*0.45)/60;   // досматривают меньше половины ролика
+  });
+  if(!gotV) return;
+  const wasMon=ccYtMonet(y);
+  y.views=(y.views||0)+gotV; y.hours=(y.hours||0)+gotH;
+  y.subs=(y.subs||0)+Math.max(0, Math.round(gotV*0.02*ccYtSat(y.subs, 500000)));
+  if(wasMon){
+    const usd=gotV/1000*CC_YT_RPM;
+    y.usd=Math.round(((y.usd||0)+usd)*100)/100;
+    y.owe=(y.owe||0)+usd;
+    const whole=Math.floor(y.owe); if(whole>0){ cr.balance=(cr.balance||0)+whole; y.owe-=whole; }
+  }
+}
+function careerYtHTML(){
+  const T=L(), y=ccYt(), me=CAREER.player||{};
+  const mon=ccYtMonet(y);
+  const pct=(a,b)=>Math.min(100, Math.round((a||0)/b*100));
+  const bar=(a,b,w)=>'<div class="yt-bar"><i style="width:'+pct(a,b)+'%"></i><span>'+ccNum(Math.min(Math.round(a||0), b))+' / '+ccNum(b)+' '+esc(w)+'</span></div>';
+  const head='<div class="yt-head"><span class="yt-logo">▶</span><div class="yt-ch"><b>'+esc(me.nick||'')+'</b><small>'+
+    esc(T.ytSubs(ccNum(y.subs||0)))+' · '+esc(T.ytViews(ccNum(y.views||0)))+'</small></div>'+
+    '<div class="yt-earn"><em>'+esc(T.ytEarned)+'</em><b>'+ccMoney(Math.round(y.usd||0))+'</b></div></div>'+
+    (mon ? '<p class="yt-mon on">'+esc(T.ytMonOn)+'</p>'
+         : '<div class="yt-mon"><span>'+esc(T.ytMonNeed)+'</span>'+bar(y.subs, CC_YT_YPP.subs, T.ytSubsW)+bar(y.hours, CC_YT_YPP.hours, T.ytHoursW)+'</div>');
+  const fresh=ccYtFresh();
+  const make='<div class="ch-tile yt-make"><h4>'+esc(T.ytNew)+'</h4>'+(ccYtMsg ? '<p class="yt-err">'+esc(ccYtMsg)+'</p>' : '')+
+    (fresh.length ? fresh.map((e,i)=>'<div class="yt-ev">'+ccLogArtHTML(e)+'<div class="yt-ev-t"><b>'+ccLogName(e)+'</b><small>#'+e.place+(e.of ? ' / '+e.of : '')+' · '+esc(ccDayLabel(e.day))+'</small></div>'+
+        '<div class="yt-ev-b">'+Object.keys(CC_YT_KINDS).map(k=>'<button class="cc-car-open" onclick="ccYtMake('+i+',\''+k+'\')">'+esc(T['ytK_'+k])+' <small>⚡'+CC_YT_KINDS[k].en+'</small></button>').join('')+'</div></div>').join('')
+      : '<p class="ch-empty">'+esc(T.ytNoFresh)+'</p>')+'</div>';
+  const vids=y.vids.length ? '<div class="yt-grid">'+y.vids.map((v,i)=>{
+      const age=Math.max(0, Math.round((new Date(careerToday()+'T00:00:00Z')-new Date(v.day+'T00:00:00Z'))/86400000));
+      const open=CH_YT_OPEN===i;
+      return '<div class="yt-vid'+(open ? ' open' : '')+'" onclick="CH_YT_OPEN='+(open ? 'null' : i)+';careerRenderHub(\'youtube\')">'+
+        '<div class="yt-thumb">'+ccLogArtHTML({day:v.on, kind:v.ekind, div:v.div})+'<span class="yt-kind">'+esc(T['ytK_'+v.kind])+'</span><span class="yt-dur">'+v.min+':'+String(10+(v.total%50)).slice(-2)+'</span></div>'+
+        '<b class="yt-title">'+esc(ccYtTitle(v))+'</b><small>'+esc(T.ytViews(ccNum(v.v||0)))+' · '+esc(T.ytAgo(age))+' · 👍 '+ccNum(v.likes||0)+'</small>'+
+        (open ? '<div class="yt-com">'+(v.comments.length ? v.comments.map(c=>'<p><b>@'+esc(c.who)+'</b> '+esc(c.text)+(c.likes ? ' <small>👍 '+ccNum(c.likes)+'</small>' : '')+'</p>').join('') : '<p class="ch-empty">'+esc(T.ytNoCom)+'</p>')+'</div>' : '')+
+        '</div>';
+    }).join('')+'</div>' : '<p class="ch-empty">'+esc(T.ytNoVids)+'</p>';
+  return '<div class="yt-wrap">'+head+make+'<h4 class="yt-h">'+esc(T.ytVids)+'</h4>'+vids+'</div>';
 }
 /* ---- Партнёрская программа --------------------------------------------------
 
