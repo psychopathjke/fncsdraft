@@ -646,6 +646,9 @@
     background:linear-gradient(180deg,#e9fbff 0%,#9fe1ff 100%);
     -webkit-background-clip:text;background-clip:text;color:transparent;
     -webkit-text-fill-color:transparent;
+    /* Курсив выносит хвост «S» за коробку строки, а заливка по тексту режется по коробке (Notion 27.10 скрин 18,
+       его «буква S посмотри»): запас справа, и он же забирается назад, чтобы пробел до DRAFT не вырос. */
+    padding-right:.12em;margin-right:-.12em;
     filter:drop-shadow(0 1px 1px rgba(0,0,0,.35));}
   .tagline{color:var(--ink-dim);font-size:13px;margin-top:6px;max-width:460px;}
   /* Герой-полоса главной. До неё первый экран был логотипом и сеткой карточек
@@ -120469,7 +120472,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='214a72fe';
+const CC_BUILD='14f515bd';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
