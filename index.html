@@ -8767,7 +8767,8 @@
   html:not(.ui-classic) .hero-chips{gap:6px;}
   html:not(.ui-classic) .hero-chips .cstrip-chip,html:not(.ui-classic) .hero-chips .cstrip-tag{
     font-weight:700;font-size:11.5px;letter-spacing:.04em;line-height:1;padding:6px 12px;border-radius:999px;}
-  html:not(.ui-classic) .hero-chips .cstrip-chip{color:#fff;background:linear-gradient(180deg,#1d3a8f,#0f2160);border:1px solid rgba(120,160,255,.28);}
+  /* 28.10: факты — как Select mode в шапке (его «панельки дивизион круг релоад сделай такой же»). */
+  html:not(.ui-classic) .hero-chips .cstrip-chip{color:#e6ecff;background:transparent;border:1px solid rgba(228,235,247,.28);}
   html:not(.ui-classic) .hero-chips .cstrip-tag{color:#0b0f12;background:#ffdd00;border:1px solid #ffdd00;margin-right:0;}
   html:not(.ui-classic) .hero-seg{gap:6px;border:0;border-radius:0;overflow:visible;background:none;flex-wrap:wrap;}
   html:not(.ui-classic) .hero-seg .cstrip-btn,html:not(.ui-classic) .hero-seg .cstrip-btn+.cstrip-btn{
@@ -120284,7 +120285,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='d9c93d8b';
+const CC_BUILD='20512cf7';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
