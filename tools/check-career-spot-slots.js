@@ -97,7 +97,10 @@ const BOOT = `
       walk.forEach(([day, want])=>{
         cr.day=day;
         const set=careerBrSet();
-        check('трио-год, '+day+' — остров '+want, set===want, set);
+        /* С 26.10 (Notion «26.10.26»: «we don't have the 2 same map for duo and trio») остров один на сезон для любого
+           формата: t1–t3 остались только у 2025-го, а 2027+ ходит по кругу глав. Сверка — с островом дуо в тот же день. */
+        const was=cr.size; cr.size=2; const duo=careerBrSet(); cr.size=was;
+        check('трио-год, '+day+' — остров как у дуо ('+duo+')', set===duo && !!ZONE_SETS[set], set);
         check('на нём есть место под дом', careerSpotRoom(set)===true,
               set+' used='+careerSpotUsed());
         check('и дом ставится', careerSpotSet(2, set)===true, set);

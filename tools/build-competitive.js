@@ -657,7 +657,7 @@ function renderDay(by){
   var t=e[0]*60000, end=e[1]*60000, cls='ev k-'+K[e[3]]+(t<=now&&now<end?' live':'')+(end<now?' done':'');
   var lv=e[8]>=0&&t<=now&&now<end+12*3600e3?'<button type="button" class="lvb" data-ev="'+S[e[8]]+'" data-w="'+S[e[9]]+'" data-t="'+esc(S[e[5]])+'" data-end="'+end+'">'+(now<end?'Live':'Standings')+'</button>':'';
   return '<li class="'+cls+'"><time>'+fmtT.format(t)+'</time><i>'+(e[2]>=0?R[e[2]]:'LAN')+'</i><span>'+esc(S[e[5]])+lv+'</span><em>'+KL[e[3]]+'</em></li>';
- }).join('')+'</ul>':'<p class="note">No cups on this day'+(reg==='ALL'?'':' in '+reg)+'.</p>');
+ }).join('')+'</ul>':'<p class="note">'+(D.some(function(e){var t=new Date(e[0]*60000);return t.getFullYear()===+p[0]&&t.getMonth()===p[1]-1;})||new Date(+p[0],p[1]-1,1)<=today?'No cups on this day'+(reg==='ALL'?'':' in '+reg)+'.':'Epic has not published the schedule for this month yet.')+'</p>');
 }
 var bigKey='2026', bigAll=false;
 function renderBig(){

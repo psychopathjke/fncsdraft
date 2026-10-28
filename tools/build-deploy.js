@@ -82,15 +82,17 @@ if (best.attrs) throw new Error('у блока приложения появил
    на 27.09), браузеру они не нужны, а размер упирается в линию 9 МБ. Код не трогается:
    terser без compress и mangle только перепечатывает его. Исходник в репо — как был. */
 function minifyJs(appPath){
-  const { execFileSync } = require('child_process');
+  const { execFileSync, execSync } = require('child_process');
   const before = fs.statSync(appPath).size, name = path.basename(appPath);
   const tmpOut = appPath + '.min';
   try {
     // На Windows с shell:true аргументы склеиваются без кавычек — путь с пробелами («Рабочий стол до 07.09»)
     // рвался, terser падал, и app.js уезжал с комментариями (11,8 млн байт вместо 8,7).
     const q = s => process.platform === 'win32' ? '"' + s + '"' : s;
-    execFileSync(process.platform === 'win32' ? 'npx.cmd' : 'npx', ['-y', 'terser@5', q(appPath), '--comments', 'false', '-o', q(tmpOut)],
-      { stdio: ['ignore', 'ignore', 'inherit'], shell: process.platform === 'win32', timeout: 600000 });
+    // Windows: одной строкой через execSync — массив аргументов вместе с shell:true Node 24 помечает DEP0190.
+    if (process.platform === 'win32') execSync(['npx.cmd', '-y', 'terser@5', q(appPath), '--comments', 'false', '-o', q(tmpOut)].join(' '),
+      { stdio: ['ignore', 'ignore', 'inherit'], timeout: 600000 });
+    else execFileSync('npx', ['-y', 'terser@5', appPath, '--comments', 'false', '-o', tmpOut], { stdio: ['ignore', 'ignore', 'inherit'], timeout: 600000 });
     fs.renameSync(tmpOut, appPath);
     console.log(name + ' без комментариев: ' + before + ' → ' + fs.statSync(appPath).size + ' байт');
   } catch (e) {
@@ -273,8 +275,8 @@ const prefilled = prefillI18n(OUT);
     const src = path.join(tmpDir, 'in' + n + '.css'), dst = path.join(tmpDir, 'out' + n + '.css'); n++;
     fs.writeFileSync(src, css, 'utf8');
     try {
-      execFileSync(process.platform === 'win32' ? 'npx.cmd' : 'npx', ['-y', 'clean-css-cli@5', '-O1', '-o', '"' + dst + '"', '"' + src + '"'],
-        { stdio: ['ignore', 'ignore', 'pipe'], shell: true });
+      require('child_process').execSync([process.platform === 'win32' ? 'npx.cmd' : 'npx', '-y', 'clean-css-cli@5', '-O1', '-o', '"' + dst + '"', '"' + src + '"'].join(' '),
+        { stdio: ['ignore', 'ignore', 'pipe'] });
       const min = fs.readFileSync(dst, 'utf8');
       if (!min.trim() && css.trim()) throw new Error('пусто');
       return '<style>' + min + '</style>';

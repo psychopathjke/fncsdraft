@@ -6,7 +6,7 @@
 //                  JS, в снимках чисел нет) — по логарифму между соседними годами и 1,0 в 2026. Twitch по годам не
 //                  замерить (в снимках twitch.tv чисел нет), ему берётся кривая X — тоже площадка «фолловеров», того же
 //                  роста; это допущение, и оно записано рядом с кодом (ccProSocialAt).
-//   node tools/build-pro-social-history.js <wayback.tsv>
+//   node tools/build-pro-social-history.js <wayback.tsv> [ещё.tsv …]   (креаторы — отдельным файлом; в кривую они не идут)
 'use strict';
 const fs = require('fs'), path = require('path');
 const ROOT = path.resolve(__dirname, '..');
@@ -16,16 +16,20 @@ let html = fs.readFileSync(f, 'utf8');
 const m = /const CC_PRO_SOCIAL=(\{[^\n]*\});/.exec(html);
 if (!m) throw new Error('CC_PRO_SOCIAL');
 const NOW = JSON.parse(m[1]);
+const PRO = new Set(Object.keys(NOW));
+// Креаторы: нынешние [YouTube, X] — tools/measured/creator-socials-2026.json (build-creator-socials.js)
+const CRE = JSON.parse(fs.readFileSync(path.join(__dirname, 'measured', 'creator-socials-2026.json'), 'utf8')).creators || {};
+Object.keys(CRE).forEach(n => { const k = n.toLowerCase(); if (!NOW[k]) NOW[k] = [0, CRE[n][0] || 0, CRE[n][1] || 0]; });
 const hist = {};
-fs.readFileSync(process.argv[2], 'utf8').split(/\r?\n/).filter(Boolean).forEach(l => {
+process.argv.slice(2).map(f => fs.readFileSync(f, 'utf8')).join('\n').split(/\r?\n/).filter(Boolean).forEach(l => {
   const [h, net, y, v] = l.split('\t');
   if (!(+y >= 2019) || !(+v >= 0)) return;
   const k = h.toLowerCase();
   ((hist[k] = hist[k] || {})[net] = hist[k][net] || {})[y] = +v;
 });
 // Замер больше нынешнего в полтора раза — не тот аккаунт (ник переехал, старый канал MrSavage на 1,1 млн): не берём.
-const IDX = { x: 2, yt: 1 };
-Object.keys(hist).forEach(k => ['x', 'yt'].forEach(net => {
+const IDX = { x: 2, yt: 1, tw: 0 };
+Object.keys(hist).forEach(k => ['x', 'yt', 'tw'].forEach(net => {
   const now = (NOW[k] || [])[IDX[net]] || 0, o = (hist[k] || {})[net];
   if (!o) return;
   Object.keys(o).forEach(y => { if (now && o[y] > now * 1.5) delete o[y]; });
@@ -34,11 +38,11 @@ Object.keys(hist).forEach(k => ['x', 'yt'].forEach(net => {
 const YEARS = [2019, 2020, 2021, 2022, 2023, 2024, 2025];
 const median = a => { if (!a.length) return null; a = a.slice().sort((p, q) => p - q); return a[Math.floor(a.length / 2)]; };
 const curve = {}, sample = {};
-['x', 'yt'].forEach(net => {
+['x', 'yt', 'tw'].forEach(net => {
   const c = {};
   YEARS.forEach(y => {
     const r = [];
-    Object.keys(hist).forEach(k => { const now = (NOW[k] || [])[IDX[net]] || 0, v = ((hist[k] || {})[net] || {})[y]; if (now >= 1000 && v != null) r.push(Math.min(1.5, v / now)); });
+    Object.keys(hist).forEach(k => { const now = (NOW[k] || [])[IDX[net]] || 0, v = ((hist[k] || {})[net] || {})[y]; if (PRO.has(k) && now >= 1000 && v != null) r.push(Math.min(1.5, v / now)); });
     sample[net + y] = r.length;
     if (r.length >= 15) c[y] = Math.max(0.005, median(r));
   });
@@ -53,8 +57,8 @@ const curve = {}, sample = {};
   for (let i = YEARS.length - 1; i >= 0; i--) c[YEARS[i]] = Math.min(c[YEARS[i]], i + 1 < YEARS.length ? c[YEARS[i + 1]] : 1);
   curve[net] = Object.fromEntries(YEARS.map(y => [y, +c[y].toFixed(4)]));
 });
-// Twitch без своих замеров X — по кривой YouTube (кривая X у про в архиве к 2021-му почти плоская, Twitch рос позже)
-curve.tw = curve.yt;
+// Twitch без единого года с замерами (сбор SocialBlade ещё не прошёл) — кривая YouTube, а не выдуманный спад.
+if (!YEARS.some(y => sample['tw' + y] >= 15)) curve.tw = curve.yt;
 const keys = Object.keys(hist).sort();
 const histJs = '{' + keys.map(k => JSON.stringify(k) + ':' + JSON.stringify(hist[k])).join(',') + '}';
 fs.writeFileSync(path.join(__dirname, 'measured', 'pro-social-history.json'), JSON.stringify({ at: '2026-10-28', curve, sample, hist }));
