@@ -11183,6 +11183,11 @@ ccCupBanked:'Сессия 1 в зачёт — таблицу решает вто
 ccRelBanked:'Сессия 1 в зачёт — отбор решает вторая',
 dmOrgWait:d=>'Обсудим с руководством, ответим к '+ccDayLabel(d)+'.',
 dmOrgDeadline:d=>'Предложение в силе до '+ccDayLabel(d)+'.',
+dmOrgTerm:n=>'Контракт на '+(n>1 ? n+' сезона' : 'сезон')+'.',
+dmOrgFee:(c,v)=>'У тебя контракт с '+c+': отступные $'+v+' платим мы.',
+ccNewsTransfer:(from,to,v)=>'Трансфер: '+from+' продаёт игрока в '+to+' за $'+v,
+ccNewsOrgYear:(n,k)=>'Контракт с '+n+' продолжается: '+(k>0 ? 'ещё сезон после этого' : 'последний сезон'),
+ccOrgTermRow:'Контракт', ccOrgTermLeft:k=>k>0 ? 'этот сезон и ещё '+k : 'до конца сезона',
 dmAgentDeadline:(c,d)=>c+' держит место до '+ccDayLabel(d)+'.',
 dmOrgYesMoreAgent:v=>'Договорился. $'+v+' в месяц, можно подписывать.',
 dmOrgNoMoreAgent:v=>'Больше не дают. Держатся за $'+v+' — решай, стоит оно того или нет.',
@@ -13295,6 +13300,11 @@ ccCupBanked:'Session 1 banked — Tuesday decides the table',
 ccRelBanked:'Session 1 banked — the second session decides the cut',
 dmOrgWait:d=>'We will take it upstairs and come back to you by '+ccDayLabel(d)+'.',
 dmOrgDeadline:d=>'The offer stands until '+ccDayLabel(d)+'.',
+dmOrgTerm:n=>'The contract runs '+(n>1 ? n+' seasons' : 'one season')+'.',
+dmOrgFee:(c,v)=>'You are under contract with '+c+': we pay the $'+v+' buyout.',
+ccNewsTransfer:(from,to,v)=>'Transfer: '+from+' sell the player to '+to+' for $'+v,
+ccNewsOrgYear:(n,k)=>'The contract with '+n+' runs on: '+(k>0 ? 'one more season after this' : 'final season'),
+ccOrgTermRow:'Contract', ccOrgTermLeft:k=>k>0 ? 'this season and '+k+' more' : 'to the end of the season',
 dmAgentDeadline:(c,d)=>c+' hold the seat until '+ccDayLabel(d)+'.',
 dmOrgYesMoreAgent:v=>'Got it done. $'+v+' a month, you can sign.',
 dmOrgNoMoreAgent:v=>'That is their limit. They are holding at $'+v+' — your call whether it is worth it.',
@@ -120472,7 +120482,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='d174cf68';
+const CC_BUILD='480e551d';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -126769,8 +126779,24 @@ function careerBuyoutCost(){
   const pays=careerWagePaydays();
   const left=pays.filter(d=>d>careerToday()).length;
   const each=Math.round(org.salary/Math.max(1, pays.length));
-  return Math.max(50, Math.round(each*left*CC_BUYOUT_SHARE/50)*50);
+  // Контракт на два сезона (29.10, его «контракты: срок, отступные»): целые сезоны после этого — тоже в отступных.
+  const more=ccOrgSeasonsLeft(org)*org.salary;
+  return Math.max(50, Math.round((each*left+more)*CC_BUYOUT_SHARE/50)*50);
 }
+/* СРОК КОНТРАКТА (29.10, его «8 надо»: срок, отступные, выкуп другим клубом). org.to — последний сезон контракта
+   (номер cr.season); старые контракты без срока — годовые, как и жили. Сколько ЦЕЛЫХ сезонов осталось после текущего. */
+function ccOrgSeasonsLeft(org){
+  const cr=CAREER && CAREER.career;
+  if(!org || org.own || !cr || org.to==null) return 0;
+  return Math.max(0, org.to-(cr.season||1));
+}
+// Срок в оффере: академия — год; основной состав — иногда два, у топ-клубов чаще (держат вложенное).
+function ccOrgTermRoll(tier, academy, rnd){
+  if(academy) return 1;
+  return rnd() < (tier>=88 ? 0.5 : 0.3) ? 2 : 1;
+}
+// Контракт идёт и после этого сезона: уйти можно только выкупом, и выкупить могут клубы заметно выше нынешнего.
+const CC_ORG_POACH_STEP=3;
 function careerLeaveOrg(){
   const cr=CAREER.career, org=CAREER.org;
   if(!org) return false;
@@ -128176,6 +128202,7 @@ function careerOrgTileHTML(){
         ${(CAREER.career.orgCut||0) ? row(T.ccOrgCutPaid, '$'+ccNum(CAREER.career.orgCut||0)) : ''}
         ${row(T.ccPaid, ccMoney(org.paid||0))}
         ${org.since ? row(T.lfSince, org.since) : ''}
+        ${!org.own ? row(T.ccOrgTermRow, esc(T.ccOrgTermLeft(ccOrgSeasonsLeft(org)))) : ''}
       </details>
       <div class="cc-orgc-btns">
         <button class="ch-decline"${can ? '' : ' disabled'} onclick="careerLeaveOrg()" title="${esc(T.ccBuyoutWhat)}">${T.ccBuyout(ccNum(cost))}</button>
@@ -140270,8 +140297,10 @@ function careerOrgOffers(){
      club far over your head is a thing that happens rather than a thing you
      plan on — and what arrives is a real first-team offer at your own wage. */
   const mine=(CAREER.org && CAREER.org.name) || null;
+  const bound=CAREER.org && !CAREER.org.own && ccOrgSeasonsLeft(CAREER.org)>0 ? (CAREER.org.tier||0)+CC_ORG_POACH_STEP : null;
   const eligible=careerOrgPool().filter(o=>{
     if(mine && o.name===mine) return false;
+    if(bound!=null && o.tier<bound) return false;
     const gap=o.tier-pl.ovr;
     if(gap<=reach) return true;
     return rnd() < Math.max(0, 0.35-(gap-reach)*0.05);
@@ -140374,6 +140403,9 @@ function careerOrgOffers(){
       goal: careerOrgGoal(cr.division),
       cut: careerOrgCutFor(o.tier),
       perk: ccOrgPerk(o.tier, academy, rnd),
+      term: ccOrgTermRoll(o.tier, academy, rnd),
+      // Под контрактом: новый клуб выкупает игрока у нынешнего — платит отступные он, не игрок.
+      fee: (CAREER.org && !CAREER.org.own) ? careerBuyoutCost() : 0,
       /* Иногда клуб берёт не игрока, а состав.
 
          Правка: «пусть будет иногда приходить контракт двоим
@@ -140577,7 +140609,7 @@ function careerSign(i){
   CAREER.org={name:offer.name, tier:offer.tier, salary:offer.salary,
               goal:offer.goal, cut:offer.cut!=null?offer.cut:careerOrgCutFor(offer.tier),
               since:CAREER.career.season, paid:0, perk:offer.perk||null,
-              bonus:careerOrgBonusFor(offer.salary)};
+              bonus:careerOrgBonusFor(offer.salary), to:CAREER.career.season+(offer.term||1)-1};
   CAREER.offers=null;
   careerReachAdd(ccOrgMediaSign(offer.name, offer.tier, offer.academy), true);
   const withMates=careerOrgSignMates(offer);
@@ -142281,10 +142313,18 @@ function careerOrgSeasonEnd(){
     CAREER.org=null;
     return;
   }
+  // Контракт идёт и дальше — продлевать нечего: та же зарплата, новая задача на сезон.
+  if(ccOrgSeasonsLeft(org)>0){
+    org.goal=careerOrgGoal(CAREER.career.division);
+    careerNews('good', 'ccNewsOrgYear', [org.name, org.to-(CAREER.career.season||1)], {by:ccOrgBy(org.name)});
+    careerSave();
+    return;
+  }
   const was=org.salary;
   const raise=Math.round(org.salary*(1+CC_ORG_GOAL_RAISE[(org.goal && org.goal.tier!=null) ? org.goal.tier : 1])/50)*50;
   const stay=function(){
     org.salary=raise;
+    org.to=(CAREER.career.season||1)+1;   // продление — на следующий сезон (сезон ещё не сменился)
     org.goal=careerOrgGoal(CAREER.career.division);
     careerNews('good', 'ccNewsExtended', [org.name, org.salary], {by:ccOrgBy(org.name)});
     careerSave();
@@ -142694,7 +142734,7 @@ const CC_POST_BY={
   ccNewsClubSold:'by', ccNewsClubSour:'by', ccNewsClubUnpaid:'by', ccNewsClubUp:'by', ccNewsClubWant:'by',
   ccNewsSacPay:'you', ccNewsTwSubbed:'you', ccNewsClubClosed:'by',
   ccNewsLeftOrg:'press',
-  ccNewsSigned:'press', ccNewsReleased:'press', ccNewsExtended:'press',
+  ccNewsSigned:'press', ccNewsReleased:'press', ccNewsExtended:'press', ccNewsTransfer:'press', ccNewsOrgYear:'press',
   /* Парный контракт заведён 25 августа, когда клубы уже постили сами, поэтому
      ему не нужен запасной автор из прошлого: его пишет тот, кто подписал, и
      запись всегда приходит с ним ('by'). */
@@ -143471,7 +143511,7 @@ function ccPostOrgName(v){
 const CC_ORG_POST_ARG={
   ccNewsSigned:0, ccNewsSignedDuo:0, ccNewsSignedAcademy:0,
   ccNewsReleased:0, ccNewsExtended:0, ccNewsPromotedRoster:0, ccNewsRaise:0,
-  ccNewsLeft:1,
+  ccNewsLeft:1, ccNewsTransfer:1, ccNewsOrgYear:0,
   // Победу своего человека клуб празднует сам — см. careerD1Posts.
   ccPostOrgWin:0
 };
@@ -148234,9 +148274,11 @@ function careerSignFromDm(id){
   if(!t || !t.offer) return;
   const o=t.offer;
   const leaving=CAREER.org && CAREER.org.name!==o.name ? CAREER.org.name : null;
+  // Под контрактом новый клуб платит прежнему отступные (сумма — на сегодня, а не на день оффера).
+  const fee=(leaving && CAREER.org && !CAREER.org.own) ? careerBuyoutCost() : 0;
   CAREER.org={name:o.name, salary:o.salary, goal:o.goal, academy:!!o.academy,
               tier:o.tier, cut:o.cut!=null?o.cut:careerOrgCutFor(o.tier),
-              since:CAREER.career.season, paid:0, perk:o.perk||null};
+              since:CAREER.career.season, paid:0, perk:o.perk||null, to:CAREER.career.season+(o.term||1)-1};
   // Kept because nothing else keeps it: CAREER.org is who you play for now, and
   // a career that ends wants to say who it played for.
   CAREER.career.orgs=CAREER.career.orgs||[];
@@ -148248,7 +148290,8 @@ function careerSignFromDm(id){
   careerReachAdd(ccOrgMediaSign(o.name, o.tier, o.academy), true);   // объявление — от аудитории клуба, а не от уровня
   ccOrgSay(t, 'dmOrgWelcome', [o.name]);
   // Уход объявляет тот, КУДА пришёл: у нового клуба и повод, и аккаунт.
-  if(leaving) careerNews('flat', 'ccNewsLeft', [leaving, o.name], {by:ccOrgBy(o.name)});
+  if(leaving && fee) careerNews('good', 'ccNewsTransfer', [leaving, o.name, ccNum(fee)], {by:ccOrgBy(o.name)});
+  else if(leaving) careerNews('flat', 'ccNewsLeft', [leaving, o.name], {by:ccOrgBy(o.name)});
   const withMates=careerOrgSignMates(o);
   if(withMates) careerNews('good', 'ccNewsSignedDuo', [o.name, withMates], {by:ccOrgBy(o.name)});
   else careerNews('good', o.academy ? 'ccNewsSignedAcademy' : 'ccNewsSigned',
@@ -148272,7 +148315,7 @@ function careerOrgDm(offer, index){
      it. The club says its piece once, and then the clock owns it. */
   if(t.offer && t.offer.name===offer.name) return t;
   t.offer={index:index, name:offer.name, salary:offer.salary, academy:offer.academy,
-           tier:offer.tier, goal:offer.goal, perk:offer.perk||null,
+           tier:offer.tier, goal:offer.goal, perk:offer.perk||null, term:offer.term||1, fee:offer.fee||0,
            until:ccAddDays(careerToday(), CC_OFFER_DAYS)};
   t.asks=0; t.asked=false; t.pending=null;
   t.state='org';
@@ -148302,6 +148345,9 @@ function careerOrgDm(offer, index){
      sentence, or the list is three of the same conversation. */
   careerDmPush(t, 'them', on ? 'dmAgentDeadline' : 'dmOrgDeadline',
                on ? [offer.name, t.offer.until] : [t.offer.until]);
+  // Срок и выкуп — отдельной строкой: это условия, о которых решают, а не мелкий шрифт.
+  careerDmPush(t, 'them', 'dmOrgTerm', [t.offer.term]);
+  if(t.offer.fee && CAREER.org) careerDmPush(t, 'them', 'dmOrgFee', [CAREER.org.name, ccNum(t.offer.fee)]);
   return t;
 }
 /* Every offer on the table becomes a conversation. Called where the offers are

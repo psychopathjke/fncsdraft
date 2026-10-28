@@ -60,6 +60,38 @@ const BOOT = `
     check('and the tile says the price', careerOrgTileHTML().indexOf(
       careerBuyoutCost().toLocaleString('en-US')) >= 0);
 
+    /* ---- a contract with a term (29.10: «срок, отступные, выкуп другим клубом») ---- */
+    seed(50000); club();
+    const one = careerBuyoutCost();
+    CAREER.org.to = 2;
+    const two = careerBuyoutCost();
+    out.notes.term = {one: one, two: two};
+    check('a second season on the contract raises the buyout by half a season of wage',
+          Math.abs(two - one - 1200 * CC_BUYOUT_SHARE) <= 50, one + ' -> ' + two);
+    check('the tile says how long it runs', careerOrgTileHTML().indexOf(L().ccOrgTermLeft(1)) >= 0);
+    // Season end with a season left: no renewal question, same wage, the club stays.
+    CAREER.career.log = [{kind:'major', place:1, season:1}];
+    careerOrgSeasonEnd();
+    check('a running contract is not renegotiated at season end', !!CAREER.org && CAREER.org.salary === 1200 && CAREER.org.to === 2,
+          JSON.stringify(CAREER.org));
+    // Bound by contract: only clubs well above may write, and they pay the buyout.
+    seed(50000, '2026-06-20'); club(); CAREER.org.to = 2; CAREER.career.orgs = ['Probe Esports'];   // уже играл за клуб — рынок его видит (ccOrgProven)
+    const offers = careerOrgOffers();
+    out.notes.offers = offers.map(o => o.name + ' ' + o.tier + ' fee ' + o.fee + ' term ' + o.term);
+    check('under contract only bigger clubs come in', offers.every(o => o.tier >= 84 + CC_ORG_POACH_STEP), out.notes.offers.join(' | '));
+    check('and their offer carries the buyout', offers.every(o => o.fee > 0), out.notes.offers.join(' | '));
+    if (offers.length) {
+      CAREER.offers = offers; careerOrgOffersToDms();
+      const t = careerDms().find(x => x.offer && x.offer.name === offers[0].name);
+      const bal = CAREER.career.balance;
+      careerSignFromDm(t.id);
+      check('signing from a contract moves the player', CAREER.org && CAREER.org.name === offers[0].name);
+      check('the new club pays, not the player', CAREER.career.balance === bal, bal + ' -> ' + CAREER.career.balance);
+      check('and it is announced as a transfer', (CAREER.career.news||[]).some(n => n.k === 'ccNewsTransfer' || n.key === 'ccNewsTransfer'),
+            JSON.stringify((CAREER.career.news||[]).slice(-3)));
+      check('the new contract has its own term', CAREER.org.to >= 1, String(CAREER.org.to));
+    }
+
   } catch(e) { out.err = String(e && e.stack || e); }
   document.getElementById('__out').textContent =
     'PB' + 'EGIN' + encodeURIComponent(JSON.stringify(out)) + 'PE' + 'ND';

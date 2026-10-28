@@ -73,7 +73,7 @@ console.log(out.euCards + ' European cards, ' + out.nowCards + ' of them from ' 
 if (out.yearless) fail(out.yearless + ' cards whose year cannot be read — ccCardYear has a gap');
 console.log(out.pool.length + ' clubs field somebody in ' + out.year + ', of ' + out.everOrgs + ' ever');
 
-const onDisk = fs.readdirSync(path.join(ROOT, 'logos')).filter(f => f.endsWith('.png')).sort();
+const onDisk = fs.readdirSync(path.join(ROOT, 'logos')).filter(f => /\.(png|jpg)$/.test(f)).sort();   // и .jpg: Kraven_Esport, Team_Eldia
 const crested = out.pool.filter(o => onDisk.includes(o.logo));
 console.log('with a crest on disk: ' + crested.length + '; drawn as a monogram: ' +
   (out.pool.length - crested.length));
