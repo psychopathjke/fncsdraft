@@ -120171,7 +120171,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='6fa85ac0';
+const CC_BUILD='e7052c35';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -138097,7 +138097,21 @@ function careerMateFactor(myOvr){
    силе, с шансом CC_BREAK_P получает разовый скачок +4…+7 каждому из состава в книгу роста (выдуманные — в свою,
    devL) и пост «новая звезда». Не чаще раза в неделю, человек — не чаще раза в год, потолок CC_BREAK_TO. Случай — от
    дня и поля, не Math.random: в гонке и командной игре книга у всех одна (вызывается там же, где careerGrowField). */
-const CC_BREAK_FIELD=40, CC_BREAK_TOP=3, CC_BREAK_P=0.6, CC_BREAK_TO=92;
+/* Возраст (его «давай так» 28.10): до CC_BREAK_YOUNG лет прорыв насовсем — новая звезда; старше — вспышка формы на
+   CC_BREAK_HOT турниров, потом прибавка снимается (ccBreakoutTick). Возраст — как на карточке (ccAgeShown). */
+const CC_BREAK_FIELD=40, CC_BREAK_TOP=3, CC_BREAK_P=0.6, CC_BREAK_TO=92, CC_BREAK_YOUNG=22, CC_BREAK_HOT=6;
+// Каждый турнир: у временных прорывов на один турнир меньше; кончились — прибавка уходит из книги.
+function ccBreakoutTick(){
+  const cr=CAREER && CAREER.career;
+  if(!cr || !Array.isArray(cr.breakouts)) return;
+  cr.breakouts.forEach(b=>{
+    if(!b || !(b.left>0)) return;
+    if(--b.left>0) return;
+    const book=b.lad ? CAREER.devL : CAREER.dev;
+    if(book && book[b.k]!=null){ const v=Math.round((book[b.k]-(b.d||0))*10)/10; if(Math.abs(v)<0.05) delete book[b.k]; else book[b.k]=v; }
+    b.d=0;
+  });
+}
 const CC_BREAK_BY={name:'Rising Stars FN', handle:'risingstarsfn', f:36000};
 function ccBreakoutCheck(field, you){
   const cr=CAREER && CAREER.career;
@@ -138126,7 +138140,9 @@ function ccBreakoutCheck(field, you){
       const now=(c._ovr!=null ? c._ovr : (attrsFor(c)||{}).ovr)||0;
       const add=Math.max(0, Math.min(d, CC_BREAK_TO-now));
       if(add>0) book[k]=Math.round(((book[k]||0)+add)*10)/10;
-      cr.breakouts.push({k, day:today, d:add});
+      const age=(typeof ccAgeShown==='function') ? ccAgeShown(c.handle) : null;
+      const hot=age!=null && age>CC_BREAK_YOUNG;
+      cr.breakouts.push(hot ? {k, day:today, d:add, lad:lad?1:0, left:CC_BREAK_HOT} : {k, day:today, d:add});
     });
     const tags=cards.map(c=>'@'+ccHandle(c.handle)).join(' & ');
     careerNews('good', 'ccPostBreakout', [tags, i+1, Math.floor(rnd()*3)], {by:CC_BREAK_BY});
@@ -138154,7 +138170,7 @@ function careerGrowEvent(place, total, you, field){
      двигал книгу развития только у него, и следующее общее поле расходилось на силе бота
      (командный год за Pixie и SwizzY 20.10: соло 17.01 → Duos Victory Cup 19.01, f1n4ik+zarbeh 88 против 89). */
   const teamApart=(typeof ccTeamSoloNight==='function' && ccTeamSoloNight());
-  if(field && field.length>1 && !raceApart && !teamApart){ careerGrowField(field, you); ccBreakoutCheck(field, you); }
+  if(field && field.length>1 && !raceApart && !teamApart){ careerGrowField(field, you); ccBreakoutTick(); ccBreakoutCheck(field, you); }
   /* И вечер, отыгранный дома, пишется на дом — на ту из трёх точек, где ты
      сидел. Ауру делает не результат турнира, а то, удержал ли ты место: счёт
      стычек за этап против счёта поражений. См. careerSpotNight. */
