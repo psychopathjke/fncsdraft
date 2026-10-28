@@ -1923,6 +1923,21 @@
   .cl-box[hidden]{display:none;}
   .cl-head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;} .cl-head b{font-size:15px;color:#fff;} .cl-head span{font-size:12px;color:#9fe1ff;font-weight:700;}
   /* YouTube в карьере (28.10): шапка канала, «новый ролик» из свежего турнира, сетка роликов с комментариями по нажатию. */
+  /* МЕДИА В ЦВЕТАХ СЕТЕЙ (28.10): соцсеть — X (чёрный, #e7e9ea, синий #1d9bf0), стримы — Twitch (#0e0e10, фиолетовый
+     #9146ff), YouTube — YouTube (#0f0f0f, красный #ff0033). Подвкладка своей сети горит её цветом. */
+  #screen-career-hub .ch-subtab.ch-subtab-social.on{background:#e7e9ea;color:#000;} #screen-career-hub .ch-subtab.ch-subtab-streams.on{background:#9146ff;color:#fff;} #screen-career-hub .ch-subtab.ch-subtab-youtube.on{background:#ff0033;color:#fff;}
+  .ch-subtab-social:not(.on){box-shadow:inset 0 -2px 0 #1d9bf0;} .ch-subtab-streams:not(.on){box-shadow:inset 0 -2px 0 #9146ff;} .ch-subtab-youtube:not(.on){box-shadow:inset 0 -2px 0 #ff0033;}
+  .cc-media{border-radius:16px;padding:12px;}
+  .cc-media-x{background:#000;border:1px solid #2f3336;color:#e7e9ea;}
+  .cc-media-tw{background:#0e0e10;border:1px solid #26262c;box-shadow:inset 0 3px 0 #9146ff;color:#efeff1;}
+  .cc-media-yt{background:#0f0f0f;border:1px solid #272727;box-shadow:inset 0 3px 0 #ff0033;color:#f1f1f1;}
+  #screen-career-hub .cc-media-x .ch-tile{background:#16181c;border-color:#2f3336;}
+  #screen-career-hub .cc-media-tw .ch-tile{background:#18181b;border-color:#2f2f35;}
+  #screen-career-hub .cc-media-yt .ch-tile{background:#1f1f1f;border-color:#303030;}
+  .cc-media-x a,.cc-media-x .cc-car-open:hover{color:#1d9bf0;}
+  .cc-media-tw .cc-car-open{border-color:rgba(145,70,255,.6);} .cc-media-yt .cc-car-open{border-color:rgba(255,0,51,.5);}
+  .cc-media-yt .yt-head,.cc-media-yt .yt-mon,.cc-media-yt .yt-com{background:#1f1f1f;border-color:#303030;}
+  .cc-media-yt .yt-earn b{color:#fff;} .cc-media-yt .yt-ch small,.cc-media-yt .yt-vid>small{color:#aaa;}
   .yt-wrap{display:flex;flex-direction:column;gap:12px;}
   .yt-head{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:14px;background:rgba(10,16,40,.55);border:1px solid rgba(255,255,255,.1);}
   .yt-logo{flex:none;width:40px;height:28px;border-radius:8px;background:#ff0033;color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;}
@@ -120376,7 +120391,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='0a9e6b13';
+const CC_BUILD='c47c694b';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -125365,7 +125380,7 @@ function careerWorldHTML(){
 function ccSubTabsHTML(group){
   const list=group==='media' ? [['social', L().chTabSocial], ['streams', L().chTabStreams], ['youtube', L().chTabYt]]
                              : [['table', L().lfSubPrMoney], ['stats', L().chTabStats], ['world', L().lbTab]];
-  return '<div class="ch-subtabs">'+list.map(([k,t])=>'<button class="ch-subtab'+(CH_TAB===k?' on':'')+'" onclick="careerTab(\''+k+'\')">'+esc(t)+'</button>').join('')+'</div>';
+  return '<div class="ch-subtabs">'+list.map(([k,t])=>'<button class="ch-subtab ch-subtab-'+k+(CH_TAB===k?' on':'')+'" onclick="careerTab(\''+k+'\')">'+esc(t)+'</button>').join('')+'</div>';
 }
 function careerRenderHubBody(tab){
   CH_TAB=tab||CH_TAB;
@@ -125523,7 +125538,7 @@ function careerRenderHubBody(tab){
   if(CH_TAB==='hist'){ body.innerHTML=careerHistoryHTML(); return; }
   if(CH_TAB==='stats'){ body.innerHTML=ccSubTabsHTML('boards')+careerStatsHTML(); return; }
   if(CH_TAB==='world'){ body.innerHTML=ccSubTabsHTML('boards')+careerWorldHTML(); return; }
-  if(CH_TAB==='streams'){ body.innerHTML=ccSubTabsHTML('media')+careerStreamsHTML(); return; }
+  if(CH_TAB==='streams'){ body.innerHTML=ccSubTabsHTML('media')+'<div class="cc-media cc-media-tw">'+careerStreamsHTML()+'</div>'; return; }
   // Two standings on one tab: the division's season table, which only Division 1
   // has, and the money, which everybody is in.
   if(CH_TAB==='table'){
@@ -125534,8 +125549,9 @@ function careerRenderHubBody(tab){
     return;
   }
   if(CH_TAB==='shop'){ body.innerHTML=careerShopHTML(); ccPaintMoveMap(); return; }
-  if(CH_TAB==='social'){ body.innerHTML=ccSubTabsHTML('media')+careerSocialHTML(); return; }
-  if(CH_TAB==='youtube'){ body.innerHTML=ccSubTabsHTML('media')+careerYtHTML(); return; }
+  // Медиа в цветах своих сетей (28.10, его «соцсети в цвете X, стримы в цвете твич, youtube в цветах ютуб»).
+  if(CH_TAB==='social'){ body.innerHTML=ccSubTabsHTML('media')+'<div class="cc-media cc-media-x">'+careerSocialHTML()+'</div>'; return; }
+  if(CH_TAB==='youtube'){ body.innerHTML=ccSubTabsHTML('media')+'<div class="cc-media cc-media-yt">'+careerYtHTML()+'</div>'; return; }
   /* The career itself, on its own screen.
 
      The centre was doing two jobs — what to do today, and who you have deals
