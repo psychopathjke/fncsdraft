@@ -4814,6 +4814,14 @@
     #screen-career-hub .ch-purse b small{font-size:10px;font-weight:700;color:rgba(255,255,255,.55);margin-left:2px;}
     #screen-career-hub .ch-purse-now .ch-pend{display:inline-block;align-self:flex-start;margin-top:3px;padding:1px 7px;border-radius:999px;
       background:rgba(126,240,221,.14);color:#bff6ec;font-size:10px;}
+    /* ШАПКА В ОДНУ СТРОКУ (28.10, Notion 27.10 скрин 11: чип выплат под балансом и длинная строка под ником
+       (клуб · дивизион · роль · «2× победитель кубка») переносили сезон/неделю/подписчиков вниз): строка не переносится,
+       подпись под ником сжимается с многоточием. */
+    #screen-career-hub .ch-top{flex-wrap:nowrap;}
+    #screen-career-hub .ch-who{min-width:0;flex:0 1 auto;overflow:hidden;}
+    #screen-career-hub .ch-who *{min-width:0;}
+    #screen-career-hub .ch-who small,#screen-career-hub .ch-who .ch-sub{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    #screen-career-hub .ch-purse-now .ch-pend{white-space:nowrap;}
   }
   /* Всё остальное синее — тем же оттенком (Notion «20.10», последний скрин: «цвета не те» — панели в цвет сезона,
      а шапка SEASON, уровень, заголовок заданий и правая панель дня оставались синими). */
@@ -120283,7 +120291,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='06c83e8e';
+const CC_BUILD='c0002f35';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -141558,7 +141566,7 @@ function ccPayPendHTML(){
   if(!q.length) return '';
   const rows=CC_PAY_OPEN ? '<span class="ch-pend-list">'+q.map(x=>'<span>'+ccMoney(x.amt)+' — '+esc(ccDayLabel(x.due))+'</span>').join('')+'</span>' : '';
   return '<small class="ch-pend" role="button" tabindex="0" onclick="CC_PAY_OPEN=!CC_PAY_OPEN;careerRenderHub()" title="'+esc(L().ccPayPendAll)+'">+'+
-    ccMoney(ccPayPending())+' '+esc(L().ccPayPend||'pending')+' · '+esc(L().ccPayNext(ccDayLabel(q[0].due)))+(q.length>1 ? ' ▾' : '')+rows+'</small>';
+    ccMoney(ccPayPending())+' · '+esc(ccDayLabel(q[0].due))+(q.length>1 ? ' ▾' : '')+rows+'</small>';
 }
 function ccPayPending(){ const q=(CAREER && CAREER.career && CAREER.career.payQ)||[]; return q.reduce((a,x)=>a+(x.amt||0), 0); }
 const CC_PAY_WHO={handle:'Epic Payouts', verified:true, roster:false, staff:'pay'};
