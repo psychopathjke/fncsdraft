@@ -120359,7 +120359,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='79ea89e3';
+const CC_BUILD='cc4a9cf5';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -180071,8 +180071,11 @@ function ccYtTotal(e, kind, rnd){
   const y=ccYt(), s=y.subs||0, k=CC_YT_KINDS[kind];
   const big=(e && CC_YT_BIG.indexOf(e.kind)>=0) ? 1.5 : 1;
   const spread=Math.exp((rnd()-0.5)*1.6);              // ×0.45 … ×2.2
-  const fame=Math.min(careerReach()*0.001, 30+s*0.2);  // известность в сцене приводит людей, но не больше, чем держит канал
-  return Math.max(5, Math.round((25 + s*0.4*k.views*big)*spread + fame));
+  /* Известность приводит людей и на НОВЫЙ канал (28.10, его «ютуб медленно растёт»: доля была reach·0.001, у игрока с
+     28 тыс. фолловеров в X первый ролик набирал 30–80 просмотров и одного подписчика). Теперь от фолловеров в X — до 20 %
+     (потолок 3000 + подписчики канала) и от Twitch 5 %: про с аудиторией начинает с тысяч, а не с десятков. */
+  const cr=CAREER.career, fame=Math.min(careerReach()*0.2, 3000+s) + (cr.twitch||0)*0.05;
+  return Math.max(5, Math.round((25 + s*0.4*k.views*big + fame*k.views*big)*spread));
 }
 // Имя события на английском — названия у про всегда английские.
 function ccYtEvName(e){
@@ -180154,7 +180157,8 @@ function ccYtTick(){
   if(!gotV) return;
   const wasMon=ccYtMonet(y);
   y.views=(y.views||0)+gotV; y.hours=(y.hours||0)+gotH;
-  y.subs=(y.subs||0)+Math.max(0, Math.round(gotV*0.02*ccYtSat(y.subs, 500000)));
+  // Подписываются 5 % досмотревших у нового канала, у большого меньше (sat).
+  y.subs=(y.subs||0)+Math.max(0, Math.round(gotV*0.05*ccYtSat(y.subs, 300000)));
   if(wasMon){
     const usd=gotV/1000*CC_YT_RPM;
     y.usd=Math.round(((y.usd||0)+usd)*100)/100;
