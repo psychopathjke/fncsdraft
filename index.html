@@ -24132,6 +24132,12 @@ Object.assign(I18N.ru, {ccPostLfdWantAny:(h,d)=>'LFD. Дивизион '+d+' и 
   ccCoMeta:['пул норм','верните помпу 🙏','прощай моя точка','посмотрим на скримах','мета мид 💀','наконец новая карта','кто ещё ненавидит этот пул','сёрдж будет жёсткий'],
   ccCoTaunt:['💀💀','он тебя готовит','ратио','поймай его на скримах','🤣🤣','бесплатные киллы…','ты не в безопасности','ответь ему'],
   ccCoPress:['менталка W','смело','он серьёзно','посмотрим 👀','скромно 🙏','слова ничего не стоят','клипни это','уважаю честность']});
+/* Прорыв (28.10, идея игрока в Notion «27.10»: «random ai can become good from 1 breakthrough tournament»). */
+Object.assign(I18N.en, {ccPostBreakout:(tags,place,v)=>['Out of nowhere: '+tags+', #'+place+' tonight. Remember the name, this is a breakout 📈','Nobody had '+tags+' on the radar. #'+place+' tonight. Looks like the scene has a new star ⭐','#'+place+' for '+tags+'. A week ago nobody knew them. Breakout run 🚀'][v%3]});
+Object.assign(I18N.ru, {ccPostBreakout:(tags,place,v)=>['Из ниоткуда: '+tags+', #'+place+' за вечер. Запомните ник, это прорыв 📈','Никто не ставил на '+tags+'. #'+place+' сегодня. Похоже, у сцены новая звезда ⭐','#'+place+' у '+tags+'. Неделю назад их никто не знал. Прорыв 🚀'][v%3]});
+Object.assign(I18N.fr, {ccPostBreakout:(tags,place,v)=>['Sorti de nulle part : '+tags+', #'+place+' ce soir. Retenez ce nom, c’est une révélation 📈','Personne ne voyait venir '+tags+'. #'+place+' ce soir. La scène tient une nouvelle star ⭐','#'+place+' pour '+tags+'. Il y a une semaine, personne ne les connaissait 🚀'][v%3]});
+Object.assign(I18N.it, {ccPostBreakout:(tags,place,v)=>['Dal nulla: '+tags+', #'+place+' stasera. Ricordatevi questo nome, è un exploit 📈','Nessuno puntava su '+tags+'. #'+place+' stasera. La scena ha una nuova stella ⭐','#'+place+' per '+tags+'. Una settimana fa nessuno li conosceva 🚀'][v%3]});
+Object.assign(I18N.pt, {ccPostBreakout:(tags,place,v)=>['Do nada: '+tags+', #'+place+' hoje. Lembrem desse nome, é uma revelação 📈','Ninguém apostava em '+tags+'. #'+place+' hoje. A cena tem uma nova estrela ⭐','#'+place+' para '+tags+'. Uma semana atrás ninguém os conhecia 🚀'][v%3]});
 /* Особые карточки 97/98/99 (16.10). */
 Object.assign(I18N.ru, {formWhyLanwin:'чемпион ЛАНа', formWhyPoty:'игрок года'});
 Object.assign(I18N.en, {formWhyLanwin:'LAN champion', formWhyPoty:'player of the year'});
@@ -120165,7 +120171,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='8c00d9c3';
+const CC_BUILD='6fa85ac0';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -138084,6 +138090,49 @@ function careerMateFactor(myOvr){
    Guarded, because these nine callers are less uniform than the cup: a stage
    with one team in it, or a runner that has moved on from its field by the time
    it writes the row, gets nothing rather than a divide by zero. */
+/* ПРОРЫВ (28.10, идея игрока в Notion «27.10»: на двадцатом сезоне карьеры одни и те же про, «make it so random ai
+   can become good from 1 breakthrough tournament and maybe later place good in majors/lans», «each tournament could
+   give a new star player»). Плавный рост книги (careerGrowField) двигает по десятым и звёзд не делает. Здесь после
+   турнира с полем от CC_BREAK_FIELD команд одна команда из топ-CC_BREAK_TOP, вышедшая из слабой половины поля по
+   силе, с шансом CC_BREAK_P получает разовый скачок +4…+7 каждому из состава в книгу роста (выдуманные — в свою,
+   devL) и пост «новая звезда». Не чаще раза в неделю, человек — не чаще раза в год, потолок CC_BREAK_TO. Случай — от
+   дня и поля, не Math.random: в гонке и командной игре книга у всех одна (вызывается там же, где careerGrowField). */
+const CC_BREAK_FIELD=40, CC_BREAK_TOP=3, CC_BREAK_P=0.6, CC_BREAK_TO=92;
+const CC_BREAK_BY={name:'Rising Stars FN', handle:'risingstarsfn', f:36000};
+function ccBreakoutCheck(field, you){
+  const cr=CAREER && CAREER.career;
+  if(!cr || !field || field.length<CC_BREAK_FIELD) return;
+  const today=careerToday();
+  cr.breakouts=(cr.breakouts||[]).filter(b=>b && ccDaysBetween(b.day, today)<=365);
+  // Не чаще раза в неделю: турниров в неделе несколько, и прорыв каждый вечер раздул бы сцену.
+  if(cr.breakouts.some(b=>ccDaysBetween(b.day, today)<7)) return;
+  const rnd=careerRng(ccHashStr('breakout|'+today+'|'+field.length));
+  if(rnd()>CC_BREAK_P) return;
+  const ranked=careerRankField(field);
+  const strength=t=>(t.pow||0)+(t.closeEdge||0);
+  const weakHalf=new Set(field.slice().sort((a,b)=>strength(a)-strength(b)).slice(0, Math.floor(field.length/2)));
+  const seen=new Set(cr.breakouts.map(b=>b.k));
+  let peerKey=null;
+  try{ if(typeof ccMpTeam==='function' && ccMpTeam() && typeof MP!=='undefined' && MP.peer) peerKey=hKey(MP.peer); }catch(e){ peerKey=null; }
+  for(let i=0; i<Math.min(CC_BREAK_TOP, ranked.length); i++){
+    const t=ranked[i];
+    if(t===you || t.isYou || t.isRival || t.isMate || !weakHalf.has(t)) continue;
+    const cards=(t.squad||[]).filter(c=>c && c.handle);
+    if(!cards.length || cards.some(c=>seen.has(hKey(c)) || (peerKey && hKey(c)===peerKey))) continue;
+    const d=4+Math.floor(rnd()*4);
+    cards.forEach(c=>{
+      const k=hKey(c), lad=(c.tier==='ladder');
+      const book=lad ? (CAREER.devL=CAREER.devL||{}) : (CAREER.dev=CAREER.dev||{});
+      const now=(c._ovr!=null ? c._ovr : (attrsFor(c)||{}).ovr)||0;
+      const add=Math.max(0, Math.min(d, CC_BREAK_TO-now));
+      if(add>0) book[k]=Math.round(((book[k]||0)+add)*10)/10;
+      cr.breakouts.push({k, day:today, d:add});
+    });
+    const tags=cards.map(c=>'@'+ccHandle(c.handle)).join(' & ');
+    careerNews('good', 'ccPostBreakout', [tags, i+1, Math.floor(rnd()*3)], {by:CC_BREAK_BY});
+    return;
+  }
+}
 function careerGrowEvent(place, total, you, field){
   if(!(place>0) || !(total>1) || !you) return 0;
   /* Вечер учит всю комнату, а не только того, кто её читает. См. careerGrowField.
@@ -138105,7 +138154,7 @@ function careerGrowEvent(place, total, you, field){
      двигал книгу развития только у него, и следующее общее поле расходилось на силе бота
      (командный год за Pixie и SwizzY 20.10: соло 17.01 → Duos Victory Cup 19.01, f1n4ik+zarbeh 88 против 89). */
   const teamApart=(typeof ccTeamSoloNight==='function' && ccTeamSoloNight());
-  if(field && field.length>1 && !raceApart && !teamApart) careerGrowField(field, you);
+  if(field && field.length>1 && !raceApart && !teamApart){ careerGrowField(field, you); ccBreakoutCheck(field, you); }
   /* И вечер, отыгранный дома, пишется на дом — на ту из трёх точек, где ты
      сидел. Ауру делает не результат турнира, а то, удержал ли ты место: счёт
      стычек за этап против счёта поражений. См. careerSpotNight. */
@@ -142250,7 +142299,7 @@ const CC_POST_BY={
   // Пресс-конференции (16.10): цитату и исход обещания пишет пресса, на провокацию отвечает названный игрок.
   ccPostPress:'press', ccPostPressKept:'press', ccPostPressBroke:'press', ccPostPressRival:'arg0',
   // Слухи и опросы (16.10) пишут выдуманные медиа-аккаунты — автор едет в opt.by; здесь — на случай записи без него.
-  ccPostRumorPair:'press', ccPostRumorYou:'press', ccPostRumorDrama:'press', ccPostRumorTrue:'press', ccPostPollWin:'press',
+  ccPostRumorPair:'press', ccPostRumorYou:'press', ccPostRumorDrama:'press', ccPostRumorTrue:'press', ccPostPollWin:'press', ccPostBreakout:'press',
   ccNewsHotfix:'press', ccNewsRehost:'press', ccNewsTeamingDq:'press', ccPostTechNet:'you',
   // LFD is the player saying it out loud. Nobody else posts that for you.
   ccNewsLfd:'you',
