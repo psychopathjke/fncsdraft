@@ -273,6 +273,8 @@
       var p = startOf(team);
       // Киллы этой игры, видимые приложению по ходу (дуэль «лут с киллов», см. CC_KEY_LOOT в index.html).
       team._gElims = 0;
+      // Пришла ли зона эндгейма к этому отряду (см. PULL_ZONE). Сброс, чтобы не осталась прошлая игра.
+      team._zonePull = null;
       return {
         team: team,
         x: p.x, y: p.y * aspect,
@@ -1282,6 +1284,11 @@
   // so a good squad leaves almost at once and a poor one leaves with the storm
   // already on top of it.
   var LINGER_MAX = 0.3;
+  // Круг, с которого считается «зона пришла к тебе»: шестой, первый круг эндгейма (радиус вдвое меньше пятого,
+  // дальше круги двигаются). Так считают игроки в постах «pulled 1/12 zones»: игра, где финал лёг на твою точку.
+  // PULL_SLACK — запас: отряды держат край пятого круга, и строго внутри шестого оказывалось 13% доживших (проба
+  // check-career-zone-luck); в полтора радиуса от центра — около четверти. Настройка ленты, не замер.
+  var PULL_ZONE = 6, PULL_SLACK = 1.5;
   // Во сколько раз быстрее идёт круг на предмете мувмента (шоквейв, краш-пад,
   // слайдеры). ДОГАДКА, не замер: реплей не пишет, чем ехали. Больше единицы
   // ровно настолько, чтобы поздний выход на предмете не стоил здоровья.
@@ -1541,6 +1548,15 @@
       lobbyZone = phase.zone;
       currentSurgeAt = phase.surgeAt;
       var total = phase.waitSec + phase.shrinkSec;
+      // Зона пришла к тебе: когда показан круг эндгейма, отряд уже внутри него и ехать не надо.
+      // Только отметка для ленты (удача зон, index.html ccZoneLuckPost), на игру не влияет и бросков не тратит.
+      // Считаются только дожившие до эндгейма: 1 — внутри, 0 — снаружи; у выбывших раньше остаётся null.
+      if(phase.zone === PULL_ZONE) for(var q=0;q<squads.length;q++){
+        var sq = squads[q];
+        if(!sq.alive) continue;
+        var px = sq.x - to.cx, py = sq.y - to.cy;
+        sq.team._zonePull = (px*px + py*py <= to.radius * to.radius * PULL_SLACK * PULL_SLACK) ? 1 : 0;
+      }
       for(var i=0;i<squads.length;i++) if(squads[i].alive){
         var s0 = squads[i];
         s0.target = chooseTarget(s0, {cx: to.cx, cy: to.cy, radius: to.radius}, squads, rng);

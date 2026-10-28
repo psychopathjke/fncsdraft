@@ -4160,3 +4160,14 @@ Object.assign(I18N.de=I18N.de||{},
 /* Дозаливка «de» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
 Object.assign(I18N.de=I18N.de||{},
 ({ navCareerPlayer: 'Spieler' }));
+/* Дозаливка «de» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
+Object.assign(I18N.de=I18N.de||{},
+({
+  ccPostZoneLuck:(n,g,b,v)=>(n*2>=g ? ['Zonen heute auf meiner Seite: '+n+'/'+g+'. Keine Ausreden für niemanden', n+'/'+g+' Zonen kamen zu mir. Bestes Spiel #'+b, 'die Zone liebt mich heute: '+n+'/'+g]
+                                    : ['Zone kam '+n+'/'+g+' heute. Bestes Spiel #'+b+', ohne Zonen geht nicht viel', n+'/'+g+' bei den Zonen heute. Jedes Spiel über die halbe Map', 'Zonenglück heute: '+n+'/'+g+'. Weiter'])[v%3],
+  ccNewsZoneLuck:(ev,list)=>'ZONENGLÜCK · '+(ev!=null?ev+', ':'')+'Top 10, Endgames, in denen die Zone zu ihnen kam: '+(list||[]).map(r=>'#'+r[0]+' '+r[1]+' '+r[2]+'/'+r[3]).join(' · '),
+  ccPostDebate:(a,b,v)=>{ const s=x=>'@'+x[0]+': #'+x[1]+' PR'+(x[2]?', $'+ccNum(x[2])+' dieses Jahr':'')+(x[3]?', '+x[3]+(x[3]===1?' Cup':' Cups'):'');
+    return ['Beenden wir die Debatte. '+s(a)+'. '+s(b)+'. Wer ist besser?', 'Entscheidet. '+s(a)+' gegen '+s(b)+'.'][v%2]; },
+  ccNewsNatStreak:(nat,k,ev,v)=>{ const nm=natDisplay(nat);
+    return ['Die letzten '+k+' großen Finals gewann ein Team mit einem Spieler aus '+nm+' (zuletzt: '+ev+'). Ist '+nm+' gerade die beste Nation in Fortnite?', 'Wieder '+nm+'. '+k+' große Finals in Folge mit einem Spieler aus '+nm+' im Siegerteam. Hält sie jemand auf?'][v%2]; }
+}));

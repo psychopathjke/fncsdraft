@@ -9234,7 +9234,7 @@
      кэш промахивается сам. Проверку «хеш в теге совпадает с файлом» держит
      tools/check-deploy-folder.js: забыть обновить руками теперь нельзя, папка
      деплоя просто не соберётся зелёной. -->
-<script src="zone-sim.js?v=c44eb556"></script>
+<script src="zone-sim.js?v=d2bf9a76"></script>
 <script src="zone-replay.js?v=eddac9ed"></script>
 <!-- Командная карьера: транспорт и склейка. Весь код мультиплеера живёт здесь,
      в index.html только точки врезки. ?v= — тот же кэш-предохранитель, что и
@@ -23646,7 +23646,7 @@ ccSacPromoRow:(n,m,p)=>'promo no X '+n+'/'+m+(p ? ' · +'+p+'%' : ''),
 ccGoalReach:{majorFinal:'chegar a uma final de Major FNCS', fncsFinal:'chegar à final semanal da FNCS'},
 ccOrgGoalPickHint:'Meta da temporada: escolha uma antes do fim da temporada. Cumpriu, renova com aumento (meta mais difícil, aumento maior); falhou, o clube te libera. Sem escolha, fica a do meio.'
 }));
-let CC_I18N_V={de:'07557185', es:'37abd7b0'};   // ==== CC_I18N_V (tools/build-i18n.js) ====
+let CC_I18N_V={de:'d7a1736d', es:'c205b5ae'};   // ==== CC_I18N_V (tools/build-i18n.js) ====
 // Версия fn-shop.js (магазин Fortnite по дням, tools/build-fn-shop.js) — для ?v= ленивой загрузки.
 let CC_FN_SHOP_V='be7040d6';
 const CC_LANG_WAIT={};
@@ -24138,6 +24138,52 @@ Object.assign(I18N.ru, {ccPostBreakout:(tags,place,v)=>['Из ниоткуда: 
 Object.assign(I18N.fr, {ccPostBreakout:(tags,place,v)=>['Sorti de nulle part : '+tags+', #'+place+' ce soir. Retenez ce nom, c’est une révélation 📈','Personne ne voyait venir '+tags+'. #'+place+' ce soir. La scène tient une nouvelle star ⭐','#'+place+' pour '+tags+'. Il y a une semaine, personne ne les connaissait 🚀'][v%3]});
 Object.assign(I18N.it, {ccPostBreakout:(tags,place,v)=>['Dal nulla: '+tags+', #'+place+' stasera. Ricordatevi questo nome, è un exploit 📈','Nessuno puntava su '+tags+'. #'+place+' stasera. La scena ha una nuova stella ⭐','#'+place+' per '+tags+'. Una settimana fa nessuno li conosceva 🚀'][v%3]});
 Object.assign(I18N.pt, {ccPostBreakout:(tags,place,v)=>['Do nada: '+tags+', #'+place+' hoje. Lembrem desse nome, é uma revelação 📈','Ninguém apostava em '+tags+'. #'+place+' hoje. A cena tem uma nova estrela ⭐','#'+place+' para '+tags+'. Uma semana atrás ninguém os conhecia 🚀'][v%3]});
+/* Удача зон, спор «кто лучше», серия страны (28.10, его «357» по X после Solo FNCS). */
+Object.assign(I18N.en, {
+  ccPostZoneLuck:(n,g,b,v)=>(n*2>=g ? ['zones on my side tonight: '+n+'/'+g+'. No excuses for anyone', n+'/'+g+' zones came to me. Best game #'+b, 'the zone loved me tonight: '+n+'/'+g]
+                                    : ['pulled '+n+'/'+g+' zones tonight. Best game #'+b+', not much you can do without zones', n+'/'+g+' on zones tonight. Crossed half the map every game', 'zone luck tonight: '+n+'/'+g+'. On to the next'])[v%3],
+  ccNewsZoneLuck:(ev,list)=>'ZONE LUCK · '+(ev!=null?ev+', ':'')+'top 10, endgames where the zone came to them: '+(list||[]).map(r=>'#'+r[0]+' '+r[1]+' '+r[2]+'/'+r[3]).join(' · '),
+  ccPostDebate:(a,b,v)=>{ const s=x=>'@'+x[0]+': #'+x[1]+' PR'+(x[2]?', $'+ccNum(x[2])+' this year':'')+(x[3]?', '+x[3]+(x[3]===1?' cup':' cups'):'');
+    return ["Let's end the debate. "+s(a)+'. '+s(b)+". Who's better?", 'Settle it. '+s(a)+' vs '+s(b)+'.'][v%2]; },
+  ccNewsNatStreak:(nat,k,ev,v)=>{ const nm=natDisplay(nat);
+    return ['The last '+k+' big finals were won by a team with a player from '+nm+' (latest: '+ev+'). Is '+nm+' the best nation in Fortnite right now?', nm+' again. '+k+' big finals in a row with a player from '+nm+' on the winning team. Is anyone stopping them?'][v%2]; }
+});
+Object.assign(I18N.ru, {
+  ccPostZoneLuck:(n,g,b,v)=>(n*2>=g ? ['зоны сегодня за меня: '+n+'/'+g+'. Оправданий нет ни у кого', n+'/'+g+' зон пришли ко мне. Лучшая игра #'+b, 'зона сегодня меня любит: '+n+'/'+g]
+                                    : ['зона пришла '+n+'/'+g+' за вечер. Лучшая игра #'+b+', без зон много не сделаешь', n+'/'+g+' по зонам сегодня. Каждую игру ехал через полкарты', 'удача зон за вечер: '+n+'/'+g+'. Дальше'])[v%3],
+  ccNewsZoneLuck:(ev,list)=>'УДАЧА ЗОН · '+(ev!=null?ev+', ':'')+'топ-10, в скольких эндгеймах зона пришла к ним: '+(list||[]).map(r=>'#'+r[0]+' '+r[1]+' '+r[2]+'/'+r[3]).join(' · '),
+  ccPostDebate:(a,b,v)=>{ const s=x=>'@'+x[0]+': #'+x[1]+' в PR'+(x[2]?', $'+ccNum(x[2])+' за год':'')+(x[3]?', кубков: '+x[3]:'');
+    return ['Закроем спор. '+s(a)+'. '+s(b)+'. Кто лучше?', 'Решайте. '+s(a)+' против '+s(b)+'.'][v%2]; },
+  ccNewsNatStreak:(nat,k,ev,v)=>{ const nm=natDisplay(nat);
+    return ['Крупных финалов подряд, где в составе победителей игрок из страны '+nm+': '+k+' (последний: '+ev+'). '+nm+' сейчас лучшая страна в Fortnite?', 'Снова '+nm+'. Уже '+k+' крупных финала подряд победитель с игроком из этой страны. Их кто-нибудь остановит?'][k>=5 ? 0 : v%2]; }
+});
+Object.assign(I18N.fr, {
+  ccPostZoneLuck:(n,g,b,v)=>(n*2>=g ? ['les zones pour moi ce soir : '+n+'/'+g+'. Aucune excuse pour personne', n+'/'+g+' zones venues à moi. Meilleure game #'+b, 'la zone m’aime ce soir : '+n+'/'+g]
+                                    : ['zone venue '+n+'/'+g+' ce soir. Meilleure game #'+b+', sans zones on ne fait pas grand-chose', n+'/'+g+' en zones ce soir. Toute la soirée à traverser la map', 'chance de zone ce soir : '+n+'/'+g+'. Au suivant'])[v%3],
+  ccNewsZoneLuck:(ev,list)=>'CHANCE DE ZONE · '+(ev!=null?ev+', ':'')+'top 10, endgames où la zone est venue à eux : '+(list||[]).map(r=>'#'+r[0]+' '+r[1]+' '+r[2]+'/'+r[3]).join(' · '),
+  ccPostDebate:(a,b,v)=>{ const s=x=>'@'+x[0]+' : n°'+x[1]+' PR'+(x[2]?', $'+ccNum(x[2])+' cette année':'')+(x[3]?', '+x[3]+(x[3]===1?' coupe':' coupes'):'');
+    return ['Mettons fin au débat. '+s(a)+'. '+s(b)+'. Qui est le meilleur ?', 'Tranchez. '+s(a)+' contre '+s(b)+'.'][v%2]; },
+  ccNewsNatStreak:(nat,k,ev,v)=>{ const nm=natDisplay(nat);
+    return ['Les '+k+' dernières grandes finales ont été gagnées par une équipe avec un joueur de '+nm+' (dernière : '+ev+'). '+nm+', meilleure nation de Fortnite en ce moment ?', nm+' encore. '+k+' grandes finales de suite avec un joueur de '+nm+' dans l’équipe gagnante. Qui va les arrêter ?'][v%2]; }
+});
+Object.assign(I18N.it, {
+  ccPostZoneLuck:(n,g,b,v)=>(n*2>=g ? ['zone dalla mia stasera: '+n+'/'+g+'. Nessuna scusa per nessuno', n+'/'+g+' zone arrivate da me. Partita migliore #'+b, 'la zona mi ama stasera: '+n+'/'+g]
+                                    : ['zona arrivata '+n+'/'+g+' stasera. Partita migliore #'+b+', senza zone si fa poco', n+'/'+g+' di zone stasera. Tutta la sera ad attraversare la mappa', 'fortuna con le zone stasera: '+n+'/'+g+'. Avanti'])[v%3],
+  ccNewsZoneLuck:(ev,list)=>'FORTUNA CON LE ZONE · '+(ev!=null?ev+', ':'')+'top 10, endgame in cui la zona è arrivata da loro: '+(list||[]).map(r=>'#'+r[0]+' '+r[1]+' '+r[2]+'/'+r[3]).join(' · '),
+  ccPostDebate:(a,b,v)=>{ const s=x=>'@'+x[0]+': #'+x[1]+' PR'+(x[2]?', $'+ccNum(x[2])+' quest’anno':'')+(x[3]?', '+x[3]+(x[3]===1?' coppa':' coppe'):'');
+    return ['Chiudiamo il dibattito. '+s(a)+'. '+s(b)+'. Chi è più forte?', 'Decidete voi. '+s(a)+' contro '+s(b)+'.'][v%2]; },
+  ccNewsNatStreak:(nat,k,ev,v)=>{ const nm=natDisplay(nat);
+    return ['Le ultime '+k+' grandi finali le ha vinte una squadra con un giocatore di '+nm+' (l’ultima: '+ev+'). '+nm+' è la nazione migliore di Fortnite adesso?', nm+' ancora. '+k+' grandi finali di fila con un giocatore di '+nm+' tra i vincitori. Chi li ferma?'][v%2]; }
+});
+Object.assign(I18N.pt, {
+  ccPostZoneLuck:(n,g,b,v)=>(n*2>=g ? ['zonas do meu lado hoje: '+n+'/'+g+'. Sem desculpa pra ninguém', n+'/'+g+' zonas vieram até mim. Melhor partida #'+b, 'a zona me ama hoje: '+n+'/'+g]
+                                    : ['zona veio '+n+'/'+g+' hoje. Melhor partida #'+b+', sem zona não dá pra fazer muito', n+'/'+g+' de zonas hoje. A noite toda atravessando o mapa', 'sorte de zona hoje: '+n+'/'+g+'. Próxima'])[v%3],
+  ccNewsZoneLuck:(ev,list)=>'SORTE DE ZONA · '+(ev!=null?ev+', ':'')+'top 10, endgames em que a zona veio até eles: '+(list||[]).map(r=>'#'+r[0]+' '+r[1]+' '+r[2]+'/'+r[3]).join(' · '),
+  ccPostDebate:(a,b,v)=>{ const s=x=>'@'+x[0]+': #'+x[1]+' PR'+(x[2]?', $'+ccNum(x[2])+' este ano':'')+(x[3]?', '+x[3]+(x[3]===1?' copa':' copas'):'');
+    return ['Vamos encerrar o debate. '+s(a)+'. '+s(b)+'. Quem é melhor?', 'Decidam. '+s(a)+' contra '+s(b)+'.'][v%2]; },
+  ccNewsNatStreak:(nat,k,ev,v)=>{ const nm=natDisplay(nat);
+    return ['As últimas '+k+' grandes finais foram vencidas por um time com um jogador de '+nm+' (a última: '+ev+'). '+nm+' é a melhor nação do Fortnite agora?', nm+' de novo. '+k+' grandes finais seguidas com um jogador de '+nm+' no time campeão. Alguém para eles?'][v%2]; }
+});
 /* Особые карточки 97/98/99 (16.10). */
 Object.assign(I18N.ru, {formWhyLanwin:'чемпион ЛАНа', formWhyPoty:'игрок года'});
 Object.assign(I18N.en, {formWhyLanwin:'LAN champion', formWhyPoty:'player of the year'});
@@ -113896,7 +113942,7 @@ function ccEveningRecord(t, g, place, elims){
   if(!t || !t.isYou || !CAREER || !CAREER.career) return;
   const plan=CC_COACH_PLAN ? ccCoachPlanScore() : null;
   ccEveningRows().push({g, place, elims, dc:t._deathCause||null, dz:t._zoneReached||null, dd:!!t._droppedOut,
-                        rot:t._rot||null, plan});
+                        rot:t._rot||null, plan, zp:t._zonePull!=null ? t._zonePull : null});
 }
 /* ПЛАН КОУЧА. Строится перед первой игрой вечера, если коуч нанят (одиночная игра). Ставка — по дивизиону: в первых двух
    коуч играет от силы (контест, с зоной, файты, центр в эндгейме), ниже — от выживания (своя точка, рано, без лишних файтов,
@@ -113996,6 +114042,15 @@ function ccEveningPosts(rows){
   if(vr && !done.vr){ careerNews('good', 'ccPostEvVR', [vr.g, vr.elims, rows.length]); posted=done.vr=true; }
   const kills=rows.reduce((n,r)=>n+(r.elims||0), 0);
   if(!vr && !done.e && rows.length>=4 && kills/rows.length>=3){ careerNews('good', 'ccPostEvKills', [kills, rows.length]); posted=done.e=true; }
+  /* Удача зон (28.10, X после Solo FNCS: «pulled 1/12 zones & played 2 endgames but still W»). Считаются эндгеймы, до
+     которых дожил (zp не null, см. PULL_ZONE в zone-sim): по всем играм вышло бы «1/12» почти у каждого, потому что
+     большинство до шестого круга не доживает. Зона приходит примерно в четверти эндгеймов, поэтому пост — только
+     заметный вечер: ни одной из шести и больше (или одна из восьми), либо три и больше и не меньше половины. */
+  const zr=rows.filter(r=>r.zp!=null), zn=zr.filter(r=>r.zp).length;
+  if(!done.z && ((zn===0 && zr.length>=6) || (zn<=1 && zr.length>=8) || (zn>=3 && zn*2>=zr.length))){
+    const best=rows.reduce((m,r)=>Math.min(m, r.place||999), 999);
+    careerNews(zn<=1 ? 'flat' : 'good', 'ccPostZoneLuck', [zn, zr.length, best, zr.length%3]); posted=done.z=true;
+  }
   if(posted){ try{ careerSave(); }catch(e){} }
 }
 /* ПРЕСС-КОНФЕРЕНЦИИ (16.10, его «делай» на «пресс-конференции как в FIFA»). После заметного вечера — победа, подиум,
@@ -114427,6 +114482,30 @@ function careerPollTick(){
       {by:CC_POLL_BY, poll:{o:opts.map(x=>x.l), w:opts.map(x=>x.w), end:at, v:null}});
     return;
   }
+}
+/* СПОР «КТО ЛУЧШЕ» (28.10, X: «Lets end the Debate. SHXRK: … MALIBUCA: … Who's better?»). Раз в 10–16 дней медиа-аккаунт
+   ставит рядом двух соседей по Power Rankings из первой восьмёрки (не ты и не твой состав): место в PR, призовые за год,
+   кубки, взятые на глазах у карьеры (CAREER.titles). Опрос на два дня; доли — от PR, как у опроса перед Мейджором. */
+const CC_DEBATE_BY={name:'Comp Debates', handle:'compdebatesfn', f:42000};
+function careerDebateTick(){
+  const cr=CAREER && CAREER.career; if(!cr) return;
+  if(typeof ccMpOn==='function' && ccMpOn()) return;
+  const today=careerToday();
+  if(cr.debateNext && today<cr.debateNext) return;
+  const rnd=careerRng(ccHashStr('debate|'+today+'|'+(cr.season||1)));
+  const first=!cr.debateNext;
+  cr.debateNext=ccAddDays(today, 10+Math.floor(rnd()*7));
+  if(first) return;
+  const mine=new Set(); try{ (careerMates()||[]).forEach(c=>c && mine.add(hKey(c))); }catch(e){}
+  let rows=[]; try{ rows=careerPrRows().map((r,i)=>Object.assign({rank:i+1}, r)).filter(r=>!r.you && !mine.has(hKey({handle:r.name}))).slice(0, 8); }catch(e){}
+  if(rows.length<4) return;
+  const i=Math.floor(rnd()*(rows.length-1)), a=rows[i], b=rows[i+1];
+  let usd={}; try{ careerMoneyRows('year').forEach(r=>{ usd[hKey({handle:r.name})]=r.usd; }); }catch(e){}
+  const T=CAREER.titles||{};
+  const side=r=>[ccHandle(r.name), r.rank, Math.round(usd[hKey({handle:r.name})]||0), T[hKey({handle:r.name})]||0];
+  const w=[a.pr, b.pr].map(p=>Math.round(p*(0.8+0.4*rnd())));
+  careerNews('flat', 'ccPostDebate', [side(a), side(b), Math.floor(rnd()*2)],
+    {by:CC_DEBATE_BY, poll:{o:['@'+ccHandle(a.name), '@'+ccHandle(b.name)], w, end:ccAddDays(today, 2), v:null}});
 }
 function ccPollHTML(n){
   const P=n && n.poll; if(!P || !P.o || !P.o.length) return '';
@@ -116361,6 +116440,9 @@ function accumulateMatchStats(t, place, total, placePts, elimPts){
   const elims = t._elims||0;
 
   s.games++;
+  // Удача зон: до скольких эндгеймов команда дожила и в скольких зона пришла к ней (_zonePull, zone-sim).
+  // Метка снимается: следующая игра, посчитанная без движка, не должна прочитать старую.
+  if(t._zonePull!=null){ s.zpG=(s.zpG||0)+1; if(t._zonePull) s.zpN=(s.zpN||0)+1; t._zonePull=null; }
   s.placementPts += placePts;
   s.elimPts += elimPts;
   s.elims += elims;
@@ -120171,7 +120253,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='e7052c35';
+const CC_BUILD='f6350b9a';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -129419,6 +129501,7 @@ function careerAdvanceBody(iso){
   // Слухи и опросы сцены (16.10). Ошибка в них не должна останавливать день.
   try{ careerRumorTick(); }catch(e){ console.error('rumor', e); }
   try{ careerPollTick(); }catch(e){ console.error('poll', e); }
+  try{ careerDebateTick(); }catch(e){ console.error('debate', e); }
   // Хотфиксы и выплаты призовых (16.10).
   try{ careerHotfixTick(); }catch(e){ console.error('hotfix', e); }
   try{ careerPayTick(); }catch(e){ console.error('pay', e); }
@@ -142316,6 +142399,8 @@ const CC_POST_BY={
   ccPostPress:'press', ccPostPressKept:'press', ccPostPressBroke:'press', ccPostPressRival:'arg0',
   // Слухи и опросы (16.10) пишут выдуманные медиа-аккаунты — автор едет в opt.by; здесь — на случай записи без него.
   ccPostRumorPair:'press', ccPostRumorYou:'press', ccPostRumorDrama:'press', ccPostRumorTrue:'press', ccPostPollWin:'press', ccPostBreakout:'press',
+  // Удача зон, спор «кто лучше», серия страны (28.10): свой пост о зонах — твой, остальное пишут медиа (автор в opt.by).
+  ccPostZoneLuck:'you', ccNewsZoneLuck:'press', ccPostDebate:'press', ccNewsNatStreak:'press',
   ccNewsHotfix:'press', ccNewsRehost:'press', ccNewsTeamingDq:'press', ccPostTechNet:'you',
   // LFD is the player saying it out loud. Nobody else posts that for you.
   ccNewsLfd:'you',
@@ -144072,6 +144157,9 @@ const CC_CO_BY_KIND=[
   [/^ccPostPress$/, 'Press'],
   [/^ccPostRumor/, 'Rumor'],
   [/^ccPostPoll/, 'Poll'],
+  [/^ccPostDebate/, 'Poll'],
+  [/^ccNewsZoneLuck/, 'Stat'],
+  [/^ccPostZoneLuck/, 'Bad'],
   [/^ccPostPressBroke/, 'Bad'],
   [/^ccNewsSigned|^ccNewsExtended|^ccNewsPromotedRoster|^ccNewsRaise/, 'Sign'],
   [/^ccNewsReleased|^ccNewsLeft|^ccPostBye/, 'Left'],
@@ -150363,6 +150451,7 @@ function ccBoardAfter(ranked, you, label){
   ccKinchPost(ranked, you, label);
   ccStatBoardPost(ranked, label);
   ccEliteFlopPost(ranked, label);
+  ccZoneLuckPost(ranked, label);
   ccMyStatsButton(ranked, you, label);
 }
 /* Кнопка под итогом вечера. Отзыв: после каждого финала — грандов,
@@ -150421,13 +150510,57 @@ function ccStatBoardPost(ranked, label){
   if(rows.length<4) return;
   careerNews('flat', 'ccNewsStatBoard', [label, rows], {lead:{cap:label, rows:rows}});
 }
+/* УДАЧА ЗОН ТОПА (28.10, X: «Solo FNCS EU Grand Finals Cumulative Zone Luck Accountability Post»). После финала аккаунт
+   считает топ-10: в скольких эндгеймах зона пришла к команде (mstats.zpN из _zonePull движка, zpG — эндгеймы). Только
+   команды, дожившие хотя бы до CC_ZL_MIN эндгеймов (лобби на карте), пост не чаще раза в CC_ZL_GAP дней. */
+const CC_ZL_BY={name:'Zone Watch FN', handle:'zonewatchfn', f:31000}, CC_ZL_MIN=3, CC_ZL_GAP=5;
+function ccZoneLuckPost(ranked, label){
+  const cr=CAREER && CAREER.career; if(!cr || !ranked) return;
+  const today=careerToday(), from=ccAddDays(today, -(CC_ZL_GAP-1));
+  if((cr.news||[]).some(e=>e && e.k==='ccNewsZoneLuck' && e.day>=from && e.day<=today)) return;
+  const me=hKey(ccHandle((CAREER.player && CAREER.player.nick)||''));
+  const list=[];
+  ranked.slice(0, 10).forEach(function(t, i){
+    const s=t && t.mstats;
+    if(!s || !(s.zpG>=CC_ZL_MIN)) return;
+    const hs=(t.isYou ? [CAREER.player.nick].concat((careerMates()||[]).map(c=>c && c.handle))
+                      : (t._cards||t.cards||t.squad||[]).map(c=>c && c.handle)).filter(Boolean);
+    if(!hs.length) return;
+    list.push([i+1, hs.map(h=>'@'+ccHandle(h)).join(' & '), s.zpN||0, s.zpG]);
+  });
+  if(list.length<5) return;
+  careerNews('flat', 'ccNewsZoneLuck', [label, list], {by:CC_ZL_BY});
+}
+/* СЕРИЯ СТРАНЫ (28.10, X: «The last 5 FNCS's on EU have been won by a Danish player. Is Denmark the best nation?»).
+   Крупные финалы (всё, что поздравляет careerCongrats, кроме недельного) пишут страны победителей в cr.natFin;
+   страна, у которой CC_NAT_RUN финала подряд есть игрок в составе победителя, получает пост. Один пост на финал. */
+const CC_NAT_BY={name:'FN Comp Stats', handle:'fncompstats', f:54000}, CC_NAT_RUN=3;
+function ccNatStreakNote(w, you, label){
+  const cr=CAREER && CAREER.career; if(!cr || !w) return;
+  let nats;
+  if(you && w===you){
+    const P=CAREER.player||{};
+    nats=[P.nat||P.country].concat((careerMates()||[]).map(c=>c && (ccWhoCard(c.handle)||c).nat));
+  } else nats=(w._cards||w.cards||w.squad||[]).map(c=>c && (c.nat || (ccWhoCard(c.handle)||{}).nat));
+  // В карточках — название страны («Дания»), у своего игрока бывает код; к одному виду.
+  nats=nats.filter(Boolean).map(x=>/^[a-z]{2}(-[a-z]+)?$/i.test(x) ? (ccNatOf(x.toLowerCase())||'') : x)
+    .filter(Boolean).filter((x,i,a)=>a.indexOf(x)===i);
+  cr.natFin=(cr.natFin||[]).concat([{d:careerToday(), l:label, n:nats}]).slice(-12);
+  const run=nat=>{ let k=0; for(let i=cr.natFin.length-1; i>=0 && cr.natFin[i].n.indexOf(nat)>=0; i--) k++; return k; };
+  let best=null, bk=0;
+  nats.forEach(n=>{ const k=run(n); if(k>bk){ bk=k; best=n; } });
+  if(!best || bk<CC_NAT_RUN) return;
+  careerNews('flat', 'ccNewsNatStreak', [best, bk, label, bk%2], {by:CC_NAT_BY});
+}
 function careerCongrats(ranked, you, label){
   if(!ranked || !ranked.length) return;
   ccKinchPost(ranked, you, label);
   ccStatBoardPost(ranked, label);
   ccEliteFlopPost(ranked, label);
+  ccZoneLuckPost(ranked, label);
   ccMyStatsButton(ranked, you, label);
   const w=ranked[0];
+  if(label!==L().calWeeklyFinal){ try{ ccNatStreakNote(w, you, label); }catch(e){ console.error('natstreak', e); } }
   const bare=t=>String(t.name||'').replace(/<[^>]*>/g,'');
   let handles;
   if(you && w===you){
