@@ -167,7 +167,16 @@ const BOOT = `
     ccStreamHappen({id: 'clip'});
     check('a cup-stream happening lands in CC_TV_CUPX', CC_TV_CUPX.got.length === 1 && CC_TV_CUPX.got[0].id === 'clip');
     check('and shows as an alert in the frame', !!document.querySelector('#ccTvFrame .cc-tv-alert .cc-tv-al'));
+    // Рейд не с неба (28.10): пустой канал без своих в эфире рейда не получает, заметный — от стримера своего размера.
+    const tw0 = CAREER.career.twitch, v0 = CC_TV_VIEW, folOff = window.ccTwFollowLive;
+    window.ccTwFollowLive = () => [];
+    CAREER.career.twitch = 0; CC_TV_VIEW = 5;
     ccStreamHappen({id: 'raid'});
+    check('no raid on an empty channel', !CC_TV_CUPX.got.some(g => g.id === 'raid'));
+    const peer = (careerLiveNow(12) || []).filter(s => s && s.v > 0).sort((a, b) => a.v - b.v)[0];
+    CAREER.career.twitch = 20000; CC_TV_VIEW = peer ? peer.v : 100;
+    ccStreamHappen({id: 'raid'});
+    window.ccTwFollowLive = folOff; CAREER.career.twitch = tw0;
     check('a raid too', CC_TV_CUPX.got.some(g => g.id === 'raid') && !!document.querySelector('#ccTvFrame .cc-tv-alert .cc-tv-al.raid'));
     const haps = ccStreamHappenings(CC_STREAM_CUP, 450);
     check('a cup stream schedules at most two happenings', haps.length <= 2 && haps.every(h => h.at >= 2));
