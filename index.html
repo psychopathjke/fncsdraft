@@ -120469,7 +120469,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='dea5dcc9';
+const CC_BUILD='214a72fe';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -155588,6 +155588,12 @@ function careerSpotGate(next){
   const set=careerNightSet(next);
   const key=careerNightSpotKey(next);
   if(careerSpotList(key).length) return true;
+  /* Кап другого формата (сквад-LAN в дуо-год, Notion 27.10 скрин 17: «лока выбрана, а пишет это»): игрок ставил дом
+     на сезонной карте того же острова — им и садимся, копией в склад формата (дальше они живут отдельно). */
+  if(ccIsFmtSpotKey(key)){
+    const home=careerSpotList(key.split('@')[1]);
+    if(home.length){ careerSpotStore(key)[key]=home.map(s=>Object.assign({}, s)); try{ careerSave(); }catch(e){} return true; }
+  }
   const tab=careerSpotSets().find(t=>t.key===key);
   // Карты под этот вечер в списке нет — поставить метку негде, и окно было бы ловушкой: вечер идёт без неё.
   if(!tab) return true;
