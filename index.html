@@ -9338,6 +9338,42 @@
     #screen-career-hub .ch-tab.on{background:rgba(255,214,0,.16) !important;color:#ffd600 !important;}
     #screen-career-hub{padding-bottom:calc(86px + env(safe-area-inset-bottom)) !important;}
   }
+
+  /* Экран создания карьеры в стиле карьеры и сайта (28.10, его «изменить дизайн выбора игроков, там же другой,
+     чем от карьеры и от сайта»). Список карточек был белыми строками с чёрным рейтингом, чипы — бирюзовыми
+     прямоугольниками, «Начать» — бирюзовым скосом: всё от старого светлого экрана. Теперь как в хабе: строки —
+     голубое стекло со скруглением, выбранная — светлая рамка, рейтинг — жёлтая плашка как .ch-ovr, чипы —
+     пилюли с активной светлой (как вкладки карьеры и CAREER в шапке), «Начать» — жёлтая primary. */
+  #screen-career-create .cc-cards{gap:8px;max-height:560px;padding-right:6px;scrollbar-width:thin;scrollbar-color:rgba(180,200,255,.3) transparent;}
+  #screen-career-create .cc-card{background:rgba(255,255,255,.06);border:1px solid rgba(140,175,255,.2);border-radius:14px;
+    padding:9px 12px;color:#eaf0ff;gap:12px;transition:background .15s,border-color .15s;}
+  #screen-career-create .cc-card:hover{background:rgba(255,255,255,.11);border-color:rgba(228,235,247,.6);}
+  #screen-career-create .cc-card.on{background:rgba(228,235,247,.16);border-color:#e4ebf7;box-shadow:0 0 0 1px #e4ebf7 inset;}
+  #screen-career-create .cc-card-ph{width:44px;height:44px;border-radius:10px;background:rgba(6,10,30,.5);}
+  #screen-career-create .cc-card-n{font-size:14px;color:#fff;}
+  #screen-career-create .cc-card-o,#screen-career-create .cc-card.on .cc-card-o{color:#b7c3e6;}
+  #screen-career-create .cc-card-mate,#screen-career-create .cc-card.on .cc-card-mate{color:rgba(205,218,246,.62);}
+  #screen-career-create .cc-card-res{color:rgba(205,218,246,.62);}
+  #screen-career-create .cc-card-res.top{color:#ffe600;}
+  #screen-career-create .cc-card-r{background:#ffe600;color:#0b1a3a;border-radius:10px;font-size:15px;
+    min-width:38px;text-align:center;padding:6px 8px;font-style:italic;}
+  #screen-career-create .cc-card-media{margin-top:4px;}
+  #screen-career-create .cc-card-media i{border-radius:999px;}
+  #screen-career-create .cc-chip{border-radius:999px;}
+  #screen-career-create .cc-chip:hover{border-color:rgba(255,255,255,.9);}
+  #screen-career-create .cc-chip.on{background:#e4ebf7;border-color:#e4ebf7;color:#0b1a3a;}
+  #screen-career-create .cc-search{border-radius:999px;padding-left:16px;}
+  #screen-career-create .cc-res{background:rgba(6,10,30,.45);border:1px solid rgba(140,175,255,.2);border-radius:14px;color:#eaf0ff;}
+  #screen-career-create .cc-res-ev{color:#eaf0ff;}
+  #screen-career-create .cc-res-p{color:#b7c3e6;}
+  #screen-career-create .cc-res-p.top{color:#ffe600;}
+  #screen-career-create .cc-res-row{border-top-color:rgba(140,175,255,.14);}
+  #screen-career-create .cc-readout{background:rgba(8,18,50,.72);border:1px solid rgba(140,175,255,.2);border-radius:999px;padding:10px 18px;}
+  #screen-career-create .cc-readout em{color:#8094c4;}
+  #screen-career-create .cc-start{clip-path:none;border-radius:999px;background:#ffe600;color:#0b1a3a;padding:14px 30px;}
+  #screen-career-create .cc-start:hover:not(:disabled){background:#fff04d;outline:3px solid rgba(255,255,255,.92);}
+  #screen-career-create .cc-start:disabled{background:rgba(255,255,255,.14);color:#7d8db4;}
+  #screen-career-create .cc-photo{border-radius:14px;}
 </style>
 <!-- ?v= — это НЕ украшение, это починка того, что он поймал 24 августа.
 
@@ -120419,7 +120455,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='51a31b6f';
+const CC_BUILD='b4288ae4';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
