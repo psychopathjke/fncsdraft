@@ -1,7 +1,7 @@
 // Справочник CC_PRO_SOCIAL в index.html: ник в нижнем регистре → [фолловеры Twitch, подписчики YouTube].
 // Источники — выход fetch-pro-twitch-followers.js и fetch-pro-youtube-subs.js; снимок пишется и в
 // tools/measured/pro-socials-2026.json.
-//   node tools/build-pro-socials.js <twitch.tsv> <youtube.tsv>
+//   node tools/build-pro-socials.js <twitch.tsv> <youtube.tsv> [x.tsv]   → [Twitch, YouTube, X]
 'use strict';
 const fs = require('fs'), path = require('path');
 const ROOT = path.resolve(__dirname, '..');
@@ -9,7 +9,9 @@ const read = f => fs.readFileSync(f, 'utf8').split(/\r?\n/).filter(Boolean).map(
 const map = {};
 read(process.argv[2]).forEach(t => { const k = t[0].toLowerCase(); (map[k] = map[k] || [0, 0])[0] = +t[2] || 0; });
 read(process.argv[3]).forEach(t => { const k = t[0].toLowerCase(); (map[k] = map[k] || [0, 0])[1] = +t[1] || 0; });
-Object.keys(map).forEach(k => { if (!map[k][0] && !map[k][1]) delete map[k]; });
+if (process.argv[4]) read(process.argv[4]).forEach(t => { const k = t[0].toLowerCase(); (map[k] = map[k] || [0, 0])[2] = +t[2] || 0; });
+Object.keys(map).forEach(k => { while (map[k].length < 3) map[k].push(0); });
+Object.keys(map).forEach(k => { if (!map[k][0] && !map[k][1] && !map[k][2]) delete map[k]; });
 const keys = Object.keys(map).sort();
 const obj = '{' + keys.map(k => JSON.stringify(k) + ':[' + map[k].join(',') + ']').join(',') + '}';
 fs.writeFileSync(path.join(__dirname, 'measured', 'pro-socials-2026.json'), JSON.stringify({at: '2026-10-28', players: map}));

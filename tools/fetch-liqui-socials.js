@@ -2,7 +2,7 @@
 // за про 2026 года (28.10, его «можешь игрокам 2026 года подтянуть цифры твич и ютуб»). Ссылка с собственной страницы
 // игрока и есть доказательство, что канал его, а не тёзки. Правила Liquipedia те же, что у fetch-liqui-twitch.js:
 // UA, gzip, один запрос в 2,1 с.
-//   node tools/fetch-liqui-socials.js <handles.txt> <out.tsv>   → ник<TAB>twitch-логин<TAB>youtube-путь
+//   node tools/fetch-liqui-socials.js <handles.txt> <out.tsv>   → ник<TAB>twitch-логин<TAB>youtube-путь<TAB>x-ник
 'use strict';
 const fs = require('fs'), https = require('https'), zlib = require('zlib');
 const UA = 'fncsdraft.com photo fetcher (contact: keegorka@gmail.com)';
@@ -33,14 +33,16 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
       if (!p.revisions) return;
       const text = p.revisions[0].slots.main['*'] || '';
       if (!/\{\{Infobox player/i.test(text)) return;
-      const tw = /\|\s*twitch\s*=\s*([^\n|}]+)/.exec(text), yt = /\|\s*youtube\s*=\s*([^\n|}]+)/.exec(text);
+      const tw = /\|\s*twitch\s*=\s*([^\n|}]+)/.exec(text), yt = /\|\s*youtube\s*=\s*([^\n|}]+)/.exec(text), tx = /\|\s*twitter\s*=\s*([^\n|}]+)/.exec(text);
       let login = tw ? tw[1].trim().replace(/^https?:\/\/(www\.)?twitch\.tv\//i, '').replace(/\/.*$/, '').toLowerCase() : '';
       if (!/^[a-z0-9_]{3,25}$/.test(login)) login = '';
       let ytp = yt ? yt[1].trim().replace(/^https?:\/\/(www\.|m\.)?youtube\.com\//i, '').replace(/[?#].*$/, '').replace(/\/+$/, '') : '';
       if (ytp && !/^(@|channel\/|c\/|user\/)/.test(ytp)) ytp = (/^UC[\w-]{20,}$/.test(ytp) ? 'channel/' : '@') + ytp;
-      if (!login && !ytp) return;
+      let xh = tx ? tx[1].trim().replace(/^https?:\/\/(www\.)?(twitter|x)\.com\//i, '').replace(/[\/?#].*$/, '').replace(/^@/, '') : '';
+      if (!/^[A-Za-z0-9_]{1,15}$/.test(xh)) xh = '';
+      if (!login && !ytp && !xh) return;
       let title = p.title; if (redir.has(title)) title = redir.get(title); if (norm.has(title)) title = norm.get(title);
-      batch.filter(h => h === title || h.toLowerCase() === String(title).toLowerCase()).forEach(h => { out.push(h + '\t' + login + '\t' + ytp); hit++; });
+      batch.filter(h => h === title || h.toLowerCase() === String(title).toLowerCase()).forEach(h => { out.push(h + '\t' + login + '\t' + ytp + '\t' + xh); hit++; });
     });
     console.log('  batch ' + (i / BATCH + 1) + '/' + Math.ceil(handles.length / BATCH) + ': ' + hit);
   }
