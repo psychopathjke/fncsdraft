@@ -1922,6 +1922,7 @@
   .cl-box{margin:0 0 14px;padding:12px 14px;border-radius:12px;background:rgba(255,255,255,.05);border:1px solid rgba(140,175,255,.25);}
   .cl-box[hidden]{display:none;}
   .cl-head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;} .cl-head b{font-size:15px;color:#fff;} .cl-head span{font-size:12px;color:#9fe1ff;font-weight:700;}
+  .cl-code.cl-hid{user-select:none;-webkit-user-select:none;letter-spacing:.14em;}
   .cl-code{margin:8px 0 4px;font-family:var(--font-display);font-weight:700;font-size:24px;letter-spacing:.08em;color:#ffdd00;user-select:all;-webkit-user-select:all;}
   .cl-sub{margin:4px 0 0;font-size:12.5px;color:#b9c7ea;line-height:1.45;}
   .cl-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;}
@@ -24019,6 +24020,11 @@ Object.assign(I18N.en, {clTitle:'Cloud', clOn:'on', clOffNow:'off — careers li
 Object.assign(I18N.fr, {clTitle:'Cloud', clOn:'activé', clOffNow:'désactivé — les carrières restent dans ce navigateur', clWhy:'Active le cloud pour obtenir un code. Avec lui, tes carrières et ton manager s’ouvrent sur n’importe quel appareil, même si ce navigateur est vidé.', clEnable:'Activer le cloud', clHave:'J’ai un code', clKeep:'Note ce code : il ouvre tes carrières sur un autre appareil.', clSent:w=>'Dernier envoi : '+w, clBusy:'envoi…', clPushNow:'Envoyer maintenant', clOther:'Entrer un autre code', clOff:'Désactiver', clOpen:'Ouvrir', clFound:n=>'Sauvegardes sur ce code : '+n, clCareer:'carrière', clMgr:'manager', clTake:'Les récupérer ici', clSure:'Remplace les mêmes emplacements ici — touche encore', clErr:m=>'Le cloud n’a pas répondu ('+m+'). Ta carrière est sauvegardée dans le navigateur ; on réessaiera.', clBad:'Le code fait 16 caractères, ex. K7QM-2XPA-9RTD-WH4C'});
 Object.assign(I18N.it, {clTitle:'Cloud', clOn:'attivo', clOffNow:'spento — le carriere restano in questo browser', clWhy:'Attiva il cloud per avere un codice. Con esso carriere e manager si aprono su qualsiasi dispositivo, anche se questo browser viene svuotato.', clEnable:'Attiva il cloud', clHave:'Ho un codice', clKeep:'Segnati questo codice: apre le tue carriere su un altro dispositivo.', clSent:w=>'Ultimo invio: '+w, clBusy:'invio…', clPushNow:'Invia ora', clOther:'Inserisci un altro codice', clOff:'Spegni', clOpen:'Apri', clFound:n=>'Salvataggi con questo codice: '+n, clCareer:'carriera', clMgr:'manager', clTake:'Portali in questo browser', clSure:'Sostituisce gli stessi slot qui — tocca di nuovo', clErr:m=>'Il cloud non ha risposto ('+m+'). La carriera è salvata nel browser; riproveremo.', clBad:'Il codice ha 16 caratteri, es. K7QM-2XPA-9RTD-WH4C'});
 Object.assign(I18N.pt, {clTitle:'Nuvem', clOn:'ligada', clOffNow:'desligada — as carreiras ficam só neste navegador', clWhy:'Ligue a nuvem para receber um código. Com ele, suas carreiras e o manager abrem em qualquer aparelho, mesmo se este navegador for limpo.', clEnable:'Ligar a nuvem', clHave:'Tenho um código', clKeep:'Anote este código: ele abre suas carreiras em outro aparelho.', clSent:w=>'Último envio: '+w, clBusy:'enviando…', clPushNow:'Enviar agora', clOther:'Digitar outro código', clOff:'Desligar', clOpen:'Abrir', clFound:n=>'Saves neste código: '+n, clCareer:'carreira', clMgr:'manager', clTake:'Trazer para este navegador', clSure:'Substitui os mesmos slots aqui — toque de novo', clErr:m=>'A nuvem não respondeu ('+m+'). Sua carreira está salva no navegador; tentaremos de novo.', clBad:'O código tem 16 caracteres, ex. K7QM-2XPA-9RTD-WH4C'});
+Object.assign(I18N.ru, {clShow:'Показать', clHide:'Скрыть', clCopy:'Скопировать', clCopied:'Скопировано'});
+Object.assign(I18N.en, {clShow:'Show', clHide:'Hide', clCopy:'Copy', clCopied:'Copied'});
+Object.assign(I18N.fr, {clShow:'Afficher', clHide:'Masquer', clCopy:'Copier', clCopied:'Copié'});
+Object.assign(I18N.it, {clShow:'Mostra', clHide:'Nascondi', clCopy:'Copia', clCopied:'Copiato'});
+Object.assign(I18N.pt, {clShow:'Mostrar', clHide:'Ocultar', clCopy:'Copiar', clCopied:'Copiado'});
 /* Драфт дня (16.10). */
 Object.assign(I18N.ru, {playersLink:'Игроки FNCS'}); Object.assign(I18N.en, {playersLink:'FNCS players'}); Object.assign(I18N.fr, {playersLink:'Joueurs FNCS'}); Object.assign(I18N.it, {playersLink:'Giocatori FNCS'}); Object.assign(I18N.pt, {playersLink:'Jogadores FNCS'});
 Object.assign(I18N.ru, {dyNickBad:"Такой ник в таблицу не пускаем, выбери другой", dyTitleW:'Драфт дня', dyTag:'Каждый день', dyTitle:n=>'Драфт дня #'+n, dySub:'Каждый день случайный сезон: паки у всех свои, но только из игроков того периода. Одна попытка, таблица дня по силе состава.', dyRules:'сквад · все регионы · 12 игр', dyPlayers:y=>'игроки '+y, dyOnce:'Попытка одна: после «Выйти на турнир» переиграть нельзя.', dyPlay:'Играть', dyBoard:'Таблица дня', dyShare:'Поделиться', dyCopied:'Скопировано', dyPts:'очк.', dyNick:'Ник для таблицы', dySend:'В таблицу', dySent:n=>'Ты в таблице дня как '+n, dyLeft:'Турнир не доигран, попытка сгорела', dyNext:t=>'Новый драфт через '+t, dyH:'ч', dyM:'мин', dyRank:(r,t)=>'Твоё место: '+r+' из '+t, dyEmpty:'Сегодня ещё никто не сыграл. Будь первым.', dyHonest:'Результат присылает браузер игрока, сервер его не пересчитывает.'});
@@ -120285,7 +120291,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='20512cf7';
+const CC_BUILD='3565353f';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -123953,7 +123959,11 @@ function ccCloudDraw(){
   if(code){
     const sent=ccCloudSent();
     const when=sent._at ? new Date(sent._at).toLocaleString(LANG==='ru' ? 'ru-RU' : LANG, {day:'numeric', month:'short', hour:'2-digit', minute:'2-digit'}) : '-';
-    h+='<span>'+esc(T.clOn)+'</span></div><div class="cl-code">'+esc(ccCloudFmt(code))+'</div>'+
+    /* Код закрыт точками (28.10, его «скрой цифры облака, вдруг на стриме кто-то покажет»): показать — на 10 секунд,
+       скопировать — не показывая. */
+    h+='<span>'+esc(T.clOn)+'</span></div><div class="cl-code'+(CC_CLOUD_SHOW ? '' : ' cl-hid')+'">'+esc(CC_CLOUD_SHOW ? ccCloudFmt(code) : ccCloudFmt(code.replace(/./g, '•')))+'</div>'+
+       '<div class="cl-row"><button class="cc-car-open" onclick="ccCloudShow()">'+esc(CC_CLOUD_SHOW ? T.clHide : T.clShow)+'</button>'+
+       '<button class="cc-car-open" onclick="ccCloudCopy()">'+esc(CC_CLOUD_COPIED ? T.clCopied : T.clCopy)+'</button></div>'+
        '<p class="cl-sub">'+esc(T.clKeep)+'</p><p class="cl-sub">'+esc(T.clSent(when))+(CC_CLOUD_BUSY ? ' · '+esc(T.clBusy) : '')+'</p>'+
        '<div class="cl-row"><button class="cc-car-open" onclick="ccCloudPush()">'+esc(T.clPushNow)+'</button>'+
        '<button class="cc-car-open" onclick="ccCloudEnter()">'+esc(T.clOther)+'</button>'+
@@ -123964,7 +123974,7 @@ function ccCloudDraw(){
        '<button class="cc-car-open" onclick="ccCloudEnter()">'+esc(T.clHave)+'</button></div>';
   }
   if(CC_CLOUD_ENTER){
-    h+='<div class="cl-enter"><input id="ccCloudIn" maxlength="24" placeholder="XXXX-XXXX-XXXX-XXXX" autocapitalize="characters" autocomplete="off" spellcheck="false">'+
+    h+='<div class="cl-enter"><input id="ccCloudIn" type="password" maxlength="24" placeholder="XXXX-XXXX-XXXX-XXXX" autocapitalize="characters" autocomplete="off" spellcheck="false">'+
        '<button class="ch-play" onclick="ccCloudOpen()">'+esc(T.clOpen)+'</button></div>';
   }
   if(CC_CLOUD_LIST){
@@ -123975,6 +123985,17 @@ function ccCloudDraw(){
   }
   if(CC_CLOUD_MSG) h+='<p class="cl-err">'+esc(T.clErr(CC_CLOUD_MSG))+'</p>';
   box.innerHTML=h;
+}
+let CC_CLOUD_SHOW=false, CC_CLOUD_COPIED=false, CC_CLOUD_SHOW_T=null;
+function ccCloudShow(){
+  CC_CLOUD_SHOW=!CC_CLOUD_SHOW; clearTimeout(CC_CLOUD_SHOW_T);
+  if(CC_CLOUD_SHOW) CC_CLOUD_SHOW_T=setTimeout(function(){ CC_CLOUD_SHOW=false; ccCloudDraw(); }, 10000);
+  ccCloudDraw();
+}
+function ccCloudCopy(){
+  const t=ccCloudFmt(ccCloudCode()); if(!t) return;
+  const done=function(){ CC_CLOUD_COPIED=true; ccCloudDraw(); setTimeout(function(){ CC_CLOUD_COPIED=false; ccCloudDraw(); }, 2000); };
+  try{ navigator.clipboard.writeText(t).then(done, function(){}); }catch(e){}
 }
 function ccCloudOn(){
   try{ localStorage.setItem(CC_CLOUD_LS, ccCloudNewCode()); localStorage.removeItem(CC_CLOUD_SENT); }catch(e){}
