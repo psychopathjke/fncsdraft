@@ -119469,6 +119469,7 @@ function ccRenderList(){
     // СНГ играет в Европе (ccCreatorRegion сводит CIS к EU) — европейский чип показывает и их.
     const all=(CC_PROAM_CREATORS_BY_REGION[CC.region||'EU']||[]).concat((CC.region||'EU')==='EU' ? (CC_PROAM_CREATORS_BY_REGION.CIS||[]) : [])
       .filter(n=>!CC_CREATOR_HOME_APAC[CC.region] || ccCreatorRegion(n)===CC.region)
+      .filter(n=>ccProAmFollowers(n)>0)   // без подтверждённого канала Twitch не показываем (28.10, его «убери контент-мейкеров, у которых канал не подтверждён»)
       .filter((n,i,arr)=>arr.findIndex(x=>hKey(x)===hKey(n))===i)
       .sort((a,b)=>ccProAmFollowers(b)-ccProAmFollowers(a))
       .filter(n=>!q || n.toLowerCase().includes(q));
@@ -120468,7 +120469,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='7ebb4b11';
+const CC_BUILD='78c35c2f';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -127789,7 +127790,10 @@ function careerSpotSets(){
      остров — 'f3@m1': командный склад (cr.spots, общий в игре вдвоём), слотов не занимает. */
   try{
     const isl=careerBrSet(), cur=careerSquadSize(), NAME={2:L().lfRosterDuo, 3:L().lfRosterTrio, 4:L().lfRosterSquad};
-    [2,3,4].forEach(f=>{ if(f!==cur && typeof ccFormatNext==='function' && ccFormatNext(f) && !ccFmtOpenFrom(f)) out.push({key:ccFmtSpotKey(f, isl), grid:isl, label:NAME[f]}); });
+    // И сегодняшний турнир по приглашению (Notion 27.10, скрин 16: сквад-LAN «Lost Legends» в дуо-год — ccFormatNext
+    // приглашения пропускает, вкладки не было, и окно метки звало на карту «» без выхода).
+    const vt=typeof careerVictoryOn==='function' ? careerVictoryOn(careerToday()) : null, MODE={2:'duo', 3:'trio', 4:'squad'};
+    [2,3,4].forEach(f=>{ if(f!==cur && ((typeof ccFormatNext==='function' && ccFormatNext(f) && !ccFmtOpenFrom(f)) || (vt && vt.mode===MODE[f]))) out.push({key:ccFmtSpotKey(f, isl), grid:isl, label:NAME[f]}); });
   }catch(e){}
   /* Метка сборной на Кубок наций — своя (cr.natSpots), на сезонном острове, в командные слоты не
      считается; карта рисуется под сквады (ccSquadKeep). Появляется, пока висит карточка сборной.
@@ -155584,7 +155588,10 @@ function careerSpotGate(next){
   const set=careerNightSet(next);
   const key=careerNightSpotKey(next);
   if(careerSpotList(key).length) return true;
-  const label=(careerSpotSets().find(t=>t.key===key)||{}).label||'';
+  const tab=careerSpotSets().find(t=>t.key===key);
+  // Карты под этот вечер в списке нет — поставить метку негде, и окно было бы ловушкой: вечер идёт без неё.
+  if(!tab) return true;
+  const label=tab.label||'';
   const room=careerSpotRoom(key);
   /* БЕЗ МЕТКИ ВЕЧЕР НЕ НАЧИНАЕТСЯ. Отзыв: «сделай, чтоб без
      метки нельзя было начать игру». Кнопки «сыграть без метки» больше нет:

@@ -40,8 +40,8 @@ const BOOT = `
        на карточке вместо клуба. */
     check('the list shows what they are famous for',
           cards.innerHTML.indexOf('Twitch ' + ccFollowers(ccProAmFollowers('Ibai'))) >= 0);   // плашкой Twitch с 28.10
-    check('and says so where no channel is confirmed',
-          cards.innerHTML.indexOf(String(L().ccCreatorNoTw)) >= 0);
+    check('and nobody without a confirmed channel is offered (28.10)',
+          cards.innerHTML.indexOf(String(L().ccCreatorNoTw)) < 0);
 
     // ---- выбор --------------------------------------------------------------
     check('a name off the list is refused', (function(){
