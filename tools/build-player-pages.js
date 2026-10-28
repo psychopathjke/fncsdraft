@@ -190,13 +190,14 @@ ${order.filter(r => byRegion[r]).map(r => '<h2>' + esc(REGION[r] || 'Other') + '
 fs.writeFileSync(path.join(OUT, 'players.html'), page({ title: 'FNCS players: results 2019-2026 | FNCS Draft',
   desc: 'Every Fortnite FNCS player in FNCS Draft: tournament results, best finishes and teams from 2019 to 2026.', canon: SITE + '/players', body: idxBody }));
 
-// Рейтинг карточки по нику для поиска на /competitive (build-competitive.js): лучшая карточка 2026 года, а нет её —
-// лучшая карточка последнего года игрока. У тёзок — сильнейший.
+// Рейтинг по нику для /competitive (build-competitive.js): СРЕДНИЙ по карточкам 2026 года, а нет их — по карточкам
+// последнего года игрока (28.10, его «пусть средняя за год»: лучшая карточка давала 100 победителям Саммита). У тёзок — сильнейший.
 const RT = {};
 D.players.forEach(g => {
   if (!g.cards.length) return;
   const y = Math.max(...g.cards.map(yearOf));
-  const r = Math.max(...g.cards.filter(c => yearOf(c) === y).map(c => c.rating || 0));
+  const rs = g.cards.filter(c => yearOf(c) === y && c.rating).map(c => c.rating);
+  const r = rs.length ? Math.round(rs.reduce((a, b) => a + b, 0) / rs.length) : 0;
   const k = g.handle.toLowerCase(), o = RT[k];
   if (r && (!o || o.r < r)) RT[k] = { r, y, s: g.slug || '' };
 });

@@ -713,7 +713,7 @@ function openCompare(a,b){ loadPL(function(L){ var el=document.getElementById('p
   var best=function(p){return p.c.reduce(function(m,c){return c[3]>m?c[3]:m;},0);};
   var fl=function(p){return p.f?'<img src="/flags/w20/'+p.f+'.png" alt="" width="16"> ':'';};
   o.innerHTML='<table class="tbl cmp"><thead><tr><th></th><th class="n">'+fl(pa)+esc(pa.n)+'</th><th class="n">'+fl(pb)+esc(pb.n)+'</th></tr></thead><tbody>'+
-   (pa.v||pb.v?row('Card rating',pa.v||0,pb.v||0,function(v){return v?String(v):'·';}):'')+row('Earned 2026',pa.t,pb.t,money)+row('Cups paid',pa.k,pb.k,String)+row('Wins',pa.w,pb.w,String)+row('Biggest prize',best(pa),best(pb),money)+'</tbody></table>'+bars([pa,pb])+
+   (pa.v||pb.v?row('Avg card rating',pa.v||0,pb.v||0,function(v){return v?String(v):'·';}):'')+row('Earned 2026',pa.t,pb.t,money)+row('Cups paid',pa.k,pb.k,String)+row('Wins',pa.w,pb.w,String)+row('Biggest prize',best(pa),best(pb),money)+'</tbody></table>'+bars([pa,pb])+
    '<p class="lg2"><span class="b0"></span>'+esc(pa.n)+' <span class="b1"></span>'+esc(pb.n)+'</p>'; }
  draw();
  document.getElementById('pm').hidden=false; }); }
