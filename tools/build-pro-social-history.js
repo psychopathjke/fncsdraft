@@ -49,11 +49,12 @@ const curve = {}, sample = {};
     const b = pts.find(p => p[0] > y), a = pts.slice().reverse().find(p => p[0] < y);
     c[y] = a ? Math.exp(a[1] + (b[1] - a[1]) * (y - a[0]) / (b[0] - a[0])) : Math.exp(b[1]) * Math.pow(0.6, b[0] - y);
   });
-  // не растёт назад: раньше — не больше, чем позже
-  for (let i = YEARS.length - 2; i >= 0; i--) c[YEARS[i]] = Math.min(c[YEARS[i]], c[YEARS[i + 1]]);
+  // не растёт назад: раньше — не больше, чем позже, и не больше нынешнего
+  for (let i = YEARS.length - 1; i >= 0; i--) c[YEARS[i]] = Math.min(c[YEARS[i]], i + 1 < YEARS.length ? c[YEARS[i + 1]] : 1);
   curve[net] = Object.fromEntries(YEARS.map(y => [y, +c[y].toFixed(4)]));
 });
-curve.tw = curve.x;
+// Twitch без своих замеров X — по кривой YouTube (кривая X у про в архиве к 2021-му почти плоская, Twitch рос позже)
+curve.tw = curve.yt;
 const keys = Object.keys(hist).sort();
 const histJs = '{' + keys.map(k => JSON.stringify(k) + ':' + JSON.stringify(hist[k])).join(',') + '}';
 fs.writeFileSync(path.join(__dirname, 'measured', 'pro-social-history.json'), JSON.stringify({ at: '2026-10-28', curve, sample, hist }));
