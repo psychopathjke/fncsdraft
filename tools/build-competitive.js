@@ -49,6 +49,8 @@ const COUNTRY_REG = {};
 ['sa','ae','kw','qa','bh','om','jo','lb','iq','sy','ye','eg','ps','ly','sd','ir'].forEach(c => COUNTRY_REG[c] = 'ME');
 ['jp','kr','cn','tw','hk','mo','th','vn','ph','sg','my','id','in','pk','bd','lk','mn','kh','la','mm'].forEach(c => COUNTRY_REG[c] = 'ASIA');
 ['au','nz','fj','pg'].forEach(c => COUNTRY_REG[c] = 'OCE');
+// СНГ (28.10, его «компетитив cis ещё сделать по призам»): своего сервера нет, играют на EU — фильтр призовых по стране игрока.
+const CIS_C = ['ru', 'ua', 'by', 'kz', 'uz', 'kg', 'tj', 'tm', 'am', 'az', 'md', 'ge'];
 const homeRegion = c => c ? COUNTRY_REG[String(c).toLowerCase()] || null : null;
 
 // ---- Главное событие: финал FNCS Solos с прогнозом
@@ -271,8 +273,10 @@ if (RES && RES.windows.length) {
     const all = [...M.p.values()].sort((a, b) => b.usd - a.usd);
     const keep = new Set(all.slice(0, 100).map(x => x.id));
     REGS.forEach(r => all.filter(x => who.get(x.id).reg === r).slice(0, 40).forEach(x => keep.add(x.id)));
-    const byReg = {}; all.forEach(x => { const r = who.get(x.id).reg; if (r) byReg[r] = (byReg[r] || 0) + x.usd; });
-    EARN[m] = { paid: M.paid, reg: byReg, rows: all.filter(x => keep.has(x.id)).map(x => { const o = who.get(x.id); return [o.n, o.f, REGS.indexOf(o.reg), x.usd, x.cups, x.wins, x.id.slice(0, 12), o.v]; }) };
+    const isCis = x => CIS_C.includes(who.get(x.id).f);
+    all.filter(isCis).slice(0, 100).forEach(x => keep.add(x.id));
+    const byReg = {}; all.forEach(x => { const r = who.get(x.id).reg; if (r) byReg[r] = (byReg[r] || 0) + x.usd; if (isCis(x)) byReg.CIS = (byReg.CIS || 0) + x.usd; });
+    EARN[m] = { paid: M.paid, reg: byReg, rows: all.filter(x => keep.has(x.id)).map(x => { const o = who.get(x.id); return [o.n, o.f, REGS.indexOf(o.reg), x.usd, x.cups, x.wins, x.id.slice(0, 12), o.v, isCis(x) ? 1 : 0]; }) };
   });
   // ---- Год игрока (26.10, его пункты 1 и 7: страница игрока и сравнение двух): 2000 лучших по году — деньги по
   // месяцам и все призовые капы; отдельным файлом comp-players.json, страница грузит его по клику.
@@ -591,7 +595,10 @@ var guess=/^Europe|^Africa/.test(tz)?'EU':/Sao_Paulo|Argentina|Santiago|Montevid
  /Los_Angeles|Vancouver|Phoenix|Denver|Tijuana/.test(tz)?'NAW':/^America/.test(tz)?'NAC':/Australia|Auckland|Pacific/.test(tz)?'OCE':
  /Dubai|Riyadh|Qatar|Kuwait|Bahrain|Baghdad|Tehran|Muscat|Amman|Beirut|Jerusalem/.test(tz)?'ME':/^Asia/.test(tz)?'ASIA':'EU';
 var saved=null; try{saved=localStorage.getItem('compReg');}catch(e){}
-var reg=/^(ALL|EU|NAC|NAW|BR|ASIA|ME|OCE)$/.test(saved||'')?saved:guess;
+var reg=/^(ALL|EU|CIS|NAC|NAW|BR|ASIA|ME|OCE)$/.test(saved||'')?saved:guess;
+var CISC=${JSON.stringify(CIS_C)};
+function sreg(){return reg==='CIS'?'EU':reg;}
+function inReg(r){return reg==='ALL'||(reg==='CIS'?r[8]===1:R[r[2]]===reg);}
 var fmtT=new Intl.DateTimeFormat(undefined,{hour:'2-digit',minute:'2-digit'}), fmtD=new Intl.DateTimeFormat(undefined,{weekday:'long',day:'numeric',month:'long'});
 var fmtDT=new Intl.DateTimeFormat(undefined,{weekday:'short',day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
 var now=Date.now();
@@ -603,7 +610,7 @@ var fmtM=new Intl.DateTimeFormat(undefined,{month:'long',year:'numeric'});
 function dk(d){return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();}
 var today=new Date(), cur={y:today.getFullYear(),m:today.getMonth()}, pick=dk(today);
 var first=D.length?new Date(D[0][0]*60000):today, last=D.length?new Date(D[D.length-1][0]*60000):today;
-function byDay(){var m={}; D.forEach(function(e){ if(reg!=='ALL'&&e[2]>=0&&R[e[2]]!==reg) return; var k=dk(new Date(e[0]*60000)); (m[k]=m[k]||[]).push(e);}); return m;}
+function byDay(){var m={}; D.forEach(function(e){ if(reg!=='ALL'&&e[2]>=0&&R[e[2]]!==sreg()) return; var k=dk(new Date(e[0]*60000)); (m[k]=m[k]||[]).push(e);}); return m;}
 function esc(x){return String(x).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
 function renderCal(){
  var by=byDay(), y=cur.y, m=cur.m, days=new Date(y,m+1,0).getDate(), lead=(new Date(y,m,1).getDay()+6)%7;
@@ -635,7 +642,7 @@ function money(v){return '$'+Math.round(v).toLocaleString('en-US');}
 function renderEarn(){
  var mk=cur.y+'-'+String(cur.m+1).padStart(2,'0'), M=EARN[mk], name=fmtM.format(new Date(cur.y,cur.m,1));
  document.getElementById('earnH').textContent='Prize money · '+name;
- var rows=M?M.rows.filter(function(r){return reg==='ALL'||R[r[2]]===reg;}):[];
+ var rows=M?M.rows.filter(inReg):[];
  var paid=M?(reg==='ALL'?M.paid:(M.reg[reg]||0)):0;
  document.getElementById('earnP').textContent=(paid?money(paid)+(reg==='ALL'?' paid in cash cups and FNCS':' to '+reg+' players')+(mk===today.getFullYear()+'-'+String(today.getMonth()+1).padStart(2,'0')?' so far':'')+'. ':'')+'Duos: each player gets the payout.';
  var show=earnAll?rows.slice(0,100):rows.slice(0,15);
@@ -659,7 +666,7 @@ function renderBig(){
   return '<button type="button" data-k="'+k+'" aria-pressed="'+(k===bigKey)+'">'+lbl+'</button>';}).join('');
  document.querySelectorAll('#periods button').forEach(function(b){b.onclick=function(){bigKey=b.dataset.k; bigAll=false; renderBig();};});
  var M=EARN[bigKey], name=bigKey==='2026'?'2026':fmtM.format(new Date(+bigKey.slice(0,4),+bigKey.slice(5)-1,1));
- var rows=M?M.rows.filter(function(r){return reg==='ALL'||R[r[2]]===reg;}):[];
+ var rows=M?M.rows.filter(inReg):[];
  var paid=M?(reg==='ALL'?M.paid:(M.reg[reg]||0)):0;
  document.getElementById('bigH').textContent='Prize money · '+name+(reg==='ALL'?'':' · '+reg);
  document.getElementById('bigP').textContent=(paid?money(paid)+(reg==='ALL'?' paid in Epic cups, FNCS and LANs':' to '+reg+' players')+'. ':'')+'Duos and squads: each player gets the payout.';
@@ -668,7 +675,7 @@ function renderBig(){
   show.map(function(r,i){return '<tr><td class="n">'+(i+1)+'</td><td class="pl">'+(r[1]?'<img src="/flags/w20/'+r[1]+'.png" alt="" width="16">':'')+'<b data-pid="'+r[6]+'">'+esc(r[0])+'</b>'+ovr(r[7])+'</td><td>'+(r[2]>=0?R[r[2]]:'')+'</td><td class="n">'+r[4]+'</td><td class="n">'+(r[5]||'')+'</td><td class="n p1">'+money(r[3])+'</td></tr>';}).join('')+
   '</tbody></table>'+(rows.length>30&&!bigAll?'<button class="morebtn" type="button">Show more</button>':''):'<p class="note">No prize money for '+name+(reg==='ALL'?'':' in '+reg)+'.</p>';
  var mb=document.querySelector('#bigT .morebtn'); if(mb) mb.onclick=function(){bigAll=true; renderBig();};
- var cc=M&&M.cc||[];
+ var cc=(M&&M.cc||[]).filter(function(r){return reg!=='CIS'||CISC.indexOf(r[0])>=0;});
  document.getElementById('ccH').textContent='Prize money by country · '+name;
  document.getElementById('ccT').innerHTML=cc.length?'<table class="tbl" id="cc"><thead><tr><th>#</th><th>Country</th><th class="n">Players</th><th class="n">Earned</th></tr></thead><tbody>'+
   cc.slice(0,20).map(function(r,i){return '<tr><td class="n">'+(i+1)+'</td><td><img src="/flags/w20/'+r[0]+'.png" alt="" width="16"><b>'+(CN[r[0]]||r[0].toUpperCase())+'</b></td><td class="n">'+r[2]+'</td><td class="n p1">'+money(r[1])+'</td></tr>';}).join('')+'</tbody></table>':'<p class="note">No data.</p>';
@@ -734,7 +741,7 @@ document.addEventListener('click',function(e){ var b=e.target.closest('.lvb'); i
  box.hidden=false; })();
 function rlShow(r){ document.querySelectorAll('.rlr button').forEach(function(b){b.setAttribute('aria-pressed',b.dataset.rr===r?'true':'false');}); document.querySelectorAll('.rlt').forEach(function(t){t.hidden=t.dataset.rr!==r;}); }
 document.querySelectorAll('.rlr button').forEach(function(b){b.onclick=function(){rlShow(b.dataset.rr);};});
-if(document.querySelector('.rlr')) rlShow(reg==='ALL'?'EU':reg);
+if(document.querySelector('.rlr')) rlShow(reg==='ALL'?'EU':sreg());
 document.querySelector('#pm .mx').onclick=function(){document.getElementById('pm').hidden=true; clearInterval(liveTimer);};
 document.getElementById('pm').onclick=function(e){ if(e.target.id==='pm') e.target.hidden=true; };
 document.getElementById('cmpBtn').onclick=function(){ openCompare(); };
@@ -752,7 +759,7 @@ showTab(tab);
 var trO=document.getElementById('trOnly'); if(trO) trO.onchange=function(){ document.getElementById('trs').classList.toggle('only',trO.checked); };
 function apply(){
  document.querySelectorAll('.regs button[data-r]').forEach(function(b){b.setAttribute('aria-pressed',b.dataset.r===reg?'true':'false');});
- document.querySelectorAll('.res').forEach(function(x){x.hidden=reg!=='ALL'&&x.dataset.reg!==reg&&x.dataset.reg!=='LAN';});
+ document.querySelectorAll('.res').forEach(function(x){x.hidden=reg!=='ALL'&&x.dataset.reg!==sreg()&&x.dataset.reg!=='LAN';});
  renderCal(); renderBig();
  try{localStorage.setItem('compReg',reg);}catch(e){}
 }
@@ -761,7 +768,7 @@ document.querySelectorAll('.regs button[data-r]').forEach(function(b){b.addEvent
 apply();
 })();`;
 
-const regButtons = '<div class="regs" role="group" aria-label="Region">' + ['ALL'].concat(REGS).map(r => `<button type="button" data-r="${r}">${r === 'ALL' ? 'All' : r}</button>`).join('') + '</div>';
+const regButtons = '<div class="regs" role="group" aria-label="Region">' + ['ALL', 'EU', 'CIS'].concat(REGS.slice(1)).map(r => `<button type="button" data-r="${r}">${r === 'ALL' ? 'All' : r}</button>`).join('') + '</div>';
 const title = 'Fortnite Competitive: tournament calendar, prize money and results | FNCS Draft';
 const desc = 'Every Fortnite tournament this week in your time zone, who earned the most prize money in ' + 'every month of 2026' +
   ', the latest cup results and FNCS predictions. All regions.';
