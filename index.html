@@ -6311,6 +6311,8 @@
   /* Своё био (ccBioOwnHTML): текст игрока строкой, кнопка правки, поле с тремя кнопками. */
   .x-bio-own{margin-top:4px;font-size:12.5px;line-height:1.35;}
   .x-bio-txt{display:block;color:inherit;white-space:pre-wrap;word-break:break-word;}
+  .x-post-in>p{white-space:pre-line;}
+  .x-post-in>p .x-flag{height:12px;width:auto;vertical-align:-1px;border-radius:2px;}   /* посты строками (Kinch, 28.10) */
   .x-bio-edit{border:0;background:none;color:#8ea6d6;font-size:11px;font-weight:700;padding:2px 0;cursor:pointer;}
   .x-bio-in{width:100%;box-sizing:border-box;font:inherit;font-size:12.5px;padding:6px 8px;border-radius:8px;
     border:1px solid rgba(180,200,255,.3);background:rgba(8,18,50,.5);color:inherit;resize:vertical;}
@@ -11930,7 +11932,7 @@ ccPostBdayEpic:(h,a)=>'С днём рождения, @'+h+'! Сегодня '+a+
 ccBornHint:'Дата рождения — по желанию. Укажи, и в этот день тебя поздравят. Число сверху — сколько тебе на день старта сезона; день рождения ты встретишь уже в нём.',
 ccNewsCongrats:(n,ev)=>'Поздравляем '+n+' с победой — '+ev+'! 🏆',
 ccNewsKinch:(ev,p,g,avg,el,epg,plp,elp,er)=>'РАЗБОР · '+(ev!=null?ev+': ':'')+ccTop(p)+'. '+g+' игр, среднее место '+avg+', элимов '+el+' ('+epg+' за игру). Очки: '+plp+' за места, '+elp+' за элимы. По элимам в лобби — '+ccTop(er)+'.',
-ccNewsStatBoard:(ev,rows)=>(ev!=null?ev+' — ':'')+'лидеры вечера',
+ccNewsStatBoard:(ev,rows)=>ccKinchBoardText(ev, rows),
 ccNewsEliteFlop:(ev,t,p,n,x,tags)=>'ПРОВАЛ ВЕЧЕРА · '+(ev!=null?ev+': ':'')+t+' — фавориты (#'+x+' по силе поля), а место только '+p+'-е из '+n+'. '+(tags||''),
 ccLeadCap:'лидеры вечера',
 ccMyStatsBtn:'Моя статистика',
@@ -14041,7 +14043,7 @@ ccPostBdayEpic:(h,a)=>'Happy birthday @'+h+' — '+a+' today. Have a good season
 ccBornHint:'Date of birth — optional. Fill it in and the scene wishes you a happy birthday on the day. The number above is your age on the day the season starts; the birthday itself falls inside it.',
 ccNewsCongrats:(n,ev)=>'Congratulations to '+n+' on the win — '+ev+'! 🏆',
 ccNewsKinch:(ev,p,g,avg,el,epg,plp,elp,er)=>'BREAKDOWN · '+(ev!=null?ev+': ':'')+ccTop(p)+'. '+g+' games, avg placement '+avg+', '+el+' elims ('+epg+' per game). Points: '+plp+' placement, '+elp+' elims. Elims in the lobby: '+ccTop(er)+'.',
-ccNewsStatBoard:(ev,rows)=>(ev!=null?ev+' — ':'')+'stats leaders',
+ccNewsStatBoard:(ev,rows)=>ccKinchBoardText(ev, rows),
 ccNewsEliteFlop:(ev,t,p,n,x,tags)=>'FLOP OF THE NIGHT · '+(ev!=null?ev+': ':'')+t+' came in as favourites (#'+x+' on paper) and finished '+p+' of '+n+'. '+(tags||''),
 ccLeadCap:'stats leaders',
 ccMyStatsBtn:'My stats',
@@ -15355,7 +15357,7 @@ ccPostBdayEpic:(h,a)=>'Joyeux anniversaire @'+h+' ! '+a+' ans aujourd’hui — 
 ccBornHint:'Date de naissance — facultative. Renseigne-la et le jour venu, on te souhaitera ton anniversaire. Le nombre au-dessus est ton âge au premier jour de la saison ; l’anniversaire, lui, tombe pendant celle-ci.',
 ccNewsCongrats:(n,ev)=>'Félicitations à '+n+' pour la victoire — '+ev+' ! 🏆',
 ccNewsKinch:(ev,p,g,avg,el,epg,plp,elp,er)=>'BREAKDOWN · '+(ev!=null?ev+': ':'')+ccTop(p)+'. '+g+' games, avg placement '+avg+', '+el+' elims ('+epg+' per game). Points: '+plp+' placement, '+elp+' elims. Elims in the lobby: '+ccTop(er)+'.',
-ccNewsStatBoard:(ev,rows)=>(ev!=null?ev+' — ':'')+'stats leaders',
+ccNewsStatBoard:(ev,rows)=>ccKinchBoardText(ev, rows),
 ccNewsEliteFlop:(ev,t,p,n,x,tags)=>'FLOP DE LA SOIRÉE · '+(ev!=null?ev+' : ':'')+t+', favoris (n°'+x+' sur le papier), finissent seulement '+p+'e sur '+n+'. '+(tags||''),
 ccLeadCap:'stats leaders',
 ccMyStatsBtn:'Mes stats',
@@ -17948,7 +17950,7 @@ ccPostPlaced:(p,d,m,v)=>{const a=m?' @'+m:''; if(p===1) return ['TOP 1 \ud83c\ud
 ccPostBdayEpic:(h,a)=>'Buon compleanno @'+h+' — '+a+' anni oggi. Buona stagione \ud83c\udf82',
 ccNewsCongrats:(n,ev)=>'Complimenti a '+n+' per la vittoria — '+ev+'! \ud83c\udfc6',
 ccNewsKinch:(ev,p,g,avg,el,epg,plp,elp,er)=>'BREAKDOWN · '+(ev!=null?ev+': ':'')+ccTop(p)+'. '+g+' games, avg placement '+avg+', '+el+' elims ('+epg+' per game). Points: '+plp+' placement, '+elp+' elims. Elims in the lobby: '+ccTop(er)+'.',
-ccNewsStatBoard:(ev,rows)=>(ev!=null?ev+' — ':'')+'stats leaders',
+ccNewsStatBoard:(ev,rows)=>ccKinchBoardText(ev, rows),
 ccNewsEliteFlop:(ev,t,p,n,x,tags)=>'FLOP DELLA SERATA · '+(ev!=null?ev+': ':'')+t+', favoriti (#'+x+' sulla carta), chiudono solo '+p+'° su '+n+'. '+(tags||''),
 ccLeadCap:'stats leaders',
 ccMyStatsBtn:'Le mie statistiche',
@@ -20501,7 +20503,7 @@ ccPostPlaced:(p,d,m,v)=>{const a=m?' @'+m:''; if(p===1) return ['TOP 1 \ud83c\ud
 ccPostBdayEpic:(h,a)=>'Feliz anivers\u00e1rio @'+h+' — '+a+' hoje. Boa temporada \ud83c\udf82',
 ccNewsCongrats:(n,ev)=>'Parab\u00e9ns a '+n+' pela vit\u00f3ria — '+ev+'! \ud83c\udfc6',
 ccNewsKinch:(ev,p,g,avg,el,epg,plp,elp,er)=>'BREAKDOWN · '+(ev!=null?ev+': ':'')+ccTop(p)+'. '+g+' games, avg placement '+avg+', '+el+' elims ('+epg+' per game). Points: '+plp+' placement, '+elp+' elims. Elims in the lobby: '+ccTop(er)+'.',
-ccNewsStatBoard:(ev,rows)=>(ev!=null?ev+' — ':'')+'stats leaders',
+ccNewsStatBoard:(ev,rows)=>ccKinchBoardText(ev, rows),
 ccNewsEliteFlop:(ev,t,p,n,x,tags)=>'FRACASSO DA NOITE · '+(ev!=null?ev+': ':'')+t+', favoritos (#'+x+' no papel), terminam só em '+p+'º de '+n+'. '+(tags||''),
 ccLeadCap:'stats leaders',
 ccMyStatsBtn:'Minhas estatísticas',
@@ -23760,7 +23762,7 @@ ccSacPromoRow:(n,m,p)=>'promo no X '+n+'/'+m+(p ? ' · +'+p+'%' : ''),
 ccGoalReach:{majorFinal:'chegar a uma final de Major FNCS', fncsFinal:'chegar à final semanal da FNCS'},
 ccOrgGoalPickHint:'Meta da temporada: escolha uma antes do fim da temporada. Cumpriu, renova com aumento (meta mais difícil, aumento maior); falhou, o clube te libera. Sem escolha, fica a do meio.'
 }));
-let CC_I18N_V={de:'d7a1736d', es:'c205b5ae'};   // ==== CC_I18N_V (tools/build-i18n.js) ====
+let CC_I18N_V={de:'93d3dc34', es:'93abf296'};   // ==== CC_I18N_V (tools/build-i18n.js) ====
 // Версия fn-shop.js (магазин Fortnite по дням, tools/build-fn-shop.js) — для ?v= ленивой загрузки.
 let CC_FN_SHOP_V='be7040d6';
 const CC_LANG_WAIT={};
@@ -120409,7 +120411,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='25a196e2';
+const CC_BUILD='47b627dc';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -145071,7 +145073,7 @@ function ccPostHTML(n){
         // Из другого региона — с его кодом рядом с ником. См. careerRegionsWeek.
         `${who.you?'':ccRegChipHTML(who.card)}`+
         `<span>@${esc(who.handle)}</span><span class="x-dot">·</span><span>${stamp}</span></header>`+
-        `<p>${ccMentions(ccText(n))}</p>`+
+        `<p>${ccFlagImgs(ccMentions(ccText(n)))}</p>`+
         ccShotHTML(n.tbl)+ccLeadHTML(n.lead)+
         ccDropMapHTML(n)+
         ccArtHTML(n)+
@@ -150679,10 +150681,38 @@ function ccEliteFlopPost(ranked, label){
   const tags=f.cards.map(c=>'@'+ccHandle(c.handle)).join(' ');
   careerNews('flat', 'ccNewsEliteFlop', [label, f.name, f.place, f.n, f.exp, tags]);
 }
+/* ПОСТ КИНЧА — ПРОСТО ТЕКСТ (28.10, Notion 27.10 скрин 14: «посмотри как у кинча выглядит, у него вроде просто посты»).
+   Настоящий @KinchAnalytics (снято 28.10 с его X, FNCS Solos) пишет без картинок, строками:
+     🏆 FNCS Solos - BR 🏆 / 🔥 Stats Leaders 🔥 / 💥 Damage: 7207 🇧🇷 @edsonmalado / 🎯 Elims: 31 🇧🇷 @lucxfn1 / …
+   Доска-картинка под постом снята; строки те же (ccStatLeaders), язык — его английский. */
+const CC_KINCH_LBL={s_dmgTo:'Damage', s_elims:'Elims', s_assists:'Assists', s_dmgRatio:'Damage Ratio', s_dmgNet:'Net Damage',
+  s_dpm:'Damage Per Minute', s_matsFarmed:'Farmed', s_distance:'Distance', s_timeStorm:'Storm Time'};
+const CC_KINCH_ICO={s_assists:'💁‍♂️'};
+function ccFlagEmoji(nat){
+  let c='';
+  try{ c=String((typeof FLAG_CODE!=='undefined' && FLAG_CODE[nat]) || (typeof ccCountryOf==='function' && ccCountryOf(nat)) || nat || '').toLowerCase(); }catch(e){ c=''; }
+  if(!/^[a-z]{2}$/.test(c)) return '';
+  return String.fromCodePoint(0x1F1E6+c.charCodeAt(0)-97, 0x1F1E6+c.charCodeAt(1)-97);
+}
+// Флаг-эмодзи в тексте поста — картинкой сайта: на Windows эмодзи-флаги видны буквами («DK»).
+function ccFlagImgs(html){
+  return String(html||'').replace(/([🇦-🇿])([🇦-🇿])/gu, (m, a, b)=>{
+    const c=String.fromCharCode(97+a.codePointAt(0)-0x1F1E6, 97+b.codePointAt(0)-0x1F1E6);
+    return '<img class="x-flag" src="flags/w20/'+c+'.png" alt="'+m+'" onerror="this.replaceWith(this.alt)">';
+  });
+}
+function ccKinchBoardText(ev, rows){
+  const head=(ev!=null && ev!=='' ? '🏆 '+String(ev)+' 🏆\n' : '')+'🔥 Stats Leaders 🔥\n';
+  const lines=(rows||[]).filter(r=>r && CC_KINCH_LBL[r[0]]).map(r=>{
+    const fl=ccFlagEmoji(r[3]);
+    return (CC_KINCH_ICO[r[0]]||CC_LEAD_ICO[r[0]]||'')+' '+CC_KINCH_LBL[r[0]]+': '+String(r[1]).replace(/(\d)[\s  ,](?=\d{3}\b)/g, '$1')+(fl ? ' '+fl : '')+' @'+String(r[2]||'');
+  });
+  return head+'\n'+lines.join('\n');
+}
 function ccStatBoardPost(ranked, label){
   const rows=ccStatLeaders(ranked);
   if(rows.length<4) return;
-  careerNews('flat', 'ccNewsStatBoard', [label, rows], {lead:{cap:label, rows:rows}});
+  careerNews('flat', 'ccNewsStatBoard', [label, rows]);
 }
 /* УДАЧА ЗОН ТОПА (28.10, X: «Solo FNCS EU Grand Finals Cumulative Zone Luck Accountability Post»). После финала аккаунт
    считает топ-10: в скольких эндгеймах зона пришла к команде (mstats.zpN из _zonePull движка, zpG — эндгеймы). Только
