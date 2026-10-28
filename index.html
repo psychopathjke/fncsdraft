@@ -8753,6 +8753,24 @@
   .hero-seg .cstrip-btn+.cstrip-btn{border-left:1px solid rgba(126,240,221,.25);}
   .hero-seg .cstrip-btn:hover{background:rgba(126,240,221,.16);color:#fff;}
   .hero-seg .cstrip-btn[hidden]{display:none;}
+  /* ПЛАШКИ КАК В МАГАЗИНЕ FORTNITE (28.10, Notion 27.10 скрин 9: «выглядит аишно, сделай в стиле фортнайт»; из трёх
+     макетов выбран «магазин»). Факты — скошенные параллелограммы со сплошной тёмно-синей заливкой, без обводки, жирный
+     курсив капсом; NEW — тот же крой жёлтым. «С другом» — три жёлтые скошенные кнопки со ступенькой снизу, как «Играть».
+     Скос — clip-path, а не skewX: текст остаётся прямым без второй обёртки. Классический вид (ui-classic) как был. */
+  html:not(.ui-classic) .hero-chips{gap:4px;}
+  html:not(.ui-classic) .hero-chips .cstrip-chip,html:not(.ui-classic) .hero-chips .cstrip-tag{
+    font-family:var(--font-display);font-style:italic;font-weight:800;font-size:12px;letter-spacing:.05em;text-transform:uppercase;
+    line-height:1;padding:6px 15px 5px;border:0;border-radius:0;
+    clip-path:polygon(7px 0,100% 0,calc(100% - 7px) 100%,0 100%);}
+  html:not(.ui-classic) .hero-chips .cstrip-chip{color:#fff;background:linear-gradient(180deg,#1d3a8f,#0f2160);}
+  html:not(.ui-classic) .hero-chips .cstrip-tag{color:#0b0f12;background:#ffdd00;margin-right:0;}
+  html:not(.ui-classic) .hero-seg{gap:5px;border:0;border-radius:0;overflow:visible;background:none;}
+  html:not(.ui-classic) .hero-seg .cstrip-btn,html:not(.ui-classic) .hero-seg .cstrip-btn+.cstrip-btn{
+    font-style:italic;font-weight:800;font-size:12.5px;letter-spacing:.04em;color:#0b0f12;border:0;border-radius:0;
+    padding:9px 17px 10px;background:linear-gradient(180deg,#ffe94d 0,#ffdd00 55%,#ffdd00 calc(100% - 3px),#b59c00 calc(100% - 3px));
+    clip-path:polygon(8px 0,100% 0,calc(100% - 8px) 100%,0 100%);}
+  html:not(.ui-classic) .hero-seg .cstrip-btn:hover,html:not(.ui-classic) .hero-seg .cstrip-btn:focus-visible{color:#0b0f12;filter:brightness(1.08);}
+  html:not(.ui-classic) .hero-seg .cstrip-btn:active{transform:translateY(1px);}
   @media(min-width:901px){
     #screen-mode .hero-pair:has(.hero-mgr:not([hidden])){grid-template-columns:repeat(3,minmax(0,1fr));}
     #screen-mode .hero-pair:has(.hero-mgr:not([hidden]))>.hero{min-height:420px;}
@@ -120253,7 +120271,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='f6350b9a';
+const CC_BUILD='79fee2be';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
