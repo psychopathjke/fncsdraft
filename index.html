@@ -120469,7 +120469,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='78c35c2f';
+const CC_BUILD='7b65b053';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -169270,6 +169270,12 @@ const CC_PROAM_TWITCH={
   'Winter':['winter1k',36826], 'Worthy':['worthyy',196739], 'Boter':['not_boter',95220],
   'Nephrite':['nephrite_2',14332], 'Shinck':['shincky',5615], 'Hamuppi':['dfm_hamuppi',4310]
 };
+/* Без подтверждённого канала креатора нет нигде (28.10, его «пусть и соперниками они не могут быть»): ни в выборе, ни
+   напарником или соперником на Про-Аме. Списки чистятся на месте — на них же смотрят CC_PROAM_CREATORS и сторожа. */
+[CC_PROAM_CREATORS_EU, CC_PROAM_CREATORS_NAC, CC_PROAM_CREATORS_BR, CC_PROAM_CREATORS_CIS, CC_PROAM_CREATORS_ASIA].forEach(list=>{
+  for(let i=list.length-1;i>=0;i--) if(!(CC_PROAM_TWITCH[list[i]] && CC_PROAM_TWITCH[list[i]][1]>0)) list.splice(i, 1);
+});
+Object.keys(CC_CREATOR_HOME_APAC).forEach(r=>{ CC_CREATOR_HOME_APAC[r]=CC_CREATOR_HOME_APAC[r].filter(n=>CC_PROAM_TWITCH[n]); });
 function ccProAmTwitch(name){ return CC_PROAM_TWITCH[name] || null; }
 function ccProAmFollowers(name){ const t=ccProAmTwitch(name); return t ? t[1] : 0; }
 /* АВАТАРКИ КРЕАТОРОВ — правка: «аватарки контент креаторов».
