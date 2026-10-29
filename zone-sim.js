@@ -344,7 +344,7 @@
         lastK: -1,
         // Заводятся сразу, а не по ходу игры: поле, добавленное посреди игры в разном порядке у разных отрядов,
         // плодит формы объектов, и горячие циклы движка перестают оптимизироваться (замер 29.10: 12 → 38 мс на игру).
-        _hit: 0, killedBy: null, mBy: null, busy: false, surgeNet: null, respawns: 0, droppedOut: false, leaveAt: null, held: null,
+        _hit: 0, killedBy: null, mBy: null, mCard: (function(){ var a = []; for(var i=0;i<size;i++) a.push(0); return a; })(), reboots: 0, busy: false, surgeNet: null, respawns: 0, droppedOut: false, leaveAt: null, held: null,
         // Щит и здоровье каждого игрока — для худа (memberVitals). Смерть решает общее hp отряда, как было.
         mSh: (function(){ var a = []; for(var i=0;i<size;i++) a.push(100); return a; })(),
         mHp: (function(){ var a = []; for(var i=0;i<size;i++) a.push(100); return a; })(),
@@ -837,6 +837,31 @@
      слабее: сила для дуэли × (живых/всех)^SHORT_EXP — 1 против 2 при равных картах ≈ четверть побед
      (ОЦЕНКА, замера нет). Здоровье и щит — общие на отряд, как было; шторм и сюрдж убивают отряд целиком. */
   var MEMBER_LOSS = 0.45, SHORT_EXP = 0.32;   // 0.3 → 0.18 дуо с отдельной смертью, 0.45 → 0.24, 0.6 → 0.31 (реплеи 0.25)
+  /* РЕБУТ (29.10, его «чтоб ребутаться можно было, как в реальном фортнайте»). Реплеи трёх финалов FNCS 2026 EU
+     (tools/real-matches.json): смертей 102/105/107 при 98/100/100 игроках — то есть 6–9 ребутов за игру (смертей сверх
+     игроков, минус живые победители). Карточка выбитого лежит REBOOT_CARD_SEC; пока она жива, напарник, не занятый файтом,
+     в каждую секунду ребутает с шансом REBOOT_RATE (подогнан пробой tools/check-member-deaths.js под 6–9 за игру).
+     Ребутнутый — со 100 здоровья и без щита. Круг, после которого ребута нет, — фазой (phases.rebootUntil, правила по
+     годам; без неё — REBOOT_UNTIL). */
+  var REBOOT_RATE = 0.05, REBOOT_CARD_SEC = 90, REBOOT_UNTIL = 7;   // 0.012 → 4.0 ребута за игру, 0.035 → 6.3, 0.05 → 6.6, 0.08 → 7.1 (реплеи 6–9)
+  var REBOOT_ZONE_MAX = REBOOT_UNTIL;
+  function applyReboots(squads, seconds, zone){
+    if(!(zone < REBOOT_ZONE_MAX)) return;
+    for(var i=0;i<squads.length;i++){
+      var s = squads[i];
+      if(!s.alive || !s.mCard || s.busy) continue;
+      for(var k=0;k<s.mCard.length;k++){
+        if(s.mAlive[k] || !(s.mCard[k] > 0)) continue;
+        s.mCard[k] -= seconds;
+        if(rngReboot() < REBOOT_RATE * seconds){
+          s.mAlive[k] = true; s.mCard[k] = 0; s.reboots++;
+          if(s.mSh){ s.mSh[k] = 0; s.mHp[k] = 100; }
+          if(onRebootHook) onRebootHook(s, k);
+        }
+      }
+    }
+  }
+  var rngReboot = Math.random, onRebootHook = null;
   function aliveOf(sq){
     if(!sq.mAlive) return (sq.team.squad && sq.team.squad.length) || 1;
     var n = 0; for(var i=0;i<sq.mAlive.length;i++) if(sq.mAlive[i]) n++;
@@ -862,6 +887,7 @@
     var left = []; for(var i=0;i<winner.mAlive.length;i++) if(winner.mAlive[i]) left.push(i);
     var k = left[Math.floor(rng() * left.length)];
     winner.mAlive[k] = false;
+    if(winner.mCard) winner.mCard[k] = REBOOT_CARD_SEC;
     if(winner.mSh){ winner.mSh[k] = 0; winner.mHp[k] = 0; }
     loser.elims += 1; giveKill(loser, 1); loser.team._gElims = loser.elims; loser.dealt += KILL_DAMAGE;
     winner.mBy = winner.mBy || []; winner.mBy[k] = loser.lastK;
@@ -1488,6 +1514,14 @@
     var rng = opts.rng, aspect = opts.aspect, duel = opts.duel, record = !!opts.record;
     var plan = generateZonePlan({rng: rng, land: opts.land, aspect: aspect, phases: opts.phases});
     SURGE_NET = !(opts.phases && opts.phases.net === false);
+    // Ребут: бросок из потока игры; круг-отсечка — из правил года (phasesFor .rebootUntil), Reload — без ребута (там возрождение).
+    rngReboot = rng;
+    REBOOT_ZONE_MAX = (opts.phases && opts.phases.rebootUntil != null) ? opts.phases.rebootUntil
+                    : opts.respawnUntilZone ? 0 : REBOOT_UNTIL;
+    onRebootHook = function(sq, k){
+      var who = sq.team.squad && sq.team.squad[k] && sq.team.squad[k].handle;
+      pendingEvents.push('reboot:' + sq.team.name + ' ##' + (who || ('#' + (k + 1))));
+    };
     var squads = createSquads(teams, {aspect: aspect, startOf: opts.startOf});
     for(var st=0; st<squads.length; st++) squads[st].surgeTie = rng();
     // Средняя сила лобби по карточкам — для LOBBY_WEAK_K, см. resolveContacts.
@@ -1738,6 +1772,8 @@
                   ms: (s.alive && s.mSh && s.mSh.length > 1) ? s.mSh.map(Math.round) : null,
                   // Киллы каждого игрока (giveKill).
                   mk: (s.mK && s.mK.length > 1) ? s.mK.slice() : null,
+                  // Секунды карточки ребута у выбитых (0 — карточки нет), если кто-то выбит.
+                  mc: (s.alive && s.mCard && aliveOf(s) < s.mCard.length) ? s.mCard.map(function(v){ return v > 0 ? Math.ceil(v) : 0; }) : null,
                   mh: (s.alive && s.mHp && s.mHp.length > 1) ? s.mHp.map(function(v){ return Math.max(0, Math.round(v)); }) : null,
                   // Under surge right now, and net damage (dealt minus taken):
                   // the two numbers surge itself is decided on.
@@ -1819,6 +1855,7 @@
         holdLate(squads, t);
         stepMovement(squads, TICK_SEC, from);
         applyHealing(squads, from, TICK_SEC);
+        applyReboots(squads, TICK_SEC, phase.zone);
         applyStorm(squads, from, phase.dps, TICK_SEC, onDeath);
         currentSurgeLine = applySurge(squads, phase.surgeAt, TICK_SEC, onDeath, rng);
         resolveContacts(squads, from, rng, duel, onDeath, inDrop, elimsFor, onMember);
@@ -1837,6 +1874,7 @@
         liveCircle = cur;
         stepMovement(squads, TICK_SEC, cur);
         applyHealing(squads, cur, TICK_SEC);
+        applyReboots(squads, TICK_SEC, phase.zone);
         applyStorm(squads, cur, phase.dps, TICK_SEC, onDeath);
         currentSurgeLine = applySurge(squads, phase.surgeAt, TICK_SEC, onDeath, rng);
         resolveContacts(squads, cur, rng, duel, onDeath, false, elimsFor, onMember);
@@ -2115,6 +2153,8 @@
     if(v.SURGE_HIT      != null) SURGE_HIT      = v.SURGE_HIT;
     if(v.SURGE_TICK     != null) SURGE_TICK     = v.SURGE_TICK;
     if(v.MEMBER_LOSS    != null) MEMBER_LOSS    = v.MEMBER_LOSS;
+    if(v.REBOOT_RATE    != null) REBOOT_RATE    = v.REBOOT_RATE;
+    if(v.REBOOT_UNTIL   != null) REBOOT_UNTIL   = v.REBOOT_UNTIL;
     if(v.SHORT_EXP      != null) SHORT_EXP      = v.SHORT_EXP;
     if(v.ROOM           != null) ROOM           = v.ROOM;
     if(v.PRESSURE_BASE  != null) PRESSURE_BASE  = v.PRESSURE_BASE;
@@ -2133,7 +2173,7 @@
     if(v.SHIELD_RATE    != null) SHIELD_RATE    = v.SHIELD_RATE;
     return {READ_NOISE:READ_NOISE, CROWD_WEIGHT:CROWD_WEIGHT, CROWD_SEEK:CROWD_SEEK, ENGAGE_CHANCE:ENGAGE_CHANCE,
             ENGAGE_BIAS:ENGAGE_BIAS, CHAIN_CHANCE:CHAIN_CHANCE, EXPOSURE_FLOOR:EXPOSURE_FLOOR,
-            CHAIN_MAX:CHAIN_MAX, LINGER_MAX:LINGER_MAX, SURGE_DUTY:SURGE_DUTY, SURGE_HIT:SURGE_HIT, SURGE_TICK:SURGE_TICK, MEMBER_LOSS:MEMBER_LOSS, SHORT_EXP:SHORT_EXP,
+            CHAIN_MAX:CHAIN_MAX, LINGER_MAX:LINGER_MAX, SURGE_DUTY:SURGE_DUTY, SURGE_HIT:SURGE_HIT, SURGE_TICK:SURGE_TICK, MEMBER_LOSS:MEMBER_LOSS, SHORT_EXP:SHORT_EXP, REBOOT_RATE:REBOOT_RATE, REBOOT_UNTIL:REBOOT_UNTIL,
             ROOM:ROOM, PRESSURE_BASE:PRESSURE_BASE, PRESSURE_EXP:PRESSURE_EXP,
             PICK_EXP:PICK_EXP, CHIP_RATE:CHIP_RATE, HEAL_RATE:HEAL_RATE, CHIP_HP:CHIP_HP,
             CHIP_TO_HP:CHIP_TO_HP, CHIP_HP_FLOOR:CHIP_HP_FLOOR, SHIELD_RATE:SHIELD_RATE,

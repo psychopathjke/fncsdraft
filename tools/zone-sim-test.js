@@ -1282,7 +1282,8 @@ test('the replay slows down for every fight your squad is in, and before it', ()
     timeline.forEach((f, i) => {
       (f.events || []).forEach(e => {
         const cut = e.indexOf(':');
-        if(e.slice(0, cut) !== mine && e.slice(cut + 1) !== mine) return;
+        // Килфид по игрокам: «отряд ##ник» с обеих сторон — сравнивается отряд.
+        if(e.slice(0, cut).split(' ##')[0] !== mine && e.slice(cut + 1).split(' ##')[0] !== mine) return;
         fights++;
         // At fight speed or slower. From zone 10 the last circles are slower
         // still, and a fight there must not put the speed back up.

@@ -46,7 +46,7 @@ function field(n){
 const GAMES = Number(process.argv[2]) || 200;
 function run(loss){
   if (loss != null) ZoneSim.tune({MEMBER_LOSS: loss});
-  let partial = 0, teams = 0, top5 = 0, storm = 0, elims = 0;
+  let partial = 0, teams = 0, top5 = 0, storm = 0, elims = 0, reb = 0;
   for (let g = 0; g < GAMES; g++) {
     const rng = ZoneSim.createRng(1 + g), T = field(50);
     const picks = T.map(() => LAND[Math.floor(rng() * LAND.length)]);
@@ -57,12 +57,12 @@ function run(loss){
     });
     // Отдельная смерть игрока — строка ' ##' в ленте; по одной на отряд.
     const hit = new Set();
-    res.timeline.forEach(f => (f.events || []).forEach(e => { const v = e.slice(e.indexOf(':') + 1); if (v.indexOf(' ##') >= 0 && v.indexOf(' ##!') < 0) hit.add(v.split(' ##')[0]); }));
+    res.timeline.forEach(f => (f.events || []).forEach(e => { if (e.indexOf('reboot:') === 0) { reb++; return; } const v = e.slice(e.indexOf(':') + 1); if (v.indexOf(' ##') >= 0 && v.indexOf(' ##!') < 0) hit.add(v.split(' ##')[0]); }));
     partial += hit.size; teams += T.length;
     res.order.forEach((t, i) => { if (+t.name.slice(1) < 5) top5 += i + 1; if (t._deathCause === 'storm') storm++; });
     elims += T.reduce((s, t) => s + (t._gElims || 0), 0);
   }
-  return {partial: partial / teams, top5: top5 / GAMES / 5, storm: storm / GAMES, elims: elims / GAMES};
+  return {partial: partial / teams, top5: top5 / GAMES / 5, storm: storm / GAMES, elims: elims / GAMES, reb: reb / GAMES};
 }
 
 const DEF = ZoneSim.tune({}).MEMBER_LOSS;
@@ -72,7 +72,7 @@ console.log('реплеи: дуо с отдельной смертью ' + real.
 console.log('без потерь:  отдельных ' + base.partial.toFixed(2) + '  место пяти сильнейших ' + base.top5.toFixed(1) +
   '  шторм ' + base.storm.toFixed(2) + '  элимов на лобби ' + base.elims.toFixed(1));
 console.log('с потерями:  отдельных ' + now.partial.toFixed(2) + '  место пяти сильнейших ' + now.top5.toFixed(1) +
-  '  шторм ' + now.storm.toFixed(2) + '  элимов на лобби ' + now.elims.toFixed(1));
+  '  шторм ' + now.storm.toFixed(2) + '  элимов на лобби ' + now.elims.toFixed(1) + '  ребутов за игру ' + now.reb.toFixed(1) + ' (реплеи 6–9)');
 const ok = Math.abs(now.partial - real) <= 0.06;
 console.log(ok ? 'доля в пределах ±0.06 от реплеев' : 'FAIL: доля отдельных смертей далеко от реплеев');
 process.exit(ok ? 0 : 1);

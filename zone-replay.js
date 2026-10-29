@@ -801,7 +801,7 @@
       // которого стоит команда из ростера (или шторм/сёрдж); не нашлось — первое, как было.
       for(var ci0 = raw.indexOf(':'); ci0 >= 0; ci0 = raw.indexOf(':', ci0 + 1)){
         var left = plain(raw.slice(0, ci0)).split(' ##')[0];
-        if(left === 'storm' || left === 'surge' || indexOfName[left] != null){ cut = ci0; break; }
+        if(left === 'storm' || left === 'surge' || left === 'reboot' || indexOfName[left] != null){ cut = ci0; break; }
       }
       var cause = plain(raw.slice(0, cut)), victim = plain(raw.slice(cut + 1));
       // «отряд ##ник» у убийцы — кил одного игрока (zone-sim giveKill): ник цветом отряда.
@@ -812,7 +812,10 @@
       if(vh >= 0){ vNick = victim.slice(vh + 3).replace(/^!/, ''); victim = victim.slice(0, vh); if(/^#\d+$/.test(vNick)) vNick = null; }
       // Убийство твоей команды — с иконкой надетой кирки вместо значка (карьера, магазин предметов, 18.10).
       var ci = indexOfName[cause], axe = (ci != null && roster[ci].you && typeof window !== 'undefined') ? window.CC_FN_AXE : null;
-      var row = (cause === 'storm' || cause === 'surge')
+      // Ребут (zone-sim applyReboots): «⟲ ник» цветом отряда.
+      var row = cause === 'reboot'
+        ? '<span style="font-weight:900;color:#7de3a8;">⟲</span>' + pillFor(victim, vNick)
+        : (cause === 'storm' || cause === 'surge')
         ? badge(cause) + pillFor(victim, vNick)
         : pillFor(cause, kNick) + (axe ? '<img src="' + esc(axe) + '" alt="" style="width:22px;height:22px;flex:none;' +
             'filter:drop-shadow(0 1px 2px #000);" onerror="this.remove()">' : badge('kill')) + pillFor(victim, vNick);
@@ -1532,7 +1535,8 @@
         m: d.m || null,
         ms: d.ms || null,
         mh: d.mh || null,
-        mk: d.mk || null
+        mk: d.mk || null,
+        mc: d.mc || null
       });
     }
     return {
