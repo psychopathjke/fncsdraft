@@ -342,6 +342,9 @@
         // Киллы каждого игрока (giveKill): кил получает один, не весь отряд.
         mK: (function(){ var a = []; for(var i=0;i<size;i++) a.push(0); return a; })(),
         lastK: -1,
+        // Заводятся сразу, а не по ходу игры: поле, добавленное посреди игры в разном порядке у разных отрядов,
+        // плодит формы объектов, и горячие циклы движка перестают оптимизироваться (замер 29.10: 12 → 38 мс на игру).
+        _hit: 0, killedBy: null, mBy: null, busy: false, surgeNet: null, respawns: 0, droppedOut: false, leaveAt: null, held: null,
         // Щит и здоровье каждого игрока — для худа (memberVitals). Смерть решает общее hp отряда, как было.
         mSh: (function(){ var a = []; for(var i=0;i<size;i++) a.push(100); return a; })(),
         mHp: (function(){ var a = []; for(var i=0;i<size;i++) a.push(100); return a; })(),
@@ -629,23 +632,33 @@
      принимает на себя один из живых (по очереди с перемешкой, без бросков: поток rng не трогается), и он
      берёт урон за всех — у дуо вдвое, остаток переходит на соседа. Шторм и сюрдж бьют всех поровну, круг
      лечит всех. Ниже 1 здоровья не падает: умирают игроки только в файте (memberLoss) или вместе с отрядом. */
+  // Без массивов и замыканий: зовётся на каждом тике для каждого отряда (замер 29.10: версия с ними
+  // замедлила движок втрое, 12 → 38 мс на игру, и большой кап скипался десятки секунд).
   function memberVitals(s, dSh, dHp, focus){
-    if(!s.mSh || s.mSh.length < 2) return;
-    var live = []; for(var i=0;i<s.mAlive.length;i++) if(s.mAlive[i]) live.push(i);
-    if(!live.length) return;
-    var clamp = function(v, lo){ return Math.max(lo, Math.min(100, v)); };
+    var ms = s.mSh;
+    if(!ms || ms.length < 2) return;
+    var mh = s.mHp, ma = s.mAlive, n = ms.length, i, live = 0;
+    for(i=0;i<n;i++) if(ma[i]) live++;
+    if(!live) return;
     if(!focus){
-      for(var j=0;j<live.length;j++){ var m = live[j]; s.mSh[m] = clamp(s.mSh[m] - dSh, 0); s.mHp[m] = clamp(s.mHp[m] - dHp, 1); }
+      for(i=0;i<n;i++){
+        if(!ma[i]) continue;
+        var v = ms[i] - dSh; ms[i] = v < 0 ? 0 : (v > 100 ? 100 : v);
+        var h = mh[i] - dHp; mh[i] = h < 1 ? 1 : (h > 100 ? 100 : h);
+      }
       return;
     }
     s._hit = (s._hit || 0) + 1;
-    var first = live[(s._hit * 7 + 3) % live.length], order = [first];
-    for(var q=0;q<live.length;q++) if(live[q] !== first) order.push(live[q]);
-    var restSh = dSh * live.length, restHp = dHp * live.length;
-    for(var o=0;o<order.length && (restSh > 0 || restHp > 0);o++){
-      var k = order[o];
-      var tSh = Math.min(s.mSh[k], restSh); s.mSh[k] -= tSh; restSh -= tSh;
-      var tHp = Math.min(s.mHp[k] - 1, restHp); if(tHp > 0){ s.mHp[k] -= tHp; restHp -= tHp; }
+    // Первый принимает урон тот, чей номер среди живых выпал по очереди; остаток — дальше по кругу.
+    var pick = (s._hit * 7 + 3) % live, start = 0;
+    for(i=0;i<n;i++){ if(!ma[i]) continue; if(pick === 0){ start = i; break; } pick--; }
+    var restSh = dSh * live, restHp = dHp * live;
+    for(var o=0;o<n && (restSh > 0 || restHp > 0);o++){
+      var k = (start + o) % n;
+      if(!ma[k]) continue;
+      var tSh = ms[k] < restSh ? ms[k] : restSh; ms[k] -= tSh; restSh -= tSh;
+      var room = mh[k] - 1, tHp = room < restHp ? room : restHp;
+      if(tHp > 0){ mh[k] -= tHp; restHp -= tHp; }
     }
   }
   function chipTake(s, dmg){
