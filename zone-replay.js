@@ -349,21 +349,65 @@
   // hard pink ring this is meant to replace. The gradient is measured in the
   // map's own units, so the glow is proportional to the circle: wide and soft
   // around the first one, tight around the last.
+  /* ВИД ШТОРМА ПО ГЛАВАМ (29.10, его «зоны на симуляции, как выглядят»). По скриншотам карты (M) каждой
+     главы, цвета сняты с пикселей, то есть оценка:
+       c1 — Главы 1–2 (2019–2021), старый экран карты: сиренево-синий шторм с широкими косыми пурпурными
+            полосами, край текущей зоны тонкой тёмно-синей линией, розового свечения нет;
+       c3 — Главы 3–5 (2022–2024), новый экран карты: пурпурно-розовый шторм, тонкие бледные полосы, край
+            без линии, широкое розовое свечение от безопасной зоны, следующий круг тонкий белый без тени;
+       c6 — Глава 6 и дальше (2025+): фиолетовый с розовым свечением у стены, как было до этой правки.
+     Вид игры ставит index.html (ccStormPhases → window.CC_STORM_LOOK). */
+  var LOOKS = {
+    c1: {fill:'rgba(117,110,210,.5)', stripe:'rgba(214,72,214,.38)', gap:4.2, sw:1.1, rim:false, edge:'#1b2fb8', nextShadow:true},
+    c3: {fill:'rgba(175,62,161,.5)', stripe:'rgba(255,170,240,.16)', gap:1.6, sw:0.35, rim:true, rimMul:1.6, edge:null, nextShadow:false},
+    c6: {fill:'rgba(150,54,214,.44)', stripe:null, rim:true, rimMul:1, edge:null, nextShadow:true}
+  };
+  function stormLook(){
+    var k = (typeof window !== 'undefined' && window.CC_STORM_LOOK) || 'c6';
+    return LOOKS[k] || LOOKS.c6;
+  }
   var seq = 0;
-  function stormFill(vbW, vbH, cx, cy, r){
-    var d = outsideCircle(vbW, vbH, cx, cy, r);
+  function stormFill(vbW, vbH, cx, cy, r, scale){
+    var d = outsideCircle(vbW, vbH, cx, cy, r), look = stormLook();
     var g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
 
     var p = document.createElementNS('http://www.w3.org/2000/svg', 'path');
     p.setAttribute('d', d);
     p.setAttribute('fill-rule', 'evenodd');
-    p.setAttribute('fill', 'rgba(150,54,214,.44)');
+    p.setAttribute('fill', look.fill);
     g.appendChild(p);
+
+    // Косые полосы по шторму — узор в единицах карты, повёрнутый на 45°.
+    if(look.stripe){
+      var pid = 'zr-str-' + (++seq);
+      var pd = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+      var pat = document.createElementNS('http://www.w3.org/2000/svg', 'pattern');
+      pat.setAttribute('id', pid);
+      pat.setAttribute('patternUnits', 'userSpaceOnUse');
+      // Шаг полос — на экране, а не на карте: камера в эндгейме приближает в несколько раз.
+      var k = 1 / Math.max(1, scale || 1), gap = look.gap * k;
+      pat.setAttribute('width', gap); pat.setAttribute('height', gap);
+      pat.setAttribute('patternTransform', 'rotate(45)');
+      var bar = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+      bar.setAttribute('x', 0); bar.setAttribute('y', 0);
+      bar.setAttribute('width', look.sw * k); bar.setAttribute('height', gap);
+      bar.setAttribute('fill', look.stripe);
+      pat.appendChild(bar); pd.appendChild(pat); g.appendChild(pd);
+      var ps = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      ps.setAttribute('d', d);
+      ps.setAttribute('fill-rule', 'evenodd');
+      ps.setAttribute('fill', 'url(#' + pid + ')');
+      g.appendChild(ps);
+    }
+    if(!look.rim){
+      if(look.edge) g.appendChild(circle(cx, cy, r, look.edge, 1.4));
+      return g;
+    }
 
     // How far the burn reaches past the wall, in map units. Proportional, with
     // a floor so the endgame circles keep an edge at all and a ceiling so the
     // opening one does not wash half the island.
-    var gw = Math.max(0.55, Math.min(r * 0.09, 2.4));
+    var gw = Math.max(0.55, Math.min(r * 0.09, 2.4)) * (look.rimMul || 1);
     var R = r + gw, inner = r / R;
     var id = 'zr-rim-' + (++seq);
 
@@ -1220,7 +1264,7 @@
 
     // Storm first, so the circles and everybody's markers sit on top of it.
     handle.svg.appendChild(stormFill(100, vbH,
-      frame.circle.cx, frame.circle.cy, frame.circle.radius));
+      frame.circle.cx, frame.circle.cy, frame.circle.radius, handle.scale));
     // One ring on the map, and it is the circle you have to run to.
     //
     // The zone you are standing in does not get a line, because it does not
@@ -1235,10 +1279,12 @@
     // pale, the storm is purple, and a white thread crossing both needs
     // something to sit on.
     if(frame.next){
-      handle.svg.appendChild(circle(frame.next.cx, frame.next.cy, frame.next.radius,
+      // Главы 3–5 рисовали следующий круг тонкой белой линией без тени (stormLook).
+      var nl = stormLook();
+      if(nl.nextShadow) handle.svg.appendChild(circle(frame.next.cx, frame.next.cy, frame.next.radius,
         'rgba(12,8,26,.45)', 3.4));
       handle.svg.appendChild(circle(frame.next.cx, frame.next.cy, frame.next.radius,
-        'rgba(255,255,255,.96)', 1.6));
+        'rgba(255,255,255,.96)', nl.nextShadow ? 1.6 : 1.2));
     }
 
     /* Где кто умер (15.10): крестик на месте гибели держится до конца игры, как на карте повтора в самой игре.

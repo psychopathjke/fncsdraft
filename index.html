@@ -9396,7 +9396,7 @@
      tools/check-deploy-folder.js: забыть обновить руками теперь нельзя, папка
      деплоя просто не соберётся зелёной. -->
 <script src="zone-sim.js?v=d906481d"></script>
-<script src="zone-replay.js?v=eddac9ed"></script>
+<script src="zone-replay.js?v=44dc45f4"></script>
 <!-- Командная карьера: транспорт и склейка. Весь код мультиплеера живёт здесь,
      в index.html только точки врезки. ?v= — тот же кэш-предохранитель, что и
      у соседей: поменял mp.js — переставь хеш, иначе браузер возьмёт старый
@@ -115003,6 +115003,9 @@ function ccStormDay(set){
   return CC_STORM_DAY[k] || CC_STORM_DAY[k.charAt(0)] || '';
 }
 function ccStormPhases(set, squadSize){
+  // Вид шторма на карте (zone-replay stormLook): Главы 1–2 до 5.12.2021, Главы 3–5 до 1.12.2024, дальше нынешний.
+  const day=ccStormDay(set);
+  try{ window.CC_STORM_LOOK=!day ? 'c6' : day<'2021-12-05' ? 'c1' : day<'2024-12-01' ? 'c3' : 'c6'; }catch(e){}
   if(/^r\d$/.test(set)){ CC_GAME_PHASES=ZoneSim.RELOAD_PHASES; return ZoneSim.RELOAD_PHASES; }
   CC_GAME_PHASES=ZoneSim.phasesFor ? ZoneSim.phasesFor(ccStormDay(set), squadSize) : null;
   return CC_GAME_PHASES || undefined;
@@ -120506,7 +120509,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='49f833df';
+const CC_BUILD='1dbf0caf';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
