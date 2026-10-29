@@ -10763,7 +10763,7 @@ squadSourceTitle:'Твой состав — источник данных по �
 newDraftBtn:'Новый драфт',
 shareResultBtn:'Поделиться результатом',
 matchHistoryLabel:'История матчей', closeBtn:'Закрыть',
-ccLiveDay2:k=>'день 2: очки ×1.5, элим '+k+' (правило Epic)', finalsLiveGameLabel:(s,g,n)=>s+' — игра '+g+' из '+n, finalsLiveDoneLabel:s=>s+' — этап завершён, считаем итог...', finalsLiveDefault:'Финалы', liveHeat:n=>'Heat '+n, ccHeatOf:(n,m)=>'Хит '+n+' из '+m, liveLcq:'Last Chance Qualifier · Раунд 1', liveLcqR2:'Last Chance Qualifier · Раунд 2', liveRegionalFinals:'Гранд-финал региона',
+ccLiveDay2:k=>'день 2: очки ×1.5, элим '+k+' (правило Epic)', finalsLiveDayLabel:(s,d,g,n)=>s+' · день '+d+' · игра '+g+' из '+n, ccDayEnd:d=>'Конец дня '+d, ccDayEndSub:'Очки идут во второй день', finalsLiveGameLabel:(s,g,n)=>s+' — игра '+g+' из '+n, finalsLiveDoneLabel:s=>s+' — этап завершён, считаем итог...', finalsLiveDefault:'Финалы', liveHeat:n=>'Heat '+n, ccHeatOf:(n,m)=>'Хит '+n+' из '+m, liveLcq:'Last Chance Qualifier · Раунд 1', liveLcqR2:'Last Chance Qualifier · Раунд 2', liveRegionalFinals:'Гранд-финал региона',
 liveScq:'Second Chance Qualifier', ccScqSeat:'Место на Саммите в Дюссельдорфе: нижняя сетка', ccScqNoSeat:n=>'На Саммит уезжают первые '+n, liveUpper:'Summit · Верхняя сетка', liveLower:'Summit · Нижняя сетка', liveSummitFinals:'Summit · Гранд-финал',
 apiNote:'Все игроки — реальные участники FNCS, рейтинг и характеристики взяты из опубликованных таблиц (подробнее — на первом экране). Симулируется только сам турнир после драфта.',
 regionUnk:'Регион не подтверждён', allRegions:'Все регионы',
@@ -11129,7 +11129,8 @@ ccYearNames:{
   FNCSSolos_FastTrack:'FNCS Solos · Fast Track',
   FNCSSolos_Q2Round2:'FNCS Solos · квал 2, раунд 2',
   FNCSSolos_Q2Round3:'FNCS Solos · квал 2, раунд 3',
-  FNCSSolos_Heats:'FNCS Solos · хиты',
+  FNCSSolos_Heats:'FNCS Solos · хит 1',
+  FNCSSolos_Heats2:'FNCS Solos · хит 2',
   FNCSSolos_LCQRound1:'FNCS Solos · последний шанс, раунд 1',
   FNCSSolos_LCQFinal:'FNCS Solos · последний шанс, финал',
   FNCSSolos_Final:'FNCS Solos · финал',
@@ -12931,7 +12932,7 @@ squadSourceTitle:'Your squad — data source per player', playerHeader:'Player',
 newDraftBtn:'New draft',
 shareResultBtn:'Share result',
 matchHistoryLabel:'Match History', closeBtn:'Close',
-ccLiveDay2:k=>'day 2: points ×1.5, '+k+' per elim (Epic rule)', finalsLiveGameLabel:(s,g,n)=>s+' — game '+g+' of '+n, finalsLiveDoneLabel:s=>s+' — stage complete, tallying results...', finalsLiveDefault:'Finals', liveHeat:n=>'Heat '+n, ccHeatOf:(n,m)=>'Heat '+n+' of '+m, liveLcq:'Last Chance Qualifier · Round 1', liveLcqR2:'Last Chance Qualifier · Round 2', liveRegionalFinals:'Regional Grand Finals',
+ccLiveDay2:k=>'day 2: points ×1.5, '+k+' per elim (Epic rule)', finalsLiveDayLabel:(s,d,g,n)=>s+' · day '+d+' · game '+g+' of '+n, ccDayEnd:d=>'End of day '+d, ccDayEndSub:'Points carry into day 2', finalsLiveGameLabel:(s,g,n)=>s+' — game '+g+' of '+n, finalsLiveDoneLabel:s=>s+' — stage complete, tallying results...', finalsLiveDefault:'Finals', liveHeat:n=>'Heat '+n, ccHeatOf:(n,m)=>'Heat '+n+' of '+m, liveLcq:'Last Chance Qualifier · Round 1', liveLcqR2:'Last Chance Qualifier · Round 2', liveRegionalFinals:'Regional Grand Finals',
 liveScq:'Second Chance Qualifier', ccScqSeat:'A Summit seat in Düsseldorf: Lower Bracket', ccScqNoSeat:n=>'The top '+n+' go to the Summit', liveUpper:'Summit · Upper Bracket', liveLower:'Summit · Lower Bracket', liveSummitFinals:'Summit · Grand Finals',
 apiNote:'All players are real FNCS participants, and ratings and attributes come from published standings (details on the first screen). Only the tournament after the draft is simulated.',
 regionUnk:'Region unconfirmed', allRegions:'All regions',
@@ -13248,7 +13249,8 @@ ccYearNames:{
   FNCSSolos_FastTrack:'FNCS Solos · Fast Track',
   FNCSSolos_Q2Round2:'FNCS Solos · Qualifier 2, Round 2',
   FNCSSolos_Q2Round3:'FNCS Solos · Qualifier 2, Round 3',
-  FNCSSolos_Heats:'FNCS Solos · Heats',
+  FNCSSolos_Heats:'FNCS Solos · Heat 1',
+  FNCSSolos_Heats2:'FNCS Solos · Heat 2',
   FNCSSolos_LCQRound1:'FNCS Solos · Last Chance, Round 1',
   FNCSSolos_LCQFinal:'FNCS Solos · Last Chance, Final',
   FNCSSolos_Final:'FNCS Solos · Finals',
@@ -14834,7 +14836,7 @@ lanSeatHeld:(rank)=>'L’équipe avait déjà sa place avant le Major — finir 
 summitRegionCount:(n,m)=>n+' + '+m,
 celScqSub:r=>ccTopC(r)+' — ton billet pour la LAN',
 celGcSub:r=>ccTopC(r)+' aux Grandes Finales du Summit',
-ccLiveDay2:k=>'jour 2 : points ×1,5, '+k+' par élimination (règle Epic)',finalsLiveGameLabel:(s,g,n)=>s+' — partie '+g+' sur '+n,
+ccLiveDay2:k=>'jour 2 : points ×1,5, '+k+' par élimination (règle Epic)',finalsLiveDayLabel:(s,d,g,n)=>s+' · jour '+d+' · partie '+g+' sur '+n, ccDayEnd:d=>'Fin du jour '+d, ccDayEndSub:'Les points passent au jour 2', finalsLiveGameLabel:(s,g,n)=>s+' — partie '+g+' sur '+n,
 finalsLiveDoneLabel:s=>s+' — étape terminée, on compte les résultats…',
 liveHeat:n=>'Heat '+n, ccHeatOf:(n,m)=>'Heat '+n+' sur '+m,
 synergyPartner:v=>' — vrais coéquipiers (+'+v+')',
@@ -15766,7 +15768,7 @@ ccVicFail:n=>'Hors du top '+n+' — la Manche 2 sans toi',
 ccVicCash:(w,c)=>w+(w===1?' victoire':' victoires')+' — '+c,
 ccNewsVicCash:(w,c)=>'Victory Cup : '+w+(w===1?' victoire':' victoires')+', '+c+' gagnés',
 ccNewsVicOut:(p,of)=>'Victory Cup : '+ccTop(p)+' sur '+of+', pas de Manche 2',
-ccYearNames:{ReloadEliteSeries1Opens:'Reload · opens coupe 1',ReloadEliteSeries1PlayIn:'Reload · play-in coupe 1',ReloadEliteSeries1Heats:'Reload · heats coupe 1',ReloadEliteSeries1Final:'Reload · finale coupe 1',ReloadEliteSeries2Opens:'Reload · opens coupe 2',ReloadEliteSeries2PlayIn:'Reload · play-in coupe 2',ReloadEliteSeries2Heats:'Reload · heats coupe 2',ReloadEliteSeries2Final:'Reload · finale coupe 2',ReloadEliteSeries3Opens:'Reload · opens coupe 3',ReloadEliteSeries3PlayIn:'Reload · play-in coupe 3',ReloadEliteSeries3Heats:'Reload · heats coupe 3',ReloadEliteSeries3Final:'Reload · finale coupe 3',ReloadEliteSeries4Opens:'Reload · opens coupe 4',ReloadEliteSeries4PlayIn:'Reload · play-in coupe 4',ReloadEliteSeries4Heats:'Reload · heats coupe 4',ReloadEliteSeries4Final:'Reload · finale coupe 4',Major1_PlayIn:'Major 1 · Play-In',Major1_Heats:'Major 1 · Heats',Major1_LCQ:'Major 1 · Last Chance',Major1_Final:'Major 1 · Finale',Summit_SCQPlay:'Second Chance · ouvert',Summit_SCQ:'Second Chance · finale',Summit_Upper:'Summit · Upper Bracket',Summit_Lower:'Summit · Lower Bracket',Summit_Final:'Summit · Grandes Finales',Major2_PlayIn:'Major 2 · Play-In',Major2_Heats:'Major 2 · Heats',Major2_LCQ:'Major 2 · Last Chance',Major2_Final:'Major 2 · Finale',GlobalChampionshipLastChance:'Global Championship · Last Chance',ReloadChampionshipParis:'Reload Championship · {CITY}',GlobalChampionship:'Global Championship · {CITY}',SoloSeries_Qualifier:'Solo Series · qualifications',SoloSeries_Heats:'Solo Series · heats',SoloSeries_Final:'Solo Series · finale',FNCSSolos_Q1Round2:'FNCS Solos · qualif 1, round 2',FNCSSolos_Q1Round3:'FNCS Solos · qualif 1, round 3',FNCSSolos_FastTrack:'FNCS Solos · Fast Track',FNCSSolos_Q2Round2:'FNCS Solos · qualif 2, round 2',FNCSSolos_Q2Round3:'FNCS Solos · qualif 2, round 3',FNCSSolos_Heats:'FNCS Solos · heats',FNCSSolos_LCQRound1:'FNCS Solos · Last Chance, round 1',FNCSSolos_LCQFinal:'FNCS Solos · Last Chance, finale',FNCSSolos_Final:'FNCS Solos · finale',FNCSSoloReload_Round2:'FNCS Solo Reload · qualif, round 2',FNCSSoloReload_Round3:'FNCS Solo Reload · qualif, round 3',FNCSSoloReload_Heats:'FNCS Solo Reload · heats',FNCSSoloReload_LCQRound1:'FNCS Solo Reload · Last Chance, round 1',FNCSSoloReload_LCQFinal:'FNCS Solo Reload · Last Chance, finale',FNCSSoloReload_Final:'FNCS Solo Reload · finale',ProAm_Dallas:'Pro-Am · Dallas',ProAm_SaoPaulo:'Pro-Am · São Paulo', ProAm_Paris:'Pro-Am · Paris', ProAm_Seoul:'Pro-Am · Seoul', NationsTrial:'Coupe des nations · sélection', NationsQual:'Coupe des nations · qualification', NationsFinal:'Coupe des nations · finale · {CITY}'},
+ccYearNames:{ReloadEliteSeries1Opens:'Reload · opens coupe 1',ReloadEliteSeries1PlayIn:'Reload · play-in coupe 1',ReloadEliteSeries1Heats:'Reload · heats coupe 1',ReloadEliteSeries1Final:'Reload · finale coupe 1',ReloadEliteSeries2Opens:'Reload · opens coupe 2',ReloadEliteSeries2PlayIn:'Reload · play-in coupe 2',ReloadEliteSeries2Heats:'Reload · heats coupe 2',ReloadEliteSeries2Final:'Reload · finale coupe 2',ReloadEliteSeries3Opens:'Reload · opens coupe 3',ReloadEliteSeries3PlayIn:'Reload · play-in coupe 3',ReloadEliteSeries3Heats:'Reload · heats coupe 3',ReloadEliteSeries3Final:'Reload · finale coupe 3',ReloadEliteSeries4Opens:'Reload · opens coupe 4',ReloadEliteSeries4PlayIn:'Reload · play-in coupe 4',ReloadEliteSeries4Heats:'Reload · heats coupe 4',ReloadEliteSeries4Final:'Reload · finale coupe 4',Major1_PlayIn:'Major 1 · Play-In',Major1_Heats:'Major 1 · Heats',Major1_LCQ:'Major 1 · Last Chance',Major1_Final:'Major 1 · Finale',Summit_SCQPlay:'Second Chance · ouvert',Summit_SCQ:'Second Chance · finale',Summit_Upper:'Summit · Upper Bracket',Summit_Lower:'Summit · Lower Bracket',Summit_Final:'Summit · Grandes Finales',Major2_PlayIn:'Major 2 · Play-In',Major2_Heats:'Major 2 · Heats',Major2_LCQ:'Major 2 · Last Chance',Major2_Final:'Major 2 · Finale',GlobalChampionshipLastChance:'Global Championship · Last Chance',ReloadChampionshipParis:'Reload Championship · {CITY}',GlobalChampionship:'Global Championship · {CITY}',SoloSeries_Qualifier:'Solo Series · qualifications',SoloSeries_Heats:'Solo Series · heats',SoloSeries_Final:'Solo Series · finale',FNCSSolos_Q1Round2:'FNCS Solos · qualif 1, round 2',FNCSSolos_Q1Round3:'FNCS Solos · qualif 1, round 3',FNCSSolos_FastTrack:'FNCS Solos · Fast Track',FNCSSolos_Q2Round2:'FNCS Solos · qualif 2, round 2',FNCSSolos_Q2Round3:'FNCS Solos · qualif 2, round 3',FNCSSolos_Heats:'FNCS Solos · heat 1', FNCSSolos_Heats2:'FNCS Solos · heat 2',FNCSSolos_LCQRound1:'FNCS Solos · Last Chance, round 1',FNCSSolos_LCQFinal:'FNCS Solos · Last Chance, finale',FNCSSolos_Final:'FNCS Solos · finale',FNCSSoloReload_Round2:'FNCS Solo Reload · qualif, round 2',FNCSSoloReload_Round3:'FNCS Solo Reload · qualif, round 3',FNCSSoloReload_Heats:'FNCS Solo Reload · heats',FNCSSoloReload_LCQRound1:'FNCS Solo Reload · Last Chance, round 1',FNCSSoloReload_LCQFinal:'FNCS Solo Reload · Last Chance, finale',FNCSSoloReload_Final:'FNCS Solo Reload · finale',ProAm_Dallas:'Pro-Am · Dallas',ProAm_SaoPaulo:'Pro-Am · São Paulo', ProAm_Paris:'Pro-Am · Paris', ProAm_Seoul:'Pro-Am · Seoul', NationsTrial:'Coupe des nations · sélection', NationsQual:'Coupe des nations · qualification', NationsFinal:'Coupe des nations · finale · {CITY}'},
 ccNatZoneNA:'Amérique du Nord', ccNatCash:v=>'Gains : '+v+' pour toi', ccNatCongrats:'Coupe des nations', ccNatLockedNoCountry:'Ton pays n\'a pas d\'équipe : moins de quatre de ses joueurs dans la scène', ccNatLockedIn:'Tu es dans le top 4 de ton pays — pas de sélection, attends la qualification', ccNatLockedNotIn:(nat,names)=>'Tu n\'es pas dans l\'équipe '+nat+' : '+names, ccNatLockedDone:'L\'équipe a déjà joué cette soirée', ccNatLockedOut:nat=>nat+' ne s\'est pas qualifiée', ccNatTrialWon:'Sélection gagnée — la quatrième place est à toi', ccNatTrialLost:'Sélection perdue — l\'équipe part sans toi', ccNatQualThrough:nat=>nat+' est en finale de la Coupe des nations', ccNatQualOut:(nat,cut)=>nat+' hors du top '+cut+' — pas de finale', ccNatMedal:p=>(p===1 ? '🥇 Or' : p===2 ? '🥈 Argent' : '🥉 Bronze')+' à la Coupe des nations', ccNatFinalPlace:p=>ccTopC(p)+' à la Coupe des nations', ccNewsNatTrialWon:(nat,p,of)=>'Sélection '+nat+' gagnée : '+ccTop(p)+' sur '+of+' — quatrième place dans l\'équipe', ccNewsNatTrialLost:(nat,p,of)=>'Sélection '+nat+' : '+ccTop(p)+' sur '+of+' — l\'équipe part sans moi', ccNewsNatQualThrough:(nat,p,of)=>nat+' — '+ccTop(p)+' en qualification, direction la finale de la Coupe des nations', ccNewsNatQualOut:(nat,p,of)=>nat+' — '+ccTop(p)+' sur '+of+' en qualification, pas de finale pour nous', ccNewsNatMedal:(nat,p,of)=>(p===1 ? '🥇 '+nat+' — champions de la Coupe des nations' : (p===2 ? '🥈 ' : '🥉 ')+nat+' — '+ccTop(p)+' à la Coupe des nations'), ccNewsNatFinal:(nat,p,of)=>nat+' — '+ccTop(p)+' sur '+of+' à la Coupe des nations', ccNewsNatWorldQual:nat=>nat+' est en finale de la Coupe des nations — sans moi', ccNewsNatWorldOut:nat=>nat+' ne s\'est pas qualifiée pour la Coupe des nations', ccRaceWhynations:'Coupe des nations — chacun sa sélection, la soirée est à toi seul', ccNatSquadTitle:'Sélection pour la Coupe des nations', ccNatCaptain:'capitaine', ccNatYou:'toi', ccNatPickHint:'Tu es capitaine : choisis deux joueurs, la quatrième place se joue en sélection', ccNatPickSlot:'choisis un joueur', ccNatTrialSlot:'place de sélection', ccNatUnpickBtn:'Retirer', ccSpotNationsTab:'Coupe des nations · squads', ccNatSpotPick:'Choisir le drop de la sélection', ccNatModalWhy:'La Coupe des nations arrive et la sélection n\'est pas faite : tu es capitaine, choisis deux joueurs, sans eux la soirée ne commence pas', ccNatModalLater:'Plus tard', ccNatTrialFirst:'La sélection d\'abord', ccNatTrialFirstSub:d=>'Le pays joue une sélection en solo'+(d ? ' le '+d : '')+' ; en tant que capitaine tu n\'y joues pas. Ensuite tu choisis deux joueurs d\'après ses résultats, la quatrième place revient au meilleur des autres', ccNatAfterTrial:'choix après la sélection', ccNatLockedCap:'Tu es capitaine — la sélection pour la quatrième place se joue sans toi, attends la qualification',
 ccDuoWith:n=>'duo avec '+n,
 ccDuoFound:n=>n+(n===1?' joueur':' joueurs'),
@@ -17569,7 +17571,7 @@ stageCutLabel:n=>'— linea di taglio: passano i primi '+n+' —',
 summitRegionCount:(n,m)=>n+' + '+m,
 celScqSub:r=>ccTopC(r)+' — il tuo biglietto per il LAN',
 celGcSub:r=>ccTopC(r)+' nelle Gran Finali del Summit',
-ccLiveDay2:k=>'giorno 2: punti ×1,5, '+k+' per eliminazione (regola Epic)',finalsLiveGameLabel:(s,g,n)=>s+' — partita '+g+' di '+n,
+ccLiveDay2:k=>'giorno 2: punti ×1,5, '+k+' per eliminazione (regola Epic)',finalsLiveDayLabel:(s,d,g,n)=>s+' · giorno '+d+' · partita '+g+' di '+n, ccDayEnd:d=>'Fine del giorno '+d, ccDayEndSub:'I punti passano al giorno 2', finalsLiveGameLabel:(s,g,n)=>s+' — partita '+g+' di '+n,
 finalsLiveDoneLabel:s=>s+' — fase conclusa, calcolo i risultati...',
 liveHeat:n=>'Heat '+n,
 ccHeatOf:(n,m)=>'Heat '+n+' su '+m,
@@ -18264,7 +18266,7 @@ ccPingServer:city=>'verso il server di '+city,
 ccCity:{Dus:'Düsseldorf', Ant:'Anversa', Lyo:'Lione', Cph:'Copenaghen', Ftw:'Fort Worth', Rdu:'Raleigh', Par:'Parigi', Ryd:'Riyadh', Nyc:'New York', Tok:'Tokyo', Bel:'Belgrado', Kat:'Katowice', Sto:'Stoccolma', Mad:'Madrid', Ams:'Amsterdam', Dal:'Dallas', Sao:'San Paolo', Seo:'Seul', Tor:'Toronto', Syd:'Sydney', Mex:'Città del Messico', Dub:'Dubai', Ist:'Istanbul', Mil:'Milano', Lon:'Londra', Sin:'Singapore', Bue:'Buenos Aires', Alm:'Almaty', Scl:'Santiago'},
 ccCityIn:{Dus:'Düsseldorf', Ant:'Anversa', Lyo:'Lione', Cph:'Copenaghen', Ftw:'Fort Worth', Rdu:'Raleigh', Par:'Parigi', Ryd:'Riyadh', Nyc:'New York', Tok:'Tokyo', Bel:'Belgrado', Kat:'Katowice', Sto:'Stoccolma', Mad:'Madrid', Ams:'Amsterdam', Dal:'Dallas', Sao:'San Paolo', Seo:'Seul', Tor:'Toronto', Syd:'Sydney', Mex:'Città del Messico', Dub:'Dubai', Ist:'Istanbul', Mil:'Milano', Lon:'Londra', Sin:'Singapore', Bue:'Buenos Aires', Alm:'Almaty', Scl:'Santiago'},
 ccYearSub:{cup:'Una finestra, 11 partite', final:'Finale settimanale, solo Divisione 1', eval:'Due round in una sera, solo Divisione 1', major:'Play-In, Heat, LAN', gc:'La fine dell\u2019anno', reload:'Un circuito a s\u00e9, non FNCS', summit:'Tre giorni di LAN, dal Major 1', victory:'Due round, $100 per ogni vittoria nel secondo'},
-ccYearNames:{ReloadEliteSeries1Opens:'Reload · open coppa 1', ReloadEliteSeries1PlayIn:'Reload · play-in coppa 1', ReloadEliteSeries1Heats:'Reload · heat coppa 1', ReloadEliteSeries1Final:'Reload · finale coppa 1', ReloadEliteSeries2Opens:'Reload · open coppa 2', ReloadEliteSeries2PlayIn:'Reload · play-in coppa 2', ReloadEliteSeries2Heats:'Reload · heat coppa 2', ReloadEliteSeries2Final:'Reload · finale coppa 2', ReloadEliteSeries3Opens:'Reload · open coppa 3', ReloadEliteSeries3PlayIn:'Reload · play-in coppa 3', ReloadEliteSeries3Heats:'Reload · heat coppa 3', ReloadEliteSeries3Final:'Reload · finale coppa 3', ReloadEliteSeries4Opens:'Reload · open coppa 4', ReloadEliteSeries4PlayIn:'Reload · play-in coppa 4', ReloadEliteSeries4Heats:'Reload · heat coppa 4', ReloadEliteSeries4Final:'Reload · finale coppa 4', Major1_PlayIn:'Major 1 · Play-In', Major1_Heats:'Major 1 · Heat', Major1_LCQ:'Major 1 · Last Chance', Major1_Final:'Major 1 · Finale', Summit_SCQPlay:'Second Chance · open', Summit_SCQ:'Second Chance · finale', Summit_Upper:'Summit · Upper Bracket', Summit_Lower:'Summit · Lower Bracket', Summit_Final:'Summit · Gran Finali', Major2_PlayIn:'Major 2 · Play-In', Major2_Heats:'Major 2 · Heat', Major2_LCQ:'Major 2 · Last Chance', Major2_Final:'Major 2 · Finale', GlobalChampionshipLastChance:'Global Championship · Last Chance', ReloadChampionshipParis:'Reload Championship · {CITY}', GlobalChampionship:'Global Championship · {CITY}', SoloSeries_Qualifier:'Solo Series · qualificazioni', SoloSeries_Heats:'Solo Series · heat', SoloSeries_Final:'Solo Series · finali', FNCSSolos_Q1Round2:'FNCS Solos · qualif 1, round 2', FNCSSolos_Q1Round3:'FNCS Solos · qualif 1, round 3', FNCSSolos_FastTrack:'FNCS Solos · Fast Track', FNCSSolos_Q2Round2:'FNCS Solos · qualif 2, round 2', FNCSSolos_Q2Round3:'FNCS Solos · qualif 2, round 3', FNCSSolos_Heats:'FNCS Solos · heat', FNCSSolos_LCQRound1:'FNCS Solos · Last Chance, round 1', FNCSSolos_LCQFinal:'FNCS Solos · Last Chance, finale', FNCSSolos_Final:'FNCS Solos · finali', FNCSSoloReload_Round2:'FNCS Solo Reload · qualif, round 2', FNCSSoloReload_Round3:'FNCS Solo Reload · qualif, round 3', FNCSSoloReload_Heats:'FNCS Solo Reload · heat', FNCSSoloReload_LCQRound1:'FNCS Solo Reload · Last Chance, round 1', FNCSSoloReload_LCQFinal:'FNCS Solo Reload · Last Chance, finale', FNCSSoloReload_Final:'FNCS Solo Reload · finali', ProAm_Dallas:'Pro-Am · Dallas', ProAm_SaoPaulo:'Pro-Am · San Paolo', ProAm_Paris:'Pro-Am · Paris', ProAm_Seoul:'Pro-Am · Seoul', NationsTrial:'Coppa delle nazioni · selezione', NationsQual:'Coppa delle nazioni · qualificazione', NationsFinal:'Coppa delle nazioni · finale · {CITY}'},
+ccYearNames:{ReloadEliteSeries1Opens:'Reload · open coppa 1', ReloadEliteSeries1PlayIn:'Reload · play-in coppa 1', ReloadEliteSeries1Heats:'Reload · heat coppa 1', ReloadEliteSeries1Final:'Reload · finale coppa 1', ReloadEliteSeries2Opens:'Reload · open coppa 2', ReloadEliteSeries2PlayIn:'Reload · play-in coppa 2', ReloadEliteSeries2Heats:'Reload · heat coppa 2', ReloadEliteSeries2Final:'Reload · finale coppa 2', ReloadEliteSeries3Opens:'Reload · open coppa 3', ReloadEliteSeries3PlayIn:'Reload · play-in coppa 3', ReloadEliteSeries3Heats:'Reload · heat coppa 3', ReloadEliteSeries3Final:'Reload · finale coppa 3', ReloadEliteSeries4Opens:'Reload · open coppa 4', ReloadEliteSeries4PlayIn:'Reload · play-in coppa 4', ReloadEliteSeries4Heats:'Reload · heat coppa 4', ReloadEliteSeries4Final:'Reload · finale coppa 4', Major1_PlayIn:'Major 1 · Play-In', Major1_Heats:'Major 1 · Heat', Major1_LCQ:'Major 1 · Last Chance', Major1_Final:'Major 1 · Finale', Summit_SCQPlay:'Second Chance · open', Summit_SCQ:'Second Chance · finale', Summit_Upper:'Summit · Upper Bracket', Summit_Lower:'Summit · Lower Bracket', Summit_Final:'Summit · Gran Finali', Major2_PlayIn:'Major 2 · Play-In', Major2_Heats:'Major 2 · Heat', Major2_LCQ:'Major 2 · Last Chance', Major2_Final:'Major 2 · Finale', GlobalChampionshipLastChance:'Global Championship · Last Chance', ReloadChampionshipParis:'Reload Championship · {CITY}', GlobalChampionship:'Global Championship · {CITY}', SoloSeries_Qualifier:'Solo Series · qualificazioni', SoloSeries_Heats:'Solo Series · heat', SoloSeries_Final:'Solo Series · finali', FNCSSolos_Q1Round2:'FNCS Solos · qualif 1, round 2', FNCSSolos_Q1Round3:'FNCS Solos · qualif 1, round 3', FNCSSolos_FastTrack:'FNCS Solos · Fast Track', FNCSSolos_Q2Round2:'FNCS Solos · qualif 2, round 2', FNCSSolos_Q2Round3:'FNCS Solos · qualif 2, round 3', FNCSSolos_Heats:'FNCS Solos · heat 1', FNCSSolos_Heats2:'FNCS Solos · heat 2', FNCSSolos_LCQRound1:'FNCS Solos · Last Chance, round 1', FNCSSolos_LCQFinal:'FNCS Solos · Last Chance, finale', FNCSSolos_Final:'FNCS Solos · finali', FNCSSoloReload_Round2:'FNCS Solo Reload · qualif, round 2', FNCSSoloReload_Round3:'FNCS Solo Reload · qualif, round 3', FNCSSoloReload_Heats:'FNCS Solo Reload · heat', FNCSSoloReload_LCQRound1:'FNCS Solo Reload · Last Chance, round 1', FNCSSoloReload_LCQFinal:'FNCS Solo Reload · Last Chance, finale', FNCSSoloReload_Final:'FNCS Solo Reload · finali', ProAm_Dallas:'Pro-Am · Dallas', ProAm_SaoPaulo:'Pro-Am · San Paolo', ProAm_Paris:'Pro-Am · Paris', ProAm_Seoul:'Pro-Am · Seoul', NationsTrial:'Coppa delle nazioni · selezione', NationsQual:'Coppa delle nazioni · qualificazione', NationsFinal:'Coppa delle nazioni · finale · {CITY}'},
 ccNatZoneNA:'Nord America', ccNatCash:v=>'Montepremi: '+v+' a te', ccNatCongrats:'Coppa delle nazioni', ccNatLockedNoCountry:'Il tuo paese non ha una nazionale: meno di quattro suoi giocatori nella scena', ccNatLockedIn:'Sei nei primi quattro del tuo paese — niente selezione, aspetta la qualificazione', ccNatLockedNotIn:(nat,names)=>'Non sei nella nazionale '+nat+': '+names, ccNatLockedDone:'La nazionale ha già giocato questa serata', ccNatLockedOut:nat=>nat+' non si è qualificata', ccNatTrialWon:'Selezione vinta — il quarto posto in nazionale è tuo', ccNatTrialLost:'Selezione persa — la nazionale parte senza di te', ccNatQualThrough:nat=>nat+' è nella finale della Coppa delle nazioni', ccNatQualOut:(nat,cut)=>nat+' fuori dalla top '+cut+' — niente finale', ccNatMedal:p=>(p===1 ? '🥇 Oro' : p===2 ? '🥈 Argento' : '🥉 Bronzo')+' alla Coppa delle nazioni', ccNatFinalPlace:p=>ccTopC(p)+' alla Coppa delle nazioni', ccNewsNatTrialWon:(nat,p,of)=>'Selezione '+nat+' vinta: '+ccTop(p)+' su '+of+' — quarto posto in nazionale', ccNewsNatTrialLost:(nat,p,of)=>'Selezione '+nat+': '+ccTop(p)+' su '+of+' — la nazionale parte senza di me', ccNewsNatQualThrough:(nat,p,of)=>nat+' — '+ccTop(p)+' in qualificazione, si vola alla finale della Coppa delle nazioni', ccNewsNatQualOut:(nat,p,of)=>nat+' — '+ccTop(p)+' su '+of+' in qualificazione, niente finale per noi', ccNewsNatMedal:(nat,p,of)=>(p===1 ? '🥇 '+nat+' — campioni della Coppa delle nazioni' : (p===2 ? '🥈 ' : '🥉 ')+nat+' — '+ccTop(p)+' alla Coppa delle nazioni'), ccNewsNatFinal:(nat,p,of)=>nat+' — '+ccTop(p)+' su '+of+' alla Coppa delle nazioni', ccNewsNatWorldQual:nat=>nat+' è in finale della Coppa delle nazioni — senza di me', ccNewsNatWorldOut:nat=>nat+' non si è qualificata per la Coppa delle nazioni', ccRaceWhynations:'Coppa delle nazioni — ognuno con la sua nazionale, la serata è tua', ccNatSquadTitle:'Nazionale per la Coppa delle nazioni', ccNatCaptain:'capitano', ccNatYou:'tu', ccNatPickHint:'Sei il capitano: scegli due giocatori, il quarto posto lo assegna la selezione', ccNatPickSlot:'scegli un giocatore', ccNatTrialSlot:'posto della selezione', ccNatUnpickBtn:'Togli', ccSpotNationsTab:'Coppa delle nazioni · squadre', ccNatSpotPick:'Scegli il drop della nazionale', ccNatModalWhy:'La Coppa delle nazioni è alle porte e la nazionale non è fatta: sei il capitano, scegli due giocatori, senza di loro la serata non parte', ccNatModalLater:'Più tardi', ccNatTrialFirst:'Prima la selezione', ccNatTrialFirstSub:d=>'Il paese gioca una selezione in solo'+(d ? ' il '+d : '')+'; da capitano non partecipi. Dopo scegli due giocatori in base ai risultati, il quarto posto va al migliore dei restanti', ccNatAfterTrial:'scelta dopo la selezione', ccNatLockedCap:'Sei il capitano — la selezione per il quarto posto si gioca senza di te, aspetta la qualificazione',
 modeFncs2026Title:"FNCS 2026",
 majorPick1:"Major 1",
@@ -20122,7 +20124,7 @@ stageCutLabel:n=>'— linha de corte: os '+n+' melhores avan\u00e7am —',
 summitRegionCount:(n,m)=>n+' + '+m,
 celScqSub:r=>ccTopC(r)+' — sua passagem para o LAN',
 celGcSub:r=>ccTopC(r)+' nas Grandes Finais do Summit',
-ccLiveDay2:k=>'dia 2: pontos ×1,5, '+k+' por eliminação (regra Epic)',finalsLiveGameLabel:(s,g,n)=>s+' — partida '+g+' de '+n,
+ccLiveDay2:k=>'dia 2: pontos ×1,5, '+k+' por eliminação (regra Epic)',finalsLiveDayLabel:(s,d,g,n)=>s+' · dia '+d+' · partida '+g+' de '+n, ccDayEnd:d=>'Fim do dia '+d, ccDayEndSub:'Os pontos passam para o dia 2', finalsLiveGameLabel:(s,g,n)=>s+' — partida '+g+' de '+n,
 finalsLiveDoneLabel:s=>s+' — fase conclu\u00edda, somando os resultados...',
 liveHeat:n=>'Heat '+n,
 ccHeatOf:(n,m)=>'Heat '+n+' de '+m,
@@ -20817,7 +20819,7 @@ ccPingServer:city=>'at\u00e9 o servidor de '+city,
 ccCity:{Dus:'Düsseldorf', Ant:'Antuérpia', Lyo:'Lyon', Cph:'Copenhague', Ftw:'Fort Worth', Rdu:'Raleigh', Par:'Paris', Ryd:'Riade', Nyc:'Nova York', Tok:'Tóquio', Bel:'Belgrado', Kat:'Katowice', Sto:'Estocolmo', Mad:'Madri', Ams:'Amsterdã', Dal:'Dallas', Sao:'São Paulo', Seo:'Seul', Tor:'Toronto', Syd:'Sydney', Mex:'Cidade do México', Dub:'Dubai', Ist:'Istambul', Mil:'Milão', Lon:'Londres', Sin:'Singapura', Bue:'Buenos Aires', Alm:'Almaty', Scl:'Santiago'},
 ccCityIn:{Dus:'Düsseldorf', Ant:'Antuérpia', Lyo:'Lyon', Cph:'Copenhague', Ftw:'Fort Worth', Rdu:'Raleigh', Par:'Paris', Ryd:'Riade', Nyc:'Nova York', Tok:'Tóquio', Bel:'Belgrado', Kat:'Katowice', Sto:'Estocolmo', Mad:'Madri', Ams:'Amsterdã', Dal:'Dallas', Sao:'São Paulo', Seo:'Seul', Tor:'Toronto', Syd:'Sydney', Mex:'Cidade do México', Dub:'Dubai', Ist:'Istambul', Mil:'Milão', Lon:'Londres', Sin:'Singapura', Bue:'Buenos Aires', Alm:'Almaty', Scl:'Santiago'},
 ccYearSub:{cup:'Uma janela, 11 partidas', final:'Final semanal, s\u00f3 Divis\u00e3o 1', eval:'Duas rodadas numa noite, s\u00f3 Divis\u00e3o 1', major:'Play-In, Heats, LAN', gc:'O fim do ano', reload:'Circuito pr\u00f3prio, n\u00e3o \u00e9 FNCS', summit:'Tr\u00eas dias de LAN, vindos do Major 1', victory:'Duas rodadas, $100 por cada vit\u00f3ria na segunda'},
-ccYearNames:{ReloadEliteSeries1Opens:'Reload · opens copa 1', ReloadEliteSeries1PlayIn:'Reload · play-in copa 1', ReloadEliteSeries1Heats:'Reload · heats copa 1', ReloadEliteSeries1Final:'Reload · final copa 1', ReloadEliteSeries2Opens:'Reload · opens copa 2', ReloadEliteSeries2PlayIn:'Reload · play-in copa 2', ReloadEliteSeries2Heats:'Reload · heats copa 2', ReloadEliteSeries2Final:'Reload · final copa 2', ReloadEliteSeries3Opens:'Reload · opens copa 3', ReloadEliteSeries3PlayIn:'Reload · play-in copa 3', ReloadEliteSeries3Heats:'Reload · heats copa 3', ReloadEliteSeries3Final:'Reload · final copa 3', ReloadEliteSeries4Opens:'Reload · opens copa 4', ReloadEliteSeries4PlayIn:'Reload · play-in copa 4', ReloadEliteSeries4Heats:'Reload · heats copa 4', ReloadEliteSeries4Final:'Reload · final copa 4', Major1_PlayIn:'Major 1 · Play-In', Major1_Heats:'Major 1 · Heats', Major1_LCQ:'Major 1 · Last Chance', Major1_Final:'Major 1 · Final', Summit_SCQPlay:'Second Chance · aberto', Summit_SCQ:'Second Chance · final', Summit_Upper:'Summit · Upper Bracket', Summit_Lower:'Summit · Lower Bracket', Summit_Final:'Summit · Grandes Finais', Major2_PlayIn:'Major 2 · Play-In', Major2_Heats:'Major 2 · Heats', Major2_LCQ:'Major 2 · Last Chance', Major2_Final:'Major 2 · Final', GlobalChampionshipLastChance:'Global Championship · Last Chance', ReloadChampionshipParis:'Reload Championship · {CITY}', GlobalChampionship:'Global Championship · {CITY}', SoloSeries_Qualifier:'Solo Series · classificat\u00f3rias', SoloSeries_Heats:'Solo Series · heats', SoloSeries_Final:'Solo Series · finais', FNCSSolos_Q1Round2:'FNCS Solos · classif 1, round 2', FNCSSolos_Q1Round3:'FNCS Solos · classif 1, round 3', FNCSSolos_FastTrack:'FNCS Solos · Fast Track', FNCSSolos_Q2Round2:'FNCS Solos · classif 2, round 2', FNCSSolos_Q2Round3:'FNCS Solos · classif 2, round 3', FNCSSolos_Heats:'FNCS Solos · heats', FNCSSolos_LCQRound1:'FNCS Solos · Last Chance, round 1', FNCSSolos_LCQFinal:'FNCS Solos · Last Chance, final', FNCSSolos_Final:'FNCS Solos · finais', FNCSSoloReload_Round2:'FNCS Solo Reload · classif, round 2', FNCSSoloReload_Round3:'FNCS Solo Reload · classif, round 3', FNCSSoloReload_Heats:'FNCS Solo Reload · heats', FNCSSoloReload_LCQRound1:'FNCS Solo Reload · Last Chance, round 1', FNCSSoloReload_LCQFinal:'FNCS Solo Reload · Last Chance, final', FNCSSoloReload_Final:'FNCS Solo Reload · finais', ProAm_Dallas:'Pro-Am · Dallas', ProAm_SaoPaulo:'Pro-Am · San Paolo', ProAm_Paris:'Pro-Am · Paris', ProAm_Seoul:'Pro-Am · Seoul', NationsTrial:'Copa das Nações · seletiva', NationsQual:'Copa das Nações · classificatória', NationsFinal:'Copa das Nações · final · {CITY}'},
+ccYearNames:{ReloadEliteSeries1Opens:'Reload · opens copa 1', ReloadEliteSeries1PlayIn:'Reload · play-in copa 1', ReloadEliteSeries1Heats:'Reload · heats copa 1', ReloadEliteSeries1Final:'Reload · final copa 1', ReloadEliteSeries2Opens:'Reload · opens copa 2', ReloadEliteSeries2PlayIn:'Reload · play-in copa 2', ReloadEliteSeries2Heats:'Reload · heats copa 2', ReloadEliteSeries2Final:'Reload · final copa 2', ReloadEliteSeries3Opens:'Reload · opens copa 3', ReloadEliteSeries3PlayIn:'Reload · play-in copa 3', ReloadEliteSeries3Heats:'Reload · heats copa 3', ReloadEliteSeries3Final:'Reload · final copa 3', ReloadEliteSeries4Opens:'Reload · opens copa 4', ReloadEliteSeries4PlayIn:'Reload · play-in copa 4', ReloadEliteSeries4Heats:'Reload · heats copa 4', ReloadEliteSeries4Final:'Reload · final copa 4', Major1_PlayIn:'Major 1 · Play-In', Major1_Heats:'Major 1 · Heats', Major1_LCQ:'Major 1 · Last Chance', Major1_Final:'Major 1 · Final', Summit_SCQPlay:'Second Chance · aberto', Summit_SCQ:'Second Chance · final', Summit_Upper:'Summit · Upper Bracket', Summit_Lower:'Summit · Lower Bracket', Summit_Final:'Summit · Grandes Finais', Major2_PlayIn:'Major 2 · Play-In', Major2_Heats:'Major 2 · Heats', Major2_LCQ:'Major 2 · Last Chance', Major2_Final:'Major 2 · Final', GlobalChampionshipLastChance:'Global Championship · Last Chance', ReloadChampionshipParis:'Reload Championship · {CITY}', GlobalChampionship:'Global Championship · {CITY}', SoloSeries_Qualifier:'Solo Series · classificat\u00f3rias', SoloSeries_Heats:'Solo Series · heats', SoloSeries_Final:'Solo Series · finais', FNCSSolos_Q1Round2:'FNCS Solos · classif 1, round 2', FNCSSolos_Q1Round3:'FNCS Solos · classif 1, round 3', FNCSSolos_FastTrack:'FNCS Solos · Fast Track', FNCSSolos_Q2Round2:'FNCS Solos · classif 2, round 2', FNCSSolos_Q2Round3:'FNCS Solos · classif 2, round 3', FNCSSolos_Heats:'FNCS Solos · heat 1', FNCSSolos_Heats2:'FNCS Solos · heat 2', FNCSSolos_LCQRound1:'FNCS Solos · Last Chance, round 1', FNCSSolos_LCQFinal:'FNCS Solos · Last Chance, final', FNCSSolos_Final:'FNCS Solos · finais', FNCSSoloReload_Round2:'FNCS Solo Reload · classif, round 2', FNCSSoloReload_Round3:'FNCS Solo Reload · classif, round 3', FNCSSoloReload_Heats:'FNCS Solo Reload · heats', FNCSSoloReload_LCQRound1:'FNCS Solo Reload · Last Chance, round 1', FNCSSoloReload_LCQFinal:'FNCS Solo Reload · Last Chance, final', FNCSSoloReload_Final:'FNCS Solo Reload · finais', ProAm_Dallas:'Pro-Am · Dallas', ProAm_SaoPaulo:'Pro-Am · San Paolo', ProAm_Paris:'Pro-Am · Paris', ProAm_Seoul:'Pro-Am · Seoul', NationsTrial:'Copa das Nações · seletiva', NationsQual:'Copa das Nações · classificatória', NationsFinal:'Copa das Nações · final · {CITY}'},
 ccNatZoneNA:'América do Norte', ccNatCash:v=>'Premiação: '+v+' para você', ccNatCongrats:'Copa das Nações', ccNatLockedNoCountry:'O seu país não tem seleção: menos de quatro jogadores dele na cena', ccNatLockedIn:'Você está no top 4 do seu país — sem seletiva, espere a classificatória', ccNatLockedNotIn:(nat,names)=>'Você não está na seleção '+nat+': '+names, ccNatLockedDone:'A seleção já jogou esta noite', ccNatLockedOut:nat=>nat+' não se classificou', ccNatTrialWon:'Seletiva vencida — a quarta vaga da seleção é sua', ccNatTrialLost:'Seletiva perdida — a seleção vai sem você', ccNatQualThrough:nat=>nat+' está na final da Copa das Nações', ccNatQualOut:(nat,cut)=>nat+' fora do top '+cut+' — sem final', ccNatMedal:p=>(p===1 ? '🥇 Ouro' : p===2 ? '🥈 Prata' : '🥉 Bronze')+' na Copa das Nações', ccNatFinalPlace:p=>ccTopC(p)+' na Copa das Nações', ccNewsNatTrialWon:(nat,p,of)=>'Seletiva '+nat+' vencida: '+ccTop(p)+' de '+of+' — quarta vaga na seleção', ccNewsNatTrialLost:(nat,p,of)=>'Seletiva '+nat+': '+ccTop(p)+' de '+of+' — a seleção vai sem mim', ccNewsNatQualThrough:(nat,p,of)=>nat+' — '+ccTop(p)+' na classificatória, vamos à final da Copa das Nações', ccNewsNatQualOut:(nat,p,of)=>nat+' — '+ccTop(p)+' de '+of+' na classificatória, sem final para nós', ccNewsNatMedal:(nat,p,of)=>(p===1 ? '🥇 '+nat+' — campeã da Copa das Nações' : (p===2 ? '🥈 ' : '🥉 ')+nat+' — '+ccTop(p)+' na Copa das Nações'), ccNewsNatFinal:(nat,p,of)=>nat+' — '+ccTop(p)+' de '+of+' na Copa das Nações', ccNewsNatWorldQual:nat=>nat+' chegou à final da Copa das Nações — sem mim', ccNewsNatWorldOut:nat=>nat+' não se classificou para a Copa das Nações', ccRaceWhynations:'Copa das Nações — cada um com a sua seleção, a noite é sua', ccNatSquadTitle:'Seleção para a Copa das Nações', ccNatCaptain:'capitão', ccNatYou:'você', ccNatPickHint:'Você é o capitão: escolha dois, a quarta vaga sai da seletiva', ccNatPickSlot:'escolha um jogador', ccNatTrialSlot:'vaga da seletiva', ccNatUnpickBtn:'Tirar', ccSpotNationsTab:'Copa das Nações · esquadrões', ccNatSpotPick:'Escolher o drop da seleção', ccNatModalWhy:'A Copa das Nações está chegando e a seleção não está pronta: você é o capitão, escolha dois, sem eles a noite não começa', ccNatModalLater:'Depois', ccNatTrialFirst:'Primeiro a seletiva', ccNatTrialFirstSub:d=>'O país joga uma seletiva solo'+(d ? ' em '+d : '')+'; como capitão você não participa. Depois você escolhe dois pelos resultados, a quarta vaga vai para o melhor dos restantes', ccNatAfterTrial:'escolha após a seletiva', ccNatLockedCap:'Você é o capitão — a seletiva pela quarta vaga é jogada sem você, espere a classificatória',
 modeFncs2026Title:"FNCS 2026",
 majorPick1:"Major 1",
@@ -104766,6 +104768,19 @@ function ccYield(){
   }
   return new Promise(res=>{ CC_YIELD_CH.q.push(res); CC_YIELD_CH.port2.postMessage(0); });
 }
+/* Конец первого дня финала (simulateGamesLive, opts.twoDay/days): карточка на карте, очки идут дальше. */
+async function ccDayBreak(host, stageName, day){
+  if(!host) return;
+  const card=document.createElement('div');
+  card.className='vr-card';
+  card.innerHTML='<div class="vr-slab"><div class="vr-title">'+esc(L().ccDayEnd(day))+'</div></div>'+
+    '<div class="vr-strip"><span class="vr-stage">'+stageName+'</span><span class="vr-game">'+esc(L().ccDayEndSub)+'</span></div>';
+  host.appendChild(card);
+  void card.offsetHeight;
+  card.classList.add('vr-in');
+  try{ await sleep(2400); }
+  finally{ card.classList.remove('vr-in'); setTimeout(()=>card.remove(), 400); }
+}
 function sleep(ms){
   const gen=runGeneration;
   return ccMpIdle(new Promise((res,rej)=>{
@@ -105764,10 +105779,20 @@ async function simulateGamesLive(teams, numGames, pointsFn, killMult, fieldPrefi
   }
 
   const liveLabel = opts.stageName || L().finalsLiveDefault;
+  /* ФИНАЛ В ДВА ДНЯ (29.10, его «финалы все по два дня, во всех модах… суммируются во второй»): у Epic гранд-финалы
+     играются двумя днями по половине матчей, и таблица второго дня — продолжение первого. opts.days — сколько игр в
+     первый день (Мейджоры 2024: CC_M24_DAY1_GAMES, со своим ×1.5), opts.twoDay — поровну. Очки не трогаются: это
+     тот же счёт, только с днями, подписью «день N» и экраном «Конец дня 1» между ними. */
+  const dayOne=(opts.days>0 && opts.days<numGames) ? opts.days : (opts.twoDay && numGames>=6 ? Math.ceil(numGames/2) : 0);
   for(let g=0; g<numGames; g++){
+    if(dayOne && g===dayOne){
+      try{ await ccDayBreak(replay && replay.wrap, liveLabel, 1); }catch(e){ if(e===RUN_ABANDONED) throw e; }
+    }
     // The label can carry a flag image, so it has to go in as markup — as text
     // the <img> tag would be printed out literally.
-    titleEl.innerHTML=L().finalsLiveGameLabel(liveLabel, g+1, numGames);
+    titleEl.innerHTML=dayOne
+      ? L().finalsLiveDayLabel(liveLabel, g<dayOne ? 1 : 2, g<dayOne ? g+1 : g+1-dayOne, g<dayOne ? dayOne : numGames-dayOne)
+      : L().finalsLiveGameLabel(liveLabel, g+1, numGames);
     /* Второй день Гранд-финала 2024-го платит ×1.5 (ruleset Epic 152: элим 6, день 1 — 4). Игрок, 3.10:
        «дают почему-то 6 поинтов за килл, хотя должно быть 4» — правило настоящее, но его не было видно. */
     if(killMult===ccM24KillGf && g+1>CC_M24_DAY1_GAMES)
@@ -108932,7 +108957,7 @@ async function runMajorTournament(){
   // finalTeams собран в порядке квалификации — хиты, потом Ласт Ченс, — и это
   // тот порядок, в котором ставят метку. См. stampQualSeats.
   const zoneGroups=await stageLandingPicker(finalTeams, you, L().finalsLandingTitle);
-  await simulateGamesLive(finalTeams, (FMT.gfGames||12), pointsForPlace, (FMT.gfKill||4), 'stage', 0, null, zoneGroups, {mapReplay:true, choices:true, stageName:L().liveRegionalFinals, prize:CARD_MODE ? ccHomeRegion() : null});
+  await simulateGamesLive(finalTeams, (FMT.gfGames||12), pointsForPlace, (FMT.gfKill||4), 'stage', 0, null, zoneGroups, {twoDay:true, mapReplay:true, choices:true, stageName:L().liveRegionalFinals, prize:CARD_MODE ? ccHomeRegion() : null});
   // Landing zone + fight now happen fresh before every one of the 12 games
   // (see pickZoneForGame, called from inside simulateGamesLive) instead of
   // once before the whole stage — so the bonus/penalty is already folded
@@ -109256,7 +109281,7 @@ async function runGlobalChampionship2024(you, regionRank, region, regionalFinal)
   // Форт-Уэрт — таблица 2024-го, и второй день ×1.5, как печатал лидерборд.
   CC_M24_GAME=0;
   await simulateGamesLive(field, DRAFT_M24.final.games, ccM24PointsGf, ccM24KillGf, 'stage', 0, null, zones,
-    {mapReplay:true, choices:true, stageName:L().liveWorlds2024,
+    {days:CC_M24_DAY1_GAMES, mapReplay:true, choices:true, stageName:L().liveWorlds2024,
      dropEachGame:(g)=>{ CC_M24_GAME=g; return null; }});
   useLandingSet(wasSet);
   const ranked=rank24(field);
@@ -109572,7 +109597,7 @@ async function runMajor2024Tournament(){
   const zoneGroups=await stageLandingPicker(fin, you, L().finalsLandingTitle);
   CC_M24_GAME=0;
   await simulateGamesLive(fin, S.final.games, ccM24PointsGf, ccM24KillGf, 'stage', 0, null, zoneGroups,
-    {mapReplay:true, choices:true, stageName:L().liveRegionalFinals, prize:ccHomeRegion(),
+    {twoDay:true, mapReplay:true, choices:true, stageName:L().liveRegionalFinals, prize:ccHomeRegion(),
      // Какая игра идёт — это и есть день: с седьмой счёт ×1.5. См. ccM24Day.
      dropEachGame:(g)=>{ CC_M24_GAME=g; return null; }});
   const finalRanked=rank24(fin);
@@ -111213,7 +111238,7 @@ async function runGlobalChampionship(you, regionRank, region, lcqWinners, region
   const zones=await showFinalsLandingPicker(field, you);
   const shell=createStageCardShell(L().gcStageTitle(GC_GAMES));
   await simulateGamesLive(field, GC_GAMES, pointsForPlace, 4, 'stage', 0, null, zones,
-    {mapReplay:true, choices:true, stageName:L().liveWorlds});
+    {twoDay:true, mapReplay:true, choices:true, stageName:L().liveWorlds});
   const ranked=summitStandings(field);
   const rank=ranked.indexOf(you)+1;
   await revealStageLog(you, shell, true);
@@ -111418,7 +111443,7 @@ async function runGlobalChampionship2025(you, regionRank, region, regionalFinal)
   // Grand Finals (T1_KILL.G). The LAN's own payload was never imported, so this
   // is the season's final-stage ladder rather than a number read off Lyon.
   await simulateGamesLive(field, GC2025_GAMES, pointsForPlace, T1_KILL.G, 'stage', 0, null, zones,
-    {mapReplay:true, choices:true, stageName:L().liveWorlds2025});
+    {twoDay:true, mapReplay:true, choices:true, stageName:L().liveWorlds2025});
   } finally { LOOT_ISLAND_NOW=null; useLandingSet(prevSet); }
   const ranked=summitStandings(field);
   const rank=ranked.indexOf(you)+1;
@@ -120593,7 +120618,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='422191d4';
+const CC_BUILD='5875fb48';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -121519,7 +121544,7 @@ function ccSoloWhyLocked(){
 function ccSoloPeerSeat(ev, s){
   if(!ev) return false;
   if(ccSoloDoneToday(ev, s)) return false;
-  if(ev.series==='solos') return careerSolosCanFor(ev.stage, s);
+  if(ev.series==='solos') return careerSolosCanFor(ev.stage, s, ev.id);
   if(ev.stage==='qual')  return true;
   if(ev.stage==='heats') return !!(s && s.pass==='qual');
   if(ev.stage==='final') return !!(s && s.pass==='heats');
@@ -131121,7 +131146,7 @@ const CAREER_EV_ART_ID={
   Showdown4_2025_LCQ:'art/mode-trio.jpg', Showdown4_2025_Final:'art/mode-trio.jpg', Showdown5_2025_LCQ:'art/mode-trio.jpg', Showdown5_2025_Final:'art/mode-trio.jpg', Showdown6_2025_LCQ:'art/mode-trio.jpg', Showdown6_2025_Final:'art/mode-trio.jpg',
   FNCSSolos_Q1Round2:'art/fncs-solo.jpg', FNCSSolos_Q1Round3:'art/fncs-solo.jpg',
   FNCSSolos_FastTrack:'art/fncs-solo.jpg', FNCSSolos_Q2Round2:'art/fncs-solo.jpg',
-  FNCSSolos_Q2Round3:'art/fncs-solo.jpg', FNCSSolos_Heats:'art/fncs-solo.jpg',
+  FNCSSolos_Q2Round3:'art/fncs-solo.jpg', FNCSSolos_Heats:'art/fncs-solo.jpg', FNCSSolos_Heats2:'art/fncs-solo.jpg',
   FNCSSolos_LCQRound1:'art/fncs-solo.jpg', FNCSSolos_LCQFinal:'art/fncs-solo.jpg',
   FNCSSolos_Final:'art/fncs-solo.jpg',
   FNCSSoloReload_Round2:'art/fncs-solo.jpg',
@@ -131591,7 +131616,9 @@ const CAREER_YEAR=[
   ['2026-10-10','2026-10-10','FNCSSolos_FastTrack','solo'],
   ['2026-10-10','2026-10-10','FNCSSolos_Q2Round2','solo'],
   ['2026-10-11','2026-10-11','FNCSSolos_Q2Round3','solo'],
-  ['2026-10-17','2026-10-18','FNCSSolos_Heats','solo'],
+  // Два хита в два дня, каждый играет один (правила Epic: Heat 1 17.10, Heat 2 18.10; сверка 29.10).
+  ['2026-10-17','2026-10-17','FNCSSolos_Heats','solo'],
+  ['2026-10-18','2026-10-18','FNCSSolos_Heats2','solo'],
   ['2026-10-19','2026-10-19','FNCSSolos_LCQRound1','solo'],
   ['2026-10-20','2026-10-20','FNCSSolos_LCQFinal','solo'],
   ['2026-10-26','2026-10-27','FNCSSolos_Final','solo'],
@@ -161334,7 +161361,7 @@ async function runCareerGclc(){
   const kindsForDrop=['gclc'];
   const zones=null;
   await simulateGamesLive(field, st.games, majorPoints, st.kill, 'stage', 0, null, zones,
-    {lobbySize:ccTeams(50), stageName:ev.label, mapReplay:true, choices:true, stopOnYourDeath:true,
+    {twoDay:ev.stage==='final', lobbySize:ccTeams(50), stageName:ev.label, mapReplay:true, choices:true, stopOnYourDeath:true,
      dropEachGame:(g,room)=>careerLandingPick(room||field, you, ev.label, kindsForDrop)});
   const ranked=field.slice().sort((a,b)=>b.stagePts-a.stagePts || (b.wins||0)-(a.wins||0) || b.stageElims-a.stageElims);
   const place=ranked.indexOf(you)+1;
@@ -161501,7 +161528,7 @@ async function runCareerReloadChampionship(){
   const kindsForDrop=['rc'];
   const zones=null;
   await simulateGamesLive(field, st.games, rcPoints, CC_RC_KILL, 'stage', 0, null, zones,
-    {lobbySize:ccTeams(20), stageName:ev.label, mapReplay:true, choices:true, stopOnYourDeath:true,
+    {twoDay:ev.stage==='final', lobbySize:ccTeams(20), stageName:ev.label, mapReplay:true, choices:true, stopOnYourDeath:true,
      // ЛАН круга идёт по двум островам, игра через игру. См. ccRelIsland.
      mapEach:(g)=>ccRelIsland('r4', g),
      // Финал кончается на матч-поинте: 350 очков и следующая победа — чемпион, дальше не играют.
@@ -163362,7 +163389,7 @@ async function runCareerSummit(){
   const kindsForDrop=['summit','major'];
   const zones=null;
   await simulateGamesLive(field, st.games, st.pts, st.kill, 'stage', 0, null, zones,
-    {lobbySize:ccTeams(50), stageName:ev.label, mapReplay:true, choices:true, stopOnYourDeath:true,
+    {twoDay:ev.stage==='final', lobbySize:ccTeams(50), stageName:ev.label, mapReplay:true, choices:true, stopOnYourDeath:true,
      dropEachGame:(g,room)=>careerLandingPick(room||field, you, ev.label, kindsForDrop)});
   const ranked=field.slice().sort((a,b)=>b.stagePts-a.stagePts || (b.wins||0)-(a.wins||0) || b.stageElims-a.stageElims);
   const place=ranked.indexOf(you)+1;
@@ -164090,7 +164117,7 @@ async function runCareerGlobals(){
   const stageNm=ev.label.lastIndexOf(sessCut)>0 ? ev.label.slice(0, ev.label.lastIndexOf(sessCut)) : ev.label;
   await simulateGamesLive(field, CC_GLOB_GAMES, gc24 ? ccM24PointsGf : majorPoints, gc24 ? ccM24KillGf : CC_GLOB_KILL,
     'stage', 0, null, zones,
-    {lobbySize:ccTeams(50), stageName:stageNm, mapReplay:true, choices:true, stopOnYourDeath:true,
+    {twoDay:true, lobbySize:ccTeams(50), stageName:stageNm, mapReplay:true, choices:true, stopOnYourDeath:true,
      dropEachGame:(g,room)=>{ CC_M24_GAME=g; return careerLandingPick(room||field, you, ev.label, kindsForDrop); }});
   const ranked=field.slice().sort((a,b)=>b.stagePts-a.stagePts || (b.wins||0)-(a.wins||0) || b.stageElims-a.stageElims);
   const place=ranked.indexOf(you)+1;
@@ -165950,7 +165977,7 @@ async function runCareerMajor2024(){
   CC_M24_GAME=0;
   await simulateGamesLive(field, spec.games, fin0 ? ccM24PointsGf : ccM24Points,
     fin0 ? ccM24KillGf : ev.stage==='q' ? CC_M24_KILL_Q : CC_M24_KILL, 'stage', 0, null, null,
-    {lobbySize:ccTeams(50), stageName:stageLabel, mapReplay:true, choices:true, stopOnYourDeath:true,
+    {days:fin0 ? CC_M24_DAY1_GAMES : 0, lobbySize:ccTeams(50), stageName:stageLabel, mapReplay:true, choices:true, stopOnYourDeath:true,
      stopOnWin:!!spec.vr, roomOnly:!openRound,
      // Второй день гранд-финала — ×1.5, и какая игра идёт, знает только этот вопрос.
      dropEachGame:(g,room)=>{ CC_M24_GAME=g;
@@ -166549,7 +166576,7 @@ async function runCareerGlobals2023(){
   const row0=ccYearRows().find(r=>r[2]==='GlobalChampionship2023');
   const label=(row0 ? ccYearLabel(row0[2], row0[0], row0[0]) : ev.label)+' · '+L().ccYr23GcDay(day);
   await simulateGamesLive(field, spec.games, majorPoints, CC_GLOB_KILL, 'stage', 0, null, null,
-    {lobbySize:ccTeams(50), stageName:label, mapReplay:true, choices:true, stopOnYourDeath:true,
+    {twoDay:true, lobbySize:ccTeams(50), stageName:label, mapReplay:true, choices:true, stopOnYourDeath:true,
      dropEachGame:(g,room)=>careerLandingPick(room||field, you, label, ['summit','major','gclc'])});
   const ranked=field.slice().sort((a,b)=>b.stagePts-a.stagePts || (b.wins||0)-(a.wins||0) || b.stageElims-a.stageElims);
   const place=ranked.indexOf(you)+1;
@@ -166814,7 +166841,7 @@ async function runCareerMajor(){
   // Название комнаты — с номером хита, когда хит один из трёх.
   const stageLabel = heatNo ? ev.label+' · '+L().ccHeatOf(heatNo, ccMajorHeats()) : ev.label;
   await simulateGamesLive(field, st.games, st.pts, st.kill, 'stage', 0, null, zones,
-    {lobbySize:ccTeams(50), stageName:stageLabel, mapReplay:true, choices:true, stopOnYourDeath:true,
+    {twoDay:ev.stage==='final', lobbySize:ccTeams(50), stageName:stageLabel, mapReplay:true, choices:true, stopOnYourDeath:true,
      stopOnWin: ev.stage==='heats' || ev.stage==='lclobby', roomOnly: ev.stage==='lclobby',
      // Каждую игру, а не раз за этап — правка. LCQ идёт одним
      // общим полем и точку не выбирает вовсе, поэтому и вопроса там нет.
@@ -169123,7 +169150,8 @@ const CC_SOLOS_STAGES={
      него заходит, Epic не называет («все, кто играл Round 1 и не прошёл»), а
      вот сколько выходит — называет, и это семьдесят. Поэтому поле берётся
      карьерное, открытое, а отсечка — Epic'ова, живьём. */
-  lcq1: {games:11, kill:2, open:true, cut:70, pass:'lcqf'},
+  // Поле LCQ Round 1 — по региону, той же долей, что выход из Round 1 у Epic (EU 8000, NAC 4000, остальные 2000; сверка 29.10).
+  lcq1: {games:11, kill:2, open:true, cut:70, pass:'lcqf', fieldScale:()=>(CC_SOLOS_R1_THROUGH[ccCareerRegion()]||2000)/8000},
   // LCQ Final — «players: 100» (Liquipedia): 70 из LCQ Round 1 и 36–50-е обоих хитов. Было 70 (сверка 7.10).
   lcqf: {games:5,  kill:3, field:100, cut:17, vr:true, pass:'final', pts:soloHeatsPoints},
   final:{games:12, kill:4, field:100, cut:0,  prize:solosPrize}
@@ -169215,9 +169243,15 @@ function ccSolosSet(card, v, stage){
 /* Кто сегодня допущен. Первый круг открыт всем; второй — только тем, у кого
    места ещё нет, и это и есть «второй шанс» правил. Дальше вечер играется
    тем, кто на него сел, и ровно один раз. */
-function careerSolosCanFor(stage, s){
+/* Хит — свой (s.heat: 1 — 17.10, 2 — 18.10). Старый сейв без номера играет любой из двух, второй закроет got. */
+function ccSolosHeatOk(id, s){
+  if(!s || !s.heat || !/^FNCSSolos_Heats2?$/.test(String(id||''))) return true;
+  return s.heat===(id==='FNCSSolos_Heats2' ? 2 : 1);
+}
+function careerSolosCanFor(stage, s, id){
   const seat=s ? s.seat : null, got=s ? s.got : null;
   if(got===stage) return false;
+  if(id && !ccSolosHeatOk(id, s)) return false;
   if(/^sc\d+r1$/.test(stage)) return true;   // Solo Cash Cup: каждый кап открыт заново (got уже проверен выше)
   if(stage==='q1r2' || stage==='rlr2') return !got;
   if(stage==='q2r2') return !seat;
@@ -169248,7 +169282,7 @@ for(let n=1; n<=16; n++){
 }
 const CC_SOLOS_BY_ID={
   FNCSSolos_Q1Round2:'q1r2', FNCSSolos_Q1Round3:'q1r3', FNCSSolos_FastTrack:'fast',
-  FNCSSolos_Q2Round2:'q2r2', FNCSSolos_Q2Round3:'q2r3', FNCSSolos_Heats:'heats',
+  FNCSSolos_Q2Round2:'q2r2', FNCSSolos_Q2Round3:'q2r3', FNCSSolos_Heats:'heats', FNCSSolos_Heats2:'heats',
   FNCSSolos_LCQRound1:'lcq1', FNCSSolos_LCQFinal:'lcqf', FNCSSolos_Final:'final',
   FNCSSoloReload_Round2:'rlr2', FNCSSoloReload_Round3:'rlr3', FNCSSoloReload_Heats:'rlheats',
   FNCSSoloReload_LCQRound1:'rllcq1', FNCSSoloReload_LCQFinal:'rllcqf', FNCSSoloReload_Final:'rlfinal'
@@ -169266,7 +169300,7 @@ function careerSoloSeriesOn(iso){
   const mine=function(e){
     const st=CC_SOLOS_BY_ID[String(e.id||'')];
     if(!st) return true;
-    return careerSolosCanFor(st, ccSolosOf(me, st));
+    return careerSolosCanFor(st, ccSolosOf(me, st), e.id);
   };
   const e=all.find(mine) || all[0];
   /* Два соло-турнира в году, и оба ходят через этот раннер. Различает их
@@ -169347,7 +169381,7 @@ function ccSoloCarryTake(ev, skip, size){
 }
 function careerSoloSeriesCanFor(ev, s){
   if(!ev) return false;
-  if(ev.series==='solos') return careerSolosCanFor(ev.stage, s);
+  if(ev.series==='solos') return careerSolosCanFor(ev.stage, s, ev.id);
   const done=s ? s.got : null;
   /* Квал — в несколько сессий, идёт лучшая (см. CAREER_YEAR): играется, пока
      не прошёл, и не дважды в один день. Сейв без дня (до 30 августа) — одна
@@ -170618,7 +170652,8 @@ async function runCareerSoloSeries(){
   const spec=ev.spec||null;
   const open=spec ? !!spec.open : ev.stage==='qual';
   const lobbyCr=open ? cr : Object.assign({}, cr, {division:1});
-  const size=open ? careerVictoryField(true) : (spec ? spec.field : CC_SOLO_FIELD);
+  const size=open ? (spec && spec.fieldScale ? Math.max(200, Math.round(careerVictoryField(true)*spec.fieldScale())) : careerVictoryField(true))
+                   : (spec ? spec.field : CC_SOLO_FIELD);
   /* Напарник — в той же сотне, участником: его карточка с провода, его форма,
      без адресных вопросов и без записи его итога — свой итог он считает сам. */
   /* …но только если он на этот этап ДОПУЩЕН. Скриншот (вкладка
@@ -170651,7 +170686,7 @@ async function runCareerSoloSeries(){
   await simulateGamesLive(field, games,
     (spec && spec.pts) || (ev.stage==='heats' ? soloHeatsPoints : victoryR1Points), spec ? spec.kill : CC_SOLO_KILL,
     'stage', 0, null, zones,
-    {lobbySize:100, stageName:ev.label, mapReplay:true, choices:true, stopOnYourDeath:true,
+    {twoDay:ev.stage==='final', lobbySize:100, stageName:ev.label, mapReplay:true, choices:true, stopOnYourDeath:true,
      /* Виктори в хитах — билет, и вечер на нём для тебя кончается: правило Epic
         (см. шапку раздела) и то же stopOnWin, что у хитов Мейджора. Раньше
         победитель первой игры играл все шесть, карточка говорила «прошёл», а
@@ -170660,7 +170695,11 @@ async function runCareerSoloSeries(){
      stopOnWin: spec ? !!spec.vr : ev.stage==='heats',
      together: mate ? humans : null,
      dropEachGame:(g,room)=>open ? null : ccSoloDrops(room||field, humans, ev.label, kindsForDrop)});
-  const ranked=field.slice().sort((a,b)=>b.stagePts-a.stagePts || (b.wins||0)-(a.wins||0) || b.stageElims-a.stageElims);
+  /* Равные очки — по правилам Epic (сверка 29.10): победы, средние элимы за матч, среднее место; секунд жизни движок не
+     хранит, этот последний шаг опущен. Было: победы, затем элимы всего — у сыгравших меньше матчей (победа уводит из хита)
+     это занижало их. */
+  const avgOf=(t,k)=>{ const l=t.stageLog||[]; return l.length ? l.reduce((x,r)=>x+(r[k]||0),0)/l.length : 0; };
+  const ranked=field.slice().sort((a,b)=>b.stagePts-a.stagePts || (b.wins||0)-(a.wins||0) || avgOf(b,'elims')-avgOf(a,'elims') || avgOf(a,'place')-avgOf(b,'place'));
   /* Прошедшие по победе — НАВЕРХУ (29.10, его «почему я не выше всех в таблице»): у Epic победа в хите давала 947
      сверху, и победитель стоял первым. Бонус снят (см. soloHeatsPoints), поэтому порядок держится отдельно: сначала
      взявшие Виктори этого этапа, потом остальные по очкам. Только показ и место в карточке — кто проходит по
@@ -170707,7 +170746,11 @@ async function runCareerSoloSeries(){
     const next=function(card, t){
       const was=ccSoloStateOf(ev, card);
       const at=ranked.indexOf(t)+1;
-      if(spec) return {got:ev.stage, seat:seatOf(t), day:careerToday()};
+      if(spec){
+        const st0=seatOf(t);
+        // В хиты Epic раскладывает через одного по месту в Fast Track / Q2 Round 3 (правила, сверка 29.10).
+        return {got:ev.stage, seat:st0, day:careerToday(), heat: st0==='heats' ? ((ranked.indexOf(t)+1)%2===1 ? 1 : 2) : null};
+      }
       return {got:ev.stage, pass: passOf(t) ? ev.stage : (was && was.pass)||null,
               day:careerToday(),
               best: ev.stage==='qual' ? Math.min(at, (was && was.best)||Infinity) : (was && was.best)||null};
