@@ -72,7 +72,7 @@ const BOOT = `
     out.notes.cands=cands.slice(0,12).map(c=>c.handle+':'+ccHireOvr(c)+':'+ccHireFee(ccHireOvr(c), c)); out.notes.n=cands.length;
     check('есть кого нанять', cands.length>0);
     const mateOvr=ccHireOvr(careerMateRecords().map(ccMateCardOf)[0]);
-    check('весь регион, сверху сильнейшие', cands.length>30 && cands.every((c,i)=>!i || ccHireOvr(cands[i-1])>=ccHireOvr(c)) && cands.some(c=>ccHireOvr(c)<mateOvr), 'напарник '+mateOvr+' n '+cands.length);
+    check('топ-100 региона, сверху сильнейшие', cands.length===CC_HIRE_TOP && cands.every((c,i)=>!i || ccHireOvr(cands[i-1])>=ccHireOvr(c)) && cands.some(c=>ccHireOvr(c)<mateOvr), 'напарник '+mateOvr+' n '+cands.length);
     const bal0=CAREER.career.balance, fee=ccHireFee(ccHireOvr(cands[0]), cands[0]), who=cands[0].handle;
     careerHire(0);
     check('деньги списаны', CAREER.career.balance===bal0-fee, bal0+' → '+CAREER.career.balance+' за '+fee);

@@ -120777,7 +120777,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='dfed21af';
+const CC_BUILD='8f96427a';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -143460,7 +143460,7 @@ function ccSmmPickClose(){
 function ccSmmPickKey(e){ if(e.key==='Escape') ccSmmPickClose(); }
 /* НАЁМ НА ТУРНИР (29.10, идея игрока из Notion 27.10 скрин 27: «чтобы ты мог заплатить игрокам на голову
    сильнее, чтобы они пошли с тобой турнир»; его выбор «наём на турнир»). В день турнира — кнопка на Центре:
-   список всех игроков сцены твоего региона (сверху сильнейшие), плата сразу. Нанятый садится в первое кресло на ЭТОТ день (careerMates/careerPartnerCard): поле турнира
+   топ-100 сцены твоего региона по рейтингу (сверху сильнейшие), плата сразу. Нанятый садится в первое кресло на ЭТОТ день (careerMates/careerPartnerCard): поле турнира
    убирает его из своей пары, как убирает любого из твоего состава (careerCupField, mine). Призы — как с
    напарником. Отменить до игры — деньги назад. Цена — ccHireFee ниже (заработок за вечер).
    В команде и в гонке найма нет: первое кресло там занято человеком. */
@@ -143470,7 +143470,7 @@ function ccSmmPickKey(e){ if(e.key==='Escape') ccSmmPickClose(); }
    что был, ошибалась база). Цена — заработок игрока за один дуо-вечер года: свой из Liquipedia, если он есть и год 2026,
    иначе по кривой; делитель CC_HIRE_DAYS — дни дуо-турниров карьеры 2026 (кубки 34, финалы 19, Мейджоры 18, Victory 23,
    Reload 24, Саммит 5, GC 11, Глобалы 2). Что турнир платит больше или меньше среднего, цена не знает — это оценка. */
-const CC_HIRE_FIT_A=-1.110, CC_HIRE_FIT_B=0.1371, CC_HIRE_DAYS=136;
+const CC_HIRE_FIT_A=-1.110, CC_HIRE_FIT_B=0.1371, CC_HIRE_DAYS=136, CC_HIRE_TOP=100;
 let CC_HIRE_MEMO=null;
 function ccHireAllowed(){
   return !!(CAREER && CAREER.career) && !(typeof ccMpOn==='function' && ccMpOn()) &&
@@ -143502,10 +143502,10 @@ function ccHireCands(){
   const own=careerMateRecords().map(ccMateCardOf).filter(Boolean);
   const mine=new Set([hKey(CAREER.player.handle||CAREER.player.nick||'')].concat(own.map(c=>hKey(c))));
   /* Все игроки региона, не только сильнее напарника (29.10, его «пусть все игроки региона твоего будут в этом списке»):
-     сверху сильнейшие, один ник — одна строка. */
+     сверху сильнейшие, один ник — одна строка; потом — только топ CC_HIRE_TOP региона (его «возьми топ 100 каждого региона»). */
   const seen=new Set();
   return (roster||[]).filter(c=>{ if(!c || !c.handle || mine.has(hKey(c))) return false; const k=hKey(c); if(seen.has(k)) return false; seen.add(k); return true; })
-    .sort((a,b)=>ccHireOvr(b)-ccHireOvr(a));
+    .sort((a,b)=>ccHireOvr(b)-ccHireOvr(a)).slice(0, CC_HIRE_TOP);
 }
 function ccHireOpen(){
   if(!ccHireAllowed()) return;
