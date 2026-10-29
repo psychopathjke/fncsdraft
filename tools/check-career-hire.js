@@ -69,10 +69,10 @@ const BOOT = `
     const hubHas=!!document.querySelector('#screen-career-hub button[onclick="ccHireOpen()"]');
     check('кнопка найма на Центре в день турнира', hubHas);
     const cands=ccHireCands();
-    out.notes.cands=cands.map(c=>c.handle+':'+ccHireOvr(c)+':'+ccHireFee(ccHireOvr(c), c));
+    out.notes.cands=cands.slice(0,12).map(c=>c.handle+':'+ccHireOvr(c)+':'+ccHireFee(ccHireOvr(c), c)); out.notes.n=cands.length;
     check('есть кого нанять', cands.length>0);
     const mateOvr=ccHireOvr(careerMateRecords().map(ccMateCardOf)[0]);
-    check('все сильнее напарника', cands.every(c=>ccHireOvr(c)>=mateOvr+CC_HIRE_OVER), 'напарник '+mateOvr);
+    check('весь регион, сверху сильнейшие', cands.length>30 && cands.every((c,i)=>!i || ccHireOvr(cands[i-1])>=ccHireOvr(c)) && cands.some(c=>ccHireOvr(c)<mateOvr), 'напарник '+mateOvr+' n '+cands.length);
     const bal0=CAREER.career.balance, fee=ccHireFee(ccHireOvr(cands[0]), cands[0]), who=cands[0].handle;
     careerHire(0);
     check('деньги списаны', CAREER.career.balance===bal0-fee, bal0+' → '+CAREER.career.balance+' за '+fee);
