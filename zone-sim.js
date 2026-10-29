@@ -2081,6 +2081,8 @@
     // rest of the app already reads.
     squads.forEach(function(s){
       s.team._elims = s.elims;
+      // Киллы по игрокам отряда (giveKill), в порядке team.squad — личная статистика вечера (аналитик в карьере).
+      s.team._mK = (s.mK && s.mK.length > 1) ? s.mK.slice() : null;
       s.team._feed = s.feed;
       s.team._deathCause = s.deathCause;
       s.team._zoneReached = s.zoneReached;
