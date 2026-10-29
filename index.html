@@ -11186,6 +11186,7 @@ dmOrgDeadline:d=>'Предложение в силе до '+ccDayLabel(d)+'.',
 dmOrgTerm:n=>'Контракт на '+(n>1 ? n+' сезона' : 'сезон')+'.',
 dmOrgFee:(c,v)=>'У тебя контракт с '+c+': отступные $'+v+' платим мы.',
 ccNewsTransfer:(from,to,v)=>'Трансфер: '+from+' продаёт игрока в '+to+' за $'+v,
+ccNewsRumor:(c,n)=>'Слух: '+c+' присматривается к '+n+'. Источники говорят о разговоре в ближайшие недели',
 ccNewsOrgYear:(n,k)=>'Контракт с '+n+' продолжается: '+(k>0 ? 'ещё сезон после этого' : 'последний сезон'),
 ccOrgTermRow:'Контракт', ccOrgTermLeft:k=>k>0 ? 'этот сезон и ещё '+k : 'до конца сезона',
 dmAgentDeadline:(c,d)=>c+' держит место до '+ccDayLabel(d)+'.',
@@ -13303,6 +13304,7 @@ dmOrgDeadline:d=>'The offer stands until '+ccDayLabel(d)+'.',
 dmOrgTerm:n=>'The contract runs '+(n>1 ? n+' seasons' : 'one season')+'.',
 dmOrgFee:(c,v)=>'You are under contract with '+c+': we pay the $'+v+' buyout.',
 ccNewsTransfer:(from,to,v)=>'Transfer: '+from+' sell the player to '+to+' for $'+v,
+ccNewsRumor:(c,n)=>'Rumour: '+c+' are keeping an eye on '+n+'. Sources expect talks in the coming weeks',
 ccNewsOrgYear:(n,k)=>'The contract with '+n+' runs on: '+(k>0 ? 'one more season after this' : 'final season'),
 ccOrgTermRow:'Contract', ccOrgTermLeft:k=>k>0 ? 'this season and '+k+' more' : 'to the end of the season',
 dmAgentDeadline:(c,d)=>c+' hold the seat until '+ccDayLabel(d)+'.',
@@ -120482,7 +120484,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='480e551d';
+const CC_BUILD='e9004c5a';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -126797,6 +126799,8 @@ function ccOrgTermRoll(tier, academy, rnd){
 }
 // Контракт идёт и после этого сезона: уйти можно только выкупом, и выкупить могут клубы заметно выше нынешнего.
 const CC_ORG_POACH_STEP=3;
+// Слухи о трансфере: не чаще раза в три недели и не в каждое окно (careerOrgOffers).
+const CC_RUMOR_GAP=21, CC_RUMOR_ODDS=0.35;
 function careerLeaveOrg(){
   const cr=CAREER.career, org=CAREER.org;
   if(!org) return false;
@@ -140365,6 +140369,28 @@ function careerOrgOffers(){
       shuffled.push(o);
     }
   }
+  /* СЛУХИ (29.10, его «10»): за неделю до оффера в ленте «по слухам, X присматривается к тебе», как на сцене.
+     Слух — про клуб из тех, кто мог бы написать, но не написал в этот раз; через 5–12 дней он садится в окно,
+     и то не всегда: семь из десяти слухов сбываются, остальные просто гаснут. Один слух за раз. */
+  const today=careerToday(), ru=cr.rumor;
+  if(ru && ru.real && !ru.done && ccDaysBetween(ru.day, today)>=ru.wait){
+    ru.done=1;
+    const o=eligible.find(x=>x.name===ru.name);
+    if(o && !shuffled.some(x=>x.name===o.name)){
+      if(shuffled.length>=3) shuffled.sort((a,b)=>a.tier-b.tier).shift();
+      shuffled.push(o);
+    }
+  } else if(!ru || (ru.done || !ru.real) && ccDaysBetween(ru.day, today)>=CC_RUMOR_GAP){
+    // Не тот же клуб, что в трёх последних слухах: иначе лента пишет одно и то же имя месяцами.
+    const past=cr.rumorPast||[];
+    const pool2=eligible.filter(o=>!shuffled.some(x=>x.name===o.name) && o.tier>=pl.ovr-2 && past.indexOf(o.name)<0);
+    if(pool2.length && rnd()<CC_RUMOR_ODDS){
+      const o=pool2.slice().sort((a,b)=>weightOf(b)-weightOf(a))[Math.floor(rnd()*Math.min(3, pool2.length))];
+      cr.rumor={name:o.name, day:today, wait:5+Math.floor(rnd()*8), real:rnd()<0.7};
+      cr.rumorPast=past.concat(o.name).slice(-3);
+      careerNews('flat', 'ccNewsRumor', [o.name, ccHandle(pl.nick||'')]);
+    }
+  }
   // Клуб сел в окно — просьба исполнена: менеджера можно просить о следующем.
   if(asked && shuffled.some(o=>o.name===asked) && CAREER.pitch) CAREER.pitch.done=careerToday();
   shuffled.sort((a,b)=>b.tier-a.tier);
@@ -142734,7 +142760,7 @@ const CC_POST_BY={
   ccNewsClubSold:'by', ccNewsClubSour:'by', ccNewsClubUnpaid:'by', ccNewsClubUp:'by', ccNewsClubWant:'by',
   ccNewsSacPay:'you', ccNewsTwSubbed:'you', ccNewsClubClosed:'by',
   ccNewsLeftOrg:'press',
-  ccNewsSigned:'press', ccNewsReleased:'press', ccNewsExtended:'press', ccNewsTransfer:'press', ccNewsOrgYear:'press',
+  ccNewsSigned:'press', ccNewsReleased:'press', ccNewsExtended:'press', ccNewsTransfer:'press', ccNewsOrgYear:'press', ccNewsRumor:'press',
   /* Парный контракт заведён 25 августа, когда клубы уже постили сами, поэтому
      ему не нужен запасной автор из прошлого: его пишет тот, кто подписал, и
      запись всегда приходит с ним ('by'). */
