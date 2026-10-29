@@ -48,7 +48,10 @@ for (const [key, r] of Object.entries(src)) {
    местам), таблица призов турнира на игрока, одна комната (см. runCareerVictoryNight). */
 const lanFile = path.join(__dirname, 'measured', 'lans.json');
 const lans = fs.existsSync(lanFile) ? JSON.parse(fs.readFileSync(lanFile, 'utf8')) : [];
+// Убраны совсем по его слову (29.10: «Games of the Future 2025 убери этот турнир вообще»).
+const LAN_SKIP = new Set(['Games of the Future/2025']);
 lans.forEach(l => {
+  if (LAN_SKIP.has(l.page)) return;
   // payT — онлайн-кап с выплатами по регионам (World Cup Warmup 2019); иначе одна таблица турнира.
   const t = l.payT || { EU: l.pay };
   const js = JSON.stringify(t);

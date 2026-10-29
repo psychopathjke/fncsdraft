@@ -9402,8 +9402,8 @@
      кэш промахивается сам. Проверку «хеш в теге совпадает с файлом» держит
      tools/check-deploy-folder.js: забыть обновить руками теперь нельзя, папка
      деплоя просто не соберётся зелёной. -->
-<script src="zone-sim.js?v=4c7fb0e2"></script>
-<script src="zone-replay.js?v=8571611b"></script>
+<script src="zone-sim.js?v=2e4ac899"></script>
+<script src="zone-replay.js?v=071d69d0"></script>
 <!-- Командная карьера: транспорт и склейка. Весь код мультиплеера живёт здесь,
      в index.html только точки врезки. ?v= — тот же кэш-предохранитель, что и
      у соседей: поменял mp.js — переставь хеш, иначе браузер возьмёт старый
@@ -112742,6 +112742,8 @@ function ccYouKillSplit(you){
     return {seat:seat, w:ccKillWeights(sq)};
   }catch(e){ return null; }
 }
+// Веса киллов каждой команды лобби для движка (zone-sim giveKill: кил — одному игроку). Считаются раз на команду.
+function ccSetKillW(teams){ try{ (teams||[]).forEach(t=>{ const sq=t && t.squad; if(!t._killW && sq && sq.length>1 && sq.every(Boolean)) t._killW=ccKillWeights(sq); }); }catch(e){} }
 const CC_KILL_ROLE_W={roleFRG:1.5, roleIGL:0.75};
 function ccKillWeights(sq){
   const roles=[];
@@ -112906,6 +112908,7 @@ async function playGameWithChoices(teams, lobbyOpts, ui){
      и у обоих клиентов в одном и том же порядке. См. runCareerSoloSeries. */
   const humans=teams.filter(t=>t.isYou||t.isMate||t.isRival)
     .sort((a,b)=>String(a.mpTag||a.name)<String(b.mpTag||b.name) ? -1 : 1);
+  ccSetKillW(teams);
   const game=ZoneSim.simulateZoneGame(teams, {
     rng: Math.random, land: ZONE_SETS[set], aspect: aspect,
     // Острова Reload (r1–r4) идут по своему шторму — см. RELOAD_PHASES в zone-sim,
@@ -113302,9 +113305,11 @@ function ccKitPanel(lobby, frame){
   const mateIdx=sqList.map((c,k)=>k).filter(k=>sqList[k] && sqList[k].handle && k!==meIdx).slice(0, 2);
   const mates=mateIdx.map(k=>sqList[k].handle);
   const specOn=meDead ? mateIdx.find(k=>aliveM(k)) : undefined;
+  // Свои полоски — своего игрока (zone-sim memberVitals); выбит — того, за кем смотришь. Нет данных — общие отряда.
+  const ownK=meDead ? specOn : meIdx, shMe=(d.ms && ownK!=null && ownK>=0) ? d.ms[ownK] : shield, hpMe=(d.mh && ownK!=null && ownK>=0) ? Math.max(1, d.mh[ownK]) : health;
   const mateRows=(specOn!=null ? '<div class="zk-spec"><b>'+esc(T.ccKitSpec ? T.ccKitSpec(sqList[specOn].handle) : sqList[specOn].handle)+'</b></div>' : '')+
     mateIdx.map(k=>aliveM(k)
-      ? '<div class="zk-mate"><b>'+esc(sqList[k].handle)+'</b><i class="zk-msh"><span style="width:'+shield+'%"></span></i><i><span style="width:'+hp+'%"></span></i></div>'
+      ? '<div class="zk-mate"><b>'+esc(sqList[k].handle)+'</b><i class="zk-msh"><span style="width:'+(d.ms ? d.ms[k] : shield)+'%"></span></i><i><span style="width:'+(d.mh ? d.mh[k] : hp)+'%"></span></i></div>'
       : '<div class="zk-mate zk-mate-out"><b>'+esc(sqList[k].handle)+' · '+esc(T.ccKitMateOut||'')+'</b><i><span style="width:0"></span></i></div>').join('');
   /* Компас сверху по центру, как в игре: курс отряда в градусах (0 — север) и
      стороны света вокруг. Курс — из направления стрелки на кадре (d.a, градусы
@@ -113340,11 +113345,11 @@ function ccKitPanel(lobby, frame){
       '<div class="zk-top-row"><b>'+(frame.players!=null?frame.players:frame.alive||0)+'</b><i class="zk-ico-man"></i></div>'+
       '<div class="zk-top-row"><b>'+clock+'</b><i class="zk-ico-clock"></i></div>'+
     '</div>'+
-    '<div class="zk-vitals" data-hp="'+hp+'" data-shield="'+shield+'" data-health="'+health+'">'+
+    '<div class="zk-vitals" data-hp="'+hp+'" data-shield="'+shMe+'" data-health="'+hpMe+'">'+
       mateRows+
       '<div class="zk-bars">'+
-        '<div class="zk-row"><i class="zk-ico zk-ico-shield"></i><div class="zk-bar zk-shield"><i style="width:'+shield+'%"></i></div><b>'+shield+'</b></div>'+
-        '<div class="zk-row"><i class="zk-ico zk-ico-plus">+</i><div class="zk-bar zk-health"><i style="width:'+health+'%"></i></div><b>'+health+'</b></div>'+
+        '<div class="zk-row"><i class="zk-ico zk-ico-shield"></i><div class="zk-bar zk-shield"><i style="width:'+shMe+'%"></i></div><b>'+shMe+'</b></div>'+
+        '<div class="zk-row"><i class="zk-ico zk-ico-plus">+</i><div class="zk-bar zk-health"><i style="width:'+hpMe+'%"></i></div><b>'+hpMe+'</b></div>'+
       '</div>'+
       '<span class="zk-pts">'+level+'</span>'+
     '</div>',
@@ -115677,6 +115682,7 @@ function simulateGameOnMap(teams, lobbyOpts){
   const aspect = Number(ratio[1]) / Number(ratio[0]);
   const exponent = DUEL_POW_EXPONENT_BY_MODE[squadSize] || 5;
 
+  ccSetKillW(teams);
   const result = ZoneSim.simulateZoneGame(teams, {
     rng: Math.random,
     land: ZONE_SETS[set],
@@ -120573,7 +120579,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='6358edef';
+const CC_BUILD='e98f59f7';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -160751,7 +160757,6 @@ const CC_CUPS_ARCH=[
   {day:'2025-12-13',id:'S39_ReloadCashVictoryCup_Dec',mode:'duo',n:3,name:"Reload Duos Victory Cup",payT:CC_CUPS_ARCH_PAY[55]},
   {day:'2025-12-14',id:'S39_ReloadCashVictoryCup_Dec',mode:'duo',n:4,name:"Reload Duos Victory Cup",payT:CC_CUPS_ARCH_PAY[55]},
   {day:'2025-12-16',id:'S39_ReloadCashVictoryCup_Dec',mode:'duo',n:5,name:"Reload Duos Victory Cup",payT:CC_CUPS_ARCH_PAY[55]},
-  {day:'2025-12-18',id:'LAN_Games_of_the_Future_2025_Reload',mode:'duo',n:1,name:"Games of the Future 2025",payT:CC_CUPS_ARCH_PAY[128],zb:true,lan:"Games of the Future 2025 · Abu Dhabi",invite:40},
   {day:'2025-12-20',id:'S39_ReloadCashVictoryCup_Dec',mode:'duo',n:6,name:"Reload Duos Victory Cup",payT:CC_CUPS_ARCH_PAY[55]},
   {day:'2025-12-20',id:'S39_1MillionUnrealCup',mode:'duo',n:1,name:"$1 Million Unreal Cup",payT:CC_CUPS_ARCH_PAY[56]},
   {day:'2025-12-21',id:'S39_NvidiaCup',mode:'solo',n:1,name:"NVIDIA GeForce RTX Cup",payT:CC_CUPS_ARCH_PAY[58]},

@@ -750,7 +750,9 @@
     var e = frame.dots[me].e;
     if(e == null) return null;
     var sp = roster && roster.youKills;
-    var you = sp ? killShare(e, sp.w, sp.seat) : null;
+    // Киллы по игрокам из движка (giveKill); старая запись без них — раскладка долями, как было.
+    var mk = frame.dots[me].mk;
+    var you = sp ? ((mk && sp.seat < mk.length) ? mk[sp.seat] : killShare(e, sp.w, sp.seat)) : null;
     return {team: e, you: (you == null ? (e === 0 && sp ? 0 : null) : you)};
   }
   function placeOf(frame, roster){
@@ -798,10 +800,13 @@
       // посреди имени: убийцей выходило «Your squad», жертвой — «Probe & Scroll:…». Берётся то двоеточие, слева от
       // которого стоит команда из ростера (или шторм/сёрдж); не нашлось — первое, как было.
       for(var ci0 = raw.indexOf(':'); ci0 >= 0; ci0 = raw.indexOf(':', ci0 + 1)){
-        var left = plain(raw.slice(0, ci0));
+        var left = plain(raw.slice(0, ci0)).split(' ##')[0];
         if(left === 'storm' || left === 'surge' || indexOfName[left] != null){ cut = ci0; break; }
       }
       var cause = plain(raw.slice(0, cut)), victim = plain(raw.slice(cut + 1));
+      // «отряд ##ник» у убийцы — кил одного игрока (zone-sim giveKill): ник цветом отряда.
+      var kNick = null, kh = cause.indexOf(' ##');
+      if(kh >= 0){ kNick = cause.slice(kh + 3); cause = cause.slice(0, kh); }
       // «отряд ##ник» — выбит один игрок отряда (zone-sim MEMBER_LOSS): в ленте ник цветом его отряда.
       var vNick = null, vh = victim.indexOf(' ##');
       if(vh >= 0){ vNick = victim.slice(vh + 3); victim = victim.slice(0, vh); if(/^#\d+$/.test(vNick)) vNick = null; }
@@ -809,7 +814,7 @@
       var ci = indexOfName[cause], axe = (ci != null && roster[ci].you && typeof window !== 'undefined') ? window.CC_FN_AXE : null;
       var row = (cause === 'storm' || cause === 'surge')
         ? badge(cause) + pillFor(victim, vNick)
-        : pillFor(cause) + (axe ? '<img src="' + esc(axe) + '" alt="" style="width:22px;height:22px;flex:none;' +
+        : pillFor(cause, kNick) + (axe ? '<img src="' + esc(axe) + '" alt="" style="width:22px;height:22px;flex:none;' +
             'filter:drop-shadow(0 1px 2px #000);" onerror="this.remove()">' : badge('kill')) + pillFor(victim, vNick);
       handle.lines.push(feedRow(row));
     }
@@ -1794,7 +1799,7 @@
         // every death in the lobby counts, which is the same rule with the
         // whole field as the subject.
         if(mine == null ||
-           plain(raw.slice(0, cut)) === mine || plain(raw.slice(cut + 1)).split(' ##')[0] === mine){
+           plain(raw.slice(0, cut)).split(' ##')[0] === mine || plain(raw.slice(cut + 1)).split(' ##')[0] === mine){
           markAround(i);
           break;
         }

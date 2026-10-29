@@ -1230,7 +1230,7 @@ test('every elimination reaches the timeline, not one tick in eight of them', ()
     const {order, timeline} = runGame(seed, teams, true);
     const named = [];
     // ' ##' — выбит один игрок, отряд жив (MEMBER_LOSS); здесь считаются отряды.
-    timeline.forEach(f => (f.events || []).forEach(e => { if(e.indexOf(' ##') < 0) named.push(e.slice(e.indexOf(':') + 1)); }));
+    timeline.forEach(f => (f.events || []).forEach(e => { const v = e.slice(e.indexOf(':') + 1); if(v.indexOf(' ##') < 0) named.push(v); }));
     assert(named.length === teams.length - 1,
       'seed ' + seed + ': ' + named.length + ' eliminations in the feed, ' +
       (teams.length - 1) + ' in the game');

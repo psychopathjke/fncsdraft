@@ -57,7 +57,7 @@ function run(loss){
     });
     // Отдельная смерть игрока — строка ' ##' в ленте; по одной на отряд.
     const hit = new Set();
-    res.timeline.forEach(f => (f.events || []).forEach(e => { if (e.indexOf(' ##') >= 0) hit.add(e.slice(e.indexOf(':') + 1).split(' ##')[0]); }));
+    res.timeline.forEach(f => (f.events || []).forEach(e => { const v = e.slice(e.indexOf(':') + 1); if (v.indexOf(' ##') >= 0) hit.add(v.split(' ##')[0]); }));
     partial += hit.size; teams += T.length;
     res.order.forEach((t, i) => { if (+t.name.slice(1) < 5) top5 += i + 1; if (t._deathCause === 'storm') storm++; });
     elims += T.reduce((s, t) => s + (t._gElims || 0), 0);

@@ -83,7 +83,7 @@ const BOOT = `
       check(d+' '+who.c+' стоит '+id, r.id===id, JSON.stringify(r));
       check(d+' '+who.c+' приглашение '+inv, !!r.inv===inv, JSON.stringify(r));
     }
-    seed('2025-12-18', {year:2026, year0:2026}, {c:'de'}); CC_VICTORY_LIST=null; { const v=careerVictoryOn('2025-12-18'); out.notes.gotf={id:v&&v.id, inv:v?ccVictoryInvited(v):null, y:ccCalYear()}; check('Games of the Future в 2026-м', v && v.id==='LAN_Games_of_the_Future_2025_Reload', JSON.stringify(out.notes.gotf)); }
+    seed('2025-12-18', {year:2026, year0:2026}, {c:'de'}); CC_VICTORY_LIST=null; { const v=careerVictoryOn('2025-12-18'); out.notes.gotf={id:v&&v.id, inv:v?ccVictoryInvited(v):null, y:ccCalYear()}; check('Games of the Future убран (его слово 29.10)', !v || v.id!=='LAN_Games_of_the_Future_2025_Reload', JSON.stringify(out.notes.gotf)); }
     seed('2019-04-07', null, {c:'de'});
     const h2=await playThrough('Warmup');
     const l2=lastLog();

@@ -34,6 +34,8 @@ ${FIELD}
     out.html=handle.head.innerHTML.replace(/\\s+/g,' ').slice(0, 400);
     /* И СВОИ КИЛЛЫ ОТДЕЛЬНО ОТ КОМАНДНЫХ — идея его подписчика 11.09. Веса кладёт на
        роастер ccRosterYouSplit; здесь они ставятся руками, чтобы проверить саму раскладку. */
+    // Счёт ставится руками — киллы по игрокам из движка (mk, zone-sim giveKill) к нему не относятся.
+    if(me>=0 && f.dots[me]) delete f.dots[me].mk;
     game.roster.youKills={seat:0, w:[80, 40]};
     if(me>=0 && f.dots[me]) f.dots[me].e=6;
     ZoneReplay.show(handle, f, opts);

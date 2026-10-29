@@ -339,6 +339,12 @@
         // а игрок — и по одному, в выигранном файте.
         mAlive: (function(){ var a = []; for(var i=0;i<size;i++) a.push(true); return a; })(),
         mDiedAt: [],
+        // Киллы каждого игрока (giveKill): кил получает один, не весь отряд.
+        mK: (function(){ var a = []; for(var i=0;i<size;i++) a.push(0); return a; })(),
+        lastK: -1,
+        // Щит и здоровье каждого игрока — для худа (memberVitals). Смерть решает общее hp отряда, как было.
+        mSh: (function(){ var a = []; for(var i=0;i<size;i++) a.push(100); return a; })(),
+        mHp: (function(){ var a = []; for(var i=0;i<size;i++) a.push(100); return a; })(),
         hp: 100,
         // The shield the HUD draws: drained by contact, refilled by the circle;
         // never part of dying. See CHIP_HP.
@@ -488,6 +494,7 @@
       // it has just to stay standing, which is what makes being late expensive.
       var hx = s.x - circle.cx, hy = s.y - circle.cy;
       if(hx*hx + hy*hy > circle.radius * circle.radius) continue;
+      memberVitals(s, -SHIELD_RATE * seconds, -HEAL_RATE * seconds, false);
       s.hp = Math.min(100, s.hp + HEAL_RATE * seconds);
       /* Щит возвращается быстрее здоровья. В игре его и правда чинят чаще: замер того же
          матча — 134 хилки против 52 щитов на команду, но щит ставится целиком одним
@@ -506,6 +513,7 @@
       var wx = s.x - circle.cx, wy = s.y - circle.cy;
       if(wx*wx + wy*wy <= circle.radius * circle.radius) continue;
       s.hp -= dps * seconds;
+      memberVitals(s, 0, dps * seconds, false);
       if(s.hp <= 0){
         s.hp = 0;
         s.alive = false;
@@ -616,12 +624,37 @@
   var CHIP_HP_FLOOR = 30;
   // Сколько щита возвращает круг за секунду (здоровье — HEAL_RATE).
   var SHIELD_RATE = 3.4;
+  /* У КАЖДОГО ИГРОКА СВОИ ПОЛОСКИ (29.10, его «почему-то всегда одинаковые хп с тимейтом»). Движок решает
+     смерти по общим hp/shield отряда, как калибровал; поверх — щит и здоровье игроков для худа. Перестрелку
+     принимает на себя один из живых (по очереди с перемешкой, без бросков: поток rng не трогается), и он
+     берёт урон за всех — у дуо вдвое, остаток переходит на соседа. Шторм и сюрдж бьют всех поровну, круг
+     лечит всех. Ниже 1 здоровья не падает: умирают игроки только в файте (memberLoss) или вместе с отрядом. */
+  function memberVitals(s, dSh, dHp, focus){
+    if(!s.mSh || s.mSh.length < 2) return;
+    var live = []; for(var i=0;i<s.mAlive.length;i++) if(s.mAlive[i]) live.push(i);
+    if(!live.length) return;
+    var clamp = function(v, lo){ return Math.max(lo, Math.min(100, v)); };
+    if(!focus){
+      for(var j=0;j<live.length;j++){ var m = live[j]; s.mSh[m] = clamp(s.mSh[m] - dSh, 0); s.mHp[m] = clamp(s.mHp[m] - dHp, 1); }
+      return;
+    }
+    s._hit = (s._hit || 0) + 1;
+    var first = live[(s._hit * 7 + 3) % live.length], order = [first];
+    for(var q=0;q<live.length;q++) if(live[q] !== first) order.push(live[q]);
+    var restSh = dSh * live.length, restHp = dHp * live.length;
+    for(var o=0;o<order.length && (restSh > 0 || restHp > 0);o++){
+      var k = order[o];
+      var tSh = Math.min(s.mSh[k], restSh); s.mSh[k] -= tSh; restSh -= tSh;
+      var tHp = Math.min(s.mHp[k] - 1, restHp); if(tHp > 0){ s.mHp[k] -= tHp; restHp -= tHp; }
+    }
+  }
   function chipTake(s, dmg){
     var take = dmg * CHIP_HP;
-    var sh = (s.shield == null ? 100 : s.shield);
+    var sh = (s.shield == null ? 100 : s.shield), hp0 = s.hp;
     var over = take - sh;
     s.shield = Math.max(0, sh - take);
     if(over > 0 && s.hp > CHIP_HP_FLOOR) s.hp = Math.max(CHIP_HP_FLOOR, s.hp - over * CHIP_TO_HP);
+    memberVitals(s, sh - s.shield, hp0 - s.hp, true);
   }
   // Сколько соседей за тик обмениваются уроном с одним отрядом. См. resolveContacts.
   var CHIP_MAX = 2;
@@ -816,9 +849,29 @@
     var left = []; for(var i=0;i<winner.mAlive.length;i++) if(winner.mAlive[i]) left.push(i);
     var k = left[Math.floor(rng() * left.length)];
     winner.mAlive[k] = false;
-    loser.elims += 1; loser.team._gElims = loser.elims; loser.dealt += KILL_DAMAGE;
+    if(winner.mSh){ winner.mSh[k] = 0; winner.mHp[k] = 0; }
+    loser.elims += 1; giveKill(loser, 1); loser.team._gElims = loser.elims; loser.dealt += KILL_DAMAGE;
+    winner.mBy = winner.mBy || []; winner.mBy[k] = loser.lastK;
     winner.taken += KILL_DAMAGE;
     if(onMember) onMember(winner, k, loser);
+  }
+  /* КИЛ — ОДНОМУ ИГРОКУ (29.10, его «в килфиде килл должен давать игроку, а не двум сразу»). Кому из живых —
+     по весам team._killW (index: ccKillWeights — AIM и роль, фраггер берёт больше), «у кого больше долг по доле»,
+     как killShare в zone-replay: без бросков, поток rng не трогается. Без весов — поровну. */
+  function giveKill(sq, n){
+    if(!sq.mK || !(n > 0)) return;
+    var w = sq.team._killW, live = [];
+    for(var i=0;i<sq.mK.length;i++) if(sq.mAlive[i]) live.push(i);
+    if(!live.length) return;
+    for(var c=0;c<n;c++){
+      var sum = 0, tot = 0, best = live[0], bd = -Infinity;
+      for(var a=0;a<live.length;a++){ sum += Math.max(0.01, (w && w[live[a]]) || 1); tot += sq.mK[live[a]]; }
+      for(var b=0;b<live.length;b++){
+        var k = live[b], d = (Math.max(0.01, (w && w[k]) || 1) / sum) * (tot + 1) - sq.mK[k];
+        if(d > bd + 1e-9){ bd = d; best = k; }
+      }
+      sq.mK[best]++; sq.lastK = best;
+    }
   }
   function creditKills(winner, loser, size, alive, rng){
     var near = null, best = THIRD_PARTY_RANGE * THIRD_PARTY_RANGE;
@@ -835,11 +888,15 @@
       for(var k=0;k<size;k++) if(rng() < THIRD_PARTY_SHARE) mine--;
       if(mine < size){
         near.elims += size - mine;
+        giveKill(near, size - mine);
         near.team._gElims = near.elims;
         near.dealt += KILL_DAMAGE * (size - mine);
       }
     }
     winner.elims += mine;
+    giveKill(winner, mine);
+    if(mine > 0) loser.deathBy = winner.lastK;
+    else if(near) loser.deathBy = null;
     winner.team._gElims = winner.elims;
     winner.dealt += KILL_DAMAGE * mine;
   }
@@ -1355,6 +1412,7 @@
         t.surgeAcc -= SURGE_TICK;
         if((rng ? rng() : Math.random()) < SURGE_DUTY){
           t.hp -= SURGE_HIT;
+          memberVitals(t, 0, SURGE_HIT, false);
           t.surgeTaken += SURGE_HIT;
         }
       }
@@ -1510,10 +1568,15 @@
       return aliveOf(loser);
     }
     // Игрок отряда выбит, отряд жив: строка ленты «убийца:отряд ##ник» (zone-replay рисует ник цветом отряда).
+    // «Отряд ##ник» убийцы, если ник известен.
+    function killerTag(sq, k){
+      var who = (k != null && k >= 0 && sq.team.squad && sq.team.squad[k]) ? sq.team.squad[k].handle : null;
+      return sq.team.name + (who ? ' ##' + who : '');
+    }
     function onMember(sq, k, by){
       sq.mDiedAt[k] = tickIndex * TICK_SEC;
       var who = sq.team.squad && sq.team.squad[k] && sq.team.squad[k].handle;
-      pendingEvents.push(by.team.name + ':' + sq.team.name + ' ##' + (who || ('#' + (k + 1))));
+      pendingEvents.push(killerTag(by, sq.mBy && sq.mBy[k]) + ':' + sq.team.name + ' ##' + (who || ('#' + (k + 1))));
     }
     function onDeath(sq){
       /* RELOAD: ВОЗРОЖДЕНИЕ. В Reload убитый возвращается в бой, пока
@@ -1528,7 +1591,7 @@
          быть не должно. */
       if(opts.respawnUntilZone && currentZone < opts.respawnUntilZone){
         sq.alive = true; sq.hp = 100; sq.shield = 100; sq.deathCause = null; sq.busy = true;
-        if(sq.mAlive) for(var ma=0; ma<sq.mAlive.length; ma++) sq.mAlive[ma] = true;
+        if(sq.mAlive) for(var ma=0; ma<sq.mAlive.length; ma++){ sq.mAlive[ma] = true; if(sq.mSh){ sq.mSh[ma] = 100; sq.mHp[ma] = 100; } }
         sq.respawns = (sq.respawns || 0) + 1;
         /* И ВОЗРОЖДАЕТСЯ С НЕБА, А НЕ НА МЕСТЕ СМЕРТИ (Notion 26.10.26, Pro-Am Dallas: «очень много киллов, хотя умер
            в топ-20»). Отряд вставал там же, с полным HP, рядом с убийцей, и две команды на одной точке фармили друг
@@ -1551,7 +1614,10 @@
       // dying between two frames leaves the frames unable to say which of them
       // took sixth and which took eighth. The engine knows.
       sq.place = squads.length - eliminationOrder.length + 1;
-      pendingEvents.push(sq.deathCause + ':' + sq.team.name);
+      // Убийца — игрок, который забрал последнего (deathBy), ником после ' ##'; шторм и сюрдж — как были.
+      var killer = null;
+      for(var kq=0; kq<squads.length; kq++) if(squads[kq].team.name === sq.deathCause){ killer = squads[kq]; break; }
+      pendingEvents.push((killer ? killerTag(killer, sq.deathBy) : sq.deathCause) + ':' + sq.team.name);
     }
 
     // Take a death back out of the feed: for the squad that dies on the same
@@ -1645,6 +1711,11 @@
                   e: s.elims, p: s.alive ? 0 : (s.place || 0),
                   // Живые игроки отряда по порядку team.squad (1/0), если кто-то уже выбит.
                   m: (s.alive && s.mAlive && aliveOf(s) < s.mAlive.length) ? s.mAlive.map(function(v){ return v ? 1 : 0; }) : null,
+                  // Щит и здоровье каждого игрока (memberVitals) — у отрядов от двух.
+                  ms: (s.alive && s.mSh && s.mSh.length > 1) ? s.mSh.map(Math.round) : null,
+                  // Киллы каждого игрока (giveKill).
+                  mk: (s.mK && s.mK.length > 1) ? s.mK.slice() : null,
+                  mh: (s.alive && s.mHp && s.mHp.length > 1) ? s.mHp.map(function(v){ return Math.max(0, Math.round(v)); }) : null,
                   // Under surge right now, and net damage (dealt minus taken):
                   // the two numbers surge itself is decided on.
                   u: (s.alive && s.surged) ? 1 : 0,
@@ -1826,6 +1897,7 @@
         if(!loser || !loser.alive || !winner || winner === loser) return false;
         var loserSize = elimsFor(loser);
         winner.elims += loserSize;
+        giveKill(winner, loserSize); loser.deathBy = winner.lastK;
         winner.team._gElims = winner.elims;
         winner.dealt += KILL_DAMAGE * loserSize;
         loser.taken += KILL_DAMAGE * loserSize;
