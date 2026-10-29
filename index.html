@@ -9496,7 +9496,6 @@
              кнопки трёх колонок стояли на одной линии внизу. Id кнопок «с другом» прежние (check-mp-doors, setLang).
              Видно сразу, а не после app.js (правка 29.09); CC_MP_OPEN=false по-прежнему прячет ряд из setLang. -->
         <div class="hero-team" id="heroTeam">
-          <span class="hero-team-lbl" data-i18n="heroTeamLbl"></span>
           <span class="hero-seg">
             <button class="cstrip-btn cstrip-btn-duo" id="cstripDuo" type="button" onclick="careerMpNew()" data-i18n="heroDuo"></button>
             <button class="cstrip-btn cstrip-btn-duo" id="cstripRace" type="button" onclick="careerRaceNew()" data-i18n="ccRaceMake"></button>
@@ -120507,7 +120506,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='e7acaf1e';
+const CC_BUILD='4f2a25b7';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
