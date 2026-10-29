@@ -4171,3 +4171,6 @@ Object.assign(I18N.de=I18N.de||{},
   ccNewsNatStreak:(nat,k,ev,v)=>{ const nm=natDisplay(nat);
     return ['Die letzten '+k+' großen Finals gewann ein Team mit einem Spieler aus '+nm+' (zuletzt: '+ev+'). Ist '+nm+' gerade die beste Nation in Fortnite?', 'Wieder '+nm+'. '+k+' große Finals in Folge mit einem Spieler aus '+nm+' im Siegerteam. Hält sie jemand auf?'][v%2]; }
 }));
+/* Дозаливка «de» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
+Object.assign(I18N.de=I18N.de||{},
+({ ccRaceMake: "Gegen einen Freund" }));
