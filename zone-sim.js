@@ -143,6 +143,9 @@
       out.drift = DRIFT;
     }
     out.net = d >= '2025-10-23';
+    // Ребут по годам (см. REBOOT_RATE): фургонов нет до 10.04.2019 и 19.04–04.05.2019; карточка 270 с в Главе 2 S8.
+    out.rebootUntil = (d < '2019-04-10' || (d >= '2019-04-19' && d < '2019-05-04')) ? 0 : Infinity;
+    out.rebootCard = (d >= '2021-09-13' && d < '2021-12-05') ? 270 : 90;
     return out;
   }
 
@@ -843,7 +846,11 @@
      в каждую секунду ребутает с шансом REBOOT_RATE (подогнан пробой tools/check-member-deaths.js под 6–9 за игру).
      Ребутнутый — со 100 здоровья и без щита. Круг, после которого ребута нет, — фазой (phases.rebootUntil, правила по
      годам; без неё — REBOOT_UNTIL). */
-  var REBOOT_RATE = 0.05, REBOOT_CARD_SEC = 90, REBOOT_UNTIL = 7;   // 0.012 → 4.0 ребута за игру, 0.035 → 6.3, 0.05 → 6.6, 0.08 → 7.1 (реплеи 6–9)
+  /* Правила по годам (сверка 29.10, tools/measured/reboot-rules.md): отсечки по кругу в соревновательном нет — ребут, пока
+     жива карточка; карточка 90 с (Глава 2 S8 — 270); фургонов нет до v8.30 (10.04.2019) и 19.04–04.05.2019 (Epic отключила
+     в турнирах). REBOOT_UNTIL — круг-отсечка без даты: бесконечность. */
+  var REBOOT_RATE = 0.014, REBOOT_CARD_SEC = 90, REBOOT_UNTIL = Infinity;   // без отсечки: 0.01 → 5.5 ребута за игру, 0.014 → 6.8, 0.02 → 8.6 (реплеи 6–9)
+  var REBOOT_CARD_NOW = REBOOT_CARD_SEC;   // 0.012 → 4.0 ребута за игру, 0.035 → 6.3, 0.05 → 6.6, 0.08 → 7.1 (реплеи 6–9)
   var REBOOT_ZONE_MAX = REBOOT_UNTIL;
   function applyReboots(squads, seconds, zone){
     if(!(zone < REBOOT_ZONE_MAX)) return;
@@ -887,7 +894,7 @@
     var left = []; for(var i=0;i<winner.mAlive.length;i++) if(winner.mAlive[i]) left.push(i);
     var k = left[Math.floor(rng() * left.length)];
     winner.mAlive[k] = false;
-    if(winner.mCard) winner.mCard[k] = REBOOT_CARD_SEC;
+    if(winner.mCard) winner.mCard[k] = REBOOT_CARD_NOW;
     if(winner.mSh){ winner.mSh[k] = 0; winner.mHp[k] = 0; }
     loser.elims += 1; giveKill(loser, 1); loser.team._gElims = loser.elims; loser.dealt += KILL_DAMAGE;
     winner.mBy = winner.mBy || []; winner.mBy[k] = loser.lastK;
@@ -1516,8 +1523,9 @@
     SURGE_NET = !(opts.phases && opts.phases.net === false);
     // Ребут: бросок из потока игры; круг-отсечка — из правил года (phasesFor .rebootUntil), Reload — без ребута (там возрождение).
     rngReboot = rng;
-    REBOOT_ZONE_MAX = (opts.phases && opts.phases.rebootUntil != null) ? opts.phases.rebootUntil
-                    : opts.respawnUntilZone ? 0 : REBOOT_UNTIL;
+    REBOOT_ZONE_MAX = opts.respawnUntilZone ? 0
+                    : (opts.phases && opts.phases.rebootUntil != null) ? opts.phases.rebootUntil : REBOOT_UNTIL;
+    REBOOT_CARD_NOW = (opts.phases && opts.phases.rebootCard) || REBOOT_CARD_SEC;
     onRebootHook = function(sq, k){
       var who = sq.team.squad && sq.team.squad[k] && sq.team.squad[k].handle;
       pendingEvents.push('reboot:' + sq.team.name + ' ##' + (who || ('#' + (k + 1))));
