@@ -3330,14 +3330,14 @@
     background:linear-gradient(160deg,var(--cc-th-a,var(--panel)) 0%,var(--cc-th-b,var(--panel)) 46%,var(--cc-th-c,var(--panel)) 100%) !important;}
   /* Описание карточки штаба — ник и подписчики строкой, эффекты чипами (его слово 20.10: «описание странно выглядит»:
      «Рейтинг 95 · @… · 👥 418K · вся карточка» и «Прокачка за день +35% · сыгранность +0.4 · на месяц» рвались по словам). */
-  :is(#coachPickModal,#agentPickModal,#smmPickModal,#mktPickModal,#staff2PickModal) .cc-buy-in i.cc-buy-who{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  :is(#coachPickModal,#agentPickModal,#smmPickModal,#mktPickModal,#staff2PickModal,#hirePickModal) .cc-buy-in i.cc-buy-who{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   .cc-buy-in .cc-buy-who{display:block;font-style:normal;font-size:11px;color:rgba(255,255,255,.62);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   .cc-buy-chips{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px;}
-  :is(#coachPickModal,#agentPickModal,#smmPickModal,#mktPickModal,#staff2PickModal) .cc-buy-in{flex:1 1 auto;min-width:0;}
-  :is(#coachPickModal,#agentPickModal,#smmPickModal,#mktPickModal,#staff2PickModal) .cc-buy-in > b{display:flex;align-items:center;gap:6px;min-width:0;}
+  :is(#coachPickModal,#agentPickModal,#smmPickModal,#mktPickModal,#staff2PickModal,#hirePickModal) .cc-buy-in{flex:1 1 auto;min-width:0;}
+  :is(#coachPickModal,#agentPickModal,#smmPickModal,#mktPickModal,#staff2PickModal,#hirePickModal) .cc-buy-in > b{display:flex;align-items:center;gap:6px;min-width:0;}
   .cc-buy-in > b > .cc-buy-nm{min-width:0;overflow:hidden !important;text-overflow:ellipsis !important;white-space:nowrap !important;color:inherit !important;font:inherit !important;margin:0 !important;}
-  :is(#coachPickModal,#agentPickModal,#smmPickModal,#mktPickModal,#staff2PickModal) .cc-buy-in > b .cc-staff-rt{flex:none;}
-  :is(#coachPickModal,#agentPickModal,#smmPickModal,#mktPickModal,#staff2PickModal) .cc-buy-chips em{white-space:normal;max-width:100%;overflow-wrap:anywhere;}
+  :is(#coachPickModal,#agentPickModal,#smmPickModal,#mktPickModal,#staff2PickModal,#hirePickModal) .cc-buy-in > b .cc-staff-rt{flex:none;}
+  :is(#coachPickModal,#agentPickModal,#smmPickModal,#mktPickModal,#staff2PickModal,#hirePickModal) .cc-buy-chips em{white-space:normal;max-width:100%;overflow-wrap:anywhere;}
   #movePickModal .ch-sign{width:100%;margin-top:8px;padding:10px;}
   #movePickModal .cc-move-x{width:100%;margin-top:12px;padding:11px;border:none;border-radius:10px;background:rgba(200,225,220,.18);
     color:#eaf5f3;font-weight:800;font-size:14px;cursor:pointer;letter-spacing:.02em;}
@@ -3350,16 +3350,16 @@
   .cc-buy-chips em{font-style:normal;font-size:10.5px;font-weight:800;line-height:1.2;padding:2px 7px;border-radius:999px;
     background:rgba(255,255,255,.08);color:#dfe7ff;white-space:nowrap;}
   .cc-buy-chips em.up{background:rgba(70,220,150,.16);color:#7cf0b4;}
-  :is(#coachPickModal,#agentPickModal,#smmPickModal,#mktPickModal,#staff2PickModal) .cc-buys{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:8px;margin-top:8px;}
-  :is(#coachPickModal,#agentPickModal,#smmPickModal,#mktPickModal,#staff2PickModal) .cc-buy{padding:8px 10px;border:1px solid rgba(255,255,255,.1);border-radius:10px;background:rgba(255,255,255,.05);gap:10px;}
-  :is(#coachPickModal,#agentPickModal,#smmPickModal,#mktPickModal,#staff2PickModal) .cc-buy:last-child{border-bottom:1px solid rgba(255,255,255,.1);}
-  :is(#coachPickModal,#agentPickModal,#smmPickModal,#mktPickModal,#staff2PickModal) .cc-buy.own{opacity:1;border-color:#ffd400;background:rgba(255,212,0,.08);}
-  :is(#coachPickModal,#agentPickModal,#smmPickModal,#mktPickModal,#staff2PickModal) .cc-buy-face{width:44px;height:44px;border-radius:50%;}
-  :is(#coachPickModal,#agentPickModal,#smmPickModal,#mktPickModal,#staff2PickModal) .cc-buy-in b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-  :is(#coachPickModal,#agentPickModal,#smmPickModal,#mktPickModal,#staff2PickModal) .cc-buy-in i, :is(#coachPickModal,#agentPickModal,#smmPickModal,#mktPickModal,#staff2PickModal) .cc-buy-in span{font-size:11px;white-space:normal;overflow-wrap:anywhere;}
-  :is(#coachPickModal,#agentPickModal,#smmPickModal,#mktPickModal,#staff2PickModal) .mgf-rt.gold{color:#2a1d00;} :is(#coachPickModal,#agentPickModal,#smmPickModal,#mktPickModal,#staff2PickModal) .mgf-rt.silver{color:#1b2230;}
-  :is(#coachPickModal,#agentPickModal,#smmPickModal,#mktPickModal,#staff2PickModal) .cc-buy-btns{display:flex;flex-direction:column;gap:4px;flex:0 0 auto;}
-  :is(#coachPickModal,#agentPickModal,#smmPickModal,#mktPickModal,#staff2PickModal) .cc-buy-btns .ch-sign, :is(#coachPickModal,#agentPickModal,#smmPickModal,#mktPickModal,#staff2PickModal) .cc-buy > .ch-sign{font-size:11px;padding:6px 9px;white-space:nowrap;}
+  :is(#coachPickModal,#agentPickModal,#smmPickModal,#mktPickModal,#staff2PickModal,#hirePickModal) .cc-buys{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:8px;margin-top:8px;}
+  :is(#coachPickModal,#agentPickModal,#smmPickModal,#mktPickModal,#staff2PickModal,#hirePickModal) .cc-buy{padding:8px 10px;border:1px solid rgba(255,255,255,.1);border-radius:10px;background:rgba(255,255,255,.05);gap:10px;}
+  :is(#coachPickModal,#agentPickModal,#smmPickModal,#mktPickModal,#staff2PickModal,#hirePickModal) .cc-buy:last-child{border-bottom:1px solid rgba(255,255,255,.1);}
+  :is(#coachPickModal,#agentPickModal,#smmPickModal,#mktPickModal,#staff2PickModal,#hirePickModal) .cc-buy.own{opacity:1;border-color:#ffd400;background:rgba(255,212,0,.08);}
+  :is(#coachPickModal,#agentPickModal,#smmPickModal,#mktPickModal,#staff2PickModal,#hirePickModal) .cc-buy-face{width:44px;height:44px;border-radius:50%;}
+  :is(#coachPickModal,#agentPickModal,#smmPickModal,#mktPickModal,#staff2PickModal,#hirePickModal) .cc-buy-in b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  :is(#coachPickModal,#agentPickModal,#smmPickModal,#mktPickModal,#staff2PickModal,#hirePickModal) .cc-buy-in i, :is(#coachPickModal,#agentPickModal,#smmPickModal,#mktPickModal,#staff2PickModal,#hirePickModal) .cc-buy-in span{font-size:11px;white-space:normal;overflow-wrap:anywhere;}
+  :is(#coachPickModal,#agentPickModal,#smmPickModal,#mktPickModal,#staff2PickModal,#hirePickModal) .mgf-rt.gold{color:#2a1d00;} :is(#coachPickModal,#agentPickModal,#smmPickModal,#mktPickModal,#staff2PickModal,#hirePickModal) .mgf-rt.silver{color:#1b2230;}
+  :is(#coachPickModal,#agentPickModal,#smmPickModal,#mktPickModal,#staff2PickModal,#hirePickModal) .cc-buy-btns{display:flex;flex-direction:column;gap:4px;flex:0 0 auto;}
+  :is(#coachPickModal,#agentPickModal,#smmPickModal,#mktPickModal,#staff2PickModal,#hirePickModal) .cc-buy-btns .ch-sign, :is(#coachPickModal,#agentPickModal,#smmPickModal,#mktPickModal,#staff2PickModal,#hirePickModal) .cc-buy > .ch-sign{font-size:11px;padding:6px 9px;white-space:nowrap;}
   .cc-buy{display:flex;align-items:center;gap:12px;justify-content:space-between;
     padding:9px 0;border-bottom:1px solid rgba(140,175,255,.14);}
   .cc-buy:last-child{border-bottom:none;}
@@ -10456,7 +10456,7 @@
   </div>
 </div>
 <div id="hirePickModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:230;align-items:center;justify-content:center;padding:16px;" onclick="if(event.target===this) ccHireClose();">
-  <div style="width:100%;max-width:560px;max-height:88vh;overflow-y:auto;border-radius:14px;
+  <div style="width:100%;max-width:860px;max-height:88vh;overflow-y:auto;border-radius:14px;
     background:var(--panel);border:1px solid var(--line);padding:16px;box-shadow:0 20px 60px rgba(0,0,0,.6);">
     <div id="hirePickBody"></div>
     <button onclick="ccHireClose()" style="width:100%;margin-top:12px;padding:11px;border:none;border-radius:10px;
@@ -120760,7 +120760,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='d9de03e6';
+const CC_BUILD='cd516c88';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -126635,7 +126635,8 @@ function careerCentreHTML(card, a){
         (onToday && !ccMpOn() && !(typeof ccRaceLock==='function' && ccRaceLock())
           ? `<button class="ch-play ch-skipev" onclick="careerSkipEventAsk()">${L().chSkipEv}</button>` : '')+
         /* Наём на турнир (ccHireOpen): нанятый — строкой с отменой, иначе кнопка. */
-        (onToday && typeof ccHireAllowed==='function' && ccHireAllowed()
+        /* Соло-вечер (Solo Series, FNCS Solos, соло-кап) напарника не берёт — и нанимать некого (его Notion 29.10 «на соло можно нанять»). */
+        (onToday && typeof ccHireAllowed==='function' && ccHireAllowed() && careerNeedsMate(next.type)
           ? (ccHireActive()
               ? `<div class="ch-hint ch-hire-on">${esc(L().ccHireOn(CAREER.career.hire.handle, ccMoney(CAREER.career.hire.fee)))} <button class="ch-sign" onclick="careerHireCancel()">${L().ccHireCancel}</button></div>`
               : `<button class="ch-play ch-skipev" onclick="ccHireOpen()">${L().ccHireBtn}</button>`)
@@ -143430,7 +143431,13 @@ function ccSmmPickKey(e){ if(e.key==='Escape') ccSmmPickClose(); }
    убирает его из своей пары, как убирает любого из твоего состава (careerCupField, mine). Призы — как с
    напарником. Отменить до игры — деньги назад. Цена — ОЦЕНКА режима: CC_HIRE_BASE за рейтинг 85, ×CC_HIRE_STEP
    за каждое очко сверху. В команде и в гонке найма нет: первое кресло там занято человеком. */
-const CC_HIRE_BASE=150, CC_HIRE_STEP=1.15, CC_HIRE_OVER=2, CC_HIRE_N=8;
+/* ЦЕНА ПО ЗАРАБОТКАМ (29.10, его «цены нереалистичные, слишком мало»). Было 150 × 1,15^(r−85): Sky 95 — $610 за вечер,
+   при его $277 тыс. призовых за 2026. Замер (scratchpad hire-fit.js): заработок 2026 из Liquipedia (HOME_EARN_LQ, 49 игроков
+   с карточкой) против рейтинга карточки — log(e) = CC_HIRE_FIT_A + CC_HIRE_FIT_B·r (r² 0,30; шаг ×1,147 за очко — тот же,
+   что был, ошибалась база). Цена — заработок игрока за один дуо-вечер года: свой из Liquipedia, если он есть и год 2026,
+   иначе по кривой; делитель CC_HIRE_DAYS — дни дуо-турниров карьеры 2026 (кубки 34, финалы 19, Мейджоры 18, Victory 23,
+   Reload 24, Саммит 5, GC 11, Глобалы 2). Что турнир платит больше или меньше среднего, цена не знает — это оценка. */
+const CC_HIRE_FIT_A=-1.110, CC_HIRE_FIT_B=0.1371, CC_HIRE_DAYS=136, CC_HIRE_OVER=2, CC_HIRE_N=30;
 let CC_HIRE_MEMO=null;
 function ccHireAllowed(){
   return !!(CAREER && CAREER.career) && !(typeof ccMpOn==='function' && ccMpOn()) &&
@@ -143449,7 +143456,13 @@ function ccHireCard(){
   return card;
 }
 function ccHireOvr(c){ return Math.round(c ? (c._ovr!=null ? c._ovr : ((attrsFor(c)||{}).ovr||c.rating||0)) : 0); }
-function ccHireFee(ovr){ return Math.max(50, Math.round(CC_HIRE_BASE*Math.pow(CC_HIRE_STEP, ovr-85)/10)*10); }
+function ccHireEarn(c, ovr){
+  if(c && c.handle && (CAREER && CAREER.career && CAREER.career.year)===2026 && typeof HOME_EARN_LQ!=='undefined'){
+    const k=hKey(c.handle), r=HOME_EARN_LQ.find(x=>hKey(x.n)===k); if(r && r.e>0) return r.e;
+  }
+  return Math.exp(CC_HIRE_FIT_A+CC_HIRE_FIT_B*ovr);
+}
+function ccHireFee(ovr, c){ return Math.max(50, Math.round(ccHireEarn(c, ovr)/CC_HIRE_DAYS/10)*10); }
 function ccHireCands(){
   const reg=ccCareerRegion();
   const roster=(typeof ccSceneRoster==='function' && reg!=='EU') ? ccSceneRoster(reg) : careerRosterNowEU();
@@ -143463,7 +143476,7 @@ function ccHireOpen(){
   if(!ccHireAllowed()) return;
   const cr=CAREER.career, T=L(), list=ccHireCands();
   const rows=list.map((c, i)=>{
-    const ovr=ccHireOvr(c), fee=ccHireFee(ovr), can=(cr.balance||0)>=fee;
+    const ovr=ccHireOvr(c), fee=ccHireFee(ovr, c), can=(cr.balance||0)>=fee;
     return '<div class="cc-buy"><div class="cc-buy-in"><b><span class="cc-buy-nm">'+esc(c.handle)+'</span> <span class="cc-staff-rt mgf-rt">'+ovr+'</span></b>'+
       '<i class="cc-buy-who">'+esc(c.org||T.ccHireFree||'')+'</i></div>'+
       '<span class="cc-buy-btns"><button class="ch-sign"'+(can?'':' disabled')+' onclick="careerHire('+i+')">'+ccMoney(fee)+'</button></span></div>';
@@ -143481,7 +143494,7 @@ function ccHireKey(e){ if(e.key==='Escape') ccHireClose(); }
 function careerHire(i){
   const cr=CAREER.career; if(!ccHireAllowed()) return;
   const c=ccHireCands()[i]; if(!c) return;   // номер в том же списке, что показан в окне
-  const fee=ccHireFee(ccHireOvr(c));
+  const fee=ccHireFee(ccHireOvr(c), c);
   if((cr.balance||0)<fee) return;
   if(ccHireActive()) cr.balance=(cr.balance||0)+(cr.hire.fee||0);   // сменил нанятого — прошлому вернули
   cr.balance=(cr.balance||0)-fee;
