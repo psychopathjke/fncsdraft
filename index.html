@@ -3995,7 +3995,7 @@
   .zr-kit .zk-ico-squad{background:#e6ecf7;-webkit-mask-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle cx='7.4' cy='6.6' r='3.3'/%3E%3Ccircle cx='17' cy='7.4' r='2.7'/%3E%3Cpath d='M1.2 20.5c0-3.6 2.7-5.9 6.2-5.9s6.2 2.3 6.2 5.9z'/%3E%3Cpath d='M12.6 20.5c0-3.1 2.2-5 5-5s4.9 1.9 4.9 5z' opacity='.85'/%3E%3C/svg%3E");mask-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle cx='7.4' cy='6.6' r='3.3'/%3E%3Ccircle cx='17' cy='7.4' r='2.7'/%3E%3Cpath d='M1.2 20.5c0-3.6 2.7-5.9 6.2-5.9s6.2 2.3 6.2 5.9z'/%3E%3Cpath d='M12.6 20.5c0-3.1 2.2-5 5-5s4.9 1.9 4.9 5z' opacity='.85'/%3E%3C/svg%3E");
     -webkit-mask-size:contain;mask-size:contain;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;
     -webkit-mask-position:center;mask-position:center;}
-  .zr-kit .zk-ico-skull{clip-path:polygon(20% 0,80% 0,100% 30%,100% 62%,84% 70%,84% 100%,60% 100%,60% 84%,40% 84%,40% 100%,16% 100%,16% 70%,0 62%,0 30%);}
+  .zr-kit .zk-ico-skull{-webkit-mask-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath fill-rule='evenodd' d='M6 0.3L11.2 3V8L9.4 9V11.7H7.6V10.6H6.8V11.7H5.2V10.6H4.4V11.7H2.6V9L0.8 8V3ZM2.7 4.7L5.3 6.2L2.9 7.4ZM9.3 4.7L6.7 6.2L9.1 7.4Z'/%3E%3C/svg%3E");mask-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath fill-rule='evenodd' d='M6 0.3L11.2 3V8L9.4 9V11.7H7.6V10.6H6.8V11.7H5.2V10.6H4.4V11.7H2.6V9L0.8 8V3ZM2.7 4.7L5.3 6.2L2.9 7.4ZM9.3 4.7L6.7 6.2L9.1 7.4Z'/%3E%3C/svg%3E");-webkit-mask-size:contain;mask-size:contain;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;}   /* череп элиминаций как в игре, см. zone-replay SKULL_PATH */
   .zr-kit .zk-ico-man{clip-path:polygon(35% 0,65% 0,72% 28%,55% 36%,90% 55%,90% 100%,10% 100%,10% 55%,45% 36%,28% 28%);}
   .zr-kit .zk-ico-clock{border-radius:50%;background:transparent;border:2px solid #e6ecf7;width:10px;height:10px;position:relative;}
   .zr-kit .zk-ico-clock::after{content:'';position:absolute;left:4px;top:1px;width:2px;height:5px;background:#e6ecf7;}
@@ -9396,7 +9396,7 @@
      tools/check-deploy-folder.js: забыть обновить руками теперь нельзя, папка
      деплоя просто не соберётся зелёной. -->
 <script src="zone-sim.js?v=b54ff4ab"></script>
-<script src="zone-replay.js?v=b7898a2b"></script>
+<script src="zone-replay.js?v=a04037cb"></script>
 <!-- Командная карьера: транспорт и склейка. Весь код мультиплеера живёт здесь,
      в index.html только точки врезки. ?v= — тот же кэш-предохранитель, что и
      у соседей: поменял mp.js — переставь хеш, иначе браузер возьмёт старый
@@ -120550,7 +120550,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='8738964b';
+const CC_BUILD='72978247';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
