@@ -2514,7 +2514,7 @@
   .cc-field input{width:100%;box-sizing:border-box;border:1px solid #cfd6da;border-radius:3px;
     background:#fff;color:#0b0f12;font:inherit;font-weight:800;font-size:15px;padding:9px 11px;}
   .cc-field input:focus{outline:none;border-color:#00b090;box-shadow:0 0 0 2px rgba(0,176,144,.18);}
-  .cc-binds{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+  .cc-binds{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;}
   .cc-binds span{flex:1;display:flex;align-items:center;gap:6px;min-width:0;}
   .cc-binds i{flex:none;width:26px;height:26px;border-radius:4px;background:#5f646e;display:flex;align-items:center;justify-content:center;}
   .cc-binds i svg{width:22px;height:22px;display:block;}
@@ -2560,6 +2560,10 @@
   .cc-c.on .cc-c-name{background:#00b090;}
   .cc-note{font-size:10px;color:#6b7883;margin-top:9px;}
   .cc-col{display:flex;flex-direction:column;gap:16px;min-width:0;}
+  .cc-setup{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:0 24px;align-items:start;}
+  .cc-setup-col{min-width:0;}
+  .cc-setup-col>.cc-field:first-child{margin-top:0;}
+  @media(max-width:700px){.cc-setup{grid-template-columns:1fr;} .cc-setup-col+.cc-setup-col>.cc-field:first-child{margin-top:14px;}}
   .cc-chips{display:flex;gap:6px;}
   .cc-chips-5{gap:4px;}
   .cc-chips-reg{flex-wrap:wrap;gap:4px;}
@@ -9861,18 +9865,6 @@
               <button type="button" id="ccSexF" class="cc-chip" onclick="ccSexPick('f')" data-i18n="ccSexF"></button>
             </div>
           </div>
-          <!-- Бинды построек (29.10, его «пусть игрок сам напишет в начале карьеры»): их показывает HUD симуляции
-               над хотбаром. Пусто — стоит подсказка. У всех остальных на HUD бинды Peterbot (CC_PRO_BINDS). -->
-          <div class="cc-field">
-            <label data-i18n="ccBinds"></label>
-            <div class="cc-binds">
-              <span><i id="ccBindIcoWall"></i><input id="ccBindWall" maxlength="3" autocomplete="off" spellcheck="false" autocapitalize="characters" onkeydown="ccBindKey(event,this)" oninput="ccBindInput(this)" onmousedown="ccBindMouse(event,this)" onauxclick="event.preventDefault()" oncontextmenu="event.preventDefault()" placeholder="Q"></span>
-              <span><i id="ccBindIcoFloor"></i><input id="ccBindFloor" maxlength="3" autocomplete="off" spellcheck="false" autocapitalize="characters" onkeydown="ccBindKey(event,this)" oninput="ccBindInput(this)" onmousedown="ccBindMouse(event,this)" onauxclick="event.preventDefault()" oncontextmenu="event.preventDefault()" placeholder="F"></span>
-              <span><i id="ccBindIcoStairs"></i><input id="ccBindStairs" maxlength="3" autocomplete="off" spellcheck="false" autocapitalize="characters" onkeydown="ccBindKey(event,this)" oninput="ccBindInput(this)" onmousedown="ccBindMouse(event,this)" onauxclick="event.preventDefault()" oncontextmenu="event.preventDefault()" placeholder="V"></span>
-              <span><i id="ccBindIcoCone"></i><input id="ccBindCone" maxlength="3" autocomplete="off" spellcheck="false" autocapitalize="characters" onkeydown="ccBindKey(event,this)" oninput="ccBindInput(this)" onmousedown="ccBindMouse(event,this)" onauxclick="event.preventDefault()" oncontextmenu="event.preventDefault()" placeholder="T"></span>
-            </div>
-            <div class="cc-gain" data-i18n="ccBindsHint"></div>
-          </div>
           <!-- The age is a choice again, and a real one now that the birthday
                is worth points: a sixteen-year-old carries +4 and a
                twenty-five-year-old +3, and everybody retires at thirty either
@@ -9895,46 +9887,11 @@
             <input id="ccBorn" class="cc-born" type="date" oninput="ccBornInput()">
             <div class="cc-note cc-born-note" data-i18n="ccBornHint"></div>
           </div>
-          <div class="cc-field" id="ccRoleField">
-            <label data-i18n="ccRole"></label>
-            <div class="cc-chips" id="ccRoleChips"></div>
-          </div>
-          <!-- Устройство (Notion «19.10», игрок: «добавьте выбор, на чём играть: контроллер или клавиатура и мышь»).
-               У взятой карточки настоящего про — его устройство по данным (CC_PRO_PAD), выбирать нечего. -->
-          <div class="cc-field" id="ccInputField">
-            <label data-i18n="ccInput"></label>
-            <div class="cc-chips" id="ccInputChips"></div>
-          </div>
-          <!-- Прибавка за пинг и возраст — выключаемая (Notion «18.10», тестер: «хочу, чтобы было столько рейтинга,
-               сколько я сам сделал, а не +10 ещё»). Только своему игроку: у взятой карточки и креатора её нет. -->
-          <div class="cc-field" id="ccEdgeField">
-            <label data-i18n="ccEdgeTitle"></label>
-            <div class="cc-chips" id="ccEdgeChips"></div>
-            <div class="cc-note" data-i18n="ccEdgeNote"></div>
-          </div>
-          <!-- Очки прокачки раздаются здесь и только здесь — правка,
-               23 августа: «очки только в начале карьеры, в создании карточки,
-               один раз». Взятой карточке поле не показывается: реальному
-               человеку статы не дарят. -->
-          <div class="cc-field" id="ccSpField">
-            <label data-i18n="ccSpaTitle"></label>
-            <div class="cc-spa-note"><span data-i18n="ccSpCreateHint"></span></div>
-            <div class="ch-sp" id="ccSpRows"></div>
-          </div>
-          <div class="cc-field" id="ccDivField">
-            <label data-i18n="ccDivision"></label>
-            <div class="cc-chips cc-chips-5" id="ccDivChips"></div>
-            <div class="cc-note" data-i18n="ccDivNote"></div>
-          </div>
-          <div class="cc-field" id="ccDiffField">
-            <label data-i18n="ccDiff"></label>
-            <div class="cc-chips" id="ccDiffChips"></div>
-            <div class="cc-note" data-i18n="ccDiffNote"></div>
-          </div>
         </div>
         <div class="cc-panel cc-cardbox" id="ccCardBox"></div>
         </div>
 
+        <div class="cc-col">
         <div class="cc-panel">
           <div class="cc-field" style="margin-top:0;">
             <label data-i18n="ccRegion"></label>
@@ -9952,6 +9909,63 @@
           <div class="cc-cards" id="ccCards" style="display:none;"></div>
           <div class="cc-gain" id="ccPingGain"></div>
           <div class="cc-note" data-i18n="ccPingNote"></div>
+        </div>
+        <!-- Под картой (29.10, «листать вниз нужно»): настройки игрока двумя столбцами, чтобы колонки были одной высоты
+             и кнопка старта не уезжала на два экрана вниз. На узком экране — одним столбцом. -->
+        <div class="cc-panel cc-setup">
+          <div class="cc-setup-col">
+            <!-- Бинды построек (29.10, его «пусть игрок сам напишет в начале карьеры»): их показывает HUD симуляции
+                 над хотбаром. Пусто — стоит подсказка. У всех остальных на HUD бинды Peterbot (CC_PRO_BINDS). -->
+            <div class="cc-field">
+              <label data-i18n="ccBinds"></label>
+              <div class="cc-binds">
+                <span><i id="ccBindIcoWall"></i><input id="ccBindWall" maxlength="3" autocomplete="off" spellcheck="false" autocapitalize="characters" onkeydown="ccBindKey(event,this)" oninput="ccBindInput(this)" onmousedown="ccBindMouse(event,this)" onauxclick="event.preventDefault()" oncontextmenu="event.preventDefault()" placeholder="Q"></span>
+                <span><i id="ccBindIcoFloor"></i><input id="ccBindFloor" maxlength="3" autocomplete="off" spellcheck="false" autocapitalize="characters" onkeydown="ccBindKey(event,this)" oninput="ccBindInput(this)" onmousedown="ccBindMouse(event,this)" onauxclick="event.preventDefault()" oncontextmenu="event.preventDefault()" placeholder="F"></span>
+                <span><i id="ccBindIcoStairs"></i><input id="ccBindStairs" maxlength="3" autocomplete="off" spellcheck="false" autocapitalize="characters" onkeydown="ccBindKey(event,this)" oninput="ccBindInput(this)" onmousedown="ccBindMouse(event,this)" onauxclick="event.preventDefault()" oncontextmenu="event.preventDefault()" placeholder="V"></span>
+                <span><i id="ccBindIcoCone"></i><input id="ccBindCone" maxlength="3" autocomplete="off" spellcheck="false" autocapitalize="characters" onkeydown="ccBindKey(event,this)" oninput="ccBindInput(this)" onmousedown="ccBindMouse(event,this)" onauxclick="event.preventDefault()" oncontextmenu="event.preventDefault()" placeholder="T"></span>
+              </div>
+              <div class="cc-gain" data-i18n="ccBindsHint"></div>
+            </div>
+            <div class="cc-field" id="ccRoleField">
+              <label data-i18n="ccRole"></label>
+              <div class="cc-chips" id="ccRoleChips"></div>
+            </div>
+            <!-- Устройство (Notion «19.10», игрок: «добавьте выбор, на чём играть: контроллер или клавиатура и мышь»).
+                 У взятой карточки настоящего про — его устройство по данным (CC_PRO_PAD), выбирать нечего. -->
+            <div class="cc-field" id="ccInputField">
+              <label data-i18n="ccInput"></label>
+              <div class="cc-chips" id="ccInputChips"></div>
+            </div>
+            <!-- Прибавка за пинг и возраст — выключаемая (Notion «18.10», тестер: «хочу, чтобы было столько рейтинга,
+                 сколько я сам сделал, а не +10 ещё»). Только своему игроку: у взятой карточки и креатора её нет. -->
+            <div class="cc-field" id="ccEdgeField">
+              <label data-i18n="ccEdgeTitle"></label>
+              <div class="cc-chips" id="ccEdgeChips"></div>
+              <div class="cc-note" data-i18n="ccEdgeNote"></div>
+            </div>
+            <!-- Очки прокачки раздаются здесь и только здесь — правка,
+                 23 августа: «очки только в начале карьеры, в создании карточки,
+                 один раз». Взятой карточке поле не показывается: реальному
+                 человеку статы не дарят. -->
+          </div>
+          <div class="cc-setup-col">
+            <div class="cc-field" id="ccSpField">
+              <label data-i18n="ccSpaTitle"></label>
+              <div class="cc-spa-note"><span data-i18n="ccSpCreateHint"></span></div>
+              <div class="ch-sp" id="ccSpRows"></div>
+            </div>
+            <div class="cc-field" id="ccDivField">
+              <label data-i18n="ccDivision"></label>
+              <div class="cc-chips cc-chips-5" id="ccDivChips"></div>
+              <div class="cc-note" data-i18n="ccDivNote"></div>
+            </div>
+            <div class="cc-field" id="ccDiffField">
+              <label data-i18n="ccDiff"></label>
+              <div class="cc-chips" id="ccDiffChips"></div>
+              <div class="cc-note" data-i18n="ccDiffNote"></div>
+            </div>
+          </div>
+        </div>
         </div>
       </div>
 
@@ -120690,7 +120704,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='e5cd59d5';
+const CC_BUILD='b2cfb1b8';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
