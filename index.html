@@ -105477,7 +105477,9 @@ async function simulateGamesLive(teams, numGames, pointsFn, killMult, fieldPrefi
   function liveSorted(){
     const n=teams.length, P=new Float64Array(n), E=new Float64Array(n), W=new Float64Array(n), ix=new Array(n);
     for(let k=0;k<n;k++){ const t=teams[k]; P[k]=livePts(t); E[k]=liveElims(t); W[k]=t.wins||0; ix[k]=k; }
-    ix.sort((a,b)=>P[b]-P[a] || E[b]-E[a] || W[b]-W[a] || a-b);
+    // Этап, где победа — билет (stopOnWin): взявшие Виктори стоят над всеми, как у Epic с их 947 за победу.
+    if(opts.stopOnWin) ix.sort((a,b)=>((teams[b].qualByWin?1:0)-(teams[a].qualByWin?1:0)) || P[b]-P[a] || E[b]-E[a] || W[b]-W[a] || a-b);
+    else ix.sort((a,b)=>P[b]-P[a] || E[b]-E[a] || W[b]-W[a] || a-b);
     return ix.map(k=>teams[k]);
   }
   function renderRows(){
@@ -120588,7 +120590,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='4050bd40';
+const CC_BUILD='a708e0b6';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -170644,7 +170646,13 @@ async function runCareerSoloSeries(){
      together: mate ? humans : null,
      dropEachGame:(g,room)=>open ? null : ccSoloDrops(room||field, humans, ev.label, kindsForDrop)});
   const ranked=field.slice().sort((a,b)=>b.stagePts-a.stagePts || (b.wins||0)-(a.wins||0) || b.stageElims-a.stageElims);
-  const place=ranked.indexOf(you)+1;
+  /* Прошедшие по победе — НАВЕРХУ (29.10, его «почему я не выше всех в таблице»): у Epic победа в хите давала 947
+     сверху, и победитель стоял первым. Бонус снят (см. soloHeatsPoints), поэтому порядок держится отдельно: сначала
+     взявшие Виктори этого этапа, потом остальные по очкам. Только показ и место в карточке — кто проходит по
+     очкам (cut, ccSolosSeat), считает ranked, как было. */
+  const vrStage=spec ? !!spec.vr : ev.stage==='heats';
+  const shown=vrStage ? ranked.slice().sort((a,b)=>((b.wins||0)>0)-((a.wins||0)>0)) : ranked;
+  const place=shown.indexOf(you)+1;
   careerPrAdd(ranked, {div:cr.division, kind:'solo', stage:ev.stage});
   // Соло играется в несколько вечеров: доска — только на финальном.
   if(ev.stage==='final' || ev.stage==='rlfinal') ccBoardAfter(ranked, you, ev.label);
@@ -170677,7 +170685,7 @@ async function runCareerSoloSeries(){
     careerReachAdd(careerReachResult(place, field.length, 1, 'solo'));
     careerNews(cash?'good':'flat', cash?'ccNewsSoloCash':'ccNewsSoloOut',
                cash?[place, ccNum(cash)]:[ev.label, place, field.length],
-               {tbl:ccStageShot(ranked, you, CAREER.career.division, ev.label, cut)});
+               {tbl:ccStageShot(shown, you, CAREER.career.division, ev.label, cut)});
     ccSoloStateSet(ev, me, {got:'final', pass:'final', seat:null});
     if(mate) ccSoloStateSet(ev, pc, {got:'final', pass:'final', seat:null});
   } else {
