@@ -331,9 +331,14 @@
       team._gElims = 0;
       // Пришла ли зона эндгейма к этому отряду (см. PULL_ZONE). Сброс, чтобы не осталась прошлая игра.
       team._zonePull = null;
+      var size = (team.squad && team.squad.length) || 1;
       return {
         team: team,
         x: p.x, y: p.y * aspect,
+        // Кто из отряда жив, по порядку team.squad (см. MEMBER_LOSS): отряд умирает целиком,
+        // а игрок — и по одному, в выигранном файте.
+        mAlive: (function(){ var a = []; for(var i=0;i<size;i++) a.push(true); return a; })(),
+        mDiedAt: [],
         hp: 100,
         // The shield the HUD draws: drained by contact, refilled by the circle;
         // never part of dying. See CHIP_HP.
@@ -776,6 +781,45 @@
      меняется только, у кого они. Доля — оценка, не замер: поигровых киллов трио в данных нет. */
   var THIRD_PARTY_SHARE = 0.22;
   var THIRD_PARTY_RANGE = 2 * CONTACT_RANGE;
+  /* ИГРОКИ ОТРЯДА УМИРАЮТ И ПО ОДНОМУ (29.10, его «тимейты вообще не умирают либо сам игрок, чтоб досмотреть
+     за ним, как в реальной жизни», «и боты тоже»). До этого отряд был одним целым и выбывал только весь.
+     Замер по трём реплеям финалов FNCS 2026 EU (tools/real-matches.json, 149 дуо): смерти, у которых нет
+     напарника в пределах 60 с и 40 м, — 74, то есть примерно у четверти дуо игрок умирал отдельно от
+     тиммейта. Здесь это так: выигравший файт отряд теряет игрока с вероятностью MEMBER_LOSS × «насколько
+     файт был равным» (2·min/(сумма сил), в равном 1) — подогнано пробой tools/check-member-deaths.js под ту
+     же долю. Кил за него получает проигравший (обмен перед смертью). Неполный отряд в следующих файтах
+     слабее: сила для дуэли × (живых/всех)^SHORT_EXP — 1 против 2 при равных картах ≈ четверть побед
+     (ОЦЕНКА, замера нет). Здоровье и щит — общие на отряд, как было; шторм и сюрдж убивают отряд целиком. */
+  var MEMBER_LOSS = 0.45, SHORT_EXP = 0.32;   // 0.3 → 0.18 дуо с отдельной смертью, 0.45 → 0.24, 0.6 → 0.31 (реплеи 0.25)
+  function aliveOf(sq){
+    if(!sq.mAlive) return (sq.team.squad && sq.team.squad.length) || 1;
+    var n = 0; for(var i=0;i<sq.mAlive.length;i++) if(sq.mAlive[i]) n++;
+    return n;
+  }
+  // Дуэль с поправкой на неполный отряд: сила на время броска умножается и возвращается.
+  function shortDuel(duel, a, b, dropping){
+    var ka = a.mAlive ? Math.pow(aliveOf(a) / a.mAlive.length, SHORT_EXP) : 1;
+    var kb = b.mAlive ? Math.pow(aliveOf(b) / b.mAlive.length, SHORT_EXP) : 1;
+    if(ka === 1 && kb === 1) return duel(a.team, b.team, dropping);
+    var sa = [a.team._pc, a.team.pow], sb = [b.team._pc, b.team.pow];
+    if(typeof a.team._pc === 'number') a.team._pc *= ka; if(typeof a.team.pow === 'number') a.team.pow *= ka;
+    if(typeof b.team._pc === 'number') b.team._pc *= kb; if(typeof b.team.pow === 'number') b.team.pow *= kb;
+    try { return duel(a.team, b.team, dropping); }
+    finally { a.team._pc = sa[0]; a.team.pow = sa[1]; b.team._pc = sb[0]; b.team.pow = sb[1]; }
+  }
+  // Победитель файта мог потерять игрока. Кил — проигравшему; onMember пишет строку в ленту.
+  function memberLoss(winner, loser, rng, onMember){
+    if(!winner.mAlive || aliveOf(winner) < 2) return;
+    var pw = winner.power || 1, pl = loser.power || 1;
+    var even = 2 * Math.min(pw, pl) / (pw + pl);
+    if(rng() >= MEMBER_LOSS * even) return;
+    var left = []; for(var i=0;i<winner.mAlive.length;i++) if(winner.mAlive[i]) left.push(i);
+    var k = left[Math.floor(rng() * left.length)];
+    winner.mAlive[k] = false;
+    loser.elims += 1; loser.team._gElims = loser.elims; loser.dealt += KILL_DAMAGE;
+    winner.taken += KILL_DAMAGE;
+    if(onMember) onMember(winner, k, loser);
+  }
   function creditKills(winner, loser, size, alive, rng){
     var near = null, best = THIRD_PARTY_RANGE * THIRD_PARTY_RANGE;
     if(size > 1 && alive){
@@ -953,9 +997,9 @@
   // that drew a third squad is a fight nobody gets out of.
   var STACK_MIN = 3;
 
-  function resolveContacts(squads, circle, rng, duel, onDeath, dropping, elimsFor){
+  function resolveContacts(squads, circle, rng, duel, onDeath, dropping, elimsFor, onMember){
     // Цена смерти отряда в элимах — см. elimsFor у игры; без неё — весь отряд.
-    if(!elimsFor) elimsFor = function(l){ return (l.team.squad && l.team.squad.length) || 1; };
+    if(!elimsFor) elimsFor = function(l){ return aliveOf(l); };
     var alive = [];
     for(var i=0;i<squads.length;i++) if(squads[i].alive) alive.push(squads[i]);
 
@@ -1177,9 +1221,10 @@
         // Nothing in here changes on the answer — the engine settles no fight
         // itself — but a fight in the first forty seconds is a different fight:
         // both squads landed with nothing, so the app quotes it different odds.
-        var winnerTeam = duel(s.team, o.team, dropping);
+        var winnerTeam = shortDuel(duel, s, o, dropping);
         var winner = (winnerTeam === s.team) ? s : o;
         var loser  = (winner === s) ? o : s;
+        memberLoss(winner, loser, rng, onMember);
         var loserSize = elimsFor(loser);
 
         creditKills(winner, loser, loserSize, alive, rng);
@@ -1216,9 +1261,10 @@
             victim = v; break;
           }
           if(!victim) break;
-          var cwTeam = duel(streaker.team, victim.team, dropping);
+          var cwTeam = shortDuel(duel, streaker, victim, dropping);
           var cw = (cwTeam === streaker.team) ? streaker : victim;
           var cl = (cw === streaker) ? victim : streaker;
+          memberLoss(cw, cl, rng, onMember);
           var clSize = elimsFor(cl);
           creditKills(cw, cl, clSize, alive, rng);
           cl.taken += KILL_DAMAGE * clSize;
@@ -1264,7 +1310,7 @@
       s.surgeNet = Math.round(s.dealt - (SURGE_NET ? s.taken : 0));
       if(!s.alive) continue;
       alive.push(s);
-      players += (s.team.squad && s.team.squad.length) || 1;
+      players += aliveOf(s);
     }
     if(players <= surgeAt || !alive.length) return null;
 
@@ -1298,7 +1344,7 @@
     var below = [], covered = 0;
     for(var b=0; b<alive.length && covered < over; b++){
       below.push(alive[b]);
-      covered += (alive[b].team.squad && alive[b].team.squad.length) || 1;
+      covered += aliveOf(alive[b]);
     }
 
     for(var k=0;k<below.length;k++){
@@ -1461,7 +1507,13 @@
        Когда возрождения гаснут, смерть снова стоит весь отряд — как в игре. */
     function elimsFor(loser){
       if(opts.respawnUntilZone && currentZone < opts.respawnUntilZone) return 1;
-      return (loser.team.squad && loser.team.squad.length) || 1;
+      return aliveOf(loser);
+    }
+    // Игрок отряда выбит, отряд жив: строка ленты «убийца:отряд ##ник» (zone-replay рисует ник цветом отряда).
+    function onMember(sq, k, by){
+      sq.mDiedAt[k] = tickIndex * TICK_SEC;
+      var who = sq.team.squad && sq.team.squad[k] && sq.team.squad[k].handle;
+      pendingEvents.push(by.team.name + ':' + sq.team.name + ' ##' + (who || ('#' + (k + 1))));
     }
     function onDeath(sq){
       /* RELOAD: ВОЗРОЖДЕНИЕ. В Reload убитый возвращается в бой, пока
@@ -1476,6 +1528,7 @@
          быть не должно. */
       if(opts.respawnUntilZone && currentZone < opts.respawnUntilZone){
         sq.alive = true; sq.hp = 100; sq.shield = 100; sq.deathCause = null; sq.busy = true;
+        if(sq.mAlive) for(var ma=0; ma<sq.mAlive.length; ma++) sq.mAlive[ma] = true;
         sq.respawns = (sq.respawns || 0) + 1;
         /* И ВОЗРОЖДАЕТСЯ С НЕБА, А НЕ НА МЕСТЕ СМЕРТИ (Notion 26.10.26, Pro-Am Dallas: «очень много киллов, хотя умер
            в топ-20»). Отряд вставал там же, с полным HP, рядом с убийцей, и две команды на одной точке фармили друг
@@ -1532,7 +1585,7 @@
       var n = 0;
       for(var i=0;i<squads.length;i++){
         if(!squads[i].alive) continue;
-        n += (squads[i].team.squad && squads[i].team.squad.length) || 1;
+        n += aliveOf(squads[i]);
       }
       return n;
     }
@@ -1590,6 +1643,8 @@
                   // The shield, for the HUD's upper bar. See CHIP_HP.
                   sh: s.alive ? Math.round(s.shield == null ? 100 : s.shield) : 0,
                   e: s.elims, p: s.alive ? 0 : (s.place || 0),
+                  // Живые игроки отряда по порядку team.squad (1/0), если кто-то уже выбит.
+                  m: (s.alive && s.mAlive && aliveOf(s) < s.mAlive.length) ? s.mAlive.map(function(v){ return v ? 1 : 0; }) : null,
                   // Under surge right now, and net damage (dealt minus taken):
                   // the two numbers surge itself is decided on.
                   u: (s.alive && s.surged) ? 1 : 0,
@@ -1672,7 +1727,7 @@
         applyHealing(squads, from, TICK_SEC);
         applyStorm(squads, from, phase.dps, TICK_SEC, onDeath);
         currentSurgeLine = applySurge(squads, phase.surgeAt, TICK_SEC, onDeath, rng);
-        resolveContacts(squads, from, rng, duel, onDeath, inDrop, elimsFor);
+        resolveContacts(squads, from, rng, duel, onDeath, inDrop, elimsFor, onMember);
         frame(from, to, phase.waitSec - t + phase.shrinkSec);
         if(aliveCount() <= 1) return;
       }
@@ -1690,7 +1745,7 @@
         applyHealing(squads, cur, TICK_SEC);
         applyStorm(squads, cur, phase.dps, TICK_SEC, onDeath);
         currentSurgeLine = applySurge(squads, phase.surgeAt, TICK_SEC, onDeath, rng);
-        resolveContacts(squads, cur, rng, duel, onDeath, false, elimsFor);
+        resolveContacts(squads, cur, rng, duel, onDeath, false, elimsFor, onMember);
         frame(cur, to, phase.shrinkSec - t);
         if(aliveCount() <= 1) return;
       }
@@ -1964,6 +2019,8 @@
     if(v.SURGE_DUTY     != null) SURGE_DUTY     = v.SURGE_DUTY;
     if(v.SURGE_HIT      != null) SURGE_HIT      = v.SURGE_HIT;
     if(v.SURGE_TICK     != null) SURGE_TICK     = v.SURGE_TICK;
+    if(v.MEMBER_LOSS    != null) MEMBER_LOSS    = v.MEMBER_LOSS;
+    if(v.SHORT_EXP      != null) SHORT_EXP      = v.SHORT_EXP;
     if(v.ROOM           != null) ROOM           = v.ROOM;
     if(v.PRESSURE_BASE  != null) PRESSURE_BASE  = v.PRESSURE_BASE;
     if(v.PRESSURE_EXP   != null) PRESSURE_EXP   = v.PRESSURE_EXP;
@@ -1981,7 +2038,7 @@
     if(v.SHIELD_RATE    != null) SHIELD_RATE    = v.SHIELD_RATE;
     return {READ_NOISE:READ_NOISE, CROWD_WEIGHT:CROWD_WEIGHT, CROWD_SEEK:CROWD_SEEK, ENGAGE_CHANCE:ENGAGE_CHANCE,
             ENGAGE_BIAS:ENGAGE_BIAS, CHAIN_CHANCE:CHAIN_CHANCE, EXPOSURE_FLOOR:EXPOSURE_FLOOR,
-            CHAIN_MAX:CHAIN_MAX, LINGER_MAX:LINGER_MAX, SURGE_DUTY:SURGE_DUTY, SURGE_HIT:SURGE_HIT, SURGE_TICK:SURGE_TICK,
+            CHAIN_MAX:CHAIN_MAX, LINGER_MAX:LINGER_MAX, SURGE_DUTY:SURGE_DUTY, SURGE_HIT:SURGE_HIT, SURGE_TICK:SURGE_TICK, MEMBER_LOSS:MEMBER_LOSS, SHORT_EXP:SHORT_EXP,
             ROOM:ROOM, PRESSURE_BASE:PRESSURE_BASE, PRESSURE_EXP:PRESSURE_EXP,
             PICK_EXP:PICK_EXP, CHIP_RATE:CHIP_RATE, HEAL_RATE:HEAL_RATE, CHIP_HP:CHIP_HP,
             CHIP_TO_HP:CHIP_TO_HP, CHIP_HP_FLOOR:CHIP_HP_FLOOR, SHIELD_RATE:SHIELD_RATE,

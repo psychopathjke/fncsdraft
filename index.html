@@ -3908,6 +3908,13 @@
   .zr-kit .zk-mate i{display:block;height:5px;width:130px;background:rgba(14,18,34,.78);
     clip-path:polygon(0 0,100% 0,calc(100% - 4px) 100%,0 100%);overflow:hidden;}
   .zr-kit .zk-mate i span{display:block;height:100%;background:linear-gradient(90deg,#43c95b,#a6f57f);}
+  /* Щит тиммейта над его здоровьем, выбитый тиммейт серым, «наблюдаешь» — когда выбит ты (MEMBER_LOSS, 29.10). */
+  .zr-kit .zk-mate i.zk-msh{height:3px;}
+  .zr-kit .zk-mate i.zk-msh span{background:linear-gradient(90deg,#2f7dff,#8cc4ff);}
+  .zr-kit .zk-mate-out b{color:#8a93a8;}
+  .zr-kit .zk-mate-out i{opacity:.35;}
+  .zr-kit .zk-spec{margin:0 0 6px 19px;}
+  .zr-kit .zk-spec b{font-size:12px;color:#ffd166;text-transform:uppercase;letter-spacing:.04em;transform:skewX(-6deg);display:inline-block;}
   /* Баннер сёржа: треугольник с молнией и надпись, сверху по центру. */
   .zr-kit .zk-tri{position:relative;display:block;width:22px;height:20px;flex:none;
     background:#a35cff;clip-path:polygon(50% 0,100% 100%,0 100%);}
@@ -9395,8 +9402,8 @@
      кэш промахивается сам. Проверку «хеш в теге совпадает с файлом» держит
      tools/check-deploy-folder.js: забыть обновить руками теперь нельзя, папка
      деплоя просто не соберётся зелёной. -->
-<script src="zone-sim.js?v=b54ff4ab"></script>
-<script src="zone-replay.js?v=a04037cb"></script>
+<script src="zone-sim.js?v=4c7fb0e2"></script>
+<script src="zone-replay.js?v=8571611b"></script>
 <!-- Командная карьера: транспорт и склейка. Весь код мультиплеера живёт здесь,
      в index.html только точки врезки. ?v= — тот же кэш-предохранитель, что и
      у соседей: поменял mp.js — переставь хеш, иначе браузер возьмёт старый
@@ -11582,7 +11589,7 @@ ccLateEdgeWon:v=>'За зоной сработало — +'+v+' к силе', cc
 ccLateRefreshWon:v=>'Рефреш найден, +'+v+' к силе и полные ресы', ccLateRefreshLost:v=>'Рефреша нет, вернулся последним: −'+v+' к силе',
 ccKitLine:(m,low,loot)=>'Ресы '+m+(low?' · '+low:'')+(loot?' · '+loot:''), ccKitLow:'мало',
 // Панель набора на карте — правка: «добавить на симуляцию ресурсы, лут и сюрдж».
-ccKitMats:m=>'Ресы '+m, ccKitLootNone:'лут: свой пак', ccKitOut:'выбыли', ccKitWatch:'игра идёт дальше, смотрим', ccKitPickaxe:'Кирка',
+ccKitMats:m=>'Ресы '+m, ccKitLootNone:'лут: свой пак', ccKitOut:'выбыли', ccKitSpec:n=>'наблюдаешь: '+n, ccKitMateOut:'выбит', ccKitWatch:'игра идёт дальше, смотрим', ccKitPickaxe:'Кирка',
 ccKitSurgeOff:'сюрдж выключен', ccKitSurgeAt:(a,p)=>'сюрдж с '+a+' игроков · в игре '+p,
 // Баннер и подпись под числом — как на HUD игры («STORM SURGE ACTIVE!» и «269 ABOVE DAMAGE THRESHOLD»).
 ccKitSurgeBanner:'СЁРДЖ АКТИВЕН!', ccKitUnderBanner:'ТЫ ПОД СЁРЖЕМ!',
@@ -13701,7 +13708,7 @@ ccLateEdge:'Play outside the zone',ccLateEdgeNote:(v,f,p)=>p+'%: catch them comi
 ccLateEdgeWon:v=>'Outside the zone worked — +'+v+' power', ccLateEdgeLost:v=>'The storm got you, −'+v+' power',
 ccLateRefreshWon:v=>'Refresh found, +'+v+' power and full mats', ccLateRefreshLost:v=>'No refresh, back in last: −'+v+' power',
 ccKitLine:(m,low,loot)=>'Mats '+m+(low?' · '+low:'')+(loot?' · '+loot:''), ccKitLow:'low',
-ccKitMats:m=>'Mats '+m, ccKitLootNone:'loot: own pack', ccKitOut:'eliminated', ccKitWatch:'the game goes on, spectating', ccKitPickaxe:'Pickaxe',
+ccKitMats:m=>'Mats '+m, ccKitLootNone:'loot: own pack', ccKitOut:'eliminated', ccKitSpec:n=>'spectating '+n, ccKitMateOut:'eliminated', ccKitWatch:'the game goes on, spectating', ccKitPickaxe:'Pickaxe',
 ccKitSurgeOff:'surge off', ccKitSurgeAt:(a,p)=>'surge from '+a+' players · alive '+p,
 ccKitSurgeBanner:'STORM SURGE ACTIVE!', ccKitUnderBanner:'YOU ARE UNDER SURGE!',
 ccKitSurgeWarn:'STORM SURGE WARNING!', ccKitSurgeWarnSub:'DAMAGE ENEMIES TO AVOID ELIMINATION!',
@@ -15878,7 +15885,7 @@ ccLateEdge:'Jouer hors zone',ccLateEdgeNote:(v,f,p)=>p+' % : tu prends ceux qui 
 ccLateEdgeWon:v=>'Hors zone, ça a marché — +'+v+' de puissance', ccLateEdgeLost:v=>'La tempête t\'a eu, −'+v+' de puissance',
 ccLateRefreshWon:v=>'Refresh trouvé, +'+v+' de puissance et mats pleins', ccLateRefreshLost:v=>'Pas de refresh, rentré en dernier : −'+v+' de puissance',
 ccKitLine:(m,low,loot)=>'Mats '+m+(low?' · '+low:'')+(loot?' · '+loot:''), ccKitLow:'peu',
-ccKitMats:m=>'Mats '+m, ccKitLootNone:'loot : ton pack', ccKitOut:'éliminés', ccKitWatch:'la partie continue, on regarde', ccKitPickaxe:'Pioche',
+ccKitMats:m=>'Mats '+m, ccKitLootNone:'loot : ton pack', ccKitOut:'éliminés', ccKitSpec:n=>'spectateur : '+n, ccKitMateOut:'éliminé', ccKitWatch:'la partie continue, on regarde', ccKitPickaxe:'Pioche',
 ccKitSurgeOff:'surge off', ccKitSurgeAt:(a,p)=>'surge dès '+a+' joueurs · en vie '+p,
 ccKitSurgeBanner:'STORM SURGE ACTIF !', ccKitUnderBanner:'TU ES SOUS SURGE !',
 ccKitSurgeWarn:'ALERTE STORM SURGE !', ccKitSurgeWarnSub:'INFLIGE DES DÉGÂTS POUR ÉVITER L’ÉLIMINATION !',
@@ -17846,7 +17853,7 @@ ccLateEdge:"Giocare fuori zona",ccLateEdgeNote:(v,f,p)=>p+'%: prendi chi entra \
 ccLateEdgeWon:v=>'Fuori zona ha funzionato \u2014 +'+v+' di forza', ccLateEdgeLost:v=>'La tempesta ti ha preso, \u2212'+v+' di forza',
 ccLateRefreshWon:v=>'Refresh trovato, +'+v+' di forza e mats pieni', ccLateRefreshLost:v=>'Niente refresh, rientrato per ultimo: \u2212'+v+' di forza',
 ccKitLine:(m,low,loot)=>'Mats '+m+(low?' \u00b7 '+low:'')+(loot?' \u00b7 '+loot:''), ccKitLow:"pochi",
-ccKitMats:m=>'Mats '+m, ccKitLootNone:'loot: il tuo pack', ccKitOut:'eliminati', ccKitWatch:'la partita continua, guardiamo', ccKitPickaxe:'Piccone',
+ccKitMats:m=>'Mats '+m, ccKitLootNone:'loot: il tuo pack', ccKitOut:'eliminati', ccKitSpec:n=>'spettatore: '+n, ccKitMateOut:'eliminato', ccKitWatch:'la partita continua, guardiamo', ccKitPickaxe:'Piccone',
 ccKitSurgeOff:'surge off', ccKitSurgeAt:(a,p)=>'surge da '+a+' giocatori \u00b7 vivi '+p,
 ccKitSurgeBanner:'STORM SURGE ATTIVO!', ccKitUnderBanner:'SEI SOTTO SURGE!',
 ccKitSurgeWarn:'AVVISO STORM SURGE!', ccKitSurgeWarnSub:'INFLIGGI DANNI PER EVITARE L’ELIMINAZIONE!',
@@ -20399,7 +20406,7 @@ ccLateEdge:"Jogar fora da zona",ccLateEdgeNote:(v,f,p)=>p+'%: pega quem entra �
 ccLateEdgeWon:v=>'Fora da zona funcionou — +'+v+' de força', ccLateEdgeLost:v=>'A tempestade te pegou, −'+v+' de força',
 ccLateRefreshWon:v=>'Refresh achado, +'+v+' de força e mats cheios', ccLateRefreshLost:v=>'Sem refresh, voltou por último: −'+v+' de força',
 ccKitLine:(m,low,loot)=>'Mats '+m+(low?' · '+low:'')+(loot?' · '+loot:''), ccKitLow:"pouco",
-ccKitMats:m=>'Mats '+m, ccKitLootNone:'loot: seu pack', ccKitOut:'eliminados', ccKitWatch:'a partida continua, assistindo', ccKitPickaxe:'Picareta',
+ccKitMats:m=>'Mats '+m, ccKitLootNone:'loot: seu pack', ccKitOut:'eliminados', ccKitSpec:n=>'assistindo '+n, ccKitMateOut:'eliminado', ccKitWatch:'a partida continua, assistindo', ccKitPickaxe:'Picareta',
 ccKitSurgeOff:'surge desligado', ccKitSurgeAt:(a,p)=>'surge a partir de '+a+' jogadores · vivos '+p,
 ccKitSurgeBanner:'STORM SURGE ATIVO!', ccKitUnderBanner:'VOCÊ ESTÁ SOB SURGE!',
 ccKitSurgeWarn:'AVISO DE STORM SURGE!', ccKitSurgeWarnSub:'CAUSE DANO AOS INIMIGOS PARA NÃO SER ELIMINADO!',
@@ -113286,8 +113293,19 @@ function ccKitPanel(lobby, frame){
   const sec=Math.max(0, frame.secondsLeft||0);
   const clock=Math.floor(sec/60)+':'+String(sec%60).padStart(2,'0');
   const meKey=(typeof hKey==='function' && CAREER && CAREER.player) ? hKey(careerCard()||CAREER.player.nick) : '';
-  const mates=(you.squad||[]).map(c=>c && c.handle).filter(h=>h && (!meKey || hKey(h)!==meKey)).slice(0, 2);
-  const mateRows=mates.map(h=>'<div class="zk-mate"><b>'+esc(h)+'</b><i><span style="width:'+hp+'%"></span></i></div>').join('');
+  /* Игроки отряда умирают и по одному (zone-sim MEMBER_LOSS, 29.10: «тимейты вообще не умирают либо сам игрок»).
+     d.m — кто жив по порядку you.squad (нет — все живы). Живой тиммейт: щит и здоровье отряда (они в движке общие),
+     выбитый — серой строкой «выбит». Выбит ты, а отряд жив — смотришь за тиммейтом, как в игре. */
+  const sqList=you.squad||[], aliveM=k=>!d.m || !!d.m[k];
+  const meIdx=sqList.findIndex(c=>c && c.handle && meKey && hKey(c.handle)===meKey);
+  const meDead=meIdx>=0 && !aliveM(meIdx);
+  const mateIdx=sqList.map((c,k)=>k).filter(k=>sqList[k] && sqList[k].handle && k!==meIdx).slice(0, 2);
+  const mates=mateIdx.map(k=>sqList[k].handle);
+  const specOn=meDead ? mateIdx.find(k=>aliveM(k)) : undefined;
+  const mateRows=(specOn!=null ? '<div class="zk-spec"><b>'+esc(T.ccKitSpec ? T.ccKitSpec(sqList[specOn].handle) : sqList[specOn].handle)+'</b></div>' : '')+
+    mateIdx.map(k=>aliveM(k)
+      ? '<div class="zk-mate"><b>'+esc(sqList[k].handle)+'</b><i class="zk-msh"><span style="width:'+shield+'%"></span></i><i><span style="width:'+hp+'%"></span></i></div>'
+      : '<div class="zk-mate zk-mate-out"><b>'+esc(sqList[k].handle)+' · '+esc(T.ccKitMateOut||'')+'</b><i><span style="width:0"></span></i></div>').join('');
   /* Компас сверху по центру, как в игре: курс отряда в градусах (0 — север) и
      стороны света вокруг. Курс — из направления стрелки на кадре (d.a, градусы
      математические, 0 — восток). */
@@ -113354,7 +113372,7 @@ function ccKitPanel(lobby, frame){
   /* Килфид над тиммейтами (Notion 27.10 скрин 26: «выше сделать килфид, чтоб хп и броню было видно тимейтов»):
      78px — над своими полосками, плюс строка на каждого напарника (имя 11px + полоса 5px + отступы, .zk-mate).
      По числу напарников, а не замером: offsetHeight на каждом кадре — пересчёт раскладки. */
-  const feed=map.querySelector('.zr-feed'), fb=78+mates.length*26;
+  const feed=map.querySelector('.zr-feed'), fb=78+mateIdx.reduce((s,k)=>s+(aliveM(k) ? 31 : 26), 0)+(specOn!=null ? 22 : 0);   // живой тиммейт с полосой щита — 31, выбитый — 26
   if(feed && feed._fb!==fb){ feed.style.bottom=fb+'px'; feed._fb=fb; }
 }
 // Одно число ресов — тремя стопками, как на HUD: 40% дерево, 35% кирпич, остаток металл.
@@ -120555,7 +120573,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='72e8e7a8';
+const CC_BUILD='6358edef';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого

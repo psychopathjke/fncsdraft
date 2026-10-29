@@ -397,12 +397,18 @@ test('a squad that has just won can carry straight on into the next one', () => 
     {aspect: ASPECT, startOf: () => ({x:0, y:0})});
   squads.forEach(s => { s.x = 0; s.y = 0; s.seek = 1; });
   let deaths = 0;
-  ZoneSim.resolveContacts(squads, TIGHT, alwaysEngage, strongerWins, () => deaths++);
+  // «Всегда да» у rng отнял бы у победителя игрока в каждом файте, и полный отряд стал бы неполным —
+  // здесь проверяется серия, а не потери (их см. tools/check-member-deaths.js).
+  const keepLoss = ZoneSim.tune({}).MEMBER_LOSS; ZoneSim.tune({MEMBER_LOSS: 0});
+  try { ZoneSim.resolveContacts(squads, TIGHT, alwaysEngage, strongerWins, () => deaths++); }
+  finally { ZoneSim.tune({MEMBER_LOSS: keepLoss}); }
   const best = Math.max.apply(null, squads.map(s => s.elims));
   assert(best >= 4, 'no squad took more than one kill in a tick — the streak never fired');
   assert(best <= 8, 'a squad took ' + (best/2) + ' kills — the three-chain cap is not holding');
-  assert(deaths * 2 === squads.reduce((s, x) => s + x.elims, 0),
-    'kills credited do not match squads killed');
+  // Игрок отряда может пасть и в выигранном файте (MEMBER_LOSS): его кил — проигравшему.
+  const lost = squads.filter(s => s.alive).reduce((n, s) => n + s.mAlive.filter(v => !v).length, 0);
+  assert(deaths * 2 + lost === squads.reduce((s, x) => s + x.elims, 0),
+    'kills credited do not match players killed');
 });
 
 test('nobody dies twice, however long the streak', () => {
@@ -1223,7 +1229,8 @@ test('every elimination reaches the timeline, not one tick in eight of them', ()
     const teams = fakeField(50);
     const {order, timeline} = runGame(seed, teams, true);
     const named = [];
-    timeline.forEach(f => (f.events || []).forEach(e => named.push(e.slice(e.indexOf(':') + 1))));
+    // ' ##' — выбит один игрок, отряд жив (MEMBER_LOSS); здесь считаются отряды.
+    timeline.forEach(f => (f.events || []).forEach(e => { if(e.indexOf(' ##') < 0) named.push(e.slice(e.indexOf(':') + 1)); }));
     assert(named.length === teams.length - 1,
       'seed ' + seed + ': ' + named.length + ' eliminations in the feed, ' +
       (teams.length - 1) + ' in the game');
