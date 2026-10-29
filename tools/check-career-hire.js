@@ -85,6 +85,22 @@ const BOOT = `
     careerHireCancel();
     check('отмена вернула деньги', CAREER.career.balance===bal0, String(CAREER.career.balance));
     check('после отмены — свой напарник', careerMates()[0] && careerMates()[0].handle!==who);
+    // Два кресла (трио): двое нанятых, платишь каждому, третий не встаёт, отпускаешь по одному с возвратом.
+    { const seats0=careerMateSeats; careerMateSeats=()=>2;
+      CAREER.partners=CAREER.partners.concat([{card:card('M2', 81), patience:60, since:'2025-11-01', dev:0}]);
+      const b0=CAREER.career.balance, f0=ccHireFee(ccHireOvr(cands[0]), cands[0]), f1=ccHireFee(ccHireOvr(cands[1]), cands[1]);
+      careerHire(0); careerHire(1); careerHire(2);
+      const ms=careerMates().map(c=>c && c.handle);
+      check('трио: двое нанятых в двух креслах', ms[0]===cands[0].handle && ms[1]===cands[1].handle, JSON.stringify(ms));
+      check('трио: заплачено обоим, третьего нет', CAREER.career.balance===b0-f0-f1 && ccHireList().length===2, b0+' → '+CAREER.career.balance+' за '+f0+'+'+f1);
+      const fld=careerCupField(CAREER.career, [careerCard()].concat(careerMates()), 100, 'hire2', true);
+      check('трио: нанятых нет в поле', !fld.some(t=>(t.cards||t.squad||[]).some(c=>c && (hKey(c)===hKey(cands[0]) || hKey(c)===hKey(cands[1])))));
+      check('наём не уход: ключи нанятых видны ccTrioRefill', ccHireKeys().has(hKey(cands[0])) && ccHireKeys().has(hKey(cands[1])));
+      careerHire(0);
+      check('трио: отпустил одного — его деньги вернулись', ccHireList().length===1 && CAREER.career.balance===b0-f1, String(CAREER.career.balance));
+      careerHireCancel();
+      check('трио: отмена вернула всё', CAREER.career.balance===b0 && !ccHireActive(), String(CAREER.career.balance));
+      CAREER.partners=CAREER.partners.slice(0, 1); careerMateSeats=seats0; CC_HIRE_MEMO=null; }
     careerHire(0);
     try{ careerRenderHub('centre'); }catch(e){ out.notes.renderErr=String(e && e.stack || e).slice(0,400); }
     out.notes.hubBtns=[...document.querySelectorAll('#screen-career-hub button')].map(b=>(b.className+'|'+(b.getAttribute('onclick')||'')).slice(0,40)).slice(12,40); out.notes.body=(document.getElementById('chBody')||{}).innerHTML ? document.getElementById('chBody').innerHTML.replace(/<[^>]+>/g,' ').replace(/s+/g,' ').slice(0,600) : 'нет chBody';
