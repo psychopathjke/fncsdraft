@@ -9402,7 +9402,7 @@
      кэш промахивается сам. Проверку «хеш в теге совпадает с файлом» держит
      tools/check-deploy-folder.js: забыть обновить руками теперь нельзя, папка
      деплоя просто не соберётся зелёной. -->
-<script src="zone-sim.js?v=39464d24"></script>
+<script src="zone-sim.js?v=2c15b2f3"></script>
 <script src="zone-replay.js?v=03696fdb"></script>
 <!-- Командная карьера: транспорт и склейка. Весь код мультиплеера живёт здесь,
      в index.html только точки врезки. ?v= — тот же кэш-предохранитель, что и
@@ -105471,19 +105471,17 @@ async function simulateGamesLive(teams, numGames, pointsFn, killMult, fieldPrefi
      many of them are on screen. */
   // Живая таблица — шестьдесят и всегда: сотня строк в финале соло лагала на движении зон (Notion 27.10 скрин 33, 29.10).
   // Итог этапа (revealStandings) показывает всю сотню.
-  const LIVE_ROWS=60;
+  // Строк — сколько отрядов в одном лобби режима (его слово 29.10: «топ 50 в дуо, 33 трио, 25 сквад, соло 100»).
+  const LIVE_ROWS=({1:100, 2:50, 3:33, 4:25})[squadSize] || 50;
   /* ОКНО У ТВОЕГО МЕСТА (29.10, его «пусть таблица будет рядом с плейсами игрока, чтоб меньше лагов»): живая таблица
      — лидеры (LIVE_TOP) и строки вокруг тебя (±LIVE_NEAR), плюс строка черты прохода; ~25 строк вместо 60, меньше
      перерисовки на движении зон. Без своей команды в поле (смотришь чужой кап) — верх LIVE_ROWS, как было. */
   const LIVE_TOP=5, LIVE_NEAR=10;
   function liveWindow(sorted){
-    const mine=sorted.findIndex(t=>t.isYou);
-    if(mine<0 || sorted.length<=LIVE_TOP+2*LIVE_NEAR+1) return sorted.slice(0, LIVE_ROWS);
-    const keep=new Set();
-    for(let i=0;i<Math.min(LIVE_TOP, sorted.length);i++) keep.add(i);
-    for(let i=Math.max(0, mine-LIVE_NEAR); i<=Math.min(sorted.length-1, mine+LIVE_NEAR); i++) keep.add(i);
-    if(opts.cutAt>0 && opts.cutAt<=sorted.length) keep.add(opts.cutAt-1);
-    return [...keep].sort((a,b)=>a-b).map(i=>sorted[i]);
+    // Верх LIVE_ROWS, своя строка — снизу, если ты ниже (окно у своего места снято по его слову того же дня).
+    const top=sorted.slice(0, LIVE_ROWS), mine=sorted.find(t=>t.isYou);
+    if(mine && sorted.indexOf(mine)>=LIVE_ROWS) top.push(mine);
+    return top;
   }
   /* Строки живут между перерисовками.
 
@@ -120628,7 +120626,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='4a2c3594';
+const CC_BUILD='44ccb3cd';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого

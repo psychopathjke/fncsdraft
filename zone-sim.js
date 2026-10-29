@@ -495,12 +495,14 @@
   function applyHealing(squads, circle, seconds){
     for(var i=0;i<squads.length;i++){
       var s = squads[i];
-      if(!s.alive || (s.hp >= 100 && s.shield >= 100)) continue;
+      if(!s.alive) continue;
       // Only inside the circle. Out in the storm a squad is spending everything
       // it has just to stay standing, which is what makes being late expensive.
       var hx = s.x - circle.cx, hy = s.y - circle.cy;
       if(hx*hx + hy*hy > circle.radius * circle.radius) continue;
+      // Игроки лечатся и тогда, когда общее hp отряда уже полное (иначе здоровье игрока не возвращалось никогда).
       memberVitals(s, -SHIELD_RATE * seconds, -HEAL_RATE * seconds, false);
+      if(s.hp >= 100 && s.shield >= 100) continue;
       s.hp = Math.min(100, s.hp + HEAL_RATE * seconds);
       /* Щит возвращается быстрее здоровья. В игре его и правда чинят чаще: замер того же
          матча — 134 хилки против 52 щитов на команду, но щит ставится целиком одним
@@ -637,13 +639,34 @@
      лечит всех. Ниже 1 здоровья не падает: умирают игроки только в файте (memberLoss) или вместе с отрядом. */
   // Без массивов и замыканий: зовётся на каждом тике для каждого отряда (замер 29.10: версия с ними
   // замедлила движок втрое, 12 → 38 мс на игру, и большой кап скипался десятки секунд).
+  /* Полоски игроков — показ (смерти решает общее hp отряда): урон одного обмена по игроку ×MEMBER_DMG_MUL, щит и
+     здоровье игрока чинятся медленнее общего, обмен держит один игрок MEMBER_STICK тиков. Подобрано, чтобы у тиммейтов
+     полоски заметно расходились (29.10, «все равно одинаковое хп»), — не замер. */
+  var MEMBER_SHIELD_REGEN = 0.8, MEMBER_HP_REGEN = 2, MEMBER_STICK = 40, MEMBER_DMG_MUL = 1.5;   // разница у тиммейтов заметна в 27% кадров, хп<70 — 19%, оба полные — 15%
   function memberVitals(s, dSh, dHp, focus){
     var ms = s.mSh;
     if(!ms || ms.length < 2) return;
     var mh = s.mHp, ma = s.mAlive, n = ms.length, i, live = 0;
     for(i=0;i<n;i++) if(ma[i]) live++;
     if(!live) return;
+    if(!focus && dSh <= 0 && dHp <= 0){
+      /* Лечение (круг) — сначала самому раненому, как в игре: хилки пьёт тот, кого побили (29.10, его «все равно
+         одинаковое хп»: поровну всем оно выравнивало полоски за секунды). Запас — за всех живых. */
+      // Щит игрока чинится медленнее общего (MEMBER_SHIELD_REGEN): общий — это и хилки, и щиты всего отряда, у одного
+      // игрока пробитый щит должен быть виден, и урон — уходить в здоровье. Только показ: смерти решает общее hp.
+      var poolSh = -dSh * live * MEMBER_SHIELD_REGEN, poolHp = -dHp * live * MEMBER_HP_REGEN;
+      for(var t=0;t<n && (poolSh > 0 || poolHp > 0);t++){
+        var lo = -1;
+        for(i=0;i<n;i++) if(ma[i] && (ms[i] < 100 || mh[i] < 100) && (lo < 0 || ms[i] + mh[i] < ms[lo] + mh[lo])) lo = i;
+        if(lo < 0) break;
+        var gh = Math.min(100 - mh[lo], poolHp); mh[lo] += gh; poolHp -= gh;
+        var gs = Math.min(100 - ms[lo], poolSh); ms[lo] += gs; poolSh -= gs;
+        if(gh <= 0 && gs <= 0) break;
+      }
+      return;
+    }
     if(!focus){
+      // Шторм и сюрдж — всем поровну.
       for(i=0;i<n;i++){
         if(!ma[i]) continue;
         var v = ms[i] - dSh; ms[i] = v < 0 ? 0 : (v > 100 ? 100 : v);
@@ -651,18 +674,15 @@
       }
       return;
     }
+    // Перестрелку держит один и тот же игрок несколько обменов подряд (а не по очереди каждый тик): урон за всех
+    // живых — в его щит, остаток в его здоровье (не ниже 1; умирают игроки только в memberLoss).
     s._hit = (s._hit || 0) + 1;
-    // Первый принимает урон тот, чей номер среди живых выпал по очереди; остаток — дальше по кругу.
-    var pick = (s._hit * 7 + 3) % live, start = 0;
-    for(i=0;i<n;i++){ if(!ma[i]) continue; if(pick === 0){ start = i; break; } pick--; }
-    var restSh = dSh * live, restHp = dHp * live;
-    for(var o=0;o<n && (restSh > 0 || restHp > 0);o++){
-      var k = (start + o) % n;
-      if(!ma[k]) continue;
-      var tSh = ms[k] < restSh ? ms[k] : restSh; ms[k] -= tSh; restSh -= tSh;
-      var room = mh[k] - 1, tHp = room < restHp ? room : restHp;
-      if(tHp > 0){ mh[k] -= tHp; restHp -= tHp; }
-    }
+    var pick = (Math.floor(s._hit / MEMBER_STICK) * 7 + 3) % live, k = 0;
+    for(i=0;i<n;i++){ if(!ma[i]) continue; if(pick === 0){ k = i; break; } pick--; }
+    var rest = (dSh + dHp) * live * MEMBER_DMG_MUL;
+    var tSh = ms[k] < rest ? ms[k] : rest; ms[k] -= tSh; rest -= tSh;
+    var room = mh[k] - 1, tHp = room < rest ? room : rest;
+    if(tHp > 0) mh[k] -= tHp;
   }
   function chipTake(s, dmg){
     var take = dmg * CHIP_HP;
