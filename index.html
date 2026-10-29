@@ -105454,7 +105454,9 @@ async function simulateGamesLive(teams, numGames, pointsFn, killMult, fieldPrefi
      row pinned underneath — the same shape the money and Power Rankings boards
      use. Every team is still scored, sorted and placed; this only decides how
      many of them are on screen. */
-  const LIVE_ROWS=60;
+  // Финалы и всё, где до сотни участников, — вся сотня (его слово 29.10: «в финалах топ 100 показывает, а не 60»);
+  // большие капы на тысячи — шестьдесят, ради скорости (см. выше).
+  const LIVE_ROWS=teams.length<=100 ? 100 : 60;
   /* Строки живут между перерисовками.
 
      Замер на телефоне (Chrome, CPU ×6, 30 секунд вечера): пересчёт стилей
@@ -110055,7 +110057,8 @@ async function revealStandings(shell, ranked, you, cut, maxRows, qualifiedSet, p
   // standings under it ran out at 60 with nothing marking where 99 was. A
   // player reported it as the Play-In not having 99 teams in it, which is
   // exactly what it looked like.
-  const cap=Math.max(maxRows||60, cut ? cut+1 : 0);
+  // До сотни участников — все (финалы, 29.10), больше — шестьдесят.
+  const cap=Math.max(maxRows||(ranked.length<=100 ? 100 : 60), cut ? cut+1 : 0);
   let view=ranked, truncated=false;
   if(ranked.length>cap){
     const youIdx=ranked.indexOf(you);
@@ -120590,7 +120593,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='a708e0b6';
+const CC_BUILD='237b926c';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -169000,7 +169003,13 @@ function soloSeriesQualCut(){
    Победа остаётся самой дорогой строкой вечера, но стоит двух топ-10, а не
    двадцати. Числа не выдуманы под случай: это та самая сетка, которой в этом
    файле считаются квалификация и финал соло. */
-function soloHeatsPoints(place){ return victoryR1Points(place); }
+/* 29.10 КАК У EPIC (его «сделай как у эпиков»): победа в хите снова 1000 очков — сетка Epic (Tracker, Solo Series
+   Heats Session 1 EU) кладёт 947 в первую строку, чтобы победа давала ровно их порог в 1000. Сняли её 27.08, потому что
+   победитель играл дальше и две победы с четырьмя смертями выигрывали таблицу; с тех пор хит играется stopOnWin —
+   после победы игр больше нет, двух побед не бывает, и бонус снова делает то, что у Epic: ставит прошедшего наверх.
+   Остальные места — общая соло-сетка (victoryR1Points). */
+const SOLO_HEAT_WIN=1000;
+function soloHeatsPoints(place){ return place===1 ? SOLO_HEAT_WIN : victoryR1Points(place); }
 /* Два острова круга Reload, по очереди — отзыв: «1 игра
    слюрпи, другая стронхолд».
 
