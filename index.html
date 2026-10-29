@@ -2024,6 +2024,16 @@
     background-image:linear-gradient(180deg,#fff27a,#ffc400 50%,#ff8a00);-webkit-text-stroke:.3cqw #5a3a00;}
   .ytr-who{flex:1;min-width:0;font-family:var(--font-display);font-weight:900;font-size:4.8cqw;line-height:.95;color:#101828;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   .ytr-who small{display:block;font-size:.72em;}
+  .ytr-figw{right:auto;left:22%;width:56%;top:-4%;height:230%;}
+  .ytr-shadew{position:absolute;inset:0;z-index:2;background:linear-gradient(0deg,rgba(0,0,0,.6) 0%,rgba(0,0,0,.15) 40%,transparent 60%);}
+  .ytr-tag{position:absolute;left:3%;top:5%;z-index:3;padding:.8cqw 2.4cqw;background:#101828;color:#fff;border:.5cqw solid #fff;transform:rotate(-4deg);
+    font-family:var(--font-display);font-weight:900;font-size:5.6cqw;line-height:1;text-transform:uppercase;white-space:nowrap;max-width:60%;overflow:hidden;}
+  .ytr-wbot{position:absolute;left:3%;right:4%;bottom:17%;z-index:3;display:flex;align-items:flex-end;justify-content:space-between;gap:2cqw;}
+  .ytr-wn{flex:1;min-width:0;font-family:var(--font-display);font-weight:900;font-size:7.4cqw;line-height:.95;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+    -webkit-text-stroke:.35cqw #000;paint-order:stroke fill;text-shadow:0 .6cqw 0 rgba(0,0,0,.5);}
+  .ytr-wn b{color:#ffd400;}
+  .ytr-cash{flex:none;font-family:var(--font-display);font-weight:900;font-size:11cqw;line-height:.9;-webkit-background-clip:text;background-clip:text;color:transparent;
+    background-image:linear-gradient(180deg,#d9ff7a,#3fe02a 55%,#0a9a1a);-webkit-text-stroke:.4cqw #062a06;filter:drop-shadow(0 .6cqw 0 rgba(0,0,0,.45));}
   .ytr-hex{flex:none;font-style:normal;font-family:var(--font-display);font-weight:900;font-size:5cqw;color:#fff8d0;padding:1.6cqw 2.6cqw;
     -webkit-text-stroke:.25cqw #6a3a00;paint-order:stroke fill;background:linear-gradient(180deg,#ffd84a,#e89a00);
     clip-path:polygon(25% 0,75% 0,100% 50%,75% 100%,25% 100%,0 50%);}
@@ -96512,7 +96522,7 @@ const R1_CONSUMABLE_POOL=[
   {name:"Shockwave Grenade", rarity:"purple"},
   {name:"Launch Pad", rarity:"purple"},
   {name:"Crash Pad Jr.", rarity:"blue"},
-  {name:"FlowBerry Fizz", rarity:"purple"},
+  {name:"FlowBerry Fizz", rarity:"blue"},
   {name:"Slap Splash", rarity:"blue"},
   {name:"Med-Mist Smoke Grenade", rarity:"blue"},
   {name:"Shield Potion", rarity:"blue"},
@@ -96530,7 +96540,7 @@ const R2_CONSUMABLE_POOL=[
   {name:"Launch Pad", rarity:"purple"},
   {name:"Rift-To-Go", rarity:"purple"},
   {name:"Bandage Bazooka", rarity:"purple"},
-  {name:"FlowBerry Fizz", rarity:"purple"},
+  {name:"FlowBerry Fizz", rarity:"blue"},
   {name:"Crash Pad Jr.", rarity:"blue"},
   {name:"Chug Splash", rarity:"blue"},
   {name:"Slap Splash", rarity:"blue"},
@@ -96552,7 +96562,7 @@ const R3_CONSUMABLE_POOL=[
   {name:"Rift-To-Go", rarity:"purple"},
   {name:"Jetpack", rarity:"purple"},
   {name:"Bandage Bazooka", rarity:"purple"},
-  {name:"FlowBerry Fizz", rarity:"purple"},
+  {name:"FlowBerry Fizz", rarity:"blue"},
   {name:"Crash Pad Jr.", rarity:"blue"},
   {name:"Chug Splash", rarity:"blue"},
   {name:"Slap Splash", rarity:"blue"},
@@ -96568,7 +96578,7 @@ const R4_CONSUMABLE_POOL=[
   {name:"Launch Pad", rarity:"purple"},
   {name:"Rift-To-Go", rarity:"purple"},
   {name:"Bandage Bazooka", rarity:"purple"},
-  {name:"FlowBerry Fizz", rarity:"purple"},
+  {name:"FlowBerry Fizz", rarity:"blue"},
   {name:"Crash Pad Jr.", rarity:"blue"},
   {name:"Chug Splash", rarity:"blue"},
   {name:"Spicy Slapperoni Slice", rarity:"blue"},
@@ -120896,7 +120906,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='dd098316';
+const CC_BUILD='0fb93d4d';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -145289,6 +145299,10 @@ function ccPostComments(n, who, st){
   // Зрители — сколько под постом принято показывать, минус те, кто уже сказал.
   const want=Math.min(CC_CO_MAX, Math.max(1, Math.min(replies, 2+Math.floor(rnd()*4))));
   const fanHandle=()=>{
+    // 30.10, его «никнеймы чет не популярные» (скрин ответов @krisbot, @lenrss): больше половины пишущих — известные
+    // про региона (ccPopularHandles), остальное — люди с кубков, как раньше.
+    const pop=ccPopularHandles();
+    if(pop.length && rnd()<0.55) return pop[Math.floor(rnd()*pop.length)];
     // Настоящие люди региона, которые играют кубки (CC_LADDER_REAL), — выдуманный ник только когда их нет.
     const rp=ccLadderRealPick(rnd, new Set(), 0); if(rp) return rp[0];
     // Тем же составителем, что и ладдер: зритель под постом и выдуманный из
@@ -181389,18 +181403,53 @@ function ccYtCashShort(n){
       снизу белая полоса «#1 НИК & НАПАРНИК» и гигантский золотой «$10K» (или очки «504PTS»).
    Фон — размытый кадр, голубой свет, стеклянные осколки. Шаблон — от ролика (хеш), соперники в таблице — настоящие
    игроки сцены, записываются в ролик один раз (v.rows). */
+/* Известные про региона карьеры (30.10, его «никнеймы чет не популярные»): вес — log10 подписчиков Twitch+YouTube+X
+   (CC_PRO_SOCIAL) плюс рейтинг/20. Состав меняется по дням, поэтому кэш на день и регион. */
+let CC_POP_CACHE=null;
+function ccPopularCards(n){
+  const key=careerToday()+'|'+ccCareerRegion();
+  if(!CC_POP_CACHE || CC_POP_CACHE.key!==key){
+    let list=[];
+    try{
+      list=(careerRosterNowEU()||[]).filter(c=>c && c.handle)
+        .map(c=>{ const s=ccProSocial(c.handle); return {c, w:Math.log10(1+(s[0]||0)+(s[1]||0)+(s[2]||0))+(c._ovr||c.rating||0)/20}; })
+        .sort((a,b)=>b.w-a.w).slice(0, 80).map(x=>x.c);
+    }catch(e){ list=[]; }
+    CC_POP_CACHE={key, list};
+  }
+  return CC_POP_CACHE.list.slice(0, n||80);
+}
+function ccPopularHandles(){
+  const me=hKey(String((CAREER && CAREER.player && CAREER.player.nick)||''));
+  return ccPopularCards(60).map(c=>c.handle).filter(h=>hKey(h)!==me);
+}
 function ccYtRows(v){
-  if(v.rows && v.rows.some(r=>r[2]>0) && v.rows.every((r,i)=>!i || r[2]<=v.rows[i-1][2]) && (v.pts!=null || v.kind==='hl')) return v.rows;   // ролики до 28.10 с «0» очков — пересобрать
+  if(v.rowsV===2 && v.rows && v.rows.some(r=>r[2]>0) && v.rows.every((r,i)=>!i || r[2]<=v.rows[i-1][2]) && (v.pts!=null || v.kind==='hl')) return v.rows;   // ролики до 28.10 с «0» очков и до 30.10 со случайными никами — пересобрать
   const rnd=careerRng(ccHashStr('ytrows|'+(v.ev||'')));
-  let pool=[]; try{ pool=(careerRosterNowEU()||[]).map(c=>c && c.handle).filter(Boolean); }catch(e){}
-  const pick=()=>pool.length ? pool.splice(Math.floor(rnd()*pool.length), 1)[0] : 'player';
+  /* 30.10, его «никнеймы чет не популярные»: в таблице превью — известные про региона (подписчики Twitch+YouTube+X из
+     CC_PRO_SOCIAL и рейтинг), а не случайные из всего состава; напарник — свой настоящий дуо (card.partner), как
+     «Clix & Rapid» на превью Peterbot. */
+  const skip=new Set([hKey(String((CAREER.player||{}).nick||'')), hKey(String(v.mate||''))]);
+  const stars=ccPopularCards(30).filter(c=>!skip.has(hKey(c.handle)));
+  const used=new Set();
+  const pick=()=>{
+    const free=stars.filter(c=>!used.has(hKey(c.handle)));
+    if(!free.length) return 'player';
+    const c=free[Math.floor(rnd()*free.length)]; used.add(hKey(c.handle));
+    if(!v.mate) return c.handle;
+    const ph=c.partner && (typeof c.partner==='string' ? c.partner : c.partner.handle);
+    if(ph && !used.has(hKey(ph)) && !skip.has(hKey(ph))){ used.add(hKey(ph)); return c.handle+' & '+ph; }
+    const o=free.find(x=>x!==c && !used.has(hKey(x.handle)));
+    if(o){ used.add(hKey(o.handle)); return c.handle+' & '+o.handle; }
+    return c.handle;
+  };
   const p=v.place||1, pts=v.pts!=null ? v.pts : 200+Math.round(rnd()*200);
   // Очков в логе нет — у самого те же оценочные, что легли в основу соседей: иначе соседи с очками, а он без.
   if(v.pts==null && v.kind!=='hl') v.pts=pts;
   const rows=[];
   let cur=pts;   // вниз по таблице очки только убывают
-  for(let i=1;i<=2;i++){ const n=pick()+(v.mate ? ' & '+pick() : ''); cur=Math.max(0, cur-Math.round(4+rnd()*22)); rows.push([p+i, n, cur]); }
-  v.rows=rows;
+  for(let i=1;i<=4;i++){ const n=pick(); cur=Math.max(0, cur-Math.round(4+rnd()*22)); rows.push([p+i, n, cur]); }   // пять строк, как у про
+  v.rows=rows; v.rowsV=2;
   return rows;
 }
 function ccYtThumbHTML(v){
@@ -181426,6 +181475,14 @@ function ccYtThumbHTML(v){
   /* 30.10, его «превью странно выглядят, посмотри как в реальной жизни» (Notion 27.10, последний скрин; канал Peterbot):
      один вид — название слева сверху, большая таблица слева (#1 белой строкой с золотым номером и шестиугольником очков,
      остальные тёмные), игрок крупно справа по плечи, фон цветом итога. Без короны, наклеек и обрезанного приза. */
+  /* Победа с призом — второй вид, как у Malibuca/Pollo/Mero/Queasy/vic0 (30.10, «ещё 5 каналов»): турнир маленькой
+     наклонной плашкой, игрок крупно, внизу огромное «#1 НИК & НАПАРНИК» и приз золотом. */
+  if(v.kind==='win' && cash){
+    return '<div class="yt-thumb ytt ytr ytr-gold ytr-w">'+bg+'<div class="ytr-fig ytr-figw">'+fig+'</div><i class="ytr-shadew"></i>'+
+      '<span class="ytr-tag">'+esc(big)+'</span>'+
+      '<div class="ytr-wbot"><span class="ytr-wn"><b>#1</b> '+esc(me.toUpperCase())+(mate ? ' & '+esc(mate.toUpperCase()) : '')+'</span>'+
+      '<b class="ytr-cash">'+esc(cash)+'</b></div>'+dur+'</div>';
+  }
   {
     const rows=ccYtRows(v).slice(0, 4).map(r=>'<div class="ytr-row"><b>#'+r[0]+'</b><span>'+esc(r[1])+'</span><em>'+r[2]+'</em></div>').join('');
     const tone=v.kind==='win' ? 'ytr-gold' : v.kind==='podium' ? 'ytr-teal' : 'ytr-blue';
