@@ -1525,7 +1525,14 @@
         // is, so the kit panel does not read "surge off" between two frames
         // that both say otherwise.
         u: d.u || 0,
-        n: d.n || 0
+        n: d.n || 0,
+        // Игроки отряда (zone-sim memberVitals/giveKill): кто жив, их щит, здоровье и киллы. Без этих полей
+        // промежуточный кадр отдавал панели общие числа отряда — у тиммейтов полоски выходили одинаковыми
+        // (Notion 27.10 скрин 30: «все равно одинаковая броня и хп»). Как и элимы — с записанного кадра.
+        m: d.m || null,
+        ms: d.ms || null,
+        mh: d.mh || null,
+        mk: d.mk || null
       });
     }
     return {
