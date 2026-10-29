@@ -10403,6 +10403,15 @@
       data-i18n="closeBtn"></button>
   </div>
 </div>
+<div id="hirePickModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:230;align-items:center;justify-content:center;padding:16px;" onclick="if(event.target===this) ccHireClose();">
+  <div style="width:100%;max-width:560px;max-height:88vh;overflow-y:auto;border-radius:14px;
+    background:var(--panel);border:1px solid var(--line);padding:16px;box-shadow:0 20px 60px rgba(0,0,0,.6);">
+    <div id="hirePickBody"></div>
+    <button onclick="ccHireClose()" style="width:100%;margin-top:12px;padding:11px;border:none;border-radius:10px;
+      background:rgba(200,225,220,.18);color:#eaf5f3;font-weight:800;font-size:14px;cursor:pointer;letter-spacing:.02em;"
+      data-i18n="closeBtn"></button>
+  </div>
+</div>
 <div id="smmPickModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:230;align-items:center;justify-content:center;padding:16px;" onclick="if(event.target===this) ccSmmPickClose();">
   <div style="width:100%;max-width:560px;max-height:88vh;overflow-y:auto;border-radius:14px;
     background:var(--panel);border:1px solid var(--line);padding:16px;box-shadow:0 20px 60px rgba(0,0,0,.6);">
@@ -11589,7 +11598,7 @@ ccLateEdgeWon:v=>'За зоной сработало — +'+v+' к силе', cc
 ccLateRefreshWon:v=>'Рефреш найден, +'+v+' к силе и полные ресы', ccLateRefreshLost:v=>'Рефреша нет, вернулся последним: −'+v+' к силе',
 ccKitLine:(m,low,loot)=>'Ресы '+m+(low?' · '+low:'')+(loot?' · '+loot:''), ccKitLow:'мало',
 // Панель набора на карте — правка: «добавить на симуляцию ресурсы, лут и сюрдж».
-ccKitMats:m=>'Ресы '+m, ccKitLootNone:'лут: свой пак', ccKitOut:'выбыли', ccKitSpec:n=>'наблюдаешь: '+n, ccKitMateOut:'выбит', ccKitWatch:'игра идёт дальше, смотрим', ccKitPickaxe:'Кирка',
+ccKitMats:m=>'Ресы '+m, ccKitLootNone:'лут: свой пак', ccHireBtn:'Нанять на турнир', ccHireT:'Нанять на турнир', ccHireHint:'Игрок сильнее твоего напарника сыграет с тобой сегодняшний турнир. Платишь сразу, призы делятся как обычно. Отмена до игры возвращает деньги.', ccHireNone:'Сильнее твоего напарника сегодня никого свободного нет', ccHireFree:'без клуба', ccHireOn:(n,f)=>'Сегодня с тобой: '+n+' ('+f+')', ccHireCancel:'Отменить', ccKitOut:'выбыли', ccKitSpec:n=>'наблюдаешь: '+n, ccKitMateOut:'выбит', ccKitWatch:'игра идёт дальше, смотрим', ccKitPickaxe:'Кирка',
 ccKitSurgeOff:'сюрдж выключен', ccKitSurgeAt:(a,p)=>'сюрдж с '+a+' игроков · в игре '+p,
 // Баннер и подпись под числом — как на HUD игры («STORM SURGE ACTIVE!» и «269 ABOVE DAMAGE THRESHOLD»).
 ccKitSurgeBanner:'СЁРДЖ АКТИВЕН!', ccKitUnderBanner:'ТЫ ПОД СЁРЖЕМ!',
@@ -13708,7 +13717,7 @@ ccLateEdge:'Play outside the zone',ccLateEdgeNote:(v,f,p)=>p+'%: catch them comi
 ccLateEdgeWon:v=>'Outside the zone worked — +'+v+' power', ccLateEdgeLost:v=>'The storm got you, −'+v+' power',
 ccLateRefreshWon:v=>'Refresh found, +'+v+' power and full mats', ccLateRefreshLost:v=>'No refresh, back in last: −'+v+' power',
 ccKitLine:(m,low,loot)=>'Mats '+m+(low?' · '+low:'')+(loot?' · '+loot:''), ccKitLow:'low',
-ccKitMats:m=>'Mats '+m, ccKitLootNone:'loot: own pack', ccKitOut:'eliminated', ccKitSpec:n=>'spectating '+n, ccKitMateOut:'eliminated', ccKitWatch:'the game goes on, spectating', ccKitPickaxe:'Pickaxe',
+ccKitMats:m=>'Mats '+m, ccKitLootNone:'loot: own pack', ccHireBtn:'Hire for this event', ccHireT:'Hire for this event', ccHireHint:'A player stronger than your partner plays today\'s event with you. You pay now, prize money splits as usual. Cancel before playing to get it back.', ccHireNone:'Nobody stronger than your partner is free today', ccHireFree:'no club', ccHireOn:(n,f)=>'With you today: '+n+' ('+f+')', ccHireCancel:'Cancel', ccKitOut:'eliminated', ccKitSpec:n=>'spectating '+n, ccKitMateOut:'eliminated', ccKitWatch:'the game goes on, spectating', ccKitPickaxe:'Pickaxe',
 ccKitSurgeOff:'surge off', ccKitSurgeAt:(a,p)=>'surge from '+a+' players · alive '+p,
 ccKitSurgeBanner:'STORM SURGE ACTIVE!', ccKitUnderBanner:'YOU ARE UNDER SURGE!',
 ccKitSurgeWarn:'STORM SURGE WARNING!', ccKitSurgeWarnSub:'DAMAGE ENEMIES TO AVOID ELIMINATION!',
@@ -15885,7 +15894,7 @@ ccLateEdge:'Jouer hors zone',ccLateEdgeNote:(v,f,p)=>p+' % : tu prends ceux qui 
 ccLateEdgeWon:v=>'Hors zone, ça a marché — +'+v+' de puissance', ccLateEdgeLost:v=>'La tempête t\'a eu, −'+v+' de puissance',
 ccLateRefreshWon:v=>'Refresh trouvé, +'+v+' de puissance et mats pleins', ccLateRefreshLost:v=>'Pas de refresh, rentré en dernier : −'+v+' de puissance',
 ccKitLine:(m,low,loot)=>'Mats '+m+(low?' · '+low:'')+(loot?' · '+loot:''), ccKitLow:'peu',
-ccKitMats:m=>'Mats '+m, ccKitLootNone:'loot : ton pack', ccKitOut:'éliminés', ccKitSpec:n=>'spectateur : '+n, ccKitMateOut:'éliminé', ccKitWatch:'la partie continue, on regarde', ccKitPickaxe:'Pioche',
+ccKitMats:m=>'Mats '+m, ccKitLootNone:'loot : ton pack', ccHireBtn:'Engager pour le tournoi', ccHireT:'Engager pour le tournoi', ccHireHint:'Un joueur plus fort que ton partenaire joue le tournoi du jour avec toi. Tu paies tout de suite, les gains se partagent comme d\'habitude. Annuler avant de jouer te rembourse.', ccHireNone:'Personne de plus fort que ton partenaire n\'est libre aujourd\'hui', ccHireFree:'sans club', ccHireOn:(n,f)=>'Avec toi aujourd\'hui : '+n+' ('+f+')', ccHireCancel:'Annuler', ccKitOut:'éliminés', ccKitSpec:n=>'spectateur : '+n, ccKitMateOut:'éliminé', ccKitWatch:'la partie continue, on regarde', ccKitPickaxe:'Pioche',
 ccKitSurgeOff:'surge off', ccKitSurgeAt:(a,p)=>'surge dès '+a+' joueurs · en vie '+p,
 ccKitSurgeBanner:'STORM SURGE ACTIF !', ccKitUnderBanner:'TU ES SOUS SURGE !',
 ccKitSurgeWarn:'ALERTE STORM SURGE !', ccKitSurgeWarnSub:'INFLIGE DES DÉGÂTS POUR ÉVITER L’ÉLIMINATION !',
@@ -17853,7 +17862,7 @@ ccLateEdge:"Giocare fuori zona",ccLateEdgeNote:(v,f,p)=>p+'%: prendi chi entra \
 ccLateEdgeWon:v=>'Fuori zona ha funzionato \u2014 +'+v+' di forza', ccLateEdgeLost:v=>'La tempesta ti ha preso, \u2212'+v+' di forza',
 ccLateRefreshWon:v=>'Refresh trovato, +'+v+' di forza e mats pieni', ccLateRefreshLost:v=>'Niente refresh, rientrato per ultimo: \u2212'+v+' di forza',
 ccKitLine:(m,low,loot)=>'Mats '+m+(low?' \u00b7 '+low:'')+(loot?' \u00b7 '+loot:''), ccKitLow:"pochi",
-ccKitMats:m=>'Mats '+m, ccKitLootNone:'loot: il tuo pack', ccKitOut:'eliminati', ccKitSpec:n=>'spettatore: '+n, ccKitMateOut:'eliminato', ccKitWatch:'la partita continua, guardiamo', ccKitPickaxe:'Piccone',
+ccKitMats:m=>'Mats '+m, ccKitLootNone:'loot: il tuo pack', ccHireBtn:'Ingaggia per il torneo', ccHireT:'Ingaggia per il torneo', ccHireHint:'Un giocatore più forte del tuo compagno gioca con te il torneo di oggi. Paghi subito, i premi si dividono come sempre. Annullando prima di giocare ti rimborsa.', ccHireNone:'Oggi nessuno più forte del tuo compagno è libero', ccHireFree:'senza club', ccHireOn:(n,f)=>'Oggi con te: '+n+' ('+f+')', ccHireCancel:'Annulla', ccKitOut:'eliminati', ccKitSpec:n=>'spettatore: '+n, ccKitMateOut:'eliminato', ccKitWatch:'la partita continua, guardiamo', ccKitPickaxe:'Piccone',
 ccKitSurgeOff:'surge off', ccKitSurgeAt:(a,p)=>'surge da '+a+' giocatori \u00b7 vivi '+p,
 ccKitSurgeBanner:'STORM SURGE ATTIVO!', ccKitUnderBanner:'SEI SOTTO SURGE!',
 ccKitSurgeWarn:'AVVISO STORM SURGE!', ccKitSurgeWarnSub:'INFLIGGI DANNI PER EVITARE L’ELIMINAZIONE!',
@@ -20406,7 +20415,7 @@ ccLateEdge:"Jogar fora da zona",ccLateEdgeNote:(v,f,p)=>p+'%: pega quem entra �
 ccLateEdgeWon:v=>'Fora da zona funcionou — +'+v+' de força', ccLateEdgeLost:v=>'A tempestade te pegou, −'+v+' de força',
 ccLateRefreshWon:v=>'Refresh achado, +'+v+' de força e mats cheios', ccLateRefreshLost:v=>'Sem refresh, voltou por último: −'+v+' de força',
 ccKitLine:(m,low,loot)=>'Mats '+m+(low?' · '+low:'')+(loot?' · '+loot:''), ccKitLow:"pouco",
-ccKitMats:m=>'Mats '+m, ccKitLootNone:'loot: seu pack', ccKitOut:'eliminados', ccKitSpec:n=>'assistindo '+n, ccKitMateOut:'eliminado', ccKitWatch:'a partida continua, assistindo', ccKitPickaxe:'Picareta',
+ccKitMats:m=>'Mats '+m, ccKitLootNone:'loot: seu pack', ccHireBtn:'Contratar para o torneio', ccHireT:'Contratar para o torneio', ccHireHint:'Um jogador mais forte que o teu parceiro joga contigo o torneio de hoje. Pagas já, os prémios dividem-se como sempre. Cancelar antes de jogar devolve o dinheiro.', ccHireNone:'Hoje ninguém mais forte que o teu parceiro está livre', ccHireFree:'sem clube', ccHireOn:(n,f)=>'Hoje contigo: '+n+' ('+f+')', ccHireCancel:'Cancelar', ccKitOut:'eliminados', ccKitSpec:n=>'assistindo '+n, ccKitMateOut:'eliminado', ccKitWatch:'a partida continua, assistindo', ccKitPickaxe:'Picareta',
 ccKitSurgeOff:'surge desligado', ccKitSurgeAt:(a,p)=>'surge a partir de '+a+' jogadores · vivos '+p,
 ccKitSurgeBanner:'STORM SURGE ATIVO!', ccKitUnderBanner:'VOCÊ ESTÁ SOB SURGE!',
 ccKitSurgeWarn:'AVISO DE STORM SURGE!', ccKitSurgeWarnSub:'CAUSE DANO AOS INIMIGOS PARA NÃO SER ELIMINADO!',
@@ -120579,7 +120588,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='81231811';
+const CC_BUILD='5954db55';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -126452,7 +126461,13 @@ function careerCentreHTML(card, a){
            всех — это так утомительно»). Раньше играемый вечер давал только «Играть»: пропустить его было нечем. В
            команде и в гонке день двигают вместе — там кнопки нет. */
         (onToday && !ccMpOn() && !(typeof ccRaceLock==='function' && ccRaceLock())
-          ? `<button class="ch-play ch-skipev" onclick="careerSkipEventAsk()">${L().chSkipEv}</button>` : '')
+          ? `<button class="ch-play ch-skipev" onclick="careerSkipEventAsk()">${L().chSkipEv}</button>` : '')+
+        /* Наём на турнир (ccHireOpen): нанятый — строкой с отменой, иначе кнопка. */
+        (onToday && typeof ccHireAllowed==='function' && ccHireAllowed()
+          ? (ccHireActive()
+              ? `<div class="ch-hint ch-hire-on">${esc(L().ccHireOn(CAREER.career.hire.handle, ccMoney(CAREER.career.hire.fee)))} <button class="ch-sign" onclick="careerHireCancel()">${L().ccHireCancel}</button></div>`
+              : `<button class="ch-play ch-skipev" onclick="ccHireOpen()">${L().ccHireBtn}</button>`)
+          : '')
       : `<button class="ch-play" onclick="careerSkipAsk()" title="${esc(
             ccRaceModeWhy() ? ccRaceModeWhy()
           /* Арена, ранг, травма, бан (ccLifeWhy) закрывают вечер в careerCanPlayKindOn, а сюда
@@ -138003,7 +138018,10 @@ function careerMates(){
     const p=ccRacePairPeer();
     return p && p.card ? [p.card].slice(0, careerMateSeats()) : [];
   }
-  return careerMateRecords().map(ccMateCardOf).filter(Boolean);
+  const list=careerMateRecords().map(ccMateCardOf).filter(Boolean);
+  // Нанятый на сегодняшний турнир — в первое кресло (ccHireActive).
+  if(typeof ccHireActive==='function' && ccHireActive()){ const hc=ccHireCard(); if(hc) list[0]=hc; }
+  return list;
 }
 /* Карточка первого кресла — той же дверью, что и все остальные.
  *
@@ -138019,6 +138037,7 @@ function careerMates(){
 function careerPartnerCard(){
   // Та же врезка, что и в careerMates: первое кресло тоже занимает живой.
   if(ccMpOn() && typeof MP!=='undefined' && MP.peer) return MP.peer;
+  if(typeof ccHireActive==='function' && ccHireActive()){ const hc=ccHireCard(); if(hc) return hc; }
   return ccMateCardOf(careerMateRec());
 }
 
@@ -143230,6 +143249,77 @@ function ccSmmPickClose(){
   document.removeEventListener('keydown', ccSmmPickKey);
 }
 function ccSmmPickKey(e){ if(e.key==='Escape') ccSmmPickClose(); }
+/* НАЁМ НА ТУРНИР (29.10, идея игрока из Notion 27.10 скрин 27: «чтобы ты мог заплатить игрокам на голову
+   сильнее, чтобы они пошли с тобой турнир»; его выбор «наём на турнир»). В день турнира — кнопка на Центре:
+   список игроков сцены твоего региона сильнее напарника (или тебя, если сидишь без напарника) на CC_HIRE_OVER
+   и выше, плата сразу. Нанятый садится в первое кресло на ЭТОТ день (careerMates/careerPartnerCard): поле турнира
+   убирает его из своей пары, как убирает любого из твоего состава (careerCupField, mine). Призы — как с
+   напарником. Отменить до игры — деньги назад. Цена — ОЦЕНКА режима: CC_HIRE_BASE за рейтинг 85, ×CC_HIRE_STEP
+   за каждое очко сверху. В команде и в гонке найма нет: первое кресло там занято человеком. */
+const CC_HIRE_BASE=150, CC_HIRE_STEP=1.15, CC_HIRE_OVER=2, CC_HIRE_N=8;
+let CC_HIRE_MEMO=null;
+function ccHireAllowed(){
+  return !!(CAREER && CAREER.career) && !(typeof ccMpOn==='function' && ccMpOn()) &&
+    !(typeof ccRacePairOn==='function' && ccRacePairOn()) && !(typeof ccRaceLock==='function' && ccRaceLock()) &&
+    careerMateSeats()>0;
+}
+function ccHireActive(){
+  const h=CAREER && CAREER.career && CAREER.career.hire;
+  return !!(h && h.day===careerToday() && ccHireAllowed());
+}
+function ccHireCard(){
+  const h=CAREER.career.hire, key=h.handle+'|'+h.day;
+  if(CC_HIRE_MEMO && CC_HIRE_MEMO.key===key) return CC_HIRE_MEMO.card;
+  let card=null; try{ card=ccMateCardOf({handle:h.handle, cardRegion:h.region}); }catch(e){ card=null; }
+  CC_HIRE_MEMO={key:key, card:card};
+  return card;
+}
+function ccHireOvr(c){ return Math.round(c ? (c._ovr!=null ? c._ovr : ((attrsFor(c)||{}).ovr||c.rating||0)) : 0); }
+function ccHireFee(ovr){ return Math.max(50, Math.round(CC_HIRE_BASE*Math.pow(CC_HIRE_STEP, ovr-85)/10)*10); }
+function ccHireCands(){
+  const reg=ccCareerRegion();
+  const roster=(typeof ccSceneRoster==='function' && reg!=='EU') ? ccSceneRoster(reg) : careerRosterNowEU();
+  const own=careerMateRecords().map(ccMateCardOf).filter(Boolean);
+  const mine=new Set([hKey(CAREER.player.handle||CAREER.player.nick||'')].concat(own.map(c=>hKey(c))));
+  const bar=(own.length ? ccHireOvr(own[0]) : Math.round(CAREER.player.ovr||0))+CC_HIRE_OVER;
+  return (roster||[]).filter(c=>c && c.handle && !mine.has(hKey(c)) && ccHireOvr(c)>=bar)
+    .sort((a,b)=>ccHireOvr(b)-ccHireOvr(a)).slice(0, CC_HIRE_N);
+}
+function ccHireOpen(){
+  if(!ccHireAllowed()) return;
+  const cr=CAREER.career, T=L(), list=ccHireCands();
+  const rows=list.map((c, i)=>{
+    const ovr=ccHireOvr(c), fee=ccHireFee(ovr), can=(cr.balance||0)>=fee;
+    return '<div class="cc-buy"><div class="cc-buy-in"><b><span class="cc-buy-nm">'+esc(c.handle)+'</span> <span class="cc-staff-rt mgf-rt">'+ovr+'</span></b>'+
+      '<i class="cc-buy-who">'+esc(c.org||T.ccHireFree||'')+'</i></div>'+
+      '<span class="cc-buy-btns"><button class="ch-sign"'+(can?'':' disabled')+' onclick="careerHire('+i+')">'+ccMoney(fee)+'</button></span></div>';
+  }).join('');
+  document.getElementById('hirePickBody').innerHTML='<h4 class="cc-pick-h">'+esc(T.ccHireT)+'</h4>'+
+    '<div class="ch-hint">'+esc(T.ccHireHint)+'</div>'+(rows ? '<div class="cc-buys">'+rows+'</div>' : '<p class="ch-empty">'+esc(T.ccHireNone)+'</p>');
+  document.getElementById('hirePickModal').style.display='flex';
+  document.addEventListener('keydown', ccHireKey);
+}
+function ccHireClose(){
+  const m=document.getElementById('hirePickModal'); if(m) m.style.display='none';
+  document.removeEventListener('keydown', ccHireKey);
+}
+function ccHireKey(e){ if(e.key==='Escape') ccHireClose(); }
+function careerHire(i){
+  const cr=CAREER.career; if(!ccHireAllowed()) return;
+  const c=ccHireCands()[i]; if(!c) return;   // номер в том же списке, что показан в окне
+  const fee=ccHireFee(ccHireOvr(c));
+  if((cr.balance||0)<fee) return;
+  if(ccHireActive()) cr.balance=(cr.balance||0)+(cr.hire.fee||0);   // сменил нанятого — прошлому вернули
+  cr.balance=(cr.balance||0)-fee;
+  cr.hire={day:careerToday(), handle:c.handle, region:ccCareerRegion(), fee:fee};
+  CC_HIRE_MEMO=null;
+  careerSave(); ccHireClose(); careerRenderHub();
+}
+function careerHireCancel(){
+  const cr=CAREER.career; if(!ccHireActive()) return;
+  cr.balance=(cr.balance||0)+(cr.hire.fee||0); cr.hire=null; CC_HIRE_MEMO=null;
+  careerSave(); careerRenderHub();
+}
 /* АНАЛИТИК И ПСИХОЛОГ (его слова 8.10: «1 2 6 какие есть примеры» → «поищи ещё психологов и аналитиков» →
    «youenn не надо», «и аналитикам сделай рейтинги»). Люди настоящие, найдены 8.10.2026:
    аналитики — категория Analysts на Liquipedia и состав официальной трансляции FNCS (Liquipedia: Major 1 Summit 2026,
