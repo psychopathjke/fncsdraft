@@ -70,7 +70,7 @@ const BOOT = `
     const cr=CAREER.career;
 
     // ---- the calendar carries Epic's own days ------------------------------
-    const days={q1r2:'2026-10-03', q1r3:'2026-10-04', q2r3:'2026-10-11',
+    const days={q1r1:'2026-09-28', q2r1:'2026-10-05', q1r2:'2026-10-03', q1r3:'2026-10-04', q2r3:'2026-10-11',
                 heats:'2026-10-17', lcq1:'2026-10-19', lcqf:'2026-10-20',
                 final:'2026-10-26'};
     Object.keys(days).forEach(function(st){
@@ -81,14 +81,18 @@ const BOOT = `
     });
     // The year has to reach the final, or the tournament stops before its own end.
     if(CC_YEAR_TO < '2026-10-27') fail('the year ends '+CC_YEAR_TO+', before the Solos final');
-    out.steps.push('calendar: nine evenings, 3 Oct to 27 Oct, and the year reaches them');
+    out.steps.push('calendar: Round 1 of both qualifiers, then 3 Oct to 27 Oct, and the year reaches them');
 
     /* 10 October carries two of Epic's evenings at once — Fast Track and the
        second round of the second qualifier. They are mutually exclusive for one
        player, so the day must hand back the one this player may play. */
-    delete cr.solos;
+    /* С Round 1 (29.10) во второй раунд садится прошедший Round 1 (seat q2r2) или топ-2000 PR. */
+    cr.solos={got:'q2r1', seat:'q2r2'};
     if(careerSoloSeriesOn('2026-10-10').stage!=='q2r2')
-      fail('10 Oct gave a seatless player Fast Track instead of the second qualifier');
+      fail('10 Oct gave a q2r2 seat Fast Track instead of the second qualifier');
+    delete cr.solos;
+    if(careerSoloSeriesCan(careerSoloSeriesOn('2026-10-10')))
+      fail('10 Oct let a seatless rookie skip Round 1 of the second qualifier');
     cr.solos={got:'q1r3', seat:'fast'};
     if(careerSoloSeriesOn('2026-10-10').stage!=='fast')
       fail('10 Oct handed a Fast Track seat the other qualifier');
@@ -96,7 +100,11 @@ const BOOT = `
     out.steps.push('10 Oct holds two evenings, and each player is given their own');
 
     // ---- the gates ---------------------------------------------------------
-    if(!careerSoloSeriesCan(careerSoloSeriesOn(days.q1r2))) fail('the open qualifier refused a rookie');
+    if(!careerSoloSeriesCan(careerSoloSeriesOn(days.q1r1))) fail('Round 1 refused a rookie');
+    if(careerSoloSeriesCan(careerSoloSeriesOn(days.q1r2))) fail('Round 2 took a rookie who skipped Round 1');
+    cr.solos={got:'q1r3', seat:null};
+    if(!careerSoloSeriesCan(careerSoloSeriesOn(days.q2r1))) fail('Q2 Round 1 refused a player who fell out of Q1');
+    delete cr.solos;
     ['q1r3','heats','lcqf','final'].forEach(function(st){
       if(careerSoloSeriesCan(careerSoloSeriesOn(days[st]))) fail(st+' let somebody in without a seat');
     });
@@ -134,6 +142,17 @@ const BOOT = `
     if(cutAt('EU')!==13 || cutAt('NAC')!==25 || cutAt('OCE')!==50)
       fail('the Round 2 cut is wrong: EU '+cutAt('EU')+', NAC '+cutAt('NAC')+', OCE '+cutAt('OCE'));
     out.steps.push('round 2 cut: EU 13, NAC 25, the rest 50 — a thousand over Epic own field');
+
+    // ---- Qualifier 1, Round 1: open, two days, 22 matches (field is an estimate) ----
+    delete cr.solos; cr.day='2026-09-28'; careerSave();
+    await runCareerSoloSeries();
+    const lr1=cr.log[cr.log.length-1];
+    if(!lr1 || lr1.kind!=='solo' || lr1.stage!=='q1r1') fail('Round 1 wrote no log row');
+    if(lr1.games!==22) fail('Round 1 played '+lr1.games+' matches, Epic says 22 over two days');
+    if(!cr.solos || cr.solos.got!=='q1r1') fail('Round 1 left no state');
+    if(cr.solos.seat && cr.solos.seat!=='q1r2') fail('Round 1 seated somebody outside Round 2');
+    out.steps.push('qualifier 1 round 1: '+lr1.place+' of '+lr1.of+' over 22 matches, '+(cr.solos.seat||'out'));
+    cr.solos={got:'q1r1', seat:'q1r2'}; cr.day='2026-10-03'; careerSave();
 
     // ---- Qualifier 1, Round 2: a room of 100 over 11 matches ---------------
     if(careerNext().type!=='solo') fail('3 Oct offers '+careerNext().type+' instead of FNCS Solos');
