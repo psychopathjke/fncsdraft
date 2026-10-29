@@ -9395,7 +9395,7 @@
      кэш промахивается сам. Проверку «хеш в теге совпадает с файлом» держит
      tools/check-deploy-folder.js: забыть обновить руками теперь нельзя, папка
      деплоя просто не соберётся зелёной. -->
-<script src="zone-sim.js?v=d2bf9a76"></script>
+<script src="zone-sim.js?v=48702812"></script>
 <script src="zone-replay.js?v=eddac9ed"></script>
 <!-- Командная карьера: транспорт и склейка. Весь код мультиплеера живёт здесь,
      в index.html только точки врезки. ?v= — тот же кэш-предохранитель, что и
@@ -112904,7 +112904,7 @@ async function playGameWithChoices(teams, lobbyOpts, ui){
     rng: Math.random, land: ZONE_SETS[set], aspect: aspect,
     // Острова Reload (r1–r4) идут по своему шторму — см. RELOAD_PHASES в zone-sim,
     // и с возрождениями до восьмого круга — см. onDeath там же.
-    phases: /^r\d$/.test(set) ? ZoneSim.RELOAD_PHASES : undefined,
+    phases: ccStormPhases(set, squadSize),
     // В соло-Reload возрождать некому — без напарника смерть окончательная
     // (реплеи Reload Solo Victory Cup S41: 40 → 27 к восьмому кругу, а не 40).
     respawnUntilZone: (/^r\d$/.test(set) && squadSize>1) ? CC_RELOAD_RESPAWN_ZONE : 0,
@@ -113247,7 +113247,7 @@ function ccKitPanel(lobby, frame){
      тем же правилом, что в движке (applySurge): отсечь столько нижних по
      чистому урону, на сколько живых больше порога. Reload сёрджа не знает. */
   const reload=/^r\d$/.test(String(typeof ACTIVE_LANDING_SET!=='undefined' ? ACTIVE_LANDING_SET : ''));
-  const nextPh=(!active && !reload && typeof ZoneSim!=='undefined' && ZoneSim.PHASES) ? ZoneSim.PHASES[frame.zone] : null;
+  const nextPh=(!active && !reload && typeof ZoneSim!=='undefined' && ZoneSim.PHASES) ? (CC_GAME_PHASES||ZoneSim.PHASES)[frame.zone] : null;
   const nextAt=nextPh && isFinite(nextPh.surgeAt) ? nextPh.surgeAt : 0;
   // На первом круге предупреждения нет — скриншот высадки 5.09: ни порога, ни баннера.
   const warn=!active && frame.zone>=2 && nextAt>0 && frame.players!=null && frame.players>nextAt;
@@ -114992,6 +114992,22 @@ function ccDeathInfo(you, game){
           gun:gun ? gun.name : '', range, place:sq.place||0, net:net, elims:sq.elims||0,
           surge:ccSurgeGapAt(game && game.frames ? game.frames() : null, net)};
 }
+/* Шторм и сюрдж своего года (29.10, его «в каждом чаптере были разные зоны и сюрдж правила»): таблица из
+   ZoneSim.phasesFor по дню карьеры, вне карьеры по сезону острова. Reload: своя таблица, как была.
+   CC_GAME_PHASES: таблица последней игры, по ней HUD считает порог следующего круга. */
+let CC_GAME_PHASES=null;
+const CC_STORM_DAY={g:'2019-03-01', h:'2019-08-01', i:'2020-06-01', j:'2021-06-01', k1:'2022-03-15', k2:'2022-06-15', k3:'2022-09-01',
+  e:'2023-06-01', f:'2024-06-01', t:'2025-06-01'};
+function ccStormDay(set){
+  try{ if(CAREER_RUN && typeof CAREER!=='undefined' && CAREER && CAREER.career) return careerToday(); }catch(e){}
+  const k=String(set||'');
+  return CC_STORM_DAY[k] || CC_STORM_DAY[k.charAt(0)] || '';
+}
+function ccStormPhases(set, squadSize){
+  if(/^r\d$/.test(set)){ CC_GAME_PHASES=ZoneSim.RELOAD_PHASES; return ZoneSim.RELOAD_PHASES; }
+  CC_GAME_PHASES=ZoneSim.phasesFor ? ZoneSim.phasesFor(ccStormDay(set), squadSize) : null;
+  return CC_GAME_PHASES || undefined;
+}
 /* Число сёрджа, как его пишет HUD («149 ABOVE DAMAGE THRESHOLD»): чистый урон
    отряда минус линия отсечки последнего кадра. Пока сёрдж никого не бьёт, но
    живых больше порога следующего круга — линия предварительная, тем же
@@ -115004,7 +115020,7 @@ function ccSurgeGapAt(frames, net){
   if(!f) return null;
   if(f.surgeAt>0 && f.surgeLine!=null) return Math.round(net-f.surgeLine);
   const reload=/^r[0-9]$/.test(String(typeof ACTIVE_LANDING_SET!=='undefined' ? ACTIVE_LANDING_SET : ''));
-  const nextPh=(!reload && typeof ZoneSim!=='undefined' && ZoneSim.PHASES) ? ZoneSim.PHASES[f.zone] : null;
+  const nextPh=(!reload && typeof ZoneSim!=='undefined' && ZoneSim.PHASES) ? (CC_GAME_PHASES||ZoneSim.PHASES)[f.zone] : null;
   const nextAt=nextPh && isFinite(nextPh.surgeAt) ? nextPh.surgeAt : 0;
   if(!(f.zone>=2 && nextAt>0 && f.players>nextAt)) return null;
   const alive=(f.dots||[]).filter(x=>x && x.alive);
@@ -115603,7 +115619,7 @@ function simulateGameOnMap(teams, lobbyOpts){
   const result = ZoneSim.simulateZoneGame(teams, {
     rng: Math.random,
     land: ZONE_SETS[set],
-    phases: /^r\d$/.test(set) ? ZoneSim.RELOAD_PHASES : undefined,
+    phases: ccStormPhases(set, squadSize),
     // В соло-Reload возрождать некому — без напарника смерть окончательная
     // (реплеи Reload Solo Victory Cup S41: 40 → 27 к восьмому кругу, а не 40).
     respawnUntilZone: (/^r\d$/.test(set) && squadSize>1) ? CC_RELOAD_RESPAWN_ZONE : 0,

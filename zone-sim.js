@@ -90,6 +90,53 @@
   // null means "draw it inside the nesting budget".
   var DRIFT = [null, null, null, null, 13.49, 8.30, 6.23, 4.98, 4.15, 3.05, 3.05];
 
+  /* ШТОРМ И СЮРДЖ ПО ГОДАМ (29.10.2026, его «в каждом чаптере были разные зоны и сюрдж правила»).
+     Таблицы шторма только для соревновательных Epic не публиковала ни разу; по вики (Competitive
+     (Gamemode)) соревновательный режим менял лишь движение кругов, а размеры и время брал из обычной
+     таблицы. Поэтому:
+       до 10.03.2023 (Глава 1 – Глава 4 S1) — обычная таблица того времени, 9 кругов (вики «The Storm»,
+         старые правки): ждать 200 120 90 80 50 30 0 0 0, сжатие 180 (с 2020 — 240) 120 90 70 60 60 55
+         45 75, урон 1 1 2 5 8 10 10 10 10, размеры 1600 800 400 200 100 50 35 20 0 — круг вдвое меньше
+         прошлого. Метры это или поперечник — вики сама путается, поэтому берётся только доля от первого
+         круга, первый — тот же, что у реплея 2026. Дрейф центра не измерен — внутри разницы радиусов.
+       с 10.03.2023 (Глава 4 S2, 12 кругов у Epic) — PHASES, реплей финала 2026: ближайшее измеренное.
+     Пороги сюрджа (живых игроков больше N — бьёт):
+       до 19.07.2022 — 70 70 50 50 30 (AMA Epic, июнь 2019; в Главе 2 изменений не нашлось),
+       с 19.07.2022 — 64 54 44 40 30 (новость Epic C3S3),
+       с 10.03.2023 — 90 90 78 64 54 44 40 30 (трио 90 90 78 63 54 42 39 30; FortniteStatus),
+       с 20.02.2024 — 90 90 74 60 50 40 36 26 (FortniteStatus) — это и есть PHASES.
+     Удар везде 25 за 5 секунд (в 2022 месяц было 10 секунд — не берём). Чистый урон (нанесённый минус
+     полученный) — с 23.10.2025 во всех турнирах; до того сюрдж смотрел только на нанесённый.
+     Источники и пробелы — tools/measured/storm-eras.md. */
+  function withSurge(base, list){
+    // list — пороги со второго круга; дальше последнего — последний.
+    return base.map(function(ph, i){
+      var at = i === 0 ? Infinity : list[Math.min(i - 1, list.length - 1)];
+      return {zone:ph.zone, waitSec:ph.waitSec, shrinkSec:ph.shrinkSec, dps:ph.dps, radius:ph.radius, surgeAt:at};
+    });
+  }
+  function oldStorm(shrink1){
+    var r1 = PHASES[0].radius, size = [1600, 800, 400, 200, 100, 50, 35, 20, 10];  // последний 0 у Epic, у движка — точка
+    var wait = [200, 120, 90, 80, 50, 30, 0, 0, 0], shrink = [shrink1, 120, 90, 70, 60, 60, 55, 45, 75], dps = [1, 1, 2, 5, 8, 10, 10, 10, 10];
+    return size.map(function(s, i){ return {zone:i + 1, waitSec:wait[i], shrinkSec:shrink[i], dps:dps[i], radius:r1 * s / 1600, surgeAt:Infinity}; });
+  }
+  // day — 'YYYY-MM-DD'; squadSize 3 — трио. Возвращает таблицу кругов; .drift — измеренный дрейф или пусто,
+  // .net — сюрдж по чистому урону. Без даты — нынешние правила.
+  function phasesFor(day, squadSize){
+    var d = String(day || '9999'), out;
+    if(d < '2023-03-10'){
+      out = withSurge(oldStorm(d < '2020-01-01' ? 180 : 240), d < '2022-07-19' ? [70, 70, 50, 50, 30] : [64, 54, 44, 40, 30]);
+      out.drift = [];
+    } else {
+      out = d < '2024-02-20'
+        ? withSurge(PHASES, squadSize === 3 ? [90, 90, 78, 63, 54, 42, 39, 30] : [90, 90, 78, 64, 54, 44, 40, 30])
+        : PHASES.slice();
+      out.drift = DRIFT;
+    }
+    out.net = d >= '2025-10-23';
+    return out;
+  }
+
   // Rejection-sample a point on the island. The landing rectangles already
   // describe where the playable ground is — they were placed POI by POI — so no
   // second map is needed. If the sampler cannot find land in 60 tries the
@@ -151,7 +198,7 @@
     // Своя таблица шторма (Reload) — иначе БР. Дрейф центра у Reload не
     // измерен — рисуется где угодно внутри разницы радиусов, как у БР в 2–4.
     var phases = opts.phases || PHASES;
-    var drift = opts.phases ? [] : DRIFT;
+    var drift = opts.phases ? (opts.phases.drift || []) : DRIFT;
 
     // Zone 0 is the whole island: the centre of the bounding box of the land,
     // with a radius that reaches its corners.
@@ -1193,6 +1240,7 @@
   // 6.3 in the engine at this value (8.4 at 0.04, 17 at 0.08); the final 5.3
   // against 6.5. Surge deaths come out at a few in a hundred games.
   var SURGE_HIT = 25, SURGE_TICK = 5, SURGE_DUTY = 0.03;
+  var SURGE_NET = true;   // на игру из opts.phases.net (phasesFor), иначе чистый урон
 
   function applySurge(squads, surgeAt, seconds, onDeath, rng){
     if(!isFinite(surgeAt)) return;
@@ -1204,7 +1252,7 @@
       // Net damage as surge saw it this tick. The frame is recorded after the
       // fights of the same tick, so the number it shows next to the surge line
       // has to be the one the line was drawn against.
-      s.surgeNet = Math.round(s.dealt - s.taken);
+      s.surgeNet = Math.round(s.dealt - (SURGE_NET ? s.taken : 0));
       if(!s.alive) continue;
       alive.push(s);
       players += (s.team.squad && s.team.squad.length) || 1;
@@ -1232,8 +1280,10 @@
     // of Chapter 6 where lobbies traded tickle damage back and forth. Before
     // that it was damage dealt alone, and the HUD's "above damage threshold"
     // is now a net figure too.
+    // До 23.10.2025 (phasesFor .net) — только нанесённый.
     alive.sort(function(a, b){
-      return ((a.dealt - a.taken) - (b.dealt - b.taken)) || (a.surgeTie - b.surgeTie);
+      return SURGE_NET ? (((a.dealt - a.taken) - (b.dealt - b.taken)) || (a.surgeTie - b.surgeTie))
+                       : ((a.dealt - b.dealt) || (a.surgeTie - b.surgeTie));
     });
 
     var below = [], covered = 0;
@@ -1311,6 +1361,7 @@
   function simulateZoneGame(teams, opts){
     var rng = opts.rng, aspect = opts.aspect, duel = opts.duel, record = !!opts.record;
     var plan = generateZonePlan({rng: rng, land: opts.land, aspect: aspect, phases: opts.phases});
+    SURGE_NET = !(opts.phases && opts.phases.net === false);
     var squads = createSquads(teams, {aspect: aspect, startOf: opts.startOf});
     for(var st=0; st<squads.length; st++) squads[st].surgeTie = rng();
     // Средняя сила лобби по карточкам — для LOBBY_WEAK_K, см. resolveContacts.
@@ -1939,6 +1990,7 @@
     createRng: createRng,
     PHASES: PHASES,
     RELOAD_PHASES: RELOAD_PHASES,
+    phasesFor: phasesFor,
     DRIFT: DRIFT,
     generateZonePlan: generateZonePlan,
     SPEED: SPEED,
