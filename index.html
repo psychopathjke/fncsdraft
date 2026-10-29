@@ -115181,6 +115181,29 @@ function ccChestRoll(rng, set){
   return {weapon, cons};
 }
 // Пак по правилу «два ствола разных классов, две хилки, мувмент» — из того, что выпало.
+/* МЕТА ПРО ПО СЕЗОНАМ (29.10, его «посмотри лут метовый у про игроков в инвентаре, чтоб игроки и боты брали нужное»).
+   r — автоматы, s — дробовики, m — передвижение; порядок — что про берёт первым, если лежит и то и другое.
+   Только сезоны, где мету удалось подтвердить (HIGH/MED в tools/measured/meta-loadouts.md); остальные острова — как было,
+   по редкости. Мета берёт верх над стволом на ступень редче; что вытеснено, уходит в dropped — сила пака (ccPackPow)
+   считает его как раньше, поэтому мета меняет руки, а не силу. */
+const CC_META_BY_SET={"h1":{"r":["Assault Rifle","Heavy Assault Rifle","Tactical Assault Rifle"],"s":["Pump Shotgun","Combat Shotgun","Tactical Shotgun"],"m":["Rift-To-Go","Shockwave Grenade"]},"h3":{"r":["Assault Rifle","Heavy Assault Rifle","Suppressed Assault Rifle"],"s":["Pump Shotgun","Combat Shotgun","Tactical Shotgun"],"m":["Shockwave Grenade","Junk Rift"]},"h4":{"r":["Assault Rifle","Burst Assault Rifle","Heavy Assault Rifle"],"s":["Pump Shotgun","Tactical Shotgun"],"m":[]},"i1":{"r":["Assault Rifle","Burst Assault Rifle"],"s":["Pump Shotgun","Tactical Shotgun"],"m":["Crash Pad"]},"i2":{"r":["Assault Rifle","Burst Assault Rifle"],"s":["Charge Shotgun","Tactical Shotgun"],"m":["Crash Pad"]},"i3":{"r":["Assault Rifle","Burst Assault Rifle","Scoped Assault Rifle"],"s":["Pump Shotgun","Combat Shotgun"],"m":["Shockwave Grenade","Crash Pad","Stark Jetpack"]},"j1":{"r":["Heavy Assault Rifle","Assault Rifle"],"s":["Charge Shotgun","Lever Action Shotgun","Tactical Shotgun"],"m":["Shockwave Grenade"]},"j2":{"r":["Assault Rifle","Primal Rifle","Infantry Rifle","Makeshift Rifle"],"s":["Pump Shotgun","Primal Shotgun","Tactical Shotgun"],"m":["Shockwave Grenade"]},"j3":{"r":["Assault Rifle","Burst Assault Rifle","Heavy Assault Rifle"],"s":["Pump Shotgun","Tactical Shotgun","Lever Action Shotgun"],"m":[]},"j4":{"r":["Combat Assault Rifle","Assault Rifle","Burst Assault Rifle"],"s":["Pump Shotgun","Combat Shotgun","Charge Shotgun"],"m":["Shockwave Launcher"]},"k1":{"r":["MK-Seven Assault Rifle","Ranger Assault Rifle"],"s":["Striker Pump Shotgun","Auto Shotgun","Heavy Shotgun"],"m":[]},"k2":{"r":["MK-Seven Assault Rifle","Striker Burst Rifle","Ranger Assault Rifle"],"s":["Striker Pump Shotgun","Ranger Shotgun"],"m":["Shockwave Grenade","Rift-To-Go"]},"k3":{"r":["Hammer Assault Rifle","Striker Burst Rifle","Ranger Assault Rifle"],"s":["Striker Pump Shotgun","Two-Shot Shotgun"],"m":["Crash Pad"]},"e1":{"r":["Red-Eye Assault Rifle","Assault Rifle","Burst Assault Rifle"],"s":["Thunder Shotgun","Maven Auto Shotgun"],"m":["Shockwave Hammer","Launch Pad"]},"e2":{"r":["Red-Eye Assault Rifle","Havoc Suppressed Assault Rifle"],"s":["Havoc Pump Shotgun","Maven Auto Shotgun","Combat Shotgun"],"m":[]},"f1":{"r":["Nemesis AR","Striker AR","Enforcer AR"],"s":["Hammer Pump Shotgun","Frenzy Auto Shotgun"],"m":["Shockwave Grenade","Crash Pad Jr."]},"f2":{"r":["Nemesis AR","Warforged Assault Rifle","Tactical Assault Rifle"],"s":["Gatekeeper Shotgun","Hammer Pump Shotgun","Frenzy Auto Shotgun"],"m":["Shockwave Grenade"]},"f3":{"r":["Combat Assault Rifle","Enforcer AR","Tactical Assault Rifle"],"s":["Combat Shotgun","Gatekeeper Shotgun","Hammer Pump Shotgun"],"m":["Nitro Fists","Shockwave Grenade","Crash Pad Jr."]},"t1":{"r":["Holo Twister Assault Rifle","Fury Assault Rifle","Ranger Assault Rifle"],"s":["Sentinel Pump Shotgun","Oni Shotgun","Twinfire Auto Shotgun"],"m":["Void Oni Mask","Shockwave Grenade"]}};
+function ccProMeta(set){ try{ return CC_META_BY_SET[ccLootSet(set)] || null; }catch(e){ return null; } }
+function ccMetaRank(meta, o){
+  if(!meta || !o) return 99;
+  const l=o.icon==='rifle' ? meta.r : o.icon==='shotgun' ? meta.s : CC_MOVE_ITEMS.indexOf(o.name)>=0 ? meta.m : null;
+  const i=l ? l.indexOf(o.name) : -1;
+  return i<0 ? 99 : i;
+}
+// Лучший из списка по мете: метовый, если он не больше чем на ступень редче лучшего по редкости.
+function ccMetaBest(list, meta){
+  const mod=o=>o ? (RARITY_MOD[o.rarity]||0) : -1;
+  if(!list.length) return null;
+  const top=list.reduce((a,b)=>mod(b)>mod(a) ? b : a);
+  if(!meta) return top;
+  const ok=list.filter(o=>ccMetaRank(meta, o)<99 && mod(o)>=mod(top)-1)
+    .sort((a,b)=>(ccMetaRank(meta, a)-ccMetaRank(meta, b)) || (mod(b)-mod(a)));
+  return ok[0] || top;
+}
 function ccPackFrom(weapons, cons){
   const mod=o=>o ? (RARITY_MOD[o.rarity]||0) : -1;
   const byMod=(a,b)=>mod(b)-mod(a);
@@ -115188,14 +115211,18 @@ function ccPackFrom(weapons, cons){
   /* Отзыв: «должны быть 2 оружия автомат дробовик». Пара — лучшая винтовка и
      лучший дробовик из выпавшего; нет одного из них — лучший ствол другого класса
      (ПП, пистолет, снайперка); класс один на всех рулонах — второй лучший, что есть. */
-  const best=cls=>ws.find(w=>w.icon===cls)||null;
+  const meta=ccProMeta();
+  const best=cls=>ccMetaBest(ws.filter(w=>w.icon===cls), meta);
   let first=best('rifle'), second=best('shotgun');
+  // Метовый ствол встал вместо более редкого того же класса — тот в dropped (ccPackPow его считает).
+  const pushed=[first, second].filter(Boolean).map(w=>ws.find(o=>o.icon===w.icon && mod(o)>mod(w))).filter(Boolean);
   if(!first || !second){
     first=first||second||ws[0]||null;
     second=(first && ws.find(w=>w!==first && w.icon!==first.icon)) || (first && ws.find(w=>w!==first)) || null;
   }
   if(first && second && mod(second)>mod(first)){ const t=first; first=second; second=t; }
   const moves=cons.filter(x=>CC_MOVE_ITEMS.indexOf(x.name)>=0).sort(byMod);
+  const move=ccMetaBest(moves, meta);
   const healsAll=cons.filter(x=>CC_MOVE_ITEMS.indexOf(x.name)<0).sort(byMod);
   /* Две хилки — РАЗНЫЕ, и каждая СТАКОМ (отзыв: «можно стакать хилы, 3 биги
      6 миников»). Сколько нашли, столько и лежит, но не больше стака этой хилки по вики
@@ -115204,7 +115231,9 @@ function ccPackFrom(weapons, cons){
   const cnt={}; const order=[];
   healsAll.forEach(x=>{ if(!cnt[x.name]){ cnt[x.name]={item:x, n:0}; order.push(x.name); } cnt[x.name].n++; });
   const heals=order.slice(0, 2).map(n=>Object.assign({}, cnt[n].item, {n:Math.min(cnt[n].n, ccHealOf(cnt[n].item).stack)}));
-  return {weapons:[first, second].filter(Boolean), heals, move:moves[0]||null};
+  const out={weapons:[first, second].filter(Boolean), heals, move:move||null};
+  if(pushed.length) out.dropped=pushed;
+  return out;
 }
 function ccPackFromRolls(rolls){
   const p=ccPackFrom(rolls.map(r=>r.weapon), rolls.map(r=>r.cons).filter(Boolean));
@@ -115239,11 +115268,16 @@ function ccPackMerge(cur, add, set, rng){   // rng больше не берёт�
   out.dropped=((cur&&cur.dropped)||[]).concat((add&&add.dropped)||[]);
   out.first=(cur&&cur.first)||(add&&add.first)||undefined;
   if(!add) return out;
+  const meta=ccProMeta(set);
   (add.weapons||[]).forEach(w=>{
     if(!w) return;
     const i=out.weapons.findIndex(o=>o && o.icon===w.icon);
-    if(i<0) out.weapons.push(w);
-    else if(mod(w)>mod(out.weapons[i])) out.weapons[i]=w;
+    if(i<0){ out.weapons.push(w); return; }
+    const old=out.weapons[i];
+    if(w!==old && ccMetaBest([old, w], meta)===w){
+      if(!old.floor && mod(old)>mod(w)) out.dropped.push(old);
+      out.weapons[i]=w;
+    }
   });
   (add.heals||[]).forEach(h=>{
     if(!h) return;
@@ -115253,7 +115287,7 @@ function ccPackMerge(cur, add, set, rng){   // rng больше не берёт�
     const weak=out.heals.reduce((a,b)=>(a.floor && !b.floor) ? a : (b.floor && !a.floor) ? b : (mod(a)<=mod(b) ? a : b));
     if(weak.floor || mod(h)>mod(weak)) out.heals[out.heals.indexOf(weak)]=Object.assign({}, h);
   });
-  if(add.move && (!out.move || out.move.floor || mod(add.move)>mod(out.move))) out.move=add.move;
+  if(add.move && (!out.move || out.move.floor || ccMetaBest([out.move, add.move], meta)===add.move)) out.move=add.move;
   return ccPackFloor(out, set, rng);
 }
 /* СВОЙ БРОСОК, НЕ ОБЩИЙ. Пол и слияние берут предметы своим PRNG от содержимого пака, а не из
@@ -115273,7 +115307,9 @@ function ccPackFloor(pack, set, rng){
   pack.weapons=pack.weapons||[]; pack.heals=pack.heals||[];
   const lowest=list=>{ const by={}; list.forEach(o=>{ const k=o.name; if(!by[k] || RARITY_LADDER.indexOf(o.rarity)<RARITY_LADDER.indexOf(by[k].rarity)) by[k]=o; }); return Object.keys(by).map(k=>by[k]); };
   const guns=lowest(pool.weapons), heals=lowest(pool.heals.filter(ccIsHealItem)), moves=pool.heals.filter(x=>CC_MOVE_ITEMS.indexOf(x.name)>=0);
-  const one=list=>list[Math.floor(r()*list.length)];
+  const meta=ccProMeta(set);
+  const one=list=>{ const m=meta ? list.filter(o=>ccMetaRank(meta, o)<99).sort((a,b)=>ccMetaRank(meta, a)-ccMetaRank(meta, b)) : [];
+    return m.length ? m[0] : list[Math.floor(r()*list.length)]; };
   const count=()=>pack.weapons.length+pack.heals.length+(pack.move?1:0);
   /* АВТОМАТ И ДРОБОВИК — ВСЕГДА. Отзыв: «дробовик+автомат должен всегда быть в
      инвентаре». Нет класса в руках — с пола берётся его серый ствол; пара встаёт в первые два
@@ -115986,8 +116022,13 @@ function ccLootPack(rng, set){
   const moves=pool.heals.filter(x=>CC_MOVE_ITEMS.indexOf(x.name)>=0);
   // Автомат и дробовик (отзыв), не два случайных класса; нет класса в пуле — добор ниже.
   const rifles=pool.weapons.filter(w=>w.icon==='rifle'), shotguns=pool.weapons.filter(w=>w.icon==='shotgun');
-  const pack={weapons:[rifles.length ? pick(rifles, 1)[0] : null, shotguns.length ? pick(shotguns, 1)[0] : null].filter(Boolean),
-              heals:pick(heals, 2), move:moves.length ? pick(moves, 1)[0] : null};
+  const meta=ccProMeta(set);
+  const metaPick=list=>{ if(!list.length) return null; const m=meta ? list.filter(o=>ccMetaRank(meta, o)<99) : [];
+    if(!m.length) return pick(list, 1)[0];
+    const r0=Math.min(...m.map(o=>ccMetaRank(meta, o))), top=m.filter(o=>ccMetaRank(meta, o)===r0);
+    return pick(top, 1)[0]; };
+  const pack={weapons:[metaPick(rifles), metaPick(shotguns)].filter(Boolean),
+              heals:pick(heals, 2), move:metaPick(moves)};
   return ccPackFloor(pack, set, rng);   // пять слотов — пять предметов, см. ccPackFloor
 }
 /* Пак больше не переводится в силу. Он был прибавкой (ccLootPow, той же
@@ -120509,7 +120550,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='1dbf0caf';
+const CC_BUILD='c8b38e8c';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
