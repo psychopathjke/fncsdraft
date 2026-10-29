@@ -9866,10 +9866,10 @@
           <div class="cc-field">
             <label data-i18n="ccBinds"></label>
             <div class="cc-binds">
-              <span><i id="ccBindIcoWall"></i><input id="ccBindWall" maxlength="5" autocomplete="off" spellcheck="false" placeholder="Q"></span>
-              <span><i id="ccBindIcoFloor"></i><input id="ccBindFloor" maxlength="5" autocomplete="off" spellcheck="false" placeholder="F"></span>
-              <span><i id="ccBindIcoStairs"></i><input id="ccBindStairs" maxlength="5" autocomplete="off" spellcheck="false" placeholder="V"></span>
-              <span><i id="ccBindIcoCone"></i><input id="ccBindCone" maxlength="5" autocomplete="off" spellcheck="false" placeholder="T"></span>
+              <span><i id="ccBindIcoWall"></i><input id="ccBindWall" maxlength="3" autocomplete="off" spellcheck="false" autocapitalize="characters" onkeydown="ccBindKey(event,this)" oninput="ccBindInput(this)" onmousedown="ccBindMouse(event,this)" onauxclick="event.preventDefault()" oncontextmenu="event.preventDefault()" placeholder="Q"></span>
+              <span><i id="ccBindIcoFloor"></i><input id="ccBindFloor" maxlength="3" autocomplete="off" spellcheck="false" autocapitalize="characters" onkeydown="ccBindKey(event,this)" oninput="ccBindInput(this)" onmousedown="ccBindMouse(event,this)" onauxclick="event.preventDefault()" oncontextmenu="event.preventDefault()" placeholder="F"></span>
+              <span><i id="ccBindIcoStairs"></i><input id="ccBindStairs" maxlength="3" autocomplete="off" spellcheck="false" autocapitalize="characters" onkeydown="ccBindKey(event,this)" oninput="ccBindInput(this)" onmousedown="ccBindMouse(event,this)" onauxclick="event.preventDefault()" oncontextmenu="event.preventDefault()" placeholder="V"></span>
+              <span><i id="ccBindIcoCone"></i><input id="ccBindCone" maxlength="3" autocomplete="off" spellcheck="false" autocapitalize="characters" onkeydown="ccBindKey(event,this)" oninput="ccBindInput(this)" onmousedown="ccBindMouse(event,this)" onauxclick="event.preventDefault()" oncontextmenu="event.preventDefault()" placeholder="T"></span>
             </div>
             <div class="cc-gain" data-i18n="ccBindsHint"></div>
           </div>
@@ -12554,7 +12554,7 @@ ccTabRookie:'Новичок',
 ccTabCard:'Готовая карточка',
 ccPhotoHint:'Нажми, чтобы<br>загрузить фото',
 ccNick:'Никнейм', ccSex:'Пол', ccSexM:'Мужской', ccSexF:'Женский', ccSpTitle:'Очки прокачки', ccSpHow:'Дают за результаты: титул +3, подиум +2, топ-25% лобби +1', ccSpLeft:'Осталось:', ccSpCreateHint:'Опусти одни статы и подними другие — «+1» стоит столько очков, сколько весит стат в рейтинге (цифра справа). Один раз, здесь.', ccSpaTitle:'Статы', ccSpReset:'Сбросить', ccSpFreeHint:'Любой стат от 35 до 99 — кнопками или числом в поле. Общий рейтинг считается из статов: все 99 — это 99.', ccSpAll99:'Все 99', ccNewsSp:(g,t)=>'Очки прокачки: +'+g+' (всего '+t+')', ccJobTitle:'Подработка', ccJobH:'ч', ccJobPerH:'/час', ccNewsJob:(h,p)=>'Смена '+h+' ч — $'+p, ccPowerNote:'Отключили свет — вечер пропал', ccSickNote:d=>'Болеешь до '+d+' — сил меньше обычного', ccNewsSick:d=>'Слёг с простудой — до '+d, ccCheatRow:'Прицел сам наводится. Никто не узнает', ccCheatDl:'Скачать', ccCheat1:'Это читы.', ccCheat1Sub:'Ты правда собираешься это поставить?', ccCheatYes:'Да, качаю', ccCheatNo:'Нет', ccCheat2:'Epic банит за это навсегда.', ccCheat2Sub:'Аккаунт, скины, карьера — всё сгорит.', ccCheatR3:'Каждый килл пишется в реплей.', ccCheatR3Sub:'Повторы пересматривают тысячи глаз — аим, который сам доводится, видно с первой секунды.', ccCheatR4:'Спонсоры уходят в день бана.', ccCheatR4Sub:'Контракт, зарплата, баннеры — никто не платит читеру.', ccCheatR5:'Об этом узнают все.', ccCheatR5Sub:'Напарник, клуб, вся лента — для них ты навсегда останешься читером.', ccCheatStill:'Всё равно', ccCheatBack:'Одуматься', ccAskYes:'Да', ccAskNo:'Отмена', ccCheat3:'Последний шанс.', ccCheat3Sub:'Держи $100 — просто закрой это окно.', ccCheatTake:'Взять $100', ccNewsCheatPaid:'Не стал качать читы. +$100 за здравый смысл', ccNewsBanned:'АККАУНТ ЗАБАНЕН: читы. Карьера завершена', ccNewsBdayGift:g=>'Подарки на день рождения: +$'+g, ccPostBdayPro:(w,n)=>'с днём рождения, @'+n+'! 🎉', ccPostBanSad1:(w,n)=>'не ожидал такого от @'+n+'. Разочарован', ccPostBanSad2:(w,n)=>'грустно. @'+n+', мы же играли вместе…', ccPostBanSad3:(w,n)=>'@'+n+' с читами. До сих пор не верится', ccNewsStreamStats:(v,p,f,d,t,h)=>'Стрим ('+(h||2)+' ч): зрители в среднем '+v+', пик '+p+' · +'+f+' фолловеров твича (всего '+t+') · заработано $'+d, ccNewsStreamBanner:(b,c)=>'Менеджер повесил баннер '+b+' на эфир: +$'+c, ccFriends:'Друзья', ccFriendsNone:'Пока никого — кинь запрос из поиска дуо', ccFriendsNonet:'Пока никого — кинь запрос из поиска трио', ccFriendAdd:'В друзья', ccFriendIs:'Друг', ccNewsFriendYes:h=>'@'+h+' принял запрос в друзья', ccNewsFriendNo:h=>'@'+h+' не ответил на запрос в друзья', ccNews1v1:(h,a,b)=>(a>b?'Победа':'Поражение')+' в 1v1 с @'+h+': '+a+'–'+b, ccNewsDuoWorldSplit:(a,b)=>a+' и '+b+' расходятся после серии провалов', ccPostDuoSplitBy:(a,b,t)=>'я больше не в дуо с @'+b+'. '+t+' 🙏', ccPostTrioLF:(a,b,t)=>'мы с @'+b+' ищем трио. '+t+' \ud83d\ude4f', ccPostDuoSplitByt:(a,b,t)=>'я больше не в трио с @'+b+'. '+t+' 🙏', ccCoSad:['не расходитесь 😭','вы же лучшие','грустно это читать','F','конец эпохи','ну нет…'],
-ccBinds:'Бинды построек', ccBindsHint:'Свои клавиши, как у тебя в Fortnite: стена, пол, лестница, конус. Их видно на HUD в симуляции.',ccAge:'Возраст',
+ccBinds:'Бинды построек', ccBindsHint:'Нажми в клетке свою клавишу из Fortnite: одна буква или цифра, или кнопка мыши (средняя, боковые). Стена, пол, лестница, конус. Их видно на HUD в симуляции.',ccAge:'Возраст',
 ccPingTitle:'ПИНГ (мс)',
 ccPingServer:city=>'до сервера '+city,
 ccPingNote:'Пинг считается от ближайшего к серверу крупного города страны. По Европе числа замерены, по остальным регионам посчитаны по той же кривой. Страна влияет только на пинг, на силу игрока она не влияет.',
@@ -14662,7 +14662,7 @@ ccTabRookie:'Rookie',
 ccTabCard:'Existing card',
 ccPhotoHint:'Click to<br>upload a photo',
 ccNick:'Nickname', ccSex:'Gender', ccSexM:'Male', ccSexF:'Female', ccSpTitle:'Skill points', ccSpHow:'Earned by results: title +3, podium +2, top 25% of the lobby +1', ccSpLeft:'Left:', ccSpCreateHint:'Lower some stats and raise others — +1 costs as many points as the stat weighs in the rating (the number on the right). Once, here.', ccSpaTitle:'Stats', ccSpReset:'Reset', ccSpFreeHint:'Any stat from 35 to 99 — with the buttons or by typing it. The overall comes from the stats: all 99 is a 99.', ccSpAll99:'All 99', ccNewsSp:(g,t)=>'Skill points: +'+g+' ('+t+' banked)', ccJobTitle:'Part-time job', ccJobH:'h', ccJobPerH:'/hr', ccNewsJob:(h,p)=>'Worked a '+h+'h shift — $'+p, ccPowerNote:'Power cut — the evening is gone', ccSickNote:d=>'Sick until '+d+' — less energy than usual', ccNewsSick:d=>'Came down with a cold — until '+d, ccCheatRow:'The crosshair aims itself. Nobody will know', ccCheatDl:'Download', ccCheat1:'These are cheats.', ccCheat1Sub:'You are really about to install this?', ccCheatYes:'Yes, downloading', ccCheatNo:'No', ccCheat2:'Epic bans this forever.', ccCheat2Sub:'The account, the skins, the career — all of it burns.', ccCheatR3:'Every kill goes into a replay.', ccCheatR3Sub:'Thousands of eyes rewatch them — an aim that snaps on its own shows from the first second.', ccCheatR4:'Sponsors leave the day of the ban.', ccCheatR4Sub:'The contract, the wage, the banners — nobody pays a cheater.', ccCheatR5:'Everybody finds out.', ccCheatR5Sub:'Your duo, the club, the whole feed — to them you stay a cheater forever.', ccCheatStill:'Still yes', ccCheatBack:'Think again', ccAskYes:'Yes', ccAskNo:'Cancel', ccCheat3:'Last chance.', ccCheat3Sub:'Here is $100 — just close this window.', ccCheatTake:'Take the $100', ccNewsCheatPaid:'Did not download the cheats. +$100 for common sense', ccNewsBanned:'ACCOUNT BANNED: cheats. Career over', ccNewsBdayGift:g=>'Birthday gifts: +$'+g, ccPostBdayPro:(w,n)=>'happy birthday, @'+n+'! 🎉', ccPostBanSad1:(w,n)=>'did not expect that from @'+n+'. Disappointed', ccPostBanSad2:(w,n)=>'this one hurts. We played together, @'+n+'…', ccPostBanSad3:(w,n)=>'@'+n+' cheating. Still hard to believe', ccNewsStreamStats:(v,p,f,d,t,h)=>'Stream ('+(h||2)+'h): '+v+' avg viewers, '+p+' peak · +'+f+' Twitch followers ('+t+' total) · $'+d+' earned', ccNewsStreamBanner:(b,c)=>'The manager hung a '+b+' banner on the stream: +$'+c, ccFriends:'Friends', ccFriendsNone:'Nobody yet — send a request from the duo search', ccFriendsNonet:'Nobody yet — send a request from the trio search', ccFriendAdd:'Add friend', ccFriendIs:'Friend', ccNewsFriendYes:h=>'@'+h+' accepted the friend request', ccNewsFriendNo:h=>'@'+h+' left the friend request unanswered', ccNews1v1:(h,a,b)=>(a>b?'Won':'Lost')+' a 1v1 against @'+h+': '+a+'–'+b, ccNewsDuoWorldSplit:(a,b)=>a+' and '+b+' split after a run of bad nights', ccPostDuoSplitBy:(a,b,t)=>'not duo with @'+b+' anymore. '+t+' 🙏', ccPostTrioLF:(a,b,t)=>'me and @'+b+' looking for a trio. '+t+' \ud83d\ude4f', ccPostDuoSplitByt:(a,b,t)=>'not trio with @'+b+' anymore. '+t+' 🙏', ccCoSad:['don’t split 😭','you two were the best','sad to read this','F','end of an era','no way…'],
-ccBinds:'Build binds', ccBindsHint:'Your own keys, as you have them in Fortnite: wall, floor, stairs, cone. They show on the HUD in the simulation.',ccAge:'Age',
+ccBinds:'Build binds', ccBindsHint:'Press your Fortnite key in each box: one letter or digit, or a mouse button (middle, side). Wall, floor, stairs, cone. They show on the HUD in the simulation.',ccAge:'Age',
 ccPingTitle:'PING (ms)',
 ccPingServer:city=>'to the '+city+' server',
 ccPingNote:'Ping is counted from the country\'s closest large city to the server. Europe uses measured numbers; other regions use the same curve for their own server. The country only affects ping, not player strength.',
@@ -16967,7 +16967,7 @@ ccTabRookie:'Débutant',
 ccTabCard:'Carte existante',
 ccPhotoHint:'Clique pour<br>ajouter une photo',
 ccNick:'Pseudo', ccSex:'Genre', ccSexM:'Homme', ccSexF:'Femme', ccSpTitle:'Points de progression', ccSpHow:'Gagnés par les résultats : titre +3, podium +2, top 25 % du lobby +1', ccSpLeft:'Restant :', ccSpCreateHint:'Baisse certaines stats et monte les autres — +1 coûte autant de points que le poids de la stat dans la note (chiffre à droite). Une seule fois, ici.', ccSpaTitle:'Stats', ccSpReset:'Réinitialiser', ccSpFreeHint:'N’importe quelle stat de 35 à 99 — boutons ou saisie. La note vient des stats : tout à 99, c’est 99.', ccSpAll99:'Tout à 99', ccNewsSp:(g,t)=>'Points de progression : +'+g+' ('+t+' en réserve)', ccJobTitle:'Petit boulot', ccJobH:'h', ccJobPerH:'/h', ccNewsJob:(h,p)=>'Un service de '+h+' h — '+p+' $', ccPowerNote:'Coupure de courant — la soirée est perdue', ccSickNote:d=>'Malade jusqu’au '+d+' — moins d’énergie', ccNewsSick:d=>'Un rhume — jusqu’au '+d, ccCheatRow:'Le viseur vise tout seul. Personne ne saura', ccCheatDl:'Télécharger', ccCheat1:'Ce sont des cheats.', ccCheat1Sub:'Tu vas vraiment installer ça ?', ccCheatYes:'Oui, je télécharge', ccCheatNo:'Non', ccCheat2:'Epic bannit ça à vie.', ccCheat2Sub:'Le compte, les skins, la carrière — tout brûle.', ccCheatR3:'Chaque kill part dans un replay.', ccCheatR3Sub:'Des milliers d’yeux les revoient — une visée qui s’accroche toute seule se voit dès la première seconde.', ccCheatR4:'Les sponsors partent le jour du ban.', ccCheatR4Sub:'Le contrat, le salaire, les bannières — personne ne paie un cheateur.', ccCheatR5:'Tout le monde le saura.', ccCheatR5Sub:'Ton duo, le club, tout le fil — pour eux tu resteras un cheateur à vie.', ccCheatStill:'Quand même', ccCheatBack:'Se raviser', ccAskYes:'Oui', ccAskNo:'Annuler', ccCheat3:'Dernière chance.', ccCheat3Sub:'Voilà 100 $ — ferme juste cette fenêtre.', ccCheatTake:'Prendre les 100 $', ccNewsCheatPaid:'N’a pas téléchargé les cheats. +100 $ de bon sens', ccNewsBanned:'COMPTE BANNI : cheats. Carrière terminée', ccNewsBdayGift:g=>'Cadeaux d’anniversaire : +'+g+' $', ccPostBdayPro:(w,n)=>'joyeux anniversaire, @'+n+' ! 🎉', ccPostBanSad1:(w,n)=>'je ne m’attendais pas à ça de @'+n+'. Déçu', ccPostBanSad2:(w,n)=>'ça fait mal. On a joué ensemble, @'+n+'…', ccPostBanSad3:(w,n)=>'@'+n+' qui triche. Encore dur à croire', ccNewsStreamStats:(v,p,f,d,t,h)=>'Stream ('+(h||2)+' h) : '+v+' viewers en moyenne, pic '+p+' · +'+f+' followers Twitch ('+t+' au total) · '+d+' $ gagnés', ccNewsStreamBanner:(b,c)=>'Le manager a mis une bannière '+b+' sur le stream : +'+c+' $', ccFriends:'Amis', ccFriendsNone:'Personne pour l’instant — envoie une demande depuis la recherche de duo', ccFriendsNonet:'Personne pour l’instant — envoie une demande depuis la recherche de trio', ccFriendAdd:'Ajouter', ccFriendIs:'Ami', ccNewsFriendYes:h=>'@'+h+' a accepté la demande d’ami', ccNewsFriendNo:h=>'@'+h+' n’a pas répondu à la demande', ccNews1v1:(h,a,b)=>(a>b?'Victoire':'Défaite')+' en 1v1 contre @'+h+' : '+a+'–'+b, ccNewsDuoWorldSplit:(a,b)=>a+' et '+b+' se séparent après une série de soirées ratées', ccPostDuoSplitBy:(a,b,t)=>'je ne suis plus en duo avec @'+b+'. '+t+' 🙏', ccPostTrioLF:(a,b,t)=>'@'+b+' et moi cherchons un trio. '+t+' \ud83d\ude4f', ccPostDuoSplitByt:(a,b,t)=>'je ne suis plus en trio avec @'+b+'. '+t+' 🙏', ccCoSad:['ne vous séparez pas 😭','vous étiez les meilleurs','triste à lire','F','fin d’une époque','non…'],
-ccBinds:'Touches de construction', ccBindsHint:'Tes propres touches, comme dans Fortnite : mur, sol, escalier, cône. Elles s’affichent sur le HUD de la simulation.',ccAge:'Âge',
+ccBinds:'Touches de construction', ccBindsHint:'Appuie dans chaque case sur ta touche Fortnite : une lettre ou un chiffre, ou un bouton de souris (milieu, côté). Mur, sol, escalier, cône. Elles s’affichent sur le HUD de la simulation.',ccAge:'Âge',
 ccRole:'Rôle', ccMateKick:'Retirer de l’équipe', ccMateKickAsk:n=>'Retirer '+n+' de l’équipe ? La place gagnée ensemble est perdue.', ccRoleSwapTo:r=>'Passer '+r, ccRoleLockedTwo:'L’équipe a déjà un IGL, et elle ne peut pas en avoir deux.', ccRoleLockedNone:'Tu es le seul IGL de l’équipe, et une équipe sans IGL ne joue pas.',
 ccDivision:'Division',
 ccDivNote:'La division fixe ta note de départ. Cinq, c’est toute la montée depuis rien ; un, c’est que tu es déjà dans le top 50 de ta région.',
@@ -17315,7 +17315,7 @@ ccNick:"Nickname",
 ccSex:"Sesso",
 ccSexM:"Maschio",
 ccSexF:"Femmina",
-ccBinds:"Tasti costruzione", ccBindsHint:"I tuoi tasti, come in Fortnite: muro, pavimento, scale, cono. Si vedono sull’HUD della simulazione.",ccAge:"Età",
+ccBinds:"Tasti costruzione", ccBindsHint:"Premi in ogni casella il tuo tasto di Fortnite: una lettera o una cifra, o un tasto del mouse (centrale, laterali). Muro, pavimento, scale, cono. Si vedono sull’HUD della simulazione.",ccAge:"Età",
 ccRole:"Ruolo",
 ccSpTitle:"Punti abilità",
 ccSpCreateHint:"Abbassa alcune statistiche e alza le altre — +1 costa tanti punti quanto pesa la statistica nel rating (il numero a destra). Una volta sola, qui.", ccSpaTitle:"Statistiche", ccSpReset:"Azzera", ccSpFreeHint:"Qualsiasi statistica da 35 a 99 — con i pulsanti o scrivendola. Il rating viene dalle statistiche: tutto 99 è 99.", ccSpAll99:"Tutto 99",
@@ -19868,7 +19868,7 @@ ccNick:"Apelido",
 ccSex:"Gênero",
 ccSexM:"Masculino",
 ccSexF:"Feminino",
-ccBinds:"Teclas de construção", ccBindsHint:"As tuas teclas, como no Fortnite: parede, chão, escada, cone. Aparecem no HUD da simulação.",ccAge:"Idade",
+ccBinds:"Teclas de construção", ccBindsHint:"Carrega em cada caixa na tua tecla do Fortnite: uma letra ou um número, ou um botão do rato (meio, laterais). Parede, chão, escada, cone. Aparecem no HUD da simulação.",ccAge:"Idade",
 ccRole:"Função",
 ccSpTitle:"Pontos de habilidade",
 ccSpCreateHint:"Baixe alguns atributos e suba outros — +1 custa tantos pontos quanto o atributo pesa no rating (o número à direita). Uma vez só, aqui.", ccSpaTitle:"Atributos", ccSpReset:"Zerar", ccSpFreeHint:"Qualquer atributo de 35 a 99 — pelos botões ou digitando. O rating vem dos atributos: tudo 99 é 99.", ccSpAll99:"Tudo 99",
@@ -113234,12 +113234,34 @@ const CC_KIT_ICON={
 const CC_PRO_BINDS=['T','Y','F','V'];
 const CC_BIND_DEFAULT=['Q','F','V','T'];
 const CC_BIND_IDS=['ccBindWall','ccBindFloor','ccBindStairs','ccBindCone'];
+// Бинд — одна буква или цифра либо кнопка мыши MB3/MB4/MB5; всё прочее не бинд (стоит подсказка).
+function ccBindOk(v){ v=String(v||'').trim().toUpperCase(); return /^[A-Z0-9]$|^MB[345]$/.test(v) ? v : ''; }
 function ccBindsOf(p){
   const b=p && p.binds;
-  return CC_BIND_DEFAULT.map((d,k)=>{ const v=b && b[k] ? String(b[k]).trim().toUpperCase().slice(0,5) : ''; return v || d; });
+  return CC_BIND_DEFAULT.map((d,k)=>ccBindOk(b && b[k]) || d);
 }
 function ccBindsRead(){
-  return CC_BIND_IDS.map((id,k)=>{ const el=document.getElementById(id); const v=el ? el.value.trim().toUpperCase().slice(0,5) : ''; return v || CC_BIND_DEFAULT[k]; });
+  return CC_BIND_IDS.map((id,k)=>{ const el=document.getElementById(id); return ccBindOk(el && el.value) || CC_BIND_DEFAULT[k]; });
+}
+// Поле бинда ловит нажатие: буква/цифра встаёт целиком, Backspace/Delete очищают, Tab идёт дальше.
+function ccBindKey(e, el){
+  if(e.key==='Tab' || e.ctrlKey || e.metaKey || e.altKey) return;
+  if(e.key==='Backspace' || e.key==='Delete'){ el.value=''; e.preventDefault(); return; }
+  const v=ccBindOk(e.key && e.key.length===1 ? e.key : '');
+  if(v){ el.value=v; e.preventDefault(); return; }
+  // На телефоне клавиатура часто шлёт «Unidentified»: тогда разберёт ccBindInput.
+  if(e.key && e.key!=='Unidentified' && e.key!=='Process') e.preventDefault();
+}
+function ccBindInput(el){
+  const raw=String(el.value||'').toUpperCase();
+  if(/^MB[345]$/.test(raw)) return;
+  const ch=raw.replace(/[^A-Z0-9]/g,'').slice(-1);
+  el.value=ch;
+}
+// Средняя и боковые кнопки мыши: MB3, MB4, MB5. Левая — просто фокус, правая — ничего.
+function ccBindMouse(e, el){
+  const v=e.button===1 ? 'MB3' : e.button===3 ? 'MB4' : e.button===4 ? 'MB5' : '';
+  if(v){ el.value=v; e.preventDefault(); el.focus(); }
 }
 // Значки построек у полей биндов на экране создания (один раз, при первом открытии).
 function ccBindsPaint(){
@@ -120668,7 +120690,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='c1ced30a';
+const CC_BUILD='e5cd59d5';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
