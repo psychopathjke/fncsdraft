@@ -361,7 +361,7 @@
      в WebKit и лагал у него на ПК («начинает лагать после 4 игры»). Код узора оставлен; включать только
      дешёвым способом и с замером (scratchpad-проба fps-webkit по образцу tools/check-replay-fps.js). */
   var LOOKS = {
-    c1: {fill:'rgba(117,110,210,.5)', stripe:null, gap:4.2, sw:1.1, rim:false, edge:'#1b2fb8', nextShadow:true},
+    c1: {fill:'rgba(196,128,240,.82)', stripe:'rgba(140,60,200,.75)', gap:13, sw:2.4, rim:false, edge:'#1b2fb8', nextShadow:true, path:true},
     c3: {fill:'rgba(175,62,161,.5)', stripe:null, gap:1.6, sw:0.35, rim:true, rimMul:1.6, edge:null, nextShadow:false},
     c6: {fill:'rgba(150,54,214,.44)', stripe:null, rim:true, rimMul:1, edge:null, nextShadow:true}
   };
@@ -380,36 +380,30 @@
     p.setAttribute('fill', look.fill);
     g.appendChild(p);
 
-    // Косые полосы по шторму — узор в единицах карты, повёрнутый на 45°.
-    if(look.stripe){
-      var pid = 'zr-str-' + (++seq);
-      var pd = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
-      var pat = document.createElementNS('http://www.w3.org/2000/svg', 'pattern');
-      pat.setAttribute('id', pid);
-      pat.setAttribute('patternUnits', 'userSpaceOnUse');
-      // Шаг полос — на экране, а не на карте: камера в эндгейме приближает в несколько раз.
-      var k = 1, gap = look.gap;
-      pat.setAttribute('width', gap); pat.setAttribute('height', gap);
-      pat.setAttribute('patternTransform', 'rotate(45)');
-      var bar = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-      bar.setAttribute('x', 0); bar.setAttribute('y', 0);
-      bar.setAttribute('width', look.sw * k); bar.setAttribute('height', gap);
-      bar.setAttribute('fill', look.stripe);
-      pat.appendChild(bar); pd.appendChild(pat); g.appendChild(pd);
-      var ps = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-      // Полосы — только в кадре камеры (с запасом на её ход): на приближении в эндгейме шаг мелкий, и узор
-      // на всю карту — сотни тысяч плиток каждый кадр (его «начинает лагать, где зоны сужаются»).
-      var sd = d;
-      if(view){
-        var px = (view.x1 - view.x0) * 0.25, py = (view.y1 - view.y0) * 0.25;
-        var x0 = Math.max(0, view.x0 - px), y0 = Math.max(0, view.y0 - py), x1 = Math.min(vbW, view.x1 + px), y1 = Math.min(vbH, view.y1 + py);
-        sd = 'M' + x0 + ' ' + y0 + ' H' + x1 + ' V' + y1 + ' H' + x0 + ' Z ' +
-             'M' + (cx - r) + ' ' + cy + ' a' + r + ' ' + r + ' 0 1 0 ' + (r*2) + ' 0' + ' a' + r + ' ' + r + ' 0 1 0 ' + (-r*2) + ' 0 Z';
-      }
-      ps.setAttribute('d', sd);
-      ps.setAttribute('fill-rule', 'evenodd');
-      ps.setAttribute('fill', 'url(#' + pid + ')');
-      g.appendChild(ps);
+    // Широкие косые полосы по шторму (Главы 1–2): десяток линий в кадре камеры, обрезанных по шторму.
+    // Не SVG-узор: узор на весь шторм ронял эндгейм с 50 до 5–12 кадров (WebKit) и лагал на ПК.
+    // Шаг и толщина — экранные (делятся на приближение камеры), как на миникарте трансляции.
+    if(look.stripe && view){
+      var sc = Math.max(1, scale || 1), gap = look.gap / sc;
+      var px = (view.x1 - view.x0) * 0.25, py = (view.y1 - view.y0) * 0.25;
+      var x0 = view.x0 - px, y0 = view.y0 - py, x1 = view.x1 + px, y1 = view.y1 + py;
+      var cid = 'zr-clip-' + (++seq);
+      var cd = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+      var cp = document.createElementNS('http://www.w3.org/2000/svg', 'clipPath');
+      cp.setAttribute('id', cid);
+      var cpp = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      cpp.setAttribute('d', d); cpp.setAttribute('clip-rule', 'evenodd');
+      cp.appendChild(cpp); cd.appendChild(cp); g.appendChild(cd);
+      // Линии y = x + c, c с шагом gap·√2 по диагонали, от левого нижнего угла кадра до правого верхнего.
+      var step = gap * Math.SQRT2, c0 = Math.floor((y0 - x1) / step) * step, segs = '';
+      for(var c = c0; c <= y1 - x0; c += step) segs += 'M' + (x0) + ' ' + (x0 + c) + ' L' + (x1) + ' ' + (x1 + c) + ' ';
+      var sl = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      sl.setAttribute('d', segs);
+      sl.setAttribute('stroke', look.stripe);
+      sl.setAttribute('stroke-width', look.sw / sc);
+      sl.setAttribute('fill', 'none');
+      sl.setAttribute('clip-path', 'url(#' + cid + ')');
+      g.appendChild(sl);
     }
     if(!look.rim){
       if(look.edge) g.appendChild(circle(cx, cy, r, look.edge, 1.4));
@@ -1297,6 +1291,18 @@
         'rgba(12,8,26,.45)', 3.4));
       handle.svg.appendChild(circle(frame.next.cx, frame.next.cy, frame.next.radius,
         'rgba(255,255,255,.96)', nl.nextShadow ? 1.6 : 1.2));
+      if(nl.path){
+        var ddx = frame.next.cx - frame.circle.cx, ddy = frame.next.cy - frame.circle.cy, dl = Math.hypot(ddx, ddy);
+        if(dl > frame.circle.radius + 0.05){
+          var ux = ddx / dl, uy = ddy / dl, er = dl > frame.circle.radius + frame.next.radius ? frame.next.radius : 0;
+          var ln = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+          ln.setAttribute('x1', frame.circle.cx + ux * frame.circle.radius); ln.setAttribute('y1', frame.circle.cy + uy * frame.circle.radius);
+          ln.setAttribute('x2', frame.next.cx - ux * er); ln.setAttribute('y2', frame.next.cy - uy * er);
+          ln.setAttribute('stroke', 'rgba(255,255,255,.96)'); ln.setAttribute('stroke-width', 1.6);
+          ln.setAttribute('vector-effect', 'non-scaling-stroke');
+          handle.svg.appendChild(ln);
+        }
+      }
     }
 
     /* Где кто умер (15.10): крестик на месте гибели держится до конца игры, как на карте повтора в самой игре.
