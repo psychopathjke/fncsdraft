@@ -1230,7 +1230,10 @@ test('every elimination reaches the timeline, not one tick in eight of them', ()
     const {order, timeline} = runGame(seed, teams, true);
     const named = [];
     // ' ##' — выбит один игрок, отряд жив (MEMBER_LOSS); здесь считаются отряды.
-    timeline.forEach(f => (f.events || []).forEach(e => { const v = e.slice(e.indexOf(':') + 1); if(v.indexOf(' ##') < 0) named.push(v); }));
+    // Килфид по игрокам: выбывание отряда — строки ' ##!' (по одной на игрока), отряд считается один раз.
+    const seen = new Set();
+    timeline.forEach(f => (f.events || []).forEach(e => { const v = e.slice(e.indexOf(':') + 1), h = v.indexOf(' ##!');
+      if(h >= 0){ const t = v.slice(0, h); if(!seen.has(t)){ seen.add(t); named.push(t); } else if(v.slice(h) === ' ##!#1') named.push(t); } }));
     assert(named.length === teams.length - 1,
       'seed ' + seed + ': ' + named.length + ' eliminations in the feed, ' +
       (teams.length - 1) + ' in the game');

@@ -809,7 +809,7 @@
       if(kh >= 0){ kNick = cause.slice(kh + 3); cause = cause.slice(0, kh); }
       // «отряд ##ник» — выбит один игрок отряда (zone-sim MEMBER_LOSS): в ленте ник цветом его отряда.
       var vNick = null, vh = victim.indexOf(' ##');
-      if(vh >= 0){ vNick = victim.slice(vh + 3); victim = victim.slice(0, vh); if(/^#\d+$/.test(vNick)) vNick = null; }
+      if(vh >= 0){ vNick = victim.slice(vh + 3).replace(/^!/, ''); victim = victim.slice(0, vh); if(/^#\d+$/.test(vNick)) vNick = null; }
       // Убийство твоей команды — с иконкой надетой кирки вместо значка (карьера, магазин предметов, 18.10).
       var ci = indexOfName[cause], axe = (ci != null && roster[ci].you && typeof window !== 'undefined') ? window.CC_FN_AXE : null;
       var row = (cause === 'storm' || cause === 'surge')

@@ -859,10 +859,11 @@
      по весам team._killW (index: ccKillWeights — AIM и роль, фраггер берёт больше), «у кого больше долг по доле»,
      как killShare в zone-replay: без бросков, поток rng не трогается. Без весов — поровну. */
   function giveKill(sq, n){
-    if(!sq.mK || !(n > 0)) return;
+    var got = [];
+    if(!sq.mK || !(n > 0)) return got;
     var w = sq.team._killW, live = [];
     for(var i=0;i<sq.mK.length;i++) if(sq.mAlive[i]) live.push(i);
-    if(!live.length) return;
+    if(!live.length) return got;
     for(var c=0;c<n;c++){
       var sum = 0, tot = 0, best = live[0], bd = -Infinity;
       for(var a=0;a<live.length;a++){ sum += Math.max(0.01, (w && w[live[a]]) || 1); tot += sq.mK[live[a]]; }
@@ -870,8 +871,9 @@
         var k = live[b], d = (Math.max(0.01, (w && w[k]) || 1) / sum) * (tot + 1) - sq.mK[k];
         if(d > bd + 1e-9){ bd = d; best = k; }
       }
-      sq.mK[best]++; sq.lastK = best;
+      sq.mK[best]++; sq.lastK = best; got.push(best);
     }
+    return got;
   }
   function creditKills(winner, loser, size, alive, rng){
     var near = null, best = THIRD_PARTY_RANGE * THIRD_PARTY_RANGE;
@@ -883,20 +885,18 @@
         if(d <= best){ best = d; near = q; }
       }
     }
-    var mine = size;
+    var mine = size, byN = [];
     if(near){
       for(var k=0;k<size;k++) if(rng() < THIRD_PARTY_SHARE) mine--;
       if(mine < size){
         near.elims += size - mine;
-        giveKill(near, size - mine);
+        giveKill(near, size - mine).forEach(function(k){ byN.push({s: near, k: k}); });
         near.team._gElims = near.elims;
         near.dealt += KILL_DAMAGE * (size - mine);
       }
     }
     winner.elims += mine;
-    giveKill(winner, mine);
-    if(mine > 0) loser.deathBy = winner.lastK;
-    else if(near) loser.deathBy = null;
+    loser.killedBy = giveKill(winner, mine).map(function(k){ return {s: winner, k: k}; }).concat(byN);
     winner.team._gElims = winner.elims;
     winner.dealt += KILL_DAMAGE * mine;
   }
@@ -1614,10 +1614,22 @@
       // dying between two frames leaves the frames unable to say which of them
       // took sixth and which took eighth. The engine knows.
       sq.place = squads.length - eliminationOrder.length + 1;
-      // Убийца — игрок, который забрал последнего (deathBy), ником после ' ##'; шторм и сюрдж — как были.
+      /* КИЛФИД ПО ИГРОКАМ (29.10, его «игрок убивает состав, а не игрока — в фортнайте он только одного»). Строка
+         на каждого игрока, выбитого вместе с отрядом: 'отряд ##убийца:отряд ##!убитый' (! — отряд выбыл этой
+         строкой, без ! — пал один игрок, см. onMember). Кто кого — по порядку киллов (killedBy); шторм и сюрдж —
+         'storm:отряд ##!ник'. Без ников (ботам их не дали) — '##!N', лента пишет имя отряда. */
       var killer = null;
       for(var kq=0; kq<squads.length; kq++) if(squads[kq].team.name === sq.deathCause){ killer = squads[kq]; break; }
-      pendingEvents.push((killer ? killerTag(killer, sq.deathBy) : sq.deathCause) + ':' + sq.team.name);
+      var by = sq.killedBy || [], left = [];
+      if(sq.mAlive) for(var mi=0; mi<sq.mAlive.length; mi++) if(sq.mAlive[mi]) left.push(mi);
+      if(!left.length) left.push(0);
+      for(var li=0; li<left.length; li++){
+        var vk = left[li], vn = sq.team.squad && sq.team.squad[vk] && sq.team.squad[vk].handle;
+        var kb = by[li] || by[by.length - 1];
+        var cause = kb ? killerTag(kb.s, kb.k) : (killer ? killerTag(killer, null) : sq.deathCause);
+        pendingEvents.push(cause + ':' + sq.team.name + ' ##!' + (vn || ('#' + (vk + 1))));
+      }
+      sq.killedBy = null;
     }
 
     // Take a death back out of the feed: for the squad that dies on the same
@@ -1625,14 +1637,12 @@
     // line is usually still waiting to be drawn, but the tick it died on can
     // have been a recorded one, so the last frame is checked too.
     function unsay(name){
-      var suffix = ':' + name;
+      var mark = ':' + name + ' ##!';
       function drop(list){
+        var hit = false;
         for(var i=list.length-1;i>=0;i--)
-          if(list[i].length > suffix.length &&
-             list[i].indexOf(suffix, list[i].length - suffix.length) !== -1){
-            list.splice(i, 1); return true;
-          }
-        return false;
+          if(list[i].indexOf(mark) !== -1){ list.splice(i, 1); hit = true; }
+        return hit;
       }
       if(drop(pendingEvents)) return;
       if(timeline.length) drop(timeline[timeline.length-1].events || []);
@@ -1897,7 +1907,7 @@
         if(!loser || !loser.alive || !winner || winner === loser) return false;
         var loserSize = elimsFor(loser);
         winner.elims += loserSize;
-        giveKill(winner, loserSize); loser.deathBy = winner.lastK;
+        loser.killedBy = giveKill(winner, loserSize).map(function(k){ return {s: winner, k: k}; });
         winner.team._gElims = winner.elims;
         winner.dealt += KILL_DAMAGE * loserSize;
         loser.taken += KILL_DAMAGE * loserSize;
