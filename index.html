@@ -4455,6 +4455,8 @@
   .cc-lk5-slot.on{outline:3px solid #fff;}
   .cc-lk5-slot:hover{filter:brightness(1.12);}
   .cc-lk5-stage{position:relative;min-height:520px;}
+  /* Ничего не надето — сцена не стоит пустым синим блоком (на телефоне она первой, 360px пустоты; 29.10). */
+  .cc-lk5-stage:empty{min-height:0 !important;display:none;}
   /* 24.10 (Notion «24.10.26», игрок на ПК: «скин на весь экран и не нажимается ничего»): квадрат по высоте сцены рос с
      плиткой шкафчика (чем больше куплено, тем выше), без max-width вылезал влево поверх плиток, и его прозрачные края
      забирали клики (1366×768: модель 929 px, пять плиток выбора под ней). */
@@ -5144,6 +5146,10 @@
     .cc-lobby{height:auto;display:flex;flex-direction:column;padding-top:0;background:#0d1838;}
     .cc-lb-top{position:relative;order:0;} .cc-lb-nav{display:none;} .cc-lb-wallet{margin-left:auto;}
     .cc-lb-stage{position:relative;order:1;height:330px;inset:auto;background:var(--lb-bg) center/cover no-repeat;}
+    /* 29.10 (его «с телефона очень странно выглядит карьера, особенно скины»): правило полного лобби (.cc-lb-full
+       .cc-lb-stage, 720px) сильнее строки выше и на телефоне растягивало сцену вдвое: фигуры во весь экран, над ними
+       пустая синяя полоса. Здесь та же высота с той же силой селектора. */
+    .cc-lobby.cc-lb-full .cc-lb-stage{position:relative;inset:auto;height:330px;}
     .cc-lb-famC .cc-lb-stage{inset:auto;}
     .cc-lb-fig.cc-lb-s0{left:50%;bottom:7%;height:74%;} .cc-lb-fig.cc-lb-s1{left:20%;bottom:18%;height:56%;}
     .cc-lb-fig.cc-lb-s2{left:77%;bottom:18%;height:56%;} .cc-lb-fig.cc-lb-s3{left:93%;bottom:20%;height:50%;}
@@ -105644,29 +105650,46 @@ async function simulateGamesLive(teams, numGames, pointsFn, killMult, fieldPrefi
      Теперь два прохода: сперва читаются все новые прямоугольники, потом
      пишутся все стили. Картинка та же, порядок работы — нет. */
   const LIVE_SMALL=(typeof window!=='undefined' && window.matchMedia) ? window.matchMedia('(max-width: 760px)').matches : false;
+  /* ПЕРЕСТАНОВКА БЕЗ ЗАМЕРОВ (29.10, его «поищи внимательней все таблицы симуляции»). Профиль Solo Series (сто строк):
+     долгие кадры 60–160 мс, и почти всё в них — вынужденная раскладка (forced style and layout) внутри шага повтора:
+     перестановка читала прямоугольник каждой строки до и после renderRows, а followYou — offsetTop своей строки; оба
+     чтения шли сразу после записей в таблицу, и браузер каждый раз пересчитывал страницу. Теперь сдвиг строки — разница
+     номеров × высота строки, видимое окно и прокрутка — из кэша (событие scroll, ResizeObserver), высоты строки и шапки
+     меряются один раз. Едут только строки в окне. */
+  const liveWrap=shell.querySelector('.lobby-wrap');
+  const LV={rowH:0, headH:0, top:0, h:0};
+  function liveMeasure(){
+    if(LV.rowH) return;
+    const r=body.children[0]; if(!r) return;
+    LV.rowH=r.offsetHeight||34;
+    const th=shell.querySelector('.lobby-wrap thead'); LV.headH=th ? th.offsetHeight : 0;
+    if(liveWrap){ LV.top=liveWrap.scrollTop; LV.h=liveWrap.clientHeight; }
+  }
+  if(liveWrap){
+    liveWrap.addEventListener('scroll', ()=>{ LV.top=liveWrap.scrollTop; }, {passive:true});
+    try{ new ResizeObserver(()=>{ LV.h=liveWrap.clientHeight; }).observe(liveWrap); }catch(e){}
+  }
   function animatedRerender(){
     /* Под пропуском (перемотка, «пропустить») строки не едут: замер 2.10 — месяц перемотки
        ставил ~780 пар кадров и столько же таймеров уборки ради анимации, которую никто не видит. */
     if(skipAnimation){ renderRows(); return; }
-    /* На телефоне строки встают на места без полёта: замер каждой строки до и после перестановки — это пересчёт
-       стилей всей таблицы (~600 элементов, 40–50 мс при процессоре телефона) несколько раз в секунду, и со второй
-       игры, когда очки разошлись и порядок меняется постоянно, показ рвался (его слово 20.10, трасса под эмуляцией). */
+    /* На телефоне строки встают на места без полёта (его слово 20.10). */
     if(LIVE_SMALL){ renderRows(); followYou(); return; }
-    const oldRects=new Map();
-    Array.from(body.children).forEach(tr=>{ oldRects.set(tr.dataset.uid, tr.getBoundingClientRect()); });
+    const before=new Map(Array.from(body.children).map((tr,i)=>[tr.dataset.uid, i]));
     renderRows();
-    const rows=Array.from(body.children);
-    // Проход первый — только чтение.
+    if(!LV.rowH){ liveMeasure(); followYou(); return; }
+    const rows=Array.from(body.children), H=LV.rowH;
+    const vis=i=>{ const y=LV.headH+i*H; return !LV.h || (y+H>LV.top-40 && y<LV.top+LV.h+40); };
     const moved=[];
-    rows.forEach(tr=>{
-      const old=oldRects.get(tr.dataset.uid);
-      if(!old) return;
-      const dy=old.top-tr.getBoundingClientRect().top;
+    rows.forEach((tr, ni)=>{
+      const oi=before.get(tr.dataset.uid);
+      if(oi==null || oi===ni) return;
+      if(!vis(oi) && !vis(ni)) return;
+      const dy=(oi-ni)*H;
       // Only animate short hops. A row flying across forty places just smears
       // through everything else, so long jumps snap into place instead.
-      if(Math.abs(dy)>1 && Math.abs(dy)<420) moved.push([tr, dy]);
+      if(Math.abs(dy)<420) moved.push([tr, dy]);
     });
-    // Проход второй — только запись.
     moved.forEach(([tr, dy])=>{
       tr.style.transition='none';
       tr.style.transform=`translateY(${dy}px)`;
@@ -105675,35 +105698,28 @@ async function simulateGamesLive(teams, numGames, pointsFn, killMult, fieldPrefi
       tr.style.position='relative';
       tr.style.zIndex='2';
       if(!tr.classList.contains('lobby-you')) tr.style.background='var(--lobby-row)';
-      // two frames: one to commit the start position, one to start the move
-      requestAnimationFrame(()=>requestAnimationFrame(()=>{
-        tr.style.transition='transform 380ms cubic-bezier(.2,.8,.3,1)';
-        tr.style.transform='';
-        setTimeout(()=>{ tr.style.zIndex=''; tr.style.background=''; tr.style.position=''; }, 400);
-      }));
     });
+    // Один кадр на всю пачку, а не по два на каждую строку.
+    if(moved.length) requestAnimationFrame(()=>requestAnimationFrame(()=>{
+      moved.forEach(([tr])=>{ tr.style.transition='transform 380ms cubic-bezier(.2,.8,.3,1)'; tr.style.transform=''; });
+      setTimeout(()=>{ moved.forEach(([tr])=>{ tr.style.zIndex=''; tr.style.background=''; tr.style.position=''; }); }, 400);
+    }));
     followYou();
   }
 
-  // The table watches your squad, not the top of the leaderboard.
-  //
-  // It is five hundred pixels tall over a field of fifty to a hundred and fifty,
-  // and it sat at rank one for the whole stage — so a player sitting 27th
-  // watched somebody else's places move for twelve games. Now the scroll follows
-  // your row wherever the standings put it.
-  //
-  // After the row animation rather than during it: animatedRerender measures
-  // where every row was and where it now is to work out how far to slide it, and
-  // scrolling between those two measurements would add the scroll distance to
-  // every delta and send the whole table flying.
-  const liveWrap=shell.querySelector('.lobby-wrap');
+  // The table watches your squad, not the top of the leaderboard: the scroll
+  // follows your row wherever the standings put it. Position from the row index
+  // and the cached row height — no offsetTop read in the middle of a game.
   function followYou(){
     if(!liveWrap) return;
     setTimeout(()=>{
-      const row=body.querySelector('tr.lobby-you');
-      if(!row) return;
-      const target=Math.max(0, row.offsetTop - liveWrap.clientHeight/2 + row.offsetHeight/2);
-      if(Math.abs(liveWrap.scrollTop-target) < 4) return;
+      const rows=body.children; let i=-1;
+      for(let k=0;k<rows.length;k++) if(rows[k].classList.contains('lobby-you')){ i=k; break; }
+      if(i<0) return;
+      if(!LV.rowH) liveMeasure();
+      const target=Math.max(0, LV.headH+i*LV.rowH - (LV.h||liveWrap.clientHeight)/2 + LV.rowH/2);
+      if(Math.abs(LV.top-target) < 4) return;
+      LV.top=target;
       liveWrap.scrollTo ? liveWrap.scrollTo({top:target, behavior:'smooth'})
                         : (liveWrap.scrollTop=target);
     }, 420);
@@ -120786,7 +120802,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='59dd0df9';
+const CC_BUILD='c7b5429c';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -136455,7 +136471,18 @@ function ccRestPairs(cr, per){
   }
   return m;
 }
+/* ДЕНЬ НАЙМА НЕ МЕНЯЕТ МИР (29.10, его «пусть не будет распада трио у них из-за этого только на один кап»). Поле капа
+   с нанятым собирается как обычно: его напарникам на этот вечер подбирают кого-то вместо него. Но память мира — кто чей
+   третий (cr.trios, cr.trioFilled) и пара осиротевшему (cr.orphanMate) — после сборки возвращается к прежней: проба
+   (трио-год 2027, наняли Pixie) показала, что без этого Swizzy и Shxrk навсегда становились тройкой с новым третьим. */
 function careerCupField(cr, mine, size, salt, open, sharp){
+  const live=CAREER && CAREER.career;
+  if(!live || !(typeof ccHireActive==='function' && ccHireActive())) return careerCupFieldRaw(cr, mine, size, salt, open, sharp);
+  const keep={}; ['trios','trioFilled','orphanMate'].forEach(k=>{ keep[k]=live[k]===undefined ? undefined : JSON.stringify(live[k]); });
+  try{ return careerCupFieldRaw(cr, mine, size, salt, open, sharp); }
+  finally{ Object.keys(keep).forEach(k=>{ if(keep[k]===undefined) delete live[k]; else live[k]=JSON.parse(keep[k]); }); }
+}
+function careerCupFieldRaw(cr, mine, size, salt, open, sharp){
   /* Гонка: из ботов вычитаются и соперники со своими напарниками — они в комнате людьми.
      И В ТОТ ВЕЧЕР, КОТОРЫЙ ИГРАЕТСЯ БЕЗ НИХ. Вычитание стояло под ccRaceLock, то есть только
      в общем вечере; когда сосед сегодня не играет, его пара выходила в поле обычным ботом и
@@ -138242,8 +138269,13 @@ function careerMates(){
     return p && p.card ? [p.card].slice(0, careerMateSeats()) : [];
   }
   const list=careerMateRecords().map(ccMateCardOf).filter(Boolean);
-  // Нанятые на сегодняшний турнир — в кресла с первого (ccHireActive); в трио можно двоих.
-  if(typeof ccHireActive==='function' && ccHireActive()){ ccHireCards().forEach((hc, k)=>{ if(k<careerMateSeats()) list[k]=hc; }); }
+  /* Нанятые на сегодняшний турнир (ccHireActive) — сначала в пустые кресла, и только когда пустых нет, вместо твоих
+     тиммейтов с последнего (29.10, его вопрос «нанять можно только если нет тиммейта?» — нет, но свой тиммейт теперь
+     остаётся, пока есть свободное место). */
+  if(typeof ccHireActive==='function' && ccHireActive()){
+    const seats=careerMateSeats(), hc=ccHireCards().slice(0, seats), own=list.slice(0, seats);
+    return own.slice(0, Math.max(0, seats-hc.length)).concat(hc);
+  }
   return list;
 }
 /* Карточка первого кресла — той же дверью, что и все остальные.
@@ -138260,7 +138292,8 @@ function careerMates(){
 function careerPartnerCard(){
   // Та же врезка, что и в careerMates: первое кресло тоже занимает живой.
   if(ccMpOn() && typeof MP!=='undefined' && MP.peer) return MP.peer;
-  if(typeof ccHireActive==='function' && ccHireActive()){ const hc=ccHireCard(); if(hc) return hc; }
+  // С нанятым первое кресло — то, что вышло в careerMates (свой тиммейт остаётся, если нанятый сел в пустое).
+  if(typeof ccHireActive==='function' && ccHireActive()){ const m=careerMates()[0]; if(m) return m; }
   return ccMateCardOf(careerMateRec());
 }
 
@@ -156818,7 +156851,8 @@ function ccTrioRefill(mine){
   /* Нанятые на сегодня (ccHireKeys) — не ушедшие: их трио в cr.trios остаётся как было, без нового третьего
      и без cr.orphanMate (его «пусть не будет распада трио у них из-за этого только на один кап»). */
   const hk=(typeof ccHireKeys==='function') ? ccHireKeys() : new Set();
-  const mk=new Set((mine||[]).map(c=>c && (c._k||hKey(c))).filter(k=>k && !hk.has(k)));
+  // Отсев по самой карточке: ключ строки — c._k (может быть с регионом), а нанятые хранятся по нику (hKey).
+  const mk=new Set((mine||[]).filter(c=>c && !hk.has(hKey(c))).map(c=>c._k||hKey(c)).filter(Boolean));
   if(!mk.size) return 0;
   const memo=cr.trios, keyOf=cards=>cards.map(c=>hKey(c)).sort().join('+');
   const need=[];

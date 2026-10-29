@@ -100,7 +100,13 @@ const BOOT = `
       check('трио: отпустил одного — его деньги вернулись', ccHireList().length===1 && CAREER.career.balance===b0-f1, String(CAREER.career.balance));
       careerHireCancel();
       check('трио: отмена вернула всё', CAREER.career.balance===b0 && !ccHireActive(), String(CAREER.career.balance));
-      CAREER.partners=CAREER.partners.slice(0, 1); careerMateSeats=seats0; CC_HIRE_MEMO=null; }
+      // Свой тиммейт один, кресел два: нанятый садится в пустое, тиммейт остаётся.
+      CAREER.partners=CAREER.partners.slice(0, 1); CC_HIRE_MEMO=null;
+      careerHire(0);
+      const ms2=careerMates().map(c=>c && c.handle);
+      check('пустое кресло: свой тиммейт остаётся, нанятый рядом', ms2.length===2 && ms2[0]==='M1' && ms2[1]===cands[0].handle && careerPartnerCard().handle==='M1', JSON.stringify(ms2));
+      careerHireCancel();
+      careerMateSeats=seats0; CC_HIRE_MEMO=null; }
     careerHire(0);
     try{ careerRenderHub('centre'); }catch(e){ out.notes.renderErr=String(e && e.stack || e).slice(0,400); }
     out.notes.hubBtns=[...document.querySelectorAll('#screen-career-hub button')].map(b=>(b.className+'|'+(b.getAttribute('onclick')||'')).slice(0,40)).slice(12,40); out.notes.body=(document.getElementById('chBody')||{}).innerHTML ? document.getElementById('chBody').innerHTML.replace(/<[^>]+>/g,' ').replace(/s+/g,' ').slice(0,600) : 'нет chBody';
