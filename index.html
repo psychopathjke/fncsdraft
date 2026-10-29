@@ -105472,6 +105472,19 @@ async function simulateGamesLive(teams, numGames, pointsFn, killMult, fieldPrefi
   // Живая таблица — шестьдесят и всегда: сотня строк в финале соло лагала на движении зон (Notion 27.10 скрин 33, 29.10).
   // Итог этапа (revealStandings) показывает всю сотню.
   const LIVE_ROWS=60;
+  /* ОКНО У ТВОЕГО МЕСТА (29.10, его «пусть таблица будет рядом с плейсами игрока, чтоб меньше лагов»): живая таблица
+     — лидеры (LIVE_TOP) и строки вокруг тебя (±LIVE_NEAR), плюс строка черты прохода; ~25 строк вместо 60, меньше
+     перерисовки на движении зон. Без своей команды в поле (смотришь чужой кап) — верх LIVE_ROWS, как было. */
+  const LIVE_TOP=5, LIVE_NEAR=10;
+  function liveWindow(sorted){
+    const mine=sorted.findIndex(t=>t.isYou);
+    if(mine<0 || sorted.length<=LIVE_TOP+2*LIVE_NEAR+1) return sorted.slice(0, LIVE_ROWS);
+    const keep=new Set();
+    for(let i=0;i<Math.min(LIVE_TOP, sorted.length);i++) keep.add(i);
+    for(let i=Math.max(0, mine-LIVE_NEAR); i<=Math.min(sorted.length-1, mine+LIVE_NEAR); i++) keep.add(i);
+    if(opts.cutAt>0 && opts.cutAt<=sorted.length) keep.add(opts.cutAt-1);
+    return [...keep].sort((a,b)=>a-b).map(i=>sorted[i]);
+  }
   /* Строки живут между перерисовками.
 
      Замер на телефоне (Chrome, CPU ×6, 30 секунд вечера): пересчёт стилей
@@ -105502,11 +105515,7 @@ async function simulateGamesLive(teams, numGames, pointsFn, killMult, fieldPrefi
   function renderRows(){
     const sorted=liveSorted();
     sorted.forEach((t,i)=>{ t._liveRank=i+1; });
-    const shown=sorted.slice(0, LIVE_ROWS);
-    if(sorted.length>LIVE_ROWS){
-      const mine=sorted.find(t=>t.isYou);
-      if(mine && mine._liveRank>LIVE_ROWS) shown.push(mine);
-    }
+    const shown=liveWindow(sorted);
     const frag=document.createDocumentFragment();
     const live=new Set();
     shown.forEach((t)=>{
@@ -105773,7 +105782,8 @@ async function simulateGamesLive(teams, numGames, pointsFn, killMult, fieldPrefi
     const now=Date.now();
     if(now-lastMove>=(LIVE_SMALL ? 1000 : 380)){
       const sorted=liveSorted();
-      const order=sorted.slice(0, LIVE_ROWS+1).map(t=>t._uid).join(',')+'|'+((sorted.find(t=>t.isYou)||{})._uid);
+      const pos=new Map(sorted.map((t,i)=>[t,i]));
+      const order=liveWindow(sorted).map(t=>t._uid+':'+pos.get(t)).join(',');
       if(order!==lastOrder){ lastOrder=order; lastMove=now; animatedRerender(); }
     }
   }
@@ -120618,7 +120628,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='a9c96929';
+const CC_BUILD='fcb828d6';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
