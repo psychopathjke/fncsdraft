@@ -349,9 +349,11 @@
         // плодит формы объектов, и горячие циклы движка перестают оптимизироваться (замер 29.10: 12 → 38 мс на игру).
         _hit: 0, killedBy: null, mBy: null, mCard: (function(){ var a = []; for(var i=0;i<size;i++) a.push(0); return a; })(), reboots: 0, busy: false, surgeNet: null, respawns: 0, droppedOut: false, leaveAt: null, held: null,
         // Щит и здоровье каждого игрока — для худа (memberVitals). Смерть решает общее hp отряда, как было.
-        // Сдвиг щита и здоровья игрока от общих отряда (memberVitals): сумма по живым — ноль.
-        mSh: (function(){ var a = []; for(var i=0;i<size;i++) a.push(0); return a; })(),
-        mHp: (function(){ var a = []; for(var i=0;i<size;i++) a.push(0); return a; })(),
+        // Щит и здоровье игрока на полоске (memberVitals) и секунды без урона (с них начинается лечение).
+        mSh: (function(){ var a = []; for(var i=0;i<size;i++) a.push(100); return a; })(),
+        mHp: (function(){ var a = []; for(var i=0;i<size;i++) a.push(100); return a; })(),
+        mQuiet: (function(){ var a = []; for(var i=0;i<size;i++) a.push(99); return a; })(),
+        mDmg: 0,
         hp: 100,
         // The shield the HUD draws: drained by contact, refilled by the circle;
         // never part of dying. See CHIP_HP.
@@ -640,48 +642,48 @@
      лечит всех. Ниже 1 здоровья не падает: умирают игроки только в файте (memberLoss) или вместе с отрядом. */
   // Без массивов и замыканий: зовётся на каждом тике для каждого отряда (замер 29.10: версия с ними
   // замедлила движок втрое, 12 → 38 мс на игру, и большой кап скипался десятки секунд).
-  /* ПОЛОСКИ ИГРОКОВ = ОБЩЕЕ + СДВИГ (29.10, его «у обоих нереалистично пишет хп, посмотри как в настоящих играх»).
-     Скрин: щит 0 и здоровье 1 у обоих при живом отряде — отдельные полоски жили своей жизнью и шторм эндгейма добивал
-     их до пола. Теперь основа — общие hp и щит отряда (их движок считает по замерам), а у игрока только сдвиг от них:
-     перестрелку держит один (MEMBER_STICK тиков подряд) — он ниже, остальные на столько же выше, сумма сдвигов ноль;
-     вне драки сдвиг гаснет (MEMBER_EVEN с, «раненый хилится»). Полный отряд — оба полные; отряд на краю — оба низко.
-     Только показ: смерти решает общее hp. Коэффициенты подобраны на глаз, не замер. */
-  var MEMBER_STICK = 40, MEMBER_DMG_MUL = 2.5, MEMBER_EVEN = 25;
+  /* ПОЛОСКИ ИГРОКОВ ПО РЕПЛЕЯМ (29.10, его «посмотри в настоящих играх, как меняется хп и броня»). Реплеи трёх
+     финалов FNCS 2026 EU (tools/real-matches.json, 149 дуо): за игру команда получает 1394 урона (топ-10 — 1650) и хилит
+     здоровье 109 раз, щит 52 — около 700 урона на игрока, три с половиной полных запаса, и в здоровье его уходит больше,
+     чем в щит. Секунда за секундой в реплее не записана, поэтому форма — правила игры: урон обмена принимает один игрок
+     (MEMBER_STICK тиков подряд), сначала щит, потом здоровье; шторм и сюрдж — сразу в здоровье, мимо щита; лечатся после
+     MEMBER_HEAL_DELAY с без урона и в круге: здоровье MEMBER_HP_HEAL/с, щит MEMBER_SH_HEAL/с. Объём урона — ×MEMBER_DMG_MUL
+     к урону движка, подогнан под ~700 на игрока (проба в комментарии ниже). От обменов здоровье не ниже MEMBER_FLOOR:
+     умирают игроки в файте (memberLoss) или вместе с отрядом. Только показ: смерти решает общее hp отряда. */
+  var MEMBER_STICK = 40, MEMBER_DMG_MUL = 0.8, MEMBER_HEAL_DELAY = 3, MEMBER_HP_HEAL = 9, MEMBER_SH_HEAL = 10, MEMBER_FLOOR = 10;   // ×0.8: хп<100 27% времени, <70 17%, <40 8%, щит 0 27% (×1.8: 41/35/29/42)
   function memberVitals(s, dSh, dHp, focus){
     var ms = s.mSh;
     if(!ms || ms.length < 2) return;
-    var mh = s.mHp, ma = s.mAlive, n = ms.length, i, live = 0;
+    var mh = s.mHp, mq = s.mQuiet, ma = s.mAlive, n = ms.length, i, live = 0;
     for(i=0;i<n;i++) if(ma[i]) live++;
-    if(live < 2) return;
-    if(!focus){
-      // Лечение круга: сдвиги гаснут (dSh, dHp < 0 — секунды лечения пересчитаны из темпа). Шторм и сюрдж — всем поровну, сдвиг не трогают.
-      if(dSh < 0 || dHp < 0){
-        var sec = Math.max(-dSh / (SHIELD_RATE || 1), -dHp / (HEAL_RATE || 1)), k0 = Math.exp(-sec / MEMBER_EVEN);
-        for(i=0;i<n;i++){ ms[i] *= k0; mh[i] *= k0; }
+    if(!live) return;
+    if(!focus && (dSh < 0 || dHp < 0)){
+      // Тик лечения (круг): секунды без урона копятся, после паузы — здоровье, потом щит.
+      var sec = -dHp / (HEAL_RATE || 1);
+      for(i=0;i<n;i++){
+        if(!ma[i]) continue;
+        mq[i] += sec;
+        if(mq[i] < MEMBER_HEAL_DELAY) continue;
+        if(mh[i] < 100) mh[i] = Math.min(100, mh[i] + MEMBER_HP_HEAL * sec);
+        else if(ms[i] < 100) ms[i] = Math.min(100, ms[i] + MEMBER_SH_HEAL * sec);
       }
+      return;
+    }
+    if(!focus){
+      // Шторм и сюрдж — всем, в здоровье, мимо щита (как в игре).
+      for(i=0;i<n;i++){ if(!ma[i]) continue; mh[i] = Math.max(1, mh[i] - dHp); mq[i] = 0; }
       return;
     }
     s._hit = (s._hit || 0) + 1;
     var pick = (Math.floor(s._hit / MEMBER_STICK) * 7 + 3) % live, k = 0;
     for(i=0;i<n;i++){ if(!ma[i]) continue; if(pick === 0){ k = i; break; } pick--; }
-    // Урон обмена: щитовая часть сдвигает щиты, здоровьевая — здоровье; держащий ниже на (live−1)/live, остальные выше на 1/live.
-    var aSh = dSh * MEMBER_DMG_MUL * live, aHp = dHp * MEMBER_DMG_MUL * live;
-    for(i=0;i<n;i++){
-      if(!ma[i]) continue;
-      var w = i === k ? -(live - 1) / live : 1 / live;
-      ms[i] += aSh * w; mh[i] += aHp * w;
-      if(ms[i] < -100) ms[i] = -100; if(ms[i] > 100) ms[i] = 100;
-      if(mh[i] < -100) mh[i] = -100; if(mh[i] > 100) mh[i] = 100;
-    }
+    var rest = (dSh + dHp) * live * MEMBER_DMG_MUL;
+    s.mDmg += rest;
+    var tSh = ms[k] < rest ? ms[k] : rest; ms[k] -= tSh; rest -= tSh;
+    if(rest > 0) mh[k] = Math.max(MEMBER_FLOOR, mh[k] - rest);
+    mq[k] = 0;
   }
-  // Что видно на полоске игрока k: общее + сдвиг, в пределах шкалы (живой — не ниже 1 здоровья).
-  function memberShown(s, k){
-    var sh = (s.shield == null ? 100 : s.shield) + (s.mSh ? s.mSh[k] : 0);
-    var hp = s.hp + (s.mHp ? s.mHp[k] : 0);
-    // Щита не хватило — остаток урона по нему виден в здоровье, как в игре (щит, потом здоровье).
-    if(sh < 0){ hp += sh; sh = 0; }
-    return [Math.round(sh < 0 ? 0 : sh > 100 ? 100 : sh), Math.round(hp < 1 ? 1 : hp > 100 ? 100 : hp)];
-  }
+  function memberShown(s, k){ return [Math.round(s.mSh[k]), Math.round(Math.max(1, s.mHp[k]))]; }
   function chipTake(s, dmg){
     var take = dmg * CHIP_HP;
     var sh = (s.shield == null ? 100 : s.shield), hp0 = s.hp;
@@ -892,7 +894,7 @@
         if(rngReboot() < REBOOT_RATE * vanIn * seconds){
           s.mAlive[k] = true; s.mCard[k] = 0; s.reboots++;
           // Ребут: 100 здоровья и без щита — сдвиг от общего.
-          if(s.mSh){ s.mSh[k] = -(s.shield == null ? 100 : s.shield); s.mHp[k] = 100 - s.hp; }
+          if(s.mSh){ s.mSh[k] = 0; s.mHp[k] = 100; s.mQuiet[k] = 0; }
           if(onRebootHook) onRebootHook(s, k);
         }
       }
@@ -1679,7 +1681,7 @@
          быть не должно. */
       if(opts.respawnUntilZone && currentZone < opts.respawnUntilZone){
         sq.alive = true; sq.hp = 100; sq.shield = 100; sq.deathCause = null; sq.busy = true;
-        if(sq.mAlive) for(var ma=0; ma<sq.mAlive.length; ma++){ sq.mAlive[ma] = true; if(sq.mSh){ sq.mSh[ma] = 0; sq.mHp[ma] = 0; } }
+        if(sq.mAlive) for(var ma=0; ma<sq.mAlive.length; ma++){ sq.mAlive[ma] = true; if(sq.mSh){ sq.mSh[ma] = 100; sq.mHp[ma] = 100; } }
         sq.respawns = (sq.respawns || 0) + 1;
         /* И ВОЗРОЖДАЕТСЯ С НЕБА, А НЕ НА МЕСТЕ СМЕРТИ (Notion 26.10.26, Pro-Am Dallas: «очень много киллов, хотя умер
            в топ-20»). Отряд вставал там же, с полным HP, рядом с убийцей, и две команды на одной точке фармили друг
@@ -2195,6 +2197,7 @@
     if(v.SURGE_TICK     != null) SURGE_TICK     = v.SURGE_TICK;
     if(v.MEMBER_LOSS    != null) MEMBER_LOSS    = v.MEMBER_LOSS;
     if(v.REBOOT_RATE    != null) REBOOT_RATE    = v.REBOOT_RATE;
+    if(v.MEMBER_DMG_MUL != null) MEMBER_DMG_MUL = v.MEMBER_DMG_MUL;
     if(v.REBOOT_UNTIL   != null) REBOOT_UNTIL   = v.REBOOT_UNTIL;
     if(v.SHORT_EXP      != null) SHORT_EXP      = v.SHORT_EXP;
     if(v.ROOM           != null) ROOM           = v.ROOM;
