@@ -2002,6 +2002,31 @@
   .ytt-elim{position:absolute;left:0;right:0;top:56%;z-index:3;text-align:center;font-family:var(--font-display);font-weight:900;font-size:4cqw;color:#fff;text-shadow:0 0 6px #000;}
   .ytt-elim b{color:#ff2a2a;font-size:1.6em;-webkit-text-stroke:.2cqw #300;}
   .ytt-hl .ytt-title{top:auto;bottom:20%;font-size:6.5cqw;}
+  /* Превью как у про (30.10, канал Peterbot): фон цветом итога, игрок справа по плечи, таблица слева. */
+  .ytr.ytr-gold{background:linear-gradient(135deg,#3a2a00 0%,#a67600 45%,#ffcf3a 100%);}
+  .ytr.ytr-teal{background:linear-gradient(135deg,#032a2c 0%,#0b6e72 50%,#3fd3c6 100%);}
+  .ytr.ytr-blue{background:linear-gradient(135deg,#071a5c 0%,#1146c2 50%,#4aa3ff 100%);}
+  .ytr .ytt-bg{opacity:.35;mix-blend-mode:luminosity;}
+  .ytr-fig{position:absolute;right:-8%;top:-6%;width:60%;height:250%;z-index:1;display:flex;justify-content:center;align-items:flex-start;}
+  .ytr-fig .ytt-fig{height:100%;width:auto;max-width:none;object-fit:contain;filter:drop-shadow(0 0 2cqw rgba(0,0,0,.55));}
+  .ytr-shade{position:absolute;inset:0;z-index:2;background:linear-gradient(90deg,rgba(0,0,0,.55) 0%,rgba(0,0,0,.25) 45%,transparent 62%);}
+  .ytr-title{position:absolute;left:3%;top:4%;z-index:3;max-width:62%;font-family:var(--font-display);font-weight:900;font-size:10.5cqw;line-height:.95;
+    color:#fff;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:clip;text-shadow:0 .5cqw 0 rgba(0,0,0,.45),0 0 2cqw rgba(0,0,0,.4);}
+  .ytr-title.ytr-t-m{font-size:8.5cqw;} .ytr-title.ytr-t-s{font-size:6.6cqw;}
+  .ytr-board{position:absolute;left:3%;top:23%;width:58%;z-index:3;display:flex;flex-direction:column;gap:1cqw;}
+  .ytr-row{display:flex;align-items:center;gap:1.6cqw;padding:.9cqw 1.8cqw;background:rgba(10,14,24,.62);border-radius:.6cqw;
+    font-family:var(--font-display);font-weight:800;color:#e9eef8;font-size:3.6cqw;line-height:1;}
+  .ytr-row b{font-weight:900;font-size:5.4cqw;color:rgba(255,255,255,.62);min-width:7cqw;}
+  .ytr-row span{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .ytr-row em{font-style:normal;font-weight:900;font-size:4.4cqw;}
+  .ytr-me{background:#fff;color:#101828;padding:1.2cqw 1.8cqw;box-shadow:0 .7cqw 0 rgba(0,0,0,.3);}
+  .ytr-me b{font-size:8cqw;line-height:.85;-webkit-background-clip:text;background-clip:text;color:transparent;
+    background-image:linear-gradient(180deg,#fff27a,#ffc400 50%,#ff8a00);-webkit-text-stroke:.3cqw #5a3a00;}
+  .ytr-who{flex:1;min-width:0;font-family:var(--font-display);font-weight:900;font-size:4.8cqw;line-height:.95;color:#101828;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .ytr-who small{display:block;font-size:.72em;}
+  .ytr-hex{flex:none;font-style:normal;font-family:var(--font-display);font-weight:900;font-size:5cqw;color:#fff8d0;padding:1.6cqw 2.6cqw;
+    -webkit-text-stroke:.25cqw #6a3a00;paint-order:stroke fill;background:linear-gradient(180deg,#ffd84a,#e89a00);
+    clip-path:polygon(25% 0,75% 0,100% 50%,75% 100%,25% 100%,0 50%);}
   .yt-kind{position:absolute;z-index:3;left:8px;top:8px;padding:2px 8px;border-radius:999px;background:rgba(0,0,0,.7);color:#fff;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;}
   .yt-dur{position:absolute;z-index:3;right:8px;bottom:8px;padding:1px 5px;border-radius:4px;background:rgba(0,0,0,.8);color:#fff;font-size:11px;font-weight:700;}
   .yt-title{color:#fff;font-size:13.5px;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
@@ -3967,6 +3992,14 @@
   .zr-kit .zk-thresh span{font-size:10px;letter-spacing:.06em;text-transform:uppercase;font-weight:700;color:#dfe8ff;}
   .zr-kit .zk-thresh.on b,.zr-kit .zk-thresh.on span{color:#ffb3b3;}
   .zr-kit .zk-thresh.on .zk-tri{background:#ff4d4d;}
+  /* Вид как в игре (30.10, его скрин): треугольник слева, надпись сверху, число под ней справа, белое с тенью. */
+  .zr-kit .zk-thresh-g{gap:6px;}
+  .zr-kit .zk-thresh-g .zk-tri2{width:40px;height:36px;flex:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,.6));}
+  .zr-kit .zk-thresh-g span{order:0;font-size:12px;font-weight:900;letter-spacing:.02em;color:#fff;text-shadow:0 1px 2px #000,0 0 3px rgba(0,0,0,.7);}
+  .zr-kit .zk-thresh-g b{order:1;font-size:20px;font-weight:900;color:#fff;transform:none;text-shadow:0 1px 2px #000,0 0 3px rgba(0,0,0,.7);}
+  .zr-kit .zk-thresh-g.on b,.zr-kit .zk-thresh-g.on span{color:#fff;}
+  .zr-kit .zk-thresh-g.ok b{order:-1;}   /* выше порога число над надписью (+258), ниже — под ней (−28), как в игре */
+  .zr-kit .zk-thresh-g.ok{align-items:flex-end;}
   /* Верхний правый столбик: элимы · живые · время, число слева от иконки. */
   .zr-head-quiet>span:last-child{visibility:hidden;}
   .cc-club-crest-box{display:flex;gap:14px;align-items:center;margin:8px 0 10px;}
@@ -11689,9 +11722,10 @@ ccKitLine:(m,low,loot)=>'Ресы '+m+(low?' · '+low:'')+(loot?' · '+loot:''),
 ccKitMats:m=>'Ресы '+m, ccKitLootNone:'лут: свой пак', ccHireBtn:'Нанять на турнир', ccHireT:'Нанять на турнир', ccHireHint:'Любой игрок твоего региона сыграет с тобой сегодняшний турнир. Платишь сразу, призы делятся как обычно. Отмена до игры возвращает деньги.', ccHireNone:'Сегодня в регионе никого свободного нет', ccHireFree:'без клуба', ccHireOn:(n,f)=>'Сегодня с тобой: '+n+' ('+f+')', ccHireCount:(a,b)=>'Нанято '+a+' из '+b, ccHireCancel:'Отменить', ccKitOut:'выбыли', ccKitSpec:n=>'наблюдаешь: '+n, ccKitMateOut:'выбит', ccKitMateCard:n=>'карточка ребута · '+n+' с', ccKitWatch:'игра идёт дальше, смотрим', ccKitPickaxe:'Кирка',
 ccKitSurgeOff:'сюрдж выключен', ccKitSurgeAt:(a,p)=>'сюрдж с '+a+' игроков · в игре '+p,
 // Баннер и подпись под числом — как на HUD игры («STORM SURGE ACTIVE!» и «269 ABOVE DAMAGE THRESHOLD»).
-ccKitSurgeBanner:'СЁРДЖ АКТИВЕН!', ccKitUnderBanner:'ТЫ ПОД СЁРЖЕМ!',
-ccKitSurgeWarn:'ПРЕДУПРЕЖДЕНИЕ О СЁРДЖЕ!', ccKitSurgeWarnSub:'НАНОСИ УРОН ВРАГАМ, ЧТОБЫ НЕ ВЫЛЕТЕТЬ!',
-ccKitAboveCap:'над порогом урона', ccKitBelowCap:'до порога урона',
+// 30.10, его «над порогом урона странно пишется»: у Epic по-русски Storm Surge — «усиление Бури» (fortnite.com/news, lang=ru).
+ccKitSurgeBanner:'УСИЛЕНИЕ БУРИ АКТИВНО!', ccKitUnderBanner:'ТЫ ПОД УСИЛЕНИЕМ БУРИ!',
+ccKitSurgeWarn:'ВНИМАНИЕ: УСИЛЕНИЕ БУРИ!', ccKitSurgeWarnSub:'НАНОСИ УРОН ВРАГАМ, ЧТОБЫ НЕ ВЫЛЕТЕТЬ!',
+ccKitAboveCap:'выше порога урона', ccKitBelowCap:'ниже порога урона', ccKitCapLbl:'Минимальный урон',
 // Рычаги игроку (5.09): стиль стройки и лечение.
 ccBuildTitle:'Третья зона — как строим', ccBuildNorm:'Как обычно', ccBuildNormNote:m=>m+' ресов за круг',
 ccLootUpgraded:n=>'с трупа взяли '+n,
@@ -24324,6 +24358,9 @@ Object.assign(I18N.en, {ccPostPress:(me,sit,ai,p,n,r,mate,g)=>ccPressPostText(me
   ccPostPressBroke:(me,g,p)=>ccPressT().broke(me, (ccPressT().goalName||{})[g]||g, p)});
 /* Личка после вечера (16.10, ccKinchDm / ccStaffAfterNight). v — номер варианта фразы, чтобы не повторялись. */
 Object.assign(I18N.en, {
+  dmKinchYouAsk:who=>who ? 'Break down @'+who+"'s night" : 'Break down my night',
+  ccDmKinchOne:(lbl,r)=>'🏆 '+String(lbl)+' 🏆\n👤 '+(r[0] ? '@'+r[0] : 'You')+'\n🎯 Elims: '+r[1]+'\n💥 Damage: ≈'+ccNum(r[2])+'\n🩸 Taken: ≈'+ccNum(r[3])+
+    '\n⏱️ Time alive: ≈'+r[4]+'\n📍 Avg place: '+r[5]+'\n🔟 Top 10s: '+r[6]+'\n👑 Wins: '+r[7]+'\n⭐ Points: '+r[8],
   // Разбор строками, как пост Кинча в ленте: язык его, английский, на всех языках сайта (как ccNewsStatBoard).
   ccDmKinchBoard:(lbl,p,g,avg,rk,rows)=>'🏆 '+String(lbl)+' 🏆\n📊 #'+p+' · '+g+' games · avg place '+avg+' · #'+rk+' in the lobby by elims\n'+
     (rows||[]).map(r=>'\n👤 '+(r[0] ? '@'+r[0] : 'You')+'\n🎯 Elims: '+r[1]+'\n💥 Damage: ≈'+ccNum(r[2])+'\n🩸 Taken: ≈'+ccNum(r[3])+
@@ -24345,6 +24382,7 @@ Object.assign(I18N.en, {
   ccDmSmmBad:v=>['Today better post nothing in emotions. Tomorrow — a calm line about the next goal.','Skip the feed today. Bad nights do not need a tweet.'][v%2],
   ccDmMktBrands:v=>['After nights like this brands ask about you — check the sponsors tab.','Two brands asked for your stats today. Results like this raise your price.'][v%2]});
 Object.assign(I18N.ru, {
+  dmKinchYouAsk:who=>who ? 'Разбери игру @'+who : 'Разбери мою игру',
   ccDmKinchSum:(lbl,p,g,avg,el,pg,rk)=>'📊 '+esc(String(lbl))+': #'+p+'. Игр: '+g+', средний плейс '+avg+', киллов: '+el+' ('+pg+' за игру) — #'+rk+' в лобби по киллам.',
   ccDmKinchCmp:rows=>'Внутри состава: '+(rows||[]).map(r=>(r[4] ? 'ты' : '@'+esc(r[0]))+' — киллы '+r[1]+', урон '+ccNum(r[2])+' ('+r[3]+'%)').join(' · '),
   ccDmKinchVerdict:(who,me,sh,v)=>me ? ['Сегодня тащил ты: '+sh+'% урона состава — твои.','Топ-фраггер состава — ты, '+sh+'% урона.'][v%2]
@@ -113392,6 +113430,14 @@ function ccKitAxe(){
   } }catch(e){}
   return {src:CC_PICKAXE_ART, n:'The Axe of Champions 2.0', r:'rare'};
 }
+// Значок усиления Бури как на HUD игры: скруглённый фиолетовый треугольник, внутри фигурка под молнией. Без градиентов
+// с id (скрытые копии HUD ломают ссылки на id, см. иконки построек).
+const CC_SURGE_TRI='<svg class="zk-tri2" viewBox="0 0 40 36" aria-hidden="true">'+
+  '<path d="M17.2 3.6q2.8-4.4 5.6 0l15.4 26.6q2.4 4.6-2.8 4.6H4.6q-5.2 0-2.8-4.6z" fill="#8a35d6" stroke="#c39bff" stroke-width="1.6"/>'+
+  '<path d="M21.6 6.5l-4 6.6h3l-2.2 4.6 5.4-6.4h-3.1l2.3-4.8z" fill="#fff"/>'+
+  '<circle cx="20" cy="20.6" r="2.6" fill="#fff"/>'+
+  '<path d="M14.3 31.5q.4-6.6 5.7-6.6t5.7 6.6z" fill="#fff"/>'+
+  '<path d="M13.8 18.5l-2.4 5.2 3.2.2" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 function ccKitPanel(lobby, frame){
   const map=CC_RUN_MAP;
   if(!map || !map.isConnected || !frame) return;
@@ -113495,8 +113541,13 @@ function ccKitPanel(lobby, frame){
   /* И порог заранее — вопрос «а на экране у игрока есть
      сёрдж?»: пока сёрдж никого не бьёт, но фаза его уже знает, стоит тихая
      строка «сёрдж с 60 · в игре 76», как между зонами на турнирном HUD. */
+  /* 30.10, его скрин из игры (Notion 27.10, последний): русский HUD пишет «МИНИМАЛЬНЫЙ УРОН» и под ним число со знаком
+     (−28), значок — скруглённый фиолетовый треугольник. Где у языка есть ccKitCapLbl — так; иначе английское «N ABOVE…». */
+  const gapN=Math.round(gap);
   const thresh=(line!=null)
-    ? '<div class="zk-thresh'+(below?' on':' ok')+'">'+tri+'<div><b>'+ccNum(Math.abs(Math.round(gap)))+'</b><span>'+esc(below ? T.ccKitBelowCap : T.ccKitAboveCap)+'</span></div></div>'
+    ? (T.ccKitCapLbl
+        ? '<div class="zk-thresh zk-thresh-g'+(below?' on':' ok')+'">'+CC_SURGE_TRI+'<div><span>'+esc(T.ccKitCapLbl)+'</span><b>'+(gapN<0 ? '-' : '+')+ccNum(Math.abs(gapN))+'</b></div></div>'
+        : '<div class="zk-thresh'+(below?' on':' ok')+'">'+tri+'<div><b>'+ccNum(Math.abs(gapN))+'</b><span>'+esc(below ? T.ccKitBelowCap : T.ccKitAboveCap)+'</span></div></div>')
     : '';
   const surge = active
     ? '<div class="zk-banner'+(d.u?' on':'')+'">'+tri+'<b>'+esc(d.u ? T.ccKitUnderBanner : T.ccKitSurgeBanner)+'</b></div>'+thresh
@@ -114797,10 +114848,14 @@ function ccKinchDm(ranked, you, label){
   const t=ccStaffThread(CC_KINCH_WHO);
   /* 30.10, его «сделай кинчу в лс такой же разбор и как его посты в медиа»: при записи вечера по игрокам — разбор
      аналитика (ccEveningPlayers) одним сообщением, строками с эмодзи, как пост Кинча в ленте (ccKinchBoardText). */
+  /* 30.10, его «пусть игрок сам пишет насчет разбора и может выбрать какого тимейта»: Кинч присылает только сводку,
+     разбор по человеку — по кнопке в ветке (ccKinchPick), кого спросил, того и разбирает. Вечер лежит в cr.kinchNight,
+     чтобы кнопки пережили перезагрузку страницы; новый вечер его заменяет. */
   let pl=null; try{ pl=ccEveningPlayers(careerToday()); }catch(e){ pl=null; }
   if(pl){
-    careerDmPush(t, 'them', 'ccDmKinchBoard', [label, place, games, avg.toFixed(1), rk,
-      pl.map(b=>[b.me ? '' : String(b.h), b.el, b.dmg, b.took, b.alive, b.place, b.top10, b.wins, b.pts])]);
+    CAREER.career.kinchNight={day:careerToday(), lbl:String(label), p:place, g:games, avg:avg.toFixed(1), rk, done:[],
+      rows:pl.map(b=>[b.me ? '' : String(b.h), b.el, b.dmg, b.took, b.alive, b.place, b.top10, b.wins, b.pts])};
+    careerDmPush(t, 'them', 'ccDmKinchSum', [label, place, games, avg.toFixed(1), elims, (elims/games).toFixed(1), rk]);
     return true;
   }
   careerDmPush(t, 'them', 'ccDmKinchSum', [label, place, games, avg.toFixed(1), elims, (elims/games).toFixed(1), rk]);
@@ -120841,7 +120896,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='817f015a';
+const CC_BUILD='9bf4db5d';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -149315,11 +149370,27 @@ function ccStaffReply(id, opt){
   }
   careerDmPush(t, 'them', 'dmStRe_'+kind+'_'+opt);
   t.ask=null;
+  if(kind==='kinch') cr.kinchNight=null;   // «спасибо» закрывает выбор разбора этого вечера
+  careerSave(); careerRenderHub('social');
+}
+// Разбор Кинча по выбору (cr.kinchNight): игрок пишет, кого разобрать, Кинч отвечает блоком этого игрока.
+function ccKinchPick(id, i){
+  const t=careerDms().find(x=>x.id===id), kn=CAREER.career.kinchNight;
+  if(!t || !kn || !kn.rows[i] || (kn.done||[]).indexOf(i)>=0) return;
+  const cr=CAREER.career, r=kn.rows[i];
+  careerDmPush(t, 'you', 'dmKinchYouAsk', [r[0]]);
+  if(!ccStaffReplyDay('kinch')){ cr.form=clamp((cr.form||0)+CC_STAFF_OPTS.kinch.vod.form, -CC_FORM_MAX, CC_FORM_MAX); (cr.staffRe=cr.staffRe||{}).kinch=careerToday(); }
+  careerDmPush(t, 'them', 'ccDmKinchOne', [kn.lbl, r]);
+  (kn.done=kn.done||[]).push(i);
   careerSave(); careerRenderHub('social');
 }
 function ccStaffReplyHTML(open){
   const kind=open.who.staff, opts=CC_STAFF_OPTS[kind];
   if(!opts || !open.ask) return '';
+  const kn=kind==='kinch' && CAREER.career.kinchNight;
+  if(kn) return '<div class="dm-ask">'+kn.rows.map((r,i)=>(kn.done||[]).indexOf(i)>=0 ? '' :
+      '<button class="cc-back" onclick="ccKinchPick(\''+open.id+'\','+i+')">'+esc(L().dmKinchYouAsk(r[0]))+'</button>').join('')+
+    '<button class="cc-back" onclick="ccStaffReply(\''+open.id+'\',\'ok\')">'+esc(L().dmStBtn_kinch_ok)+'</button></div>';
   const used=ccStaffReplyDay(kind);
   return '<div class="dm-ask">'+Object.keys(opts).map(o=>{
     const fx=opts[o], tip=used ? '' : [fx.form ? L().dmStFxForm(fx.form) : '', fx.grind ? L().dmStFxRest : '', fx.reach ? L().dmStFxReach : ''].filter(Boolean).join(' · ');
@@ -181352,6 +181423,18 @@ function ccYtThumbHTML(v){
   // Сборник: размытый кадр игры и красная строка убийства, как у Peterbot «Highlights #43».
   if(v.kind==='hl') return '<div class="yt-thumb ytt ytt-hl">'+bg+fig+
     '<span class="ytt-elim">ELIMINATED <b>'+esc(String((ccYtRows(v)[0]||[])[1]||'').split(' & ')[0])+'</b></span><span class="ytt-title ytt-title-c">'+esc(me.toUpperCase())+' HIGHLIGHTS #'+esc(String(v.n||''))+'</span>'+dur+'</div>';
+  /* 30.10, его «превью странно выглядят, посмотри как в реальной жизни» (Notion 27.10, последний скрин; канал Peterbot):
+     один вид — название слева сверху, большая таблица слева (#1 белой строкой с золотым номером и шестиугольником очков,
+     остальные тёмные), игрок крупно справа по плечи, фон цветом итога. Без короны, наклеек и обрезанного приза. */
+  {
+    const rows=ccYtRows(v).slice(0, 4).map(r=>'<div class="ytr-row"><b>#'+r[0]+'</b><span>'+esc(r[1])+'</span><em>'+r[2]+'</em></div>').join('');
+    const tone=v.kind==='win' ? 'ytr-gold' : v.kind==='podium' ? 'ytr-teal' : 'ytr-blue';
+    const tsz=big.length>14 ? ' ytr-t-s' : big.length>9 ? ' ytr-t-m' : '';
+    return '<div class="yt-thumb ytt ytr '+tone+'">'+bg+'<div class="ytr-fig">'+fig+'</div><i class="ytr-shade"></i>'+
+      '<span class="ytr-title'+tsz+'">'+esc(big)+'</span>'+
+      '<div class="ytr-board"><div class="ytr-row ytr-me"><b>#'+(p||1)+'</b>'+names.replace('ytt-who', 'ytr-who')+
+        (v.pts!=null ? '<i class="ytr-hex">'+esc(String(v.pts))+'</i>' : '')+'</div>'+rows+'</div>'+dur+'</div>';
+  }
   const crown=v.kind==='win' ? '<span class="ytt-crown">👑</span>' : '';
   if(h%2===0){
     const rows=ccYtRows(v).map(r=>'<div class="ytt-row"><b>#'+r[0]+'</b><span>'+esc(r[1])+'</span><em>'+r[2]+'</em></div>').join('');
