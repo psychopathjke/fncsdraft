@@ -57,8 +57,9 @@ const curve = {}, sample = {};
   for (let i = YEARS.length - 1; i >= 0; i--) c[YEARS[i]] = Math.min(c[YEARS[i]], i + 1 < YEARS.length ? c[YEARS[i + 1]] : 1);
   curve[net] = Object.fromEntries(YEARS.map(y => [y, +c[y].toFixed(4)]));
 });
-// Twitch без единого года с замерами (сбор SocialBlade ещё не прошёл) — кривая YouTube, а не выдуманный спад.
-if (!YEARS.some(y => sample['tw' + y] >= 15)) curve.tw = curve.yt;
+// Twitch: меньше трёх лет с выборкой (SocialBlade в архиве — почти только крупные стримеры, 29.10: 101 точка, год 2022 из 15) —
+// кривая YouTube (выборка в сотни каналов), а не перекос звёзд, которые уже не росли. Свои замеры Twitch берутся всё равно.
+if (YEARS.filter(y => sample['tw' + y] >= 15).length < 3) curve.tw = curve.yt;
 const keys = Object.keys(hist).sort();
 const histJs = '{' + keys.map(k => JSON.stringify(k) + ':' + JSON.stringify(hist[k])).join(',') + '}';
 fs.writeFileSync(path.join(__dirname, 'measured', 'pro-social-history.json'), JSON.stringify({ at: '2026-10-28', curve, sample, hist }));
