@@ -120777,7 +120777,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='8f96427a';
+const CC_BUILD='61c14e51';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -143512,7 +143512,7 @@ function ccHireOpen(){
   const cr=CAREER.career, T=L(), list=ccHireCands();
   const rows=list.map((c, i)=>{
     const ovr=ccHireOvr(c), fee=ccHireFee(ovr, c), can=(cr.balance||0)>=fee;
-    return '<div class="cc-buy"><div class="cc-buy-in"><b><span class="cc-buy-nm">'+esc(c.handle)+'</span> <span class="cc-staff-rt mgf-rt">'+ovr+'</span></b>'+
+    return '<div class="cc-buy"><div class="cc-buy-in"><b>'+cardFlag(c, 14)+'<span class="cc-buy-nm">'+esc(c.handle)+'</span> <span class="cc-staff-rt mgf-rt">'+ovr+'</span></b>'+
       '<i class="cc-buy-who">'+esc(c.org||T.ccHireFree||'')+'</i></div>'+
       '<span class="cc-buy-btns"><button class="ch-sign"'+(can?'':' disabled')+' onclick="careerHire('+i+')">'+ccMoney(fee)+'</button></span></div>';
   }).join('');
