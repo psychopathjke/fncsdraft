@@ -7285,8 +7285,11 @@
     background:linear-gradient(180deg,rgba(48,32,120,.42) 0%,rgba(34,26,92,.68) 46%,rgba(14,14,54,.92) 100%);}
   /* Флаг ЛАНа гасится слабее обложек: его и надо разглядеть, а число дня
      остаётся читаемым за счёт тени под ним. */
+  /* 29.10 (его «пусть флаг отчётливо будет видно»): сверху флаг без тени, тень только у подписи внизу. */
   #screen-career-hub .cal-day.art-lan::before{
-    background:linear-gradient(180deg,rgba(6,10,26,.28) 0%,rgba(6,10,26,.52) 46%,rgba(6,10,26,.86) 100%);}
+    background:linear-gradient(180deg,rgba(6,10,26,0) 0%,rgba(6,10,26,0) 55%,rgba(6,10,26,.55) 100%);}
+  #screen-career-hub .cal-day.art-lan.now::before{
+    background:linear-gradient(180deg,rgba(6,10,26,0) 0%,rgba(6,10,26,0) 55%,rgba(6,10,26,.55) 100%);}
   #screen-career-hub .cal-day.art-gc::before{
     background:linear-gradient(180deg,rgba(96,60,0,.4) 0%,rgba(66,40,6,.66) 46%,rgba(28,18,10,.92) 100%);}
   #screen-career-hub .cal-day.art.now{background-color:transparent;}
@@ -120778,7 +120781,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='6cd14653';
+const CC_BUILD='2f9697f5';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
