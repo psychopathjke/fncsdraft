@@ -204,6 +204,12 @@
     {zone:10, waitSec:0,   shrinkSec:55, dps:10, radius:1090/RELOAD_UNIT,  surgeAt:Infinity},
     {zone:11, waitSec:0,   shrinkSec:50, dps:10, radius:1080/RELOAD_UNIT,  surgeAt:Infinity}
   ];
+  /* Движение кругов Reload (30.10, его «зоны должны быть динамические как в настоящей игре»). Без drift круги Reload
+     сжимались каждый внутри прошлого — неподвижная мишень. Соревновательный шторм по вики (Competitive (Gamemode),
+     tools/measured/storm-eras.md): с пятого круга центр уходит на край прошлого («half in, half out»), дальше круги
+     едут целиком — то же правило, что у БР (DRIFT: сдвиг круга i = радиус круга i−1, замерено на трёх реплеях).
+     Центры кругов в реплеях Reload не снимались, поэтому правило БР, а не своё число. */
+  RELOAD_PHASES.drift = RELOAD_PHASES.map(function(ph, i){ return i >= 4 ? RELOAD_PHASES[i-1].radius : null; });
 
   function generateZonePlan(opts){
     var rng = opts.rng, land = opts.land, aspect = opts.aspect;
