@@ -105469,9 +105469,9 @@ async function simulateGamesLive(teams, numGames, pointsFn, killMult, fieldPrefi
      row pinned underneath — the same shape the money and Power Rankings boards
      use. Every team is still scored, sorted and placed; this only decides how
      many of them are on screen. */
-  // Финалы и всё, где до сотни участников, — вся сотня (его слово 29.10: «в финалах топ 100 показывает, а не 60»);
-  // большие капы на тысячи — шестьдесят, ради скорости (см. выше).
-  const LIVE_ROWS=teams.length<=100 ? 100 : 60;
+  // Живая таблица — шестьдесят и всегда: сотня строк в финале соло лагала на движении зон (Notion 27.10 скрин 33, 29.10).
+  // Итог этапа (revealStandings) показывает всю сотню.
+  const LIVE_ROWS=60;
   /* Строки живут между перерисовками.
 
      Замер на телефоне (Chrome, CPU ×6, 30 секунд вечера): пересчёт стилей
@@ -120618,7 +120618,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='60d49681';
+const CC_BUILD='a9c96929';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
