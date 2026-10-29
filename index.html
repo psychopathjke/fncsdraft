@@ -6046,6 +6046,24 @@
   .ev-rbar{display:block;width:6px;border-radius:2px;background:#7aa2ff;}
   .ev-rbar.hi{background:#00d6a4;} .ev-rbar.lo{background:#ff7d70;}
   .aw-shelf{margin:10px 0;}
+  /* Полка наград (30.10): кубки и карточки «Игрок месяца» как в футболе. */
+  .aw-sub{margin:12px 0 6px;font-size:11px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:#9fb0e8;}
+  .aw-cups{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px;}
+  .aw-cup{display:flex;flex-direction:column;align-items:center;gap:3px;padding:12px 6px 10px;border-radius:12px;text-align:center;color:#ffc93a;
+    background:radial-gradient(ellipse at 50% 30%,rgba(255,201,58,.22),transparent 65%),rgba(6,12,32,.45);border:1px solid rgba(255,201,58,.35);}
+  .aw-cup.aw-cup-g{color:#7ff0ff;background:radial-gradient(ellipse at 50% 30%,rgba(127,240,255,.25),transparent 65%),rgba(6,12,32,.45);border-color:rgba(127,240,255,.4);}
+  .aw-cup.aw-cup-s{color:#d6dde8;border-color:rgba(214,221,232,.3);background:rgba(6,12,32,.45);}
+  .aw-cup-i{width:40px;height:46px;filter:drop-shadow(0 2px 4px rgba(0,0,0,.5));}
+  .aw-cup b{font-size:11.5px;font-weight:900;color:#fff;line-height:1.15;}
+  .aw-cup small{font-size:10px;font-weight:800;color:#9fb0e8;}
+  .aw-potms{display:grid;grid-template-columns:repeat(auto-fill,minmax(132px,1fr));gap:10px;}
+  .aw-potm{position:relative;display:flex;flex-direction:column;align-items:center;gap:2px;padding:12px 8px 10px;border-radius:14px;text-align:center;overflow:hidden;
+    background:linear-gradient(160deg,#3d1a78 0%,#6a2bc2 45%,#2a0f55 100%);border:1px solid rgba(255,214,90,.55);box-shadow:inset 0 0 0 2px rgba(255,214,90,.15);}
+  .aw-potm img{width:64px;height:64px;border-radius:50%;object-fit:cover;border:2px solid #ffd65a;background:#1a0b38;}
+  .aw-potm-band{margin-top:4px;padding:2px 8px;border-radius:4px;background:#ffd65a;color:#2a0f55;font-size:9.5px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;}
+  .aw-potm-m{font-size:15px;font-weight:900;color:#fff;text-transform:capitalize;}
+  .aw-potm-n{font-size:11px;font-weight:800;color:#e9dcff;}
+  .aw-potm small{font-size:9.5px;font-weight:800;color:#ffd65a;}
   .aw-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px;}
   .aw-item{display:flex;flex-direction:column;align-items:center;gap:2px;padding:10px 6px;border-radius:12px;
     background:rgba(255,255,255,.06);border:1px solid rgba(255,214,0,.25);text-align:center;}
@@ -24001,7 +24019,7 @@ Object.assign(I18N.ru, {
   lfRate:'Оценка за вечер', lfMvp:'MVP вечера', lfMvpYou:'ты — MVP вечера', lfAvgRate:'Средняя оценка сезона', lfMvpCount:'MVP за сезон',
   lfNewsPlaced:n=>'Посев: Дивизион '+n, lfDropH:'Где я сажусь', lfDropHint:'кружок — точка, размер — сколько раз, цвет — среднее место', lfDropTip:(n,c,p,w)=>'точка '+n+': '+c+' раз, выше '+p+'% лобби'+(w?', побед '+w:''), lfFocusH:'Фокус недели', lfFocusOn:(a,p)=>a+': +'+p+'% к приросту до конца недели', lfFocusPick:p=>'Выбери атрибут недели — его занятия дают +'+p+'%. Сменить до конца недели нельзя.', lfGoalH:'Цель', lfGoalHint:'Поставь число — дошёл, и форма чуть лучше.', lfGoalDone:(a,t)=>a+' '+t+' — цель выполнена', lfNewsGoal:(a,t)=>'Цель выполнена: '+a+' '+t, lfCompare:'Ты и тиммейт', lfCalQual:'Квалифицирован', lfCalInvited:'Приглашён', chTabMedia:'Медиа', chTabBoards:'Таблицы', lfSubPrMoney:'PR и призовые', ccBellClear:'Прочитать всё', lfInbox:'Входящие', lfPtsShort:'очк.', chTabTrain:'Тренировка', lfTrainTitle:'Тренировочный центр', lfTrainOpen:'Открыть', lfTrainPromo:(w,a)=>'За неделю '+w+' · слабее всего: '+a, lfTrainEventDay:t=>'Сегодня турнир'+(t?' — '+t:'')+'. Тренировки — в свободный день.', lfTrainToCentre:'К турниру',
   lfHdrNext:'Далее', lfHdrToday:'Сегодня', lfHdrPlay:'можно играть', lfHdrIn:n=>n===1?'завтра':'через '+n+' дн.', lfHdrSeason:'Рейтинг за сезон',
-  lfTitle:'Между турнирами', lfToday:'Сегодня', lfFatigue:'Усталость', lfGalaYouH:'Твой год', lfGalaMates:'Тиммейтов', lfGalaBestNight:'Лучший вечер', lfGalaTopMate:'Чаще всего вместе', lfVod:'Разобрать реплей: в чём была главная ошибка?', lfVod_drop:'Дроп', lfVod_rot:'Ротации и зона', lfVod_fight:'Файты', lfVodOk:'Верно — опыт +0.4, форма чуть лучше', lfVodNo:t=>'Не то — главная беда была: '+t, lfNewsVodOk:t=>'Разобрал реплей: ошибка — '+t+'. Понял, что делать', lfNewsVodNo:t=>'Разбор реплея не зашёл — на самом деле проблема была: '+t, lfScout:'Разведка', lfScoutYou:p=>'ты в топ-'+p+'% сцены', lfScoutFav:'Фавориты сцены', lfScoutForm:'В форме (PR)', lfChem:'Сыгранность', lfChemHint:d=>'Растёт от дней вместе ('+d+' до максимума), вечер вместе считается за 3 дня, скрим — за 2.', lfChemBonus:'Бонус к силе команды', lfYouTag:'ты', lfWordSoloOne:'соло', lfNewsStandin:n=>'На кап своего состава нет — играю со стэнд-инами: '+n, lfRateShort:'Оценка', lfAvgRateAll:'Средняя оценка', lfMvpAll:'MVP вечеров', lfLastNights:'Последние вечера', lfAwards:'Награды', lfAwYear:'Игрок года', lfAwMonth:'Игрок месяца', lfAwNone:'Пока наград нет. Игрок месяца, игрок года и номинации решаются по Power Ranking.', lfMetaGive:'форма в новом сезоне', lfFatFresh:'свежий', lfFatTired:'устал', lfFatBurn:'выгорание', lfInjuryRisk:p=>'риск травмы '+p+'% в день', lfCoachBoost:p=>'коуч +'+p+'%', chTabClub:'Клуб', lfContract:'Контракт', lfNoOrg:'Без клуба. Предложения приходят в личку после результатов.', lfSalary:'Зарплата в месяц', lfCut:'Доля клуба с призовых', lfGoal:'Цель сезона', lfGoalMet:'выполнена', lfGoalOpen:'пока нет', lfBuyout:'Отступные', lfSince:'В клубе с сезона', lfPaid:'Выплачено клубом', lfIncome:'Доходы', lfPrize:'Призовые', lfWages:'Зарплата', lfSide:'Побочные', lfSponsor:'Спонсоры', lfOrgCut:'Ушло клубу', lfBalance:'Баланс', lfRosters:'Составы', lfRostersHint:'У дуо, трио и сквада — свои составы; этап года выбирает, какой играет.', lfRosterDuo:'Дуо', lfRosterTrio:'Трио', lfRosterSquad:'Сквад', lfRosterNow:'сейчас', lfRosterEmpty:'пусто', lfWordSolo:'игроков', lfWordSquads:'сквадов', lfRank:'Ранкед', lfHurt:'Травма', lfWrist:'запястье', lfIll:'болезнь', lfUntil:'до', lfCaseOpen:'Разбирательство',
+  lfTitle:'Между турнирами', lfToday:'Сегодня', lfFatigue:'Усталость', lfGalaYouH:'Твой год', lfGalaMates:'Тиммейтов', lfGalaBestNight:'Лучший вечер', lfGalaTopMate:'Чаще всего вместе', lfVod:'Разобрать реплей: в чём была главная ошибка?', lfVod_drop:'Дроп', lfVod_rot:'Ротации и зона', lfVod_fight:'Файты', lfVodOk:'Верно — опыт +0.4, форма чуть лучше', lfVodNo:t=>'Не то — главная беда была: '+t, lfNewsVodOk:t=>'Разобрал реплей: ошибка — '+t+'. Понял, что делать', lfNewsVodNo:t=>'Разбор реплея не зашёл — на самом деле проблема была: '+t, lfScout:'Разведка', lfScoutYou:p=>'ты в топ-'+p+'% сцены', lfScoutFav:'Фавориты сцены', lfScoutForm:'В форме (PR)', lfChem:'Сыгранность', lfChemHint:d=>'Растёт от дней вместе ('+d+' до максимума), вечер вместе считается за 3 дня, скрим — за 2.', lfChemBonus:'Бонус к силе команды', lfYouTag:'ты', lfWordSoloOne:'соло', lfNewsStandin:n=>'На кап своего состава нет — играю со стэнд-инами: '+n, lfRateShort:'Оценка', lfAvgRateAll:'Средняя оценка', lfMvpAll:'MVP вечеров', lfLastNights:'Последние вечера', lfAwards:'Награды', lfAwYear:'Игрок года', lfAwMonth:'Игрок месяца', lfAwCups:'Кубки', lfAwMonths:'Игрок месяца', lfAwPts:'очков PR', lfAwEv:'турниров', lfAwWeekly:'Финалы недели', lfAwNone:'Пока наград нет. Игрок месяца, игрок года и номинации решаются по Power Ranking.', lfMetaGive:'форма в новом сезоне', lfFatFresh:'свежий', lfFatTired:'устал', lfFatBurn:'выгорание', lfInjuryRisk:p=>'риск травмы '+p+'% в день', lfCoachBoost:p=>'коуч +'+p+'%', chTabClub:'Клуб', lfContract:'Контракт', lfNoOrg:'Без клуба. Предложения приходят в личку после результатов.', lfSalary:'Зарплата в месяц', lfCut:'Доля клуба с призовых', lfGoal:'Цель сезона', lfGoalMet:'выполнена', lfGoalOpen:'пока нет', lfBuyout:'Отступные', lfSince:'В клубе с сезона', lfPaid:'Выплачено клубом', lfIncome:'Доходы', lfPrize:'Призовые', lfWages:'Зарплата', lfSide:'Побочные', lfSponsor:'Спонсоры', lfOrgCut:'Ушло клубу', lfBalance:'Баланс', lfRosters:'Составы', lfRostersHint:'У дуо, трио и сквада — свои составы; этап года выбирает, какой играет.', lfRosterDuo:'Дуо', lfRosterTrio:'Трио', lfRosterSquad:'Сквад', lfRosterNow:'сейчас', lfRosterEmpty:'пусто', lfWordSolo:'игроков', lfWordSquads:'сквадов', lfRank:'Ранкед', lfHurt:'Травма', lfWrist:'запястье', lfIll:'болезнь', lfUntil:'до', lfCaseOpen:'Разбирательство',
   lfBan:'Бан открытых турниров', lfIcon:'Икон-скин',
   lfWeek:'неделя', lfSessions:'сессий',
   lfWhyHurt:'Травма — играть нельзя', lfWhyBan:'Бан открытых турниров',
@@ -24024,7 +24042,7 @@ Object.assign(I18N.en, {
   lfRate:'Match rating', lfMvp:'Player of the night', lfMvpYou:'you were the player of the night', lfAvgRate:'Season average rating', lfMvpCount:'Player-of-the-night awards',
   lfNewsPlaced:n=>'Seeded into Division '+n, lfDropH:'Where I land', lfDropHint:'dot — spot, size — how often, colour — average place', lfDropTip:(n,c,p,w)=>'spot '+n+': '+c+' times, above '+p+'% of the lobby'+(w?', wins '+w:''), lfFocusH:'Focus of the week', lfFocusOn:(a,p)=>a+': +'+p+'% gain until the week ends', lfFocusPick:p=>'Pick the attribute of the week — its sessions give +'+p+'%. It stays until the week ends.', lfGoalH:'Goal', lfGoalHint:'Set a number — reach it and your form improves a little.', lfGoalDone:(a,t)=>a+' '+t+' — goal reached', lfNewsGoal:(a,t)=>'Goal reached: '+a+' '+t, lfCompare:'You and your teammate', lfCalQual:'Qualified', lfCalInvited:'Invited', chTabMedia:'Media', chTabBoards:'Boards', lfSubPrMoney:'PR and prize money', ccBellClear:'Mark all as read', lfInbox:'Inbox', lfPtsShort:'pts', chTabTrain:'Training', lfTrainTitle:'Training centre', lfTrainOpen:'Open', lfTrainPromo:(w,a)=>'This week '+w+' · weakest: '+a, lfTrainEventDay:t=>'Tournament today'+(t?' — '+t:'')+'. Training is on free days.', lfTrainToCentre:'To the tournament',
   lfHdrNext:'Next', lfHdrToday:'Today', lfHdrPlay:'ready to play', lfHdrIn:n=>n===1?'tomorrow':'in '+n+' days', lfHdrSeason:'Rating this season',
-  lfTitle:'Between events', lfToday:'Today', lfFatigue:'Fatigue', lfGalaYouH:'Your year', lfGalaMates:'Teammates', lfGalaBestNight:'Best night', lfGalaTopMate:'Most nights with', lfVod:'Review the replay: what was the main mistake?', lfVod_drop:'The drop', lfVod_rot:'Rotations and zone', lfVod_fight:'Fights', lfVodOk:'Right — experience +0.4, a bit more form', lfVodNo:t=>'Not quite — the real problem was: '+t, lfNewsVodOk:t=>'Reviewed the replay: the mistake was '+t+'. Got it', lfNewsVodNo:t=>'The replay review missed — the real problem was: '+t, lfScout:'Scouting', lfScoutYou:p=>'you are top '+p+'% of the scene', lfScoutFav:'Scene favourites', lfScoutForm:'In form (PR)', lfChem:'Chemistry', lfChemHint:d=>'Grows with days together ('+d+' to max); a night together counts as 3 days, a scrim as 2.', lfChemBonus:'Team strength bonus', lfYouTag:'you', lfWordSoloOne:'solo', lfNewsStandin:n=>'No roster of my own for this cup — playing with stand-ins: '+n, lfRateShort:'Rating', lfAvgRateAll:'Average rating', lfMvpAll:'Nights as MVP', lfLastNights:'Last nights', lfAwards:'Awards', lfAwYear:'Player of the year', lfAwMonth:'Player of the month', lfAwNone:'No awards yet. Player of the month, of the year and the season categories are decided by Power Ranking.', lfMetaGive:'form in the new season', lfFatFresh:'fresh', lfFatTired:'tired', lfFatBurn:'burnt out', lfInjuryRisk:p=>'injury risk '+p+'% a day', lfCoachBoost:p=>'coach +'+p+'%', chTabClub:'Club', lfContract:'Contract', lfNoOrg:'No club. Offers arrive in your DMs after results.', lfSalary:'Monthly salary', lfCut:'Club share of prize money', lfGoal:'Season goal', lfGoalMet:'done', lfGoalOpen:'not yet', lfBuyout:'Buyout', lfSince:'At the club since season', lfPaid:'Paid by the club', lfIncome:'Income', lfPrize:'Prize money', lfWages:'Salary', lfSide:'Side income', lfSponsor:'Sponsors', lfOrgCut:'Went to the club', lfBalance:'Balance', lfRosters:'Rosters', lfRostersHint:'Duos, trios and squads keep their own rosters; the stage of the year picks which one plays.', lfRosterDuo:'Duos', lfRosterTrio:'Trios', lfRosterSquad:'Squads', lfRosterNow:'now', lfRosterEmpty:'empty', lfWordSolo:'players', lfWordSquads:'squads', lfRank:'Ranked', lfHurt:'Injury', lfWrist:'wrist', lfIll:'illness', lfUntil:'until', lfCaseOpen:'Under review',
+  lfTitle:'Between events', lfToday:'Today', lfFatigue:'Fatigue', lfGalaYouH:'Your year', lfGalaMates:'Teammates', lfGalaBestNight:'Best night', lfGalaTopMate:'Most nights with', lfVod:'Review the replay: what was the main mistake?', lfVod_drop:'The drop', lfVod_rot:'Rotations and zone', lfVod_fight:'Fights', lfVodOk:'Right — experience +0.4, a bit more form', lfVodNo:t=>'Not quite — the real problem was: '+t, lfNewsVodOk:t=>'Reviewed the replay: the mistake was '+t+'. Got it', lfNewsVodNo:t=>'The replay review missed — the real problem was: '+t, lfScout:'Scouting', lfScoutYou:p=>'you are top '+p+'% of the scene', lfScoutFav:'Scene favourites', lfScoutForm:'In form (PR)', lfChem:'Chemistry', lfChemHint:d=>'Grows with days together ('+d+' to max); a night together counts as 3 days, a scrim as 2.', lfChemBonus:'Team strength bonus', lfYouTag:'you', lfWordSoloOne:'solo', lfNewsStandin:n=>'No roster of my own for this cup — playing with stand-ins: '+n, lfRateShort:'Rating', lfAvgRateAll:'Average rating', lfMvpAll:'Nights as MVP', lfLastNights:'Last nights', lfAwards:'Awards', lfAwYear:'Player of the year', lfAwMonth:'Player of the month', lfAwCups:'Trophies', lfAwMonths:'Player of the month', lfAwPts:'PR points', lfAwEv:'events', lfAwWeekly:'Weekly finals', lfAwNone:'No awards yet. Player of the month, of the year and the season categories are decided by Power Ranking.', lfMetaGive:'form in the new season', lfFatFresh:'fresh', lfFatTired:'tired', lfFatBurn:'burnt out', lfInjuryRisk:p=>'injury risk '+p+'% a day', lfCoachBoost:p=>'coach +'+p+'%', chTabClub:'Club', lfContract:'Contract', lfNoOrg:'No club. Offers arrive in your DMs after results.', lfSalary:'Monthly salary', lfCut:'Club share of prize money', lfGoal:'Season goal', lfGoalMet:'done', lfGoalOpen:'not yet', lfBuyout:'Buyout', lfSince:'At the club since season', lfPaid:'Paid by the club', lfIncome:'Income', lfPrize:'Prize money', lfWages:'Salary', lfSide:'Side income', lfSponsor:'Sponsors', lfOrgCut:'Went to the club', lfBalance:'Balance', lfRosters:'Rosters', lfRostersHint:'Duos, trios and squads keep their own rosters; the stage of the year picks which one plays.', lfRosterDuo:'Duos', lfRosterTrio:'Trios', lfRosterSquad:'Squads', lfRosterNow:'now', lfRosterEmpty:'empty', lfWordSolo:'players', lfWordSquads:'squads', lfRank:'Ranked', lfHurt:'Injury', lfWrist:'wrist', lfIll:'illness', lfUntil:'until', lfCaseOpen:'Under review',
   lfBan:'Banned from open events', lfIcon:'Icon skin',
   lfWeek:'week', lfSessions:'sessions',
   lfWhyHurt:'Injured — cannot play', lfWhyBan:'Banned from open events',
@@ -120906,7 +120924,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='0fb93d4d';
+const CC_BUILD='42fa01a7';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -125062,7 +125080,9 @@ function careerCard(raw){
            _attrs:pl.attrs ? {...pl.attrs, _floored:false} : null,
            // Карьера за контент-мейкера носит его редкость — см. shownRarity.
            creator:!!pl.creator,
-           _photo:pl.photo||null };
+           /* Креатор без своего фото — с аватаркой своего канала (CC_PROAM_AVA). 30.10, его «я выбрал контент
+              мейкера а у него нет аватарки» (At0m): сейв хранил только загруженное фото, и карточка падала на скин. */
+           _photo:pl.photo || (pl.creator ? ccProAmAvatar(pl.nick) : null) || null };
   } else if(pl.photo){ base._photo=pl.photo; }
   /* Строка события — лучший вечер карьеры (см. ccCareerCardEvent): у построенного всегда,
      у взятой настоящей карточки — только когда карьера взяла больше, чем её собственная
@@ -142506,7 +142526,7 @@ function careerAwardCheck(){
   if(!board.length) return null;
   const win=board[0];
   aw.won=aw.won||[];
-  aw.won.push({kind:'month', key:past, season:cr.season, name:win.name, you:!!win.you});
+  aw.won.push({kind:'month', key:past, season:cr.season, name:win.name, you:!!win.you, pts:Math.round(win.pts||0), ev:win.events||0});
   if(win.you){
     careerReachAdd(CC_REACH_DIV(cr.division)*8);
     careerNews('good', 'ccNewsAwardYou', [ccMonthName(past)]);
@@ -179586,17 +179606,49 @@ function ccMyDropsHTML(){   // не ccDropMapHTML: то имя — у вырез
     '<div class="dm-map" style="aspect-ratio:'+MAP_ASPECT[set].replace('/', ' / ')+'"><img src="'+MAP_ART[set]+'" alt="">'+dots+'</div>'+
     '<ol class="dm-top">'+top+'</ol></div>';
 }
+// Кубок полки наград: чаша на ножке с ручками, плоскими цветами (без градиентов с id — копии полки ломают ссылки).
+const CC_AW_CUP='<svg class="aw-cup-i" viewBox="0 0 48 56" aria-hidden="true">'+
+  '<path d="M12 6h24v10c0 9-5 16-12 16S12 25 12 16z" fill="currentColor"/>'+
+  '<path d="M12 9H5c0 8 3 12 9 13M36 9h7c0 8-3 12-9 13" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>'+
+  '<path d="M21 31h6v8h-6z" fill="currentColor"/><path d="M14 40h20l2 8H12z" fill="currentColor"/>'+
+  '<path d="M17 9c0 7 2 12 5 15" fill="none" stroke="rgba(255,255,255,.55)" stroke-width="2.4" stroke-linecap="round"/></svg>';
 function ccAwardsShelfHTML(){
   if(typeof careerAwards!=='function') return '';
   const won=(careerAwards().won||[]).filter(a=>a.you);
   const month=won.filter(a=>a.kind==='month'), season=won.filter(a=>a.kind==='season'), cat=won.filter(a=>a.kind==='cat');
+  /* 30.10, его «награды чет сделать мб кубки фнксы какие-то как в игрок месяца в футболе» (скрин: шесть одинаковых
+     звёзд, месяцы вперемешку). Теперь две полки: КУБКИ — выигранные финалы FNCS из лога (Мейджоры, ЛАНы, Глобалы,
+     Reload), кубок с названием и датой, финалы недели одной строкой ×N; ИГРОК МЕСЯЦА — карточки как в футболе:
+     твоё фото, плашка, месяц и год, очки PR и турниры (у наград до 30.10 их нет — только месяц). Всё по порядку. */
   const item=(ico, name, sub)=>'<div class="aw-item"><i>'+ico+'</i><b>'+esc(name)+'</b><small>'+esc(sub)+'</small></div>';
+  const log=((CAREER.career||{}).log||[]).filter(e=>e && e.place===1);
+  const big=e=>{ try{ if(ccFncsTitle(e)) return true; }catch(x){}
+    return e.kind==='globals' || (/^(summit|rc|reload)$/.test(e.kind) && e.stage==='final'); };
+  const cups=log.filter(big).sort((a,b)=>String(a.day)<String(b.day) ? -1 : 1);
+  const weekly=log.filter(e=>e.kind==='final' && !big(e)).length;
+  const cupName=e=>{ try{ return ccLockerPlain(ccLogName(e)); }catch(x){ return e.name||''; } };
+  const cupDay=e=>{ try{ return ccDayLabel ? ccDayLabel(e.day) : e.day; }catch(x){ return e.day||''; } };
+  const cupHTML=e=>'<div class="aw-cup'+(e.kind==='globals' ? ' aw-cup-g' : '')+'">'+CC_AW_CUP+'<b>'+esc(cupName(e))+'</b><small>'+esc(String(cupDay(e)))+'</small></div>';
+  const ph=(()=>{ try{ return photoURL(careerCard()); }catch(x){ return null; } })();
+  const nick=String((CAREER.player||{}).nick||'');
+  const potm=month.slice().sort((a,b)=>String(a.key)<String(b.key) ? -1 : 1).map(a=>{
+    const mName=typeof ccMonthName==='function' ? ccMonthName(a.key) : a.key;
+    return '<div class="aw-potm">'+(ph ? '<img src="'+esc(ph)+'" alt="" loading="lazy" onerror="this.remove()">' : '')+
+      '<span class="aw-potm-band">'+esc(L().lfAwMonths)+'</span>'+
+      '<b class="aw-potm-m">'+esc(mName)+' '+esc(String(a.key).slice(0,4))+'</b>'+
+      '<span class="aw-potm-n">'+esc(nick)+'</span>'+
+      (a.pts ? '<small>'+esc(ccNum(a.pts))+' '+esc(L().lfAwPts)+' · '+a.ev+' '+esc(L().lfAwEv)+'</small>' : '')+'</div>';
+  });
   const items=[]
     .concat(season.map(a=>item('🏆', L().lfAwYear, L().ccMoneySeason(a.season))))
-    .concat(cat.map(a=>item('🎖️', (typeof ccAwCatLabel==='function' ? ccAwCatLabel(a.cat) : a.cat), L().ccMoneySeason(a.season))))
-    .concat(month.map(a=>item('⭐', L().lfAwMonth, (typeof ccMonthName==='function' ? ccMonthName(a.key) : a.key))));
+    .concat(cat.map(a=>item('🎖️', (typeof ccAwCatLabel==='function' ? ccAwCatLabel(a.cat) : a.cat), L().ccMoneySeason(a.season))));
+  const any=cups.length || weekly || potm.length || items.length;
   return '<div class="ch-tile aw-shelf"><h4>'+L().lfAwards+'</h4>'+
-    (items.length ? '<div class="aw-grid">'+items.join('')+'</div>' : '<div class="ch-empty">'+L().lfAwNone+'</div>')+'</div>';
+    (!any ? '<div class="ch-empty">'+L().lfAwNone+'</div>' :
+      ((cups.length || weekly) ? '<div class="aw-sub">'+esc(L().lfAwCups)+'</div><div class="aw-cups">'+cups.map(cupHTML).join('')+
+        (weekly ? '<div class="aw-cup aw-cup-s">'+CC_AW_CUP+'<b>'+esc(L().lfAwWeekly)+'</b><small>×'+weekly+'</small></div>' : '')+'</div>' : '')+
+      (items.length ? '<div class="aw-grid">'+items.join('')+'</div>' : '')+
+      (potm.length ? '<div class="aw-sub">'+esc(L().lfAwMonths)+'</div><div class="aw-potms">'+potm.join('')+'</div>' : ''))+'</div>';
 }
 // The rating over the career, drawn from the log itself. The reference puts the
 // number's own curve behind it, and it is the one chart a career has: eleven
