@@ -6740,6 +6740,7 @@
     text-transform:uppercase;color:#8094c4;margin-top:2px;}
   .dm-msgs{flex:1;padding:16px;display:flex;flex-direction:column;gap:12px;overflow-y:auto;max-height:330px;}
   .dm-msg{max-width:78%;}
+  .dm-msg span{white-space:pre-line;}   /* разбор Кинча строками (30.10) */
   .dm-msg span{display:block;padding:10px 13px;border-radius:14px;font-size:13px;
     font-weight:700;line-height:1.45;}
   .dm-msg i{display:block;font-style:normal;font-size:8.5px;font-weight:900;letter-spacing:.09em;
@@ -24323,6 +24324,10 @@ Object.assign(I18N.en, {ccPostPress:(me,sit,ai,p,n,r,mate,g)=>ccPressPostText(me
   ccPostPressBroke:(me,g,p)=>ccPressT().broke(me, (ccPressT().goalName||{})[g]||g, p)});
 /* Личка после вечера (16.10, ccKinchDm / ccStaffAfterNight). v — номер варианта фразы, чтобы не повторялись. */
 Object.assign(I18N.en, {
+  // Разбор строками, как пост Кинча в ленте: язык его, английский, на всех языках сайта (как ccNewsStatBoard).
+  ccDmKinchBoard:(lbl,p,g,avg,rk,rows)=>'🏆 '+String(lbl)+' 🏆\n📊 #'+p+' · '+g+' games · avg place '+avg+' · #'+rk+' in the lobby by elims\n'+
+    (rows||[]).map(r=>'\n👤 '+(r[0] ? '@'+r[0] : 'You')+'\n🎯 Elims: '+r[1]+'\n💥 Damage: ≈'+ccNum(r[2])+'\n🩸 Taken: ≈'+ccNum(r[3])+
+      '\n⏱️ Time alive: ≈'+r[4]+'\n📍 Avg place: '+r[5]+'\n🔟 Top 10s: '+r[6]+'\n👑 Wins: '+r[7]+'\n⭐ Points: '+r[8]).join('\n'),
   ccDmKinchSum:(lbl,p,g,avg,el,pg,rk)=>'📊 '+esc(String(lbl))+': #'+p+'. '+g+' games, avg placement '+avg+', '+el+' elims ('+pg+' per game) — #'+rk+' in the lobby by elims.',
   ccDmKinchCmp:rows=>'Inside the squad: '+(rows||[]).map(r=>(r[4] ? 'you' : '@'+esc(r[0]))+' — '+r[1]+' elims, '+ccNum(r[2])+' dmg ('+r[3]+'%)').join(' · '),
   ccDmKinchVerdict:(who,me,sh,v)=>me ? ['You carried tonight: '+sh+'% of the squad damage was yours.','Top fragger of the squad — you, '+sh+'% of the damage.'][v%2]
@@ -114790,6 +114795,14 @@ function ccKinchDm(ranked, you, label){
   const avg=log.reduce((s,g)=>s+g.place, 0)/games, elims=log.reduce((s,g)=>s+(g.elims||0), 0);
   const rk=ranked.filter(t=>t!==you && (t.stageElims||0)>elims).length+1;
   const t=ccStaffThread(CC_KINCH_WHO);
+  /* 30.10, его «сделай кинчу в лс такой же разбор и как его посты в медиа»: при записи вечера по игрокам — разбор
+     аналитика (ccEveningPlayers) одним сообщением, строками с эмодзи, как пост Кинча в ленте (ccKinchBoardText). */
+  let pl=null; try{ pl=ccEveningPlayers(careerToday()); }catch(e){ pl=null; }
+  if(pl){
+    careerDmPush(t, 'them', 'ccDmKinchBoard', [label, place, games, avg.toFixed(1), rk,
+      pl.map(b=>[b.me ? '' : String(b.h), b.el, b.dmg, b.took, b.alive, b.place, b.top10, b.wins, b.pts])]);
+    return true;
+  }
   careerDmPush(t, 'them', 'ccDmKinchSum', [label, place, games, avg.toFixed(1), elims, (elims/games).toFixed(1), rk]);
   // Раскладка внутри состава: доля каждого — по весам киллов (как в «моей статистике»), урон — той же долей.
   const sq=((you.squad||you._cards||you.cards)||[]).filter(c=>c && c.handle);
@@ -120828,7 +120841,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='e37de790';
+const CC_BUILD='817f015a';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -149346,6 +149359,13 @@ function ccKinchPlace(place, of){
   return CC_KINCH_BY_PLACE.find(r=>p<=r[0]) || CC_KINCH_BY_PLACE[CC_KINCH_BY_PLACE.length-1];
 }
 function ccAnalystMe(day){
+  const list=ccEveningPlayers(day);
+  if(!list) return null;
+  const T=L();
+  return list.map(b=>T.dmStAnKinch(b.me ? T.dmStAnYou : '@'+b.h, b.el, ccNum(b.dmg), ccNum(b.took), b.alive, b.place, b.top10, b.wins, b.pts));
+}
+// Строки вечера по игрокам (ccEveningRows): ты первый, дальше по элимам. Общие для аналитика и личного разбора Кинча.
+function ccEveningPlayers(day){
   if(!CC_EVENING || CC_EVENING.day!==day) return null;
   const rows=(CC_EVENING.rows||[]).filter(r=>r && Array.isArray(r.mk) && Array.isArray(r.who) && r.mk.length===r.who.length);
   if(!rows.length) return null;
@@ -149364,9 +149384,9 @@ function ccAnalystMe(day){
   const list=[...by.values()];
   if(list.length<2) return null;
   list.sort((a,b)=>(b.me?1:0)-(a.me?1:0) || b.el-a.el);
-  const T=L(), mmss=sec=>Math.floor(sec/60)+':'+String(Math.round(sec%60)).padStart(2,'0');
-  return list.map(b=>T.dmStAnKinch(b.me ? T.dmStAnYou : '@'+b.h, b.el, ccNum(Math.round(b.dmg/10)*10), ccNum(Math.round(b.took/10)*10),
-    mmss(b.alive/b.games), (b.place/b.games).toFixed(1), b.top10, b.wins, b.pts));
+  const mmss=sec=>Math.floor(sec/60)+':'+String(Math.round(sec%60)).padStart(2,'0');
+  return list.map(b=>({h:b.h, me:b.me, el:b.el, dmg:Math.round(b.dmg/10)*10, took:Math.round(b.took/10)*10,
+    alive:mmss(b.alive/b.games), place:(b.place/b.games).toFixed(1), top10:b.top10, wins:b.wins, pts:b.pts}));
 }
 function ccStaffDmTick(to){
   if(!CAREER || !CAREER.career) return;
