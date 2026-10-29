@@ -8,7 +8,9 @@
  */
 (function(){
 'use strict';
-var SOCK=null, CODE=null, ID=null, SEEN=0, HANDLERS={}, PEER=null;
+var SOCK=null, CODE=null, ID=null, SEEN=0, HANDLERS={}, PEER=null, PEER_POSTS=null;
+// Посты напарника снимаются с карточки при приёме: карточка садится в состав и в сейв, лента — только показ.
+function takePosts(c){ if(c && c.posts){ PEER_POSTS=c.posts; c=Object.assign({}, c); delete c.posts; } return c; }
 /* Чужие решения, приехавшие раньше, чем до них дошёл этот клиент.
 
    Гонка настоящая, а не теоретическая: тот, кто жмёт «пропустить», проходит
@@ -119,6 +121,7 @@ var MP={
      и проверками — поэтому не только геттер: сторожу негде взять живой сокет,
      а подменять транспорт ради одной строки дороже, чем открыть запись. */
   get peer(){ return PEER; },
+  get peerPosts(){ return PEER_POSTS; },
   set peer(c){ PEER=c; },
   get code(){ return CODE; },
   get peerSeen(){ return LAST_PEER; },
@@ -222,6 +225,9 @@ var MP={
        тиммейтов показывают» — у каждого свой стоял на себе, а напарник в стандартном). Силы не двигает. */
     var eq=(typeof CAREER!=='undefined' && CAREER && CAREER.fnEq)||{}, own=(typeof CAREER!=='undefined' && CAREER && CAREER.fnOwn)||{};
     out.fnSkin = (eq.o && own[eq.o]) ? eq.o : null;
+    /* Свои последние посты — напарник видит их в своей ленте (Notion 27.10 скрин 34, игрок: «pouvoir voir les tweet
+       du mate»). Только показ: силы и вечера не двигают. См. ccMatePostsWire в index.html. */
+    out.posts = (typeof ccMatePostsWire==='function') ? ccMatePostsWire() : null;
     return out;
   },
 
@@ -262,7 +268,7 @@ var MP={
     if(m.t==='state' && typeof ccMpKindCheck==='function' && typeof m.race==='boolean') ccMpKindCheck(m.race);
     if(m.t==='act' && m.kind==='race' && m.by && m.by!==ID && typeof ccMpKindCheck==='function') ccMpKindCheck(true);
     if(m.t==='state'){
-      PEER=m.peer||PEER;
+      PEER=takePosts(m.peer)||PEER;
       /* Сид команды — ОТ СЕРВЕРА, и он старше всего, что лежит в сейве.
 
          Живой сторож 28 августа (check-mp-live-two): у двоих в одном лобби
@@ -296,7 +302,7 @@ var MP={
       }
     }
     if(m.t==='card'){
-      PEER=m.card;
+      PEER=takePosts(m.card);
       // Кто это вообще — решает index.html: здесь про карточки знать нечего.
       if(typeof ccMpPeerCheck==='function') ccMpPeerCheck();
     }

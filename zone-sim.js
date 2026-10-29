@@ -839,7 +839,11 @@
      же долю. Кил за него получает проигравший (обмен перед смертью). Неполный отряд в следующих файтах
      слабее: сила для дуэли × (живых/всех)^SHORT_EXP — 1 против 2 при равных картах ≈ четверть побед
      (ОЦЕНКА, замера нет). Здоровье и щит — общие на отряд, как было; шторм и сюрдж убивают отряд целиком. */
-  var MEMBER_LOSS = 0.45, SHORT_EXP = 0.32;   // 0.3 → 0.18 дуо с отдельной смертью, 0.45 → 0.24, 0.6 → 0.31 (реплеи 0.25)
+  var MEMBER_LOSS = 0.28, SHORT_EXP = 0.32;   // с кругами и ребутом (29.10): 0.30 → 0.27 дуо с отдельной смертью, 0.28 → 0.26, 0.25 → 0.23 (реплеи 0.25)
+  /* По кругам — по реплеям (29.10, одиночные смерти финалов FNCS 2026 EU за игру по кругу: высадка и 1-й 7.0, 2-й 3.3,
+     3-й 1.0, 4-й 2.3, 5-й 2.3, 6-й 4.0, 7-й 2.7, 8-й 1.0, 9–10-й 0, 11-й 1.0): игрока по одному теряют на высадке и в
+     середине, в эндгейме выбивают отрядом. Множитель к MEMBER_LOSS по кругу, подогнан check-member-deaths.js. */
+  var MEMBER_LOSS_ZONE = [2.5, 2.5, 3, 3, 3, 3, 2.2, 0.9, 0.35, 0.05, 0.05, 0.4, 0.4];   // 0.3 → 0.18 дуо с отдельной смертью, 0.45 → 0.24, 0.6 → 0.31 (реплеи 0.25)
   /* РЕБУТ (29.10, его «чтоб ребутаться можно было, как в реальном фортнайте»). Реплеи трёх финалов FNCS 2026 EU
      (tools/real-matches.json): смертей 102/105/107 при 98/100/100 игроках — то есть 6–9 ребутов за игру (смертей сверх
      игроков, минус живые победители). Карточка выбитого лежит REBOOT_CARD_SEC; пока она жива, напарник, не занятый файтом,
@@ -849,18 +853,25 @@
   /* Правила по годам (сверка 29.10, tools/measured/reboot-rules.md): отсечки по кругу в соревновательном нет — ребут, пока
      жива карточка; карточка 90 с (Глава 2 S8 — 270); фургонов нет до v8.30 (10.04.2019) и 19.04–04.05.2019 (Epic отключила
      в турнирах). REBOOT_UNTIL — круг-отсечка без даты: бесконечность. */
-  var REBOOT_RATE = 0.014, REBOOT_CARD_SEC = 90, REBOOT_UNTIL = Infinity;   // без отсечки: 0.01 → 5.5 ребута за игру, 0.014 → 6.8, 0.02 → 8.6 (реплеи 6–9)
+  var REBOOT_RATE = 0.02, REBOOT_CARD_SEC = 90, REBOOT_UNTIL = Infinity;   // с фургоном в зоне (REBOOT_VANS) и кругами MEMBER_LOSS_ZONE: 0.012 → 6.0 за игру, 0.016 → 6.4, 0.02 → 6.5–7 (реплеи 6–9)   // без отсечки: 0.01 → 5.5 ребута за игру, 0.014 → 6.8, 0.02 → 8.6 (реплеи 6–9)
   var REBOOT_CARD_NOW = REBOOT_CARD_SEC;   // 0.012 → 4.0 ребута за игру, 0.035 → 6.3, 0.05 → 6.6, 0.08 → 7.1 (реплеи 6–9)
   var REBOOT_ZONE_MAX = REBOOT_UNTIL;
-  function applyReboots(squads, seconds, zone){
+  /* ФУРГОН ВНУТРИ ЗОНЫ. Первая версия ребутала где угодно, и больше половины ребутов выходило в эндгейме (круги
+     7–10), где круг меньше любой точки острова и фургона в нём нет. Теперь шанс умножается на вероятность, что хоть один
+     из REBOOT_VANS фургонов стоит внутри текущего круга: 1 − (1 − доля площади)^фургонов. Число фургонов на острове —
+     ОЦЕНКА (в разных главах 10–15), по реплеям «кто ребутнул» не восстановить. */
+  var REBOOT_VANS = 12;
+  function applyReboots(squads, seconds, zone, areaShare){
     if(!(zone < REBOOT_ZONE_MAX)) return;
+    var a = areaShare > 1 ? 1 : (areaShare > 0 ? areaShare : 0), vanIn = 1 - Math.pow(1 - a, REBOOT_VANS);
+    if(!(vanIn > 0)) return;
     for(var i=0;i<squads.length;i++){
       var s = squads[i];
       if(!s.alive || !s.mCard || s.busy) continue;
       for(var k=0;k<s.mCard.length;k++){
         if(s.mAlive[k] || !(s.mCard[k] > 0)) continue;
         s.mCard[k] -= seconds;
-        if(rngReboot() < REBOOT_RATE * seconds){
+        if(rngReboot() < REBOOT_RATE * vanIn * seconds){
           s.mAlive[k] = true; s.mCard[k] = 0; s.reboots++;
           if(s.mSh){ s.mSh[k] = 0; s.mHp[k] = 100; }
           if(onRebootHook) onRebootHook(s, k);
@@ -890,7 +901,8 @@
     if(!winner.mAlive || aliveOf(winner) < 2) return;
     var pw = winner.power || 1, pl = loser.power || 1;
     var even = 2 * Math.min(pw, pl) / (pw + pl);
-    if(rng() >= MEMBER_LOSS * even) return;
+    var zw = MEMBER_LOSS_ZONE[Math.min(MEMBER_LOSS_ZONE.length - 1, Math.max(0, currentZoneRef() || 0))];
+    if(rng() >= Math.min(0.95, MEMBER_LOSS * zw * even)) return;
     var left = []; for(var i=0;i<winner.mAlive.length;i++) if(winner.mAlive[i]) left.push(i);
     var k = left[Math.floor(rng() * left.length)];
     winner.mAlive[k] = false;
@@ -1520,6 +1532,8 @@
   function simulateZoneGame(teams, opts){
     var rng = opts.rng, aspect = opts.aspect, duel = opts.duel, record = !!opts.record;
     var plan = generateZonePlan({rng: rng, land: opts.land, aspect: aspect, phases: opts.phases});
+    // Радиус всего острова (круг 0) — для доли площади текущего круга (applyReboots).
+    var ISLAND_R = (plan[0] && plan[0].fromRadius) || 50;
     SURGE_NET = !(opts.phases && opts.phases.net === false);
     // Ребут: бросок из потока игры; круг-отсечка — из правил года (phasesFor .rebootUntil), Reload — без ребута (там возрождение).
     rngReboot = rng;
@@ -1863,7 +1877,7 @@
         holdLate(squads, t);
         stepMovement(squads, TICK_SEC, from);
         applyHealing(squads, from, TICK_SEC);
-        applyReboots(squads, TICK_SEC, phase.zone);
+        applyReboots(squads, TICK_SEC, phase.zone, Math.pow(from.radius / ISLAND_R, 2));
         applyStorm(squads, from, phase.dps, TICK_SEC, onDeath);
         currentSurgeLine = applySurge(squads, phase.surgeAt, TICK_SEC, onDeath, rng);
         resolveContacts(squads, from, rng, duel, onDeath, inDrop, elimsFor, onMember);
@@ -1882,7 +1896,7 @@
         liveCircle = cur;
         stepMovement(squads, TICK_SEC, cur);
         applyHealing(squads, cur, TICK_SEC);
-        applyReboots(squads, TICK_SEC, phase.zone);
+        applyReboots(squads, TICK_SEC, phase.zone, Math.pow(cur.radius / ISLAND_R, 2));
         applyStorm(squads, cur, phase.dps, TICK_SEC, onDeath);
         currentSurgeLine = applySurge(squads, phase.surgeAt, TICK_SEC, onDeath, rng);
         resolveContacts(squads, cur, rng, duel, onDeath, false, elimsFor, onMember);

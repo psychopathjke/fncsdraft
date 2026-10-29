@@ -9402,13 +9402,13 @@
      кэш промахивается сам. Проверку «хеш в теге совпадает с файлом» держит
      tools/check-deploy-folder.js: забыть обновить руками теперь нельзя, папка
      деплоя просто не соберётся зелёной. -->
-<script src="zone-sim.js?v=4a26ca67"></script>
+<script src="zone-sim.js?v=39464d24"></script>
 <script src="zone-replay.js?v=03696fdb"></script>
 <!-- Командная карьера: транспорт и склейка. Весь код мультиплеера живёт здесь,
      в index.html только точки врезки. ?v= — тот же кэш-предохранитель, что и
      у соседей: поменял mp.js — переставь хеш, иначе браузер возьмёт старый
      файл и разойдётся с напарником. -->
-<script src="mp.js?v=2ffb24cf"></script>
+<script src="mp.js?v=4fb4df12"></script>
 <!-- Дополнительные реплики лички и реплаев (tools/build-lines-more.js), грузятся после страницы. -->
 <script src="lines-more.js?v=5aebca09" defer></script>
 <!-- lz-string 1.5.0 (MIT, (c) 2013 pieroxy) — сжатие сейва карьеры, когда браузеру не хватает места (Safari: 5 МБ на сайт). -->
@@ -120628,7 +120628,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='edc539b4';
+const CC_BUILD='4a2c3594';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -144404,8 +144404,28 @@ function careerNewsHTML(limit){
    в своей же ленте стоит везде, где такая вкладка есть. */
 let CH_FEED='all', CH_WHO=null, CH_FEED_Q=null;
 function careerFeedMode(m){ CH_FEED=m; careerRenderHub('social'); }
+/* ПОСТЫ ТИММЕЙТА (29.10, игрок из Франции: «pouvoir voir les tweet du mate ?»). В командной карьере напарник шлёт свои
+   последние посты с карточкой (MP.card → posts); здесь они встают в ленту под его ником — до следующего вечера,
+   когда карточка приедет заново. Лайк и ответ на них не пишутся: пост живёт у него. */
+const CC_MATE_POSTS_N=12;
+function ccMatePostsWire(){
+  try{
+    return (CAREER.career.news||[]).filter(e=>{ try{ return ccPostAuthor(e).you; }catch(x){ return false; } })
+      .slice(0, CC_MATE_POSTS_N).map(e=>({id:e.id, day:e.day, k:e.k, a:e.a, text:e.text, kind:e.kind, likes:e.likes||0, rts:e.rts||0}));
+  }catch(e){ return null; }
+}
+function ccMatePosts(){
+  try{
+    if(!(typeof ccMpOn==='function' && ccMpOn()) || typeof MP==='undefined' || !MP.peer || !Array.isArray(MP.peerPosts)) return [];
+    const p=MP.peer, by={name:p.handle, handle:ccHandle(p.handle), card:p, ovr:p._ovr};
+    return MP.peerPosts.map(x=>Object.assign({}, x, {id:'mate:'+x.id, by:by, mate:true}));
+  }catch(e){ return []; }
+}
 function careerFeedHTML(){
-  const news=(CAREER.career.news||[]);
+  const mp=ccMatePosts();
+  // Свои и тиммейта — одной лентой, новые сверху (у своих порядок записи сохраняется).
+  const news=mp.length ? (CAREER.career.news||[]).concat(mp).map((e,i)=>[e,i]).sort((x,y)=>(x[0].day<y[0].day?1:x[0].day>y[0].day?-1:x[1]-y[1])).map(x=>x[0])
+                       : (CAREER.career.news||[]);
   let list=CH_FEED==='subs'
     ? news.filter(n=>{ const w=ccPostAuthor(n); return w.you || ccFollowing(w.handle); })
     : news;
