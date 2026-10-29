@@ -113351,6 +113351,11 @@ function ccKitPanel(lobby, frame){
   } else {
     for(let k=0;k<parts.length;k++) if(parts[k]!==box._parts[k]){ box.children[k].innerHTML=parts[k]; box._parts[k]=parts[k]; }
   }
+  /* Килфид над тиммейтами (Notion 27.10 скрин 26: «выше сделать килфид, чтоб хп и броню было видно тимейтов»):
+     78px — над своими полосками, плюс строка на каждого напарника (имя 11px + полоса 5px + отступы, .zk-mate).
+     По числу напарников, а не замером: offsetHeight на каждом кадре — пересчёт раскладки. */
+  const feed=map.querySelector('.zr-feed'), fb=78+mates.length*26;
+  if(feed && feed._fb!==fb){ feed.style.bottom=fb+'px'; feed._fb=fb; }
 }
 // Одно число ресов — тремя стопками, как на HUD: 40% дерево, 35% кирпич, остаток металл.
 // Три стопки на HUD — дерево, кирпич, металл, каждая не выше капа игры (500):
@@ -120550,7 +120555,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='72978247';
+const CC_BUILD='72e8e7a8';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
