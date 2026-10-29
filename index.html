@@ -2533,6 +2533,22 @@
   .cc-warn{display:none;background:#e0396a;color:#fff;font-size:10.5px;font-weight:800;
     line-height:1.45;padding:6px 9px;border-radius:3px;margin-bottom:6px;}
 
+  /* Карта окном поверх (ccMapOpen): свёрнута — видна кнопка страны, открыта — панель целиком по центру экрана. */
+  #ccMapPanel.cc-compact .cc-maphead, #ccMapPanel.cc-compact #ccGrid, #ccMapPanel.cc-compact [data-i18n="ccPingNote"]{display:none!important;}
+  .cc-mapbtn{display:none;}
+  #ccMapPanel.cc-compact .cc-mapbtn{display:flex;align-items:center;gap:10px;width:100%;margin-top:14px;padding:12px 14px;border-radius:8px;cursor:pointer;
+    border:1px solid rgba(255,255,255,.22);background:rgba(255,255,255,.07);color:inherit;font:inherit;text-align:left;}
+  #ccMapPanel.cc-compact .cc-mapbtn:hover{background:rgba(255,255,255,.13);}
+  .cc-mapbtn b{font-weight:800;text-transform:uppercase;letter-spacing:.04em;}
+  .cc-mapbtn span{margin-left:auto;opacity:.7;font-size:12px;}
+  .cc-mapbtn img{height:16px;width:auto;border-radius:2px;}
+  .cc-mapclose{display:none;flex:none;width:34px;height:34px;border-radius:50%;border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.08);
+    color:#fff;font-size:20px;line-height:1;cursor:pointer;}
+  #ccMapPanel.cc-float{position:fixed;inset:12px;margin:auto;width:min(1100px, calc(100vw - 24px));height:fit-content;max-height:calc(100vh - 24px);
+    overflow:auto;z-index:9000;background:#0d1b4a!important;box-shadow:0 0 0 100vmax rgba(3,8,22,.72),0 24px 60px rgba(0,0,0,.6)!important;}
+  #ccMapPanel.cc-float .cc-mapclose{display:block;}
+  /* .cc-body — свой слой (z-index:2): пока карта открыта, он поверх года и вкладок, иначе чипы сезонов лезли на окно. */
+  #screen-career-create.cc-mapopen .cc-body{z-index:9000;}
   .cc-maphead{display:flex;align-items:center;justify-content:space-between;gap:12px;
     flex-wrap:wrap;margin-bottom:12px;}
   .cc-mapttl{background:#101c2e;color:#fff;border-radius:5px;padding:8px 12px;line-height:1.25;}
@@ -9892,18 +9908,21 @@
         </div>
 
         <div class="cc-col">
-        <div class="cc-panel">
+        <!-- Своему игроку карта стран — окном поверх (ccMapOpen, 29.10): на странице кнопка страны, карта не растягивает экран. -->
+        <div class="cc-panel cc-mappanel" id="ccMapPanel">
           <div class="cc-field" style="margin-top:0;">
             <label data-i18n="ccRegion"></label>
             <div class="cc-chips cc-chips-reg" id="ccRegionChips"></div>
             <div class="cc-note" data-i18n="ccRegionNote"></div>
           </div>
+          <button type="button" class="cc-mapbtn" id="ccMapBtn" onclick="ccMapOpen()"></button>
           <div class="cc-maphead">
             <div class="cc-mapttl" id="ccPingPlate">
               <b data-i18n="ccPingTitle"></b>
               <i id="ccPingServer"></i>
             </div>
             <input class="cc-search" id="ccSearch" autocomplete="off" oninput="ccRenderList()">
+            <button type="button" class="cc-mapclose" onclick="ccMapClose()" aria-label="Close">×</button>
           </div>
           <div class="cc-grid" id="ccGrid"></div>
           <div class="cc-cards" id="ccCards" style="display:none;"></div>
@@ -10910,7 +10929,7 @@ cardOvrFull:'Показанный рейтинг = база + прибавка �
 attrPingFull:'Пинг — прибавка в ближнем бою',
 ccRegion:'Регион',
 ccRegionNote:'Регион — это сервер и лестница дивизионов, на которых ты играешь. Карта под ним своя у каждого.',
-ccMapLoading:'Загружается карта…', ccZoomIn:'Приблизить', ccZoomOut:'Отдалить', ccZoomReset:'Вся карта',
+ccMapOpen:'открыть карту', ccMapChange:'сменить на карте', ccMapLoading:'Загружается карта…', ccZoomIn:'Приблизить', ccZoomOut:'Отдалить', ccZoomReset:'Вся карта',
 ccRegionSoon:'Доступно, если брать готовую карточку',
 ccRole:'Роль', ccMateKick:'Убрать из состава', ccMateKickAsk:n=>'Убрать '+n+' из состава? Место, которое вы выиграли вместе, при этом теряется.', ccRoleSwapTo:r=>'Стать '+r, ccRoleLockedTwo:'В команде уже есть ИГЛ — второго быть не может. Смени напарника, если хочешь играть ИГЛом.', ccRoleLockedNone:'Ты единственный ИГЛ в команде — без ИГЛа команды не бывает.',
 ccDivision:'Дивизион',
@@ -13033,7 +13052,7 @@ cardOvrFull:'Shown rating = base + ping bonus + age bonus (99 max).',
 attrPingFull:'Ping — close-range bonus',
 ccRegion:'Region',
 ccRegionNote:'A region is the server you play on and the ladder you climb. Each one has its own map below.',
-ccMapLoading:'Loading the map\u2026', ccZoomIn:'Zoom in', ccZoomOut:'Zoom out', ccZoomReset:'Whole map',
+ccMapOpen:'open the map', ccMapChange:'change on the map', ccMapLoading:'Loading the map\u2026', ccZoomIn:'Zoom in', ccZoomOut:'Zoom out', ccZoomReset:'Whole map',
 ccRegionSoon:'Open if you take an existing card',
 ccRole:'Role', ccMateKick:'Drop from the squad', ccMateKickAsk:n=>'Drop '+n+' from the squad? Any seat the two of you won together goes with them.', ccRoleSwapTo:r=>'Switch to '+r, ccRoleLockedTwo:'The squad already has an IGL, and it cannot have two. Change partner if you want to call.', ccRoleLockedNone:'You are the only IGL in the squad, and a squad without one does not play.',
 ccDivision:'Division',
@@ -16233,7 +16252,7 @@ ccAgeTooOld:'Au-delà de {N} ans, ce n’est plus une carrière. Mets {N} ans ou
 ccAgeEmpty:'Indique un âge.',
 ccAgeKnown:'Une vraie date de naissance — l’âge est le sien, pas le tien.',
 ccAgeUnknown:'Personne n’a publié la date de naissance de ce joueur. Mets-la toi-même.',
-ccMapLoading:'Chargement de la carte…', ccZoomIn:'Agrandir', ccZoomOut:'Réduire', ccZoomReset:'Carte entière',
+ccMapOpen:'ouvrir la carte', ccMapChange:'changer sur la carte', ccMapLoading:'Chargement de la carte…', ccZoomIn:'Agrandir', ccZoomOut:'Réduire', ccZoomReset:'Carte entière',
 ccRegionSoon:'Disponible si tu prends une carte existante',
 ccDivEvent:'FNCS Division {N}',
 ccRoRole:'Rôle',
@@ -18569,7 +18588,7 @@ ccAgeTooOld:"Dopo i {N} questa smette di essere una carriera. Metti {N} anni o m
 ccAgeEmpty:"Inserisci un'età.",
 ccAgeKnown:"Una data di nascita reale — l'età è la sua, non la tua.",
 ccAgeUnknown:"Nessuno ha pubblicato il compleanno di questo giocatore. Mettilo tu.",
-ccMapLoading:"Carico la mappa…",
+ccMapOpen:"apri la mappa", ccMapChange:"cambia sulla mappa", ccMapLoading:"Carico la mappa…",
 ccZoomIn:"Ingrandisci",
 ccZoomOut:"Riduci",
 ccZoomReset:"Tutta la mappa",
@@ -21122,7 +21141,7 @@ ccAgeTooOld:"Depois dos {N} isso deixa de ser carreira. Coloque {N} anos ou meno
 ccAgeEmpty:"Digite uma idade.",
 ccAgeKnown:"Uma data de nascimento real — a idade é dele, não sua.",
 ccAgeUnknown:"Ninguém publicou o aniversário desse jogador. Defina você mesmo.",
-ccMapLoading:"Carregando o mapa…",
+ccMapOpen:"abrir o mapa", ccMapChange:"mudar no mapa", ccMapLoading:"Carregando o mapa…",
 ccZoomIn:"Aproximar",
 ccZoomOut:"Afastar",
 ccZoomReset:"Mapa inteiro",
@@ -119260,6 +119279,7 @@ function ccPlayerFem(){ return !!(CAREER && CAREER.player && CAREER.player.sex==
 
 function openCareerCreate(){
   try{ ccBindsPaint(); }catch(e){}
+  CC_MAP_OPEN=false;
   show('screen-career-create');
   // Что здесь заводится — одиночная карьера или половина команды. См. CC_MP_NEW.
   ccMpNoteDraw();
@@ -119412,11 +119432,12 @@ function ccRenderRegions(){
     const ready=ccRegionReady(r) && !(lockR && r!==lockR);
     return `<button class="cc-chip${CC.region===r?' on':''}${ready?'':' soon'}" `+
       `${ready?'':'disabled title="'+esc(lockR ? L().ccMpLockedBy : L().ccRegionSoon)+'"'} `+
-      `onclick="ccPickRegion(\'${r}\')">${regionName(r)}</button>`;
+      `onclick="ccPickRegion(\'${r}\', true)">${regionName(r)}</button>`;
   }).join('');
 }
-function ccPickRegion(r){
+function ccPickRegion(r, byHand){
   if(!ccRegionReady(r)) return;
+  if(byHand && CC.mode==='rookie') CC_MAP_OPEN=true;
   if(ccMpLockedRegion() && r!==ccMpLockedRegion()) return;   // регион задан хозяином комнаты
   CC.region=r;
   // A card from the region you just left is not a card in this one, so the pick
@@ -119683,6 +119704,7 @@ const CC_PRO_HOME={malibuca:'rs', swizzy:'rs', panzer:'rs', nefrizi:'rs'};
 function ccProHomeOf(handle){ return CC_PRO_HOME[String(handle||'').toLowerCase()]||null; }
 
 function ccRenderList(){
+  try{ ccMapState(); }catch(e){}
   const q=(document.getElementById('ccSearch').value||'').trim().toLowerCase();
   const grid=document.getElementById('ccGrid'), cards=document.getElementById('ccCards');
   const plate=document.getElementById('ccPingPlate');
@@ -119830,7 +119852,23 @@ function ccMateNow(card){
   // В трио их двое — тогда через запятую, потому что это и есть состав.
   return best ? best.join(', ') : null;
 }
-function ccPickCountry(code){ CC.country=code; ccRenderList(); ccSync(); }
+function ccPickCountry(code){ CC.country=code; CC_MAP_OPEN=false; ccRenderList(); ccSync(); }
+let CC_MAP_OPEN=false;
+function ccMapState(){
+  const p=document.getElementById('ccMapPanel'); if(!p) return;
+  const on=CC.mode==='rookie';
+  p.classList.toggle('cc-compact', on && !CC_MAP_OPEN);
+  p.classList.toggle('cc-float', on && CC_MAP_OPEN);
+  const scr=document.getElementById('screen-career-create'); if(scr) scr.classList.toggle('cc-mapopen', on && CC_MAP_OPEN);
+  const b=document.getElementById('ccMapBtn'); if(!b) return;
+  const T=L();
+  b.innerHTML=CC.country
+    ? ccFlagImgs(ccFlagEmoji(CC.country))+'<b>'+esc(ccCountryName(CC.country))+'</b><span>'+esc(T.ccMapChange||'')+'</span>'
+    : '<b>'+esc(T.ccPickCountry||'')+'</b><span>'+esc(T.ccMapOpen||'')+'</span>';
+}
+function ccMapOpen(){ CC_MAP_OPEN=true; ccRenderList(); }
+function ccMapClose(){ CC_MAP_OPEN=false; ccMapState(); }
+document.addEventListener('keydown', e=>{ if(e.key==='Escape' && CC_MAP_OPEN){ ccMapClose(); } });
 /* СВОИ СТАТЫ НА СОЗДАНИИ (его просьба 29.09: «чтоб игрок мог себе сам статы, которые хочет
    поставить»). Было: десять очков по +0.5 к стату, только вверх. Стало: шесть строк «− число +»
    — любой стат можно опустить и отдать в другой, плюс небольшой запас сверху.
@@ -120704,7 +120742,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='b2cfb1b8';
+const CC_BUILD='f3bfd41c';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -176789,6 +176827,7 @@ function mgrCarHooks(on){
       const res=await sim.apply(this, arguments); try{ mgrCarJoinRecord(teams, arguments[8]); mgrCarMaybeSwap(teams); }catch(e){ console.error('mgrCarMaybeSwap', e); } return res; };
     careerMoneyAdd=function(ranked, prize){ try{ const J=MGR_CAR_JOIN; if(J && ranked) Object.keys(J.obj).forEach(id=>{ const i=ranked.indexOf(J.obj[id]); if(i<0) return;
         J.rec[id]=Object.assign(J.rec[id]||{}, {place:i+1, of:ranked.length, prize:Math.round(prize(i+1, J.obj[id])||0), final:true}); }); }catch(e){}
+      try{ mgrCarPayNote(ranked, prize); }catch(e){ console.error('mgrCarPayNote', e); }
       return money.apply(this, arguments); };
   } else if(!on && mgrCarHooks.sim){ simulateGamesLive=mgrCarHooks.sim; careerMoneyAdd=mgrCarHooks.money; mgrCarHooks.sim=null; mgrCarHooks.money=null; }
 }
@@ -176975,8 +177014,46 @@ async function mgrCarRun(ev, tm, quiet, fast){
   }
   return res;
 }
+/* ВЫПЛАТЫ ВЕЧЕРА КАРЬЕРЫ — В «КЛУБЫ ПО СЕЗОНУ» (MGR.ctab) И ТАБЛИЦЫ МИРА. Каждая выплата раннера (careerMoneyAdd: финал
+   недели, Reload, кубок, Мейджор; два раунда — две выплаты) снимается сразу, пока места и очки те, что в таблице:
+   первые MGR_RESULTS_ROWS мест, все составы клуба и все, кому заплатили. Приз — весь состав (как J.rec.prize). */
+let MGR_CAR_PAYS=[];
+function mgrCarPayNote(ranked, prize){
+  if(!ranked || !ranked.length || !MGR || !MGR.club) return;
+  const rows=[];
+  ranked.forEach((t, i)=>{
+    if(!t) return;
+    const p=Math.round(prize(i+1, t)||0), club=!!(t.isYou || t.isClub);
+    if(!(p>0 || club || i<MGR_RESULTS_ROWS)) return;
+    const sq=t.squad||[];
+    let orgs=[...new Set(sq.map(c=>{ try{ return mgrOrgOf(c); }catch(e){ return null; } }).filter(Boolean))];
+    if(club && orgs.indexOf(MGR.club.name)<0) orgs=[MGR.club.name].concat(orgs);
+    rows.push({place:i+1, n:sq.map(c=>(c && (c.handle||c.nick))||'').filter(Boolean).join(' & ')||t.name||'-', orgs,
+               pts:t.stagePts!=null ? Math.round(t.stagePts) : null, el:t.stageElims!=null ? t.stageElims : null, prize:p, mine:club || orgs.indexOf(MGR.club.name)>=0});
+  });
+  MGR_CAR_PAYS.push({n:ranked.length, rows});
+}
+function mgrCarWorldStore(ev, pays){
+  if(!pays || !pays.length || !MGR) return;
+  MGR.results=MGR.results||[];
+  if(!MGR.ctab || MGR.ctab.year!==MGR.year) MGR.ctab={year:MGR.year, by:{}};
+  const counted=new Set();
+  pays.forEach((p, k)=>{
+    const id=ev.id+(k ? '#'+k : ''), last=k===pays.length-1;
+    if(MGR.results.some(r=>r.id===id && r.day===ev.day && r.year===MGR.year)) return;
+    MGR.results.unshift({id, day:ev.day, year:MGR.year, name:ev.name+(pays.length>1 ? ' · '+(k+1) : ''), played:true, n:p.n,
+      rows:p.rows.filter(r=>r.place<=MGR_RESULTS_ROWS || r.mine), mode:ev.mode});
+    p.rows.forEach(row=>{ if(!row.orgs.length) return; row.orgs.forEach(o=>{ const b=MGR.ctab.by[o]=MGR.ctab.by[o]||{org:o, prize:0, wins:0, top3:0, events:0};
+      b.prize+=Math.round((row.prize||0)/row.orgs.length);
+      if(!counted.has(o)){ counted.add(o); b.events++; }
+      if(last){ if(row.place===1) b.wins++; if(row.place<=3) b.top3++; } }); });
+  });
+  MGR.results=MGR.results.slice(0, MGR_RESULTS_MAX);
+}
 // Итог вечера команды — в журнал клуба, кассу, мораль и ленту (как у Victory-капа, mgrAfterResults).
 function mgrCarHarvest(ev, parts){
+  try{ mgrCarWorldStore(ev, MGR_CAR_PAYS); }catch(e){ console.error('mgrCarWorldStore', e); }
+  MGR_CAR_PAYS=[];
   const row={day:ev.day, kind:'night', name:ev.name, car:ev.ck, teams:[]};
   let clubGot=0;
   parts.forEach(p=>{
@@ -177053,6 +177130,7 @@ function mgrCarTeams(ev){
 }
 // Перемотка: все команды — без вопросов и анимации.
 async function mgrCarAuto(ev){
+  MGR_CAR_PAYS=[];
   const teams=mgrCarTeams(ev);
   const parts=teams.length ? await mgrCarNight(ev, teams, teams[0], true, true) : [];
   try{ document.getElementById('majorStages').innerHTML=''; }catch(e){}
@@ -177062,6 +177140,7 @@ async function mgrCarAuto(ev){
 // «Играть» / «Симулировать»: остальные команды клуба — быстро, выбранная — на карте (Играть — с вопросами).
 async function mgrPlayCar(ev){
   await mgrWorldCatchUpLive(ev.day);
+  MGR_CAR_PAYS=[];
   mgrAdvanceTo(ev.day);
   const teams=mgrCarTeams(ev);
   if(!teams.length){ MGR.skipped=(MGR.skipped||[]).concat([ev.id+'|'+ev.day]); MGR_CAR_CACHE=null; mgrSave(); mgrOpenHub(); return; }
