@@ -356,10 +356,13 @@
        c3 — Главы 3–5 (2022–2024), новый экран карты: пурпурно-розовый шторм, тонкие бледные полосы, край
             без линии, широкое розовое свечение от безопасной зоны, следующий круг тонкий белый без тени;
        c6 — Глава 6 и дальше (2025+): фиолетовый с розовым свечением у стены, как было до этой правки.
-     Вид игры ставит index.html (ccStormPhases → window.CC_STORM_LOOK). */
+     Вид игры ставит index.html (ccStormPhases → window.CC_STORM_LOOK).
+     Косые полосы (stripe) ВЫКЛЮЧЕНЫ: SVG-узор на весь шторм в эндгейме ронял реплей с 50 до 5–12 кадров
+     в WebKit и лагал у него на ПК («начинает лагать после 4 игры»). Код узора оставлен; включать только
+     дешёвым способом и с замером (scratchpad-проба fps-webkit по образцу tools/check-replay-fps.js). */
   var LOOKS = {
-    c1: {fill:'rgba(117,110,210,.5)', stripe:'rgba(214,72,214,.38)', gap:4.2, sw:1.1, rim:false, edge:'#1b2fb8', nextShadow:true},
-    c3: {fill:'rgba(175,62,161,.5)', stripe:'rgba(255,170,240,.16)', gap:1.6, sw:0.35, rim:true, rimMul:1.6, edge:null, nextShadow:false},
+    c1: {fill:'rgba(117,110,210,.5)', stripe:null, gap:4.2, sw:1.1, rim:false, edge:'#1b2fb8', nextShadow:true},
+    c3: {fill:'rgba(175,62,161,.5)', stripe:null, gap:1.6, sw:0.35, rim:true, rimMul:1.6, edge:null, nextShadow:false},
     c6: {fill:'rgba(150,54,214,.44)', stripe:null, rim:true, rimMul:1, edge:null, nextShadow:true}
   };
   function stormLook(){
@@ -367,7 +370,7 @@
     return LOOKS[k] || LOOKS.c6;
   }
   var seq = 0;
-  function stormFill(vbW, vbH, cx, cy, r, scale){
+  function stormFill(vbW, vbH, cx, cy, r, scale, view){
     var d = outsideCircle(vbW, vbH, cx, cy, r), look = stormLook();
     var g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
 
@@ -385,7 +388,7 @@
       pat.setAttribute('id', pid);
       pat.setAttribute('patternUnits', 'userSpaceOnUse');
       // Шаг полос — на экране, а не на карте: камера в эндгейме приближает в несколько раз.
-      var k = 1 / Math.max(1, scale || 1), gap = look.gap * k;
+      var k = 1, gap = look.gap;
       pat.setAttribute('width', gap); pat.setAttribute('height', gap);
       pat.setAttribute('patternTransform', 'rotate(45)');
       var bar = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
@@ -394,7 +397,16 @@
       bar.setAttribute('fill', look.stripe);
       pat.appendChild(bar); pd.appendChild(pat); g.appendChild(pd);
       var ps = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-      ps.setAttribute('d', d);
+      // Полосы — только в кадре камеры (с запасом на её ход): на приближении в эндгейме шаг мелкий, и узор
+      // на всю карту — сотни тысяч плиток каждый кадр (его «начинает лагать, где зоны сужаются»).
+      var sd = d;
+      if(view){
+        var px = (view.x1 - view.x0) * 0.25, py = (view.y1 - view.y0) * 0.25;
+        var x0 = Math.max(0, view.x0 - px), y0 = Math.max(0, view.y0 - py), x1 = Math.min(vbW, view.x1 + px), y1 = Math.min(vbH, view.y1 + py);
+        sd = 'M' + x0 + ' ' + y0 + ' H' + x1 + ' V' + y1 + ' H' + x0 + ' Z ' +
+             'M' + (cx - r) + ' ' + cy + ' a' + r + ' ' + r + ' 0 1 0 ' + (r*2) + ' 0' + ' a' + r + ' ' + r + ' 0 1 0 ' + (-r*2) + ' 0 Z';
+      }
+      ps.setAttribute('d', sd);
       ps.setAttribute('fill-rule', 'evenodd');
       ps.setAttribute('fill', 'url(#' + pid + ')');
       g.appendChild(ps);
@@ -1264,7 +1276,7 @@
 
     // Storm first, so the circles and everybody's markers sit on top of it.
     handle.svg.appendChild(stormFill(100, vbH,
-      frame.circle.cx, frame.circle.cy, frame.circle.radius, handle.scale));
+      frame.circle.cx, frame.circle.cy, frame.circle.radius, handle.scale, handle.view));
     // One ring on the map, and it is the circle you have to run to.
     //
     // The zone you are standing in does not get a line, because it does not
