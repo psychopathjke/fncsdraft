@@ -120593,7 +120593,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='237b926c';
+const CC_BUILD='422191d4';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -169117,14 +169117,15 @@ const CC_SOLOS_STAGES={
   fast: {games:4,  kill:4, field:100, cut:8,  pass:'final', rest:'heats'},
   q2r2: {games:11, kill:2, field:100, cut:solosR2Cut, pass:'q2r3'},
   q2r3: {games:11, kill:2, field:100, cut:11, pass:'heats'},
-  heats:{games:6,  kill:3, field:100, cut:29, vr:true, pass:'final', tail:[36,50], tailSeat:'lcqf'},
+  // Победа в хите и в LCQ Final — 1000 очков (правила Epic, приложение A; Liquipedia — та же сетка), сверка 29.10.
+  heats:{games:6,  kill:3, field:100, cut:29, vr:true, pass:'final', tail:[36,50], tailSeat:'lcqf', pts:soloHeatsPoints},
   /* Последний шанс — открытая комната, как январский квал: сколько человек в
      него заходит, Epic не называет («все, кто играл Round 1 и не прошёл»), а
      вот сколько выходит — называет, и это семьдесят. Поэтому поле берётся
      карьерное, открытое, а отсечка — Epic'ова, живьём. */
   lcq1: {games:11, kill:2, open:true, cut:70, pass:'lcqf'},
   // LCQ Final — «players: 100» (Liquipedia): 70 из LCQ Round 1 и 36–50-е обоих хитов. Было 70 (сверка 7.10).
-  lcqf: {games:5,  kill:3, field:100, cut:17, vr:true, pass:'final'},
+  lcqf: {games:5,  kill:3, field:100, cut:17, vr:true, pass:'final', pts:soloHeatsPoints},
   final:{games:12, kill:4, field:100, cut:0,  prize:solosPrize}
 };
 /* FNCS Solo Reload, ноябрь 2026 — схемы Epic из поста 19.10. Поля и выходы с них:
@@ -169187,7 +169188,12 @@ function ccSolosSeat(spec, t, ranked){
     if(clean.indexOf(t)+1<=cut) return spec.pass;
   } else if(rank<=cut) return spec.pass;
   if(spec.rest) return spec.rest;
-  if(spec.tail && rank>=spec.tail[0] && rank<=spec.tail[1]) return spec.tailSeat;
+  /* Хвост в LCQ Final — «следующие 15, кто не взял победы» (правила Epic, сверка 29.10). Считался по сырой таблице, где
+     победители (60 очков, игры кончились) стоят вперемешку, и окно 36-50 съезжало: места сразу за 29-м не садились никуда. */
+  if(spec.tail && spec.vr){
+    const n=spec.tail[1]-spec.tail[0]+1, cr0=ranked.filter(x=>!((x.wins||0)>0)).indexOf(t)+1;
+    if(cr0>cut && cr0<=cut+n) return spec.tailSeat;
+  } else if(spec.tail && rank>=spec.tail[0] && rank<=spec.tail[1]) return spec.tailSeat;
   return null;
 }
 /* FNCS Solo Reload — свой турнир и своё состояние (cr.solosRl): иначе октябрьский финал Solos
