@@ -120778,7 +120778,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='cd40d3b9';
+const CC_BUILD='6cd14653';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -133461,7 +133461,14 @@ function ccFlagLayers(f){
 }
 // Полный набор свойств, а не одна картинка: полосам США нужен ещё и размер.
 function ccLanFlagStyle(kind, season){
-  const f=CC_FLAGS[ccLanNat(kind, season)] || CC_FLAGS.de;
+  const nat=ccLanNat(kind, season), f=CC_FLAGS[nat] || CC_FLAGS.de;
+  /* Настоящий флаг картинкой (flags/w320, есть у всех стран ЛАНов) — нарисованный градиентами остаётся под ним
+     запасным. Градиент упрощал: у Бразилии ромб стал жёлтым кругом, и день Саммита читался непонятным флагом
+     (его Notion 29.10 «что это за флаг»). */
+  if(/^[a-z]{2}$/.test(nat||'')){
+    const under=f.stripes ? 'linear-gradient(#3c3b6e,#3c3b6e)' : ccFlagLayers(f).join(',');
+    return 'background-image:url(flags/w320/'+nat+'.png),'+under+';background-size:cover;background-position:center;';
+  }
   if(f.stripes){
     return 'background-image:linear-gradient(#3c3b6e,#3c3b6e),'+
            'repeating-linear-gradient(to bottom,#b22234 0 7.6923%,#ffffff 7.6923% 15.3846%);'+
