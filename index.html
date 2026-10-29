@@ -119980,7 +119980,8 @@ function ccSpaRender(){
   rows.innerHTML=`<div class="cc-spa-head">${head}${any ? ` <button type="button" class="cc-spa-reset" onclick="ccSpaReset()">${T.ccSpReset}</button>` : ''}</div>
     <div class="cc-spa-grid">${ATTR_KEYS.map(k=>{
       const v=free ? ccSpaFreeVal(k) : clamp(base[k]+(CC.spa[k]||0), 35, 99), n=v-base[k], cost=ccSpaCost(k);
-      const name=T['attr'+k.charAt(0).toUpperCase()+k.slice(1)];
+      // Полное название стата (его Notion 29.10: «мб полные названия сделать, место же хватает»); нет — сокращение.
+      const K=k.charAt(0).toUpperCase()+k.slice(1), name=T['attr'+K+'Full'] || T['attr'+K];
       const canUp=v<99 && (free || (n<CC_SP_SPAN && left>=cost)), canDown=v>35 && (free || n>-CC_SP_SPAN);
       const val=free
         ? `<input class="cc-spa-in" type="number" inputmode="numeric" min="35" max="99" value="${v}" onchange="ccSpaSet('${k}',this.value)" aria-label="${name}">`
@@ -120777,7 +120778,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='b3ba4eff';
+const CC_BUILD='cd40d3b9';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -143505,7 +143506,14 @@ function ccHireEarn(c, ovr){
   }
   return Math.exp(CC_HIRE_FIT_A+CC_HIRE_FIT_B*ovr);
 }
-function ccHireFee(ovr, c){ return Math.max(50, Math.round(ccHireEarn(c, ovr)/CC_HIRE_DAYS/10)*10); }
+/* Медийка в цене (29.10, его «пусть медийка тоже влияет на цену игры»): подписчики в X (CC_XFOLLOW — настоящие у 343 про,
+   иначе кривая по рейтингу ccReachOf). 50 тыс. — ×1; каждый десятикратный рост — +25%, в пределах ×0,8…×1,6: Clix (2,9 млн)
+   ×1,44, Peterbot (805 тыс.) ×1,30, Sky (42 тыс.) ×0,98. Шкала — оценка режима, данных о гонорарах нет. */
+function ccHireMedia(c, ovr){
+  const fl=(typeof ccReachOf==='function') ? ccReachOf(ovr, c && c.handle) : 0;
+  return fl>0 ? clamp(1+0.25*Math.log10(fl/50000), 0.8, 1.6) : 1;
+}
+function ccHireFee(ovr, c){ return Math.max(50, Math.round(ccHireEarn(c, ovr)/CC_HIRE_DAYS*ccHireMedia(c, ovr)/10)*10); }
 function ccHireCands(){
   const reg=ccCareerRegion();
   const roster=(typeof ccSceneRoster==='function' && reg!=='EU') ? ccSceneRoster(reg) : careerRosterNowEU();
@@ -143524,7 +143532,7 @@ function ccHireOpen(){
   const rows=list.map((c, i)=>{
     const ovr=ccHireOvr(c), fee=ccHireFee(ovr, c), on=hired.has(hKey(c)), can=on || (!full && (cr.balance||0)>=fee);
     return '<div class="cc-buy'+(on ? ' own' : '')+'"><div class="cc-buy-in"><b>'+cardFlag(c, 14)+'<span class="cc-buy-nm">'+esc(c.handle)+'</span> <span class="cc-staff-rt mgf-rt">'+ovr+'</span></b>'+
-      '<i class="cc-buy-who">'+esc(c.org||T.ccHireFree||'')+'</i></div>'+
+      '<i class="cc-buy-who">'+esc(c.org||T.ccHireFree||'')+' · X '+esc(ccFollowText(c.handle, ovr))+'</i></div>'+
       '<span class="cc-buy-btns"><button class="'+(on ? 'cc-back' : 'ch-sign')+'"'+(can?'':' disabled')+' onclick="careerHire('+i+')">'+(on ? esc(T.ccHireCancel) : ccMoney(fee))+'</button></span></div>';
   }).join('');
   const count=seats>1 && T.ccHireCount ? '<div class="ch-hint"><b>'+esc(T.ccHireCount(got.length, seats))+'</b></div>' : '';
