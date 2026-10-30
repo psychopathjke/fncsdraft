@@ -3,10 +3,16 @@
 //
 // Из tools/measured: comp-calendar.json и comp-results.json (fetch-competitive.js), solos-2026-predict.json (прогноз).
 // Время в разметке — UTC, страница переводит его в часы зрителя и прячет прошедшее. Регион по умолчанию —
-// по часовому поясу браузера. Английская, как /predict.
+// по часовому поясу браузера. Семь языков: competitive.html и <lang>/competitive.html, строки в comp-i18n.js.
 //
 //   node tools/build-competitive.js <папка деплоя>   (зовёт build-deploy.js)
 const fs = require('fs'), path = require('path');
+const I18N = require('./comp-i18n.js');
+// Язык страницы, которая сейчас собирается (page() ставит его перед сборкой).
+let LG = 'en', TT = I18N.dict('en'), LOC = 'en-GB', EVR = [];
+const tr = (k, o) => { let s = TT[k] == null ? k : TT[k]; if (o) Object.keys(o).forEach(x => { s = s.split('{' + x + '}').join(o[x]); }); return s; };
+const setLang = l => { LG = l; TT = I18N.dict(l); LOC = I18N.LOCALE[l]; EVR = (I18N.EV[l] || []).map(p => [new RegExp(p[0], 'g'), p[1]]); };
+const evL = s => { let v = String(s); EVR.forEach(p => { v = v.replace(p[0], p[1]); }); return v; };
 const OUT = path.resolve(process.argv[2] || '');
 if (!process.argv[2] || !fs.existsSync(path.join(OUT, 'index.html'))) throw new Error('нужна папка деплоя с index.html');
 const M = path.join(__dirname, 'measured');
@@ -35,7 +41,7 @@ function pretty(name) {
   return s.replace(/\s+/g, ' ').replace(/· ·/g, '·').replace(/\s·\s*$/, '').trim();
 }
 const kind = w => /FNCS|^Bratwurst_|^MannekenPis_/.test(w) ? 'fncs' : /VCC|VictoryCup|CashCup|PerformanceEvaluation|NickEh30/.test(w) ? 'cash' : /Ranked/.test(w) ? 'ranked' : 'other';
-const KIND = { fncs: 'FNCS', cash: 'Cash cup', ranked: 'Ranked cup', other: 'Cup' };
+const KIND = { fncs: 'kFncs', cash: 'kCash', ranked: 'kRanked', other: 'kOther' };   // ключи словаря
 // LAN-ивенты Epic (события …_Official: FNCS Major 1 Summit «Bratwurst», Global Championship «MannekenPis», мобильный «BOG»)
 // региона не имеют — «LAN», видны при любом выбранном регионе (26.10, его «почему в мае нет лан фнкса»).
 const LAN_W = /^(Bratwurst|MannekenPis|BOG|LQ)_/i;
@@ -57,16 +63,16 @@ const homeRegion = c => c ? COUNTRY_REG[String(c).toLowerCase()] || null : null;
 const finals = CAL.events.filter(e => /FNCSSolo_Final_Day1_/.test(e.w)).map(e => ({ reg: regOf(e), begin: e.begin }))
   .filter(f => REGS.includes(f.reg)).sort((a, b) => a.begin < b.begin ? -1 : 1);
 const finalsLive = finals.length && Date.parse(finals[finals.length - 1].begin) + 2 * 86400e3 > NOW;
-const heroHTML = finalsLive ? `<section class="glass hero">
-  <span class="tag">Next up · Finals</span>
+const heroHTML = () => finalsLive ? `<section class="glass hero">
+  <span class="tag">${tr('nextFin')}</span>
   <h2>FNCS Solos 2026 Finals</h2>
-  <p class="sub">The first solo FNCS in years. 100 players per region, two days, six games a night.</p>
+  <p class="sub">${tr('finSub')}</p>
   <ul class="when">${finals.map(f => {
     const fav = PRED && PRED.regions[f.reg] && PRED.regions[f.reg][0];
     return `<li data-t="${esc(f.begin)}"><b>${esc(f.reg)}</b><time datetime="${esc(f.begin)}">${esc(f.begin.slice(5, 16).replace('T', ' '))} UTC</time>` +
-      (fav ? `<span>Fav: ${esc(fav.n)} ${Math.round(fav.win * 100)}%</span>` : '') + '</li>';
+      (fav ? `<span>${tr('fav', { n: esc(fav.n), p: Math.round(fav.win * 100) })}</span>` : '') + '</li>';
   }).join('')}</ul>
-  <a class="btn" href="/predict/fncs-solos-2026">Win chances and drop maps</a>
+  <a class="btn" href="/predict/fncs-solos-2026">${tr('finBtn')}</a>
 </section>` : '';
 
 // ---- FNCS Solo Reload (ноябрь): финалистов до квалификаций нет, поэтому пока фавориты по Reload-окнам 2026 года в
@@ -88,16 +94,16 @@ const RL = {};
     R.set(id, p);
   });
 }));
-const rlDay = d => d ? new Date(d).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', timeZone: 'UTC' }) : 'November';
-const reloadHTML = Object.keys(RL_FINAL).length ? `<section class="glass panel rlp"><span class="tag">Early favourites</span>
+const rlDay = d => d ? new Date(d).toLocaleDateString(LOC, { day: 'numeric', month: 'long', timeZone: 'UTC' }) : tr('november');
+const reloadHTML = () => Object.keys(RL_FINAL).length ? `<section class="glass panel rlp"><span class="tag">${tr('rlTag')}</span>
 <h2>FNCS Solos Reload 2026</h2>
-<p class="sub">Qualifiers from ${rlDay(RL_Q.EU)}, finals ${rlDay(RL_FINAL.EU)}. Until the finalists are known, this ranks players by their 2026 Reload results in each region: Reload prize money (solo events count in full, duos at half) plus $500 per win. The full prediction with drop maps follows once the finals line-up is set.</p>
+<p class="sub">${tr('rlSub', { q: rlDay(RL_Q.EU), f: rlDay(RL_FINAL.EU) })}</p>
 <div class="rlr">${REGS.map(r => `<button type="button" data-rr="${r}">${r}</button>`).join('')}</div>
 ${REGS.map(r => {
   const top = [...(RL[r] || new Map()).values()].sort((a, b) => b.score - a.score).slice(0, 10);
-  return `<div class="rlt" data-rr="${r}" hidden>` + (top.length ? '<table class="tbl"><thead><tr><th>#</th><th>Player</th><th class="n">Reload cups</th><th class="n">Wins</th><th class="n">Reload $</th></tr></thead><tbody>' +
+  return `<div class="rlt" data-rr="${r}" hidden>` + (top.length ? `<table class="tbl"><thead><tr><th>#</th><th>${tr('thPlayer')}</th><th class="n">${tr('rlCups')}</th><th class="n">${tr('thWins')}</th><th class="n">${tr('rlUsd')}</th></tr></thead><tbody>` +
     top.map((p, i) => `<tr><td class="n">${i + 1}</td><td class="pl">${flag(p.c)}${esc(p.n)}</td><td class="n">${p.ev}</td><td class="n">${p.wins || ''}</td><td class="n p1">${money(Math.round(p.usd))}</td></tr>`).join('') +
-    '</tbody></table>' : '<p class="note">No Reload results in this region yet.</p>') + (RL_FINAL[r] ? `<p class="small">Finals: ${esc(RL_FINAL[r].slice(0, 16).replace('T', ' '))} UTC</p>` : '') + '</div>';
+    '</tbody></table>' : `<p class="note">${tr('rlNone')}</p>`) + (RL_FINAL[r] ? `<p class="small">${tr('rlFin', { t: esc(RL_FINAL[r].slice(0, 16).replace('T', ' ')) })}</p>` : '') + '</div>';
 }).join('')}
 </section>` : '';
 
@@ -165,9 +171,11 @@ const artOf = e => hasArt(e.img) ? '/' + artFile(e.img) : famArt.get(famOf(e.ev)
 // Старшинство окна дня: финал FNCS, остальной FNCS, призовые серии (Performance, Nick Eh 30), кэш-капы, ranked, прочее.
 const rankOf = (e, nm) => kind(e.w) === 'fncs' ? (/Final|Summit|Championship/.test(nm) ? 100 : 80) : /PerformanceEvaluation|NickEh30/.test(e.w) ? 60 : /^LQ_/.test(e.w) ? 70 : kind(e.w) === 'cash' ? 50 : kind(e.w) === 'ranked' ? 30 : 10;
 const ART = {};
+const NAMEIX = new Set();   // строки STR, которые названия (их служебные слова переводятся)
+const nid = v => { const i = sid(v); NAMEIX.add(i); return i; };
 const CALDATA = upcoming.map(e => {
   const nm = e.pretty ? e.name : pretty(e.name);
-  return [Math.round(Date.parse(e.begin) / 60000), Math.round(Date.parse(e.end || e.begin) / 60000), REGS.indexOf(regOf(e)), KINDS.indexOf(kind(e.w)), sid(series(nm)), sid(nm), sid(artOf(e)), rankOf(e, nm),
+  return [Math.round(Date.parse(e.begin) / 60000), Math.round(Date.parse(e.end || e.begin) / 60000), REGS.indexOf(regOf(e)), KINDS.indexOf(kind(e.w)), nid(series(nm)), nid(nm), sid(artOf(e)), rankOf(e, nm),
     (Math.abs(Date.parse(e.begin) - NOW) < 16 * 86400e3 && /^epicgames_/.test(e.ev || '')) ? sid(e.ev) : -1, (Math.abs(Date.parse(e.begin) - NOW) < 16 * 86400e3 && /^epicgames_/.test(e.ev || '')) ? sid(e.w) : -1];
 });
 
@@ -178,7 +186,8 @@ const CALDATA = upcoming.map(e => {
 // Регион игрока — его домашний, а не региона капа (26.10: «PANZER топ-1 NAC — ошибка, он европеец, взял призовые на
 // Америке»): страна → регион; США и Канада — NAC/NAW по тому, где больше капов за год; страны нет — где больше капов.
 // Деньги считаются все, где бы ни выиграны.
-let resHTML = '', WEEK = null, RECS = [], NEWS = null;
+// Куски с текстом — функции: зовутся заново под каждый язык.
+let resHTML = () => '', WEEK = null, RECS = () => [], NEWS = () => null;
 const EARN = {};
 if (RES && RES.windows.length) {
   // Ники Epic и ники игры расходятся: тег клана впереди («DIG Synth»), кириллица вместо латиницы, «ǃ», точка в конце, диакритика.
@@ -298,9 +307,9 @@ if (RES && RES.windows.length) {
   plIdx.forEach((p, id) => (names.get(id) || new Map()).forEach((c, n) => { const f = foldN(n); put(nFull, f, id); put(nTail, tailOf(f), id); }));
   const plOf = n => { const f = foldN(n), id = nFull.has(f) ? nFull.get(f) : f.length >= 5 ? nTail.get(f) : null; return id ? plIdx.get(id) : null; };
   const TR = read('comp-transfers.json');
-  const day = d => new Date(d + 'T12:00:00Z').toLocaleDateString('en-GB', { day: 'numeric', month: 'short', timeZone: 'UTC' });
-  const team = (t, r) => t ? esc(t) + (r ? ' <i>(' + esc(r) + ')</i>' : '') : '<i>No team</i>';
-  const trRows = (TR && TR.rows || []).filter(t => Date.parse(t.d) > NOW - 45 * 86400e3).slice(0, 150).map(t => {
+  const day = d => new Date(d + 'T12:00:00Z').toLocaleDateString(LOC, { day: 'numeric', month: 'short', timeZone: 'UTC' });
+  const team = (t, r) => t ? esc(t) + (r ? ' <i>(' + esc(r) + ')</i>' : '') : '<i>' + tr('noTeam') + '</i>';
+  NEWS = () => { const trRows = (TR && TR.rows || []).filter(t => Date.parse(t.d) > NOW - 45 * 86400e3).slice(0, 150).map(t => {
     let big = false;
     const ppl = t.who.map(([n, f]) => {
       const p = plOf(n), v = p ? p.v : rtOf(n);
@@ -310,22 +319,23 @@ if (RES && RES.windows.length) {
         (p && p.t ? ' <span class="p1">' + money(p.t) + '</span>' : '');
     }).join('<span class="sep">, </span>');
     return `<li class="tr${big ? ' big' : ''}"><time datetime="${esc(t.d)}">${esc(day(t.d))}</time><div class="trw">${ppl}</div>` +
-      `<div class="trt">${team(t.from, t.r1)} <span class="arr">→</span> ${team(t.to, t.r2)}</div>` + (t.ref ? `<a class="src" href="${esc(t.ref)}" rel="noopener nofollow" target="_blank">Source</a>` : '') + '</li>';
+      `<div class="trt">${team(t.from, t.r1)} <span class="arr">→</span> ${team(t.to, t.r2)}</div>` + (t.ref ? `<a class="src" href="${esc(t.ref)}" rel="noopener nofollow" target="_blank">${tr('source')}</a>` : '') + '</li>';
   });
   // Заголовки: победы месяца (финалы FNCS, ЛАНы, сторонние турниры) и крупное впереди (3 недели).
   const heads = RES.windows.filter(w => Date.parse(w.begin) > NOW - 30 * 86400e3).map(w => ({ w, x: w.top.find(t => t.rank === 1) }))
     .filter(o => o.x && o.x.usd && (regOf(o.w) === 'LAN' || (kind(o.w.w) === 'fncs' && o.x.usd >= 1000) || o.x.usd >= 5000))
     .sort((a, b) => a.w.begin < b.w.begin ? 1 : -1).slice(0, 12)
-    .map(o => `<li><time datetime="${esc(o.w.begin)}">${esc(day(o.w.begin.slice(0, 10)))}</time><div>${o.x.ids.map((id, i) => flag(who.get(id).f) + (plIdx.has(id) ? `<a href="#" data-pid="${esc(plIdx.get(id).id)}">${esc(who.get(id).n)}</a>` : '<b>' + esc(who.get(id).n) + '</b>')).join(' + ')}` +
-      ` won <b>${esc(prettyW(o.w))}</b>${/^LQ_/.test(o.w.w) || regOf(o.w) === 'LAN' ? '' : ' (' + esc(regOf(o.w)) + ')'} <span class="p1">${money(o.x.usd)}${o.x.ids.length > 1 ? ' each' : ''}</span></div></li>`);
+    .map(o => `<li><time datetime="${esc(o.w.begin)}">${esc(day(o.w.begin.slice(0, 10)))}</time><div>` +
+      tr('headWin', { p: o.x.ids.map((id, i) => flag(who.get(id).f) + (plIdx.has(id) ? `<a href="#" data-pid="${esc(plIdx.get(id).id)}">${esc(who.get(id).n)}</a>` : '<b>' + esc(who.get(id).n) + '</b>')).join(' + '), e: esc(evL(prettyW(o.w))) }) +
+      `${/^LQ_/.test(o.w.w) || regOf(o.w) === 'LAN' ? '' : ' (' + esc(regOf(o.w)) + ')'} <span class="p1">${money(o.x.usd)}${o.x.ids.length > 1 ? tr('each') : ''}</span></div></li>`);
   const POOL = new Map(((read('comp-lan-list.json') || [])).map(l => [l.name, l.usd]));
   const seenS = new Set();
   const ahead = upcoming.filter(e => Date.parse(e.begin) > NOW && Date.parse(e.begin) < NOW + 21 * 86400e3)
     .map(e => ({ e, nm: e.pretty ? e.name : pretty(e.name) })).filter(o => rankOf(o.e, o.nm) >= 70)
     .filter(o => { const k = series(o.nm).replace(/ · (EU|NAC|NAW|BR|ASIA|ME|OCE)\b.*$/, '').replace(/ · .*$/, ''); if (seenS.has(k)) return false; seenS.add(k); o.k = k; return true; })
     .slice(0, 8).map(o => { const pool = POOL.get(o.e.name.split(' · ')[0]);
-      return `<li><time datetime="${esc(o.e.begin)}">${esc(day(o.e.begin.slice(0, 10)))}</time><div><b>${esc(o.k)}</b>${pool ? ' <span class="p1">' + money(pool) + ' prize pool</span>' : ''}</div></li>`; });
-  NEWS = { tr: trRows, heads, ahead, big: trRows.filter(r => r.startsWith('<li class="tr big')).length };
+      return `<li><time datetime="${esc(o.e.begin)}">${esc(day(o.e.begin.slice(0, 10)))}</time><div><b>${esc(evL(o.k))}</b>${pool ? ' <span class="p1">' + tr('pool', { usd: money(pool) }) + '</span>' : ''}</div></li>`; });
+  return { tr: trRows, heads, ahead, big: trRows.filter(r => r.startsWith('<li class="tr big')).length }; };
 
   // ---- Рекорды года (пункт 3)
   let bigPay = null, bestMonth = null;
@@ -337,12 +347,12 @@ if (RES && RES.windows.length) {
   const pairs = new Map();
   RES.windows.forEach(w => w.top.forEach(x => { if (!x.usd || x.ids.length !== 2) return; const k = x.ids.slice().sort().join('|'); pairs.set(k, (pairs.get(k) || 0) + x.usd * 2); }));
   const bestPair = [...pairs.entries()].sort((a, b) => b[1] - a[1])[0];
-  const RECORDS = [
-    bigPay && ['Biggest single payout', bigPay.n, money(bigPay.usd) + ' each · ' + bigPay.ev],
-    mostWins && ['Most cup wins', who.get(mostWins.id).n, mostWins.wins + ' wins · ' + money(mostWins.usd)],
-    mostCups && ['Most paid cups', who.get(mostCups.id).n, mostCups.cups + ' cups in the money'],
-    bestPair && ['Best duo', bestPair[0].split('|').map(id => who.get(id).n).join(' + '), money(bestPair[1]) + ' together'],
-    bestMonth && ['Best month', bestMonth.n, money(bestMonth.usd) + ' in ' + new Date(bestMonth.m + '-01T00:00:00Z').toLocaleString('en-US', { month: 'long', timeZone: 'UTC' })],
+  const RECORDS = () => [
+    bigPay && [tr('rBig'), bigPay.n, tr('rBigV', { usd: money(bigPay.usd), e: evL(bigPay.ev) })],
+    mostWins && [tr('rWins'), who.get(mostWins.id).n, tr('rWinsV', { n: mostWins.wins, usd: money(mostWins.usd) })],
+    mostCups && [tr('rCups'), who.get(mostCups.id).n, tr('rCupsV', { n: mostCups.cups })],
+    bestPair && [tr('rDuo'), bestPair[0].split('|').map(id => who.get(id).n).join(' + '), tr('rDuoV', { usd: money(bestPair[1]) })],
+    bestMonth && [tr('rMonth'), bestMonth.n, tr('rMonthV', { usd: money(bestMonth.usd), m: new Date(bestMonth.m + '-01T00:00:00Z').toLocaleString(LG === 'en' ? 'en-US' : LOC, { month: 'long', timeZone: 'UTC' }) })],
   ].filter(Boolean);
 
   // ---- Страны (пункт 4): по месяцам и за год
@@ -359,17 +369,22 @@ if (RES && RES.windows.length) {
   RECS = RECORDS;
 
   const latest = RES.windows.slice().sort((a, b) => a.begin > b.begin ? -1 : 1).slice(0, 60);
-  resHTML = latest.map(w => {
+  resHTML = () => latest.map(w => {
     const t3 = w.top.slice(0, 3);
-    return `<article class="glass res" data-reg="${esc(regOf(w))}"><header><i>${/^LQ_/.test(w.w) ? 'Non-Epic' : esc(regOf(w))}</i><time datetime="${esc(w.begin)}">${esc(w.begin.slice(0, 10))}</time></header>` +
-      `<h4>${esc(w.pretty ? w.name : pretty(w.name))}</h4><ol>` + t3.map(x => `<li><div>${x.ids.map((id, i) => flag(x.c[i]) + esc(x.n[i] || x.epic[i] || '?')).join(' + ')}</div>` +
-      `<span>${x.pts} pts${x.usd ? ' · ' + money(x.usd) : ''}</span></li>`).join('') + '</ol></article>';
+    return `<article class="glass res" data-reg="${esc(regOf(w))}"><header><i>${/^LQ_/.test(w.w) ? tr('nonEpic') : esc(regOf(w))}</i><time datetime="${esc(w.begin)}">${esc(w.begin.slice(0, 10))}</time></header>` +
+      `<h4>${esc(evL(w.pretty ? w.name : pretty(w.name)))}</h4><ol>` + t3.map(x => `<li><div>${x.ids.map((id, i) => flag(x.c[i]) + esc(x.n[i] || x.epic[i] || '?')).join(' + ')}</div>` +
+      `<span>${tr('pts', { n: x.pts })}${x.usd ? ' · ' + money(x.usd) : ''}</span></li>`).join('') + '</ol></article>';
   }).join('');
 }
 
 // ---- Шапка как у главной (26.10, его «сделай дизайн компетитив как главный экран»): логотип, пилюли навбара.
-const NAV = `<header class="top"><a class="logo" href="/"><img src="/logo.png" alt="" width="40" height="40"><b><i>FNCS</i> DRAFT</b></a>
-<nav class="site-nav" aria-label="site"><a class="nav-pill" href="/">Career</a><a class="nav-pill on" href="/competitive" aria-current="page">Competitive</a><a class="nav-pill" href="/#me">Account</a></nav></header>`;
+// Главная и эта страница на языке: / и /competitive у английского, /ru/ и /ru/competitive у остальных.
+const homeOf = l => l === 'en' ? '/' : '/' + l + '/';
+const compOf = l => (l === 'en' ? '' : '/' + l) + '/competitive';
+// Языки пилюлями рядом с навбаром (не в .regs: там их поймал бы фильтр регионов).
+const NAV = () => `<header class="top"><a class="logo" href="${homeOf(LG)}"><img src="/logo.png" alt="" width="40" height="40"><b><i>FNCS</i> DRAFT</b></a>
+<nav class="site-nav" aria-label="site"><a class="nav-pill" href="${homeOf(LG)}">${tr('navCareer')}</a><a class="nav-pill on" href="${compOf(LG)}" aria-current="page">${tr('navComp')}</a><a class="nav-pill" href="${homeOf(LG)}#me">${tr('navAcc')}</a></nav>
+<nav class="langs" aria-label="${tr('navLang')}">${I18N.LANGS.map(l => `<a class="lang-pill${l === LG ? ' on' : ''}" href="${compOf(l)}" hreflang="${l}" lang="${l}" data-lang="${l}"${l === LG ? ' aria-current="true"' : ''}>${l.toUpperCase()}</a>`).join('')}</nav></header>`;
 
 // Синее стекло главной: фон #0b1640 с подсветкой, панели-градиенты с лучами, Fira Sans Extra Condensed в заголовках,
 // пилюли навбара, жёлтая кнопка со «ступенькой», заголовки разделов — разделитель меню Fortnite (линии по бокам).
@@ -442,7 +457,7 @@ h1,h2,h3,h4{font-family:var(--font-display);font-weight:700;margin:0;line-height
 .ev.k-cash{border-left-color:var(--lime)}.ev.k-cash em{background:var(--lime)}
 .ev.k-ranked{border-left-color:var(--cyan)}.ev.k-ranked em{background:var(--cyan)}
 .ev.live{box-shadow:inset 0 0 0 2px var(--hot)}
-.ev.live em{background:var(--hot);color:#fff}.ev.live em::before{content:'LIVE · '}
+.ev.live em{background:var(--hot);color:#fff}.ev.live em::before{content:'@LIVE@ · '}
 .tbl{width:100%;border-collapse:separate;border-spacing:0 4px;font-size:14px}
 .tbl th{text-align:left;font:700 12px var(--font-display);text-transform:uppercase;letter-spacing:.08em;color:var(--dimmer);padding:2px 10px}
 .tbl td{padding:8px 10px;background:var(--row)}
@@ -495,7 +510,7 @@ h1,h2,h3,h4{font-family:var(--font-display);font-weight:700;margin:0;line-height
 .cal-day.now{box-shadow:inset 0 0 0 2px #35e0ff;background-color:rgba(53,224,255,.13)}
 .cal-day.picked{box-shadow:inset 0 0 0 2px var(--go)}
 .cal-day.past{opacity:.55}
-.cal-day.live .cal-n::after{content:' LIVE';color:var(--hot);font-size:9px;letter-spacing:.06em}
+.cal-day.live .cal-n::after{content:' @LIVE@';color:var(--hot);font-size:9px;letter-spacing:.06em}
 .cal-n{font:900 13px/1 var(--font-display);color:#6d7fae}
 .cal-day.has .cal-n,.cal-day.art .cal-n{color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.8)}
 .cal-ev{display:block;font:700 12px/1.25 var(--font-display);letter-spacing:.02em;padding:2px 4px;border-radius:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#0b1a3a;background:rgba(228,235,247,.9)}
@@ -535,7 +550,7 @@ h1,h2,h3,h4{font-family:var(--font-display);font-weight:700;margin:0;line-height
 .week{margin-bottom:16px}
 .modal{position:fixed;inset:0;z-index:50;background:rgba(5,10,30,.72);display:flex;align-items:flex-start;justify-content:center;padding:40px 14px;overflow:auto}
 .mbox{width:min(760px,100%);padding:22px 22px 24px;position:relative}
-.mx{position:absolute;top:10px;right:12px;width:36px;height:36px;border:none;border-radius:10px;background:rgba(255,255,255,.12);color:#fff;font-size:22px;cursor:pointer}
+.mx{position:absolute;z-index:3;top:10px;right:12px;width:36px;height:36px;border:none;border-radius:10px;background:rgba(255,255,255,.12);color:#fff;font-size:22px;cursor:pointer}
 .ph{display:flex;align-items:center;gap:10px;margin-bottom:12px}.ph b{font:italic 900 30px var(--font-display);text-transform:uppercase}.ph i{font-style:normal;color:var(--dim);font:700 14px var(--font-display)}
 .pstats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
 .pstats div{background:var(--row);border-radius:10px;padding:8px 12px}.pstats i{display:block;font-style:normal;font-size:12px;color:var(--dim)}.pstats b{font:700 22px var(--font-display)}
@@ -587,9 +602,18 @@ h1,h2,h3,h4{font-family:var(--font-display);font-weight:700;margin:0;line-height
 .trs.only .tr:not(.big){display:none}
 .trtools{display:flex;align-items:center;gap:8px;margin:0 0 6px;font-size:14px;color:var(--dim)}.trtools input{accent-color:var(--go);width:18px;height:18px}
 @media(max-width:700px){.news{grid-template-columns:1fr}.tr{grid-template-columns:50px 1fr}.tr .src{grid-row:auto;grid-column:2;justify-self:start}}
+.langs{display:flex;flex-wrap:wrap;gap:2px}
+.lang-pill{font:700 13px var(--font-display);letter-spacing:.06em;color:#e6ecff;text-decoration:none;padding:5px 9px;border-radius:999px}
+.lang-pill:hover{background:rgba(255,255,255,.12)}
+.lang-pill.on{background:#e4ebf7;color:#0b1a3a}
 [hidden]{display:none!important}`;
+// Кириллица Fira — только русской странице.
+const CSS_CYR = [700, 900].map(w => `@font-face{font-family:'Fira Sans Extra Condensed';font-style:normal;font-weight:${w};font-display:swap;src:url(/fonts/fira-xc-${w}-cyrillic.woff2) format('woff2');unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116;}`).join('\n') + '\n';
 
-const JS = `(function(){
+const JS = () => `(function(){
+var T=${JSON.stringify(TT)},LOC=${LG === 'en' ? 'undefined' : JSON.stringify(LOC)},EVX=${JSON.stringify(I18N.EV[LG] || [])}.map(function(p){return [new RegExp(p[0],'g'),p[1]];});
+function tx(k,o){var s=T[k]==null?k:T[k]; if(o) for(var x in o) s=s.split('{'+x+'}').join(o[x]); return s;}
+function evL(s){var v=String(s); EVX.forEach(function(p){v=v.replace(p[0],p[1]);}); return v;}
 var tz=(Intl.DateTimeFormat().resolvedOptions().timeZone||'');
 var guess=/^Europe|^Africa/.test(tz)?'EU':/Sao_Paulo|Argentina|Santiago|Montevideo|Bogota|Lima|America\\/(Recife|Fortaleza|Bahia|Belem|Manaus)/.test(tz)?'BR':
  /Los_Angeles|Vancouver|Phoenix|Denver|Tijuana/.test(tz)?'NAW':/^America/.test(tz)?'NAC':/Australia|Auckland|Pacific/.test(tz)?'OCE':
@@ -599,14 +623,16 @@ var reg=/^(ALL|EU|CIS|NAC|NAW|BR|ASIA|ME|OCE)$/.test(saved||'')?saved:guess;
 var CISC=${JSON.stringify(CIS_C)};
 function sreg(){return reg==='CIS'?'EU':reg;}
 function inReg(r){return reg==='ALL'||(reg==='CIS'?r[8]===1:R[r[2]]===reg);}
-var fmtT=new Intl.DateTimeFormat(undefined,{hour:'2-digit',minute:'2-digit'}), fmtD=new Intl.DateTimeFormat(undefined,{weekday:'long',day:'numeric',month:'long'});
-var fmtDT=new Intl.DateTimeFormat(undefined,{weekday:'short',day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
+var fmtT=new Intl.DateTimeFormat(LOC,{hour:'2-digit',minute:'2-digit'}), fmtD=new Intl.DateTimeFormat(LOC,{weekday:'long',day:'numeric',month:'long'});
+var fmtDT=new Intl.DateTimeFormat(LOC,{weekday:'short',day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
 var now=Date.now();
 document.querySelectorAll('.when li').forEach(function(li){var t=Date.parse(li.dataset.t); li.querySelector('time').textContent=fmtDT.format(t);
  if(t<=now && now<t+3*3600e3) li.classList.add('live');});
-var D=${JSON.stringify(CALDATA)},S=${JSON.stringify(STR)},R=${JSON.stringify(REGS)},K=${JSON.stringify(KINDS)},KL=${JSON.stringify(KINDS.map(k => KIND[k]))},ART=${JSON.stringify(ART)};
-var DOW=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
-var fmtM=new Intl.DateTimeFormat(undefined,{month:'long',year:'numeric'});
+var D=${JSON.stringify(CALDATA)},S=${JSON.stringify(STR.map((s, i) => NAMEIX.has(i) ? evL(s) : s))},R=${JSON.stringify(REGS)},K=${JSON.stringify(KINDS)},KL=${JSON.stringify(KINDS.map(k => tr(KIND[k])))},ART=${JSON.stringify(ART)};
+var DOW=T.dow;
+var fmtM=new Intl.DateTimeFormat(LOC,{month:'long',year:'numeric'});
+function mName(d){return T.monL?T.monL[d.getMonth()]+' '+d.getFullYear():fmtM.format(d);}
+function mLow(s){return T.lcm?s.charAt(0).toLowerCase()+s.slice(1):s;}
 function dk(d){return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();}
 var today=new Date(), cur={y:today.getFullYear(),m:today.getMonth()}, pick=dk(today);
 var first=D.length?new Date(D[0][0]*60000):today, last=D.length?new Date(D[D.length-1][0]*60000):today;
@@ -615,9 +641,9 @@ function esc(x){return String(x).replace(/[&<>"]/g,function(c){return {'&':'&amp
 function renderCal(){
  var by=byDay(), y=cur.y, m=cur.m, days=new Date(y,m+1,0).getDate(), lead=(new Date(y,m,1).getDay()+6)%7;
  var atStart=y*12+m<=first.getFullYear()*12+first.getMonth(), atEnd=y*12+m>=last.getFullYear()*12+last.getMonth();
- var h='<div class="cal-bar"><button class="cal-nav" data-d="-1" aria-label="Previous month"'+(atStart?' disabled':'')+'><svg viewBox="0 0 16 16"><path d="M10.5 2.5L5 8l5.5 5.5 1.5-1.5-4-4 4-4z"/></svg></button>'+
-  '<h4>'+esc(fmtM.format(new Date(y,m,1)))+'</h4><button class="cal-nav" data-d="1" aria-label="Next month"'+(atEnd?' disabled':'')+'><svg viewBox="0 0 16 16"><path d="M5.5 2.5L11 8l-5.5 5.5L4 12l4-4-4-4z"/></svg></button>'+
-  '<button class="cal-today">Today</button></div><div class="cal-dow">'+DOW.map(function(d){return '<span>'+d+'</span>';}).join('')+'</div><div class="cal-grid">';
+ var h='<div class="cal-bar"><button class="cal-nav" data-d="-1" aria-label="'+tx('prevM')+'"'+(atStart?' disabled':'')+'><svg viewBox="0 0 16 16"><path d="M10.5 2.5L5 8l5.5 5.5 1.5-1.5-4-4 4-4z"/></svg></button>'+
+  '<h4>'+esc(mName(new Date(y,m,1)))+'</h4><button class="cal-nav" data-d="1" aria-label="'+tx('nextM')+'"'+(atEnd?' disabled':'')+'><svg viewBox="0 0 16 16"><path d="M5.5 2.5L11 8l-5.5 5.5L4 12l4-4-4-4z"/></svg></button>'+
+  '<button class="cal-today">'+tx('today')+'</button></div><div class="cal-dow">'+DOW.map(function(d){return '<span>'+d+'</span>';}).join('')+'</div><div class="cal-grid">';
  for(var i=0;i<lead;i++) h+='<div class="cal-day cal-void"></div>';
  for(var d=1;d<=days;d++){
   var k=y+'-'+(m+1)+'-'+d, list=by[k]||[], seen={}, chips=[], fncs=false;
@@ -628,7 +654,7 @@ function renderCal(){
   h+='<button class="cal-day'+(list.length?' has':'')+(img?' art':'')+(top?' r'+top[7]:'')+(k===dk(today)?' now':'')+(k===pick?' picked':'')+(past?' past':'')+(live?' live':'')+'" data-k="'+k+'"'+
    (img?' style="background-image:url('+img+')"':'')+'><span class="cal-n">'+d+'</span>'+
    (top?'<span class="cal-top k-'+K[top[3]]+'">'+esc(S[top[4]])+'</span>':'')+
-   (chips.length>1?'<span class="cal-more">+'+(chips.length-1)+' more</span>':'')+'</button>';
+   (chips.length>1?'<span class="cal-more">'+tx('more',{n:chips.length-1})+'</span>':'')+'</button>';
  }
  h+='</div>';
  var el=document.getElementById('cal'); el.innerHTML=h;
@@ -640,51 +666,51 @@ function renderCal(){
 var EARN=${JSON.stringify(EARN)}, earnAll=false;
 function money(v){return '$'+Math.round(v).toLocaleString('en-US');}
 function renderEarn(){
- var mk=cur.y+'-'+String(cur.m+1).padStart(2,'0'), M=EARN[mk], name=fmtM.format(new Date(cur.y,cur.m,1));
- document.getElementById('earnH').textContent='Prize money · '+name;
+ var mk=cur.y+'-'+String(cur.m+1).padStart(2,'0'), M=EARN[mk], name=mName(new Date(cur.y,cur.m,1));
+ document.getElementById('earnH').textContent=tx('prizeM',{m:name});
  var rows=M?M.rows.filter(inReg):[];
  var paid=M?(reg==='ALL'?M.paid:(M.reg[reg]||0)):0;
- document.getElementById('earnP').textContent=(paid?money(paid)+(reg==='ALL'?' paid in cash cups and FNCS':' to '+reg+' players')+(mk===today.getFullYear()+'-'+String(today.getMonth()+1).padStart(2,'0')?' so far':'')+'. ':'')+'Duos: each player gets the payout.';
+ document.getElementById('earnP').textContent=(paid?tx(reg==='ALL'?'paidAll':'paidReg',{usd:money(paid),r:reg})+(mk===today.getFullYear()+'-'+String(today.getMonth()+1).padStart(2,'0')?tx('soFar'):'')+'. ':'')+tx('duoNote');
  var show=earnAll?rows.slice(0,100):rows.slice(0,15);
- document.getElementById('earnT').innerHTML=rows.length?'<table class="tbl" id="earn"><thead><tr><th>#</th><th>Player</th><th class="n">Cups</th><th class="n">Wins</th><th class="n">Earned</th></tr></thead><tbody>'+
+ document.getElementById('earnT').innerHTML=rows.length?'<table class="tbl" id="earn"><thead><tr><th>#</th><th>'+tx('thPlayer')+'</th><th class="n">'+tx('thCups')+'</th><th class="n">'+tx('thWins')+'</th><th class="n">'+tx('thEarned')+'</th></tr></thead><tbody>'+
   show.map(function(r,i){return '<tr><td class="n">'+(i+1)+'</td><td class="pl">'+(r[1]?'<img src="/flags/w20/'+r[1]+'.png" alt="" width="16">':'')+'<b data-pid="'+r[6]+'">'+esc(r[0])+'</b>'+ovr(r[7])+'</td><td class="n">'+r[4]+'</td><td class="n">'+(r[5]||'')+'</td><td class="n p1">'+money(r[3])+'</td></tr>';}).join('')+
-  '</tbody></table>'+(rows.length>15&&!earnAll?'<button class="morebtn" type="button">Show more</button>':''):'<p class="note">No prize money '+(new Date(cur.y,cur.m,1)>today?'yet':'recorded')+' for '+name+(reg==='ALL'?'':' in '+reg)+'.</p>';
+  '</tbody></table>'+(rows.length>15&&!earnAll?'<button class="morebtn" type="button">'+tx('showMore')+'</button>':''):'<p class="note">'+tx(new Date(cur.y,cur.m,1)>today?'noPrizeYet':'noPrizeRec',{m:mLow(name),r:reg==='ALL'?'':tx('inReg',{r:reg})})+'</p>';
  var mb=document.querySelector('#earnT .morebtn'); if(mb) mb.onclick=function(){earnAll=true; renderEarn();};
 }
 function renderDay(by){
  var p=pick.split('-'), list=(by[pick]||[]).slice().sort(function(a,b){return a[0]-b[0];}), el=document.getElementById('calDay');
  el.innerHTML='<h4>'+esc(fmtD.format(new Date(+p[0],p[1]-1,+p[2])))+'</h4>'+(list.length?'<ul>'+list.map(function(e){
   var t=e[0]*60000, end=e[1]*60000, cls='ev k-'+K[e[3]]+(t<=now&&now<end?' live':'')+(end<now?' done':'');
-  var lv=e[8]>=0&&t<=now&&now<end+12*3600e3?'<button type="button" class="lvb" data-ev="'+S[e[8]]+'" data-w="'+S[e[9]]+'" data-t="'+esc(S[e[5]])+'" data-end="'+end+'">'+(now<end?'Live':'Standings')+'</button>':'';
+  var lv=e[8]>=0&&t<=now&&now<end+12*3600e3?'<button type="button" class="lvb" data-ev="'+S[e[8]]+'" data-w="'+S[e[9]]+'" data-t="'+esc(S[e[5]])+'" data-end="'+end+'">'+tx(now<end?'liveBtn':'standBtn')+'</button>':'';
   return '<li class="'+cls+'"><time>'+fmtT.format(t)+'</time><i>'+(e[2]>=0?R[e[2]]:'LAN')+'</i><span>'+esc(S[e[5]])+lv+'</span><em>'+KL[e[3]]+'</em></li>';
- }).join('')+'</ul>':'<p class="note">'+(D.some(function(e){var t=new Date(e[0]*60000);return t.getFullYear()===+p[0]&&t.getMonth()===p[1]-1;})||new Date(+p[0],p[1]-1,1)<=today?'No cups on this day'+(reg==='ALL'?'':' in '+reg)+'.':'Epic has not published the schedule for this month yet.')+'</p>');
+ }).join('')+'</ul>':'<p class="note">'+(D.some(function(e){var t=new Date(e[0]*60000);return t.getFullYear()===+p[0]&&t.getMonth()===p[1]-1;})||new Date(+p[0],p[1]-1,1)<=today?tx('noCups',{r:reg==='ALL'?'':tx('inReg',{r:reg})}):tx('noSched'))+'</p>');
 }
 var bigKey='2026', bigAll=false;
 function renderBig(){
  var keys=Object.keys(EARN).filter(function(k){return k!=='2026';}).sort();
- document.getElementById('periods').innerHTML=['2026'].concat(keys).map(function(k){var lbl=k==='2026'?'Year 2026':new Intl.DateTimeFormat(undefined,{month:'short'}).format(new Date(+k.slice(0,4),+k.slice(5)-1,1));
+ document.getElementById('periods').innerHTML=['2026'].concat(keys).map(function(k){var lbl=k==='2026'?tx('year'):LOC?T.mon[+k.slice(5)-1]:new Intl.DateTimeFormat(undefined,{month:'short'}).format(new Date(+k.slice(0,4),+k.slice(5)-1,1));
   return '<button type="button" data-k="'+k+'" aria-pressed="'+(k===bigKey)+'">'+lbl+'</button>';}).join('');
  document.querySelectorAll('#periods button').forEach(function(b){b.onclick=function(){bigKey=b.dataset.k; bigAll=false; renderBig();};});
- var M=EARN[bigKey], name=bigKey==='2026'?'2026':fmtM.format(new Date(+bigKey.slice(0,4),+bigKey.slice(5)-1,1));
+ var M=EARN[bigKey], name=bigKey==='2026'?'2026':mName(new Date(+bigKey.slice(0,4),+bigKey.slice(5)-1,1));
  var rows=M?M.rows.filter(inReg):[];
  var paid=M?(reg==='ALL'?M.paid:(M.reg[reg]||0)):0;
- document.getElementById('bigH').textContent='Prize money · '+name+(reg==='ALL'?'':' · '+reg);
- document.getElementById('bigP').textContent=(paid?money(paid)+(reg==='ALL'?' paid in Epic cups, FNCS and LANs':' to '+reg+' players')+'. ':'')+'Duos and squads: each player gets the payout.';
+ document.getElementById('bigH').textContent=tx('prizeM',{m:name})+(reg==='ALL'?'':' · '+reg);
+ document.getElementById('bigP').textContent=(paid?tx(reg==='ALL'?'paidAllY':'paidReg',{usd:money(paid),r:reg})+'. ':'')+tx('duoNoteY');
  var show=bigAll?rows.slice(0,100):rows.slice(0,30);
- document.getElementById('bigT').innerHTML=rows.length?'<table class="tbl" id="big"><thead><tr><th>#</th><th>Player</th><th>Region</th><th class="n">Cups paid</th><th class="n">Wins</th><th class="n">Earned</th></tr></thead><tbody>'+
+ document.getElementById('bigT').innerHTML=rows.length?'<table class="tbl" id="big"><thead><tr><th>#</th><th>'+tx('thPlayer')+'</th><th>'+tx('thRegion')+'</th><th class="n">'+tx('thCupsPaid')+'</th><th class="n">'+tx('thWins')+'</th><th class="n">'+tx('thEarned')+'</th></tr></thead><tbody>'+
   show.map(function(r,i){return '<tr><td class="n">'+(i+1)+'</td><td class="pl">'+(r[1]?'<img src="/flags/w20/'+r[1]+'.png" alt="" width="16">':'')+'<b data-pid="'+r[6]+'">'+esc(r[0])+'</b>'+ovr(r[7])+'</td><td>'+(r[2]>=0?R[r[2]]:'')+'</td><td class="n">'+r[4]+'</td><td class="n">'+(r[5]||'')+'</td><td class="n p1">'+money(r[3])+'</td></tr>';}).join('')+
-  '</tbody></table>'+(rows.length>30&&!bigAll?'<button class="morebtn" type="button">Show more</button>':''):'<p class="note">No prize money for '+name+(reg==='ALL'?'':' in '+reg)+'.</p>';
+  '</tbody></table>'+(rows.length>30&&!bigAll?'<button class="morebtn" type="button">'+tx('showMore')+'</button>':''):'<p class="note">'+tx('noPrize',{m:mLow(name),r:reg==='ALL'?'':tx('inReg',{r:reg})})+'</p>';
  var mb=document.querySelector('#bigT .morebtn'); if(mb) mb.onclick=function(){bigAll=true; renderBig();};
  var cc=(M&&M.cc||[]).filter(function(r){return reg!=='CIS'||CISC.indexOf(r[0])>=0;});
- document.getElementById('ccH').textContent='Prize money by country · '+name;
- document.getElementById('ccT').innerHTML=cc.length?'<table class="tbl" id="cc"><thead><tr><th>#</th><th>Country</th><th class="n">Players</th><th class="n">Earned</th></tr></thead><tbody>'+
-  cc.slice(0,20).map(function(r,i){return '<tr><td class="n">'+(i+1)+'</td><td><img src="/flags/w20/'+r[0]+'.png" alt="" width="16"><b>'+(CN[r[0]]||r[0].toUpperCase())+'</b></td><td class="n">'+r[2]+'</td><td class="n p1">'+money(r[1])+'</td></tr>';}).join('')+'</tbody></table>':'<p class="note">No data.</p>';
+ document.getElementById('ccH').textContent=tx('ccM',{m:name});
+ document.getElementById('ccT').innerHTML=cc.length?'<table class="tbl" id="cc"><thead><tr><th>#</th><th>'+tx('thCountry')+'</th><th class="n">'+tx('thPlayers')+'</th><th class="n">'+tx('thEarned')+'</th></tr></thead><tbody>'+
+  cc.slice(0,20).map(function(r,i){return '<tr><td class="n">'+(i+1)+'</td><td><img src="/flags/w20/'+r[0]+'.png" alt="" width="16"><b>'+(CN[r[0]]||r[0].toUpperCase())+'</b></td><td class="n">'+r[2]+'</td><td class="n p1">'+money(r[1])+'</td></tr>';}).join('')+'</tbody></table>':'<p class="note">'+tx('noData')+'</p>';
 }
-var CN=(function(){try{var d=new Intl.DisplayNames(['en'],{type:'region'});return new Proxy({},{get:function(_,k){try{return d.of(String(k).toUpperCase());}catch(e){return null;}}});}catch(e){return {};}})();
+var CN=(function(){try{var d=new Intl.DisplayNames([${JSON.stringify(LG)}],{type:'region'});return new Proxy({},{get:function(_,k){try{return d.of(String(k).toUpperCase());}catch(e){return null;}}});}catch(e){return {};}})();
 var PLS=null;
 function loadPL(cb){ if(PLS) return cb(PLS); fetch('/comp-players.json').then(function(r){return r.json();}).then(function(j){PLS=j; cb(j);}).catch(function(){cb([]);}); }
 function byId(id){ return (PLS||[]).find(function(p){return p.id===id;}); }
-var MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+var MON=T.mon;
 function bars(ps){ var mx=1; ps.forEach(function(p){p.m.forEach(function(v){if(v>mx)mx=v;});});
  return '<div class="bars">'+MON.map(function(mn,i){return '<div class="bcol"><div class="bstack">'+ps.map(function(p,k){return '<span class="b b'+k+'" style="height:'+Math.round(p.m[i]/mx*100)+'%" title="'+esc(p.n)+' '+mn+': '+money(p.m[i])+'"></span>';}).join('')+'</div><em>'+mn+'</em></div>';}).join('')+'</div>'; }
 function ovr(v){ return v?'<span class="ovr'+(v>=90?' hi':'')+'">'+v+'</span>':''; }
@@ -693,7 +719,7 @@ function fold(x){ return String(x||'').normalize('NFKD').replace(/[\u0300-\u036f
 function pickHTML(id,ph,p){ return '<div class="pk" id="'+id+'"><input type="search" autocomplete="off" spellcheck="false" placeholder="'+ph+'" value="'+(p?esc(p.n):'')+'"><ul class="pkL" hidden></ul></div>'; }
 function pickWire(id,onPick){ var box=document.getElementById(id), inp=box.querySelector('input'), ul=box.querySelector('ul'), hits=[], on=0;
  function row(p,i){ return '<li data-i="'+i+'"'+(i===on?' class="on"':'')+'>'+(p.f?'<img src="/flags/w20/'+p.f+'.png" alt="" width="20">':'<span class="nf"></span>')+'<b>'+esc(p.n)+'</b>'+(p.r?'<i>'+p.r+'</i>':'')+ovr(p.v)+'<em>'+money(p.t)+'</em></li>'; }
- function show(){ ul.innerHTML=hits.length?hits.map(row).join(''):'<li class="none">No player with that name in the 2026 prize list</li>'; ul.hidden=false; }
+ function show(){ ul.innerHTML=hits.length?hits.map(row).join(''):'<li class="none">'+tx('noPl')+'</li>'; ul.hidden=false; }
  function find(){ loadPL(function(L){ var q=fold(inp.value.trim()); if(!q){ hits=L.slice(0,8); } else {
    var a=[],b=[]; L.forEach(function(p){ var n=fold(p.n), k=n.indexOf(q); if(k===0) a.push(p); else if(k>0) b.push(p); });
    hits=a.concat(b).slice(0,8); } on=0; show(); }); }
@@ -705,22 +731,22 @@ function pickWire(id,onPick){ var box=document.getElementById(id), inp=box.query
  ul.addEventListener('mousedown',function(e){ var li=e.target.closest('li[data-i]'); if(li){ e.preventDefault(); pick(+li.dataset.i); } });
  inp.addEventListener('blur',function(){ setTimeout(function(){ ul.hidden=true; },120); }); }
 function openPlayer(id){ loadPL(function(){ var p=byId(id); if(!p) return; var el=document.getElementById('pmB');
- el.innerHTML=head(p)+'<div class="pstats"><div><i>Earned 2026</i><b class="p1">'+money(p.t)+'</b></div><div><i>Cups paid</i><b>'+p.k+'</b></div><div><i>Wins</i><b>'+p.w+'</b></div></div>'+bars([p])+
-  '<div class="pact">'+(p.page?'<a class="morebtn" href="'+p.page+'">Player page</a>':'')+'<button type="button" class="morebtn" id="pmCmp">Compare</button></div>'+
-  '<table class="tbl"><thead><tr><th>Date</th><th>Event</th><th class="n">Place</th><th class="n">Prize</th></tr></thead><tbody>'+p.c.slice(0,60).map(function(c){return '<tr><td>'+c[0].slice(5)+'</td><td class="pl">'+esc(c[1])+'</td><td class="n">'+c[2]+'</td><td class="n p1">'+money(c[3])+'</td></tr>';}).join('')+'</tbody></table>';
+ el.innerHTML=head(p)+'<div class="pstats"><div><i>'+tx('earned26')+'</i><b class="p1">'+money(p.t)+'</b></div><div><i>'+tx('thCupsPaid')+'</i><b>'+p.k+'</b></div><div><i>'+tx('thWins')+'</i><b>'+p.w+'</b></div></div>'+bars([p])+
+  '<div class="pact">'+(p.page?'<a class="morebtn" href="'+p.page+'">'+tx('plPage')+'</a>':'')+'<button type="button" class="morebtn" id="pmCmp">'+tx('compare')+'</button></div>'+
+  '<table class="tbl"><thead><tr><th>'+tx('thDate')+'</th><th>'+tx('thEvent')+'</th><th class="n">'+tx('thPlace')+'</th><th class="n">'+tx('thPrize')+'</th></tr></thead><tbody>'+p.c.slice(0,60).map(function(c){return '<tr><td>'+c[0].slice(5)+'</td><td class="pl">'+esc(evL(c[1]))+'</td><td class="n">'+c[2]+'</td><td class="n p1">'+money(c[3])+'</td></tr>';}).join('')+'</tbody></table>';
  document.getElementById('pmCmp').onclick=function(){ openCompare(p.id); };
  document.getElementById('pm').hidden=false; }); }
 function openCompare(a,b){ loadPL(function(L){ var el=document.getElementById('pmB');
  var pa=a&&byId(a), pb=b&&byId(b);
- el.innerHTML='<h3>Compare two players</h3><div class="cmpin">'+pickHTML('cmpA','Player 1',pa)+pickHTML('cmpB','Player 2',pb)+'</div><div id="cmpOut"></div>';
+ el.innerHTML='<h3>'+tx('cmp2')+'</h3><div class="cmpin">'+pickHTML('cmpA',tx('p1'),pa)+pickHTML('cmpB',tx('p2'),pb)+'</div><div id="cmpOut"></div>';
  pickWire('cmpA',function(p){pa=p;draw();}); pickWire('cmpB',function(p){pb=p;draw();});
  function draw(){ var o=document.getElementById('cmpOut');
-  if(!pa||!pb){o.innerHTML='<p class="note">Type a name and pick from the list (top 2000 by prize money in 2026).</p>';return;}
+  if(!pa||!pb){o.innerHTML='<p class="note">'+tx('cmpHint')+'</p>';return;}
   var row=function(lbl,x,y,fmt){return '<tr><td>'+lbl+'</td><td class="n'+(x>y?' p1':'')+'">'+fmt(x)+'</td><td class="n'+(y>x?' p1':'')+'">'+fmt(y)+'</td></tr>';};
   var best=function(p){return p.c.reduce(function(m,c){return c[3]>m?c[3]:m;},0);};
   var fl=function(p){return p.f?'<img src="/flags/w20/'+p.f+'.png" alt="" width="16"> ':'';};
   o.innerHTML='<table class="tbl cmp"><thead><tr><th></th><th class="n">'+fl(pa)+esc(pa.n)+'</th><th class="n">'+fl(pb)+esc(pb.n)+'</th></tr></thead><tbody>'+
-   (pa.v||pb.v?row('Avg card rating',pa.v||0,pb.v||0,function(v){return v?String(v):'·';}):'')+row('Earned 2026',pa.t,pb.t,money)+row('Cups paid',pa.k,pb.k,String)+row('Wins',pa.w,pb.w,String)+row('Biggest prize',best(pa),best(pb),money)+'</tbody></table>'+bars([pa,pb])+
+   (pa.v||pb.v?row(tx('avgCard'),pa.v||0,pb.v||0,function(v){return v?String(v):'·';}):'')+row(tx('earned26'),pa.t,pb.t,money)+row(tx('thCupsPaid'),pa.k,pb.k,String)+row(tx('thWins'),pa.w,pb.w,String)+row(tx('bestPrize'),best(pa),best(pb),money)+'</tbody></table>'+bars([pa,pb])+
    '<p class="lg2"><span class="b0"></span>'+esc(pa.n)+' <span class="b1"></span>'+esc(pb.n)+'</p>'; }
  draw();
  document.getElementById('pm').hidden=false; }); }
@@ -728,16 +754,16 @@ var liveTimer=null;
 function openLive(ev,w,title,end){ var el=document.getElementById('pmB'); clearInterval(liveTimer);
  function load(){ fetch('/api/live?ev='+encodeURIComponent(ev)+'&w='+encodeURIComponent(w)).then(function(r){return r.json();}).then(function(j){
   var rows=j.rows||[], liveNow=Date.now()<end;
-  el.innerHTML='<h3>'+esc(title)+'</h3><p class="small">'+(liveNow?'<b class="lvdot">LIVE</b> refreshes every minute':'Final standings')+(j.synced?' · synced '+new Date(j.synced).toLocaleTimeString():'')+'</p>'+
-   (rows.length&&rows.some(function(r){return r.pts>0;})?'<table class="tbl"><thead><tr><th>#</th><th>Player</th><th class="n">Games</th><th class="n">Points</th></tr></thead><tbody>'+rows.map(function(r){return '<tr><td class="n">'+r.rank+'</td><td class="pl">'+r.n.map(function(n,i){return (r.c[i]?'<img src="/flags/w20/'+r.c[i]+'.png" alt="" width="16">':'')+esc(n);}).join(' + ')+'</td><td class="n">'+(r.g||'')+'</td><td class="n p1">'+r.pts+'</td></tr>';}).join('')+'</tbody></table>':'<p class="note">No points yet. The table fills in once the first game ends.</p>');
-  if(!liveNow) clearInterval(liveTimer); }).catch(function(){ el.innerHTML='<h3>'+esc(title)+'</h3><p class="note">Live table is unavailable right now.</p>'; }); }
- el.innerHTML='<h3>'+esc(title)+'</h3><p class="note">Loading…</p>'; document.getElementById('pm').hidden=false; load();
+  el.innerHTML='<h3>'+esc(title)+'</h3><p class="small">'+(liveNow?'<b class="lvdot">'+tx('live')+'</b>'+tx('refresh'):tx('finalSt'))+(j.synced?tx('synced',{t:new Date(j.synced).toLocaleTimeString(LOC)}):'')+'</p>'+
+   (rows.length&&rows.some(function(r){return r.pts>0;})?'<table class="tbl"><thead><tr><th>#</th><th>'+tx('thPlayer')+'</th><th class="n">'+tx('thGames')+'</th><th class="n">'+tx('thPoints')+'</th></tr></thead><tbody>'+rows.map(function(r){return '<tr><td class="n">'+r.rank+'</td><td class="pl">'+r.n.map(function(n,i){return (r.c[i]?'<img src="/flags/w20/'+r.c[i]+'.png" alt="" width="16">':'')+esc(n);}).join(' + ')+'</td><td class="n">'+(r.g||'')+'</td><td class="n p1">'+r.pts+'</td></tr>';}).join('')+'</tbody></table>':'<p class="note">'+tx('noPts')+'</p>');
+  if(!liveNow) clearInterval(liveTimer); }).catch(function(){ el.innerHTML='<h3>'+esc(title)+'</h3><p class="note">'+tx('liveNa')+'</p>'; }); }
+ el.innerHTML='<h3>'+esc(title)+'</h3><p class="note">'+tx('loading')+'</p>'; document.getElementById('pm').hidden=false; load();
  if(Date.now()<end) liveTimer=setInterval(function(){ if(document.getElementById('pm').hidden){clearInterval(liveTimer);return;} load(); },60000); }
 document.addEventListener('click',function(e){ var b=e.target.closest('.lvb'); if(b){ e.preventDefault(); openLive(b.dataset.ev,b.dataset.w,b.dataset.t,+b.dataset.end); } });
 (function(){ var box=document.getElementById('liveNow'); if(!box) return;
  var L=D.filter(function(e){return e[8]>=0&&K[e[3]]==='fncs'&&e[0]*60000-30*60000<=now&&now<e[1]*60000+6*3600e3;});
  if(!L.length) return;
- box.innerHTML='<h3><b class="lvdot">LIVE</b> FNCS now</h3><div class="lvregs">'+L.map(function(e){return '<button type="button" class="lvb" data-ev="'+S[e[8]]+'" data-w="'+S[e[9]]+'" data-t="'+esc(S[e[5]])+' · '+(e[2]>=0?R[e[2]]:'LAN')+'" data-end="'+e[1]*60000+'">'+(e[2]>=0?R[e[2]]:'LAN')+' · '+esc(S[e[5]].replace(/^.*·\s*/,''))+'</button>';}).join('')+'</div>';
+ box.innerHTML='<h3><b class="lvdot">'+tx('live')+'</b> '+tx('fncsNow')+'</h3><div class="lvregs">'+L.map(function(e){return '<button type="button" class="lvb" data-ev="'+S[e[8]]+'" data-w="'+S[e[9]]+'" data-t="'+esc(S[e[5]])+' · '+(e[2]>=0?R[e[2]]:'LAN')+'" data-end="'+e[1]*60000+'">'+(e[2]>=0?R[e[2]]:'LAN')+' · '+esc(S[e[5]].replace(/^.*·\\s*/,''))+'</button>';}).join('')+'</div>';
  box.hidden=false; })();
 function rlShow(r){ document.querySelectorAll('.rlr button').forEach(function(b){b.setAttribute('aria-pressed',b.dataset.rr===r?'true':'false');}); document.querySelectorAll('.rlt').forEach(function(t){t.hidden=t.dataset.rr!==r;}); }
 document.querySelectorAll('.rlr button').forEach(function(b){b.onclick=function(){rlShow(b.dataset.rr);};});
@@ -768,56 +794,74 @@ document.querySelectorAll('.regs button[data-r]').forEach(function(b){b.addEvent
 apply();
 })();`;
 
-const regButtons = '<div class="regs" role="group" aria-label="Region">' + ['ALL', 'EU', 'CIS'].concat(REGS.slice(1)).map(r => `<button type="button" data-r="${r}">${r === 'ALL' ? 'All' : r}</button>`).join('') + '</div>';
-const title = 'Fortnite Competitive: tournament calendar, prize money and results | FNCS Draft';
-const desc = 'Every Fortnite tournament this week in your time zone, who earned the most prize money in ' + 'every month of 2026' +
-  ', the latest cup results and FNCS predictions. All regions.';
-const html = `<!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+// Страница одного языка. Английская — та же, что была, плюс hreflang и выбор языка.
+function page(l) {
+  setLang(l);
+  const regButtons = '<div class="regs" role="group" aria-label="' + tr('regAria') + '">' + ['ALL', 'EU', 'CIS'].concat(REGS.slice(1)).map(r => `<button type="button" data-r="${r}">${r === 'ALL' ? tr('all') : r}</button>`).join('') + '</div>';
+  const title = tr('title'), desc = tr('desc'), url = SITE + compOf(l);
+  const alt = I18N.LANGS.map(x => `<link rel="alternate" hreflang="${x}" href="${SITE + compOf(x)}">`).join('') + `<link rel="alternate" hreflang="x-default" href="${SITE}/competitive">`;
+  // Как на главной: язык в адресе главнее. С /competitive без языка — на сохранённый язык (хэш вкладки с собой).
+  // Клик по пилюле языка запоминает выбор.
+  const langJS = `(function(){var P=${JSON.stringify(l)},L=${JSON.stringify(I18N.LANGS)},s=null;try{s=localStorage.getItem('fncsdraft_lang');}catch(e){}
+if(P==='en'&&s&&s!==P&&L.indexOf(s)>=0){location.replace((s==='en'?'':'/'+s)+'/competitive'+location.search+location.hash);return;}
+document.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('a[data-lang]');if(!a)return;try{localStorage.setItem('fncsdraft_lang',a.getAttribute('data-lang'));}catch(x){}a.setAttribute('href',a.getAttribute('href').split('#')[0]+location.hash);});})();`;
+  const NEWS_ = NEWS(), RECS_ = RECS();
+  return `<!doctype html>
+<html lang="${l}"><head><meta charset="utf-8"><script>${langJS}</script><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>${esc(title)}</title><meta name="description" content="${esc(desc)}">
-<link rel="canonical" href="${SITE}/competitive"><meta property="og:title" content="${esc(title)}"><meta property="og:description" content="${esc(desc)}">
-<meta property="og:url" content="${SITE}/competitive"><meta property="og:type" content="website"><meta name="twitter:card" content="summary_large_image">
-<link rel="icon" href="/favicon.ico"><style>${CSS}</style></head>
-<body><div class="wrap">${NAV}
-<section class="glass head"><h1>Competitive</h1>
-<p>Fortnite tournaments in your time zone, prize money and results for every region. Updated with every site build.</p></section>
-<nav class="subnav" role="tablist" aria-label="Competitive">
-<button role="tab" data-tab="calendar">Calendar</button><button role="tab" data-tab="prizes">Prize money</button><button role="tab" data-tab="results">Results</button><button role="tab" data-tab="news">News</button><button role="tab" data-tab="predictions">Predictions</button>
+<link rel="canonical" href="${url}">${alt}<meta property="og:title" content="${esc(title)}"><meta property="og:description" content="${esc(desc)}">
+<meta property="og:url" content="${url}"><meta property="og:type" content="website"><meta property="og:locale" content="${LOC.replace('-', '_')}"><meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/favicon.ico"><style>${l === 'ru' ? CSS_CYR : ''}${CSS.split('@LIVE@').join(tr('live'))}</style></head>
+<body><div class="wrap">${NAV()}
+<section class="glass head"><h1>${tr('h1')}</h1>
+<p>${tr('lead')}</p></section>
+<nav class="subnav" role="tablist" aria-label="${tr('navComp')}">
+<button role="tab" data-tab="calendar">${tr('tCal')}</button><button role="tab" data-tab="prizes">${tr('tPrize')}</button><button role="tab" data-tab="results">${tr('tRes')}</button><button role="tab" data-tab="news">${tr('tNews')}</button><button role="tab" data-tab="predictions">${tr('tPred')}</button>
 </nav>
 ${regButtons}
 <div class="tabp" data-tab="calendar">
 <div class="grid">
-<section class="glass panel" aria-label="Calendar"><h3>Calendar</h3><p class="small">In your time zone. Pick a day to see every cup on it.</p>
+<section class="glass panel" aria-label="${tr('tCal')}"><h3>${tr('tCal')}</h3><p class="small">${tr('calHint')}</p>
 <div id="cal" class="cal"></div><div id="calDay" class="calday"></div></section>
-<section class="glass panel" aria-label="Prize money"><h3 id="earnH">Prize money</h3>
+<section class="glass panel" aria-label="${tr('tPrize')}"><h3 id="earnH">${tr('tPrize')}</h3>
 <p class="small" id="earnP"></p><div id="earnT"></div>
 </section></div></div>
-<div class="tabp" data-tab="prizes" hidden><section class="glass panel"><h3 id="bigH">Prize money</h3><p class="small" id="bigP"></p>
-<div class="periods" id="periods"></div><div class="bigtools"><div class="pk" id="plFind"><input type="search" autocomplete="off" spellcheck="false" placeholder="Find a player"><ul class="pkL" hidden></ul></div><button type="button" id="cmpBtn" class="morebtn">Compare two players</button></div><div id="bigT"></div></section>
-<section class="glass panel"><h3>Records 2026</h3><div class="recs">${RECS.map(r => '<div class="rec"><i>' + esc(r[0]) + '</i><b>' + esc(r[1]) + '</b><span>' + esc(r[2]) + '</span></div>').join('')}</div></section>
-<section class="glass panel"><h3 id="ccH">Prize money by country</h3><div id="ccT"></div></section></div>
-<div class="tabp" data-tab="results" hidden>${WEEK ? '<section class="glass panel week"><h3>This week</h3><p class="small">' + money(WEEK.paid) + ' paid in the last 7 days.</p><div class="wkgrid"><div><i>Top earners</i>' +
-  WEEK.top.map(t => '<p>' + flag(t[1]) + '<b>' + esc(t[0]) + '</b> <span class="p1">' + money(t[2]) + '</span></p>').join('') + '</div><div><i>Biggest wins</i>' +
-  WEEK.wins.map(t => '<p><b>' + esc(t[0]) + '</b> won ' + esc(t[1]) + ' <span class="p1">' + money(t[2]) + '</span></p>').join('') + '</div></div></section>' : ''}
-<div class="results">${resHTML || '<p class="note">No results yet.</p>'}</div></div>
-<div class="tabp" data-tab="news" hidden>${NEWS ? '<div class="news"><section class="glass panel"><h3>Latest wins</h3><p class="small">Biggest wins of the last 30 days: FNCS, LANs and non-Epic tournaments.</p><ul class="nl">' + (NEWS.heads.join('') || '<li><span></span><span class="note">Nothing big this month yet.</span></li>') + '</ul></section>' +
-  '<section class="glass panel"><h3>Coming up</h3><p class="small">The biggest events of the next three weeks.</p><ul class="nl">' + (NEWS.ahead.join('') || '<li><span></span><span class="note">Nothing big on the calendar yet.</span></li>') + '</ul></section></div>' +
-  '<section class="glass panel"><h3>Transfers</h3><p class="small">Roster moves of the last 45 days, from Liquipedia. Click a player to see their 2026.</p>' +
-  '<label class="trtools"><input type="checkbox" id="trOnly" checked> Known players only (' + NEWS.big + ' of ' + NEWS.tr.length + ')</label><ul class="trs only" id="trs">' + NEWS.tr.join('') + '</ul></section>' : '<p class="note">No news yet.</p>'}</div>
-<div class="tabp" data-tab="predictions" hidden><section class="glass panel" id="liveNow" hidden></section>${heroHTML}
-<a class="glass predcard" href="/predict/fncs-solos-2026"><span class="tag">Prediction</span><b>FNCS Solos 2026 Finals</b>
-<span>Win chances for all 698 finalists, real drop maps for every region, 500 simulated finals each.</span></a>${reloadHTML}</div>
-<div class="modal" id="pm" hidden><div class="glass mbox"><button type="button" class="mx" aria-label="Close">×</button><div id="pmB"></div></div></div>
-<div class="foot"><p class="note">Calendar and leaderboards: Epic Games via <a href="https://eucompetitive.com" rel="noopener">eucompetitive.com</a> and Fortnite Tracker. Payout tables: Epic, via Fortnite Tracker. Non-Epic tournaments and transfers: <a href="https://liquipedia.net/fortnite" rel="noopener">Liquipedia</a> (CC BY-SA 3.0).</p>
-<a class="btn" href="/">Play the FNCS career</a></div>
-</div><script>${JS}</script></body></html>`;
-fs.writeFileSync(path.join(OUT, 'competitive.html'), html, 'utf8');
+<div class="tabp" data-tab="prizes" hidden><section class="glass panel"><h3 id="bigH">${tr('tPrize')}</h3><p class="small" id="bigP"></p>
+<div class="periods" id="periods"></div><div class="bigtools"><div class="pk" id="plFind"><input type="search" autocomplete="off" spellcheck="false" placeholder="${tr('find')}"><ul class="pkL" hidden></ul></div><button type="button" id="cmpBtn" class="morebtn">${tr('cmp2')}</button></div><div id="bigT"></div></section>
+<section class="glass panel"><h3>${tr('recs')}</h3><div class="recs">${RECS_.map(r => '<div class="rec"><i>' + esc(r[0]) + '</i><b>' + esc(r[1]) + '</b><span>' + esc(r[2]) + '</span></div>').join('')}</div></section>
+<section class="glass panel"><h3 id="ccH">${tr('byCountry')}</h3><div id="ccT"></div></section></div>
+<div class="tabp" data-tab="results" hidden>${WEEK ? '<section class="glass panel week"><h3>' + tr('week') + '</h3><p class="small">' + tr('wkPaid', { usd: money(WEEK.paid) }) + '</p><div class="wkgrid"><div><i>' + tr('wkTop') + '</i>' +
+  WEEK.top.map(t => '<p>' + flag(t[1]) + '<b>' + esc(t[0]) + '</b> <span class="p1">' + money(t[2]) + '</span></p>').join('') + '</div><div><i>' + tr('wkBig') + '</i>' +
+  WEEK.wins.map(t => '<p>' + tr('wkWin', { p: esc(t[0]), e: esc(evL(t[1])) }) + ' <span class="p1">' + money(t[2]) + '</span></p>').join('') + '</div></div></section>' : ''}
+<div class="results">${resHTML() || '<p class="note">' + tr('noRes') + '</p>'}</div></div>
+<div class="tabp" data-tab="news" hidden>${NEWS_ ? '<div class="news"><section class="glass panel"><h3>' + tr('latest') + '</h3><p class="small">' + tr('latestSub') + '</p><ul class="nl">' + (NEWS_.heads.join('') || '<li><span></span><span class="note">' + tr('latestNone') + '</span></li>') + '</ul></section>' +
+  '<section class="glass panel"><h3>' + tr('ahead') + '</h3><p class="small">' + tr('aheadSub') + '</p><ul class="nl">' + (NEWS_.ahead.join('') || '<li><span></span><span class="note">' + tr('aheadNone') + '</span></li>') + '</ul></section></div>' +
+  '<section class="glass panel"><h3>' + tr('trH') + '</h3><p class="small">' + tr('trSub') + '</p>' +
+  '<label class="trtools"><input type="checkbox" id="trOnly" checked> ' + tr('trOnly', { a: NEWS_.big, b: NEWS_.tr.length }) + '</label><ul class="trs only" id="trs">' + NEWS_.tr.join('') + '</ul></section>' : '<p class="note">' + tr('noNews') + '</p>'}</div>
+<div class="tabp" data-tab="predictions" hidden><section class="glass panel" id="liveNow" hidden></section>${heroHTML()}
+<a class="glass predcard" href="/predict/fncs-solos-2026"><span class="tag">${tr('predTag')}</span><b>FNCS Solos 2026 Finals</b>
+<span>${tr('predSub')}</span></a>${reloadHTML()}</div>
+<div class="modal" id="pm" hidden><div class="glass mbox"><button type="button" class="mx" aria-label="${tr('close')}">×</button><div id="pmB"></div></div></div>
+<div class="foot"><p class="note">${tr('foot', { eu: '<a href="https://eucompetitive.com" rel="noopener">eucompetitive.com</a>', lq: '<a href="https://liquipedia.net/fortnite" rel="noopener">Liquipedia</a>' })}</p>
+<a class="btn" href="${homeOf(l)}">${tr('play')}</a></div>
+</div><script>${JS()}</script></body></html>`;
+}
+let enKB = 0;
+I18N.LANGS.forEach(l => {
+  const html = page(l), dir = l === 'en' ? OUT : path.join(OUT, l);
+  fs.mkdirSync(dir, { recursive: true });
+  fs.writeFileSync(path.join(dir, 'competitive.html'), html, 'utf8');
+  if (l === 'en') enKB = Math.round(html.length / 1024);
+});
+setLang('en');
 
-// sitemap
+// sitemap: все семь адресов
 const smPath = path.join(OUT, 'sitemap.xml');
 if (fs.existsSync(smPath)) {
   let sm = fs.readFileSync(smPath, 'utf8');
-  if (!sm.includes(SITE + '/competitive<')) sm = sm.replace('</urlset>', '<url><loc>' + SITE + '/competitive</loc><lastmod>' + new Date().toISOString().slice(0, 10) + '</lastmod><changefreq>daily</changefreq><priority>0.9</priority></url>\n</urlset>');
+  const add = I18N.LANGS.map(compOf).filter(u => !sm.includes(SITE + u + '<'))
+    .map(u => '<url><loc>' + SITE + u + '</loc><lastmod>' + new Date().toISOString().slice(0, 10) + '</lastmod><changefreq>daily</changefreq><priority>' + (u === '/competitive' ? '0.9' : '0.8') + '</priority></url>\n').join('');
+  if (add) sm = sm.split('</urlset>').join(add + '</urlset>');
   fs.writeFileSync(smPath, sm, 'utf8');
 }
-console.log('competitive: /competitive (' + upcoming.length + ' окон в календаре, ' + (RES ? RES.windows.length : 0) + ' призовых окон, ' + Math.round(html.length / 1024) + ' КБ)');
+console.log('competitive: /competitive + ' + (I18N.LANGS.length - 1) + ' языков (' + upcoming.length + ' окон в календаре, ' + (RES ? RES.windows.length : 0) + ' призовых окон, ' + enKB + ' КБ)');
