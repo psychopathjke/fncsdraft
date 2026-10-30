@@ -24164,7 +24164,7 @@ Object.assign(I18N.ru, {
   lfCaseteam:'тиминг', lfCasesnipe:'стрим-снайпинг', lfCasetoxic:'токсичный пост',
   ccActnoble:'Noble Pro Scrims',
   lfNewsRankUp:r=>'Новый ранг в ранкеде: '+r,
-  lfNewsNoble:(s,p,of,k,pts)=>s+': #'+p+' из '+of+', '+k+' килл., '+pts+' очк.',
+  lfNewsNoble:(s,p,of,k,pts,fg)=>s+': #'+p+' из '+of+', '+k+' килл., '+pts+' очк.'+(fg ? ' · форма +'+fg : ''), lfNobleForm:'+ форма',
   lfNewsWrist:n=>'Боль в запястье: врач запретил играть '+n+' дн.',
   lfNewsIll:n=>'Заболел — '+n+' дн. без игры',
   lfNewsHealed:()=>'Снова в строю',
@@ -24187,7 +24187,7 @@ Object.assign(I18N.en, {
   lfCaseteam:'teaming', lfCasesnipe:'stream sniping', lfCasetoxic:'a toxic post',
   ccActnoble:'Noble Pro Scrims',
   lfNewsRankUp:r=>'New ranked rank: '+r,
-  lfNewsNoble:(s,p,of,k,pts)=>s+': #'+p+' of '+of+', '+k+' kills, '+pts+' pts',
+  lfNewsNoble:(s,p,of,k,pts,fg)=>s+': #'+p+' of '+of+', '+k+' kills, '+pts+' pts'+(fg ? ' · form +'+fg : ''), lfNobleForm:'+ form',
   lfNewsWrist:n=>'Wrist pain: the doctor says no games for '+n+' days',
   lfNewsIll:n=>'Ill — '+n+' days off',
   lfNewsHealed:()=>'Back in action',
@@ -120128,7 +120128,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='05588701';
+const CC_BUILD='1dbf71f9';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -128576,6 +128576,8 @@ function ccNobleServer(){
   if(cr.division<=3 && !ccNoDivisions()) return {name:'Noble Division '+cr.division, avg:[0,84,80,76][cr.division]};
   return o>=80 ? {name:'Noble Solos Closed', avg:80} : {name:'Noble Practice Scrims', avg:72};
 }
+// Сессия Noble поднимает форму: игра на сотню про — та же практика вечера, что и кап. Чем выше место, тем больше.
+function ccNobleForm(place, of){ return place<=Math.ceil(of*0.1) ? 0.4 : place<=Math.ceil(of*0.35) ? 0.2 : 0.1; }
 function ccNobleRun(){
   const lf=ccLife(), sv=ccNobleServer(), rng=ccLifeRng('noble');
   const o=(CAREER.player && CAREER.player.ovr)||70, of=90+Math.floor(rng()*9);
@@ -128590,8 +128592,10 @@ function ccNobleRun(){
   lf.noble.me+=pts; lf.noble.n++; lf.noble.server=sv.name;
   // Соперники сервера играют ту же сессию.
   Object.keys(lf.noble.rows).forEach(h=>{ const r=lf.noble.rows[h]; r.p+=Math.max(0, Math.round(victoryR1Points(1+Math.floor(rng()*of))+rng()*8)); });
-  careerNews(place<=10?'good':'flat', 'lfNewsNoble', [sv.name, place, of, kills, pts]);
-  return {server:sv.name, place, of, kills, pts};
+  const fg=ccNobleForm(place, of), cr=CAREER.career;
+  cr.form=clamp((cr.form||0)+fg, -CC_FORM_MAX, CC_FORM_MAX);
+  careerNews(place<=10?'good':'flat', 'lfNewsNoble', [sv.name, place, of, kills, pts, fg]);
+  return {server:sv.name, place, of, kills, pts, form:fg};
 }
 function ccNobleRivals(sv, wk){
   const reg=ccCareerRegion(), rows={};
@@ -147387,6 +147391,7 @@ function ccDiscTileHTML(a, o){
   const chips=gains.slice(0, 2).map(x=>'<i>+'+x.by.toFixed(1)+' '+(L()['ccAttr'+x.k.toUpperCase()]||x.k)+'</i>').join('')+
     (gains.length>2 ? '<i>+'+(gains.length-2)+'</i>' : '')+
     (a.morale ? '<i class="m">'+esc(L().ccGiveMood)+'</i>' : '')+
+    (a.noble ? '<i class="m">'+esc(L().lfNobleForm||'+ form')+'</i>' : '')+
     (!a.gain || !Object.keys(a.gain).length ? '<i>'+esc(L().lfMetaGive)+'</i>' : '');
   const tip=(d.map ? d.map+' · ' : '')+ccActName(a.id)+(gains.length ? ' · '+gains.map(x=>'+'+x.by.toFixed(1)+' '+ccAttrFull(x.k)).join(', ') : '');
   return '<button class="cc-dt'+(o.can?'':' off')+(o.did?' did':'')+'" title="'+esc(tip)+'" '+
