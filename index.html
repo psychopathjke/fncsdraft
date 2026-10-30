@@ -5862,6 +5862,7 @@
   .cc-tc-grade{margin-left:auto;flex:none;font-style:normal;font-size:10px;font-weight:900;padding:1px 5px;border-radius:5px;background:rgba(255,255,255,.12);color:#fff;}
   .g-D{color:#ff5f56 !important;} .g-C{color:#ffb13d !important;} .g-B{color:#cfd8ff !important;} .g-A{color:#00d6a4 !important;} .g-Ap{color:#ffdd00 !important;}
   .tw-tile{max-width:1100px;margin:0 auto 10px;}
+  .tw-noble-ic{height:20px;width:auto;vertical-align:-3px;margin-right:7px;}
   /* Два атрибута у карт Creative — прирост переносится на вторую строку, а не режется. */
   .cc-tc-gain{white-space:normal;line-height:1.15;}
   .cc-day-train .cc-tc-gain{font-size:15px;}
@@ -120127,7 +120128,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='9ab2fe5d';
+const CC_BUILD='05588701';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -147350,7 +147351,7 @@ function ccFatigueLineHTML(){
 }
 /* Вкладка «Тренировка» как Discover в лобби Fortnite: каждое занятие — плитка карты с обложкой.
    Обложки — настоящие острова Creative (fortnite.gg → og:image острова), сжаты в items/creative/*.webp.
-   Где карты нет (разбор реплеев, Noble), обложка — арт турнира. Игра на ранг — Ranked со значком Unreal
+   Noble — баннер и корона с nobleprac.com. Разбор реплеев — арт турнира. Игра на ранг — Ranked со значком Unreal
    (вики Fortnite), до его запуска 16.05.2023 — Арена. */
 const CC_DISC={
   trAim:{img:'items/creative/trAim.webp', map:'Skaavok Aim Trainer'},
@@ -147362,7 +147363,7 @@ const CC_DISC={
   trZw:{img:'items/creative/trZw.webp', map:'Desert Zone Wars'},
   trEdit:{img:'items/creative/trEdit.webp', map:"Raider's Edit Course"},
   scrim:{img:'items/creative/scrim.webp', map:'Pro Realistics'},
-  noble:{img:'art/comp/fnbr-40-10-competitive-in-game-solotexture-800x800-800x800-630b3ce0a6fb.jpg', map:'Noble Pro Scrims'}
+  noble:{img:'items/creative/noble.jpg', map:'Noble Pro Scrims'}
 };
 const CC_RANKED_FROM='2023-05-16';
 function ccDiscOf(id){
@@ -147690,7 +147691,7 @@ function careerTrainTabHTML(){
   const six=CAREER.player.attrs || ccOwnAttrs();
   // Сначала карты, под ними план недели и таблица Noble (если на неделе были сессии).
   const noble=ccNobleBoardHTML();
-  const below=ccTrainPlanHTML()+(noble ? '<div class="ch-tile tw-tile"><h4>Noble Pro Scrims</h4>'+noble+'</div>' : '');
+  const below=ccTrainPlanHTML()+(noble ? '<div class="ch-tile tw-tile"><h4><img class="tw-noble-ic" src="items/creative/noble-crown.png" alt="">Noble Pro Scrims</h4>'+noble+'</div>' : '');
   if(ccCentreDayOpen()){
     CC_DAY_VIEW='train';
     try{ return '<div class="cc-train-tab">'+careerDayPanelHTML(null)+below+'</div>'; } finally{ CC_DAY_VIEW=''; }
