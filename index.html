@@ -24244,7 +24244,7 @@ Object.assign(I18N.pt, {ccYrXHeatsIn:k=>'Top '+k+' da série — nos heats', ccY
 Object.assign(I18N.ru, {ownTitle:'Свой турнир', ownLead:'Устрой кап сам: дата, режим, инвайт или квалы, игры и призовой фонд. Играешь в нём сам.',
   ownNew:'Устроить турнир', ownName:'Название', ownDate:'Дата', ownMode:'Режим', ownEntry:'Допуск', ownSize:'Лобби, игроков', ownGames:'Игр',
   ownPool:'Призовой фонд', ownInvite:'Инвайт', ownOpenQ:'Квалы и финал', ownOpenNote:'Два дня: в первый открытые квалы региона, на следующий день финал на 100 игроков. Ты как хозяин сразу в финале.',
-  ownShape:'Как делить', ownAllPaid:(n,p)=>'Призовые получают все '+n+' составов финала, фонд $'+p,
+  ownShape:'Как делить', ownAllPaid:(n,p)=>'Призовые получают все '+n+' составов финала, фонд $'+p, ownPerPlayer:'суммы на игрока',
   ownTeam:'Состав', ownTeamMine:'Моя команда', ownTeamAuto:'Сильнейшие свободные', ownTeamPick:'Выбрать самому',
   ownTeamFill:n=>'не хватает '+n+', доберём по рейтингу', ownTeamPicked:(a,b)=>'Выбрано '+a+' из '+b,
   ownDates:'Даты: квалы и финал', ownQualTag:'Квалы', ownFinalTag:'Финал', ownQualIn:n=>'Прошёл в финал (топ-'+n+')', ownQualOut:n=>'Не прошёл в финал (топ-'+n+')',
@@ -24254,7 +24254,7 @@ Object.assign(I18N.ru, {ownTitle:'Свой турнир', ownLead:'Устрой 
 Object.assign(I18N.en, {ownTitle:'Your tournament', ownLead:'Run a cup yourself: date, mode, invite or qualifier, games and prize pool. You play in it.',
   ownNew:'Host a tournament', ownName:'Name', ownDate:'Date', ownMode:'Mode', ownEntry:'Entry', ownSize:'Lobby, players', ownGames:'Games',
   ownPool:'Prize pool', ownInvite:'Invite', ownOpenQ:'Qualifier + final', ownOpenNote:'Two days: an open regional qualifier, then a 100-player final the next day. As the host you go straight to the final.',
-  ownShape:'Split', ownAllPaid:(n,p)=>'All '+n+' teams in the final are paid, $'+p+' pool',
+  ownShape:'Split', ownAllPaid:(n,p)=>'All '+n+' teams in the final are paid, $'+p+' pool', ownPerPlayer:'amounts per player',
   ownTeam:'Team', ownTeamMine:'My team', ownTeamAuto:'Best free players', ownTeamPick:'Pick myself',
   ownTeamFill:n=>n+' short, filled by rating', ownTeamPicked:(a,b)=>a+' of '+b+' picked',
   ownDates:'Dates: qualifier and final', ownQualTag:'Qualifier', ownFinalTag:'Final', ownQualIn:n=>'Through to the final (top '+n+')', ownQualOut:n=>'Out before the final (top '+n+')',
@@ -120183,7 +120183,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='ff1b2462';
+const CC_BUILD='5b2e2c14';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -157117,7 +157117,17 @@ function ccOwnPayT(d){
     const head=sh.head.slice(0, Math.max(0, n-1)), left=1-head.reduce((a, b)=>a+b, 0);
     share=w.map((x, i)=>i<head.length ? head[i] : left*x/sumOf(head.length, n));
   }
-  return {EU:share.map((f, i)=>[i+1, Math.max(1, Math.floor(d.pool*f/size))])};
+  // Круглые суммы: шаг от величины, перебор сверх фонда снимается снизу таблицы, порядок мест не ломается.
+  const step=v=>v>=10000 ? 500 : v>=2000 ? 100 : v>=500 ? 50 : v>=100 ? 10 : v>=20 ? 5 : 1;
+  const pay=share.map(f=>{ const v=d.pool*f/size; return Math.max(1, Math.round(v/step(v))*step(v)); });
+  for(let i=1;i<pay.length;i++) if(pay[i]>pay[i-1]) pay[i]=pay[i-1];
+  let over=pay.reduce((a, b)=>a+b, 0)*size-d.pool;
+  for(let guard=0; over>0 && guard<20; guard++)
+    for(let i=pay.length-1; i>=0 && over>0; i--){
+      const st=step(pay[i]), floor=i<pay.length-1 ? pay[i+1] : 1;
+      if(pay[i]-st>=floor){ pay[i]-=st; over-=st*size; }
+    }
+  return {EU:pay.map((v, i)=>[i+1, v])};
 }
 // Дни под турнир: свободный день, а квалам — два свободных подряд.
 function ccOwnFreeDays(two){
@@ -157214,8 +157224,9 @@ function ccOwnPayBoxHTML(){
   const pay=d.pool>=CC_OWN_MIN ? ccOwnPayT(d).EU : [];
   const shown=pay.length>12 ? pay.slice(0, 10).concat([pay[pay.length-1]]) : pay;
   const short=d.team==='pick' && size>1 && d.roster.length<size-1;
-  return '<small class="own-note">'+esc(T.ownAllPaid(n, ccNum(d.pool)))+'</small>'+
-    '<div class="own-pay">'+shown.map(([p, a], i)=>(pay.length>12 && i===10 ? '<span>…</span>' : '')+'<span><b>#'+p+'</b> $'+ccNum(a*size)+'</span>').join('')+'</div>'+
+  // Команде — суммы на игрока: у тройки круглой суммы на всех не бывает.
+  return '<small class="own-note">'+esc(T.ownAllPaid(n, ccNum(d.pool)))+(size>1 ? ' · '+esc(T.ownPerPlayer) : '')+'</small>'+
+    '<div class="own-pay">'+shown.map(([p, a], i)=>(pay.length>12 && i===10 ? '<span>…</span>' : '')+'<span><b>#'+p+'</b> $'+ccNum(a)+'</span>').join('')+'</div>'+
     (why ? '<div class="own-why">'+esc(why)+'</div>'
       : d.pool<CC_OWN_MIN ? '<div class="own-why">'+esc(T.ownMin(ccNum(CC_OWN_MIN)))+'</div>'
       : bal<d.pool ? '<div class="own-why">'+esc(T.ownNoCash(ccNum(d.pool-bal)))+'</div>'

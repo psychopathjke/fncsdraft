@@ -136,8 +136,10 @@ const BOOT = `
     for (const shape of ['podium', 'top10', 'even']) {
       const t = ccOwnPayT({mode:'solo', entry:'open', pool:100000, shape}).EU, sum = t.reduce((x, r) => x + r[1], 0);
       if (t.length !== 100 || sum > 100000 || t.some((r, i) => i && r[1] > t[i-1][1]) || !(t[99][1] > 0)) fail(shape + ' table is off: sum ' + sum);
+      if (sum < 97000) fail(shape + ' pays out only $' + sum + ' of $100,000');
+      const odd = t.filter(r => r[1] >= 100 && r[1] % 10).map(r => r[1]); if (odd.length) fail(shape + ' has uneven amounts: ' + odd.slice(0, 5));
       if (shape === 'podium' && (t[0][1] !== 35000 || t[1][1] !== 20000 || t[2][1] !== 12000)) fail('podium is not 35/20/12: ' + t.slice(0, 3).map(r => r[1]));
-      if (shape === 'top10') { const top = t.slice(0, 10).reduce((x, r) => x + r[1], 0); if (top < 69900 || top > 70000) fail('top 10 should share 70%, got $' + top); }
+      if (shape === 'top10') { const top = t.slice(0, 10).reduce((x, r) => x + r[1], 0); if (top < 69000 || top > 71000) fail('top 10 should share 70%, got $' + top); }
       out.steps.push(shape + ': #1 $' + t[0][1] + ', #10 $' + t[9][1] + ', #100 $' + t[99][1]);
     }
 
