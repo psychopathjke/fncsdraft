@@ -4582,6 +4582,7 @@
   .cc-sac-in h4{margin:0 30px 12px 0;font:800 18px/1.1 Oswald,system-ui,sans-serif;text-transform:uppercase;}
   .cc-sac-x{position:absolute;top:10px;right:10px;border:0;background:none;color:#fff;font-size:18px;cursor:pointer;}
   .cc-sac-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;}
+  .cc-sac-q{width:100%;box-sizing:border-box;margin:0 0 10px;padding:10px 12px;border-radius:10px;border:1px solid rgba(180,200,255,.25);background:rgba(255,255,255,.08);color:#fff;font:inherit;font-size:14px;}
   .cc-sac-list button{display:flex;align-items:center;gap:8px;padding:8px;border-radius:10px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05);color:#fff;cursor:pointer;text-align:left;}
   .cc-sac-list button:disabled{opacity:.45;cursor:default;}
   .cc-sac-list img,.cc-sac-list i{width:32px;height:32px;border-radius:50%;flex:none;object-fit:cover;display:flex;align-items:center;justify-content:center;background:#24306a;font-style:normal;font-weight:800;}
@@ -6183,6 +6184,9 @@
   .aw-plq-g .aw-plq-plate{background:linear-gradient(180deg,#d9fbff,#7fd6e6);color:#032a33;}
   .aw-plq.aw-plq-s{border-color:#c9d2de;} .aw-plq-s .aw-plq-plate{background:linear-gradient(180deg,#f2f5f9,#aab4c2);color:#1a2230;}
   .aw-plq-plate b{display:block;font-size:11px;font-weight:900;line-height:1.1;}
+  .aw-plq.aw-plq-t{aspect-ratio:auto;display:flex;flex-direction:column;background:#05070d;border-color:#ffdd00;box-shadow:0 0 18px rgba(255,221,0,.18);}
+  .aw-plq-t img{position:static;width:100%;height:auto;aspect-ratio:3/4;object-fit:cover;}
+  .aw-plq-t .aw-plq-plate{position:static;margin:6px;}
   .aw-plq-plate small{display:block;font-size:9.5px;font-weight:800;opacity:.8;}
   .aw-potms{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:10px;}
   .aw-medal{display:flex;flex-direction:column;align-items:center;gap:1px;text-align:center;padding:4px 2px;}
@@ -24201,7 +24205,7 @@ Object.assign(I18N.fr, {ccYrXHeatsIn:k=>'Top '+k+' de la série — en heats', c
 Object.assign(I18N.it, {ccYrXHeatsIn:k=>'Top '+k+' della serie — negli heat', ccYrXHeatsZone:k=>'Zona heat: top '+k+' della serie', ccYrXHeatsOut:k=>'Fuori dal top '+k+' della serie — niente heat'});
 Object.assign(I18N.pt, {ccYrXHeatsIn:k=>'Top '+k+' da série — nos heats', ccYrXHeatsZone:k=>'Zona dos heats: top '+k+' da série', ccYrXHeatsOut:k=>'Fora do top '+k+' da série — sem heats'});
 // Шкафчик: подписи как в русском клиенте Fortnite; в остальных языках остаётся английский вид Epic.
-Object.assign(I18N.ru, {ccLkSub:'Мой набор', ccLkChar:'Персонаж', ccLkEmotes:'Эмоции', ccFnSave:'Сохранить набор'});
+Object.assign(I18N.ru, {ccLkSub:'Мой набор', ccLkChar:'Персонаж', ccLkEmotes:'Эмоции', ccFnSave:'Сохранить набор', ccSacFind:'Найти автора'});
 Object.assign(I18N.ru, {ccYr21ToDay2:'Не прошли — завтра хиты второго дня'}); Object.assign(I18N.en, {ccYr21ToDay2:'Not through — the day-2 heats are tomorrow'});
 Object.assign(I18N.fr, {ccYr21ToDay2:'Pas qualifiés — heats du jour 2 demain'}); Object.assign(I18N.it, {ccYr21ToDay2:'Non passati — domani gli heat del giorno 2'}); Object.assign(I18N.pt, {ccYr21ToDay2:'Não passaram — amanhã os heats do dia 2'});
 Object.assign(I18N.ru, {ccYrSemiZone:k=>'В зоне полуфинала: топ-'+k+' серии', ccYrSemiOut:k=>'Вне топ-'+k+' серии — мимо полуфинала'});
@@ -120123,7 +120127,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='6ff9009c';
+const CC_BUILD='9ab2fe5d';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -147346,10 +147350,10 @@ function ccFatigueLineHTML(){
 }
 /* Вкладка «Тренировка» как Discover в лобби Fortnite: каждое занятие — плитка карты с обложкой.
    Обложки — настоящие острова Creative (fortnite.gg → og:image острова), сжаты в items/creative/*.webp.
-   Где карты нет (игра в BR, разбор реплеев, Noble), обложка — арт сезона или турнира. */
+   Где карты нет (разбор реплеев, Noble), обложка — арт турнира. Игра на ранг — Ranked со значком Unreal
+   (вики Fortnite), до его запуска 16.05.2023 — Арена. */
 const CC_DISC={
   trAim:{img:'items/creative/trAim.webp', map:'Skaavok Aim Trainer'},
-  trSur:{map:'Battle Royale'},
   trCon:{img:'items/creative/trCon.webp', map:'Piece Control 1v1'},
   trClu:{img:'items/creative/trClu.webp', map:'1v1 Build Fights'},
   trExp:{img:'art/comp/fnce-37-10-soloseries-ingamecompetetab-solotexture-800x800-800x800-e2b94d5baa94.jpg'},
@@ -147360,6 +147364,12 @@ const CC_DISC={
   scrim:{img:'items/creative/scrim.webp', map:'Pro Realistics'},
   noble:{img:'art/comp/fnbr-40-10-competitive-in-game-solotexture-800x800-800x800-630b3ce0a6fb.jpg', map:'Noble Pro Scrims'}
 };
+const CC_RANKED_FROM='2023-05-16';
+function ccDiscOf(id){
+  if(id==='trSur') return careerToday()>=CC_RANKED_FROM ? {img:'items/creative/trSur-ranked.jpg', map:'Ranked'}
+    : {img:'items/creative/trSur-arena.jpg', map:L().lfArena||'Arena'};
+  return CC_DISC[id]||{};
+}
 function ccDiscTile(id){ return id!=='talk' && (String(id).indexOf('tr')===0 || id==='scrim' || id==='noble'); }
 // Сколько занятие поднимет каждый параметр сегодня: та же арифметика, что в careerDoAct.
 function ccDiscGains(a, o){
@@ -147370,7 +147380,7 @@ function ccDiscGains(a, o){
   }).filter(g=>g.by>0).sort((x,y)=>y.by-x.by);
 }
 function ccDiscTileHTML(a, o){
-  const d=CC_DISC[a.id]||{}, img=d.img || ccDayArt(), g=ccDrillLast(a.id), gains=ccDiscGains(a, o);
+  const d=ccDiscOf(a.id), img=d.img || ccDayArt(), g=ccDrillLast(a.id), gains=ccDiscGains(a, o);
   const why = o.closed ? '' : o.maxed ? L().ccAttrMaxed : (o.keys.length && !o.gainsMove) ? L().ccNoGain
             : o.left<a.energy ? L().ccNeedEnergy(a.energy-o.left) : (o.hostWhy || '');
   const chips=gains.slice(0, 2).map(x=>'<i>+'+x.by.toFixed(1)+' '+(L()['ccAttr'+x.k.toUpperCase()]||x.k)+'</i>').join('')+
@@ -150838,9 +150848,19 @@ function ccFnPeekBun(e, k){
    режима). Свой код — с 1000 подписчиков (порог Support-a-Creator у Epic); раз в месяц он платит 5% с покупок фанатов:
    подписчики × 0,4% покупающих × $8 × 5% — ОЦЕНКА режима, у Epic числа фанатских покупок нет. */
 const CC_SAC_MIN=1000, CC_SAC_THANK=5000, CC_SAC_RATE=0.004*8*0.05;
+// Все, у кого в игре есть код: креаторы Про-Ама и каналы CC_CREATORS_MORE (про-игроки тоже, у Bugha и Clix коды есть).
 function ccSacCreators(){
-  if(typeof CC_PROAM_TWITCH==='undefined') return [];
-  return Object.keys(CC_PROAM_TWITCH).map(n=>({name:n, fol:(CC_PROAM_TWITCH[n]||[])[1]||0})).filter(x=>x.fol>0).sort((a,b)=>b.fol-a.fol).slice(0, 40);
+  const out=[], seen=new Set();
+  const add=(name, login, fol, ava)=>{ const k=String(login||name).toLowerCase(); if(seen.has(k)) return; seen.add(k); out.push({name, fol:fol||0, ava}); };
+  if(typeof CC_PROAM_TWITCH!=='undefined') Object.keys(CC_PROAM_TWITCH).forEach(n=>{
+    const t=CC_PROAM_TWITCH[n]||[]; add(n, t[0], t[1], typeof ccProAmAvatar==='function' ? ccProAmAvatar(n) : ''); });
+  if(typeof CC_CREATORS_MORE!=='undefined') Object.keys(CC_CREATORS_MORE).forEach(rg=>(CC_CREATORS_MORE[rg]||[]).forEach(([n, login, f, file])=>
+    add(n, login, f, file ? 'photos/creators/'+file : '')));
+  return out.sort((a,b)=>b.fol-a.fol);
+}
+function ccSacFilter(q){
+  q=String(q||'').trim().toLowerCase();
+  document.querySelectorAll('#ccSacModal .cc-sac-list button').forEach(b=>{ b.style.display=(!q || b.dataset.n.indexOf(q)>=0) ? '' : 'none'; });
 }
 function ccSacSet(name){
   CAREER.sac=name ? {code:name, since:careerToday(), vb:0, thanked:0} : null;
@@ -150899,8 +150919,9 @@ function ccSacPickOpen(){
   let el=document.getElementById('ccSacModal');
   if(!el){ el=document.createElement('div'); el.id='ccSacModal'; el.className='cc-sac-modal'; document.body.appendChild(el); }
   el.innerHTML='<div class="cc-sac-in"><h4>'+esc(T.ccSacTitle||'Support a Creator')+'</h4><button class="cc-sac-x" onclick="ccSacPickClose()">✕</button>'+
-    '<div class="cc-sac-list">'+list.map(c=>'<button onclick="ccSacSet(\''+esc(c.name).replace(/'/g, '')+'\')">'+
-      (typeof ccProAmAvatar==='function' && ccProAmAvatar(c.name) ? '<img src="'+esc(ccProAmAvatar(c.name))+'" alt="" loading="lazy" onerror="this.remove()">' : '<i>'+esc(c.name.slice(0,1))+'</i>')+
+    '<input class="cc-sac-q" type="search" placeholder="'+esc(T.ccSacFind||'Search')+'" oninput="ccSacFilter(this.value)">'+
+    '<div class="cc-sac-list">'+list.map(c=>'<button data-n="'+esc(c.name.toLowerCase())+'" onclick="ccSacSet(\''+esc(c.name).replace(/'/g, '')+'\')">'+
+      (c.ava ? '<img src="'+esc(c.ava)+'" alt="" loading="lazy" onerror="this.remove()">' : '<i>'+esc(c.name.slice(0,1))+'</i>')+
       '<b>'+esc(c.name)+'</b><em>'+esc(ccFollowers(c.fol))+'</em></button>').join('')+'</div>'+
     (CAREER.sac ? '<button class="cc-sac-off" onclick="ccSacSet(null)">'+esc(T.ccSacOff||'Remove code')+'</button>' : '')+'</div>';
   el.style.display='flex';
@@ -174766,6 +174787,17 @@ const CC_AW_MEDALS=['nisha', 'peter', 'valeria', 'oscar'];
 /* У каждого месяца свой медальон: январь → peter, … декабрь → godzilla.
    Нет файла месяца: onerror ставит один из скачанных (CC_AW_MEDALS). Положил картинку в папку, месяц её берёт. */
 const CC_AW_MEDAL_MONTH=['peter', 'nisha', 'oscar', 'montague', 'valeria', 'megalodon', 'shogunx', 'nightrose', 'doombot', 'emmafrost', 'mysterio', 'godzilla'];
+/* Настоящие кубки ЛАНов, фото с сайтов производителей и Epic: World Cup 2019 (Нью-Йорк), FNCS Invitational 2022
+   (Swarovski), Global Championship 2023 и 2024 (Swarovski, один дизайн), Глобалы с 2025-го и Pro-Am (Thomas Lyte).
+   Остальные финалы остаются табличкой с артом турнира. */
+function ccAwTrophy(e){
+  if(!e) return null;
+  const y=String(e.day||'').slice(0,4);
+  if(e.kind==='major' && (e.day==='2019-07-27' || e.day==='2019-07-28')) return 'wc-2019';
+  if(e.kind==='globals') return y==='2022' ? 'inv-2022' : y<'2025' ? 'gc-2023' : 'gc-2025';
+  if(e.kind==='proam') return 'proam';
+  return null;
+}
 function ccAwardsShelfHTML(){
   if(typeof careerAwards!=='function') return '';
   const won=(careerAwards().won||[]).filter(a=>a.you);
@@ -174777,16 +174809,23 @@ function ccAwardsShelfHTML(){
   const item=(ico, name, sub)=>'<div class="aw-item"><i>'+ico+'</i><b>'+esc(name)+'</b><small>'+esc(sub)+'</small></div>';
   const log=((CAREER.career||{}).log||[]).filter(e=>e && e.place===1);
   const big=e=>{ try{ if(ccFncsTitle(e)) return true; }catch(x){}
-    return e.kind==='globals' || (/^(summit|rc|reload)$/.test(e.kind) && e.stage==='final'); };
+    return e.kind==='globals' || e.kind==='proam' || (/^(summit|rc|reload)$/.test(e.kind) && e.stage==='final'); };
   const cups=log.filter(big).sort((a,b)=>String(a.day)<String(b.day) ? -1 : 1);
   const weekly=log.filter(e=>e.kind==='final' && !big(e)).length;
   // Глобалы полным именем: ccLogName даёт календарное сокращение «ГЧ» (его «что такое ГЧ», 30.10).
-  const cupName=e=>{ if(e.kind==='globals') return 'Global Championship';
+  const cupName=e=>{ const t=ccAwTrophy(e);
+    if(t==='wc-2019') return 'World Cup '+(e.day==='2019-07-28' ? 'Solo' : 'Duos');
+    if(t==='inv-2022') return 'FNCS Invitational';
+    if(t==='proam') return 'Pro-Am';
+    if(e.kind==='globals') return 'Global Championship';
     try{ return ccLockerPlain(ccLogName(e)); }catch(x){ return e.name||''; } };
   const cupDay=e=>{ try{ return ccDayLabel ? ccDayLabel(e.day) : e.day; }catch(x){ return e.day||''; } };
   /* 30.10 (2), его «слопно; кубки пусть лого фнкса, который он выиграл»: кубок — заставка того самого турнира
      (ccLogArt, те же картинки, что на стене истории) в рамке с табличкой: название и год. */
   const cupHTML=e=>{
+    const t=ccAwTrophy(e);
+    if(t) return '<div class="aw-plq aw-plq-t"><img src="items/trophies/'+t+'.webp" alt="" loading="lazy">'+
+      '<div class="aw-plq-plate"><b>'+esc(cupName(e))+'</b><small>'+esc(String(cupDay(e)))+' '+esc(String(e.day||'').slice(0,4))+'</small></div></div>';
     let art=null; try{ art=ccLogArt(e); }catch(x){ art=null; }
     return '<div class="aw-plq'+(e.kind==='globals' ? ' aw-plq-g' : '')+'">'+
       (art ? '<img src="'+esc(art)+'" alt="" loading="lazy" onerror="this.remove()">' : '')+
