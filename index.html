@@ -120199,7 +120199,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='e4d1dc38';
+const CC_BUILD='997dd5c1';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -157076,9 +157076,10 @@ function ccVictoryList(){
      Теперь в дни кубков недели кап стоит рядом (не прошёл в финал — играешь кап, careerNext), а капов
      одного дня может быть несколько — какой играть, выбирается (careerVictoryOn, cr.vpick). FNCS,
      Мейджоры, свои события года и ЛАНы по-прежнему держат день целиком. */
-  const ownDays=new Set(own.map(v=>v.day));
+  const ownDays=new Set(own.map(v=>v.day)), ownIds=new Set(own.map(v=>v.day+'|'+v.id));
+  // Zero Build встаёт и в день своего капа года — выбором рядом (ZBM Squads по субботам начала 2023-го).
   const extra=y>=2026 ? [] : CC_CUPS_ARCH.filter(v=>!v.invite && v.day>=from && v.day<=to
-    && !hard.has(v.day) && !lanDays.has(v.day) && !ownDays.has(v.day));
+    && !hard.has(v.day) && !lanDays.has(v.day) && (!ownDays.has(v.day) || (v.zb && !ownIds.has(v.day+'|'+v.id))));
   CC_VICTORY_LIST=own.concat(lans, extra).sort((a,b)=>a.day<b.day?-1:a.day>b.day?1:0);
   /* Годы продолжения (2027+) играют календарь 2026-го со сдвигом дат, а в имени события стоял
      настоящий год: «Games of the Future 2025 - Abu Dhabi» в декабре 2027-го (17.10, Notion
