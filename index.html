@@ -4593,6 +4593,10 @@
   .own-note,.own-lead{display:block;font-size:12px;color:#b9c6ee;margin:0 0 12px;}
   .own-why{margin:8px 0;font-size:12px;font-weight:800;color:#ffb13d;}
   .own-go{width:100%;}
+  .own-step{display:flex;gap:6px;margin:0 0 8px;} .own-step input{margin:0;text-align:center;font-weight:900;}
+  .own-step button{flex:none;width:44px;border:0;border-radius:10px;cursor:pointer;font:inherit;font-size:20px;font-weight:900;color:#fff;
+    background:rgba(255,255,255,.1);box-shadow:inset 0 0 0 1px rgba(180,200,255,.2);}
+  .own-people button i{font-style:normal;opacity:.7;margin-left:3px;}
   .own-tile{max-width:1100px;margin:12px auto;}
   .own-item{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 0;border-top:1px solid rgba(255,255,255,.08);}
   .own-item span{display:flex;flex-direction:column;gap:2px;min-width:0;} .own-item b{font-weight:900;} .own-item small{font-size:11px;color:#b9c6ee;}
@@ -24222,16 +24226,22 @@ Object.assign(I18N.pt, {ccYrXHeatsIn:k=>'Top '+k+' da série — nos heats', ccY
 // Шкафчик: подписи как в русском клиенте Fortnite; в остальных языках остаётся английский вид Epic.
 Object.assign(I18N.ru, {ownTitle:'Свой турнир', ownLead:'Устрой кап сам: дата, режим, инвайт или квалы, игры и призовой фонд. Играешь в нём сам.',
   ownNew:'Устроить турнир', ownName:'Название', ownDate:'Дата', ownMode:'Режим', ownEntry:'Допуск', ownSize:'Лобби, игроков', ownGames:'Игр',
-  ownPool:'Призовой фонд', ownInvite:'Инвайт', ownOpenQ:'Квалы и финал', ownOpenNote:'Открытая квалификация региона, лучшие проходят в финал в тот же вечер.',
-  ownPaid:n=>'Кто получает · участников '+n, ownPaid3:'Топ-3', ownPaid10:'Топ-10', ownPaid25:'Четверть', ownPaidAll:'Все участники',
-  ownShape:'Как делить', ownShapeTop:'Победителю больше', ownShapeEven:'Ровнее', ownShapeFlat:'Поровну', ownMin:n=>'Фонд от $'+n, ownMode_solo:'Соло', ownMode_duo:'Дуо', ownMode_trio:'Трио', ownMode_squad:'Сквад',
+  ownPool:'Призовой фонд', ownInvite:'Инвайт', ownOpenQ:'Квалы и финал', ownOpenNote:'Два дня: в первый открытые квалы региона, сто лучших играют финал на следующий день.',
+  ownShape:'Как делить', ownAllPaid:(n,p)=>'Призовые получают все '+n+' составов финала, фонд $'+p,
+  ownTeam:'Состав', ownTeamMine:'Моя команда', ownTeamAuto:'Сильнейшие свободные', ownTeamPick:'Выбрать самому',
+  ownTeamFill:n=>'не хватает '+n+', доберём по рейтингу', ownTeamPicked:(a,b)=>'Выбрано '+a+' из '+b,
+  ownDates:'Даты: квалы и финал', ownQualTag:'Квалы', ownFinalTag:'Финал', ownQualIn:n=>'Прошёл в финал (топ-'+n+')', ownQualOut:n=>'Не прошёл в финал (топ-'+n+')',
+  ownNewsQualOut:n=>'Не прошёл квалы своего турнира '+n+'. Финал завтра без меня', ownShapeTop:'Победителю больше', ownShapeEven:'Ровнее', ownShapeFlat:'Поровну', ownMin:n=>'Фонд от $'+n, ownMode_solo:'Соло', ownMode_duo:'Дуо', ownMode_trio:'Трио', ownMode_squad:'Сквад',
   ownNoDays:'Свободных дней в ближайшие два месяца нет', ownNoCash:n=>'Не хватает $'+n+' на фонд', ownCreate:n=>'Объявить · фонд $'+n, ownCancel:'Отменить',
   ownWhyMp:'Вдвоём свои турниры не устраиваются', ownNewsAnnounce:(n,d,p)=>'Объявил свой турнир '+n+': '+d+', фонд $'+p});
 Object.assign(I18N.en, {ownTitle:'Your tournament', ownLead:'Run a cup yourself: date, mode, invite or qualifier, games and prize pool. You play in it.',
   ownNew:'Host a tournament', ownName:'Name', ownDate:'Date', ownMode:'Mode', ownEntry:'Entry', ownSize:'Lobby, players', ownGames:'Games',
-  ownPool:'Prize pool', ownInvite:'Invite', ownOpenQ:'Qualifier + final', ownOpenNote:'Open regional qualifier, the best go through to the final the same evening.',
-  ownPaid:n=>'Who gets paid · '+n+' entrants', ownPaid3:'Top 3', ownPaid10:'Top 10', ownPaid25:'Top quarter', ownPaidAll:'Everyone',
-  ownShape:'Split', ownShapeTop:'Winner gets more', ownShapeEven:'Flatter', ownShapeFlat:'Equal', ownMin:n=>'Pool from $'+n, ownMode_solo:'Solo', ownMode_duo:'Duos', ownMode_trio:'Trios', ownMode_squad:'Squads',
+  ownPool:'Prize pool', ownInvite:'Invite', ownOpenQ:'Qualifier + final', ownOpenNote:'Two days: an open regional qualifier, then the best hundred play the final the next day.',
+  ownShape:'Split', ownAllPaid:(n,p)=>'All '+n+' teams in the final are paid, $'+p+' pool',
+  ownTeam:'Team', ownTeamMine:'My team', ownTeamAuto:'Best free players', ownTeamPick:'Pick myself',
+  ownTeamFill:n=>n+' short, filled by rating', ownTeamPicked:(a,b)=>a+' of '+b+' picked',
+  ownDates:'Dates: qualifier and final', ownQualTag:'Qualifier', ownFinalTag:'Final', ownQualIn:n=>'Through to the final (top '+n+')', ownQualOut:n=>'Out before the final (top '+n+')',
+  ownNewsQualOut:n=>'Out in the qualifier of my own '+n+'. The final goes on tomorrow without me', ownShapeTop:'Winner gets more', ownShapeEven:'Flatter', ownShapeFlat:'Equal', ownMin:n=>'Pool from $'+n, ownMode_solo:'Solo', ownMode_duo:'Duos', ownMode_trio:'Trios', ownMode_squad:'Squads',
   ownNoDays:'No free days in the next two months', ownNoCash:n=>'$'+n+' short for the pool', ownCreate:n=>'Announce · $'+n+' pool', ownCancel:'Cancel',
   ownWhyMp:'Own tournaments are not hosted in a two-player career', ownNewsAnnounce:(n,d,p)=>'Announced my own tournament '+n+': '+d+', $'+p+' pool'});
 Object.assign(I18N.ru, {ccLkSub:'Мой набор', ccLkChar:'Персонаж', ccLkEmotes:'Эмоции', ccFnSave:'Сохранить набор', ccSacFind:'Найти автора'});
@@ -120156,7 +120166,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='91f2ce9e';
+const CC_BUILD='49040571';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -152519,6 +152529,8 @@ function ccLanQualified(ev){
 function ccVictoryInvited(ev){
   // EWC 2024 и его отборы: по путёвке, а не по PR (ewc24Invited).
   if(ev && ev.ewc24 && typeof ewc24Invited==='function') return ewc24Invited(ev);
+  // Финал своего турнира — для прошедших квалы, хозяин тоже проходит их на общих правах.
+  if(ev && ev.finalOf){ const q=ccOwnQualOf(ev); return !!(q && q.res && q.res.youIn); }
   if(!ev || !ev.invite || ev.own) return true;
   /* КОМАНДУ ЗОВУТ, ЕСЛИ ЗОВУТ ХОТЬ ОДНОГО ИЗ ДВОИХ — и решают это одинаково у обоих (командный год за
      Pixie и SwizzY 20.10: Amar Rohat Pro Invitational, по своему месту в PR одного звали, другого нет, и каждый
@@ -157042,15 +157054,14 @@ function ccVictoryLocked(){
    создании, отмена до дня турнира возвращает его. Устраивать может тот, кто держит свою кастомку (ccHostWhy):
    аудитория, клуб или PR. Вдвоём не устраивается: календарь у двоих должен быть один. */
 // Фонд — любой от CC_OWN_MIN; кнопки — быстрые суммы.
-const CC_OWN_MIN=10000, CC_OWN_POOLS=[10000, 25000, 50000, 100000, 250000, 1000000];
-/* Призовые места считаются от числа участников (инвайт — лобби, квалы — финал прошедших): топ-3, топ-10,
-   четверть или все. Форма делёжки — вес места 1/место^k: «победителю больше» k=1.2 (у топ-10 победитель берёт
-   ~40%), «ровнее» k=0.5 (~20%), «поровну» k=0. */
+const CC_OWN_MIN=10000, CC_OWN_POOLS=[10000, 25000, 50000, 100000, 250000, 1000000], CC_OWN_STEP=5000;
+/* Призовые получают все составы финала: на 100 человек это 100 соло, 50 дуо, 33 трио, 25 сквадов. Форма
+   делёжки — вес места 1/место^k: «победителю больше» k=1.2, «ровнее» k=0.5, «поровну» k=0. */
 const CC_OWN_SHAPES={top:1.2, even:0.5, flat:0};
-const CC_OWN_PAID=['3','10','25p','all'];
+// Квалы: в финал проходит 100 человек, финал — на следующий день.
+const CC_OWN_FINAL=100;
 let CC_OWN_DRAFT=null;
 function ccOwnCupsVer(){ const cr=typeof CAREER!=='undefined' && CAREER && CAREER.career; return (cr && cr.ownV) || 0; }
-function ccOwnModeOfYear(){ const n=careerSquadSize(); return n===1 ? 'solo' : n===2 ? 'duo' : n===3 ? 'trio' : 'squad'; }
 function ccOwnSize(mode){ return mode==='solo' ? 1 : mode==='duo' ? 2 : mode==='trio' ? 3 : 4; }
 function ccOwnCups(){
   const cr=typeof CAREER!=='undefined' && CAREER && CAREER.career;
@@ -157058,27 +157069,24 @@ function ccOwnCups(){
   const from=ccYearFrom(), to=ccYearTo();
   return cr.ownCups.filter(c=>c.day>=from && c.day<=to && !c.off);
 }
-// Сколько составов играет: инвайт — лобби на составы, квалы — комната финала.
+// Составов в финале: инвайт — лобби, квалы — сотня прошедших.
 function ccOwnField(d){
-  const size=ccOwnSize(d.mode);
-  return d.entry==='invite' ? Math.max(2, Math.round(d.size/size)) : Math.max(2, Math.round(CC_VICTORY_R2_PLAYERS/size));
+  const players=d.entry==='invite' ? d.size : CC_OWN_FINAL;
+  return Math.max(2, Math.round(players/ccOwnSize(d.mode)));
 }
-function ccOwnPaidN(d){
-  const n=ccOwnField(d);
-  return Math.max(1, Math.min(n, d.paid==='3' ? 3 : d.paid==='10' ? 10 : d.paid==='25p' ? Math.ceil(n/4) : n));
-}
-// Таблица на игрока: доля фонда за место по форме, у команды делится на состав.
 function ccOwnPayT(d){
-  const size=ccOwnSize(d.mode), n=ccOwnPaidN(d), k=CC_OWN_SHAPES[d.shape]!=null ? CC_OWN_SHAPES[d.shape] : 1.2;
+  const size=ccOwnSize(d.mode), n=ccOwnField(d), k=CC_OWN_SHAPES[d.shape]!=null ? CC_OWN_SHAPES[d.shape] : 1.2;
   const w=[]; for(let i=1;i<=n;i++) w.push(1/Math.pow(i, k));
   const sum=w.reduce((a,b)=>a+b, 0);
-  return {EU:w.map((x, i)=>[i+1, Math.floor(d.pool*x/sum/size)])};
+  return {EU:w.map((x, i)=>[i+1, Math.max(1, Math.floor(d.pool*x/sum/size))])};
 }
-function ccOwnFreeDays(){
+// Дни под турнир: свободный день, а квалам — два свободных подряд.
+function ccOwnFreeDays(two){
   const cr=CAREER.career, today=careerToday(), days=careerYearDays(), out=[];
+  const free=d=>!(days.get(d)||[]).length && !(cr.did||{})[d] && d<=ccYearTo();
   let last=ccAddDays(today, 60); if(last>ccYearTo()) last=ccYearTo();
   for(let d=ccAddDays(today, 2); d<=last; d=ccAddDays(d, 1))
-    if(!(days.get(d)||[]).length && !(cr.did||{})[d]) out.push(d);
+    if(free(d) && (!two || free(ccAddDays(d, 1)))) out.push(d);
   return out;
 }
 function ccOwnWhy(){
@@ -157087,82 +157095,152 @@ function ccOwnWhy(){
   if(ccHostWhy()==='reach') return L().ccHostNeedReach(ccNum(CC_HOST_REACH));
   return '';
 }
+// Свободные игроки сцены своего региона для состава: сильнейшие первыми, без себя.
+function ccOwnPool(){
+  const me=hKey(CAREER.player.handle||CAREER.player.nick||'');
+  return ccSceneRoster(ccCareerRegion()).filter(c=>c && c.handle && hKey(c)!==me)
+    .sort((a,b)=>ccCardOvr(b)-ccCardOvr(a));
+}
+function ccOwnMyMates(fmt){
+  return ((CAREER.rosters||{})[fmt] || CAREER.partners || []).filter(Boolean).map(r=>ccMateCardOf(r)).filter(Boolean).slice(0, fmt-1);
+}
 function ccOwnOpen(){
-  const free=ccOwnFreeDays();
-  CC_OWN_DRAFT={name:(String(CAREER.player.nick||'')+' Cup').trim(), day:free[0]||'', mode:'solo', entry:'invite', size:100, games:6, pool:CC_OWN_MIN, paid:'10', shape:'top'};
+  CC_OWN_DRAFT={name:(String(CAREER.player.nick||'')+' Cup').trim(), day:'', mode:'solo', entry:'invite', size:100, games:6, pool:CC_OWN_MIN, shape:'top', team:'mine', roster:[]};
+  CC_OWN_DRAFT.day=ccOwnFreeDays(false)[0]||'';
   ccOwnDraw();
 }
-function ccOwnSet(k, v){ if(!CC_OWN_DRAFT) return; CC_OWN_DRAFT[k]=v; ccOwnDraw(); }
+function ccOwnSet(k, v){
+  const d=CC_OWN_DRAFT; if(!d) return; d[k]=v;
+  if(k==='entry'){ const f=ccOwnFreeDays(v==='open'); if(f.indexOf(d.day)<0) d.day=f[0]||''; }
+  if(k==='mode') d.roster=[];
+  ccOwnDraw();
+}
+function ccOwnPick(h){
+  const d=CC_OWN_DRAFT; if(!d) return;
+  const i=d.roster.indexOf(h), need=ccOwnSize(d.mode)-1;
+  if(i>=0) d.roster.splice(i, 1); else if(d.roster.length<need) d.roster.push(h);
+  ccOwnDraw();
+}
 function ccOwnClose(){ const el=document.getElementById('ccOwnModal'); if(el) el.style.display='none'; CC_OWN_DRAFT=null; }
 function ccOwnDraw(){
   const T=L(), d=CC_OWN_DRAFT; if(!d) return;
   let el=document.getElementById('ccOwnModal');
   if(!el){ el=document.createElement('div'); el.id='ccOwnModal'; el.className='cc-sac-modal'; document.body.appendChild(el); }
+  const keep=el.querySelector('.own-in') ? el.querySelector('.own-in').scrollTop : 0;
   const chips=(k, opts)=>'<div class="own-chips">'+opts.map(([v, lbl])=>'<button class="'+(d[k]===v ? 'on' : '')+'" onclick="ccOwnSet(\''+k+'\','+(typeof v==='number' ? v : '\''+v+'\'')+')">'+esc(lbl)+'</button>').join('')+'</div>';
   const row=(lbl, body)=>'<div class="own-row"><em>'+esc(lbl)+'</em>'+body+'</div>';
-  const free=ccOwnFreeDays().slice(0, 24);
-  const yr=ccOwnModeOfYear();
-  const modes=[['solo', T.ownMode_solo]].concat(yr!=='solo' ? [[yr, T['ownMode_'+yr]]] : []);
-  const bal=CAREER.career.balance||0, why=ccOwnWhy();
-  const n=ccOwnField(d);
+  const two=d.entry==='open', free=ccOwnFreeDays(two).slice(0, 24);
+  const dayLbl=x=>two ? ccDayLabel(x)+'–'+ccDayLabel(ccAddDays(x, 1)) : ccDayLabel(x);
+  const size=ccOwnSize(d.mode), need=size-1;
+  let teamBody='';
+  if(need>0){
+    teamBody=chips('team', [['mine', T.ownTeamMine], ['auto', T.ownTeamAuto], ['pick', T.ownTeamPick]]);
+    if(d.team==='mine'){ const m=ccOwnMyMates(size); teamBody+='<small class="own-note">'+esc(m.length ? m.map(c=>c.handle).join(', ')+(m.length<need ? ' · '+T.ownTeamFill(need-m.length) : '') : T.ownTeamFill(need))+'</small>'; }
+    else if(d.team==='auto'){ teamBody+='<small class="own-note">'+esc(ccOwnPool().slice(0, need).map(c=>c.handle+' '+ccCardOvr(c)).join(', '))+'</small>'; }
+    else teamBody+='<small class="own-note">'+esc(T.ownTeamPicked(d.roster.length, need))+'</small><div class="own-chips own-people">'+
+      ccOwnPool().slice(0, 30).map(c=>{ const on=d.roster.indexOf(c.handle)>=0;
+        return '<button class="'+(on ? 'on' : '')+'" onclick="ccOwnPick(\''+esc(c.handle).replace(/'/g, '')+'\')">'+esc(c.handle)+' <i>'+ccCardOvr(c)+'</i></button>'; }).join('')+'</div>';
+  }
   el.innerHTML='<div class="cc-sac-in own-in"><h4>'+esc(T.ownTitle)+'</h4><button class="cc-sac-x" onclick="ccOwnClose()">✕</button>'+
     row(T.ownName, '<input class="cc-sac-q" maxlength="32" value="'+esc(d.name)+'" oninput="CC_OWN_DRAFT.name=this.value">')+
-    row(T.ownDate, free.length ? chips('day', free.map(x=>[x, ccDayLabel(x)])) : '<small>'+esc(T.ownNoDays)+'</small>')+
-    row(T.ownMode, chips('mode', modes))+
+    row(T.ownMode, chips('mode', [['solo', T.ownMode_solo], ['duo', T.ownMode_duo], ['trio', T.ownMode_trio], ['squad', T.ownMode_squad]]))+
+    (need>0 ? row(T.ownTeam, teamBody) : '')+
     row(T.ownEntry, chips('entry', [['invite', T.ownInvite], ['open', T.ownOpenQ]]))+
-    (d.entry==='invite'
-      ? row(T.ownSize, chips('size', [[50, '50'], [100, '100']]))+row(T.ownGames, chips('games', [[4,'4'],[6,'6'],[8,'8'],[10,'10'],[12,'12']]))
-      : '<small class="own-note">'+esc(T.ownOpenNote)+'</small>')+
-    row(T.ownPool, '<input class="cc-sac-q" id="ownPoolIn" type="number" inputmode="numeric" min="'+CC_OWN_MIN+'" step="1000" value="'+d.pool+'" oninput="ccOwnPoolIn(this.value)">'+
-      chips('pool', CC_OWN_POOLS.map(p=>[p, '$'+ccNum(p)])))+
-    row(T.ownPaid(n), chips('paid', [['3', T.ownPaid3], ['10', T.ownPaid10], ['25p', T.ownPaid25], ['all', T.ownPaidAll]]))+
+    (two ? '<small class="own-note">'+esc(T.ownOpenNote)+'</small>' : row(T.ownSize, chips('size', [[50, '50'], [100, '100']])))+
+    row(T.ownGames, chips('games', [[4,'4'],[6,'6'],[8,'8'],[10,'10'],[12,'12']]))+
+    row(two ? T.ownDates : T.ownDate, free.length ? chips('day', free.map(x=>[x, dayLbl(x)])) : '<small>'+esc(T.ownNoDays)+'</small>')+
+    row(T.ownPool, '<div class="own-step"><button onclick="ccOwnPoolStep(-1)">−</button>'+
+      '<input class="cc-sac-q" id="ownPoolIn" type="text" inputmode="numeric" value="'+ccNum(d.pool)+'" oninput="ccOwnPoolIn(this.value)" onblur="this.value=ccNum(CC_OWN_DRAFT ? CC_OWN_DRAFT.pool : 0)">'+
+      '<button onclick="ccOwnPoolStep(1)">+</button></div>'+chips('pool', CC_OWN_POOLS.map(p=>[p, '$'+ccNum(p)])))+
     row(T.ownShape, chips('shape', [['top', T.ownShapeTop], ['even', T.ownShapeEven], ['flat', T.ownShapeFlat]]))+
     '<div id="ownPayBox">'+ccOwnPayBoxHTML()+'</div>'+
     '</div>';
   el.style.display='flex';
+  const inn=el.querySelector('.own-in'); if(inn) inn.scrollTop=keep;
 }
-// Предпросмотр выплат и кнопка — отдельно: ввод суммы не перерисовывает окно и не теряет курсор.
+function ccOwnPoolStep(dir){
+  const d=CC_OWN_DRAFT; if(!d) return;
+  d.pool=Math.max(CC_OWN_MIN, Math.round(((d.pool||0)+dir*CC_OWN_STEP)/CC_OWN_STEP)*CC_OWN_STEP);
+  ccOwnDraw();
+}
+// Ввод суммы не перерисовывает окно: только выплаты и кнопку, курсор остаётся в поле.
 function ccOwnPoolIn(v){
   if(!CC_OWN_DRAFT) return;
   CC_OWN_DRAFT.pool=Math.max(0, Math.floor(Number(String(v).replace(/[^0-9]/g, ''))||0));
   const box=document.getElementById('ownPayBox'); if(box) box.innerHTML=ccOwnPayBoxHTML();
-  document.querySelectorAll('#ccOwnModal .own-chips button').forEach(b=>{ if(/ccOwnSet\('pool'/.test(b.getAttribute('onclick')||'')) b.classList.toggle('on', b.getAttribute('onclick').indexOf(','+CC_OWN_DRAFT.pool+')')>=0); });
 }
 function ccOwnPayBoxHTML(){
   const T=L(), d=CC_OWN_DRAFT; if(!d) return '';
-  const bal=CAREER.career.balance||0, why=ccOwnWhy(), size=ccOwnSize(d.mode);
+  const bal=CAREER.career.balance||0, why=ccOwnWhy(), size=ccOwnSize(d.mode), n=ccOwnField(d);
   const pay=d.pool>=CC_OWN_MIN ? ccOwnPayT(d).EU : [];
   const shown=pay.length>12 ? pay.slice(0, 10).concat([pay[pay.length-1]]) : pay;
-  return '<div class="own-pay">'+shown.map(([p, a], i)=>(pay.length>12 && i===10 ? '<span>…</span>' : '')+'<span><b>#'+p+'</b> $'+ccNum(a*size)+'</span>').join('')+'</div>'+
+  const short=d.team==='pick' && size>1 && d.roster.length<size-1;
+  return '<small class="own-note">'+esc(T.ownAllPaid(n, ccNum(d.pool)))+'</small>'+
+    '<div class="own-pay">'+shown.map(([p, a], i)=>(pay.length>12 && i===10 ? '<span>…</span>' : '')+'<span><b>#'+p+'</b> $'+ccNum(a*size)+'</span>').join('')+'</div>'+
     (why ? '<div class="own-why">'+esc(why)+'</div>'
       : d.pool<CC_OWN_MIN ? '<div class="own-why">'+esc(T.ownMin(ccNum(CC_OWN_MIN)))+'</div>'
       : bal<d.pool ? '<div class="own-why">'+esc(T.ownNoCash(ccNum(d.pool-bal)))+'</div>'
+      : short ? '<div class="own-why">'+esc(T.ownTeamPicked(d.roster.length, size-1))+'</div>'
       : !d.day ? '' : '<button class="ch-play own-go" onclick="ccOwnCreate()">'+esc(T.ownCreate(ccNum(d.pool)))+'</button>');
 }
 function ccOwnCreate(){
   const d=CC_OWN_DRAFT, cr=CAREER.career; if(!d || !d.day || ccOwnWhy()) return null;
-  if(!(d.pool>=CC_OWN_MIN) || (cr.balance||0)<d.pool || ccOwnFreeDays().indexOf(d.day)<0) return null;
+  const two=d.entry==='open', size=ccOwnSize(d.mode);
+  if(!(d.pool>=CC_OWN_MIN) || (cr.balance||0)<d.pool || ccOwnFreeDays(two).indexOf(d.day)<0) return null;
+  const roster=size<2 ? [] : d.team==='pick' ? d.roster.slice(0, size-1)
+    : d.team==='auto' ? ccOwnPool().slice(0, size-1).map(c=>c.handle) : null;
+  if(d.team==='pick' && size>1 && roster.length<size-1) return null;
   const name=String(d.name||'').trim().slice(0, 32) || 'Cup';
-  const id='OWN_'+(cr.ownN=(cr.ownN||0)+1);
-  const c={day:d.day, id, own:true, mode:d.mode, n:'', name, payT:ccOwnPayT(d), pool:d.pool, entry:d.entry, paid:ccOwnPaidN(d), shape:d.shape};
-  if(d.entry==='invite'){ c.invite=d.size; c.games=d.games; c.lan=name; }
+  const n=(cr.ownN=(cr.ownN||0)+1), id='OWN_'+n;
+  const base={own:true, mode:d.mode, n:'', pool:d.pool, entry:d.entry, shape:d.shape, roster:roster, games:d.games};
+  const made=[];
+  if(two){
+    made.push(Object.assign({}, base, {day:d.day, id:id+'_Q', name:name+' · '+L().ownQualTag, ownQual:true, pool:0, cutPlayers:CC_OWN_FINAL}));
+    made.push(Object.assign({}, base, {day:ccAddDays(d.day, 1), id, name:name+' · '+L().ownFinalTag, lan:name+' · '+L().ownFinalTag,
+      invite:CC_OWN_FINAL, finalOf:id+'_Q', payT:ccOwnPayT(d), paid:ccOwnField(d)}));
+  } else made.push(Object.assign({}, base, {day:d.day, id, name, lan:name, invite:d.size, payT:ccOwnPayT(d), paid:ccOwnField(d)}));
   cr.balance=(cr.balance||0)-d.pool;
   cr.hosted=(cr.hosted||0)+d.pool;
-  (cr.ownCups=cr.ownCups||[]).push(c);
+  cr.ownCups=(cr.ownCups||[]).concat(made);
   cr.ownV=(cr.ownV||0)+1;
   CC_VICTORY_LIST=null; CC_YEAR_DAYS=null;
   // Анонс разлетается: охват от фонда, как у прежнего капа из магазина (CC_OWN_CUP_REACH).
   careerReachAdd(Math.round(d.pool*CC_OWN_CUP_REACH));
   careerRepAdd(1);
-  careerNews('good', 'ownNewsAnnounce', [name, ccDayLabel(d.day), ccNum(d.pool)]);
+  careerNews('good', 'ownNewsAnnounce', [name, two ? ccDayLabel(d.day)+'–'+ccDayLabel(ccAddDays(d.day, 1)) : ccDayLabel(d.day), ccNum(d.pool)]);
   careerSave();
   ccOwnClose();
   careerRenderHub('calendar');
-  return c;
+  return made[made.length-1];
+}
+function ccOwnQualOf(ev){ const cr=CAREER.career; return (cr.ownCups||[]).find(x=>x.id===(ev && ev.finalOf)); }
+// Итог квал: кто прошёл (составы ником, сильнейшие первыми) и прошёл ли хозяин. Возвращает отсечку в составах.
+function ccOwnQualDone(ev, ranked, you){
+  const cr=CAREER.career, rec=(cr.ownCups||[]).find(x=>x.id===ev.id);
+  const cut=Math.max(2, Math.round((ev.cutPlayers||CC_OWN_FINAL)/(ccOwnSize(ev.mode)||1)));
+  const top=ranked.slice(0, cut);
+  const res={youIn:top.indexOf(you)>=0, teams:top.filter(t=>t!==you && !t.isYou).map(t=>(t.squad||[]).map(c=>c && c.handle).filter(Boolean))};
+  if(rec){ rec.res=res; cr.ownV=(cr.ownV||0)+1; CC_VICTORY_LIST=null; CC_YEAR_DAYS=null; }
+  if(!res.youIn) careerNews('flat', 'ownNewsQualOut', [String(ev.name||'').replace(/ · .*$/, '')]);
+  return cut;
+}
+// Финал: составы, прошедшие квалы, — со сцены своего региона.
+function ccOwnFinalField(ev, n){
+  const q=ccOwnQualOf(ev); if(!q || !q.res) return null;
+  const scene=ccSceneRoster(ccCareerRegion()), byKey=new Map(scene.filter(Boolean).map(c=>[hKey(c), c]));
+  const out=[];
+  q.res.teams.forEach(hs=>{ if(out.length>=n) return;
+    const cards=hs.map(h=>byKey.get(hKey(h))).filter(Boolean);
+    if(cards.length!==hs.length || !cards.length) return;
+    const t=careerTeam(cards, false, true); if(!t.name) t.name=teamLabel(cards); out.push(t); });
+  return out;
 }
 function ccOwnCancel(id){
   const cr=CAREER.career, c=(cr.ownCups||[]).find(x=>x.id===id);
   if(!c || c.off || c.day<=careerToday()) return;
+  const q=c.finalOf ? (cr.ownCups||[]).find(x=>x.id===c.finalOf) : null;
+  if(q && q.day<=careerToday()) return;
+  if(q) q.off=true;
   c.off=true; cr.balance=(cr.balance||0)+c.pool; cr.hosted=Math.max(0, (cr.hosted||0)-c.pool);
   cr.ownV=(cr.ownV||0)+1; CC_VICTORY_LIST=null; CC_YEAR_DAYS=null;
   careerSave(); careerRenderHub('calendar');
@@ -157170,7 +157248,7 @@ function ccOwnCancel(id){
 function ccOwnCupPanelHTML(){
   if(!CAREER || !CAREER.career || (typeof ccMpOn==='function' && ccMpOn())) return '';
   const T=L(), cr=CAREER.career, today=careerToday();
-  const list=(cr.ownCups||[]).filter(c=>!c.off && c.day>=today);
+  const list=(cr.ownCups||[]).filter(c=>!c.off && c.day>=today && !c.ownQual);
   const why=ccOwnWhy();
   return '<div class="ch-tile own-tile"><h4>'+esc(T.ownTitle)+'</h4>'+
     '<p class="own-lead">'+esc(T.ownLead)+'</p>'+
@@ -163551,7 +163629,7 @@ async function runCareerVictory(){
     const elder=[ccMpId()].concat(ids).sort()[0]===ccMpId();
     if(!elder && !CC_BOARD_ONLY_YOU){ CC_BOARD_ONLY_YOU=true; raceOwn=true; }
   }
-  const fmtSwap=ccEventRosterBegin(ccVictoryFormat(ev));
+  const fmtSwap=ccEventRosterBegin(ccVictoryFormat(ev), ev && ev.own ? ev.roster : null);
   try{ return await runCareerVictoryNight(); }
   finally{ CC_ZB=false; ccEventRosterEnd(fmtSwap); if(resh) CC_MP_ALONE=false; ccTeamOwnRowsOff(own); if(raceOwn) CC_BOARD_ONLY_YOU=false; }
 }
@@ -163564,18 +163642,27 @@ async function runCareerVictory(){
    сцены своего региона, как в жизни берут филла на кап. После вечера всё как было.
    2026-й живёт по своему правилу (Victory Cup — составом сезона), его не трогаем. */
 function ccVictoryFormat(ev){
+  // Свой турнир — всегда в выбранном режиме, в любой год.
+  if(ev && ev.own) return ({solo:1, duo:2, trio:3, squad:4})[ev.mode]||0;
   if(!ev || ccCalYear()>=2026) return 0;
   return ({solo:1, duo:2, trio:3, squad:4})[ev.mode]||0;
 }
-function ccEventRosterBegin(fmt){
+function ccEventRosterBegin(fmt, picks){
   if(!fmt || fmt===1 || !CAREER || CC_EVENT_SIZE) return null;
   if(typeof ccMpOn==='function' && ccMpOn()) return ccMpFmtBegin(fmt);
   if(typeof ccRacePairOn==='function' && ccRacePairOn()) return null;
   const base=careerSquadSize();
-  if(fmt===base) return null;
+  const picked=(picks||[]).filter(Boolean);
+  if(fmt===base && !picked.length) return null;
   const prev=(CAREER.partners||[]).slice();
-  const own=((CAREER.rosters||{})[fmt] || prev).filter(Boolean).slice(0, fmt-1);
   const taken=new Set([hKey(CAREER.player.handle||CAREER.player.nick||'')]);
+  // Свой турнир: тиммейты, которых выбрал игрок, — со сцены своего региона, на этот вечер.
+  let own;
+  if(picked.length){
+    const scene=ccSceneRoster(ccCareerRegion());
+    own=picked.map(h=>scene.find(x=>x && hKey(x)===hKey(h))).filter(Boolean).slice(0, fmt-1)
+      .map(c=>({card:{...c}, patience:60, since:careerToday(), dev:0, standin:true, picked:true}));
+  } else own=((CAREER.rosters||{})[fmt] || prev).filter(Boolean).slice(0, fmt-1);
   own.forEach(r=>{ const c=ccMateCardOf(r); if(c) taken.add(hKey(c)); });
   // Люди гонки и их напарники стэнд-инами не выходят: в общей комнате они стоят своими командами.
   if(typeof ccRaceOn==='function' && ccRaceOn()) ccRaceTakenKeys().forEach(k=>taken.add(k));
@@ -164612,18 +164699,27 @@ async function runCareerVictoryNight(){
   // FNCS Trial — одна сессия: второго раунда нет, ступень по месту в ней (ccPlacementApply).
   // Кап в одно окно у Epic (ccCupRounds — Solo Cash Cup 2019–20, дейли, капы 2021) — один раунд,
   // деньги по месту сразу, как у ЛАНа.
-  const oneRound=!lanN && !ev.single && !!(ev.pay || ev.payT) && ccCupRounds(ev)===1;
+  const oneRound=!lanN && !ev.single && (!!(ev.pay || ev.payT) && ccCupRounds(ev)===1 || !!ev.ownQual);
   // Очки раундов — как у Epic в этом капе (ccCupScore); у ЛАНов и своих событий — прежняя таблица.
   const vSc1=lanN ? null : ccCupScore(ev, 1), vSc2=lanN ? null : ccCupScore(ev, 2);
   /* Число игр — тоже Epic'ово (MatchCap окна в CC_CUP_SCORE, третье/четвёртое поле): Solo Victory Cup S41 — 8 в раунде 1,
      Duos S39 — 7, Solo Cash Cup 2023/2025 — 10 и 10. Было 6 (раунд 1) и 3/6 (раунд 2) на все капы. Нет числа — как было. */
   const capOk=n=>n>0 && n<=15;
-  const vG1=(vSc1 && capOk(vSc1.cap)) ? vSc1.cap : CC_VICTORY_R1_GAMES;
+  const vG1=(ev.ownQual && capOk(ev.games)) ? ev.games : (vSc1 && capOk(vSc1.cap)) ? vSc1.cap : CC_VICTORY_R1_GAMES;
   const vSize=lanN || careerVictoryField(solo), vCut=(lanN || ev.single || oneRound) ? 0 : careerVictoryCut(solo);
   const field=[...humans, ...(lanN ? (solo ? careerSoloField(cr, pc ? [me, pc] : drafted, vSize-(humans.length-1), false, 'final')
                                            : careerCupField(cr, drafted, vSize, 'lan|'+ev.id, false, CC_FIELD_SHARP.lan))   // size — вместе со мной (было vSize-1: Katowice 49 пар из 50, 21.10)
                              : solo ? careerSoloField(cr, pc ? [me, pc] : drafted, vSize-(humans.length-1), true)
                                     : careerCupField(cr, drafted, vSize, null, true))];
+  // Финал своего турнира: прошедшие квалы, кого нет на сцене — добор обычным полем ЛАНа.
+  if(ev.finalOf){
+    const room=lanN-humans.length, own=ccOwnFinalField(ev, room)||[];
+    if(own.length){
+      const keyOf=t=>(t.squad||[]).map(c=>hKey(c)).sort().join('+'), seen=new Set(own.map(keyOf));
+      const rest=field.slice(humans.length).filter(t=>!seen.has(keyOf(t))).slice(0, Math.max(0, room-own.length));
+      field.splice(humans.length, field.length-humans.length, ...own, ...rest);
+    }
+  }
 
   /* Reshuffle (ev.reshuffle, Red Bull, Вена 2026): Reload Duos, но пара в КАЖДОЙ игре новая,
      по жребию; таблица у каждого своя — очки игры получают оба из пары, элимы делятся. */
@@ -164682,17 +164778,19 @@ async function runCareerVictoryNight(){
   const through=!lanN && place1<=vCut;
   // ЛАН платит за место единственной серии — сразу, до карточки.
   const lanCash=(lanN || oneRound) ? ccVictoryPayOf(ev, place1) : 0;
+  const ownCut=ev.ownQual ? ccOwnQualDone(ev, ranked1, you) : 0;
   if(lanN || oneRound) careerMoneyAdd(ranked1, function(place){ return ccVictoryPayOf(ev, place); });
 
   const shell1=createStageCardShell(lanN ? ev.lan+' — '+field.length : oneRound ? (ev.name||'Cash Cup')+' — '+field.length : L().ccVicR1Title(field.length));
   await revealStageLog(you, shell1, true);
   finalizeStageCard(shell1, place1, field.length, you.stagePts, (lanN || oneRound) ? lanCash>0 : through, false,
-    (lanN || oneRound) ? (lanCash ? L().ccVicPlaceCash(place1, lanCash) : L().ccWfNoCash)
+    ev.ownQual ? (place1<=ownCut ? L().ownQualIn(ownCut) : L().ownQualOut(ownCut))
+         : (lanN || oneRound) ? (lanCash ? L().ccVicPlaceCash(place1, lanCash) : L().ccWfNoCash)
          : ev.single ? L().lfNewsPlaced(ccTrialDiv(ev, place1, field.length))
          : through ? L().ccVicPass(vCut)
          : ev.placement ? L().lfNewsPlaced(ccPlacementDivOf(false, null, vCut, ev, place1, field.length))
          : L().ccVicFail(vCut));
-  await revealStandings(shell1, ranked1, you, vCut, null, null,
+  await revealStandings(shell1, ranked1, you, ownCut || vCut, null, null,
     (lanN || oneRound) ? function(place){ return ccVictoryPayOf(ev, place); } : null, null, lanN || oneRound);
 
   // cash — на игрока: соло-кап платит одному, дуо/трио — составу.

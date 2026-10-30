@@ -1,4 +1,4 @@
-// Свой турнир: объявить, дождаться дня, сыграть через интерфейс; инвайт и квалы, отмена с возвратом фонда.
+// Свой турнир: инвайт, трио с выбранными тиммейтами, квалы и финал на два дня, призовые у всех, отмена.
 //
 //   node tools/check-career-own-cup.js
 const fs = require('fs'), os = require('os'), path = require('path');
@@ -79,62 +79,98 @@ const BOOT = `
   };
 
   try{
-    // Свой турнир: объявить с баланса, дождаться дня, сыграть, увидеть строку в истории и выплату.
-    const hostOne = async (draft, label) => {
-      seed(4, '2026-03-02', 72);
+    const fresh = (bal, ovr) => {
+      seed(4, '2026-03-02', ovr || 72);
       const s = JSON.parse(localStorage.getItem('fncsdraft_career'));
-      s.career.balance = 200000; s.career.reach = 50000;
+      s.career.balance = bal; s.career.reach = 50000;
       localStorage.setItem('fncsdraft_career', JSON.stringify(s));
       careerEntry(); ccProbeSeat();
+    };
+    const announce = (draft, label) => {
       if (ccOwnWhy()) fail(label + ': hosting refused: ' + ccOwnWhy());
       ccOwnOpen();
-      const free = ccOwnFreeDays();
+      const free = ccOwnFreeDays(draft.entry === 'open');
       if (!free.length) fail(label + ': no free days to host on');
       Object.assign(CC_OWN_DRAFT, draft, {day: free[0]});
       const bal0 = CAREER.career.balance;
       const c = ccOwnCreate();
       if (!c) fail(label + ': the tournament was not created');
       if (CAREER.career.balance !== bal0 - draft.pool) fail(label + ': the pool did not leave the balance');
-      if (!(careerYearDays().get(c.day)||[]).some(e => e.kind === 'victory' && e.id === c.id))
-        fail(label + ': ' + c.day + ' is not on the calendar');
-      out.steps.push(label + ': announced for ' + c.day + ', pool $' + draft.pool);
-      careerSkipTo(c.day);
-      ccProbeSeat();
-      const next = careerNext();
-      if (next.type !== 'victory') fail(label + ': the hub on ' + c.day + ' offers ' + next.type);
-      if (careerVictoryOn(c.day).id !== c.id) fail(label + ': another cup took the day');
-      if (!careerCanPlayKind('victory')) fail(label + ': the host cannot enter their own cup');
-      const card = await playThrough(label);
-      card.querySelector('button[onclick*="careerBackToHub"]').click();
-      const row = (JSON.parse(localStorage.getItem('fncsdraft_career')).career.log||[]).filter(r => r.day === c.day).slice(-1)[0];
-      if (!row || row.kind !== 'victory') fail(label + ': no history row for the night');
-      out.steps.push(label + ': #' + row.place + ' of ' + row.of + ', ' + row.games + ' games, $' + (row.prize||0));
-      return row;
+      if (!(careerYearDays().get(c.day)||[]).some(e => e.kind === 'victory' && e.id === c.id)) fail(label + ': ' + c.day + ' is not on the calendar');
+      return c;
     };
-    const inv = await hostOne({name:'Probe Invitational', mode:'solo', entry:'invite', size:50, games:4, pool:10000, paid:'all', shape:'top'}, 'invite solo');
-    if (inv.of !== 50) fail('invite lobby of 50 played with ' + inv.of);
-    if (inv.games !== 4) fail('invite with 4 games played ' + inv.games);
-    // Все участники получают: таблица на 50 мест, последнее место не ноль, сумма не больше фонда.
-    { const t = ccOwnPayT({mode:'solo', entry:'invite', size:50, pool:10000, paid:'all', shape:'top'}).EU;
-      const sum = t.reduce((a, row) => a + row[1], 0);
-      if (t.length !== 50 || !(t[49][1] > 0) || sum > 10000) fail('pay-everyone table is off: ' + t.length + ' rows, last ' + t[49][1] + ', sum ' + sum);
-      out.steps.push('pay everyone: 50 places, #1 $' + t[0][1] + ', #50 $' + t[49][1]); }
-    // Пул меньше минимума не объявляется.
-    { seed(4, '2026-03-02', 72); const sv = JSON.parse(localStorage.getItem('fncsdraft_career')); sv.career.balance = 50000; sv.career.reach = 50000;
-      localStorage.setItem('fncsdraft_career', JSON.stringify(sv)); careerEntry();
-      ccOwnOpen(); Object.assign(CC_OWN_DRAFT, {pool:9000});
-      if (ccOwnCreate()) fail('a $9,000 pool was accepted, the minimum is $10,000');
-      ccOwnClose(); out.steps.push('pool under $10,000 refused'); }
-    await hostOne({name:'Probe Open', mode:'solo', entry:'open', pool:10000, paid:'25p', shape:'even'}, 'open qualifier');
-    // Отмена до дня возвращает фонд.
-    seed(4, '2026-03-02', 72);
-    { const s = JSON.parse(localStorage.getItem('fncsdraft_career')); s.career.balance = 20000; s.career.reach = 50000; localStorage.setItem('fncsdraft_career', JSON.stringify(s)); }
-    careerEntry();
-    ccOwnOpen(); Object.assign(CC_OWN_DRAFT, {pool:10000});
-    const c = ccOwnCreate(); ccOwnCancel(c.id);
-    if (CAREER.career.balance !== 20000) fail('cancelling did not refund the pool: ' + CAREER.career.balance);
-    if ((careerYearDays().get(c.day)||[]).some(e => e.id === c.id)) fail('a cancelled cup stayed on the calendar');
-    out.steps.push('cancel refunds the pool and clears the day');
+    const playOn = async (day, id, label) => {
+      careerSkipTo(day); ccProbeSeat();
+      if (careerNext().type !== 'victory') fail(label + ': the hub on ' + day + ' offers ' + careerNext().type);
+      if (careerVictoryOn(day).id !== id) fail(label + ': another cup took ' + day);
+      if (!careerCanPlayKind('victory')) fail(label + ': cannot enter on ' + day);
+      document.querySelectorAll('#majorStages .stage-card').forEach(c => c.remove());
+      const card = await playThrough(label);
+      const head = card.textContent.replace(/\s+/g, ' ').slice(0, 160);
+      card.querySelector('button[onclick*="careerBackToHub"]').click();
+      const row = (JSON.parse(localStorage.getItem('fncsdraft_career')).career.log||[]).filter(r => r.day === day).slice(-1)[0];
+      if (!row || row.kind !== 'victory') { const lg=(JSON.parse(localStorage.getItem('fncsdraft_career')).career.log||[]).slice(-3).map(r=>r.day+':'+r.kind+':'+r.place+'/'+r.of); fail(label + ': no history row for ' + day + ' · card: ' + head + ' · log: ' + lg.join(' | ') + ' · today ' + careerToday()); }
+      return {row, head};
+    };
+
+    // Инвайт соло: 50 человек, 4 игры, призовые у всех.
+    fresh(200000);
+    const inv = announce({name:'Probe Invitational', mode:'solo', entry:'invite', size:50, games:4, pool:10000, shape:'top'}, 'invite solo');
+    if (inv.payT.EU.length !== 50) fail('a 50-player solo invite pays ' + inv.payT.EU.length + ' places, should be all 50');
+    const r1 = (await playOn(inv.day, inv.id, 'invite solo')).row;
+    if (r1.of !== 50 || r1.games !== 4) fail('invite played ' + r1.of + ' players, ' + r1.games + ' games');
+    if (!(r1.prize > 0)) fail('everyone in the invite is paid, the host got $' + r1.prize);
+    out.steps.push('invite solo: #' + r1.place + ' of 50, 4 games, $' + r1.prize);
+
+    // Призовые на 100 человек: 100 соло, 50 дуо, 33 трио, 25 сквадов.
+    const want = {solo:100, duo:50, trio:33, squad:25};
+    Object.keys(want).forEach(m => { const n = ccOwnPayT({mode:m, entry:'open', pool:10000, shape:'even'}).EU.length;
+      if (n !== want[m]) fail(m + ' final pays ' + n + ' teams, should be ' + want[m]); });
+    out.steps.push('a 100-player final pays 100 solo / 50 duo / 33 trio / 25 squad');
+
+    // Трио в соло-году с выбранными тиммейтами.
+    fresh(200000);
+    const pool = ccOwnPool();
+    const picks = [pool[3].handle, pool[7].handle];
+    ccOwnOpen(); Object.assign(CC_OWN_DRAFT, {mode:'trio', team:'pick', roster:picks.slice(0, 1)});
+    if (ccOwnCreate()) fail('a trio with one of two teammates picked was accepted');
+    ccOwnClose();
+    const tri = announce({name:'Probe Trios', mode:'trio', entry:'invite', size:50, games:4, pool:15000, shape:'flat', team:'pick', roster:picks}, 'trio invite');
+    const r2 = (await playOn(tri.day, tri.id, 'trio invite')).row;
+    const mates = JSON.stringify(r2);
+    if (!picks.every(h => mates.toLowerCase().indexOf(h.toLowerCase()) >= 0)) fail('picked teammates did not play: ' + mates + ' vs ' + picks.join(','));
+    out.steps.push('trio with picked ' + picks.join(' + ') + ': #' + r2.place + ' of ' + r2.of + ', $' + r2.prize);
+
+    // Квалы и финал — два дня (сильный игрок, чтобы дойти до финала).
+    fresh(200000, 96);
+    const fin = announce({name:'Probe Open', mode:'solo', entry:'open', games:6, pool:20000, shape:'even'}, 'open');
+    const qual = CAREER.career.ownCups.find(x => x.id === fin.finalOf);
+    if (!qual || qual.day !== ccAddDays(fin.day, -1)) fail('the qualifier is not the day before the final');
+    const q = await playOn(qual.day, qual.id, 'qualifier');
+    const res = CAREER.career.ownCups.find(x => x.id === qual.id).res;
+    if (!res) fail('the qualifier stored no result');
+    if (q.row.prize) fail('the qualifier paid money: $' + q.row.prize);
+    out.steps.push('qualifier: #' + q.row.place + ' of ' + q.row.of + ', through: ' + res.youIn + ', ' + res.teams.length + ' others go on');
+    if (res.youIn) {
+      const f = await playOn(fin.day, fin.id, 'final');
+      if (f.row.of !== 100) fail('the final lobby is ' + f.row.of + ', should be 100');
+      if (!(f.row.prize > 0)) fail('the host played the final and got $0');
+      out.steps.push('final: #' + f.row.place + ' of 100, $' + f.row.prize);
+    } else {
+      careerSkipTo(fin.day);
+      if (careerCanPlayKind('victory')) fail('a host knocked out in the qualifier can enter the final');
+      out.steps.push('out in the qualifier: the final is closed to the host');
+    }
+
+    // Пул меньше минимума и отмена.
+    fresh(50000);
+    ccOwnOpen(); Object.assign(CC_OWN_DRAFT, {pool:9000});
+    if (ccOwnCreate()) fail('a $9,000 pool was accepted'); ccOwnClose();
+    const cx = announce({name:'Probe Cancel', mode:'solo', entry:'open', games:6, pool:10000, shape:'top'}, 'cancel');
+    ccOwnCancel(cx.id);
+    if (CAREER.career.balance !== 50000) fail('cancelling did not refund the pool: ' + CAREER.career.balance);
+    if (CAREER.career.ownCups.some(x => !x.off)) fail('a cancelled cup left a day on the calendar');
+    out.steps.push('pool under $10,000 refused; cancel refunds and clears both days');
   } catch(e){ if(!out.fail) out.fail = String(e && e.message || e); }
   out.errs = window.__errs;
   document.getElementById('__out').textContent = 'BEGIN' + encodeURIComponent(JSON.stringify(out)) + 'END';
@@ -146,7 +182,7 @@ const tmp = path.join(dir, 'index.html');
 fs.writeFileSync(tmp, '<base href="file:///' + ROOT.replace(/\\/g,'/') + '/">' + HEAD +
   fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8') + BOOT);
 const dom = execFileSync(CHROME, ['--headless=new','--disable-gpu','--no-sandbox',
-  '--allow-file-access-from-files','--virtual-time-budget=240000','--dump-dom',
+  '--allow-file-access-from-files','--virtual-time-budget=600000','--dump-dom',
   'file:///' + tmp.replace(/\\/g,'/')], {maxBuffer:512*1024*1024, encoding:'utf8', stdio:['ignore','pipe','ignore']});
 fs.rmSync(dir, {recursive:true, force:true});
 
