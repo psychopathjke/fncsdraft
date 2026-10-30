@@ -227,8 +227,8 @@ JSON.parse(JSON.stringify(out.notes)); // notes are plain data
 const imgs = (fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8')
   .match(/img:'([^']+)'/g) || []).map(s => s.slice(5, -1));
 imgs.forEach(f => {
-  // Картинки карт EWC (art/ewc/…) лежат от корня, девайсы — в devices/.
-  if (!fs.existsSync(path.join(ROOT, 'devices', f)) && !(f.indexOf('art/') === 0 && fs.existsSync(path.join(ROOT, f)))) { console.error('FAIL missing devices/' + f); missing++; }
+  // Картинки карт EWC (art/ewc/…) и обложки тренировки (items/creative/…) лежат от корня, девайсы — в devices/.
+  if (!fs.existsSync(path.join(ROOT, 'devices', f)) && !(/^(art|items)\//.test(f) && fs.existsSync(path.join(ROOT, f)))) { console.error('FAIL missing devices/' + f); missing++; }
 });
 if (out.fails.length) { out.fails.forEach(f => console.error('FAIL ' + f)); }
 if (out.fails.length || missing) process.exit(1);

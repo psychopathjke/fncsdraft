@@ -3819,7 +3819,7 @@ ccMerchRate:(p,c)=>p+'% de los seguidores en $, hasta $'+c+'/mes', ccMerchAsk:(n
 ccMerchMonth:'Al mes ahora', ccMerchEarned:'Ganado con merch', ccNewsMerch:n=>'Merch lanzado: '+n,
 ccCharityTitle:'Beneficencia', ccCharityHint:'El dinero va a la beneficencia; tú ganas el respeto de la escena y seguidores. Como mucho una vez al mes.',
 ccCharityGive:n=>'Donar '+n, ccCharityAsk:n=>'¿Donar $'+n+' a beneficencia?', ccCharityYes:n=>'Donar · $'+n, ccCharityTotal:n=>'Donaciones ('+n+')',
-ccNewsCharity:(n,f)=>'Donaste $'+n+' a beneficencia. +'+f+' seguidores',
+ccNewsCharity:(n,f)=>'Donaste $'+n+' a beneficencia',
 ccLuxTitle:'Lujo', ccLuxHint:'No aporta nada a tu juego — solo una estantería en tu perfil y la línea «Gastado» en Jugadores del sitio.',
 ccLuxNote:'va a la estantería de tu perfil', ccLux_watch:'Reloj', ccLux_hyper:'Hiperdeportivo', ccLux_yacht:'Yate', ccLux_jet:'Jet privado',
 ccLuxAsk:(n,c)=>'¿Comprar «'+n+'» por $'+c+'? No da fuerza — solo una estantería en tu perfil.', ccNewsLux:n=>'Nueva compra: '+n,
@@ -3842,7 +3842,7 @@ hmFriendRace:'Cada uno lleva su propia carrera, y un lobby común muestra quién
 hmSceneTitle:'La escena ahora', hmSceneSub:'El calendario real de FNCS 2026.', hmSceneLive:'en directo', hmSceneTomorrow:'mañana',
 hmSceneIn:n=>'en '+n+' día'+(n===1 ? '' : 's'), hmSceneDone:'La temporada FNCS 2026 ha terminado.',
 hmBoardSub:'Las carreras de los jugadores del sitio, por premios.', hmBoardMore:n=>'Mostrar '+n, hmBoardLess:'Mostrar menos', hmHistSub:'Drafts anteriores, récords y premios.',
-ccNewsOwnCup:(who,n,w,f)=>'Cup de '+who+', bolsa de $'+n+': gana '+w+'. +'+f+' seguidores'});
+ccNewsOwnCup:(who,n,w,f)=>'Cup de '+who+', bolsa de $'+n+': gana '+w});
 Object.assign(I18N.es, {hmRealTitle:'Resultados 2026', hmRealSub:'Los resultados reales de los torneos FNCS de este año. Toca uno para ver la tabla completa.', hmRealOpen:'Tabla', hmRealTeam:'Equipo', hmRealReg:'Región', hmRealPts:'Puntos', hmRealPrize:'Premio', hmRealClose:'Cerrar'});
 Object.assign(I18N.es, {hmRealAll:n=>'Tabla completa ('+n+')', hmScenePrize:(r,a,b)=>r+': 1.º $'+a+', bolsa $'+b});
 Object.assign(I18N.es, {hmEarnTitle:'Ganancias 2026', hmEarnSub:'Lo que ganaron los jugadores en FNCS este año: finales de Majors, Summit, Reload Championship, Global Championship. Toca un jugador para ver dónde.', hmEarnEvents:n=>n+' torneo'+(n===1?'':'s'), hmEarnEvent:'Torneo', hmEarnNote:'La parte de un jugador es la mitad del premio del dúo. Clasificatorias y cups no cuentan.'});

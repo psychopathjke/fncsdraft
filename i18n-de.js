@@ -3819,7 +3819,7 @@ ccMerchRate:(p,c)=>p+'% der Follower in $, bis $'+c+'/Monat', ccMerchAsk:(n,c)=>
 ccMerchMonth:'Pro Monat gerade', ccMerchEarned:'Mit Merch verdient', ccNewsMerch:n=>'Merch gestartet: '+n,
 ccCharityTitle:'Spenden', ccCharityHint:'Das Geld geht an eine Wohltätigkeitsorganisation; du bekommst Respekt der Szene und Follower. Höchstens einmal im Monat.',
 ccCharityGive:n=>n+' spenden', ccCharityAsk:n=>'$'+n+' spenden?', ccCharityYes:n=>'Spenden · $'+n, ccCharityTotal:n=>'Gespendet ('+n+')',
-ccNewsCharity:(n,f)=>'$'+n+' gespendet. +'+f+' Follower',
+ccNewsCharity:(n,f)=>'$'+n+' gespendet',
 ccLuxTitle:'Luxus', ccLuxHint:'Bringt deinem Spiel nichts — nur ein Regal im Profil und die Zeile „Ausgegeben“ bei Spieler der Seite.',
 ccLuxNote:'kommt ins Regal in deinem Profil', ccLux_watch:'Uhr', ccLux_hyper:'Hypercar', ccLux_yacht:'Yacht', ccLux_jet:'Privatjet',
 ccLuxAsk:(n,c)=>'„'+n+'“ für $'+c+' kaufen? Bringt keine Stärke — nur ein Regal im Profil.', ccNewsLux:n=>'Neuer Kauf: '+n,
@@ -3842,7 +3842,7 @@ hmFriendRace:'Jeder spielt seine eigene Karriere, und eine gemeinsame Lobby zeig
 hmSceneTitle:'Die Szene jetzt', hmSceneSub:'Der echte FNCS-Kalender 2026.', hmSceneLive:'läuft gerade', hmSceneTomorrow:'morgen',
 hmSceneIn:n=>'in '+n+' Tag'+(n===1 ? '' : 'en'), hmSceneDone:'Die FNCS-Saison 2026 ist vorbei.',
 hmBoardSub:'Karrieren der Spieler dieser Seite, nach Preisgeld.', hmBoardMore:n=>n+' anzeigen', hmBoardLess:'Weniger anzeigen', hmHistSub:'Frühere Drafts, Rekorde und Auszeichnungen.',
-ccNewsOwnCup:(who,n,w,f)=>who+' Cup, $'+n+' Preisgeld: Sieg für '+w+'. +'+f+' Follower'});
+ccNewsOwnCup:(who,n,w,f)=>who+' Cup, $'+n+' Preisgeld: Sieg für '+w});
 Object.assign(I18N.de, {hmRealTitle:'Ergebnisse 2026', hmRealSub:'Echte Ergebnisse der FNCS-Turniere dieses Jahres. Tippe eins an für die ganze Tabelle.', hmRealOpen:'Tabelle', hmRealTeam:'Team', hmRealReg:'Region', hmRealPts:'Punkte', hmRealPrize:'Preisgeld', hmRealClose:'Schließen'});
 Object.assign(I18N.de, {hmRealAll:n=>'Ganze Tabelle ('+n+')', hmScenePrize:(r,a,b)=>r+': Platz 1 $'+a+', Preisgeld $'+b});
 Object.assign(I18N.de, {hmEarnTitle:'Preisgeld 2026', hmEarnSub:'Was Spieler dieses Jahr in der FNCS verdient haben: Major-Finals, Summit, Reload Championship, Global Championship. Tippe einen Spieler an für die Details.', hmEarnEvents:n=>n+' Turnier'+(n===1?'':'e'), hmEarnEvent:'Turnier', hmEarnNote:'Der Anteil eines Spielers ist die Hälfte des Duo-Preisgelds. Qualifikationen und Cups zählen nicht.'});
