@@ -120946,7 +120946,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='ca953b80';
+const CC_BUILD='1a95ac26';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -179634,6 +179634,8 @@ const CC_AW_CUP='<svg class="aw-cup-i" viewBox="0 0 48 56" aria-hidden="true">'+
   '<path d="M12 9H5c0 8 3 12 9 13M36 9h7c0 8-3 12-9 13" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>'+
   '<path d="M21 31h6v8h-6z" fill="currentColor"/><path d="M14 40h20l2 8H12z" fill="currentColor"/>'+
   '<path d="M17 9c0 7 2 12 5 15" fill="none" stroke="rgba(255,255,255,.55)" stroke-width="2.4" stroke-linecap="round"/></svg>';
+// Медальоны боссов Fortnite с вики (items/medallions). Остальные (Montague, Megalo Don…) за проверкой Cloudflare, 30.10.
+const CC_AW_MEDALS=['nisha', 'peter', 'valeria', 'oscar'];
 function ccAwardsShelfHTML(){
   if(typeof careerAwards!=='function') return '';
   const won=(careerAwards().won||[]).filter(a=>a.you);
@@ -179663,9 +179665,8 @@ function ccAwardsShelfHTML(){
   const potm=month.slice().sort((a,b)=>String(a.key)<String(b.key) ? -1 : 1).map((a, ai)=>{
     const mName=typeof ccMonthName==='function' ? ccMonthName(a.key) : a.key;
     /* 30.10, его «чет с фортнайтом связанное… мб медальки из фортнайта»: медальоны боссов Главы 5 (вики Fortnite,
-       items/medallions). Вики отдала только два (Nisha, Valeria) — остальные за проверкой Cloudflare; он выбрал
-       чередовать эти два по месяцам. */
-    const med=ai%2 ? 'valeria' : 'nisha';   // по очереди наград, а не по номеру месяца
+       items/medallions). Вики отдала четыре (CC_AW_MEDALS) — остальные за проверкой Cloudflare; идут по кругу. */
+    const med=CC_AW_MEDALS[ai%CC_AW_MEDALS.length];   // по очереди наград, а не по номеру месяца
     return '<div class="aw-medal"><span class="aw-medal-glow"><img class="aw-medal-i" src="items/medallions/'+med+'.webp" alt="" loading="lazy"></span>'+
       '<b class="aw-medal-m">'+esc(mName)+'</b><span class="aw-medal-y">'+esc(String(a.key).slice(0,4))+'</span>'+
       (a.pts ? '<small>'+esc(ccNum(a.pts))+' '+esc(L().lfAwPts)+' · '+a.ev+' '+esc(L().lfAwEv)+'</small>' : '')+'</div>';
