@@ -851,7 +851,8 @@ let enKB = 0;
    в подпапке (psychopathjke.github.io/fncsdraft/). Полные адреса (https://…, //) не трогаются. */
 const relRoot = (html, l) => {
   const R = l === 'en' ? '' : '../';
-  return html.replace(/(["'(])\/(?=[A-Za-z?#])/g, (m, q) => q + R).replace(/(href=)"\/"/g, (m, h) => h + '"' + (R || './') + '"');
+  // «/#me» без префикса стал бы якорем этой же страницы — у корня он «./#me».
+  return html.replace(/(["'(])\/(?=[A-Za-z?#])/g, (m, q, i, s) => q + (R || (/[?#]/.test(s[i + 2]) ? './' : ''))).replace(/(href=)"\/"/g, (m, h) => h + '"' + (R || './') + '"');
 };
 I18N.LANGS.forEach(l => {
   const html = relRoot(page(l), l), dir = l === 'en' ? OUT : path.join(OUT, l);
