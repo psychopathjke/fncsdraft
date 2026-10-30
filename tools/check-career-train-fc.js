@@ -1,4 +1,4 @@
-// Главная и тренировка по образцу EA FC: «Цели» (если есть задачи) и план недели, полоса недели,
+// Главная и тренировка: «Цели» (если есть задачи), план недели, плитки занятий как Discover,
 // карты Creative с оценкой D…A+, Арена с Hype до 2023-го (допуск на кэш-капы с
 // Champion League), своя карта в Creative с выплатами.
 //
@@ -80,15 +80,16 @@ const BOOT = `
     // месяца; «Развитие» снята (рейтинг и ход за сезон в шапке, параметры в панели дня); фокус и цель — свёрнутым планом.
     check('в «Тренировке» плитка «Цели» — только с задачами', !!body.querySelector('.hg-tile')===!!ccGoalsTileHTML(true));
     check('в «Тренировке» нет плитки «Развитие» (повтор шапки и панели дня)', !body.querySelector('.hd-tile'));
-    check('в «Тренировке» параметр и его тренировка — одна карточка (шесть)', body.querySelectorAll('.cc-stat-t').length===6 || !ccCentreDayOpen());
+    check('в «Тренировке» занятия — плитками карт с обложкой', !ccCentreDayOpen() ||
+      (body.querySelectorAll('.cc-dt').length>=11 && [...body.querySelectorAll('.cc-dt-img')].every(e=>e.style.backgroundImage.indexOf('url')===0)));
+    check('в «Тренировке» шесть параметров строкой', body.querySelectorAll('.cc-ds span').length===6);
     check('в «Тренировке» фокус и цель свёрнуты в «План недели»', !!body.querySelector('details.tp-fold'));
     careerRenderHub('centre'); body=document.getElementById('chBody');
     check('профиля соцсети на главной больше нет', !body.querySelector('.ch-tile-me'));
     careerRenderHub('me');
     check('ник и фото меняются во вкладке «Профиль»', !!document.querySelector('#chBody .ch-me-edit') && !!document.getElementById('chPhotoInput'));
     careerRenderHub('train');
-    check('полоса недели: семь дней', document.querySelectorAll('#chBody .tw-day').length===7);
-    check('в полосе сегодня видны сделанные занятия', !!document.querySelector('#chBody .tw-day.now .tw-did i'));
+    check('сделанное сегодня занятие отмечено на плитке', !!document.querySelector('#chBody .cc-dt.did'));
     check('карты Creative в тренировке', document.querySelector('#chBody').innerHTML.indexOf('Clix Box Fights')>=0);
 
     // ---- Обложка новости — сезона, в котором она вышла (или своего турнира).

@@ -3006,7 +3006,7 @@
 
   /* The wide band: what is coming */
   .ch-next{background:#00b090;color:#fff;border-radius:5px;overflow:hidden;margin-bottom:14px;}
-  .ch-next-head{display:flex;align-items:baseline;justify-content:space-between;
+  .ch-next-head{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:2px 10px;
     padding:11px 16px 8px;}
   .ch-next-head h3{margin:0;font-weight:900;font-style:italic;font-size:22px;letter-spacing:-.01em;}
   .ch-next-head span{font-weight:900;font-size:12px;letter-spacing:.08em;text-transform:uppercase;opacity:.9;}
@@ -5735,25 +5735,6 @@
   @media(prefers-reduced-motion:reduce){ .sq-reveal .sq-m{animation:none;} }
   @media(max-width:600px){ .sq-mgrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;} .sq-tile.big{min-height:200px;} }
   @media(max-width:600px){ .sq-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;} .sq-top h2{font-size:22px;} }
-  /* Параметр = кнопка его тренировки (ccTrainStatHTML, 27.10). */
-  .cc-stgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:6px 0 10px;}
-  @media(max-width:700px){ .cc-stgrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;} }
-  .cc-stat-t{display:flex;flex-direction:column;gap:6px;text-align:left;padding:12px 14px;border-radius:14px;cursor:pointer;font:inherit;color:#fff;
-    border:1px solid rgba(180,200,255,.2);background:rgba(255,255,255,.07);transition:border-color .15s,background .15s;min-width:0;}
-  .cc-stat-t:hover:not(:disabled){border-color:#00d6a4;background:rgba(0,214,164,.1);}
-  .cc-stat-t.off{opacity:.5;cursor:default;}
-  .cc-stat-t.did{box-shadow:inset 0 0 0 2px rgba(0,214,164,.55);}
-  .cc-stat-t .st-top{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:800;min-width:0;}
-  .cc-stat-t .st-top i{font-style:normal;flex:none;}
-  .cc-stat-t .st-top b{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-  .cc-stat-t .st-val{display:flex;align-items:baseline;justify-content:space-between;gap:6px;}
-  .cc-stat-t .st-val b{font-family:inherit;font-style:normal;font-weight:900;font-size:24px;line-height:1;font-variant-numeric:tabular-nums;letter-spacing:-.01em;}
-  .cc-stat-t .st-val i{font-style:normal;font-size:14px;font-weight:900;color:#00d6a4;}
-  .cc-stat-t .st-bar{display:block;height:6px;border-radius:4px;background:rgba(255,255,255,.1);overflow:hidden;text-decoration:none;}
-  .cc-stat-t .st-bar s{display:block;height:100%;background:linear-gradient(90deg,#00d6a4,#7aa2ff);text-decoration:none;}
-  .cc-stat-t .st-cost{font-size:12px;font-weight:800;color:#ffb347;}
-  .cc-stat-t .st-why{font-size:11px;font-weight:800;color:#ff7d70;line-height:1.2;}
-  @media(prefers-reduced-motion:reduce){ .cc-stat-t{transition:none;} }
   /* План недели свёрнут (27.10): строка «План недели · что выбрано», по нажатию — фокус и цель в две колонки. */
   .tp-fold{display:block;}
   .tp-fold>summary{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;cursor:pointer;list-style:none;}
@@ -5877,27 +5858,13 @@
   .hd-rank b{font-weight:900;color:#fff;} .hd-rank .hg-bar{margin:0;} .hd-rank i{font-style:normal;font-weight:800;color:#cfd8ff;font-size:11px;}
   .ch-prof-me{max-width:980px;margin:0 auto 12px;}
   /* Тренировка: карта занятия, оценка D…A+, полоса недели. */
-  .cc-tc-map{display:block;font-size:10px;font-weight:700;color:#9fb0e8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   .cc-tc-grade{margin-left:auto;flex:none;font-style:normal;font-size:10px;font-weight:900;padding:1px 5px;border-radius:5px;background:rgba(255,255,255,.12);color:#fff;}
   .g-D{color:#ff5f56 !important;} .g-C{color:#ffb13d !important;} .g-B{color:#cfd8ff !important;} .g-A{color:#00d6a4 !important;} .g-Ap{color:#ffdd00 !important;}
-  .cc-tc-mapcard .hg-bar{margin:3px 0 2px;height:4px;}
   .tw-tile{max-width:1100px;margin:0 auto 10px;}
   /* Два атрибута у карт Creative — прирост переносится на вторую строку, а не режется. */
   .cc-tc-gain{white-space:normal;line-height:1.15;}
   .cc-day-train .cc-tc-gain{font-size:15px;}
-  .tw-week{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px;margin-top:6px;}
-  .tw-day{display:flex;flex-direction:column;gap:2px;min-width:0;padding:6px;border-radius:9px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);}
-  .tw-day.now{border-color:#ffdd00;background:rgba(255,221,0,.08);}
-  .tw-day.past{opacity:.8;}
-  .tw-day em{font-style:normal;font-size:9px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;color:#8fa1cc;}
-  .tw-day > b{font-size:17px;font-weight:900;font-style:italic;color:#fff;line-height:1;}
-  .tw-ev{display:flex;align-items:center;gap:3px;font-size:9px;font-weight:800;color:#cfd8ff;min-width:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;}
-  .tw-did{display:flex;flex-wrap:wrap;gap:2px 4px;}
-  .tw-did i{font-style:normal;font-size:12px;display:inline-flex;align-items:baseline;gap:1px;}
-  .tw-did i b{font-size:9px;font-weight:900;}
-  .tw-free{font-size:10px;font-weight:800;color:#8fa1cc;}
   .tw-noble{margin-top:8px;} .hg-alerts{margin-bottom:4px;padding-bottom:4px;border-bottom:1px solid rgba(255,255,255,.12);}
-  @media (max-width:520px){ .tw-week{gap:3px;} .tw-day{padding:4px 3px;} .tw-ev{font-size:0;} .tw-ev .ch-pip{font-size:10px;} }
   .tp-x{grid-column:2;grid-row:1 / span 2;border:0;background:rgba(255,255,255,.08);color:#cfd8ff;border-radius:8px;width:28px;height:28px;cursor:pointer;}
   .tp-done{margin-top:8px;font-size:12px;font-weight:900;color:#00d6a4;}
   .dm-map{position:relative;width:100%;max-width:520px;margin:8px auto;border-radius:12px;overflow:hidden;box-shadow:inset 0 0 0 1px rgba(180,200,255,.2);}
@@ -5929,6 +5896,43 @@
   .cc-day-train .cc-tc-row em{font-size:12px;}
   .cc-day-train .cc-tc-why,.cc-day-train .cc-tc-coach{font-size:11px;}
   .cc-day-train .cc-bars{max-width:520px;}
+  /* Тренировка как Discover: параметры строкой, занятия плитками карт с обложкой. */
+  .cc-ds{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px;margin:10px 0 14px;width:100%;box-sizing:border-box;}
+  .cc-ds span{display:flex;flex-direction:column;align-items:center;gap:1px;padding:7px 2px;border-radius:10px;
+    background:rgba(255,255,255,.07);box-shadow:inset 0 0 0 1px rgba(180,200,255,.12);}
+  .cc-ds em{font-style:normal;font-size:10px;font-weight:900;letter-spacing:.06em;color:#8fa1cc;}
+  .cc-ds b{font-size:20px;font-weight:900;font-style:italic;color:#fff;line-height:1.05;}
+  .cc-ds i{font-style:normal;font-size:10px;font-weight:900;color:#00d6a4;}
+  .cc-disc{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:0 0 14px;width:100%;}
+  @media (min-width:1000px){ .cc-disc{grid-template-columns:repeat(4,minmax(0,1fr));} }
+  @media (max-width:700px){ .cc-disc{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;} }
+  .cc-dt{position:relative;display:flex;flex-direction:column;min-width:0;margin:0;padding:0;
+    border:0;border-radius:12px;overflow:hidden;cursor:pointer;text-align:left;color:#fff;font:inherit;
+    background:#121c46;box-shadow:inset 0 0 0 1px rgba(255,255,255,.14),0 6px 16px rgba(0,0,0,.3);
+    transition:transform .12s ease,box-shadow .12s ease;}
+  .cc-dt-img{position:relative;display:block;aspect-ratio:16/9;background-size:cover;background-position:center;}
+  .cc-dt:hover:not(.off){transform:translateY(-2px);box-shadow:inset 0 0 0 2px #ffdd00,0 10px 22px rgba(0,0,0,.4);}
+  .cc-dt:active:not(.off){transform:scale(.98);}
+  .cc-dt.did{box-shadow:inset 0 0 0 2px #00d6a4,0 6px 16px rgba(0,0,0,.3);}
+  .cc-dt.off{cursor:default;filter:grayscale(.75) brightness(.7);}
+  @media(prefers-reduced-motion:reduce){ .cc-dt{transition:none;} .cc-dt:hover:not(.off){transform:none;} }
+  .cc-dt-en{position:absolute;top:7px;right:7px;z-index:1;font-style:normal;font-size:11px;font-weight:900;padding:3px 7px;border-radius:7px;
+    background:rgba(6,12,40,.78);color:#ffdd00;}
+  .cc-dt-gr{position:absolute;top:7px;left:7px;z-index:1;font-style:normal;font-size:11px;font-weight:900;padding:3px 7px;border-radius:7px;background:rgba(6,12,40,.78);}
+  .cc-dt-txt{position:relative;z-index:1;display:flex;flex-direction:column;gap:2px;padding:8px 9px 9px;min-width:0;}
+  .cc-dt-txt b{font-family:var(--font-display);font-size:16px;font-weight:900;text-transform:uppercase;line-height:1.02;letter-spacing:.01em;
+    display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;text-shadow:0 1px 3px rgba(0,0,0,.6);}
+  .cc-dt-g{display:flex;flex-wrap:wrap;gap:3px;margin-top:3px;}
+  .cc-dt-g i{font-style:normal;font-size:10px;font-weight:900;padding:2px 5px;border-radius:5px;background:rgba(0,214,164,.22);color:#5fffd0;}
+  .cc-dt-g i.m{background:rgba(255,120,200,.2);color:#ffb0e4;}
+  .cc-dt-why{font-size:10px;font-weight:800;color:#ffb13d;margin-top:2px;}
+  .cc-dlife{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 10px;}
+  .cc-dl{display:inline-flex;align-items:center;gap:7px;margin:0;padding:9px 13px;border:0;border-radius:999px;cursor:pointer;font:inherit;color:#fff;
+    background:rgba(255,255,255,.09);box-shadow:inset 0 0 0 1px rgba(180,200,255,.16);}
+  .cc-dl:hover:not(.off){background:rgba(255,255,255,.16);}
+  .cc-dl.did{box-shadow:inset 0 0 0 2px #00d6a4;}
+  .cc-dl.off{opacity:.45;cursor:default;}
+  .cc-dl i{font-style:normal;font-size:15px;} .cc-dl b{font-size:13px;font-weight:900;} .cc-dl em{font-style:normal;font-size:11px;font-weight:900;color:#ffdd00;}
   @media (max-width:700px){
     .cc-day-train .ch-art-in{padding:12px !important;}
     .cc-day-train .cc-ta-grid{grid-template-columns:minmax(0,1fr);gap:8px;}
@@ -7544,6 +7548,10 @@
   #screen-career-hub .ch-ffbtn{background:rgba(255,255,255,.14);color:#fff;border:1.5px solid rgba(255,255,255,.55);padding:9px 14px;}
   #screen-career-hub .ch-ffbtn:hover{background:#fff;color:#0b0f12;border-color:#fff;}
   #screen-career-hub .cal-bar h4{font-size:26px;font-style:italic;letter-spacing:0;}
+  /* На телефоне строка месяца переносится: «Сейчас» и «Сыграть за меня» уезжали за правый край. */
+  @media (max-width:520px){ #screen-career-hub .cal-bar{display:grid;grid-template-columns:auto minmax(0,1fr) auto;row-gap:8px;}
+    #screen-career-hub .cal-bar h4{font-size:21px;} #screen-career-hub .cal-bar .cal-today{grid-column:1 / -1;justify-self:start;margin:0;}
+    #screen-career-hub .cal-bar .ch-ffwrap{grid-column:1 / -1;margin:0;} }
   #screen-career-hub .cal-nav.cc-old{background:rgba(255,255,255,.08);border-color:rgba(150,185,255,.3);
     color:#fff;}
   #screen-career-hub .cal-nav:hover{border-color:#35e0ff;color:#35e0ff;}
@@ -8150,7 +8158,7 @@
   .cal-ev.cal-eval{background:none;color:#0b0f12;box-shadow:inset 0 0 0 1px #b3bfc6;}
   @media(max-width:520px){.cal-day{min-height:44px;} .cal-ev{font-size:7.5px;}}
 
-  .ch-foot{position:relative;z-index:2;display:flex;gap:12px;align-items:center;
+  .ch-foot{position:relative;z-index:2;display:flex;flex-wrap:wrap;gap:12px;align-items:center;
     padding:16px 18px 0;}
   .ch-end{margin-left:auto;border:1px solid #e0396a;background:none;color:#c11e4c;
     font-weight:900;font-size:11px;letter-spacing:.06em;text-transform:uppercase;
@@ -24192,6 +24200,8 @@ Object.assign(I18N.en, {ccYrXHeatsIn:k=>'Top '+k+' of the series — into the He
 Object.assign(I18N.fr, {ccYrXHeatsIn:k=>'Top '+k+' de la série — en heats', ccYrXHeatsZone:k=>'Zone des heats : top '+k+' de la série', ccYrXHeatsOut:k=>'Hors du top '+k+' de la série — pas de heats'});
 Object.assign(I18N.it, {ccYrXHeatsIn:k=>'Top '+k+' della serie — negli heat', ccYrXHeatsZone:k=>'Zona heat: top '+k+' della serie', ccYrXHeatsOut:k=>'Fuori dal top '+k+' della serie — niente heat'});
 Object.assign(I18N.pt, {ccYrXHeatsIn:k=>'Top '+k+' da série — nos heats', ccYrXHeatsZone:k=>'Zona dos heats: top '+k+' da série', ccYrXHeatsOut:k=>'Fora do top '+k+' da série — sem heats'});
+// Шкафчик: подписи как в русском клиенте Fortnite; в остальных языках остаётся английский вид Epic.
+Object.assign(I18N.ru, {ccLkSub:'Мой набор', ccLkChar:'Персонаж', ccLkEmotes:'Эмоции', ccFnSave:'Сохранить набор'});
 Object.assign(I18N.ru, {ccYr21ToDay2:'Не прошли — завтра хиты второго дня'}); Object.assign(I18N.en, {ccYr21ToDay2:'Not through — the day-2 heats are tomorrow'});
 Object.assign(I18N.fr, {ccYr21ToDay2:'Pas qualifiés — heats du jour 2 demain'}); Object.assign(I18N.it, {ccYr21ToDay2:'Non passati — domani gli heat del giorno 2'}); Object.assign(I18N.pt, {ccYr21ToDay2:'Não passaram — amanhã os heats do dia 2'});
 Object.assign(I18N.ru, {ccYrSemiZone:k=>'В зоне полуфинала: топ-'+k+' серии', ccYrSemiOut:k=>'Вне топ-'+k+' серии — мимо полуфинала'});
@@ -120113,7 +120123,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='b692ff19';
+const CC_BUILD='6ff9009c';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -147321,72 +147331,10 @@ function ccTrainPanelHTML(six, wide){
     '<div class="cc-fat"><span>'+L().lfFatigue+'</span><span class="cc-fat-bar s-'+state+'"><i style="width:'+fat.toFixed(0)+'%"></i></span>'+
       '<b>'+L()[state]+'</b></div></div>';
 }
-// Своя карта: стройка (вечер из пяти) или обновление вышедшей; ниже — игры и деньги.
-function ccMapCardHTML(a, o){
-  const m=ccMap();
-  const line = !m || !m.pub ? L().lfMapBuild((m ? m.prog : 0), CC_MAP_BUILD)
-    : L().lfMapLive(m.name, m.code, ccNum(m.last||0), ccMoney(m.earned||0));
-  const why = o.closed ? '' : o.left<a.energy ? L().ccNeedEnergy(a.energy-o.left) : '';
-  return '<button class="cc-act cc-tcard g-train cc-tc-mapcard'+(o.can?'':' off')+(o.did?' did':'')+'" '+
-    (o.can?'onclick="careerPickDay(\''+a.id+'\')"':'disabled')+'>'+
-    '<span class="cc-tc-top"><i class="cc-tc-ico">'+CC_TRAIN_ICON.trMap+'</i><b class="cc-tc-name">'+
-      esc(m && m.pub ? L().lfMapUpdate : L().ccActtrMap)+'</b></span>'+
-    '<span class="cc-tc-map">'+esc(line)+'</span>'+
-    (m && !m.pub ? '<u class="hg-bar"><s style="width:'+Math.round(m.prog/CC_MAP_BUILD*100)+'%"></s></u>' : '')+
-    '<span class="cc-tc-row"><span class="cc-tc-gain"><i>'+esc(L().lfMapGive)+'</i></span><em>'+a.energy+L().ccEnergyMark+'</em></span>'+
-    (why ? '<i class="cc-tc-why">'+esc(why)+'</i>' : '')+'</button>';
-}
-/* Полоса недели во вкладке «Тренировка»: что сделано в каждый день и с какой оценкой.
-   Это журнал, а не расписание: план на неделю вперёд уже был и снят (3.09) — день
-   выбирается в свой день. */
-function ccTrainWeekHTML(){
-  const cr=CAREER.career, gr=ccLife().gr||{}, today=careerToday(), mon=careerMonday(today);
-  const evs=careerEvents();
-  const cells=[0,1,2,3,4,5,6].map(d=>{
-    const iso=ccAddDays(mon, d), on=evs.get(iso)||[], did=(cr.did||{})[iso]||[];
-    const grades=gr[iso]||[];
-    let body;
-    if(on.length) body='<span class="tw-ev"><i class="ch-pip ch-pip-'+(on[0].kind||'cup')+'">'+ccKindIconSVG(on[0].kind)+'</i>'+esc(on[0].label||'')+'</span>';
-    else if(did.length) body='<span class="tw-did">'+did.filter(x=>String(x).indexOf('ev:')!==0).map(id=>{
-        const g=(grades.find(r=>r.id===id)||{}).g;
-        return '<i title="'+esc(ccActName(id))+'">'+(CC_TRAIN_ICON[id]||'•')+(g ? '<b class="g-'+g.replace('+','p')+'">'+g+'</b>' : '')+'</i>'; }).join('')+'</span>';
-    else body='<span class="tw-free">'+(iso<today ? '-' : iso===today ? esc(L().lfTwPick) : '')+'</span>';
-    return '<div class="tw-day'+(iso===today?' now':'')+(iso<today?' past':'')+'"><em>'+L().calDows[d]+'</em><b>'+
-      new Date(iso+'T00:00:00Z').getUTCDate()+'</b>'+body+'</div>';
-  }).join('');
-  return '<div class="ch-tile tw-tile"><h4>'+esc(L().lfTwH)+'</h4><div class="tw-week">'+cells+'</div>'+ccNobleBoardHTML()+'</div>';
-}
-// Где проходит занятие: настоящие карты Creative и плейлисты. Имена — как в игре.
-const CC_DRILL_MAP={trClu:"Enigma's Galaxy 1v1 Arena", trBox:'Clix Box Fights · Pandvil', trZw:'Desert Zone Wars', trSur:'Battle Royale',
-  };
-function ccDrillPlace(id){
-  return CC_DRILL_MAP[id]||'';
-}
 function ccActName(id){
   return L()['ccAct'+id]||id;
 }
-/* Карточка параметра — она же кнопка его тренировки (27.10): имя, значение, шкала 35–99, сколько даст занятие и
-   цена. Оценка прошлого занятия — значком, причина серой кнопки — строкой вместо цены. Прирост недели не печатается:
-   «+0.0» на шести карточках был шумом. */
-// Значение параметра на плитке: десятая — только когда она есть (27.10, его «может .0 убрать»): 68, но 55.6.
 function ccStatNum(v){ const r=Math.round(v*10)/10; return r%1 ? r.toFixed(1) : String(r); }
-function ccTrainStatHTML(a, o){
-  const k=o.keys[0], v=o.six[k]!=null ? o.six[k] : 50;
-  const coachOn=!!(o.dayCoach && o.dayCoach.keys.indexOf(k)>=0);
-  const by=Math.max(35, Math.min(99, v+a.gain[k]*o.dayMult*(coachOn ? 1+o.dayCoach.train : 1)*ccFocusMult(k)))-v;
-  const pct=Math.max(0, Math.min(100, (v-35)/(99-35)*100)), num=x=>(Math.round(x*10)/10).toFixed(1);
-  const why = o.closed ? '' : o.maxed ? L().ccAttrMaxed : !o.gainsMove ? L().ccNoGain
-            : o.left<a.energy ? L().ccNeedEnergy(a.energy-o.left) : '';
-  const g=ccDrillLast(a.id);
-  return '<button class="cc-stat-t'+(o.can?'':' off')+(o.did?' did':'')+'" title="'+esc(ccActName(a.id)+' · '+ccAttrFull(k)+' '+num(v)+' → '+num(v+by))+'" '+
-    (o.can?'onclick="careerPickDay(\''+a.id+'\')"':'disabled')+'>'+
-    '<span class="st-top"><i>'+(CC_ATTR_ICON[k]||'•')+'</i><b>'+esc(ccAttrFull(k))+'</b>'+
-      (g ? '<em class="cc-tc-grade g-'+g.replace('+','p')+'" title="'+esc(L().lfGradeLast)+'">'+g+'</em>' : '')+'</span>'+
-    '<span class="st-val"><b>'+ccStatNum(v)+'</b>'+(by>=0.05 && !o.closed ? '<i>+'+ccStatNum(by)+'</i>' : '')+'</span>'+
-    '<u class="st-bar"><s style="width:'+pct.toFixed(0)+'%"></s></u>'+
-    (why ? '<span class="st-why">'+esc(why)+'</span>' : '<span class="st-cost">'+a.energy+L().ccEnergyMark+(coachOn ? ' · '+esc(L().lfCoachBoost(Math.round(o.dayCoach.train*100))) : '')+'</span>')+
-    '</button>';
-}
 // Усталость — строкой и только когда она есть: «свежий» на каждом экране ничего не говорил.
 function ccFatigueLineHTML(){
   const cr=CAREER.career, grind=cr.grind||0, top=CC_GRIND_FREE+CC_GRIND_MAX/CC_GRIND_STEP;
@@ -147396,33 +147344,63 @@ function ccFatigueLineHTML(){
   return '<div class="cc-fat"><span>'+L().lfFatigue+'</span><span class="cc-fat-bar s-'+state+'"><i style="width:'+fat.toFixed(0)+'%"></i></span>'+
     '<b>'+L()[state]+'</b></div>';
 }
-function ccTrainCardHTML(a, o){
-  if(a.map) return ccMapCardHTML(a, o);
-  const k=o.keys[0];
-  const from=k ? (o.six[k]!=null ? o.six[k] : 50) : 0;
-  const coachOn=!!(k && o.dayCoach && o.dayCoach.keys.indexOf(k)>=0);
-  const by=k ? a.gain[k]*o.dayMult*(coachOn ? 1+o.dayCoach.train : 1)*ccFocusMult(k) : 0;
-  const to=Math.max(35, Math.min(99, from+by));
-  const num=v=>(Math.round(v*10)/10).toFixed(1);
-  const why = o.closed ? '' : o.maxed ? L().ccAttrMaxed
-            : (k && !o.gainsMove) ? L().ccNoGain
-            : o.left<a.energy ? L().ccNeedEnergy(a.energy-o.left) : '';
-  const tip=(ccDrillPlace(a.id) ? ccDrillPlace(a.id)+' · ' : '')+(k ? ccAttrFull(k)+': '+num(from)+' → '+num(to) : L().lfMetaGive);
-  return '<button class="cc-act cc-tcard g-train'+(o.can?'':' off')+(o.did?' did':'')+'" title="'+esc(tip)+'" '+
-    (o.can?'onclick="careerPickDay(\''+a.id+'\')"':'disabled')+'>'+
-    '<span class="cc-tc-top"><i class="cc-tc-ico">'+(CC_TRAIN_ICON[a.id]||'•')+'</i><b class="cc-tc-name">'+esc(ccActName(a.id))+'</b>'+
-      (ccDrillLast(a.id) ? '<i class="cc-tc-grade g-'+ccDrillLast(a.id).replace('+','p')+'" title="'+esc(L().lfGradeLast)+'">'+ccDrillLast(a.id)+'</i>' : '')+'</span>'+
-    // Название карты Creative («Clix Box Fights · Pandvil») — в подсказке, а не строкой: третья строка на карточке была лишней (27.10).
-    // Каждый атрибут занятия своим приростом — у карт Creative их два.
-    '<span class="cc-tc-row">'+(k ? '<span class="cc-tc-gain">'+o.keys.map(kk=>{
-        const f=o.six[kk]!=null ? o.six[kk] : 50;
-        const c=!!(o.dayCoach && o.dayCoach.keys.indexOf(kk)>=0);
-        const t=Math.max(35, Math.min(99, f+a.gain[kk]*o.dayMult*(c ? 1+o.dayCoach.train : 1)*ccFocusMult(kk)));
-        return '+'+num(t-f)+' <i>'+(L()['ccAttr'+kk.toUpperCase()]||kk)+'</i>'; }).join(' ')+'</span>'
-                                   : '<span class="cc-tc-gain"><i>'+L().lfMetaGive+'</i></span>')+
-      '<em>'+a.energy+L().ccEnergyMark+'</em></span>'+
-    (why ? '<i class="cc-tc-why">'+esc(why)+'</i>' : coachOn ? '<i class="cc-tc-coach">'+L().lfCoachBoost(Math.round(o.dayCoach.train*100))+'</i>' : '')+
-    '</button>';
+/* Вкладка «Тренировка» как Discover в лобби Fortnite: каждое занятие — плитка карты с обложкой.
+   Обложки — настоящие острова Creative (fortnite.gg → og:image острова), сжаты в items/creative/*.webp.
+   Где карты нет (игра в BR, разбор реплеев, Noble), обложка — арт сезона или турнира. */
+const CC_DISC={
+  trAim:{img:'items/creative/trAim.webp', map:'Skaavok Aim Trainer'},
+  trSur:{map:'Battle Royale'},
+  trCon:{img:'items/creative/trCon.webp', map:'Piece Control 1v1'},
+  trClu:{img:'items/creative/trClu.webp', map:'1v1 Build Fights'},
+  trExp:{img:'art/comp/fnce-37-10-soloseries-ingamecompetetab-solotexture-800x800-800x800-e2b94d5baa94.jpg'},
+  trEnd:{img:'items/creative/trEnd.webp', map:'Solo Cup Zone Wars · Endgame'},
+  trBox:{img:'items/creative/trBox.webp', map:'Clix Box Fights'},
+  trZw:{img:'items/creative/trZw.webp', map:'Desert Zone Wars'},
+  trEdit:{img:'items/creative/trEdit.webp', map:"Raider's Edit Course"},
+  scrim:{img:'items/creative/scrim.webp', map:'Pro Realistics'},
+  noble:{img:'art/comp/fnbr-40-10-competitive-in-game-solotexture-800x800-800x800-630b3ce0a6fb.jpg', map:'Noble Pro Scrims'}
+};
+function ccDiscTile(id){ return id!=='talk' && (String(id).indexOf('tr')===0 || id==='scrim' || id==='noble'); }
+// Сколько занятие поднимет каждый параметр сегодня: та же арифметика, что в careerDoAct.
+function ccDiscGains(a, o){
+  return Object.keys(a.gain||{}).map(k=>{
+    const f=o.six[k]!=null ? o.six[k] : 50, c=!!(o.dayCoach && o.dayCoach.keys.indexOf(k)>=0);
+    const t=Math.max(35, Math.min(99, f+a.gain[k]*o.dayMult*(c ? 1+o.dayCoach.train : 1)*ccFocusMult(k)));
+    return {k:k, by:Math.round((t-f)*10)/10};
+  }).filter(g=>g.by>0).sort((x,y)=>y.by-x.by);
+}
+function ccDiscTileHTML(a, o){
+  const d=CC_DISC[a.id]||{}, img=d.img || ccDayArt(), g=ccDrillLast(a.id), gains=ccDiscGains(a, o);
+  const why = o.closed ? '' : o.maxed ? L().ccAttrMaxed : (o.keys.length && !o.gainsMove) ? L().ccNoGain
+            : o.left<a.energy ? L().ccNeedEnergy(a.energy-o.left) : (o.hostWhy || '');
+  const chips=gains.slice(0, 2).map(x=>'<i>+'+x.by.toFixed(1)+' '+(L()['ccAttr'+x.k.toUpperCase()]||x.k)+'</i>').join('')+
+    (gains.length>2 ? '<i>+'+(gains.length-2)+'</i>' : '')+
+    (a.morale ? '<i class="m">'+esc(L().ccGiveMood)+'</i>' : '')+
+    (!a.gain || !Object.keys(a.gain).length ? '<i>'+esc(L().lfMetaGive)+'</i>' : '');
+  const tip=(d.map ? d.map+' · ' : '')+ccActName(a.id)+(gains.length ? ' · '+gains.map(x=>'+'+x.by.toFixed(1)+' '+ccAttrFull(x.k)).join(', ') : '');
+  return '<button class="cc-dt'+(o.can?'':' off')+(o.did?' did':'')+'" title="'+esc(tip)+'" '+
+    (o.can ? 'onclick="careerPickDay(\''+a.id+'\')"' : 'disabled')+'>'+
+    '<span class="cc-dt-img" style="background-image:url(\''+img+'\')">'+
+      '<em class="cc-dt-en">'+a.energy+L().ccEnergyMark+'</em>'+
+      (g ? '<em class="cc-dt-gr g-'+g.replace('+','p')+'" title="'+esc(L().lfGradeLast)+'">'+g+'</em>' : '')+'</span>'+
+    '<span class="cc-dt-txt"><b>'+esc(d.map || ccActName(a.id))+'</b>'+
+      '<span class="cc-dt-g">'+chips+'</span>'+(why ? '<span class="cc-dt-why">'+esc(why)+'</span>' : '')+'</span></button>';
+}
+// Разговор, стрим, своя кастомка, отдых — строкой под плитками: это не карты.
+function ccDiscChipHTML(a, o, extra){
+  return '<button class="cc-dl'+(o.can?'':' off')+(o.did?' did':'')+'" title="'+esc(ccActName(a.id)+(extra ? ' · '+extra.replace(/<\/i>/g, ' · ').replace(/<[^>]+>/g, '').replace(/[\s·]+$/, '') : ''))+'" '+
+    (o.can ? 'onclick="careerPickDay(\''+a.id+'\')"' : 'disabled')+'>'+
+    '<i>'+(CC_TRAIN_ICON[a.id]||'•')+'</i><b>'+esc(ccActName(a.id))+'</b><em>'+a.energy+L().ccEnergyMark+'</em></button>';
+}
+// Параметры одной строкой над плитками: сокращение, значение, прирост за неделю.
+function ccDiscStatsHTML(six){
+  const lf=(typeof ccLife==='function') ? ccLife() : {};
+  const tw=(lf.tw && lf.tw.wk===ccWeekTag()) ? lf.tw.g : {};
+  return '<div class="cc-ds">'+ATTR_KEYS.map(k=>{
+    const v=six[k]!=null ? six[k] : 50;
+    return '<span title="'+esc(ccAttrFull(k))+'"><em>'+(L()['ccAttr'+k.toUpperCase()]||k)+'</em><b>'+ccStatNum(v)+'</b>'+
+      (tw[k] ? '<i>+'+(Math.round(tw[k]*10)/10).toFixed(1)+'</i>' : '')+'</span>';
+  }).join('')+'</div>';
 }
 function careerDayPanelHTML(locked){
   const cr=CAREER.career;
@@ -147585,40 +147563,14 @@ function careerDayPanelHTML(locked){
         '<span class="cc-act-h"><b>'+ccActName(a.id)+'</b><em>'+a.energy+L().ccEnergyMark+'</em></span>'+
         '<span class="cc-act-g">'+gains+extra.join('')+'</span></button>';
     }
-    // Тренировки — карточками «Тренировочного центра» (ccTrainCardHTML), с панелью атрибутов сверху.
-    /* Параметр и его тренировка — одна карточка (27.10, его «тренинг сделай получше дизайн и без спама информации»):
-       шесть карточек параметров стояли над шестью карточками занятий на те же параметры. Теперь нажимаешь на сам
-       параметр. Карты Creative (два параметра за раз) — своей группой ниже; усталость — строкой, только когда устал. */
-    if(grp==='train'){
-      const trains=allActs.filter(x=>String(x.id).indexOf('tr')===0);
-      const single=x=>!x.map && !x.meta && Object.keys(x.gain||{}).length===1;
-      const singles=trains.filter(single), rest=trains.filter(x=>!single(x));
-      const o={can, did:done.indexOf(a.id)>=0, keys, six, dayMult, dayCoach, left, maxed, gainsMove, closed};
-      if(single(a)) return (a===singles[0] ? '<div class="cc-act-grp">'+(L().ccActGrpTrain||'')+'</div><div class="cc-stgrid">' : '')+
-        ccTrainStatHTML(a, o)+(a===singles[singles.length-1] ? '</div>'+ccFatigueLineHTML() : '');
-      return (a===rest[0] ? '<div class="cc-act-grp">'+(L().ccActGrpMaps||'')+'</div><div class="cc-tgrid">' : '')+
-        ccTrainCardHTML(a, o)+(a===rest[rest.length-1] ? '</div>' : '');
+    // Вкладка «Тренировка»: занятия плитками карт, остальное строкой (см. CC_DISC).
+    {
+      const o={can, did:done.indexOf(a.id)>=0, keys, six, dayMult, dayCoach, left, maxed, gainsMove, closed,
+               hostWhy:hostWhy==='reach' ? L().ccHostNeedReach(ccNum(CC_HOST_REACH)) : hostWhy==='cash' ? L().ccHostNeedCash(ccNum(ccHostPot()-(cr.balance||0))) : ''};
+      const tiles=allActs.filter(x=>ccDiscTile(x.id)), lifes=allActs.filter(x=>!ccDiscTile(x.id));
+      if(ccDiscTile(a.id)) return (a===tiles[0] ? '<div class="cc-disc">' : '')+ccDiscTileHTML(a, o)+(a===tiles[tiles.length-1] ? '</div>' : '');
+      return (a===lifes[0] ? '<div class="cc-dlife">' : '')+ccDiscChipHTML(a, o, gains+extra.join(''))+(a===lifes[lifes.length-1] ? '</div>' : '');
     }
-    /* Команда и жизнь — такими же карточками, как тренировки: сетка своей группы,
-       иконка, прирост одной строкой (сумма по атрибутам), энергия, эффекты значками. */
-    /* Команда и жизнь — тоже во вкладке «Тренировка» (27.10): Центр теперь одной кнопкой ведёт сюда, и всё, на что
-       уходит день, должно быть здесь. Раньше эти карточки не рисовались нигде (Центр брал строки выше). */
-    const grpOf=x=>String(x.id).indexOf('tr')===0 ? 'train' : (x.id==='scrim'||x.id==='talk'||x.id==='noble') ? 'team' : 'life';
-    const mates=allActs.filter(x=>grpOf(x)===grp);
-    const grpHead=a===mates[0]
-      ? '<div class="cc-act-grp">'+(L()['ccActGrp'+grp.charAt(0).toUpperCase()+grp.slice(1)]||'')+'</div><div class="cc-tgrid cc-agrid">' : '';
-    const tot=keys.reduce((sum,k)=>sum+a.gain[k]*dayMult*(dayCoach && dayCoach.keys.indexOf(k)>=0 ? 1+dayCoach.train : 1), 0);
-    // Один параметр и «+N» за остальными (27.10, «без спама информации»): полный список — в подсказке кнопки.
-    const shortG=keys.length ? '<span class="cc-tc-gain">+'+(Math.round(tot*10)/10).toFixed(1)+' <i>'+
-      (L()['ccAttr'+keys[0].toUpperCase()]||keys[0])+(keys.length>1 ? ' +'+(keys.length-1) : '')+'</i></span>' : '<span class="cc-tc-gain"></span>';
-    return grpHead+'<button class="cc-act cc-tcard g-'+grp+(can?'':' off')+(done.indexOf(a.id)>=0?' did':'')+'" '+
-      'title="'+esc(ccActName(a.id)+' · '+gains.replace(/<\/i>/g, ' · ').replace(/<[^>]+>/g, '').replace(/[\s·]+$/, ''))+'" '+
-      (can?'onclick="careerPickDay(\''+a.id+'\')"':'disabled')+'>'+
-      '<span class="cc-tc-top"><i class="cc-tc-ico">'+(CC_TRAIN_ICON[a.id]||'•')+'</i><b class="cc-tc-name">'+ccActName(a.id)+'</b></span>'+
-      '<span class="cc-tc-row">'+shortG+'<em>'+a.energy+L().ccEnergyMark+'</em></span>'+
-      '<span class="cc-act-g cc-tc-fx">'+extra.join('')+
-        ((maxed||restFull||(!closed && left<a.energy)||(keys.length && !gainsMove)) ? gains.replace(/<i>[^<]*<\/i>/g,'') : '')+'</span></button>'+
-      (a===mates[mates.length-1] ? '</div>' : '');
   }).join('');
   return '<div class="ch-art cc-day'+(CC_DAY_VIEW==='train' ? ' cc-day-train' : '')+'" style="background-image:url('+ccDayArt()+');">'+
     // Which day it is, beside what is on it: his ask, 17 August.
@@ -147669,7 +147621,7 @@ function careerDayPanelHTML(locked){
         ? '<div class="cc-bars">'+
             ccMeterHTML(L().ccRingEnergy, left, careerEnergyMax(), 'energy')+
             ccMeterHTML(L().ccRingMood, (careerMateRec() || (typeof ccMpTeam==='function' && ccMpTeam()))?careerPatience():0, 100, 'mood')+
-          '</div>'
+          '</div>'+ccDiscStatsHTML(six)+ccFatigueLineHTML()
         : '<div class="cc-rings">'+
             careerRingHTML(L().ccRingEnergy, left, careerEnergyMax(), 'energy')+
             careerRingHTML(L().ccRingMood, (careerMateRec() || (typeof ccMpTeam==='function' && ccMpTeam()))?careerPatience():0, 100, 'mood')+
@@ -147726,17 +147678,20 @@ function ccCentreDayOpen(){
 }
 function careerTrainTabHTML(){
   const six=CAREER.player.attrs || ccOwnAttrs();
+  // Сначала карты, под ними план недели и таблица Noble (если на неделе были сессии).
+  const noble=ccNobleBoardHTML();
+  const below=ccTrainPlanHTML()+(noble ? '<div class="ch-tile tw-tile"><h4>Noble Pro Scrims</h4>'+noble+'</div>' : '');
   if(ccCentreDayOpen()){
     CC_DAY_VIEW='train';
-    try{ return '<div class="cc-train-tab">'+ccTrainWeekHTML()+ccTrainPlanHTML()+careerDayPanelHTML(null)+'</div>'; } finally{ CC_DAY_VIEW=''; }
+    try{ return '<div class="cc-train-tab">'+careerDayPanelHTML(null)+below+'</div>'; } finally{ CC_DAY_VIEW=''; }
   }
   const cr=CAREER.career, next=careerNext();
-  return '<div class="cc-train-tab">'+ccTrainWeekHTML()+ccTrainPlanHTML()+'<div class="ch-art cc-day cc-day-train" style="background-image:url('+ccDayArt()+');">'+
+  return '<div class="cc-train-tab"><div class="ch-art cc-day cc-day-train" style="background-image:url('+ccDayArt()+');">'+
     '<div class="ch-livebar"><b class="ch-live-soon">'+L().ccDayTag+'</b><span>'+esc(ccDayFull(careerToday()))+'</span></div>'+
-    '<div class="ch-art-in cc-day-in">'+ccTrainPanelHTML(six, true)+
+    '<div class="ch-art-in cc-day-in">'+ccDiscStatsHTML(six)+
     '<div class="cc-day-locked">'+esc(cr.seasonOver ? L().ccSeasonOver : L().lfTrainEventDay(next.title||''))+'</div>'+
     '<button class="ch-play" onclick="careerTab(\'centre\')">'+esc(L().lfTrainToCentre)+'</button>'+
-    '</div></div></div>';
+    '</div></div>'+below+'</div>';
 }
 /* ФОКУС НЕДЕЛИ: один атрибут на неделю, его занятия дают +15% (CC_FOCUS_BONUS — выбор
    режима, не замер). Выбранный держится до конца недели — сменить нельзя.
@@ -151168,9 +151123,9 @@ function ccFnLocker5HTML(){
   }
   const rail=[['o','👤'],['e','💃'],['w','🎨']].map(([k, ic])=>'<button class="'+((k==='o' ? ['o','b','p','g'] : [k]).indexOf(CC_FN_PICK||'o')>=0 ? 'on' : '')+'" onclick="ccFnPick(\''+k+'\')">'+ic+'</button>').join('');
   return '<div class="ch-tile cc-fn-load cc-fn-c5 cc-lk5"><nav class="cc-lk5-rail">'+rail+'</nav>'+
-    '<div class="cc-lk5-mid"><em class="cc-lk5-sub">My Locker Loadout</em><h3>CHARACTER</h3>'+
+    '<div class="cc-lk5-mid"><em class="cc-lk5-sub">'+esc(T.ccLkSub||'My Locker Loadout')+'</em><h3>'+esc(T.ccLkChar||'CHARACTER')+'</h3>'+
       '<div class="cc-lk5-grid">'+['o','b','p','g'].map(tile).join('')+'</div>'+
-      '<h3 class="dim">EMOTES</h3><div class="cc-lk5-grid">'+['e','w'].map(tile).join('')+'</div>'+pick+'</div>'+
+      '<h3 class="dim">'+esc(T.ccLkEmotes||'EMOTES')+'</h3><div class="cc-lk5-grid">'+['e','w'].map(tile).join('')+'</div>'+pick+'</div>'+
     '<div class="cc-lk5-stage">'+model+info+'</div>'+
     '<div class="cc-lk5-btns"><button onclick="careerSave()">'+esc(T.ccFnSave||'Save Loadout')+'</button>'+
       '<button onclick="ccFnShopOpen()">'+esc(T.ccFnToShop)+'</button></div></div>';
