@@ -6054,6 +6054,14 @@
   #screen-profile .ch-tile h4{margin:0 -14px 10px;background:#0b0f12;color:#fff;padding:9px 30px 9px 14px;font-family:var(--font-display);
     font-style:normal;font-size:17px;letter-spacing:.02em;text-transform:uppercase;clip-path:polygon(0 0,100% 0,calc(100% - 15px) 100%,0 100%);}
   #screen-profile .me-head{padding:14px;}
+  #screen-profile .me-det{padding-bottom:0;}
+  #screen-profile .me-det[open]{padding-bottom:14px;}
+  #screen-profile .me-det>summary{list-style:none;cursor:pointer;}
+  #screen-profile .me-det>summary::-webkit-details-marker{display:none;}
+  #screen-profile .me-det>summary h4{margin-bottom:0;position:relative;}
+  #screen-profile .me-det[open]>summary h4{margin-bottom:10px;}
+  #screen-profile .me-det>summary h4::after{content:'▾';position:absolute;right:30px;top:50%;transform:translateY(-50%) rotate(-90deg);transition:transform .15s;color:#ffd400;}
+  #screen-profile .me-det[open]>summary h4::after{transform:translateY(-50%);}
   #screen-profile .ch-empty{color:#9fb0e8;font-weight:700;padding:6px 0;}
   #screen-profile .achv-card{background:rgba(6,12,32,.45);border-color:rgba(140,175,255,.16);}
   #screen-profile .achv-card.unlocked{border-color:#ffd400;background:rgba(255,212,0,.08);}
@@ -121009,7 +121017,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='83c14d2c';
+const CC_BUILD='5681c41f';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -179911,15 +179919,17 @@ function ccMeHTML(){
   const achHTML='<div class="me-ach">'+ACHIEVEMENTS.map(a=>'<div class="achv-card '+(ach.has(a.id) ? 'unlocked' : 'locked')+'"><div class="achv-icon">'+a.icon+'</div><div><div class="achv-title">'+
       (L()['achv_'+a.id+'_title']||a.id)+'</div><div class="achv-desc">'+(L()['achv_'+a.id+'_desc']||'')+'</div></div></div>').join('')+'</div>';
   const sec=(h, body)=>'<div class="ch-tile me-sec"><h4>'+esc(h)+'</h4>'+body+'</div>';
+  // Достижения свёрнуты (30.10, его «скрыть… нажимаешь и открываются»): заголовок со счётом, список по нажатию.
+  const secAch=(h, body)=>'<details class="ch-tile me-sec me-det"><summary><h4>'+esc(h)+'</h4></summary>'+body+'</details>';
   // Драфт дня первыми в наборе драфта: они свежие и про то, во что играют каждый день.
   const draftAch='<div class="me-ach">'+ccMeAchHTML(has, 'd_')+achHTML.replace(/^<div class="me-ach">/, '');
   // Три отдельных набора: карьера под карьерами, драфт под драфтом, менеджер в конце (его «и отдельные для карьеры менеджера»).
   return head+sec(T.careers, '<div class="me-cars">'+carHTML+'</div>')+
-    sec(T.achCareer+' · '+cOpen+'/'+cKeys.length, '<div class="me-ach">'+ccMeAchHTML(has, 'c_')+'</div>')+
+    secAch(T.achCareer+' · '+cOpen+'/'+cKeys.length, '<div class="me-ach">'+ccMeAchHTML(has, 'c_')+'</div>')+
     sec(T.daily, dailyHTML)+sec(T.draft, draftHTML)+
-    sec(T.achDraft+' · '+(ach.size+dOpen)+'/'+(ACHIEVEMENTS.length+dKeys.length), draftAch)+
+    secAch(T.achDraft+' · '+(ach.size+dOpen)+'/'+(ACHIEVEMENTS.length+dKeys.length), draftAch)+
     sec(T.mgr, mgrN ? '<div class="me-sts">'+stat(mgrN, T.clubs)+'</div>' : '<div class="ch-empty">'+esc(T.none)+'</div>')+
-    sec(T.achMgr+' · '+mOpen+'/'+mKeys.length, '<div class="me-ach">'+ccMeAchHTML(has, 'm_')+'</div>');
+    secAch(T.achMgr+' · '+mOpen+'/'+mKeys.length, '<div class="me-ach">'+ccMeAchHTML(has, 'm_')+'</div>');
 }
 function openProfileScreen(){
   const b=document.getElementById('meBody'); if(b) b.innerHTML=ccMeHTML();
