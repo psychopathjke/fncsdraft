@@ -120136,6 +120136,7 @@ function careerLoad(){
               if(ccChapterCarry()) careerSave();
               // Сейв, раздутый линейной формулой твича, — под потолок. См. CC_TW_CEIL.
               careerMigrateTwitch();
+              if(careerMigrateTwitchFromX()) careerSave();
               // Про 2026 года: настоящие Twitch и YouTube в сейв, начатый до 28.10 (один раз). См. CC_PRO_SOCIAL.
               if(ccMigrateProSocial()) careerSave();
               // A save from before the desk touched the card owns the devices
@@ -120257,7 +120258,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='2e13a0bb';
+const CC_BUILD='7743db29';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -141037,7 +141038,10 @@ function careerReachAdd(n, raw){
   const was=cr.reach||0;
   const add=raw ? n : n*(1+ccSmmBoost());
   cr.reach=Math.max(0, Math.round(was+add));
-  return cr.reach-was;
+  // Часть новых читателей X идёт и на Twitch, см. CC_TW_FROM_X.
+  const got=cr.reach-was;
+  if(got>0) cr.twitch=Math.min(CC_TW_CEIL, (cr.twitch||0)+Math.round(got*CC_TW_FROM_X));
+  return got;
 }
 /* What a result is worth to the audience.
 
@@ -175927,6 +175931,8 @@ function careerStreamGo(id){
   if(careerDayClosed()) return false;
   if(k.watch){ CC_STREAM_WATCH_EV=ccStreamWatchEvent(); if(!CC_STREAM_WATCH_EV) return false; }
   if(careerEnergy()<k.energy) return false;
+  // Пропуск, нажатый в прошлом вечере, держится до следующего раннера; эфир свободного дня он не касается.
+  if(!CAREER_RUN && CC_SKIP_RUN){ skipAnimation=false; CC_SKIP_RUN=false; }
   CC_STREAM_KIND=k.id;
   const done=careerDoAct('stream');
   CC_STREAM_KIND='grind';
@@ -175962,9 +175968,11 @@ let CC_TV_PLAIN=null;
 function ccStreamRun(k){
   if(typeof document==='undefined' || !document.body) return false;
   if(typeof skipAnimation!=='undefined' && skipAnimation) return false;
-  if(careerSimOn() || (typeof CC_FF!=='undefined' && CC_FF)) return false;
+  if(typeof CC_FF!=='undefined' && CC_FF) return false;
   const cr=CAREER && CAREER.career, last=cr && cr.streamLast;
   if(!last || last.day!==careerToday()) return false;
+  // В режиме симуляции рамки нет, а рейд, клип и про в чате всё равно случаются: иначе их не было бы вовсе.
+  if(careerSimOn()){ ccStreamQuiet(k, last); return false; }
   // Чужой финал смотрят дольше обычного эфира: моментов ролика на минуту (CC_TV_WATCH_SECS).
   const ticks=k.watch ? Math.max(8, Math.round(CC_TV_WATCH_SECS*1000/CC_TV_TICK))
                       : Math.max(8, Math.round((k.hours||4)*CC_TV_PLAIN_SECS_PER_HOUR*1000/CC_TV_TICK));
@@ -176056,8 +176064,18 @@ function ccStreamHapLine(g){
   if(g.id==='sac')  return T.ccTvHapSacSum(ccNum(g.cash));
   return '';
 }
+// Эфир без рамки: те же события дня сразу, итог в streamLast.
+function ccStreamQuiet(k, last){
+  CC_TV_BASE=Math.max(3, ccStreamViewersNow()); CC_TV_VIEW=CC_TV_BASE; CC_TV_PEAK=CC_TV_BASE;
+  CC_TV_HYPE=0; CC_TV_MSGS=[]; CC_TV_WHO=[]; CC_TV_EV={fol:0, subs:0, cash:0};
+  CC_TV_SUM={n:0, sum:0}; CC_TV_HIST=[]; CC_TV_CHATTERS=new Set();
+  CC_TV_PLAIN={id:k.id, at:0, done:0, hours:k.hours||4, ticks:1,
+               want:{fol:(last.a && last.a[2])||0, cash:last.m||0}, hap:ccStreamHappenings(k, 4), got:[]};
+  while(CC_TV_PLAIN.hap.length) ccStreamHappen(CC_TV_PLAIN.hap.shift());
+  ccStreamRunEnd(true);
+}
 // Конец обычного эфира: рамка снимается, сводка — из чисел этого дня.
-function ccStreamRunEnd(){
+function ccStreamRunEnd(quiet){
   const p=CC_TV_PLAIN; CC_TV_PLAIN=null;
   const cr=CAREER && CAREER.career, last=cr && cr.streamLast;
   const avg=(CC_TV_SUM && CC_TV_SUM.n) ? Math.round(CC_TV_SUM.sum/CC_TV_SUM.n) : CC_TV_VIEW;
@@ -176082,6 +176100,7 @@ function ccStreamRunEnd(){
              hap:got.map(g=>ccStreamHapLine(g)).filter(Boolean)};
   if(last && last.day===careerToday()){ last.sum=sum; last.label=sum.label; }
   try{ careerSave(); }catch(e){}
+  if(quiet) return;
   ccTvClose();
   // Конец эфира перерисовывает ту вкладку, где игрок сейчас, а не тащит его обратно в «Стримы».
   try{ careerRenderHub(CH_TAB); }catch(e){}
@@ -176956,6 +176975,18 @@ function ccMigrateProSocial(){
   if(!first) return true;
   if(tw>(cr.twitch||0)) cr.twitch=tw;
   if(yt){ const y=ccYt(); if(yt>(y.subs||0)){ y.subs=yt; y.real=yt; if(yt>=1000) y.hours=Math.max(y.hours||0, 4000); } }
+  return true;
+}
+/* Twitch про того же порядка, что X: у 1014 про с каналом (CC_PRO_SOCIAL) Twitch/X медиана 0.95–1.5,
+   нижняя четверть 0.4–0.76 во всех размерах. Раньше Twitch рос только от своих эфиров, и X 95 тыс. стоял
+   против Twitch 443. Доля по нижней четверти: канал есть и у того, кто стримит мало. */
+const CC_TW_FROM_X=0.5;
+// Сейв, где X ушёл далеко вперёд Twitch, подтягивается один раз до той же доли.
+function careerMigrateTwitchFromX(){
+  const cr=CAREER && CAREER.career; if(!cr || cr.twX) return false;
+  cr.twX=1;
+  const floor=Math.min(CC_TW_CEIL, Math.round((cr.reach||0)*CC_TW_FROM_X));
+  if(floor>(cr.twitch||0)) cr.twitch=floor;
   return true;
 }
 function careerMigrateTwitch(){
