@@ -121009,7 +121009,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='8fcb01c5';
+const CC_BUILD='83c14d2c';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -179715,9 +179715,11 @@ const CC_ME_TX={
 };
 function ccMeT(){ return CC_ME_TX[(typeof LANG!=='undefined' && LANG)] || CC_ME_TX.en; }
 Object.assign(CC_ME_TX.ru, {edit:'Изменить', save:'Сохранить', cancel:'Отмена', nickPh:'Никнейм', upload:'Загрузить фото', skinPh:'Найти скин Fortnite',
-  cloudOn:'Сохраняется в облако', cloudOff:'Включи облако на экране карьеры, чтобы профиль был на всех устройствах', achCareer:'Достижения карьеры', achDaily:'Достижения драфта дня', more:'ещё'});
+  cloudOn:'Сохраняется в облако', cloudOff:'Включи облако на экране карьеры, чтобы профиль был на всех устройствах', achCareer:'Достижения карьеры', achDaily:'Достижения драфта дня', more:'ещё',
+  achDraft:'Достижения драфта', achMgr:'Достижения менеджера', achCareerS:'Ачивки карьеры', achDraftS:'Ачивки драфта', achMgrS:'Ачивки менеджера'});
 Object.assign(CC_ME_TX.en, {edit:'Edit', save:'Save', cancel:'Cancel', nickPh:'Nickname', upload:'Upload photo', skinPh:'Find a Fortnite skin',
-  cloudOn:'Saved to the cloud', cloudOff:'Turn on the cloud on the career screen to have your profile on every device', achCareer:'Career achievements', achDaily:'Daily draft achievements', more:'more'});
+  cloudOn:'Saved to the cloud', cloudOff:'Turn on the cloud on the career screen to have your profile on every device', achCareer:'Career achievements', achDaily:'Daily draft achievements', more:'more',
+  achDraft:'Draft achievements', achMgr:'Manager achievements', achCareerS:'Career', achDraftS:'Draft', achMgrS:'Manager'});
 /* Свой профиль (30.10, его «пусть никнейм можно будет выбрать и аватарку и сохранить это все в облако»): ключ
    fncsdraft_profile {nick, ava:{t:'skin', id} | {t:'img', d:dataURL 128px}} — в облаке рядом с карьерами (CC_CLOUD_KEY). */
 const CC_ME_LS='fncsdraft_profile';
@@ -179766,7 +179768,11 @@ const CC_ME_ACH_TX={
       c_top50:['Стабильность','50 раз попади в топ-10'], c_s3:['Ветеран сцены','Доиграй до третьего сезона'], c_creator:['Из стримеров в про','Начни карьеру за креатора'],
       c_yt:['Ютубер','Набери 100 000 подписчиков на YouTube'], c_multi:['Многостаночник','Веди три карьеры сразу'],
       d_first:['Ежедневный','Сыграй драфт дня'], d_win:['Лучший за день','Выиграй драфт дня'], d_top3:['Подиум дня','Займи топ-3 в драфте дня'],
-      d_streak7:['Неделя без пропусков','Играй драфт дня 7 дней подряд'], d_30:['Месяц драфтов','Сыграй 30 драфтов дня'], d_win3:['Трижды лучший','Выиграй драфт дня 3 раза']},
+      d_streak7:['Неделя без пропусков','Играй драфт дня 7 дней подряд'], d_30:['Месяц драфтов','Сыграй 30 драфтов дня'], d_win3:['Трижды лучший','Выиграй драфт дня 3 раза'],
+      m_first:['Главный тренер','Возглавь клуб в режиме менеджера'], m_own:['Владелец','Создай свой клуб'], m_win:['Первый кубок клуба','Игрок твоего клуба выигрывает турнир'],
+      m_win10:['Машина побед','Игроки клуба выигрывают 10 турниров'], m_trophy:['Трофей сезона','Получи награду сезона'], m_trophy5:['Полка трофеев','Собери 5 наград сезона'],
+      m_1m:['Миллион в кассе','Клуб зарабатывает $1 000 000'], m_s3:['Династия','Проведи с клубами три сезона'], m_clubs2:['Новый вызов','Поработай в двух разных клубах'],
+      m_fired:['Ничего личного','Тебя уволили из клуба']},
   en:{c_win:['First win','Win any event in a career'], c_major:['Major champion','Win an FNCS Major final'],
       c_lan:['LAN king','Win a LAN final'], c_globals:['World champion','Win the Global Championship'], c_reload:['Reload champion','Win a Reload final'],
       c_potm:['Player of the month','Be named player of the month'], c_potm5:['Star of the season','Be player of the month 5 times'],
@@ -179775,11 +179781,22 @@ const CC_ME_ACH_TX={
       c_top50:['Consistency','Finish top 10 fifty times'], c_s3:['Scene veteran','Reach season three'], c_creator:['Streamer to pro','Start a career as a creator'],
       c_yt:['YouTuber','Reach 100,000 YouTube subscribers'], c_multi:['Juggler','Run three careers at once'],
       d_first:['Daily','Play a daily draft'], d_win:['Best of the day','Win a daily draft'], d_top3:['Daily podium','Finish top 3 in a daily draft'],
-      d_streak7:['No days off','Play the daily draft 7 days in a row'], d_30:['A month of drafts','Play 30 daily drafts'], d_win3:['Three-time best','Win the daily draft 3 times']}
+      d_streak7:['No days off','Play the daily draft 7 days in a row'], d_30:['A month of drafts','Play 30 daily drafts'], d_win3:['Three-time best','Win the daily draft 3 times'],
+      m_first:['Head coach','Take charge of a club in manager mode'], m_own:['Owner','Found your own club'], m_win:['First club cup','A player of your club wins an event'],
+      m_win10:['Winning machine','Your club players win 10 events'], m_trophy:['Season trophy','Win a season award'], m_trophy5:['Trophy shelf','Collect 5 season awards'],
+      m_1m:['A million in the bank','Your club earns $1,000,000'], m_s3:['Dynasty','Manage clubs for three seasons'], m_clubs2:['New challenge','Work at two different clubs'],
+      m_fired:['Nothing personal','Get sacked by a club']}
 };
 const CC_ME_ACH_ICO={c_win:'🏆', c_major:'👑', c_lan:'🏟️', c_globals:'🌍', c_reload:'🔁', c_potm:'🏅', c_potm5:'🌟', c_100k:'💵', c_1m:'💰',
   c_div1:'🥇', c_ev100:'💯', c_top50:'📈', c_s3:'🧓', c_creator:'🎥', c_yt:'▶️', c_multi:'🗂️',
-  d_first:'📅', d_win:'🥇', d_top3:'🥉', d_streak7:'🔥', d_30:'🗓️', d_win3:'👑'};
+  d_first:'📅', d_win:'🥇', d_top3:'🥉', d_streak7:'🔥', d_30:'🗓️', d_win3:'👑',
+  m_first:'📋', m_own:'🏢', m_win:'🏆', m_win10:'⚙️', m_trophy:'🎖️', m_trophy5:'🗄️', m_1m:'🏦', m_s3:'🏰', m_clubs2:'🔄', m_fired:'📦'};
+// Сейвы менеджера — прямо по ключам (mgrSlotRead в куске mgr.js): клуб, трофеи, история сезонов, результаты.
+function ccMeMgrSaves(){
+  const out=[];
+  for(let n=1;n<=10;n++){ try{ const m=ccSaveParse(localStorage.getItem(n===1 ? 'fncsdraft_manager' : 'fncsdraft_manager_s'+n)); if(m && m.club) out.push(m); }catch(e){} }
+  return out;
+}
 function ccMeAch(saves, dr){
   const all=saves.map(s=>(s.career||{}));
   const wins=[].concat(...all.map(c=>(c.log||[]).filter(e=>e && e.place===1)));
@@ -179797,6 +179814,15 @@ function ccMeAch(saves, dr){
     d_first:dr.length>0, d_win:dr.some(r=>r.place===1), d_top3:dr.some(r=>r.place<=3), d_streak7:maxStreak>=7, d_30:dr.length>=30,
     d_win3:dr.filter(r=>r.place===1).length>=3
   };
+  const ms=ccMeMgrSaves();
+  const mWins=ms.reduce((a,m)=>a+(m.results||[]).filter(r=>!/#/.test(String(r.id||'')) && (r.rows||[]).some(x=>x && x.mine && x.place===1)).length, 0);
+  const mTro=ms.reduce((a,m)=>a+(m.trophies||[]).length, 0);
+  const mHist=[].concat(...ms.map(m=>m.history||[]));
+  Object.assign(has, {
+    m_first:ms.length>0, m_own:ms.some(m=>m.club && m.club.own), m_win:mWins>=1, m_win10:mWins>=10,
+    m_trophy:mTro>=1, m_trophy5:mTro>=5, m_1m:ms.some(m=>(m.club.earned||0)>=1000000) || mHist.some(h=>(h.earned||0)>=1000000),
+    m_s3:mHist.length>=3, m_clubs2:new Set(mHist.map(h=>h.club).concat(ms.map(m=>m.club.name))).size>=2, m_fired:mHist.some(h=>h.fired)
+  });
   return has;
 }
 function ccMeAchHTML(has, pre){
@@ -179840,7 +179866,11 @@ function ccMeHTML(){
   const nick=(E ? E.nick : prof.nick) || (cars[0] && cars[0][1].nick) || dailyNick() || '—';
   let ph=E ? ccMeAvaURL(E) : ccMeAvaURL(prof);
   if(!ph){ try{ ph=CAREER && careerCard() ? photoURL(careerCard()) : null; }catch(e){ ph=null; } }
-  const has=ccMeAch(saves, dr), hasN=Object.values(has).filter(Boolean).length, achAll=ACHIEVEMENTS.length+Object.keys(has).length;
+  /* Два отдельных набора (30.10, его «отдельные достижения для карьеры и отдельные для драфта»): карьера — c_*;
+     драфт — 76 старых ACHIEVEMENTS (забеги) и d_* (драфт дня). */
+  const has=ccMeAch(saves, dr);
+  const cKeys=Object.keys(has).filter(k=>k[0]==='c'), dKeys=Object.keys(has).filter(k=>k[0]==='d'), mKeys=Object.keys(has).filter(k=>k[0]==='m');
+  const cOpen=cKeys.filter(k=>has[k]).length, dOpen=dKeys.filter(k=>has[k]).length, mOpen=mKeys.filter(k=>has[k]).length;
   const cloud=!!(typeof ccCloudCode==='function' && ccCloudCode());
   const ava=ph ? '<img class="me-ava" src="'+esc(ph)+'" alt="" onerror="this.remove()">' : '<span class="me-ava me-ava-0">'+esc(String(nick).slice(0,1).toUpperCase())+'</span>';
   const editor=E ? '<div class="me-edit">'+
@@ -179854,7 +179884,8 @@ function ccMeHTML(){
     '<div><h2>'+esc(nick)+'</h2><small>'+esc(T.device)+(cloud ? ' · ☁ '+esc(T.cloudOn) : '')+'</small>'+
       (E ? '' : '<button class="cc-back me-editbtn" onclick="ccMeEditOpen()">'+esc(T.edit)+'</button>')+'</div>'+
     '<div class="me-sts">'+stat(cars.length, T.careers)+stat('$'+ccNum(tot.earn), T.earn)+stat(tot.wins, T.wins)+stat(tot.titles, T.titles)+
-      stat(dr.length, T.daily)+stat((ach.size+hasN)+'/'+achAll, T.ach)+'</div>'+editor+'</div>';
+      stat(dr.length, T.daily)+stat(cOpen+'/'+cKeys.length, T.achCareerS)+stat((ach.size+dOpen)+'/'+(ACHIEVEMENTS.length+dKeys.length), T.achDraftS)+
+      stat(mOpen+'/'+mKeys.length, T.achMgrS)+'</div>'+editor+'</div>';
   const cupsHTML=c=>{ if(!c.cups.length) return '';
     const shown=c.cups.slice(-6), rest=c.cups.length-shown.length;
     return '<div class="me-cups">'+shown.map(e=>{ let art=null; try{ art=ccLogArt(e); }catch(x){}
@@ -179880,11 +179911,15 @@ function ccMeHTML(){
   const achHTML='<div class="me-ach">'+ACHIEVEMENTS.map(a=>'<div class="achv-card '+(ach.has(a.id) ? 'unlocked' : 'locked')+'"><div class="achv-icon">'+a.icon+'</div><div><div class="achv-title">'+
       (L()['achv_'+a.id+'_title']||a.id)+'</div><div class="achv-desc">'+(L()['achv_'+a.id+'_desc']||'')+'</div></div></div>').join('')+'</div>';
   const sec=(h, body)=>'<div class="ch-tile me-sec"><h4>'+esc(h)+'</h4>'+body+'</div>';
-  const cN=Object.keys(has).filter(k=>k[0]==='c'), dN=Object.keys(has).filter(k=>k[0]==='d');
-  return head+sec(T.careers, '<div class="me-cars">'+carHTML+'</div>')+(mgrN ? sec(T.mgr, '<div class="me-sts">'+stat(mgrN, T.clubs)+'</div>') : '')+
-    sec(T.achCareer+' · '+cN.filter(k=>has[k]).length+'/'+cN.length, '<div class="me-ach">'+ccMeAchHTML(has, 'c_')+'</div>')+
-    sec(T.daily, dailyHTML)+sec(T.achDaily+' · '+dN.filter(k=>has[k]).length+'/'+dN.length, '<div class="me-ach">'+ccMeAchHTML(has, 'd_')+'</div>')+
-    sec(T.draft, draftHTML)+sec(T.ach+' · '+ach.size+'/'+ACHIEVEMENTS.length, achHTML);
+  // Драфт дня первыми в наборе драфта: они свежие и про то, во что играют каждый день.
+  const draftAch='<div class="me-ach">'+ccMeAchHTML(has, 'd_')+achHTML.replace(/^<div class="me-ach">/, '');
+  // Три отдельных набора: карьера под карьерами, драфт под драфтом, менеджер в конце (его «и отдельные для карьеры менеджера»).
+  return head+sec(T.careers, '<div class="me-cars">'+carHTML+'</div>')+
+    sec(T.achCareer+' · '+cOpen+'/'+cKeys.length, '<div class="me-ach">'+ccMeAchHTML(has, 'c_')+'</div>')+
+    sec(T.daily, dailyHTML)+sec(T.draft, draftHTML)+
+    sec(T.achDraft+' · '+(ach.size+dOpen)+'/'+(ACHIEVEMENTS.length+dKeys.length), draftAch)+
+    sec(T.mgr, mgrN ? '<div class="me-sts">'+stat(mgrN, T.clubs)+'</div>' : '<div class="ch-empty">'+esc(T.none)+'</div>')+
+    sec(T.achMgr+' · '+mOpen+'/'+mKeys.length, '<div class="me-ach">'+ccMeAchHTML(has, 'm_')+'</div>');
 }
 function openProfileScreen(){
   const b=document.getElementById('meBody'); if(b) b.innerHTML=ccMeHTML();
