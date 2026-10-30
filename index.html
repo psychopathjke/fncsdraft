@@ -6118,6 +6118,12 @@
   /* Плашки цифр — светлое голубое стекло, а не --fn-deep (30.10, его скрин «слишком тёмный и странный цвет»). */
   #screen-profile .me-st,#screen-profile .me-last span,#screen-profile .achv-card,#screen-profile .me-skin{background:rgba(150,180,255,.16);border:1px solid rgba(180,200,255,.18);}
   #screen-profile .me-st{border:none;}
+  #screen-profile .me-last span.p{background:#3fd3c6;color:#032a2c;border-color:transparent;}
+  /* Заголовки разделов без чёрной полосы (30.10, его скрин «и это слишком темно»): белый курсив Fortnite на стекле. */
+  #screen-profile .ch-tile h4{background:transparent;clip-path:none;font-style:italic;font-size:19px;padding:12px 30px 8px 0;margin:0 0 10px;
+    border-bottom:1px solid rgba(180,200,255,.2);text-shadow:0 2px 0 rgba(8,18,50,.35);}
+  #screen-profile .me-det:not([open])>summary h4{border-bottom-color:transparent;margin-bottom:0;padding-bottom:12px;}
+  #screen-profile .me-det>summary h4::after{right:4px;}
   #screen-profile .me-car{background:rgba(126,150,224,.16);border-color:var(--fn-line);}
   #screen-profile .me-st small,#screen-profile .me-head small,#screen-profile .me-car-h span,#screen-profile .me-best small,
   #screen-profile .me-last small,#screen-profile .achv-desc,#screen-profile .ch-empty,#screen-profile .me-edit>small{color:var(--fn-dim);}
@@ -121036,7 +121042,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='bd52820f';
+const CC_BUILD='caba8f90';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
