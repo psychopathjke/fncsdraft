@@ -6076,7 +6076,7 @@
   .me-up{cursor:pointer;}
   #screen-profile .me-up,#screen-profile .me-edit-b .cc-back:not(.me-open),#screen-profile .me-editbtn{background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.25);
     padding:7px 14px;border-radius:8px;font-weight:900;opacity:1;}
-  #screen-profile .me-editbtn{margin-left:8px;}
+  #screen-profile .me-editbtn{margin-left:0;align-self:flex-start;}
   .me-skins{flex-basis:100%;display:grid;grid-template-columns:repeat(auto-fill,minmax(78px,1fr));gap:6px;}
   .me-skin{display:flex;flex-direction:column;align-items:center;gap:2px;padding:4px;border-radius:8px;border:1px solid rgba(140,175,255,.16);background:rgba(6,12,32,.45);cursor:pointer;color:#dfe8ff;}
   .me-skin img{width:64px;height:64px;object-fit:contain;} .me-skin small{font-size:9px;font-weight:800;line-height:1.1;text-align:center;}
@@ -6097,6 +6097,60 @@
   #screen-profile .me-st,#screen-profile .me-last span,#screen-profile .achv-card,#screen-profile .me-skin{background:rgba(150,180,255,.16);border:1px solid rgba(180,200,255,.18);}
   #screen-profile .me-st{border:none;}
   #screen-profile .me-last span.p{background:#3fd3c6;color:#032a2c;border-color:transparent;}
+  /* Уровень, баннеры, рамки, витрина. */
+  #screen-profile .me-head.me-bn-sunset{background:linear-gradient(135deg,#ff7a3d 0%,#c2386e 55%,#3b1a6e 100%);}
+  #screen-profile .me-head.me-bn-storm{background:linear-gradient(135deg,#6a2bd6 0%,#3b1488 55%,#120a3a 100%);}
+  #screen-profile .me-head.me-bn-tilted{background:linear-gradient(135deg,#2fbf71 0%,#1b7d6a 55%,#0b3446 100%);}
+  #screen-profile .me-head.me-bn-gold{background:linear-gradient(135deg,#ffd84a 0%,#c98a00 50%,#5a3a00 100%);}
+  #screen-profile .me-head.me-bn-ice{background:linear-gradient(135deg,#d9fbff 0%,#58c4e6 45%,#16507a 100%);}
+  #screen-profile .me-head.me-bn-champ{background:linear-gradient(135deg,#1b1b1b 0%,#3a2a00 55%,#ffd400 140%);}
+  .me-id{display:flex;flex-direction:column;gap:4px;min-width:220px;}
+  .me-lv{display:flex;align-items:center;gap:8px;}
+  .me-lv b{font-family:var(--font-display);font-size:14px;color:#fff;white-space:nowrap;}
+  .me-lv span{flex:1;min-width:120px;height:8px;border-radius:99px;background:rgba(8,18,50,.45);overflow:hidden;}
+  .me-lv i{display:block;height:100%;background:var(--fn-yellow,#ffe600);border-radius:99px;}
+  .me-lv small{font-size:10px;font-weight:800;white-space:nowrap;}
+  .me-fr{display:inline-flex;border-radius:16px;padding:3px;}
+  .me-fr .me-ava{border:none !important;}
+  .me-fr-yellow{background:var(--fn-yellow,#ffe600);} .me-fr-silver{background:linear-gradient(135deg,#f2f5f9,#9aa4b2);}
+  .me-fr-gold{background:linear-gradient(135deg,#fff27a,#c98a00);} .me-fr-storm{background:linear-gradient(135deg,#c64cff,#4a0e85);box-shadow:0 0 12px rgba(198,76,255,.7);}
+  .me-fr-rainbow{background:linear-gradient(135deg,#ff4d4d,#ffd400,#3fe02a,#31b6ff,#c64cff);}
+  .me-show{display:flex;gap:8px;flex-wrap:wrap;}
+  .me-show-t{width:86px;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px;border-radius:10px;background:rgba(150,180,255,.16);text-align:center;}
+  .me-show-t img{width:48px;height:60px;object-fit:cover;border-radius:6px;border:2px solid #d9a93a;}
+  .me-show-t i{font-style:normal;font-size:28px;line-height:1.2;}
+  .me-show-t b{font-size:10px;font-weight:900;color:#fff;line-height:1.15;} .me-show-t small{font-size:9px;}
+  .me-row{flex-basis:100%;display:flex;flex-wrap:wrap;align-items:center;gap:6px;}
+  .me-row>small{min-width:90px;font-size:11px;font-weight:900;text-transform:uppercase;color:var(--fn-dim,#b7c3e6);}
+  .me-pick{width:42px;height:28px;border-radius:8px;border:2px solid transparent;cursor:pointer;font-size:10px;font-weight:900;color:#fff;}
+  .me-pick.on{border-color:#fff;} .me-pick:disabled{opacity:.45;cursor:default;}
+  .me-bn-lobby{background:linear-gradient(135deg,#1d3b8c,#0b1640);} .me-bn-sunset{background:linear-gradient(135deg,#ff7a3d,#3b1a6e);}
+  .me-bn-storm{background:linear-gradient(135deg,#6a2bd6,#120a3a);} .me-bn-tilted{background:linear-gradient(135deg,#2fbf71,#0b3446);}
+  .me-bn-gold{background:linear-gradient(135deg,#ffd84a,#5a3a00);} .me-bn-ice{background:linear-gradient(135deg,#d9fbff,#16507a);}
+  .me-bn-champ{background:linear-gradient(135deg,#1b1b1b,#ffd400);}
+  .me-pick.me-fr-yellow,.me-pick.me-fr-silver,.me-pick.me-fr-gold,.me-pick.me-fr-storm,.me-pick.me-fr-rainbow{border-radius:50%;width:30px;height:30px;}
+  .me-show-pick{display:flex;flex-wrap:wrap;gap:6px;flex-basis:100%;}
+  .me-show-o{padding:0;border:2px solid transparent;border-radius:12px;background:none;cursor:pointer;color:inherit;}
+  .me-show-o.on{border-color:var(--fn-yellow,#ffe600);}
+  /* Люди, календарь, настройки. */
+  .me-mates{display:flex;flex-direction:column;gap:4px;margin-top:10px;}
+  .me-mates>small{font-size:10px;font-weight:800;text-transform:uppercase;color:var(--fn-dim,#b7c3e6);}
+  .me-mate{display:flex;justify-content:space-between;gap:10px;padding:6px 10px;border-radius:8px;background:rgba(150,180,255,.12);}
+  .me-mate b{color:#fff;} .me-mate span{font-size:12px;font-weight:700;color:var(--fn-dim,#b7c3e6);}
+  .me-cal{margin-top:10px;} .me-cal>small{font-size:10px;font-weight:800;text-transform:uppercase;color:var(--fn-dim,#b7c3e6);}
+  .me-cal>div{display:grid;grid-template-columns:repeat(15,18px);gap:4px;margin-top:6px;}
+  .me-cal i{width:18px;height:18px;border-radius:4px;background:rgba(150,180,255,.14);}
+  .me-cal i.y{background:#6f8fe8;} .me-cal i.p{background:#3fd3c6;} .me-cal i.w{background:var(--fn-yellow,#ffe600);}
+  .me-set{display:flex;flex-direction:column;gap:10px;}
+  #screen-profile .me-set .cl-box{margin:0;}
+  .me-lang{padding:5px 10px;border-radius:999px;border:1px solid var(--fn-line,rgba(180,200,255,.2));background:var(--fn-btn,rgba(150,180,255,.28));color:#fff;font-weight:900;font-size:11px;cursor:pointer;}
+  .me-lang.on{background:#fff;color:#0b1640;}
+  .me-bind{display:inline-flex;align-items:center;gap:4px;}
+  .me-bico{width:22px;height:22px;display:inline-block;} .me-bico svg{width:100%;height:100%;}
+  .me-bind input{width:44px;text-align:center;background:rgba(8,18,50,.5);border:1px solid var(--fn-line,rgba(180,200,255,.2));color:#fff;border-radius:8px;padding:6px;font-weight:900;}
+  .me-bind input.bad{border-color:#ff4d4d;}
+  .me-set em{font-style:normal;font-size:11px;font-weight:900;color:#3fe02a;}
+  .me-note{color:var(--fn-dim,#b7c3e6);font-size:11px;font-weight:700;}
   /* Заголовки разделов без чёрной полосы (30.10, его скрин «и это слишком темно»): белый курсив Fortnite на стекле. */
   #screen-profile .ch-tile h4{background:transparent;clip-path:none;font-style:italic;font-size:19px;padding:12px 30px 8px 0;margin:0 0 10px;
     border-bottom:1px solid rgba(180,200,255,.2);text-shadow:0 2px 0 rgba(8,18,50,.35);}
@@ -101103,6 +101157,7 @@ function show(id){
     document.querySelectorAll('.site-nav .nav-main').forEach(b=>b.classList.toggle('on', !me));
     document.querySelectorAll('.site-nav .nav-me').forEach(b=>b.classList.toggle('on', me));
     if(!me && location.hash==='#me') history.replaceState(null, '', location.pathname+location.search);
+    if(!me && typeof ccMeCloudHome==='function') ccMeCloudHome();   // панель облака обратно на экран карьеры
   }catch(e){}
   if(moved) window.scrollTo(0, 0);
   // Tiles on a screen that was display:none have no box to intersect, so the
@@ -112904,7 +112959,9 @@ const CC_BIND_IDS=['ccBindWall','ccBindFloor','ccBindStairs','ccBindCone'];
 // Бинд — одна буква или цифра либо кнопка мыши MB3/MB4/MB5; всё прочее не бинд (стоит подсказка).
 function ccBindOk(v){ v=String(v||'').trim().toUpperCase(); return /^[A-Z0-9]$|^MB[345]$/.test(v) ? v : ''; }
 function ccBindsOf(p){
-  const b=p && p.binds;
+  // Бинды из аккаунта (fncsdraft_profile.binds) главнее бинд карьеры: работают и в старых карьерах.
+  let acc=null; try{ acc=typeof ccMeProf==='function' ? ccMeProf().binds : null; }catch(e){}
+  const b=(acc && acc.length) ? acc : (p && p.binds);
   return ccBindsUniq(CC_BIND_DEFAULT.map((d,k)=>ccBindOk(b && b[k]) || d));
 }
 function ccBindsRead(){
@@ -120056,7 +120113,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='cd13fa35';
+const CC_BUILD='802596e2';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -174407,15 +174464,16 @@ function ccMeProf(){ try{ return JSON.parse(localStorage.getItem(CC_ME_LS)||'{}'
 function ccMeProfSave(o){ try{ localStorage.setItem(CC_ME_LS, JSON.stringify(Object.assign(o, {at:Date.now()}))); }catch(e){} try{ ccCloudSoon(); }catch(e){} }
 function ccMeAvaURL(p){ const a=p && p.ava; if(!a) return null; return a.t==='img' ? a.d : a.t==='skin' ? ccFnImg(a.id) : null; }
 let CC_ME_EDIT=null;   // {nick, ava, q} — открытый редактор
-function ccMeEditOpen(){ const p=ccMeProf(); CC_ME_EDIT={nick:p.nick||'', ava:p.ava||null, q:''}; ccMeRedraw(); }
+function ccMeEditOpen(){ const p=ccMeProf(); CC_ME_EDIT={nick:p.nick||'', ava:p.ava||null, q:'', banner:p.banner||'lobby', frame:p.frame||'yellow', show:(p.show||[]).slice()}; ccMeRedraw(); }
 function ccMeEditClose(){ CC_ME_EDIT=null; ccMeRedraw(); }
 function ccMeEditSave(){
   if(!CC_ME_EDIT) return;
   const nick=String(CC_ME_EDIT.nick||'').replace(/[<>]/g, '').trim().slice(0, 24);
-  ccMeProfSave({nick, ava:CC_ME_EDIT.ava});
+  const p=ccMeProf();   // бинды и прочее, что редактор не трогает, остаются
+  ccMeProfSave(Object.assign(p, {nick, ava:CC_ME_EDIT.ava, banner:CC_ME_EDIT.banner, frame:CC_ME_EDIT.frame, show:(CC_ME_EDIT.show||[]).slice(0, 3)}));
   CC_ME_EDIT=null; ccMeRedraw();
 }
-function ccMeRedraw(){ const b=document.getElementById('meBody'); if(b) b.innerHTML=ccMeHTML(); }
+function ccMeRedraw(){ const b=document.getElementById('meBody'); if(!b) return; ccMeCloudHome(); b.innerHTML=ccMeHTML(); ccMeCloudMount(); }
 function ccMePhoto(inp){
   const f=inp && inp.files && inp.files[0]; if(!f || !CC_ME_EDIT) return;
   const im=new Image(), url=URL.createObjectURL(f);
@@ -174526,6 +174584,91 @@ function ccMeCareer(s){
     vr:log.reduce((a,e)=>a+(e.wins||0), 0), top10:log.filter(e=>e.place<=10).length, titles, potm:((cr.aw||{}).won||[]).filter(a=>a && a.you && a.kind==='month').length,
     best:best ? '#'+best.place+' · '+bestName : '', photo:pl.photo||null, cups, flag};
 }
+Object.assign(CC_ME_TX.ru, {level:'Уровень', xp:'опыт', banner:'Баннер', frame:'Рамка', locked:'с уровня', showcase:'Витрина', showPick:'Выбери до трёх для витрины',
+  people:'Люди', mates:'Напарники', nights:'вечеров', avgP:'ср. место', bestMate:'Лучший напарник', rival:'Главный соперник', rivalNote:'чаще всех MVP твоих вечеров',
+  cal:'Последние 30 дней', settings:'Настройки', lang:'Язык', binds:'Бинды построек', bindsNote:'Действуют во всех карьерах, на HUD над хотбаром', bindsSaved:'Сохранено'});
+Object.assign(CC_ME_TX.en, {level:'Level', xp:'XP', banner:'Banner', frame:'Frame', locked:'from level', showcase:'Showcase', showPick:'Pick up to three for the showcase',
+  people:'People', mates:'Teammates', nights:'nights', avgP:'avg place', bestMate:'Best teammate', rival:'Main rival', rivalNote:'most often MVP of your nights',
+  cal:'Last 30 days', settings:'Settings', lang:'Language', binds:'Build binds', bindsNote:'Used in every career, shown on the HUD above the hotbar', bindsSaved:'Saved'});
+/* Уровень аккаунта: опыт за всё, что лежит на устройстве. Порог уровня n: 150·n·(n−1), то есть 2 = 300, 5 = 3000,
+   10 = 13 500, 20 = 57 000. Баннеры (фон шапки) и рамки аватара открываются по уровню. */
+function ccMeXp(cars, dr, hist, achOpen){
+  let xp=0;
+  cars.forEach(([,c])=>{ xp+=c.ev*10+c.wins*60+c.titles*400+c.potm*150; });
+  xp+=dr.length*40+dr.filter(r=>r.place===1).length*150;
+  xp+=hist.length*15+hist.filter(h=>h.place===1).length*60;
+  xp+=achOpen*50;
+  let lv=1; while(150*(lv+1)*lv<=xp) lv++;
+  const from=150*lv*(lv-1), to=150*(lv+1)*lv;
+  return {xp, lv, pct:Math.round((xp-from)/(to-from)*100), next:to};
+}
+const CC_ME_BANNERS=[[1,'lobby'],[3,'sunset'],[5,'storm'],[8,'tilted'],[12,'gold'],[16,'ice'],[20,'champ']];
+const CC_ME_FRAMES=[[1,'yellow'],[4,'silver'],[7,'gold'],[10,'storm'],[15,'rainbow']];
+// Витрина: выигранные финалы FNCS из всех карьер и открытые достижения. id: cup:<слот>:<день>:<вид>, a:<id>, p:<ключ>.
+function ccMeShowItems(cars, ach, has){
+  const out=[];
+  cars.forEach(([n, c])=>c.cups.forEach(e=>{ let art=null, nm=''; try{ art=ccLogArt(e); }catch(x){}
+    if(e.kind==='globals') nm='Global Championship'; else { try{ nm=ccLockerPlain(ccLogName(e)); }catch(x){} }
+    out.push({id:'cup:'+n+':'+e.day+':'+e.kind, art, icon:'🏆', name:nm, sub:String(e.day||'').slice(0,4)}); }));
+  const PT=CC_ME_ACH_TX[(typeof LANG!=='undefined' && LANG)] || CC_ME_ACH_TX.en;
+  Object.keys(has).filter(k=>has[k]).forEach(k=>out.push({id:'p:'+k, icon:CC_ME_ACH_ICO[k], name:PT[k][0]}));
+  ACHIEVEMENTS.filter(a=>ach.has(a.id)).forEach(a=>out.push({id:'a:'+a.id, icon:a.icon, name:L()['achv_'+a.id+'_title']||a.id}));
+  return out;
+}
+function ccMeShowTile(it){
+  return '<div class="me-show-t">'+(it.art ? '<img src="'+esc(it.art)+'" alt="" loading="lazy" onerror="this.remove()">' : '<i>'+it.icon+'</i>')+
+    '<b>'+esc(it.name)+'</b>'+(it.sub ? '<small>'+esc(it.sub)+'</small>' : '')+'</div>';
+}
+function ccMeShowToggle(id){
+  if(!CC_ME_EDIT) return;
+  const s=(CC_ME_EDIT.show=CC_ME_EDIT.show||[]), i=s.indexOf(id);
+  if(i>=0) s.splice(i, 1); else if(s.length<3) s.push(id);
+  ccMeRedraw();
+}
+// Люди: напарники из записей вечеров (e.mates) по всем карьерам; соперник — чаще всех MVP твоих вечеров, кроме тебя.
+function ccMePeople(saves){
+  const by=new Map(), mvp=new Map();
+  saves.forEach(s=>{ const me=hKey(String((s.player||{}).nick||''));
+    ((s.career||{}).log||[]).forEach(e=>{ if(!e || !e.place) return;
+      (e.mates||(e.mate ? [e.mate] : [])).forEach(m=>{ const k=hKey(m); if(!k || k===me) return;
+        const b=by.get(k)||{name:m, n:0, sum:0, firsts:0, prize:0}; b.n++; b.sum+=e.place; if(e.place===1) b.firsts++; b.prize+=e.prize||0; by.set(k, b); });
+      if(e.mvp && !e.mvpYou && hKey(e.mvp)!==me){ const k=hKey(e.mvp); const r=mvp.get(k)||{name:e.mvp, n:0}; r.n++; mvp.set(k, r); } }); });
+  const mates=[...by.values()].sort((a,b)=>b.n-a.n);
+  const best=mates.filter(m=>m.n>=5).sort((a,b)=>a.sum/a.n-b.sum/b.n)[0]||null;
+  const rival=[...mvp.values()].sort((a,b)=>b.n-a.n)[0]||null;
+  return {mates:mates.slice(0, 6), best, rival};
+}
+// Бинды аккаунта главнее бинд карьеры (ccBindsOf): настоящие клавиши у человека одни на все карьеры.
+function ccMeBindSet(el, k, v){
+  v=ccBindOk(v); if(!v) return false;
+  const p=ccMeProf(), b=(p.binds||CC_BIND_DEFAULT.slice()).slice(0, 4);
+  if(b.some((x,i)=>i!==k && x===v)){ el.classList.add('bad'); setTimeout(()=>el.classList.remove('bad'), 700); return false; }
+  b[k]=v; p.binds=b; ccMeProfSave(p);
+  el.value=v; const m=document.getElementById('meBindsOk'); if(m) m.hidden=false;
+  return true;
+}
+function ccMeBindKey(e, k){
+  if(e.key==='Tab' || e.ctrlKey || e.metaKey || e.altKey) return;
+  if(!e.key || e.key==='Unidentified' || e.key==='Process') return;   // экранная клавиатура телефона: разберёт ccMeBindInput
+  e.preventDefault();
+  if(e.key.length===1) ccMeBindSet(e.target, k, e.key);
+}
+function ccMeBindInput(el, k){
+  const ch=String(el.value||'').toUpperCase().replace(/[^A-Z0-9]/g, '').slice(-1);
+  const p=ccMeProf(), was=(p.binds||CC_BIND_DEFAULT)[k];
+  if(!ch || !ccMeBindSet(el, k, ch)) el.value=was;
+}
+// Панель облака одна (#ccCloud, со своими id полей), поэтому на время аккаунта переезжает в него и возвращается обратно.
+let CC_ME_CLOUD_HOME=null;
+function ccMeCloudMount(){
+  const cl=document.getElementById('ccCloud'), slot=document.getElementById('meCloudSlot'); if(!cl || !slot) return;
+  if(!CC_ME_CLOUD_HOME) CC_ME_CLOUD_HOME={parent:cl.parentNode, next:cl.nextSibling};
+  slot.appendChild(cl); try{ ccCloudDraw(); }catch(e){}
+}
+function ccMeCloudHome(){
+  const cl=document.getElementById('ccCloud'); if(!cl || !CC_ME_CLOUD_HOME || cl.parentNode===CC_ME_CLOUD_HOME.parent) return;
+  CC_ME_CLOUD_HOME.parent.insertBefore(cl, CC_ME_CLOUD_HOME.next);
+}
 function ccMeHTML(){
   const T=ccMeT(), stat=(v,l)=>'<div class="me-st"><b>'+v+'</b><small>'+esc(l)+'</small></div>';
   // Карьеры по слотам.
@@ -174552,17 +174695,33 @@ function ccMeHTML(){
   const cKeys=Object.keys(has).filter(k=>k[0]==='c'), dKeys=Object.keys(has).filter(k=>k[0]==='d'), mKeys=Object.keys(has).filter(k=>k[0]==='m');
   const cOpen=cKeys.filter(k=>has[k]).length, dOpen=dKeys.filter(k=>has[k]).length, mOpen=mKeys.filter(k=>has[k]).length;
   const cloud=!!(typeof ccCloudCode==='function' && ccCloudCode());
-  const ava=ph ? '<img class="me-ava" src="'+esc(ph)+'" alt="" onerror="this.remove()">' : '<span class="me-ava me-ava-0">'+esc(String(nick).slice(0,1).toUpperCase())+'</span>';
+  // Уровень, баннер, рамка, витрина.
+  const lv=ccMeXp(cars, dr, hist, ach.size+cOpen+dOpen+mOpen);
+  const okB=k=>CC_ME_BANNERS.some(([l,n])=>n===k && l<=lv.lv), okF=k=>CC_ME_FRAMES.some(([l,n])=>n===k && l<=lv.lv);
+  const bn=okB(E ? E.banner : prof.banner) ? (E ? E.banner : prof.banner) : 'lobby';
+  const fr=okF(E ? E.frame : prof.frame) ? (E ? E.frame : prof.frame) : 'yellow';
+  const showAll=ccMeShowItems(cars, ach, has), showIds=(E ? E.show : prof.show)||[];
+  const shown=showIds.map(id=>showAll.find(x=>x.id===id)).filter(Boolean);
+  const ava='<span class="me-fr me-fr-'+fr+'">'+(ph ? '<img class="me-ava" src="'+esc(ph)+'" alt="" onerror="this.remove()">' : '<span class="me-ava me-ava-0">'+esc(String(nick).slice(0,1).toUpperCase())+'</span>')+'</span>';
+  const pick=(list, cur, key)=>list.map(([l,n])=>'<button type="button" class="me-pick me-pick-'+key+' me-'+key+'-'+n+(cur===n ? ' on' : '')+'"'+
+    (l>lv.lv ? ' disabled title="'+esc(T.locked+' '+l)+'"' : ' onclick="CC_ME_EDIT.'+(key==='bn' ? 'banner' : 'frame')+'=\''+n+'\';ccMeRedraw()"')+'>'+(l>lv.lv ? '🔒'+l : '')+'</button>').join('');
   const editor=E ? '<div class="me-edit">'+
       '<input class="me-nick-in" maxlength="24" placeholder="'+esc(T.nickPh)+'" value="'+esc(E.nick)+'" oninput="CC_ME_EDIT.nick=this.value">'+
       '<label class="cc-back me-up">'+esc(T.upload)+'<input type="file" accept="image/*" hidden onchange="ccMePhoto(this)"></label>'+
       '<input class="me-skin-in" placeholder="'+esc(T.skinPh)+'" value="'+esc(E.q)+'" oninput="ccMeSkinFind(this.value)">'+
       '<div class="me-skins" id="meSkins">'+ccMeSkinsHTML()+'</div>'+
+      '<div class="me-row"><small>'+esc(T.banner)+'</small>'+pick(CC_ME_BANNERS, bn, 'bn')+'</div>'+
+      '<div class="me-row"><small>'+esc(T.frame)+'</small>'+pick(CC_ME_FRAMES, fr, 'fr')+'</div>'+
+      (showAll.length ? '<div class="me-row me-row-show"><small>'+esc(T.showPick)+' · '+showIds.length+'/3</small><div class="me-show-pick">'+
+        showAll.map(it=>'<button type="button" class="me-show-o'+(showIds.indexOf(it.id)>=0 ? ' on' : '')+'" onclick="ccMeShowToggle(\''+esc(it.id)+'\')">'+ccMeShowTile(it)+'</button>').join('')+'</div></div>' : '')+
       '<div class="me-edit-b"><button class="cc-back me-open" onclick="ccMeEditSave()">'+esc(T.save)+'</button><button class="cc-back" onclick="ccMeEditClose()">'+esc(T.cancel)+'</button></div>'+
       '<small>'+esc(cloud ? T.cloudOn : T.cloudOff)+'</small></div>' : '';
-  const head='<div class="ch-tile me-head">'+ava+
-    '<div><h2>'+esc(nick)+'</h2><small>'+esc(T.device)+(cloud ? ' · ☁ '+esc(T.cloudOn) : '')+'</small>'+
+  const head='<div class="ch-tile me-head me-bn-'+bn+'">'+ava+
+    '<div class="me-id"><h2>'+esc(nick)+'</h2>'+
+      '<div class="me-lv"><b>'+esc(T.level)+' '+lv.lv+'</b><span><i style="width:'+lv.pct+'%"></i></span><small>'+ccNum(lv.xp)+' / '+ccNum(lv.next)+' '+esc(T.xp)+'</small></div>'+
+      '<small>'+esc(T.device)+(cloud ? ' · ☁ '+esc(T.cloudOn) : '')+'</small>'+
       (E ? '' : '<button class="cc-back me-editbtn" onclick="ccMeEditOpen()">'+esc(T.edit)+'</button>')+'</div>'+
+    (shown.length && !E ? '<div class="me-show">'+shown.map(ccMeShowTile).join('')+'</div>' : '')+
     '<div class="me-sts">'+stat(cars.length, T.careers)+stat('$'+ccNum(tot.earn), T.earn)+stat(tot.wins, T.firsts)+stat(tot.vr, T.vr)+stat(tot.titles, T.titles)+
       stat(dr.length, T.daily)+stat(cOpen+'/'+cKeys.length, T.achCareerS)+stat((ach.size+dOpen)+'/'+(ACHIEVEMENTS.length+dKeys.length), T.achDraftS)+
       stat(mOpen+'/'+mKeys.length, T.achMgrS)+'</div>'+editor+'</div>';
@@ -174580,10 +174739,15 @@ function ccMeHTML(){
       (c.best ? '<div class="me-best"><small>'+esc(T.best)+'</small> '+esc(c.best)+'</div>' : '')+
       '<button class="cc-back me-open" onclick="ccSlotUse('+n+');careerEntry()">'+esc(T.open)+'</button></div>').join('')
     : '<div class="ch-empty">'+esc(T.none)+'</div>';
+  // Календарь драфта дня: 30 клеток до сегодня, сыграно / топ-3 / победа.
+  const calHTML=(()=>{ let d=dailyDay(), cells=[];
+    for(let i=0;i<30;i++){ const r=days[d]; cells.unshift('<i class="'+(r && r.place ? (r.place===1 ? 'w' : r.place<=3 ? 'p' : 'y') : '')+'" title="'+esc(d+(r && r.place ? ' · #'+r.place : ''))+'"></i>'); d=ccAddDays(d, -1); }
+    return '<div class="me-cal"><small>'+esc(T.cal)+'</small><div>'+cells.join('')+'</div></div>'; })();
   const dailyHTML=dr.length ? '<div class="me-sts">'+stat(dr.length, T.played)+stat(dr.filter(r=>r.place===1).length, T.wins)+
       stat('#'+Math.min.apply(null, dr.map(r=>r.place)), T.bestPlace)+stat('#'+(dr.reduce((a,r)=>a+r.place,0)/dr.length).toFixed(1), T.avgPlace)+
       stat(ccNum(Math.max.apply(null, dr.map(r=>r.score||0))), T.bestScore)+stat(streak, T.streak)+'</div>'+
-      '<div class="me-last"><small>'+esc(T.last)+'</small>'+dr.slice(-10).reverse().map(r=>'<span class="'+(r.place===1 ? 'w' : r.place<=3 ? 'p' : '')+'" title="'+esc(r.day)+'">#'+r.place+'</span>').join('')+'</div>'
+      '<div class="me-last"><small>'+esc(T.last)+'</small>'+dr.slice(-10).reverse().map(r=>'<span class="'+(r.place===1 ? 'w' : r.place<=3 ? 'p' : '')+'" title="'+esc(r.day)+'">#'+r.place+'</span>').join('')+'</div>'+
+      calHTML
     : '<div class="ch-empty">'+esc(T.none)+'</div>';
   const draftHTML=hist.length ? '<div class="me-sts">'+stat(hist.length, T.runs)+stat(placed.filter(h=>h.place===1).length, T.wins)+
       stat(placed.length ? '#'+Math.min.apply(null, placed.map(h=>h.place)) : '—', T.bestPlace)+stat(bestGrade, T.bestGrade)+
@@ -174596,15 +174760,31 @@ function ccMeHTML(){
   // Драфт дня первыми в наборе драфта: они свежие и про то, во что играют каждый день.
   const draftAch='<div class="me-ach">'+ccMeAchHTML(has, 'd_')+achHTML.replace(/^<div class="me-ach">/, '');
   // Три отдельных набора: карьера под карьерами, драфт под драфтом, менеджер в конце.
+  // Люди: напарники, лучший напарник (от 5 вечеров), главный соперник.
+  const ppl=ccMePeople(saves);
+  const pplHTML=ppl.mates.length ? '<div class="me-sts">'+
+      (ppl.best ? stat(esc(ppl.best.name)+' · #'+(ppl.best.sum/ppl.best.n).toFixed(1), T.bestMate) : '')+
+      (ppl.rival ? stat(esc(ppl.rival.name)+' · '+ppl.rival.n, T.rival+' ('+T.rivalNote+')') : '')+'</div>'+
+      '<div class="me-mates"><small>'+esc(T.mates)+'</small>'+ppl.mates.map(m=>'<div class="me-mate"><b>'+esc(m.name)+'</b><span>'+m.n+' '+esc(T.nights)+' · '+esc(T.avgP)+' #'+(m.sum/m.n).toFixed(1)+
+        (m.firsts ? ' · 🏆 '+m.firsts : '')+(m.prize ? ' · $'+ccNum(m.prize) : '')+'</span></div>').join('')+'</div>'
+    : '<div class="ch-empty">'+esc(T.none)+'</div>';
+  // Настройки: облако (панель #ccCloud переезжает сюда), язык, бинды аккаунта.
+  const pb=ccMeProf().binds||CC_BIND_DEFAULT, langs=['en','ru','fr','it','pt','de','es'];
+  const setHTML='<div class="me-set"><div id="meCloudSlot"></div>'+
+    '<div class="me-row"><small>'+esc(T.lang)+'</small>'+langs.map(l=>'<button type="button" class="me-lang'+(LANG===l ? ' on' : '')+'" onclick="setLang(\''+l+'\');ccMeRedraw()">'+l.toUpperCase()+'</button>').join('')+'</div>'+
+    '<div class="me-row"><small>'+esc(T.binds)+'</small>'+['Wall','Floor','Stairs','Cone'].map((n,k)=>'<span class="me-bind"><i class="me-bico">'+(CC_KIT_BUILD_ICON[n.toLowerCase()]||'')+'</i><input maxlength="3" value="'+esc(pb[k]||CC_BIND_DEFAULT[k])+'" autocomplete="off" spellcheck="false" onkeydown="ccMeBindKey(event,'+k+')" oninput="ccMeBindInput(this,'+k+')"></span>').join('')+
+      '<em id="meBindsOk" hidden>✓ '+esc(T.bindsSaved)+'</em></div><small class="me-note">'+esc(T.bindsNote)+'</small></div>';
   return head+sec(T.careers, '<div class="me-cars">'+carHTML+'</div>')+
     secAch(T.achCareer+' · '+cOpen+'/'+cKeys.length, '<div class="me-ach">'+ccMeAchHTML(has, 'c_')+'</div>')+
+    sec(T.people, pplHTML)+
     sec(T.daily, dailyHTML)+sec(T.draft, draftHTML)+
     secAch(T.achDraft+' · '+(ach.size+dOpen)+'/'+(ACHIEVEMENTS.length+dKeys.length), draftAch)+
     sec(T.mgr, mgrN ? '<div class="me-sts">'+stat(mgrN, T.clubs)+'</div>' : '<div class="ch-empty">'+esc(T.none)+'</div>')+
-    secAch(T.achMgr+' · '+mOpen+'/'+mKeys.length, '<div class="me-ach">'+ccMeAchHTML(has, 'm_')+'</div>');
+    secAch(T.achMgr+' · '+mOpen+'/'+mKeys.length, '<div class="me-ach">'+ccMeAchHTML(has, 'm_')+'</div>')+
+    sec(T.settings, setHTML);
 }
 function openProfileScreen(){
-  const b=document.getElementById('meBody'); if(b) b.innerHTML=ccMeHTML();
+  ccMeRedraw();
   show('screen-profile');
   try{ if(location.hash!=='#me') history.replaceState(null, '', '#me'); }catch(e){}
   window.scrollTo(0, 0);
