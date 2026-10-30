@@ -120240,7 +120240,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='634321a3';
+const CC_BUILD='2021ffa8';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -163563,9 +163563,13 @@ async function runCareerReload(){
     return m ? ' · '+L().ccWfCash(ccNum(m)) : ''; })();
   const shell=createStageCardShell(ev.label+' - '+showOf);
   await revealStageLog(you, shell, true);
+  // В финале дальше идти некуда: проход — это место на EWC, а если оно уже есть, так и пишем.
+  const passText=ev.stage==='final'
+    ? (ccRelMySeats(cr).length ? L().ccRelSeatHave : L().ccRelSeat)
+    : L().ccRelPass(showCut);
   finalizeStageCard(shell, showPlace, showOf, you.stagePts, through, false,
     banking ? L().ccRelBanked
-            : (through ? L().ccRelPass(showCut) : L().ccRelFail(showCut))+cashNote);
+            : (through ? passText : L().ccRelFail(showCut))+cashNote);
   /* Кто из этой таблицы едет на Championship. Считается ДО таблицы, потому что
      таблица это и показывает: взявшие место — зелёной меткой, уже имеющие его —
      жёлтой «уже в квале» и без затемнения, ведь финиш позади такой команды
@@ -163629,8 +163633,10 @@ async function runCareerReload(){
            берут своим результатом, а не твоим отказом. */
         const down=[...relSeats].filter(t=>ranked.indexOf(t)>=st.cut);
         const to=down.length ? down[down.length-1] : null;
-        seatText = to ? L().ccRelSeatPass(to.name) : L().ccRelSeatHave;
-        careerNews('flat', 'ccNewsRelSeatPass', [ev.series, place, to ? to.name : '']);
+        // В имени команды флаги тегами; карточка и лента пишут текстом.
+        const toName=to ? String(to.name||'').replace(/<[^>]*>/g, '').trim() : '';
+        seatText = toName ? L().ccRelSeatPass(toName) : L().ccRelSeatHave;
+        careerNews('flat', 'ccNewsRelSeatPass', [ev.series, place, toName]);
       }
     } else {
       cr.reload={series:ev.series, got:ev.stage};
