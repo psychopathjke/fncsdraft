@@ -6115,8 +6115,10 @@
   #screen-profile .me-wrap{background:linear-gradient(160deg,#1d3b8c 0%,#13265f 46%,#0b1640 100%);border-radius:var(--r,16px);
     box-shadow:inset 0 0 0 1px rgba(180,200,255,.16);padding:16px 14px 28px;margin-top:10px;margin-bottom:30px;}
   #screen-profile .ch-tile{background:var(--fn-panel);border:1px solid var(--fn-line);border-radius:var(--r,14px);box-shadow:none;color:var(--fn-ink);}
-  #screen-profile .me-st,#screen-profile .me-last span,#screen-profile .achv-card,#screen-profile .me-skin{background:var(--fn-deep);border-color:var(--fn-line);}
-  #screen-profile .me-car{background:rgba(8,18,50,.35);border-color:var(--fn-line);}
+  /* Плашки цифр — светлое голубое стекло, а не --fn-deep (30.10, его скрин «слишком тёмный и странный цвет»). */
+  #screen-profile .me-st,#screen-profile .me-last span,#screen-profile .achv-card,#screen-profile .me-skin{background:rgba(150,180,255,.16);border:1px solid rgba(180,200,255,.18);}
+  #screen-profile .me-st{border:none;}
+  #screen-profile .me-car{background:rgba(126,150,224,.16);border-color:var(--fn-line);}
   #screen-profile .me-st small,#screen-profile .me-head small,#screen-profile .me-car-h span,#screen-profile .me-best small,
   #screen-profile .me-last small,#screen-profile .achv-desc,#screen-profile .ch-empty,#screen-profile .me-edit>small{color:var(--fn-dim);}
   #screen-profile .me-ovr,#screen-profile .me-open,#screen-profile .me-last span.w{background:var(--fn-yellow);color:#0b1640;}
@@ -121034,7 +121036,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='ecc810f5';
+const CC_BUILD='bd52820f';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
