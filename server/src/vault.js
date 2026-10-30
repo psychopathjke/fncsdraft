@@ -7,7 +7,8 @@
  * проверка — server/tools/check-vault.js. */
 
 const CODE_RE=/^[A-HJ-NP-Z2-9]{16}$/;
-const KEY_RE=/^fncsdraft_(career|manager)(_s\d{1,2})?$/;
+// + fncsdraft_profile (30.10): ник и аватар вкладки «Профиль».
+const KEY_RE=/^(fncsdraft_(career|manager)(_s\d{1,2})?|fncsdraft_profile)$/;
 const MAX_ONE=6*1024*1024;      // одна запись (сжатая, base64)
 const MAX_ALL=40*1024*1024;     // всё на один код
 const MAX_KEYS=24;              // 10 карьер + 10 менеджеров + запас

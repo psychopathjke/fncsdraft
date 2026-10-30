@@ -6083,6 +6083,25 @@
   .me-last span{padding:3px 8px;border-radius:6px;background:rgba(6,12,32,.45);font-weight:900;font-size:12px;color:#dfe8ff;}
   .me-last span.w{background:#ffd400;color:#101828;} .me-last span.p{background:#3fd3c6;color:#032a2c;}
   .me-ach{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:8px;}
+  #screen-profile .me-editbtn{display:inline-block;margin-top:6px;padding:5px 12px;font-size:11px;}
+  .me-edit{flex-basis:100%;display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding-top:10px;border-top:1px solid rgba(140,175,255,.16);}
+  .me-edit input{background:rgba(6,12,32,.6);border:1px solid rgba(140,175,255,.3);color:#fff;border-radius:8px;padding:8px 10px;font-weight:800;font-size:14px;}
+  .me-nick-in{width:200px;} .me-skin-in{flex:1;min-width:200px;}
+  .me-up{cursor:pointer;}
+  #screen-profile .me-up,#screen-profile .me-edit-b .cc-back:not(.me-open),#screen-profile .me-editbtn{background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.25);
+    padding:7px 14px;border-radius:8px;font-weight:900;opacity:1;}
+  #screen-profile .me-editbtn{margin-left:8px;}
+  .me-skins{flex-basis:100%;display:grid;grid-template-columns:repeat(auto-fill,minmax(78px,1fr));gap:6px;}
+  .me-skin{display:flex;flex-direction:column;align-items:center;gap:2px;padding:4px;border-radius:8px;border:1px solid rgba(140,175,255,.16);background:rgba(6,12,32,.45);cursor:pointer;color:#dfe8ff;}
+  .me-skin img{width:64px;height:64px;object-fit:contain;} .me-skin small{font-size:9px;font-weight:800;line-height:1.1;text-align:center;}
+  .me-edit-b{display:flex;gap:8px;} .me-edit>small{flex-basis:100%;color:#9fb0e8;font-weight:700;}
+  .me-flag img{height:16px;width:auto;border-radius:2px;vertical-align:-2px;}
+  .me-cups{display:flex;flex-wrap:wrap;gap:6px;align-items:center;}
+  .me-cup{position:relative;width:46px;height:58px;border-radius:6px;overflow:hidden;border:2px solid #d9a93a;background:#0b1430;}
+  .me-cup.g{border-color:#7ff0ff;}
+  .me-cup img{width:100%;height:100%;object-fit:cover;}
+  .me-cup b{position:absolute;right:1px;bottom:0;font-size:13px;filter:drop-shadow(0 1px 1px #000);}
+  .me-cup-more{font-size:11px;font-weight:900;color:#ffd400;}
   /* Полка наград (30.10): кубки и карточки «Игрок месяца» как в футболе. */
   .aw-sub{margin:12px 0 6px;font-size:11px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:#9fb0e8;}
   .aw-cups{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px;}
@@ -120990,7 +121009,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='73c821d5';
+const CC_BUILD='8fcb01c5';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -124572,7 +124591,8 @@ function ccApplyTeamState(t){
    Сервер о игре не знает ничего: ключ localStorage → строка. Отправка — через 45 с после сохранения и при уходе со
    вкладки, только изменившиеся слоты (подпись длина+хеш); удалённый тут слот удаляется и там. */
 const CC_CLOUD_LS='fd_cloud_code', CC_CLOUD_SENT='fd_cloud_sent', CC_CLOUD_ALPH='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-const CC_CLOUD_KEY=/^fncsdraft_(career|manager)(_s\d{1,2})?$/;
+// + fncsdraft_profile (30.10): ник и аватар вкладки «Профиль» едут в облако вместе с карьерами.
+const CC_CLOUD_KEY=/^(fncsdraft_(career|manager)(_s\d{1,2})?|fncsdraft_profile)$/;
 let CC_CLOUD_T=null, CC_CLOUD_AGAIN=false, CC_CLOUD_BUSY=false, CC_CLOUD_MSG='', CC_CLOUD_LIST=null, CC_CLOUD_ENTER=false, CC_CLOUD_ARM=false;
 function ccCloudBase(){
   const h=(typeof MP!=='undefined' && MP.host) || '';
@@ -124607,6 +124627,7 @@ async function ccCloudUnpack(d){
 }
 function ccCloudInfo(key, raw){
   try{
+    if(key==='fncsdraft_profile'){ const p=JSON.parse(raw||'{}')||{}; return {kind:'profile', name:p.nick||''}; }
     const s=ccSaveParse(raw); if(!s) return {};
     if(/manager/.test(key)) return {kind:'mgr', name:(s.club||{}).name||'', day:((s.shadow||{}).career||{}).day||''};
     return {kind:'career', name:(s.player||{}).nick||'', day:(s.career||{}).day||'', earn:Math.round((s.career||{}).earnings||0)};
@@ -124630,6 +124651,11 @@ async function ccCloudPush(){
       const raw=localStorage.getItem(k)||'';
       const sig=raw.length+':'+ccHashStr(raw);
       if(sent[k]===sig) continue;
+      // Профиль — без права уронить отправку карьер: сервер до 30.10 этот ключ не знает и отвечает «key».
+      if(k==='fncsdraft_profile'){
+        try{ await ccCloudPost({code, op:'put', key:k, data:await ccCloudPack(raw), info:ccCloudInfo(k, raw), at:Date.now()}); sent[k]=sig; }catch(e){}
+        continue;
+      }
       await ccCloudPost({code, op:'put', key:k, data:await ccCloudPack(raw), info:ccCloudInfo(k, raw), at:Date.now()});
       sent[k]=sig;
     }
@@ -124688,7 +124714,7 @@ function ccCloudDraw(){
   }
   if(CC_CLOUD_LIST){
     const rows=CC_CLOUD_LIST.saves.map(sv=>{ let i={}; try{ i=JSON.parse(sv.info||'{}'); }catch(e){}
-      return '<li><b>'+esc(i.name||sv.key)+'</b><span>'+esc((i.kind==='mgr' ? T.clMgr : T.clCareer)+(i.day ? ' · '+i.day : '')+(i.earn ? ' · $'+ccNum(i.earn) : ''))+'</span></li>'; }).join('');
+      return '<li><b>'+esc(i.name||sv.key)+'</b><span>'+esc((i.kind==='mgr' ? T.clMgr : i.kind==='profile' ? ccMeT().title : T.clCareer)+(i.day ? ' · '+i.day : '')+(i.earn ? ' · $'+ccNum(i.earn) : ''))+'</span></li>'; }).join('');
     h+='<div class="cl-list"><p class="cl-sub">'+esc(T.clFound(CC_CLOUD_LIST.saves.length))+'</p><ul>'+rows+'</ul>'+
        (CC_CLOUD_LIST.saves.length ? '<button class="ch-play" onclick="ccCloudRestore()">'+esc(CC_CLOUD_ARM ? T.clSure : T.clTake)+'</button>' : '')+'</div>';
   }
@@ -179688,6 +179714,96 @@ const CC_ME_TX={
       ach:'Achievements', mgr:'Manager', clubs:'Clubs', creator:'Creator', open:'Open'}
 };
 function ccMeT(){ return CC_ME_TX[(typeof LANG!=='undefined' && LANG)] || CC_ME_TX.en; }
+Object.assign(CC_ME_TX.ru, {edit:'Изменить', save:'Сохранить', cancel:'Отмена', nickPh:'Никнейм', upload:'Загрузить фото', skinPh:'Найти скин Fortnite',
+  cloudOn:'Сохраняется в облако', cloudOff:'Включи облако на экране карьеры, чтобы профиль был на всех устройствах', achCareer:'Достижения карьеры', achDaily:'Достижения драфта дня', more:'ещё'});
+Object.assign(CC_ME_TX.en, {edit:'Edit', save:'Save', cancel:'Cancel', nickPh:'Nickname', upload:'Upload photo', skinPh:'Find a Fortnite skin',
+  cloudOn:'Saved to the cloud', cloudOff:'Turn on the cloud on the career screen to have your profile on every device', achCareer:'Career achievements', achDaily:'Daily draft achievements', more:'more'});
+/* Свой профиль (30.10, его «пусть никнейм можно будет выбрать и аватарку и сохранить это все в облако»): ключ
+   fncsdraft_profile {nick, ava:{t:'skin', id} | {t:'img', d:dataURL 128px}} — в облаке рядом с карьерами (CC_CLOUD_KEY). */
+const CC_ME_LS='fncsdraft_profile';
+function ccMeProf(){ try{ return JSON.parse(localStorage.getItem(CC_ME_LS)||'{}')||{}; }catch(e){ return {}; } }
+function ccMeProfSave(o){ try{ localStorage.setItem(CC_ME_LS, JSON.stringify(Object.assign(o, {at:Date.now()}))); }catch(e){} try{ ccCloudSoon(); }catch(e){} }
+function ccMeAvaURL(p){ const a=p && p.ava; if(!a) return null; return a.t==='img' ? a.d : a.t==='skin' ? ccFnImg(a.id) : null; }
+let CC_ME_EDIT=null;   // {nick, ava, q} — открытый редактор
+function ccMeEditOpen(){ const p=ccMeProf(); CC_ME_EDIT={nick:p.nick||'', ava:p.ava||null, q:''}; ccMeRedraw(); }
+function ccMeEditClose(){ CC_ME_EDIT=null; ccMeRedraw(); }
+function ccMeEditSave(){
+  if(!CC_ME_EDIT) return;
+  const nick=String(CC_ME_EDIT.nick||'').replace(/[<>]/g, '').trim().slice(0, 24);
+  ccMeProfSave({nick, ava:CC_ME_EDIT.ava});
+  CC_ME_EDIT=null; ccMeRedraw();
+}
+function ccMeRedraw(){ const b=document.getElementById('meBody'); if(b) b.innerHTML=ccMeHTML(); }
+function ccMePhoto(inp){
+  const f=inp && inp.files && inp.files[0]; if(!f || !CC_ME_EDIT) return;
+  const im=new Image(), url=URL.createObjectURL(f);
+  im.onload=()=>{ const c=document.createElement('canvas'); c.width=c.height=128; const g=c.getContext('2d');
+    const s=Math.min(im.width, im.height); g.drawImage(im, (im.width-s)/2, (im.height-s)/2, s, s, 0, 0, 128, 128);
+    let d=''; try{ d=c.toDataURL('image/webp', .85); }catch(e){}
+    if(!/^data:image\/webp/.test(d)) d=c.toDataURL('image/jpeg', .85);   // Safari старых версий не пишет webp
+    URL.revokeObjectURL(url); CC_ME_EDIT.ava={t:'img', d}; ccMeRedraw(); };
+  im.src=url;
+}
+function ccMeSkinFind(q){
+  if(!CC_ME_EDIT) return; CC_ME_EDIT.q=q;
+  const draw=()=>{ const el=document.getElementById('meSkins'); if(el) el.innerHTML=ccMeSkinsHTML(); };
+  if(typeof CC_FN_SHOP==='undefined') ccFnShopLoad(draw); else draw();
+}
+function ccMeSkinsHTML(){
+  if(!CC_ME_EDIT || typeof CC_FN_SHOP==='undefined') return '';
+  const q=String(CC_ME_EDIT.q||'').trim().toLowerCase(); if(q.length<2) return '';
+  return CC_FN_SHOP.items.filter(i=>i[2]==='o' && String(i[1]).toLowerCase().indexOf(q)>=0).slice(0, 30).map(i=>
+    '<button type="button" class="me-skin" title="'+esc(i[1])+'" onclick="CC_ME_EDIT.ava={t:\'skin\',id:\''+esc(i[0])+'\'};ccMeRedraw()"><img src="'+esc(ccFnImg(i[0], true))+'" alt="" loading="lazy" onerror="this.remove()"><small>'+esc(i[1])+'</small></button>').join('');
+}
+/* ДОСТИЖЕНИЯ ПРОФИЛЯ (30.10, «новые ачивки для карьеры и для драфта, которые сейчас подходят для сайта»). Считаются
+   из того, что уже лежит на устройстве (все слоты карьер, fd_daily), — ничего не хранят и открываются задним числом. */
+const CC_ME_ACH_TX={
+  ru:{c_win:['Первая победа','Выиграй любой турнир в карьере'], c_major:['Чемпион Мейджора','Выиграй финал Мейджора FNCS'],
+      c_lan:['Король ЛАНа','Выиграй финал на ЛАНе'], c_globals:['Чемпион мира','Выиграй Global Championship'], c_reload:['Reload-чемпион','Выиграй финал Reload'],
+      c_potm:['Игрок месяца','Стань игроком месяца'], c_potm5:['Звезда сезона','Стань игроком месяца 5 раз'],
+      c_100k:['Шестизначные','Заработай $100 000 призовых в одной карьере'], c_1m:['Миллионер','Заработай $1 000 000 призовых в одной карьере'],
+      c_div1:['Дивизион 1','Дойди до первого дивизиона'], c_ev100:['Сотня турниров','Сыграй 100 турниров в одной карьере'],
+      c_top50:['Стабильность','50 раз попади в топ-10'], c_s3:['Ветеран сцены','Доиграй до третьего сезона'], c_creator:['Из стримеров в про','Начни карьеру за креатора'],
+      c_yt:['Ютубер','Набери 100 000 подписчиков на YouTube'], c_multi:['Многостаночник','Веди три карьеры сразу'],
+      d_first:['Ежедневный','Сыграй драфт дня'], d_win:['Лучший за день','Выиграй драфт дня'], d_top3:['Подиум дня','Займи топ-3 в драфте дня'],
+      d_streak7:['Неделя без пропусков','Играй драфт дня 7 дней подряд'], d_30:['Месяц драфтов','Сыграй 30 драфтов дня'], d_win3:['Трижды лучший','Выиграй драфт дня 3 раза']},
+  en:{c_win:['First win','Win any event in a career'], c_major:['Major champion','Win an FNCS Major final'],
+      c_lan:['LAN king','Win a LAN final'], c_globals:['World champion','Win the Global Championship'], c_reload:['Reload champion','Win a Reload final'],
+      c_potm:['Player of the month','Be named player of the month'], c_potm5:['Star of the season','Be player of the month 5 times'],
+      c_100k:['Six figures','Earn $100,000 in one career'], c_1m:['Millionaire','Earn $1,000,000 in one career'],
+      c_div1:['Division 1','Reach the first division'], c_ev100:['A hundred events','Play 100 events in one career'],
+      c_top50:['Consistency','Finish top 10 fifty times'], c_s3:['Scene veteran','Reach season three'], c_creator:['Streamer to pro','Start a career as a creator'],
+      c_yt:['YouTuber','Reach 100,000 YouTube subscribers'], c_multi:['Juggler','Run three careers at once'],
+      d_first:['Daily','Play a daily draft'], d_win:['Best of the day','Win a daily draft'], d_top3:['Daily podium','Finish top 3 in a daily draft'],
+      d_streak7:['No days off','Play the daily draft 7 days in a row'], d_30:['A month of drafts','Play 30 daily drafts'], d_win3:['Three-time best','Win the daily draft 3 times']}
+};
+const CC_ME_ACH_ICO={c_win:'🏆', c_major:'👑', c_lan:'🏟️', c_globals:'🌍', c_reload:'🔁', c_potm:'🏅', c_potm5:'🌟', c_100k:'💵', c_1m:'💰',
+  c_div1:'🥇', c_ev100:'💯', c_top50:'📈', c_s3:'🧓', c_creator:'🎥', c_yt:'▶️', c_multi:'🗂️',
+  d_first:'📅', d_win:'🥇', d_top3:'🥉', d_streak7:'🔥', d_30:'🗓️', d_win3:'👑'};
+function ccMeAch(saves, dr){
+  const all=saves.map(s=>(s.career||{}));
+  const wins=[].concat(...all.map(c=>(c.log||[]).filter(e=>e && e.place===1)));
+  const fin=(re)=>wins.some(e=>re(e));
+  const potm=all.reduce((a,c)=>a+((c.aw||{}).won||[]).filter(x=>x && x.you && x.kind==='month').length, 0);
+  let maxStreak=0, run=0, prev=null;
+  dr.map(r=>r.day).sort().forEach(d=>{ run=(prev && ccAddDays(prev, 1)===d) ? run+1 : 1; prev=d; if(run>maxStreak) maxStreak=run; });
+  const has={
+    c_win:wins.length>0, c_major:fin(e=>{ try{ return !!ccFncsTitle(e); }catch(x){ return false; } }),
+    c_lan:fin(e=>/^(summit|rc)$/.test(e.kind) && e.stage==='final'), c_globals:fin(e=>e.kind==='globals'), c_reload:fin(e=>e.kind==='reload' && e.stage==='final'),
+    c_potm:potm>=1, c_potm5:potm>=5, c_100k:all.some(c=>(c.earnings||0)>=100000), c_1m:all.some(c=>(c.earnings||0)>=1000000),
+    c_div1:all.some(c=>c.division===1), c_ev100:all.some(c=>(c.log||[]).filter(e=>e && e.place).length>=100),
+    c_top50:all.reduce((a,c)=>a+(c.log||[]).filter(e=>e && e.place && e.place<=10).length, 0)>=50, c_s3:all.some(c=>(c.season||1)>=3),
+    c_creator:saves.some(s=>(s.player||{}).creator), c_yt:all.some(c=>((c.yt||{}).subs||0)>=100000), c_multi:saves.length>=3,
+    d_first:dr.length>0, d_win:dr.some(r=>r.place===1), d_top3:dr.some(r=>r.place<=3), d_streak7:maxStreak>=7, d_30:dr.length>=30,
+    d_win3:dr.filter(r=>r.place===1).length>=3
+  };
+  return has;
+}
+function ccMeAchHTML(has, pre){
+  const T=CC_ME_ACH_TX[(typeof LANG!=='undefined' && LANG)] || CC_ME_ACH_TX.en;
+  return Object.keys(has).filter(k=>k.indexOf(pre)===0).map(k=>'<div class="achv-card '+(has[k] ? 'unlocked' : 'locked')+'"><div class="achv-icon">'+CC_ME_ACH_ICO[k]+'</div><div><div class="achv-title">'+
+    esc(T[k][0])+'</div><div class="achv-desc">'+esc(T[k][1])+'</div></div></div>').join('');
+}
 Object.keys(I18N).forEach(l=>{ I18N[l].navGrpProfile=(CC_ME_TX[l]||CC_ME_TX.en).nav; });
 function ccMeCareer(s){
   const cr=(s && s.career)||{}, pl=(s && s.player)||{};
@@ -179695,16 +179811,20 @@ function ccMeCareer(s){
   let titles=0; log.forEach(e=>{ if(e.place===1){ try{ if(ccFncsTitle(e)) titles++; }catch(x){} } });
   const best=log.filter(e=>e.of>1).sort((a,b)=>(a.place/a.of)-(b.place/b.of) || a.place-b.place)[0]||null;
   let bestName=''; if(best){ try{ bestName=ccLockerPlain(ccLogName(best)); }catch(x){ bestName=best.name||''; } }
+  // Кубки карьеры — выигранные финалы FNCS (как на полке наград), по порядку.
+  const big=e=>{ try{ if(ccFncsTitle(e)) return true; }catch(x){} return e.kind==='globals' || (/^(summit|rc|reload)$/.test(e.kind) && e.stage==='final'); };
+  const cups=log.filter(e=>e.place===1 && big(e)).sort((a,b)=>String(a.day)<String(b.day) ? -1 : 1);
+  let flag=''; try{ flag=ccFlagImgs(ccFlagEmoji(pl.country||pl.nat||'')); }catch(x){ flag=''; }
   return {nick:pl.nick||pl.handle||'?', creator:!!pl.creator, y0:cr.year0||cr.year, y:cr.year, season:cr.season||1, div:cr.division,
     ovr:Math.round(pl.ovr||0), earn:Math.round(cr.earnings||0), ev:log.length, wins:log.filter(e=>e.place===1).length,
     top10:log.filter(e=>e.place<=10).length, titles, potm:((cr.aw||{}).won||[]).filter(a=>a && a.you && a.kind==='month').length,
-    best:best ? '#'+best.place+' · '+bestName : '', photo:pl.photo||null};
+    best:best ? '#'+best.place+' · '+bestName : '', photo:pl.photo||null, cups, flag};
 }
 function ccMeHTML(){
   const T=ccMeT(), stat=(v,l)=>'<div class="me-st"><b>'+v+'</b><small>'+esc(l)+'</small></div>';
   // Карьеры по слотам.
-  const cars=[];
-  for(let n=1;n<=CC_SLOTS;n++){ const s=ccSlotRead(n); if(s && s.career) cars.push([n, ccMeCareer(s)]); }
+  const cars=[], saves=[];
+  for(let n=1;n<=CC_SLOTS;n++){ const s=ccSlotRead(n); if(s && s.career){ cars.push([n, ccMeCareer(s)]); saves.push(s); } }
   // Менеджер — прямо по ключам: mgrSlotRead живёт в куске mgr.js и до входа в менеджер на сайте не загружен.
   let mgrN=0; try{ for(let n=1;n<=10;n++) if(localStorage.getItem(n===1 ? 'fncsdraft_manager' : 'fncsdraft_manager_s'+n)) mgrN++; }catch(e){}
   const tot=cars.reduce((a,[,c])=>{ a.earn+=c.earn; a.ev+=c.ev; a.wins+=c.wins; a.titles+=c.titles; return a; }, {earn:0, ev:0, wins:0, titles:0});
@@ -179715,15 +179835,35 @@ function ccMeHTML(){
   const hist=loadHistory(), ach=loadAchievements();
   const gradeOrder='SABCD', bestGrade=hist.map(h=>h.grade).filter(Boolean).sort((a,b)=>gradeOrder.indexOf(a)-gradeOrder.indexOf(b))[0]||'—';
   const placed=hist.filter(h=>h.place!=null);
-  const nick=(cars[0] && cars[0][1].nick) || dailyNick() || '—';
-  let ph=null; try{ ph=CAREER && careerCard() ? photoURL(careerCard()) : null; }catch(e){ ph=null; }
-  const head='<div class="ch-tile me-head">'+(ph ? '<img class="me-ava" src="'+esc(ph)+'" alt="" onerror="this.remove()">' : '<span class="me-ava me-ava-0">'+esc(nick.slice(0,1).toUpperCase())+'</span>')+
-    '<div><h2>'+esc(nick)+'</h2><small>'+esc(T.device)+'</small></div>'+
+  // Ник и аватар: свой профиль (fncsdraft_profile) первым, потом первая карьера и ник драфта дня.
+  const prof=ccMeProf(), E=CC_ME_EDIT;
+  const nick=(E ? E.nick : prof.nick) || (cars[0] && cars[0][1].nick) || dailyNick() || '—';
+  let ph=E ? ccMeAvaURL(E) : ccMeAvaURL(prof);
+  if(!ph){ try{ ph=CAREER && careerCard() ? photoURL(careerCard()) : null; }catch(e){ ph=null; } }
+  const has=ccMeAch(saves, dr), hasN=Object.values(has).filter(Boolean).length, achAll=ACHIEVEMENTS.length+Object.keys(has).length;
+  const cloud=!!(typeof ccCloudCode==='function' && ccCloudCode());
+  const ava=ph ? '<img class="me-ava" src="'+esc(ph)+'" alt="" onerror="this.remove()">' : '<span class="me-ava me-ava-0">'+esc(String(nick).slice(0,1).toUpperCase())+'</span>';
+  const editor=E ? '<div class="me-edit">'+
+      '<input class="me-nick-in" maxlength="24" placeholder="'+esc(T.nickPh)+'" value="'+esc(E.nick)+'" oninput="CC_ME_EDIT.nick=this.value">'+
+      '<label class="cc-back me-up">'+esc(T.upload)+'<input type="file" accept="image/*" hidden onchange="ccMePhoto(this)"></label>'+
+      '<input class="me-skin-in" placeholder="'+esc(T.skinPh)+'" value="'+esc(E.q)+'" oninput="ccMeSkinFind(this.value)">'+
+      '<div class="me-skins" id="meSkins">'+ccMeSkinsHTML()+'</div>'+
+      '<div class="me-edit-b"><button class="cc-back me-open" onclick="ccMeEditSave()">'+esc(T.save)+'</button><button class="cc-back" onclick="ccMeEditClose()">'+esc(T.cancel)+'</button></div>'+
+      '<small>'+esc(cloud ? T.cloudOn : T.cloudOff)+'</small></div>' : '';
+  const head='<div class="ch-tile me-head">'+ava+
+    '<div><h2>'+esc(nick)+'</h2><small>'+esc(T.device)+(cloud ? ' · ☁ '+esc(T.cloudOn) : '')+'</small>'+
+      (E ? '' : '<button class="cc-back me-editbtn" onclick="ccMeEditOpen()">'+esc(T.edit)+'</button>')+'</div>'+
     '<div class="me-sts">'+stat(cars.length, T.careers)+stat('$'+ccNum(tot.earn), T.earn)+stat(tot.wins, T.wins)+stat(tot.titles, T.titles)+
-      stat(dr.length, T.daily)+stat(ach.size+'/'+ACHIEVEMENTS.length, T.ach)+'</div></div>';
+      stat(dr.length, T.daily)+stat((ach.size+hasN)+'/'+achAll, T.ach)+'</div>'+editor+'</div>';
+  const cupsHTML=c=>{ if(!c.cups.length) return '';
+    const shown=c.cups.slice(-6), rest=c.cups.length-shown.length;
+    return '<div class="me-cups">'+shown.map(e=>{ let art=null; try{ art=ccLogArt(e); }catch(x){}
+      let nm=''; if(e.kind==='globals') nm='Global Championship'; else { try{ nm=ccLockerPlain(ccLogName(e)); }catch(x){ nm=''; } }
+      return '<span class="me-cup'+(e.kind==='globals' ? ' g' : '')+'" title="'+esc(nm+' · '+e.day)+'">'+(art ? '<img src="'+esc(art)+'" alt="" loading="lazy" onerror="this.remove()">' : '')+'<b>🏆</b></span>'; }).join('')+
+      (rest>0 ? '<span class="me-cup-more">+'+rest+' '+esc(T.more)+'</span>' : '')+'</div>'; };
   const carHTML=cars.length ? cars.map(([n, c])=>'<div class="me-car">'+
-      '<div class="me-car-h"><b>'+esc(c.nick)+'</b>'+(c.creator ? '<em>'+esc(T.creator)+'</em>' : '')+'<span>'+esc(String(c.y0||''))+(c.y && c.y!==c.y0 ? '–'+c.y : '')+'</span>'+
-        '<i class="me-ovr">'+c.ovr+'</i></div>'+
+      '<div class="me-car-h">'+(c.flag ? '<span class="me-flag">'+c.flag+'</span>' : '')+'<b>'+esc(c.nick)+'</b>'+(c.creator ? '<em>'+esc(T.creator)+'</em>' : '')+'<span>'+esc(String(c.y0||''))+(c.y && c.y!==c.y0 ? '–'+c.y : '')+'</span>'+
+        '<i class="me-ovr">'+c.ovr+'</i></div>'+cupsHTML(c)+
       '<div class="me-sts">'+stat(c.season, T.season)+(c.div ? stat(c.div, T.div) : '')+stat('$'+ccNum(c.earn), T.earn)+stat(c.ev, T.ev)+stat(c.wins, T.wins)+
         stat(c.top10, T.top10)+stat(c.titles, T.titles)+stat(c.potm, T.potm)+'</div>'+
       (c.best ? '<div class="me-best"><small>'+esc(T.best)+'</small> '+esc(c.best)+'</div>' : '')+
@@ -179740,8 +179880,11 @@ function ccMeHTML(){
   const achHTML='<div class="me-ach">'+ACHIEVEMENTS.map(a=>'<div class="achv-card '+(ach.has(a.id) ? 'unlocked' : 'locked')+'"><div class="achv-icon">'+a.icon+'</div><div><div class="achv-title">'+
       (L()['achv_'+a.id+'_title']||a.id)+'</div><div class="achv-desc">'+(L()['achv_'+a.id+'_desc']||'')+'</div></div></div>').join('')+'</div>';
   const sec=(h, body)=>'<div class="ch-tile me-sec"><h4>'+esc(h)+'</h4>'+body+'</div>';
+  const cN=Object.keys(has).filter(k=>k[0]==='c'), dN=Object.keys(has).filter(k=>k[0]==='d');
   return head+sec(T.careers, '<div class="me-cars">'+carHTML+'</div>')+(mgrN ? sec(T.mgr, '<div class="me-sts">'+stat(mgrN, T.clubs)+'</div>') : '')+
-    sec(T.daily, dailyHTML)+sec(T.draft, draftHTML)+sec(T.ach+' · '+ach.size+'/'+ACHIEVEMENTS.length, achHTML);
+    sec(T.achCareer+' · '+cN.filter(k=>has[k]).length+'/'+cN.length, '<div class="me-ach">'+ccMeAchHTML(has, 'c_')+'</div>')+
+    sec(T.daily, dailyHTML)+sec(T.achDaily+' · '+dN.filter(k=>has[k]).length+'/'+dN.length, '<div class="me-ach">'+ccMeAchHTML(has, 'd_')+'</div>')+
+    sec(T.draft, draftHTML)+sec(T.ach+' · '+ach.size+'/'+ACHIEVEMENTS.length, achHTML);
 }
 function openProfileScreen(){
   const b=document.getElementById('meBody'); if(b) b.innerHTML=ccMeHTML();
