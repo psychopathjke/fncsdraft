@@ -120113,7 +120113,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='fce4ec65';
+const CC_BUILD='b692ff19';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -153171,6 +153171,9 @@ function ccTrioRefill(mine){
     (pool.duos||[]).forEach(v=>{
       if(regOf(v.cards[0])!==reg || ccDuoOvr(v)>=avg) return;
       if(v.cards.some(c=>busy(hKey(c)))) return;
+      // Ядро полной тройки не разбираем: иначе одна тройка чинится ценой другой, а оставшийся из пары
+      // и её третий висят без состава до конца сезона (Th0masHD 91 и panzer, 2027 трио-год, 7.02).
+      const vt=memo[keyOf(v.cards)]; if(vt && !mk.has(vt)) return;
       v.cards.forEach(c=>{
         const o=ccCardOvr(c); if(o<=bar) return;
         const dist=Math.abs(avg-o);
