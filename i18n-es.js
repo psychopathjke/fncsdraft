@@ -2299,7 +2299,7 @@ Object.assign(I18N.es=I18N.es||{},
   "ccBornHint": "Fecha de nacimiento — opcional. Rellénala y la escena te felicita el día exacto. El número de arriba es tu edad el día que empieza la temporada; el cumpleaños cae dentro de ella.",
   "ccNewsCongrats": (n,ev)=>'Felicidades a '+n+' por la victoria — '+ev+'! 🏆',
   "ccNewsKinch": (ev,p,g,avg,el,epg,plp,elp,er)=>'DESGLOSE · '+(ev!=null?ev+': ':'')+ccTop(p)+'. '+g+' partidas, posición media '+avg+', '+el+' elims ('+epg+' por partida). Puntos: '+plp+' por posición, '+elp+' por elims. Elims en la lobby: '+ccTop(er)+'.',
-  "ccNewsStatBoard": (ev,rows)=>(ev!=null?ev+' — ':'')+'líderes de estadísticas',
+  "ccNewsStatBoard": (ev,rows)=>ccKinchBoardText(ev, rows),
   "ccNewsEliteFlop": (ev,t,p,n,x,tags)=>'FLOP DE LA NOCHE · '+(ev!=null?ev+': ':'')+t+' llegó como favorito (n.º '+x+' sobre el papel) y terminó '+p+' de '+n+'. '+(tags||''),
   "ccLeadCap": "líderes de estadísticas",
   "ccMyStatsBtn": "Mis stats",
@@ -3182,7 +3182,7 @@ Object.assign(I18N.es=I18N.es||{},
   "ccAge": "Edad",
   "ccPingTitle": "PING (ms)",
   "ccPingServer": city=>'al servidor de '+city,
-  "ccPingNote": "El ping se calcula desde la gran ciudad del país más cercana al servidor. En Europa los valores están medidos; las demás regiones usan la misma curva para su servidor. El país solo cambia el ping, no la fuerza del jugador.",
+  "ccPingNote": "El ping se calcula desde la gran ciudad del país más cercana al servidor. En Europa los valores están medidos; las demás regiones usan la misma curva para su servidor. El país solo fija el ping, y el ping fija el bonus en combate cercano (línea de arriba). Sin bonus, el ping no da nada.",
   "ccSearchCountry": "Buscar país",
   "ccSearchCard": "Buscar jugador",
   "ccTabCreator": "Creador de contenido",
@@ -3783,6 +3783,7 @@ Object.assign(I18N.es=I18N.es||{},
   "rcPlay": "Jugar",
   "ccActtrBox": "Box fights",
   "ccActtrZw": "Zone wars",
+  "ccActtrPit": "The Pit",
   "ccActtrEdit": "Editar recorrido",
   "ccActtrMap": "Mapa propio",
   "lfArena": "Arena",
@@ -3819,7 +3820,7 @@ ccMerchRate:(p,c)=>p+'% de los seguidores en $, hasta $'+c+'/mes', ccMerchAsk:(n
 ccMerchMonth:'Al mes ahora', ccMerchEarned:'Ganado con merch', ccNewsMerch:n=>'Merch lanzado: '+n,
 ccCharityTitle:'Beneficencia', ccCharityHint:'El dinero va a la beneficencia; tú ganas el respeto de la escena y seguidores. Como mucho una vez al mes.',
 ccCharityGive:n=>'Donar '+n, ccCharityAsk:n=>'¿Donar $'+n+' a beneficencia?', ccCharityYes:n=>'Donar · $'+n, ccCharityTotal:n=>'Donaciones ('+n+')',
-ccNewsCharity:(n,f)=>'Donaste $'+n+' a beneficencia. +'+f+' seguidores',
+ccNewsCharity:(n,f)=>'Donaste $'+n+' a beneficencia',
 ccLuxTitle:'Lujo', ccLuxHint:'No aporta nada a tu juego — solo una estantería en tu perfil y la línea «Gastado» en Jugadores del sitio.',
 ccLuxNote:'va a la estantería de tu perfil', ccLux_watch:'Reloj', ccLux_hyper:'Hiperdeportivo', ccLux_yacht:'Yate', ccLux_jet:'Jet privado',
 ccLuxAsk:(n,c)=>'¿Comprar «'+n+'» por $'+c+'? No da fuerza — solo una estantería en tu perfil.', ccNewsLux:n=>'Nueva compra: '+n,
@@ -3842,7 +3843,7 @@ hmFriendRace:'Cada uno lleva su propia carrera, y un lobby común muestra quién
 hmSceneTitle:'La escena ahora', hmSceneSub:'El calendario real de FNCS 2026.', hmSceneLive:'en directo', hmSceneTomorrow:'mañana',
 hmSceneIn:n=>'en '+n+' día'+(n===1 ? '' : 's'), hmSceneDone:'La temporada FNCS 2026 ha terminado.',
 hmBoardSub:'Las carreras de los jugadores del sitio, por premios.', hmBoardMore:n=>'Mostrar '+n, hmBoardLess:'Mostrar menos', hmHistSub:'Drafts anteriores, récords y premios.',
-ccNewsOwnCup:(who,n,w,f)=>'Cup de '+who+', bolsa de $'+n+': gana '+w+'. +'+f+' seguidores'});
+ccNewsOwnCup:(who,n,w,f)=>'Cup de '+who+', bolsa de $'+n+': gana '+w});
 Object.assign(I18N.es, {hmRealTitle:'Resultados 2026', hmRealSub:'Los resultados reales de los torneos FNCS de este año. Toca uno para ver la tabla completa.', hmRealOpen:'Tabla', hmRealTeam:'Equipo', hmRealReg:'Región', hmRealPts:'Puntos', hmRealPrize:'Premio', hmRealClose:'Cerrar'});
 Object.assign(I18N.es, {hmRealAll:n=>'Tabla completa ('+n+')', hmScenePrize:(r,a,b)=>r+': 1.º $'+a+', bolsa $'+b});
 Object.assign(I18N.es, {hmEarnTitle:'Ganancias 2026', hmEarnSub:'Lo que ganaron los jugadores en FNCS este año: finales de Majors, Summit, Reload Championship, Global Championship. Toca un jugador para ver dónde.', hmEarnEvents:n=>n+' torneo'+(n===1?'':'s'), hmEarnEvent:'Torneo', hmEarnNote:'La parte de un jugador es la mitad del premio del dúo. Clasificatorias y cups no cuentan.'});
@@ -4154,3 +4155,23 @@ Object.assign(I18N.es=I18N.es||{},
 /* Дозаливка «es» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
 Object.assign(I18N.es=I18N.es||{},
 ({ccFmtYearQ:(y,c)=>'Nuevo año '+y+(c ? ', Capítulo '+c : '')+'. ¿En qué formato juegas este año?', ccFmtDuo:'Dúos', ccFmtTrio:'Tríos', ccFmtSquad:'Escuadrones'}));
+/* Дозаливка «es» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
+Object.assign(I18N.es=I18N.es||{},
+({ navGrpCareer: 'Carrera', navGrpComp: 'Competitivo', navComp: 'Torneos' }));
+/* Дозаливка «es» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
+Object.assign(I18N.es=I18N.es||{},
+({ navCareerPlayer: 'Jugador' }));
+/* Дозаливка «es» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
+Object.assign(I18N.es=I18N.es||{},
+({
+  ccPostZoneLuck:(n,g,b,v)=>(n*2>=g ? ['las zonas de mi lado hoy: '+n+'/'+g+'. Sin excusas para nadie', n+'/'+g+' zonas vinieron a mí. Mejor partida #'+b, 'la zona me quiere hoy: '+n+'/'+g]
+                                    : ['la zona vino '+n+'/'+g+' hoy. Mejor partida #'+b+', sin zonas no se puede hacer mucho', n+'/'+g+' en zonas hoy. Cada partida cruzando medio mapa', 'suerte de zona hoy: '+n+'/'+g+'. A la siguiente'])[v%3],
+  ccNewsZoneLuck:(ev,list)=>'SUERTE DE ZONA · '+(ev!=null?ev+', ':'')+'top 10, endgames en los que la zona vino a ellos: '+(list||[]).map(r=>'#'+r[0]+' '+r[1]+' '+r[2]+'/'+r[3]).join(' · '),
+  ccPostDebate:(a,b,v)=>{ const s=x=>'@'+x[0]+': #'+x[1]+' PR'+(x[2]?', $'+ccNum(x[2])+' este año':'')+(x[3]?', '+x[3]+(x[3]===1?' copa':' copas'):'');
+    return ['Cerremos el debate. '+s(a)+'. '+s(b)+'. ¿Quién es mejor?', 'Decidid. '+s(a)+' contra '+s(b)+'.'][v%2]; },
+  ccNewsNatStreak:(nat,k,ev,v)=>{ const nm=natDisplay(nat);
+    return ['Las últimas '+k+' grandes finales las ganó un equipo con un jugador de '+nm+' (la última: '+ev+'). ¿Es '+nm+' la mejor nación de Fortnite ahora?', nm+' otra vez. '+k+' grandes finales seguidas con un jugador de '+nm+' en el equipo campeón. ¿Alguien los para?'][v%2]; }
+}));
+/* Дозаливка «es» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
+Object.assign(I18N.es=I18N.es||{},
+({ ccRaceMake: "Contra un amigo" }));

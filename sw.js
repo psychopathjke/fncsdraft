@@ -35,8 +35,8 @@
  * в собранной папке — хеш app.js и настоящие адреса. Файл в репозитории
  * специально нерабочий как воркер — его никто и не регистрирует с file://.
  */
-const V = "b32d8d2e";
-const CORE = ["./","./zone-sim.js?v=7113cf36","./zone-replay.js?v=eddac9ed","./mp.js?v=2ffb24cf","./lines-more.js?v=5aebca09","./app.js?v=b32d8d2e","./fonts/fira-xc-700-cyrillic-ext.woff2","./fonts/fira-xc-700-cyrillic.woff2","./fonts/fira-xc-700-latin-ext.woff2","./fonts/fira-xc-700-latin.woff2","./fonts/fira-xc-900-cyrillic-ext.woff2","./fonts/fira-xc-900-cyrillic.woff2","./fonts/fira-xc-900-latin-ext.woff2","./fonts/fira-xc-900-latin.woff2","./fonts/oswald-cyrillic-ext.woff2","./fonts/oswald-cyrillic.woff2","./fonts/oswald-latin-ext.woff2","./fonts/oswald-latin.woff2"];
+const V = "b9fefdda";
+const CORE = ["./","./zone-sim.js?v=52f7d268","./zone-replay.js?v=d0c3aae7","./mp.js?v=58635176","./lines-more.js?v=5aebca09","./app.js?v=b9fefdda","./fonts/fira-xc-700-cyrillic-ext.woff2","./fonts/fira-xc-700-cyrillic.woff2","./fonts/fira-xc-700-latin-ext.woff2","./fonts/fira-xc-700-latin.woff2","./fonts/fira-xc-900-cyrillic-ext.woff2","./fonts/fira-xc-900-cyrillic.woff2","./fonts/fira-xc-900-latin-ext.woff2","./fonts/fira-xc-900-latin.woff2","./fonts/oswald-cyrillic-ext.woff2","./fonts/oswald-cyrillic.woff2","./fonts/oswald-latin-ext.woff2","./fonts/oswald-latin.woff2"];
 
 const DOC = 'fncsdraft-doc-' + V;      // оболочка: одна на сборку
 const APP = 'fncsdraft-app-' + V;      // скрипты с ?v=: одни на сборку
