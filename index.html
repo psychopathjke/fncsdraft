@@ -6071,7 +6071,8 @@
   .aw-potm2 small{font-size:10px;font-weight:800;color:#ffd65a;text-align:center;}
   .aw-potms{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:10px;}
   .aw-medal{display:flex;flex-direction:column;align-items:center;gap:1px;text-align:center;padding:4px 2px;}
-  .aw-medal-i{width:64px;height:88px;filter:drop-shadow(0 4px 6px rgba(0,0,0,.45));}
+  .aw-medal-glow{display:block;padding:6px;border-radius:50%;background:radial-gradient(circle,rgba(255,196,64,.45) 0%,rgba(255,140,26,.12) 55%,transparent 70%);}
+  .aw-medal-i{display:block;width:76px;height:76px;object-fit:contain;filter:drop-shadow(0 4px 6px rgba(0,0,0,.5));}
   .aw-medal-m{font-size:13px;font-weight:900;color:#fff;text-transform:capitalize;margin-top:2px;}
   .aw-medal-y{font-size:10.5px;font-weight:800;color:#f3c64a;}
   .aw-medal small{font-size:9.5px;font-weight:800;color:#9fb0e8;line-height:1.2;}
@@ -120945,7 +120946,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='c330cfdf';
+const CC_BUILD='ca953b80';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -179659,14 +179660,13 @@ function ccAwardsShelfHTML(){
   };
   /* Игрок месяца — медаль на ленте (30.10, «игрок месяца чет другое» после карточек): золотой круг с выбитым месяцем,
      лента цветов FNCS, год и очки под ней. */
-  const potm=month.slice().sort((a,b)=>String(a.key)<String(b.key) ? -1 : 1).map(a=>{
+  const potm=month.slice().sort((a,b)=>String(a.key)<String(b.key) ? -1 : 1).map((a, ai)=>{
     const mName=typeof ccMonthName==='function' ? ccMonthName(a.key) : a.key;
-    return '<div class="aw-medal">'+
-      '<svg class="aw-medal-i" viewBox="0 0 80 110" aria-hidden="true">'+
-        '<path d="M22 0h14l10 40H32z" fill="#7c3aed"/><path d="M44 0h14L48 40H34z" fill="#22d3ee"/>'+
-        '<circle cx="40" cy="70" r="34" fill="#a8761c"/><circle cx="40" cy="70" r="30" fill="#f3c64a"/>'+
-        '<circle cx="40" cy="70" r="24" fill="none" stroke="#a8761c" stroke-width="1.6" stroke-dasharray="2 3"/>'+
-        '<path d="M40 50l3.2 6.6 7.2 1-5.2 5 1.2 7.2-6.4-3.4-6.4 3.4 1.2-7.2-5.2-5 7.2-1z" fill="#fff4cc" opacity=".9"/></svg>'+
+    /* 30.10, его «чет с фортнайтом связанное… мб медальки из фортнайта»: медальоны боссов Главы 5 (вики Fortnite,
+       items/medallions). Вики отдала только два (Nisha, Valeria) — остальные за проверкой Cloudflare; он выбрал
+       чередовать эти два по месяцам. */
+    const med=ai%2 ? 'valeria' : 'nisha';   // по очереди наград, а не по номеру месяца
+    return '<div class="aw-medal"><span class="aw-medal-glow"><img class="aw-medal-i" src="items/medallions/'+med+'.webp" alt="" loading="lazy"></span>'+
       '<b class="aw-medal-m">'+esc(mName)+'</b><span class="aw-medal-y">'+esc(String(a.key).slice(0,4))+'</span>'+
       (a.pts ? '<small>'+esc(ccNum(a.pts))+' '+esc(L().lfAwPts)+' · '+a.ev+' '+esc(L().lfAwEv)+'</small>' : '')+'</div>';
   });
