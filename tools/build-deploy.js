@@ -288,6 +288,36 @@ const prefilled = prefillI18n(OUT);
     (failed ? ' (CSS-блоков не сжато: ' + failed + ')' : ''));
 })();
 
+/* Комментарии не уезжают и из остального JS: движок, карта, мультиплеер и скрипты загрузки в оболочке.
+   Тот же terser без compress/mangle, что у app.js: код перепечатывается как есть. ?v= в оболочке
+   пересчитывается по сжатому файлу (check-deploy-folder сверяет его с sha1 файла). */
+['zone-sim.js', 'zone-replay.js', 'mp.js'].forEach(f => {
+  const p = path.join(OUT, f); if (!fs.existsSync(p)) return;
+  minifyJs(p);
+  const v = crypto.createHash('sha1').update(fs.readFileSync(p)).digest('hex').slice(0, 8);
+  const shellPath = path.join(OUT, 'index.html');
+  const re = new RegExp(f.replace(/[.]/g, '[.]') + '[?]v=[0-9a-f]+', 'g');
+  fs.writeFileSync(shellPath, fs.readFileSync(shellPath, 'utf8').replace(re, f + '?v=' + v), 'utf8');
+});
+(function stripShellScripts() {
+  const shellPath = path.join(OUT, 'index.html');
+  let shell = fs.readFileSync(shellPath, 'utf8'), n = 0, k = 0;
+  const tmp = path.join(OUT, '.inline-tmp.js');
+  shell = shell.replace(/<script(?![^>]*\bsrc=)([^>]*)>([\s\S]*?)<\/script>/g, (all, attrs, body) => {
+    if (/ld\+json/.test(attrs) || !/\/\*|\/\//.test(body)) return all;
+    n++;
+    fs.writeFileSync(tmp, body, 'utf8');
+    minifyJs(tmp);
+    const min = fs.readFileSync(tmp, 'utf8');
+    if (!min.trim() && body.trim()) return all;
+    k++;
+    return '<script' + attrs + '>' + min + '</script>';
+  });
+  try { fs.unlinkSync(tmp); } catch (_) {}
+  fs.writeFileSync(shellPath, shell, 'utf8');
+  console.log('скрипты оболочки без комментариев: ' + k + ' из ' + n);
+})();
+
 /* ---- ВОРКЕРУ — ВЕРСИЯ И СПИСОК ТОГО, ЧТО КЛАСТЬ СРАЗУ -------------------
  *
  * sw.js в репозитории лежит с метками вместо версии: там ей взяться неоткуда,

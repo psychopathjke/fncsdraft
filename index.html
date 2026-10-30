@@ -1966,35 +1966,11 @@
   .ytt-shard{position:absolute;background:linear-gradient(135deg,rgba(255,255,255,.55),rgba(255,255,255,.08));}
   .ytt-s1{right:4%;top:-10%;width:22%;height:70%;clip-path:polygon(40% 0,100% 20%,60% 100%,0 70%);opacity:.35;}
   .ytt-s2{left:38%;bottom:-12%;width:18%;height:50%;clip-path:polygon(0 30%,70% 0,100% 100%,20% 90%);opacity:.25;}
-  /* Фигура по пояс на всю высоту, как лицо на настоящих превью: скин в полный рост увеличен и срезан снизу. */
-  .ytt-figbox{position:absolute;right:-6%;top:-34%;height:200%;width:58%;z-index:2;display:flex;justify-content:center;align-items:flex-start;}
-  .ytt-figc{right:auto;left:21%;width:58%;}
   .ytt-fig{height:100%;width:auto;max-width:100%;object-fit:contain;
     filter:drop-shadow(2px 0 0 #fff) drop-shadow(-2px 0 0 #fff) drop-shadow(0 2px 0 #fff) drop-shadow(0 -2px 0 #fff) drop-shadow(0 8px 14px rgba(0,0,0,.55));}
-  .ytt-crown{position:absolute;top:15%;left:50%;transform:translateX(-30%) rotate(14deg);font-size:14cqw;filter:drop-shadow(0 3px 3px rgba(0,0,0,.5));}
   .ytt-title{position:absolute;left:3%;top:3%;z-index:3;max-width:60%;font-family:var(--font-display);font-weight:900;font-style:italic;font-size:11cqw;line-height:.9;color:#fff;
     text-transform:uppercase;white-space:nowrap;overflow:hidden;-webkit-text-stroke:.5cqw #101828;paint-order:stroke fill;text-shadow:0 .8cqw 0 rgba(0,0,0,.35);}
   .ytt-title-c{left:0;right:0;max-width:none;text-align:center;z-index:1;font-size:13cqw;}
-  .ytt-board{position:absolute;left:2%;top:31%;width:54%;z-index:3;display:flex;flex-direction:column;gap:1cqw;}
-  .ytt-row{display:flex;align-items:center;gap:1.4cqw;padding:.6cqw 1.4cqw;background:rgba(255,255,255,.35);font-family:var(--font-display);font-weight:800;color:rgba(16,24,40,.7);font-size:3.2cqw;line-height:1;}
-  .ytt-row b{font-style:italic;font-weight:900;font-size:4.2cqw;color:rgba(16,24,40,.55);}
-  .ytt-row span{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-  .ytt-row em{font-style:normal;font-weight:900;}
-  .ytt-me{background:#fff;color:#101828;padding:1cqw 1.4cqw;box-shadow:0 .6cqw 0 rgba(0,0,0,.25);}
-  .ytt .ytt-n{font-family:var(--font-display);font-style:italic;font-weight:900;font-size:8cqw;line-height:.9;
-    background:linear-gradient(180deg,#fff27a,#ffb300 55%,#ff7a00);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-stroke:.35cqw #5a2a00;}
-  .ytt-who{flex:1;min-width:0;font-family:var(--font-display);font-weight:900;font-size:4.6cqw;line-height:.95;color:#101828;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-  .ytt-who small{display:block;font-size:.72em;}
-  .ytt-up{text-transform:uppercase;}
-  .ytt-hex{flex:none;font-style:normal;font-family:var(--font-display);font-weight:900;font-size:4.4cqw;color:#fff8d0;padding:1.4cqw 2.4cqw;-webkit-text-stroke:.25cqw #6a3a00;paint-order:stroke fill;
-    background:linear-gradient(180deg,#ffd84a,#c98a00);clip-path:polygon(25% 0,75% 0,100% 50%,75% 100%,25% 100%,0 50%);}
-  .ytt-stick{position:absolute;left:3%;bottom:6%;z-index:3;display:flex;flex-direction:column;align-items:center;padding:1cqw 3cqw;border-radius:3cqw;background:rgba(10,14,30,.85);border:.6cqw solid #fff;transform:rotate(-2deg);}
-  .ytt-stick span{font-family:var(--font-display);font-weight:900;font-size:6.5cqw;line-height:.9;color:#fff;-webkit-text-stroke:.3cqw #000;paint-order:stroke fill;}
-  .ytt-gold,.ytt-green{font-family:var(--font-display);font-weight:900;font-style:italic;font-size:9cqw;line-height:.95;-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-stroke:.4cqw #1a1000;}
-  .ytt-gold{background-image:linear-gradient(180deg,#fff27a,#ffc400 50%,#ff8a00);}
-  .ytt-green{background-image:linear-gradient(180deg,#b6ff7a,#3fe02a 50%,#0a9a1a);}
-  .ytt-bar{position:absolute;left:3%;right:3%;bottom:5%;z-index:3;display:flex;align-items:center;gap:1.6cqw;padding:.8cqw 2cqw;background:#fff;box-shadow:0 .8cqw 0 rgba(0,0,0,.3);}
-  .ytt-big{font-size:10cqw;}
   .ytt-hl{background:linear-gradient(160deg,#0a5bd8,#08245e);}
   .ytt-hl .ytt-bg{filter:blur(3px) saturate(1.6);opacity:.9;}
   .ytt-hl .ytt-figbox,.ytt-hl .ytt-fig{opacity:.9;}
@@ -6135,16 +6111,9 @@
   #screen-profile .me-up,#screen-profile .me-edit-b .cc-back:not(.me-open),#screen-profile .me-editbtn{background:var(--fn-btn);border-color:var(--fn-line);}
   #screen-profile .me-edit input{background:rgba(8,18,50,.5);border-color:var(--fn-line);}
   #screen-profile .me-open:hover,#screen-profile .me-editbtn:hover,#screen-profile .me-up:hover{outline:3px solid rgba(255,255,255,.92);}
-  /* Полка наград (30.10): кубки и карточки «Игрок месяца» как в футболе. */
+  /* Полка наград: кубки (заставки выигранных турниров) и медальоны «Игрок месяца». */
   .aw-sub{margin:12px 0 6px;font-size:11px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:#9fb0e8;}
   .aw-cups{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px;}
-  .aw-cup{display:flex;flex-direction:column;align-items:center;gap:3px;padding:12px 6px 10px;border-radius:12px;text-align:center;color:#ffc93a;
-    background:radial-gradient(ellipse at 50% 30%,rgba(255,201,58,.22),transparent 65%),rgba(6,12,32,.45);border:1px solid rgba(255,201,58,.35);}
-  .aw-cup.aw-cup-g{color:#7ff0ff;background:radial-gradient(ellipse at 50% 30%,rgba(127,240,255,.25),transparent 65%),rgba(6,12,32,.45);border-color:rgba(127,240,255,.4);}
-  .aw-cup.aw-cup-s{color:#d6dde8;border-color:rgba(214,221,232,.3);background:rgba(6,12,32,.45);}
-  .aw-cup-i{width:40px;height:46px;filter:drop-shadow(0 2px 4px rgba(0,0,0,.5));}
-  .aw-cup b{font-size:11.5px;font-weight:900;color:#fff;line-height:1.15;}
-  .aw-cup small{font-size:10px;font-weight:800;color:#9fb0e8;}
   .aw-plq{position:relative;aspect-ratio:3/4;border-radius:10px;overflow:hidden;background:#0b1430;border:2px solid #d9a93a;
     box-shadow:0 0 0 3px rgba(0,0,0,.35),0 6px 14px rgba(0,0,0,.45);}
   .aw-plq.aw-plq-g{border-color:#7ff0ff;}
@@ -6155,9 +6124,6 @@
   .aw-plq.aw-plq-s{border-color:#c9d2de;} .aw-plq-s .aw-plq-plate{background:linear-gradient(180deg,#f2f5f9,#aab4c2);color:#1a2230;}
   .aw-plq-plate b{display:block;font-size:11px;font-weight:900;line-height:1.1;}
   .aw-plq-plate small{display:block;font-size:9.5px;font-weight:800;opacity:.8;}
-  .aw-potm2{display:flex;flex-direction:column;align-items:center;gap:4px;}
-  .aw-potm-card{zoom:.62;}
-  .aw-potm2 small{font-size:10px;font-weight:800;color:#ffd65a;text-align:center;}
   .aw-potms{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:10px;}
   .aw-medal{display:flex;flex-direction:column;align-items:center;gap:1px;text-align:center;padding:4px 2px;}
   .aw-medal-glow{display:block;padding:6px;border-radius:50%;background:radial-gradient(circle,rgba(255,196,64,.45) 0%,rgba(255,140,26,.12) 55%,transparent 70%);}
@@ -6165,13 +6131,6 @@
   .aw-medal-m{font-size:13px;font-weight:900;color:#fff;text-transform:capitalize;margin-top:2px;}
   .aw-medal-y{font-size:10.5px;font-weight:800;color:#f3c64a;}
   .aw-medal small{font-size:9.5px;font-weight:800;color:#9fb0e8;line-height:1.2;}
-  .aw-potm{position:relative;display:flex;flex-direction:column;align-items:center;gap:2px;padding:12px 8px 10px;border-radius:14px;text-align:center;overflow:hidden;
-    background:linear-gradient(160deg,#3d1a78 0%,#6a2bc2 45%,#2a0f55 100%);border:1px solid rgba(255,214,90,.55);box-shadow:inset 0 0 0 2px rgba(255,214,90,.15);}
-  .aw-potm img{width:64px;height:64px;border-radius:50%;object-fit:cover;border:2px solid #ffd65a;background:#1a0b38;}
-  .aw-potm-band{margin-top:4px;padding:2px 8px;border-radius:4px;background:#ffd65a;color:#2a0f55;font-size:9.5px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;}
-  .aw-potm-m{font-size:15px;font-weight:900;color:#fff;text-transform:capitalize;}
-  .aw-potm-n{font-size:11px;font-weight:800;color:#e9dcff;}
-  .aw-potm small{font-size:9.5px;font-weight:800;color:#ffd65a;}
   .aw-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px;}
   .aw-item{display:flex;flex-direction:column;align-items:center;gap:2px;padding:10px 6px;border-radius:12px;
     background:rgba(255,255,255,.06);border:1px solid rgba(255,214,0,.25);text-align:center;}
@@ -24499,10 +24458,6 @@ Object.assign(I18N.en, {
   dmKinchYouAsk:who=>who ? 'Break down @'+who+"'s night" : 'Break down my night',
   ccDmKinchOne:(lbl,r)=>'🏆 '+String(lbl)+' 🏆\n👤 '+(r[0] ? '@'+r[0] : 'You')+'\n🎯 Elims: '+r[1]+'\n💥 Damage: ≈'+ccNum(r[2])+'\n🩸 Taken: ≈'+ccNum(r[3])+
     '\n⏱️ Time alive: ≈'+r[4]+'\n📍 Avg place: '+r[5]+'\n🔟 Top 10s: '+r[6]+'\n👑 Wins: '+r[7]+'\n⭐ Points: '+r[8],
-  // Разбор строками, как пост Кинча в ленте: язык его, английский, на всех языках сайта (как ccNewsStatBoard).
-  ccDmKinchBoard:(lbl,p,g,avg,rk,rows)=>'🏆 '+String(lbl)+' 🏆\n📊 #'+p+' · '+g+' games · avg place '+avg+' · #'+rk+' in the lobby by elims\n'+
-    (rows||[]).map(r=>'\n👤 '+(r[0] ? '@'+r[0] : 'You')+'\n🎯 Elims: '+r[1]+'\n💥 Damage: ≈'+ccNum(r[2])+'\n🩸 Taken: ≈'+ccNum(r[3])+
-      '\n⏱️ Time alive: ≈'+r[4]+'\n📍 Avg place: '+r[5]+'\n🔟 Top 10s: '+r[6]+'\n👑 Wins: '+r[7]+'\n⭐ Points: '+r[8]).join('\n'),
   ccDmKinchSum:(lbl,p,g,avg,el,pg,rk)=>'📊 '+esc(String(lbl))+': #'+p+'. '+g+' games, avg placement '+avg+', '+el+' elims ('+pg+' per game) — #'+rk+' in the lobby by elims.',
   ccDmKinchCmp:rows=>'Inside the squad: '+(rows||[]).map(r=>(r[4] ? 'you' : '@'+esc(r[0]))+' — '+r[1]+' elims, '+ccNum(r[2])+' dmg ('+r[3]+'%)').join(' · '),
   ccDmKinchVerdict:(who,me,sh,v)=>me ? ['You carried tonight: '+sh+'% of the squad damage was yours.','Top fragger of the squad — you, '+sh+'% of the damage.'][v%2]
@@ -25684,7 +25639,6 @@ function shownRarity(p){
      (#70C7F8, см. --exotic). Правка: в этой комнате креатор не
      про и не ладдер, и рейтинг у него один на всех (67), так что обычная
      лестница по числу сказала бы про всех одно и то же слово. */
-  if(p._potm) return 'potm';   // карточка «Игрок месяца» на полке наград (ccAwardsShelfHTML)
   if(p.creator) return 'exotic';
   // Карточка формы носит свой вид при любом числе — см. ccFormCardsFor.
   /* Только объект события: у карточки напарника по сети form — ЧИСЛО (форма в карьере, mp.js MP.card), и в хорошей
@@ -98802,8 +98756,6 @@ const CARD_SKIN={
      падал на common. Отчёт — «у карточки цвет не exotic».
      Цвет — тот же #70C7F8 из --exotic, снятый с фортнайтовской вики. */
   exotic:   {bg:'linear-gradient(155deg,#cdefff 0%,#70c7f8 48%,#186a9e 100%)', glow:'#70c7f8', tag:'EXOTIC'},
-  /* Игрок месяца (30.10, полка наград): особая карточка, как POTM в футбольных играх, — фиолетовая с золотым бликом. */
-  potm:     {bg:'linear-gradient(118deg,rgba(255,214,90,0) 36%,rgba(255,214,90,.28) 46%,rgba(255,214,90,0) 56%),linear-gradient(155deg,#8a4dff 0%,#4b1aa8 46%,#1c0647 100%)', glow:'#ffd65a', tag:'PLAYER OF THE MONTH'},
   /* Карточка формы — как TOTW/TOTS в ФИФЕ: чёрная, с золотой каймой и бликом, чтобы в паке её было видно
      сразу и не путать с мифической (та золотая целиком). См. yearRatingPass, ccFormCardsFor. */
   form:     {bg:'linear-gradient(118deg,rgba(255,214,102,0) 38%,rgba(255,214,102,.22) 46%,rgba(255,214,102,0) 54%),linear-gradient(155deg,#3b3f4a 0%,#15181f 46%,#000 100%)', glow:'#f6c343', tag:'IN FORM'}
@@ -120102,7 +120054,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='4a86d745';
+const CC_BUILD='31c1306a';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -174428,13 +174380,13 @@ function ccMyDropsHTML(){   // не ccDropMapHTML: то имя — у вырез
    Третья вкладка шапки. Всё с этого устройства, без входа: слоты карьер (LS_SLOT 1..CC_SLOTS), драфт дня (fd_daily,
    последние 30 дней), забеги драфта (fncsdraft_history, до 100), достижения (fncsdraft_achievements). */
 const CC_ME_TX={
-  ru:{nav:'Профиль', title:'Профиль', device:'Всё с этого устройства', careers:'Карьеры', none:'Пока пусто',
-      season:'Сезон', div:'Дивизион', earn:'Призовые', ev:'Турниров', wins:'Побед', top10:'Топ-10', titles:'Титулы FNCS', potm:'Игрок месяца',
+  ru:{nav:'Аккаунт', title:'Аккаунт', device:'Всё с этого устройства', careers:'Карьеры', none:'Пока пусто',
+      season:'Сезон', div:'Дивизион', earn:'Призовые', ev:'Турниров', wins:'Побед', firsts:'Первых мест', vr:'Королевских побед', top10:'Топ-10', titles:'Титулы FNCS', potm:'Игрок месяца',
       best:'Лучший результат', daily:'Драфт дня', played:'Сыграно', bestPlace:'Лучшее место', avgPlace:'Среднее место', bestScore:'Лучшие очки',
       streak:'Дней подряд', last:'Последние', draft:'Драфт', runs:'Забегов', bestGrade:'Лучшая оценка', majors:'Чемпион ALL FNCS',
       ach:'Достижения', mgr:'Менеджер', clubs:'Клубов', creator:'Креатор', open:'Открыть'},
-  en:{nav:'Profile', title:'Profile', device:'Everything from this device', careers:'Careers', none:'Nothing yet',
-      season:'Season', div:'Division', earn:'Earnings', ev:'Events', wins:'Wins', top10:'Top 10', titles:'FNCS titles', potm:'Player of the month',
+  en:{nav:'Account', title:'Account', device:'Everything from this device', careers:'Careers', none:'Nothing yet',
+      season:'Season', div:'Division', earn:'Earnings', ev:'Events', wins:'Wins', firsts:'First places', vr:'Victory Royales', top10:'Top 10', titles:'FNCS titles', potm:'Player of the month',
       best:'Best result', daily:'Daily draft', played:'Played', bestPlace:'Best place', avgPlace:'Average place', bestScore:'Best score',
       streak:'Day streak', last:'Recent', draft:'Draft', runs:'Runs', bestGrade:'Best grade', majors:'ALL FNCS champion',
       ach:'Achievements', mgr:'Manager', clubs:'Clubs', creator:'Creator', open:'Open'}
@@ -174569,7 +174521,7 @@ function ccMeCareer(s){
   let flag=''; try{ flag=ccFlagImgs(ccFlagEmoji(pl.country||pl.nat||'')); }catch(x){ flag=''; }
   return {nick:pl.nick||pl.handle||'?', creator:!!pl.creator, y0:cr.year0||cr.year, y:cr.year, season:cr.season||1, div:cr.division,
     ovr:Math.round(pl.ovr||0), earn:Math.round(cr.earnings||0), ev:log.length, wins:log.filter(e=>e.place===1).length,
-    top10:log.filter(e=>e.place<=10).length, titles, potm:((cr.aw||{}).won||[]).filter(a=>a && a.you && a.kind==='month').length,
+    vr:log.reduce((a,e)=>a+(e.wins||0), 0), top10:log.filter(e=>e.place<=10).length, titles, potm:((cr.aw||{}).won||[]).filter(a=>a && a.you && a.kind==='month').length,
     best:best ? '#'+best.place+' · '+bestName : '', photo:pl.photo||null, cups, flag};
 }
 function ccMeHTML(){
@@ -174579,7 +174531,7 @@ function ccMeHTML(){
   for(let n=1;n<=CC_SLOTS;n++){ const s=ccSlotRead(n); if(s && s.career){ cars.push([n, ccMeCareer(s)]); saves.push(s); } }
   // Менеджер — прямо по ключам: mgrSlotRead живёт в куске mgr.js и до входа в менеджер на сайте не загружен.
   let mgrN=0; try{ for(let n=1;n<=10;n++) if(localStorage.getItem(n===1 ? 'fncsdraft_manager' : 'fncsdraft_manager_s'+n)) mgrN++; }catch(e){}
-  const tot=cars.reduce((a,[,c])=>{ a.earn+=c.earn; a.ev+=c.ev; a.wins+=c.wins; a.titles+=c.titles; return a; }, {earn:0, ev:0, wins:0, titles:0});
+  const tot=cars.reduce((a,[,c])=>{ a.earn+=c.earn; a.ev+=c.ev; a.wins+=c.wins; a.vr+=c.vr; a.titles+=c.titles; return a; }, {earn:0, ev:0, wins:0, vr:0, titles:0});
   // Драфт дня.
   const days=(dailyStore().days)||{}, dk=Object.keys(days).sort(), dr=dk.map(k=>Object.assign({day:k}, days[k])).filter(r=>r.place);
   let streak=0; { let d=dailyDay(); if(!days[d]) d=ccAddDays(d, -1); while(days[d] && days[d].place){ streak++; d=ccAddDays(d, -1); } }
@@ -174609,7 +174561,7 @@ function ccMeHTML(){
   const head='<div class="ch-tile me-head">'+ava+
     '<div><h2>'+esc(nick)+'</h2><small>'+esc(T.device)+(cloud ? ' · ☁ '+esc(T.cloudOn) : '')+'</small>'+
       (E ? '' : '<button class="cc-back me-editbtn" onclick="ccMeEditOpen()">'+esc(T.edit)+'</button>')+'</div>'+
-    '<div class="me-sts">'+stat(cars.length, T.careers)+stat('$'+ccNum(tot.earn), T.earn)+stat(tot.wins, T.wins)+stat(tot.titles, T.titles)+
+    '<div class="me-sts">'+stat(cars.length, T.careers)+stat('$'+ccNum(tot.earn), T.earn)+stat(tot.wins, T.firsts)+stat(tot.vr, T.vr)+stat(tot.titles, T.titles)+
       stat(dr.length, T.daily)+stat(cOpen+'/'+cKeys.length, T.achCareerS)+stat((ach.size+dOpen)+'/'+(ACHIEVEMENTS.length+dKeys.length), T.achDraftS)+
       stat(mOpen+'/'+mKeys.length, T.achMgrS)+'</div>'+editor+'</div>';
   const cupsHTML=c=>{ if(!c.cups.length) return '';
@@ -174621,7 +174573,7 @@ function ccMeHTML(){
   const carHTML=cars.length ? cars.map(([n, c])=>'<div class="me-car">'+
       '<div class="me-car-h">'+(c.flag ? '<span class="me-flag">'+c.flag+'</span>' : '')+'<b>'+esc(c.nick)+'</b>'+(c.creator ? '<em>'+esc(T.creator)+'</em>' : '')+'<span>'+esc(String(c.y0||''))+(c.y && c.y!==c.y0 ? '–'+c.y : '')+'</span>'+
         '<i class="me-ovr">'+c.ovr+'</i></div>'+cupsHTML(c)+
-      '<div class="me-sts">'+stat(c.season, T.season)+(c.div ? stat(c.div, T.div) : '')+stat('$'+ccNum(c.earn), T.earn)+stat(c.ev, T.ev)+stat(c.wins, T.wins)+
+      '<div class="me-sts">'+stat(c.season, T.season)+(c.div ? stat(c.div, T.div) : '')+stat('$'+ccNum(c.earn), T.earn)+stat(c.ev, T.ev)+stat(c.wins, T.firsts)+stat(c.vr, T.vr)+
         stat(c.top10, T.top10)+stat(c.titles, T.titles)+stat(c.potm, T.potm)+'</div>'+
       (c.best ? '<div class="me-best"><small>'+esc(T.best)+'</small> '+esc(c.best)+'</div>' : '')+
       '<button class="cc-back me-open" onclick="ccSlotUse('+n+');careerEntry()">'+esc(T.open)+'</button></div>').join('')
@@ -174656,13 +174608,7 @@ function openProfileScreen(){
   window.scrollTo(0, 0);
 }
 window.addEventListener('load', ()=>setTimeout(()=>{ try{ if(location.hash==='#me') openProfileScreen(); }catch(e){} }, 350));
-// Кубок полки наград: чаша на ножке с ручками, плоскими цветами (без градиентов с id — копии полки ломают ссылки).
-const CC_AW_CUP='<svg class="aw-cup-i" viewBox="0 0 48 56" aria-hidden="true">'+
-  '<path d="M12 6h24v10c0 9-5 16-12 16S12 25 12 16z" fill="currentColor"/>'+
-  '<path d="M12 9H5c0 8 3 12 9 13M36 9h7c0 8-3 12-9 13" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>'+
-  '<path d="M21 31h6v8h-6z" fill="currentColor"/><path d="M14 40h20l2 8H12z" fill="currentColor"/>'+
-  '<path d="M17 9c0 7 2 12 5 15" fill="none" stroke="rgba(255,255,255,.55)" stroke-width="2.4" stroke-linecap="round"/></svg>';
-// Медальоны боссов Fortnite с вики (items/medallions). Остальные (Montague, Megalo Don…) за проверкой Cloudflare.
+// Медальоны боссов Fortnite с вики (items/medallions), по одному на месяц.
 const CC_AW_MEDALS=['nisha', 'peter', 'valeria', 'oscar'];
 /* У каждого месяца свой медальон: январь → peter, … декабрь → godzilla.
    Нет файла месяца: onerror ставит один из скачанных (CC_AW_MEDALS). Положил картинку в папку, месяц её берёт. */
@@ -176452,56 +176398,36 @@ function ccYtRows(v){
 }
 function ccYtThumbHTML(v){
   ccYtFixName(v);
-  if(!(v.pts>0)) v.pts=null;   // 0 очков — не записаны (скрин 15: «#10 … 0», «0PTS»)
+  if(!(v.pts>0)) v.pts=null;   // 0 очков = не записаны
   ccYtRows(v);
   const p=v.place||0, me=String((CAREER.player||{}).nick||'');
   const mate=v.mate ? String(v.mate) : '';
   const big=v.kind==='hl' ? 'HIGHLIGHTS' : (v.evShort || 'FNCS');
   const art=ccLogArt({day:v.on, kind:v.ekind, div:v.div});
-  const sk=v.skin!==undefined ? v.skin : ccYtSkin();   // ролики до 28.10 — в нынешнем скине
-  const h=ccHashStr(v.ev||'');
-  const qual=v.title && /QUALIFIED/.test(v.title);
+  const sk=v.skin!==undefined ? v.skin : ccYtSkin();   // у старых роликов скина нет, берём нынешний
   const cash=v.prize>0 ? ccYtCashShort(v.prize) : '';
   const fig=sk ? '<img class="ytt-fig" src="'+esc(ccFnFull(sk))+'" data-alt="'+esc(ccFnImg(sk))+'" alt="" loading="lazy" onerror="ccYtSkinErr(this)">' : '';
   const bg=(art ? '<img class="ytt-bg" src="'+esc(art)+'" alt="" loading="lazy" onerror="this.remove()">' : '')+'<i class="ytt-glow"></i><i class="ytt-shard ytt-s1"></i><i class="ytt-shard ytt-s2"></i>';
   const dur='<span class="yt-dur">'+v.min+':'+String(10+(v.total%50)).slice(-2)+'</span>';
-  const num='<b class="ytt-n">#'+(p||1)+'</b>';
-  const names='<span class="ytt-who">'+esc(me)+(mate ? '<small>& '+esc(mate)+'</small>' : '')+'</span>';
-  // Сборник: размытый кадр игры и красная строка убийства, как у Peterbot «Highlights #43».
+  const names='<span class="ytr-who">'+esc(me)+(mate ? '<small>& '+esc(mate)+'</small>' : '')+'</span>';
+  // Сборник: размытый кадр игры и строка «ELIMINATED <ник>».
   if(v.kind==='hl') return '<div class="yt-thumb ytt ytt-hl">'+bg+fig+
     '<span class="ytt-elim">ELIMINATED <b>'+esc(String((ccYtRows(v)[0]||[])[1]||'').split(' & ')[0])+'</b></span><span class="ytt-title ytt-title-c">'+esc(me.toUpperCase())+' HIGHLIGHTS #'+esc(String(v.n||''))+'</span>'+dur+'</div>';
-  /* 30.10, его «превью странно выглядят, посмотри как в реальной жизни» (Notion 27.10, последний скрин; канал Peterbot):
-     один вид — название слева сверху, большая таблица слева (#1 белой строкой с золотым номером и шестиугольником очков,
-     остальные тёмные), игрок крупно справа по плечи, фон цветом итога. Без короны, наклеек и обрезанного приза. */
-  /* Победа с призом — второй вид, как у Malibuca/Pollo/Mero/Queasy/vic0 (30.10, «ещё 5 каналов»): турнир маленькой
-     наклонной плашкой, игрок крупно, внизу огромное «#1 НИК & НАПАРНИК» и приз золотом. */
+  /* Два вида, как на каналах про. Победа с призом: турнир плашкой, игрок по центру, внизу «#1 НИК & НАПАРНИК» и приз.
+     Остальное: название слева сверху, таблица слева (#1 белой строкой с очками в шестиугольнике), игрок справа по плечи. */
   if(v.kind==='win' && cash){
     return '<div class="yt-thumb ytt ytr ytr-gold ytr-w">'+bg+'<div class="ytr-fig ytr-figw">'+fig+'</div><i class="ytr-shadew"></i>'+
       '<span class="ytr-tag">'+esc(big)+'</span>'+
       '<div class="ytr-wbot"><span class="ytr-wn"><b>#1</b> '+esc(me.toUpperCase())+(mate ? ' & '+esc(mate.toUpperCase()) : '')+'</span>'+
       '<b class="ytr-cash">'+esc(cash)+'</b></div>'+dur+'</div>';
   }
-  {
-    const rows=ccYtRows(v).slice(0, 4).map(r=>'<div class="ytr-row"><b>#'+r[0]+'</b><span>'+esc(r[1])+'</span><em>'+r[2]+'</em></div>').join('');
-    const tone=v.kind==='win' ? 'ytr-gold' : v.kind==='podium' ? 'ytr-teal' : 'ytr-blue';
-    const tsz=big.length>14 ? ' ytr-t-s' : big.length>9 ? ' ytr-t-m' : '';
-    return '<div class="yt-thumb ytt ytr '+tone+'">'+bg+'<div class="ytr-fig">'+fig+'</div><i class="ytr-shade"></i>'+
-      '<span class="ytr-title'+tsz+'">'+esc(big)+'</span>'+
-      '<div class="ytr-board"><div class="ytr-row ytr-me"><b>#'+(p||1)+'</b>'+names.replace('ytt-who', 'ytr-who')+
-        (v.pts!=null ? '<i class="ytr-hex">'+esc(String(v.pts))+'</i>' : '')+'</div>'+rows+'</div>'+dur+'</div>';
-  }
-  const crown=v.kind==='win' ? '<span class="ytt-crown">👑</span>' : '';
-  if(h%2===0){
-    const rows=ccYtRows(v).map(r=>'<div class="ytt-row"><b>#'+r[0]+'</b><span>'+esc(r[1])+'</span><em>'+r[2]+'</em></div>').join('');
-    const stick=qual ? '<span class="ytt-stick"><span>QUALED</span><b class="ytt-gold">'+(v.ekind==='globals' ? 'GLOBALS' : 'GRANDS')+'</b></span>'
-               : cash ? '<span class="ytt-stick"><span>EARNED</span><b class="ytt-green">'+esc(cash)+'</b></span>' : '';
-    return '<div class="yt-thumb ytt ytt-a">'+bg+'<div class="ytt-figbox">'+fig+crown+'</div>'+
-      '<span class="ytt-title">'+esc(big)+'</span>'+
-      '<div class="ytt-board"><div class="ytt-row ytt-me">'+num+names+(v.pts!=null ? '<i class="ytt-hex">'+esc(String(v.pts))+'</i>' : '')+'</div>'+rows+'</div>'+stick+dur+'</div>';
-  }
-  const tail=cash ? '<b class="ytt-gold ytt-big">'+esc(cash)+'</b>' : (v.pts!=null ? '<b class="ytt-gold ytt-big">'+esc(String(v.pts))+'PTS</b>' : (qual ? '<b class="ytt-gold ytt-big">QUAL</b>' : ''));
-  return '<div class="yt-thumb ytt ytt-b">'+bg+'<span class="ytt-title ytt-title-c">'+esc(big)+'</span><div class="ytt-figbox ytt-figc">'+fig+crown+'</div>'+
-    '<div class="ytt-bar">'+num+names.replace('ytt-who', 'ytt-who ytt-up')+tail+'</div>'+dur+'</div>';
+  const rows=ccYtRows(v).slice(0, 4).map(r=>'<div class="ytr-row"><b>#'+r[0]+'</b><span>'+esc(r[1])+'</span><em>'+r[2]+'</em></div>').join('');
+  const tone=v.kind==='win' ? 'ytr-gold' : v.kind==='podium' ? 'ytr-teal' : 'ytr-blue';
+  const tsz=big.length>14 ? ' ytr-t-s' : big.length>9 ? ' ytr-t-m' : '';
+  return '<div class="yt-thumb ytt ytr '+tone+'">'+bg+'<div class="ytr-fig">'+fig+'</div><i class="ytr-shade"></i>'+
+    '<span class="ytr-title'+tsz+'">'+esc(big)+'</span>'+
+    '<div class="ytr-board"><div class="ytr-row ytr-me"><b>#'+(p||1)+'</b>'+names+
+      (v.pts!=null ? '<i class="ytr-hex">'+esc(String(v.pts))+'</i>' : '')+'</div>'+rows+'</div>'+dur+'</div>';
 }
 function ccYtSmmMul(){ const m=ccSmm(); if(!m) return 0; const card=ccSmmOf(m.id)||m; return 0.8+0.6*(ccSmmPull((card && card.x)||0)||0); }
 function ccYtComments(y, total, mood, rnd){
