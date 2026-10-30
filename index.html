@@ -120168,7 +120168,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='01a18958';
+const CC_BUILD='edffbdb6';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -175056,10 +175056,13 @@ function ccAwTrophy(e){
   if(!e) return null;
   const y=String(e.day||'').slice(0,4);
   if(e.kind==='major' && (e.day==='2019-07-27' || e.day==='2019-07-28')) return 'wc-2019';
-  if(e.kind==='globals') return y==='2022' ? 'inv-2022' : y<'2025' ? 'gc-2023' : 'gc-2025';
+  if(e.kind==='globals') return y==='2022' ? 'inv-2022' : y<'2025' ? 'gc-2023' : y==='2025' ? 'gc-2025' : 'gc-2026';
   if(e.kind==='proam') return 'proam';
+  // EWC: диск на кристалле, один на все игры; Reload Championship тоже на EWC.
+  if(ccAwEwc(e) || (e.kind==='rc' && e.stage==='final')) return 'ewc';
   return null;
 }
+function ccAwEwc(e){ return !!(e && e.ewc && /Esports World Cup/.test(e.lan||'')); }
 function ccAwardsShelfHTML(){
   if(typeof careerAwards!=='function') return '';
   const won=(careerAwards().won||[]).filter(a=>a.you);
@@ -175071,7 +175074,7 @@ function ccAwardsShelfHTML(){
   const item=(ico, name, sub)=>'<div class="aw-item"><i>'+ico+'</i><b>'+esc(name)+'</b><small>'+esc(sub)+'</small></div>';
   const log=((CAREER.career||{}).log||[]).filter(e=>e && e.place===1);
   const big=e=>{ try{ if(ccFncsTitle(e)) return true; }catch(x){}
-    return e.kind==='globals' || e.kind==='proam' || (/^(summit|rc|reload)$/.test(e.kind) && e.stage==='final'); };
+    return e.kind==='globals' || e.kind==='proam' || ccAwEwc(e) || (/^(summit|rc|reload)$/.test(e.kind) && e.stage==='final'); };
   const cups=log.filter(big).sort((a,b)=>String(a.day)<String(b.day) ? -1 : 1);
   const weekly=log.filter(e=>e.kind==='final' && !big(e)).length;
   // Глобалы полным именем: ccLogName даёт календарное сокращение «ГЧ» (его «что такое ГЧ», 30.10).
@@ -175079,6 +175082,7 @@ function ccAwardsShelfHTML(){
     if(t==='wc-2019') return 'World Cup '+(e.day==='2019-07-28' ? 'Solo' : 'Duos');
     if(t==='inv-2022') return 'FNCS Invitational';
     if(t==='proam') return 'Pro-Am';
+    if(t==='ewc') return e.kind==='rc' ? 'EWC · Reload' : 'Esports World Cup';
     if(e.kind==='globals') return 'Global Championship';
     try{ return ccLockerPlain(ccLogName(e)); }catch(x){ return e.name||''; } };
   const cupDay=e=>{ try{ return ccDayLabel ? ccDayLabel(e.day) : e.day; }catch(x){ return e.day||''; } };
