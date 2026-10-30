@@ -107917,6 +107917,47 @@ function buildBotLandingAssignment(bots, opts){
     }
   }
 
+  /* КОНТЕСТЯТ СЛАБЫЕ. Команда из сильной половины, которая стоит в коробке с кем-то, меняется местами с командой
+     из слабой половины, которая стоит одна: сильные сидят по одиночке, общие коробки достаются нижней половине.
+     Число команд в коробках не меняется. В постоянном составе переезд на сезон (книга), в перемешанных капах нет. */
+  {
+    const movable=t=>t && !t.isYou && !t.isRival && !t.isMate && !t._stageSeated && !(t._mgrDrop==='quiet' || t._mgrDrop==='hot');
+    const keyOfT=t=>(book && !t.isYou && !t.isRival && !t.isMate) ? ccHashStr(ccSeatMapKey(t)).toString(36) : null;
+    const str=t=>((t.pow||0)-(t._landingPow||0))+(t.closeEdge||0);
+    const all=[]; zoneGroups.forEach(g=>g.forEach(t=>all.push(t)));
+    if(all.length>=8){
+      const ranked=all.slice().sort((a,b)=>str(b)-str(a));
+      const strong=new Set(ranked.slice(0, Math.floor(all.length/2)));
+      const zoneOf=new Map(); zoneGroups.forEach((g,z)=>g.forEach(t=>zoneOf.set(t, z)));
+      for(let guard=0; guard<all.length; guard++){
+        // Сильнейший из стоящих в общей коробке уходит первым — в лучшую из одиночных коробок слабых.
+        const s=ranked.find(t=>strong.has(t) && movable(t) && (zoneGroups.get(zoneOf.get(t))||[]).length>1);
+        if(!s) break;
+        let w=null, wz=null;
+        all.forEach(x=>{
+          if(strong.has(x) || !movable(x)) return;
+          const z2=zoneOf.get(x); if(!z2 || (zoneGroups.get(z2)||[]).length!==1) return;
+          if(!w || (z2.points||0)>(wz.points||0) || ((z2.points||0)===(wz.points||0) && str(x)<str(w))){ w=x; wz=z2; }
+        });
+        if(!w){ strong.delete(s); continue; }
+        const z=zoneOf.get(s);
+        if(book && !CC_SEATS_REMIX){
+          const ks=keyOfT(s), kw=keyOfT(w);
+          if(ks) book.at[ks]=ccSeatKeyOf(wz);
+          if(kw) book.at[kw]=ccSeatKeyOf(z);
+        }
+        zoneGroups.set(z, zoneGroups.get(z).map(o=>o===s ? w : o));
+        zoneGroups.set(wz, [s]);
+        zoneOf.set(s, wz); zoneOf.set(w, z);
+        [[s, wz], [w, z]].forEach(([t, to])=>{
+          t.landingZone=to; t.landingResult=null; t.landingRival=null;
+          applyLandingPow(t, to.points);
+          if(seats && !t.isYou && !t.isRival && !t.isMate) seats.set(ccSeatMapKey(t), ccSeatKeyOf(to));
+        });
+      }
+    }
+  }
+
   // The old guarantee: shuffle squads off the emptiest box until two boxes are
   // free, so the player always had somewhere quiet to land. It is off unless a
   // caller asks for it — a lobby where the last qualifier is left choosing
@@ -120199,7 +120240,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='230a0ce7';
+const CC_BUILD='634321a3';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
