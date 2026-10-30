@@ -120156,7 +120156,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='f5b5f880';
+const CC_BUILD='91f2ce9e';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -147414,7 +147414,7 @@ function ccDiscGains(a, o){
 }
 function ccDiscTileHTML(a, o){
   const d=ccDiscOf(a.id), img=d.img || ccDayArt(), g=ccDrillLast(a.id), gains=ccDiscGains(a, o);
-  const why = o.closed ? '' : o.maxed ? L().ccAttrMaxed : (o.keys.length && !o.gainsMove) ? L().ccNoGain
+  const why = o.closed ? '' : (o.maxed && !a.noble && !a.morale) ? L().ccAttrMaxed : (o.keys.length && !o.gainsMove && !a.noble && !a.morale) ? L().ccNoGain
             : o.left<a.energy ? L().ccNeedEnergy(a.energy-o.left) : (o.hostWhy || '');
   const chips=gains.slice(0, 2).map(x=>'<i>+'+x.by.toFixed(1)+' '+(L()['ccAttr'+x.k.toUpperCase()]||x.k)+'</i>').join('')+
     (gains.length>2 ? '<i>+'+(gains.length-2)+'</i>' : '')+
@@ -147528,8 +147528,10 @@ function careerDayPanelHTML(locked){
     // for — the day ends when something takes all of it, or when the player
     // says it is over.
     const hostWhy=a.host ? ccHostWhy() : null;
-    const can=!closed && left>=a.energy && !maxed && !restFull
-              && (!keys.length || gainsMove) && !hostWhy;
+    // Noble даёт форму, креатив — настрой: их не закрывает потолок параметров.
+    const extraUse=!!(a.noble || a.morale);
+    const can=!closed && left>=a.energy && (!maxed || extraUse) && !restFull
+              && (!keys.length || gainsMove || extraUse) && !hostWhy;
     const gains=keys.map(function(k){
       const from=six[k]!=null ? six[k] : 50;
       const by=a.gain[k]*dayMult*(dayCoach && dayCoach.keys.indexOf(k)>=0 ? 1+dayCoach.train : 1);
@@ -150719,11 +150721,29 @@ function ccFnBundles(list, day){
     if(its) set=its[0].set;
     else { const o=outfit.get(base); if(o && o.set){ its=bySet.get(norm(o.set)); set=o.set; } }
     if(!its || its.length<2 || used.has(set)) return;
+    its=ccFnBunTrim(its, b[1], outfit.get(base));
+    if(its.length<2) return;
     const sum=its.reduce((s, it)=>s+ccFnPrice(it), 0);
     if(!(b[1]<sum)) return;
     used.add(set);
     out.push({k:out.length, name:b[0], p:b[1], sum:sum, set:set, its:its});
   });
+  return out;
+}
+/* Состав набора не больше, чем стоит его цена. Набор с именем скина брал всю серию: «Yuji Itadori Bundle» за 1 900
+   получал 26 предметов Jujutsu Kaisen на 21 100. Наборы Epic дают скидку около трети, поэтому сюда идёт его скин,
+   потом рюкзак, кирка, глайдер и остальное, пока сумма не дойдёт до цены / 0.6. */
+const CC_FN_BUN_OFF=0.6;
+function ccFnBunTrim(its, price, hero){
+  const sumOf=a=>a.reduce((s, it)=>s+ccFnPrice(it), 0);
+  const cap=price/CC_FN_BUN_OFF;
+  if(sumOf(its)<=cap*1.15) return its;
+  const rank={o:0, b:1, p:2, g:3, e:4, w:5};
+  // Набор одного персонажа — без чужих скинов.
+  const rest=its.filter(it=>it!==hero && !(hero && it.t==='o')).sort((a, c)=>(rank[a.t]!=null ? rank[a.t] : 9)-(rank[c.t]!=null ? rank[c.t] : 9) || ccFnPrice(c)-ccFnPrice(a));
+  const out=hero ? [hero] : [];
+  let sum=sumOf(out);
+  rest.forEach(it=>{ const p=ccFnPrice(it); if(sum+p<=cap*1.15){ out.push(it); sum+=p; } });
   return out;
 }
 function ccFnBunPrice(b){
