@@ -154,26 +154,16 @@ const BOOT = `
     if (!picks.every(h => mates.toLowerCase().indexOf(h.toLowerCase()) >= 0)) fail('picked teammates did not play: ' + mates + ' vs ' + picks.join(','));
     out.steps.push('trio with picked ' + picks.join(' + ') + ': #' + r2.place + ' of ' + r2.of + ', $' + r2.prize);
 
-    // Квалы и финал — два дня (сильный игрок, чтобы дойти до финала).
-    fresh(200000, 96);
+    // Квалы: хозяин сразу в финале на следующий день, квал для него не играется.
+    fresh(200000);
     const fin = announce({name:'Probe Open', mode:'solo', entry:'open', games:6, pool:20000, shape:'even'}, 'open');
-    const qual = CAREER.career.ownCups.find(x => x.id === fin.finalOf);
-    if (!qual || qual.day !== ccAddDays(fin.day, -1)) fail('the qualifier is not the day before the final');
-    const q = await playOn(qual.day, qual.id, 'qualifier');
-    const res = CAREER.career.ownCups.find(x => x.id === qual.id).res;
-    if (!res) fail('the qualifier stored no result');
-    if (q.row.prize) fail('the qualifier paid money: $' + q.row.prize);
-    out.steps.push('qualifier: #' + q.row.place + ' of ' + q.row.of + ', through: ' + res.youIn + ', ' + res.teams.length + ' others go on');
-    if (res.youIn) {
-      const f = await playOn(fin.day, fin.id, 'final');
-      if (f.row.of !== 100) fail('the final lobby is ' + f.row.of + ', should be 100');
-      if (!(f.row.prize > 0)) fail('the host played the final and got $0');
-      out.steps.push('final: #' + f.row.place + ' of 100, $' + f.row.prize);
-    } else {
-      careerSkipTo(fin.day);
-      if (careerCanPlayKind('victory')) fail('a host knocked out in the qualifier can enter the final');
-      out.steps.push('out in the qualifier: the final is closed to the host');
-    }
+    if (fin.finalOf) fail('a new qualifier tournament still makes the host play the qualifier');
+    if (fin.qualDay !== ccAddDays(fin.day, -1)) fail('the final is not the day after the qualifier: ' + fin.qualDay + ' / ' + fin.day);
+    if ((careerYearDays().get(fin.qualDay)||[]).some(e => e.kind === 'victory' && String(e.id).indexOf(fin.id) === 0)) fail('the qualifier day offers the host a game');
+    const f = await playOn(fin.day, fin.id, 'final');
+    if (f.row.of !== 100) fail('the final lobby is ' + f.row.of + ', should be 100');
+    if (!(f.row.prize > 0)) fail('the host played the final and got $0');
+    out.steps.push('host goes straight to the final: #' + f.row.place + ' of 100, $' + f.row.prize);
 
     // Пул меньше минимума и отмена.
     fresh(50000);

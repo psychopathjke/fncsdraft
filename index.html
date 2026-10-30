@@ -24243,7 +24243,7 @@ Object.assign(I18N.pt, {ccYrXHeatsIn:k=>'Top '+k+' da série — nos heats', ccY
 // Шкафчик: подписи как в русском клиенте Fortnite; в остальных языках остаётся английский вид Epic.
 Object.assign(I18N.ru, {ownTitle:'Свой турнир', ownLead:'Устрой кап сам: дата, режим, инвайт или квалы, игры и призовой фонд. Играешь в нём сам.',
   ownNew:'Устроить турнир', ownName:'Название', ownDate:'Дата', ownMode:'Режим', ownEntry:'Допуск', ownSize:'Лобби, игроков', ownGames:'Игр',
-  ownPool:'Призовой фонд', ownInvite:'Инвайт', ownOpenQ:'Квалы и финал', ownOpenNote:'Два дня: в первый открытые квалы региона, сто лучших играют финал на следующий день.',
+  ownPool:'Призовой фонд', ownInvite:'Инвайт', ownOpenQ:'Квалы и финал', ownOpenNote:'Два дня: в первый открытые квалы региона, на следующий день финал на 100 игроков. Ты как хозяин сразу в финале.',
   ownShape:'Как делить', ownAllPaid:(n,p)=>'Призовые получают все '+n+' составов финала, фонд $'+p,
   ownTeam:'Состав', ownTeamMine:'Моя команда', ownTeamAuto:'Сильнейшие свободные', ownTeamPick:'Выбрать самому',
   ownTeamFill:n=>'не хватает '+n+', доберём по рейтингу', ownTeamPicked:(a,b)=>'Выбрано '+a+' из '+b,
@@ -24253,7 +24253,7 @@ Object.assign(I18N.ru, {ownTitle:'Свой турнир', ownLead:'Устрой 
   ownWhyMp:'Вдвоём свои турниры не устраиваются', ownNewsAnnounce:(n,d,p)=>'Объявил свой турнир '+n+': '+d+', фонд $'+p});
 Object.assign(I18N.en, {ownTitle:'Your tournament', ownLead:'Run a cup yourself: date, mode, invite or qualifier, games and prize pool. You play in it.',
   ownNew:'Host a tournament', ownName:'Name', ownDate:'Date', ownMode:'Mode', ownEntry:'Entry', ownSize:'Lobby, players', ownGames:'Games',
-  ownPool:'Prize pool', ownInvite:'Invite', ownOpenQ:'Qualifier + final', ownOpenNote:'Two days: an open regional qualifier, then the best hundred play the final the next day.',
+  ownPool:'Prize pool', ownInvite:'Invite', ownOpenQ:'Qualifier + final', ownOpenNote:'Two days: an open regional qualifier, then a 100-player final the next day. As the host you go straight to the final.',
   ownShape:'Split', ownAllPaid:(n,p)=>'All '+n+' teams in the final are paid, $'+p+' pool',
   ownTeam:'Team', ownTeamMine:'My team', ownTeamAuto:'Best free players', ownTeamPick:'Pick myself',
   ownTeamFill:n=>n+' short, filled by rating', ownTeamPicked:(a,b)=>a+' of '+b+' picked',
@@ -120183,7 +120183,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='0d46bfc6';
+const CC_BUILD='ff1b2462';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -157233,10 +157233,11 @@ function ccOwnCreate(){
   const n=(cr.ownN=(cr.ownN||0)+1), id='OWN_'+n;
   const base={own:true, mode:d.mode, n:'', pool:d.pool, entry:d.entry, shape:d.shape, roster:roster, games:d.games};
   const made=[];
+  /* Квалы идут в первый день без хозяина: он сразу в финале, остальные места — сильнейшие со сцены
+     (обычное поле ЛАНа). Старые сохранения с отдельной записью квал (finalOf) играются как раньше. */
   if(two){
-    made.push(Object.assign({}, base, {day:d.day, id:id+'_Q', name:name+' · '+L().ownQualTag, ownQual:true, pool:0, cutPlayers:CC_OWN_FINAL}));
     made.push(Object.assign({}, base, {day:ccAddDays(d.day, 1), id, name:name+' · '+L().ownFinalTag, lan:name+' · '+L().ownFinalTag,
-      invite:CC_OWN_FINAL, finalOf:id+'_Q', payT:ccOwnPayT(d), paid:ccOwnField(d)}));
+      invite:CC_OWN_FINAL, qualDay:d.day, payT:ccOwnPayT(d), paid:ccOwnField(d)}));
   } else made.push(Object.assign({}, base, {day:d.day, id, name, lan:name, invite:d.size, payT:ccOwnPayT(d), paid:ccOwnField(d)}));
   cr.balance=(cr.balance||0)-d.pool;
   cr.hosted=(cr.hosted||0)+d.pool;
