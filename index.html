@@ -120924,7 +120924,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='42fa01a7';
+const CC_BUILD='555268af';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -127528,7 +127528,7 @@ function careerMeHTML(){
      на кнопке написана та, в которую переходят. */
   const roleNow=ccRoleNow(), roleCan=ccRoleSwapCan();
   const cardTiles=[`<div class="ch-tile ch-tile-card">
-      <h4>${esc(CAREER.player.nick||'')} <button class="cc-back cc-prof-share" onclick="ccProfileShare()">${esc(ccProfT().share)}</button></h4>
+      <h4>${esc(CAREER.player.nick||'')}</h4>
       <div class="ch-cardwrap">${card?futCardHTML(card,{wide:true, noEvent:true, peek:true}):''}</div>
       ${ccMeEditHTML()}
       ${(CAREER.career.sp||0) ? `<div class="ch-sp">
