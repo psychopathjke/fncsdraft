@@ -37,15 +37,15 @@ const BOOT = `
       ],
       pr:{rows:{
         'Malibuca':{v:[[820,40],[760,120],[700,200]]},
-        'Keegorka':{you:true, v:[[790,50],[720,130],[640,210]]},
+        'psychopath':{you:true, v:[[790,50],[720,130],[640,210]]},
         'Vic0':{v:[[700,60],[660,140],[610,220]]},
         'th0masHD':{v:[[640,70],[600,150],[560,230]]},
         'Sky':{v:[[590,80],[560,160],[520,240]]}
       }},
-      aw:{last:'2026-10', won:[{kind:'month', key:'2026-05', season:1, name:'Keegorka', you:true}]}
+      aw:{last:'2026-10', won:[{kind:'month', key:'2026-05', season:1, name:'psychopath', you:true}]}
     }, extra||{});
     localStorage.setItem('fncsdraft_career', JSON.stringify({v:1,
-      player:{nick:'Keegorka', age:17, source:'rookie', country:'rs', countryPing:26,
+      player:{nick:'psychopath', age:17, source:'rookie', country:'rs', countryPing:26,
               closeRangeEdge:6, region:'EU', ovr:91, role:'roleIGL', attrs:null, ageEdge:4,
               photo:null, handle:null, cardRegion:null, nat:null},
       career:cr, partners:[]}));

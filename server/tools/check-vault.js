@@ -14,8 +14,8 @@ ok('ключ менеджера — да', checkReq({code, op:'get', key:'fncsdr
 ok('чужой ключ — нет', checkReq({code, op:'get', key:'fncsdraft_lang'}).err==='key');
 ok('put без данных — нет', checkReq({code, op:'put', key:'fncsdraft_career', data:''}).err==='data');
 ok('put больше лимита — нет', checkReq({code, op:'put', key:'fncsdraft_career', data:'x'.repeat(MAX_ONE+1)}).err==='size');
-const p=checkReq({code, op:'put', key:'fncsdraft_career', data:'abc', info:{nick:'keegorka'}, at:5});
-ok('put — подпись и время', p.op==='put' && JSON.parse(p.info).nick==='keegorka' && p.at===5, JSON.stringify(p));
+const p=checkReq({code, op:'put', key:'fncsdraft_career', data:'abc', info:{nick:'psychopath'}, at:5});
+ok('put — подпись и время', p.op==='put' && JSON.parse(p.info).nick==='psychopath' && p.at===5, JSON.stringify(p));
 const big='y'.repeat(PART*2+7);
 const ps=parts(big);
 ok('нарезка: три куска и склейка без потерь', ps.length===3 && ps.join('')===big, String(ps.length));
