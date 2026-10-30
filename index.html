@@ -120199,7 +120199,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='997dd5c1';
+const CC_BUILD='3eb81c9b';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -125139,7 +125139,7 @@ function ccLobbySquadFor(next){
       const f=ccVictoryFormat(careerVictoryOn(next.day));
       if(f===1) return [];
       if(f && f!==careerSquadSize())
-        return (((CAREER.rosters||{})[f]) || careerMateRecords()).map(ccMateCardOf).filter(c=>c && c.handle).slice(0, f-1);
+        return ccFmtRoster(f).map(ccMateCardOf).filter(c=>c && c.handle).slice(0, f-1);
     }
   }catch(e){}
   return base;
@@ -144488,7 +144488,7 @@ function careerFmtSeatDms(fromISO, toISO){
       if(f===cur) return;
       const next=ccFormatNext(f);
       if(!next || ccDaysBetween(d, next)>CC_ROSTER_WEEK || ccDaysBetween(d, next)<0) return;
-      const have=(((CAREER.rosters||{})[f])||[]).length;
+      const have=ccFmtRoster(f).length;
       if(have>=f-1) return;
       if(careerDms().filter(t=>t.fmt===f && t.state==='offer').length>=CC_FMT_DMS) return;
       const rnd=careerRng(ccHashStr('fmtseat|'+ccWorldSeed()+'|'+d+'|'+f));
@@ -144497,7 +144497,7 @@ function careerFmtSeatDms(fromISO, toISO){
       let pool0=[]; try{ pool0=careerDuoSearchPool(true); } finally { CC_DUO_REG=reg0; }
       // Уже написавший вторым в паре (t.fmtPair) и уже сидящий в составе формата — не пишут ещё раз.
       const busy=new Set(careerDms().map(t=>t.fmtPair).filter(Boolean).map(hKey)
-        .concat((((CAREER.rosters||{})[f])||[]).map(r=>{ const c=ccMateCardOf(r); return c ? hKey(c.handle) : ''; })));
+        .concat(ccFmtRoster(f).concat(CAREER.partners||[]).map(r=>{ const c=r && ccMateCardOf(r); return c ? hKey(c.handle) : ''; })));
       const pool=pool0.filter(w=>w && w.handle && w.ovr>=me-6 && w.ovr<=me+2 &&
         !busy.has(hKey(w.handle)) && !ccBlocked(w.handle) && !careerDmFind(w.handle));
       if(!pool.length) return;
@@ -145168,8 +145168,7 @@ function careerDmAccept(id){
   if(t.fmt && t.fmt>1 && t.fmt!==careerSquadSize()){
     const f=t.fmt, w=t.who;
     if(!CAREER.rosters) CAREER.rosters={};
-    // Состава этого формата ещё не было — он начинается с напарников года (как ccRosterSwap).
-    const list=(CAREER.rosters[f] || (CAREER.partners||[]).slice(0, f-1)).filter(Boolean);
+    const list=ccFmtRoster(f).slice();
     const rec=w.roster ? {handle:w.handle, cardRegion:w.cardRegion||'EU', patience:CAREER_PATIENCE_START, since:careerToday()}
                        : {card:w.card, patience:CAREER_PATIENCE_START, since:careerToday()};
     if(!list.some(r=>hKey((ccMateCardOf(r)||{}).handle||'')===hKey(w.handle))) list.push(rec);
@@ -146474,8 +146473,7 @@ function careerSocialHTML(){
                трогается — значит ни «слот уйдёт команде ниже», ни «Взять в дуо» (Notion 12.10: «когда сквад кеш кап, а
                сезон дуо… пишет, что можно только позвать в дуо»). Кнопка — «Взять в состав», сколько мест осталось. */
             if(open.fmt && open.fmt>1 && open.fmt!==careerSquadSize()){
-              // Как считает careerDmAccept: состава формата ещё нет — он начинается с напарников года.
-              const have=(((CAREER.rosters||{})[open.fmt]) || (CAREER.partners||[]).slice(0, open.fmt-1)).filter(Boolean).length;
+              const have=ccFmtRoster(open.fmt).length;
               return `<div class="dm-foot"><div class="dm-asked">${esc(L().ccFmtSeatLeft(ccFmtWord(open.fmt), Math.max(0, open.fmt-1-have)))}</div>
                 <button class="ch-sign" onclick="careerDmAccept(\'${open.id}\')">${L().dmTakeItt}</button></div>`;
             }
@@ -157179,7 +157177,7 @@ function ccOwnPool(){
     .sort((a,b)=>ccCardOvr(b)-ccCardOvr(a));
 }
 function ccOwnMyMates(fmt){
-  return ((CAREER.rosters||{})[fmt] || CAREER.partners || []).filter(Boolean).map(r=>ccMateCardOf(r)).filter(Boolean).slice(0, fmt-1);
+  return ccFmtRoster(fmt).map(r=>ccMateCardOf(r)).filter(Boolean).slice(0, fmt-1);
 }
 /* Аватарка турнира — только своя картинка: ужимается до 96 точек в jpeg и кладётся в сейв
    строкой; не влезла в потолок — не берём. */
@@ -163785,7 +163783,7 @@ function ccEventRosterBegin(fmt, picks){
     const scene=ccSceneRoster(ccCareerRegion());
     own=picked.map(h=>scene.find(x=>x && hKey(x)===hKey(h))).filter(Boolean).slice(0, fmt-1)
       .map(c=>({card:{...c}, patience:60, since:careerToday(), dev:0, standin:true, picked:true}));
-  } else own=((CAREER.rosters||{})[fmt] || prev).filter(Boolean).slice(0, fmt-1);
+  } else own=ccFmtRoster(fmt);
   own.forEach(r=>{ const c=ccMateCardOf(r); if(c) taken.add(hKey(c)); });
   // Люди гонки и их напарники стэнд-инами не выходят: в общей комнате они стоят своими командами.
   if(typeof ccRaceOn==='function' && ccRaceOn()) ccRaceTakenKeys().forEach(k=>taken.add(k));
@@ -163888,7 +163886,7 @@ function ccRosterSoon(){
     if(!ev || ((ev.invite || ev.ewc24) && !ccVictoryInvited(ev))) continue;
     const fmt=ccPickFormat(ev);
     if(!fmt || fmt===1 || fmt===base) continue;
-    const own=((CAREER.rosters||{})[fmt] || CAREER.partners || []).filter(Boolean).slice(0, fmt-1);
+    const own=ccFmtRoster(fmt);
     if(own.length>=fmt-1) continue;
     return {ev, day, k, fmt, own};
   }
@@ -163924,13 +163922,21 @@ function ccRosterSoonOpen(){
 // Тишина не собирает состав за игрока (его слово 29.09: «чтоб турнир случайно не сыграл, потому что тиммейта нет»);
 // десять минут — только чтобы вечер без человека (пробы, забытая вкладка) не висел вечно.
 const CC_EV_PICK_MS=600000;
+/* Состав другого формата — свой: напарников года в нём нет и по умолчанию они туда не копируются
+   (дуо на EWC и трио на FNCS — разные люди, один человек в двух составах не стоит). */
+function ccFmtRoster(f){
+  if(!CAREER) return [];
+  if(!f || f===careerSquadSize()) return (CAREER.partners||[]).filter(Boolean);
+  const year=new Set((CAREER.partners||[]).map(r=>{ const c=ccMateCardOf(r); return c ? hKey(c.handle) : ''; }).filter(Boolean));
+  return (((CAREER.rosters||{})[f])||[]).filter(r=>{ const c=r && ccMateCardOf(r); return c && !year.has(hKey(c.handle)); }).slice(0, f-1);
+}
 function ccEventRosterPick(ev, fmt){
   if(!fmt || fmt===1 || !CAREER || CC_EVENT_SIZE) return Promise.resolve('go');
   if((typeof ccMpOn==='function' && ccMpOn()) || (typeof ccRacePairOn==='function' && ccRacePairOn())) return Promise.resolve('go');
   if((typeof CC_FF!=='undefined' && CC_FF) || CC_SKIP_ALL) return Promise.resolve('go');
   const base=careerSquadSize();
   if(fmt===base) return Promise.resolve('go');
-  const own=((CAREER.rosters||{})[fmt] || CAREER.partners || []).filter(Boolean).slice(0, fmt-1);
+  const own=ccFmtRoster(fmt);
   const need=fmt-1-own.length;
   /* Полный состав формата — всё равно спросить, раз на это событие (его слово 29.09: «Winter Royale
      после сквад-FNCS, и мне не дали выбрать, с кем идти»). Дуо-состав оставался с лета (ccRosterSwap
@@ -163941,9 +163947,15 @@ function ccEventRosterPick(ev, fmt){
   const T=L();
   const hOf=r=>(ccMateCardOf(r)||{}).handle||'';
   const names=[CAREER.player.nick||CAREER.player.handle||''].concat(own.map(hOf).filter(Boolean));
-  // Кого можно взять кнопкой: свой основной состав года плюс уже стоящие в составе формата.
+  // Кого можно взять кнопкой: уже стоящие в составе формата и свободные со сцены региона, ближайшие по рейтингу.
+  // Напарников года здесь нет: один человек в двух составах не стоит.
   const pool=[];
-  own.concat(CAREER.partners||[]).filter(Boolean).forEach(r=>{ const h=hOf(r); if(h && !pool.some(p=>hKey(p.h)===hKey(h))) pool.push({r, h, ovr:(ccMateCardOf(r)||{}).rating||0}); });
+  own.forEach(r=>{ const h=hOf(r); if(h && !pool.some(p=>hKey(p.h)===hKey(h))) pool.push({r, h, ovr:(ccMateCardOf(r)||{}).rating||0}); });
+  { const busy=new Set([hKey(CAREER.player.handle||CAREER.player.nick||'')].concat((CAREER.partners||[]).map(hOf).filter(Boolean).map(hKey)));
+    const me=CAREER.player.ovr||80;
+    ccSceneRoster(ccCareerRegion()).filter(c=>c && c.handle && !busy.has(hKey(c)) && !pool.some(p=>hKey(p.h)===hKey(c.handle)))
+      .sort((a,b)=>Math.abs(ccCardOvr(a)-me)-Math.abs(ccCardOvr(b)-me)).slice(0, 12)
+      .forEach(c=>pool.push({r:{card:{...c}, patience:CAREER_PATIENCE_START, since:careerToday()}, h:c.handle, ovr:ccCardOvr(c)})); }
   const inOwn=h=>own.some(r=>hKey(hOf(r))===hKey(h));
   return new Promise(done=>{
     const box=document.createElement('div');
@@ -164321,8 +164333,8 @@ function ewc24MyTeam(busy){
   const reg=CAREER.player.region||'EU';
   const taken=new Set((busy||[]).map(h=>String(h).toLowerCase()));
   // Своя четвёрка — сквад-состав игрока (CAREER.rosters[4], собирается в окне состава), иначе напарники года.
-  const r4=((CAREER.rosters||{})[4]||[]).map(r=>ccMateCardOf(r)).filter(Boolean);
-  const mine=[me].concat(r4.length ? r4 : (careerMates()||[]).filter(Boolean)).slice(0, 4);
+  const r4=ccFmtRoster(4).map(r=>ccMateCardOf(r)).filter(Boolean);
+  const mine=[me].concat(careerSquadSize()===4 ? (careerMates()||[]).filter(Boolean) : r4).slice(0, 4);
   mine.forEach(c=>taken.add(String(c.handle||'').toLowerCase()));
   const myOvr=(CAREER.player.ovrExact!=null ? CAREER.player.ovrExact : CAREER.player.ovr)||80;
   /* Сперва люди своего клуба (идея игрока 30.09: «чтобы состав был одной организацией, особенно на EWC» —

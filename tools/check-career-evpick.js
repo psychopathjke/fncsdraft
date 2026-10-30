@@ -87,15 +87,18 @@ const BOOT = `
     check('в этот день сквадовый кап', ev && ev.mode==='squad', JSON.stringify(ev && ev.id));
     const p=ccEventRosterPick(ev, 4); await wait(30);
     check('окно спрашивает', !!document.querySelector('.cc-evpick [data-k="find"]'));
+    const offered=[...document.querySelectorAll('.cc-evpick-p b')].map(b=>b.textContent);
+    check('в окне свободные со сцены, без напарника года', offered.length>=3 && offered.indexOf('M1')<0, JSON.stringify(offered));
     document.querySelector('.cc-evpick [data-k="find"]').click();
     const ans=await p;
     check('ответ «написать»', ans==='find', String(ans));
     // 2) Переписка в формат сквада.
-    const got=await sign(4, 2);
+    const got=await sign(4, 3);
     careerRenderHub('centre');
     const r4=(CAREER.rosters[4]||[]).map(r=>(ccMateCardOf(r)||{}).handle);
     out.steps.push('signed '+JSON.stringify(got)+' rosters[4] '+JSON.stringify(r4)+' partners '+JSON.stringify(careerMates().map(m=>m.handle)));
-    check('подписанные в сквад-составе, напарник остался', got.length===2 && got.every(h=>r4.indexOf(h)>=0) && r4.indexOf('M1')>=0, JSON.stringify(r4));
+    // Составы раздельные: напарник года в сквад-состав не копируется.
+    check('подписанные в сквад-составе, напарника года там нет', got.length===3 && got.every(h=>r4.indexOf(h)>=0) && r4.indexOf('M1')<0, JSON.stringify(r4));
     check('состав года не тронут', careerMates().length===1, JSON.stringify(careerMates().map(m=>m.handle)));
     // Полный состав формата: спрашивает один раз на событие (29.09, Winter Royale), с кнопкой «Играть: …».
     let asked=false; const p2=ccEventRosterPick(ev, 4); await wait(30); asked=!!document.querySelector('.cc-evpick [data-k="go"]');
@@ -119,10 +122,10 @@ const BOOT = `
     if(go) go.click();
     check('плашка открыла поиск сквада', CC_DUO_FMT===4);
     ccDuoFindClose();
-    const got2=await sign(4, 2);
+    const got2=await sign(4, 3);
     const team=ewc24MyTeam([]);
     out.steps.push('ewc team: '+team.squad.map(c=>c.handle).join(', '));
-    check('четвёрка EWC — подписанные', got2.length===2 && got2.every(n=>team.squad.some(c=>c.handle===n)), team.squad.map(c=>c.handle).join(','));
+    check('четвёрка EWC — подписанные', got2.length===3 && got2.every(n=>team.squad.some(c=>c.handle===n)), team.squad.map(c=>c.handle).join(','));
     check('после подписи плашки нет', !ccRosterSoon());
     // 4) Плитка составов в «Карьере»: три строки.
     careerRenderHub('me');
