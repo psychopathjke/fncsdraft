@@ -8724,6 +8724,9 @@
   .cc-evpick-auto{background:none;border:0;color:#8fa1cc;font-size:12px;font-weight:800;text-decoration:underline;cursor:pointer;}
   .cc-evpick-go{background:#ffe600;color:#101a44;border:0;border-radius:10px;padding:10px 18px;font-family:var(--font-display);font-weight:700;font-size:15px;text-transform:uppercase;cursor:pointer;}
   .cc-evpick-go:disabled{opacity:.45;cursor:not-allowed;}
+  .cc-evpick-play{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:center;}
+  .cc-evpick-alt{flex:none;background:none;color:#cfd8ff;border:1px solid rgba(180,200,255,.35);border-radius:10px;padding:9px 14px;
+    font-family:var(--font-display);font-weight:700;font-size:13px;text-transform:uppercase;cursor:pointer;}
   /* Обучение новичка (ccTourStart): затемнение с окном вокруг одного места и подсказка рядом. */
   .cc-tour{position:fixed;inset:0;z-index:9700;}
   .cc-tour-dim{position:absolute;inset:0;background:transparent;}
@@ -120194,7 +120197,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='3e9cf406';
+const CC_BUILD='fda7ab80';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -163949,8 +163952,8 @@ function ccEventRosterPick(ev, fmt){
       '<p>'+esc(need>0 ? T.evPickSub : T.evPickSub2(fmt-1))+'</p>'+ picks +
       '<div class="cc-evpick-act">'+(need>0
         ? '<button class="cc-evpick-auto cc-choice-btn" data-k="go">'+esc(T.evPickAuto)+'</button>'
-        : '<button class="cc-evpick-auto cc-choice-btn" data-k="go">'+esc(T.evPickPlay(own.map(hOf).join(', ')))+'</button>')+
-      '<button class="cc-evpick-go" data-k="find">'+esc(T.evPickFind)+'</button></div></div>';
+        : '<button class="cc-evpick-go cc-evpick-play cc-choice-btn" data-k="go">'+esc(T.evPickPlay(own.map(hOf).join(', ')))+'</button>')+
+      '<button class="'+(need>0 ? 'cc-evpick-go' : 'cc-evpick-alt')+'" data-k="find">'+esc(T.evPickFind)+'</button></div></div>';
     let over=false;
     const end=k=>{ if(over) return; over=true; box.remove();
       if(k==='go'){ cr.evPicked=cr.evPicked||{}; cr.evPicked[evKey]=1; careerSave(); }

@@ -151,7 +151,12 @@ const BOOT = `
     if (ccOwnCreate()) fail('a trio with one of two teammates picked was accepted');
     ccOwnClose();
     const tri = announce({name:'Probe Trios', mode:'trio', entry:'invite', size:50, games:4, pool:15000, shape:'even', team:'pick', roster:picks}, 'trio invite');
+    const before = JSON.stringify({p:(CAREER.partners||[]).map(r => ccMateCardOf(r) && ccMateCardOf(r).handle), r:CAREER.rosters||{}, size:careerSquadSize()});
     const r2 = (await playOn(tri.day, tri.id, 'trio invite')).row;
+    const after = JSON.stringify({p:(CAREER.partners||[]).map(r => ccMateCardOf(r) && ccMateCardOf(r).handle), r:CAREER.rosters||{}, size:careerSquadSize()});
+    if (before !== after) fail('the own trio changed the regular roster: ' + before + ' -> ' + after);
+    if ((CAREER.partners||[]).some(r => r && r.standin)) fail('a stand-in from the own cup stayed in the roster');
+    out.steps.push('after the own trio the regular roster is back: ' + after);
     const mates = JSON.stringify(r2);
     if (!picks.every(h => mates.toLowerCase().indexOf(h.toLowerCase()) >= 0)) fail('picked teammates did not play: ' + mates + ' vs ' + picks.join(','));
     out.steps.push('trio with picked ' + picks.join(' + ') + ': #' + r2.place + ' of ' + r2.of + ', $' + r2.prize);

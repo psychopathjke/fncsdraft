@@ -22,7 +22,7 @@ const BOOT = `
     if(am && am.style.display==="flex"){ const no=document.getElementById("ccAskNo"), yes=document.getElementById("ccAskYes");
       if(no && no.textContent===L().ccSpotGatePlay){ no.click(); return; }
       if(yes && yes.textContent===L().ccSpotGateSet){ careerSpotEnsure(); am.style.display="none"; careerPlay(); return; } }
-    const cb=document.querySelector(".cc-choice-btn:not(.cc-evpick-auto)"); if(cb){ cb.click(); return; }
+    const cb=document.querySelector(".cc-choice-btn:not(.cc-evpick-auto):not(.cc-evpick-play)"); if(cb){ cb.click(); return; }
     const p=document.querySelector(".landing-picker"); if(!p) return;
     const z=p.querySelectorAll(".land-zone"); if(!z.length) return;
     z[0].click();
