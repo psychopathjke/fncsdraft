@@ -24248,7 +24248,7 @@ Object.assign(I18N.ru, {ownTitle:'Свой турнир', ownLead:'Устрой 
   ownTeam:'Состав', ownTeamMine:'Моя команда', ownTeamAuto:'Сильнейшие свободные', ownTeamPick:'Выбрать самому',
   ownTeamFill:n=>'не хватает '+n+', доберём по рейтингу', ownTeamPicked:(a,b)=>'Выбрано '+a+' из '+b,
   ownDates:'Даты: квалы и финал', ownQualTag:'Квалы', ownFinalTag:'Финал', ownQualIn:n=>'Прошёл в финал (топ-'+n+')', ownQualOut:n=>'Не прошёл в финал (топ-'+n+')',
-  ownNewsQualOut:n=>'Не прошёл квалы своего турнира '+n+'. Финал завтра без меня', ownShapeTop:'Победителю больше', ownShapeEven:'Ровнее', ownShapeFlat:'Поровну', ownMin:n=>'Фонд от $'+n, ownMode_solo:'Соло', ownMode_duo:'Дуо', ownMode_trio:'Трио', ownMode_squad:'Сквад',
+  ownNewsQualOut:n=>'Не прошёл квалы своего турнира '+n+'. Финал завтра без меня', ownShapeTop:'Победителю половина', ownShapePodium:'Подиум', ownShapeTop10:'Топ-10', ownShapeEven:'Ровнее', ownMin:n=>'Фонд от $'+n, ownMode_solo:'Соло', ownMode_duo:'Дуо', ownMode_trio:'Трио', ownMode_squad:'Сквад',
   ownNoDays:'Свободных дней в ближайшие два месяца нет', ownNoCash:n=>'Не хватает $'+n+' на фонд', ownCreate:n=>'Объявить · фонд $'+n, ownCancel:'Отменить',
   ownWhyMp:'Вдвоём свои турниры не устраиваются', ownNewsAnnounce:(n,d,p)=>'Объявил свой турнир '+n+': '+d+', фонд $'+p});
 Object.assign(I18N.en, {ownTitle:'Your tournament', ownLead:'Run a cup yourself: date, mode, invite or qualifier, games and prize pool. You play in it.',
@@ -24258,7 +24258,7 @@ Object.assign(I18N.en, {ownTitle:'Your tournament', ownLead:'Run a cup yourself:
   ownTeam:'Team', ownTeamMine:'My team', ownTeamAuto:'Best free players', ownTeamPick:'Pick myself',
   ownTeamFill:n=>n+' short, filled by rating', ownTeamPicked:(a,b)=>a+' of '+b+' picked',
   ownDates:'Dates: qualifier and final', ownQualTag:'Qualifier', ownFinalTag:'Final', ownQualIn:n=>'Through to the final (top '+n+')', ownQualOut:n=>'Out before the final (top '+n+')',
-  ownNewsQualOut:n=>'Out in the qualifier of my own '+n+'. The final goes on tomorrow without me', ownShapeTop:'Winner gets more', ownShapeEven:'Flatter', ownShapeFlat:'Equal', ownMin:n=>'Pool from $'+n, ownMode_solo:'Solo', ownMode_duo:'Duos', ownMode_trio:'Trios', ownMode_squad:'Squads',
+  ownNewsQualOut:n=>'Out in the qualifier of my own '+n+'. The final goes on tomorrow without me', ownShapeTop:'Half to the winner', ownShapePodium:'Podium', ownShapeTop10:'Top 10', ownShapeEven:'Flatter', ownMin:n=>'Pool from $'+n, ownMode_solo:'Solo', ownMode_duo:'Duos', ownMode_trio:'Trios', ownMode_squad:'Squads',
   ownNoDays:'No free days in the next two months', ownNoCash:n=>'$'+n+' short for the pool', ownCreate:n=>'Announce · $'+n+' pool', ownCancel:'Cancel',
   ownWhyMp:'Own tournaments are not hosted in a two-player career', ownNewsAnnounce:(n,d,p)=>'Announced my own tournament '+n+': '+d+', $'+p+' pool'});
 Object.assign(I18N.ru, {ccLkSub:'Мой набор', ccLkChar:'Персонаж', ccLkEmotes:'Эмоции', ccFnSave:'Сохранить набор', ccSacFind:'Найти автора'});
@@ -120183,7 +120183,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='1c3f4e5e';
+const CC_BUILD='0d46bfc6';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -157085,7 +157085,10 @@ function ccVictoryLocked(){
 const CC_OWN_MIN=10000, CC_OWN_POOLS=[10000, 25000, 50000, 100000, 250000, 1000000], CC_OWN_STEP=5000;
 /* Призовые получают все составы финала: на 100 человек это 100 соло, 50 дуо, 33 трио, 25 сквадов. Форма
    делёжки — вес места 1/место^k: «победителю больше» k=1.2, «ровнее» k=0.5, «поровну» k=0. */
-const CC_OWN_SHAPES={top:1.2, even:0.5, flat:0};
+/* Делёжка: head — доли фонда верхним местам, остальное хвосту по 1/место^k.
+   top: победителю половина; podium: 35/20/12; top10: десятке 70% по убыванию; even: всем 1/√место. */
+const CC_OWN_SHAPES={top:{head:[0.5], k:1}, podium:{head:[0.35, 0.2, 0.12], k:1},
+  top10:{headN:10, headPart:0.7, k:1}, even:{head:[], k:0.5}};
 // Квалы: в финал проходит 100 человек, финал — на следующий день.
 const CC_OWN_FINAL=100;
 let CC_OWN_DRAFT=null;
@@ -157103,10 +157106,18 @@ function ccOwnField(d){
   return Math.max(2, Math.round(players/ccOwnSize(d.mode)));
 }
 function ccOwnPayT(d){
-  const size=ccOwnSize(d.mode), n=ccOwnField(d), k=CC_OWN_SHAPES[d.shape]!=null ? CC_OWN_SHAPES[d.shape] : 1.2;
-  const w=[]; for(let i=1;i<=n;i++) w.push(1/Math.pow(i, k));
-  const sum=w.reduce((a,b)=>a+b, 0);
-  return {EU:w.map((x, i)=>[i+1, Math.max(1, Math.floor(d.pool*x/sum/size))])};
+  const size=ccOwnSize(d.mode), n=ccOwnField(d), sh=CC_OWN_SHAPES[d.shape]||CC_OWN_SHAPES.top;
+  const w=[]; for(let i=1;i<=n;i++) w.push(1/Math.pow(i, sh.k));
+  const sumOf=(a, b)=>w.slice(a, b).reduce((x, y)=>x+y, 0);
+  let share;
+  if(sh.headN){
+    const h=Math.min(sh.headN, n), part=h<n ? sh.headPart : 1;
+    share=w.map((x, i)=>i<h ? part*x/sumOf(0, h) : (1-part)*x/sumOf(h, n));
+  } else {
+    const head=sh.head.slice(0, Math.max(0, n-1)), left=1-head.reduce((a, b)=>a+b, 0);
+    share=w.map((x, i)=>i<head.length ? head[i] : left*x/sumOf(head.length, n));
+  }
+  return {EU:share.map((f, i)=>[i+1, Math.max(1, Math.floor(d.pool*f/size))])};
 }
 // Дни под турнир: свободный день, а квалам — два свободных подряд.
 function ccOwnFreeDays(two){
@@ -157180,7 +157191,7 @@ function ccOwnDraw(){
     row(T.ownPool, '<div class="own-step"><button onclick="ccOwnPoolStep(-1)">−</button>'+
       '<input class="cc-sac-q" id="ownPoolIn" type="text" inputmode="numeric" value="'+ccNum(d.pool)+'" oninput="ccOwnPoolIn(this.value)" onblur="this.value=ccNum(CC_OWN_DRAFT ? CC_OWN_DRAFT.pool : 0)">'+
       '<button onclick="ccOwnPoolStep(1)">+</button></div>'+chips('pool', CC_OWN_POOLS.map(p=>[p, '$'+ccNum(p)])))+
-    row(T.ownShape, chips('shape', [['top', T.ownShapeTop], ['even', T.ownShapeEven], ['flat', T.ownShapeFlat]]))+
+    row(T.ownShape, chips('shape', [['top', T.ownShapeTop], ['podium', T.ownShapePodium], ['top10', T.ownShapeTop10], ['even', T.ownShapeEven]]))+
     '<div id="ownPayBox">'+ccOwnPayBoxHTML()+'</div>'+
     '</div>';
   el.style.display='flex';

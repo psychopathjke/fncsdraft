@@ -127,6 +127,19 @@ const BOOT = `
     Object.keys(want).forEach(m => { const n = ccOwnPayT({mode:m, entry:'open', pool:10000, shape:'even'}).EU.length;
       if (n !== want[m]) fail(m + ' final pays ' + n + ' teams, should be ' + want[m]); });
     out.steps.push('a 100-player final pays 100 solo / 50 duo / 33 trio / 25 squad');
+    // «Победителю больше»: первый берёт половину, дальше строго по убыванию.
+    { const t = ccOwnPayT({mode:'solo', entry:'open', pool:100000, shape:'top'}).EU;
+      if (t[0][1] !== 50000) fail('the winner should take half of $100,000, got $' + t[0][1]);
+      if (t.some((r, i) => i && r[1] > t[i-1][1])) fail('prizes go up somewhere down the table');
+      out.steps.push('winner-takes-more: #1 $' + t[0][1] + ', #2 $' + t[1][1] + ', #100 $' + t[99][1]); }
+    // Подиум 35/20/12 и топ-10 с 70%: суммы не больше фонда, по убыванию, платят всем.
+    for (const shape of ['podium', 'top10', 'even']) {
+      const t = ccOwnPayT({mode:'solo', entry:'open', pool:100000, shape}).EU, sum = t.reduce((x, r) => x + r[1], 0);
+      if (t.length !== 100 || sum > 100000 || t.some((r, i) => i && r[1] > t[i-1][1]) || !(t[99][1] > 0)) fail(shape + ' table is off: sum ' + sum);
+      if (shape === 'podium' && (t[0][1] !== 35000 || t[1][1] !== 20000 || t[2][1] !== 12000)) fail('podium is not 35/20/12: ' + t.slice(0, 3).map(r => r[1]));
+      if (shape === 'top10') { const top = t.slice(0, 10).reduce((x, r) => x + r[1], 0); if (top < 69900 || top > 70000) fail('top 10 should share 70%, got $' + top); }
+      out.steps.push(shape + ': #1 $' + t[0][1] + ', #10 $' + t[9][1] + ', #100 $' + t[99][1]);
+    }
 
     // Трио в соло-году с выбранными тиммейтами.
     fresh(200000);
@@ -135,7 +148,7 @@ const BOOT = `
     ccOwnOpen(); Object.assign(CC_OWN_DRAFT, {mode:'trio', team:'pick', roster:picks.slice(0, 1)});
     if (ccOwnCreate()) fail('a trio with one of two teammates picked was accepted');
     ccOwnClose();
-    const tri = announce({name:'Probe Trios', mode:'trio', entry:'invite', size:50, games:4, pool:15000, shape:'flat', team:'pick', roster:picks}, 'trio invite');
+    const tri = announce({name:'Probe Trios', mode:'trio', entry:'invite', size:50, games:4, pool:15000, shape:'even', team:'pick', roster:picks}, 'trio invite');
     const r2 = (await playOn(tri.day, tri.id, 'trio invite')).row;
     const mates = JSON.stringify(r2);
     if (!picks.every(h => mates.toLowerCase().indexOf(h.toLowerCase()) >= 0)) fail('picked teammates did not play: ' + mates + ' vs ' + picks.join(','));
