@@ -104710,7 +104710,7 @@ window.addEventListener('unhandledrejection', function(e){
   ccErrLog('rej', (r && r.message) || r, r && r.stack ? String(r.stack).split('\n').slice(1, 3).join(' < ').replace(/\s+/g, ' ') : '');
 });
 let runGeneration=0, currentRunGen=0;
-function abandonRun(){ runGeneration++; }
+function abandonRun(){ runGeneration++; try{ if(typeof ccMpIdleEpoch==='function') ccMpIdleEpoch(); }catch(e){} }
 function runIsCurrent(){ return currentRunGen===runGeneration; }
 
 /* Показ выключен — пропуском или тем, что смотреть некому.
@@ -120113,7 +120113,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='802596e2';
+const CC_BUILD='fce4ec65';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -120516,12 +120516,18 @@ let CC_MP_GAME=0;
    пришло. Скриншот: «rolls @ oth=… · hid 1» — броски разошлись у
    вкладки в фоне при равном поле; кто тратил сид в паузе, теперь назовёт
    сама красная строка (foreign N @ стек), а тратить он больше не сможет. */
-let CC_MP_IDLE=0, CC_MP_FOREIGN=0, CC_MP_FOREIGN_AT='';
+let CC_MP_IDLE=0, CC_MP_FOREIGN=0, CC_MP_FOREIGN_AT='', CC_MP_IDLE_EPOCH=0;
+/* Паузы считаются по эпохам: старт вечера (ccMpSeedOn) и брошенный забег (abandonRun) открывают новую.
+   Пауза из прошлой эпохи (sleep брошенного забега ещё тикает) не трогает новый счёт, иначе её конец уводил
+   счётчик в минус или, наоборот, держал его выше нуля, и симуляция нового вечера брала родной генератор
+   (у видимой вкладки 631 бросок «чужими» на игре 1, у свёрнутой 0). */
 function ccMpIdle(p){
   if(!CC_MP_RAND) return p;
+  const ep=CC_MP_IDLE_EPOCH;
   CC_MP_IDLE++;
-  return Promise.resolve(p).finally(function(){ CC_MP_IDLE--; });
+  return Promise.resolve(p).finally(function(){ if(ep===CC_MP_IDLE_EPOCH && CC_MP_IDLE>0) CC_MP_IDLE--; });
 }
+function ccMpIdleEpoch(){ CC_MP_IDLE_EPOCH++; CC_MP_IDLE=0; }
 function ccMpSeedOn(seed){
   ccMpSeedOff();
   // Новый вечер — пропуск снова спрашивается у обоих, вопросы считаются заново.
@@ -120566,7 +120572,7 @@ function ccMpSeedOn(seed){
      строку всем, и по ней все строят один и тот же набор ботов. */
   CC_MP_SEED=String(seed||'')||null;
   const g=careerRng(ccHashStr(String(seed)));
-  CC_MP_IDLE=0; CC_MP_FOREIGN=0; CC_MP_FOREIGN_AT='';
+  ccMpIdleEpoch(); CC_MP_FOREIGN=0; CC_MP_FOREIGN_AT='';
   const native=CC_MP_RAND;
   Math.random=function(){
     if(CC_MP_IDLE>0){
@@ -157035,14 +157041,17 @@ function ccVictoryList(){
 // Остров Reload по году: 2026-й — четвёртый круг серии, 2025-й — первый (другого измеренного нет).
 function ccReloadSetOfYear(){ return (ccIs2025() || ccIs2024()) ? (ZONE_SETS.r1 ? 'r1' : careerBrSet()) : (ZONE_SETS.r4 ? 'r4' : careerBrSet()); }
 function ccVictoryAlts(iso){ return ccVictoryList().filter(v=>v.day===iso); }
+/* Онлайн (гонка и команда вдвоём): кап дня один на всех, по умолчанию, без кнопок выбора. vpick синхронизируется
+   с задержкой, и если один успел нажать, двое садились в разные капы одного дня (соло и дуо Luxe Cup 2019,
+   разошлись на игре 1). */
+function ccVictoryLocked(){
+  return (typeof ccRaceOn==='function' && ccRaceOn()) || (typeof ccMpTeam==='function' && ccMpTeam());
+}
 function careerVictoryOn(iso){
   const alts=ccVictoryAlts(iso);
   if(alts.length<2) return alts[0] || null;
   const cr=(typeof CAREER!=='undefined' && CAREER && CAREER.career) || null;
-  /* В гонке кап дня один на комнату: выбор у каждого свой, и нажавший кнопку играл ZB-кап, а сосед обычный —
-     «field victory:S28_ConsoleCashCups… vs …ConsoleCashCupsZB…», вечер расходился на игре 1 (Notion 24.10.26,
-     гонка 2024). Пока гонка идёт, играют кап по умолчанию, кнопки выбора не рисуются (ccVictoryAltsHTML). */
-  const raced=typeof ccRaceOn==='function' && ccRaceOn();
+  const raced=ccVictoryLocked();
   const pick=!raced && cr && cr.vpick && cr.vpick[iso];
   const hit=pick && alts.find(v=>v.id===pick);
   if(hit) return hit;
@@ -157053,7 +157062,7 @@ function ccVictoryPick(id){
   const cr=CAREER && CAREER.career; if(!cr) return;
   const day=careerToday();
   if(!ccVictoryAlts(day).some(v=>v.id===id)) return;
-  if(typeof ccRaceOn==='function' && ccRaceOn()) return;
+  if(ccVictoryLocked()) return;
   (cr.vpick=cr.vpick||{})[day]=id;
   careerSave();
   careerRenderHub(CH_TAB||'centre');
@@ -157061,7 +157070,7 @@ function ccVictoryPick(id){
 // Капы этого дня — кнопками под названием вечера, если их больше одного.
 function ccVictoryAltsHTML(){
   const alts=ccVictoryAlts(careerToday());
-  if(alts.length<2 || (typeof ccRaceOn==='function' && ccRaceOn())) return '';
+  if(alts.length<2 || ccVictoryLocked()) return '';
   const cur=careerVictoryOn(careerToday());
   // Капы на разных платформах в один день называются одинаково — платформа из id.
   const plat=id=>/Mobile/i.test(id) ? 'Mobile' : /Console|Xbox|Playstation/i.test(id) ? 'Console' : /_PC\b|_PC$/.test(id) ? 'PC' : '';
