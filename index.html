@@ -105917,7 +105917,7 @@ async function simulateGamesLive(teams, numGames, pointsFn, killMult, fieldPrefi
          Сотня на 4900 едет один раз, как ехала. */
       CC_MP_FIELD_LIST=((g===0 || teams.length<=600) && typeof ccMpFieldList==='function') ? ccMpFieldList(teams) : null;
       CC_MP_STATE_KEYS=ccMpStateKeys();
-      await ccMpSync('game', (g+1)+'|'+ccTableHash(teams)+'|'+CC_MP_ROLLS+'|'+ccFieldSig(teams)+'|'+CC_MP_LEDGER.join(',')+'|'+ccTableTop(teams)+'|'+(CC_MP_FIELD_FP||''), ccMpQn('game'));   // 7-е поле — отпечаток сборки, только для показа
+      await ccMpSync('game', (g+1)+'|'+ccTableHash(teams)+'|'+CC_MP_ROLLS+'|'+ccFieldSig(teams)+'|'+CC_MP_LEDGER.join(',')+'|'+ccTableTop(teams)+'|'+(CC_MP_FIELD_FP||'')+ccMpHumansTag(teams), ccMpQn('game'));   // 7-е поле — отпечаток сборки, только для показа
       CC_MP_FIELD_LIST=null;
       ccMpLedgerReset();
     }
@@ -120258,7 +120258,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='7743db29';
+const CC_BUILD='7ce8a610';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -122536,6 +122536,11 @@ function ccMpStartNew(){
    сходится везде, значит дело в состоянии вкладок — и первый вопрос «то же
    ли поле» должен отвечаться на первой же игре. Сюда же остров: раннеры
    берут его из ACTIVE_LANDING_SET, а это состояние вкладки. */
+// Люди поля поимённо с силой: в подписи поля они сортированы и безымянны (h82+88), здесь видно, чья сила разошлась. Только для показа.
+function ccMpHumansTag(teams){
+  try{ return ' H'+(teams||[]).filter(function(t){ return t.isYou||t.isMate||t.isRival; })
+    .map(function(t){ return String(t.mpTag||t.name||'?').replace(/[|\s]/g,'').slice(0,14)+':'+Math.round(t.pow||0); }).sort().join(','); }catch(e){ return ''; }
+}
 function ccFieldSig(teams){
   // По никам (в одном порядке — у дуо состав у каждого свой первый), не по имени:
   // своя строка подписана «Твой состав», а у напарника в соло она без подписи.
@@ -134621,7 +134626,10 @@ function careerCupFieldRaw(cr, mine, size, salt, open, sharp){
   try{ const pl=(open || cr.division===1) ? careerPools() : null; const dl=(pl && pl.duos)||[];
     CC_MP_FIELD_FP='s'+String(careerSeed(cr, salt)).slice(0,6)+'.t'+String(ccHashStr([...taken].sort().join('|'))).slice(0,6)+
       '.p'+dl.length+':'+String(ccHashStr(dl.map(d=>(d.cards||[]).map(c=>c&&(c._k||hKey(c))).join('+')).join('|'))).slice(0,6)+':'+String(ccHashStr(dl.map(d=>Math.round(ccDuoOvr(d)*10)).join(','))).slice(0,6)+
-      '.'+String(ccPoolRegion())+'.sh'+String(sharp||0)+'.o'+(open?1:0); }catch(e){ CC_MP_FIELD_FP='fp-err'; }
+      '.'+String(ccPoolRegion())+'.sh'+String(sharp||0)+'.o'+(open?1:0)+
+      // Из чего сложен сид (careerSeed): разошёлся s — видно, что именно.
+      '.c'+cr.season+'w'+((cr.seedWeek!=null) ? cr.seedWeek : careerWeek())+'d'+cr.division+'.e'+String(ccHashStr(String((typeof CC_MP_SEED!=='undefined' && CC_MP_SEED)||''))).slice(0,6)+
+      (ccRaceLock() ? '.L' : ''); }catch(e){ CC_MP_FIELD_FP='fp-err'; }
   const cores=(per>2) ? allDuos.slice(0, need) : allDuos;
   const extras=[];
   /* Хвост очереди больше не разбираем на третьих. С тех пор как careerPools кладёт
