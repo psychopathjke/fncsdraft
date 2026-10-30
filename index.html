@@ -24222,14 +24222,16 @@ Object.assign(I18N.pt, {ccYrXHeatsIn:k=>'Top '+k+' da série — nos heats', ccY
 // Шкафчик: подписи как в русском клиенте Fortnite; в остальных языках остаётся английский вид Epic.
 Object.assign(I18N.ru, {ownTitle:'Свой турнир', ownLead:'Устрой кап сам: дата, режим, инвайт или квалы, игры и призовой фонд. Играешь в нём сам.',
   ownNew:'Устроить турнир', ownName:'Название', ownDate:'Дата', ownMode:'Режим', ownEntry:'Допуск', ownSize:'Лобби, игроков', ownGames:'Игр',
-  ownPool:'Призовой фонд', ownSplit:'Делёж', ownInvite:'Инвайт', ownOpenQ:'Квалы и финал', ownOpenNote:'Открытая квалификация региона, лучшие проходят в финал в тот же вечер.',
-  ownSplitWin:'Всё победителю', ownSplitTop3:'Топ-3', ownSplitTop10:'Топ-10', ownMode_solo:'Соло', ownMode_duo:'Дуо', ownMode_trio:'Трио', ownMode_squad:'Сквад',
+  ownPool:'Призовой фонд', ownInvite:'Инвайт', ownOpenQ:'Квалы и финал', ownOpenNote:'Открытая квалификация региона, лучшие проходят в финал в тот же вечер.',
+  ownPaid:n=>'Кто получает · участников '+n, ownPaid3:'Топ-3', ownPaid10:'Топ-10', ownPaid25:'Четверть', ownPaidAll:'Все участники',
+  ownShape:'Как делить', ownShapeTop:'Победителю больше', ownShapeEven:'Ровнее', ownShapeFlat:'Поровну', ownMin:n=>'Фонд от $'+n, ownMode_solo:'Соло', ownMode_duo:'Дуо', ownMode_trio:'Трио', ownMode_squad:'Сквад',
   ownNoDays:'Свободных дней в ближайшие два месяца нет', ownNoCash:n=>'Не хватает $'+n+' на фонд', ownCreate:n=>'Объявить · фонд $'+n, ownCancel:'Отменить',
   ownWhyMp:'Вдвоём свои турниры не устраиваются', ownNewsAnnounce:(n,d,p)=>'Объявил свой турнир '+n+': '+d+', фонд $'+p});
 Object.assign(I18N.en, {ownTitle:'Your tournament', ownLead:'Run a cup yourself: date, mode, invite or qualifier, games and prize pool. You play in it.',
   ownNew:'Host a tournament', ownName:'Name', ownDate:'Date', ownMode:'Mode', ownEntry:'Entry', ownSize:'Lobby, players', ownGames:'Games',
-  ownPool:'Prize pool', ownSplit:'Split', ownInvite:'Invite', ownOpenQ:'Qualifier + final', ownOpenNote:'Open regional qualifier, the best go through to the final the same evening.',
-  ownSplitWin:'Winner takes all', ownSplitTop3:'Top 3', ownSplitTop10:'Top 10', ownMode_solo:'Solo', ownMode_duo:'Duos', ownMode_trio:'Trios', ownMode_squad:'Squads',
+  ownPool:'Prize pool', ownInvite:'Invite', ownOpenQ:'Qualifier + final', ownOpenNote:'Open regional qualifier, the best go through to the final the same evening.',
+  ownPaid:n=>'Who gets paid · '+n+' entrants', ownPaid3:'Top 3', ownPaid10:'Top 10', ownPaid25:'Top quarter', ownPaidAll:'Everyone',
+  ownShape:'Split', ownShapeTop:'Winner gets more', ownShapeEven:'Flatter', ownShapeFlat:'Equal', ownMin:n=>'Pool from $'+n, ownMode_solo:'Solo', ownMode_duo:'Duos', ownMode_trio:'Trios', ownMode_squad:'Squads',
   ownNoDays:'No free days in the next two months', ownNoCash:n=>'$'+n+' short for the pool', ownCreate:n=>'Announce · $'+n+' pool', ownCancel:'Cancel',
   ownWhyMp:'Own tournaments are not hosted in a two-player career', ownNewsAnnounce:(n,d,p)=>'Announced my own tournament '+n+': '+d+', $'+p+' pool'});
 Object.assign(I18N.ru, {ccLkSub:'Мой набор', ccLkChar:'Персонаж', ccLkEmotes:'Эмоции', ccFnSave:'Сохранить набор', ccSacFind:'Найти автора'});
@@ -120154,7 +120156,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='303e5601';
+const CC_BUILD='f5b5f880';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -157019,9 +157021,13 @@ function ccVictoryLocked(){
    региона, как ЛАН; квалы — открытый первый раунд и финал прошедших. Фонд снимается с баланса при
    создании, отмена до дня турнира возвращает его. Устраивать может тот, кто держит свою кастомку (ccHostWhy):
    аудитория, клуб или PR. Вдвоём не устраивается: календарь у двоих должен быть один. */
-const CC_OWN_POOLS=[1000, 5000, 10000, 25000, 50000, 100000, 250000, 1000000];
-const CC_OWN_SPLITS={win:[[1,1]], top3:[[1,.5],[2,.3],[3,.2]],
-  top10:[[1,.3],[2,.2],[3,.12],[4,.09],[5,.07],[6,.06],[7,.05],[8,.04],[9,.04],[10,.03]]};
+// Фонд — любой от CC_OWN_MIN; кнопки — быстрые суммы.
+const CC_OWN_MIN=10000, CC_OWN_POOLS=[10000, 25000, 50000, 100000, 250000, 1000000];
+/* Призовые места считаются от числа участников (инвайт — лобби, квалы — финал прошедших): топ-3, топ-10,
+   четверть или все. Форма делёжки — вес места 1/место^k: «победителю больше» k=1.2 (у топ-10 победитель берёт
+   ~40%), «ровнее» k=0.5 (~20%), «поровну» k=0. */
+const CC_OWN_SHAPES={top:1.2, even:0.5, flat:0};
+const CC_OWN_PAID=['3','10','25p','all'];
 let CC_OWN_DRAFT=null;
 function ccOwnCupsVer(){ const cr=typeof CAREER!=='undefined' && CAREER && CAREER.career; return (cr && cr.ownV) || 0; }
 function ccOwnModeOfYear(){ const n=careerSquadSize(); return n===1 ? 'solo' : n===2 ? 'duo' : n===3 ? 'trio' : 'squad'; }
@@ -157032,10 +157038,21 @@ function ccOwnCups(){
   const from=ccYearFrom(), to=ccYearTo();
   return cr.ownCups.filter(c=>c.day>=from && c.day<=to && !c.off);
 }
-// Таблица на игрока: доля фонда за место, у команды делится на состав.
-function ccOwnPayT(pool, split, mode){
-  const size=ccOwnSize(mode);
-  return {EU:(CC_OWN_SPLITS[split]||CC_OWN_SPLITS.top3).map(([p,f])=>[p, Math.round(pool*f/size)])};
+// Сколько составов играет: инвайт — лобби на составы, квалы — комната финала.
+function ccOwnField(d){
+  const size=ccOwnSize(d.mode);
+  return d.entry==='invite' ? Math.max(2, Math.round(d.size/size)) : Math.max(2, Math.round(CC_VICTORY_R2_PLAYERS/size));
+}
+function ccOwnPaidN(d){
+  const n=ccOwnField(d);
+  return Math.max(1, Math.min(n, d.paid==='3' ? 3 : d.paid==='10' ? 10 : d.paid==='25p' ? Math.ceil(n/4) : n));
+}
+// Таблица на игрока: доля фонда за место по форме, у команды делится на состав.
+function ccOwnPayT(d){
+  const size=ccOwnSize(d.mode), n=ccOwnPaidN(d), k=CC_OWN_SHAPES[d.shape]!=null ? CC_OWN_SHAPES[d.shape] : 1.2;
+  const w=[]; for(let i=1;i<=n;i++) w.push(1/Math.pow(i, k));
+  const sum=w.reduce((a,b)=>a+b, 0);
+  return {EU:w.map((x, i)=>[i+1, Math.floor(d.pool*x/sum/size)])};
 }
 function ccOwnFreeDays(){
   const cr=CAREER.career, today=careerToday(), days=careerYearDays(), out=[];
@@ -157052,7 +157069,7 @@ function ccOwnWhy(){
 }
 function ccOwnOpen(){
   const free=ccOwnFreeDays();
-  CC_OWN_DRAFT={name:(String(CAREER.player.nick||'')+' Cup').trim(), day:free[0]||'', mode:'solo', entry:'invite', size:100, games:6, pool:5000, split:'top3'};
+  CC_OWN_DRAFT={name:(String(CAREER.player.nick||'')+' Cup').trim(), day:free[0]||'', mode:'solo', entry:'invite', size:100, games:6, pool:CC_OWN_MIN, paid:'10', shape:'top'};
   ccOwnDraw();
 }
 function ccOwnSet(k, v){ if(!CC_OWN_DRAFT) return; CC_OWN_DRAFT[k]=v; ccOwnDraw(); }
@@ -157067,7 +157084,7 @@ function ccOwnDraw(){
   const yr=ccOwnModeOfYear();
   const modes=[['solo', T.ownMode_solo]].concat(yr!=='solo' ? [[yr, T['ownMode_'+yr]]] : []);
   const bal=CAREER.career.balance||0, why=ccOwnWhy();
-  const pay=ccOwnPayT(d.pool, d.split, d.mode).EU, size=ccOwnSize(d.mode);
+  const n=ccOwnField(d);
   el.innerHTML='<div class="cc-sac-in own-in"><h4>'+esc(T.ownTitle)+'</h4><button class="cc-sac-x" onclick="ccOwnClose()">✕</button>'+
     row(T.ownName, '<input class="cc-sac-q" maxlength="32" value="'+esc(d.name)+'" oninput="CC_OWN_DRAFT.name=this.value">')+
     row(T.ownDate, free.length ? chips('day', free.map(x=>[x, ccDayLabel(x)])) : '<small>'+esc(T.ownNoDays)+'</small>')+
@@ -157076,21 +157093,38 @@ function ccOwnDraw(){
     (d.entry==='invite'
       ? row(T.ownSize, chips('size', [[50, '50'], [100, '100']]))+row(T.ownGames, chips('games', [[4,'4'],[6,'6'],[8,'8'],[10,'10'],[12,'12']]))
       : '<small class="own-note">'+esc(T.ownOpenNote)+'</small>')+
-    row(T.ownPool, chips('pool', CC_OWN_POOLS.map(p=>[p, '$'+ccNum(p)])))+
-    row(T.ownSplit, chips('split', [['win', T.ownSplitWin], ['top3', T.ownSplitTop3], ['top10', T.ownSplitTop10]]))+
-    '<div class="own-pay">'+pay.map(([p, a])=>'<span><b>#'+p+'</b> $'+ccNum(a*size)+'</span>').join('')+'</div>'+
-    (why ? '<div class="own-why">'+esc(why)+'</div>'
-      : bal<d.pool ? '<div class="own-why">'+esc(T.ownNoCash(ccNum(d.pool-bal)))+'</div>'
-      : !d.day ? '' : '<button class="ch-play own-go" onclick="ccOwnCreate()">'+esc(T.ownCreate(ccNum(d.pool)))+'</button>')+
+    row(T.ownPool, '<input class="cc-sac-q" id="ownPoolIn" type="number" inputmode="numeric" min="'+CC_OWN_MIN+'" step="1000" value="'+d.pool+'" oninput="ccOwnPoolIn(this.value)">'+
+      chips('pool', CC_OWN_POOLS.map(p=>[p, '$'+ccNum(p)])))+
+    row(T.ownPaid(n), chips('paid', [['3', T.ownPaid3], ['10', T.ownPaid10], ['25p', T.ownPaid25], ['all', T.ownPaidAll]]))+
+    row(T.ownShape, chips('shape', [['top', T.ownShapeTop], ['even', T.ownShapeEven], ['flat', T.ownShapeFlat]]))+
+    '<div id="ownPayBox">'+ccOwnPayBoxHTML()+'</div>'+
     '</div>';
   el.style.display='flex';
 }
+// Предпросмотр выплат и кнопка — отдельно: ввод суммы не перерисовывает окно и не теряет курсор.
+function ccOwnPoolIn(v){
+  if(!CC_OWN_DRAFT) return;
+  CC_OWN_DRAFT.pool=Math.max(0, Math.floor(Number(String(v).replace(/[^0-9]/g, ''))||0));
+  const box=document.getElementById('ownPayBox'); if(box) box.innerHTML=ccOwnPayBoxHTML();
+  document.querySelectorAll('#ccOwnModal .own-chips button').forEach(b=>{ if(/ccOwnSet\('pool'/.test(b.getAttribute('onclick')||'')) b.classList.toggle('on', b.getAttribute('onclick').indexOf(','+CC_OWN_DRAFT.pool+')')>=0); });
+}
+function ccOwnPayBoxHTML(){
+  const T=L(), d=CC_OWN_DRAFT; if(!d) return '';
+  const bal=CAREER.career.balance||0, why=ccOwnWhy(), size=ccOwnSize(d.mode);
+  const pay=d.pool>=CC_OWN_MIN ? ccOwnPayT(d).EU : [];
+  const shown=pay.length>12 ? pay.slice(0, 10).concat([pay[pay.length-1]]) : pay;
+  return '<div class="own-pay">'+shown.map(([p, a], i)=>(pay.length>12 && i===10 ? '<span>…</span>' : '')+'<span><b>#'+p+'</b> $'+ccNum(a*size)+'</span>').join('')+'</div>'+
+    (why ? '<div class="own-why">'+esc(why)+'</div>'
+      : d.pool<CC_OWN_MIN ? '<div class="own-why">'+esc(T.ownMin(ccNum(CC_OWN_MIN)))+'</div>'
+      : bal<d.pool ? '<div class="own-why">'+esc(T.ownNoCash(ccNum(d.pool-bal)))+'</div>'
+      : !d.day ? '' : '<button class="ch-play own-go" onclick="ccOwnCreate()">'+esc(T.ownCreate(ccNum(d.pool)))+'</button>');
+}
 function ccOwnCreate(){
   const d=CC_OWN_DRAFT, cr=CAREER.career; if(!d || !d.day || ccOwnWhy()) return null;
-  if((cr.balance||0)<d.pool || ccOwnFreeDays().indexOf(d.day)<0) return null;
+  if(!(d.pool>=CC_OWN_MIN) || (cr.balance||0)<d.pool || ccOwnFreeDays().indexOf(d.day)<0) return null;
   const name=String(d.name||'').trim().slice(0, 32) || 'Cup';
   const id='OWN_'+(cr.ownN=(cr.ownN||0)+1);
-  const c={day:d.day, id, own:true, mode:d.mode, n:'', name, payT:ccOwnPayT(d.pool, d.split, d.mode), pool:d.pool, entry:d.entry};
+  const c={day:d.day, id, own:true, mode:d.mode, n:'', name, payT:ccOwnPayT(d), pool:d.pool, entry:d.entry, paid:ccOwnPaidN(d), shape:d.shape};
   if(d.entry==='invite'){ c.invite=d.size; c.games=d.games; c.lan=name; }
   cr.balance=(cr.balance||0)-d.pool;
   cr.hosted=(cr.hosted||0)+d.pool;

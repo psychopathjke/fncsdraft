@@ -111,15 +111,26 @@ const BOOT = `
       out.steps.push(label + ': #' + row.place + ' of ' + row.of + ', ' + row.games + ' games, $' + (row.prize||0));
       return row;
     };
-    const inv = await hostOne({name:'Probe Invitational', mode:'solo', entry:'invite', size:50, games:4, pool:10000, split:'top10'}, 'invite solo');
+    const inv = await hostOne({name:'Probe Invitational', mode:'solo', entry:'invite', size:50, games:4, pool:10000, paid:'all', shape:'top'}, 'invite solo');
     if (inv.of !== 50) fail('invite lobby of 50 played with ' + inv.of);
     if (inv.games !== 4) fail('invite with 4 games played ' + inv.games);
-    await hostOne({name:'Probe Open', mode:'solo', entry:'open', pool:5000, split:'top3'}, 'open qualifier');
+    // Все участники получают: таблица на 50 мест, последнее место не ноль, сумма не больше фонда.
+    { const t = ccOwnPayT({mode:'solo', entry:'invite', size:50, pool:10000, paid:'all', shape:'top'}).EU;
+      const sum = t.reduce((a, row) => a + row[1], 0);
+      if (t.length !== 50 || !(t[49][1] > 0) || sum > 10000) fail('pay-everyone table is off: ' + t.length + ' rows, last ' + t[49][1] + ', sum ' + sum);
+      out.steps.push('pay everyone: 50 places, #1 $' + t[0][1] + ', #50 $' + t[49][1]); }
+    // Пул меньше минимума не объявляется.
+    { seed(4, '2026-03-02', 72); const sv = JSON.parse(localStorage.getItem('fncsdraft_career')); sv.career.balance = 50000; sv.career.reach = 50000;
+      localStorage.setItem('fncsdraft_career', JSON.stringify(sv)); careerEntry();
+      ccOwnOpen(); Object.assign(CC_OWN_DRAFT, {pool:9000});
+      if (ccOwnCreate()) fail('a $9,000 pool was accepted, the minimum is $10,000');
+      ccOwnClose(); out.steps.push('pool under $10,000 refused'); }
+    await hostOne({name:'Probe Open', mode:'solo', entry:'open', pool:10000, paid:'25p', shape:'even'}, 'open qualifier');
     // Отмена до дня возвращает фонд.
     seed(4, '2026-03-02', 72);
     { const s = JSON.parse(localStorage.getItem('fncsdraft_career')); s.career.balance = 20000; s.career.reach = 50000; localStorage.setItem('fncsdraft_career', JSON.stringify(s)); }
     careerEntry();
-    ccOwnOpen(); Object.assign(CC_OWN_DRAFT, {pool:5000});
+    ccOwnOpen(); Object.assign(CC_OWN_DRAFT, {pool:10000});
     const c = ccOwnCreate(); ccOwnCancel(c.id);
     if (CAREER.career.balance !== 20000) fail('cancelling did not refund the pool: ' + CAREER.career.balance);
     if ((careerYearDays().get(c.day)||[]).some(e => e.id === c.id)) fail('a cancelled cup stayed on the calendar');
