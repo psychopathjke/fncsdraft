@@ -382,7 +382,9 @@
 <!-- Язык с первого кадра (Notion «20.10»: «сайт сразу на языке, на котором играл игрок, а не англ, а потом русский»).
      Разметка первого экрана — английская, перевод ставит setLang после app.js. Если язык не английский (сохранённый
      или язык браузера — то же правило, что LANG), страница прячется до первого setLang; страховка — 3 с. -->
-<style>html.i18n-wait body{visibility:hidden;}</style>
+<style>html.i18n-wait body{visibility:hidden;}html.boot-me #screen-mode{display:none !important;}</style>
+<!-- Переход сразу в аккаунт (/#me): главная не мелькает, пока не откроется экран аккаунта (openProfileScreen снимает класс). -->
+<script>if(location.hash==='#me')document.documentElement.classList.add('boot-me');setTimeout(function(){document.documentElement.classList.remove('boot-me');},8000);</script>
 <script>try{if(localStorage.getItem('fd_ui_classic')==='1')document.documentElement.classList.add('ui-classic');}catch(e){}</script>
 <!-- ОТКЛИК НА КАСАНИЕ (Notion 23.10, скрин 9: «кнопки нажимаются так, будто у меня огромный пинг»). Код нажатия
      быстрый (замер ×4: 20–90 мс), но кнопка в момент касания не менялась никак: :active во всём файле было два, а iOS
@@ -120054,7 +120056,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='31c1306a';
+const CC_BUILD='cd13fa35';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -174607,7 +174609,11 @@ function openProfileScreen(){
   try{ if(location.hash!=='#me') history.replaceState(null, '', '#me'); }catch(e){}
   window.scrollTo(0, 0);
 }
-window.addEventListener('load', ()=>setTimeout(()=>{ try{ if(location.hash==='#me') openProfileScreen(); }catch(e){} }, 350));
+// /#me открывается, как только код готов: после DOMContentLoaded (язык и главная уже собраны), не дожидаясь картинок.
+(function(){
+  const go=()=>setTimeout(()=>{ try{ if(location.hash==='#me') openProfileScreen(); }catch(e){} document.documentElement.classList.remove('boot-me'); }, 0);
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', go); else go();
+})();
 // Медальоны боссов Fortnite с вики (items/medallions), по одному на месяц.
 const CC_AW_MEDALS=['nisha', 'peter', 'valeria', 'oscar'];
 /* У каждого месяца свой медальон: январь → peter, … декабрь → godzilla.
