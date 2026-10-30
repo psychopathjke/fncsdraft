@@ -9756,7 +9756,7 @@
          «Компетитив» — /competitive (tools/build-competitive.js). Игрок, менеджер, драфт и история — двери на главной. -->
     <nav class="site-nav" aria-label="site">
       <button class="nav-pill nav-main on" type="button" onclick="requestReset()" data-i18n="navGrpCareer"></button>
-      <a class="nav-pill" id="navComp" href="/competitive" data-i18n="navGrpComp"></a>
+      <a class="nav-pill" id="navComp" href="competitive" data-i18n="navGrpComp"></a>
       <button class="nav-pill nav-me" type="button" onclick="openProfileScreen()" data-i18n="navGrpProfile"></button>
     </nav>
     <div style="display:flex;align-items:center;gap:10px;">
@@ -25638,8 +25638,8 @@ function setLang(lang, persist){
                  if(b) b.hidden=!CC_MP_OPEN;
                }); })();
   if(persist!==false){ try{ localStorage.setItem(LS_LANG, lang); }catch(e){} }
-  // Компетитив на том же языке.
-  try{ const nc=document.getElementById('navComp'); if(nc) nc.href=lang==='en' ? '/competitive' : '/'+lang+'/competitive'; }catch(e){}
+  // Компетитив на том же языке; путь относительный — зеркало живёт в подпапке.
+  try{ const nc=document.getElementById('navComp'); if(nc) nc.setAttribute('href', (/\/(ru|fr|it|pt|de|es)\/(index\.html)?$/.test(location.pathname) ? '../' : '')+(lang==='en' ? '' : lang+'/')+'competitive'); }catch(e){}
   // Сменил язык руками на /ru/ и т.п. — адрес следом, иначе перезагрузка вернула бы язык адреса.
   if(persist!==false && CC_PATH_LANG && lang!==CC_PATH_LANG){
     try{ history.replaceState(null, '', '/' + (lang==='en' ? '' : lang + '/') + location.search + location.hash); }catch(e){}
@@ -120199,7 +120199,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='3eb81c9b';
+const CC_BUILD='59474ec8';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого

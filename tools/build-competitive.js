@@ -803,7 +803,7 @@ function page(l) {
   // Как на главной: язык в адресе главнее. С /competitive без языка — на сохранённый язык (хэш вкладки с собой).
   // Клик по пилюле языка запоминает выбор.
   const langJS = `(function(){var P=${JSON.stringify(l)},L=${JSON.stringify(I18N.LANGS)},s=null;try{s=localStorage.getItem('fncsdraft_lang');}catch(e){}
-if(P==='en'&&s&&s!==P&&L.indexOf(s)>=0){location.replace((s==='en'?'':'/'+s)+'/competitive'+location.search+location.hash);return;}
+if(P==='en'&&s&&s!==P&&L.indexOf(s)>=0){location.replace(s+'/competitive'+location.search+location.hash);return;}
 document.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('a[data-lang]');if(!a)return;try{localStorage.setItem('fncsdraft_lang',a.getAttribute('data-lang'));}catch(x){}a.setAttribute('href',a.getAttribute('href').split('#')[0]+location.hash);});})();`;
   const NEWS_ = NEWS(), RECS_ = RECS();
   return `<!doctype html>
@@ -847,8 +847,14 @@ ${regButtons}
 </div><script>${JS()}</script></body></html>`;
 }
 let enKB = 0;
+/* Пути от корня сайта («/flags/…», «/ru/») — относительными: страница живёт и на fncsdraft.com, и на зеркале
+   в подпапке (psychopathjke.github.io/fncsdraft/). Полные адреса (https://…, //) не трогаются. */
+const relRoot = (html, l) => {
+  const R = l === 'en' ? '' : '../';
+  return html.replace(/(["'(])\/(?=[A-Za-z?#])/g, (m, q) => q + R).replace(/(href=)"\/"/g, (m, h) => h + '"' + (R || './') + '"');
+};
 I18N.LANGS.forEach(l => {
-  const html = page(l), dir = l === 'en' ? OUT : path.join(OUT, l);
+  const html = relRoot(page(l), l), dir = l === 'en' ? OUT : path.join(OUT, l);
   fs.mkdirSync(dir, { recursive: true });
   fs.writeFileSync(path.join(dir, 'competitive.html'), html, 'utf8');
   if (l === 'en') enKB = Math.round(html.length / 1024);
