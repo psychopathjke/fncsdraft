@@ -6056,7 +6056,25 @@
   .aw-cup-i{width:40px;height:46px;filter:drop-shadow(0 2px 4px rgba(0,0,0,.5));}
   .aw-cup b{font-size:11.5px;font-weight:900;color:#fff;line-height:1.15;}
   .aw-cup small{font-size:10px;font-weight:800;color:#9fb0e8;}
-  .aw-potms{display:grid;grid-template-columns:repeat(auto-fill,minmax(132px,1fr));gap:10px;}
+  .aw-plq{position:relative;aspect-ratio:3/4;border-radius:10px;overflow:hidden;background:#0b1430;border:2px solid #d9a93a;
+    box-shadow:0 0 0 3px rgba(0,0,0,.35),0 6px 14px rgba(0,0,0,.45);}
+  .aw-plq.aw-plq-g{border-color:#7ff0ff;}
+  .aw-plq img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
+  .aw-plq-plate{position:absolute;left:6%;right:6%;bottom:6%;padding:5px 6px;border-radius:5px;text-align:center;
+    background:linear-gradient(180deg,#f3d277,#c79a2c);color:#2a1a00;box-shadow:0 2px 6px rgba(0,0,0,.5);}
+  .aw-plq-g .aw-plq-plate{background:linear-gradient(180deg,#d9fbff,#7fd6e6);color:#032a33;}
+  .aw-plq.aw-plq-s{border-color:#c9d2de;} .aw-plq-s .aw-plq-plate{background:linear-gradient(180deg,#f2f5f9,#aab4c2);color:#1a2230;}
+  .aw-plq-plate b{display:block;font-size:11px;font-weight:900;line-height:1.1;}
+  .aw-plq-plate small{display:block;font-size:9.5px;font-weight:800;opacity:.8;}
+  .aw-potm2{display:flex;flex-direction:column;align-items:center;gap:4px;}
+  .aw-potm-card{zoom:.62;}
+  .aw-potm2 small{font-size:10px;font-weight:800;color:#ffd65a;text-align:center;}
+  .aw-potms{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:10px;}
+  .aw-medal{display:flex;flex-direction:column;align-items:center;gap:1px;text-align:center;padding:4px 2px;}
+  .aw-medal-i{width:64px;height:88px;filter:drop-shadow(0 4px 6px rgba(0,0,0,.45));}
+  .aw-medal-m{font-size:13px;font-weight:900;color:#fff;text-transform:capitalize;margin-top:2px;}
+  .aw-medal-y{font-size:10.5px;font-weight:800;color:#f3c64a;}
+  .aw-medal small{font-size:9.5px;font-weight:800;color:#9fb0e8;line-height:1.2;}
   .aw-potm{position:relative;display:flex;flex-direction:column;align-items:center;gap:2px;padding:12px 8px 10px;border-radius:14px;text-align:center;overflow:hidden;
     background:linear-gradient(160deg,#3d1a78 0%,#6a2bc2 45%,#2a0f55 100%);border:1px solid rgba(255,214,90,.55);box-shadow:inset 0 0 0 2px rgba(255,214,90,.15);}
   .aw-potm img{width:64px;height:64px;border-radius:50%;object-fit:cover;border:2px solid #ffd65a;background:#1a0b38;}
@@ -25574,6 +25592,7 @@ function shownRarity(p){
      (#70C7F8, см. --exotic). Правка: в этой комнате креатор не
      про и не ладдер, и рейтинг у него один на всех (67), так что обычная
      лестница по числу сказала бы про всех одно и то же слово. */
+  if(p._potm) return 'potm';   // карточка «Игрок месяца» на полке наград (ccAwardsShelfHTML)
   if(p.creator) return 'exotic';
   // Карточка формы носит свой вид при любом числе — см. ccFormCardsFor.
   /* Только объект события: у карточки напарника по сети form — ЧИСЛО (форма в карьере, mp.js MP.card), и в хорошей
@@ -98885,6 +98904,8 @@ const CARD_SKIN={
      падал на common. Отчёт — «у карточки цвет не exotic».
      Цвет — тот же #70C7F8 из --exotic, снятый с фортнайтовской вики. */
   exotic:   {bg:'linear-gradient(155deg,#cdefff 0%,#70c7f8 48%,#186a9e 100%)', glow:'#70c7f8', tag:'EXOTIC'},
+  /* Игрок месяца (30.10, полка наград): особая карточка, как POTM в футбольных играх, — фиолетовая с золотым бликом. */
+  potm:     {bg:'linear-gradient(118deg,rgba(255,214,90,0) 36%,rgba(255,214,90,.28) 46%,rgba(255,214,90,0) 56%),linear-gradient(155deg,#8a4dff 0%,#4b1aa8 46%,#1c0647 100%)', glow:'#ffd65a', tag:'PLAYER OF THE MONTH'},
   /* Карточка формы — как TOTW/TOTS в ФИФЕ: чёрная, с золотой каймой и бликом, чтобы в паке её было видно
      сразу и не путать с мифической (та золотая целиком). См. yearRatingPass, ccFormCardsFor. */
   form:     {bg:'linear-gradient(118deg,rgba(255,214,102,0) 38%,rgba(255,214,102,.22) 46%,rgba(255,214,102,0) 54%),linear-gradient(155deg,#3b3f4a 0%,#15181f 46%,#000 100%)', glow:'#f6c343', tag:'IN FORM'}
@@ -120924,7 +120945,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='555268af';
+const CC_BUILD='c330cfdf';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -179628,15 +179649,25 @@ function ccAwardsShelfHTML(){
   const weekly=log.filter(e=>e.kind==='final' && !big(e)).length;
   const cupName=e=>{ try{ return ccLockerPlain(ccLogName(e)); }catch(x){ return e.name||''; } };
   const cupDay=e=>{ try{ return ccDayLabel ? ccDayLabel(e.day) : e.day; }catch(x){ return e.day||''; } };
-  const cupHTML=e=>'<div class="aw-cup'+(e.kind==='globals' ? ' aw-cup-g' : '')+'">'+CC_AW_CUP+'<b>'+esc(cupName(e))+'</b><small>'+esc(String(cupDay(e)))+'</small></div>';
-  const ph=(()=>{ try{ return photoURL(careerCard()); }catch(x){ return null; } })();
-  const nick=String((CAREER.player||{}).nick||'');
+  /* 30.10 (2), его «слопно; кубки пусть лого фнкса, который он выиграл»: кубок — заставка того самого турнира
+     (ccLogArt, те же картинки, что на стене истории) в рамке с табличкой: название и год. */
+  const cupHTML=e=>{
+    let art=null; try{ art=ccLogArt(e); }catch(x){ art=null; }
+    return '<div class="aw-plq'+(e.kind==='globals' ? ' aw-plq-g' : '')+'">'+
+      (art ? '<img src="'+esc(art)+'" alt="" loading="lazy" onerror="this.remove()">' : '')+
+      '<div class="aw-plq-plate"><b>'+esc(cupName(e))+'</b><small>'+esc(String(cupDay(e)))+' '+esc(String(e.day||'').slice(0,4))+'</small></div></div>';
+  };
+  /* Игрок месяца — медаль на ленте (30.10, «игрок месяца чет другое» после карточек): золотой круг с выбитым месяцем,
+     лента цветов FNCS, год и очки под ней. */
   const potm=month.slice().sort((a,b)=>String(a.key)<String(b.key) ? -1 : 1).map(a=>{
     const mName=typeof ccMonthName==='function' ? ccMonthName(a.key) : a.key;
-    return '<div class="aw-potm">'+(ph ? '<img src="'+esc(ph)+'" alt="" loading="lazy" onerror="this.remove()">' : '')+
-      '<span class="aw-potm-band">'+esc(L().lfAwMonths)+'</span>'+
-      '<b class="aw-potm-m">'+esc(mName)+' '+esc(String(a.key).slice(0,4))+'</b>'+
-      '<span class="aw-potm-n">'+esc(nick)+'</span>'+
+    return '<div class="aw-medal">'+
+      '<svg class="aw-medal-i" viewBox="0 0 80 110" aria-hidden="true">'+
+        '<path d="M22 0h14l10 40H32z" fill="#7c3aed"/><path d="M44 0h14L48 40H34z" fill="#22d3ee"/>'+
+        '<circle cx="40" cy="70" r="34" fill="#a8761c"/><circle cx="40" cy="70" r="30" fill="#f3c64a"/>'+
+        '<circle cx="40" cy="70" r="24" fill="none" stroke="#a8761c" stroke-width="1.6" stroke-dasharray="2 3"/>'+
+        '<path d="M40 50l3.2 6.6 7.2 1-5.2 5 1.2 7.2-6.4-3.4-6.4 3.4 1.2-7.2-5.2-5 7.2-1z" fill="#fff4cc" opacity=".9"/></svg>'+
+      '<b class="aw-medal-m">'+esc(mName)+'</b><span class="aw-medal-y">'+esc(String(a.key).slice(0,4))+'</span>'+
       (a.pts ? '<small>'+esc(ccNum(a.pts))+' '+esc(L().lfAwPts)+' · '+a.ev+' '+esc(L().lfAwEv)+'</small>' : '')+'</div>';
   });
   const items=[]
@@ -179646,7 +179677,9 @@ function ccAwardsShelfHTML(){
   return '<div class="ch-tile aw-shelf"><h4>'+L().lfAwards+'</h4>'+
     (!any ? '<div class="ch-empty">'+L().lfAwNone+'</div>' :
       ((cups.length || weekly) ? '<div class="aw-sub">'+esc(L().lfAwCups)+'</div><div class="aw-cups">'+cups.map(cupHTML).join('')+
-        (weekly ? '<div class="aw-cup aw-cup-s">'+CC_AW_CUP+'<b>'+esc(L().lfAwWeekly)+'</b><small>×'+weekly+'</small></div>' : '')+'</div>' : '')+
+        (weekly ? (()=>{ const we=log.filter(e=>e.kind==='final' && !big(e)).slice(-1)[0]; let art=null; try{ art=ccLogArt(we); }catch(x){}
+          return '<div class="aw-plq aw-plq-s">'+(art ? '<img src="'+esc(art)+'" alt="" loading="lazy" onerror="this.remove()">' : '')+
+            '<div class="aw-plq-plate"><b>'+esc(L().lfAwWeekly)+'</b><small>×'+weekly+'</small></div></div>'; })() : '')+'</div>' : '')+
       (items.length ? '<div class="aw-grid">'+items.join('')+'</div>' : '')+
       (potm.length ? '<div class="aw-sub">'+esc(L().lfAwMonths)+'</div><div class="aw-potms">'+potm.join('')+'</div>' : ''))+'</div>';
 }
