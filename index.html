@@ -4614,6 +4614,17 @@
   .own-people button i{font-style:normal;opacity:.7;margin-left:3px;}
   .own-tile{max-width:1100px;margin:12px auto;}
   .own-item{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 0;border-top:1px solid rgba(255,255,255,.08);}
+  .own-ava{width:38px;height:38px;flex:none;border-radius:10px;object-fit:contain;background:#0b1430;box-shadow:inset 0 0 0 1px rgba(255,221,0,.25);}
+  .own-item span{flex:1;}
+  .own-logos{display:flex;flex-wrap:wrap;gap:8px;align-items:center;}
+  .own-logos button,.own-logo-up{width:46px;height:46px;padding:4px;border:0;border-radius:12px;cursor:pointer;display:grid;place-items:center;
+    font:inherit;font-size:18px;font-weight:900;color:#cfd8ff;background:rgba(255,255,255,.08);box-shadow:inset 0 0 0 1px rgba(180,200,255,.16);}
+  .own-logos button,.own-logo-up{overflow:hidden;box-sizing:border-box;}
+  #ccOwnModal .own-logos img{width:38px!important;height:38px!important;max-width:none;object-fit:contain;border-radius:8px;display:block;}
+  .own-logos button.on{box-shadow:0 0 0 2px #ffdd00;background:rgba(255,221,0,.12);}
+  .own-logo-up{color:#ffdd00;font-size:26px!important;line-height:1;}
+  html #screen-career-hub .own-item .ch-decline{flex:none;width:auto!important;margin:0;padding:8px 14px;}
+  .own-logo-up{display:flex!important;align-items:center;justify-content:center;}
   .own-item span{display:flex;flex-direction:column;gap:2px;min-width:0;} .own-item b{font-weight:900;} .own-item small{font-size:11px;color:#b9c6ee;}
   .cc-sac-q{width:100%;box-sizing:border-box;margin:0 0 10px;padding:10px 12px;border-radius:10px;border:1px solid rgba(180,200,255,.25);background:rgba(255,255,255,.08);color:#fff;font:inherit;font-size:14px;}
   .cc-sac-list button{display:flex;align-items:center;gap:8px;padding:8px;border-radius:10px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05);color:#fff;cursor:pointer;text-align:left;}
@@ -24242,7 +24253,7 @@ Object.assign(I18N.it, {ccYrXHeatsIn:k=>'Top '+k+' della serie — negli heat', 
 Object.assign(I18N.pt, {ccYrXHeatsIn:k=>'Top '+k+' da série — nos heats', ccYrXHeatsZone:k=>'Zona dos heats: top '+k+' da série', ccYrXHeatsOut:k=>'Fora do top '+k+' da série — sem heats'});
 // Шкафчик: подписи как в русском клиенте Fortnite; в остальных языках остаётся английский вид Epic.
 Object.assign(I18N.ru, {ownTitle:'Свой турнир', ownLead:'Устрой кап сам: дата, режим, инвайт или квалы, игры и призовой фонд. Играешь в нём сам.',
-  ownNew:'Устроить турнир', ownName:'Название', ownDate:'Дата', ownMode:'Режим', ownEntry:'Допуск', ownSize:'Лобби, игроков', ownGames:'Игр',
+  ownNew:'Устроить турнир', ownName:'Название', ownLogo:'Аватарка', ownLogoNone:'Без аватарки', ownLogoUp:'Своя картинка', ownLogoBig:'Картинка не подошла, попробуй другую', ownDate:'Дата', ownMode:'Режим', ownEntry:'Допуск', ownSize:'Лобби, игроков', ownGames:'Игр',
   ownPool:'Призовой фонд', ownInvite:'Инвайт', ownOpenQ:'Квалы и финал', ownOpenNote:'Два дня: в первый открытые квалы региона, на следующий день финал на 100 игроков. Ты как хозяин сразу в финале.',
   ownShape:'Как делить', ownAllPaid:(n,p)=>'Призовые получают все '+n+' составов финала, фонд $'+p, ownPerPlayer:'суммы на игрока',
   ownTeam:'Состав', ownTeamMine:'Моя команда', ownTeamAuto:'Сильнейшие свободные', ownTeamPick:'Выбрать самому',
@@ -24252,7 +24263,7 @@ Object.assign(I18N.ru, {ownTitle:'Свой турнир', ownLead:'Устрой 
   ownNoDays:'Свободных дней в ближайшие два месяца нет', ownNoCash:n=>'Не хватает $'+n+' на фонд', ownCreate:n=>'Объявить · фонд $'+n, ownCancel:'Отменить',
   ownWhyMp:'Вдвоём свои турниры не устраиваются', ownNewsAnnounce:(n,d,p)=>'Объявил свой турнир '+n+': '+d+', фонд $'+p});
 Object.assign(I18N.en, {ownTitle:'Your tournament', ownLead:'Run a cup yourself: date, mode, invite or qualifier, games and prize pool. You play in it.',
-  ownNew:'Host a tournament', ownName:'Name', ownDate:'Date', ownMode:'Mode', ownEntry:'Entry', ownSize:'Lobby, players', ownGames:'Games',
+  ownNew:'Host a tournament', ownName:'Name', ownLogo:'Logo', ownLogoNone:'No logo', ownLogoUp:'Your own picture', ownLogoBig:'That picture did not work, try another', ownDate:'Date', ownMode:'Mode', ownEntry:'Entry', ownSize:'Lobby, players', ownGames:'Games',
   ownPool:'Prize pool', ownInvite:'Invite', ownOpenQ:'Qualifier + final', ownOpenNote:'Two days: an open regional qualifier, then a 100-player final the next day. As the host you go straight to the final.',
   ownShape:'Split', ownAllPaid:(n,p)=>'All '+n+' teams in the final are paid, $'+p+' pool', ownPerPlayer:'amounts per player',
   ownTeam:'Team', ownTeamMine:'My team', ownTeamAuto:'Best free players', ownTeamPick:'Pick myself',
@@ -120183,7 +120194,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='5b2e2c14';
+const CC_BUILD='3e1093a6';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -130295,8 +130306,18 @@ function ccFncsPoster(id){
   return k ? 'art/cups/'+k+'.jpg' : '';
 }
 // Обложка события: постер FNCS сезона, потом по id, потом постер капа, потом по виду. Одна дверь для календаря и карточки.
+// Календарь хранит у своего турнира только id: аватарку берём из записи турнира.
+function ccOwnLogoOf(ev){
+  if(!ev) return '';
+  if(ev.own && ev.logo) return ev.logo;
+  const id=String(ev.id||ev.eid||''); if(id.indexOf('OWN_')!==0) return '';
+  const cr=typeof CAREER!=='undefined' && CAREER && CAREER.career;
+  const c=cr && (cr.ownCups||[]).find(x=>x.id===id);
+  return (c && c.logo) || '';
+}
 function ccEventArt(ev){
   if(!ev) return '';
+  const own=ccOwnLogoOf(ev); if(own) return own;
   const byId=ccFncsPoster(ev.id||ev.eid) || CAREER_EV_ART_ID[ev.id||ev.eid||''] || ccCupPoster(ev.id||ev.eid);
   if(byId) return byId;
   const k=ev.kind||ev.type||'';
@@ -141934,6 +141955,7 @@ function ccSeasonArtOn(day){
 // Свой постер события (сезон FNCS, id, постер капа) — без запасной обложки по виду.
 function ccEventArtOwn(ev){
   if(!ev) return '';
+  const own=ccOwnLogoOf(ev); if(own) return own;
   return ccFncsPoster(ev.id||ev.eid) || CAREER_EV_ART_ID[ev.id||ev.eid||''] || ccCupPoster(ev.id||ev.eid) || '';
 }
 function ccNewsArtOf(n){
@@ -157153,6 +157175,52 @@ function ccOwnPool(){
 function ccOwnMyMates(fmt){
   return ((CAREER.rosters||{})[fmt] || CAREER.partners || []).filter(Boolean).map(r=>ccMateCardOf(r)).filter(Boolean).slice(0, fmt-1);
 }
+/* Аватарка турнира: готовые кубки или своя картинка. Своя ужимается до 96 точек в jpeg и
+   кладётся в сейв строкой; не влезла в потолок — не берём. */
+const CC_OWN_LOGOS=['items/trophies/gc-2025.png', 'items/trophies/gc-2026.png', 'items/trophies/gc-2023.png',
+  'items/trophies/inv-2022.png', 'items/trophies/wc-2019.png', 'items/trophies/proam.png', 'items/trophies/ewc.png'];
+const CC_OWN_LOGO_MAX=16000;
+function ccOwnLogoHTML(){
+  const T=L(), d=CC_OWN_DRAFT||{}, cur=d.logo||'';
+  const up=cur.slice(0, 11)==='data:image/';
+  return '<div class="own-logos">'+
+    '<button class="own-logo-none'+(cur ? '' : ' on')+'" onclick="ccOwnLogoSet(-1)" title="'+esc(T.ownLogoNone)+'">✕</button>'+
+    CC_OWN_LOGOS.map((u, i)=>'<button class="'+(cur===u ? 'on' : '')+'" onclick="ccOwnLogoSet('+i+')"><img src="'+u+'" alt=""></button>').join('')+
+    (up ? '<button class="on" onclick="ccOwnLogoSet(-2)"><img src="'+esc(cur)+'" alt=""></button>' : '')+
+    '<label class="own-logo-up" title="'+esc(T.ownLogoUp)+'">+<input type="file" accept="image/*" style="display:none" onchange="ccOwnLogoPick(this)"></label>'+
+    '</div>'+(d.logoBad ? '<small class="own-why">'+esc(T.ownLogoBig)+'</small>' : '');
+}
+function ccOwnLogoSet(i){
+  const d=CC_OWN_DRAFT; if(!d) return;
+  if(i===-2) return;
+  d.logo=i<0 ? '' : (CC_OWN_LOGOS[i]||''); d.logoBad=false;
+  ccOwnDraw();
+}
+// Квадрат по центру, тёмная подложка под прозрачные png.
+function ccOwnLogoFrom(src, done){
+  const img=new Image();
+  img.onload=function(){
+    let url='';
+    try{
+      const N=96, cv=document.createElement('canvas'); cv.width=cv.height=N;
+      const x=cv.getContext('2d'); x.fillStyle='#0b1430'; x.fillRect(0, 0, N, N);
+      const side=Math.min(img.width||1, img.height||1);
+      x.drawImage(img, ((img.width||1)-side)/2, ((img.height||1)-side)/2, side, side, 0, 0, N, N);
+      url=cv.toDataURL('image/jpeg', 0.82);
+    }catch(e){ url=''; }
+    const d=CC_OWN_DRAFT;
+    if(d){ if(url && url.length<=CC_OWN_LOGO_MAX){ d.logo=url; d.logoBad=false; } else d.logoBad=true; ccOwnDraw(); }
+    if(done) done(!!(d && d.logo===url));
+  };
+  img.onerror=function(){ if(CC_OWN_DRAFT){ CC_OWN_DRAFT.logoBad=true; ccOwnDraw(); } if(done) done(false); };
+  img.src=String(src);
+}
+function ccOwnLogoPick(input){
+  if(!input || !input.files || !input.files[0]) return;
+  const rd=new FileReader();
+  rd.onload=function(){ ccOwnLogoFrom(String(rd.result||'')); };
+  rd.readAsDataURL(input.files[0]);
+}
 function ccOwnOpen(){
   CC_OWN_DRAFT={name:(String(CAREER.player.nick||'')+' Cup').trim(), day:'', mode:'solo', entry:'invite', size:100, games:6, pool:CC_OWN_MIN, shape:'top', team:'mine', roster:[]};
   CC_OWN_DRAFT.day=ccOwnFreeDays(false)[0]||'';
@@ -157192,6 +157260,7 @@ function ccOwnDraw(){
   }
   el.innerHTML='<div class="cc-sac-in own-in"><h4>'+esc(T.ownTitle)+'</h4><button class="cc-sac-x" onclick="ccOwnClose()">✕</button>'+
     row(T.ownName, '<input class="cc-sac-q" maxlength="32" value="'+esc(d.name)+'" oninput="CC_OWN_DRAFT.name=this.value">')+
+    row(T.ownLogo, ccOwnLogoHTML())+
     row(T.ownMode, chips('mode', [['solo', T.ownMode_solo], ['duo', T.ownMode_duo], ['trio', T.ownMode_trio], ['squad', T.ownMode_squad]]))+
     (need>0 ? row(T.ownTeam, teamBody) : '')+
     row(T.ownEntry, chips('entry', [['invite', T.ownInvite], ['open', T.ownOpenQ]]))+
@@ -157242,7 +157311,7 @@ function ccOwnCreate(){
   if(d.team==='pick' && size>1 && roster.length<size-1) return null;
   const name=String(d.name||'').trim().slice(0, 32) || 'Cup';
   const n=(cr.ownN=(cr.ownN||0)+1), id='OWN_'+n;
-  const base={own:true, mode:d.mode, n:'', pool:d.pool, entry:d.entry, shape:d.shape, roster:roster, games:d.games};
+  const base={own:true, mode:d.mode, n:'', pool:d.pool, entry:d.entry, shape:d.shape, roster:roster, games:d.games, logo:d.logo||''};
   const made=[];
   /* Квалы идут в первый день без хозяина: он сразу в финале, остальные места — сильнейшие со сцены
      (обычное поле ЛАНа). Старые сохранения с отдельной записью квал (finalOf) играются как раньше. */
@@ -157303,7 +157372,7 @@ function ccOwnCupPanelHTML(){
   const why=ccOwnWhy();
   return '<div class="ch-tile own-tile"><h4>'+esc(T.ownTitle)+'</h4>'+
     '<p class="own-lead">'+esc(T.ownLead)+'</p>'+
-    list.map(c=>'<div class="own-item"><span><b>'+esc(c.name)+'</b><small>'+esc(ccDayLabel(c.day))+' · '+esc(T['ownMode_'+c.mode]||T.ownMode_solo)+' · '+
+    list.map(c=>'<div class="own-item">'+(c.logo ? '<img class="own-ava" src="'+esc(c.logo)+'" alt="">' : '')+'<span><b>'+esc(c.name)+'</b><small>'+esc(ccDayLabel(c.day))+' · '+esc(T['ownMode_'+c.mode]||T.ownMode_solo)+' · '+
       esc(c.entry==='invite' ? T.ownInvite+' '+c.invite : T.ownOpenQ)+' · $'+ccNum(c.pool)+'</small></span>'+
       (c.day>today ? '<button class="ch-decline" onclick="ccOwnCancel(\''+c.id+'\')">'+esc(T.ownCancel)+'</button>' : '')+'</div>').join('')+
     (why ? '<div class="own-why">'+esc(why)+'</div>' : '<button class="ch-sign" onclick="ccOwnOpen()">'+esc(T.ownNew)+'</button>')+'</div>';
