@@ -120168,7 +120168,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='6c50cb7a';
+const CC_BUILD='2bc43939';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -138622,7 +138622,7 @@ function ccShopKey(x){ return String((x&&x.at)||(x&&x.id)||'').toLowerCase(); }
    ведёт, по его же описанию в X (сняты 8.10.2026) и картам этой базы; рейтинг = p − 6, от 60 до 95. У кого клиенты
    не названы или их нет в базе — по подписчикам: 60 + 6·lg(подписчики/1000), не выше 76. Условия (доля, охват,
    прибавка, цена) идут от рейтинга, а не от места в списке; порядок окна — по рейтингу. Формула — оценка режима. */
-const CC_STAFF_X={"roxogg":3007, "JoaovEU":2874, "ElyxxM":16729, "alhasarda":3166, "NaaxoMNG":853, "PixelzMNG":2439, "Kiinywz0":822, "Yeekzie7":3076, "F0C8S":4581, "ClapMNG":4144, "AlybiSaCE":3366, "IdziU97":3200, "Th0masNL":2363, "RemssMNG":2150, "DamlosMNG":1674, "ZedroxMNG":1364, "errieMNG":1304, "Raziaa_":953, "LC7_MNG":931, "ArtinMNG":866, "yaleblan":787, "DrazoxMNG":702, "Skyforcemng272":525, "Zerkomng":516, "askebott":294, "v1nteroFN":2137, "SweetyyFN":1991, "SandoraFN":1014, "baderwtw":885, "Pyp4ingS":613, "UgoComm":548, "Lair_Fn":594, "veltrixx10":481, "CmLumos":357, "MetiDark_":49, "murlotron":3007, "Goalkikermng":1104, "KaizenMNG":785, "PyraxMGMT":433, "loicmng_":565};
+const CC_STAFF_X={"roxogg":3007, "JoaovEU":2874, "ElyxxM":16729, "alhasarda":3166, "NaaxoMNG":853, "PixelzMNG":2439, "Kiinywz0":822, "Yeekzie7":3076, "F0C8S":4581, "ClapMNG":4144, "AlybiSaCE":3366, "IdziU97":3200, "Th0masNL":2363, "RemssMNG":2150, "DamlosMNG":1674, "ZedroxMNG":1364, "errieMNG":1304, "Raziaa_":953, "LC7_MNG":931, "ArtinMNG":866, "yaleblan":787, "DrazoxMNG":702, "Skyforcemng272":525, "Zerkomng":516, "Lou1sMNG":385, "askebott":294, "v1nteroFN":2137, "SweetyyFN":1991, "SandoraFN":1014, "baderwtw":885, "Pyp4ingS":613, "UgoComm":548, "Lair_Fn":594, "veltrixx10":481, "CmLumos":357, "MetiDark_":49, "murlotron":3007, "Goalkikermng":1104, "KaizenMNG":785, "PyraxMGMT":433, "loicmng_":565};
 const CC_STAFF_RES={
   "roxogg":{p:91, who:["Phzin","Edson","916Gon","Night"]},   // 23.10: в X — phzin, edson, 916gon, blxckoutz, night, seeyun, pardal; четыре лучшие карты
   "PixelzMNG":{p:77, who:["Matice","Shadox","Seili","Th3ioF"]},   // 23.10: matice, Shadox, Seili, Th3io, Sobyy, Berre (двух последних в базе нет)
@@ -138653,6 +138653,7 @@ const CC_STAFF_RES={
   // Игроки названы, а карт в базе нет (или только тёзки) — рейтинг 65.
   "Zerkomng":{p:null, who:["insaneebtw","cuhkifn","eonshh","snekgery"]},   // шапка X
   "LC7_MNG":{p:null, who:["toryzenfv","maddingooo"]},   // шапка X
+  "Lou1sMNG":{p:null, who:["Timur11x","Worizome180"]},   // шапка X
   "yaleblan":{p:null, who:["rexivski","Hugo","Linqish","dkay","arvid","Meltz","ozarxo","Atome","Da1ko","dzeq"]},   // linktr.ee/YaleblanFN
   "Raziaa_":{p:null, who:["Noaggs","Hazyache","squadir23","noa"]},   // шапка X 21.08, konect.gg/raziaa
   "Skyforcemng272":{p:null, who:["joyyfnrr","NATEKFN1","Karotek_"]},   // шапка X 29.09
@@ -139049,6 +139050,9 @@ const CC_AGENTS=[
      ZERKO»; «Head of Fortnite for @?» — клуб не назван. Агент insaneebtw,
      cuhkifn, eonshh «& more». В шапке два флага, 🇫🇷🇵🇹, — берётся первый. */
   {name:'FA ZERKO',     at:'Zerkomng',      nat:'fr', photo:'Zerkomng.jpg',      x:461},
+  /* x.com/Lou1sMNG, 385 фолловеров. D.E в RG22 (@RG22ESP), игроки Timur11x и Worizome180.
+     Флаги 🇫🇷🇧🇪, берётся первый. */
+  {name:'RG22 Lou1s',   at:'Lou1sMNG',      nat:'fr', photo:'Lou1sMNG.jpg',      x:385},
   /* Скриншот профиля: x.com/askebott — Vira Askey, Марокко,
      Head of Fortnite в Vira Esport, 252 фолловера. Агент семерых, и все семеро
      названы у него в шапке поимённо (zbidak3kk, CyranKids, Litr07, 2Kixu,
