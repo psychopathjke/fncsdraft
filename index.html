@@ -6046,6 +6046,43 @@
   .ev-rbar{display:block;width:6px;border-radius:2px;background:#7aa2ff;}
   .ev-rbar.hi{background:#00d6a4;} .ev-rbar.lo{background:#ff7d70;}
   .aw-shelf{margin:10px 0;}
+  /* Профиль (30.10): шапка, карточки карьер, драфт дня, драфт, достижения. */
+  .me-wrap{max-width:1180px;margin:0 auto;padding:14px 12px 40px;display:flex;flex-direction:column;gap:12px;}
+  /* Плитки как в карьере: стекло и чёрный срезанный заголовок (вне #screen-career-hub .ch-tile белая). */
+  #screen-profile .ch-tile{background:rgba(255,255,255,.055);border:1px solid rgba(140,175,255,.16);border-radius:14px;overflow:hidden;
+    padding:0 14px 14px;box-shadow:0 14px 34px rgba(6,10,30,.32);color:#dfe8ff;}
+  #screen-profile .ch-tile h4{margin:0 -14px 10px;background:#0b0f12;color:#fff;padding:9px 30px 9px 14px;font-family:var(--font-display);
+    font-style:normal;font-size:17px;letter-spacing:.02em;text-transform:uppercase;clip-path:polygon(0 0,100% 0,calc(100% - 15px) 100%,0 100%);}
+  #screen-profile .me-head{padding:14px;}
+  #screen-profile .ch-empty{color:#9fb0e8;font-weight:700;padding:6px 0;}
+  #screen-profile .achv-card{background:rgba(6,12,32,.45);border-color:rgba(140,175,255,.16);}
+  #screen-profile .achv-card.unlocked{border-color:#ffd400;background:rgba(255,212,0,.08);}
+  #screen-profile .achv-title{color:#fff;} #screen-profile .achv-desc{color:#9fb0e8;}
+  .me-head{display:flex;flex-wrap:wrap;align-items:center;gap:16px;}
+  .me-head h2{margin:0;font-family:var(--font-display);font-size:28px;color:#fff;}
+  .me-head small{color:#9fb0e8;font-weight:700;}
+  .me-ava{width:64px;height:64px;border-radius:14px;object-fit:cover;background:#0b1430;border:2px solid #ffd400;}
+  .me-ava-0{display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:30px;color:#ffd400;}
+  .me-head .me-sts{margin-left:auto;}
+  .me-sts{display:flex;flex-wrap:wrap;gap:8px;}
+  .me-st{min-width:84px;padding:8px 10px;border-radius:10px;background:rgba(6,12,32,.45);display:flex;flex-direction:column;}
+  .me-st b{font-family:var(--font-display);font-size:20px;color:#fff;line-height:1.05;}
+  .me-st small{font-size:10px;font-weight:800;color:#9fb0e8;text-transform:uppercase;letter-spacing:.04em;}
+  .me-cars{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:10px;}
+  .me-car{padding:12px;border-radius:12px;background:rgba(6,12,32,.35);border:1px solid rgba(255,255,255,.08);display:flex;flex-direction:column;gap:8px;}
+  .me-car-h{display:flex;align-items:center;gap:8px;}
+  .me-car-h b{font-family:var(--font-display);font-size:19px;color:#fff;}
+  .me-car-h em{font-style:normal;font-size:10px;font-weight:900;color:#70c7f8;text-transform:uppercase;}
+  .me-car-h span{font-size:12px;font-weight:800;color:#9fb0e8;}
+  .me-ovr{margin-left:auto;font-style:normal;font-family:var(--font-display);font-size:20px;background:#ffd400;color:#101828;padding:2px 8px;border-radius:6px;}
+  .me-car .me-st{min-width:70px;padding:6px 8px;} .me-car .me-st b{font-size:16px;}
+  .me-best{font-size:12px;font-weight:800;color:#fff;} .me-best small{color:#9fb0e8;}
+  #screen-profile .me-open{align-self:flex-start;background:#ffd400;color:#101828;border:none;padding:7px 16px;border-radius:8px;font-weight:900;opacity:1;}
+  .me-last{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:10px;}
+  .me-last small{font-size:10px;font-weight:800;color:#9fb0e8;text-transform:uppercase;margin-right:4px;}
+  .me-last span{padding:3px 8px;border-radius:6px;background:rgba(6,12,32,.45);font-weight:900;font-size:12px;color:#dfe8ff;}
+  .me-last span.w{background:#ffd400;color:#101828;} .me-last span.p{background:#3fd3c6;color:#032a2c;}
+  .me-ach{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:8px;}
   /* Полка наград (30.10): кубки и карточки «Игрок месяца» как в футболе. */
   .aw-sub{margin:12px 0 6px;font-size:11px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:#9fb0e8;}
   .aw-cups{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px;}
@@ -9591,6 +9628,7 @@
     <nav class="site-nav" aria-label="site">
       <button class="nav-pill nav-main on" type="button" onclick="requestReset()" data-i18n="navGrpCareer"></button>
       <a class="nav-pill" href="/competitive" data-i18n="navGrpComp"></a>
+      <button class="nav-pill nav-me" type="button" onclick="openProfileScreen()" data-i18n="navGrpProfile"></button>
     </nav>
     <div style="display:flex;align-items:center;gap:10px;">
       <div class="badge" id="topBadge" data-i18n="badgeMode"></div>
@@ -10203,6 +10241,7 @@
     </div>
   </div>
 
+  <div class="screen" id="screen-profile"><div class="me-wrap" id="meBody"></div></div>
   <div class="screen" id="screen-history">
     <button class="restart-btn" onclick="show('screen-mode')" style="margin-bottom:16px;" data-i18n="backBtn"></button>
 
@@ -101269,6 +101308,11 @@ function show(id){
   try{
     const nav = /career/.test(id) ? 'career' : (id==='screen-history' ? 'history' : 'draft');
     document.querySelectorAll('.nav-pill[data-nav]').forEach(b=>b.classList.toggle('on', b.dataset.nav===nav));
+    // Шапка из трёх вкладок (30.10): «Профиль» светлая на своём экране, «Карьера» — на всех остальных.
+    const me=id==='screen-profile';
+    document.querySelectorAll('.site-nav .nav-main').forEach(b=>b.classList.toggle('on', !me));
+    document.querySelectorAll('.site-nav .nav-me').forEach(b=>b.classList.toggle('on', me));
+    if(!me && location.hash==='#me') history.replaceState(null, '', location.pathname+location.search);
   }catch(e){}
   if(moved) window.scrollTo(0, 0);
   // Tiles on a screen that was display:none have no box to intersect, so the
@@ -120946,7 +120990,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='508a597e';
+const CC_BUILD='73c821d5';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -179628,6 +179672,84 @@ function ccMyDropsHTML(){   // не ccDropMapHTML: то имя — у вырез
     '<div class="dm-map" style="aspect-ratio:'+MAP_ASPECT[set].replace('/', ' / ')+'"><img src="'+MAP_ART[set]+'" alt="">'+dots+'</div>'+
     '<ol class="dm-top">'+top+'</ol></div>';
 }
+/* ПРОФИЛЬ (30.10, его «карьера/компетитив/профиль, в профиле подробная статистика карьер, драфт дейли, ачивки»).
+   Третья вкладка шапки. Всё с этого устройства, без входа: слоты карьер (LS_SLOT 1..CC_SLOTS), драфт дня (fd_daily,
+   последние 30 дней), забеги драфта (fncsdraft_history, до 100), достижения (fncsdraft_achievements). */
+const CC_ME_TX={
+  ru:{nav:'Профиль', title:'Профиль', device:'Всё с этого устройства', careers:'Карьеры', none:'Пока пусто',
+      season:'Сезон', div:'Дивизион', earn:'Призовые', ev:'Турниров', wins:'Побед', top10:'Топ-10', titles:'Титулы FNCS', potm:'Игрок месяца',
+      best:'Лучший результат', daily:'Драфт дня', played:'Сыграно', bestPlace:'Лучшее место', avgPlace:'Среднее место', bestScore:'Лучшие очки',
+      streak:'Дней подряд', last:'Последние', draft:'Драфт', runs:'Забегов', bestGrade:'Лучшая оценка', majors:'Чемпион ALL FNCS',
+      ach:'Достижения', mgr:'Менеджер', clubs:'Клубов', creator:'Креатор', open:'Открыть'},
+  en:{nav:'Profile', title:'Profile', device:'Everything from this device', careers:'Careers', none:'Nothing yet',
+      season:'Season', div:'Division', earn:'Earnings', ev:'Events', wins:'Wins', top10:'Top 10', titles:'FNCS titles', potm:'Player of the month',
+      best:'Best result', daily:'Daily draft', played:'Played', bestPlace:'Best place', avgPlace:'Average place', bestScore:'Best score',
+      streak:'Day streak', last:'Recent', draft:'Draft', runs:'Runs', bestGrade:'Best grade', majors:'ALL FNCS champion',
+      ach:'Achievements', mgr:'Manager', clubs:'Clubs', creator:'Creator', open:'Open'}
+};
+function ccMeT(){ return CC_ME_TX[(typeof LANG!=='undefined' && LANG)] || CC_ME_TX.en; }
+Object.keys(I18N).forEach(l=>{ I18N[l].navGrpProfile=(CC_ME_TX[l]||CC_ME_TX.en).nav; });
+function ccMeCareer(s){
+  const cr=(s && s.career)||{}, pl=(s && s.player)||{};
+  const log=(cr.log||[]).filter(e=>e && e.place);
+  let titles=0; log.forEach(e=>{ if(e.place===1){ try{ if(ccFncsTitle(e)) titles++; }catch(x){} } });
+  const best=log.filter(e=>e.of>1).sort((a,b)=>(a.place/a.of)-(b.place/b.of) || a.place-b.place)[0]||null;
+  let bestName=''; if(best){ try{ bestName=ccLockerPlain(ccLogName(best)); }catch(x){ bestName=best.name||''; } }
+  return {nick:pl.nick||pl.handle||'?', creator:!!pl.creator, y0:cr.year0||cr.year, y:cr.year, season:cr.season||1, div:cr.division,
+    ovr:Math.round(pl.ovr||0), earn:Math.round(cr.earnings||0), ev:log.length, wins:log.filter(e=>e.place===1).length,
+    top10:log.filter(e=>e.place<=10).length, titles, potm:((cr.aw||{}).won||[]).filter(a=>a && a.you && a.kind==='month').length,
+    best:best ? '#'+best.place+' · '+bestName : '', photo:pl.photo||null};
+}
+function ccMeHTML(){
+  const T=ccMeT(), stat=(v,l)=>'<div class="me-st"><b>'+v+'</b><small>'+esc(l)+'</small></div>';
+  // Карьеры по слотам.
+  const cars=[];
+  for(let n=1;n<=CC_SLOTS;n++){ const s=ccSlotRead(n); if(s && s.career) cars.push([n, ccMeCareer(s)]); }
+  // Менеджер — прямо по ключам: mgrSlotRead живёт в куске mgr.js и до входа в менеджер на сайте не загружен.
+  let mgrN=0; try{ for(let n=1;n<=10;n++) if(localStorage.getItem(n===1 ? 'fncsdraft_manager' : 'fncsdraft_manager_s'+n)) mgrN++; }catch(e){}
+  const tot=cars.reduce((a,[,c])=>{ a.earn+=c.earn; a.ev+=c.ev; a.wins+=c.wins; a.titles+=c.titles; return a; }, {earn:0, ev:0, wins:0, titles:0});
+  // Драфт дня.
+  const days=(dailyStore().days)||{}, dk=Object.keys(days).sort(), dr=dk.map(k=>Object.assign({day:k}, days[k])).filter(r=>r.place);
+  let streak=0; { let d=dailyDay(); if(!days[d]) d=ccAddDays(d, -1); while(days[d] && days[d].place){ streak++; d=ccAddDays(d, -1); } }
+  // Драфт и достижения.
+  const hist=loadHistory(), ach=loadAchievements();
+  const gradeOrder='SABCD', bestGrade=hist.map(h=>h.grade).filter(Boolean).sort((a,b)=>gradeOrder.indexOf(a)-gradeOrder.indexOf(b))[0]||'—';
+  const placed=hist.filter(h=>h.place!=null);
+  const nick=(cars[0] && cars[0][1].nick) || dailyNick() || '—';
+  let ph=null; try{ ph=CAREER && careerCard() ? photoURL(careerCard()) : null; }catch(e){ ph=null; }
+  const head='<div class="ch-tile me-head">'+(ph ? '<img class="me-ava" src="'+esc(ph)+'" alt="" onerror="this.remove()">' : '<span class="me-ava me-ava-0">'+esc(nick.slice(0,1).toUpperCase())+'</span>')+
+    '<div><h2>'+esc(nick)+'</h2><small>'+esc(T.device)+'</small></div>'+
+    '<div class="me-sts">'+stat(cars.length, T.careers)+stat('$'+ccNum(tot.earn), T.earn)+stat(tot.wins, T.wins)+stat(tot.titles, T.titles)+
+      stat(dr.length, T.daily)+stat(ach.size+'/'+ACHIEVEMENTS.length, T.ach)+'</div></div>';
+  const carHTML=cars.length ? cars.map(([n, c])=>'<div class="me-car">'+
+      '<div class="me-car-h"><b>'+esc(c.nick)+'</b>'+(c.creator ? '<em>'+esc(T.creator)+'</em>' : '')+'<span>'+esc(String(c.y0||''))+(c.y && c.y!==c.y0 ? '–'+c.y : '')+'</span>'+
+        '<i class="me-ovr">'+c.ovr+'</i></div>'+
+      '<div class="me-sts">'+stat(c.season, T.season)+(c.div ? stat(c.div, T.div) : '')+stat('$'+ccNum(c.earn), T.earn)+stat(c.ev, T.ev)+stat(c.wins, T.wins)+
+        stat(c.top10, T.top10)+stat(c.titles, T.titles)+stat(c.potm, T.potm)+'</div>'+
+      (c.best ? '<div class="me-best"><small>'+esc(T.best)+'</small> '+esc(c.best)+'</div>' : '')+
+      '<button class="cc-back me-open" onclick="ccSlotUse('+n+');careerEntry()">'+esc(T.open)+'</button></div>').join('')
+    : '<div class="ch-empty">'+esc(T.none)+'</div>';
+  const dailyHTML=dr.length ? '<div class="me-sts">'+stat(dr.length, T.played)+stat(dr.filter(r=>r.place===1).length, T.wins)+
+      stat('#'+Math.min.apply(null, dr.map(r=>r.place)), T.bestPlace)+stat('#'+(dr.reduce((a,r)=>a+r.place,0)/dr.length).toFixed(1), T.avgPlace)+
+      stat(ccNum(Math.max.apply(null, dr.map(r=>r.score||0))), T.bestScore)+stat(streak, T.streak)+'</div>'+
+      '<div class="me-last"><small>'+esc(T.last)+'</small>'+dr.slice(-10).reverse().map(r=>'<span class="'+(r.place===1 ? 'w' : r.place<=3 ? 'p' : '')+'" title="'+esc(r.day)+'">#'+r.place+'</span>').join('')+'</div>'
+    : '<div class="ch-empty">'+esc(T.none)+'</div>';
+  const draftHTML=hist.length ? '<div class="me-sts">'+stat(hist.length, T.runs)+stat(placed.filter(h=>h.place===1).length, T.wins)+
+      stat(placed.length ? '#'+Math.min.apply(null, placed.map(h=>h.place)) : '—', T.bestPlace)+stat(bestGrade, T.bestGrade)+
+      stat(hist.filter(h=>h.championMajor).length, T.majors)+'</div>' : '<div class="ch-empty">'+esc(T.none)+'</div>';
+  const achHTML='<div class="me-ach">'+ACHIEVEMENTS.map(a=>'<div class="achv-card '+(ach.has(a.id) ? 'unlocked' : 'locked')+'"><div class="achv-icon">'+a.icon+'</div><div><div class="achv-title">'+
+      (L()['achv_'+a.id+'_title']||a.id)+'</div><div class="achv-desc">'+(L()['achv_'+a.id+'_desc']||'')+'</div></div></div>').join('')+'</div>';
+  const sec=(h, body)=>'<div class="ch-tile me-sec"><h4>'+esc(h)+'</h4>'+body+'</div>';
+  return head+sec(T.careers, '<div class="me-cars">'+carHTML+'</div>')+(mgrN ? sec(T.mgr, '<div class="me-sts">'+stat(mgrN, T.clubs)+'</div>') : '')+
+    sec(T.daily, dailyHTML)+sec(T.draft, draftHTML)+sec(T.ach+' · '+ach.size+'/'+ACHIEVEMENTS.length, achHTML);
+}
+function openProfileScreen(){
+  const b=document.getElementById('meBody'); if(b) b.innerHTML=ccMeHTML();
+  show('screen-profile');
+  try{ if(location.hash!=='#me') history.replaceState(null, '', '#me'); }catch(e){}
+  window.scrollTo(0, 0);
+}
+window.addEventListener('load', ()=>setTimeout(()=>{ try{ if(location.hash==='#me') openProfileScreen(); }catch(e){} }, 350));
 // Кубок полки наград: чаша на ножке с ручками, плоскими цветами (без градиентов с id — копии полки ломают ссылки).
 const CC_AW_CUP='<svg class="aw-cup-i" viewBox="0 0 48 56" aria-hidden="true">'+
   '<path d="M12 6h24v10c0 9-5 16-12 16S12 25 12 16z" fill="currentColor"/>'+
@@ -179653,7 +179775,9 @@ function ccAwardsShelfHTML(){
     return e.kind==='globals' || (/^(summit|rc|reload)$/.test(e.kind) && e.stage==='final'); };
   const cups=log.filter(big).sort((a,b)=>String(a.day)<String(b.day) ? -1 : 1);
   const weekly=log.filter(e=>e.kind==='final' && !big(e)).length;
-  const cupName=e=>{ try{ return ccLockerPlain(ccLogName(e)); }catch(x){ return e.name||''; } };
+  // Глобалы полным именем: ccLogName даёт календарное сокращение «ГЧ» (его «что такое ГЧ», 30.10).
+  const cupName=e=>{ if(e.kind==='globals') return 'Global Championship';
+    try{ return ccLockerPlain(ccLogName(e)); }catch(x){ return e.name||''; } };
   const cupDay=e=>{ try{ return ccDayLabel ? ccDayLabel(e.day) : e.day; }catch(x){ return e.day||''; } };
   /* 30.10 (2), его «слопно; кубки пусть лого фнкса, который он выиграл»: кубок — заставка того самого турнира
      (ccLogArt, те же картинки, что на стене истории) в рамке с табличкой: название и год. */

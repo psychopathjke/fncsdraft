@@ -369,7 +369,7 @@ if (RES && RES.windows.length) {
 
 // ---- Шапка как у главной (26.10, его «сделай дизайн компетитив как главный экран»): логотип, пилюли навбара.
 const NAV = `<header class="top"><a class="logo" href="/"><img src="/logo.png" alt="" width="40" height="40"><b><i>FNCS</i> DRAFT</b></a>
-<nav class="site-nav" aria-label="site"><a class="nav-pill" href="/">Career</a><a class="nav-pill on" href="/competitive" aria-current="page">Competitive</a></nav></header>`;
+<nav class="site-nav" aria-label="site"><a class="nav-pill" href="/">Career</a><a class="nav-pill on" href="/competitive" aria-current="page">Competitive</a><a class="nav-pill" href="/#me">Profile</a></nav></header>`;
 
 // Синее стекло главной: фон #0b1640 с подсветкой, панели-градиенты с лучами, Fira Sans Extra Condensed в заголовках,
 // пилюли навбара, жёлтая кнопка со «ступенькой», заголовки разделов — разделитель меню Fortnite (линии по бокам).
