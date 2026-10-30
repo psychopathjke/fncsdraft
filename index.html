@@ -6110,6 +6110,23 @@
   .me-cup img{width:100%;height:100%;object-fit:cover;}
   .me-cup b{position:absolute;right:1px;bottom:0;font-size:13px;filter:drop-shadow(0 1px 1px #000);}
   .me-cup-more{font-size:11px;font-weight:900;color:#ffd400;}
+  /* Цвета карьеры (30.10, его «цвета в профиле не под стиль карьеры и сайта»): сцена — синий градиент лобби
+     (.ch-stage), панели — голубое стекло --fn-panel, плашки цифр — --fn-deep, акцент — жёлтый Fortnite --fn-yellow. */
+  #screen-profile .me-wrap{background:linear-gradient(160deg,#1d3b8c 0%,#13265f 46%,#0b1640 100%);border-radius:var(--r,16px);
+    box-shadow:inset 0 0 0 1px rgba(180,200,255,.16);padding:16px 14px 28px;margin-top:10px;margin-bottom:30px;}
+  #screen-profile .ch-tile{background:var(--fn-panel);border:1px solid var(--fn-line);border-radius:var(--r,14px);box-shadow:none;color:var(--fn-ink);}
+  #screen-profile .me-st,#screen-profile .me-last span,#screen-profile .achv-card,#screen-profile .me-skin{background:var(--fn-deep);border-color:var(--fn-line);}
+  #screen-profile .me-car{background:rgba(8,18,50,.35);border-color:var(--fn-line);}
+  #screen-profile .me-st small,#screen-profile .me-head small,#screen-profile .me-car-h span,#screen-profile .me-best small,
+  #screen-profile .me-last small,#screen-profile .achv-desc,#screen-profile .ch-empty,#screen-profile .me-edit>small{color:var(--fn-dim);}
+  #screen-profile .me-ovr,#screen-profile .me-open,#screen-profile .me-last span.w{background:var(--fn-yellow);color:#0b1640;}
+  #screen-profile .me-ava{border-color:var(--fn-yellow);background:var(--fn-deep);} #screen-profile .me-ava-0{color:var(--fn-yellow);}
+  #screen-profile .achv-card.unlocked{border-color:var(--fn-yellow);background:rgba(255,230,0,.1);}
+  #screen-profile .me-det>summary h4::after,#screen-profile .me-cup-more{color:var(--fn-yellow);}
+  #screen-profile .me-open,#screen-profile .me-editbtn,#screen-profile .me-up,#screen-profile .me-edit-b .cc-back{border-radius:999px;}
+  #screen-profile .me-up,#screen-profile .me-edit-b .cc-back:not(.me-open),#screen-profile .me-editbtn{background:var(--fn-btn);border-color:var(--fn-line);}
+  #screen-profile .me-edit input{background:rgba(8,18,50,.5);border-color:var(--fn-line);}
+  #screen-profile .me-open:hover,#screen-profile .me-editbtn:hover,#screen-profile .me-up:hover{outline:3px solid rgba(255,255,255,.92);}
   /* Полка наград (30.10): кубки и карточки «Игрок месяца» как в футболе. */
   .aw-sub{margin:12px 0 6px;font-size:11px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:#9fb0e8;}
   .aw-cups{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px;}
@@ -121017,7 +121034,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='5681c41f';
+const CC_BUILD='ecc810f5';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
