@@ -6203,8 +6203,10 @@
   .aw-plq-g .aw-plq-plate{background:linear-gradient(180deg,#d9fbff,#7fd6e6);color:#032a33;}
   .aw-plq.aw-plq-s{border-color:#c9d2de;} .aw-plq-s .aw-plq-plate{background:linear-gradient(180deg,#f2f5f9,#aab4c2);color:#1a2230;}
   .aw-plq-plate b{display:block;font-size:11px;font-weight:900;line-height:1.1;}
-  .aw-plq.aw-plq-t{aspect-ratio:auto;display:flex;flex-direction:column;background:#05070d;border-color:#ffdd00;box-shadow:0 0 18px rgba(255,221,0,.18);}
-  .aw-plq-t img{position:static;width:100%;height:auto;aspect-ratio:3/4;object-fit:cover;}
+  .aw-plq.aw-plq-t{aspect-ratio:auto;display:flex;flex-direction:column;border-color:#ffdd00;box-shadow:0 0 18px rgba(255,221,0,.18);
+    background:radial-gradient(ellipse 60% 45% at 50% 48%,rgba(255,221,0,.22),transparent 70%),linear-gradient(180deg,#141b33,#05070d);}
+  .aw-plq-t img{position:static;width:100%;height:auto;aspect-ratio:3/4;object-fit:contain;padding:10px 8px 0;box-sizing:border-box;
+    filter:drop-shadow(0 6px 8px rgba(0,0,0,.6));}
   .aw-plq-t .aw-plq-plate{position:static;margin:6px;}
   .aw-plq-plate small{display:block;font-size:9.5px;font-weight:800;opacity:.8;}
   .aw-potms{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:10px;}
@@ -120166,7 +120168,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='49040571';
+const CC_BUILD='6c50cb7a';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -175077,7 +175079,7 @@ function ccAwardsShelfHTML(){
      (ccLogArt, те же картинки, что на стене истории) в рамке с табличкой: название и год. */
   const cupHTML=e=>{
     const t=ccAwTrophy(e);
-    if(t) return '<div class="aw-plq aw-plq-t"><img src="items/trophies/'+t+'.webp" alt="" loading="lazy">'+
+    if(t) return '<div class="aw-plq aw-plq-t"><img src="items/trophies/'+t+'.png" alt="" loading="lazy">'+
       '<div class="aw-plq-plate"><b>'+esc(cupName(e))+'</b><small>'+esc(String(cupDay(e)))+' '+esc(String(e.day||'').slice(0,4))+'</small></div></div>';
     let art=null; try{ art=ccLogArt(e); }catch(x){ art=null; }
     return '<div class="aw-plq'+(e.kind==='globals' ? ' aw-plq-g' : '')+'">'+
