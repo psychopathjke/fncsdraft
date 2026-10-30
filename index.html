@@ -120194,7 +120194,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='3e1093a6';
+const CC_BUILD='3e9cf406';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -157175,25 +157175,22 @@ function ccOwnPool(){
 function ccOwnMyMates(fmt){
   return ((CAREER.rosters||{})[fmt] || CAREER.partners || []).filter(Boolean).map(r=>ccMateCardOf(r)).filter(Boolean).slice(0, fmt-1);
 }
-/* Аватарка турнира: готовые кубки или своя картинка. Своя ужимается до 96 точек в jpeg и
-   кладётся в сейв строкой; не влезла в потолок — не берём. */
-const CC_OWN_LOGOS=['items/trophies/gc-2025.png', 'items/trophies/gc-2026.png', 'items/trophies/gc-2023.png',
-  'items/trophies/inv-2022.png', 'items/trophies/wc-2019.png', 'items/trophies/proam.png', 'items/trophies/ewc.png'];
+/* Аватарка турнира — только своя картинка: ужимается до 96 точек в jpeg и кладётся в сейв
+   строкой; не влезла в потолок — не берём. */
 const CC_OWN_LOGO_MAX=16000;
 function ccOwnLogoHTML(){
   const T=L(), d=CC_OWN_DRAFT||{}, cur=d.logo||'';
   const up=cur.slice(0, 11)==='data:image/';
   return '<div class="own-logos">'+
-    '<button class="own-logo-none'+(cur ? '' : ' on')+'" onclick="ccOwnLogoSet(-1)" title="'+esc(T.ownLogoNone)+'">✕</button>'+
-    CC_OWN_LOGOS.map((u, i)=>'<button class="'+(cur===u ? 'on' : '')+'" onclick="ccOwnLogoSet('+i+')"><img src="'+u+'" alt=""></button>').join('')+
-    (up ? '<button class="on" onclick="ccOwnLogoSet(-2)"><img src="'+esc(cur)+'" alt=""></button>' : '')+
+    (up ? '<button class="on" onclick="ccOwnLogoSet(-2)"><img src="'+esc(cur)+'" alt=""></button>'+
+      '<button class="own-logo-none" onclick="ccOwnLogoSet(-1)" title="'+esc(T.ownLogoNone)+'">✕</button>' : '')+
     '<label class="own-logo-up" title="'+esc(T.ownLogoUp)+'">+<input type="file" accept="image/*" style="display:none" onchange="ccOwnLogoPick(this)"></label>'+
     '</div>'+(d.logoBad ? '<small class="own-why">'+esc(T.ownLogoBig)+'</small>' : '');
 }
 function ccOwnLogoSet(i){
   const d=CC_OWN_DRAFT; if(!d) return;
   if(i===-2) return;
-  d.logo=i<0 ? '' : (CC_OWN_LOGOS[i]||''); d.logoBad=false;
+  d.logo=''; d.logoBad=false;
   ccOwnDraw();
 }
 // Квадрат по центру, тёмная подложка под прозрачные png.
