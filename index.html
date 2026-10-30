@@ -117331,7 +117331,7 @@ function showUnlockToasts(newly){
   newly.forEach(a=>{
     const div=document.createElement('div');
     div.className='toast-unlock';
-    div.textContent=L().unlockedToast(a.icon+' '+L()['achv_'+a.id+'_title']);
+    div.textContent=L().unlockedToast(a.icon+' '+String(L()['achv_'+a.id+'_title']||'').replace(/<[^>]*>/g, '').trim());
     box.appendChild(div);
   });
 }
@@ -120199,7 +120199,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='59474ec8';
+const CC_BUILD='230a0ce7';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -174988,7 +174988,8 @@ function ccMeShowItems(cars, ach, has){
     out.push({id:'cup:'+n+':'+e.day+':'+e.kind, art, icon:'🏆', name:nm, sub:String(e.day||'').slice(0,4)}); }));
   const PT=CC_ME_ACH_TX[(typeof LANG!=='undefined' && LANG)] || CC_ME_ACH_TX.en;
   Object.keys(has).filter(k=>has[k]).forEach(k=>out.push({id:'p:'+k, icon:CC_ME_ACH_ICO[k], name:PT[k][0]}));
-  ACHIEVEMENTS.filter(a=>ach.has(a.id)).forEach(a=>out.push({id:'a:'+a.id, icon:a.icon, name:L()['achv_'+a.id+'_title']||a.id}));
+  // В названиях ачивок бывает флаг тегом <img>; в плитке нужен только текст.
+  ACHIEVEMENTS.filter(a=>ach.has(a.id)).forEach(a=>out.push({id:'a:'+a.id, icon:a.icon, name:String(L()['achv_'+a.id+'_title']||a.id).replace(/<[^>]*>/g, '').trim()}));
   return out;
 }
 function ccMeShowTile(it){
