@@ -9853,7 +9853,7 @@
         <div class="hero-cta">
           <button class="hero-btn hero-btn-go" type="button" onclick="homeOpenDraft()"><span data-i18n="hdPlay"></span></button>
           <button class="hero-btn hero-btn-alt" type="button" onclick="chooseMode(2, true)"><span>All FNCS</span></button>
-          <button class="hero-btn hero-btn-alt hero-sq-btn" type="button" onclick="sqStart()"><span>FNCS Cards</span></button>
+          <!-- Кнопка FNCS Cards скрыта; код режима (sqStart) остаётся. -->
         </div>
       </div>
       <!-- Превью драфта — стена логотипов FNCS и World Cup 2019–2026 (его просьба 29.09: «на превью добавить все
@@ -120199,7 +120199,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='2e8cac9d';
+const CC_BUILD='e4d1dc38';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
