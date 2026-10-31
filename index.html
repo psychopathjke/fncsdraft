@@ -14932,6 +14932,7 @@ dmMateTalkspot:(i,a)=>'I like it. Loot is steady, we scared the neighbours off �
 dmMeTalkrole:(m,y)=>'On roles: you are '+m+', I am '+y+'. Good?',
 dmMateTalkrole:(m,y)=>'Good. You call the rotations, I take first contact. That is how we play',
 dmMeTalklife:'How are you doing?',
+dmMateSay:(k,i)=>{ const s=CC_MATE_V[LANG]||CC_MATE_V.en, l=s[k]||CC_MATE_V.en[k]||[]; return l[i%Math.max(1,l.length)]||''; },
 dmMateTalklife:'Fine. Slept badly, but the mood is there. Let us go tonight',
 ccPsTitle:'This career, this season', ccPsPr:'Power Ranking', ccPsPrize:'Prize money this year', ccPsEvents:'Events', ccPsWins:'Wins (VR)', ccPsElims:'Elims', ccPsAvg:'Average place', ccPsBest:'Best place', ccPsPodiums:'Podiums', ccPsLast:'Latest nights', ccPsFncs:'FNCS over the whole career', ccPsFncsReal:'Real events — Tracker and Liquipedia', ccPsFncsN:'FNCS events', ccPsFncsGf:'Grand Finals', ccPsFncsBest:'Best final', ccPsFncsTitles:'Titles', ccPsFncsGc:'Global Championships', ccPsFncsMine:n=>'In this career — from the last '+n+' nights', ccPsFncsNights:'FNCS nights', ccPsFncsWon:'Wins', ccStTitle:'Stats', ccStEmpty:'Play a first tournament and the numbers appear here', ccStEvents:'Tournaments', ccStGames:'Matches',
 ccStWins:'Wins', ccStElims:'Eliminations', ccStPerGame:'per match', ccStAvg:'Average place', ccStPodiums:'Podiums', ccStTop10:'Top 10s',
@@ -120277,7 +120278,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='16c483d6';
+const CC_BUILD='f6be569b';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -175706,7 +175707,8 @@ function careerMateTalk(kind){
     life:  []
   }[kind]||[];
   careerDmPush(t, 'you', 'dmMeTalk'+kind, args);
-  careerDmPush(t, 'them', 'dmMateTalk'+kind, args);
+  const alt=ccMateReplyAlt(kind, args, rec);
+  if(alt) careerDmPush(t, 'them', 'dmMateSay', alt); else careerDmPush(t, 'them', 'dmMateTalk'+kind, args);
   /* Настрой — тем же правилом, что и день «поговорить»: разговор подряд
      стоит вдвое и вчетверо меньше. Разница в том, что этот не берёт день. */
   const by=firstToday ? careerTalkMove(rec, careerToday()) : 0;
@@ -175718,6 +175720,72 @@ function careerMateTalk(kind){
   careerSave();
   careerRenderHub('social');
   return true;
+}
+/* Ответ напарника от обстановки, а не одна строка на тему: вечер хороший, средний или плохой, есть ли точка и аура,
+   какой у него настрой. Строка выбирается днём, чтобы перерисовка её не меняла. Нет набора в языке: английский. */
+const CC_MATE_V={
+  ru:{night_none:['Пока разбирать нечего, ещё не играли вместе. Вечером посмотрим','Сначала сыграем, потом разберём. Я готов'],
+      night_good:['Вот это вечер. Держим так же, ничего не меняем','Видел? Мы в зону заходили первыми. Повторим','Хороший вечер. Только в конце жадничали, можно было больше'],
+      night_mid:['Средне. Две игры отдали на ровном месте','Не плохо, не хорошо. В середине вечера просели, надо держать концентрацию'],
+      night_bad:['Плохо, честно. Я тоже накосячил, извини','Пересмотрел. Дропали слишком жадно, давай спокойнее','Забудем. Один вечер ничего не решает, завтра заново'],
+      spot_none:['Своей точки у нас нет. Может, возьмём? Без неё каждый вечер лотерея','Каждый раз падаем куда придётся. Давай закрепимся'],
+      spot_weak:['Точка норм, но нас там ещё не боятся. Надо постоять','Лут есть, но соседи лезут. Пару вечеров и отстанут'],
+      spot_strong:['Наша точка, все знают. Никто не лезет','Там нам спокойно. Лут ровный, выходим полными'],
+      role:['Норм. Ты зовёшь ротации, я беру первый контакт','Меня устраивает. Только зови раньше, я не всегда вижу зону','Давай так. Если что, поменяемся, мне не принципиально'],
+      life_up:['Отлично. Настрой боевой, жду вечера','Всё хорошо. Потренил утром, руки тёплые','Норм, даже кайфую. Давно так не хотелось играть'],
+      life_down:['Честно, так себе. Устал немного','Не очень. Последние вечера выбили, но я соберусь','Средне. Давай сегодня без лишнего давления']},
+  en:{night_none:['Nothing to review yet, we have not played together. Tonight we will see','Play first, review after. I am ready'],
+      night_good:['What a night. Keep it exactly like this','Saw that? We were first into every zone. Again','Good night. We got greedy at the end though, could have been more'],
+      night_mid:['Average. We threw two games for nothing','Not bad, not good. We dipped mid evening, need to stay focused'],
+      night_bad:['Bad, honestly. I messed up too, sorry','Rewatched it. We dropped too greedy, let us play calmer','Forget it. One night decides nothing, fresh start tomorrow'],
+      spot_none:['We have no spot of our own. Shall we take one? Without it every night is a lottery','We land wherever every time. Let us settle somewhere'],
+      spot_weak:['Spot is fine, but nobody fears us there yet. We need to hold it','There is loot, but the neighbours keep coming. A couple of nights and they stop'],
+      spot_strong:['Our spot, everyone knows it. Nobody contests','We are calm there. Steady loot, we leave full'],
+      role:['Fine. You call rotations, I take first contact','Works for me. Just call earlier, I do not always see the zone','Let us do it. We can swap if needed, I do not mind'],
+      life_up:['Great. In the mood, can not wait for tonight','All good. Warmed up this morning, hands are ready','Fine, enjoying it even. Have not wanted to play this much in a while'],
+      life_down:['Honestly, meh. A bit tired','Not great. The last nights got to me, but I will pull it together','So so. Let us keep the pressure low today']},
+  fr:{night_none:['Rien à analyser, on n’a pas encore joué ensemble. Ce soir on verra','On joue d’abord, on analyse après. Je suis prêt'],
+      night_good:['Quelle soirée. On garde exactement ça','T’as vu ? On rentrait premiers dans chaque zone. On remet ça','Bonne soirée. Un peu gourmands à la fin quand même, on pouvait faire plus'],
+      night_mid:['Moyen. On a lâché deux games pour rien','Ni bien ni mal. On a baissé en milieu de soirée, faut rester concentrés'],
+      night_bad:['Mauvais, honnêtement. J’ai raté aussi, désolé','J’ai revu. On a drop trop gourmand, jouons plus calme','On oublie. Une soirée ne décide rien, demain on repart'],
+      spot_none:['On n’a pas de spot à nous. On en prend un ? Sans ça chaque soirée est une loterie','On atterrit n’importe où à chaque fois. Posons nous quelque part'],
+      spot_weak:['Le spot est correct, mais personne ne nous craint encore. Faut tenir','Il y a du loot, mais les voisins viennent. Deux soirées et ils arrêtent'],
+      spot_strong:['Notre spot, tout le monde le sait. Personne ne conteste','On est tranquilles là bas. Loot stable, on sort full'],
+      role:['Ça va. Tu appelles les rotations, je prends le premier contact','Ça me va. Appelle juste plus tôt, je ne vois pas toujours la zone','Faisons comme ça. On peut échanger si besoin, ça m’est égal'],
+      life_up:['Top. Motivé, j’attends ce soir','Tout va bien. Échauffé ce matin, les mains sont prêtes','Ça va, je kiffe même. Ça faisait longtemps que je n’avais pas autant envie de jouer'],
+      life_down:['Franchement, bof. Un peu fatigué','Pas terrible. Les dernières soirées m’ont touché, mais je vais me reprendre','Moyen. Allons y sans trop de pression aujourd’hui']},
+  it:{night_none:['Ancora niente da rivedere, non abbiamo giocato insieme. Stasera vediamo','Prima giochiamo, poi analizziamo. Sono pronto'],
+      night_good:['Che serata. Teniamola così','Visto? Entravamo primi in ogni zona. Di nuovo','Bella serata. Un po’ ingordi alla fine però, si poteva fare di più'],
+      night_mid:['Nella media. Abbiamo buttato due partite per niente','Né bene né male. Calati a metà serata, serve concentrazione'],
+      night_bad:['Male, onestamente. Ho sbagliato anche io, scusa','Rivista. Drop troppo ingordo, giochiamo più calmi','Dimentichiamola. Una serata non decide niente, domani si riparte'],
+      spot_none:['Non abbiamo un posto nostro. Ne prendiamo uno? Senza ogni serata è una lotteria','Atterriamo ovunque ogni volta. Fermiamoci da qualche parte'],
+      spot_weak:['Il posto va bene, ma lì nessuno ci teme ancora. Bisogna tenerlo','Il loot c’è, ma i vicini arrivano. Un paio di serate e smettono'],
+      spot_strong:['È il nostro posto, lo sanno tutti. Nessuno contesta','Lì siamo tranquilli. Loot stabile, usciamo pieni'],
+      role:['Va bene. Tu chiami le rotazioni, io prendo il primo contatto','Per me va bene. Chiama solo prima, non sempre vedo la zona','Facciamo così. Se serve ci scambiamo, per me è uguale'],
+      life_up:['Benissimo. Carico, aspetto stasera','Tutto bene. Riscaldato stamattina, le mani sono pronte','Bene, anzi mi diverto. Non avevo così voglia di giocare da tempo'],
+      life_down:['Sinceramente, così così. Un po’ stanco','Non benissimo. Le ultime serate mi hanno pesato, ma mi riprendo','Insomma. Oggi niente pressione extra']},
+  pt:{night_none:['Ainda nada para rever, não jogamos juntos. À noite a gente vê','Primeiro joga, depois analisa. Tô pronto'],
+      night_good:['Que noite. Mantém assim','Viu? A gente entrava primeiro em toda zona. De novo','Boa noite. Mas ficamos gananciosos no fim, dava pra mais'],
+      night_mid:['Mediano. Entregamos duas partidas à toa','Nem bom nem ruim. Caímos no meio da noite, precisa de foco'],
+      night_bad:['Ruim, sinceramente. Eu errei também, foi mal','Revi. Drop ganancioso demais, vamos jogar mais calmos','Esquece. Uma noite não decide nada, amanhã de novo'],
+      spot_none:['Não temos um ponto nosso. Vamos pegar um? Sem isso toda noite é loteria','Toda vez caímos em qualquer lugar. Vamos fixar um ponto'],
+      spot_weak:['O ponto é bom, mas ninguém tem medo da gente lá ainda. Precisa segurar','Tem loot, mas os vizinhos aparecem. Umas duas noites e eles param'],
+      spot_strong:['Nosso ponto, todo mundo sabe. Ninguém disputa','Lá é tranquilo. Loot estável, saímos cheios'],
+      role:['Beleza. Você chama as rotações, eu pego o primeiro contato','Por mim tudo bem. Só chama antes, nem sempre vejo a zona','Vamos assim. Se precisar a gente troca, tanto faz'],
+      life_up:['Ótimo. No clima, esperando a noite','Tudo certo. Aqueci de manhã, mãos prontas','De boa, curtindo até. Fazia tempo que não tinha tanta vontade de jogar'],
+      life_down:['Sinceramente, mais ou menos. Meio cansado','Não muito bem. As últimas noites pesaram, mas vou me recuperar','Mais ou menos. Hoje sem pressão extra']}
+};
+function ccMateReplyAlt(kind, args, rec){
+  const set=CC_MATE_V[(typeof LANG!=='undefined' && LANG) || 'en'] || CC_MATE_V.en;
+  let k=null;
+  if(kind==='night'){ const p=args[0]||0, of=args[1]||0;
+    k=!p ? 'night_none' : (p<=Math.max(5, of*0.1) ? 'night_good' : p<=of*0.5 ? 'night_mid' : 'night_bad'); }
+  else if(kind==='spot') k=!args[0] ? 'spot_none' : (args[1]||0)>=50 ? 'spot_strong' : 'spot_weak';
+  else if(kind==='role') k='role';
+  else if(kind==='life') k=((rec && rec.patience!=null ? rec.patience : 60)>=50 && careerEnergy()>=40) ? 'life_up' : 'life_down';
+  const list=k && set[k];
+  if(!list || !list.length) return null;
+  return [k, Math.abs(ccHashStr('mate|'+kind+'|'+careerToday()))%list.length];
 }
 function careerMateOpen(){
   const t=careerMateThread(); if(!t) return;
