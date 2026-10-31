@@ -12959,7 +12959,7 @@ attrFlatNote:'Нет поматчевой статистики — профил�
 roleFRG:'ФРГ', roleBLD:'БЛД', roleSRV:'ВЖВ', roleIGL:'ИГЛ', roleCLU:'КЛЧ', roleANC:'АНК',
 cardBackBtn:'Стата', cardFrontBtn:'Атрибуты', cardPeekHint:'Нажми, чтобы посмотреть стату карточки',
 brkTitle:'Из чего сложился рейтинг',
-brk_lan:'LAN Summit', brk_rc:'LAN Reload Championship', brk_gc26:'LAN Global Championship, Антверпен', brk_gf:'Гранд-финал', brk_heat:'Хит', brk_playin:'Play-In', brk_lcq:'Last Chance', brk_cup:'Кубок Div 1',
+brk_lan:'LAN Summit', brk_rc:'LAN Reload Championship', brk_gc26:'LAN Global Championship, Антверпен', brk_solos:'Финал FNCS Solos', brk_gf:'Гранд-финал', brk_heat:'Хит', brk_playin:'Play-In', brk_lcq:'Last Chance', brk_cup:'Кубок Div 1',
 brk_cup_nth:'неделя', brk_heat_nth:'группа',
 brkBlend:'Сумма / вес',
 brkNormalised:'После нормировки по региону',
@@ -15064,7 +15064,7 @@ attrFlatNote:'No per-match data — flat profile at the rating the placement ear
 roleFRG:'FRG', roleBLD:'BLD', roleSRV:'SRV', roleIGL:'IGL', roleCLU:'CLU', roleANC:'ANC',
 cardBackBtn:'Stats', cardFrontBtn:'Attributes', cardPeekHint:'Click to open this card\u2019s stat sheet',
 brkTitle:'How this rating was built',
-brk_lan:'Summit LAN', brk_rc:'Reload Championship LAN', brk_gc26:'Global Championship LAN, Antwerp', brk_gf:'Grand Final', brk_heat:'Heat', brk_playin:'Play-In', brk_lcq:'Last Chance', brk_cup:'Div 1 Cup',
+brk_lan:'Summit LAN', brk_rc:'Reload Championship LAN', brk_gc26:'Global Championship LAN, Antwerp', brk_solos:'FNCS Solos Final', brk_gf:'Grand Final', brk_heat:'Heat', brk_playin:'Play-In', brk_lcq:'Last Chance', brk_cup:'Div 1 Cup',
 brk_cup_nth:'week', brk_heat_nth:'group',
 brkBlend:'Total / weight',
 brkNormalised:'After the region is normalised',
@@ -15251,7 +15251,7 @@ cardBackBtn:'Stats',
 cardFrontBtn:'Attributs',
 cardPeekHint:'Clique pour ouvrir la fiche de stats de cette carte',
 brkTitle:'Comment cette note a été construite',
-brk_lan:'LAN du Summit', brk_rc:'LAN du Reload Championship', brk_gc26:'LAN du Global Championship, Anvers',
+brk_lan:'LAN du Summit', brk_rc:'LAN du Reload Championship', brk_solos:'Finale FNCS Solos', brk_gc26:'LAN du Global Championship, Anvers',
 brk_gf:'Grande Finale',
 brk_heat:'Heat',
 brk_playin:'Play-In',
@@ -18830,7 +18830,7 @@ attrConSrc:"Punti per partita",
 attrFlatNote:"Nessun dato per partita — profilo piatto alla valutazione data dal piazzamento",
 brkTitle:"Come è stata costruita questa valutazione",
 brk_lan:"LAN Summit",
-brk_rc:"LAN Reload Championship", brk_gc26:"LAN Global Championship, Antuérpia", brk_gc26:"LAN Global Championship, Anversa",
+brk_rc:"LAN Reload Championship", brk_solos:"Finale FNCS Solos", brk_gc26:"LAN Global Championship, Antuérpia", brk_gc26:"LAN Global Championship, Anversa",
 brk_gf:"Gran Finale",
 brk_heat:"Heat",
 brk_playin:"Play-In",
@@ -23738,6 +23738,7 @@ Object.assign(I18N.pt=I18N.pt||{},
   "ccRaceWhymode": "Modos diferentes na corrida — a noite só começa quando todo mundo escolher um",
   "ccRaceWait": "O dia fecha junto — esperando seu rival terminar o dele",
   "ccRaceAloneGo": "Seguir sem eles",
+  "brk_solos": "Final FNCS Solos",
   "brk_gc26": "Global Championship LAN, Antuérpia",
   "lfRate": "Nota da partida",
   "lfMvp": "Jogador da noite",
@@ -24190,7 +24191,7 @@ ccSacPromoRow:(n,m,p)=>'promo no X '+n+'/'+m+(p ? ' · +'+p+'%' : ''),
 ccGoalReach:{majorFinal:'chegar a uma final de Major FNCS', fncsFinal:'chegar à final semanal da FNCS'},
 ccOrgGoalPickHint:'Meta da temporada: escolha uma antes do fim da temporada. Cumpriu, renova com aumento (meta mais difícil, aumento maior); falhou, o clube te libera. Sem escolha, fica a do meio.'
 }));
-let CC_I18N_V={de:'3b3e960a', es:'fdcc6d77'};   // ==== CC_I18N_V (tools/build-i18n.js) ====
+let CC_I18N_V={de:'2e283359', es:'1f889c81'};   // ==== CC_I18N_V (tools/build-i18n.js) ====
 // Версия fn-shop.js (магазин Fortnite по дням, tools/build-fn-shop.js) — для ?v= ленивой загрузки.
 let CC_FN_SHOP_V='be7040d6';
 const CC_LANG_WAIT={};
@@ -95191,6 +95192,21 @@ var RATING_FLOOR={};
   const gc26Stage=reg=>({map:byHandle(GC26_RANK[reg]), weight:3.0, label:'gc26', field:50,
     score:r=>curve(r, 100, 24, 50)});
   Object.keys(S41).forEach(reg=>{ if(GC26_RANK[reg]) S41[reg]=S41[reg].concat([gc26Stage(reg)]); });
+  /* Финал FNCS Solos 2026 (S42, 26–27.10): сто игроков на регион, итог двух дней. Соло, но это финал FNCS сезона,
+     поэтому весит как гранд-финал (2.0) и с той же скидкой региона; поле 100, последний получает top−30.
+     Места: tools/build-solos26-rank.js (eucompetitive, ник по id аккаунта). */
+  const SOLOS26_RANK={
+    EU:{ "Tjino":1, "Shxrk":2, "Focus":3, "Prism":4, "demus":5, "Pixie":6, "Rax":7, "Darm":8, "Malibuca":9, "Nebs":10, "P1ng":11, "Turtl3":12, "Vanyak3kk":13, "Akiira":14, "FRANEK":15, "Nxthan":16, "F1shyX":17, "Zynox":18, "Scroll":19, "Rz VeriSnow.":20, "Polo":21, "Moneymaker":22, "PabloWingu":23, "Tidi":24, "un1q frxzifyǃ":25, "Scaryy":26, "charyy":27, "Pixovsky":28, "Szarik":29, "ghxsty":30, "Ghonzo":31, "OLM HEADHURTING":32, "Wox":33, "f3kserǃ":34, "TEYYDINHO":35, "Fastroki":36, "Wozah":37, "Kombek":38, "Adrx":39, "Chap":40, "bpro teku 0":41, "Freaky Calle88":42, "Kurama":43, "IDrop":44, "Kayd":45, "Twek":46, "Howly":47, "Kenrop":48, "Kreg 逝":49, "Bimbo":50, "F1n4ik":51, "Flickzy":52, "Wheat":53, "SkyJump":54, "Lericx":55, "freuzi":56, "PAX MaxDMG.":57, "Twi":58, "FiTo":59, "trippernn":60, "BGLORY Pruzen":61, "Sky":62, "Vira omexo":63, "MariusCOW":64, "t3eny":65, "Pixx":66, "Cxshy":67, "Repairs":68, "frxstyy":69, "Joshbot":70, "Prax":71, "Samux 7":72, "Tisma":73, "Vexi":74, "Hedra":75, "Deckzee":76, "Foczka":77, "Crisbuca":78, "xzeevit":79, "Wolvax":80, "Turtle":81, "Aryan Jane":82, "Casperinovic":83, "AlbaXna":84, "Mаtez":85, "Werex":86, "Syaaz":88, "Volko":89, "Matrekarrr":90, "9UNA":91, "Supa Grind":92, "Ricky":93, "Xaizz":94, "Zane":95, "Ismo":96, "flexgotyy":97, "Trooly":99, "Clue Vinq":100 },
+    NAC:{ "Ajerss":1, "Ritual":2, "Pollo":3, "Klixey":4, "Boltz":5, "Curve":6, "Scare":7, "Reet":8, "Peterbot":9, "Hcube":10, "Vergo":11, "Eomzo":12, "Xavi":13, "Higgs":14, "Enough":15, "Muz":16, "josh":17, "Golden":18, "Cooper":19, "GМoney":20, "Slepzi":21, "Kraez":22, "PXMP":23, "Threats":24, "Sphinx":25, "Monty":26, "Noxy":27, "Rise":28, "Northern":29, "Queasy":30, "Salt":31, "kingaling":32, "Jayse1x":33, "Eshouu":34, "Clix":35, "Rapid":36, "Krreon":37, "Wagers":38, "cyclops":39, "Chimp":40, "Channce":41, "Mason":42, "Khanada":43, "Visxals":44, "Shadow":45, "JariesFire":46, "Lukin":47, "Evyn":48, "nvtylerh":49, "Cam":50, "Magma":51, "Jaus":52, "Zanda":53, "Jargue":54, "Light":55, "Acorn":56, "Noizy":57, "Tank":58, "queasys left nut":59, "EpikWhale":60, "Bucke":61, "Liam":62, "Dolzeur":63, "PureBx":64, "codack":65, "Danyfishy3x":66, "Bugha":67, "Doxey":68, "Kirillian":69, "Boogy":70, "mely":71, "cauzerz":72, "Jerry":73, "Jemitty":74, "VicterV":75, "Darzy":76, "Void":77, "Khaki":78, "Dash":79, "REGULARBRD OKTYB":80, "Zyft":81, "Chase":82, "Okis":83, "Max":84, "NoahWPlays":85, "n8 lieǃ":86, "Lorzizs":87, "Seek":88, "Grapido":89, "Tragic":90, "flxs":91, "DIG Aden.":92, "Gr1ndfn":93, "Twitch Aeirdfv11":94, "jefe 1x":95, "realiseal":96, "Synix":97, "crocfv":98, "Dazed Sonder":99, "Barney":100 },
+    NAW:{ "Darky":1, "Chele":2, "Resunator":3, "dig ark2x":4, "xenon":5, "ZLinkRain":6, "BludGansta47":7, "2slimey variant":8, "Spooky":9, "bullyslayrr":10, "phoenix":11, "Darts":12, "Retro":13, "icyfai":14, "larccoz":15, "Jeulzz":16, "Timko":17, "REG RYQNTR0N Ӝ.":18, "pepitоерstеinP3ǃ":19, "Blink":20, "Munk":21, "Velo":22, "Centro":23, "Zafuu":24, "sfg carboner":25, "Lukey":26, "Jeree":27, "Anix":28, "ocfv":29, "sfg wukong":30, "Twitter Tightfv":31, "Cugo":32, "Tups":33, "Cofts":34, "housen bowcros":35, "KomanderK":36, "Andyyak":37, "Spoky":38, "THORIK":39, "tiktok mattbruh":40, "Parz":41, "Braden":42, "crycx7":43, "soleanäǃ":44, "scxpez":45, "5foot7lesbo":46, "Rio":47, "Ollie":48, "kjcoins":49, "minit":50, "zaire":51, "Bacca":52, "flinty":53, "LomelyFn":54, "krazed":55, "Virus":56, "Vorx":57, "creek fvǃ":58, "purple":59, "tracktorǃ":60, "Uxsif":61, "D1 Devury":62, "Salko":63, "Ratgun":64, "sfg xinvvs":65, "AbdibasidYT":66, "shark":67, "denvarǃ":68, "Vision":69, "mukutaf":70, "R2P Mystical":71, "shrimpzy 925ǃ":72, "wockhardt flash":73, "Evolved":74, "NobleD1x":75, "Twitch Icyybtw":76, "carbonawesomerǃ":77, "FatalGinger5559":78, "dwavyrex13":79, "Zyro":80, "warr 874":82, "peepotron":83, "Krisp":84, "Jerry":85, "BrandonFromDaO":86, "Flex":87, "bricefv":88, "chipz":89, "kla lwlo":90, "Danty":91, "PrimeManny":92, "silv lebon":93, "Phenom":94, "drill pig":95, "tiktok vBqtify":96, "TREX":97, "nxhqziǃ":98, "Miofvǃ":99, "sagoalex":100 },
+    BR:{ "Lucx":1, "kaykywhale":2, "Nuti":3, "Azizis":4, "EdRoadToGlory":5, "Romero":6, "edson":7, "916Gon":8, "letz":9, "White":10, "52x seeyun":11, "THEFELOZ 6":12, "Persa":13, "Royale":14, "Mack":15, "eduzz 1xzerazul":16, "Spectral":17, "Cauее":19, "KING":20, "Dediez":21, "Poyart":22, "vadeyy":23, "Randu":24, "Pingu":25, "CLW":26, "Marinn":27, "Mvxy":28, "Sirence":29, "Jxnes":30, "Carlin":31, "nevess":32, "pietrofn6":33, "Arthurbc":34, "Wolfie":35, "renat0":36, "Nahuxwq":37, "Covrezinn":38, "tga cajerow dvǃ":39, "franezǃ":40, "RodryGØD.":41, "fazer":42, "K1nG":43, "PRG chetoǃ":44, "N3Wghoost":45, "Lewa":46, "KBR":47, "fxbin":48, "Lynex bettifn":49, "Gutinho":50, "Pietriinnn":51, "Diguera":52, "Teuzz":53, "alejo314ARG":54, "Avoxy":55, "tigersym":56, "zskrr 1":57, "langoni 17":58, "Space":59, "zaikokame44":60, "nxtftn":61, "tozeo1x":62, "Gabzera":63, "Thiagin":64, "Pedrin":65, "Tisco":66, "Barroso":67, "Rafast":68, "Paulinyache32":69, "Seven":70, "pepogamer321":71, "Fliksǃ":72, "Bryanvyy":73, "Grx":74, "TGA Frostyǃ":75, "iMeyfishy":76, "JPFK1NG":77, "Night":78, "ᵖᑫᵈ BRDoguitoᵗᵗᵏ":79, "Truit":80, "Pr0mpt":81, "Azulfv":82, "awtǃ":83, "Nicobuca":84, "rama":85, "f4t guizera 1":86, "maxifv99":87, "IgorLorens":88, "rodri btj":89, "Kenyto":90, "leanzin":91, "Thiaz":92, "ruka maybank":93, "baddieslovesme":94, "Vinizin":95, "OTÁVIO MALCRIADO":96, "N6hue":97, "Hazzense":98, "Tiktok XAmitoS2":99 },
+    ASIA:{ "stella":1, "Nalu":2, "たいが":3, "まぁ":4, "ちからv2":5, "かめてぃん":6, "Nika":7, "p1ng":8, "seljuny":9, "Bot":10, "RyoIT":11, "Jaemon":12, "Teddy":13, "RAI":14, "He-stin":15, "kumo":16, "ZAKURo0O":17, "Reim":18, "Fuukun":19, "3peace":20, "ちわわ":21, "TRG るっちǃǃ":22, "Stain":23, "yuma":24, "Minipiyo":25, "るいのゲーム部屋 YouTube":26, "Rqzrim3":27, "キーチǃ":28, "Chonky":29, "Koyota":30, "Tossy":31, "LBworks":32, "Kol":33, "ばぶっち":34, "gre RazNotÿǃ":35, "hamu":36, "Smile":37, "rakirye":38, "ZAZI":39, "Taiya":40, "Rura":41, "らーく":42, "Rise":43, "mkmkpapa":44, "めいる":45, "CH.Muri 姫":46, "Rainy":47, "PONY":48, "ptt れっどうぃんぐ":49, "Reaper":50, "meah":51, "riemu":52, "HAYATO":53, "Airy":54, "たろう":55, "FCT 波乗りペンギン":56, "Asndドラゴンまか蜂ﾌﾞｰﾝ":57, "ONYX 泥沼":58, "natafish":59, "Shiroka":60, "yuzurio":61, "なーりゃふぉーじゃー":62, "Job":63, "BoF Kid egoǃ":64, "Botえもん":65, "rara":66, "EDGE Unger":67, "IGNUM rirksignzz":68, "IGNITE.soufini":69, "invia junjunǃ":70, "Lily":71, "zagouの弟":72, "prime wagers.":73, "NEOS すぱいく":74, "ecs pino":75, "wsr joker":76, "NEOS KAIMINA":77, "INFL ふれあとるーと":78, "Mofu":79, "ひょっこりもりりん":80, "でーもんくらげǃ":81, "ftw とるこ ｺﾞｰﾃｨー":82, "Fraymy":83, "Zagou":84, "やまもと そうし":85, "NE maroafnǃ":86, "My Dear Momentsǃ":87, "fuwa":88, "FALK ichxgoÿ":89, "TsV 666":90, "ftw KakáDelPiero":91, "dyd シンプル編集のぷりなの":92, "好きじゃなくなったらすぐ言ってね":93, "RookieTK":94, "Ares.Okan":95, "Msy rilazZzero0":96, "CLD hazyǃ":97, "bear":98, "Razl":99, "ばもすたいようではありません":100 },
+    ME:{ "BARQ":1, "Modaǃ":2, "Saeed":3, "viei.":4, "Matrx":5, "7man1x":6, "Hellon":7, "Tiger":8, "Rew":9, "FKS":10, "RXB Mongan":11, "7med":12, "Pika":13, "saad":14, "KOSQF":15, "Cubix":16, "raz zzz":17, "Controller":18, "osamabot 7":19, "kenyata teen xǃ":20, "Sultan":21, "YUNITE":22, "JKReet":23, "zxens":24, "Txrm":25, "san":26, "Mansour":27, "Malcs":28, "Zio":29, "somuchtek":30, "Slay":31, "Battal":32, "17Q8":33, "Zayan":34, "Kalgamer":35, "Aiden":36, "OB":37, "Mkh":38, "cool":39, "Cubix":40, "Yoicy":41, "xViperzz":42, "27Q8":43, "7xdeyyǃ":44, "VoltiaX":45, "Death":46, "Tiggz":47, "3mory1x":48, "SHRSHF":49, "7lmyy":50, "Rayo":51, "Attar":52, "Yassen":53, "Salehhopee":54, "d7my":55, "RKT":56, "CLexTr":57, "Swtaǃ":58, "Wa7sh":59, "Sairo 19.":60, "Stranger":61, "Hadron Lurks":62, "Vix":63, "opi Яvx":64, "Po":65, "Bd":66, "C-137 DaNicush":67, "3alawi.":68, "OVT See ya solos":69, "Bolt BATBOY":70, "omareet.":71, "Jab ǃ":72, "Rd Fhdyy7":73, "speedy":74, "Mshary":75, "Aziz":76, "Chriskp":77, "ROIT7":78, "Wardﾠ":79, "Abood":80, "Henchman":82, "Mohanad":83, "Balor":84, "CTM":85, "Faisal 7ǃ":86, "Arrow":87, "5AALD":88, "Twitch Johnkob_":89, "Bronzeす":90, "Hero":91, "Brosky 02":92, "Bolt M7md3kǃ":93, "Rizen 10ǃ":94, "Kalki":95, "Joy":96, "Morix":97, "SoulFnBrx":98, "Kairu":99, "twitter qro1stt":100, "dekeltryr.":101 },
+    OCE:{ "ZDog":1, "Mase":2, "Jerald":3, "Ceaqul":4, "Astrixnara":5, "Spookz":6, "Dummi":7, "Mxnty":8, "Hydra":9, "Mace":10, "Cazi":11, "Aspect":12, "rob jit 1st":13, "chrome antzuru":14, "Vazen":15, "Phazma":16, "Sazers":17, "alex":18, "Rainy":19, "Crash":20, "Falcon":21, "Bruski":22, "Star":23, "zeka shes 10. ok":24, "dyre":25, "anon":26, "Slxxybot":27, "Solvey":28, "M0untain":29, "meshyǃ":30, "Venox":31, "Oatley":32, "cented fv":33, "Wreckless":34, "croakyǃ":35, "Feast":36, "DVS flyzxbotǃ":37, "Tanman":38, "Protoon":39, "Deymo":40, "Goofy":41, "Koox":42, "onyx":43, "swazy":44, "right here brahh":45, "4kt tofpita":46, "ghosty wanǃ":47, "Splintlerǃ":48, "Wokes":49, "xavz":50, "Jakezz1x":51, "Hezza":52, "Vynxyfishy":53, "AUR dxrthÿ":54, "Tommy48000":55, "Jai":56, "klyrix 6":57, "Drizzlx":58, "DeeJ Geeg 32":59, "freestylefred54":60, "Jayx":61, "sam":62, "Crusades":63, "Teroq":64, "Metrq":65, "Humbugha":66, "Tame":67, "Syncc":68, "Flixckstar":69, "Gazer":70, "Qhvst":71, "Kojo":72, "Jett":73, "1x kon.tr":74, "Tj":75, "grands fvǃ":76, "peppy":77, "kade nzr":78, "Zec":79, "swizz":80, "Sneaky":81, "costaǃ":82, "vaxsr":83, "chrome bayleyzrǃ":84, "Chrome Claytoǃ":85, "Purav":86, "novywinguǃ":87, "AUR scoopÿ":88, "litoreyli 1x":89, "stalkerfnbrǃ":90, "Cazo":91, "Inxnct":92, "Twitch Montyxfv":93, "Rileybot":94, "Rakyu.":95, "el dictator x":96, "sebjit":97, "John":98, "Piece 205":99, "el dictator camz":100 }
+  };
+  const solos26Stage=reg=>({map:byHandle(SOLOS26_RANK[reg]), weight:2.0, label:'solos', field:100,
+    score:r=>curve(r, 98-regDrop(reg), 30, 100)});
+  Object.keys(S41).forEach(reg=>{ if(SOLOS26_RANK[reg]) S41[reg]=S41[reg].concat([solos26Stage(reg)]); });
   // ---------- FNCS 2025: the same ledger treatment the 2026 sets get ----------
   // Without this a 2025 card keeps the raw band of whichever stage it was cut
   // from, which leaves nothing between 70 and 89: the field's median came out at
