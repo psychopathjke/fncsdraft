@@ -171419,7 +171419,7 @@ function mgrTrain(){ return MGR.train||'vod'; }   // по умолчанию —
 function mgrFatigue(){ return Math.max(0, Math.min(100, MGR.fatigue||0)); }
 function mgrTrainWeek(){   // раз в неделю (из mgrWeekly)
   const t=mgrTrain();
-  MGR.fatigue=mgrFatigue()+(t==='scrims' ? 6 : t==='creative' ? 3 : t==='vod' ? 1 : -21)-4-(mgrStaff('psych') ? 3 : 0)-2*mgrFac('house');   // −4: неделя сама по себе восстанавливает
+  MGR.fatigue=mgrFatigue()+(t==='scrims' ? 6 : t==='creative' ? 3 : t==='vod' ? 1 : -26)-4-(mgrStaff('psych') ? 3 : 0)-2*mgrFac('house');   // −4: неделя сама по себе восстанавливает
   MGR.fatigue-=Math.min(2, ((MGR.teams[0]||{cards:[]}).cards).filter(h=>mgrTrait(h)==='pro').length);   // профи первой команды берегут себя (не больше −2)
   MGR.fatigue=Math.max(0, Math.min(100, MGR.fatigue));
   if(MGR.fatigue>70 && !MGR.fatWarned){ MGR.fatWarned=true; MGR.inbox=MGR.inbox||[]; MGR.inbox.unshift({id:'f'+CAREER.career.day, day:CAREER.career.day, kind:'info', done:'info', text:mgrT4().tired}); }
@@ -172673,7 +172673,8 @@ function mgrAfterResults(ev, row, clubGot){
   MGR.log.unshift(row); try{ mgrFeedNight(row); }catch(e){}
   try{ mgrGuestNight(row); }catch(e){ console.error('mgrGuestNight', e); }
   (row.teams||[]).forEach(t=>{ if(t.place>3) return; const x=MGR.teams.find(y=>y.id===t.id); if(x) x.cards.forEach(h=>{ if(mgrTrait(h)==='ambitious') mgrMoraleAdd(h, 1); }); });   // амбициозному подиум — праздник
-  MGR.fatigue=Math.min(100, mgrFatigue()+(row.fncs || row.ewc ? 8 : 4));
+  // В неделю отдыха вечер утомляет вдвое меньше: при пяти-шести капах в неделю +4 за вечер съедали весь отдых.
+  MGR.fatigue=Math.min(100, mgrFatigue()+(row.fncs || row.ewc ? 8 : 4)*(mgrTrain()==='rest' ? 0.5 : 1));
   if(!row.ewc) row.teams.forEach(t=>{ const x=MGR.teams.find(y=>y.id===t.id); if(x) mgrChemNight(x.cards); });
   MGR.focus={}; MGR.nightMod={};
   mgrConfNight(row, clubGot);

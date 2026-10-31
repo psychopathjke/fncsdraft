@@ -940,6 +940,13 @@ const SECTIONS=[
     check('усталость: тиков ровно по неделям', MGR.wkDay===ccAddDays(d0, 28), d0+' → '+MGR.wkDay);
     MGR.fatigue=50; const w=MGR.wkDay; mgrWeekly(d, ccAddDays(d, 1));
     check('усталость: шаг в день без новой недели — без тика', mgrFatigue()===50 && MGR.wkDay===w, mgrFatigue()+' '+MGR.wkDay);
+    // Четыре состава и шесть капов в неделю: отдых всё равно снимает усталость, скримы — нет.
+    const week=(train)=>{ MGR.train=train; for(let i=0;i<6;i++){ const n=ccAddDays(d, 1); mgrAdvanceTo(n); d=n;
+      try{ mgrAfterResults(null, {teams:[], kind:'cup'}, 0); }catch(e){} } mgrAdvanceTo(ccAddDays(d, 1)); d=CAREER.career.day; };
+    MGR.wkDay=null; MGR.fatigue=100; d=CAREER.career.day; week('rest'); week('rest');
+    out.notes.rest2=mgrFatigue(); check('усталость: 2 недели отдыха при 6 капах в неделю — заметно ниже', mgrFatigue()<=60, String(mgrFatigue()));
+    const f1=mgrFatigue(); week('scrims');
+    check('усталость: неделя скримов с капами — растёт', mgrFatigue()>f1, f1+' → '+mgrFatigue());
   `},
   {name:'отступные', once:true, code:String.raw`
     let worst=0, below=0;
