@@ -4187,3 +4187,6 @@ Object.assign(I18N.es=I18N.es||{},
 
 Object.assign(I18N.es=I18N.es||{},
 ({ ccRivalLive: (n,ev,p,l,w)=>n+' ahora: '+ev+' · '+p+' pts'+(l ? ' · última partida #'+l : '')+(w ? ' · victorias '+w : '') }));
+
+Object.assign(I18N.es=I18N.es||{},
+({ ccPartAsk: '¿Romper el duo? Los dos seguís esta misma carrera, cada uno por su cuenta: el historial y el dinero se quedan, y el puesto del compañero pasa a un bot con su carta.' }));

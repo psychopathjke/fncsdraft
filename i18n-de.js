@@ -4187,3 +4187,6 @@ Object.assign(I18N.de=I18N.de||{},
 
 Object.assign(I18N.de=I18N.de||{},
 ({ ccRivalLive: (n,ev,p,l,w)=>n+' gerade: '+ev+' · '+p+' Pkt.'+(l ? ' · letztes Spiel #'+l : '')+(w ? ' · Siege '+w : '') }));
+
+Object.assign(I18N.de=I18N.de||{},
+({ ccPartAsk: 'Das Duo auflösen? Ihr spielt beide diese Karriere weiter, jeder für sich: Verlauf und Geld bleiben, der Platz des Partners geht an einen Bot mit seiner Karte.' }));
