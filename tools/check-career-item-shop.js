@@ -102,6 +102,14 @@ check('скины без набора не в куче с кирками', secs.
 seed('2019-06-01', 'EU', 100); box.innerHTML=ccFnShopHTML();
 check('шкафчик 2019 — вид Главы 1', /cc-fn-load cc-fn-c1/.test(ccFnLoadoutHTML()));
 check('Глава 1: «Ежедневные» ровными квадратами', !!box.querySelector('.cc-fn-grid.daily') && !box.querySelector('.cc-fn-grid.daily .big'));
+// Паки за деньги: без денег кнопка выключена с подсказкой и баланс виден; с деньгами пак покупается кнопкой.
+seed('2019-03-14', 'EU', 2); box.innerHTML=ccFnShopHTML();
+{ const b=box.querySelector('.cc-fn-pack .cc-fn-buy');
+  check('пак без денег: кнопка выключена и говорит почему', b && b.disabled && !!b.title, b && b.outerHTML.slice(0, 160));
+  check('баланс карьеры над паками', /\$2\.00/.test((box.querySelector('.cc-fn-packs .cc-fn-bal')||{}).textContent||'')); }
+seed('2019-03-14', 'EU', 100); box.innerHTML=ccFnShopHTML();
+{ const b=box.querySelector('.cc-fn-pack .cc-fn-buy'); const bal=CAREER.career.balance; if(b) b.click();
+  check('пак покупается кнопкой', CAREER.career.balance<bal && (CAREER.vb||0)>0, bal+' → '+CAREER.career.balance); }
 return {fails, notes};
 `;
 const tmp=path.join(fs.mkdtempSync(path.join(os.tmpdir(),'cis-')),'body.js'); fs.writeFileSync(tmp, body);

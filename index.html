@@ -4242,6 +4242,7 @@
   .cc-fn-buyall .cc-vb-ic{vertical-align:-2px;}
   .cc-fn-buy{margin-top:3px;padding:6px 4px;border:0;border-radius:6px;background:rgba(0,0,0,.45);color:#fff;font-weight:800;cursor:pointer;}
   .cc-fn-buy:disabled{opacity:.5;cursor:not-allowed;}
+  .cc-fn-bal{font-size:12px;opacity:.85;margin:2px 0 8px;} .cc-fn-bal b{color:#ffd84a;}
   .cc-fn-own{margin-top:3px;padding:6px 4px;border-radius:6px;background:rgba(0,176,144,.85);color:#fff;font-weight:800;font-size:12px;text-align:center;}
   .cc-fn-it.own{opacity:.85;}
   /* Раздел-набор как в игре: скин — большая плитка на две строки, рюкзак/кирка/дельтаплан — маленькие рядом. */
@@ -151184,14 +151185,15 @@ function ccFnBuyBundle(k){
 const CC_FN_PACK_DAYS=30;
 let CC_FN_PACK_TODAY=[];
 function ccFnPackT(){
-  return ({ru:{h:'Паки', n:n=>'предметов: '+n, own:'Куплен', note:'Паки Epic за деньги: с баланса карьеры, цена своего региона. Каждый пак стоит в магазине 30 дней с выхода.'},
-    fr:{h:'Packs', n:n=>n+' objets', own:'Acheté', note:'Packs Epic en argent réel : payés avec le solde de la carrière, au prix de ta région. Chaque pack reste 30 jours en boutique.'},
-    it:{h:'Pacchetti', n:n=>n+' oggetti', own:'Acquistato', note:'Pacchetti Epic a pagamento: si pagano col saldo della carriera, al prezzo della tua regione. Ogni pacchetto resta 30 giorni nel negozio.'},
-    pt:{h:'Pacotes', n:n=>n+' itens', own:'Comprado', note:'Pacotes da Epic pagos em dinheiro: saem do saldo da carreira, pelo preço da sua região. Cada pacote fica 30 dias na loja.'},
-    de:{h:'Packs', n:n=>n+' Gegenstände', own:'Gekauft', note:'Echtgeld-Packs von Epic: bezahlt mit dem Karriere-Guthaben, zum Preis deiner Region. Jedes Pack bleibt 30 Tage im Shop.'},
-    es:{h:'Packs', n:n=>n+' objetos', own:'Comprado', note:'Packs de Epic con dinero real: se pagan con el saldo de la carrera, al precio de tu región. Cada pack está 30 días en la tienda.'}})[LANG]
-    || {h:'Packs', n:n=>n+' items', own:'Owned', note:'Epic real-money packs: paid from the career balance at your region’s price. Each pack stays in the shop for 30 days after release.'};
+  return ({ru:{h:'Паки', n:n=>'предметов: '+n, own:'Куплен', bal:'Баланс карьеры', noBal:'Не хватает денег на балансе карьеры', note:'Паки Epic за деньги: с баланса карьеры, цена своего региона. Каждый пак стоит в магазине 30 дней с выхода.'},
+    fr:{h:'Packs', n:n=>n+' objets', own:'Acheté', bal:'Solde de la carrière', noBal:'Solde de la carrière insuffisant', note:'Packs Epic en argent réel : payés avec le solde de la carrière, au prix de ta région. Chaque pack reste 30 jours en boutique.'},
+    it:{h:'Pacchetti', n:n=>n+' oggetti', own:'Acquistato', bal:'Saldo della carriera', noBal:'Saldo della carriera insufficiente', note:'Pacchetti Epic a pagamento: si pagano col saldo della carriera, al prezzo della tua regione. Ogni pacchetto resta 30 giorni nel negozio.'},
+    pt:{h:'Pacotes', n:n=>n+' itens', own:'Comprado', bal:'Saldo da carreira', noBal:'Saldo da carreira insuficiente', note:'Pacotes da Epic pagos em dinheiro: saem do saldo da carreira, pelo preço da sua região. Cada pacote fica 30 dias na loja.'},
+    de:{h:'Packs', n:n=>n+' Gegenstände', own:'Gekauft', bal:'Karriere-Guthaben', noBal:'Nicht genug Karriere-Guthaben', note:'Echtgeld-Packs von Epic: bezahlt mit dem Karriere-Guthaben, zum Preis deiner Region. Jedes Pack bleibt 30 Tage im Shop.'},
+    es:{h:'Packs', n:n=>n+' objetos', own:'Comprado', bal:'Saldo de la carrera', noBal:'Saldo de la carrera insuficiente', note:'Packs de Epic con dinero real: se pagan con el saldo de la carrera, al precio de tu región. Cada pack está 30 días en la tienda.'}})[LANG]
+    || {h:'Packs', n:n=>n+' items', own:'Owned', bal:'Career balance', noBal:'Not enough career balance', note:'Epic real-money packs: paid from the career balance at your region’s price. Each pack stays in the shop for 30 days after release.'};
 }
+function ccFnBalHTML(){ return '<div class="cc-fn-bal">'+esc(ccFnPackT().bal)+': <b>$'+(Math.round((CAREER.career.balance||0)*100)/100).toFixed(2)+'</b></div>'; }
 function ccFnPacksToday(day){
   const P=(typeof CC_FN_SHOP!=='undefined' && CC_FN_SHOP.packs) || [], d=ccFnDataDay(day), m=CC_VB_REGION[ccCareerRegion()] || 1;
   return P.filter(p=>p[1]<=d && d<ccAddDays(p[1], CC_FN_PACK_DAYS)).map((p, k)=>({k:k, name:p[0], usd:Math.round(p[2]*m*100)/100, vb:p[3]||0,
@@ -151206,7 +151208,7 @@ function ccFnPackHTML(p, era){
     '<b>'+esc(p.name)+'</b><em>'+esc(T.n(p.its.length))+(p.vb ? ' · +'+ccNum(p.vb)+' V-Bucks' : '')+'</em>'+
     '<span class="cc-fn-pack-its">'+p.its.slice(0, 6).map(it=>'<img src="'+ccFnImg(it.id, true)+'" alt="" title="'+esc(it.name)+'" loading="lazy" onerror="this.remove()">').join('')+'</span>'+
     (all ? '<span class="cc-fn-own">'+esc(T.own)+'</span>'
-      : '<button class="cc-fn-buy" '+(((CAREER.career.balance||0)>=p.usd) ? '' : 'disabled')+' onclick="ccFnBuyPack('+p.k+')">$'+p.usd.toFixed(2)+'</button>')+'</div>';
+      : '<button class="cc-fn-buy" '+(((CAREER.career.balance||0)>=p.usd) ? '' : 'disabled title="'+esc(T.noBal)+'"')+' onclick="ccFnBuyPack('+p.k+')">$'+p.usd.toFixed(2)+'</button>')+'</div>';
 }
 function ccFnBuyPack(k){
   const cr=CAREER.career, day=careerToday();
@@ -151423,7 +151425,7 @@ function ccFnShopHTML(){
     '<div class="cc-vb-now"><i class="cc-vb-ic"></i><b>'+ccNum(vb)+'</b>'+
       (just ? '<span class="cc-shop-just" role="status">'+esc(just.vb ? '+'+ccNum(just.vb)+' V-Bucks' : T.ccShopBought(just.name))+'</span>'+
         (just.t ? '<button class="cc-fn-tolock" onclick="ccFnLockerOpen(\''+just.t+'\')">'+esc(T.ccFnToLocker)+'</button>' : '') : '')+'</div>'+
-    '<div class="cc-vb-packs">'+packs.map((p, k)=>'<button class="cc-vb-pack" '+((cr.balance||0)>=p.usd ? '' : 'disabled')+
+    ccFnBalHTML()+'<div class="cc-vb-packs">'+packs.map((p, k)=>'<button class="cc-vb-pack" '+((cr.balance||0)>=p.usd ? '' : 'disabled title="'+esc(ccFnPackT().noBal)+'"')+
       ' onclick="ccVbBuy('+k+')"><b><i class="cc-vb-ic"></i>'+ccNum(p.vb)+'</b><em>$'+p.usd.toFixed(2)+'</em></button>').join('')+'</div>'+
     '<div class="ch-hint">'+esc(T.ccVbNote(regionName(ccCareerRegion())))+'</div>'+ccSacTileHTML()+'</div>';
   const era=ccFnShopEra(day);
@@ -151486,7 +151488,7 @@ function ccFnShopHTML(){
   // Паки за деньги дня — своей плиткой под V-Bucks (ccFnPacksToday).
   const pk=ccFnPacksToday(day), PT=ccFnPackT();
   const packTile=pk.length ? '<div class="ch-tile cc-fn-shop cc-fn-packs cc-fs-'+era.v+(era.noRar ? ' norar' : '')+'"><h4>'+esc(PT.h)+'</h4>'+
-    '<div class="cc-fn-grid">'+pk.map(p=>ccFnPackHTML(p, era)).join('')+'</div><div class="ch-hint">'+esc(PT.note)+'</div></div>' : '';
+    ccFnBalHTML()+'<div class="cc-fn-grid">'+pk.map(p=>ccFnPackHTML(p, era)).join('')+'</div><div class="ch-hint">'+esc(PT.note)+'</div></div>' : '';
   return vbTile+packTile+grid;
 }
 function ccFnTabTo(n){
