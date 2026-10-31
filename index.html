@@ -120284,7 +120284,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='f18b76bc';
+const CC_BUILD='8b0ba93f';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -166924,7 +166924,8 @@ async function runCareerSoloSeries(){
      #278 scroll:96 vs sky:96». Сторож — live-two с CC_NICK_A=Sky CC_NICK_B=Scroll. */
   const fieldMine=mate ? [me, pc] : peerBot ? [me, peerCard] : drafted;
   // Прошедшие прошлого этапа из твоей сотни — первыми, сцена добирает остальное. См. ccSoloCarryPut.
-  const carried=open ? [] : ccSoloCarryTake(ev,
+  // Общий финал гонки: хиты у каждого свои, перенос из своего хита развёл бы поле. Только общий пул.
+  const carried=(open || (typeof ccRaceLock==='function' && ccRaceLock())) ? [] : ccSoloCarryTake(ev,
     fieldMine.concat((typeof ccRaceOn==='function' && ccRaceOn()) ? ccRaceAllCards() : []),
     size-humans.length-(peerBot ? 1 : 0));
   const field=[...humans, ...(peerBot ? [peerBot] : []), ...carried,
