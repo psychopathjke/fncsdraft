@@ -120278,7 +120278,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='ffd00f7b';
+const CC_BUILD='f6a50166';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -121883,6 +121883,7 @@ function ccRaceMyLine(){
           bench:undefined,   // бот пары не на скамейке, а свободен (careerRacePairFree) — вычитать нечего
           edge:(ev && CC_RACE_EDGE_NOW!=null) ? CC_RACE_EDGE_NOW : null, kr:CC_RACE_MY_KR,
           lk:CC_RACE_LOCK ? CC_RACE_LOCK_KEY : null,   // состав на вечер сел (ccRaceWaitLock)
+          posts:(typeof ccMatePostsWire==='function') ? ccMatePostsWire() : null,   // свои посты: соперники видят их в ленте (ccMatePosts)
           ps:(typeof ccStyleWire==='function') ? ccStyleWire() : null,   // стиль игры — соперники ставят его нашей команде (ccTeamStyles)
           // Понедельник Дивизиона 1 (cr.d1) — отпечатком: вторник от разных понедельников врозь (ccRaceApartWhy 'table').
           d1h:(CAREER.career.d1 && CAREER.career.d1.monday===careerMonday(careerToday())) ? String(ccHashStr(JSON.stringify(CAREER.career.d1))) : null,
@@ -141955,6 +141956,16 @@ function ccMatePostsWire(){
 }
 function ccMatePosts(){
   try{
+    // Гонка: посты соперников-людей приезжают в их строке (careerRaceCard posts), на них можно ответить.
+    if(typeof ccRaceOn==='function' && ccRaceOn() && !(typeof ccMpOn==='function' && ccMpOn())){
+      const out=[];
+      (typeof ccRaceRivals==='function' ? ccRaceRivals() : []).forEach(p=>{
+        if(!p || !p.card || !Array.isArray(p.posts)) return;
+        const c=p.card, by={name:c.handle, handle:ccHandle(c.handle), card:c, ovr:c._ovr};
+        p.posts.forEach(x=>{ if(x && x.id!=null) out.push(Object.assign({}, x, {id:'race:'+hKey(c)+':'+x.id, by:by, mate:true})); });
+      });
+      return out;
+    }
     if(!(typeof ccMpOn==='function' && ccMpOn()) || typeof MP==='undefined' || !MP.peer || !Array.isArray(MP.peerPosts)) return [];
     const p=MP.peer, by={name:p.handle, handle:ccHandle(p.handle), card:p, ovr:p._ovr};
     return MP.peerPosts.map(x=>Object.assign({}, x, {id:'mate:'+x.id, by:by, mate:true}));
