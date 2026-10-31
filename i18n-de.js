@@ -3628,7 +3628,7 @@ Object.assign(I18N.de=I18N.de||{},
   "ccOrgPayNoUntil": d=>'Der Club hat abgelehnt · wieder ab '+d,
   "ccNewsOrgPays": (o,r)=>o+' zahlt jetzt für deinen Posten: '+r.toLowerCase(),
   "ccNewsOrgPaysNo": (o,r)=>o+' zahlt nicht für deinen Posten: '+r.toLowerCase(),
-  "ccOrgSignRow": n=>'+'+n+' bei Unterschrift',
+  "ccOrgSignRow": n=>'+'+n+' Follower bei Unterschrift',
   "roSpotFrom": d=>'öffnet am '+d,
   "roChests": "Kisten",
   "roSpotPow": "Spot-Stärke",
@@ -4175,3 +4175,18 @@ Object.assign(I18N.de=I18N.de||{},
 /* Дозаливка «de» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
 Object.assign(I18N.de=I18N.de||{},
 ({ ccRaceMake: "Gegen einen Freund" }));
+
+Object.assign(I18N.de=I18N.de||{},
+({ ccPtsRule: 'Punkte nach Platz', ccPtsKill: 'Elim', ccPtsCap: n=>'max. '+n+' pro Spiel' }));
+
+Object.assign(I18N.de=I18N.de||{},
+({ ccHomeCamp: 'Bootcamp zu Hause', ccHomeCampWhat: (d,e)=>'Deine Teamkollegen wohnen eine Woche bei dir auf deine Kosten: +'+d+' Tage Teamchemie. Einmal alle '+e+' Tage', ccHomeCampMp: 'Online im Team ist die Chemie gemeinsam', ccHomeCampNoFlat: 'Du brauchst eine eigene Wohnung, wo du lebst', ccHomeCampNoMate: 'Kein Teamkollege', ccHomeCampAgain: d=>'Wieder ab '+d, ccHomeCampMoney: 'Nicht genug Geld', ccNewsHomeCamp: d=>'Eine Woche Bootcamp zu Hause: +'+d+' Tage Teamchemie' }));
+
+Object.assign(I18N.de=I18N.de||{},
+({ ccStream_train: 'Training im Stream', ccStream_trainNote: 'halber Trainingstag, weniger Zuschauer und Geld' }));
+
+Object.assign(I18N.de=I18N.de||{},
+({ ccRivalLive: (n,ev,p,l,w)=>n+' gerade: '+ev+' · '+p+' Pkt.'+(l ? ' · letztes Spiel #'+l : '')+(w ? ' · Siege '+w : '') }));
+
+Object.assign(I18N.de=I18N.de||{},
+({ ccPartAsk: 'Das Duo auflösen? Ihr spielt beide diese Karriere weiter, jeder für sich: Verlauf und Geld bleiben, der Platz des Partners geht an einen Bot mit seiner Karte.' }));
