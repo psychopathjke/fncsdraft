@@ -108008,14 +108008,16 @@ function buildBotLandingAssignment(bots, opts){
         if(seats && !t.isYou && !t.isRival && !t.isMate) seats.set(ccSeatMapKey(t), ccSeatKeyOf(to));
         const k=keyOfT(t); if(k && !CC_SEATS_REMIX) book.at[k]=ccSeatKeyOf(to);
       };
-      ranked.filter(t=>strong.has(t) && movable(t)).forEach(s=>{
+      // Только те, кого сажает этот вызов: хвост очереди после метки не двигает уже показанных на карте.
+      const inCall=new Set(bots);
+      ranked.filter(t=>strong.has(t) && movable(t) && inCall.has(t)).forEach(s=>{
         const z=zoneOf.get(s);
         if(!z || (zoneGroups.get(z)||[]).length!==1) return;
         let best=null;
         (ALL_LANDING_ZONES||[]).forEach(z2=>{
           if(z2===z || (z2.points||0)<=(z.points||0)) return;
           const g=zoneGroups.get(z2)||[];
-          if(g.some(o=>strong.has(o) || !movable(o))) return;
+          if(g.some(o=>strong.has(o) || !movable(o) || !inCall.has(o))) return;
           if(!best || (z2.points||0)>(best.points||0)) best=z2;
         });
         if(!best) return;
