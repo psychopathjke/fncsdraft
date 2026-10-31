@@ -4184,3 +4184,6 @@ Object.assign(I18N.es=I18N.es||{},
 
 Object.assign(I18N.es=I18N.es||{},
 ({ ccStream_train: 'Entrenar en directo', ccStream_trainNote: 'medio entrenamiento, menos espectadores y dinero' }));
+
+Object.assign(I18N.es=I18N.es||{},
+({ ccRivalLive: (n,ev,p,l,w)=>n+' ahora: '+ev+' · '+p+' pts'+(l ? ' · última partida #'+l : '')+(w ? ' · victorias '+w : '') }));

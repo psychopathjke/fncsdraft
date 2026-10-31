@@ -4184,3 +4184,6 @@ Object.assign(I18N.de=I18N.de||{},
 
 Object.assign(I18N.de=I18N.de||{},
 ({ ccStream_train: 'Training im Stream', ccStream_trainNote: 'halber Trainingstag, weniger Zuschauer und Geld' }));
+
+Object.assign(I18N.de=I18N.de||{},
+({ ccRivalLive: (n,ev,p,l,w)=>n+' gerade: '+ev+' · '+p+' Pkt.'+(l ? ' · letztes Spiel #'+l : '')+(w ? ' · Siege '+w : '') }));

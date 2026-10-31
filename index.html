@@ -105491,6 +105491,7 @@ async function simulateGamesLive(teams, numGames, pointsFn, killMult, fieldPrefi
   // for every mode with no replay at all: nothing here turns that on for them.
   shell.innerHTML=`<h4 id="finalsLiveTitle"></h4>
     ${ccPtsRuleHTML(pointsFn, killMult, opts.lobbySize||teams.length)}
+    ${(typeof ccRaceOn==='function' && ccRaceOn()) ? '<div class="live-note cc-rival-live" id="ccRivalLive" style="display:none"></div>' : ''}
     ${opts.carry ? `<div class="live-note">${L().ccLiveWeekNote}</div>` : ''}
     <div class="stage-live">
       <!-- Высота таблицы тоже от окна, а не 520 навсегда: рядом с картой,
@@ -120278,7 +120279,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='f6a50166';
+const CC_BUILD='64ceaa9e';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -122746,10 +122747,36 @@ function ccMpHeartbeat(on){
   if(CC_MP_HB){ clearInterval(CC_MP_HB); CC_MP_HB=null; }
   if(!on || typeof MP==='undefined' || !MP.act) return;
   // Пульс несёт, где напарник: день, игра, номера вопросов, перемотка ли. Показывается в окне ожидания.
-  CC_MP_HB=setInterval(function(){ try{ MP.act('hb', {by:ccMpId(), day:careerToday(), g:CC_MP_GAME||0, ff:!!(typeof CC_FF!=='undefined' && CC_FF), q:ccMpQnLine(), w:ccMpWaitingQ(), rand:!!CC_MP_RAND}); }catch(e){}
+  CC_MP_HB=setInterval(function(){ try{ MP.act('hb', {by:ccMpId(), day:careerToday(), g:CC_MP_GAME||0, ff:!!(typeof CC_FF!=='undefined' && CC_FF), q:ccMpQnLine(), w:ccMpWaitingQ(), rand:!!CC_MP_RAND, lv:ccRaceLiveMine()}); }catch(e){}
+    try{ ccRaceLiveDraw(); }catch(e){}
     // Своё предложение перемотки повторяется с пульсом: сосед, чья вкладка спала или связь рвалась, его увидит.
     try{ const p=(typeof ccMpFfPending==='function') ? ccMpFfPending() : null; if(p && p.mine && !(typeof CC_FF!=='undefined' && CC_FF)) MP.act('ff', {by:ccMpId(), day:p.day, until:p.until}); }catch(e){} }, CC_MP_HB_MS);
 }
+/* Соперник по гонке в ДРУГОМ турнире: его вечер едет в пульсе (lv), над своей таблицей строка «где он сейчас».
+   Пульс не идёт в очередь решений вечера (mp.js отдаёт hb раньше), локстеп он не трогает. */
+function ccRaceLiveMine(){
+  if(!(typeof ccRaceOn==='function' && ccRaceOn()) || !CAREER_RUN || typeof document==='undefined') return null;
+  const you=CC_TV_YOU, el=document.getElementById('finalsLiveTitle');
+  if(!you || !el) return null;
+  const log=you.stageLog||[];
+  return {t:String(el.textContent||'').slice(0, 90), pts:you.stagePts||0, last:log.length ? (log[log.length-1].place||0) : 0, w:you.wins||0};
+}
+function ccRaceLiveDraw(){
+  const el=typeof document!=='undefined' && document.getElementById('ccRivalLive'); if(!el) return;
+  const mine=(document.getElementById('finalsLiveTitle')||{}).textContent||'', T=L(), hbs=(typeof MP!=='undefined' && MP.peerHbs) || {};
+  const rows=(typeof ccRacePeers==='function' ? ccRacePeers() : []).map(p=>{
+    const lv=p && p.id && hbs[p.id] && hbs[p.id].lv;
+    if(!lv || !p.card || lv.t===mine) return '';
+    return '<div>'+esc(T.ccRivalLive(p.card.handle, lv.t, lv.pts, lv.last, lv.w))+'</div>';
+  }).filter(Boolean);
+  el.innerHTML=rows.join('');
+  el.style.display=rows.length ? '' : 'none';
+}
+Object.assign(I18N.ru, {ccRivalLive:(n,ev,p,l,w)=>n+' сейчас: '+ev+' · '+p+' очков'+(l ? ' · прошлая игра #'+l : '')+(w ? ' · побед '+w : '')});
+Object.assign(I18N.en, {ccRivalLive:(n,ev,p,l,w)=>n+' now: '+ev+' · '+p+' pts'+(l ? ' · last game #'+l : '')+(w ? ' · wins '+w : '')});
+Object.assign(I18N.fr, {ccRivalLive:(n,ev,p,l,w)=>n+' en ce moment : '+ev+' · '+p+' pts'+(l ? ' · dernière game #'+l : '')+(w ? ' · victoires '+w : '')});
+Object.assign(I18N.it, {ccRivalLive:(n,ev,p,l,w)=>n+' ora: '+ev+' · '+p+' punti'+(l ? ' · ultima partita #'+l : '')+(w ? ' · vittorie '+w : '')});
+Object.assign(I18N.pt, {ccRivalLive:(n,ev,p,l,w)=>n+' agora: '+ev+' · '+p+' pts'+(l ? ' · última partida #'+l : '')+(w ? ' · vitórias '+w : '')});
 function ccMpQnLine(){
   try{ return Object.keys(CC_MP_QN||{}).filter(function(k){ return !/@$/.test(k); }).map(function(k){ return k+CC_MP_QN[k]; }).join(' '); }catch(e){ return ''; }
 }
