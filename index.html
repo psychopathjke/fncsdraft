@@ -108016,6 +108016,8 @@ function buildBotLandingAssignment(bots, opts){
         let best=null;
         (ALL_LANDING_ZONES||[]).forEach(z2=>{
           if(z2===z || (z2.points||0)<=(z.points||0)) return;
+          // Дом игрока, который боты обходят по ауре, — не цель переезда.
+          if((CC_SPOT_LOCK_ZONES && CC_SPOT_LOCK_ZONES.has(z2)) || (CC_SPOT_FEAR_MAP && (CC_SPOT_FEAR_MAP.get(z2)||0)>0)) return;
           const g=zoneGroups.get(z2)||[];
           if(g.some(o=>strong.has(o) || !movable(o) || !inCall.has(o))) return;
           if(!best || (z2.points||0)>(best.points||0)) best=z2;
@@ -108027,6 +108029,28 @@ function buildBotLandingAssignment(bots, opts){
         g.forEach(o=>{ zoneOf.set(o, z); place(o, z); });
         zoneOf.set(s, best); place(s, best);
       });
+      /* ПУСТЫХ ТОЧЕК НЕТ, если команд хватает на все коробки: пока есть пустая, на неё уходит слабейшая команда
+         из самой людной общей коробки (лучшая пустая — первой). Дом игрока, который боты обходят по ауре, не трогаем. */
+      if(!(opts && opts.keepFree) && all.length>=(ALL_LANDING_ZONES||[]).length){
+        for(let guard=0; guard<all.length; guard++){
+          const empty=(ALL_LANDING_ZONES||[]).filter(z=>!(zoneGroups.get(z)||[]).length &&
+            !(CC_SPOT_LOCK_ZONES && CC_SPOT_LOCK_ZONES.has(z)) && !(CC_SPOT_FEAR_MAP && (CC_SPOT_FEAR_MAP.get(z)||0)>0))
+            .sort((a,b)=>(b.points||0)-(a.points||0));
+          if(!empty.length) break;
+          let from=null, w=null;
+          zoneGroups.forEach((g,z)=>{
+            if(g.length<2) return;
+            const c=g.filter(o=>movable(o) && inCall.has(o)).sort((a,b)=>str(a)-str(b))[0];
+            if(c && (!from || g.length>zoneGroups.get(from).length ||
+                     (g.length===zoneGroups.get(from).length && str(c)<str(w)))){ from=z; w=c; }
+          });
+          if(!w) break;
+          const to=empty[0];
+          zoneGroups.set(from, zoneGroups.get(from).filter(o=>o!==w));
+          zoneGroups.set(to, [w]);
+          zoneOf.set(w, to); place(w, to);
+        }
+      }
     }
   }
 
