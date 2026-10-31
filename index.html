@@ -107998,6 +107998,33 @@ function buildBotLandingAssignment(bots, opts){
           if(seats && !t.isYou && !t.isRival && !t.isMate) seats.set(ccSeatMapKey(t), ccSeatKeyOf(to));
         });
       }
+      /* И СИЛЬНЫЕ НА СИЛЬНЫХ ТОЧКАХ. После обмена выше слабые оставались вдвоём как раз на лучших коробках:
+         замер 8 лобби по 49 дуо — верхняя четверть по силе на 2.76 очка точки, нижняя на 3.40. Теперь сильный
+         одиночка, начиная с сильнейшего, переезжает на лучшую коробку, где стоят только слабые (или никого),
+         а они всей группой садятся на его место. Число команд в коробках опять не меняется. */
+      const place=(t, to)=>{
+        t.landingZone=to; t.landingResult=null; t.landingRival=null;
+        applyLandingPow(t, to.points);
+        if(seats && !t.isYou && !t.isRival && !t.isMate) seats.set(ccSeatMapKey(t), ccSeatKeyOf(to));
+        const k=keyOfT(t); if(k && !CC_SEATS_REMIX) book.at[k]=ccSeatKeyOf(to);
+      };
+      ranked.filter(t=>strong.has(t) && movable(t)).forEach(s=>{
+        const z=zoneOf.get(s);
+        if(!z || (zoneGroups.get(z)||[]).length!==1) return;
+        let best=null;
+        (ALL_LANDING_ZONES||[]).forEach(z2=>{
+          if(z2===z || (z2.points||0)<=(z.points||0)) return;
+          const g=zoneGroups.get(z2)||[];
+          if(g.some(o=>strong.has(o) || !movable(o))) return;
+          if(!best || (z2.points||0)>(best.points||0)) best=z2;
+        });
+        if(!best) return;
+        const g=zoneGroups.get(best)||[];
+        if(g.length) zoneGroups.set(z, g); else zoneGroups.delete(z);
+        zoneGroups.set(best, [s]);
+        g.forEach(o=>{ zoneOf.set(o, z); place(o, z); });
+        zoneOf.set(s, best); place(s, best);
+      });
     }
   }
 
