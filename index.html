@@ -146703,7 +146703,7 @@ function careerSocialHTML(){
             return `<div class="dm-foot">${held ? `<div class="dm-asked">${
               L().ccSlotLoseHint(careerPartnerCard().handle, held.what)}</div>` : ''}
               <button class="ch-sign" onclick="careerDmAcceptAsk(\'${open.id}\')">${ccSay('dmTakeIt')}</button></div>`; })()
-        : `<div class="dm-foot"><button class="ch-sign" onclick="careerDmWrite('${esc(open.who.handle)}', null, ${open.fmt||'null'})">${L()[ccSquadKey('dmAskBtn', open.fmt)]}</button></div>`}`
+        : `<div class="dm-foot"><button class="ch-sign" onclick="careerDmWrite('${esc(open.who.handle).replace(/'/g,"\\'")}', null, ${open.fmt||'null'})">${L()[ccSquadKey('dmAskBtn', open.fmt)]}</button></div>`}`
     : `<div class="ch-empty">${L().dmPickThread}</div>`;
 
   /* And why everybody writing to you is worse than you.
@@ -146721,7 +146721,7 @@ function careerSocialHTML(){
     (overRung ? `<div class="ch-hint dm-over">${
       L().dmOverRung(CAREER.career.division, ccDivCeil(CAREER.career.division))}</div>` : '')+
     (ccDmAsksLeft()<=0 && pool.length ? `<div class="ch-hint dm-over">${esc(L().ccDuoLimit)}</div>` : '')+
-    pool.slice(0,6).map(w=>`<button class="dm-item dm-new" onclick="careerDmWrite('${esc(w.handle)}')">
+    pool.slice(0,6).map(w=>`<button class="dm-item dm-new" onclick="careerDmWrite('${esc(w.handle).replace(/'/g,"\\'")}')">
       ${avatar(w,30)}
       <span class="dm-item-in"><b>${esc(w.handle)}<i>${w.ovr}</i></b>
       <span>${[L()[w.role]||'', w.club ? esc(w.club) : L().ccFreeAgent]
@@ -146779,7 +146779,7 @@ function careerSocialHTML(){
                 b && b.agent ? `<em class="dm-tag-agent">${L().ccAgentTag}</em>` : ''}</b>
               <span>${L().dmBlockedSub}</span></span></button>
             <button class="dm-x dm-unblock" title="${esc(L().dmUnblock)}"
-              onclick="careerDmUnblock('${esc(ccBlockedKey(b))}')">${L().dmUnblock}</button>
+              onclick="careerDmUnblock('${esc(ccBlockedKey(b)).replace(/'/g,"\\'")}')">${L().dmUnblock}</button>
           </div>`).join('');
       })()}
     </div>
@@ -158589,6 +158589,8 @@ function ccPlayStyleHTML(){
     '<small class="cc-style-note">'+esc(ccKeyNote(st))+'</small></span>';
 }
 async function careerLandingPick(field, you, title, kinds, o){
+  // Вышел из карьеры посреди вечера: вопроса о высадке больше нет, раскладка остаётся прошлой (errlog 24–28.10).
+  if(!CAREER || !CAREER.career) return null;
   o=o||{};
   // Стиль на игру спрашивается отдельно, перед каждой игрой (ccStyleAskGame); здесь — только поставить его.
   { if(!o.tag) CC_STYLE_TEAM=you; ccApplyPlayStyle(you); }
@@ -166633,7 +166635,7 @@ function ccNatSquadHTML(){
     if(k===capK) tags.push(T.ccNatCaptain);
     if(k===myK) tags.push(T.ccNatYou);
     if(i===CC_NATIONS_SQUAD-1 && (mine.captain || (!mine.inSquad && !N.trial))) tags.push(T.ccNatTrialSlot);
-    const drop=(canPick && mine.picks.some(p=>hKey(p)===k)) ? ' <button class="cc-nat-chip cc-nat-chip-x" onclick="ccNatPick(\''+esc(k)+'\')">'+esc(T.ccNatUnpickBtn)+'</button>' : '';
+    const drop=(canPick && mine.picks.some(p=>hKey(p)===k)) ? ' <button class="cc-nat-chip cc-nat-chip-x" onclick="ccNatPick(\''+esc(k).replace(/'/g,"\\'")+'\')">'+esc(T.ccNatUnpickBtn)+'</button>' : '';
     return '<li><b>'+esc(c.handle)+'</b> <span>'+ccCardOvr(c)+'</span>'+(k!==myK ? placeOf(k) : '')+(tags.length ? ' <em>'+esc(tags.join(' · '))+'</em>' : '')+drop+'</li>';
   };
   let pick='';
@@ -170168,6 +170170,7 @@ function mgrFfSummary(a){
 }
 // Одна единица работы перемотки: чужой кап движком или вечер клуба. null — дошли; {stop} — встали (дедлайн).
 function mgrFfStep(toDay){
+  if(!CAREER || !CAREER.career) return {stop:true};   // вышел из менеджера посреди перемотки (errlog 29–30.10)
   // Неполный состав зовёт напарника и посреди перемотки (Notion 8.10: «другой состав перестал играть турниры» — гость
   // приходил только при открытии хаба, и подписанный без пары пропускал все вечера перемотки).
   try{ if(MGR._gaDay!==CAREER.career.day){ MGR._gaDay=CAREER.career.day; mgrGuestAuto(); } }catch(e){}   // раз в день: перебор сцены дорогой
@@ -176783,8 +176786,8 @@ function ccTvHostBtnsHTML(host){
     '<button type="button" class="cc-tv-btn cc-tv-btn-sub">★ '+esc(T.ccStreamSub)+'</button>';
   const q=String(host.name).replace(/\\/g,'\\\\').replace(/'/g,"\\'");
   const fol=ccTwFollowing(host.name), sub=ccTwSubbed(host.name);
-  return '<button type="button" class="cc-tv-btn cc-tv-btn-fol'+(fol?' on':'')+'" onclick="ccTwFollowToggle(\''+esc(q)+'\')">♥ '+esc(fol ? T.ccTwFollowOn : T.ccTvFollow)+'</button>'+
-    (host.creator ? '<button type="button" class="cc-tv-btn cc-tv-btn-sub'+(sub?' on':'')+'" onclick="ccTwSubToggle(\''+esc(q)+'\')">★ '+esc(sub ? T.ccTwSubOn : T.ccTwSubPrice(CC_TW_SUB_PRICE))+'</button>' : '');
+  return '<button type="button" class="cc-tv-btn cc-tv-btn-fol'+(fol?' on':'')+'" onclick="ccTwFollowToggle(\''+esc(q).replace(/'/g,"\\'")+'\')">♥ '+esc(fol ? T.ccTwFollowOn : T.ccTvFollow)+'</button>'+
+    (host.creator ? '<button type="button" class="cc-tv-btn cc-tv-btn-sub'+(sub?' on':'')+'" onclick="ccTwSubToggle(\''+esc(q).replace(/'/g,"\\'")+'\')">★ '+esc(sub ? T.ccTwSubOn : T.ccTwSubPrice(CC_TW_SUB_PRICE))+'</button>' : '');
 }
 function ccTvHostRedraw(){
   const el=document.getElementById('ccTvHostBtns'); if(el) el.innerHTML=ccTvHostBtnsHTML(CC_TV_HOST);
