@@ -4181,3 +4181,6 @@ Object.assign(I18N.es=I18N.es||{},
 
 Object.assign(I18N.es=I18N.es||{},
 ({ ccHomeCamp: 'Bootcamp en casa', ccHomeCampWhat: (d,e)=>'Tus compañeros viven en tu casa una semana a tu cargo: +'+d+' días de química. Una vez cada '+e+' días', ccHomeCampMp: 'En equipo online la química es compartida', ccHomeCampNoFlat: 'Necesitas tu propia casa donde vives', ccHomeCampNoMate: 'Sin compañero', ccHomeCampAgain: d=>'De nuevo desde '+d, ccHomeCampMoney: 'No tienes suficiente dinero', ccNewsHomeCamp: d=>'Una semana de bootcamp en casa: +'+d+' días de química' }));
+
+Object.assign(I18N.es=I18N.es||{},
+({ ccStream_train: 'Entrenar en directo', ccStream_trainNote: 'medio entrenamiento, menos espectadores y dinero' }));

@@ -12744,7 +12744,7 @@ ccNewsStreamCup:(p,of,f)=>'Отстримил турнир: '+p+' из '+of+' ·
 ccStream_grind:'Ранкед', ccStream_grindNote:'обычный вечер, растёт аудитория', ccStream_watch:'Смотрим финал', ccStream_watchNote:'чужой финал с комментарием: большой день сцены, охват выше', ccStreamWatchOf:e=>'Смотрим: '+e,
 ccStream_chat:'Общение', ccStream_chatNote:'платят лучше, растёшь медленнее',
 ccStream_colab:'Коллаб', ccStream_colabNote:'вдвоём — придут его зрители',
-ccStream_long:'Марафон', ccStream_longNote:'вдвое дольше и вдвое больше, плюс перегруз',
+ccStream_train:'Тренировка на стриме', ccStream_trainNote:'половина тренировки, зрителей и денег меньше', ccStream_long:'Марафон', ccStream_longNote:'вдвое дольше и вдвое больше, плюс перегруз',
 ccStreamCatFn:'Fortnite', ccStreamCatChat:'Общение', ccStreamCatRanked:'Ранкед', ccStreamCatCreative:'Творческий',
 ccStreamFollowed:'Отслеживаемые каналы', ccStreamMore:'Показать ещё', ccStreamOffline:'Не в сети',
 ccStreamChat:'Чат трансляции', ccStreamSay:'Отправить сообщение', ccStreamLang:'Русский',
@@ -14853,7 +14853,7 @@ ccNewsStreamCup:(p,of,f)=>'Streamed the tournament: '+p+' of '+of+' · +'+f+' tw
 ccStream_grind:'Ranked', ccStream_grindNote:'an ordinary night, the audience grows', ccStream_watch:'Watch the final', ccStream_watchNote:'somebody else’s final with commentary: a big day for the scene, bigger reach', ccStreamWatchOf:e=>'Watching: '+e,
 ccStream_chat:'Just chatting', ccStream_chatNote:'pays better, grows slower',
 ccStream_colab:'Collab', ccStream_colabNote:'together — their viewers come over',
-ccStream_long:'Marathon', ccStream_longNote:'twice as long and twice as much, plus burnout',
+ccStream_train:'Training on stream', ccStream_trainNote:'half a training day, fewer viewers and less money', ccStream_long:'Marathon', ccStream_longNote:'twice as long and twice as much, plus burnout',
 ccStreamCatFn:'Fortnite', ccStreamCatChat:'Just Chatting', ccStreamCatRanked:'Ranked', ccStreamCatCreative:'Creative',
 ccStreamFollowed:'Followed channels', ccStreamMore:'Show more', ccStreamOffline:'Offline',
 ccStreamChat:'Stream chat', ccStreamSay:'Send a message', ccStreamLang:'English',
@@ -17320,7 +17320,7 @@ ccStreamCost:e=>e+" d'énergie", ccStreamNeed:(need,have)=>"pas assez d'énergie
 ccStream_grind:'Ranked', ccStream_grindNote:"une soirée normale, l'audience grandit", ccStream_watch:'Regarder la finale', ccStream_watchNote:'la finale des autres, commentée : grand jour, plus de portée', ccStreamWatchOf:e=>'On regarde : '+e,
 ccStream_chat:'Discussion', ccStream_chatNote:'paie mieux, grandit moins vite',
 ccStream_colab:'Collab', ccStream_colabNote:'à deux — ses spectateurs viennent',
-ccStream_long:'Marathon', ccStream_longNote:'deux fois plus long et deux fois plus, plus la fatigue',
+ccStream_train:'S\u2019entraîner en stream', ccStream_trainNote:'moitié d\u2019un entraînement, moins de viewers et d\u2019argent', ccStream_long:'Marathon', ccStream_longNote:'deux fois plus long et deux fois plus, plus la fatigue',
 ccStreamCatFn:'Fortnite', ccStreamCatChat:'Discussion', ccStreamCatRanked:'Ranked', ccStreamCatCreative:'Créatif',
 ccStreamFollowed:'Chaînes suivies', ccStreamMore:'Voir plus', ccStreamOffline:'Hors ligne',
 ccStreamChat:'Chat du live', ccStreamSay:'Envoyer un message', ccStreamLang:'Français',
@@ -17667,7 +17667,7 @@ ccStreamCost:e=>e+' di energia', ccStreamNeed:(need,have)=>'energia insufficient
 ccStream_grind:"Ranked", ccStream_grindNote:"una serata normale, il pubblico cresce", ccStream_watch:"Guardiamo la finale", ccStream_watchNote:"la finale degli altri con commento: gran giorno, più portata", ccStreamWatchOf:e=>'Guardiamo: '+e,
 ccStream_chat:"Chiacchiere", ccStream_chatNote:"paga meglio, cresce più lentamente",
 ccStream_colab:"Collab", ccStream_colabNote:"in due — arrivano i suoi spettatori",
-ccStream_long:"Maratona", ccStream_longNote:"il doppio più lunga e il doppio di tutto, più stanchezza",
+ccStream_train:'Allenamento in live', ccStream_trainNote:'metà allenamento, meno spettatori e soldi', ccStream_long:"Maratona", ccStream_longNote:"il doppio più lunga e il doppio di tutto, più stanchezza",
 ccStreamCatFn:"Fortnite", ccStreamCatChat:"Chiacchiere", ccStreamCatRanked:"Ranked", ccStreamCatCreative:"Creativa",
 ccStreamFollowed:"Canali seguiti", ccStreamMore:"Mostra altro", ccStreamOffline:"Offline",
 ccStreamChat:"Chat della diretta", ccStreamSay:"Invia un messaggio", ccStreamLang:"Italiano",
@@ -20220,7 +20220,7 @@ ccStreamCost:e=>e+' de energia', ccStreamNeed:(need,have)=>'energia insuficiente
 ccStream_grind:"Ranked", ccStream_grindNote:"uma noite normal, o público cresce", ccStream_watch:"Assistir à final", ccStream_watchNote:"a final dos outros com comentário: dia grande, mais alcance", ccStreamWatchOf:e=>'Assistindo: '+e,
 ccStream_chat:"Bate-papo", ccStream_chatNote:"paga melhor, cresce mais devagar",
 ccStream_colab:"Collab", ccStream_colabNote:"a dois — os espectadores dele vêm junto",
-ccStream_long:"Maratona", ccStream_longNote:"o dobro do tempo e o dobro de tudo, mais desgaste",
+ccStream_train:'Treino na live', ccStream_trainNote:'metade de um treino, menos viewers e dinheiro', ccStream_long:"Maratona", ccStream_longNote:"o dobro do tempo e o dobro de tudo, mais desgaste",
 ccStreamCatFn:"Fortnite", ccStreamCatChat:"Bate-papo", ccStreamCatRanked:"Ranked", ccStreamCatCreative:"Criativo",
 ccStreamFollowed:"Canais seguidos", ccStreamMore:"Mostrar mais", ccStreamOffline:"Offline",
 ccStreamChat:"Chat da live", ccStreamSay:"Enviar uma mensagem", ccStreamLang:"Português",
@@ -120278,7 +120278,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='9ac43e8e';
+const CC_BUILD='ffd00f7b';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -128404,8 +128404,11 @@ function careerDoAct(id){
        Legend 0.10. Easy is untouched. */
     // Оценка занятия D…A+ (ccDrillGrade) — только у тренировок с приростом.
     const grade=(String(act.id).indexOf('tr')===0 && Object.keys(act.gain||{}).length) ? ccDrillGrade(act.id) : null;
-    Object.keys(act.gain||{}).forEach(k=>{
-      const by=act.gain[k]*mult*(coach && coach.keys.indexOf(k)>=0 ? 1+coach.train : 1)
+    // Эфир с тренировкой берёт прирост тренировки trPit в доле вида (CC_STREAM_KINDS train).
+    const sk=(act.id==='stream' && typeof ccStreamKind==='function') ? ccStreamKind(CC_STREAM_KIND) : null;
+    const gain=(sk && sk.train) ? (g=>{ const o={}; Object.keys(g).forEach(k=>{ o[k]=g[k]*sk.train; }); return o; })((ccActById('trPit')||{}).gain||{}) : (act.gain||{});
+    Object.keys(gain).forEach(k=>{
+      const by=gain[k]*mult*(coach && coach.keys.indexOf(k)>=0 ? 1+coach.train : 1)
                *careerDiff().age*(scrim ? scrim.mult : 1)*ccFocusMult(k)*(grade ? grade.mult : 1);
       pl.attrs[k]=clamp((pl.attrs[k]||50)+by, ccAttrFloor(k), 99);
       moved[k]=by;
@@ -175854,7 +175857,9 @@ const CC_STREAM_KINDS=[
   {id:'grind', energy:30, reach:1,   cash:1,   subs:1,   grind:0, hours:4},
   {id:'chat',  energy:30, reach:0.6, cash:1.6, subs:0.8, grind:0, hours:4},
   {id:'colab', energy:40, reach:1,   cash:1,   subs:1,   grind:0, mate:true, hours:4},
-  {id:'long',  energy:55, reach:1.8, cash:1.8, subs:1.8, grind:2, hours:8}
+  {id:'long',  energy:55, reach:1.8, cash:1.8, subs:1.8, grind:2, hours:8},
+  // Тренировка в эфире: половина дня тренировки (train — доля прироста trPit), зрителей и денег меньше, чем у ранкеда.
+  {id:'train', energy:45, reach:0.6, cash:0.6, subs:0.6, grind:1, hours:4, train:0.5}
 ];
 /* Эфир с турнира: вид вечера, а не дня. Включается на панели дня рядом с «Играть», вечер
    симулируется как обычно, поверх идёт трансляция (careerPlayLive, ccTv*).
