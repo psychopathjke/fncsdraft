@@ -4175,3 +4175,6 @@ Object.assign(I18N.es=I18N.es||{},
 /* Дозаливка «es» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
 Object.assign(I18N.es=I18N.es||{},
 ({ ccRaceMake: "Contra un amigo" }));
+
+Object.assign(I18N.es=I18N.es||{},
+({ ccPtsRule: 'Puntos por puesto', ccPtsKill: 'elim', ccPtsCap: n=>'hasta '+n+' por partida' }));

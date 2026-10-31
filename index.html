@@ -105350,6 +105350,24 @@ function beginAnimatedStage(){
    everywhere; check this if a final looks a few points light. */
 const CC_RELOAD_KILL_CAP=10;
 let CC_KILL_CAP=0;
+// Строка очков турнира над таблицей: за места и за элим, из тех же правил, по которым считается вечер.
+Object.assign(I18N.ru, {ccPtsRule:'Очки за место', ccPtsKill:'элим', ccPtsCap:n=>'не больше '+n+' за игру'});
+Object.assign(I18N.en, {ccPtsRule:'Points for place', ccPtsKill:'elim', ccPtsCap:n=>'up to '+n+' a game'});
+Object.assign(I18N.fr, {ccPtsRule:'Points au classement', ccPtsKill:'élim', ccPtsCap:n=>'max '+n+' par game'});
+Object.assign(I18N.it, {ccPtsRule:'Punti per piazzamento', ccPtsKill:'elim', ccPtsCap:n=>'max '+n+' a partita'});
+Object.assign(I18N.pt, {ccPtsRule:'Pontos por colocação', ccPtsKill:'elim', ccPtsCap:n=>'até '+n+' por partida'});
+function ccPtsRuleHTML(pointsFn, killMult, lobby){
+  try{
+    const T=L(), n=Math.max(2, lobby||100);
+    // Броски генератора здесь не тратятся: таблица очков чистая функция места.
+    const at=[1,2,3,5,10,15,25,50].filter(p=>p<=n);
+    const cells=at.map(p=>({p:p, v:Math.round(pointsFn(p)*10)/10})).filter((c,i,a)=>i===0 || c.v!==a[i-1].v || c.p===at[at.length-1]);
+    const k=Math.round(ccKillPts(1, killMult)*10)/10;
+    const cap=CC_KILL_CAP>0 ? CC_KILL_CAP : (reloadPlacementTable() ? CC_RELOAD_KILL_CAP : 0);
+    return '<div class="live-note cc-pts-rule"><b>'+esc(T.ccPtsRule)+'</b> '+cells.map(c=>'#'+c.p+' '+c.v).join(' · ')+
+      (k ? ' · <b>'+esc(T.ccPtsKill)+'</b> +'+k+(cap ? ' ('+esc(T.ccPtsCap(cap))+')' : '') : '')+'</div>';
+  }catch(e){ return ''; }
+}
 function ccKillPts(elims, mult){
   // Set by the career's own Reload runners; the free Reload modes are known by
   // their placement table, which only exists for a Reload card set.
@@ -105471,6 +105489,7 @@ async function simulateGamesLive(teams, numGames, pointsFn, killMult, fieldPrefi
   // mounts) and fall back to plain block flow — table alone, full width —
   // for every mode with no replay at all: nothing here turns that on for them.
   shell.innerHTML=`<h4 id="finalsLiveTitle"></h4>
+    ${ccPtsRuleHTML(pointsFn, killMult, opts.lobbySize||teams.length)}
     ${opts.carry ? `<div class="live-note">${L().ccLiveWeekNote}</div>` : ''}
     <div class="stage-live">
       <!-- Высота таблицы тоже от окна, а не 520 навсегда: рядом с картой,
@@ -120258,7 +120277,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='8c88b2f3';
+const CC_BUILD='16c483d6';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -149033,7 +149052,8 @@ function ccMpNextSaw(p){
     CC_MP_DAY_DUE=true;                    // окно на один шаг, как после close
     careerAdvanceTo(ccAddDays(careerToday(), 1));
   }
-  careerRenderHub('centre');
+  // Голос напарника и сам шаг дня не уводят с вкладки, где ты сейчас.
+  careerRenderHub((typeof CH_TAB!=='undefined' && CH_TAB) || 'centre');
 }
 function careerNextDay(){
   if(ccMpOn() && typeof MP!=='undefined' && MP.act){
