@@ -120284,7 +120284,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='230e6265';
+const CC_BUILD='f18b76bc';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -151126,7 +151126,7 @@ function ccFnPeek(e, i){
   if(e && e.target && e.target.closest('button')) return;
   const it=ccFnItem(i); if(!it) return;
   const T=L(), own=!!ccFnOwn()[it.id], price=ccFnPrice(it), era=ccFnShopEra(careerToday());
-  const bg=era.noRar ? ccFnSetHue(it) : (CC_FN_RAR[it.r] || CC_FN_RAR.rare), nSty=(CC_FN_SHOP.sty||{})[i];
+  const bg=era.noRar ? ccFnSetHue(it) : (CC_FN_RAR[it.r] || CC_FN_RAR.rare), nSty=CC_FN_STYLES_ON ? (CC_FN_SHOP.sty||{})[i] : 0;
   const img=it.t==='o' ? ccFnFull(it.id) : ccFnImg(it.id);
   ccFnPeekOpen('<div class="cc-fn-peek-art" style="--fn-bg:'+bg+'"><img src="'+img+'" alt="" onerror="if(!this.dataset.f){this.dataset.f=1;this.src=\''+ccFnImg(it.id)+'\';}else this.remove()"></div>'+
     '<div class="cc-fn-peek-txt"><b>'+esc(it.name)+'</b><em>'+esc(T['ccFnType_'+it.t]||'')+(it.set ? ' · '+esc(it.set) : '')+'</em>'+
@@ -151469,7 +151469,10 @@ function ccFnVariants(id){
   return null;
 }
 // Выбранный стиль: картинка лежит в сейве (fnStyleImg), список вариантов подтягивается сам — после перезагрузки он пуст, и стиль пропадал.
+// Стили сняты: у источника нет моделей стилей в полный рост, только портреты 128 px. Выбор, отметка в магазине и карточка выключены.
+const CC_FN_STYLES_ON=false;
 function ccFnStyleOf(id){
+  if(!CC_FN_STYLES_ON) return null;
   const t=CAREER && CAREER.fnStyle && CAREER.fnStyle[id]; if(!t) return null;
   const v=(CC_FN_VAR[id]!==undefined) ? CC_FN_VAR[id] : ccFnVariants(id);
   const o=v && v.find(x=>x.tag===t); if(o) return o;
@@ -151492,6 +151495,7 @@ function ccFnStyleBadge(id){
 }
 // Ряд стилей надетого в выбранном слоте; пустой, пока варианты не пришли или их нет.
 function ccFnStylesHTML(slot){
+  if(!CC_FN_STYLES_ON) return '';
   const T=L(), id=slot && (CAREER.fnEq||{})[slot]; if(!id || !ccFnOwn()[id]) return '';
   const v=ccFnVariants(id); if(!v || v.length<2) return '';
   const cur=(CAREER.fnStyle||{})[id]||v[0].tag;
