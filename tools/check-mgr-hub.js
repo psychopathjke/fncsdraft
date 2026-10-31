@@ -930,6 +930,17 @@ const SECTIONS=[
     document.querySelectorAll('.mg-modal').forEach(m=>m.remove());
     check('текст не врёт про пропуск', !/пропущен|skipped/i.test(mgrT9().shortTitle(1, 2)));
   `},
+  {name:'усталость', once:true, code:String.raw`
+    // Шаги короче недели (кап через день) тоже доходят до недельного тика: «Отдых» снимает усталость.
+    MGR_NEW_YEAR=2026; MGR_NEW_REGION='EU'; MGR_NEW_SIDE='real'; MGR_NEW_SORT='stars'; mgrOpenNew(2026); mgrTake(0);
+    MGR.train='rest'; MGR.fatigue=100; MGR.wkDay=null;
+    let d=CAREER.career.day; const d0=d;
+    for(let i=0;i<14;i++){ const n=ccAddDays(d, 2); mgrWeekly(d, n); d=n; }
+    check('усталость: отдых шагами по 2 дня за 4 недели снимает усталость', mgrFatigue()<=10, String(mgrFatigue()));
+    check('усталость: тиков ровно по неделям', MGR.wkDay===ccAddDays(d0, 28), d0+' → '+MGR.wkDay);
+    MGR.fatigue=50; const w=MGR.wkDay; mgrWeekly(d, ccAddDays(d, 1));
+    check('усталость: шаг в день без новой недели — без тика', mgrFatigue()===50 && MGR.wkDay===w, mgrFatigue()+' '+MGR.wkDay);
+  `},
   {name:'отступные', once:true, code:String.raw`
     let worst=0, below=0;
     for(let s=0;s<12;s++){

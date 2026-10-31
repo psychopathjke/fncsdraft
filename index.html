@@ -9723,7 +9723,7 @@
      в index.html только точки врезки. ?v= — тот же кэш-предохранитель, что и
      у соседей: поменял mp.js — переставь хеш, иначе браузер возьмёт старый
      файл и разойдётся с напарником. -->
-<script src="mp.js?v=4fb4df12"></script>
+<script src="mp.js?v=035c40e1"></script>
 <!-- Дополнительные реплики лички и реплаев (tools/build-lines-more.js), грузятся после страницы. -->
 <script src="lines-more.js?v=5aebca09" defer></script>
 <!-- lz-string 1.5.0 (MIT, (c) 2013 pieroxy) — сжатие сейва карьеры, когда браузеру не хватает места (Safari: 5 МБ на сайт). -->
@@ -12336,6 +12336,7 @@ ccPostStreamD1:()=>'разбираю сегодняшние игры на стр
 ccShotPts:'Очки', ccShotCap:d=>'Дивизион '+d+' · кубок',
 xLike:'Нравится', ccPostWhat:'Что у тебя происходит?', ccPostBtn:'Опубликовать', xFollowers:'Подписчики', xFollowing:'Подписки', xPosts:'Постов',
 xNoPosts:'Ты ещё ничего не публиковал',
+xNoPostsWho:'Пока ничего не публиковал',
 ccPostPlaced:(p,d,m,v,pz)=>{const a=m?' @'+m:''; const o=p+' место', $=pz>0?' (+$'+ccNum(pz)+')':'';
   if(p===1) return ['1 место'+$+a+' 🏆', 'забрали финал дивизиона '+d+$+a, 'W'+$+a+' 🐐'][(v||0)%3];
   if(p<=3)  return [o+$+a, o+' в финале дивизиона'+$+' гг'+a, o+$+a+', чуть-чуть'][(v||0)%3];
@@ -14456,6 +14457,7 @@ ccPostStreamD1:()=>'vod review live 🔴',
 ccShotPts:'Pts', ccShotCap:d=>'Division '+d+' cup',
 xLike:'Like', ccPostWhat:'What is happening?', ccPostBtn:'Post', xFollowers:'Followers', xFollowing:'Following', xPosts:'Posts',
 xNoPosts:'You have not posted anything yet',
+xNoPostsWho:'No posts yet',
 ccPostPlaced:(p,d,m,v,pz)=>{const a=m?' @'+m:''; const o=ccOrdEn(p), $=pz>0?' ($'+ccNum(pz)+')':'', $2=pz>0?' +'+pz+'$':'';
   if(p===1) return ['1st'+$+a+' 🏆', '1st div '+d+' finals'+$+a, 'W'+$2+a+' 🐐'][(v||0)%3];
   if(p<=3)  return [o+$+a, o+' div '+d+' finals'+$2+' ggs'+a, o+$+a+' so close'][(v||0)%3];
@@ -15218,6 +15220,7 @@ xFollowers:'Abonnés',
 xFollowing:'Abonnements',
 xPosts:'Posts', ccPostWhat:'Quoi de neuf ?', ccPostBtn:'Publier',
 xNoPosts:'Tu n’as encore rien publié',
+xNoPostsWho:'Aucun post pour l’instant',
 attrAim:'AIM',
 attrEnd:'END',
 attrSur:'SUR',
@@ -19865,6 +19868,7 @@ xFollowers:"Follower",
 xFollowing:"Seguiti",
 xPosts:"Post",
 xNoPosts:"Non hai ancora pubblicato nulla",
+xNoPostsWho:"Ancora nessun post",
 ccCongratsTable:"Divisione 1 · classifica stagionale",
 ccCongratsCup:"la coppa di Divisione 1",
 ccSumLocked:"Il Summit si riempie dalla Finale del Major 1: i primi 20 all'Upper Bracket, dal 21 al 28 alla seconda chance",
@@ -22418,6 +22422,7 @@ xFollowers:"Seguidores",
 xFollowing:"Seguindo",
 xPosts:"Posts",
 xNoPosts:"Você ainda não publicou nada",
+xNoPostsWho:"Nenhum post ainda",
 ccCongratsTable:"Divisão 1 · tabela da temporada",
 ccCongratsCup:"a copa da Divisão 1",
 ccSumLocked:"O Summit se preenche pela Final do Major 1: top 20 para o Upper Bracket, 21-28 para a segunda chance",
@@ -24184,7 +24189,7 @@ ccSacPromoRow:(n,m,p)=>'promo no X '+n+'/'+m+(p ? ' · +'+p+'%' : ''),
 ccGoalReach:{majorFinal:'chegar a uma final de Major FNCS', fncsFinal:'chegar à final semanal da FNCS'},
 ccOrgGoalPickHint:'Meta da temporada: escolha uma antes do fim da temporada. Cumpriu, renova com aumento (meta mais difícil, aumento maior); falhou, o clube te libera. Sem escolha, fica a do meio.'
 }));
-let CC_I18N_V={de:'97a53ee0', es:'974e8d40'};   // ==== CC_I18N_V (tools/build-i18n.js) ====
+let CC_I18N_V={de:'3b3e960a', es:'fdcc6d77'};   // ==== CC_I18N_V (tools/build-i18n.js) ====
 // Версия fn-shop.js (магазин Fortnite по дням, tools/build-fn-shop.js) — для ?v= ленивой загрузки.
 let CC_FN_SHOP_V='be7040d6';
 const CC_LANG_WAIT={};
@@ -120970,6 +120975,7 @@ function ccMpPeerCheck(){
      строка гонки: по ней клиент, зашедший командной дверью, понимает, что
      попал в гонку (см. ccMpKindCheck), даже на воркере без race в state. */
   if(ccRaceOn() && !ccMpTeam()){ try{ careerRaceSend(); }catch(e){} ccMpRedraw(); return; }
+  ccMateReMerge();
   const why=ccMpSameWhy();
   if(!why){ ccMpRedraw(); return; }
   if((CAREER.career.mp.role||'a')!=='a'){ ccMpLeaveBad(why); return; }
@@ -142045,9 +142051,31 @@ const CC_MATE_POSTS_N=12;
 function ccMatePostsWire(){
   try{
     return (CAREER.career.news||[]).filter(e=>{ try{ return ccPostAuthor(e).you; }catch(x){ return false; } })
-      .slice(0, CC_MATE_POSTS_N).map(e=>({id:e.id, day:e.day, k:e.k, a:e.a, text:e.text, kind:e.kind, likes:e.likes||0, rts:e.rts||0}));
+      .slice(0, CC_MATE_POSTS_N).map(e=>({id:e.id, day:e.day, k:e.k, a:e.a, text:e.text, kind:e.kind, likes:e.likes||0, rts:e.rts||0,
+        res:(e.res||[]).slice(-CC_REPLY_MAX)}));
   }catch(e){ return null; }
 }
+/* Ответ под постом напарника в команде. Сервер пропускает только известные сообщения, поэтому ответ едет в своей карточке
+   (reMate), а напарник вписывает его под свой пост (ccMateReMerge). Свои хранятся в cr.mateRe — у себя видны сразу. */
+const CC_MATE_RE_N=40;
+function ccMateReWire(){ const a=(CAREER && CAREER.career && CAREER.career.mateRe)||[]; return a.slice(-CC_MATE_RE_N); }
+function ccMateReMerge(){
+  try{
+    const p=(typeof MP!=='undefined') && MP.peer;
+    if(!p || !Array.isArray(p.reMate) || !(typeof ccMpOn==='function' && ccMpOn())) return false;
+    const news=CAREER.career.news||[]; let got=false;
+    p.reMate.forEach(r=>{
+      if(!r || r.id==null || !r.k || !r.t) return;
+      const n=news.find(x=>String(x.id)===String(r.id));
+      if(!n || (n.res||[]).some(x=>x.k===r.k)) return;
+      n.res=(n.res||[]).concat([{t:String(r.t).slice(0, CC_POST_MAX), day:r.day, by:p.handle, k:r.k}]).slice(-CC_REPLY_MAX);
+      got=true;
+    });
+    if(got) careerSave();
+    return got;
+  }catch(e){ return false; }
+}
+function ccMpSendCardSoon(){ try{ if(typeof ccMpOn==='function' && ccMpOn() && typeof MP!=='undefined' && MP.sendCard) MP.sendCard(); }catch(e){} }
 function ccMatePosts(){
   try{
     // Гонка: посты соперников-людей приезжают в их строке (careerRaceCard posts), на них можно ответить.
@@ -142062,7 +142090,13 @@ function ccMatePosts(){
     }
     if(!(typeof ccMpOn==='function' && ccMpOn()) || typeof MP==='undefined' || !MP.peer || !Array.isArray(MP.peerPosts)) return [];
     const p=MP.peer, by={name:p.handle, handle:ccHandle(p.handle), card:p, ovr:p._ovr};
-    return MP.peerPosts.map(x=>Object.assign({}, x, {id:'mate:'+x.id, by:by, mate:true}));
+    // Под постом: ответы, что он получил (свои мои — из cr.mateRe, чтобы не задваивать), и мои.
+    const myK=hKey(careerCard()||{handle:''}), mine=(CAREER.career.mateRe||[]);
+    return MP.peerPosts.map(x=>{
+      const theirs=(x.res||[]).filter(r=>!(r.by && hKey(r.by)===myK)).map(r=>r.by ? r : Object.assign({}, r, {by:p.handle}));
+      const res=theirs.concat(mine.filter(r=>String(r.id)===String(x.id)).map(r=>({t:r.t, day:r.day})));
+      return Object.assign({}, x, {id:'mate:'+x.id, by:by, mate:true, res:res});
+    });
   }catch(e){ return []; }
 }
 function careerFeedHTML(){
@@ -142092,7 +142126,9 @@ function careerWhoHTML(h){
   if(!h) return `<div class="ch-tile"><div class="ch-empty">${L().ccNewsEmpty}</div></div>`;
   const card=ccWhoCard(h), esh=esc(h).replace(/'/g,"\\'");
   const who={name:h, handle:ccHandle(h), card:card, logo:null};
-  const posts=(CAREER.career.news||[]).filter(n=>hKey(ccPostAuthor(n).handle)===hKey(ccHandle(h)));
+  // Живой напарник: его посты едут с карточкой (ccMatePosts), в своей ленте их нет.
+  const matePosts=ccMatePosts().filter(x=>x.by && hKey(x.by.name)===hKey(h));
+  const posts=matePosts.concat((CAREER.career.news||[]).filter(n=>hKey(ccPostAuthor(n).handle)===hKey(ccHandle(h))));
   const ad=(typeof ccAdOf==='function') ? ccAdOf(h) : null;
   return `<div class="ch-tile x-profile">
     <div class="x-profile-head">
@@ -142113,7 +142149,7 @@ function careerWhoHTML(h){
     ${careerPlayerStatsHTML(h, card && card.region)}
     <div class="x-timeline">${posts.length
       ? posts.slice(0, 20).map(ccPostHTML).join('')
-      : `<div class="ch-empty">${L().xNoPosts}</div>`}</div>
+      : `<div class="ch-empty">${L().xNoPostsWho}</div>`}</div>
   </div>`;
 }
 
@@ -142421,7 +142457,8 @@ function ccPostComments(n, who, st){
      собралась (сменился напарник, подписки), ответ уходит вниз с «@кому». */
   const res=((n&&n.res)||[]);
   const toKey=r=>r.to ? hKey(r.to) : '';
-  const mineRow=r=>'<div class="x-co-r x-co-mine'+(r.to?' sub':'')+'"><b>@'+meAt+'</b>'+
+  // r.by — ответ живого напарника (ccMateReMerge), рисуется его ником.
+  const mineRow=r=>'<div class="x-co-r'+(r.by?'':' x-co-mine')+(r.to?' sub':'')+'"><b>@'+(r.by?esc(ccHandle(r.by)):meAt)+'</b>'+
       '<span>'+(r.to?'<u>@'+esc(ccHandle(r.to))+'</u> ':'')+esc(r.t||'')+'</span></div>';
   const mine=((n && n.re)
       ? '<div class="x-co-r x-co-mine"><b>@'+meAt+'</b><span>'+esc(L()['ccRe'+n.re]||'')+'</span></div>'
@@ -142964,6 +143001,14 @@ function careerReplyWrite(id){
   if(!box) return;
   const text=String(box.value||'').replace(/\s+/g,' ').trim().slice(0, CC_POST_MAX);
   if(!text) return;
+  if(/^mate:/.test(String(id))){
+    const cr=CAREER.career, k=hKey(careerCard()||{handle:''})+':'+Date.now().toString(36);
+    cr.mateRe=(cr.mateRe||[]).concat([{id:String(id).slice(5), t:text, day:careerToday(), k:k}]).slice(-CC_MATE_RE_N);
+    box.value='';
+    careerSave(); ccMpSendCardSoon();
+    careerRenderHub('social');
+    return;
+  }
   const n=(CAREER.career.news||[]).find(x=>x.id===id);
   if(!n) return;
   // Адресат — только если поле открыто именно ему под этим постом.
@@ -142971,7 +143016,7 @@ function careerReplyWrite(id){
   n.res=(n.res||[]).concat([to ? {t:text, day:careerToday(), to:to} : {t:text, day:careerToday()}]);
   if(n.res.length>CC_REPLY_MAX) n.res.length=CC_REPLY_MAX;
   if(to){ CC_REPLY_OPEN=null; CC_REPLY_TO=null; }
-  careerSave();
+  careerSave(); ccMpSendCardSoon();
   careerRenderHub('social');
 }
 let CC_REPLY_OPEN=null, CC_REPLY_TO=null;
@@ -143166,7 +143211,7 @@ function careerPostWrite(){
   careerNews('flat', null, null, {text:text, q:CC_QUOTE||undefined});
   CC_QUOTE=null;
   try{ if(ccSacPromoPost(text)) careerNews('good', 'ccNewsSacPromo', [ccSacOwnCode(), Math.round(CC_SAC_PROMO*100*ccSacPromoOf(ccMonthKey()))]); }catch(e){}
-  careerSave();
+  careerSave(); ccMpSendCardSoon();   // напарник видит пост сразу, а не после вечера
   careerRenderHub(CH_TAB);
 }
 // A reader's one contribution to a post. It is stored, so the heart survives a
@@ -155689,7 +155734,7 @@ function careerMajorCan(ev){
     if(ev.stage==='q'){
       if(ev.r===1) return true;
       const prev=s && s.q[ev.q] && s.q[ev.q]['r'+(ev.r-1)];
-      return !!(prev && prev.indexOf('you')>=0);
+      return ccSeedHasMe(prev);
     }
     if(ev.stage==='semi'){
       if(!s) return false;
@@ -155700,7 +155745,7 @@ function careerMajorCan(ev){
          комната нижней сетки собирается ccM24LowerRoom. Без этого «Играть» гасла после
          «падение в нижнюю сетку» (аудит 29.09). */
       const prev=ccM24Room(s, s.bracket, ev.r);
-      return !!(prev && prev.indexOf('you')>=0);
+      return ccSeedHasMe(prev);
     }
     return !gaveUp && !!(s && s.ticket);
   }
@@ -159575,6 +159620,13 @@ function careerSummitField(stage, you, drafted){
    каждый находит по карточке — тем же hasCard, которым ccRaceFieldSync сажает соперников. */
 function ccRaceSeeds(){ return typeof ccRaceOn==='function' && ccRaceOn() && typeof ccRaceLive==='function' && ccRaceLive(); }
 function ccSeedRow(t, you, rowFn){ return (t===you && !ccRaceSeeds()) ? 'you' : rowFn(t); }
+// Есть ли я в записи прошедших: в гонке своя строка пишется никами (ccSeedRow), а не 'you'.
+function ccSeedHasMe(rows){
+  if(!rows || !rows.length) return false;
+  if(rows.indexOf('you')>=0) return true;
+  let mk=''; try{ mk=hKey(careerCard()||{handle:''}); }catch(e){}
+  return !!mk && rows.some(r=>Array.isArray(r) && r.some(x=>hKey(typeof x==='string' ? x : (x && x.h) || '')===mk));
+}
 function ccStageSeatRow(t){
   return (t.squad||[]).map(function(c){
     const a=attrsFor(c)||{};
@@ -160976,7 +161028,7 @@ function ccMXSettleHeats(m){
     });
   });
 }
-function ccMXYourHeat(m, d){ return ccMXHeats(m).findIndex(h=>h.day===d && h.rows.indexOf('you')>=0); }
+function ccMXYourHeat(m, d){ return ccMXHeats(m).findIndex(h=>h.day===d && ccSeedHasMe(h.rows)); }
 // Финал: World Cup — настоящие финалисты Нью-Йорка; FNCS — прошедшие хиты, недобор по серии.
 /* ФИНАЛ WORLD CUP — ИЗ СЫГРАННЫХ НЕДЕЛЬ (его слово 29.09: «пусть из нашей симуляции игроки попадают,
    которые квальнутся недель», «и так должно быть на всех турнирах»). Был готовый список настоящих
@@ -161076,7 +161128,7 @@ function ccMXCanStage(ev, cr, gaveUp){
     const first=ev.rounds[0];
     if(first===1) return true;
     const prev=s && s.q[ev.w] && s.q[ev.w]['r'+(first-1)];
-    return !!(prev && prev.indexOf('you')>=0);
+    return ccSeedHasMe(prev);
   }
   if(ev.stage==='heat'){
     if(!s || s.ticket || !s.youKey) return false;
@@ -161342,7 +161394,7 @@ async function ccMXRun(ev, sp, soloTeam){
             Q.done=true; ccMXSettleWeeks(m);
             const hl=ccMXHeatList(m), need=hl.need;
             const lastWeek=ev.w===(sp.weeks||[])[(sp.weeks||[]).length-1];
-            through=hl.list.indexOf('you')>=0;
+            through=ccSeedHasMe(hl.list);
             heatsNote=through ? (lastWeek ? L().ccYrXHeatsIn(need) : L().ccYrXHeatsZone(need)) : L().ccYrXHeatsOut(need);
           }
         }
@@ -161713,7 +161765,7 @@ function ccM21SettleHeats(m){
 function ccM21YourHeat(m, d){
   const heats=ccM21Heats(m);
   ccM21PrevHeats(m);
-  return heats.findIndex(h=>h.day===d && h.rows.indexOf('you')>=0);
+  return heats.findIndex(h=>h.day===d && ccSeedHasMe(h.rows));
 }
 // Reboot Round: не прошедшие хиты первого дня по кругу, до лобби.
 function ccM21RebootRoom(m){
@@ -161775,7 +161827,7 @@ function ccM21CanStage(ev, cr, gaveUp){
     const first=ev.rounds[0];
     if(first===1) return true;
     const prev=s && s.q[ev.q] && s.q[ev.q]['r'+(first-1)];
-    return !!(prev && prev.indexOf('you')>=0);
+    return ccSeedHasMe(prev);
   }
   if(ev.stage==='semi'){
     if(!s || s.ticket || !s.youKey) return false;
@@ -161784,7 +161836,7 @@ function ccM21CanStage(ev, cr, gaveUp){
   }
   if(ev.stage==='reboot'){
     if(!s || s.ticket || !s.youKey || !ccM21RebootCut(ev.n)) return false;
-    return ccM21RebootRoom(s).indexOf('you')>=0;
+    return ccSeedHasMe(ccM21RebootRoom(s));
   }
   return !gaveUp && !!(s && s.ticket);
 }
@@ -162154,12 +162206,12 @@ function ccM22CanStage(ev, cr, gaveUp){
     const first=ev.rounds[0];
     if(first===1) return true;
     const prev=s && s.q[ev.q] && s.q[ev.q]['r'+(first-1)];
-    return !!(prev && prev.indexOf('you')>=0);
+    return ccSeedHasMe(prev);
   }
   if(ev.stage==='semi'){
     if(!s || s.ticket || !s.youKey) return false;
     const room=ccM22SemiRoom(s, ev.r);
-    return room.indexOf('you')>=0;
+    return ccSeedHasMe(room);
   }
   return !gaveUp && !!(s && s.ticket);
 }
@@ -162719,7 +162771,7 @@ function ccM23GfRows(m){
 function ccM23Ticket(m){
   if(!m || !m.youKey) return false;
   const fin=ccM23Day(m.n, 'Final');
-  if(fin && careerToday()>=fin){ const rows=ccM23GfRows(m); return !!(rows && rows.indexOf('you')>=0); }
+  if(fin && careerToday()>=fin){ const rows=ccM23GfRows(m); return ccSeedHasMe(rows); }
   const k=ccM23SeriesRank(m, m.youKey);
   return k>0 && k<=ccM23Top(m.n);
 }
@@ -162753,8 +162805,8 @@ function ccM23CanStage(ev, cr, gaveUp){
     if(ev.n===4){ const seat=ccGlobalsSeat(); if(seat) return false; }
     return true;
   }
-  if(ev.stage==='d2') return !!(wk && wk.d1 && wk.d1.indexOf('you')>=0);
-  if(ev.stage==='wf') return !!(wk && wk.d2 && wk.d2.indexOf('you')>=0);
+  if(ev.stage==='d2') return !!(wk && ccSeedHasMe(wk.d1));
+  if(ev.stage==='wf') return !!(wk && ccSeedHasMe(wk.d2));
   if(ev.stage==='surge'){
     if(!s || !s.youKey) return false;
     ccM23SettleWeeks(s);
@@ -170610,7 +170662,10 @@ let MGR_MAX_TEAMS_NOW=3;
 function mgrWeekly(fromDay, toDay){
   const T=mgrT2();
   MGR.inbox=MGR.inbox||[];
-  for(let d=ccAddDays(fromDay, 7); d<=toDay; d=ccAddDays(d, 7)){
+  // Неделя считается от якоря, а не от прошлого шага: шаги короче 7 дней (кап через день) иначе не доходили до тика никогда.
+  if(!(MGR.wkDay && MGR.wkDay<=fromDay && MGR.wkDay>ccAddDays(fromDay, -7))) MGR.wkDay=fromDay;
+  for(let d=ccAddDays(MGR.wkDay, 7); d<=toDay; d=ccAddDays(d, 7)){
+    MGR.wkDay=d;
     const rnd=careerRng(ccHashStr('mgrwk|'+MGR.club.name+'|'+d));
     mgrTrainWeek();
     mgrPeopleWeek(d);

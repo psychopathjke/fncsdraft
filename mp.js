@@ -228,6 +228,8 @@ var MP={
     /* Свои последние посты — напарник видит их в своей ленте (Notion 27.10 скрин 34, игрок: «pouvoir voir les tweet
        du mate»). Только показ: силы и вечера не двигают. См. ccMatePostsWire в index.html. */
     out.posts = (typeof ccMatePostsWire==='function') ? ccMatePostsWire() : null;
+    // Мои ответы под его постами — он вписывает их у себя (ccMateReMerge).
+    out.reMate = (typeof ccMateReWire==='function') ? ccMateReWire() : null;
     return out;
   },
 

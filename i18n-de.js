@@ -4190,3 +4190,6 @@ Object.assign(I18N.de=I18N.de||{},
 
 Object.assign(I18N.de=I18N.de||{},
 ({ ccPartAsk: 'Das Duo auflösen? Ihr spielt beide diese Karriere weiter, jeder für sich: Verlauf und Geld bleiben, der Platz des Partners geht an einen Bot mit seiner Karte.' }));
+/* Дозаливка «de» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
+Object.assign(I18N.de=I18N.de||{},
+({ xNoPostsWho: 'Noch keine Posts' }));
