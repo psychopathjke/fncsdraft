@@ -124115,7 +124115,11 @@ function careerNext(){
       /* И В ОДИНОЧНОЙ — тоже старший (23.10, его «пусть играется всегда турнир, который важнее, если в один день»; игрок:
          «пишет квал Мейджора 1, а играется соло-VCC» — финал Мейджора 1 4.03.2023 и Solo Cash Cup 9 в один день, не
          прошедшему в финал давался кап). Не прошёл — причина на кнопке, день уходит перемоткой. */
-      on=[sorted[0]];
+      /* Кроме явного выбора: в одиночной кап дня (ЗБ-сквады по субботам рядом с Weekly Final), выбранный кнопкой,
+         играется вместо старшего. В команде и гонке выбора нет (ccVictoryLocked). */
+      const vp=!ccVictoryLocked() && CAREER && CAREER.career && CAREER.career.vpick && CAREER.career.vpick[today];
+      const chosen=vp ? on.find(e=>e.kind==='victory' && e.id===vp) : null;
+      on=[chosen || sorted[0]];
     }
     if(on.length && on[0].kind==='victory'){
       const v=careerVictoryOn(today), hit=v && (days.get(today)||[]).find(e=>e.kind==='victory' && e.id===v.id);
@@ -125972,6 +125976,8 @@ function careerCentreHTML(card, a){
       ${typeof ccRosterSoonHTML==='function' ? ccRosterSoonHTML() : ''}
       ${careerMpTileHTML()}
       ${careerRaceTileHTML()}
+      ${/* Закрытый старший вечер (не прошёл в Weekly Final) — кап того же дня кнопкой здесь, иначе день уходит перемоткой. */
+        !cr.seasonOver && !playable && next.day===careerToday() ? ccVictoryAltsHTML() : ''}
       ${/* Командный вечер, заблокированный командной причиной, остаётся карточкой матча, а не панелью дня.
            Иначе пропадали кнопки режима, которыми и чинится расхождение режимов, а показывалась
            чужая причина из цепочки про мейджоры и релоад.
@@ -126015,7 +126021,7 @@ function careerCentreHTML(card, a){
           <div class="ch-art-in">
             ${playable ? `<div class="ch-matchof">${L().chMatchOf(ccNextShape(next).games)}</div>` : ''}
             <h3>${cr.seasonOver ? L().ccSeasonOver : next.title}</h3>
-            ${!cr.seasonOver && next.type==='victory' ? ccVictoryAltsHTML() : ''}
+            ${!cr.seasonOver && (next.type==='victory' || next.day===careerToday()) ? ccVictoryAltsHTML() : ''}
             ${cr.seasonOver ? `<p>${L().ccSeasonOverSub}</p>`
               : playable
               ? (()=>{ const sh=ccNextShape(next);
@@ -157723,21 +157729,32 @@ function careerVictoryOn(iso){
 function ccVictoryPick(id){
   const cr=CAREER && CAREER.career; if(!cr) return;
   const day=careerToday();
-  if(!ccVictoryAlts(day).some(v=>v.id===id)) return;
   if(ccVictoryLocked()) return;
-  (cr.vpick=cr.vpick||{})[day]=id;
+  // '__day' — старший турнир дня (Weekly Final), снимает выбор капа.
+  if(id==='__day'){ if(cr.vpick) delete cr.vpick[day]; }
+  else {
+    if(!ccVictoryAlts(day).some(v=>v.id===id)) return;
+    (cr.vpick=cr.vpick||{})[day]=id;
+  }
   careerSave();
   careerRenderHub(CH_TAB||'centre');
 }
 // Капы этого дня — кнопками под названием вечера, если их больше одного.
 function ccVictoryAltsHTML(){
-  const alts=ccVictoryAlts(careerToday());
-  if(alts.length<2 || ccVictoryLocked()) return '';
-  const cur=careerVictoryOn(careerToday());
+  const today=careerToday(), alts=ccVictoryAlts(today);
+  if(!alts.length || ccVictoryLocked()) return '';
+  // Старший турнир того же дня (Weekly Final) — тоже кнопкой: кап рядом с ним играется только по выбору.
+  const senior=(careerEvents().get(today)||[]).filter(e=>e.kind!=='victory')
+    .sort((a,b)=>CC_KIND_RANK.indexOf(a.kind)-CC_KIND_RANK.indexOf(b.kind))[0] || null;
+  if(alts.length<2 && !senior) return '';
+  const cr=CAREER.career, vp=cr.vpick && cr.vpick[today];
+  const cur=senior ? (alts.find(v=>v.id===vp) || null) : careerVictoryOn(today);
   // Капы на разных платформах в один день называются одинаково — платформа из id.
   const plat=id=>/Mobile/i.test(id) ? 'Mobile' : /Console|Xbox|Playstation/i.test(id) ? 'Console' : /_PC\b|_PC$/.test(id) ? 'PC' : '';
   const name=v=>{ const n=v.lan ? v.lan : (v.name||'Cup'), p=plat(v.id); return p && n.indexOf(p)<0 ? n+' · '+p : n; };
-  return '<div class="cc-valts"><em>'+esc(L().ccVAltH)+'</em>'+alts.map(v=>'<button class="cc-valt'+(cur && v.id===cur.id ? ' on' : '')+'" onclick="ccVictoryPick(\''+esc(v.id)+'\')">'+esc(name(v))+'</button>').join('')+'</div>';
+  return '<div class="cc-valts"><em>'+esc(L().ccVAltH)+'</em>'+
+    (senior ? '<button class="cc-valt'+(cur ? '' : ' on')+'" onclick="ccVictoryPick(\'__day\')">'+esc(senior.label||'')+'</button>' : '')+
+    alts.map(v=>'<button class="cc-valt'+(cur && v.id===cur.id ? ' on' : '')+'" onclick="ccVictoryPick(\''+esc(v.id)+'\')">'+esc(name(v))+'</button>').join('')+'</div>';
 }
 
 /* A lobby of one-card teams.
