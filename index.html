@@ -4538,6 +4538,11 @@
   /* Стиль скина — портрет Epic 128 px: не тянуть на весь блок, а карточкой по центру, не больше 256 px. */
   .cc-fn-hero img.icon,.cc-lk5-stage img.icon{inset:auto;left:50%;top:44%;right:auto;transform:translate(-50%,-50%);width:min(256px,60%);height:auto;
     aspect-ratio:1/1;border-radius:14px;object-fit:cover;box-shadow:0 10px 24px rgba(0,0,0,.4);}
+  .cc-fn-stybadge{position:absolute;right:10px;top:10px;z-index:3;display:flex;align-items:center;gap:8px;padding:6px 10px 6px 6px;
+    border-radius:12px;background:rgba(8,18,40,.72);box-shadow:0 6px 16px rgba(0,0,0,.35);}
+  .cc-fn-stybadge img{width:64px;height:64px;border-radius:10px;object-fit:cover;}
+  .cc-fn-stybadge em{font:800 11px/1.2 Oswald,system-ui,sans-serif;letter-spacing:.06em;text-transform:uppercase;color:#cfe0ff;font-style:normal;display:flex;flex-direction:column;}
+  .cc-fn-stybadge b{font-size:15px;color:#fff;}
   .cc-fn-floor{position:absolute;left:12%;right:12%;bottom:4%;height:12%;border-radius:50%;
     background:radial-gradient(ellipse at center,rgba(255,255,255,.28),rgba(255,255,255,0) 70%);}
   .cc-fn-hero b{position:relative;padding:18px 8px 8px;text-align:left;font-family:var(--font-display);text-transform:uppercase;font-size:16px;
@@ -120279,7 +120284,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='36ceaf7e';
+const CC_BUILD='230e6265';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -151394,7 +151399,7 @@ function ccFnLoadoutHTML(){
   // Как шкафчик в игре той главы: слева большой образ (надетый скин), справа ячейки по разделам.
   const o=eq.o && own[eq.o] ? eq.o : null;
   const hero='<button class="cc-fn-hero" onclick="ccFnPick(\'o\')" style="--fn-bg:'+(o ? (CC_FN_RAR[own[o].r]||CC_FN_RAR.rare) : '#1d2433')+'">'+
-    (o ? '<span class="cc-fn-floor"></span>'+(ccFnStyleOf(o) ? '<img class="icon" src="'+esc(ccFnStyleOf(o).img)+'" alt="" loading="lazy">' : '<img class="full" src="'+ccFnFull(o)+'" data-id="'+esc(o)+'" alt="" loading="lazy" onerror="ccFnHeroErr(this)">')+'<b>'+esc(own[o].n||o)+(ccFnStyleOf(o) ? ' · '+esc(ccFnStyleOf(o).name) : '')+'</b>' : '<i>+</i><b>'+esc(T.ccFnType_o)+'</b>')+'</button>';
+    (o ? '<span class="cc-fn-floor"></span>'+ccFnStyleBadge(o)+'<img class="full" src="'+ccFnFull(o)+'" data-id="'+esc(o)+'" alt="" loading="lazy" onerror="ccFnHeroErr(this)">'+'<b>'+esc(own[o].n||o)+(ccFnStyleOf(o) ? ' · '+esc(ccFnStyleOf(o).name) : '')+'</b>' : '<i>+</i><b>'+esc(T.ccFnType_o)+'</b>')+'</button>';
   const cat=(h, ss)=>'<div class="cc-fn-cat"><h5>'+esc(h)+'</h5><div class="cc-fn-slots">'+ss.map(slot).join('')+'</div></div>';
   if(era.k==='c5') return ccFnLocker5HTML();
   const slots='<div class="cc-fn-lk">'+hero+'<div class="cc-fn-cats">'+cat(T.ccFnCatChar, ['o','b','p','g'])+cat(T.ccFnTypes_e+' · '+T.ccFnTypes_w, ['e','w'])+'</div></div>';
@@ -151424,8 +151429,8 @@ function ccFnLocker5HTML(){
   const sid=eq[sel] && own[eq[sel]] ? eq[sel] : null, sit=sid ? own[sid] : null;
   const day=careerToday(), modes=['Battle Royale'].concat(day>='2023-12-09' ? ['Fortnite Festival'] : [], day>='2024-06-14' ? ['Reload'] : []);
   const model=sid
-    ? (ccFnStyleOf(sid) ? '<img class="icon" src="'+esc(ccFnStyleOf(sid).img)+'" alt="" loading="lazy">'
-      : sel==='o' ? '<img class="full" src="'+ccFnFull(sid)+'" data-id="'+esc(sid)+'" alt="" loading="lazy" onerror="ccFnHeroErr(this)">'
+    ? (sel==='o' ? ccFnStyleBadge(sid)+'<img class="full" src="'+ccFnFull(sid)+'" data-id="'+esc(sid)+'" alt="" loading="lazy" onerror="ccFnHeroErr(this)">'
+                 : ccFnStyleOf(sid) ? '<img class="icon" src="'+esc(ccFnStyleOf(sid).img)+'" alt="" loading="lazy">'
                  : '<img class="icon" src="'+ccFnImg(sid)+'" alt="" loading="lazy" onerror="this.remove()">') : '';
   const info=sit ? '<div class="cc-lk5-info"><em>'+esc(T['ccFnType_'+sel]||'')+' – Fortnite</em><b>'+esc(sit.n||sid)+'</b>'+
       '<span>'+esc(T.ccFnUsable||'This item is usable in:')+'</span><div class="cc-lk5-tags">'+modes.map(m=>'<i>'+esc(m)+'</i>').join('')+'</div></div>' : '';
@@ -151478,6 +151483,12 @@ function ccFnStyleSet(id, tag){
   const o=tag && (CC_FN_VAR[id]||[]).find(x=>x.tag===tag);
   if(tag){ CAREER.fnStyle[id]=tag; if(o) CAREER.fnStyleImg[id]=o.img; } else { delete CAREER.fnStyle[id]; delete CAREER.fnStyleImg[id]; }
   careerSave(); careerRenderHub(CH_TAB);
+}
+/* Стиль у скина: у источника (fortnite-api) на стиль есть только портрет 128 px, модели в полный рост нет.
+   Модель остаётся в полный рост, а выбранный стиль стоит рядом карточкой с портретом и названием. */
+function ccFnStyleBadge(id){
+  const s=ccFnStyleOf(id); if(!s) return '';
+  return '<span class="cc-fn-stybadge"><img src="'+esc(s.img)+'" alt="" loading="lazy" onerror="this.remove()"><em>'+esc(L().ccFnStyles||'Style')+(s.name ? '<b>'+esc(s.name)+'</b>' : '')+'</em></span>';
 }
 // Ряд стилей надетого в выбранном слоте; пустой, пока варианты не пришли или их нет.
 function ccFnStylesHTML(slot){
