@@ -108064,16 +108064,18 @@ function resolveLandingFight(you, rivals){
 // The lobby you are about to drop into, shown beside the map. Grouped by
 // region when the field is mixed (the LAN), a flat list when it isn't.
 function landingFieldHTML(you, bots){
-  const teams=[you, ...bots];
+  // The real number the simulation runs on — squad power with synergy and the
+  // loadout already in it — not the plain average of card ratings.
+  const powOf=t=>t.pow!=null ? Math.round(t.pow)
+    : (t.squad&&t.squad.length
+        ? Math.round(t.squad.reduce((s,p)=>s+attrsFor(p).ovr,0)/t.squad.length) : null);
+  // Сильные сверху: список читают, выбирая, кого контестить.
+  const teams=[you, ...bots].sort((a,b)=>(powOf(b)||0)-(powOf(a)||0));
   const regionOf=t=>t.summitRegion || (t.squad&&t.squad[0]||{}).region || '';
   const regions=[...new Set(teams.map(regionOf).filter(Boolean))];
   const row=t=>{
     const mine=t===you;
-    // The real number the simulation runs on — squad power with synergy and the
-    // loadout already in it — not the plain average of card ratings.
-    const ovr = t.pow!=null ? Math.round(t.pow)
-      : (t.squad&&t.squad.length
-          ? Math.round(t.squad.reduce((s,p)=>s+attrsFor(p).ovr,0)/t.squad.length) : '-');
+    const ovr=powOf(t)!=null ? powOf(t) : '-';
     const names=t.squad ? t.squad.map(p=>cardFlag(p,13)+p.handle).join(' & ') : t.name;
     return `<tr${mine?' style="background:rgba(0,176,144,.10);font-weight:700;"':''}>
       <td>${names}${mine?' <span style="color:var(--accent);font-size:10px;text-transform:uppercase;"> · '+L().summitYouTag+'</span>':''}</td>
