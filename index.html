@@ -108029,9 +108029,10 @@ function buildBotLandingAssignment(bots, opts){
         g.forEach(o=>{ zoneOf.set(o, z); place(o, z); });
         zoneOf.set(s, best); place(s, best);
       });
-      /* ПУСТЫХ ТОЧЕК НЕТ, если команд хватает на все коробки: пока есть пустая, на неё уходит слабейшая команда
-         из самой людной общей коробки (лучшая пустая — первой). Дом игрока, который боты обходят по ауре, не трогаем. */
-      if(!(opts && opts.keepFree) && all.length>=(ALL_LANDING_ZONES||[]).length){
+      /* СНАЧАЛА ПУСТЫЕ ТОЧКИ: пока есть пустая, никто не стоит вдвоём. На неё уходит слабейшая команда из самой людной
+         общей коробки (лучшая пустая — первой). Контесты остаются только когда команд больше, чем коробок.
+         Дом игрока, который боты обходят по ауре, не трогаем. */
+      if(!(opts && opts.keepFree)){
         for(let guard=0; guard<all.length; guard++){
           const empty=(ALL_LANDING_ZONES||[]).filter(z=>!(zoneGroups.get(z)||[]).length &&
             !(CC_SPOT_LOCK_ZONES && CC_SPOT_LOCK_ZONES.has(z)) && !(CC_SPOT_FEAR_MAP && (CC_SPOT_FEAR_MAP.get(z)||0)>0))
