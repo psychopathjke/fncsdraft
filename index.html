@@ -127773,7 +127773,7 @@ function careerOrgTileHTML(){
      негде, а плитка при этом говорила «клубы тебя видят». Ни одного письма,
      и ни одной причины на экране. Теперь переключатель есть в обеих ветках,
      а строка говорит правду. */
-  const off=!!CAREER.scoutOff;
+  const off=ccScoutOff();
   return `<div class="ch-tile ch-tile-org">
     <h4>${L().ccOrg}</h4>
     <div class="ch-empty">${L().ccFreeAgent}</div>
@@ -129219,6 +129219,10 @@ function careerMigrateMoney(){
    Without the tier there is no bar to clear, so an academy player from an older
    save could never come up. The club is in the pool under its name; read the
    standard back from there. */
+/* «Не искать клуб», нажатое в клубе, живёт, пока ты в нём. Контракт кончается многими дорогами (расторжение, выкуп,
+   событие, переезд), и после любой выключенный поиск молчал навсегда: свободный агент с 99 без единого письма.
+   Свободным агентом выключил сам (scoutOffFree) — держится. */
+function ccScoutOff(){ return !!(CAREER && CAREER.scoutOff && (CAREER.org || CAREER.scoutOffFree)); }
 function careerMigrateOrg(){
   const org=CAREER && CAREER.org;
   if(!org || org.tier!=null) return;
@@ -138279,7 +138283,7 @@ function careerOrgOffers(){
      and the signed club's own contract talk is untouched, because renewals and
      the goal do not come through this. On is the default: a career that never
      touches the switch behaves as it always has. */
-  if(CAREER.scoutOff) return CAREER.offers||[];
+  if(ccScoutOff()) return CAREER.offers||[];
   // And clubs are not signing in March. What is already on the table stays
   // there until its own deadline; this only stops new ones arriving.
   if(!careerWindowNow()) return CAREER.offers||[];
@@ -140195,6 +140199,8 @@ function careerOrgSeasonEnd(){
        HavoK by Vitality, 30 августа). Раньше клуб говорил, а игрок молчал. */
     careerNews('flat', 'ccPostBye', [ccHandle(org.name)]);
     CAREER.org=null;
+    // «Не искать клуб», нажатое в клубе, относилось к тому клубу: без сброса после расторжения не писал никто.
+    CAREER.scoutOff=false; delete CAREER.scoutOffFree;
     return;
   }
   // Контракт идёт и дальше — продлевать нечего: та же зарплата, новая задача на сезон.
@@ -152849,7 +152855,8 @@ function careerMatesShort(){
 // The switch itself. Off stops new offers arriving; nothing already on the
 // table is touched. See careerOrgOffers, where it gates.
 function careerScoutToggle(){
-  CAREER.scoutOff=!CAREER.scoutOff;
+  CAREER.scoutOff=!ccScoutOff();
+  CAREER.scoutOffFree=!!(CAREER.scoutOff && !CAREER.org);   // выключил свободным агентом: это его выбор, миграция не трогает
   careerSave();
   careerRenderHub(CH_TAB||'me');
 }
