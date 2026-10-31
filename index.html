@@ -120278,7 +120278,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='f6be569b';
+const CC_BUILD='9ac43e8e';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -150333,9 +150333,56 @@ function careerFlatHTML(){
     ${away ? `<div class="ch-hint" style="margin:6px 0 0;">${
       L().ccFlatElsewhere(L()['ccFlat'+any.id], regionName(any.place)||ccCountryName(any.place))}</div>` : ''}
     <div class="cc-buys">${rows}</div>
+    ${ccHomeCampHTML()}
     <div class="cc-photo-credit">${CC_FLAT_CREDIT}</div>
   </div>`;
 }
+/* Буткемп у себя дома: напарники живут у тебя неделю за твой счёт. Дешевле сборов из магазина (CC_SHOP camp, $1000),
+   и даёт не тренировку и не форму, а сыгранность: +7 дней к стажу пары (ccChemBump, тот же счёт, что у совместных вечеров).
+   Числа заданы, не замерены. Только в своей квартире там, где живёшь; в командном онлайне сыгранность общая, его нет. */
+const CC_HOME_CAMP={cost:300, chem:7, every:14};
+function ccHomeCampWhy(){
+  const cr=CAREER && CAREER.career, T=L();
+  if(!cr) return '';
+  if(typeof ccMpOn==='function' && ccMpOn()) return T.ccHomeCampMp;
+  if(!ccFlatHere()) return T.ccHomeCampNoFlat;
+  if(!careerMateRecords().filter(p=>p && !p.standin).length) return T.ccHomeCampNoMate;
+  if(cr.homeCamp && ccDaysBetween(cr.homeCamp, careerToday())<CC_HOME_CAMP.every) return T.ccHomeCampAgain(ccDayLabel(ccAddDays(cr.homeCamp, CC_HOME_CAMP.every)));
+  if((cr.balance||0)<CC_HOME_CAMP.cost) return T.ccHomeCampMoney;
+  return '';
+}
+function ccHomeCampHTML(){
+  const T=L(), why=ccHomeCampWhy();
+  return '<div class="cc-buy"><div class="cc-buy-in"><b>'+esc(T.ccHomeCamp)+'</b><i>'+esc(T.ccHomeCampWhat(CC_HOME_CAMP.chem, CC_HOME_CAMP.every))+'</i>'+
+    (why ? '<span>'+esc(why)+'</span>' : '')+'</div>'+
+    '<button class="ch-sign"'+(why ? ' disabled' : '')+' onclick="careerHomeCamp()">$'+ccNum(CC_HOME_CAMP.cost)+'</button></div>';
+}
+function careerHomeCamp(){
+  if(ccHomeCampWhy()) return false;
+  const cr=CAREER.career;
+  cr.balance=(cr.balance||0)-CC_HOME_CAMP.cost;
+  cr.homeCamp=careerToday();
+  ccChemBump(CC_HOME_CAMP.chem);
+  careerNews('good', 'ccNewsHomeCamp', [CC_HOME_CAMP.chem]);
+  careerSave();
+  careerRenderHub(CH_TAB);
+  return true;
+}
+Object.assign(I18N.ru, {ccHomeCamp:'Буткемп у себя дома', ccHomeCampWhat:(d,e)=>'Напарники живут у тебя неделю за твой счёт: +'+d+' дней сыгранности. Раз в '+e+' дней',
+  ccHomeCampMp:'В командном онлайне сыгранность общая', ccHomeCampNoFlat:'Нужна своя квартира там, где живёшь', ccHomeCampNoMate:'Нет напарника',
+  ccHomeCampAgain:d=>'Снова с '+d, ccHomeCampMoney:'Не хватает денег', ccNewsHomeCamp:d=>'Неделя буткемпа дома: +'+d+' дней сыгранности'});
+Object.assign(I18N.en, {ccHomeCamp:'Bootcamp at home', ccHomeCampWhat:(d,e)=>'Your teammates stay with you for a week at your cost: +'+d+' days of chemistry. Once every '+e+' days',
+  ccHomeCampMp:'In online team play chemistry is shared', ccHomeCampNoFlat:'You need your own flat where you live', ccHomeCampNoMate:'No teammate',
+  ccHomeCampAgain:d=>'Again from '+d, ccHomeCampMoney:'Not enough money', ccNewsHomeCamp:d=>'A week of bootcamp at home: +'+d+' days of chemistry'});
+Object.assign(I18N.fr, {ccHomeCamp:'Bootcamp à la maison', ccHomeCampWhat:(d,e)=>'Tes mates vivent chez toi une semaine à tes frais : +'+d+' jours de cohésion. Une fois tous les '+e+' jours',
+  ccHomeCampMp:'En équipe en ligne, la cohésion est commune', ccHomeCampNoFlat:'Il faut ton propre logement là où tu vis', ccHomeCampNoMate:'Pas de mate',
+  ccHomeCampAgain:d=>'De nouveau le '+d, ccHomeCampMoney:'Pas assez d’argent', ccNewsHomeCamp:d=>'Une semaine de bootcamp à la maison : +'+d+' jours de cohésion'});
+Object.assign(I18N.it, {ccHomeCamp:'Bootcamp a casa', ccHomeCampWhat:(d,e)=>'I compagni stanno da te una settimana a tue spese: +'+d+' giorni di intesa. Una volta ogni '+e+' giorni',
+  ccHomeCampMp:'Online in squadra l’intesa è condivisa', ccHomeCampNoFlat:'Serve una casa tua dove vivi', ccHomeCampNoMate:'Nessun compagno',
+  ccHomeCampAgain:d=>'Di nuovo dal '+d, ccHomeCampMoney:'Soldi insufficienti', ccNewsHomeCamp:d=>'Una settimana di bootcamp a casa: +'+d+' giorni di intesa'});
+Object.assign(I18N.pt, {ccHomeCamp:'Bootcamp em casa', ccHomeCampWhat:(d,e)=>'Seus parceiros ficam na sua casa por uma semana por sua conta: +'+d+' dias de entrosamento. Uma vez a cada '+e+' dias',
+  ccHomeCampMp:'No online em equipe o entrosamento é compartilhado', ccHomeCampNoFlat:'Precisa de casa própria onde você mora', ccHomeCampNoMate:'Sem parceiro',
+  ccHomeCampAgain:d=>'De novo a partir de '+d, ccHomeCampMoney:'Dinheiro insuficiente', ccNewsHomeCamp:d=>'Uma semana de bootcamp em casa: +'+d+' dias de entrosamento'});
 // Подпись авторов фото жилья — CC BY / BY-SA требуют имени и лицензии рядом со снимком.
 const CC_FLAT_CREDIT='Photos: Aaaatu (CC BY-SA 4.0), Lo (CC0), Corey Taratuta (CC BY 2.0), Shixart1985 (CC BY 2.0), w_lemay (CC BY-SA 2.0), Rio Ubatay (CC BY-SA 4.0) — Wikimedia Commons';
 function careerMoveHTML(){
