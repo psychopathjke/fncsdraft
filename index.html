@@ -98759,7 +98759,31 @@ function attrsFor(p){
    разных человека во всём файле сразу — в парах, в ростере, в пуле карьеры.
    Отзыв: «только двое japko в 25 году». Замер до правки: 90 ников с пробелом
    по краям, у 71 есть близнец без пробела. */
-function hKey(p){ return String(p && p.handle || p || '').toLowerCase().trim(); }
+function hKey(p){ const k=String(p && p.handle || p || '').toLowerCase().trim(); return hKeySame(k) || k; }
+/* Тег клуба перед ником: «Evenezy Howly» и «Howly» в одной сцене одного года стояли двумя людьми,
+   и трио-рынок сажал его в две тройки сразу. Склеены только пары с общим напарником в строках
+   (в той же сцене тег+ник ещё у 179, там есть настоящие тёзки, Misty Aim и Aim). Функция, а не
+   const: hKey зовут и выше по файлу, при загрузке. */
+function hKeySame(k){
+  const m=hKeySame.m || (hKeySame.m={
+"4114 elevate":"elevate","4d chap":"chap","7months galassia":"galassia","86 union":"union",
+"aegis sekayg0d":"sekayg0d","alba-a fa1zzy":"fa1zzy","amg znappy":"znappy","anb tuna":"tuna",
+"aurora heror3h":"heror3h","axn compton":"compton","axr sleepy":"sleepy","big dusky":"dusky",
+"bld gxra":"gxra","boomer blootea":"blootea","celis あおねこ416":"あおねこ416","code adonis":"adonis",
+"code ronaldo":"ronaldo","demonio luis":"luis","detect exqu":"exqu","die nx1xyfvǃ":"nx1xyfvǃ",
+"egoist try":"try","ehre zuko":"zuko","evenezy howly":"howly","evo thiaz":"thiaz",
+"f4tality guizera":"guizera","fake vorwenn":"vorwenn","fl tofpita":"tofpita","fpx sad":"sad",
+"fs kasz 7":"kasz 7","ge eraser":"eraser","gw voxe":"voxe","le danicush":"danicush","lil mshary":"mshary",
+"loyal angel":"angel","mtrx nevify":"nevify","mystry vbzxy":"vbzxy","naw venji":"venji","nobu beef":"beef",
+"noob teyo":"teyo","ortensia gepard":"gepard","outcast litzinio":"litzinio","pdr kenty":"kenty",
+"power 7mood":"7mood","re あおねこ416":"あおねこ416","reds wolfizsf1":"wolfizsf1","reject たろう":"たろう",
+"rns jadennx":"jadennx","rxb qerz":"qerz","señor seeyun":"seeyun","sfg whizxiy":"whizxiy",
+"smg arkive":"arkive","sol noward":"noward","svn chipson":"chipson","swift taytan":"taytan","top puzz":"puzz",
+"triggy triggy":"triggy","twitch icyybtw":"icyybtw","twitch uxsif":"uxsif","un granjero":"granjero",
+"vin ϟnip":"ϟnip","wasp nomfu":"nomfu","wave zandy":"zandy","wtr kisen":"kisen","x2twins jesse":"jesse",
+"x2twins jordan":"jordan","xrb rqzrim3 喰":"rqzrim3 喰","yvl blizy":"blizy"});
+  return m[k];
+}
 
 function attrsForRaw(p){
   if(p._attrs) return p._attrs;
