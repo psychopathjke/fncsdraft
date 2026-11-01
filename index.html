@@ -153603,6 +153603,10 @@ function ccDuoBroken(d, cr){
           : (d && d.cards) ? d.cards.map(x=>hKey(x)).sort().join('+') : null;
   if(!c || !key) return false;
   if((c.duoSplits||{})[key]) return true;
+  /* В году с настоящей сценой (до 2026 включительно) пары как в жизни: случайного развода нет. Игрок: «почему-то
+     focus и thomas расходятся». С 01.11b в 2026 три сезона (S40–S42), и бросок шёл в каждом: на третьем сезоне
+     пара настоящего года рвалась с шансом 19%, хотя в жизни Focus & Th0masHD вместе весь год. Свой развод (duoSplits) остаётся. */
+  if(ccCalYear()<=2026) return false;
   const s=Math.max(1, c.season||1);
   if(s<=1) return false;
   const churn=(typeof d==='string') ? CC_DUO_CHURN : ccDuoChurnOf(d);
