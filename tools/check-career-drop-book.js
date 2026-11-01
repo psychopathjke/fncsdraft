@@ -71,7 +71,14 @@ const BOOT = `
         for (let i = 0; i < N; i++) if (rows[e][i] !== rows[e - 1][i]) moves++;
       // Сколько команд весь сезон на одной точке.
       const loyal = field.filter((t, i) => rows.every(r => r[i] === rows[0][i])).length;
-      return {moves, loyal, rows, book: CAREER && CAREER.career.dropBook};
+      // Сильная половина (игрок 1.11: «чтобы сильные команды всегда падали на одну локацию, даже у кого контест»).
+      // Строго выше границы половины: у равных по силе на границе порядок в игре свой.
+      const byPow = field.map((t, i) => i).sort((a, b) => field[b].pow - field[a].pow);
+      const edge = field[byPow[N / 2]].pow;
+      const strong = byPow.filter(i => field[i].pow > edge);
+      let strongMoves = 0;
+      for (let e = 1; e < rows.length; e++) strong.forEach(i => { if (rows[e][i] !== rows[e - 1][i]) strongMoves++; });
+      return {moves, loyal, strongMoves, rows, book: CAREER && CAREER.career.dropBook};
     };
 
     const ctrl = season(false);
@@ -87,6 +94,8 @@ const BOOT = `
     // это +11–16 переездов на это поле (48 → 59–64, на месте 21 → 15–17). Пары топов при книге — check-drop-top-on-top-book.
     if (live.loyal < N * 0.3) fail('весь сезон на месте только ' + live.loyal + ' из ' + N);
     if (live.moves === 0) fail('никто не переехал ни разу — «меняли, но не часто» не работает');
+    out.steps.push('сильная половина: переездов ' + live.strongMoves);
+    if (live.strongMoves > 0) fail('сильные команды меняли точку посреди сезона: ' + live.strongMoves);
     const boxes = new Set(live.rows[0]);
     if (boxes.size < 10) fail('вся комната стоит в ' + boxes.size + ' коробках');
     out.steps.push('комната занимает ' + boxes.size + ' коробок');

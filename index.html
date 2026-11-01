@@ -107802,6 +107802,17 @@ function buildBotLandingAssignment(bots, opts){
      (ниже, bumped): свободно 1–6, троек нет, точку между играми меняют 1–6 из ~47. Порог «один» заполнял все
      коробки, но тогда точку каждую игру меняла половина лобби — ровно вторая жалоба («каждую игру локу меняют»). */
   const bookCrowd=Math.max(2, Math.ceil(bots.length/Math.max(1,(ALL_LANDING_ZONES||[]).length)));
+  /* Сильная половина лобби свою точку по книге не меняет весь сезон, контест так контест. Игрок просил, чтобы сильные
+     команды всегда падали на одну локу. Замер check-career-drop-book: все переезды шли от шанса CC_DROP_BOOK_MOVE
+     (61 за 11 турниров, у топ-10 ни одной команды на одном месте весь сезон), обмены и толпа их почти не давали.
+     Шанс переезда остался только у слабой половины. */
+  const bookHold=new Set(bots.slice().sort((a,b)=>((b.pow||0)+(b.closeEdge||0))-((a.pow||0)+(a.closeEdge||0))).slice(0, Math.ceil(bots.length/2)));
+  // Сильные хозяева садятся первыми: иначе слабый, выпавший на переезд, занимал их коробку раньше, и хозяина выдавливало по плотности.
+  if(book){
+    const holds=t=>bookHold.has(t) && !t.isYou && !t.isRival && !t.isMate && !!book.at[ccHashStr(ccSeatMapKey(t)).toString(36)];
+    const first=order.filter(holds), rest=order.filter(t=>!holds(t));
+    order.length=0; first.concat(rest).forEach(t=>order.push(t));
+  }
   order.forEach(t=>{
     /* Люди комнаты гонки (isRival) — как свой (isYou): их сажает голос, не место прошлого этапа.
        Иначе у соседа моя команда садилась на «своё место», у меня — нет, и число соседей на
@@ -107811,6 +107822,7 @@ function buildBotLandingAssignment(bots, opts){
        MrSavage 48 против 56). Обмены ниже (movable) напарника и так обходили. */
     const seated=(seats && !t.isYou && !t.isRival && !t.isMate) ? ccSeatZone(seats.get(ccSeatMapKey(t))) : null;
     t._stageSeated=!!seated;   // уже сидит на точке этапа — обмен «слабые не на сильных» его не трогает
+    t._bookAnchor=false;       // сильный на своей точке по книге: досадка ниже его не двигает (bookHold)
     if(seated){
       t.landingZone=seated; t.landingResult=null; t.landingRival=null;
       t.avgRating=Math.round(t.squad.reduce((s,p)=>s+p.rating,0)/t.squad.length);
@@ -107837,13 +107849,14 @@ function buildBotLandingAssignment(bots, opts){
        туда и падает весь сезон — контест так контест, как у настоящих дуо. */
     const bookKey=(book && !t.isYou && !t.isRival && !t.isMate) ? ccHashStr(ccSeatMapKey(t)).toString(36) : null;   // хеш: в кубке тысячи дуо, сейв не резиновый
     const booked=bookKey ? ccSeatZone(book.at[bookKey]) : null;
-    const moving=booked ? ccDropBookMoves(bookKey) : false;
+    const moving=(booked && !bookHold.has(t)) ? ccDropBookMoves(bookKey) : false;
     // Плотность держится во ВСЕХ лобби (тестер 7.10: «баг не до конца пофиксился» — в финале FNCS без перемешивания
     // хозяев одной точки по книге садилось 6–8: «там уже 6 команд — придётся победить всех»).
     if(booked && !moving && (zoneGroups.get(booked)||[]).length<bookCrowd &&
        !(CC_SPOT_FEAR_MAP && (CC_SPOT_FEAR_MAP.get(booked)||0)>0) &&
        !(t._mgrDrop==='quiet' || t._mgrDrop==='hot')){
       t.landingZone=booked; t.landingResult=null; t.landingRival=null;
+      t._bookAnchor=bookHold.has(t);
       t.avgRating=Math.round(t.squad.reduce((s,p)=>s+p.rating,0)/t.squad.length);
       applyLandingPow(t, booked.points);
       if(!zoneGroups.has(booked)) zoneGroups.set(booked,[]);
@@ -107942,7 +107955,7 @@ function buildBotLandingAssignment(bots, opts){
      гонке и приказ менеджера на высадку не трогаются. */
   {
     const keyOfT=t=>(book && !t.isYou && !t.isRival && !t.isMate) ? ccHashStr(ccSeatMapKey(t)).toString(36) : null;
-    const movable=t=>t && !t.isYou && !t.isRival && !t.isMate && !(t._mgrDrop==='quiet' || t._mgrDrop==='hot');
+    const movable=t=>t && !t._bookAnchor && !t.isYou && !t.isRival && !t.isMate && !(t._mgrDrop==='quiet' || t._mgrDrop==='hot');
     const feared=z=>CC_SPOT_FEAR_MAP && (CC_SPOT_FEAR_MAP.get(z)||0)>0;
     const d2=(a,b)=>((a.x||0)-(b.x||0))**2+((a.y||0)-(b.y||0))**2;
     for(let guard=0; guard<ALL_LANDING_ZONES.length; guard++){
@@ -107978,7 +107991,7 @@ function buildBotLandingAssignment(bots, opts){
      придётся победить всех». Сторож tools/check-drop-crowd.js. */
   {
     const keyOfT=t=>(book && !t.isYou && !t.isRival && !t.isMate) ? ccHashStr(ccSeatMapKey(t)).toString(36) : null;
-    const movable=t=>t && !t.isYou && !t.isRival && !t.isMate && !(t._mgrDrop==='quiet' || t._mgrDrop==='hot');
+    const movable=t=>t && !t._bookAnchor && !t.isYou && !t.isRival && !t.isMate && !(t._mgrDrop==='quiet' || t._mgrDrop==='hot');
     const feared=z=>CC_SPOT_FEAR_MAP && (CC_SPOT_FEAR_MAP.get(z)||0)>0;
     const d2=(a,b)=>((a.x||0)-(b.x||0))**2+((a.y||0)-(b.y||0))**2;
     let total=0; zoneGroups.forEach(g=>{ total+=g.length; });
@@ -108018,7 +108031,7 @@ function buildBotLandingAssignment(bots, opts){
      хозяина, книга не переписывается. Люди, напарник и приказ менеджера на высадку не трогаются. */
   {
     // Точку внутри этапа не меняют (ccStageSeats): меняются местами только те, кто садится в этом этапе впервые.
-    const movable=t=>t && !t.isYou && !t.isRival && !t.isMate && !t._stageSeated && !(t._mgrDrop==='quiet' || t._mgrDrop==='hot');
+    const movable=t=>t && !t._bookAnchor && !t.isYou && !t.isRival && !t.isMate && !t._stageSeated && !(t._mgrDrop==='quiet' || t._mgrDrop==='hot');
     const keyOfT=t=>(book && !t.isYou && !t.isRival && !t.isMate) ? ccHashStr(ccSeatMapKey(t)).toString(36) : null;
     const str=t=>((t.pow||0)-(t._landingPow||0))+(t.closeEdge||0);
     const all=[]; zoneGroups.forEach(g=>g.forEach(t=>all.push(t)));
@@ -108066,7 +108079,7 @@ function buildBotLandingAssignment(bots, opts){
      обмена «слабые с сильных» (7.10) столько же. Теперь более слабый из двух топов меняется местами с середняком из
      коробки без топа; число команд в коробках то же. Хозяин точки по книге не двигается. */
   {
-    const movable=t=>t && !t.isYou && !t.isRival && !t.isMate && !t._stageSeated && !(t._mgrDrop==='quiet' || t._mgrDrop==='hot');
+    const movable=t=>t && !t._bookAnchor && !t.isYou && !t.isRival && !t.isMate && !t._stageSeated && !(t._mgrDrop==='quiet' || t._mgrDrop==='hot');
     const keyOfT=t=>(book && !t.isYou && !t.isRival && !t.isMate) ? ccHashStr(ccSeatMapKey(t)).toString(36) : null;
     const str=t=>((t.pow||0)-(t._landingPow||0))+(t.closeEdge||0);
     const all=[]; zoneGroups.forEach(g=>g.forEach(t=>all.push(t)));
@@ -108118,7 +108131,7 @@ function buildBotLandingAssignment(bots, opts){
      из слабой половины, которая стоит одна: сильные сидят по одиночке, общие коробки достаются нижней половине.
      Число команд в коробках не меняется. В постоянном составе переезд на сезон (книга), в перемешанных капах нет. */
   {
-    const movable=t=>t && !t.isYou && !t.isRival && !t.isMate && !t._stageSeated && !(t._mgrDrop==='quiet' || t._mgrDrop==='hot');
+    const movable=t=>t && !t._bookAnchor && !t.isYou && !t.isRival && !t.isMate && !t._stageSeated && !(t._mgrDrop==='quiet' || t._mgrDrop==='hot');
     const keyOfT=t=>(book && !t.isYou && !t.isRival && !t.isMate) ? ccHashStr(ccSeatMapKey(t)).toString(36) : null;
     const str=t=>((t.pow||0)-(t._landingPow||0))+(t.closeEdge||0);
     const all=[]; zoneGroups.forEach(g=>g.forEach(t=>all.push(t)));
