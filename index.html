@@ -119257,14 +119257,24 @@ function ccEdgeOff(pl){ return !!(pl && pl.noEdge); }
 const CC_SEASON_LABEL={h1:'Season 9', g5:'OG · Season 5', g6:'OG · Season 6', g7:'OG · Season 7', h3:'Season X', h4:'C2S1', i0:'C2S1', i1:'C2S2', i3:'C2S4',
   j1:'C2S5', j2:'C2S6', j3:'C2S7', j4:'C2S8', k1:'C3S1', k2:'C3S2', k3:'C3S3',
   e1:'Major 1', e2:'Major 2', e3:'Major 3', f1:'Major 1', f2:'Major 2', f3:'Major 3',
-  t1:'Major 1', t2:'Major 2', t3:'Major 3', m1:'Major 1', m2:'Major 2', og:'Season OG', remix:'Chapter 2 Remix', sw:'Galactic Battle (Star Wars)', simpsons:'The Simpsons'};
-const CC_SEASON_SUB={og:'OG', remix:'Remix', sw:'Star Wars', simpsons:'Simpsons', e1:'C4S1', e2:'C4S2', e3:'C4S3', f1:'C5S1', f2:'C5S2', f3:'C5S3', t1:'C6S1', t2:'C6S2', t3:'C6S3'};
+  t1:'Major 1', t2:'Major 2', t3:'Major 3', m1:'Major 1', m2:'Major 2',
+  s40:'Season 40 · Major 1', s41:'Season 41 · Major 2', s42:'Season 42 · FNCS Solos', og:'Season OG', remix:'Chapter 2 Remix', sw:'Galactic Battle (Star Wars)', simpsons:'The Simpsons'};
+const CC_SEASON_SUB={m1:'S39', s40:'S40', s41:'S41', s42:'S42', og:'OG', remix:'Remix', sw:'Star Wars', simpsons:'Simpsons', e1:'C4S1', e2:'C4S2', e3:'C4S3', f1:'C5S1', f2:'C5S2', f3:'C5S3', t1:'C6S1', t2:'C6S2', t3:'C6S3'};
 // Особые сезоны Epic — своей кнопкой старта на плитке года: OG и Remix (годы продлены до 30.11, ccYearTo) и
 // Star Wars (Galactic Battle, C6, 2.05–6.06.2025: FNCS Showdown 4–6, Console Victory Cup, оценки).
 // snap — снимок рейтинга того времени; без него рейтинг — итог года (ccRatingSnap на экране создания отдаёт null).
+/* 2026 — по сезонам Fortnite, как карточки (Major 1 = S40, Major 2 = S41, Solos = S42), а не M1/M2: год идёт
+   с S39 (снимок m1), дальше старт с первого дня S40/S41/S42. Снимок m2 остаётся для составов (плей-ин 18.07),
+   но своей кнопкой не показывается: его сезон S41 начинается 6 июня. */
 const CC_START_EXTRA={2023:[{tag:'og', from:'2023-11-03'}], 2024:[{tag:'remix', from:'2024-11-02'}],
-  2025:[{tag:'sw', from:'2025-05-02', snap:'t2'}, {tag:'simpsons', from:'2025-11-01'}]};
-function ccStartSeasonsOf(y){ return (CC_SNAPS_BY_YEAR()[y] || []).concat(CC_START_EXTRA[y] || []); }
+  2025:[{tag:'sw', from:'2025-05-02', snap:'t2'}, {tag:'simpsons', from:'2025-11-01'}],
+  2026:[{tag:'s40', from:'2026-03-19', snap:'m1'}, {tag:'s41', from:'2026-06-06', snap:'m1'}, {tag:'s42', from:'2026-08-21', snap:'m2'}]};
+const CC_START_HIDE={2026:['m2']};
+// Сначала сезоны Мейджоров, потом особые (OG, Remix, Star Wars). У 2026-го все кнопки — сезоны, поэтому по датам.
+function ccStartSeasonsOf(y){
+  const list=(CC_SNAPS_BY_YEAR()[y] || []).filter(s=>!(CC_START_HIDE[y] || []).includes(s.tag)).concat(CC_START_EXTRA[y] || []);
+  return CC_START_HIDE[y] ? list.sort((a, b)=>String(a.from).localeCompare(String(b.from))) : list;
+}
 function ccStartSeasons(){ return ccStartSeasonsOf(ccPickedYear()); }
 function ccStartSeasonAllowed(){ return !ccMpLockedYear() && !(typeof CC_MP_NEW!=='undefined' && CC_MP_NEW); }
 function ccPickedStart(){

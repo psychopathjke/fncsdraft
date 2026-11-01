@@ -189,7 +189,9 @@ const boot = (who) => `
     if(turnOneB){ const orig=careerNewSeason; window.careerNewSeason=function(){ window.__preTurn=seasonSnap(); return orig.apply(this, arguments); }; }
     for(let si=0; si<${SEASONS}; si++){
       const snS=CAREER.career.season;
-      const target=${JSON.stringify(process.env.CC_UNTIL||'')} || ccYearTo();
+      // CC_LAST_UNTIL — стоп на дате ПОСЛЕДНЕГО сезона (стык проходится, второй год стоит на этой дате).
+      const untilNow=(si===${SEASONS}-1 && ${JSON.stringify(process.env.CC_LAST_UNTIL||'')}) || ${JSON.stringify(process.env.CC_UNTIL||'')};
+      const target=untilNow || ccYearTo();
       careerRenderHub('calendar'); await wait(400);
       careerFfToDay(target);
       let lastDay=CAREER.career.day, lastMove=Date.now(), again=0;
@@ -222,13 +224,13 @@ const boot = (who) => `
       }
       if(out.notes.stall || out.notes.ffErr) { out.notes.seasons.push(seasonSnap()); break; }
       // Конец года: «следующий день» за последним днём закрывает сезон (голос обоих).
-      for(let i=0;!${JSON.stringify(process.env.CC_UNTIL||"")} && Date.now()-t0<${BUDGET_MS} && !CAREER.career.seasonOver && CAREER.career.season===snS && i<2400;i++){ if(i%20===0){ try{ careerNextDay(); }catch(e){} } await wait(250); }
+      for(let i=0;!untilNow && Date.now()-t0<${BUDGET_MS} && !CAREER.career.seasonOver && CAREER.career.season===snS && i<2400;i++){ if(i%20===0){ try{ careerNextDay(); }catch(e){} } await wait(250); }
       // Дать дельтам последнего вечера доехать до снимка.
       if(CAREER.career.season===snS) await wait(8000);
       if(CAREER.career.season===snS && turnOneB) for(let i=0;i<240 && CAREER.career.season===snS;i++) await wait(500);
       const snap=(turnOneB && window.__preTurn) ? window.__preTurn : seasonSnap(); window.__preTurn=null; out.notes.seasons.push(snap);
-      if(!CAREER.career.seasonOver && CAREER.career.season===snS && !${JSON.stringify(process.env.CC_UNTIL||"")}){ out.notes.notClosed=CAREER.career.day; break; }
-      if(${JSON.stringify(process.env.CC_UNTIL||"")}) break;
+      if(!CAREER.career.seasonOver && CAREER.career.season===snS && !untilNow){ out.notes.notClosed=CAREER.career.day; break; }
+      if(untilNow) break;
       if(snap.won || si===${SEASONS}-1) break;
       /* CC_TURN_ONE=1 — стык жмёт только A, B берёт его состояние, как у живых двоих (errlog 26.10: у того, кто не жал,
          оставался формат прошлого года). Без него оба жмут сами — так проба стык второго не проверяет. */
@@ -236,6 +238,9 @@ const boot = (who) => `
       if(!${JSON.stringify(process.env.CC_TURN_ONE||"")} || ${JSON.stringify(who.role_mp)}==='a') careerNewSeason();
       else for(let i=0;i<240 && CAREER.career.season===sn0;i++) await wait(500);
       await wait(4000);
+      // Стык асинхронный (голос, сервер): ждать, пока сезон правда сменится, иначе второй год с CC_LAST_UNTIL снимается пустым.
+      for(let i=0;i<240 && CAREER.career.season===sn0;i++) await wait(500);
+      out.notes.turned=(out.notes.turned||[]).concat([CAREER.career.season+'@'+CAREER.career.day]);
       careerSave(); careerRenderHub('calendar'); await wait(2000);
     }
     out.notes.mpState=MP.state;
