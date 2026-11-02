@@ -121079,6 +121079,9 @@ function ccMpSeedOff(){
    роль, ник, владелец лобби. Даже у двух фраггеров восьмую зону берёт ровно один. Сторож tools/check-mp-relay.js.
    */
 const CC_MP_WHO={drop:'roleIGL', loot:'roleIGL', late:'roleFRG'};
+// Пара в гонке: игл — точка, лут, ротации, стиль; фраггер — драки и конец игры (у каждого свои вопросы).
+const CC_RACE_PAIR_WHO={drop:'roleIGL', site:'roleIGL', own:'roleIGL', loot:'roleIGL', rot:'roleIGL', style:'roleIGL',
+                        mid:'roleFRG', farm:'roleFRG', mats:'roleFRG', build:'roleFRG', late:'roleFRG'};
 function ccMpRoleKey(c){
   if(!c) return null;
   try{
@@ -121094,7 +121097,23 @@ function ccMpMine(kind){
   var at=String(kind).indexOf(':');
   if(at>=0){
     var meC=(typeof careerCard==='function') ? careerCard() : null;
-    return !!(meC && hKey(meC)===String(kind).slice(at+1));
+    /* Пара в гонке: два человека в одном дуо, адрес команды — первая карточка по нику (ccRacePairTeamInto),
+       и все вопросы вечера получал один из двоих (Notion 2.11: «решения принимаю только я, у друга ничего нет»).
+       Вопросы пары делятся по ролям, одинаково у обоих: CC_RACE_PAIR_WHO, равные роли — по нику. */
+    var tag=String(kind).slice(at+1);
+    if(meC && typeof ccRacePairOn==='function' && ccRacePairOn()){
+      var pcs=ccRacePairCards();
+      if(pcs && pcs.some(function(c){ return hKey(c)===tag; })){
+        var mk=hKey(meC), peerC=pcs.find(function(c){ return hKey(c)!==mk; });
+        if(peerC){
+          var pWant=CC_RACE_PAIR_WHO[String(kind).slice(0, at)] || 'roleIGL';
+          var pa=ccMpRoleKey(meC)===pWant, pb=ccMpRoleKey(peerC)===pWant;
+          if(pa!==pb) return pa;
+          return mk<hKey(peerC);
+        }
+      }
+    }
+    return !!(meC && hKey(meC)===tag);
   }
   const owner=ccMpRole()==='a';
   const me=(typeof careerCard==='function') ? careerCard() : null;
