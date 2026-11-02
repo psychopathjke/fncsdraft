@@ -77,9 +77,10 @@ const BOOT = `
 
     const cutAt=(reg)=>{ const keep=CAREER.player.region; CAREER.player.region=reg;
       const v=soloReloadR2Cut(); CAREER.player.region=keep; return v; };
-    if(cutAt('EU')!==10 || cutAt('NAC')!==17 || cutAt('OCE')!==25)
+    if(cutAt('EU')!==12 || cutAt('NAC')!==20 || cutAt('OCE')!==30)
       fail('the Round 2 cut is wrong: EU '+cutAt('EU')+', NAC '+cutAt('NAC')+', OCE '+cutAt('OCE'));
-    out.steps.push('round 2 cut: EU 10, NAC 17, the rest 25');
+    out.steps.push('round 2 cut: EU 12, NAC 20, the rest 30 (room of 120, three Reload lobbies of 40)');
+    if(CC_SOLOS_STAGES.rlr2.field!==120 || CC_SOLOS_STAGES.rlr3.field!==120 || CC_SOLOS_STAGES.rlr3.cut!==19 || ccReloadLobby(1)!==40) fail('Reload rounds: room '+CC_SOLOS_STAGES.rlr2.field+', R3 cut '+CC_SOLOS_STAGES.rlr3.cut+', lobby '+ccReloadLobby(1));
     // Очки — как в Solo Reload Victory Cup (S42): 60 за победу … 1 за 30-е, 2 за элим, до 10 элимов.
     const sc=soloReloadScore();
     if(!sc || soloReloadPoints(1)!==60 || soloReloadPoints(2)!==54 || soloReloadPoints(30)!==1 || soloReloadPoints(31)!==0 || sc.kill!==2)
@@ -109,10 +110,10 @@ const BOOT = `
       out.steps.push(st+': '+l.place+' of '+l.of+' over '+games+' to '+((cr.solosRl||{}).seat||'out'));
       return l;
     };
-    await run('rlr2', null, 100, 10);
+    await run('rlr2', null, 120, 10);
     if(cr.solosRl.seat && cr.solosRl.seat!=='rlr3') fail('Round 2 seated outside Round 3');
     if(cr.solos.got!=='final') fail('Solo Reload wrote over the October state');
-    await run('rlr3', {got:'rlr2', seat:'rlr3'}, 100, 10);
+    await run('rlr3', {got:'rlr2', seat:'rlr3'}, 120, 10);
     const lh=await run('rlheats', {got:'rlr3', seat:'rlheats'}, 40, 8);
     const seat=cr.solosRl.seat;
     if(seat==='rllcqf' && (lh.place<16 || lh.place>25)) fail('the LCQ Final took heat place '+lh.place);

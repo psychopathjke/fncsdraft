@@ -165855,7 +165855,10 @@ const CC_SOLO_RELOAD_R2_FIELD={EU:5000, NAC:3000};
 function soloReloadScore(){ return ccCupScoreOf('S42_ReloadReloadSoloVictoryCup', 1) || ccCupScoreOf('S41_ReloadReloadSoloVictoryCup', 1); }
 function soloReloadPoints(place){ const sc=soloReloadScore(); return sc ? sc.pts(place) : victoryR1Points(place); }
 const CC_SOLO_RELOAD_KILL_CAP=10;
-function soloReloadR2Cut(){ return Math.round(100*500/(CC_SOLO_RELOAD_R2_FIELD[ccCareerRegion()]||2000)); }
+/* Лобби Reload по 40 (CC_RELOAD_PLAYERS): отборы R2/R3 играются полем 120, три лобби, перемешанные каждую игру.
+   Было поле 100 одной комнатой (игрок: «у меня 100 человек релоуд фнкс»). Доля прохода та же, что у Epic. */
+const CC_SOLO_RELOAD_ROOM=120;
+function soloReloadR2Cut(){ return Math.round(CC_SOLO_RELOAD_ROOM*500/(CC_SOLO_RELOAD_R2_FIELD[ccCareerRegion()]||2000)); }
 const CC_SOLO_RELOAD_PRIZES={
   EU:  [[1,60000],[2,40000],[3,25000],[4,15000],[5,12500],[6,10000],[7,9000],
         [8,8000],[9,6000],[10,5000],[11,4000],[12,3000],[13,2500],[14,2000],
@@ -165877,8 +165880,8 @@ function soloReloadPrize(place){
   return row ? row[1] : 0;
 }
 Object.assign(CC_SOLOS_STAGES, {
-  rlr2:  {games:10, kill:2, field:100, cut:soloReloadR2Cut, pass:'rlr3', reload:true, pts:soloReloadPoints, killCap:CC_SOLO_RELOAD_KILL_CAP},
-  rlr3:  {games:10, kill:2, field:100, cut:16, pass:'rlheats', reload:true, pts:soloReloadPoints, killCap:CC_SOLO_RELOAD_KILL_CAP},
+  rlr2:  {games:10, kill:2, field:CC_SOLO_RELOAD_ROOM, cut:soloReloadR2Cut, pass:'rlr3', reload:true, pts:soloReloadPoints, killCap:CC_SOLO_RELOAD_KILL_CAP},
+  rlr3:  {games:10, kill:2, field:CC_SOLO_RELOAD_ROOM, cut:Math.round(CC_SOLO_RELOAD_ROOM*80/500), pass:'rlheats', reload:true, pts:soloReloadPoints, killCap:CC_SOLO_RELOAD_KILL_CAP},
   rlheats:{games:8,  kill:2, field:40,  cut:7,  vr:true, pass:'rlfinal', tail:[16,25], tailSeat:'rllcqf', reload:true, pts:soloReloadPoints, killCap:CC_SOLO_RELOAD_KILL_CAP},
   rllcq1:{games:10, kill:2, open:true, cut:20, pass:'rllcqf', reload:true, pts:soloReloadPoints, killCap:CC_SOLO_RELOAD_KILL_CAP},
   rllcqf:{games:5,  kill:2, field:40,  cut:5,  vr:true, pass:'rlfinal', reload:true, pts:soloReloadPoints, killCap:CC_SOLO_RELOAD_KILL_CAP},
@@ -167301,7 +167304,7 @@ async function runCareerSoloSeries(){
   await simulateGamesLive(field, games,
     (spec && spec.pts) || (ev.stage==='heats' ? soloHeatsPoints : victoryR1Points), spec ? spec.kill : CC_SOLO_KILL,
     'stage', 0, null, zones,
-    {twoDay:ev.stage==='final' || !!(spec && spec.twoDay), lobbySize:100, stageName:ev.label, mapReplay:true, choices:true, stopOnYourDeath:true,
+    {twoDay:ev.stage==='final' || !!(spec && spec.twoDay), lobbySize:(spec && spec.reload) ? ccReloadLobby(1) : 100, stageName:ev.label, mapReplay:true, choices:true, stopOnYourDeath:true,
      /* Виктори в хитах — билет, и вечер на нём для тебя кончается: правило Epic
         (см. шапку раздела) и то же stopOnWin, что у хитов Мейджора. Раньше
         победитель первой игры играл все шесть, карточка говорила «прошёл», а
