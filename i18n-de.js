@@ -4199,3 +4199,6 @@ Object.assign(I18N.de=I18N.de||{},
 /* Дозаливка «de» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
 Object.assign(I18N.de=I18N.de||{},
 ({ lbByEarn:'Turnierpreise', lbByAll:'Alle Preise', lbAllCol:'Alle Preise', lbCupNote:'Nur Turniere: ohne eigene Turniere und Handgelder.', lbAllNote:'Mit eigenen Turnieren und Handgeldern.', lbPage:(a,b,n)=>'Plätze '+a+'-'+b+' von '+n }));
+/* Дозаливка «de» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
+Object.assign(I18N.de=I18N.de||{},
+({ hmBoardList:'Ganze Liste' }));

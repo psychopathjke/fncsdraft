@@ -9049,6 +9049,13 @@
   .hb-row{display:grid;grid-template-columns:24px minmax(0,1fr) auto;align-items:center;gap:8px;padding:7px 0;
     border-top:1px solid rgba(255,255,255,.08);font-size:13.5px;}
   .hb-row:first-child{border-top:0;padding-top:2px;}
+  .hb-tabs{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 10px;}
+  .hb-tabs button{padding:6px 11px;border-radius:999px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.05);color:#cfe0ff;font:inherit;font-size:12px;font-weight:800;cursor:pointer;}
+  .hb-tabs button.on{background:#ffdd00;border-color:#ffdd00;color:#0b1430;}
+  button.hb-me{display:block;width:100%;text-align:left;font:inherit;cursor:pointer;}
+  .hb-pages{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:4px 0 10px;color:#cfe0ff;font-size:13px;font-weight:700;}
+  .hb-pages button{min-width:44px;height:36px;border-radius:10px;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.06);color:#fff;font-size:20px;font-weight:900;cursor:pointer;}
+  .hb-pages button:disabled{opacity:.35;cursor:default;}
   .hb-row>i{font-style:normal;font-family:var(--font-display);font-weight:700;color:#8ea6d6;}
   .hb-row:nth-child(-n+3)>i{color:#ffdd00;}
   .hb-row>b{color:#fff;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
@@ -24210,7 +24217,16 @@ Object.assign(I18N.it=I18N.it||{},
 /* Дозаливка «pt» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
 Object.assign(I18N.pt=I18N.pt||{},
 ({ lbByEarn:'Prêmios de torneios', lbByAll:'Todos os prêmios', lbAllCol:'Todos os prêmios', lbCupNote:'Só torneios: sem torneios próprios nem bônus de assinatura.', lbAllNote:'Com torneios próprios e bônus de assinatura.', lbPage:(a,b,n)=>'Posições '+a+'-'+b+' de '+n }));
-let CC_I18N_V={de:'3e2d67a8', es:'72a5f47c'};   // ==== CC_I18N_V (tools/build-i18n.js) ====
+/* Дозаливка «fr» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
+Object.assign(I18N.fr=I18N.fr||{},
+({ hmBoardList:'Liste complète' }));
+/* Дозаливка «it» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
+Object.assign(I18N.it=I18N.it||{},
+({ hmBoardList:'Lista completa' }));
+/* Дозаливка «pt» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
+Object.assign(I18N.pt=I18N.pt||{},
+({ hmBoardList:'Lista completa' }));
+let CC_I18N_V={de:'467d16b1', es:'95e06870'};   // ==== CC_I18N_V (tools/build-i18n.js) ====
 // Версия fn-shop.js (магазин Fortnite по дням, tools/build-fn-shop.js) — для ?v= ленивой загрузки.
 let CC_FN_SHOP_V='be7040d6';
 const CC_LANG_WAIT={};
@@ -24829,7 +24845,7 @@ Object.assign(I18N.ru, {hmContinue:'Продолжить', hmContinueSub:'Тво
   hmFriendRace:'У каждого своя карьера, а общее лобби показывает, кто впереди.',
   hmSceneTitle:'Сцена сейчас', hmSceneSub:'Настоящий календарь FNCS 2026.', hmSceneLive:'идёт сейчас', hmSceneTomorrow:'завтра',
   hmSceneIn:n=>'через '+n+' '+(n%10===1&&n%100!==11 ? 'день' : (n%10>=2&&n%10<=4&&(n%100<10||n%100>=20)) ? 'дня' : 'дней'),
-  hmSceneDone:'Сезон FNCS 2026 закончился.', hmBoardSub:'Карьеры игроков сайта по призовым.',
+  hmSceneDone:'Сезон FNCS 2026 закончился.', hmBoardSub:'Карьеры игроков сайта по призовым.', hmBoardList:'Весь список',
   hmBoardMore:n=>'Показать '+n, hmBoardLess:'Свернуть', hmHistSub:'Прошлые драфты, рекорды и награды.'});
 Object.assign(I18N.en, {hmContinue:'Continue', hmContinueSub:'Your saves, from the day you stopped.', hmPlayOn:'Play',
   hmSlotCareer:'Career', hmSlotMgr:'Manager', hmSlotLine:(s,d,e)=>'Season '+s+' · division '+d+' · '+e, hmMgrLine:(s,c)=>'Season '+s+' · cash '+c,
@@ -24838,7 +24854,7 @@ Object.assign(I18N.en, {hmContinue:'Continue', hmContinueSub:'Your saves, from t
   hmFriendRace:'Each of you runs your own career, and a shared lobby shows who is ahead.',
   hmSceneTitle:'The scene now', hmSceneSub:'The real FNCS 2026 calendar.', hmSceneLive:'live now', hmSceneTomorrow:'tomorrow',
   hmSceneIn:n=>'in '+n+' day'+(n===1 ? '' : 's'),
-  hmSceneDone:'The FNCS 2026 season is over.', hmBoardSub:'Careers of the players on this site, by prize money.',
+  hmSceneDone:'The FNCS 2026 season is over.', hmBoardSub:'Careers of the players on this site, by prize money.', hmBoardList:'Full list',
   hmBoardMore:n=>'Show '+n, hmBoardLess:'Show less', hmHistSub:'Past drafts, records and awards.'});
 /* Главная: два режима и драфт по годам (29.09). */
 Object.assign(I18N.ru, {hcHeroTitle:'Стань про. <em>Сезон за сезоном.</em>', hdHeroTitle:'Собери состав. <em>Любой год FNCS.</em>', hdChipFormats:'Дуо · Трио · Сквады', hdPlay:'Играть драфт'});
@@ -167876,7 +167892,7 @@ function mgrAllowed(host){ return true; }
 setTimeout(()=>{ try{ if(!mgrAllowed()) return; document.querySelectorAll('.hero-mgr, .hero-mgr-btn, .nav-pill[data-nav="manager"]').forEach(el=>{ el.hidden=false; }); }catch(e){} }, 0);
 /* ГЛАВНАЯ 15.10: «Продолжить» по сохранениям, «Сцена сейчас» по настоящему календарю 2026 и «Игроки сайта».
    Рисуется из ccHeroCareerText — то есть на загрузке, на смене языка и при каждом возврате на главную. */
-let HOME_BOARD=null, HOME_BOARD_ALL=false;
+let HOME_BOARD=null, HOME_BOARD_ALL=false, HOME_BOARD_SORT=null, HOME_BOARD_LIST=null;
 function homeRender(){
   try{ homeDailyDraw(); }catch(e){}
   try{ homeSceneDraw(); }catch(e){}
@@ -168265,28 +168281,66 @@ function homeBoardDraw(){
     if(d) d._busy=true; else HOME_BOARD={_busy:true, _at:0};
     // Своя строка — по id карьеры из сейва (активный слот первым): сервер отвечает местом (you), как во вкладке карьеры.
     const me=homeBoardMe();
-    fetch(base+(me ? "?me="+encodeURIComponent(me) : "")).then(r=>r.ok ? r.json() : {err:true}).catch(()=>({err:true})).then(x=>{
+    fetch(base+'?'+(HOME_BOARD_SORT ? 'sort='+HOME_BOARD_SORT+'&' : '')+(me ? 'me='+encodeURIComponent(me) : '')).then(r=>r.ok ? r.json() : {err:true}).catch(()=>({err:true})).then(x=>{
       HOME_BOARD=Object.assign(x||{err:true}, {_at:Date.now()});
       homeBoardDraw();
       try{ homeLiveTabs(); }catch(e){}
     });
   }
-  const head='<h2 class="home-h">'+esc(T.lbTab)+'</h2><p class="home-sub">'+esc(T.hmBoardSub)+'</p>';
+  /* Вкладки турниры / все призы (игрок 2.11: «призы только с турниров и вторая вкладка все призы»). */
+  const head='<h2 class="home-h">'+esc(T.lbTab)+'</h2><p class="home-sub">'+esc(HOME_BOARD_SORT==='all' ? T.lbAllNote : T.lbCupNote)+'</p>'+
+    '<div class="hb-tabs">'+[[null, T.lbByEarn], ['all', T.lbByAll]].map(([k,t])=>'<button type="button" class="'+(HOME_BOARD_SORT===k ? 'on' : '')+'" onclick="homeBoardSort('+(k ? '\''+k+'\'' : 'null')+')">'+esc(t)+'</button>').join('')+'</div>';
   if(!d || !d._at){ box.innerHTML=head+'<p class="home-sub">'+esc(T.lbLoad)+'</p>'; return; }
   if(d.err){ box.innerHTML=head+'<p class="home-sub">'+esc(T.lbErr)+'</p>'; return; }
   const seen=new Set(), rows=(d.rows||[]).filter(r=>{ const k=[r.nick, r.region, r.country, r.seasons, r.earn, r.titles].join('|');
     if(seen.has(k)) return false; seen.add(k); return true; });
   if(!rows.length){ box.innerHTML=head+'<p class="home-sub">'+esc(T.lbEmpty)+'</p>'; return; }
   HOME_BOARD_ROWS=rows;
-  const you=d.you && d.you.rank ? '<div class="hb-me">'+esc(T.lbYou(d.you.rank, d.total||rows.length))+'</div>' : '';
+  // Своё место — ссылкой на свою страницу списка.
+  const you=d.you && d.you.rank ? '<button type="button" class="hb-me" onclick="homeBoardList('+Math.floor((d.you.rank-1)/(d.per||100))+')">'+esc(T.lbYou(d.you.rank, d.total||rows.length))+'</button>' : '';
   box.innerHTML=head+'<div>'+homeBoardRowsHTML(rows.slice(0, 10))+'</div>'+you+
-    (rows.length>10 ? '<button class="home-more" type="button" onclick="homeListOpen(\'board\')">'+esc(T.hmBoardMore(Math.min(50, rows.length)))+'</button>' : '');
+    (rows.length>10 ? '<button class="home-more" type="button" onclick="homeBoardList(0)">'+esc(T.hmBoardList)+'</button>' : '');
 }
 let HOME_BOARD_ROWS=[];
-function homeBoardRowsHTML(rows){
+function homeBoardRowsHTML(rows, from, sort){
   const T=L(), flag=c=>c ? '<img src="flags/w20/'+esc(ccCountryOf(c))+'.png" alt="" onerror="this.remove()">' : '';
-  return rows.map((r,i)=>'<div class="hb-row'+(r.you ? ' me' : '')+'"><i>'+(i+1)+'</i><b>'+flag(r.country)+esc(r.nick)+
-    '<small>'+esc(r.region||'')+' · '+esc(T.lbSeasons(r.seasons))+'</small></b><span>$'+ccNum(r.earn)+'</span></div>').join('');
+  const all=(sort===undefined ? HOME_BOARD_SORT : sort)==='all';
+  return rows.map((r,i)=>'<div class="hb-row'+(r.you ? ' me' : '')+'"><i>'+((from||0)+i+1)+'</i><b>'+flag(r.country)+esc(r.nick)+
+    '<small>'+esc(r.region||'')+' · '+esc(T.lbSeasons(r.seasons))+'</small></b><span>$'+ccNum(all && r.earnAll!=null ? r.earnAll : r.earn)+'</span></div>').join('');
+}
+function homeBoardSort(k){ HOME_BOARD_SORT=k||null; HOME_BOARD=null; homeBoardDraw(); }
+/* Весь список поверх экрана, по 100 мест со стрелками (игрок 2.11: «ничего не листается» — было только «Показать 50»).
+   Страница читается с сервера (?page=), своя строка подсвечена. */
+function homeBoardList(page){
+  const T=L(), base=ccBoardBase(); if(!base) return;
+  page=Math.max(0, page|0);
+  const sort=HOME_BOARD_SORT, me=homeBoardMe();
+  const draw=(inner)=>{
+    let m=document.getElementById('homeRealModal');
+    if(!m){
+      m=document.createElement('div'); m.id='homeRealModal'; m.className='hr-modal';
+      m.addEventListener('click', ev=>{ if(ev.target===m) homeRealClose(); });
+      document.addEventListener('keydown', ev=>{ if(ev.key==='Escape' && document.getElementById('homeRealModal')) homeRealClose(); });
+      document.body.appendChild(m);
+    }
+    m.innerHTML='<div class="hr-box" role="dialog" aria-modal="true" aria-label="'+esc(T.lbTab)+'">'+
+      '<div class="hr-top"><b>'+esc(T.lbTab)+' · '+esc(sort==='all' ? T.lbByAll : T.lbByEarn)+'</b><button type="button" class="hr-x" onclick="homeRealClose()" aria-label="'+esc(T.hmRealClose)+'">✕</button></div>'+
+      '<div class="hr-wrap">'+inner+'</div></div>';
+    document.body.classList.add('hr-lock');
+  };
+  const key=(sort||'')+'|'+page;
+  HOME_BOARD_LIST=key;
+  draw('<p class="home-sub">'+esc(T.lbLoad)+'</p>');
+  fetch(base+'?'+(sort ? 'sort='+sort+'&' : '')+'page='+page+(me ? '&me='+encodeURIComponent(me) : '')).then(r=>r.ok ? r.json() : {err:true}).catch(()=>({err:true})).then(x=>{
+    if(HOME_BOARD_LIST!==key || !document.getElementById('homeRealModal')) return;
+    if(!x || x.err){ draw('<p class="home-sub">'+esc(T.lbErr)+'</p>'); return; }
+    const per=x.per||100, total=x.total||0, pages=Math.max(1, Math.ceil(total/per)), pg=x.page||0;
+    const nav='<div class="hb-pages"><button type="button"'+(pg>0 ? '' : ' disabled')+' onclick="homeBoardList('+(pg-1)+')" aria-label="‹">‹</button>'+
+      '<span>'+esc(T.lbPage(pg*per+1, Math.min(total, (pg+1)*per), total))+'</span>'+
+      '<button type="button"'+(pg<pages-1 ? '' : ' disabled')+' onclick="homeBoardList('+(pg+1)+')" aria-label="›">›</button></div>';
+    draw(nav+'<div>'+homeBoardRowsHTML(x.rows||[], pg*per, sort)+'</div>'+nav);
+    const box=document.querySelector('#homeRealModal .hr-wrap'); if(box) box.scrollTop=0;
+  });
 }
 /* «Показать 50» — списком поверх экрана, а не раскрытием колонки (16.10: «когда жмёшь топ 50, пусть поверх экрана будет список»). */
 function homeListOpen(kind){
