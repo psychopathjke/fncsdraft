@@ -108080,6 +108080,9 @@ function buildBotLandingAssignment(bots, opts){
      коробки без топа; число команд в коробках то же. Хозяин точки по книге не двигается. */
   {
     const movable=t=>t && !t._bookAnchor && !t.isYou && !t.isRival && !t.isMate && !t._stageSeated && !(t._mgrDrop==='quiet' || t._mgrDrop==='hot');
+    /* Якорь книги (bookHold) уступает только другому топу. В карьере лобби каждый раз своё, и двое сильных с одной точкой
+       по книге сходились и стояли так весь сезон: якорь обмен не трогал. */
+    const movableTop=t=>t && !t.isYou && !t.isRival && !t.isMate && !t._stageSeated && !(t._mgrDrop==='quiet' || t._mgrDrop==='hot');
     const keyOfT=t=>(book && !t.isYou && !t.isRival && !t.isMate) ? ccHashStr(ccSeatMapKey(t)).toString(36) : null;
     const str=t=>((t.pow||0)-(t._landingPow||0))+(t.closeEdge||0);
     const all=[]; zoneGroups.forEach(g=>g.forEach(t=>all.push(t)));
@@ -108095,7 +108098,7 @@ function buildBotLandingAssignment(bots, opts){
              не трогал. Тестер 10.10: «все самые сильные друг другу руинят FNCS, из-за того что падают друг на друга».
              Теперь уходит и хозяин — слабейший из топов точки, гость раньше хозяина, — и переезжает на сезон (книга ниже). */
           const strongest=tops.reduce((a,b)=>str(b)>str(a) ? b : a);
-          tops.filter(t=>t!==strongest && movable(t)).forEach(w=>{
+          tops.filter(t=>t!==strongest && movableTop(t)).forEach(w=>{
             const k=keyOfT(w), owner=k && book && book.at[k]===ccSeatKeyOf(z);
             all.forEach(x=>{
               if(top.has(x) || weak.has(x) || !movable(x)) return;
@@ -108109,7 +108112,45 @@ function buildBotLandingAssignment(bots, opts){
             });
           });
         });
-        if(!best) break;
+        if(!best){
+          /* Меняться не с кем: середняки сильной половины тоже якоря книги, а слабых обмен выше не берёт. Тогда слабейший
+             из двух топов коробки уходит в пустую коробку (лучшую по очкам), а если пустых нет (поле занимает весь остров) —
+             меняется с любым не-топом из коробки без топа, где народу меньше. Переезд на сезон. */
+          let pair=null;
+          zoneGroups.forEach((g, z)=>{
+            if(pair) return;
+            const tops=g.filter(t=>top.has(t)); if(tops.length<2) return;
+            const strongest=tops.reduce((a,b)=>str(b)>str(a) ? b : a);
+            const w=tops.filter(t=>t!==strongest && movableTop(t)).sort((a,b)=>str(a)-str(b))[0];
+            if(w) pair={w, z};
+          });
+          if(!pair) break;
+          const {w, z}=pair, k=keyOfT(w), owner=!!(k && book && book.at[k]===ccSeatKeyOf(z));
+          let to=null;
+          ALL_LANDING_ZONES.forEach(c=>{
+            if((zoneGroups.get(c)||[]).length || (CC_SPOT_FEAR_MAP && (CC_SPOT_FEAR_MAP.get(c)||0)>0)) return;
+            if(!to || (c.points||0)>(to.points||0)) to=c;
+          });
+          if(to){
+            if(book && !CC_SEATS_REMIX && owner) book.at[k]=ccSeatKeyOf(to);
+            zoneGroups.set(z, zoneGroups.get(z).filter(o=>o!==w));
+            zoneGroups.set(to, [w]); zoneOf.set(w, to);
+            w.landingZone=to; w.landingResult=null; w.landingRival=null;
+            applyLandingPow(w, to.points);
+            if(seats && !w.isYou && !w.isRival && !w.isMate) seats.set(ccSeatMapKey(w), ccSeatKeyOf(to));
+            continue;
+          }
+          let x=null, z2=null, xc=Infinity;
+          all.forEach(o=>{
+            if(top.has(o) || !movableTop(o)) return;
+            const oz=zoneOf.get(o); if(!oz || oz===z || (zoneGroups.get(oz)||[]).some(q=>top.has(q))) return;
+            const c=(zoneGroups.get(oz)||[]).length*1e4-str(o);
+            if(c<xc){ xc=c; x=o; z2=oz; }
+          });
+          if(!x) break;
+          const kx=keyOfT(x);
+          best={w, x, z, z2, owner, k, xOwner:!!(kx && book && book.at[kx]===ccSeatKeyOf(z2)), kx};
+        }
         const {w, x, z, z2}=best;
         // Переезд на сезон, как у уступившего точку в постоянном составе; в перемешанных капах книга не трогается.
         /* Переезд на сезон у обоих, как у уступившего точку в постоянном составе: иначе перезапуск финала с другой очередью
