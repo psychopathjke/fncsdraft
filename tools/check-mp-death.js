@@ -115,7 +115,7 @@ const boot = (seed, skip) => `
         MP.say({t:'act', kind:m.kind, n:++n, by:'peer',
                 payload:{v:m.payload && m.payload.v, by:'peer'}});
         const base=String(m.kind).replace(/@$/, '');
-        const canned={drop:{id:'quiet'}, loot:'take', late:'hg'};
+        const canned={drop:{id:'quiet'}, loot:'take', late:'hg', mid:'stay', farm:'full', mats:'stay', build:'norm'};   // 2.11: у фраггера ещё мид, фарм, маты, билд
         if(/@$/.test(m.kind) && canned.hasOwnProperty(base))
           MP.say({t:'act', kind:base, n:++n, by:'peer',
                   payload:{v:canned[base], by:'peer'}});
