@@ -24237,7 +24237,7 @@ Object.assign(I18N.pt=I18N.pt||{},
 ({ ccRacePairHint:'A dupla joga como um time: vocês dois, o IGL decide o estilo, o drop, o loot e as rotações, o fragger decide as lutas e o fim de jogo, o dinheiro é dividido, cada carreira segue sendo sua' }));
 let CC_I18N_V={de:'87863780', es:'fbc17e6b'};   // ==== CC_I18N_V (tools/build-i18n.js) ====
 // Версия fn-shop.js (магазин Fortnite по дням, tools/build-fn-shop.js) — для ?v= ленивой загрузки.
-let CC_FN_SHOP_V='be7040d6';
+let CC_FN_SHOP_V='2ce83138';
 const CC_LANG_WAIT={};
 function ccLangLoad(lang, done){
   if(!CC_LANG_FILES[lang] || (typeof I18N!=='undefined' && I18N[lang])){ done && done(); return; }
@@ -130539,7 +130539,7 @@ const CC_CUP_POSTER={
   S29_DuosCashCup:'cups/c25d', S29_SoloVictoryCup:'cups/c29s', S30_DuosCashCup:'cups/c25d', S30_SoloVictoryCup:'cups/c29s',
   S31_DuosCashCup:'cups/c25d', S31_SoloVictoryCup:'cups/c31s', S36_SquidGroundsCashCup:'cups/c36',
   S39_DuosVictoryCup:'cups/c38d', S39_SoloVictoryCup:'cups/c38s', S40_SoloVictoryCup:'cups/c38s', S41_SoloVictoryCup:'cups/c38s',
-  S41_ReloadSoloVictoryCup:'cups/c41r',
+  S41_ReloadSoloVictoryCup:'cups/c41r', S43_SquadsVictoryCup:'cups/c43q',
   S22_DivisionalCups:'cups/d22', S23_DivisionalCups:'cups/d23', S33_FNCSDivisionalCup:'cups/d33', S34_FNCSDivisionalCup:'cups/d34',
   S36_FNCSDivisionalCup:'cups/d34', S39_FNCSDivisionalCup:'cups/d39', S40_FNCSDivisionalCup:'cups/d39', S41_FNCSDivisionalCup:'cups/d41',
   S42_FNCSDivisionalCup_Division1:'cups/d39'
@@ -130856,13 +130856,13 @@ const CAREER_YEAR=[
   /* FNCS Solo Reload, ноябрь 2026 — пост Fortnite Competitive 19.10 (x.com/FNCompetitive/status/2112236444211429766),
      две схемы Stage 1 и Stage 2. Машина та же, что у FNCS Solos (CC_SOLOS_STAGES, ключи rl*), остров — Reload.
      Round 1 (3–4.11) не играется по тому же правилу, что у Solos: поле его Epic не называет (порог «топ-200 000 PR»).
-     Финалы у Epic по регионам 21 (OCE, ME, NAC) и 22 ноября (ASIA, BR, NAW, EU) — строка на оба дня. */
+     Финал — один вечер 21 ноября во всех регионах (календарь Epic S43, снят 2.11; у NAC/NAW это 22-е по UTC). */
   ['2026-11-07','2026-11-07','FNCSSoloReload_Round2','solo'],
   ['2026-11-08','2026-11-08','FNCSSoloReload_Round3','solo'],
   ['2026-11-14','2026-11-15','FNCSSoloReload_Heats','solo'],
   ['2026-11-16','2026-11-16','FNCSSoloReload_LCQRound1','solo'],
   ['2026-11-17','2026-11-17','FNCSSoloReload_LCQFinal','solo'],
-  ['2026-11-21','2026-11-22','FNCSSoloReload_Final','solo'],
+  ['2026-11-21','2026-11-21','FNCSSoloReload_Final','solo'],
   /* Solo Series, S39 — его два Tracker-сейва 23 августа (Solo Series Heats /
      Finals EU). Epic гнал квалификации четыре недели с 7 декабря, но карьера
      начинается 5 января — играется последняя, четвёртая сессия (11.01), и это
@@ -132121,7 +132121,9 @@ const CC_EVAL_NIGHTS=[
   // (epicgames_S42_PerformanceEvaluation_EU): девять вечеров, два раунда в
   // каждый — раунды идут одним вечером, как и раньше.
   '2026-08-23','2026-09-03','2026-09-10','2026-09-17','2026-09-24',
-  '2026-10-01','2026-10-08','2026-10-15','2026-10-22'
+  '2026-10-01','2026-10-08','2026-10-15','2026-10-22',
+  // S43 (мини-сезон с 1.11): Performance Cup по четвергам, календарь Epic (S43_PerformanceEvaluationTrios_EU).
+  '2026-11-05','2026-11-12','2026-11-19','2026-11-26'
 ];
 /* Divisional cups week by week, off Epic's schedule pages
    (www.fortnite.com/competitive/events/S39_FNCSDivisionalCup_Division1/schedule?region=EU, plus S40/S41 and
@@ -151284,10 +151286,10 @@ const CC_UMBRELLAS={1:['Solo_Umbrella','The Umbrella'], 2:['Umbrella_Snowflake',
   33:["Umbrella_Season_33","Shogun 'Brella"], 34:['Umbrella_Season_34','The Vaultbrella'], 35:["Umbrella_Ch6MiniSeason1","Death Star 'Brella"],
   36:["Umbrella_Season36","Utopia 'Brella"], 37:["Umbrella_Season_37","O.X.R. 'Brella"], 38:["Umbrella_Ch6MiniSeason2","Safety Inspector 'Brella"],
   39:["Umbrella_RankedTandem","Fame 'Brella"], 40:["Umbrella_Season_40","New Seven 'Brella"], 41:['Umbrella_Season_41','Dark Cube-rella'],
-  42:["Umbrella_Season_42","Override 'Brella"]};
+  42:["Umbrella_Season_42","Override 'Brella"], 43:["Umbrella_Season_BR43_Victory","Crow's Nest Cascade"]};
 function ccUmbrellaFor(day){
   const n=ccSeasonNumOn(day)||0;
-  const k=CC_UMBRELLAS[n] ? n : n>42 ? 42 : 1;
+  const k=CC_UMBRELLAS[n] ? n : n>43 ? 43 : 1;
   return {n:n, id:CC_UMBRELLAS[k][0], name:CC_UMBRELLAS[k][1]};
 }
 function ccUmbrellaGive(day){
@@ -154124,7 +154126,10 @@ const CC_SEASONS_2025=[
 const CC_SEASONS=[
   {id:'S39', from:'2025-11-29', to:'2026-03-18'},
   {id:'S40', from:'2026-03-19', to:'2026-06-05'},
-  {id:'S41', from:'2026-06-06', to:'2026-08-20'}
+  {id:'S41', from:'2026-06-06', to:'2026-08-20'},
+  // S42 до 31.10, S43 — мини-сезон Treasure Hunters с 1.11 до финального ивента 5.12 (календарь Epic S43 и анонс).
+  {id:'S42', from:'2026-08-21', to:'2026-10-31'},
+  {id:'S43', from:'2026-11-01', to:'2026-12-05'}
 ];
 /* После 41-го счёт не кончается — правка: «после 41 идёт 42,
    43 и тд». Таблица выше — три измеренных сезона; дальше Epic ничего не
@@ -157076,7 +157081,10 @@ const CC_VICTORY=[
   {day:'2026-07-25', id:'S41_SoloVictoryCup',        mode:'solo', n:4},
   {day:'2026-08-01', id:'S41_ReloadSoloVictoryCup',  mode:'solo', n:1},
   {day:'2026-08-11', id:'S41_ReloadSoloVictoryCup',  mode:'solo', n:2},
-  {day:'2026-08-15', id:'S41_ReloadSoloVictoryCup',  mode:'solo', n:3}
+  {day:'2026-08-15', id:'S41_ReloadSoloVictoryCup',  mode:'solo', n:3},
+  // S43: Squads Victory Cup 9 и 23 ноября (календарь Epic, два раунда одним вечером). Состав на турнир — четвёрка (fmt).
+  {day:'2026-11-09', id:'S43_SquadsVictoryCup',      mode:'squad', n:1, fmt:true, name:'Squads Victory Cup', cash:100},
+  {day:'2026-11-23', id:'S43_SquadsVictoryCup',      mode:'squad', n:2, fmt:true, name:'Squads Victory Cup', cash:100}
 ];
 /* Дуо-капы с деньгами в 2025-м (с архива Tracker): Squid Grounds Cash Cup
    (S36, три капа, $100 на игрока за победу во втором раунде) и Reload Quick Cup
@@ -164484,7 +164492,9 @@ async function runCareerVictory(){
 function ccVictoryFormat(ev){
   // Свой турнир — всегда в выбранном режиме, в любой год.
   if(ev && ev.own) return ({solo:1, duo:2, trio:3, squad:4})[ev.mode]||0;
-  if(!ev || ccCalYear()>=2026) return 0;
+  if(!ev) return 0;
+  // 2026: капы играются составом сезона, кроме тех, где формат задан самим турниром (Squads Victory Cup S43).
+  if(ccCalYear()>=2026 && !ev.fmt) return 0;
   return ({solo:1, duo:2, trio:3, squad:4})[ev.mode]||0;
 }
 function ccEventRosterBegin(fmt, picks){
