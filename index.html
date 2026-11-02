@@ -131997,6 +131997,8 @@ function ccEvalNights(){
 // Reload-оценка 2025-го снята с календаря: Reload — только в 2026-м (отзыв). Список оставлен как замер.
 function ccEvalReloadNights(){ return []; }
 function ccEvalIsReload(iso){ return ccEvalReloadNights().indexOf(iso||careerToday())>=0; }
+// Оценка в ночь Reload — лобби Reload по 40 игроков, как везде в Reload (было 50 команд, игрок 2.11: «во всех релоад турнирах по 40?»).
+function ccEvalLobby(){ return ccEvalIsReload() ? ccReloadLobby(careerSquadSize()) : ccTeams(50); }
 // Победа в оценке: 2026-й — $800 на дуо; 2025-й — $400 на игрока, то есть на состав.
 /* 2024-й — три эпохи по таблицам окон Tracker: до 2 апреля раунд 2 платил топ-5 по $200
    на игрока (PayoutTable rank), со 2 апреля $250 за победу, с 28 мая $400 за победу. */
@@ -158212,7 +158214,7 @@ async function runCareerEval(){
      табличкой», которую он попросил убрать 25 августа. */
   const zones=null;
   await simulateGamesLive(field, ccEvalR1Games(), pointsForPlace, CC_EVAL_R1_KILL, 'stage', 0, null, zones,
-    {lobbySize:ccTeams(50), stageName:L().ccEvalR1Live, mapReplay:true, choices:true, stopOnYourDeath:true,
+    {lobbySize:ccEvalLobby(), stageName:L().ccEvalR1Live, mapReplay:true, choices:true, stopOnYourDeath:true,
      dropEachGame:(g,room)=>careerLandingPick(room||field, you, L().ccEvalR1Live, kindsForDrop)});
   const ranked1=field.slice().sort((a,b)=>b.stagePts-a.stagePts || (b.wins||0)-(a.wins||0) || b.stageElims-a.stageElims);
   const place1=ranked1.indexOf(you)+1;
@@ -158248,7 +158250,7 @@ async function runCareerEval(){
        но одна общая дорога вместо двух — то, что стоит сделать в любом случае. */
     const zones2=null;
     await simulateGamesLive(r2, CC_EVAL_R2_GAMES, evalRound2Points, 0, 'stage', 0, null, zones2,
-      {lobbySize:ccTeams(50), stageName:L().ccEvalR2Live, mapReplay:true, choices:true, stopOnYourDeath:true,
+      {lobbySize:ccEvalLobby(), stageName:L().ccEvalR2Live, mapReplay:true, choices:true, stopOnYourDeath:true,
        roomOnly:true,   // комната прошедших: вылетевших людей в неё не досаживать (ccRaceFieldSync)
        dropEachGame:(g,room)=>careerLandingPick(room||r2, you, L().ccEvalR2Live, kindsForDrop)});
     /* Тем же ключом, каким считается любой другой вечер: очки, победы, элимы.
