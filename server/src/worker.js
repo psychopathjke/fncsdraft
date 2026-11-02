@@ -169,6 +169,8 @@ export class Board {
       ovr INTEGER, div INTEGER, titles INTEGER, year INTEGER, best TEXT, bestEv TEXT, at INTEGER)`);
     this.sql.exec('CREATE INDEX IF NOT EXISTS rows_earn ON rows(earn DESC)');
     try{ this.sql.exec('ALTER TABLE rows ADD COLUMN spent INTEGER DEFAULT 0'); }catch(e){}   // 15.10: «Потрачено»
+    // 2.11: все призы (свои турниры и бонусы за подпись); у старых строк — их earn.
+    try{ this.sql.exec('ALTER TABLE rows ADD COLUMN earnall INTEGER'); this.sql.exec('UPDATE rows SET earnall=earn WHERE earnall IS NULL'); }catch(e){}
     // Последние отказы (Notion 15.10: строку с >500 титулами сервер молча выбрасывал неделю). Ник и
     // причина видны по GET /board?rejects=1, id не хранится.
     this.sql.exec('CREATE TABLE IF NOT EXISTS rejects(at INTEGER, nick TEXT, err TEXT, body TEXT)');
@@ -277,9 +279,9 @@ export class Board {
       }
       if(r.skip) return json({ok:true, skip:r.skip});
       const w=r.row;
-      this.sql.exec(`INSERT OR REPLACE INTO rows(id,nick,region,country,seasons,earn,ovr,div,titles,year,best,bestEv,at,spent)
-        VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)`, w.id, w.nick, w.region, w.country, w.seasons, w.earn,
-        w.ovr, w.div, w.titles, w.year, w.best, w.bestEv, w.at, w.spent||0);
+      this.sql.exec(`INSERT OR REPLACE INTO rows(id,nick,region,country,seasons,earn,ovr,div,titles,year,best,bestEv,at,spent,earnall)
+        VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`, w.id, w.nick, w.region, w.country, w.seasons, w.earn,
+        w.ovr, w.div, w.titles, w.year, w.best, w.bestEv, w.at, w.spent||0, w.earnAll!=null ? w.earnAll : w.earn);
       return json({ok:true});
     }
     if(url.searchParams.get('rejects'))
@@ -287,10 +289,13 @@ export class Board {
     const region=REGIONS.indexOf(url.searchParams.get('region'))>=0 ? url.searchParams.get('region') : null;
     const me=String(url.searchParams.get('me')||'');
     // Сортировка: по призовым (как было) или по тратам. Имя колонки — только из этого списка.
-    const col=url.searchParams.get('sort')==='spent' ? 'spent' : 'earn';
+    const sortQ=url.searchParams.get('sort');
+    const col=sortQ==='spent' ? 'spent' : sortQ==='all' ? 'earnall' : 'earn';
+    // Страницы по TOP строк (2.11, «и они листаются»).
+    const page=Math.max(0, Math.min(1000, Math.floor(Number(url.searchParams.get('page'))||0)));
     const where=region ? ' WHERE region=?' : '';
     const args=region ? [region] : [];
-    const rows=this.sql.exec('SELECT * FROM rows'+where+' ORDER BY '+col+' DESC, at ASC LIMIT '+TOP, ...args).toArray();
+    const rows=this.sql.exec('SELECT * FROM rows'+where+' ORDER BY '+col+' DESC, at ASC LIMIT '+TOP+' OFFSET '+(page*TOP), ...args).toArray();
     const total=this.sql.exec('SELECT COUNT(*) AS n FROM rows'+where, ...args).toArray()[0].n;
     let you=null;
     const mine=/^[a-z0-9-]{16,40}$/.test(me) ? this.one(me) : null;
@@ -299,10 +304,10 @@ export class Board {
         mine[col]||0, mine[col]||0, mine.at, ...args).toArray()[0].n;
       you={rank:above+1, row:strip(mine)};
     }
-    return json({total, rows:rows.map(r=>Object.assign(strip(r), r.id===me ? {you:true} : {})), you});
+    return json({total, page, per:TOP, rows:rows.map(r=>Object.assign(strip(r), r.id===me ? {you:true} : {})), you});
   }
 }
-function strip(r){ const o=Object.assign({}, r); delete o.id; return o; }
+function strip(r){ const o=Object.assign({}, r); delete o.id; if('earnall' in o){ o.earnAll=o.earnall!=null ? o.earnall : o.earn; delete o.earnall; } return o; }
 
 /* Облачные сохранения — один объект на код (см. vault.js). Таблицы: meta (ключ, когда, размер, подпись для списка)
  * и parts (куски строки). put заменяет запись целиком; лимиты на запись и на весь код — в vault.js. */

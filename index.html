@@ -11844,7 +11844,12 @@ ccLuxAsk:(n,c)=>'Купить «'+n+'» за $'+c+'? Силы не прибав�
 ccNewsLux:n=>'Новая покупка: '+n,
 ccCollTitle:'Коллекция',
 ccCollSpent:'Потрачено на дорогое',
-lbByEarn:'По призовым',
+lbByEarn:'Призы турниров',
+lbByAll:'Все призы',
+lbAllCol:'Все призы',
+lbCupNote:'Только турниры: без своих турниров и бонусов за подпись.',
+lbAllNote:'Вместе со своими турнирами и бонусами за подпись.',
+lbPage:(a,b,n)=>'Места '+a+'-'+b+' из '+n,
 lbBySpent:'По тратам',
 lbSpentCol:'Потрачено',
 ccSecGear:'Сетап',
@@ -13967,7 +13972,12 @@ ccLuxAsk:(n,c)=>'Buy “'+n+'” for $'+c+'? It adds no strength — only a shel
 ccNewsLux:n=>'New purchase: '+n,
 ccCollTitle:'Collection',
 ccCollSpent:'Spent on the big stuff',
-lbByEarn:'By prize money',
+lbByEarn:'Tournament prizes',
+lbByAll:'All prizes',
+lbAllCol:'All prizes',
+lbCupNote:'Tournaments only: no own tournaments, no signing bonuses.',
+lbAllNote:'Including own tournaments and signing bonuses.',
+lbPage:(a,b,n)=>'Places '+a+'-'+b+' of '+n,
 lbBySpent:'By spending',
 lbSpentCol:'Spent',
 ccSecGear:'Setup',
@@ -24191,7 +24201,16 @@ ccSacPromoRow:(n,m,p)=>'promo no X '+n+'/'+m+(p ? ' · +'+p+'%' : ''),
 ccGoalReach:{majorFinal:'chegar a uma final de Major FNCS', fncsFinal:'chegar à final semanal da FNCS'},
 ccOrgGoalPickHint:'Meta da temporada: escolha uma antes do fim da temporada. Cumpriu, renova com aumento (meta mais difícil, aumento maior); falhou, o clube te libera. Sem escolha, fica a do meio.'
 }));
-let CC_I18N_V={de:'2e283359', es:'1f889c81'};   // ==== CC_I18N_V (tools/build-i18n.js) ====
+/* Дозаливка «fr» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
+Object.assign(I18N.fr=I18N.fr||{},
+({ lbByEarn:'Prix des tournois', lbByAll:'Tous les prix', lbAllCol:'Tous les prix', lbCupNote:'Tournois seulement : sans tes propres tournois ni primes de signature.', lbAllNote:'Avec tes propres tournois et les primes de signature.', lbPage:(a,b,n)=>'Places '+a+'-'+b+' sur '+n }));
+/* Дозаливка «it» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
+Object.assign(I18N.it=I18N.it||{},
+({ lbByEarn:'Premi dei tornei', lbByAll:'Tutti i premi', lbAllCol:'Tutti i premi', lbCupNote:'Solo tornei: senza i propri tornei e i bonus alla firma.', lbAllNote:'Con i propri tornei e i bonus alla firma.', lbPage:(a,b,n)=>'Posti '+a+'-'+b+' di '+n }));
+/* Дозаливка «pt» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
+Object.assign(I18N.pt=I18N.pt||{},
+({ lbByEarn:'Prêmios de torneios', lbByAll:'Todos os prêmios', lbAllCol:'Todos os prêmios', lbCupNote:'Só torneios: sem torneios próprios nem bônus de assinatura.', lbAllNote:'Com torneios próprios e bônus de assinatura.', lbPage:(a,b,n)=>'Posições '+a+'-'+b+' de '+n }));
+let CC_I18N_V={de:'3e2d67a8', es:'72a5f47c'};   // ==== CC_I18N_V (tools/build-i18n.js) ====
 // Версия fn-shop.js (магазин Fortnite по дням, tools/build-fn-shop.js) — для ?v= ленивой загрузки.
 let CC_FN_SHOP_V='be7040d6';
 const CC_LANG_WAIT={};
@@ -125136,7 +125155,7 @@ function ccHdrSeasonDelta(){
    так и пишет. Пустая таблица и упавший сервер — не ошибка игры: вкладка говорит
    «не отвечает», карьера идёт дальше. */
 const CC_BOARD_EVERY=10*60000;
-let CC_BOARD_T=null, CC_BOARD_REGION=null, CC_BOARD_DATA=null, CC_BOARD_SORT=null;
+let CC_BOARD_T=null, CC_BOARD_REGION=null, CC_BOARD_DATA=null, CC_BOARD_SORT=null, CC_BOARD_PAGE=0;
 function ccBoardBase(){
   const h=(typeof MP!=='undefined' && MP.host) || '';
   if(!h && location.protocol==='file:') return null;
@@ -125158,6 +125177,20 @@ function ccBoardId(){
   }
   return cr.board.id;
 }
+/* Не турнирные деньги внутри cr.earnings: бонус за подпись (ccPayIn в careerOrgSign) и призы своих турниров
+   (игрок сам кладёт фонд и сам его выигрывает). Игрок 2.11: «пусть в таблице пишет призы только с турниров».
+   Старые сейвы: бонусы — из ленты событий (tlSignBonus), свои капы — по дням cr.ownCups в журнале. */
+function ccEarnSignOf(cr){
+  if(cr.earnSign!=null) return cr.earnSign||0;
+  let n=0; (cr.events||[]).forEach(e=>{ if(e && e.k && String(e.k).indexOf('tlSignBonus')===0) n+=Number(String((e.a||[])[1]||'').replace(/[^0-9]/g, ''))||0; });
+  return n;
+}
+function ccEarnOwnOf(cr){
+  const days=new Set(); (cr.ownCups||[]).forEach(c=>{ if(c && !c.off && c.day){ days.add(c.day); days.add(ccAddDays(c.day, 1)); } });
+  let n=0; (cr.log||[]).forEach(r=>{ if(r && !r.who && r.prize>0 && (r.own || (r.kind==='victory' && days.has(r.day)))) n+=r.prize; });
+  return n;
+}
+function ccEarnCups(cr){ return Math.max(0, Math.round((cr.earnings||0)-ccEarnSignOf(cr)-ccEarnOwnOf(cr))); }
 // Строка карьеры: то, что о ней видно всем.
 function ccBoardRow(){
   const pl=CAREER.player, cr=CAREER.career, log=cr.log||[];
@@ -125166,7 +125199,7 @@ function ccBoardRow(){
     if(!best || r.place<best.place || (r.place===best.place && r.of>best.of)) best=r; });
   return {id:ccBoardId(), nick:String(pl.nick||pl.handle||'').slice(0, 24), region:ccCareerRegion(),
           country:String(pl.country||'').toLowerCase().slice(0, 2), seasons:Math.max(1, cr.season||1),
-          earn:Math.max(0, Math.round(cr.earnings||0)), ovr:Math.round(ccMyShownOvr()||pl.ovr||1),
+          earn:ccEarnCups(cr), earnAll:Math.max(0, Math.round(cr.earnings||0)), ovr:Math.round(ccMyShownOvr()||pl.ovr||1),
           div:Math.min(5, Math.max(1, cr.division||5)), titles:log.filter(r=>r && r.place===1).length,
           year:(typeof ccCalYear==='function' ? ccCalYear() : 2026),
           best: best ? best.place+'/'+best.of : '', bestEv: best ? String(best.kind||'cup') : '',
@@ -125190,7 +125223,7 @@ function ccBoardLater(ms){
 function ccBoardSend(force){
   if(!ccBoardOn()) return Promise.resolve(false);
   const cr=CAREER.career, row=ccBoardRow();
-  const key=[row.nick, row.region, row.earn, row.div, row.titles, row.best, row.seasons, row.spent].join('|');
+  const key=[row.nick, row.region, row.earn, row.earnAll, row.div, row.titles, row.best, row.seasons, row.spent].join('|');
   const b=cr.board;
   if(!force && b.key===key) return Promise.resolve(false);
   if(!force && b.sent && Date.now()-b.sent < CC_BOARD_EVERY){ ccBoardLater(CC_BOARD_EVERY-(Date.now()-b.sent)); return Promise.resolve(false); }
@@ -125214,15 +125247,17 @@ function ccBoardToggle(){
   (cr.board.off ? fetch(base, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id:id, del:true})})
                 : ccBoardSend(true)).catch(()=>{}).then(done, done);
 }
-function ccBoardRegion(r){ CC_BOARD_REGION=r||null; CC_BOARD_DATA=null; careerTab('world'); }
+function ccBoardRegion(r){ CC_BOARD_REGION=r||null; CC_BOARD_PAGE=0; CC_BOARD_DATA=null; careerTab('world'); }
+// Страницы по сто строк (его «и они листаются»).
+function ccBoardPage(d){ CC_BOARD_PAGE=Math.max(0, CC_BOARD_PAGE+d); CC_BOARD_DATA=null; careerTab('world'); }
 // По призовым или по тратам (15.10: роскошь и «Потрачено»).
-function ccBoardSort(k){ CC_BOARD_SORT=k||null; CC_BOARD_DATA=null; careerTab('world'); }
+function ccBoardSort(k){ CC_BOARD_SORT=k||null; CC_BOARD_PAGE=0; CC_BOARD_DATA=null; careerTab('world'); }
 function ccBoardLoad(){
   const base=ccBoardBase();
   if(!base) return Promise.resolve({err:true});
   const cr=CAREER.career;
   const q='?'+(CC_BOARD_REGION ? 'region='+encodeURIComponent(CC_BOARD_REGION)+'&' : '')+
-          (CC_BOARD_SORT ? 'sort='+CC_BOARD_SORT+'&' : '')+'me='+encodeURIComponent((cr.board && cr.board.id) || '');
+          (CC_BOARD_SORT ? 'sort='+CC_BOARD_SORT+'&' : '')+(CC_BOARD_PAGE ? 'page='+CC_BOARD_PAGE+'&' : '')+'me='+encodeURIComponent((cr.board && cr.board.id) || '');
   return fetch(base+q).then(r=>r.ok ? r.json() : {err:true}).catch(()=>({err:true}));
 }
 function careerWorldHTML(){
@@ -125231,9 +125266,9 @@ function careerWorldHTML(){
   const head='<div class="lb-top"><div class="lb-regs">'+regs.map(([k,t])=>
       '<button class="ch-subtab'+(CC_BOARD_REGION===k?' on':'')+'" onclick="ccBoardRegion('+(k?'\''+k+'\'':'null')+')">'+esc(t)+'</button>').join('')+
     '</div><button class="ch-swap" onclick="ccBoardToggle()">'+esc(off ? T.lbShow : T.lbHide)+'</button></div>'+
-    '<div class="lb-regs">'+[[null, T.lbByEarn], ['spent', T.lbBySpent]].map(([k,t])=>
+    '<div class="lb-regs">'+[[null, T.lbByEarn], ['all', T.lbByAll], ['spent', T.lbBySpent]].map(([k,t])=>
       '<button class="ch-subtab'+(CC_BOARD_SORT===k?' on':'')+'" onclick="ccBoardSort('+(k?'\''+k+'\'':'null')+')">'+esc(t)+'</button>').join('')+'</div>'+
-    '<div class="ch-hint">'+esc(T.lbNote)+'</div>';
+    '<div class="ch-hint">'+esc(T.lbNote)+' '+esc(CC_BOARD_SORT==='all' ? T.lbAllNote : CC_BOARD_SORT==='spent' ? '' : T.lbCupNote)+'</div>';
   /* Прочитанная таблица живёт минуту и только для своей карьеры: старше — перечитывается при открытии
      (старая видна, пока идёт новая), другая карьера в слоте — читает свою. */
   const bid=(cr.board && cr.board.id) || '';
@@ -125258,16 +125293,21 @@ function careerWorldHTML(){
   const me=d.you ? '<div class="lb-you">'+esc(T.lbYou(d.you.rank, d.total))+'</div>'
                  : (off ? '<div class="lb-you">'+esc(T.lbHidden)+' <button class="ch-swap" onclick="ccBoardToggle()">'+esc(T.lbShow)+'</button></div>' : '');
   if(!rows.length) return head+me+'<div class="ch-hint">'+esc(T.lbEmpty)+'</div>';
-  const c=T.lbCols.slice(); if(CC_BOARD_SORT==='spent') c[3]=T.lbSpentCol;
+  const c=T.lbCols.slice(); if(CC_BOARD_SORT==='spent') c[3]=T.lbSpentCol; else if(CC_BOARD_SORT==='all') c[3]=T.lbAllCol;
+  const base0=(d.page||0)*(d.per||100);
   const flag=cc=>cc ? '<img class="ch-bio-flag" src="flags/w20/'+esc(ccCountryOf(cc))+'.png" alt="" onerror="this.remove()"> ' : '';
   const evw=k=>{ try{ return ccFfKindWord(k)||''; }catch(e){ return ''; } };
-  const tr=(r,i)=>'<tr class="'+(r.you?'lb-me':'')+'"><td>'+(i+1)+'</td><td>'+flag(r.country)+esc(r.nick)+
-    '<small> · '+esc(T.lbSeasons(r.seasons))+'</small></td><td>'+esc(r.region)+'</td><td>$'+ccNum(CC_BOARD_SORT==='spent' ? (r.spent||0) : r.earn)+
+  const tr=(r,i,abs)=>'<tr class="'+(r.you?'lb-me':'')+'"><td>'+(abs ? i+1 : base0+i+1)+'</td><td>'+flag(r.country)+esc(r.nick)+
+    '<small> · '+esc(T.lbSeasons(r.seasons))+'</small></td><td>'+esc(r.region)+'</td><td>$'+ccNum(CC_BOARD_SORT==='spent' ? (r.spent||0) : CC_BOARD_SORT==='all' ? (r.earnAll!=null ? r.earnAll : r.earn) : r.earn)+
     '</td><td>'+r.ovr+'</td><td>'+r.div+'</td><td>'+r.titles+'</td><td>'+(r.best ? esc(r.best)+(r.bestEv ? ' <small>'+esc(evw(r.bestEv))+'</small>' : '') : '-')+'</td></tr>';
-  let body=rows.map(tr).join('');
-  if(d.you && !rows.some(r=>r.you)) body+='<tr class="lb-gap"><td colspan="8">…</td></tr>'+tr(Object.assign({you:true}, d.you.row), d.you.rank-1);
+  let body=rows.map((r,i)=>tr(r,i)).join('');
+  if(d.you && !rows.some(r=>r.you)) body+='<tr class="lb-gap"><td colspan="8">…</td></tr>'+tr(Object.assign({you:true}, d.you.row), d.you.rank-1, true);
+  const per=d.per||100, pages=Math.max(1, Math.ceil((d.total||0)/per)), pg=d.page||0;
+  const nav=pages>1 ? '<div class="lb-regs lb-pages"><button class="ch-subtab"'+(pg>0?'':' disabled')+' onclick="ccBoardPage(-1)">‹</button>'+
+    '<span class="ch-hint">'+esc(T.lbPage(pg*per+1, Math.min(d.total||0, (pg+1)*per), d.total||0))+'</span>'+
+    '<button class="ch-subtab"'+(pg<pages-1?'':' disabled')+' onclick="ccBoardPage(1)">›</button></div>' : '';
   return head+me+'<div class="lb-wrap"><table class="lb-table"><thead><tr>'+c.map(x=>'<th>'+esc(x)+'</th>').join('')+
-    '</tr></thead><tbody>'+body+'</tbody></table></div>';
+    '</tr></thead><tbody>'+body+'</tbody></table></div>'+nav;
 }
 // Подвкладки объединённых вкладок: «Медиа» = соцсети + стримы, «Таблицы» = PR/призовые + моя статистика + игроки сайта.
 function ccSubTabsHTML(group){
@@ -146050,7 +146090,7 @@ function careerSignFromDm(id){
   else careerNews('good', o.academy ? 'ccNewsSignedAcademy' : 'ccNewsSigned',
              [o.name, ccNum(o.salary)], {by:ccOrgBy(o.name)});
   careerEvent(o.academy ? 'tlAcademy' : 'tlSigned', [o.name, ccNum(o.salary)]);
-  if(o.signBonus){ ccPayIn(o.signBonus, true); careerEvent('tlSignBonus', [o.name, ccNum(o.signBonus)]); }
+  if(o.signBonus){ ccPayIn(o.signBonus, true); CAREER.career.earnSign=ccEarnSignOf(CAREER.career)+o.signBonus; careerEvent('tlSignBonus', [o.name, ccNum(o.signBonus)]); }
   if(o.perk==='gear'){ careerOrgKitOut(); careerNews('good', 'ccNewsOrgKit', [o.name]); }
   else if(o.perk==='coach') careerNews('good', 'ccNewsOrgCoach', [o.name]);
   careerSave();
@@ -165678,7 +165718,7 @@ async function runCareerVictoryNight(){
                games:lanN ? (ev.games||6) : tThrough?vG1+((vSc2 && capOk(vSc2.cap)) ? vSc2.cap : (payCup ? 6 : CC_VICTORY_R2_GAMES)):vG1,
                wins:t.wins||0, elims:t.stageElims||0,
                avg: placesT.length ? Math.round(placesT.reduce((s,v)=>s+v,0)/placesT.length*10)/10 : null,
-               mate: mate ? mate.handle : null, mates: ccLogMates(mates), prize:ccShareOf(tCash, t), kind:'victory', solo:solo,
+               mate: mate ? mate.handle : null, mates: ccLogMates(mates), prize:ccShareOf(tCash, t), kind:'victory', solo:solo, own: ev.own ? true : undefined,
                who: soloMate ? t.mpTag.slice(1) : undefined});
   });
   // Командный вечер закрывает сервер: он же двигает день. См. ccMpClose.

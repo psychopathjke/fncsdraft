@@ -43,6 +43,11 @@ function normalize(e, now){
   if(seasons==null) return {err:'seasons'};
   const earn=int(e.earn, 0, MAX_EARN_PER_SEASON*seasons);
   if(earn==null) return {err:'earn'};
+  /* Все призы (2.11): earn с этого дня — только турниры, а свои турниры и бонусы за подпись едут в earnAll.
+     Старые клиенты earnAll не шлют: их earn и есть «все». Своим турниром можно накрутить сколько угодно,
+     поэтому у earnAll потолка по сезону нет. */
+  const earnAll=e.earnAll==null ? earn : int(e.earnAll, earn, 1e13);
+  if(earnAll==null) return {err:'earnAll'};
   const ovr=int(e.ovr, 1, 120);
   const div=int(e.div, 1, 5);
   const titles=int(e.titles||0, 0, 100000);
@@ -54,7 +59,7 @@ function normalize(e, now){
   const bm=/^(\d{1,5})\/(\d{1,6})$/.exec(String(e.best||''));
   const best=(bm && +bm[1]>=1 && +bm[1]<=+bm[2]) ? bm[1]+'/'+bm[2] : '';
   const bestEv=cleanNick(e.bestEv).slice(0, 40);
-  return {row:{id, nick, region, country, seasons, earn, ovr, div, titles, year, best, bestEv, spent, at:now}};
+  return {row:{id, nick, region, country, seasons, earn, earnAll, ovr, div, titles, year, best, bestEv, spent, at:now}};
 }
 
 function createBoard(){
