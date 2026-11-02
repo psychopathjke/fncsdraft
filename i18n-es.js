@@ -4196,3 +4196,9 @@ Object.assign(I18N.es=I18N.es||{},
 /* Дозаливка «es» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
 Object.assign(I18N.es=I18N.es||{},
 ({ brk_solos: 'Final de FNCS Solos' }));
+/* Дозаливка «es» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
+Object.assign(I18N.es=I18N.es||{},
+({ lbByEarn:'Premios de torneos', lbByAll:'Todos los premios', lbAllCol:'Todos los premios', lbCupNote:'Solo torneos: sin torneos propios ni primas de fichaje.', lbAllNote:'Con torneos propios y primas de fichaje.', lbPage:(a,b,n)=>'Puestos '+a+'-'+b+' de '+n }));
+/* Дозаливка «es» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
+Object.assign(I18N.es=I18N.es||{},
+({ hmBoardList:'Lista completa' }));
