@@ -18,7 +18,7 @@
  * сокетов не хранится вовсе: его отдаёт платформа (getWebSockets), а кто
  * есть кто, лежит в attachment самого сокета. */
 import { createLobby } from './lobby.js';
-import { createBoard, REGIONS, TOP } from './board.js';
+import { createBoard, REGIONS, TOP, OLD_CUP_PER_SEASON } from './board.js';
 import { CODE_RE, MAX_ONE, MAX_ALL, MAX_KEYS, checkReq, parts } from './vault.js';
 import { normalize as dailyRow, dayOf, DAY_RE, TOP as DAILY_TOP, badNick, bannedNick } from './daily.js';
 import { normalize as errRow, keyOf as errKey, KEEP as ERR_KEEP } from './errlog.js';
@@ -171,6 +171,7 @@ export class Board {
     try{ this.sql.exec('ALTER TABLE rows ADD COLUMN spent INTEGER DEFAULT 0'); }catch(e){}   // 15.10: «Потрачено»
     // 2.11: все призы (свои турниры и бонусы за подпись); у старых строк — их earn.
     try{ this.sql.exec('ALTER TABLE rows ADD COLUMN earnall INTEGER'); this.sql.exec('UPDATE rows SET earnall=earn WHERE earnall IS NULL'); }catch(e){}
+    try{ this.sql.exec('ALTER TABLE rows ADD COLUMN v2 INTEGER DEFAULT 0'); }catch(e){}   // строка от клиента со счётом «только турниры»
     // Последние отказы (Notion 15.10: строку с >500 титулами сервер молча выбрасывал неделю). Ник и
     // причина видны по GET /board?rejects=1, id не хранится.
     this.sql.exec('CREATE TABLE IF NOT EXISTS rejects(at INTEGER, nick TEXT, err TEXT, body TEXT)');
@@ -279,9 +280,9 @@ export class Board {
       }
       if(r.skip) return json({ok:true, skip:r.skip});
       const w=r.row;
-      this.sql.exec(`INSERT OR REPLACE INTO rows(id,nick,region,country,seasons,earn,ovr,div,titles,year,best,bestEv,at,spent,earnall)
-        VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`, w.id, w.nick, w.region, w.country, w.seasons, w.earn,
-        w.ovr, w.div, w.titles, w.year, w.best, w.bestEv, w.at, w.spent||0, w.earnAll!=null ? w.earnAll : w.earn);
+      this.sql.exec(`INSERT OR REPLACE INTO rows(id,nick,region,country,seasons,earn,ovr,div,titles,year,best,bestEv,at,spent,earnall,v2)
+        VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`, w.id, w.nick, w.region, w.country, w.seasons, w.earn,
+        w.ovr, w.div, w.titles, w.year, w.best, w.bestEv, w.at, w.spent||0, w.earnAll!=null ? w.earnAll : w.earn, w.v2||0);
       return json({ok:true});
     }
     if(url.searchParams.get('rejects'))
@@ -293,21 +294,24 @@ export class Board {
     const col=sortQ==='spent' ? 'spent' : sortQ==='all' ? 'earnall' : 'earn';
     // Страницы по TOP строк (2.11, «и они листаются»).
     const page=Math.max(0, Math.min(1000, Math.floor(Number(url.searchParams.get('page'))||0)));
-    const where=region ? ' WHERE region=?' : '';
-    const args=region ? [region] : [];
+    // Вкладка турниров: старые строки с невозможной суммой не показываются (OLD_CUP_PER_SEASON в board.js).
+    const conds=[], args=[];
+    if(region){ conds.push('region=?'); args.push(region); }
+    if(col==='earn'){ conds.push('(v2=1 OR earn<=seasons*?)'); args.push(OLD_CUP_PER_SEASON); }
+    const where=conds.length ? ' WHERE '+conds.join(' AND ') : '';
     const rows=this.sql.exec('SELECT * FROM rows'+where+' ORDER BY '+col+' DESC, at ASC LIMIT '+TOP+' OFFSET '+(page*TOP), ...args).toArray();
     const total=this.sql.exec('SELECT COUNT(*) AS n FROM rows'+where, ...args).toArray()[0].n;
     let you=null;
     const mine=/^[a-z0-9-]{16,40}$/.test(me) ? this.one(me) : null;
     if(mine && (!region || mine.region===region)){
-      const above=this.sql.exec('SELECT COUNT(*) AS n FROM rows WHERE ('+col+'>? OR ('+col+'=? AND at<?))'+(region?' AND region=?':''),
+      const above=this.sql.exec('SELECT COUNT(*) AS n FROM rows WHERE ('+col+'>? OR ('+col+'=? AND at<?))'+conds.map(c=>' AND '+c).join(''),
         mine[col]||0, mine[col]||0, mine.at, ...args).toArray()[0].n;
       you={rank:above+1, row:strip(mine)};
     }
     return json({total, page, per:TOP, rows:rows.map(r=>Object.assign(strip(r), r.id===me ? {you:true} : {})), you});
   }
 }
-function strip(r){ const o=Object.assign({}, r); delete o.id; if('earnall' in o){ o.earnAll=o.earnall!=null ? o.earnall : o.earn; delete o.earnall; } return o; }
+function strip(r){ const o=Object.assign({}, r); delete o.id; delete o.v2; if('earnall' in o){ o.earnAll=o.earnall!=null ? o.earnall : o.earn; delete o.earnall; } return o; }
 
 /* Облачные сохранения — один объект на код (см. vault.js). Таблицы: meta (ключ, когда, размер, подпись для списка)
  * и parts (куски строки). put заменяет запись целиком; лимиты на запись и на весь код — в vault.js. */

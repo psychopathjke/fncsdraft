@@ -11,7 +11,11 @@
  * и проверяется без сети (server/tools/check-board.js). */
 
 const REGIONS=['EU','NAC','NAW','BR','ASIA','ME','OCE'];
-const MAX_EARN_PER_SEASON=6000000;   // больше одного сезона карьера не платит: GC + мейджоры + капы с запасом
+const MAX_EARN_PER_SEASON=6000000;
+/* Призы турниров у строки старого клиента (без earnAll): там в earn сидят свои турниры и бонусы за подпись.
+   Замер 2.11: 99-й в Д1 берёт ~$290k за карьерный год, выиграть всё ~$2-2.5M. Выше — во вкладку турниров
+   не идёт, пока игра не пришлёт строку с новым счётом. */
+const OLD_CUP_PER_SEASON=2500000;   // больше одного сезона карьера не платит: GC + мейджоры + капы с запасом
 const MIN_GAP_MS=60000;              // одна строка в минуту на карьеру
 const TOP=100;
 
@@ -59,7 +63,7 @@ function normalize(e, now){
   const bm=/^(\d{1,5})\/(\d{1,6})$/.exec(String(e.best||''));
   const best=(bm && +bm[1]>=1 && +bm[1]<=+bm[2]) ? bm[1]+'/'+bm[2] : '';
   const bestEv=cleanNick(e.bestEv).slice(0, 40);
-  return {row:{id, nick, region, country, seasons, earn, earnAll, ovr, div, titles, year, best, bestEv, spent, at:now}};
+  return {row:{id, nick, region, country, seasons, earn, earnAll, v2:e.earnAll==null ? 0 : 1, ovr, div, titles, year, best, bestEv, spent, at:now}};
 }
 
 function createBoard(){
@@ -88,4 +92,4 @@ function createBoard(){
   };
 }
 
-module.exports={ createBoard, normalize, cleanNick, REGIONS, MIN_GAP_MS, TOP };
+module.exports={ createBoard, normalize, cleanNick, REGIONS, MIN_GAP_MS, TOP, OLD_CUP_PER_SEASON };
