@@ -46,6 +46,12 @@ if (!/<head>/.test(shell) || !/<html lang="en"/.test(shell)) throw new Error('о
 // Английская главная тоже знает о своих переводах.
 fs.writeFileSync(path.join(OUT, 'index.html'), inject(shell, alternates('')), 'utf8');
 
+// Версии ленивых словарей — из собранного app.js (CC_I18N_V), тот же ?v=, что и у загрузчика.
+const LANG_V = {};
+{
+  const app = fs.readFileSync(path.join(OUT, 'app.js'), 'utf8'), m = app.match(/CC_I18N_V=\{([^}]*)\}/);
+  if (m) m[1].replace(/(\w+):["']([0-9a-f]+)["']/g, (all, k, v) => { if (fs.existsSync(path.join(OUT, 'i18n-' + k + '.js'))) LANG_V[k] = v; });
+}
 let texts = 0, aboutN = 0;
 const en = DUMPS.en || {};
 for (const l of LANGS) {
@@ -66,6 +72,12 @@ for (const l of LANGS) {
   // Ссылка «О сайте» с главной языка ведёт на /about того же языка (если перевод есть).
   if (fs.existsSync(path.join(ROOT, 'i18n-about', 'about.' + l + '.html'))) h = h.split('href="about.html"').join('href="/' + l + '/about"');
   h = h.replace(/<meta property="og:locale" content="[^"]*">/, '');
+  // Словарь языка — сразу следом за app.js, а не по запросу после загрузки: иначе /ru/ мигнёт английским.
+  if (LANG_V[l]) {
+    const tag = /<script src="app\.js\?v=[^"]*"[^>]*><\/script>/;
+    if (!tag.test(h)) throw new Error('нет тега app.js в оболочке');
+    h = h.replace(tag, all => all + '<script src="i18n-' + l + '.js?v=' + LANG_V[l] + '"></script>');
+  }
   // Текст первого экрана: английский, вшитый prefillI18n, меняется на снимок этого языка ключ в ключ.
   const tr = DUMPS[l] || {};
   for (const k of Object.keys(en)) {

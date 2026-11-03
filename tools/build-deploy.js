@@ -117,6 +117,14 @@ let appSrc = html.slice(best.from, best.end);
     console.log('mgr.js: ' + fs.statSync(mgrPath).size + ' байт, v=' + mh);
   }
 }
+/* Словари ru/fr/it/pt — отдельными файлами, как de/es (см. split-i18n.js). */
+{
+  const r = require('./split-i18n.js').splitI18n(appSrc, OUT);
+  if (r.left.length) throw new Error('split-i18n: в app.js остались верхнеуровневые словари: ' + r.left.join(', '));
+  appSrc = r.src;
+  Object.keys(r.ver).forEach(l => minifyJs(path.join(OUT, 'i18n-' + l + '.js')));
+  console.log('словари в отдельных файлах: ' + Object.keys(r.ver).join(', ') + ' (' + r.cut + ' кусков), app.js ' + r.before + ' → ' + r.after + ' байт до сжатия');
+}
 fs.writeFileSync(path.join(OUT, 'app.js'), appSrc, 'utf8');
 minifyJs(path.join(OUT, 'app.js'));
 const hash = crypto.createHash('sha1').update(fs.readFileSync(path.join(OUT, 'app.js'))).digest('hex').slice(0, 8);
@@ -223,7 +231,7 @@ function prefillI18n(dir) {
     'encodeURIComponent(JSON.stringify(o))+"PE"+"ND";}' +
     'function next(){if(i>=LS.length)return done();var l=LS[i++],n=0;' +
     'try{setLang(l,false);}catch(e){o.__err=String(e&&e.message||e);return done();}' +
-    '(function wait(){if(l==="en"||(typeof I18N!=="undefined"&&I18N[l])||n++>100){' +
+    '(function wait(){if(l==="en"||(typeof CC_LANG_DONE!=="undefined"?(!CC_LANG_FILES[l]||CC_LANG_DONE[l]):(typeof I18N!=="undefined"&&I18N[l]))||n++>100){' +
     'try{setLang(l,false);applyStaticI18n();grab(l);}catch(e){o.__err=String(e&&e.message||e);return done();}' +
     'setTimeout(next,50);}else setTimeout(wait,100);})();}' +
     'next();});<' + '/script>', 'utf8');

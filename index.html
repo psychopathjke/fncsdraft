@@ -24241,13 +24241,16 @@ let CC_I18N_V={de:'87863780', es:'fbc17e6b'};   // ==== CC_I18N_V (tools/build-i
 // Версия fn-shop.js (магазин Fortnite по дням, tools/build-fn-shop.js) — для ?v= ленивой загрузки.
 let CC_FN_SHOP_V='2ce83138';
 const CC_LANG_WAIT={};
+// Пришёл ли ленивый словарь. Не по I18N[lang]: кусок словаря может завести и код (менеджер), а целого ещё нет.
+// Не пришёл файл (сеть) — тоже «готово»: дальше английский, а не загрузка по кругу.
+const CC_LANG_DONE={};
 function ccLangLoad(lang, done){
-  if(!CC_LANG_FILES[lang] || (typeof I18N!=='undefined' && I18N[lang])){ done && done(); return; }
+  if(!CC_LANG_FILES[lang] || CC_LANG_DONE[lang]){ done && done(); return; }
   if(CC_LANG_WAIT[lang]){ CC_LANG_WAIT[lang].push(done); return; }
   CC_LANG_WAIT[lang]=[done];
   const el=document.createElement('script');
   el.src='i18n-'+lang+'.js?v='+(CC_I18N_V[lang]||'0');
-  el.onload=el.onerror=function(){ const q=CC_LANG_WAIT[lang]||[]; delete CC_LANG_WAIT[lang]; CC_L_CACHE={}; q.forEach(f=>{ try{ f && f(); }catch(e){ console.error(e); } }); };
+  el.onload=el.onerror=function(){ CC_LANG_DONE[lang]=1; const q=CC_LANG_WAIT[lang]||[]; delete CC_LANG_WAIT[lang]; CC_L_CACHE={}; q.forEach(f=>{ try{ f && f(); }catch(e){ console.error(e); } }); };
   document.head.appendChild(el);
 }
 let CC_L_CACHE={};
@@ -25684,7 +25687,7 @@ function refreshPreRegionLabels(){
 // writing back, so a language merely guessed from navigator.language never
 // hardens into a saved preference the user did not actually pick.
 function setLang(lang, persist){
-  if(CC_LANG_FILES[lang] && !I18N[lang]){ ccLangLoad(lang, function(){ setLang(lang, persist); }); if(LANG!==lang){ LANG=lang; } return; }
+  if(CC_LANG_FILES[lang] && !CC_LANG_DONE[lang]){ ccLangLoad(lang, function(){ setLang(lang, persist); }); if(LANG!==lang){ LANG=lang; } return; }
   LANG=lang;
   setTimeout(function(){ try{ if(typeof mgrHeroText==='function') mgrHeroText(); }catch(e){} }, 0);   // подписи блока Fortnite Manager
   // The year's labels are built once and cached; a language change rebuilds them.
