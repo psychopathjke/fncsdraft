@@ -120602,7 +120602,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='f649f7b9';
+const CC_BUILD='6a0ab86f';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -130679,7 +130679,7 @@ function ccSeasonNumOn(day){
    будет, какой сезон и чаптер»). Нумерация Fortnite: S1–S10 — Глава 1, S11–S18 — Глава 2,
    S19–S22 — Глава 3, S23–S26 — Глава 4 и S27 — OG, S28–S31 — Глава 5 и S32 — Remix, S33–S37 —
    Глава 6 (S35 — мини-сезон Galactic Battle, дальше счёт главы идёт с S36 как с сезона 3),
-   S38 — мини-сезон, S39–S41 — Глава 7. Дальше номеров Epic нет — только «S42». */
+   S38 — мини-сезон, S39–S42 — Глава 7 (S42 — Override), S43 — мини-сезон Treasure Hunters. Дальше только «S44». */
 function ccChapterOf(n){
   if(!(n>0)) return null;
   if(n<=10) return {c:1, s:n};
@@ -130693,7 +130693,8 @@ function ccChapterOf(n){
   if(n===35) return {c:6, name:'Galactic Battle'};
   if(n<=37) return {c:6, s:n-33};
   if(n===38) return {c:6, name:'Simpsons'};
-  if(n<=41) return {c:7, s:n-38};
+  if(n<=42) return {c:7, s:n-38};
+  if(n===43) return {c:7, name:'Treasure Hunters'};
   return {n:n};
 }
 // Полное имя («Глава 2, сезон 5») и короткое («C2S5») сезона дня.
