@@ -170,6 +170,12 @@ Object.values(byRegion).forEach(l => l.sort((a, b) => power(b) - power(a)));
 
 fs.mkdirSync(path.join(OUT, 'player'), { recursive: true });
 let bytes = 0;
+// lastmod в sitemap = день, когда страница игрока правда поменялась (хеш содержимого), а не день сборки:
+// дате, которая меняется у всех 9600 каждый раз, поиск перестаёт верить.
+const LM_PATH = path.join(__dirname, 'measured', 'player-pages-lastmod.json');
+let LM = {}; try { LM = JSON.parse(fs.readFileSync(LM_PATH, 'utf8')); } catch (e) {}
+const LM_NEW = {};
+const pageHash = h => require('crypto').createHash('sha1').update(h).digest('hex').slice(0, 12);
 P.forEach(g => {
   const l = byRegion[mainRegion(g)], i = l.indexOf(g);
   // Соседи по силе в своём регионе — внутренние ссылки, по которым поиск обходит все страницы.
@@ -177,7 +183,11 @@ P.forEach(g => {
   const html = playerPage(g, others);
   bytes += html.length;
   fs.writeFileSync(path.join(OUT, 'player', g.slug + '.html'), html);
+  const h = pageHash(html), was = LM[g.slug];
+  LM_NEW[g.slug] = was && was.h === h ? was : { h, d: TODAY };
 });
+fs.writeFileSync(LM_PATH, JSON.stringify(LM_NEW));
+const newestLM = Object.values(LM_NEW).reduce((m, x) => x.d > m ? x.d : m, '');
 
 // /players — все страницы, по регионам, сильные первыми.
 const order = ['EU', 'NAC', 'NAW', 'BR', 'ASIA', 'ME', 'OCE', 'UNK'];
@@ -206,8 +216,8 @@ fs.writeFileSync(path.join(__dirname, 'measured', 'player-ratings.json'), JSON.s
 // sitemap.xml этой папки: свои адреса дописываются к тем, что уже есть.
 const smPath = path.join(OUT, 'sitemap.xml');
 let sm = fs.readFileSync(smPath, 'utf8');
-const urls = ['<url><loc>' + SITE + '/players</loc><lastmod>' + TODAY + '</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>']
-  .concat(P.map(g => '<url><loc>' + SITE + '/player/' + g.slug + '</loc><lastmod>' + TODAY + '</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>'));
+const urls = ['<url><loc>' + SITE + '/players</loc><lastmod>' + (newestLM || TODAY) + '</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>']
+  .concat(P.map(g => '<url><loc>' + SITE + '/player/' + g.slug + '</loc><lastmod>' + LM_NEW[g.slug].d + '</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>'));
 sm = sm.replace('</urlset>', urls.join('\n') + '\n</urlset>');
 fs.writeFileSync(smPath, sm);
 console.log('страниц игроков: ' + P.length + ' (' + Math.round(bytes / 1048576) + ' МБ), /players, sitemap +' + urls.length);
