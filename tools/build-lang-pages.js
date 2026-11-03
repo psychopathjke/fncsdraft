@@ -54,8 +54,8 @@ for (const l of LANGS) {
   let h = inject(shell, '<base href="/">' + alternates(''))
     .replace('<html lang="en"', '<html lang="' + l + '"')
     
-    // Во вкладке просто «fncsdraft» на всех языках (25.10, его слово); переведённый заголовок — в og/twitter.
-    .replace(/<title>[^<]*<\/title>/, '<title>fncsdraft</title>')
+    // Один заголовок на всех языках, как у главной; переведённый — в og/twitter.
+    .replace(/<title>[^<]*<\/title>/, '<title>fncsdraft: fortnite career mode</title>')
     .replace(/<link rel="canonical" href="[^"]*">/, '<link rel="canonical" href="' + SITE + '/' + l + '/">');
   h = setMeta(h, 'name="description"', seo.d);
   h = setMeta(h, 'property="og:title"', seo.t);
