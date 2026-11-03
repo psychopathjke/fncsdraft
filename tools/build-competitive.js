@@ -811,7 +811,10 @@ document.addEventListener('click',function(e){var a=e.target.closest&&e.target.c
 <title>${esc(title)}</title><meta name="description" content="${esc(desc)}">
 <link rel="canonical" href="${url}">${alt}<meta property="og:title" content="${esc(title)}"><meta property="og:description" content="${esc(desc)}">
 <meta property="og:url" content="${url}"><meta property="og:type" content="website"><meta property="og:locale" content="${LOC.replace('-', '_')}"><meta name="twitter:card" content="summary_large_image">
-<link rel="icon" href="/favicon.ico"><style>${l === 'ru' ? CSS_CYR : ''}${CSS.split('@LIVE@').join(tr('live'))}</style></head>
+<meta property="og:image" content="${SITE}/og-image.png"><meta name="twitter:image" content="${SITE}/og-image.png">
+<script type="application/ld+json">${JSON.stringify({ '@context': 'https://schema.org', '@type': 'CollectionPage', name: title, description: desc, url, inLanguage: l, isPartOf: { '@type': 'WebSite', name: 'FNCS Draft', url: SITE + '/' } }).replace(/</g, '\\u003c')}</script>
+<link rel="icon" href="/favicon.ico">
+<link rel="preload" href="/fonts/fira-xc-700-latin.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/fonts/fira-xc-900-latin.woff2" as="font" type="font/woff2" crossorigin><style>${l === 'ru' ? CSS_CYR : ''}${CSS.split('@LIVE@').join(tr('live'))}</style></head>
 <body><div class="wrap">${NAV()}
 <section class="glass head"><h1>${tr('h1')}</h1>
 <p>${tr('lead')}</p></section>
