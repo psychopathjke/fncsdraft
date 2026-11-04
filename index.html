@@ -151565,10 +151565,10 @@ function ccBpRewardHTML(r, open, have){
     '<b>'+esc(r.name)+'</b><em>'+esc(L0['ccFnType_'+r.t]||T.tp[r.t]||'')+'</em></div>';
 }
 /* PIRATE SHOP TOKEN (мини-сезон Treasure Hunters, S43). Как в Fortnite: редкая находка в матче, у напарника тоже,
-   включается в магазине: 14 дней всё за V-Bucks бесплатно. Шанса Epic не называла: 1/950 на игру наша настройка,
-   tools/pirate-odds-probe.js намерил 70–120 игр за сезон, выходит примерно 1 карьера из 10. Читает журнал, как пасс:
+   включается в магазине: 14 дней всё за V-Bucks бесплатно. Шанса Epic не называла: 1/250 на игру наша настройка,
+   tools/pirate-odds-probe.js намерил 70–120 игр за сезон, выходит примерно 1 карьера из 3. Читает журнал, как пасс:
    Math.random не трогает, бросок зависит от состава и дня, перезагрузка его не меняет. */
-const CC_PIRATE_P=1/950, CC_PIRATE_DAYS=14, CC_PIRATE_SEASON=43;
+const CC_PIRATE_P=1/250, CC_PIRATE_DAYS=14, CC_PIRATE_SEASON=43;
 const CC_PIRATE_T_ALL={
   en:{title:'Pirate Shop Access', found:'YOU FOUND PIRATE SHOP ACCESS! Use it in the Item Shop: for 14 days everything priced in V-Bucks is free.', use:'Plunder the Item Shop', note:'One per career. Use it whenever you want: for 14 days everything priced in V-Bucks is free.', ask:'Plunder the Item Shop now? The 14 days start today.', left:n=>'Everything priced in V-Bucks is free. Days left: '+n},
   ru:{title:'Pirate Shop Access', found:'ТЫ НАШЁЛ PIRATE SHOP ACCESS! Включи его в магазине: 14 дней всё за V-Bucks бесплатно.', use:'Разграбить магазин', note:'Один на карьеру. Включай когда хочешь: 14 дней всё за V-Bucks бесплатно.', ask:'Разграбить магазин сейчас? 14 дней пойдут с сегодняшнего.', left:n=>'Всё за V-Bucks бесплатно. Осталось дней: '+n},

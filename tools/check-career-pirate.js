@@ -30,11 +30,11 @@ const BOOT = `
     await new Promise(r=>ccFnShopLoad(r));
     ccAsk=function(t, go){ go(); };
 
-    // Частота: 100 игр сезона дают примерно 1 карьеру из 10.
+    // Частота: 100 игр сезона дают примерно 1 карьеру из 3.
     let hit=0; const N=4000;
     for(let t=0; t<N; t++){ for(let g=0; g<100; g++) if(ccPirateRoll('team'+t, '2026-11-10', 1, g)){ hit++; break; } }
     out.info.rate=hit/N;
-    if(hit/N<0.06 || hit/N>0.15) bad('за 100 игр находят '+(hit/N)+', ждали около 0.10');
+    if(hit/N<0.27 || hit/N>0.40) bad('за 100 игр находят '+(hit/N)+', ждали около 0.33');
 
     // Не тратит общий генератор и повторяется для того же состава.
     const realRandom=Math.random; let drawn=0; Math.random=function(){ drawn++; return realRandom(); };
