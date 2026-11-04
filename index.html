@@ -4236,6 +4236,11 @@
   .cc-bp-buy,.cc-bp-lvlbtn{border:0;border-radius:8px;padding:10px 14px;font-weight:800;cursor:pointer;}
   .cc-bp-buy{background:#ffe066;color:#161b26;}
   .cc-bp-lvlbtn{background:rgba(255,255,255,.1);color:#e6edfb;}
+  .cc-bp-lvlbuy{display:flex;flex-wrap:wrap;align-items:center;gap:6px;}
+  .cc-bp-step{min-width:44px;height:44px;border:0;border-radius:8px;background:rgba(255,255,255,.1);color:#e6edfb;font-weight:800;font-size:16px;cursor:pointer;padding:0 8px;}
+  .cc-bp-step:disabled{opacity:.35;cursor:default;}
+  .cc-bp-lvlmax{font-size:13px;}
+  .cc-bp-lvln{min-width:30px;text-align:center;font-size:18px;font-variant-numeric:tabular-nums;color:#ffe066;}
   .cc-bp-buy:disabled,.cc-bp-lvlbtn:disabled{opacity:.45;cursor:default;}
   .cc-bp-own{display:inline-block;padding:9px 12px;border-radius:8px;background:rgba(255,224,102,.14);color:#ffe066;font-weight:800;}
   .cc-bp-news{margin-top:8px;font-size:13px;color:#8ff0a4;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
@@ -151377,40 +151382,40 @@ const CC_BP_LVLS=50, CC_BP_PAGES=5, CC_BP_PRICE=950, CC_BP_LVL_PRICE=150, CC_BP_
 function ccBpLvlXp(p){ return Math.max(800, Math.min(2000, Math.round(ccDaysBetween(p.from, p.to)*20/50)*50)); }
 const CC_BP_XP={game:40, elim:12, win:250, top10:150, top3:300, first:600, pass:500, lan:1000};
 const CC_BP_T_ALL={
-  en:{tp:{y:'Spray', j:'Emoticon', l:'Loading Screen', c:'Contrail', m:'Music'}, tab:'Battle Pass', lvl:'Level', free:'Free', paid:'Battle Pass', buy:'Buy Battle Pass', own:'Battle Pass owned', buyLvl:'Buy level',
+  en:{tp:{y:'Spray', j:'Emoticon', l:'Loading Screen', c:'Contrail', m:'Music'}, tab:'Battle Pass', lvl:'Level', free:'Free', paid:'Battle Pass', buy:'Buy Battle Pass', own:'Battle Pass owned', buyLvl:'Buy levels', lvlMax:'Max',
     noVb:'Not enough V-Bucks. Top up in the Item Shop.', left:n=>n+' days left', xpNote:'XP comes from your tournaments: every match, eliminations, Victory Royales, top finishes, qualifying and LANs. Rewards go to your Locker by themselves.',
     week:'Weekly challenges', ch:{g:n=>'Play '+n+' matches', e:n=>'Get '+n+' eliminations', w:()=>'Win a match', t:()=>'Finish top 10 in a tournament', q:()=>'Qualify for the next stage', n:n=>'Play '+n+' tournaments'},
-    none:'This season has no Battle Pass data yet.', askBuy:'Buy the Battle Pass for 950 V-Bucks? Every paid reward up to your level unlocks now.', askLvl:'Buy one level for 150 V-Bucks?',
+    none:'This season has no Battle Pass data yet.', askBuy:'Buy the Battle Pass for 950 V-Bucks? Every paid reward up to your level unlocks now.', askLvl:(n, c)=>'Buy '+n+(n===1 ? ' level' : ' levels')+' for '+c+' V-Bucks?',
     max:'Pass complete', vb:n=>n+' V-Bucks', loading:'Loading the pass…', locker:'Open Locker', got:'New in your Locker', prev:'Back', next:'Next', page:(a,b)=>'Levels '+a+' to '+b, xpOf:(a,b)=>a+' / '+b+' XP', noWeek:'No week of this season yet.'},
-  ru:{tp:{y:'Граффити', j:'Эмодзи', l:'Экран загрузки', c:'След', m:'Музыка'}, tab:'Боевой пропуск', lvl:'Уровень', free:'Бесплатно', paid:'Боевой пропуск', buy:'Купить боевой пропуск', own:'Боевой пропуск куплен', buyLvl:'Купить уровень',
+  ru:{tp:{y:'Граффити', j:'Эмодзи', l:'Экран загрузки', c:'След', m:'Музыка'}, tab:'Боевой пропуск', lvl:'Уровень', free:'Бесплатно', paid:'Боевой пропуск', buy:'Купить боевой пропуск', own:'Боевой пропуск куплен', buyLvl:'Купить уровни', lvlMax:'Макс',
     noVb:'Не хватает V-Bucks. Пополни в магазине предметов.', left:n=>'До конца сезона '+n+' дн.', xpNote:'Опыт идёт с турниров: каждый матч, киллы, Victory Royale, топ-места, квалификации и ЛАНы. Награды сами падают в шкафчик.',
     week:'Испытания недели', ch:{g:n=>'Сыграй '+n+' матчей', e:n=>'Сделай '+n+' киллов', w:()=>'Выиграй матч', t:()=>'Займи топ-10 на турнире', q:()=>'Пройди в следующий этап', n:n=>'Сыграй '+n+' турнира'},
-    none:'Для этого сезона пока нет данных пропуска.', askBuy:'Купить боевой пропуск за 950 V-Bucks? Все платные награды до твоего уровня откроются сразу.', askLvl:'Купить один уровень за 150 V-Bucks?',
+    none:'Для этого сезона пока нет данных пропуска.', askBuy:'Купить боевой пропуск за 950 V-Bucks? Все платные награды до твоего уровня откроются сразу.', askLvl:(n, c)=>'Купить уровней: '+n+' за '+c+' V-Bucks?',
     max:'Пропуск пройден', vb:n=>n+' V-Bucks', loading:'Загружаю пропуск…', locker:'В шкафчик', got:'Новое в шкафчике', prev:'Назад', next:'Дальше', page:(a,b)=>'Уровни '+a+'–'+b, xpOf:(a,b)=>a+' / '+b+' опыта', noWeek:'Недели этого сезона ещё не было.'},
-  fr:{tp:{y:'Tag', j:'Émoticône', l:'Écran de chargement', c:'Traînée', m:'Musique'}, tab:'Passe de combat', lvl:'Niveau', free:'Gratuit', paid:'Passe de combat', buy:'Acheter le Passe de combat', own:'Passe de combat acheté', buyLvl:'Acheter un niveau',
+  fr:{tp:{y:'Tag', j:'Émoticône', l:'Écran de chargement', c:'Traînée', m:'Musique'}, tab:'Passe de combat', lvl:'Niveau', free:'Gratuit', paid:'Passe de combat', buy:'Acheter le Passe de combat', own:'Passe de combat acheté', buyLvl:'Acheter des niveaux', lvlMax:'Max',
     noVb:'Pas assez de V-Bucks. Recharge dans la boutique.', left:n=>n+' jours restants', xpNote:"L'XP vient de tes tournois : chaque partie, éliminations, Top 1, bonnes places, qualifications et LAN. Les récompenses arrivent seules dans ton casier.",
     week:'Défis de la semaine', ch:{g:n=>'Joue '+n+' parties', e:n=>'Fais '+n+' éliminations', w:()=>'Gagne une partie', t:()=>'Finis dans le top 10 d\'un tournoi', q:()=>"Qualifie-toi pour l'étape suivante", n:n=>'Joue '+n+' tournois'},
-    none:"Pas encore de Passe pour cette saison.", askBuy:'Acheter le Passe de combat pour 950 V-Bucks ? Toutes les récompenses payantes jusqu\'à ton niveau se débloquent.', askLvl:'Acheter un niveau pour 150 V-Bucks ?',
+    none:"Pas encore de Passe pour cette saison.", askBuy:'Acheter le Passe de combat pour 950 V-Bucks ? Toutes les récompenses payantes jusqu\'à ton niveau se débloquent.', askLvl:(n, c)=>'Acheter '+n+(n===1 ? ' niveau' : ' niveaux')+' pour '+c+' V-Bucks ?',
     max:'Passe terminé', vb:n=>n+' V-Bucks', loading:'Chargement du Passe…', locker:'Ouvrir le casier', got:'Nouveau dans ton casier', prev:'Retour', next:'Suite', page:(a,b)=>'Niveaux '+a+' à '+b, xpOf:(a,b)=>a+' / '+b+' XP', noWeek:'Aucune semaine de cette saison pour le moment.'},
-  it:{tp:{y:'Spray', j:'Emoticon', l:'Schermata di caricamento', c:'Scia', m:'Musica'}, tab:'Pass battaglia', lvl:'Livello', free:'Gratis', paid:'Pass battaglia', buy:'Compra il Pass battaglia', own:'Pass battaglia acquistato', buyLvl:'Compra un livello',
+  it:{tp:{y:'Spray', j:'Emoticon', l:'Schermata di caricamento', c:'Scia', m:'Musica'}, tab:'Pass battaglia', lvl:'Livello', free:'Gratis', paid:'Pass battaglia', buy:'Compra il Pass battaglia', own:'Pass battaglia acquistato', buyLvl:'Compra livelli', lvlMax:'Max',
     noVb:'V-Buck insufficienti. Ricarica nel negozio.', left:n=>n+' giorni rimasti', xpNote:'I PE arrivano dai tornei: ogni partita, eliminazioni, vittorie reali, piazzamenti alti, qualificazioni e LAN. Le ricompense vanno da sole nell\'armadietto.',
     week:'Sfide della settimana', ch:{g:n=>'Gioca '+n+' partite', e:n=>'Fai '+n+' eliminazioni', w:()=>'Vinci una partita', t:()=>'Arriva nella top 10 di un torneo', q:()=>'Qualificati alla fase successiva', n:n=>'Gioca '+n+' tornei'},
-    none:'Nessun dato del Pass per questa stagione.', askBuy:'Comprare il Pass battaglia per 950 V-Buck? Tutte le ricompense a pagamento fino al tuo livello si sbloccano subito.', askLvl:'Comprare un livello per 150 V-Buck?',
+    none:'Nessun dato del Pass per questa stagione.', askBuy:'Comprare il Pass battaglia per 950 V-Buck? Tutte le ricompense a pagamento fino al tuo livello si sbloccano subito.', askLvl:(n, c)=>'Comprare '+n+(n===1 ? ' livello' : ' livelli')+' per '+c+' V-Buck?',
     max:'Pass completato', vb:n=>n+' V-Buck', loading:'Carico il Pass…', locker:'Apri armadietto', got:'Nuovo nell\'armadietto', prev:'Indietro', next:'Avanti', page:(a,b)=>'Livelli '+a+'-'+b, xpOf:(a,b)=>a+' / '+b+' PE', noWeek:'Nessuna settimana di questa stagione per ora.'},
-  pt:{tp:{y:'Spray', j:'Emoticon', l:'Tela de carregamento', c:'Rastro', m:'Música'}, tab:'Passe de Batalha', lvl:'Nível', free:'Grátis', paid:'Passe de Batalha', buy:'Comprar Passe de Batalha', own:'Passe de Batalha comprado', buyLvl:'Comprar nível',
+  pt:{tp:{y:'Spray', j:'Emoticon', l:'Tela de carregamento', c:'Rastro', m:'Música'}, tab:'Passe de Batalha', lvl:'Nível', free:'Grátis', paid:'Passe de Batalha', buy:'Comprar Passe de Batalha', own:'Passe de Batalha comprado', buyLvl:'Comprar níveis', lvlMax:'Máx.',
     noVb:'V-Bucks insuficientes. Recarregue na Loja de Itens.', left:n=>n+' dias restantes', xpNote:'O XP vem dos seus torneios: cada partida, eliminações, vitórias, boas colocações, classificações e LANs. As recompensas vão sozinhas para o seu armário.',
     week:'Desafios da semana', ch:{g:n=>'Jogue '+n+' partidas', e:n=>'Faça '+n+' eliminações', w:()=>'Vença uma partida', t:()=>'Fique no top 10 de um torneio', q:()=>'Classifique-se para a próxima fase', n:n=>'Jogue '+n+' torneios'},
-    none:'Ainda não há dados do Passe nesta temporada.', askBuy:'Comprar o Passe de Batalha por 950 V-Bucks? Todas as recompensas pagas até o seu nível liberam agora.', askLvl:'Comprar um nível por 150 V-Bucks?',
+    none:'Ainda não há dados do Passe nesta temporada.', askBuy:'Comprar o Passe de Batalha por 950 V-Bucks? Todas as recompensas pagas até o seu nível liberam agora.', askLvl:(n, c)=>'Comprar '+n+(n===1 ? ' nível' : ' níveis')+' por '+c+' V-Bucks?',
     max:'Passe completo', vb:n=>n+' V-Bucks', loading:'Carregando o Passe…', locker:'Abrir armário', got:'Novo no armário', prev:'Voltar', next:'Próximo', page:(a,b)=>'Níveis '+a+' a '+b, xpOf:(a,b)=>a+' / '+b+' XP', noWeek:'Nenhuma semana desta temporada ainda.'},
-  de:{tp:{y:'Spray', j:'Emoticon', l:'Ladebildschirm', c:'Kondensstreifen', m:'Musik'}, tab:'Battle Pass', lvl:'Stufe', free:'Gratis', paid:'Battle Pass', buy:'Battle Pass kaufen', own:'Battle Pass gekauft', buyLvl:'Stufe kaufen',
+  de:{tp:{y:'Spray', j:'Emoticon', l:'Ladebildschirm', c:'Kondensstreifen', m:'Musik'}, tab:'Battle Pass', lvl:'Stufe', free:'Gratis', paid:'Battle Pass', buy:'Battle Pass kaufen', own:'Battle Pass gekauft', buyLvl:'Stufen kaufen', lvlMax:'Max',
     noVb:'Nicht genug V-Bucks. Im Item-Shop aufladen.', left:n=>'Noch '+n+' Tage', xpNote:'EP gibt es aus Turnieren: jedes Match, Eliminierungen, Siege, Top-Platzierungen, Qualifikationen und LANs. Belohnungen landen von selbst im Spind.',
     week:'Wöchentliche Aufträge', ch:{g:n=>'Spiele '+n+' Matches', e:n=>'Erziele '+n+' Eliminierungen', w:()=>'Gewinne ein Match', t:()=>'Erreiche die Top 10 eines Turniers', q:()=>'Qualifiziere dich für die nächste Runde', n:n=>'Spiele '+n+' Turniere'},
-    none:'Für diese Saison gibt es noch keine Pass-Daten.', askBuy:'Battle Pass für 950 V-Bucks kaufen? Alle bezahlten Belohnungen bis zu deiner Stufe werden sofort frei.', askLvl:'Eine Stufe für 150 V-Bucks kaufen?',
+    none:'Für diese Saison gibt es noch keine Pass-Daten.', askBuy:'Battle Pass für 950 V-Bucks kaufen? Alle bezahlten Belohnungen bis zu deiner Stufe werden sofort frei.', askLvl:(n, c)=>n+(n===1 ? ' Stufe' : ' Stufen')+' für '+c+' V-Bucks kaufen?',
     max:'Pass abgeschlossen', vb:n=>n+' V-Bucks', loading:'Pass wird geladen…', locker:'Spind öffnen', got:'Neu im Spind', prev:'Zurück', next:'Weiter', page:(a,b)=>'Stufen '+a+' bis '+b, xpOf:(a,b)=>a+' / '+b+' EP', noWeek:'Noch keine Woche dieser Saison.'},
-  es:{tp:{y:'Grafiti', j:'Emoticono', l:'Pantalla de carga', c:'Estela', m:'Música'}, tab:'Pase de batalla', lvl:'Nivel', free:'Gratis', paid:'Pase de batalla', buy:'Comprar pase de batalla', own:'Pase de batalla comprado', buyLvl:'Comprar nivel',
+  es:{tp:{y:'Grafiti', j:'Emoticono', l:'Pantalla de carga', c:'Estela', m:'Música'}, tab:'Pase de batalla', lvl:'Nivel', free:'Gratis', paid:'Pase de batalla', buy:'Comprar pase de batalla', own:'Pase de batalla comprado', buyLvl:'Comprar niveles', lvlMax:'Máx.',
     noVb:'No tienes suficientes paVos. Recarga en la tienda.', left:n=>'Quedan '+n+' días', xpNote:'La PE sale de tus torneos: cada partida, eliminaciones, victorias, buenos puestos, clasificaciones y LAN. Las recompensas van solas a tu taquilla.',
     week:'Desafíos de la semana', ch:{g:n=>'Juega '+n+' partidas', e:n=>'Consigue '+n+' eliminaciones', w:()=>'Gana una partida', t:()=>'Entra en el top 10 de un torneo', q:()=>'Clasifícate para la siguiente fase', n:n=>'Juega '+n+' torneos'},
-    none:'Todavía no hay datos del pase para esta temporada.', askBuy:'¿Comprar el pase de batalla por 950 paVos? Todas las recompensas de pago hasta tu nivel se desbloquean ya.', askLvl:'¿Comprar un nivel por 150 paVos?',
+    none:'Todavía no hay datos del pase para esta temporada.', askBuy:'¿Comprar el pase de batalla por 950 paVos? Todas las recompensas de pago hasta tu nivel se desbloquean ya.', askLvl:(n, c)=>'¿Comprar '+n+(n===1 ? ' nivel' : ' niveles')+' por '+c+' paVos?',
     max:'Pase completado', vb:n=>n+' paVos', loading:'Cargando el pase…', locker:'Abrir taquilla', got:'Nuevo en tu taquilla', prev:'Atrás', next:'Siguiente', page:(a,b)=>'Niveles '+a+' a '+b, xpOf:(a,b)=>a+' / '+b+' PE', noWeek:'Todavía no hay semanas de esta temporada.'}};
 function ccBpT(){ return CC_BP_T_ALL[LANG] || CC_BP_T_ALL.en; }
 // Испытания недели: вид и цель. Три на неделю, выбор — от номера сезона и недели (без случайных чисел).
@@ -151533,10 +151538,16 @@ function ccBpBuy(){
   ccAsk(ccBpT().askBuy, ()=>{ if(p.prem || (CAREER.vb||0)<CC_BP_PRICE) return; CAREER.vb-=CC_BP_PRICE; p.prem=1; try{ ccSacSpend(CC_BP_PRICE); }catch(e){}
     ccBpGrant(p); careerSave(); careerRenderHub('bp'); });
 }
+// Сколько уровней можно купить: до конца пасса и на сколько хватит V-Bucks.
+let CC_BP_LVL_N=1;
+function ccBpLvlMax(p){ return Math.max(0, Math.min(CC_BP_LVLS-ccBpLevel(p), Math.floor((CAREER.vb||0)/CC_BP_LVL_PRICE))); }
+function ccBpLvlPick(p){ return Math.max(1, Math.min(ccBpLvlMax(p)||1, CC_BP_LVL_N)); }
+function ccBpLvlSet(n){ const p=ccBpCur(); if(!p) return; CC_BP_LVL_N=n; CC_BP_LVL_N=ccBpLvlPick(p); careerRenderHub('bp'); }
 function ccBpBuyLvl(){
-  const p=ccBpCur(); if(!p || ccBpLevel(p)>=CC_BP_LVLS || (CAREER.vb||0)<CC_BP_LVL_PRICE) return;
-  ccAsk(ccBpT().askLvl, ()=>{ if((CAREER.vb||0)<CC_BP_LVL_PRICE || ccBpLevel(p)>=CC_BP_LVLS) return; CAREER.vb-=CC_BP_LVL_PRICE;
-    p.xp=(ccBpLevel(p))*ccBpLvlXp(p); try{ ccSacSpend(CC_BP_LVL_PRICE); }catch(e){} ccBpGrant(p); careerSave(); careerRenderHub('bp'); });
+  const p=ccBpCur(); if(!p || !ccBpLvlMax(p)) return;
+  const n=ccBpLvlPick(p), cost=n*CC_BP_LVL_PRICE;
+  ccAsk(ccBpT().askLvl(n, cost), ()=>{ if(n>ccBpLvlMax(p)) return; CAREER.vb-=cost;
+    p.xp+=n*ccBpLvlXp(p); CC_BP_LVL_N=1; try{ ccSacSpend(cost); }catch(e){} ccBpGrant(p); careerSave(); careerRenderHub('bp'); });
 }
 function ccBpPage(d){ CC_BP_PAGE=Math.max(0, Math.min(CC_BP_PAGES-1, (CC_BP_PAGE||0)+d)); careerRenderHub('bp'); }
 function ccBpRewardHTML(r, open, have){
@@ -151547,6 +151558,14 @@ function ccBpRewardHTML(r, open, have){
   const bg=CC_FN_RAR[r.r] || CC_FN_RAR.rare;
   return '<div class="'+cls+'" style="--fn-bg:'+bg+'" title="'+esc(r.name)+'"><span class="cc-bp-img"><img src="'+ccFnImg(r.id, true)+'" alt="" loading="lazy" onerror="this.remove()"></span>'+
     '<b>'+esc(r.name)+'</b><em>'+esc(L0['ccFnType_'+r.t]||T.tp[r.t]||'')+'</em></div>';
+}
+// Выбор числа уровней: − n + и всё, что по карману; на кнопке итоговая цена.
+function ccBpLvlHTML(p, T){
+  const top=ccBpLvlMax(p), n=ccBpLvlPick(p), off=' disabled title="'+esc(T.noVb)+'"';
+  const step=(d, txt)=>'<button class="cc-bp-step" aria-label="'+txt+'" '+(n+d<1 || n+d>top ? 'disabled' : '')+' onclick="ccBpLvlSet('+(n+d)+')">'+txt+'</button>';
+  return '<div class="cc-bp-lvlbuy">'+step(-1, '−')+'<b class="cc-bp-lvln">'+n+'</b>'+step(1, '+')+
+    '<button class="cc-bp-step cc-bp-lvlmax" '+(n>=top ? 'disabled' : '')+' onclick="ccBpLvlSet('+top+')">'+esc(T.lvlMax)+'</button>'+
+    '<button class="cc-bp-lvlbtn"'+(top ? '' : off)+' onclick="ccBpBuyLvl()">'+esc(T.buyLvl)+' · <i class="cc-vb-ic"></i>'+ccNum(n*CC_BP_LVL_PRICE)+'</button></div>';
 }
 function ccBpHTML(){
   const T=ccBpT();
@@ -151568,7 +151587,7 @@ function ccBpHTML(){
     (news ? '<div class="cc-bp-news" role="status">'+esc(T.got)+' · '+news+' <button class="cc-fn-tolock" onclick="ccFnLockerOpen(\'o\')">'+esc(T.locker)+'</button></div>' : '')+
     '<div class="cc-bp-btns">'+(p.prem ? '<span class="cc-bp-own">'+esc(T.own)+'</span>'
       : '<button class="cc-bp-buy" '+(vb>=CC_BP_PRICE ? '' : 'disabled title="'+esc(T.noVb)+'"')+' onclick="ccBpBuy()">'+esc(T.buy)+' · <i class="cc-vb-ic"></i>'+CC_BP_PRICE+'</button>')+
-      (lvl<CC_BP_LVLS ? '<button class="cc-bp-lvlbtn" '+(vb>=CC_BP_LVL_PRICE ? '' : 'disabled title="'+esc(T.noVb)+'"')+' onclick="ccBpBuyLvl()">'+esc(T.buyLvl)+' · <i class="cc-vb-ic"></i>'+CC_BP_LVL_PRICE+'</button>' : '')+
+      (lvl<CC_BP_LVLS ? ccBpLvlHTML(p, T) : '')+
     '</div><div class="ch-hint">'+esc(T.xpNote)+'</div></div>';
   // Неделя: текущая неделя сезона, три испытания с прогрессом.
   const w=Math.floor(ccDaysBetween(p.from, day)/7), c=p.wk[w]||{};

@@ -77,6 +77,17 @@ const BOOT = `
       for(let L=1; L<=lvl; L++){ const r=tr[L].p; if(r && r.id && !own[r.id]) bad('платная награда уровня '+L+' не выдана после покупки'); }
       const lv0=ccBpLevel(p); CAREER.vb=500; ccBpBuyLvl();
       if(ccBpLevel(p)!==Math.min(CC_BP_LVLS, lv0+1)) bad('купленный уровень не прибавился: '+lv0+' -> '+ccBpLevel(p));
+      // Несколько уровней сразу: цена за все, прогресс внутри уровня цел, лишнее не купить.
+      p.xp=(ccBpLevel(p)-1)*ccBpLvlXp(p)+7; const lv1=ccBpLevel(p), xp1=p.xp; CAREER.vb=450; let vbBp=0;
+      for(let L=(p.gf||0)+1; L<=lv1+3; L++) if(tr[L] && tr[L].f && tr[L].f.vb) vbBp+=tr[L].f.vb;
+      for(let L=(p.gp||0)+1; L<=lv1+3; L++) if(tr[L] && tr[L].p && tr[L].p.vb) vbBp+=tr[L].p.vb;
+      CC_BP_LVL_N=99; if(ccBpLvlPick(p)!==3) bad('на 450 V-Bucks можно выбрать '+ccBpLvlPick(p)+' уровней, ждали 3');
+      ccBpLvlSet(3); ccBpBuyLvl();
+      if(ccBpLevel(p)!==lv1+3) bad('три уровня не прибавились: '+lv1+' -> '+ccBpLevel(p));
+      if(p.xp!==xp1+3*ccBpLvlXp(p)) bad('прогресс внутри уровня потерян');
+      if(CAREER.vb!==vbBp) bad('V-Bucks после трёх уровней '+CAREER.vb+', ждали '+vbBp);
+      CAREER.vb=0; const lv2=ccBpLevel(p); ccBpBuyLvl(); if(ccBpLevel(p)!==lv2) bad('уровень куплен без V-Bucks');
+      CAREER.vb=999999; if(ccBpLvlMax(p)!==CC_BP_LVLS-lv2) bad('максимум не до конца пасса: '+ccBpLvlMax(p));
       // Вкладка рисуется: 10 уровней, испытания недели.
       careerTab('bp');
       const body=document.getElementById('chBody');
