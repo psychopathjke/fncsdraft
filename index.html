@@ -4236,6 +4236,9 @@
   .cc-bp-buy,.cc-bp-lvlbtn{border:0;border-radius:8px;padding:10px 14px;font-weight:800;cursor:pointer;}
   .cc-bp-buy{background:#ffe066;color:#161b26;}
   .cc-bp-lvlbtn{background:rgba(255,255,255,.1);color:#e6edfb;}
+  .cc-pirate{border:1px solid #ffe066;background:linear-gradient(135deg,rgba(255,224,102,.16),rgba(255,224,102,.03));}
+  .cc-pirate-btn{min-height:44px;margin-top:10px;border:0;border-radius:8px;padding:10px 16px;background:#ffe066;color:#161b26;font-weight:800;cursor:pointer;}
+  .cc-pirate-on{margin-top:6px;color:#ffe066;font-weight:800;}
   .cc-bp-lvlbuy{display:flex;flex-wrap:wrap;align-items:center;gap:6px;}
   .cc-bp-step{min-width:44px;height:44px;border:0;border-radius:8px;background:rgba(255,255,255,.1);color:#e6edfb;font-weight:800;font-size:16px;cursor:pointer;padding:0 8px;}
   .cc-bp-step:disabled{opacity:.35;cursor:default;}
@@ -124214,6 +124217,7 @@ function careerSave(){
   if(ccSaveStale()){ if(typeof console!=='undefined') console.warn('career save skipped: the slot was written by another tab'); ccSaveStaleReload(); return; }
   try{ if(typeof ccLockerCheck==='function') ccLockerCheck(); }catch(e){}
   try{ if(typeof ccBpCheck==='function') ccBpCheck(); }catch(e){}
+  try{ if(typeof ccPirateCheck==='function') ccPirateCheck(); }catch(e){}
   // Экран карьер читает сейв не загружая его — пусть знает, есть ли у карьеры дивизионы сейчас.
   try{ if(CAREER.career) CAREER.career.noDiv=!!ccNoDivisions(); }catch(e){}
   try{ ccNightStamp(); }catch(e){}
@@ -125422,6 +125426,7 @@ function ccSubTabsHTML(group){
 }
 function careerRenderHubBody(tab){
   CH_TAB=tab||CH_TAB;
+  try{ ccPirateNews(); }catch(e){}
   try{ ccYearThemeApply(); }catch(e){}
   // На «Центре» вкладки хаба живут в шапке лобби (Notion «19.10»: две полосы вкладок одна над другой) — своя прячется.
   try{ document.getElementById('screen-career-hub').classList.toggle('ch-lobby-on', CH_TAB==='centre'); }catch(e){}
@@ -151559,6 +151564,64 @@ function ccBpRewardHTML(r, open, have){
   return '<div class="'+cls+'" style="--fn-bg:'+bg+'" title="'+esc(r.name)+'"><span class="cc-bp-img"><img src="'+ccFnImg(r.id, true)+'" alt="" loading="lazy" onerror="this.remove()"></span>'+
     '<b>'+esc(r.name)+'</b><em>'+esc(L0['ccFnType_'+r.t]||T.tp[r.t]||'')+'</em></div>';
 }
+/* PIRATE SHOP TOKEN (мини-сезон Treasure Hunters, S43). Как в Fortnite: редкая находка в матче, у напарника тоже,
+   включается в магазине: 14 дней всё за V-Bucks бесплатно. Шанса Epic не называла: 1/950 на игру наша настройка,
+   tools/pirate-odds-probe.js намерил 70–120 игр за сезон, выходит примерно 1 карьера из 10. Читает журнал, как пасс:
+   Math.random не трогает, бросок зависит от состава и дня, перезагрузка его не меняет. */
+const CC_PIRATE_P=1/950, CC_PIRATE_DAYS=14, CC_PIRATE_SEASON=43;
+const CC_PIRATE_T_ALL={
+  en:{title:'Pirate Shop Access', found:'YOU FOUND PIRATE SHOP ACCESS! Use it in the Item Shop: for 14 days everything priced in V-Bucks is free.', use:'Plunder the Item Shop', note:'One per career. Use it whenever you want: for 14 days everything priced in V-Bucks is free.', ask:'Plunder the Item Shop now? The 14 days start today.', left:n=>'Everything priced in V-Bucks is free. Days left: '+n},
+  ru:{title:'Pirate Shop Access', found:'ТЫ НАШЁЛ PIRATE SHOP ACCESS! Включи его в магазине: 14 дней всё за V-Bucks бесплатно.', use:'Разграбить магазин', note:'Один на карьеру. Включай когда хочешь: 14 дней всё за V-Bucks бесплатно.', ask:'Разграбить магазин сейчас? 14 дней пойдут с сегодняшнего.', left:n=>'Всё за V-Bucks бесплатно. Осталось дней: '+n},
+  fr:{title:'Pirate Shop Access', found:'TU AS TROUVÉ PIRATE SHOP ACCESS ! Active-le dans la boutique : pendant 14 jours, tout ce qui coûte des V-Bucks est gratuit.', use:'Piller la boutique', note:'Un seul par carrière. Active-le quand tu veux : pendant 14 jours, tout ce qui coûte des V-Bucks est gratuit.', ask:'Piller la boutique maintenant ? Les 14 jours commencent aujourd\'hui.', left:n=>'Tout ce qui coûte des V-Bucks est gratuit. Jours restants : '+n},
+  it:{title:'Pirate Shop Access', found:'HAI TROVATO PIRATE SHOP ACCESS! Attivalo nel negozio: per 14 giorni tutto ciò che costa V-Buck è gratis.', use:'Saccheggia il negozio', note:'Uno per carriera. Attivalo quando vuoi: per 14 giorni tutto ciò che costa V-Buck è gratis.', ask:'Saccheggiare il negozio ora? I 14 giorni partono da oggi.', left:n=>'Tutto ciò che costa V-Buck è gratis. Giorni rimasti: '+n},
+  pt:{title:'Pirate Shop Access', found:'VOCÊ ENCONTROU PIRATE SHOP ACCESS! Ative na loja: por 14 dias tudo que custa V-Bucks é grátis.', use:'Saquear a loja', note:'Um por carreira. Ative quando quiser: por 14 dias tudo que custa V-Bucks é grátis.', ask:'Saquear a loja agora? Os 14 dias começam hoje.', left:n=>'Tudo que custa V-Bucks é grátis. Dias restantes: '+n},
+  de:{title:'Pirate Shop Access', found:'DU HAST PIRATE SHOP ACCESS GEFUNDEN! Aktiviere ihn im Shop: 14 Tage lang ist alles für V-Bucks gratis.', use:'Shop plündern', note:'Einer pro Karriere. Aktiviere ihn, wann du willst: 14 Tage lang ist alles für V-Bucks gratis.', ask:'Shop jetzt plündern? Die 14 Tage beginnen heute.', left:n=>'Alles für V-Bucks ist gratis. Verbleibende Tage: '+n},
+  es:{title:'Pirate Shop Access', found:'¡HAS ENCONTRADO PIRATE SHOP ACCESS! Actívalo en la tienda: durante 14 días todo lo que cuesta paVos es gratis.', use:'Saquear la tienda', note:'Uno por carrera. Actívalo cuando quieras: durante 14 días todo lo que cuesta paVos es gratis.', ask:'¿Saquear la tienda ahora? Los 14 días empiezan hoy.', left:n=>'Todo lo que cuesta paVos es gratis. Días restantes: '+n}
+};
+function ccPirateT(){ return CC_PIRATE_T_ALL[LANG] || CC_PIRATE_T_ALL.en; }
+function ccPirate(){ return CAREER.pirate || (CAREER.pirate={seen:0}); }
+// Ключ команды один у обоих в паре: напарник находит токен вместе с тобой.
+function ccPirateTeam(){
+  const pl=CAREER.player||{}, mates=(CAREER.partners||[]).map(x=>x && x.handle).filter(Boolean);
+  return [pl.handle||pl.nick||''].concat(mates).map(x=>hKey(x)).sort().join('+');
+}
+function ccPirateRoll(team, day, k, g){ return careerRng(ccHashStr('pirate|'+team+'|'+day+'|'+k+'|'+g))()<CC_PIRATE_P; }
+function ccPirateCheck(){
+  const cr=CAREER && CAREER.career; if(!cr || !Array.isArray(cr.log)) return;
+  const p=ccPirate(), log=cr.log, team=ccPirateTeam(), perDay={};
+  if(p.seen>log.length) p.seen=log.length;
+  if(p.found){ p.seen=log.length; return; }
+  for(let i=0; i<log.length; i++){
+    const e=log[i]; if(!e || e.who || !e.day) continue;
+    const k=perDay[e.day]=(perDay[e.day]||0)+1;
+    if(i<p.seen || ccSeasonNumOn(e.day)!==CC_PIRATE_SEASON) continue;
+    for(let g=0; g<(e.games||0); g++) if(ccPirateRoll(team, e.day, k, g)){ p.found=e.day; p.news=1; p.seen=log.length; return; }
+  }
+  p.seen=log.length;
+}
+function ccPirateLeft(){
+  const p=CAREER && CAREER.pirate; if(!p || !p.on) return 0;
+  return Math.max(0, CC_PIRATE_DAYS-ccDaysBetween(p.on, careerToday()));
+}
+const ccPirateOn=()=>ccPirateLeft()>0;
+// Цена в магазине сейчас. Сортировка и суммы наборов считают по обычной ccFnPrice.
+function ccFnCost(it){ return ccPirateOn() ? 0 : ccFnPrice(it); }
+function ccPirateUse(){
+  const p=ccPirate(); if(!p.found || p.on) return;
+  ccAsk(ccPirateT().ask, ()=>{ if(p.on) return; p.on=careerToday(); careerSave(); careerRenderHub('items'); });
+}
+function ccPirateHTML(){
+  const p=CAREER.pirate, T=ccPirateT(); if(!p || !p.found) return '';
+  if(!p.on) return '<div class="ch-tile cc-pirate"><h4>'+esc(T.title)+'</h4><div class="ch-hint">'+esc(T.note)+'</div><button class="cc-pirate-btn" onclick="ccPirateUse()">'+esc(T.use)+'</button></div>';
+  const left=ccPirateLeft();
+  return left ? '<div class="ch-tile cc-pirate"><h4>'+esc(T.title)+'</h4><div class="cc-pirate-on" role="status">'+esc(T.left(left))+'</div></div>' : '';
+}
+// Сказать о находке один раз, когда вечер закончился и игрок снова в хабе.
+function ccPirateNews(){
+  const p=CAREER && CAREER.pirate; if(!p || !p.news || (typeof CC_FF!=='undefined' && CC_FF)) return;
+  p.news=0; try{ careerSave(); }catch(e){}
+  ccTell(ccPirateT().found);
+}
 // Выбор числа уровней: − n + и всё, что по карману; на кнопке итоговая цена.
 function ccBpLvlHTML(p, T){
   const top=ccBpLvlMax(p), n=ccBpLvlPick(p), off=' disabled title="'+esc(T.noVb)+'"';
@@ -151659,7 +151722,7 @@ function ccVbBuy(k){
 function ccFnBuyAllPlan(){
   const day=careerToday(), own=ccFnOwn();
   const its=(ccFnShopDay(day)||[]).filter(it=>!own[it.id]);
-  const vbNeed=its.reduce((s, it)=>s+ccFnPrice(it), 0);
+  const vbNeed=its.reduce((s, it)=>s+ccFnCost(it), 0);
   const short=Math.max(0, vbNeed-(CAREER.vb||0));
   let pack=null, n=0, usd=0;
   if(short>0){
@@ -151687,7 +151750,7 @@ function ccFnBuyAll(){
   const cr=CAREER.career, day=careerToday(), own=ccFnOwn(), eq=ccFnEq();
   if(p.usd){ cr.balance=Math.round(((cr.balance||0)-p.usd)*100)/100; CAREER.vb=(CAREER.vb||0)+p.n*p.pack.vb; }
   p.its.forEach(it=>{
-    const price=ccFnPrice(it); if((CAREER.vb||0)<price) return;
+    const price=ccFnCost(it); if((CAREER.vb||0)<price) return;
     CAREER.vb-=price;
     own[it.id]={t:it.t, n:it.name, r:it.r, d:day};
     if(!eq[it.t]) eq[it.t]=it.id;
@@ -151699,7 +151762,7 @@ function ccFnBuyAll(){
 function ccFnBuy(i){
   const it=ccFnItem(i), day=careerToday(), today=ccFnShopDay(day)||[];
   if(!it || !today.some(x=>x.i===i) || ccFnOwn()[it.id]) return;
-  const price=ccFnPrice(it);
+  const price=ccFnCost(it);
   if((CAREER.vb||0)<price) return;
   CAREER.vb-=price;
   ccFnOwn()[it.id]={t:it.t, n:it.name, r:it.r, d:day};
@@ -151770,14 +151833,15 @@ function ccFnBunHTML(b, era){
     '<span class="cc-fn-img"><img src="'+ccFnImg(hero.id)+'" alt="" loading="lazy" onerror="this.remove()"></span>'+
     '<b>'+esc(b.name)+'</b><em>'+esc(T.ccFnBundleN ? T.ccFnBundleN(b.its.length) : b.its.length+' items')+'</em>'+
     (all ? '<span class="cc-fn-own">'+esc(T.ccFnOwned)+'</span>'
-      : '<button class="cc-fn-buy" '+((CAREER.vb||0)>=price ? '' : 'disabled title="'+esc(T.ccFnNoVb)+'"')+' onclick="ccFnBuyBundle('+b.k+')">'+
-          '<i class="cc-vb-ic"></i>'+ccNum(price)+(price<b.sum ? ' <s>'+ccNum(b.sum)+'</s>' : '')+'</button>')+'</div>';
+      : '<button class="cc-fn-buy" '+((ccPirateOn() || (CAREER.vb||0)>=price) ? '' : 'disabled title="'+esc(T.ccFnNoVb)+'"')+' onclick="ccFnBuyBundle('+b.k+')">'+
+          '<i class="cc-vb-ic"></i>'+ccNum(ccPirateOn() ? 0 : price)+(price<b.sum || ccPirateOn() ? ' <s>'+ccNum(b.sum)+'</s>' : '')+'</button>')+'</div>';
 }
 function ccFnBuyBundle(k){
   const b=CC_FN_BUN_TODAY[k], day=careerToday(); if(!b) return;
   const today=new Set((ccFnShopDay(day)||[]).map(x=>x.i));
   if(!b.its.every(it=>today.has(it.i))) return;
-  const price=ccFnBunPrice(b); if(!price || (CAREER.vb||0)<price) return;
+  const base=ccFnBunPrice(b); if(!base) return;
+  const price=ccPirateOn() ? 0 : base; if((CAREER.vb||0)<price) return;
   CAREER.vb-=price;
   const own=ccFnOwn(), eq=ccFnEq();
   b.its.forEach(it=>{ if(!own[it.id]){ own[it.id]={t:it.t, n:it.name, r:it.r, d:day}; if(!eq[it.t]) eq[it.t]=it.id; } });
@@ -151844,7 +151908,7 @@ function ccFnPeekOpen(html){
 function ccFnPeek(e, i){
   if(e && e.target && e.target.closest('button')) return;
   const it=ccFnItem(i); if(!it) return;
-  const T=L(), own=!!ccFnOwn()[it.id], price=ccFnPrice(it), era=ccFnShopEra(careerToday());
+  const T=L(), own=!!ccFnOwn()[it.id], price=ccFnCost(it), era=ccFnShopEra(careerToday());
   const bg=era.noRar ? ccFnSetHue(it) : (CC_FN_RAR[it.r] || CC_FN_RAR.rare), nSty=CC_FN_STYLES_ON ? (CC_FN_SHOP.sty||{})[i] : 0;
   const img=it.t==='o' ? ccFnFull(it.id) : ccFnImg(it.id);
   ccFnPeekOpen('<div class="cc-fn-peek-art" style="--fn-bg:'+bg+'"><img src="'+img+'" alt="" onerror="if(!this.dataset.f){this.dataset.f=1;this.src=\''+ccFnImg(it.id)+'\';}else this.remove()"></div>'+
@@ -151860,7 +151924,7 @@ function ccFnPeekBun(e, k){
   ccFnPeekOpen('<div class="cc-fn-peek-art" style="--fn-bg:'+ccFnSetHue(hero)+'"><img src="'+ccFnFull(hero.id)+'" alt="" onerror="if(!this.dataset.f){this.dataset.f=1;this.src=\''+ccFnImg(hero.id)+'\';}else this.remove()"></div>'+
     '<div class="cc-fn-peek-txt"><b>'+esc(b.name)+'</b><em>'+esc(T.ccFnBundleN ? T.ccFnBundleN(b.its.length) : b.its.length+' items')+'</em>'+
     '<span class="cc-fn-peek-its">'+b.its.map(it=>'<span'+(own[it.id] ? ' class="own"' : '')+'><img src="'+ccFnImg(it.id, true)+'" alt="" loading="lazy" onerror="this.remove()"><i>'+esc(it.name)+'</i></span>').join('')+'</span>'+
-    (price ? '<button class="cc-fn-buy" '+((CAREER.vb||0)>=price ? '' : 'disabled title="'+esc(T.ccFnNoVb)+'"')+' onclick="ccFnBuyBundle('+k+')"><i class="cc-vb-ic"></i>'+ccNum(price)+(price<b.sum ? ' <s>'+ccNum(b.sum)+'</s>' : '')+'</button>'
+    (price ? '<button class="cc-fn-buy" '+((ccPirateOn() || (CAREER.vb||0)>=price) ? '' : 'disabled title="'+esc(T.ccFnNoVb)+'"')+' onclick="ccFnBuyBundle('+k+')"><i class="cc-vb-ic"></i>'+ccNum(ccPirateOn() ? 0 : price)+(price<b.sum || ccPirateOn() ? ' <s>'+ccNum(b.sum)+'</s>' : '')+'</button>'
       : '<span class="cc-fn-own">'+esc(T.ccFnOwned)+'</span>')+'</div>');
 }
 /* КОД АВТОРА (его выбор 20.10). Как в игре: в магазине вписываешь код креатора, и 5% твоих покупок идёт ему
@@ -152020,7 +152084,7 @@ function ccFnCardHTML(it, owned, canPay, big, era, day){
     '<b>'+esc(it.name)+'</b><em>'+esc(T['ccFnType_'+it.t]||'')+'</em>'+
     (owned ? '<span class="cc-fn-own">'+esc(T.ccFnOwned)+'</span>'
       : '<button class="cc-fn-buy" '+(canPay ? '' : 'disabled title="'+esc(T.ccFnNoVb)+'"')+' onclick="ccFnBuy('+it.i+')">'+
-          '<i class="cc-vb-ic"></i>'+ccNum(ccFnPrice(it))+'</button>')+'</div>';   // подарок скинов снят (его слово 20.10)
+          '<i class="cc-vb-ic"></i>'+ccNum(ccFnCost(it))+'</button>')+'</div>';   // подарок скинов снят (его слово 20.10)
 }
 function ccFnShopHTML(){
   const T=L(), cr=CAREER.career, day=careerToday();
@@ -152049,7 +152113,7 @@ function ccFnShopHTML(){
   const sec=(h, items, cls, keep, buns)=>'<div class="cc-fn-sec" id="ccFnSec'+(secN++)+'"><h5><span>'+esc(h)+'</span>'+clock+'</h5><div class="cc-fn-grid'+(cls||'')+'">'+
     (buns||[]).map(b=>ccFnBunHTML(b, era)).join('')+
     (keep ? items : setSort(items))
-      .map(it=>ccFnCardHTML(it, !!own[it.id], vb>=ccFnPrice(it), (cls && cls!==' feat') ? false : it.t==='o', era, day)).join('')+'</div></div>';
+      .map(it=>ccFnCardHTML(it, !!own[it.id], vb>=ccFnCost(it), (cls && cls!==' feat') ? false : it.t==='o', era, day)).join('')+'</div></div>';
   const bySet=new Map(), loose={};
   list.forEach(it=>{ if(it.set){ if(!bySet.has(it.set)) bySet.set(it.set, []); bySet.get(it.set).push(it); } else (loose[it.t]=loose[it.t]||[]).push(it); });
   // Набор из одного предмета — не раздел, а «россыпь» по типу.
@@ -152099,7 +152163,7 @@ function ccFnShopHTML(){
   const pk=ccFnPacksToday(day), PT=ccFnPackT();
   const packTile=pk.length ? '<div class="ch-tile cc-fn-shop cc-fn-packs cc-fs-'+era.v+(era.noRar ? ' norar' : '')+'"><h4>'+esc(PT.h)+'</h4>'+
     ccFnBalHTML()+'<div class="cc-fn-grid">'+pk.map(p=>ccFnPackHTML(p, era)).join('')+'</div><div class="ch-hint">'+esc(PT.note)+'</div></div>' : '';
-  return vbTile+packTile+grid;
+  return ccPirateHTML()+vbTile+packTile+grid;
 }
 function ccFnTabTo(n){
   const s=document.getElementById('ccFnSec'+n); if(!s) return;
