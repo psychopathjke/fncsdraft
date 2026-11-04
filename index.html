@@ -108342,6 +108342,31 @@ function buildBotLandingAssignment(bots, opts){
         g.forEach(o=>{ zoneOf.set(o, z); place(o, z); });
         zoneOf.set(s, best); place(s, best);
       });
+      /* Сильная половина не на самых бедных точках. Якорь книги держит точку весь сезон, поэтому кто раз сел на нижний
+         уровень, оставался там: меняем его с самым слабым одиночкой выше по очкам. Переезд один раз, дальше снова книга.
+         В перемешанных лобби книга не пишется, там не трогаем, иначе точка менялась бы от лобби к лобби. */
+      if(!CC_SEATS_REMIX && book){
+        const free=t=>t && !t.isYou && !t.isRival && !t.isMate && !t._stageSeated && !(t._mgrDrop==='quiet' || t._mgrDrop==='hot') && inCall.has(t);
+        const floor=Math.min(...(ALL_LANDING_ZONES||[]).map(z=>z.points||0));
+        ranked.filter(t=>strong.has(t) && free(t)).forEach(s=>{
+          const z=zoneOf.get(s);
+          if(!z || (z.points||0)>floor) return;
+          let x=null;
+          all.forEach(o=>{
+            if(o===s || !free(o) || str(o)>=str(s)) return;
+            const zo=zoneOf.get(o);
+            if(!zo || (zo.points||0)<=floor || (zoneGroups.get(zo)||[]).length!==1) return;
+            if(CC_SPOT_LOCK_ZONES && CC_SPOT_LOCK_ZONES.has(zo)) return;
+            if(!x || str(o)<str(x)) x=o;
+          });
+          if(!x) return;
+          const zx=zoneOf.get(x);
+          zoneGroups.set(z, zoneGroups.get(z).map(o=>o===s ? x : o));
+          zoneGroups.set(zx, [s]);
+          zoneOf.set(s, zx); zoneOf.set(x, z);
+          place(s, zx); place(x, z);
+        });
+      }
       /* СНАЧАЛА ПУСТЫЕ ТОЧКИ: пока есть пустая, никто не стоит вдвоём. На неё уходит слабейшая команда из самой людной
          общей коробки (лучшая пустая — первой). Контесты остаются только когда команд больше, чем коробок.
          Дом игрока, который боты обходят по ауре, не трогаем. */
