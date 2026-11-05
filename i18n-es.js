@@ -4205,3 +4205,6 @@ Object.assign(I18N.es=I18N.es||{},
 /* Дозаливка «es» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
 Object.assign(I18N.es=I18N.es||{},
 ({ ccRacePairHint:'El dúo juega como un equipo: vosotros dos, el IGL decide el estilo, el drop, el loot y las rotaciones, el fragger decide las peleas y el final, el dinero se reparte, cada carrera sigue siendo la suya' }));
+/* Дозаливка «es» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
+Object.assign(I18N.es=I18N.es||{},
+({ chTabBp: 'Pase de batalla' }));
