@@ -151831,6 +151831,7 @@ function ccBpRewardHTML(r, open, have){
    включается в магазине: 14 дней всё за V-Bucks бесплатно. Шанса Epic не называла: 1/250 на игру наша настройка,
    tools/pirate-odds-probe.js намерил 70–120 игр за сезон, выходит примерно 1 карьера из 3. Читает журнал, как пасс:
    Math.random не трогает, бросок зависит от состава и дня, перезагрузка его не меняет. */
+let CC_CHEST_DEMO=false;
 const CC_PIRATE_P=1/250, CC_PIRATE_DAYS=14, CC_PIRATE_SEASON=43;
 const CC_PIRATE_T_ALL={
   en:{title:'Pirate Shop Access', found:'YOU FOUND PIRATE SHOP ACCESS! Use it in the Item Shop: for 14 days everything priced in V-Bucks is free.', use:'Plunder the Item Shop', note:'One per career. Use it whenever you want: for 14 days everything priced in V-Bucks is free.', ask:'Plunder the Item Shop now? The 14 days start today.', left:n=>'Everything priced in V-Bucks is free. Days left: '+n},
@@ -151841,7 +151842,7 @@ const CC_PIRATE_T_ALL={
   de:{title:'Pirate Shop Access', found:'DU HAST PIRATE SHOP ACCESS GEFUNDEN! Aktiviere ihn im Shop: 14 Tage lang ist alles für V-Bucks gratis.', use:'Shop plündern', note:'Einer pro Karriere. Aktiviere ihn, wann du willst: 14 Tage lang ist alles für V-Bucks gratis.', ask:'Shop jetzt plündern? Die 14 Tage beginnen heute.', left:n=>'Alles für V-Bucks ist gratis. Verbleibende Tage: '+n},
   es:{title:'Pirate Shop Access', found:'¡HAS ENCONTRADO PIRATE SHOP ACCESS! Actívalo en la tienda: durante 14 días todo lo que cuesta paVos es gratis.', use:'Saquear la tienda', note:'Uno por carrera. Actívalo cuando quieras: durante 14 días todo lo que cuesta paVos es gratis.', ask:'¿Saquear la tienda ahora? Los 14 días empiezan hoy.', left:n=>'Todo lo que cuesta paVos es gratis. Días restantes: '+n}
 };
-function ccPirateT(){ return CC_PIRATE_T_ALL[LANG] || CC_PIRATE_T_ALL.en; }
+function ccPirateT(){ return (!(typeof CC_CHEST_DEMO!=='undefined' && CC_CHEST_DEMO) && CC_PIRATE_T_ALL[LANG]) || CC_PIRATE_T_ALL.en; }
 function ccPirate(){ return CAREER.pirate || (CAREER.pirate={seen:0}); }
 // Ключ команды один у обоих в паре: напарник находит токен вместе с тобой.
 function ccPirateTeam(){
@@ -151918,7 +151919,8 @@ const CC_CHEST_T_ALL={
   de:{more:'Mehr Truhen', freeW:'GRATIS', got:n=>'Waffen gefunden: '+n, ko:'OUTFIT', kl:'LADEBILDSCHIRM', kp:'SPITZHACKE', items:n=>n+' GEGENSTÄNDE', two:'Zwei Zeiträume von 14 Tagen: der erste bis 15. Dezember 2026, der zweite 2027. Alles für V-Bucks ist gratis.', next:'Der zweite Gratis-Zeitraum öffnet 2027.', all:n=>'Alle öffnen ('+n+')', found:'DU HAST GEFUNDEN', map:'Piratentruhen', chip:'Waffen, Items oder Münze', done:'Heute alle geöffnet. Komm morgen wieder', pick:'Tippe auf die Truhen auf der Karte. Darin: Waffen und Heilung, manchmal Outfit, Spitzhacke oder Ladebildschirm der Saison und sehr selten die Münze, die den Piratenshop öffnet.', left:n=>'Truhen heute übrig: '+n, none:'Heute keine Truhen mehr. Neue morgen.', search:'Durchsuchen', coin:'Piratenmünze!', coinS:'Zwei Zeiträume von 14 Tagen: der erste bis 15. Dezember 2026, der zweite 2027. Alles für V-Bucks ist gratis.', now:'Shop jetzt plündern', later:'Für später aufheben', close:'Schließen', free:'14 Tage gratis'},
   es:{more:'Más cofres', freeW:'GRATIS', got:n=>'Armas encontradas: '+n, ko:'ATUENDO', kl:'PANTALLA DE CARGA', kp:'PICO', items:n=>n+' OBJETOS', two:'Dos periodos de 14 días: el primero hasta el 15 de diciembre de 2026, el segundo en 2027. Todo lo que cuesta paVos es gratis.', next:'El segundo periodo gratis se abre en 2027.', all:n=>'Abrir todos ('+n+')', found:'HAS ENCONTRADO', map:'Cofres pirata', chip:'Armas, objetos o moneda', done:'Todos abiertos hoy. Vuelve mañana', pick:'Toca los cofres del mapa. Dentro: armas y curas, a veces atuendo, pico o pantalla de carga de la temporada, y muy rara vez la moneda que abre la tienda pirata.', left:n=>'Cofres restantes hoy: '+n, none:'No quedan cofres hoy. Nuevos mañana.', search:'Buscar', coin:'¡Moneda pirata!', coinS:'Dos periodos de 14 días: el primero hasta el 15 de diciembre de 2026, el segundo en 2027. Todo lo que cuesta paVos es gratis.', now:'Saquear la tienda ahora', later:'Guardar para luego', close:'Cerrar', free:'14 días gratis'}
 };
-function ccChestT(){ return CC_CHEST_T_ALL[LANG] || CC_CHEST_T_ALL.en; }
+// Показ #chestdemo всегда по-английски: он для скринов в X.
+function ccChestT(){ return (!CC_CHEST_DEMO && CC_CHEST_T_ALL[LANG]) || CC_CHEST_T_ALL.en; }
 function ccChestOn(){ return !(CAREER.career && CAREER.career.seasonOver) && ccSeasonNumOn(careerToday())===CC_PIRATE_SEASON; }
 function ccChestToday(){ const p=ccPirate(), day=careerToday(); return (p.chest && p.chest.day===day) ? p.chest : {day:day, opened:[], round:0}; }
 // Номер захода в ключе дня: новый заход это новые сундуки и новый лут, перезагрузка их не меняет.
@@ -152130,7 +152132,6 @@ function ccChestCoin(){
     '<div class="cc-ch-btns cc-chb-btns"><button class="cc-ch-btn" onclick="ccPirateActivate()">'+esc(T.now)+'</button><button class="cc-ch-btn q" onclick="ccChestBack()">'+esc(T.later)+'</button></div></div>');
 }
 /* Показ анимаций по адресу #chestdemo: без карьеры и без записи в сейв, для скринов и записи экрана. */
-let CC_CHEST_DEMO=false;
 function ccChestDemo(){
   CC_CHEST_DEMO=true; CC_CHEST_BUSY=false;
   const T=ccChestT(), pts=[], pick=(flat, n, rare)=>{ for(let k=0, got=0; k<flat.length/2 && got<n; k++){ const i=(k*37)%(flat.length/2), x=flat[i*2], y=flat[i*2+1]; if(pts.some(s=>Math.hypot(s.x-x, s.y-y)<6.5)) continue; pts.push({x:x, y:y, rare:rare}); got++; } };
