@@ -18,14 +18,17 @@ save('2026-10-31'); check('31.10 ещё s42', careerBrSet()==='s42', careerBrSet
 save('2026-11-01'); check('1.11 уже s43', careerBrSet()==='s43', careerBrSet());
 const zs=ZONE_SETS.s43, st=ZONE_STATS.s43;
 notes.zones=zs.length;
-check('40 клеток и столько же лута', zs.length===40 && st.length===40, zs.length+' '+st.length);
+check('клетки и лут вровень', zs.length>=22 && zs.length===st.length, zs.length+' '+st.length);
+check('клетки разного размера', Math.max(...zs.map(z=>z.w))-Math.min(...zs.map(z=>z.w))>5);
+check('клетки не пересекаются', zs.every((a,i)=>zs.every((b,j)=>i>=j || !(a.x<b.x+b.w-.01 && b.x<a.x+a.w-.01 && a.y<b.y+b.h-.01 && b.y<a.y+a.h-.01))));
+check('Noble: большие клетки', Math.max(...zs.map(z=>z.w))>18, Math.max(...zs.map(z=>z.w)));
 check('клетки в кадре', zs.every(z=>z.x>=0 && z.y>=0 && z.x+z.w<=100 && z.y+z.h<=100));
 check('картинка и пропорция', MAP_ART.s43==='art/map-s43.jpg' && MAP_ASPECT.s43==='1/1');
 check('лут сезона', ccLootSet('s43')==='s43' && CC_LOOT_BY_SET.s43.weapons===S43_WEAPON_POOL);
-const was=ACTIVE_LANDING_SET; useLandingSet('s43');
+const was=ACTIVE_LANDING_SET, wasSq=squadSize; squadSize=3; useLandingSet('s43');
 check('клетки встали', ACTIVE_LANDING_SET==='s43' && ALL_LANDING_ZONES.length>=20, ACTIVE_LANDING_SET+' '+ALL_LANDING_ZONES.length);
 notes.named=ALL_LANDING_ZONES.filter(z=>z.n).length;
-useLandingSet(was);
+squadSize=wasSq; useLandingSet(was);
 // Вечер на этом острове: кап Victory 9 ноября.
 save('2026-11-09');
 const next=careerNext(); notes.next=next && (next.type+' '+next.day);
@@ -40,6 +43,26 @@ check('игры прошли на s43', seen.includes('s43') && !seen.includes('
 notes.logged=CAREER.career.log.length-n0; notes.set=ACTIVE_LANDING_SET;
 check('вечер записан', CAREER.career.log.length>n0, CAREER.career.log.length);
 check('без ошибок', !errs.length, errs.slice(0,3).join(' | '));
+// Трио: S43 идёт составом из трёх, кресла добирает режим; Trios Cash Cup 7 ноября в календаре и играется.
+save('2026-10-31'); check('31.10 ещё дуо', careerSquadSize()===2 && !ccPhaseRoster(), careerSquadSize());
+save('2026-11-02');
+check('в S43 трио', careerSquadSize()===3, careerSquadSize());
+check('кресла заняты', !careerMatesShort(), careerMatesShort());
+notes.mates=careerMates().filter(Boolean).map(c=>c.handle);
+CAREER.career.day='2026-11-07';
+const v=ccVictoryAlts('2026-11-07').find(x=>x.id==='S43_TriosCashCup');
+check('Trios Cash Cup в календаре', !!v && ccVictoryFormat(v)===3, JSON.stringify(v&&v.id));
+check('приз из таблицы', v && ccVictoryPayOf(v,1)>0, v && ccVictoryPayOf(v,1));
+// Настоящий вечер трио 22 ноября.
+save('2026-11-22');
+const nx=careerNext(); notes.next22=nx && (nx.type+' '+nx.day);
+const ev22=careerVictoryOn('2026-11-22'); check('22.11 это Trios Cash Cup', ev22 && ev22.id==='S43_TriosCashCup', ev22 && ev22.id);
+const n22=CAREER.career.log.length, sk2=setInterval(()=>{ const b=document.getElementById('majorSkipBtn'); if(b && !b.disabled) b.click(); }, 20);
+await Promise.race([runCareerVictory(), new Promise(r=>setTimeout(r, 500000))]);
+clearInterval(sk2);
+const last=CAREER.career.log[CAREER.career.log.length-1]; notes.trio={place:last&&last.place, label:last&&(last.label||last.id), size:careerSquadSize(), prize:last&&last.prize};
+check('вечер трио записан', CAREER.career.log.length>n22, CAREER.career.log.length);
+check('без ошибок в трио', !errs.length, errs.slice(0,3).join(' | '));
 return {fails, notes};
 `;
 const tmp=path.join(fs.mkdtempSync(path.join(os.tmpdir(),'s43-')),'body.js'); fs.writeFileSync(tmp, body);
