@@ -152110,8 +152110,8 @@ function ccChestFoundHTML(got){
   return '<div class="cc-chf"><div class="cc-chf-cards">'+list.slice(0, 4).map(one).join('')+'</div>'+
     '<div class="cc-chf-bar"><small>'+esc(T.found)+'</small><b>'+esc(kind)+'</b></div>'+(list.length===1 ? '<div class="cc-chf-n">'+esc(list[0].n)+'</div>' : '')+'</div>';
 }
-function ccChestDone(){ ccChestClose(); careerRenderHub(CH_TAB); }
-function ccChestBack(){ if(ccChestCan()) ccChestOpen(); else ccChestDone(); }
+function ccChestDone(){ ccChestClose(); if(CC_CHEST_DEMO) return ccChestDemo(); careerRenderHub(CH_TAB); }
+function ccChestBack(){ if(CC_CHEST_DEMO) return ccChestDemo(); if(ccChestCan()) ccChestOpen(); else ccChestDone(); }
 function ccChestRainHTML(){
   let h='<div class="cc-ch-rays"></div>';
   for(let i=0; i<16; i++) h+='<i class="cc-ch-rain" style="left:'+((i*37+5)%100)+'%;animation-delay:'+(i*.11).toFixed(2)+'s"></i>';
@@ -152129,16 +152129,40 @@ function ccChestCoin(){
   ccChestShow(ccChestBannerHTML()+'<div class="cc-ch-s cc-chb-s">'+esc(T.coinS)+'</div>'+
     '<div class="cc-ch-btns cc-chb-btns"><button class="cc-ch-btn" onclick="ccPirateActivate()">'+esc(T.now)+'</button><button class="cc-ch-btn q" onclick="ccChestBack()">'+esc(T.later)+'</button></div></div>');
 }
+/* Показ анимаций по адресу #chestdemo: без карьеры и без записи в сейв, для скринов и записи экрана. */
+let CC_CHEST_DEMO=false;
+function ccChestDemo(){
+  CC_CHEST_DEMO=true; CC_CHEST_BUSY=false;
+  const T=ccChestT(), pts=[], pick=(flat, n, rare)=>{ for(let k=0, got=0; k<flat.length/2 && got<n; k++){ const i=(k*37)%(flat.length/2), x=flat[i*2], y=flat[i*2+1]; if(pts.some(s=>Math.hypot(s.x-x, s.y-y)<6.5)) continue; pts.push({x:x, y:y, rare:rare}); got++; } };
+  pick(CC_S43_CHESTS.r, CC_CHEST_R, 1); pick(CC_S43_CHESTS.n, CC_CHEST_N, 0);
+  const pin=s=>'<button class="cc-chm'+(s.rare ? ' r' : '')+'" style="left:'+s.x+'%;top:'+s.y+'%" onclick="ccChestDemoPlay(\'gun\')"><img src="items/creative/pirate-chest'+(s.rare ? '-rare' : '')+'-m.webp" alt=""></button>';
+  const btn=(k, n)=>'<button class="cc-ch-btn q" onclick="ccChestDemoPlay(\''+k+'\')">'+n+'</button>';
+  ccChestShow('<div class="cc-ch-box cc-chm-box"><div class="cc-ch-t">'+esc(T.map)+'</div><div class="cc-ch-s">'+esc(T.pick)+'</div><div class="cc-chm-map" id="ccChestMap">'+pts.map(pin).join('')+'</div>'+
+    '<div class="cc-ch-btns">'+btn('gun', 'Weapon')+btn('item', 'Outfit')+btn('coin', 'Coin')+btn('free', 'Free shop')+'</div></div>');
+}
+function ccChestDemoPlay(k){
+  if(CC_CHEST_BUSY) return;
+  if(k==='free') return ccPirateFreeFx(1);
+  const gun=S43_WEAPON_POOL.find(x=>x.name==='Bundlebuss Repeater Rifle' && x.rarity==='epic') || S43_WEAPON_POOL[0];
+  const got=k==='coin' ? {coin:1} : k==='item' ? {item:{id:CC_CHEST_DROPS.o[0][0], t:'o', n:CC_CHEST_DROPS.o[0][1], r:CC_CHEST_DROPS.o[0][2]}} : {loot:{weapon:gun, cons:S43_CONSUMABLE_POOL.find(x=>/Tangerine/.test(x.name))}};
+  ccChestStage({rare:k==='coin' ? 0 : 0}, got);
+}
+window.addEventListener('load', ()=>{ if(location.hash==='#chestdemo') setTimeout(ccChestDemo, 300); });
 // Включить токен: срок идёт сразу, магазин рисуется под анимацией, она закрывается сама или по нажатию.
 function ccPirateActivate(){
+  if(CC_CHEST_DEMO) return ccPirateFreeFx(1);
   if(!ccPirateCanUse()) return;
   const p=ccPirate();
   if(ccPirateSlot()===2) p.on2=careerToday(); else p.on=careerToday();
   p.onS=CAREER.career.season||1; careerSave(); careerRenderHub('items');
+  ccPirateFreeFx();
+}
+function ccPirateFreeFx(demo){
   const T=ccChestT();
   const m=ccChestShow('<div class="cc-chb-gold"></div>'+ccChestRainHTML()+'<div class="cc-ch-box"><span class="cc-coin cc-coin-spin">'+CC_COIN_SVG+'</span><div class="cc-ch-t">'+esc(ccPirateT().title)+'</div><span class="cc-ch-stamp">'+esc(T.free)+'</span></div>');
-  m.onclick=ccChestClose;
-  setTimeout(()=>{ if(m.parentNode) m.remove(); }, 2600);
+  const end=()=>{ if(!m.parentNode) return; m.remove(); if(demo) ccChestDemo(); };
+  m.onclick=end;
+  setTimeout(end, 2600);
 }
 // Выбор числа уровней: − n + и всё, что по карману; на кнопке итоговая цена.
 function ccBpLvlHTML(p, T){
