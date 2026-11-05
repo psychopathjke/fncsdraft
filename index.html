@@ -84332,14 +84332,14 @@ const S42_SORTS={};
       return rowEntry([rank, q[2], q[3]||1, q[4]||0, q[5]||0, q[6]||50, nm]);
     });
     const restS=restE.length ? mkSortsNoExp(entries.concat(restE)) : null;
-    const REST_STAGE={heat1:'Heat 1', heat2:'Heat 2', fast:'Fast Track', lcq:'Last Chance'};
+    const REST_STAGE={heat1:'Heat 1', heat2:'Heat 2', fast:'Fast Track', lcq:'Last Chance'}, REST_DATE={heat1:'17 окт 2026', heat2:'18 окт 2026', fast:'10 окт 2026', lcq:'20 окт 2026'};
     rest.forEach(([nm,,rank,pts,res], i)=>{
       const q=(res||[]).slice().sort((a,b)=>a[1]-b[1])[0];
       const base=Math.round(clamp(62-(rank-101)/Math.max(rest.length, 2)*20, 30, 99));
       const e=restE[i];
       pushCard({
         handle:nm, nat:null, natSource:'tracker',
-        region:reg, event:'FNCS 2026 Solos — '+REST_STAGE[q[0]]+' ('+T1_REGION_NAME[reg]+')', date:S42_DATE,
+        region:reg, event:'FNCS 2026 Solos — '+REST_STAGE[q[0]]+' ('+T1_REGION_NAME[reg]+')', date:REST_DATE[q[0]],
         // Место на этой стадии, а не в финале. Единицу ledger считает чемпионом и не опускает.
         placement:Math.max(2, q[1]), _s42Rest:true, note:'', tier:'cardmode', cardSet:'s42', rarity:rarityForRating(base), rating:base, org:null,
         real:{rank, pts, matches:e.matches, wins:e.wins, avgElims:e.avgElims, avgPlace:e.avgPlace, stage:'P'},
