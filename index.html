@@ -121372,7 +121372,7 @@ function ccMpSeedOff(){
    голосование с монеткой не годились: клик двигал общий генератор и вечера расходились (ccMpChoose,
    tools/check-mp-choice-cost.js).
    Ответ должен совпасть у обоих, поэтому считается из одних данных (своя карточка и напарника) с полным порядком:
-   роль, ник, владелец лобби. Даже у двух фраггеров восьмую зону берёт ровно один. Сторож tools/check-mp-relay.js.
+   роль, ник, владелец лобби. Даже при одной роли каждый вопрос берёт ровно один, и вопросы делятся пополам. Сторож tools/check-mp-relay.js.
    */
 /* 2.11, его слово: «в одиночной карьере или против друга ты решаешь всё, а в дуо карьере игл и фраггер свои роли решают».
    Было: фраггеру только восьмая зона, остальное иглу. Теперь игл — стиль, точка, лут, ротации; фраггер — мид, фарм,
@@ -121397,7 +121397,7 @@ function ccMpMine(kind){
     var meC=(typeof careerCard==='function') ? careerCard() : null;
     /* Пара в гонке: два человека в одном дуо, адрес команды — первая карточка по нику (ccRacePairTeamInto),
        и все вопросы вечера получал один из двоих (Notion 2.11: «решения принимаю только я, у друга ничего нет»).
-       Вопросы пары делятся по ролям, одинаково у обоих: CC_RACE_PAIR_WHO, равные роли — по нику. */
+       Вопросы пары делятся по ролям, одинаково у обоих: CC_RACE_PAIR_WHO; при одной роли половина вопросов у каждого. */
     var tag=String(kind).slice(at+1);
     if(meC && typeof ccRacePairOn==='function' && ccRacePairOn()){
       var pcs=ccRacePairCards();
@@ -121407,7 +121407,8 @@ function ccMpMine(kind){
           var pWant=CC_RACE_PAIR_WHO[String(kind).slice(0, at)] || 'roleIGL';
           var pa=ccMpRoleKey(meC)===pWant, pb=ccMpRoleKey(peerC)===pWant;
           if(pa!==pb) return pa;
-          return mk<hKey(peerC);
+          // Одна роль у обоих: вопросы всё равно на двоих, первый по нику берёт вопросы игла, второй фраггера.
+          return (mk<hKey(peerC))===(pWant==='roleIGL');
         }
       }
     }
@@ -121421,9 +121422,11 @@ function ccMpMine(kind){
   const want=CC_MP_WHO[kind] || 'roleIGL';
   const a=ccMpRoleKey(me)===want, b=ccMpRoleKey(peer)===want;
   if(a!==b) return a;
+  // Одна роль у обоих (5.11, игрок: «вдвоём не можем выбирать отдельно»): один не должен решать всё.
+  // Первый по нику берёт вопросы игла, второй фраггера. Порядок считается одинаково у обоих.
   const ha=String(me.handle||'').toLowerCase(), hb=String(peer.handle||'').toLowerCase();
-  if(ha!==hb) return ha<hb;
-  return owner;
+  const first=ha!==hb ? ha<hb : owner;
+  return first===(want==='roleIGL');
 }
 /* Код лобби — он же приглашение.
 
