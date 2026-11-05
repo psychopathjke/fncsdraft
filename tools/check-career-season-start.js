@@ -82,7 +82,7 @@ check('на плитке 2024: C5S1 C5S2 C5S3 и Remix', sb.map(b=>b.textContent
 { const w26=[...document.querySelectorAll('#ccYearChips .cc-yt-wrap')].find(w=>/^2026/.test(w.querySelector('.cc-year-tile').textContent));
   const t26=w26 ? [...w26.querySelectorAll('.cc-yt-s')].map(b=>b.textContent) : [];
   notes.tile26=t26;
-  check('на плитке 2026: S39 S40 S41 S42 S43', t26.join(' ')==='S39 S40 S41 S42 S43', t26.join(' '));
+  check('на плитке 2026: S39 S40 S41 S42 One Piece', t26.join(' ')==='S39 S40 S41 S42 One Piece', t26.join(' '));
   const ss=ccStartSeasonsOf(2026);
   check('сезоны 2026 по датам', ss.map(s=>s.from).join()==='2025-12-01,2026-03-19,2026-06-06,2026-08-21,2026-11-01', ss.map(s=>s.from).join());
   ccPickYearSeason(2026,'s42');
