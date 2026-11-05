@@ -44,13 +44,15 @@ const en0=careerEnergy(), vb0=CAREER.vb||0;
 ccChestOpen();
 check('карта с маркерами', document.querySelectorAll('#ccChestOv .cc-chm').length===40);
 check('открыть карту бесплатно', careerEnergy()===en0);
+const first0=ccPirateChestRoll(day,2,spots[2].rare);
 ccChestPick(2);
 check('первый сундук 20 энергии', en0-careerEnergy()===CC_CHEST_COST, en0-careerEnergy());
-check('сцена открытия', !!document.getElementById('ccChestStage'));
+check(first0.none ? 'у пустого сундука сцены нет' : 'сцена открытия', !!document.getElementById('ccChestStage')===!first0.none, JSON.stringify(first0));
+{ let k=-1; for(let i=3;i<40 && k<0;i++) if(ccPirateChestRoll(day,i,spots[i].rare).none) k=i; check('нашёлся пустой сундук', k>=0); CC_CHEST_BUSY=false; { const s=document.getElementById('ccChestStage'); if(s) s.remove(); } ccChestPick(k); check('пустой открылся без сцены', !document.getElementById('ccChestStage') && !CC_CHEST_BUSY && ccChestToday().opened.indexOf(k)>=0); }
 const first=JSON.parse(localStorage.getItem('fncsdraft_career')).pirate.chest;
 check('V-Bucks из сундука не падают', (CAREER.vb||0)===vb0, CAREER.vb);
 check('итог сохранён сразу', first.day===day && first.opened[0]===2, JSON.stringify(first));
-ccChestPick(3); check('пока идёт сцена, второй не открыть', ccChestToday().opened.length===1);
+{ const n=ccChestToday().opened.length; CC_CHEST_BUSY=true; ccChestPick(39); check('пока идёт сцена, второй не открыть', ccChestToday().opened.length===n); CC_CHEST_BUSY=false; }
 CC_CHEST_BUSY=false; const st=document.getElementById('ccChestStage'); if(st) st.remove();
 const en1=careerEnergy();
 CC_CHEST_BUSY=false; ccChestOpenAll();
@@ -64,7 +66,7 @@ CC_CHEST_BUSY=false; { const s=document.getElementById('ccChestStage'); if(s) s.
 { const c={none:0,l:0,p:0,loot:0,coin:0}, names={}; for(let d=1;d<=30;d++) for(let i=0;i<2000;i++){ const x=ccPirateChestRoll('2026-11-'+String(d).padStart(2,'0'), i, 0); if(x.none) c.none++; else if(x.item) c[x.item.t]++; else if(x.coin) c.coin++; else if(x.loot){ c.loot++; names[x.loot.weapon.name]=1; } else c.bad=(c.bad||0)+1; }
   notes.drops=c; notes.guns=Object.keys(names).length; check('только оружие S43', Object.keys(names).every(n=>S43_WEAPON_NAMES.some(r=>r[0]===n)) && Object.keys(names).length===S43_WEAPON_NAMES.length, Object.keys(names).join()); check('нет ничего другого', !c.bad, c.bad); const N=60000; check('ничего около 25%', c.none/N>.22 && c.none/N<.28, c.none/N); check('экраны и кирки падают', c.l/N>.012 && c.p/N>.002, c.l+' '+c.p);
   const it=Object.assign({}, CC_CHEST_DROPS.l[0], {id:CC_CHEST_DROPS.l[0][0], t:'l', n:CC_CHEST_DROPS.l[0][1], r:CC_CHEST_DROPS.l[0][2]}); ccChestGive(it); check('предмет в шкафчике', ccFnOwn()[it.id] && ccFnOwn()[it.id].t==='l');
-  check('баннер находки', /cc-chf-bar/.test(ccChestFoundHTML({item:it})) && /cc-chf-bar/.test(ccChestFoundHTML({none:1})) && ccChestFoundHTML({vb:5})===''); }
+  check('баннер только у вещей', /cc-chf-bar/.test(ccChestFoundHTML({item:it})) && ccChestFoundHTML({none:1})===''); }
 CC_CHEST_BUSY=false; ccChestClose();
 check('плитка на сегодня погашена', (()=>{ const d=document.createElement('div'); d.innerHTML=careerTrainTabHTML(); const x=d.querySelector('.cc-dt.did b'); return x && x.textContent===T.map; })());
 careerLoad();
