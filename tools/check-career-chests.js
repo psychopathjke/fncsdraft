@@ -47,7 +47,7 @@ check('карта с маркерами', document.querySelectorAll('#ccChestOv 
 check('открыть карту бесплатно', careerEnergy()===en0);
 const first0=ccPirateChestRoll(day,2,spots[2].rare);
 ccChestPick(2);
-check('сундук не тратит энергию', careerEnergy()===en0, en0-careerEnergy());
+check('заход стоит 25 энергии', en0-careerEnergy()===25, en0-careerEnergy());
 check(first0.none ? 'у пустого сундука сцены нет' : 'сцена открытия', !!document.getElementById('ccChestStage')===!first0.none, JSON.stringify(first0));
 { let k=-1; for(let i=3;i<40 && k<0;i++) if(ccPirateChestRoll(day,i,spots[i].rare).none) k=i; check('нашёлся пустой сундук', k>=0); CC_CHEST_BUSY=false; { const s=document.getElementById('ccChestStage'); if(s) s.remove(); } ccChestPick(k); check('пустой открылся без сцены', !document.getElementById('ccChestStage') && !CC_CHEST_BUSY && ccChestToday().opened.indexOf(k)>=0); }
 const first=JSON.parse(localStorage.getItem('fncsdraft_career')).pirate.chest;
@@ -70,10 +70,10 @@ CC_CHEST_BUSY=false; { const s=document.getElementById('ccChestStage'); if(s) s.
   const it=Object.assign({}, CC_CHEST_DROPS.l[0], {id:CC_CHEST_DROPS.l[0][0], t:'l', n:CC_CHEST_DROPS.l[0][1], r:CC_CHEST_DROPS.l[0][2]}); ccChestGive(it); check('предмет в шкафчике', ccFnOwn()[it.id] && ccFnOwn()[it.id].t==='l');
   check('баннер только у вещей', /cc-chf-bar/.test(ccChestFoundHTML({item:it})) && ccChestFoundHTML({none:1})===''); }
 CC_CHEST_BUSY=false; ccChestClose();
-check('плитка на сегодня погашена', (()=>{ const d=document.createElement('div'); d.innerHTML=careerTrainTabHTML(); const x=d.querySelector('.cc-dt.did b'); return x && x.textContent===T.map; })());
+{ const tile=()=>{ const d=document.createElement('div'); d.innerHTML=ccChestTileHTML(); return d.querySelector('.cc-dt'); }; check('заход кончился, плитка зовёт на новый', tile() && !tile().classList.contains('off') && /25/.test(tile().querySelector('.cc-dt-en').textContent), tile() && tile().outerHTML.slice(0,120)); const en=careerEnergy(); careerSpend(en); check('без энергии плитка закрыта', tile().classList.contains('off')); careerRestore(100); }
 careerLoad();
-check('после перезагрузки закрыто', ccChestLeft()===0);
-ccChestOpen(); check('окно не открыть', !document.getElementById('ccChestOv'));
+check('заход кончился, можно новый', ccChestLeft()===0 && ccChestDoneRound());
+{ const e1=careerEnergy(), keyA=ccChestKey(ccChestToday()); if(e1<25) careerRestore(100); ccChestOpen(); check('второй заход открылся', document.querySelectorAll('#ccChestOv .cc-chm').length===40 && ccChestToday().round===1 && ccChestToday().opened.length===0); check('новые сундуки', ccChestKey(ccChestToday())!==keyA); const e2=careerEnergy(); ccChestPick(0); check('второй заход снова 25', e2-careerEnergy()===25, e2-careerEnergy()); CC_CHEST_BUSY=false; ccChestClose(); }
 // Монета.
 let cd=null, ci=-1, cr=0;
 for(let t=0; t<60 && !cd; t++){ CAREER.player.nick='Coin'+t;
@@ -114,7 +114,7 @@ save('2026-11-09');
   check('на вкладке только сундуки', names.length===1 && names[0]===T.map, names.join());
   ccChestOpen(); check('карта открылась', document.querySelectorAll('#ccChestOv .cc-chm').length===40);
   const e=careerEnergy(), dd=careerToday(); let k=0; while(ccChestRoll2(dd,k)) k++; ccChestPick(k);
-  check('сундук открылся', ccChestToday().opened.indexOf(k)>=0); check('энергия и день те же', careerEnergy()===e && careerToday()===dd); CC_CHEST_BUSY=false; ccChestClose(); }
+  check('сундук открылся', ccChestToday().opened.indexOf(k)>=0); check('день тот же, 25 энергии', e-careerEnergy()===25 && careerToday()===dd, e-careerEnergy()); CC_CHEST_BUSY=false; ccChestClose(); }
 CAREER.career.seasonOver=true; check('сезон окончен, сундуков нет', !ccChestOn());
 return {fails, notes};
 `;
