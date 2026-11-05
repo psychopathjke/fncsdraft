@@ -4286,24 +4286,9 @@
   .cc-chs-boom{position:absolute;z-index:4;left:50%;bottom:90px;width:700px;height:700px;margin:0 0 -350px -350px;border-radius:50%;pointer-events:none;
     background:radial-gradient(circle,#fff 0,rgba(255,235,140,.95) 16%,rgba(255,180,40,.55) 38%,rgba(255,170,30,0) 66%);animation:ccChsBoom .7s ease-out .86s both;}
   @keyframes ccChsBoom{0%{opacity:0;transform:scale(.1);} 25%{opacity:1;} 100%{opacity:0;transform:scale(1.25);}}
-  .cc-chs-card{position:absolute;z-index:5;left:50%;bottom:110px;width:116px;height:116px;margin-left:-58px;padding:16px;box-sizing:border-box;background:url('items/creative/pirate-card.webp') center/contain no-repeat;animation:ccChsCard .85s cubic-bezier(.2,.8,.3,1) .92s both;}
-  @keyframes ccChsCard{0%{opacity:0;transform:translateY(40px) scale(.3) rotate(-30deg);} 25%{opacity:1;} 100%{opacity:1;transform:translateY(-210px) scale(1) rotate(8deg);}}
-  .cc-chs-sun{position:absolute;z-index:6;left:50%;top:50%;width:150vmin;height:150vmin;margin:-75vmin 0 0 -75vmin;border-radius:50%;pointer-events:none;
-    background:radial-gradient(circle,#fff6c0 0,#ffd23c 45%,rgba(255,180,40,.9) 66%,rgba(255,180,40,0) 72%);animation:ccChsSun .55s ease-in 1.8s both;}
-  .cc-chs-sun .cc-coin-i{display:block;width:62%;height:62%;margin:19%;}
   .cc-coin-i{display:block;width:100%;height:100%;object-fit:contain;}
-  .cc-chs-card .cc-coin-i{width:100%;height:100%;}
-  @keyframes ccChsSun{0%{opacity:0;transform:scale(.08) rotate(-40deg);} 100%{opacity:1;transform:scale(1) rotate(0);}}
   .cc-chb-gold{position:absolute;inset:0;background:radial-gradient(circle at 50% 40%,#f3d9a0,#d5a860 62%,#a87a38);animation:ccChbWipe .5s ease both;}
   @keyframes ccChbWipe{from{clip-path:circle(0 at 50% 40%);} to{clip-path:circle(120% at 50% 40%);}}
-  .cc-chb{position:relative;z-index:2;width:100%;max-width:560px;}
-  .cc-chb-bg{position:absolute;inset:0;background:radial-gradient(circle at 50% 30%,#d99a2c 0,#7a4a14 42%,#1d1006 86%);animation:ccChsIn .35s ease both;}
-  .cc-chb-rays{position:absolute;left:50%;top:26%;width:190vmax;height:190vmax;margin:-95vmax 0 0 -95vmax;opacity:.34;pointer-events:none;background:repeating-conic-gradient(#ffe68a 0 6deg,transparent 6deg 19deg);animation:ccChRays 26s linear infinite;}
-  .cc-chb-run{position:absolute;left:0;right:0;top:calc(50% - 215px);overflow:hidden;white-space:nowrap;pointer-events:none;font-family:var(--font-display);font-size:96px;font-weight:900;line-height:1;color:rgba(255,226,130,.5);text-shadow:0 0 18px rgba(255,190,50,.7);}
-  .cc-chb-run span{display:inline-block;animation:ccChbRun 16s linear infinite;}
-  @keyframes ccChbRun{to{transform:translateX(-50%);}}
-  .cc-chb-card{width:150px;height:150px;margin:0 auto -6px;padding:26px;box-sizing:border-box;background:url('items/creative/pirate-card.webp') center/contain no-repeat;animation:ccChbCard .5s cubic-bezier(.2,1.6,.4,1) both;}
-  @keyframes ccChbCard{from{transform:scale(2.6);opacity:0;} to{transform:none;opacity:1;}}
   .cc-chb-bar,.cc-chf-bar{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;max-width:420px;aspect-ratio:2048/700;margin:0 auto;background:url('items/creative/pirate-banner.webp') center/contain no-repeat;font-family:var(--font-display);font-weight:900;line-height:1.02;text-transform:uppercase;padding:0 16%;box-sizing:border-box;animation:ccChbBar .4s cubic-bezier(.2,1.5,.4,1) .3s both;}
   .cc-chb-bar small,.cc-chf-bar small,.cc-chb-bar b,.cc-chf-bar b{white-space:nowrap;}
   .cc-chb-bar small,.cc-chf-bar small{font-size:19px;color:#fff;text-shadow:0 2px 4px rgba(0,0,0,.8);}
@@ -4311,14 +4296,16 @@
   @keyframes ccChbBar{from{transform:scaleX(.1);opacity:0;} to{transform:none;opacity:1;}}
   .cc-chf{position:absolute;z-index:6;left:0;right:0;top:calc(50% - 300px);display:flex;flex-direction:column;align-items:center;gap:0;padding:0 10px;opacity:0;animation:ccChbUp .35s ease .95s both;pointer-events:none;}
   .cc-chf.cc-chf-st{position:static;opacity:1;animation:none;}
+  .cc-chf-act{position:absolute;z-index:7;left:0;right:0;bottom:max(12px,calc(50% - 400px));padding:0 14px;animation:ccChbUp .35s ease 1.1s both;}
+  .cc-chf-s{max-width:460px;margin:0 auto;font-size:14px;font-weight:700;line-height:1.3;color:#fff;text-shadow:0 2px 4px rgba(0,0,0,.9);}
+  .cc-chf-act .cc-ch-btns{margin-top:10px;}
+  .cc-chs.coin .cc-chs-in{transform:translateY(60px) scale(.72);}
   .cc-chf-cards{display:flex;justify-content:center;gap:4px;margin-bottom:-8px;}
   .cc-chf-card{width:112px;height:112px;padding:20px;box-sizing:border-box;background:url('items/creative/pirate-card.webp') center/contain no-repeat;}
   .cc-chf-card img{display:block;width:100%;height:100%;object-fit:contain;}
   .cc-chf-n{margin-top:2px;font-size:14px;font-weight:900;color:#fff;text-shadow:0 2px 4px rgba(0,0,0,.9);}
   @keyframes ccChbUp{from{transform:translateY(14px);opacity:0;} to{transform:none;opacity:1;}}
-  .cc-chb-s{margin:18px auto 0;min-height:0;color:#fff;animation:ccChbUp .35s ease .6s both;}
-  .cc-chb-btns{animation:ccChbUp .35s ease .7s both;margin-top:16px;}
-  @media(max-width:480px){ .cc-chb-run{font-size:72px;top:calc(50% - 195px);} }
+  @media(max-width:480px){ }
   @keyframes ccChsLoot{from{opacity:0;transform:translateY(70px) scale(.3);} to{opacity:1;transform:none;}}
   .cc-chs-sparks i{position:absolute;left:50%;bottom:110px;width:7px;height:7px;margin-left:-3px;border-radius:50%;background:#ffe680;box-shadow:0 0 8px #ffc927;opacity:0;animation:ccChsSpark .75s ease-out both;}
   @keyframes ccChsSpark{0%{opacity:1;transform:none;} 100%{opacity:0;transform:translate(var(--dx),var(--dy)) scale(.3);}}
@@ -4348,7 +4335,7 @@
   @keyframes ccChStamp{0%{transform:rotate(-5deg) scale(3);opacity:0;} 100%{transform:rotate(-5deg) scale(1);opacity:1;}}
   @media(max-width:480px){ .cc-ch-t{font-size:26px;} }
   /* Без движения вокруг: остаётся только то, что отвечает на нажатие (крышка и монета). */
-  @media(prefers-reduced-motion:reduce){ .cc-ch-rays,.cc-ch-rain,.cc-chb-rays{display:none;} .cc-chb-run span{animation:none;} .cc-coin-spin{animation:none;} }
+  @media(prefers-reduced-motion:reduce){ .cc-ch-rays,.cc-ch-rain{display:none;} .cc-coin-spin{animation:none;} }
   .cc-bp-lvlbuy{display:flex;flex-wrap:wrap;align-items:center;gap:6px;}
   .cc-bp-step{min-width:44px;height:44px;border:0;border-radius:8px;background:rgba(255,255,255,.1);color:#e6edfb;font-weight:800;font-size:16px;cursor:pointer;padding:0 8px;}
   .cc-bp-step:disabled{opacity:.35;cursor:default;}
@@ -152058,19 +152045,20 @@ function ccChestStage(s, got){
   const lootTop=got.loot ? got.loot.weapon : (got.loots && got.loots.length) ? ccChestBest(got.loots)[0].weapon : null;
   const rar=got.coin ? 'c' : got.item ? (got.item.r==='epic' ? 'e' : got.item.r==='rare' ? 'b' : 'g') : !lootTop ? 'g' : ({legendary:'l', epic:'e', rare:'b', uncommon:'g', common:'w'}[lootTop.rarity]||'w');
   const st=document.createElement('div');
-  st.className='cc-chs'+(s.rare ? ' r' : '')+(got.coin ? ' coin' : '')+((got.item || (got.items && got.items.length)) ? ' f' : ''); st.id='ccChestStage';
+  st.className='cc-chs'+(s.rare ? ' r' : '')+(got.coin ? ' coin' : '')+((got.coin || got.item || (got.items && got.items.length)) ? ' f' : ''); st.id='ccChestStage';
   st.innerHTML='<div class="cc-chs-in"><div class="cc-chs-glow"></div><div class="cc-chs-beam '+rar+'"></div><div class="cc-chs-sparks">'+sparks+'</div>'+
-    (got.coin ? '<div class="cc-chs-boom"></div><div class="cc-chs-card">'+CC_COIN_SVG+'</div><div class="cc-chs-sun">'+CC_COIN_SVG+'</div>'
-      : ccChestLootHTML(got))+
+    (got.coin ? '<div class="cc-chs-boom"></div>' : ccChestLootHTML(got))+
     '<div class="cc-chs-chest"><span class="cc-chs-lid">'+ccChestArt(s.rare, 'lid')+'</span>'+ccChestArt(s.rare, 'body')+'</div>'+
     '<div class="cc-chs-search"><i class="cc-chs-ring"><svg viewBox="0 0 36 36" aria-hidden="true"><circle cx="18" cy="18" r="15"/><circle class="p" cx="18" cy="18" r="15" pathLength="100"/></svg></i><b>'+esc(T.search)+'</b></div></div>';
   const found=ccChestFoundHTML(got);
   if(found) st.insertAdjacentHTML('afterbegin', found);
   m.appendChild(st);
   let over=false;
-  const finish=()=>{ if(over) return; over=true; CC_CHEST_BUSY=false; st.remove(); if(got.coin) ccChestCoin(); };
+  // Монету закрывает выбор игрока, а не таймер.
+  if(got.coin) return;
+  const finish=()=>{ if(over) return; over=true; CC_CHEST_BUSY=false; st.remove(); };
   setTimeout(()=>{ st.onclick=finish; }, 900);
-  setTimeout(finish, got.coin ? 2350 : found ? 3600 : 2600);
+  setTimeout(finish, found ? 3600 : 2600);
 }
 function ccChestBest(list){ return list.slice().sort((a,b)=>RARITY_LADDER.indexOf(b.weapon.rarity)-RARITY_LADDER.indexOf(a.weapon.rarity)); }
 // Карточка лута: рамка цвета редкости из файлов сезона, иконка ствола. Расходник рядом поменьше.
@@ -152106,6 +152094,8 @@ function ccSkinCupAfter(ev, place, n){
 // Баннер YOU FOUND из игры: рамка с предметом и плашка с молниями. Текст наш, на языке игрока.
 function ccChestFoundHTML(got){
   const T=ccChestT(), one=x=>'<div class="cc-chf-card"><img src="'+ccFnImg(x.id)+'" alt=""></div>';
+  if(got.coin) return '<div class="cc-chf"><div class="cc-chf-cards"><div class="cc-chf-card">'+CC_COIN_SVG+'</div></div><div class="cc-chf-bar"><small>'+esc(T.found)+'</small><b>PIRATE SHOP ACCESS</b></div></div>'+
+    '<div class="cc-chf-act"><div class="cc-chf-s">'+esc(T.coinS)+'</div><div class="cc-ch-btns"><button class="cc-ch-btn" onclick="ccChestCoinNow()">'+esc(T.now)+'</button><button class="cc-ch-btn q" onclick="ccChestCoinLater()">'+esc(T.later)+'</button></div></div>';
   const list=got.items || (got.item ? [got.item] : []);
   if(!list.length) return '';
   const kind=list.length>1 ? T.items(list.length) : T['k'+list[0].t];
@@ -152119,18 +152109,8 @@ function ccChestRainHTML(){
   for(let i=0; i<16; i++) h+='<i class="cc-ch-rain" style="left:'+((i*37+5)%100)+'%;animation-delay:'+(i*.11).toFixed(2)+'s"></i>';
   return h;
 }
-function ccChestBannerHTML(){
-  const T=ccChestT(), name='PIRATE SHOP ACCESS';
-  return '<div class="cc-chb-bg"></div><div class="cc-chb-rays"></div>'+ccChestRainHTML().replace('<div class="cc-ch-rays"></div>', '')+
-    '<div class="cc-chb-run" aria-hidden="true"><span>'+name+' '+name+' '+name+' '+name+'</span></div>'+
-    '<div class="cc-chb"><div class="cc-chb-card">'+CC_COIN_SVG+'</div>'+
-    '<div class="cc-chb-bar"><small>'+esc(T.found)+'</small><b>'+name+'</b></div>';
-}
-function ccChestCoin(){
-  const T=ccChestT();
-  ccChestShow(ccChestBannerHTML()+'<div class="cc-ch-s cc-chb-s">'+esc(T.coinS)+'</div>'+
-    '<div class="cc-ch-btns cc-chb-btns"><button class="cc-ch-btn" onclick="ccPirateActivate()">'+esc(T.now)+'</button><button class="cc-ch-btn q" onclick="ccChestBack()">'+esc(T.later)+'</button></div></div>');
-}
+function ccChestCoinNow(){ CC_CHEST_BUSY=false; ccPirateActivate(); }
+function ccChestCoinLater(){ CC_CHEST_BUSY=false; const st=document.getElementById('ccChestStage'); if(st) st.remove(); ccChestBack(); }
 /* Показ анимаций по адресу #chestdemo: без карьеры и без записи в сейв, для скринов и записи экрана. */
 function ccChestDemo(){
   CC_CHEST_DEMO=true; CC_CHEST_BUSY=false;
