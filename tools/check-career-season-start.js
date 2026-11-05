@@ -78,15 +78,17 @@ check('на плитке 2024: C5S1 C5S2 C5S3 и Remix', sb.map(b=>b.textContent
 { const w23=[...document.querySelectorAll('#ccYearChips .cc-yt-wrap')].find(w=>/^2023/.test(w.querySelector('.cc-year-tile').textContent));
   const t23=w23 ? [...w23.querySelectorAll('.cc-yt-s')].map(b=>b.textContent) : [];
   check('на плитке 2023 есть OG', t23[t23.length-1]==='OG', t23.join(' ')); }
-// 2026 по сезонам Fortnite (1.11): S39 S40 S41 S42, по датам, а не M1/M2.
+// 2026 по сезонам Fortnite: S39 S40 S41 S42 S43, по датам, а не M1/M2.
 { const w26=[...document.querySelectorAll('#ccYearChips .cc-yt-wrap')].find(w=>/^2026/.test(w.querySelector('.cc-year-tile').textContent));
   const t26=w26 ? [...w26.querySelectorAll('.cc-yt-s')].map(b=>b.textContent) : [];
   notes.tile26=t26;
-  check('на плитке 2026: S39 S40 S41 S42', t26.join(' ')==='S39 S40 S41 S42', t26.join(' '));
+  check('на плитке 2026: S39 S40 S41 S42 S43', t26.join(' ')==='S39 S40 S41 S42 S43', t26.join(' '));
   const ss=ccStartSeasonsOf(2026);
-  check('сезоны 2026 по датам', ss.map(s=>s.from).join()==='2025-12-01,2026-03-19,2026-06-06,2026-08-21', ss.map(s=>s.from).join());
+  check('сезоны 2026 по датам', ss.map(s=>s.from).join()==='2025-12-01,2026-03-19,2026-06-06,2026-08-21,2026-11-01', ss.map(s=>s.from).join());
   ccPickYearSeason(2026,'s42');
   check('S42: старт 21 августа, рейтинг по Major 2', ccPickedStart() && ccPickedStart().from==='2026-08-21' && ccRatingSnap()===null, JSON.stringify(ccPickedStart())+' '+JSON.stringify(ccRatingSnap()));
+  ccPickYearSeason(2026,'s43');
+  check('S43: старт 1 ноября, рейтинг по Major 2', ccPickedStart() && ccPickedStart().from==='2026-11-01' && ccRatingSnap()===null, JSON.stringify(ccPickedStart())+' '+JSON.stringify(ccRatingSnap()));
   ccPickYearSeason(2026,'s40');
   check('S40: рейтинг по Major 1', ccRatingSnap() && ccRatingSnap().tag==='m1', JSON.stringify(ccRatingSnap()));
   ccPickYear(2025); }
