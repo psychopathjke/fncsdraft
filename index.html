@@ -148587,6 +148587,12 @@ function careerDayPanelHTML(locked){
 function careerPickDay(id){
   if(!careerDoAct(id)) return;
   careerRenderHub(CH_TAB==='train' ? 'train' : 'centre');
+  // После отдыха экран сверху: перерисовка хранит прокрутку, и шапка с днём оставалась за краем.
+  const act=ccActById(id);
+  if(act && act.rest) ccHubToTop();
+}
+function ccHubToTop(){
+  try{ const b=document.getElementById('chBody'); if(b){ b.scrollTop=0; if(b.parentElement) b.parentElement.scrollTop=0; } window.scrollTo(0, 0); }catch(e){}
 }
 /* Вкладка «Тренировка»: атрибуты крупными карточками и занятия дня. День открыт для выбора
    тогда же, когда Центр рисует панель дня (свободный день или закрытый для игры вечер). */
