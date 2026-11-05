@@ -61,6 +61,11 @@ check('сцена суммы', !!document.getElementById('ccChestStage'));
 CC_CHEST_BUSY=false; { const s=document.getElementById('ccChestStage'); if(s) s.remove(); }
 const n5=CAREER.vb; ccChestPick(7); ccChestOpenAll();
 check('больше нечего открывать', CAREER.vb===n5);
+// Находки: 25% ничего, экраны и кирки в шкафчик.
+{ const c={none:0,l:0,p:0,vb:0,coin:0}; for(let d=1;d<=30;d++) for(let i=0;i<2000;i++){ const x=ccPirateChestRoll('2026-11-'+String(d).padStart(2,'0'), i, 0); if(x.none) c.none++; else if(x.item) c[x.item.t]++; else if(x.coin) c.coin++; else c.vb++; }
+  notes.drops=c; const N=60000; check('ничего около 25%', c.none/N>.22 && c.none/N<.28, c.none/N); check('экраны и кирки падают', c.l/N>.05 && c.p/N>.005, c.l+' '+c.p);
+  const it=Object.assign({}, CC_CHEST_DROPS.l[0], {id:CC_CHEST_DROPS.l[0][0], t:'l', n:CC_CHEST_DROPS.l[0][1], r:CC_CHEST_DROPS.l[0][2]}); ccChestGive(it); check('предмет в шкафчике', ccFnOwn()[it.id] && ccFnOwn()[it.id].t==='l');
+  check('баннер находки', /cc-chf-bar/.test(ccChestFoundHTML({item:it})) && /cc-chf-bar/.test(ccChestFoundHTML({none:1})) && ccChestFoundHTML({vb:5})===''); }
 CC_CHEST_BUSY=false; ccChestClose();
 check('плитка на сегодня погашена', (()=>{ const d=document.createElement('div'); d.innerHTML=careerTrainTabHTML(); const x=d.querySelector('.cc-dt.did b'); return x && x.textContent===T.map; })());
 careerLoad();
@@ -83,7 +88,14 @@ if(cd){ CAREER.career.day=cd; CAREER.pirate.chest=null; if(careerEnergy()<CC_CHE
   check('14 дней пошли', ccPirateLeft()===14, ccPirateLeft());
   check('анимация включения', !!document.querySelector('#ccChestOv .cc-ch-stamp'));
   ccChestClose();
-  check('монета больше не падает', !ccPirateChestRoll(cd,ci,cr).coin); }
+  check('монета больше не падает', !ccPirateChestRoll(cd,ci,cr).coin);
+  // Два срока: первый использован, в этом году второго нет, в 2027 есть, третьего нет.
+  check('первый срок занят', !ccPirateCanUse());
+  CAREER.career.season=2; CAREER.career.day='2026-01-20';
+  check('2027: прошлый срок кончился', ccPirateLeft()===0, ccPirateLeft());
+  check('2027: второй срок доступен', ccPirateSlot()===2 && ccPirateCanUse());
+  ccPirateActivate(); check('2027: 14 дней', ccPirateLeft()===14, ccPirateLeft()); ccChestClose();
+  check('третьего нет', !ccPirateCanUse()); }
 check('лут матча не тронут', typeof ccChestRoll==='function' && ccChestRoll.length!==ccPirateChestRoll.length, String(ccChestRoll.length));
 return {fails, notes};
 `;

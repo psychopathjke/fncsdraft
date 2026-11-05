@@ -106,7 +106,7 @@ const BOOT = `
     if(ccPirateOn()) bad('действует дольше 14 дней');
     if(ccFnCost(it)!==full) bad('цена не вернулась после срока');
     careerTab('items');
-    if(document.getElementById('chBody').querySelector('.cc-pirate')) bad('плитка осталась после срока');
+    if(/cc-pirate-btn/.test(ccPirateHTML()) || ccPirateHTML().indexOf(ccChestT().next)<0) bad('после первого срока нет подсказки про 2027: '+ccPirateHTML());
     ccPirateUse();
     if(CAREER.pirate.on!==ccAddDays(careerToday(), -14)) bad('включили второй раз');
   }catch(e){ out.fail.push('исключение: '+String((e&&(e.stack||e.message))||e).slice(0,500)); }

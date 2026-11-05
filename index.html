@@ -4247,9 +4247,9 @@
   .cc-chm-box{max-width:min(92vw,66vh,640px);}
   .cc-chm-box .cc-ch-t{font-size:26px;} .cc-chm-box .cc-ch-s{min-height:0;margin:4px auto 10px;font-size:13px;}
   .cc-chm-map{position:relative;width:100%;aspect-ratio:1;border-radius:14px;overflow:hidden;background:#0d4f6b url('art/map-s43.jpg') center/cover;box-shadow:0 0 0 2px rgba(255,221,0,.5),0 14px 40px rgba(0,0,0,.5);}
-  .cc-chm{position:absolute;width:36px;height:36px;margin:-18px 0 0 -18px;padding:2px;border:0;background:none;cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation;animation:ccChmPulse 1.8s ease-in-out infinite;}
+  .cc-chm{position:absolute;width:40px;height:40px;margin:-20px 0 0 -20px;padding:1px;border:0;background:none;cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation;animation:ccChmPulse 1.8s ease-in-out infinite;}
   .cc-chm img{display:block;width:100%;height:100%;filter:drop-shadow(0 0 5px rgba(255,220,80,.95)) drop-shadow(0 2px 2px rgba(0,0,0,.75));}
-  .cc-chm.r{width:44px;height:44px;margin:-22px 0 0 -22px;}
+  .cc-chm.r{width:48px;height:48px;margin:-24px 0 0 -24px;}
   .cc-chm:hover,.cc-chm:focus-visible{outline:0;transform:scale(1.25);animation:none;}
   .cc-chm.o{animation:none;cursor:default;opacity:.55;} .cc-chm.o img{filter:grayscale(1) brightness(.6);}
   @keyframes ccChmPulse{0%,100%{transform:none;} 50%{transform:scale(1.13);}}
@@ -4258,13 +4258,15 @@
   .cc-chs{position:absolute;inset:0;z-index:5;display:flex;align-items:center;justify-content:center;background:rgba(3,6,24,.78);animation:ccChsIn .18s ease both;}
   @keyframes ccChsIn{from{opacity:0;}}
   .cc-chs-in{position:relative;width:240px;height:300px;}
-  .cc-chs-chest{position:absolute;left:30px;right:30px;bottom:62px;animation:ccChsShake .62s linear both;}
-  .cc-chs-chest::before{content:'';position:absolute;z-index:1;left:4%;right:4%;top:-12px;height:30px;border-radius:50% 50% 10% 10%;background:radial-gradient(ellipse at 50% 90%,#fff3b0,#ffae26 38%,#2a1404 72%);animation:ccChbUp .15s ease .7s both;}
-  .cc-chs-chest>svg{position:relative;z-index:1;}
-  .cc-chs-chest svg{display:block;width:100%;height:auto;overflow:visible;}
-  .cc-chs-lid{position:absolute;z-index:2;left:0;right:0;z-index:2;bottom:calc(100% - 8px);transform-origin:50% 100%;animation:ccChsLid .46s cubic-bezier(.3,1.6,.5,1) .66s both;}
+  .cc-chs.f .cc-chs-in{transform:translateY(125px);}
+  .cc-chs-chest{position:absolute;left:0;right:0;bottom:30px;aspect-ratio:1;animation:ccChsShake .62s linear both;}
+  .cc-chs-chest::before{content:'';position:absolute;z-index:1;left:16%;right:16%;top:40%;height:16%;border-radius:45%;background:radial-gradient(ellipse at 50% 60%,#fff6c4,#ffb42a 42%,#1d0e03 78%);filter:blur(1px);animation:ccChbUp .15s ease .7s both;}
+  .cc-chi{position:absolute;inset:0;width:100%;height:100%;display:block;}
+  .cc-chi.b{z-index:2;clip-path:polygon(0 52%,30% 58%,52% 62%,74% 56%,100% 46%,100% 100%,0 100%);}
+  .cc-chi.l{clip-path:polygon(0 0,100% 0,100% 46%,74% 56%,52% 62%,30% 58%,0 52%);}
+  .cc-chs-lid{position:absolute;z-index:3;inset:0;transform-origin:60% 40%;animation:ccChsLid .46s cubic-bezier(.3,1.6,.5,1) .66s both;}
   @keyframes ccChsShake{0%{transform:none;} 15%{transform:rotate(-1.5deg);} 30%{transform:rotate(1.5deg);} 45%{transform:rotate(-2.5deg) translateY(-2px);} 60%{transform:rotate(2.5deg);} 75%{transform:rotate(-3.5deg) translateY(-4px);} 90%{transform:rotate(3.5deg);} 100%{transform:none;}}
-  @keyframes ccChsLid{from{transform:none;} to{transform:translate(6px,-42px) rotate(5deg) scale(.94);}}
+  @keyframes ccChsLid{from{transform:none;} to{transform:translate(2%,-13%) rotate(3deg);}}
   .cc-chs-glow{position:absolute;left:50%;bottom:50px;width:300px;height:300px;margin-left:-150px;border-radius:50%;background:radial-gradient(circle,rgba(255,236,150,.95),rgba(255,180,40,.4) 38%,rgba(255,180,40,0) 68%);animation:ccChsGlow 1.1s ease both;}
   @keyframes ccChsGlow{0%{transform:scale(.25);opacity:.35;} 58%{transform:scale(.42);opacity:.7;} 68%{transform:scale(1.2);opacity:1;} 100%{transform:scale(.85);opacity:.75;}}
   .cc-chs-beam{position:absolute;left:50%;bottom:100px;width:60px;height:240px;margin-left:-30px;transform-origin:50% 100%;border-radius:30px 30px 0 0;filter:blur(9px);opacity:0;animation:ccChsBeam .5s ease-out .74s both;}
@@ -4277,12 +4279,13 @@
   .cc-chs-boom{position:absolute;z-index:4;left:50%;bottom:90px;width:700px;height:700px;margin:0 0 -350px -350px;border-radius:50%;pointer-events:none;
     background:radial-gradient(circle,#fff 0,rgba(255,235,140,.95) 16%,rgba(255,180,40,.55) 38%,rgba(255,170,30,0) 66%);animation:ccChsBoom .7s ease-out .86s both;}
   @keyframes ccChsBoom{0%{opacity:0;transform:scale(.1);} 25%{opacity:1;} 100%{opacity:0;transform:scale(1.25);}}
-  .cc-chs-card{position:absolute;z-index:5;left:50%;bottom:110px;width:96px;height:96px;margin-left:-48px;padding:6px;box-sizing:border-box;border:3px solid #ffe27a;background:linear-gradient(135deg,rgba(255,220,110,.55),rgba(180,110,20,.55));
-    box-shadow:0 0 22px rgba(255,210,80,.9);animation:ccChsCard .85s cubic-bezier(.2,.8,.3,1) .92s both;}
+  .cc-chs-card{position:absolute;z-index:5;left:50%;bottom:110px;width:116px;height:116px;margin-left:-58px;padding:16px;box-sizing:border-box;background:url('items/creative/pirate-card.webp') center/contain no-repeat;animation:ccChsCard .85s cubic-bezier(.2,.8,.3,1) .92s both;}
   @keyframes ccChsCard{0%{opacity:0;transform:translateY(40px) scale(.3) rotate(-30deg);} 25%{opacity:1;} 100%{opacity:1;transform:translateY(-210px) scale(1) rotate(8deg);}}
   .cc-chs-sun{position:absolute;z-index:6;left:50%;top:50%;width:150vmin;height:150vmin;margin:-75vmin 0 0 -75vmin;border-radius:50%;pointer-events:none;
     background:radial-gradient(circle,#fff6c0 0,#ffd23c 45%,rgba(255,180,40,.9) 66%,rgba(255,180,40,0) 72%);animation:ccChsSun .55s ease-in 1.8s both;}
-  .cc-chs-sun svg{display:block;width:62%;height:62%;margin:19%;}
+  .cc-chs-sun .cc-coin-i{display:block;width:62%;height:62%;margin:19%;}
+  .cc-coin-i{display:block;width:100%;height:100%;object-fit:contain;}
+  .cc-chs-card .cc-coin-i{width:100%;height:100%;}
   @keyframes ccChsSun{0%{opacity:0;transform:scale(.08) rotate(-40deg);} 100%{opacity:1;transform:scale(1) rotate(0);}}
   .cc-chb-gold{position:absolute;inset:0;background:radial-gradient(circle at 50% 40%,#f3d9a0,#d5a860 62%,#a87a38);animation:ccChbWipe .5s ease both;}
   @keyframes ccChbWipe{from{clip-path:circle(0 at 50% 40%);} to{clip-path:circle(120% at 50% 40%);}}
@@ -4292,20 +4295,21 @@
   .cc-chb-run{position:absolute;left:0;right:0;top:calc(50% - 215px);overflow:hidden;white-space:nowrap;pointer-events:none;font-family:var(--font-display);font-size:96px;font-weight:900;line-height:1;color:rgba(255,226,130,.5);text-shadow:0 0 18px rgba(255,190,50,.7);}
   .cc-chb-run span{display:inline-block;animation:ccChbRun 16s linear infinite;}
   @keyframes ccChbRun{to{transform:translateX(-50%);}}
-  .cc-chb-card{width:112px;height:112px;margin:0 auto 12px;padding:7px;box-sizing:border-box;border:3px solid #ffe27a;background:linear-gradient(135deg,rgba(255,226,130,.5),rgba(160,95,15,.5));transform:rotate(8deg);
-    box-shadow:0 0 28px rgba(255,214,90,.95);animation:ccChbCard .5s cubic-bezier(.2,1.6,.4,1) both;}
-  .cc-chb-card svg{display:block;width:100%;height:100%;}
-  @keyframes ccChbCard{from{transform:scale(2.6) rotate(-14deg);opacity:0;} to{transform:scale(1) rotate(8deg);opacity:1;}}
-  .cc-chb-found{font-family:var(--font-display);font-size:26px;font-weight:900;color:#fff;text-shadow:0 2px 6px rgba(0,0,0,.7);animation:ccChbUp .35s ease .2s both;}
-  .cc-chb-bar{position:relative;margin:4px 34px 0;padding:9px 6px;font-family:var(--font-display);font-size:30px;font-weight:900;line-height:1.05;color:#fff;
-    background:linear-gradient(90deg,rgba(240,170,30,0),rgba(240,170,30,.95) 16%,rgba(255,206,70,1) 50%,rgba(240,170,30,.95) 84%,rgba(240,170,30,0));box-shadow:0 0 36px rgba(255,204,60,.75);text-shadow:0 2px 4px rgba(90,50,0,.85);animation:ccChbBar .4s cubic-bezier(.2,1.5,.4,1) .3s both;}
+  .cc-chb-card{width:150px;height:150px;margin:0 auto -6px;padding:26px;box-sizing:border-box;background:url('items/creative/pirate-card.webp') center/contain no-repeat;animation:ccChbCard .5s cubic-bezier(.2,1.6,.4,1) both;}
+  @keyframes ccChbCard{from{transform:scale(2.6);opacity:0;} to{transform:none;opacity:1;}}
+  .cc-chb-bar,.cc-chf-bar{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;max-width:420px;aspect-ratio:2048/700;margin:0 auto;background:url('items/creative/pirate-banner.webp') center/contain no-repeat;font-family:var(--font-display);font-weight:900;line-height:1.02;text-transform:uppercase;padding:0 16%;box-sizing:border-box;animation:ccChbBar .4s cubic-bezier(.2,1.5,.4,1) .3s both;}
+  .cc-chb-bar small,.cc-chf-bar small{font-size:19px;color:#fff;text-shadow:0 2px 4px rgba(0,0,0,.8);}
+  .cc-chb-bar b,.cc-chf-bar b{font-size:27px;color:#fff6c0;text-shadow:0 0 12px rgba(255,214,70,.95),0 2px 3px rgba(90,50,0,.9);}
   @keyframes ccChbBar{from{transform:scaleX(.1);opacity:0;} to{transform:none;opacity:1;}}
+  .cc-chf{position:absolute;z-index:6;left:0;right:0;top:calc(50% - 300px);display:flex;flex-direction:column;align-items:center;gap:0;padding:0 10px;opacity:0;animation:ccChbUp .35s ease .95s both;pointer-events:none;}
+  .cc-chf-cards{display:flex;justify-content:center;gap:4px;margin-bottom:-8px;}
+  .cc-chf-card{width:112px;height:112px;padding:20px;box-sizing:border-box;background:url('items/creative/pirate-card.webp') center/contain no-repeat;}
+  .cc-chf-card img{display:block;width:100%;height:100%;object-fit:contain;}
+  .cc-chf-n{margin-top:2px;font-size:14px;font-weight:900;color:#fff;text-shadow:0 2px 4px rgba(0,0,0,.9);}
   @keyframes ccChbUp{from{transform:translateY(14px);opacity:0;} to{transform:none;opacity:1;}}
-  .cc-chb-bolt{position:absolute;top:-16px;left:100%;width:44px;margin-left:-16px;animation:ccChbUp .3s ease .55s both;} .cc-chb-bolt.l{left:auto;right:100%;margin:0 -16px 0 0;} .cc-chb-bolt.l svg{transform:scaleX(-1);}
-  .cc-chb-bolt svg{display:block;width:100%;height:auto;filter:drop-shadow(0 0 8px rgba(255,214,80,.95));}
   .cc-chb-s{margin:18px auto 0;min-height:0;color:#fff;animation:ccChbUp .35s ease .6s both;}
   .cc-chb-btns{animation:ccChbUp .35s ease .7s both;margin-top:16px;}
-  @media(max-width:480px){ .cc-chb-bar{font-size:24px;margin:4px 26px 0;} .cc-chb-run{font-size:72px;top:calc(50% - 195px);} .cc-chb-bolt{width:36px;} }
+  @media(max-width:480px){ .cc-chb-run{font-size:72px;top:calc(50% - 195px);} }
   @keyframes ccChsLoot{from{opacity:0;transform:translateY(70px) scale(.3);} to{opacity:1;transform:none;}}
   .cc-chs-sparks i{position:absolute;left:50%;bottom:110px;width:7px;height:7px;margin-left:-3px;border-radius:50%;background:#ffe680;box-shadow:0 0 8px #ffc927;opacity:0;animation:ccChsSpark .75s ease-out both;}
   @keyframes ccChsSpark{0%{opacity:1;transform:none;} 100%{opacity:0;transform:translate(var(--dx),var(--dy)) scale(.3);}}
@@ -4319,7 +4323,7 @@
   .cc-ch-btn{min-height:46px;padding:11px 20px;border:0;border-radius:9px;background:#ffdd00;color:#161b26;font:inherit;font-weight:900;cursor:pointer;}
   .cc-ch-btn.q{background:rgba(255,255,255,.14);color:#fff;}
   .cc-coin{display:block;width:150px;height:150px;margin:0 auto 18px;animation:ccCoinIn 1.1s cubic-bezier(.2,.8,.3,1) both;}
-  .cc-coin svg{display:block;width:100%;height:100%;filter:drop-shadow(0 0 22px rgba(255,210,70,.85));}
+  .cc-coin img{filter:drop-shadow(0 0 22px rgba(255,210,70,.85));}
   .cc-ch-coinmini{width:44px;height:44px;}
   @keyframes ccCoinIn{0%{transform:perspective(600px) translateY(90px) scale(.2) rotateY(0);opacity:0;} 25%{opacity:1;} 100%{transform:perspective(600px) translateY(0) scale(1) rotateY(1080deg);}}
   .cc-coin-spin{animation:ccCoinSpin 1.5s linear infinite;}
@@ -151729,21 +151733,30 @@ function ccPirateCheck(){
   p.seen=log.length;
 }
 function ccPirateLeft(){
-  const p=CAREER && CAREER.pirate; if(!p || !p.on) return 0;
-  return Math.max(0, CC_PIRATE_DAYS-ccDaysBetween(p.on, careerToday()));
+  const p=CAREER && CAREER.pirate; if(!p) return 0;
+  const at=ccPirateSlot()===2 ? p.on2 : p.on; if(!at) return 0;
+  if(p.onS!=null && p.onS!==(CAREER.career.season||1)) return 0;
+  const d=ccDaysBetween(at, careerToday());
+  return d<0 ? 0 : Math.max(0, CC_PIRATE_DAYS-d);
+}
+function ccPirateSlot(){ return ccYearShift()>0 ? 2 : 1; }
+function ccPirateCanUse(){
+  const p=CAREER && CAREER.pirate; if(!p || !p.found) return false;
+  return ccPirateSlot()===2 ? !p.on2 : (!p.on && careerToday()<='2026-12-15');
 }
 const ccPirateOn=()=>ccPirateLeft()>0;
 // Цена в магазине сейчас. Сортировка и суммы наборов считают по обычной ccFnPrice.
 function ccFnCost(it){ return ccPirateOn() ? 0 : ccFnPrice(it); }
 function ccPirateUse(){
-  const p=ccPirate(); if(!p.found || p.on) return;
+  if(!ccPirateCanUse()) return;
   ccAsk(ccPirateT().ask, ()=>ccPirateActivate());
 }
 function ccPirateHTML(){
-  const p=CAREER.pirate, T=ccPirateT(); if(!p || !p.found) return '';
-  if(!p.on) return '<div class="ch-tile cc-pirate"><h4>'+esc(T.title)+'</h4><div class="ch-hint">'+esc(T.note)+'</div><button class="cc-pirate-btn" onclick="ccPirateUse()">'+esc(T.use)+'</button></div>';
+  const p=CAREER.pirate, T=ccPirateT(), C=ccChestT(); if(!p || !p.found) return '';
   const left=ccPirateLeft();
-  return left ? '<div class="ch-tile cc-pirate"><h4>'+esc(T.title)+'</h4><div class="cc-pirate-on" role="status">'+esc(T.left(left))+'</div></div>' : '';
+  if(left) return '<div class="ch-tile cc-pirate"><h4>'+esc(T.title)+'</h4><div class="cc-pirate-on" role="status">'+esc(T.left(left))+'</div></div>';
+  if(ccPirateCanUse()) return '<div class="ch-tile cc-pirate"><h4>'+esc(T.title)+'</h4><div class="ch-hint">'+esc(C.two)+'</div><button class="cc-pirate-btn" onclick="ccPirateUse()">'+esc(T.use)+'</button></div>';
+  return ccPirateSlot()===1 ? '<div class="ch-tile cc-pirate"><h4>'+esc(T.title)+'</h4><div class="ch-hint">'+esc(C.next)+'</div></div>' : '';
 }
 // Сказать о находке один раз, когда вечер закончился и игрок снова в хабе.
 function ccPirateNews(){
@@ -151756,15 +151769,17 @@ function ccPirateNews(){
    перезагрузка не перебрасывает. Шанс монеты наша настройка, Epic его не называет: 1/600 обычный, 1/180 редкий.
    tools/check-career-chests.js: открывая все каждый день за месяц, находят примерно 2 карьеры из 3. */
 /*@@S43-CHESTS-FROM@@*/const CC_S43_CHESTS={"n":[75.4,54.9,78.6,54.9,81.1,51.4,75.3,54.9,75.3,54.9,75.9,54.8,4.1,78,4.3,77.4,46.2,53.1,45.7,54.2,46.7,74.1,51.4,76.5,51.2,75.3,51.5,75.9,66.1,23,67.6,24,67.7,23.6,65,24,66.1,24.7,65.1,21.8,65.9,21.7,65.4,23.9,65.8,21.3,66.6,24.6,66.7,20.6,67.6,24.5,64.8,22.2,64.3,24.9,66.2,21.3,67,21.6,66.7,23.4,64.6,24,66.8,23.6,65.9,23,67,21.9,67.2,22.9,10.9,20.2,9.7,20.2,10.3,20.2,9.5,21.4,10.3,20,65.3,58.9,64.5,58.5,65.3,59.8,77.3,96.8,76.1,94.6,82.6,93.9,7.3,50.9,8.6,49.4,8.3,48.9,6.3,50.3,7.8,49,8.1,48.7,8.1,49.7,8.7,48,6.8,52.2,7.3,47.7,7.9,50.1,8.7,50.1,6.4,52.1,8.4,50.5,7.8,49,8.6,48.2,8.6,48.7,8.1,50.1,8.4,50.7,8.3,48.6,8.8,50.1,6.7,51.8,67.4,66.6,67.2,67.5,66.1,65.4,63.8,65.3,62.8,64.6,74.1,78.7,73.6,77.3,75.1,80.4,75.2,82.1,74.6,83.4,65.4,43.8,65.6,43.5,65.8,43.1,64.6,42.6,65.7,43.9,64.4,43.9,11.5,75.8,11.7,75.8,11.2,76.4,69.8,26.8,68.9,25.6,69.6,26.1,79.8,79.6,78.4,81.5,79.6,79.6,75.9,82.1,79.8,79.6,78,77.9,77.1,77.8,76,79.8,76,80.7,77.6,80.4,75.8,79.9,77,80.4,75.3,77.2,76.8,77.7,76.9,82.1,75.6,81,75.7,80.3,75.5,82.8,64.8,19.1,61.4,22.5,26.1,12.5,26.9,13.5,26.9,12.7,24.9,12.9,29.4,15,29.3,14.6,29.8,14.2,29.9,14.5,29.3,14.1,29,14.3,29.8,14.9,27.8,14.1,25.2,14.7,26.2,15.2,25.3,15.6,25.7,15.5,26.5,12.5,25.3,13.2,27.6,12.9,26,12.4,25.2,15.4,24.9,11.3,28.9,17.4,26,14.7,26.5,12.7,24.1,15.5,38.3,40.3,43.5,74.6,44.9,72.8,43,70.4,43.1,72.8,43.1,72.2,43.3,70.5,43.7,71.1,42.3,74.1,41.8,74.2,42.1,74.9,39.1,75,39.8,74.5,40,74.5,38.6,76.2,38.7,70.3,38.9,70.5,41.9,74.7,41,76.9,40.7,76.3,40.1,76.7,39,72.2,39.3,73.1,39.5,69.9,42.3,70.5,40.2,70.1,40.8,70.7,41.5,70.3,39.4,70.2,39.1,74.9,78.1,57,81.9,61,78.3,57.8,77.8,56.7,75.5,59.4,75.5,57.6,75.2,58.8,75.5,57.2,75.9,56,75.6,56.8,75.3,56.7,75.7,56.9,75.1,58.4,75.9,58.5,75.2,56.3,76.1,55.5,76,56.7,75.9,59.8,75.3,59.2,62.1,27.5,73.9,76.8,73.2,76.2,73.9,73.7,25,6.8,26.5,5.4,63.6,81.5,63.6,81.5,63.3,82.3,64,81,60.7,53.9,60.5,53,62.8,52.4,63.6,52.7,60.5,52.3,62.3,51.9,13.6,48.9,11.4,52.2,10.6,51.2,9.2,49,13.8,52.1,14,50.3,11.6,48.1,8.8,50,11.7,51.4,11.5,51.2,11.4,51.1,14.5,89.4,14.4,88.2,75.1,55.2,75.1,58.2,75.1,59.9,58.1,66.5,58.9,66.1,27.5,66.8,27.9,64.9,27,65.7,27.5,65.6,28.6,65.9,27,65.2,27.8,65.3,83,94,83.8,95.1,30.7,86.8,30.7,88.8,29.7,88.3,28.8,89.4,17,13.4,22.5,14.3,23.1,15.2,22.5,14.6,21.7,15.1,22.2,14.7,22.1,14.9,18.6,11.5,19.3,11.6,21.6,15.1,48.4,25.4,48.2,25.1,58.7,56.4,60.4,55,59.6,56.2,57.3,55.4,58.2,55.9,57.9,57.4,59.2,55.2,12.6,18.1,12.6,15.9,14.1,16.8,12.5,17,64.3,25.6,67.6,25.7,32.2,54.1,35.2,51.6,31.7,54.8,31.9,54.5,89.7,80.9,88.9,80.2,85.8,79.9,87,80,85.5,80.1,88.8,81.4,89.3,80.6,84.9,83.6,88.1,83.9,87.8,80.9,26.3,51.8,25.7,52.7,24.7,51.8,25.7,50.9,31.3,88.2,36.5,91.6,37.4,91.7,72.4,11.7,74,11,56.2,51.6,54.4,53.8,58.5,54.6,60.2,52.4,59.3,53.6,56.1,52.3,56,52.5,56.1,52.8,57.5,50.7,58.3,51.6,58.7,51.8,58.4,52.7,57.1,54.6,57.9,54.3,53.3,53.8,57.3,48.4,59.8,53,58.4,53.5,58.9,51.3,56.8,49.6,56,54.8,55.1,53,73.9,10.5,44.1,47.6,40.4,45.5,31,45.7,30.5,42.8,30.6,43,30.4,44.7,29.6,43.7,72.3,48.9,70.7,47.9,41.3,81.7,39.9,82.8,39.1,82.1,39.2,83.7,45.1,81.8,45.4,82,45.7,80.3,38.8,77.3,57.8,82.7,63,90.4,84.7,73,84,73.8,85.3,74.7,85.8,73.8,13.6,47.1,10.8,47.1,7.2,59.3,7.7,59.1,7.9,59.6,3.7,56.6,15.1,92,39.6,32.2,43.8,26.4,44.7,26.4,43.3,28.8,45.2,26,22.1,47.3,21,47.6,19.3,40.4,83.3,59.6,82.7,61,83.2,59.5,56.5,93.7,56.2,94,56,95.7,56.1,94.1,56.1,95.7,56.4,96.4,56.7,95.8,56.3,94.6,56.4,93.5,54.2,94.5,54,93.6,54.6,93.6,54,95.3,54.5,95.5,53.9,95.6,54.4,94.7,55,93.7,54.3,94.2,56.7,95.6,56,95,54.6,95.3,53.2,93.2,57.1,93.1,36.4,29.4,35.1,30,35.8,29.2,35.6,28.3,35.8,29.4,28.1,33.6,28.9,35.2,29.4,35,56.6,17.4,90.1,87.6,92,88.5,78,76.8,77.2,76.8,77.2,76.8,77.8,77,76.6,77.1,18.1,66.6,50.7,43.5,49.6,43,49.8,41.1,50.1,42.2,46.8,47.3,33.8,44.9,34.3,45.5,34,45.7,35.5,45.8,35.5,45.4,34.3,43.1,34.4,42.5,34.2,42.9,34.9,43.3,36.3,43.9,35.8,44.2,36.1,44.1,35.5,43.8,36.3,43.4,31.8,44.4,31.9,43.1,31.1,43.9,31.1,44.2,32.2,43.7,31.7,43.6,31.7,43.9,31.9,44.8,35,44.2,35,46,36.6,45.6,33.8,45.1,32.7,43,37.3,43.5,34.7,46.5,32,46.2,31.4,45.5,35.1,41.8,36,41.9,35.3,42.2,32,42.4,58.4,29.8,75,25.5,85.8,64.1,84.4,65,10.1,34.2,80.2,19.2,81.4,20.5,79.3,24.6,78.2,25.3,43.1,87,42.1,86.2,42.3,87.1,42.5,86,39,40.7,38.2,40.2,38.7,40.5,59.7,35.6,57.5,39.6,59.5,35.6,88.6,29.8,88.4,30.6,88.6,30.2,87.8,30.7,10.6,31.9,10.2,31.3,48.1,27.4,48,27.5,48,26.9,48.4,26,48.4,28.1,48.1,27.9,47.7,25.7,52,28.6,50.4,29.4,50.6,29.9,50.9,27.1,52.2,26.8,46.1,27.5,46,28,10.7,82.9,12.6,78.3,12.6,78,57.6,91.4,53.8,91.2,54.3,91.4,56.3,91.3,57.7,91.5,53.6,90.7,55.6,89.1,55.2,89.2,71.3,47.3,22.9,75.3,21.7,75.8,19.9,73.2,20.3,75.4,17,75.4,17.1,75.3,23.3,75.4,22.5,74.7,68.6,22.7,68.5,23.2,69.3,25.2,67.9,23.9,67.8,24.2,67.9,23.9,68.2,24.6,68.5,24,68,25.1,70.1,24.8,68.3,22.1,40.8,69.7,66.4,37.4,40.5,49.6,43.8,49.7,40.4,54.7,44.4,53.8,45.1,54.5,20.9,58.5,21.3,58.6,20.9,58.9,19.3,55.2,89.7,86,88.7,86.8,71.1,86.5,71.1,86.1,22.6,77.3,20.5,79.9,20.4,78.3,19.4,78.2,22,78.6,20.8,80.8,22.8,77.6,19.9,79,17.4,79.7,17.3,80.1,20.6,77.3,21.6,78.5,38.1,40.5,38.4,40.1,41.5,94.7,42.3,93,41.5,92.9,43.4,92.6,41.9,92.9,41.9,92.1,44.1,93.6,19.9,37.5,18.4,34.8,18.7,38.9,20.3,19.7,20.6,21.3,77.7,68.7,77.6,68,78.2,68.6,60.1,24.6,48.1,64.2,48.1,63.8,37.8,73.1,37.2,72.5,37.6,72,37,73.4,32.4,71.2,36.9,75.6,37.2,74.8,78.6,90.5,78.1,90.1,75.9,86.3,75.4,86.6,75.7,87.9,75.4,87.2,66.6,13.6,8.2,44.2,8,44,8,43.3,48.7,89.2,22.1,49.4,22,48.3,22.2,48.8,36.8,60.1,59.6,71.2,57.7,75.9,57.7,75.6,17.1,88.3,17.2,88.8,17.9,87.3,17.2,86.2,16.6,87.5,16.8,89.3,14.9,61.2,19.9,6.5,48.7,84.3,50.7,84,68,66.1,68.7,66.6,80.2,38.3,79.4,37.9,79.9,37.4,80,38.5,80.4,37.4,76.4,34.1,78.5,53.3,48.6,53.9,49.2,54,50.3,49.7,47.9,74.9,62.5,55.4,63.3,56.8,64.5,58.5,38.1,36.9,38.3,35.8,31.8,37.5,60.5,66.4,65.6,72.9,65.1,72.9,32.9,65.3,65.4,46.1,23.9,29.8,25.6,27.5,28.7,27.1,28.8,26.6,11.4,70,15.5,70.3,14.6,70.5,33.8,24.4,32.6,22.2,27.8,72.2,24.1,71,84.1,20.6,29.6,14.8,40.8,71.8,81.8,58.2,75.5,57.3,67.1,31.1,62.1,30.8,71.4,69.9,63.8,81.4,63.6,81.4,50.5,36.6,51,33.6,50.3,37.1,64.7,52.2,62.4,50.8,63.5,48.9,70.9,60,69.5,60,59.5,65.4,59.1,65.9,24.4,67,30.5,66.5,83.7,95,83.7,93,78.2,13.6,28.3,89.1,72.9,22.3,73.9,21.5,72.1,22.7,73.1,21.1,50.8,20.1,50.8,20.6,59.1,58.2,57.9,56.7,57.4,58.2,54.8,55.9,58.6,56.7,58,57.8,57.8,61.8,56.7,46.7,53.8,40.8,24.6,59.9,27.6,60.6,30.8,55.1,27,57.7,64.9,25.6,37.2,54.1,37.2,54,37.5,54.2,37.8,54.5,31.9,54.2,27,19.8,27.4,20.2,84.2,83.9,84.2,84,85.2,81.9,85.3,81.8,24.6,50.7,68.6,11.7,72.5,12,72.4,11.5,57.6,52.2,60.1,52.6,56.7,53.9,58.3,49.6,72.5,8.3,72.5,10.3,39.3,41.1,27.9,43.4,69.3,51.3,69.3,52,67.4,10.2,54.9,83.3,58.7,82.7,57.6,82.1,57.8,83.3,58.2,81.1,53.3,82.9,18.9,31.1,62.5,90.9,66,92,64.7,88.3,83.7,76.3,82.8,69.8,39.4,32.4,44.9,28.6,44.9,29.1,81.5,41.2,75.3,42.5,21.5,40.5,18,42.1,22.1,41.9,21.3,41,85.9,59.7,85.5,58,39.7,22.1,39.3,23.4,44.4,21.9,34.1,32.1,32.8,25.6,27.9,33.6,28.4,33.6,29.5,33.6,56.1,15.9,55.1,18,55.2,16.9,55.1,17.9,54.4,16.1,54.6,16.4,13.6,65,10.5,68.9,19.4,66.8,48.1,43.8,48.1,43.3,46.9,47,52.3,46.4,47.3,41.3,48.9,42.6,49.8,41.1,58,29.5,59.6,29.9,75.3,26.8,78.4,28.2,75.1,25.8,38.6,36.6,38.3,37.6,44.2,39.8,45.6,36.2,45.6,35.7,80.9,22,81.2,19.6,80.8,19.6,41.2,61.3,41.2,55.5,39.6,55.4,58.9,39.8,57,33.8,56.3,38.8,56.4,39.1,56.7,39.4,59.1,36.4,7.7,21.4,8.5,20.1,88.6,30.6,88.4,29.8,89.9,29,10.7,29.7,38.2,81.2,37.8,83.4,50.9,26,51.4,26,52,28.3,52.1,28.8,52,30,13,78.1,70.8,47,71.7,47,17.3,75.3,18.9,70.6,17.5,70.2,68.3,25.1,67.8,24.5,52,58.7,49.1,56.1,39,65.6,61.4,38.8,45.4,53.8,41,51.4,17.7,57.4,20.3,59.3,23.3,55.1,20.4,61,21.6,59.7,68.2,39.8,76.2,10.6,7.7,68.2,5.7,68.1,7.5,67.6,6.9,65.9,17,84,17.2,80,30.2,84,27.3,80.7,17.8,36.6,18.7,34.8,18,34.8,21.2,24.7,23.5,24,81.2,64.4,79.4,64,58.8,24.2,56.5,19.4,55.1,19,53.7,22.1,52.3,65,51.9,66.1,31.5,76.5,37.4,73.4,37.5,73.2,79,84.7,5.2,69.5,5.3,44.8,52.6,85.4,35.9,59.7,35.9,60.7,45.8,92,52.1,82.9,48.8,79.8,72.6,63.4,71.6,63.5,71.8,63,71.5,69.6,72.1,68.5,80.7,33.2,76.2,33.9,76.3,34.1,28,19.5,27.6,19.5,27.8,19.7,27.9,19.6,27.6,19.7,28,19.7,27.6,19.5,28,19.5,27.6,19.7,27.6,19.7,27.7,19.5,27.6,19.5,27.9,19.7,11.4,37.2,10.6,37.7,11.2,37.7,10.9,37.6,72.9,29.4,73.7,28.9,73.1,28.9,73.4,29,77.1,48.3,77.8,47.8,77.3,47.8,77.6,47.9,37.5,19.8,37,19.1,37,19.6,37.1,19.3,23.2,85.2,23.7,85.9,23.6,85.4,23.6,85.7,67.2,89,67.7,89.8,67.6,89.2,67.6,89.5],"r":[11.2,74,11.1,73.7,11.1,74,11.2,73.7,67.3,24.2,67.1,24.4,67.3,24.4,67,24.2,41.6,75,41.4,75.2,41.6,75.2,41.3,75,75.6,59.2,75.4,59,75.4,59.2,75.6,58.9,73.3,21.6,27.7,44,27.5,44.2,27.8,44.2,27.4,44,49,31.2,48.9,30.9,48.9,31.2,49,30.8,45.5,53.8,45.2,53.9,45.5,53.9,45.1,53.7,73.8,86.5,73.6,86.7,73.8,86.7,73.5,86.5,18.2,18.9,18.3,19.2,18.3,18.9,18.1,19.2,27.7,19.6,27.6,19.6]};/*@@S43-CHESTS-TILL@@*/
+const CC_CHEST_DROPS={l:[["loadingscreen_delilahthw","Plunder in Paradise","uncommon"],["LoadingScreen_EvergreenFarOut","Kaleidoscopic Cool","uncommon"],["LoadingScreen_FermiumStraw4","Ziggraffiti","uncommon"],["LoadingScreen_JuniperBurlap","The Treasure Hunt Begins","uncommon"],["LoadingScreen_LethalPoison","Charged-Up Charlotte","uncommon"],["LoadingScreen_RaspberryPaw","Spread the Kawaii","uncommon"],["LoadingScreen_S43KeyArt","Treasure Hunters","uncommon"],["LoadingScreen_S43LineUp","The Plunder Posse","uncommon"],["LoadingScreen_S43MusicPass","Grindcore!","uncommon"],["LoadingScreen_S43Treasure","X Marks the Zero Point Sliver","uncommon"],["LoadingScreen_S43_RankedBR","By Order of Geno","uncommon"],["LoadingScreen_TacticalRecon","Hope & Jones: Wanted","uncommon"],["LoadingScreen_TacticalRecon2","Crow's Nest Climber Jonesy","uncommon"],["LoadingScreen_TonicMail","Rocket. A$AP.","uncommon"],["LoadingScreen_YouKata","Pounce Pack","uncommon"]],p:[["Pickaxe_BR43_Elite","Double-Duty Duelist","rare"],["Pickaxe_BrandCreed","Zoro's Swords","rare"],["Pickaxe_DustyBones_Bass","Valley's Villain","rare"],["Pickaxe_FierceStripe","Brawler's Bounty Blades","rare"],["Pickaxe_FlipperBalm","Buggy Knives","rare"],["Pickaxe_HermitFlop","Fire Fists","rare"],["Pickaxe_InsightBawl","Sanji's Utensils","rare"],["Pickaxe_JuniperBurlap","High Tide","rare"],["Pickaxe_SoftVase","Moonlite Sensu","rare"],["Pickaxe_SpillStrikeReward","Solid Gold Gauntlets","rare"],["Pickaxe_WeldFlush","Slalom Vine","rare"]]};
+const CC_CHEST_NOTHING=.25, CC_CHEST_SCREEN=.08, CC_CHEST_PICK=.015;
 const CC_CHEST_COST=20, CC_CHEST_N=16, CC_CHEST_R=2, CC_CHEST_OPENS=CC_CHEST_N+CC_CHEST_R, CC_CHEST_P=1/600, CC_CHEST_P_RARE=1/180;
 const CC_CHEST_T_ALL={
-  en:{all:n=>'Open all ('+n+')', found:'YOU FOUND', map:'Pirate Chests', chip:'V-Bucks or a coin', done:'All opened today. Come back tomorrow', pick:'Tap the chests on the map. Each one can hold V-Bucks or the coin that opens the Pirate Shop.', left:n=>'Chests left today: '+n, none:'No chests left today. New ones tomorrow.', search:'Search', coin:'Pirate coin!', coinS:'For 14 days everything priced in V-Bucks is free. You choose when the 14 days start.', now:'Plunder the shop now', later:'Keep for later', close:'Close', free:'14 days free'},
-  ru:{all:n=>'Открыть все ('+n+')', found:'ТЫ НАШЁЛ', map:'Пиратские сундуки', chip:'V-Bucks или монета', done:'Сегодня все открыты. Приходи завтра', pick:'Нажимай на сундуки на карте. В каждом могут быть V-Bucks или монета, которая открывает пиратский магазин.', left:n=>'Сундуков на сегодня: '+n, none:'На сегодня сундуки кончились. Новые завтра.', search:'Обыскать', coin:'Пиратская монета!', coinS:'14 дней всё за V-Bucks бесплатно. Когда начнутся эти 14 дней, решаешь ты.', now:'Разграбить магазин сейчас', later:'Оставить на потом', close:'Закрыть', free:'14 дней бесплатно'},
-  fr:{all:n=>'Tout ouvrir ('+n+')', found:'TU AS TROUVÉ', map:'Coffres pirates', chip:'V-Bucks ou une pièce', done:"Tous ouverts aujourd'hui. Reviens demain", pick:'Touche les coffres sur la carte. Chacun peut contenir des V-Bucks ou la pièce qui ouvre la boutique pirate.', left:n=>"Coffres restants aujourd'hui : "+n, none:'Plus de coffres aujourd\'hui. Nouveaux coffres demain.', search:'Fouiller', coin:'Pièce pirate !', coinS:'Pendant 14 jours, tout ce qui coûte des V-Bucks est gratuit. Tu choisis quand ils commencent.', now:'Piller la boutique maintenant', later:'Garder pour plus tard', close:'Fermer', free:'14 jours gratuits'},
-  it:{all:n=>'Apri tutti ('+n+')', found:'HAI TROVATO', map:'Forzieri pirata', chip:'V-Buck o una moneta', done:'Tutti aperti oggi. Torna domani', pick:'Tocca i forzieri sulla mappa. Ognuno può contenere V-Buck o la moneta che apre il negozio pirata.', left:n=>'Forzieri rimasti oggi: '+n, none:'Niente più forzieri oggi. Nuovi forzieri domani.', search:'Cerca', coin:'Moneta pirata!', coinS:'Per 14 giorni tutto ciò che costa V-Buck è gratis. Decidi tu quando iniziano.', now:'Saccheggia il negozio ora', later:'Tieni per dopo', close:'Chiudi', free:'14 giorni gratis'},
-  pt:{all:n=>'Abrir todos ('+n+')', found:'VOCÊ ENCONTROU', map:'Baús piratas', chip:'V-Bucks ou uma moeda', done:'Todos abertos hoje. Volte amanhã', pick:'Toque nos baús do mapa. Cada um pode ter V-Bucks ou a moeda que abre a loja pirata.', left:n=>'Baús restantes hoje: '+n, none:'Sem baús por hoje. Novos baús amanhã.', search:'Procurar', coin:'Moeda pirata!', coinS:'Por 14 dias tudo que custa V-Bucks é grátis. Você escolhe quando começam.', now:'Saquear a loja agora', later:'Guardar para depois', close:'Fechar', free:'14 dias grátis'},
-  de:{all:n=>'Alle öffnen ('+n+')', found:'DU HAST GEFUNDEN', map:'Piratentruhen', chip:'V-Bucks oder eine Münze', done:'Heute alle geöffnet. Komm morgen wieder', pick:'Tippe auf die Truhen auf der Karte. Jede kann V-Bucks oder die Münze enthalten, die den Piratenshop öffnet.', left:n=>'Truhen heute übrig: '+n, none:'Heute keine Truhen mehr. Neue morgen.', search:'Durchsuchen', coin:'Piratenmünze!', coinS:'14 Tage lang ist alles für V-Bucks gratis. Du entscheidest, wann sie beginnen.', now:'Shop jetzt plündern', later:'Für später aufheben', close:'Schließen', free:'14 Tage gratis'},
-  es:{all:n=>'Abrir todos ('+n+')', found:'HAS ENCONTRADO', map:'Cofres pirata', chip:'paVos o una moneda', done:'Todos abiertos hoy. Vuelve mañana', pick:'Toca los cofres del mapa. Cada uno puede tener paVos o la moneda que abre la tienda pirata.', left:n=>'Cofres restantes hoy: '+n, none:'No quedan cofres hoy. Nuevos mañana.', search:'Buscar', coin:'¡Moneda pirata!', coinS:'Durante 14 días todo lo que cuesta paVos es gratis. Tú eliges cuándo empiezan.', now:'Saquear la tienda ahora', later:'Guardar para luego', close:'Cerrar', free:'14 días gratis'}
+  en:{nothing:'NOTHING!', kl:'LOADING SCREEN', kp:'PICKAXE', items:n=>n+' ITEMS', two:'Two periods of 14 days: the first until 15 December 2026, the second in 2027. Everything priced in V-Bucks is free.', next:'The second free period opens in 2027.', all:n=>'Open all ('+n+')', found:'YOU FOUND', map:'Pirate Chests', chip:'V-Bucks, items or a coin', done:'All opened today. Come back tomorrow', pick:'Tap the chests on the map. Inside: V-Bucks, a loading screen, a pickaxe, nothing at all or the coin that opens the Pirate Shop.', left:n=>'Chests left today: '+n, none:'No chests left today. New ones tomorrow.', search:'Search', coin:'Pirate coin!', coinS:'Two periods of 14 days: the first until 15 December 2026, the second in 2027. Everything priced in V-Bucks is free.', now:'Plunder the shop now', later:'Keep for later', close:'Close', free:'14 days free'},
+  ru:{nothing:'НИЧЕГО!', kl:'ЭКРАН ЗАГРУЗКИ', kp:'КИРКУ', items:n=>'ПРЕДМЕТОВ: '+n, two:'Два срока по 14 дней: первый до 15 декабря 2026, второй в 2027. Всё за V-Bucks бесплатно.', next:'Второй бесплатный срок откроется в 2027.', all:n=>'Открыть все ('+n+')', found:'ТЫ НАШЁЛ', map:'Пиратские сундуки', chip:'V-Bucks, вещи или монета', done:'Сегодня все открыты. Приходи завтра', pick:'Нажимай на сундуки на карте. Внутри V-Bucks, экран загрузки, кирка, ничего или монета, которая открывает пиратский магазин.', left:n=>'Сундуков на сегодня: '+n, none:'На сегодня сундуки кончились. Новые завтра.', search:'Обыскать', coin:'Пиратская монета!', coinS:'Два срока по 14 дней: первый до 15 декабря 2026, второй в 2027. Всё за V-Bucks бесплатно.', now:'Разграбить магазин сейчас', later:'Оставить на потом', close:'Закрыть', free:'14 дней бесплатно'},
+  fr:{nothing:'RIEN !', kl:'ÉCRAN DE CHARGEMENT', kp:'PIOCHE', items:n=>n+' OBJETS', two:'Deux périodes de 14 jours : la première jusqu’au 15 décembre 2026, la seconde en 2027. Tout ce qui coûte des V-Bucks est gratuit.', next:'La seconde période gratuite ouvre en 2027.', all:n=>'Tout ouvrir ('+n+')', found:'TU AS TROUVÉ', map:'Coffres pirates', chip:'V-Bucks, objets ou pièce', done:"Tous ouverts aujourd'hui. Reviens demain", pick:'Touche les coffres sur la carte. Dedans : V-Bucks, écran de chargement, pioche, rien du tout ou la pièce qui ouvre la boutique pirate.', left:n=>"Coffres restants aujourd'hui : "+n, none:'Plus de coffres aujourd\'hui. Nouveaux coffres demain.', search:'Fouiller', coin:'Pièce pirate !', coinS:'Deux périodes de 14 jours : la première jusqu’au 15 décembre 2026, la seconde en 2027. Tout ce qui coûte des V-Bucks est gratuit.', now:'Piller la boutique maintenant', later:'Garder pour plus tard', close:'Fermer', free:'14 jours gratuits'},
+  it:{nothing:'NIENTE!', kl:'SCHERMATA DI CARICAMENTO', kp:'PICCONE', items:n=>n+' OGGETTI', two:'Due periodi da 14 giorni: il primo fino al 15 dicembre 2026, il secondo nel 2027. Tutto ciò che costa V-Buck è gratis.', next:'Il secondo periodo gratis si apre nel 2027.', all:n=>'Apri tutti ('+n+')', found:'HAI TROVATO', map:'Forzieri pirata', chip:'V-Buck, oggetti o moneta', done:'Tutti aperti oggi. Torna domani', pick:'Tocca i forzieri sulla mappa. Dentro: V-Buck, schermata di caricamento, piccone, niente o la moneta che apre il negozio pirata.', left:n=>'Forzieri rimasti oggi: '+n, none:'Niente più forzieri oggi. Nuovi forzieri domani.', search:'Cerca', coin:'Moneta pirata!', coinS:'Due periodi da 14 giorni: il primo fino al 15 dicembre 2026, il secondo nel 2027. Tutto ciò che costa V-Buck è gratis.', now:'Saccheggia il negozio ora', later:'Tieni per dopo', close:'Chiudi', free:'14 giorni gratis'},
+  pt:{nothing:'NADA!', kl:'TELA DE CARREGAMENTO', kp:'PICARETA', items:n=>n+' ITENS', two:'Dois períodos de 14 dias: o primeiro até 15 de dezembro de 2026, o segundo em 2027. Tudo que custa V-Bucks é grátis.', next:'O segundo período grátis abre em 2027.', all:n=>'Abrir todos ('+n+')', found:'VOCÊ ENCONTROU', map:'Baús piratas', chip:'V-Bucks, itens ou moeda', done:'Todos abertos hoje. Volte amanhã', pick:'Toque nos baús do mapa. Dentro: V-Bucks, tela de carregamento, picareta, nada ou a moeda que abre a loja pirata.', left:n=>'Baús restantes hoje: '+n, none:'Sem baús por hoje. Novos baús amanhã.', search:'Procurar', coin:'Moeda pirata!', coinS:'Dois períodos de 14 dias: o primeiro até 15 de dezembro de 2026, o segundo em 2027. Tudo que custa V-Bucks é grátis.', now:'Saquear a loja agora', later:'Guardar para depois', close:'Fechar', free:'14 dias grátis'},
+  de:{nothing:'NICHTS!', kl:'LADEBILDSCHIRM', kp:'SPITZHACKE', items:n=>n+' GEGENSTÄNDE', two:'Zwei Zeiträume von 14 Tagen: der erste bis 15. Dezember 2026, der zweite 2027. Alles für V-Bucks ist gratis.', next:'Der zweite Gratis-Zeitraum öffnet 2027.', all:n=>'Alle öffnen ('+n+')', found:'DU HAST GEFUNDEN', map:'Piratentruhen', chip:'V-Bucks, Items oder Münze', done:'Heute alle geöffnet. Komm morgen wieder', pick:'Tippe auf die Truhen auf der Karte. Darin: V-Bucks, Ladebildschirm, Spitzhacke, gar nichts oder die Münze, die den Piratenshop öffnet.', left:n=>'Truhen heute übrig: '+n, none:'Heute keine Truhen mehr. Neue morgen.', search:'Durchsuchen', coin:'Piratenmünze!', coinS:'Zwei Zeiträume von 14 Tagen: der erste bis 15. Dezember 2026, der zweite 2027. Alles für V-Bucks ist gratis.', now:'Shop jetzt plündern', later:'Für später aufheben', close:'Schließen', free:'14 Tage gratis'},
+  es:{nothing:'¡NADA!', kl:'PANTALLA DE CARGA', kp:'PICO', items:n=>n+' OBJETOS', two:'Dos periodos de 14 días: el primero hasta el 15 de diciembre de 2026, el segundo en 2027. Todo lo que cuesta paVos es gratis.', next:'El segundo periodo gratis se abre en 2027.', all:n=>'Abrir todos ('+n+')', found:'HAS ENCONTRADO', map:'Cofres pirata', chip:'paVos, objetos o moneda', done:'Todos abiertos hoy. Vuelve mañana', pick:'Toca los cofres del mapa. Dentro: paVos, pantalla de carga, pico, nada o la moneda que abre la tienda pirata.', left:n=>'Cofres restantes hoy: '+n, none:'No quedan cofres hoy. Nuevos mañana.', search:'Buscar', coin:'¡Moneda pirata!', coinS:'Dos periodos de 14 días: el primero hasta el 15 de diciembre de 2026, el segundo en 2027. Todo lo que cuesta paVos es gratis.', now:'Saquear la tienda ahora', later:'Guardar para luego', close:'Cerrar', free:'14 días gratis'}
 };
 function ccChestT(){ return CC_CHEST_T_ALL[LANG] || CC_CHEST_T_ALL.en; }
 function ccChestOn(){ return ccSeasonNumOn(careerToday())===CC_PIRATE_SEASON; }
@@ -151789,7 +151804,19 @@ function ccChestSpots(day){
 function ccPirateChestRoll(day, i, rare){
   const r=careerRng(ccHashStr('chest|'+ccPirateTeam()+'|'+day+'|'+i)), x=r(), v=r();
   if(x<(rare ? CC_CHEST_P_RARE : CC_CHEST_P) && !ccPirate().found) return {coin:1};
+  const y=r(), w=r(), own=ccFnOwn();
+  const item=t=>{ const l=CC_CHEST_DROPS[t], e=l[Math.floor(w*l.length)]; return own[e[0]] ? null : {item:{id:e[0], t:t, n:e[1], r:e[2]}}; };
+  if(y<CC_CHEST_NOTHING) return {none:1};
+  const got=y<CC_CHEST_NOTHING+CC_CHEST_SCREEN ? item('l') : y<CC_CHEST_NOTHING+CC_CHEST_SCREEN+CC_CHEST_PICK ? item('p') : null;
+  if(got) return got;
   return {vb:rare ? (v<.6 ? 10 : v<.9 ? 25 : 50) : (v<.6 ? 5 : v<.9 ? 10 : 20)};
+}
+// Предмет сразу в шкафчик, как награды пасса.
+function ccChestGive(it){
+  const own=ccFnOwn(), eq=ccFnEq();
+  if(own[it.id]) return;
+  own[it.id]={t:it.t, n:it.n, r:it.r, d:careerToday(), chest:1};
+  if(!eq[it.t]) eq[it.t]=it.id;
 }
 function ccChestTileHTML(o){
   if(!ccChestOn()) return '';
@@ -151800,9 +151827,8 @@ function ccChestTileHTML(o){
     '<span class="cc-dt-img" style="background-image:url(\'items/creative/trChest.webp\')"><em class="cc-dt-en">'+(paid ? left+'/'+CC_CHEST_OPENS : CC_CHEST_COST+L().ccEnergyMark)+'</em></span>'+
     '<span class="cc-dt-txt"><b>'+esc(T.map)+'</b><span class="cc-dt-g"><i class="m">'+esc(T.chip)+'</i></span>'+(why ? '<span class="cc-dt-why">'+esc(why)+'</span>' : '')+'</span></button>';
 }
-const CC_CHEST_SVG={n:{lid:'<svg viewBox="0 0 120 52" aria-hidden="true"><defs><linearGradient id="ccGN" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff0a0"/><stop offset=".5" stop-color="#ffc62e"/><stop offset="1" stop-color="#b87508"/></linearGradient></defs><path d="M4 50V30C4 12 24 5 60 5s56 7 56 25v20z" fill="#c9902f" stroke="#5e3a08" stroke-width="3"/><path d="M8 40h104M10 26c20-6 80-6 100 0" fill="none" stroke="#9a6a20" stroke-width="2.500"/><path d="M16 32c6 3 10 1 14-2M92 18c5 2 10 2 14 0" fill="none" stroke="#5f9a35" stroke-width="4" stroke-linecap="round"/><path d="M4 50V30C4 18 12 11 26 8v42zM116 50V30c0-12-8-19-22-22v42z" fill="url(#ccGN)" stroke="#7a4a06" stroke-width="2"/><path d="M2 44h116v7H2z" fill="url(#ccGN)" stroke="#7a4a06" stroke-width="2"/><path d="M48 8l5-6h14l5 6-12 9z" fill="#7fe6ff" stroke="#1f6d9a" stroke-width="1.500"/><path d="M53 2l7 15 7-15" fill="none" stroke="#e6fbff" stroke-width="1.200"/><circle cx="15" cy="27" r="6.500" fill="#b545f0" stroke="#7a4a06" stroke-width="2.500"/><circle cx="13" cy="25" r="2" fill="#f3d4ff"/><circle cx="105" cy="27" r="6.500" fill="#b545f0" stroke="#7a4a06" stroke-width="2.500"/><circle cx="103" cy="25" r="2" fill="#f3d4ff"/><path d="M60 16c-11 0-19 7-19 16 0 6 3 10 7 13v6h24v-6c4-3 7-7 7-13 0-9-8-16-19-16z" fill="#c9c3b0" stroke="#4d4a40" stroke-width="2.500"/><path d="M47 32l5-5 7 5-5 6zM73 32l-5-5-7 5 5 6z" fill="#ff3fa0" stroke="#5a0f2a" stroke-width="1.200"/><path d="M60 37l-3 5h6z" fill="#4d4a40"/><path d="M54 45v6M60 45v6M66 45v6" stroke="#4d4a40" stroke-width="1.800"/></svg>', body:'<svg class="cc-ch-body" viewBox="0 0 120 66" aria-hidden="true"><defs><linearGradient id="ccGN" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff0a0"/><stop offset=".5" stop-color="#ffc62e"/><stop offset="1" stop-color="#b87508"/></linearGradient></defs><path d="M4 2h112v58a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4z" fill="#c9902f" stroke="#5e3a08" stroke-width="3"/><path d="M5 20h110M5 40h110" stroke="#9a6a20" stroke-width="3"/><path d="M28 12c5 3 9 2 13 0M80 50c5 3 9 2 13 0M30 54c3 2 6 2 9 0" fill="none" stroke="#5f9a35" stroke-width="4.500" stroke-linecap="round"/><path d="M4 2h18v62H8a4 4 0 0 1-4-4zM116 2H98v62h14a4 4 0 0 0 4-4z" fill="url(#ccGN)" stroke="#7a4a06" stroke-width="2"/><circle cx="13" cy="12" r="2.500" fill="#fff2b0" stroke="#7a4a06"/><circle cx="107" cy="12" r="2.500" fill="#fff2b0" stroke="#7a4a06"/><circle cx="13" cy="53" r="2.500" fill="#fff2b0" stroke="#7a4a06"/><circle cx="107" cy="53" r="2.500" fill="#fff2b0" stroke="#7a4a06"/><path d="M16 58C28 48 38 42 50 30M104 58C92 48 82 42 70 30" fill="none" stroke="#7a4a06" stroke-width="7" stroke-dasharray="6 3"/><path d="M16 58C28 48 38 42 50 30M104 58C92 48 82 42 70 30" fill="none" stroke="#ffd34a" stroke-width="4" stroke-dasharray="6 3"/><rect x="46" y="20" width="28" height="24" rx="3" fill="url(#ccGN)" stroke="#7a4a06" stroke-width="2.500"/><rect x="53" y="26" width="14" height="12" rx="2" fill="none" stroke="#7a4a06" stroke-width="2"/></svg>'}, r:{lid:'<svg viewBox="0 0 120 52" aria-hidden="true"><defs><linearGradient id="ccGR" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff0a0"/><stop offset=".5" stop-color="#ffc62e"/><stop offset="1" stop-color="#b87508"/></linearGradient></defs><path d="M4 50V30C4 12 24 5 60 5s56 7 56 25v20z" fill="#f0bb35" stroke="#5e3a08" stroke-width="3"/><path d="M8 40h104M10 26c20-6 80-6 100 0" fill="none" stroke="#c98c16" stroke-width="2.500"/><path d="M16 32c6 3 10 1 14-2M92 18c5 2 10 2 14 0" fill="none" stroke="#5f9a35" stroke-width="4" stroke-linecap="round"/><path d="M4 50V30C4 18 12 11 26 8v42zM116 50V30c0-12-8-19-22-22v42z" fill="url(#ccGR)" stroke="#7a4a06" stroke-width="2"/><path d="M2 44h116v7H2z" fill="url(#ccGR)" stroke="#7a4a06" stroke-width="2"/><path d="M48 8l5-6h14l5 6-12 9z" fill="#7fe6ff" stroke="#1f6d9a" stroke-width="1.500"/><path d="M53 2l7 15 7-15" fill="none" stroke="#e6fbff" stroke-width="1.200"/><circle cx="15" cy="27" r="6.500" fill="#b545f0" stroke="#7a4a06" stroke-width="2.500"/><circle cx="13" cy="25" r="2" fill="#f3d4ff"/><circle cx="105" cy="27" r="6.500" fill="#b545f0" stroke="#7a4a06" stroke-width="2.500"/><circle cx="103" cy="25" r="2" fill="#f3d4ff"/><path d="M60 16c-11 0-19 7-19 16 0 6 3 10 7 13v6h24v-6c4-3 7-7 7-13 0-9-8-16-19-16z" fill="#c9c3b0" stroke="#4d4a40" stroke-width="2.500"/><path d="M47 32l5-5 7 5-5 6zM73 32l-5-5-7 5 5 6z" fill="#ff2e4a" stroke="#5a0f2a" stroke-width="1.200"/><path d="M60 37l-3 5h6z" fill="#4d4a40"/><path d="M54 45v6M60 45v6M66 45v6" stroke="#4d4a40" stroke-width="1.800"/></svg>', body:'<svg class="cc-ch-body" viewBox="0 0 120 66" aria-hidden="true"><defs><linearGradient id="ccGR" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff0a0"/><stop offset=".5" stop-color="#ffc62e"/><stop offset="1" stop-color="#b87508"/></linearGradient></defs><path d="M4 2h112v58a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4z" fill="#f0bb35" stroke="#5e3a08" stroke-width="3"/><path d="M5 20h110M5 40h110" stroke="#c98c16" stroke-width="3"/><path d="M28 12c5 3 9 2 13 0M80 50c5 3 9 2 13 0M30 54c3 2 6 2 9 0" fill="none" stroke="#5f9a35" stroke-width="4.500" stroke-linecap="round"/><path d="M4 2h18v62H8a4 4 0 0 1-4-4zM116 2H98v62h14a4 4 0 0 0 4-4z" fill="url(#ccGR)" stroke="#7a4a06" stroke-width="2"/><circle cx="13" cy="12" r="2.500" fill="#fff2b0" stroke="#7a4a06"/><circle cx="107" cy="12" r="2.500" fill="#fff2b0" stroke="#7a4a06"/><circle cx="13" cy="53" r="2.500" fill="#fff2b0" stroke="#7a4a06"/><circle cx="107" cy="53" r="2.500" fill="#fff2b0" stroke="#7a4a06"/><path d="M16 58C28 48 38 42 50 30M104 58C92 48 82 42 70 30" fill="none" stroke="#7a4a06" stroke-width="7" stroke-dasharray="6 3"/><path d="M16 58C28 48 38 42 50 30M104 58C92 48 82 42 70 30" fill="none" stroke="#ffd34a" stroke-width="4" stroke-dasharray="6 3"/><rect x="46" y="20" width="28" height="24" rx="3" fill="url(#ccGR)" stroke="#7a4a06" stroke-width="2.500"/><rect x="53" y="26" width="14" height="12" rx="2" fill="none" stroke="#7a4a06" stroke-width="2"/></svg>'}};
-function ccChestArt(rare, part){ return CC_CHEST_SVG[rare ? 'r' : 'n'][part==='lid' ? 'lid' : 'body']; }
-const CC_COIN_SVG='<svg viewBox="0 0 100 100" aria-hidden="true"><defs><radialGradient id="ccCoinB" cx="38%" cy="32%" r="72%"><stop offset="0" stop-color="#fff0a8"/><stop offset=".5" stop-color="#f2b022"/><stop offset="1" stop-color="#a8650c"/></radialGradient><linearGradient id="ccCoinS" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff6c8"/><stop offset=".5" stop-color="#e8b23a"/><stop offset="1" stop-color="#8f5a10"/></linearGradient></defs><circle cx="50" cy="50" r="37" fill="none" stroke="#b98226" stroke-width="9"/><circle cx="50" cy="50" r="37" fill="none" stroke="#5e3a0c" stroke-width="3" stroke-dasharray="7 5"/><path d="M50 1l6 30 13-13-13 25 25-13-13 13 31 7-31 7 13 13-25-13 13 25-13-13-6 30-6-30-13 13 13-25-25 13 13-13-31-7 31-7-13-13 25 13-13-25 13 13z" fill="url(#ccCoinS)" stroke="#6d4308" stroke-width="1"/><circle cx="50" cy="50" r="24" fill="#5a370b"/><circle cx="50" cy="50" r="21" fill="url(#ccCoinB)"/><path d="M43 37h17v5.500H49.500v6H58v5.500h-8.500V64H43z" fill="#fff" stroke="#c9861a" stroke-width=".8"/></svg>';
+function ccChestArt(rare, part){ return '<img class="cc-chi '+(part==='lid' ? 'l' : 'b')+'" src="items/creative/pirate-chest'+(rare ? '-rare' : '')+'.webp" alt="">'; }
+const CC_COIN_SVG='<img class="cc-coin-i" src="items/creative/pirate-coin.webp" alt="">';
 function ccChestClose(){ const m=document.getElementById('ccChestOv'); if(m) m.remove(); }
 function ccChestShow(html){
   ccChestClose();
@@ -151821,7 +151847,7 @@ function ccChestOpen(){
   if(!ccChestCan()) return;
   const T=ccChestT(), day=careerToday(), spots=ccChestSpots(day), opened=ccChestToday().opened;
   const pin=(s, i)=>'<button class="cc-chm'+(s.rare ? ' r' : '')+(opened.indexOf(i)>=0 ? ' o' : '')+'" style="left:'+s.x+'%;top:'+s.y+'%" aria-label="'+esc(T.map)+' '+(i+1)+'" '+
-    (opened.indexOf(i)>=0 ? 'disabled' : '')+' onclick="ccChestPick('+i+')"><img src="items/creative/chest-pirate'+(s.rare ? '-rare' : '')+'.svg" alt=""></button>';
+    (opened.indexOf(i)>=0 ? 'disabled' : '')+' onclick="ccChestPick('+i+')"><img src="items/creative/pirate-chest'+(s.rare ? '-rare' : '')+'-m.webp" alt=""></button>';
   ccChestShow('<div class="cc-ch-box cc-chm-box"><div class="cc-ch-t">'+esc(T.map)+'</div><div class="cc-ch-s" id="ccChestS">'+esc(T.pick)+'</div>'+
     '<div class="cc-chm-map" id="ccChestMap">'+spots.map(pin).join('')+'</div>'+
     '<div class="cc-chm-foot"><b id="ccChestLeft">'+esc(ccChestLeftText())+'</b><button class="cc-ch-btn q" onclick="ccChestDone()">'+esc(T.close)+'</button></div>'+
@@ -151835,7 +151861,7 @@ function ccChestPick(i){
   const got=ccPirateChestRoll(day, i, s.rare);
   if(!st.opened.length) careerSpend(CC_CHEST_COST);
   st.opened.push(i); p.chest=st;
-  if(got.coin) p.found=day; else CAREER.vb=(CAREER.vb||0)+got.vb;
+  if(got.coin) p.found=day; else if(got.item) ccChestGive(got.item); else if(got.vb) CAREER.vb=(CAREER.vb||0)+got.vb;
   careerSave();
   const pinEl=document.querySelectorAll('#ccChestMap .cc-chm')[i];
   if(pinEl){ pinEl.classList.add('o'); pinEl.disabled=true; }
@@ -151852,20 +151878,20 @@ function ccChestOpenAll(){
   if(CC_CHEST_BUSY || !ccChestCan()) return;
   const p=ccPirate(), day=careerToday(), spots=ccChestSpots(day), st=ccChestToday();
   if(!st.opened.length) careerSpend(CC_CHEST_COST);
-  let sum=0, coin=false, rare=false;
+  let sum=0, coin=false, rare=false; const items=[];
   const pins=document.querySelectorAll('#ccChestMap .cc-chm');
   spots.forEach((s, i)=>{
     if(st.opened.indexOf(i)>=0) return;
     const got=ccPirateChestRoll(day, i, s.rare);
     st.opened.push(i);
     if(s.rare) rare=true;
-    if(got.coin){ p.found=day; coin=true; } else sum+=got.vb;
+    if(got.coin){ p.found=day; coin=true; } else if(got.item){ ccChestGive(got.item); items.push(got.item); } else sum+=got.vb||0;
     if(pins[i]){ pins[i].classList.add('o'); pins[i].disabled=true; }
   });
   p.chest=st; CAREER.vb=(CAREER.vb||0)+sum;
   careerSave();
   ccChestLeftSync();
-  ccChestStage({rare:rare}, coin ? {coin:1} : {vb:sum});
+  ccChestStage({rare:rare}, coin ? {coin:1} : {vb:sum, items:items});
 }
 let CC_CHEST_BUSY=false;
 /* Открытие как в игре: шкала поиска, сундук дрожит и светится, крышка откидывается со вспышкой,
@@ -151875,18 +151901,30 @@ function ccChestStage(s, got){
   CC_CHEST_BUSY=true;
   let sparks='';
   for(let k=0; k<14; k++){ const a=-160+k*(140/13), d=70+(k*37)%70; sparks+='<i style="--dx:'+Math.round(Math.cos(a*Math.PI/180)*d)+'px;--dy:'+Math.round(Math.sin(a*Math.PI/180)*d*1.3)+'px;animation-delay:'+(.72+(k%4)*.04).toFixed(2)+'s"></i>'; }
-  const rar=got.coin ? 'c' : (got.vb>=50 ? 'e' : got.vb>=20 ? 'b' : 'g');
+  const rar=got.coin ? 'c' : got.item ? (got.item.r==='rare' ? 'b' : 'g') : (got.vb>=50 ? 'e' : got.vb>=20 ? 'b' : 'g');
   const st=document.createElement('div');
-  st.className='cc-chs'+(s.rare ? ' r' : '')+(got.coin ? ' coin' : ''); st.id='ccChestStage';
+  st.className='cc-chs'+(s.rare ? ' r' : '')+(got.coin ? ' coin' : '')+((got.none || got.item || (got.items && got.items.length)) ? ' f' : ''); st.id='ccChestStage';
   st.innerHTML='<div class="cc-chs-in"><div class="cc-chs-glow"></div><div class="cc-chs-beam '+rar+'"></div><div class="cc-chs-sparks">'+sparks+'</div>'+
-    (got.coin ? '<div class="cc-chs-boom"></div><div class="cc-chs-card">'+CC_COIN_SVG+'</div><div class="cc-chs-sun">'+CC_COIN_SVG+'</div>' : '<div class="cc-chs-loot"><i class="cc-vb-ic"></i><b>+'+got.vb+'</b></div>')+
+    (got.coin ? '<div class="cc-chs-boom"></div><div class="cc-chs-card">'+CC_COIN_SVG+'</div><div class="cc-chs-sun">'+CC_COIN_SVG+'</div>'
+      : got.vb ? '<div class="cc-chs-loot"><i class="cc-vb-ic"></i><b>+'+got.vb+'</b></div>' : '')+
     '<div class="cc-chs-chest"><span class="cc-chs-lid">'+ccChestArt(s.rare, 'lid')+'</span>'+ccChestArt(s.rare, 'body')+'</div>'+
     '<div class="cc-chs-search"><i class="cc-chs-ring"><svg viewBox="0 0 36 36" aria-hidden="true"><circle cx="18" cy="18" r="15"/><circle class="p" cx="18" cy="18" r="15" pathLength="100"/></svg></i><b>'+esc(T.search)+'</b></div></div>';
+  const found=ccChestFoundHTML(got);
+  if(found) st.insertAdjacentHTML('afterbegin', found);
   m.appendChild(st);
   let over=false;
   const finish=()=>{ if(over) return; over=true; CC_CHEST_BUSY=false; st.remove(); if(got.coin) ccChestCoin(); };
   setTimeout(()=>{ st.onclick=finish; }, 900);
-  setTimeout(finish, got.coin ? 2350 : 2600);
+  setTimeout(finish, got.coin ? 2350 : found ? 3600 : 2600);
+}
+// Баннер YOU FOUND из игры: рамка с предметом и плашка с молниями. Текст наш, на языке игрока.
+function ccChestFoundHTML(got){
+  const T=ccChestT(), one=x=>'<div class="cc-chf-card"><img src="'+ccFnImg(x.id)+'" alt=""></div>';
+  const list=got.items || (got.item ? [got.item] : []);
+  if(!got.none && !list.length) return '';
+  const kind=got.none ? T.nothing : list.length>1 ? T.items(list.length) : T['k'+list[0].t];
+  return '<div class="cc-chf">'+(list.length ? '<div class="cc-chf-cards">'+list.slice(0, 4).map(one).join('')+'</div>' : '<div class="cc-chf-card e"></div>')+
+    '<div class="cc-chf-bar"><small>'+esc(T.found)+'</small><b>'+esc(kind)+'</b></div>'+(list.length===1 ? '<div class="cc-chf-n">'+esc(list[0].n)+'</div>' : '')+'</div>';
 }
 function ccChestDone(){ ccChestClose(); careerRenderHub(CH_TAB); }
 function ccChestBack(){ if(ccChestCan()) ccChestOpen(); else ccChestDone(); }
@@ -151895,13 +151933,12 @@ function ccChestRainHTML(){
   for(let i=0; i<16; i++) h+='<i class="cc-ch-rain" style="left:'+((i*37+5)%100)+'%;animation-delay:'+(i*.11).toFixed(2)+'s"></i>';
   return h;
 }
-const CC_BOLT_SVG='<svg viewBox="0 0 60 90" aria-hidden="true"><path d="M38 0L6 50h20L14 90l40-56H32z" fill="#ffd23c" stroke="#8f5a10" stroke-width="3"/></svg>';
 function ccChestBannerHTML(){
   const T=ccChestT(), name='PIRATE SHOP ACCESS';
   return '<div class="cc-chb-bg"></div><div class="cc-chb-rays"></div>'+ccChestRainHTML().replace('<div class="cc-ch-rays"></div>', '')+
     '<div class="cc-chb-run" aria-hidden="true"><span>'+name+' '+name+' '+name+' '+name+'</span></div>'+
-    '<div class="cc-chb"><div class="cc-chb-card">'+CC_COIN_SVG+'</div><div class="cc-chb-found">'+esc(T.found)+'</div>'+
-    '<div class="cc-chb-bar"><span class="cc-chb-bolt l">'+CC_BOLT_SVG+'</span><b>'+name+'</b><span class="cc-chb-bolt">'+CC_BOLT_SVG+'</span></div>';
+    '<div class="cc-chb"><div class="cc-chb-card">'+CC_COIN_SVG+'</div>'+
+    '<div class="cc-chb-bar"><small>'+esc(T.found)+'</small><b>'+name+'</b></div>';
 }
 function ccChestCoin(){
   const T=ccChestT();
@@ -151910,8 +151947,10 @@ function ccChestCoin(){
 }
 // Включить токен: срок идёт сразу, магазин рисуется под анимацией, она закрывается сама или по нажатию.
 function ccPirateActivate(){
-  const p=ccPirate(); if(!p.found || p.on) return;
-  p.on=careerToday(); careerSave(); careerRenderHub('items');
+  if(!ccPirateCanUse()) return;
+  const p=ccPirate();
+  if(ccPirateSlot()===2) p.on2=careerToday(); else p.on=careerToday();
+  p.onS=CAREER.career.season||1; careerSave(); careerRenderHub('items');
   const T=ccChestT();
   const m=ccChestShow('<div class="cc-chb-gold"></div>'+ccChestRainHTML()+'<div class="cc-ch-box"><span class="cc-coin cc-coin-spin">'+CC_COIN_SVG+'</span><div class="cc-ch-t">'+esc(ccPirateT().title)+'</div><span class="cc-ch-stamp">'+esc(T.free)+'</span></div>');
   m.onclick=ccChestClose;
