@@ -108566,6 +108566,68 @@ function buildBotLandingAssignment(bots, opts){
     zoneGroups.delete(zoneToClear);
   }
 
+  /* СИЛЬНЫЕ СТОЯТ ОДНИ (его слово 5.11: «как в трио S43, везде»). Замер tools/measure-drop-contests.js: на трио S43 богатейшая
+     точка у команды ранга 3.6 и одна в 95%, а в дуо на том же острове ранг 13.4 и одна в 33%: команд больше клеток, и лишние
+     садились к кому угодно. Теперь сильнейшие занимают самые богатые точки и стоят там одни, контесты уходят вниз лобби.
+     Сколько таких: сколько клеток может остаться без пары, но не меньше десяти. Люди, приказ менеджера и уже сидящие
+     в этом этапе не двигаются; человека с точки никто не сгоняет, и к человеку не подсаживают, пока есть другое место. */
+  {
+    const human=t=>t && (t.isYou || t.isRival || t.isMate);
+    const fixed=t=>!t || human(t) || t._stageSeated || t._mgrDrop==='quiet' || t._mgrDrop==='hot';
+    const str=t=>((t.pow||0)-(t._landingPow||0))+(t.closeEdge||0);
+    const feared=z=>CC_SPOT_FEAR_MAP && (CC_SPOT_FEAR_MAP.get(z)||0)>0;
+    const all=[]; zoneGroups.forEach(g=>g.forEach(t=>all.push(t)));
+    const zones=(ALL_LANDING_ZONES||[]).filter(z=>!feared(z));
+    if(all.length>=8 && zones.length>=4){
+      const N=all.length, C=zones.length;
+      // Сколько одиночек вмещается, чтобы остальные не стояли гуще плотности поля (tools/check-drop-crowd.js).
+      const dens=Math.max(2, Math.ceil(N/C)), room=Math.floor((C*dens-N)/(dens-1));
+      const K=Math.max(0, Math.min(N, C-1, room, Math.max(10, C-Math.max(0, N-C))));
+      // При равной силе порядок по команде, а не по тому, кто где стоит: иначе верх менялся бы от турнира к турниру.
+      const byStr=(x,y)=>(str(y)-str(x)) || (String(ccSeatMapKey(x))<String(ccSeatMapKey(y)) ? -1 : 1);
+      const ranked=all.slice().sort(byStr);
+      const top=new Set(ranked.slice(0, K)), top10=new Set(ranked.slice(0, Math.max(K, 10)));
+      const d2=(p,q)=>((p.x||0)-(q.x||0))**2+((p.y||0)-(q.y||0))**2;
+      const move=(x, from, to)=>{
+        zoneGroups.set(from, (zoneGroups.get(from)||[]).filter(o=>o!==x));
+        if(!zoneGroups.has(to)) zoneGroups.set(to, []);
+        zoneGroups.get(to).push(x);
+        x.landingZone=to; x.landingResult=null; x.landingRival=null;
+        applyLandingPow(x, to.points);
+        if(seats) seats.set(ccSeatMapKey(x), ccSeatKeyOf(to));
+        // Точка, которую команда получила, держится весь сезон: иначе завтра она снова летит к себе и снова переезжает.
+        if(book && !CC_SEATS_REMIX) book.at[ccHashStr(ccSeatMapKey(x)).toString(36)]=ccSeatKeyOf(to);
+      };
+      // Самые богатые точки: на каждой должен стоять кто-то из верха, сильнейшие первыми.
+      const rich=zones.slice().sort((p,q)=>((q.r||0)-(p.r||0)) || ((q.points||0)-(p.points||0)));
+      const richTop=rich.slice(0, Math.min(5, K)), richSet=new Set(richTop);
+      const free=[...top].filter(x=>!fixed(x) && !richSet.has(x.landingZone)).sort(byStr);
+      richTop.forEach(z=>{
+        const g=zoneGroups.get(z)||[];
+        if(g.some(x=>top10.has(x) || human(x))) return;
+        const x=free.shift(); if(x) move(x, x.landingZone, z);
+      });
+      // Куда уходит лишний: клетка без верха, где меньше всего народу, рядом. К человеку только если больше некуда.
+      const spot=(from, self)=>{
+        const ok=zones.filter(z=>z!==from && (zoneGroups.get(z)||[]).length<dens && !(zoneGroups.get(z)||[]).some(o=>o!==self && top10.has(o)));
+        if(!ok.length) return null;
+        const load=z=>{ const g=zoneGroups.get(z)||[]; return g.length+(g.some(human) ? 1000 : 0); };
+        return ok.reduce((p,q)=>(load(q)<load(p) || (load(q)===load(p) && d2(from,q)<d2(from,p))) ? q : p);
+      };
+      [...top].sort(byStr).forEach(x=>{
+        const z=x.landingZone, g=(zoneGroups.get(z)||[]).filter(o=>o!==x);
+        if(!g.length || g.some(human)) return;
+        g.forEach(o=>{
+          if(top.has(o) && byStr(o, x)<0) return;
+          if(fixed(o)) return;
+          const to=spot(z, o); if(to) move(o, z, to);
+        });
+        // Рядом остался более сильный из верха: уходит сам.
+        if((zoneGroups.get(z)||[]).some(o=>o!==x && top.has(o) && byStr(o, x)<0) && !fixed(x)){ const to=spot(z, x); if(to) move(x, z, to); }
+      });
+    }
+  }
+
   // It used to also name a guaranteed low-points box and a second one, so the
   // picker could promise the player somewhere quiet. Nothing has read those in a
   // while and nothing should: which boxes are free is now whatever the squads
