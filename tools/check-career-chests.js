@@ -40,7 +40,7 @@ const a=JSON.stringify(ccChestSpots(day)), b=JSON.stringify(ccPirateChestRoll(da
 Math.random=realRandom;
 check('сундуки и лут не тратят Math.random', drawn===0, drawn);
 check('сундуки дня те же', a===JSON.stringify(ccChestSpots(day)) && b===JSON.stringify(ccPirateChestRoll(day,3,0)));
-const en0=careerEnergy(); let vb=CAREER.vb||0;
+const en0=careerEnergy(), vb0=CAREER.vb||0;
 ccChestOpen();
 check('карта с маркерами', document.querySelectorAll('#ccChestOv .cc-chm').length===18);
 check('открыть карту бесплатно', careerEnergy()===en0);
@@ -48,22 +48,21 @@ ccChestPick(2);
 check('первый сундук 20 энергии', en0-careerEnergy()===CC_CHEST_COST, en0-careerEnergy());
 check('сцена открытия', !!document.getElementById('ccChestStage'));
 const first=JSON.parse(localStorage.getItem('fncsdraft_career')).pirate.chest;
+check('V-Bucks из сундука не падают', (CAREER.vb||0)===vb0, CAREER.vb);
 check('итог сохранён сразу', first.day===day && first.opened[0]===2, JSON.stringify(first));
 ccChestPick(3); check('пока идёт сцена, второй не открыть', ccChestToday().opened.length===1);
 CC_CHEST_BUSY=false; const st=document.getElementById('ccChestStage'); if(st) st.remove();
 const en1=careerEnergy();
-const vbBefore=CAREER.vb, wantAll=spots.reduce((a,s,i)=>a+(ccChestToday().opened.indexOf(i)>=0 ? 0 : (ccPirateChestRoll(day,i,s.rare).vb||0)),0);
 CC_CHEST_BUSY=false; ccChestOpenAll();
 check('кнопка открыла все', ccChestToday().opened.length===18 && ccChestLeft()===0, ccChestToday().opened.length);
-check('сумма V-Bucks сошлась', CAREER.vb-vbBefore===wantAll, (CAREER.vb-vbBefore)+' '+wantAll);
+check('V-Bucks и теперь те же', (CAREER.vb||0)===vb0, CAREER.vb);
 check('дальше энергия не списывается', careerEnergy()===en1, careerEnergy()+' '+en1);
 check('сцена суммы', !!document.getElementById('ccChestStage'));
 CC_CHEST_BUSY=false; { const s=document.getElementById('ccChestStage'); if(s) s.remove(); }
-const n5=CAREER.vb; ccChestPick(7); ccChestOpenAll();
-check('больше нечего открывать', CAREER.vb===n5);
+{ const was=ccChestToday().opened.length; ccChestPick(7); ccChestOpenAll(); check('больше нечего открывать', ccChestToday().opened.length===was); CC_CHEST_BUSY=false; const s=document.getElementById('ccChestStage'); if(s) s.remove(); }
 // Находки: 25% ничего, экраны и кирки в шкафчик.
-{ const c={none:0,l:0,p:0,vb:0,coin:0}; for(let d=1;d<=30;d++) for(let i=0;i<2000;i++){ const x=ccPirateChestRoll('2026-11-'+String(d).padStart(2,'0'), i, 0); if(x.none) c.none++; else if(x.item) c[x.item.t]++; else if(x.coin) c.coin++; else c.vb++; }
-  notes.drops=c; const N=60000; check('ничего около 25%', c.none/N>.22 && c.none/N<.28, c.none/N); check('экраны и кирки падают', c.l/N>.05 && c.p/N>.005, c.l+' '+c.p);
+{ const c={none:0,l:0,p:0,loot:0,coin:0}, names={}; for(let d=1;d<=30;d++) for(let i=0;i<2000;i++){ const x=ccPirateChestRoll('2026-11-'+String(d).padStart(2,'0'), i, 0); if(x.none) c.none++; else if(x.item) c[x.item.t]++; else if(x.coin) c.coin++; else if(x.loot){ c.loot++; names[x.loot.weapon.name]=1; } else c.bad=(c.bad||0)+1; }
+  notes.drops=c; notes.guns=Object.keys(names).length; check('только оружие S43', Object.keys(names).every(n=>S43_WEAPON_NAMES.some(r=>r[0]===n)) && Object.keys(names).length===S43_WEAPON_NAMES.length, Object.keys(names).join()); check('нет ничего другого', !c.bad, c.bad); const N=60000; check('ничего около 25%', c.none/N>.22 && c.none/N<.28, c.none/N); check('экраны и кирки падают', c.l/N>.05 && c.p/N>.005, c.l+' '+c.p);
   const it=Object.assign({}, CC_CHEST_DROPS.l[0], {id:CC_CHEST_DROPS.l[0][0], t:'l', n:CC_CHEST_DROPS.l[0][1], r:CC_CHEST_DROPS.l[0][2]}); ccChestGive(it); check('предмет в шкафчике', ccFnOwn()[it.id] && ccFnOwn()[it.id].t==='l');
   check('баннер находки', /cc-chf-bar/.test(ccChestFoundHTML({item:it})) && /cc-chf-bar/.test(ccChestFoundHTML({none:1})) && ccChestFoundHTML({vb:5})===''); }
 CC_CHEST_BUSY=false; ccChestClose();
@@ -79,7 +78,7 @@ check('нашёлся день с монетой', !!cd);
 if(cd){ CAREER.career.day=cd; CAREER.pirate.chest=null; if(careerEnergy()<CC_CHEST_COST) careerRestore(100);
   const v0=CAREER.vb; ccChestOpen(); ccChestPick(ci);
   check('монета нашлась', CAREER.pirate.found===cd, JSON.stringify(CAREER.pirate));
-  check('монета не даёт V-Bucks', CAREER.vb===v0);
+  check('монета не даёт V-Bucks', (CAREER.vb||0)===(v0||0));
   check('токен ещё не включён', !ccPirateOn());
   CC_CHEST_BUSY=false; ccChestCoin();
   check('баннер монеты', !!document.querySelector('#ccChestOv .cc-chb-card') && /PIRATE SHOP ACCESS/.test(document.querySelector('#ccChestOv .cc-chb-bar').textContent));
@@ -97,6 +96,7 @@ if(cd){ CAREER.career.day=cd; CAREER.pirate.chest=null; if(careerEnergy()<CC_CHE
   ccPirateActivate(); check('2027: 14 дней', ccPirateLeft()===14, ccPirateLeft()); ccChestClose();
   check('третьего нет', !ccPirateCanUse()); }
 check('лут матча не тронут', typeof ccChestRoll==='function' && ccChestRoll.length!==ccPirateChestRoll.length, String(ccChestRoll.length));
+{ const w=S43_WEAPON_POOL[0]; check('у стволов сезона есть иконки', S43_WEAPON_POOL.every(x=>/<img/.test(ccItemIconHTML(x,''))), S43_WEAPON_POOL.filter(x=>!/<img/.test(ccItemIconHTML(x,''))).map(x=>x.name).join()); check('карта лута', /cc-chl/.test(ccChestLootHTML({loot:{weapon:w,cons:S43_CONSUMABLE_POOL[0]}}))); }
 return {fails, notes};
 `;
 const tmp=path.join(fs.mkdtempSync(path.join(os.tmpdir(),'chest-')),'body.js'); fs.writeFileSync(tmp, body);

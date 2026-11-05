@@ -4270,11 +4270,15 @@
   .cc-chs-glow{position:absolute;left:50%;bottom:50px;width:300px;height:300px;margin-left:-150px;border-radius:50%;background:radial-gradient(circle,rgba(255,236,150,.95),rgba(255,180,40,.4) 38%,rgba(255,180,40,0) 68%);animation:ccChsGlow 1.1s ease both;}
   @keyframes ccChsGlow{0%{transform:scale(.25);opacity:.35;} 58%{transform:scale(.42);opacity:.7;} 68%{transform:scale(1.2);opacity:1;} 100%{transform:scale(.85);opacity:.75;}}
   .cc-chs-beam{position:absolute;left:50%;bottom:100px;width:60px;height:240px;margin-left:-30px;transform-origin:50% 100%;border-radius:30px 30px 0 0;filter:blur(9px);opacity:0;animation:ccChsBeam .5s ease-out .74s both;}
-  .cc-chs-beam.g{background:linear-gradient(to top,rgba(150,220,120,.85),rgba(150,220,120,0));} .cc-chs-beam.b{background:linear-gradient(to top,rgba(70,170,255,.85),rgba(70,170,255,0));}
+  .cc-chs-beam.w{background:linear-gradient(to top,rgba(210,214,224,.8),rgba(210,214,224,0));} .cc-chs-beam.l{background:linear-gradient(to top,rgba(255,170,50,.92),rgba(255,170,50,0));} .cc-chs-beam.g{background:linear-gradient(to top,rgba(150,220,120,.85),rgba(150,220,120,0));} .cc-chs-beam.b{background:linear-gradient(to top,rgba(70,170,255,.85),rgba(70,170,255,0));}
   .cc-chs-beam.e{background:linear-gradient(to top,rgba(190,90,255,.9),rgba(190,90,255,0));} .cc-chs-beam.c{width:100px;margin-left:-50px;background:linear-gradient(to top,rgba(255,215,70,.95),rgba(255,215,70,0));}
   @keyframes ccChsBeam{from{opacity:0;transform:scaleY(.1);} to{opacity:1;transform:scaleY(1);}}
   .cc-chs-loot{position:absolute;z-index:3;left:0;right:0;bottom:205px;display:flex;flex-direction:column;align-items:center;font-size:26px;font-weight:900;text-shadow:0 2px 6px rgba(0,0,0,.8);animation:ccChsLoot .6s cubic-bezier(.2,1.5,.4,1) .78s both;}
-  .cc-chs-loot .cc-vb-ic{width:52px;height:52px;margin:0 0 4px;background-size:contain;}
+  .cc-chl-row{display:flex;justify-content:center;align-items:flex-end;gap:4px;}
+  .cc-chl{display:block;width:124px;height:124px;padding:21px;box-sizing:border-box;background:center/contain no-repeat;}
+  .cc-chl.s{width:76px;height:76px;padding:13px;}
+  .cc-chl img,.cc-chl svg{display:block;width:100%;height:100%;object-fit:contain;}
+  .cc-chl-n{margin-top:-2px;font-size:17px;font-family:var(--font-display);font-weight:900;text-transform:uppercase;white-space:nowrap;}
   .cc-chs.coin .cc-chs-glow{background:radial-gradient(circle,rgba(255,244,180,1),rgba(255,190,40,.65) 40%,rgba(255,180,40,0) 70%);}
   .cc-chs-boom{position:absolute;z-index:4;left:50%;bottom:90px;width:700px;height:700px;margin:0 0 -350px -350px;border-radius:50%;pointer-events:none;
     background:radial-gradient(circle,#fff 0,rgba(255,235,140,.95) 16%,rgba(255,180,40,.55) 38%,rgba(255,170,30,0) 66%);animation:ccChsBoom .7s ease-out .86s both;}
@@ -96534,6 +96538,20 @@ const S42_WEAPON_NAMES=[
   ["Dual Pistols",'pistol','common','legendary']
 ];
 const S42_WEAPON_POOL=ladderPool(S42_WEAPON_NAMES);
+// Лут мини-сезона S43: fortnite.gg/weapons, Battle Royale, 5.11 (tools/measured/s43-loot.json). Только обычный лут.
+const S43_WEAPON_NAMES=[
+  ["Bundlebuss Repeater Rifle",'rifle','uncommon','legendary'],
+  ["Hammer Assault Rifle",'rifle','common','legendary'],
+  ["Gilded Dragoon Shotgun",'shotgun','uncommon','legendary'],
+  ["Auto Shotgun",'shotgun','common','legendary'],
+  ["Sentinel Pump Shotgun",'shotgun','common','legendary'],
+  ["Tactical Submachine Gun",'smg','uncommon','legendary'],
+  ["Machine SMG",'smg','common','legendary'],
+  ["Usopp's Slingshot",'pistol','uncommon','legendary'],
+  ["Flint-Knock Pistol",'pistol','common','epic'],
+  ["Sidearm Pistol",'pistol','common','legendary']
+];
+const S43_WEAPON_POOL=ladderPool(S43_WEAPON_NAMES);
 
 // The loot pool the way it actually was in the year that FNCS was played.
 // Picking 2023 in the era filter should hand you Chapter 4 guns, not the guns
@@ -96726,6 +96744,17 @@ const S42_CONSUMABLE_POOL=[
   {name:"Bandage", rarity:'grey'},
   {name:"Spicy Taco", rarity:'grey'},
   {name:"Small Fry", rarity:'grey'}
+].map(w=>({...w, icon:'heal', mod:CONSUMABLE_MOD[w.rarity]}));
+const S43_CONSUMABLE_POOL=[
+  {name:"Small Shield Potion", rarity:'green'},
+  {name:"Shield Potion", rarity:'blue'},
+  {name:"Meat on a Stick", rarity:'green'},
+  {name:"Med Kit", rarity:'green'},
+  {name:"Nami's Tangerine", rarity:'green'},
+  {name:"Bandage", rarity:'grey'},
+  {name:"Slurp Juice", rarity:'purple'},
+  {name:"Chug Jug", rarity:'legendary'},
+  {name:"Overdrive Grenade", rarity:'blue'}
 ].map(w=>({...w, icon:'heal', mod:CONSUMABLE_MOD[w.rarity]}));
 const ITEM_ART={
   "Bandage":"items/item-bandage.png",
@@ -98058,6 +98087,14 @@ const WEAPON_ART_BY_NAME={
 // pistol points at the Mammoth Pistol. Those carry the base weapon picture, and
 // the substitution is written down in the fetcher rather than hidden here.
 const EXTRA_ITEM_ART={
+ // Лут мини-сезона S43 (fortnite.gg/weapons).
+ "Bundlebuss Repeater Rifle": "items/s43/bundlebuss-repeater-rifle.webp",
+ "Gilded Dragoon Shotgun": "items/s43/gilded-dragoon-shotgun.webp",
+ "Sentinel Pump Shotgun": "items/s43/sentinel-pump-shotgun.webp",
+ "Usopp's Slingshot": "items/s43/usopp-s-slingshot.webp",
+ "Meat on a Stick": "items/s43/meat-on-a-stick.webp",
+ "Nami's Tangerine": "items/s43/nami-s-tangerine.webp",
+ "Overdrive Grenade": "items/s43/overdrive-grenade.webp",
  // ==== FNCS 2019–2020 art (tools/fetch-mx-item-art.js) ====
  "Scoped Assault Rifle": "items/itm-scoped-assault-rifle.webp",
  "Burst SMG": "items/itm-burst-smg.webp",
@@ -116326,8 +116363,7 @@ const CC_LOOT_BY_SET={
   m1:{weapons:M1_WEAPON_POOL, heals:M1_CONSUMABLE_POOL},
   m2:{weapons:WEAPON_POOL, heals:M2_CONSUMABLE_POOL},
   s42:{weapons:S42_WEAPON_POOL, heals:S42_CONSUMABLE_POOL},
-  // Листа лута мини-сезона нет ни у Epic, ни на вики: пул сезона S42.
-  s43:{weapons:S42_WEAPON_POOL, heals:S42_CONSUMABLE_POOL},
+  s43:{weapons:S43_WEAPON_POOL, heals:S43_CONSUMABLE_POOL},
   t1:{weapons:T1_WEAPON_POOL, heals:T1_CONSUMABLE_POOL},
   t2:{weapons:T2_WEAPON_POOL, heals:T2_CONSUMABLE_POOL},
   t3:{weapons:T3_WEAPON_POOL, heals:T3_CONSUMABLE_POOL},
@@ -151773,13 +151809,13 @@ const CC_CHEST_DROPS={l:[["loadingscreen_delilahthw","Plunder in Paradise","unco
 const CC_CHEST_NOTHING=.25, CC_CHEST_SCREEN=.08, CC_CHEST_PICK=.015;
 const CC_CHEST_COST=20, CC_CHEST_N=16, CC_CHEST_R=2, CC_CHEST_OPENS=CC_CHEST_N+CC_CHEST_R, CC_CHEST_P=1/600, CC_CHEST_P_RARE=1/180;
 const CC_CHEST_T_ALL={
-  en:{nothing:'NOTHING!', kl:'LOADING SCREEN', kp:'PICKAXE', items:n=>n+' ITEMS', two:'Two periods of 14 days: the first until 15 December 2026, the second in 2027. Everything priced in V-Bucks is free.', next:'The second free period opens in 2027.', all:n=>'Open all ('+n+')', found:'YOU FOUND', map:'Pirate Chests', chip:'V-Bucks, items or a coin', done:'All opened today. Come back tomorrow', pick:'Tap the chests on the map. Inside: V-Bucks, a loading screen, a pickaxe, nothing at all or the coin that opens the Pirate Shop.', left:n=>'Chests left today: '+n, none:'No chests left today. New ones tomorrow.', search:'Search', coin:'Pirate coin!', coinS:'Two periods of 14 days: the first until 15 December 2026, the second in 2027. Everything priced in V-Bucks is free.', now:'Plunder the shop now', later:'Keep for later', close:'Close', free:'14 days free'},
-  ru:{nothing:'НИЧЕГО!', kl:'ЭКРАН ЗАГРУЗКИ', kp:'КИРКУ', items:n=>'ПРЕДМЕТОВ: '+n, two:'Два срока по 14 дней: первый до 15 декабря 2026, второй в 2027. Всё за V-Bucks бесплатно.', next:'Второй бесплатный срок откроется в 2027.', all:n=>'Открыть все ('+n+')', found:'ТЫ НАШЁЛ', map:'Пиратские сундуки', chip:'V-Bucks, вещи или монета', done:'Сегодня все открыты. Приходи завтра', pick:'Нажимай на сундуки на карте. Внутри V-Bucks, экран загрузки, кирка, ничего или монета, которая открывает пиратский магазин.', left:n=>'Сундуков на сегодня: '+n, none:'На сегодня сундуки кончились. Новые завтра.', search:'Обыскать', coin:'Пиратская монета!', coinS:'Два срока по 14 дней: первый до 15 декабря 2026, второй в 2027. Всё за V-Bucks бесплатно.', now:'Разграбить магазин сейчас', later:'Оставить на потом', close:'Закрыть', free:'14 дней бесплатно'},
-  fr:{nothing:'RIEN !', kl:'ÉCRAN DE CHARGEMENT', kp:'PIOCHE', items:n=>n+' OBJETS', two:'Deux périodes de 14 jours : la première jusqu’au 15 décembre 2026, la seconde en 2027. Tout ce qui coûte des V-Bucks est gratuit.', next:'La seconde période gratuite ouvre en 2027.', all:n=>'Tout ouvrir ('+n+')', found:'TU AS TROUVÉ', map:'Coffres pirates', chip:'V-Bucks, objets ou pièce', done:"Tous ouverts aujourd'hui. Reviens demain", pick:'Touche les coffres sur la carte. Dedans : V-Bucks, écran de chargement, pioche, rien du tout ou la pièce qui ouvre la boutique pirate.', left:n=>"Coffres restants aujourd'hui : "+n, none:'Plus de coffres aujourd\'hui. Nouveaux coffres demain.', search:'Fouiller', coin:'Pièce pirate !', coinS:'Deux périodes de 14 jours : la première jusqu’au 15 décembre 2026, la seconde en 2027. Tout ce qui coûte des V-Bucks est gratuit.', now:'Piller la boutique maintenant', later:'Garder pour plus tard', close:'Fermer', free:'14 jours gratuits'},
-  it:{nothing:'NIENTE!', kl:'SCHERMATA DI CARICAMENTO', kp:'PICCONE', items:n=>n+' OGGETTI', two:'Due periodi da 14 giorni: il primo fino al 15 dicembre 2026, il secondo nel 2027. Tutto ciò che costa V-Buck è gratis.', next:'Il secondo periodo gratis si apre nel 2027.', all:n=>'Apri tutti ('+n+')', found:'HAI TROVATO', map:'Forzieri pirata', chip:'V-Buck, oggetti o moneta', done:'Tutti aperti oggi. Torna domani', pick:'Tocca i forzieri sulla mappa. Dentro: V-Buck, schermata di caricamento, piccone, niente o la moneta che apre il negozio pirata.', left:n=>'Forzieri rimasti oggi: '+n, none:'Niente più forzieri oggi. Nuovi forzieri domani.', search:'Cerca', coin:'Moneta pirata!', coinS:'Due periodi da 14 giorni: il primo fino al 15 dicembre 2026, il secondo nel 2027. Tutto ciò che costa V-Buck è gratis.', now:'Saccheggia il negozio ora', later:'Tieni per dopo', close:'Chiudi', free:'14 giorni gratis'},
-  pt:{nothing:'NADA!', kl:'TELA DE CARREGAMENTO', kp:'PICARETA', items:n=>n+' ITENS', two:'Dois períodos de 14 dias: o primeiro até 15 de dezembro de 2026, o segundo em 2027. Tudo que custa V-Bucks é grátis.', next:'O segundo período grátis abre em 2027.', all:n=>'Abrir todos ('+n+')', found:'VOCÊ ENCONTROU', map:'Baús piratas', chip:'V-Bucks, itens ou moeda', done:'Todos abertos hoje. Volte amanhã', pick:'Toque nos baús do mapa. Dentro: V-Bucks, tela de carregamento, picareta, nada ou a moeda que abre a loja pirata.', left:n=>'Baús restantes hoje: '+n, none:'Sem baús por hoje. Novos baús amanhã.', search:'Procurar', coin:'Moeda pirata!', coinS:'Dois períodos de 14 dias: o primeiro até 15 de dezembro de 2026, o segundo em 2027. Tudo que custa V-Bucks é grátis.', now:'Saquear a loja agora', later:'Guardar para depois', close:'Fechar', free:'14 dias grátis'},
-  de:{nothing:'NICHTS!', kl:'LADEBILDSCHIRM', kp:'SPITZHACKE', items:n=>n+' GEGENSTÄNDE', two:'Zwei Zeiträume von 14 Tagen: der erste bis 15. Dezember 2026, der zweite 2027. Alles für V-Bucks ist gratis.', next:'Der zweite Gratis-Zeitraum öffnet 2027.', all:n=>'Alle öffnen ('+n+')', found:'DU HAST GEFUNDEN', map:'Piratentruhen', chip:'V-Bucks, Items oder Münze', done:'Heute alle geöffnet. Komm morgen wieder', pick:'Tippe auf die Truhen auf der Karte. Darin: V-Bucks, Ladebildschirm, Spitzhacke, gar nichts oder die Münze, die den Piratenshop öffnet.', left:n=>'Truhen heute übrig: '+n, none:'Heute keine Truhen mehr. Neue morgen.', search:'Durchsuchen', coin:'Piratenmünze!', coinS:'Zwei Zeiträume von 14 Tagen: der erste bis 15. Dezember 2026, der zweite 2027. Alles für V-Bucks ist gratis.', now:'Shop jetzt plündern', later:'Für später aufheben', close:'Schließen', free:'14 Tage gratis'},
-  es:{nothing:'¡NADA!', kl:'PANTALLA DE CARGA', kp:'PICO', items:n=>n+' OBJETOS', two:'Dos periodos de 14 días: el primero hasta el 15 de diciembre de 2026, el segundo en 2027. Todo lo que cuesta paVos es gratis.', next:'El segundo periodo gratis se abre en 2027.', all:n=>'Abrir todos ('+n+')', found:'HAS ENCONTRADO', map:'Cofres pirata', chip:'paVos, objetos o moneda', done:'Todos abiertos hoy. Vuelve mañana', pick:'Toca los cofres del mapa. Dentro: paVos, pantalla de carga, pico, nada o la moneda que abre la tienda pirata.', left:n=>'Cofres restantes hoy: '+n, none:'No quedan cofres hoy. Nuevos mañana.', search:'Buscar', coin:'¡Moneda pirata!', coinS:'Dos periodos de 14 días: el primero hasta el 15 de diciembre de 2026, el segundo en 2027. Todo lo que cuesta paVos es gratis.', now:'Saquear la tienda ahora', later:'Guardar para luego', close:'Cerrar', free:'14 días gratis'}
+  en:{got:n=>'Weapons found: '+n, nothing:'NOTHING!', kl:'LOADING SCREEN', kp:'PICKAXE', items:n=>n+' ITEMS', two:'Two periods of 14 days: the first until 15 December 2026, the second in 2027. Everything priced in V-Bucks is free.', next:'The second free period opens in 2027.', all:n=>'Open all ('+n+')', found:'YOU FOUND', map:'Pirate Chests', chip:'Weapons, items or a coin', done:'All opened today. Come back tomorrow', pick:'Tap the chests on the map. Inside: weapons and heals, a loading screen, a pickaxe, nothing at all or the coin that opens the Pirate Shop.', left:n=>'Chests left today: '+n, none:'No chests left today. New ones tomorrow.', search:'Search', coin:'Pirate coin!', coinS:'Two periods of 14 days: the first until 15 December 2026, the second in 2027. Everything priced in V-Bucks is free.', now:'Plunder the shop now', later:'Keep for later', close:'Close', free:'14 days free'},
+  ru:{got:n=>'Найдено оружия: '+n, nothing:'НИЧЕГО!', kl:'ЭКРАН ЗАГРУЗКИ', kp:'КИРКУ', items:n=>'ПРЕДМЕТОВ: '+n, two:'Два срока по 14 дней: первый до 15 декабря 2026, второй в 2027. Всё за V-Bucks бесплатно.', next:'Второй бесплатный срок откроется в 2027.', all:n=>'Открыть все ('+n+')', found:'ТЫ НАШЁЛ', map:'Пиратские сундуки', chip:'Оружие, вещи или монета', done:'Сегодня все открыты. Приходи завтра', pick:'Нажимай на сундуки на карте. Внутри оружие и хилки, экран загрузки, кирка, ничего или монета, которая открывает пиратский магазин.', left:n=>'Сундуков на сегодня: '+n, none:'На сегодня сундуки кончились. Новые завтра.', search:'Обыскать', coin:'Пиратская монета!', coinS:'Два срока по 14 дней: первый до 15 декабря 2026, второй в 2027. Всё за V-Bucks бесплатно.', now:'Разграбить магазин сейчас', later:'Оставить на потом', close:'Закрыть', free:'14 дней бесплатно'},
+  fr:{got:n=>'Armes trouvées : '+n, nothing:'RIEN !', kl:'ÉCRAN DE CHARGEMENT', kp:'PIOCHE', items:n=>n+' OBJETS', two:'Deux périodes de 14 jours : la première jusqu’au 15 décembre 2026, la seconde en 2027. Tout ce qui coûte des V-Bucks est gratuit.', next:'La seconde période gratuite ouvre en 2027.', all:n=>'Tout ouvrir ('+n+')', found:'TU AS TROUVÉ', map:'Coffres pirates', chip:'Armes, objets ou pièce', done:"Tous ouverts aujourd'hui. Reviens demain", pick:'Touche les coffres sur la carte. Dedans : armes et soins, écran de chargement, pioche, rien du tout ou la pièce qui ouvre la boutique pirate.', left:n=>"Coffres restants aujourd'hui : "+n, none:'Plus de coffres aujourd\'hui. Nouveaux coffres demain.', search:'Fouiller', coin:'Pièce pirate !', coinS:'Deux périodes de 14 jours : la première jusqu’au 15 décembre 2026, la seconde en 2027. Tout ce qui coûte des V-Bucks est gratuit.', now:'Piller la boutique maintenant', later:'Garder pour plus tard', close:'Fermer', free:'14 jours gratuits'},
+  it:{got:n=>'Armi trovate: '+n, nothing:'NIENTE!', kl:'SCHERMATA DI CARICAMENTO', kp:'PICCONE', items:n=>n+' OGGETTI', two:'Due periodi da 14 giorni: il primo fino al 15 dicembre 2026, il secondo nel 2027. Tutto ciò che costa V-Buck è gratis.', next:'Il secondo periodo gratis si apre nel 2027.', all:n=>'Apri tutti ('+n+')', found:'HAI TROVATO', map:'Forzieri pirata', chip:'Armi, oggetti o moneta', done:'Tutti aperti oggi. Torna domani', pick:'Tocca i forzieri sulla mappa. Dentro: armi e cure, schermata di caricamento, piccone, niente o la moneta che apre il negozio pirata.', left:n=>'Forzieri rimasti oggi: '+n, none:'Niente più forzieri oggi. Nuovi forzieri domani.', search:'Cerca', coin:'Moneta pirata!', coinS:'Due periodi da 14 giorni: il primo fino al 15 dicembre 2026, il secondo nel 2027. Tutto ciò che costa V-Buck è gratis.', now:'Saccheggia il negozio ora', later:'Tieni per dopo', close:'Chiudi', free:'14 giorni gratis'},
+  pt:{got:n=>'Armas encontradas: '+n, nothing:'NADA!', kl:'TELA DE CARREGAMENTO', kp:'PICARETA', items:n=>n+' ITENS', two:'Dois períodos de 14 dias: o primeiro até 15 de dezembro de 2026, o segundo em 2027. Tudo que custa V-Bucks é grátis.', next:'O segundo período grátis abre em 2027.', all:n=>'Abrir todos ('+n+')', found:'VOCÊ ENCONTROU', map:'Baús piratas', chip:'Armas, itens ou moeda', done:'Todos abertos hoje. Volte amanhã', pick:'Toque nos baús do mapa. Dentro: armas e curas, tela de carregamento, picareta, nada ou a moeda que abre a loja pirata.', left:n=>'Baús restantes hoje: '+n, none:'Sem baús por hoje. Novos baús amanhã.', search:'Procurar', coin:'Moeda pirata!', coinS:'Dois períodos de 14 dias: o primeiro até 15 de dezembro de 2026, o segundo em 2027. Tudo que custa V-Bucks é grátis.', now:'Saquear a loja agora', later:'Guardar para depois', close:'Fechar', free:'14 dias grátis'},
+  de:{got:n=>'Waffen gefunden: '+n, nothing:'NICHTS!', kl:'LADEBILDSCHIRM', kp:'SPITZHACKE', items:n=>n+' GEGENSTÄNDE', two:'Zwei Zeiträume von 14 Tagen: der erste bis 15. Dezember 2026, der zweite 2027. Alles für V-Bucks ist gratis.', next:'Der zweite Gratis-Zeitraum öffnet 2027.', all:n=>'Alle öffnen ('+n+')', found:'DU HAST GEFUNDEN', map:'Piratentruhen', chip:'Waffen, Items oder Münze', done:'Heute alle geöffnet. Komm morgen wieder', pick:'Tippe auf die Truhen auf der Karte. Darin: Waffen und Heilung, Ladebildschirm, Spitzhacke, gar nichts oder die Münze, die den Piratenshop öffnet.', left:n=>'Truhen heute übrig: '+n, none:'Heute keine Truhen mehr. Neue morgen.', search:'Durchsuchen', coin:'Piratenmünze!', coinS:'Zwei Zeiträume von 14 Tagen: der erste bis 15. Dezember 2026, der zweite 2027. Alles für V-Bucks ist gratis.', now:'Shop jetzt plündern', later:'Für später aufheben', close:'Schließen', free:'14 Tage gratis'},
+  es:{got:n=>'Armas encontradas: '+n, nothing:'¡NADA!', kl:'PANTALLA DE CARGA', kp:'PICO', items:n=>n+' OBJETOS', two:'Dos periodos de 14 días: el primero hasta el 15 de diciembre de 2026, el segundo en 2027. Todo lo que cuesta paVos es gratis.', next:'El segundo periodo gratis se abre en 2027.', all:n=>'Abrir todos ('+n+')', found:'HAS ENCONTRADO', map:'Cofres pirata', chip:'Armas, objetos o moneda', done:'Todos abiertos hoy. Vuelve mañana', pick:'Toca los cofres del mapa. Dentro: armas y curas, pantalla de carga, pico, nada o la moneda que abre la tienda pirata.', left:n=>'Cofres restantes hoy: '+n, none:'No quedan cofres hoy. Nuevos mañana.', search:'Buscar', coin:'¡Moneda pirata!', coinS:'Dos periodos de 14 días: el primero hasta el 15 de diciembre de 2026, el segundo en 2027. Todo lo que cuesta paVos es gratis.', now:'Saquear la tienda ahora', later:'Guardar para luego', close:'Cerrar', free:'14 días gratis'}
 };
 function ccChestT(){ return CC_CHEST_T_ALL[LANG] || CC_CHEST_T_ALL.en; }
 function ccChestOn(){ return ccSeasonNumOn(careerToday())===CC_PIRATE_SEASON; }
@@ -151800,16 +151836,16 @@ function ccChestSpots(day){
   take(CC_S43_CHESTS.n, CC_CHEST_N, 0);
   return out;
 }
-// Что в сундуке: монета по шансу, иначе V-Bucks. Монета падает, только пока её нет.
+// Что в сундуке: монета по шансу, вещь, ничего, иначе оружие и расходник тем же броском, что в матче (ccChestRoll).
 function ccPirateChestRoll(day, i, rare){
-  const r=careerRng(ccHashStr('chest|'+ccPirateTeam()+'|'+day+'|'+i)), x=r(), v=r();
+  const r=careerRng(ccHashStr('chest|'+ccPirateTeam()+'|'+day+'|'+i)), x=r();
   if(x<(rare ? CC_CHEST_P_RARE : CC_CHEST_P) && !ccPirate().found) return {coin:1};
   const y=r(), w=r(), own=ccFnOwn();
   const item=t=>{ const l=CC_CHEST_DROPS[t], e=l[Math.floor(w*l.length)]; return own[e[0]] ? null : {item:{id:e[0], t:t, n:e[1], r:e[2]}}; };
   if(y<CC_CHEST_NOTHING) return {none:1};
   const got=y<CC_CHEST_NOTHING+CC_CHEST_SCREEN ? item('l') : y<CC_CHEST_NOTHING+CC_CHEST_SCREEN+CC_CHEST_PICK ? item('p') : null;
   if(got) return got;
-  return {vb:rare ? (v<.6 ? 10 : v<.9 ? 25 : 50) : (v<.6 ? 5 : v<.9 ? 10 : 20)};
+  return {loot:ccChestRoll(r, 's43')};
 }
 // Предмет сразу в шкафчик, как награды пасса.
 function ccChestGive(it){
@@ -151861,7 +151897,7 @@ function ccChestPick(i){
   const got=ccPirateChestRoll(day, i, s.rare);
   if(!st.opened.length) careerSpend(CC_CHEST_COST);
   st.opened.push(i); p.chest=st;
-  if(got.coin) p.found=day; else if(got.item) ccChestGive(got.item); else if(got.vb) CAREER.vb=(CAREER.vb||0)+got.vb;
+  if(got.coin) p.found=day; else if(got.item) ccChestGive(got.item);
   careerSave();
   const pinEl=document.querySelectorAll('#ccChestMap .cc-chm')[i];
   if(pinEl){ pinEl.classList.add('o'); pinEl.disabled=true; }
@@ -151878,20 +151914,20 @@ function ccChestOpenAll(){
   if(CC_CHEST_BUSY || !ccChestCan()) return;
   const p=ccPirate(), day=careerToday(), spots=ccChestSpots(day), st=ccChestToday();
   if(!st.opened.length) careerSpend(CC_CHEST_COST);
-  let sum=0, coin=false, rare=false; const items=[];
+  let coin=false, rare=false; const items=[], loots=[];
   const pins=document.querySelectorAll('#ccChestMap .cc-chm');
   spots.forEach((s, i)=>{
     if(st.opened.indexOf(i)>=0) return;
     const got=ccPirateChestRoll(day, i, s.rare);
     st.opened.push(i);
     if(s.rare) rare=true;
-    if(got.coin){ p.found=day; coin=true; } else if(got.item){ ccChestGive(got.item); items.push(got.item); } else sum+=got.vb||0;
+    if(got.coin){ p.found=day; coin=true; } else if(got.item){ ccChestGive(got.item); items.push(got.item); } else if(got.loot) loots.push(got.loot);
     if(pins[i]){ pins[i].classList.add('o'); pins[i].disabled=true; }
   });
-  p.chest=st; CAREER.vb=(CAREER.vb||0)+sum;
+  p.chest=st;
   careerSave();
   ccChestLeftSync();
-  ccChestStage({rare:rare}, coin ? {coin:1} : {vb:sum, items:items});
+  ccChestStage({rare:rare}, coin ? {coin:1} : {loots:loots, items:items});
 }
 let CC_CHEST_BUSY=false;
 /* Открытие как в игре: шкала поиска, сундук дрожит и светится, крышка откидывается со вспышкой,
@@ -151901,12 +151937,13 @@ function ccChestStage(s, got){
   CC_CHEST_BUSY=true;
   let sparks='';
   for(let k=0; k<14; k++){ const a=-160+k*(140/13), d=70+(k*37)%70; sparks+='<i style="--dx:'+Math.round(Math.cos(a*Math.PI/180)*d)+'px;--dy:'+Math.round(Math.sin(a*Math.PI/180)*d*1.3)+'px;animation-delay:'+(.72+(k%4)*.04).toFixed(2)+'s"></i>'; }
-  const rar=got.coin ? 'c' : got.item ? (got.item.r==='rare' ? 'b' : 'g') : (got.vb>=50 ? 'e' : got.vb>=20 ? 'b' : 'g');
+  const lootTop=got.loot ? got.loot.weapon : (got.loots && got.loots.length) ? ccChestBest(got.loots)[0].weapon : null;
+  const rar=got.coin ? 'c' : got.item ? (got.item.r==='rare' ? 'b' : 'g') : !lootTop ? 'g' : ({legendary:'l', epic:'e', rare:'b', uncommon:'g', common:'w'}[lootTop.rarity]||'w');
   const st=document.createElement('div');
   st.className='cc-chs'+(s.rare ? ' r' : '')+(got.coin ? ' coin' : '')+((got.none || got.item || (got.items && got.items.length)) ? ' f' : ''); st.id='ccChestStage';
   st.innerHTML='<div class="cc-chs-in"><div class="cc-chs-glow"></div><div class="cc-chs-beam '+rar+'"></div><div class="cc-chs-sparks">'+sparks+'</div>'+
     (got.coin ? '<div class="cc-chs-boom"></div><div class="cc-chs-card">'+CC_COIN_SVG+'</div><div class="cc-chs-sun">'+CC_COIN_SVG+'</div>'
-      : got.vb ? '<div class="cc-chs-loot"><i class="cc-vb-ic"></i><b>+'+got.vb+'</b></div>' : '')+
+      : ccChestLootHTML(got))+
     '<div class="cc-chs-chest"><span class="cc-chs-lid">'+ccChestArt(s.rare, 'lid')+'</span>'+ccChestArt(s.rare, 'body')+'</div>'+
     '<div class="cc-chs-search"><i class="cc-chs-ring"><svg viewBox="0 0 36 36" aria-hidden="true"><circle cx="18" cy="18" r="15"/><circle class="p" cx="18" cy="18" r="15" pathLength="100"/></svg></i><b>'+esc(T.search)+'</b></div></div>';
   const found=ccChestFoundHTML(got);
@@ -151916,6 +151953,24 @@ function ccChestStage(s, got){
   const finish=()=>{ if(over) return; over=true; CC_CHEST_BUSY=false; st.remove(); if(got.coin) ccChestCoin(); };
   setTimeout(()=>{ st.onclick=finish; }, 900);
   setTimeout(finish, got.coin ? 2350 : found ? 3600 : 2600);
+}
+function ccChestBest(list){ return list.slice().sort((a,b)=>RARITY_LADDER.indexOf(b.weapon.rarity)-RARITY_LADDER.indexOf(a.weapon.rarity)); }
+// Карточка лута: рамка цвета редкости из файлов сезона, иконка ствола. Расходник рядом поменьше.
+function ccChestCardHTML(o, small){
+  const key=RARITY_LADDER.indexOf(o.rarity)>=0 ? o.rarity : (CONSUMABLE_SKIN_KEY[o.rarity]||'common');
+  const k=key==='mythic' ? 'legendary' : key;
+  return '<span class="cc-chl'+(small ? ' s' : '')+'" style="background-image:url(\'items/creative/pirate-card-'+k+'.webp\')">'+ccItemIconHTML(o, '')+'</span>';
+}
+function ccChestLootHTML(got){
+  if(got.loot){
+    const w=got.loot.weapon, c=got.loot.cons;
+    return '<div class="cc-chs-loot"><div class="cc-chl-row">'+ccChestCardHTML(w)+(c ? ccChestCardHTML(c, 1) : '')+'</div><b class="cc-chl-n">'+esc(w.name)+'</b></div>';
+  }
+  if(got.loots && got.loots.length){
+    const top=ccChestBest(got.loots).slice(0, 3);
+    return '<div class="cc-chs-loot"><div class="cc-chl-row">'+top.map(x=>ccChestCardHTML(x.weapon, 1)).join('')+'</div><b class="cc-chl-n">'+esc(ccChestT().got(got.loots.length))+'</b></div>';
+  }
+  return '';
 }
 // Баннер YOU FOUND из игры: рамка с предметом и плашка с молниями. Текст наш, на языке игрока.
 function ccChestFoundHTML(got){

@@ -21,7 +21,7 @@ notes.zones=zs.length;
 check('40 клеток и столько же лута', zs.length===40 && st.length===40, zs.length+' '+st.length);
 check('клетки в кадре', zs.every(z=>z.x>=0 && z.y>=0 && z.x+z.w<=100 && z.y+z.h<=100));
 check('картинка и пропорция', MAP_ART.s43==='art/map-s43.jpg' && MAP_ASPECT.s43==='1/1');
-check('лут сезона', ccLootSet('s43')==='s43' && CC_LOOT_BY_SET.s43.weapons===S42_WEAPON_POOL);
+check('лут сезона', ccLootSet('s43')==='s43' && CC_LOOT_BY_SET.s43.weapons===S43_WEAPON_POOL);
 const was=ACTIVE_LANDING_SET; useLandingSet('s43');
 check('клетки встали', ACTIVE_LANDING_SET==='s43' && ALL_LANDING_ZONES.length>=20, ACTIVE_LANDING_SET+' '+ALL_LANDING_ZONES.length);
 notes.named=ALL_LANDING_ZONES.filter(z=>z.n).length;

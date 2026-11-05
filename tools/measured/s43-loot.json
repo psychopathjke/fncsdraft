@@ -1,0 +1,189 @@
+[
+ {
+  "name": "Bundlebuss Repeater Rifle",
+  "cat": "assault",
+  "rar": [
+   "uncommon",
+   "rare",
+   "epic",
+   "legendary"
+  ],
+  "file": "items/s43/bundlebuss-repeater-rifle.webp"
+ },
+ {
+  "name": "Hammer Assault Rifle",
+  "cat": "assault",
+  "rar": [
+   "common",
+   "uncommon",
+   "rare",
+   "epic",
+   "legendary"
+  ],
+  "file": "items/s43/hammer-assault-rifle.webp"
+ },
+ {
+  "name": "Gilded Dragoon Shotgun",
+  "cat": "shotgun",
+  "rar": [
+   "uncommon",
+   "rare",
+   "epic",
+   "legendary"
+  ],
+  "file": "items/s43/gilded-dragoon-shotgun.webp"
+ },
+ {
+  "name": "Auto Shotgun",
+  "cat": "shotgun",
+  "rar": [
+   "common",
+   "uncommon",
+   "rare",
+   "epic",
+   "legendary"
+  ],
+  "file": "items/s43/auto-shotgun.webp"
+ },
+ {
+  "name": "Sentinel Pump Shotgun",
+  "cat": "shotgun",
+  "rar": [
+   "common",
+   "uncommon",
+   "rare",
+   "epic",
+   "legendary"
+  ],
+  "file": "items/s43/sentinel-pump-shotgun.webp"
+ },
+ {
+  "name": "Tactical Submachine Gun",
+  "cat": "smg",
+  "rar": [
+   "uncommon",
+   "rare",
+   "epic",
+   "legendary"
+  ],
+  "file": "items/s43/tactical-submachine-gun.webp"
+ },
+ {
+  "name": "Machine SMG",
+  "cat": "smg",
+  "rar": [
+   "common",
+   "uncommon",
+   "rare",
+   "epic",
+   "legendary"
+  ],
+  "file": "items/s43/machine-smg.webp"
+ },
+ {
+  "name": "Usopp's Slingshot",
+  "cat": "pistol",
+  "rar": [
+   "uncommon",
+   "rare",
+   "epic",
+   "legendary"
+  ],
+  "file": "items/s43/usopp-s-slingshot.webp"
+ },
+ {
+  "name": "Flint-Knock Pistol",
+  "cat": "pistol",
+  "rar": [
+   "common",
+   "uncommon",
+   "rare",
+   "epic"
+  ],
+  "file": "items/s43/flint-knock-pistol.webp"
+ },
+ {
+  "name": "Sidearm Pistol",
+  "cat": "pistol",
+  "rar": [
+   "common",
+   "uncommon",
+   "rare",
+   "epic",
+   "legendary"
+  ],
+  "file": "items/s43/sidearm-pistol.webp"
+ },
+ {
+  "name": "Small Shield Potion",
+  "cat": "consumable",
+  "rar": [
+   "uncommon"
+  ],
+  "file": "items/s43/small-shield-potion.webp"
+ },
+ {
+  "name": "Shield Potion",
+  "cat": "consumable",
+  "rar": [
+   "rare"
+  ],
+  "file": "items/s43/shield-potion.webp"
+ },
+ {
+  "name": "Meat on a Stick",
+  "cat": "consumable",
+  "rar": [
+   "uncommon"
+  ],
+  "file": "items/s43/meat-on-a-stick.webp"
+ },
+ {
+  "name": "Med Kit",
+  "cat": "consumable",
+  "rar": [
+   "uncommon"
+  ],
+  "file": "items/s43/med-kit.webp"
+ },
+ {
+  "name": "Nami's Tangerine",
+  "cat": "consumable",
+  "rar": [
+   "uncommon"
+  ],
+  "file": "items/s43/nami-s-tangerine.webp"
+ },
+ {
+  "name": "Bandage",
+  "cat": "consumable",
+  "rar": [
+   "common"
+  ],
+  "file": "items/s43/bandage.webp"
+ },
+ {
+  "name": "Slurp Juice",
+  "cat": "consumable",
+  "rar": [
+   "epic"
+  ],
+  "file": "items/s43/slurp-juice.webp"
+ },
+ {
+  "name": "Chug Jug",
+  "cat": "consumable",
+  "rar": [
+   "legendary"
+  ],
+  "file": "items/s43/chug-jug.webp"
+ },
+ {
+  "name": "Overdrive Grenade",
+  "cat": "utility",
+  "rar": [
+   "rare"
+  ],
+  "file": "items/s43/overdrive-grenade.webp"
+ }
+]
