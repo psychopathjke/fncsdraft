@@ -12008,7 +12008,7 @@ lbByEarn:'Призы турниров',
 lbByAll:'Все призы',
 lbAllCol:'Все призы',
 lbCupNote:'Только турниры: без своих турниров и бонусов за подпись.',
-lbAllNote:'Вместе со своими турнирами и бонусами за подпись.',
+lbAllNote:'Вместе с бонусами за подпись. Свои турниры не считаются.',
 lbPage:(a,b,n)=>'Места '+a+'-'+b+' из '+n,
 lbBySpent:'По тратам',
 lbSpentCol:'Потрачено',
@@ -14136,7 +14136,7 @@ lbByEarn:'Tournament prizes',
 lbByAll:'All prizes',
 lbAllCol:'All prizes',
 lbCupNote:'Tournaments only: no own tournaments, no signing bonuses.',
-lbAllNote:'Including own tournaments and signing bonuses.',
+lbAllNote:'Including signing bonuses. Own tournaments do not count.',
 lbPage:(a,b,n)=>'Places '+a+'-'+b+' of '+n,
 lbBySpent:'By spending',
 lbSpentCol:'Spent',
@@ -24363,13 +24363,13 @@ ccOrgGoalPickHint:'Meta da temporada: escolha uma antes do fim da temporada. Cum
 }));
 /* Дозаливка «fr» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
 Object.assign(I18N.fr=I18N.fr||{},
-({ lbByEarn:'Prix des tournois', lbByAll:'Tous les prix', lbAllCol:'Tous les prix', lbCupNote:'Tournois seulement : sans tes propres tournois ni primes de signature.', lbAllNote:'Avec tes propres tournois et les primes de signature.', lbPage:(a,b,n)=>'Places '+a+'-'+b+' sur '+n }));
+({ lbByEarn:'Prix des tournois', lbByAll:'Tous les prix', lbAllCol:'Tous les prix', lbCupNote:'Tournois seulement : sans tes propres tournois ni primes de signature.', lbAllNote:'Avec les primes de signature. Tes propres tournois ne comptent pas.', lbPage:(a,b,n)=>'Places '+a+'-'+b+' sur '+n }));
 /* Дозаливка «it» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
 Object.assign(I18N.it=I18N.it||{},
-({ lbByEarn:'Premi dei tornei', lbByAll:'Tutti i premi', lbAllCol:'Tutti i premi', lbCupNote:'Solo tornei: senza i propri tornei e i bonus alla firma.', lbAllNote:'Con i propri tornei e i bonus alla firma.', lbPage:(a,b,n)=>'Posti '+a+'-'+b+' di '+n }));
+({ lbByEarn:'Premi dei tornei', lbByAll:'Tutti i premi', lbAllCol:'Tutti i premi', lbCupNote:'Solo tornei: senza i propri tornei e i bonus alla firma.', lbAllNote:'Con i bonus alla firma. I propri tornei non contano.', lbPage:(a,b,n)=>'Posti '+a+'-'+b+' di '+n }));
 /* Дозаливка «pt» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
 Object.assign(I18N.pt=I18N.pt||{},
-({ lbByEarn:'Prêmios de torneios', lbByAll:'Todos os prêmios', lbAllCol:'Todos os prêmios', lbCupNote:'Só torneios: sem torneios próprios nem bônus de assinatura.', lbAllNote:'Com torneios próprios e bônus de assinatura.', lbPage:(a,b,n)=>'Posições '+a+'-'+b+' de '+n }));
+({ lbByEarn:'Prêmios de torneios', lbByAll:'Todos os prêmios', lbAllCol:'Todos os prêmios', lbCupNote:'Só torneios: sem torneios próprios nem bônus de assinatura.', lbAllNote:'Com bônus de assinatura. Torneios próprios não contam.', lbPage:(a,b,n)=>'Posições '+a+'-'+b+' de '+n }));
 /* Дозаливка «fr» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
 Object.assign(I18N.fr=I18N.fr||{},
 ({ hmBoardList:'Liste complète' }));
@@ -125579,7 +125579,7 @@ function ccBoardRow(){
     if(!best || r.place<best.place || (r.place===best.place && r.of>best.of)) best=r; });
   return {id:ccBoardId(), nick:String(pl.nick||pl.handle||'').slice(0, 24), region:ccCareerRegion(),
           country:String(pl.country||'').toLowerCase().slice(0, 2), seasons:Math.max(1, cr.season||1),
-          earn:ccEarnCups(cr), earnAll:Math.max(0, Math.round(cr.earnings||0)), ovr:Math.round(ccMyShownOvr()||pl.ovr||1),
+          earn:ccEarnCups(cr), earnAll:ccEarnCups(cr)+Math.round(ccEarnSignOf(cr)), ovr:Math.round(ccMyShownOvr()||pl.ovr||1),
           div:Math.min(5, Math.max(1, cr.division||5)), titles:log.filter(r=>r && r.place===1).length,
           year:(typeof ccCalYear==='function' ? ccCalYear() : 2026),
           best: best ? best.place+'/'+best.of : '', bestEv: best ? String(best.kind||'cup') : '',

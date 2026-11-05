@@ -47,11 +47,11 @@ function normalize(e, now){
   if(seasons==null) return {err:'seasons'};
   const earn=int(e.earn, 0, MAX_EARN_PER_SEASON*seasons);
   if(earn==null) return {err:'earn'};
-  /* Все призы (2.11): earn с этого дня — только турниры, а свои турниры и бонусы за подпись едут в earnAll.
-     Старые клиенты earnAll не шлют: их earn и есть «все». Своим турниром можно накрутить сколько угодно,
-     поэтому у earnAll потолка по сезону нет. */
-  const earnAll=e.earnAll==null ? earn : int(e.earnAll, earn, 1e13);
-  if(earnAll==null) return {err:'earnAll'};
+  /* Все призы: турниры плюс бонусы за подпись. Свои турниры сюда не входят, старый клиент ещё шлёт их,
+     поэтому сверх турниров принимается не больше потолка бонусов за сезон. */
+  const earnAllIn=e.earnAll==null ? earn : int(e.earnAll, earn, 1e13);
+  if(earnAllIn==null) return {err:'earnAll'};
+  const earnAll=Math.min(earnAllIn, earn+OLD_CUP_PER_SEASON*seasons);
   const ovr=int(e.ovr, 1, 120);
   const div=int(e.div, 1, 5);
   const titles=int(e.titles||0, 0, 100000);

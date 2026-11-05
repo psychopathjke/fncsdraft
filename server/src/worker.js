@@ -298,6 +298,8 @@ export class Board {
     const conds=[], args=[];
     if(region){ conds.push('region=?'); args.push(region); }
     if(col==='earn'){ conds.push('(v2=1 OR earn<=seasons*?)'); args.push(OLD_CUP_PER_SEASON); }
+    // Вкладка всех призов: лежащие строки со своими турнирами не показываются, новая строка игры их заменит.
+    if(col==='earnall'){ conds.push('earnall<=earn+seasons*?'); args.push(OLD_CUP_PER_SEASON); }
     const where=conds.length ? ' WHERE '+conds.join(' AND ') : '';
     const rows=this.sql.exec('SELECT * FROM rows'+where+' ORDER BY '+col+' DESC, at ASC LIMIT '+TOP+' OFFSET '+(page*TOP), ...args).toArray();
     const total=this.sql.exec('SELECT COUNT(*) AS n FROM rows'+where, ...args).toArray()[0].n;
