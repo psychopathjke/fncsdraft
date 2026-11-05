@@ -151860,7 +151860,7 @@ function ccChestTileHTML(o){
   const poor=!paid && o.left<CC_CHEST_COST, can=!done && !o.closed && !poor;
   const why=done ? T.done : o.closed ? '' : poor ? L().ccNeedEnergy(CC_CHEST_COST-o.left) : '';
   return '<button class="cc-dt'+(can ? '' : ' off')+(done ? ' did' : '')+'" title="'+esc(T.map)+'" '+(can ? 'onclick="ccChestOpen()"' : 'disabled')+'>'+
-    '<span class="cc-dt-img" style="background-image:url(\'items/creative/trChest.webp\')"><em class="cc-dt-en">'+(paid ? left+'/'+CC_CHEST_OPENS : CC_CHEST_COST+L().ccEnergyMark)+'</em></span>'+
+    '<span class="cc-dt-img" style="background-image:url(\'items/creative/trChest-s43.webp\')"><em class="cc-dt-en">'+(paid ? left+'/'+CC_CHEST_OPENS : CC_CHEST_COST+L().ccEnergyMark)+'</em></span>'+
     '<span class="cc-dt-txt"><b>'+esc(T.map)+'</b><span class="cc-dt-g"><i class="m">'+esc(T.chip)+'</i></span>'+(why ? '<span class="cc-dt-why">'+esc(why)+'</span>' : '')+'</span></button>';
 }
 function ccChestArt(rare, part){ return '<img class="cc-chi '+(part==='lid' ? 'l' : 'b')+'" src="items/creative/pirate-chest'+(rare ? '-rare' : '')+'.webp" alt="">'; }
