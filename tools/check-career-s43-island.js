@@ -53,6 +53,12 @@ CAREER.career.day='2026-11-07';
 const v=ccVictoryAlts('2026-11-07').find(x=>x.id==='S43_TriosCashCup');
 check('Trios Cash Cup в календаре', !!v && ccVictoryFormat(v)===3, JSON.stringify(v&&v.id));
 check('приз из таблицы', v && ccVictoryPayOf(v,1)>0, v && ccVictoryPayOf(v,1));
+// FNCS Solo Reload ноября: Nitemare Island (r5), а не старые острова Reload.
+save('2026-11-07');
+const rlEv={spec:CC_SOLOS_STAGES.rlr2};
+check('Solo Reload на Nitemare', ccSoloFncsSet(rlEv)==='r5', ccSoloFncsSet(rlEv));
+check('Nitemare: картинка и клетки', MAP_ART.r5==='art/map-r5.jpg' && ZONE_SETS.r5.length>=25 && ZONE_SETS.r5.length===ZONE_STATS.r5.length, ZONE_SETS.r5.length);
+{ const was=ACTIVE_LANDING_SET, sq=squadSize; squadSize=1; useLandingSet('r5'); check('соло-клетки не дробятся', ALL_LANDING_ZONES.length===ZONE_SETS.r5.length, ALL_LANDING_ZONES.length); check('лут круга Reload', /^r[1-4]$/.test(ccLootSet()), ccLootSet()); squadSize=sq; useLandingSet(was); }
 // Настоящий вечер трио 22 ноября.
 save('2026-11-22');
 const nx=careerNext(); notes.next22=nx && (nx.type+' '+nx.day);
