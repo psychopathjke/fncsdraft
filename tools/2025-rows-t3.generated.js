@@ -894,7 +894,7 @@ const CARD_T3BR_LCQ_RAW=[
 [75,289,7,2,7.71,8.57,54,"joeyǃ","beyoncé 01","seis quatro"],
 [76,289,9,2,6.67,14.11,60,"v4ǃǃǃǃǃǃǃǃǃǃǃǃ","Mauricio Duarte.","The void404ǃ"],
 [77,289,9,1,6.89,12.22,62,"Tw Churrichat","Blumecl mi amorr","K2G Jayaguǃ"],
-[78,288,10,2,7.1,16,71,"Tiersǃǃ","lucasnikabaly11","Jerok3k"],
+[78,288,10,2,7.1,16,71,"Tiersǃǃ","lucasnikabaly11","Jerok"],
 [79,288,9,1,6.33,12.33,57,"PEAGÁ XIS V","smith xlll","CTL Hakari"],
 [80,288,10,0,8,13,80,"imccaii","Kttivo","sionnachtt"],
 [81,288,6,0,7,5.17,42,"asta 8 神圣的","vaz mcc 33","santyksj"],

@@ -11,15 +11,15 @@ check('финалистов столько же', fin.length>=650 && fin.length<
 check('у отбора нет финала', rest.every(c=>!c.realGf && !c.gfEvent && c.real.stage==='P'));
 const dup=new Set(fin.map(c=>c.region+'|'+c.handle.toLowerCase()));
 check('финалист не лежит дважды', rest.every(c=>!dup.has(c.region+'|'+c.handle.toLowerCase())));
-const j=rest.find(c=>c.handle==='Jerok3k' && c.region==='BR');
-check('Jerok3k: карточка называет хит и место', !!j && /Heat 1/.test(j.event) && j.placement===87, j && j.event+' '+j.placement);
-check('Jerok3k: хит 87', !!j && j._ratingParts && j._ratingParts.parts.some(p=>p.label==='heat' && p.rank===87));
-check('Jerok3k: рейтинг сезона выше карточки Major 2', !!j && j.rating>=60, j && j.rating);
+const j=rest.find(c=>c.handle==='Jerok' && c.region==='BR');
+check('Jerok: карточка называет хит и место', !!j && /Heat 1/.test(j.event) && j.placement===87, j && j.event+' '+j.placement);
+check('Jerok: хит 87', !!j && j._ratingParts && j._ratingParts.parts.some(p=>p.label==='heat' && p.rank===87));
+check('Jerok: рейтинг сезона выше карточки Major 2', !!j && j.rating>=60, j && j.rating);
 const saveY=CC.year; CC.year=2026;
-check('Jerok3k стартует в Д1 в 2026-м', j && ccCardStartDiv(j)===1);
+check('Jerok стартует в Д1 в 2026-м', j && ccCardStartDiv(j)===1);
 CC.year=2025;
 check('в другой год Д1 по записи не даётся', j && ccCardStartDiv(j)===ccDivisionFor(attrsFor(j).ovr));
-const other=rest.find(c=>c.handle!=='Jerok3k' && c.region==='BR' && attrsFor(c).ovr<70); CC.year=2026;
+const other=rest.find(c=>c.handle!=='Jerok' && c.region==='BR' && attrsFor(c).ovr<70); CC.year=2026;
 check('другие по рейтингу', !other || ccCardStartDiv(other)===ccDivisionFor(attrsFor(other).ovr));
 CC.year=saveY;
 for(const reg of ['EU','NAC','NAW','BR','ASIA','ME','OCE']){
@@ -32,4 +32,4 @@ const tmp=path.join(fs.mkdtempSync(path.join(os.tmpdir(),'rest-')),'body.js'); f
 const out=execFileSync(process.execPath,[path.join(__dirname,'probe-run.js'), tmp, '150000'],{encoding:'utf8',maxBuffer:1<<26,stdio:['ignore','pipe','ignore']});
 const res=JSON.parse(out); if(res.err){ console.log('FAIL', res.err); process.exit(1); }
 if(res.fails.length){ res.fails.forEach(f=>console.log('FAIL '+f)); process.exit(1); }
-console.log('OK check-solos-rest: '+res.rest+' карточек отбора, Jerok3k '+res.jerok);
+console.log('OK check-solos-rest: '+res.rest+' карточек отбора, Jerok '+res.jerok);

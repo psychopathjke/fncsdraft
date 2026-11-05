@@ -7,7 +7,7 @@ const R = JSON.parse(fs.readFileSync(path.join(M, 'solos-2026-rest.json'), 'utf8
 const F = JSON.parse(fs.readFileSync(path.join(M, 'solos-2026-final.json'), 'utf8'));
 const H = Object.values(JSON.parse(fs.readFileSync(path.join(M, 'player-handles.json'), 'utf8')));
 // Ник Epic не похож на ник карточки, связь проверена по местам и флагу.
-const ALIAS = { f429cf5fef7e4c86a1ffea6110c760c3: 'Jerok3k' };
+const ALIAS = { f429cf5fef7e4c86a1ffea6110c760c3: 'Jerok' };
 const low = s => String(s || '').toLowerCase().trim();
 const keys = s => { const t = low(s).split(/\s+/).filter(Boolean); return [low(s), t.slice(1).join(' '), t.slice(0, -1).join(' ')].filter(x => x.length >= 3); };
 const out = {}, stat = {};
