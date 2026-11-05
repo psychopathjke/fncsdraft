@@ -28,7 +28,7 @@ check('внутри карты', spots.every(s=>s.x>=2 && s.x<=98 && s.y>=2 && s
 { let month=0, month20=0; const N=800;
   for(let t=0; t<N; t++){ CAREER.player.nick='P'+t; let hit=false, hit20=false;
     for(let d=1; d<=30; d++){ const k='2026-11-'+String(d).padStart(2,'0');
-      const got=[0,1].map(i=>ccChestRoll(k,i,1)).concat([2,3,4].map(i=>ccChestRoll(k,i,0)));
+      const got=[0,1].map(i=>ccPirateChestRoll(k,i,1)).concat([2,3,4].map(i=>ccPirateChestRoll(k,i,0)));
       if(got.some(x=>x.coin)){ hit=true; if(d<=20) hit20=true; } }
     if(hit) month++; if(hit20) month20++; }
   CAREER.player.nick='Probe'; CC_POOLS=null;
@@ -36,10 +36,10 @@ check('внутри карты', spots.every(s=>s.x>=2 && s.x<=98 && s.y>=2 && s
   check('за месяц примерно 3 из 4', month/N>0.65 && month/N<0.88, month/N); }
 // Открытие: энергия один раз, 5 сундуков, без Math.random, тот же итог.
 const realRandom=Math.random; let drawn=0; Math.random=function(){ drawn++; return realRandom(); };
-const a=JSON.stringify(ccChestSpots(day)), b=JSON.stringify(ccChestRoll(day,3,0));
+const a=JSON.stringify(ccChestSpots(day)), b=JSON.stringify(ccPirateChestRoll(day,3,0));
 Math.random=realRandom;
 check('сундуки и лут не тратят Math.random', drawn===0, drawn);
-check('сундуки дня те же', a===JSON.stringify(ccChestSpots(day)) && b===JSON.stringify(ccChestRoll(day,3,0)));
+check('сундуки дня те же', a===JSON.stringify(ccChestSpots(day)) && b===JSON.stringify(ccPirateChestRoll(day,3,0)));
 const en0=careerEnergy(); let vb=CAREER.vb||0;
 ccChestOpen();
 check('карта с маркерами', document.querySelectorAll('#ccChestOv .cc-chm').length===18);
@@ -65,7 +65,7 @@ ccChestOpen(); check('окно не открыть', !document.getElementById('c
 // Монета.
 let cd=null, ci=-1, cr=0;
 for(let d=1; d<=30 && !cd; d++){ const k='2026-11-'+String(d).padStart(2,'0'), sp=ccChestSpots(k);
-  for(let i=0; i<sp.length; i++) if(ccChestRoll(k,i,sp[i].rare).coin){ cd=k; ci=i; cr=sp[i].rare; break; } }
+  for(let i=0; i<sp.length; i++) if(ccPirateChestRoll(k,i,sp[i].rare).coin){ cd=k; ci=i; cr=sp[i].rare; break; } }
 check('нашёлся день с монетой', !!cd);
 if(cd){ CAREER.career.day=cd; CAREER.pirate.chest=null; if(careerEnergy()<CC_CHEST_COST) careerRestore(100);
   const v0=CAREER.vb; ccChestOpen(); ccChestPick(ci);
@@ -79,7 +79,8 @@ if(cd){ CAREER.career.day=cd; CAREER.pirate.chest=null; if(careerEnergy()<CC_CHE
   check('14 дней пошли', ccPirateLeft()===14, ccPirateLeft());
   check('анимация включения', !!document.querySelector('#ccChestOv .cc-ch-stamp'));
   ccChestClose();
-  check('монета больше не падает', !ccChestRoll(cd,ci,cr).coin); }
+  check('монета больше не падает', !ccPirateChestRoll(cd,ci,cr).coin); }
+check('лут матча не тронут', typeof ccChestRoll==='function' && ccChestRoll.length!==ccPirateChestRoll.length, String(ccChestRoll.length));
 return {fails, notes};
 `;
 const tmp=path.join(fs.mkdtempSync(path.join(os.tmpdir(),'chest-')),'body.js'); fs.writeFileSync(tmp, body);

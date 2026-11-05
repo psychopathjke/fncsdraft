@@ -102535,6 +102535,8 @@ const MAP_ART={
   s42:"art/map-s42.jpg",
   // Тот же остров, но сеткой на сотню — под соло, см. ZONE_SETS.s42solo.
   s42solo:"art/map-s42.jpg",
+  // Остров мини-сезона S43 (Treasure Hunters): тайлы fortnite.gg, tools/build-s43-island.js.
+  s43:"art/map-s43.jpg",
   // Chapter 5, 2024: карты eucompetitive.com (ch5s1map … ch5s4map), сжаты в JPEG.
   f1:"art/map-f1.jpg",
   f2:"art/map-f2.jpg",
@@ -102579,7 +102581,7 @@ const MAP_ART={
   r3:"art/map-reload-b.jpg",
   r4:"art/map-reload-b.jpg"
 };
-const MAP_ASPECT={m1:'1100/1142', m2:'1100/970', s42:'921/843', s42solo:'921/843', t1:'1701/1714',
+const MAP_ASPECT={m1:'1100/1142', m2:'1100/970', s42:'921/843', s42solo:'921/843', s43:'1/1', t1:'1701/1714',
                   f1:'1600/1600', f2:'1600/1600', f3:'1600/1600', f4:'1600/1600',
                   e1:'1600/1600', e2:'1600/1600', e3:'1600/1600', e4:'1600/1600',
                   k1:'1600/1600', k2:'1600/1600', k3:'1600/1600', k4:'1600/1600',
@@ -102615,6 +102617,7 @@ const ZONE_STATS={
      Флор-лут и ящики с продуктами не считаются: их заполняют не везде, и
      учитывать их значило бы ранжировать локацию по тому, насколько подробно
      её описали. Ноль у зоны — не пробел, а пустое поле между локациями. */
+  s43:[{r:18,loot:18,chests:8,rare:0,ammo:10},{r:63,loot:63,chests:31,rare:0,ammo:32},{r:21,loot:21,chests:8,rare:0,ammo:13},{r:11,loot:11,chests:7,rare:0,ammo:4},{r:35,loot:35,chests:15,rare:2,ammo:14},{r:13,loot:13,chests:6,rare:0,ammo:7},{r:107,loot:107,chests:43,rare:4,ammo:52},{r:56,loot:56,chests:18,rare:4,ammo:26},{r:4,loot:4,chests:2,rare:0,ammo:2},{r:12,loot:12,chests:7,rare:0,ammo:5},{r:14,loot:14,chests:7,rare:0,ammo:7},{r:17,loot:17,chests:7,rare:0,ammo:10},{r:9,loot:9,chests:7,rare:0,ammo:2},{r:16,loot:16,chests:5,rare:0,ammo:11},{r:20,loot:20,chests:12,rare:0,ammo:8},{r:72,loot:72,chests:25,rare:4,ammo:35},{r:19,loot:19,chests:9,rare:0,ammo:10},{r:14,loot:14,chests:7,rare:0,ammo:7},{r:69,loot:69,chests:34,rare:0,ammo:35},{r:45,loot:45,chests:24,rare:0,ammo:21},{r:14,loot:14,chests:8,rare:0,ammo:6},{r:8,loot:8,chests:6,rare:0,ammo:2},{r:7,loot:7,chests:5,rare:0,ammo:2},{r:66,loot:66,chests:29,rare:4,ammo:25},{r:10,loot:10,chests:6,rare:0,ammo:4},{r:11,loot:11,chests:9,rare:0,ammo:2},{r:9,loot:9,chests:7,rare:0,ammo:2},{r:3,loot:3,chests:3,rare:0,ammo:0},{r:9,loot:9,chests:6,rare:0,ammo:3},{r:13,loot:13,chests:8,rare:0,ammo:5},{r:90,loot:90,chests:39,rare:4,ammo:39},{r:45,loot:45,chests:22,rare:0,ammo:23},{r:51,loot:51,chests:28,rare:0,ammo:23},{r:19,loot:19,chests:11,rare:0,ammo:8},{r:7,loot:7,chests:6,rare:0,ammo:1},{r:11,loot:11,chests:7,rare:0,ammo:4},{r:14,loot:14,chests:8,rare:0,ammo:6},{r:12,loot:12,chests:7,rare:0,ammo:5},{r:53,loot:53,chests:32,rare:0,ammo:21},{r:10,loot:10,chests:8,rare:0,ammo:2}],/*@@S43-STATS@@*/
   s42:[{r:100,loot:100,chests:62,rare:0,ammo:42},{r:67,loot:67,chests:27,rare:0,ammo:25},{r:65,loot:65,chests:44,rare:0,ammo:34},{r:0,loot:0,chests:27,rare:0,ammo:16},{r:130,loot:130,chests:117,rare:4,ammo:83},{r:0,loot:0,chests:68,rare:0,ammo:9},{r:0,loot:0,chests:65,rare:0,ammo:31},{r:89,loot:89,chests:56,rare:1,ammo:40},{r:0,loot:0,chests:52,rare:3,ammo:44},{r:73,loot:73,chests:60,rare:0,ammo:46},{r:83,loot:83,chests:93,rare:0,ammo:44},{r:57,loot:57,chests:53,rare:0,ammo:31},{r:62,loot:62,chests:43,rare:2,ammo:48},{r:19,loot:19,chests:18,rare:2,ammo:7},{r:0,loot:0,chests:34,rare:0,ammo:21},{r:0,loot:0,chests:2,rare:0,ammo:2},{r:12,loot:12,chests:5,rare:0,ammo:4},{r:0,loot:0,chests:26,rare:0,ammo:6},{r:0,loot:0,chests:8,rare:0,ammo:4},{r:0,loot:0,chests:12,rare:0,ammo:4},{r:0,loot:0,chests:0,rare:0,ammo:0},{r:0,loot:0,chests:1,rare:0,ammo:0},{r:0,loot:0,chests:11,rare:2,ammo:7},{r:12,loot:12,chests:6,rare:0,ammo:6},{r:16,loot:16,chests:15,rare:0,ammo:10},{r:19,loot:19,chests:18,rare:0,ammo:9},{r:0,loot:0,chests:11,rare:0,ammo:5},{r:0,loot:0,chests:2,rare:0,ammo:0},{r:15,loot:15,chests:9,rare:0,ammo:6},{r:0,loot:0,chests:12,rare:0,ammo:2},{r:0,loot:0,chests:13,rare:0,ammo:3},{r:0,loot:0,chests:4,rare:0,ammo:4},{r:0,loot:0,chests:11,rare:0,ammo:7}],
   /* Соло-сотня — тот же считанный лут, разложенный по площади.
 
@@ -102755,6 +102758,7 @@ const ZONE_SETS={
      той же нерегулярной формы, что его сетка. Координаты — проценты
      art/map-s42.jpg, положены по самой картинке; опубликованной дроп-карты
      у сезона ещё нет, снять нечего. */
+  s43:[{x:71.05,y:7.97,w:6,h:6},{x:19.2,y:8.92,w:10.5,h:8.02,n:"Rubber Resort"},{x:52.14,y:15.99,w:6,h:6},{x:7.86,y:17.17,w:6,h:6},{x:24.43,y:17.44,w:6,h:5.77},{x:78.37,y:19.01,w:5.56,h:6},{x:60.75,y:19.24,w:10.5,h:10.5,n:"Fortune'S Fort"},{x:41.19,y:22.16,w:9.35,h:10.5,n:"Loot Lagoon"},{x:14.36,y:22.66,w:8.91,h:10.5,n:"The Chest"},{x:72.31,y:23.77,w:5.56,h:6},{x:85.62,y:26.8,w:6,h:6},{x:26.41,y:32.04,w:6,h:6},{x:16.87,y:34.49,w:6,h:6},{x:76.03,y:34.56,w:6.5,h:6.5,n:"Boogie Boat"},{x:35.06,y:37.51,w:6,h:6},{x:26.28,y:39.33,w:8.27,h:7.34,n:"Lantern Landing"},{x:45.09,y:40.77,w:6,h:6},{x:62.36,y:40.79,w:6,h:6},{x:3.24,y:44.3,w:10.5,h:10.5,n:"Arlong Park"},{x:52.51,y:46.43,w:7.27,h:8.35,n:"Cursed Cavern"},{x:21.58,y:47.73,w:6,h:6},{x:60.64,y:49.74,w:6,h:5.57},{x:37.41,y:51.74,w:6,h:5.39},{x:71.4,y:52.48,w:8.33,h:10.5,n:"The $.$. Rocky"},{x:17.9,y:55.49,w:6,h:6},{x:55.1,y:55.81,w:6.5,h:5.82,n:"The Salty Skull"},{x:80.31,y:56.59,w:6,h:6},{x:32.98,y:57.62,w:6.5,h:5.64,n:"Giant'S Battlefield"},{x:63.07,y:62.41,w:6,h:6},{x:24.49,y:63.8,w:6,h:6},{x:34.13,y:66.91,w:10.5,h:10.5,n:"Loguetown"},{x:13.69,y:71.74,w:10.5,h:10.5,n:"Windmill Village"},{x:68.97,y:75.58,w:10.5,h:10.5,n:"Busy Bay"},{x:84.77,y:77.87,w:6,h:6},{x:54.84,y:79.23,w:6.32,h:6.5,n:"Henry"},{x:27.74,y:83.8,w:6,h:6},{x:13.64,y:84.48,w:6,h:6},{x:61.73,y:85.33,w:6,h:6},{x:48.24,y:86.46,w:10.5,h:10.5,n:"Plunder Port"},{x:40.43,y:89.55,w:6,h:6}],/*@@S43-ZONES@@*/
   s42:[
     {x:24,y:8,w:16,h:14},  {x:57,y:13,w:14,h:11}, {x:71,y:22,w:16,h:13},
     {x:12,y:26,w:14,h:11}, {x:35,y:28,w:16,h:13}, {x:25,y:42,w:17,h:14},
@@ -103868,7 +103872,7 @@ function ccKeepMythic(kept){
 // duo cup laid that island's landing grid over last season's satellite photo.
 let ACTIVE_LANDING_SET='m2';
 // Чей счёт сундуков у острова (поле chests в ZONE_STATS): подпись в подсказке точки.
-const CC_CHESTS_SRC={s42:'fortnite.gg', s42solo:'fortnite.gg', t1:'wiki', t2:'wiki', t3:'wiki', f1:'wiki', f2:'wiki', f3:'wiki', f4:'wiki', e1:'wiki', e2:'wiki', e3:'wiki', e4:'wiki', k1:'wiki', k2:'wiki', k3:'wiki', k4:'wiki', j1:'wiki', j2:'wiki', j3:'wiki', j4:'wiki', h1:'wiki', h3:'wiki', h4:'wiki', i1:'wiki', i2:'wiki', i3:'wiki', m1:'Kinch', m2:'Kinch'};
+const CC_CHESTS_SRC={s42:'fortnite.gg', s42solo:'fortnite.gg', s43:'fortnite.gg', t1:'wiki', t2:'wiki', t3:'wiki', f1:'wiki', f2:'wiki', f3:'wiki', f4:'wiki', e1:'wiki', e2:'wiki', e3:'wiki', e4:'wiki', k1:'wiki', k2:'wiki', k3:'wiki', k4:'wiki', j1:'wiki', j2:'wiki', j3:'wiki', j4:'wiki', h1:'wiki', h3:'wiki', h4:'wiki', i1:'wiki', i2:'wiki', i3:'wiki', m1:'Kinch', m2:'Kinch'};
 /* МИФИЧЕСКИЕ POI Chapter 5–6 (острова 2024 f1–f4 и 2025 t1–t3): точка, где стоит босс с мификом.
    Босс и его место — вики (страница Bosses и страницы боссов), клетка — по маркеру локации на
    вики-карте патча финала (tools/build-2025-zone-loot.js, DUMP_POIS). Ключ — индекс клетки в
@@ -116313,6 +116317,8 @@ const CC_LOOT_BY_SET={
   m1:{weapons:M1_WEAPON_POOL, heals:M1_CONSUMABLE_POOL},
   m2:{weapons:WEAPON_POOL, heals:M2_CONSUMABLE_POOL},
   s42:{weapons:S42_WEAPON_POOL, heals:S42_CONSUMABLE_POOL},
+  // Листа лута мини-сезона нет ни у Epic, ни на вики: пул сезона S42.
+  s43:{weapons:S42_WEAPON_POOL, heals:S42_CONSUMABLE_POOL},
   t1:{weapons:T1_WEAPON_POOL, heals:T1_CONSUMABLE_POOL},
   t2:{weapons:T2_WEAPON_POOL, heals:T2_CONSUMABLE_POOL},
   t3:{weapons:T3_WEAPON_POOL, heals:T3_CONSUMABLE_POOL},
@@ -130087,6 +130093,7 @@ function careerBrSet(){
        Снять Chapter 5 с fortnite.gg — отдельная работа. */
     /* 2023-й — Chapter 4: остров по Мейджору (C4S1 до 10.03, C4S2 до 9.06, C4S3 до 25.08, дальше
        C4S4 — Копенгаген). Пока островов Chapter 4 в сборке нет, стоят острова 2024-го. */
+    if(d>=CC_SEASONS[4].from && ZONE_SETS.s43) return 's43';
     if(d>='2026-08-21') return 's42';
     return d>=CC_SEASONS[2].from ? 'm2' : 'm1';
   }
@@ -151774,7 +151781,7 @@ function ccChestSpots(day){
   return out;
 }
 // Что в сундуке: монета по шансу, иначе V-Bucks. Монета падает, только пока её нет.
-function ccChestRoll(day, i, rare){
+function ccPirateChestRoll(day, i, rare){
   const r=careerRng(ccHashStr('chest|'+ccPirateTeam()+'|'+day+'|'+i)), x=r(), v=r();
   if(x<(rare ? CC_CHEST_P_RARE : CC_CHEST_P) && !ccPirate().found) return {coin:1};
   return {vb:rare ? (v<.6 ? 25 : v<.9 ? 50 : 100) : (v<.6 ? 10 : v<.9 ? 20 : 40)};
@@ -151823,7 +151830,7 @@ function ccChestPick(i){
   if(CC_CHEST_BUSY || !ccChestCan()) return;
   const p=ccPirate(), day=careerToday(), spots=ccChestSpots(day), s=spots[i], st=ccChestToday();
   if(!s || st.opened.indexOf(i)>=0) return;
-  const got=ccChestRoll(day, i, s.rare);
+  const got=ccPirateChestRoll(day, i, s.rare);
   if(!st.opened.length) careerSpend(CC_CHEST_COST);
   st.opened.push(i); p.chest=st;
   if(got.coin) p.found=day; else CAREER.vb=(CAREER.vb||0)+got.vb;
