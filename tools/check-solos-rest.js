@@ -15,6 +15,13 @@ const j=rest.find(c=>c.handle==='Jerok3k' && c.region==='BR');
 check('Jerok3k: карточка называет хит и место', !!j && /Heat 1/.test(j.event) && j.placement===87, j && j.event+' '+j.placement);
 check('Jerok3k: хит 87', !!j && j._ratingParts && j._ratingParts.parts.some(p=>p.label==='heat' && p.rank===87));
 check('Jerok3k: рейтинг сезона выше карточки Major 2', !!j && j.rating>=60, j && j.rating);
+const saveY=CC.year; CC.year=2026;
+check('Jerok3k стартует в Д1 в 2026-м', j && ccCardStartDiv(j)===1);
+CC.year=2025;
+check('в другой год Д1 по записи не даётся', j && ccCardStartDiv(j)===ccDivisionFor(attrsFor(j).ovr));
+const other=rest.find(c=>c.handle!=='Jerok3k' && c.region==='BR' && attrsFor(c).ovr<70); CC.year=2026;
+check('другие по рейтингу', !other || ccCardStartDiv(other)===ccDivisionFor(attrsFor(other).ovr));
+CC.year=saveY;
 for(const reg of ['EU','NAC','NAW','BR','ASIA','ME','OCE']){
   const f=fin.filter(c=>c.region===reg).map(c=>c.rating), r=rest.filter(c=>c.region===reg).map(c=>c.rating);
   check(reg+': лучший в регионе финалист', Math.max(...f)>Math.max(...r), Math.max(...f)+' '+Math.max(...r));

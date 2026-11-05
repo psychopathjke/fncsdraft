@@ -120158,7 +120158,7 @@ function ccPickCard(handle){
   CC.country=ccProHomeOf(p.handle) || ccCodeForNat(p.nat);
   CC.photo=null;
   // A suggestion, not a lock — the chips stay live.
-  CC.div=ccDivisionFor(attrsFor(p).ovr);
+  CC.div=ccCardStartDiv(p);
   document.getElementById('ccNick').value=p.handle;
   /* Their age, not the default sixteen.
 
@@ -120434,6 +120434,13 @@ function ccRealMateOf(card){
 // Where a taken card would naturally sit — the same bands the rookie table uses,
 // read backwards. It is only a suggestion now: in card mode you may start
 // anywhere, so a 92 can go down to Division 5 and walk over it.
+/* Настоящий Дивизион 1 в 2026-м у тех, кого рейтинг ставит ниже: списков Д1 у Epic в открытом доступе нет,
+   только топ-50 еженедельных финалов. Здесь люди, про которых это известно. */
+const CC_REAL_D1_2026={'BR|jerok3k':1};
+function ccCardStartDiv(p){
+  if(ccPickedYear()===2026 && CC_REAL_D1_2026[p.region+'|'+String(p.handle||'').toLowerCase()]) return 1;
+  return ccDivisionFor(attrsFor(p).ovr);
+}
 function ccDivisionFor(ovr){
   if(ovr>=ccBand(1)) return 1;
   if(ovr>=ccBand(2)) return 2;
