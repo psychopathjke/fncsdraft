@@ -173397,14 +173397,13 @@ function mgrChallengeHTML(){
 function mgrIdentity(){ const a=MGR.club.avg||75; return a>=86 ? 'results' : a<=76 ? 'youth' : 'business'; }
 function mgrConf(){ const b=MGR.board||{}; return b.conf==null ? 60 : b.conf; }
 function mgrConfAdd(d){ MGR.board=MGR.board||{}; MGR.board.conf=Math.max(0, Math.min(100, mgrConf()+d)); }
-/* СОВЕТ ПРОТИВ — НО РЕШАЕШЬ ТЫ (его слово 8.10: «кто такой совет и почему мне запрещают подписать игрока, я босс»).
-   Бюджет совета (трансферный и потолок зарплат, как в FC) был стеной: тост «совет против» и всё. Теперь это вопрос:
-   «подписать всё равно?» — сделка проходит, а доверие совета падает на 5…25 по размеру перерасхода против оборота клуба
-   (оценка режима); при нуле доверия совет увольняет, как и раньше. Денег в кассе это не добавляет: без них — нельзя. */
+/* Бюджет совета не запрещает сделку: «подписать всё равно?» проводит её, а доверие падает на 5…25 по размеру перерасхода
+   против оборота клуба. Денег в кассе это не добавляет. Оборот в формуле не ниже 100 тыс.: у клуба новичка он 40 тыс.,
+   и перерасход на $13 тыс. стоил максимальные 25, так что двух подписей хватало до увольнения с 60 до 10. */
 let MGR_BOARD_PASS=false;
 function mgrBoardAsk(msg, overBy, retry){
   if(MGR_BOARD_PASS) return true;
-  const turn=Math.max(20000, (MGR.club && MGR.club.turnover) || 100000);
+  const turn=Math.max(100000, (MGR.club && MGR.club.turnover) || 0);
   const pen=Math.max(5, Math.min(25, Math.round(5+overBy/turn*60)));
   const ru=(typeof LANG!=='undefined' && LANG==='ru');
   const q=(ru ? msg+'. Ты главный — подписать всё равно? Доверие совета −'+pen :({fr:()=>(msg+'. C’est toi le patron — signer quand même ? Confiance du board −'+pen), it:()=>(msg+'. Il capo sei tu — firmare comunque? Fiducia della dirigenza −'+pen), pt:()=>(msg+'. Você é o chefe — contratar mesmo assim? Confiança da diretoria −'+pen), de:()=>(msg+'. Du bist der Boss — trotzdem verpflichten? Vertrauen des Vorstands −'+pen), es:()=>(msg+'. Tú eres el jefe — ¿fichar de todos modos? Confianza de la directiva −'+pen)}[LANG]||(()=>(msg+'. You are the boss — sign anyway? Board confidence −'+pen)))())
