@@ -685,6 +685,7 @@
     text-shadow:0 3px 0 rgba(0,0,0,.35),0 0 24px rgba(0,0,0,.25);max-width:19ch;}
   .hero-title em{font-style:normal;color:#7ef0dd;}
   .hero-sub{margin:0;max-width:52ch;color:#c9dfe0;font-size:14px;line-height:1.55;}
+  .hero-what{margin:0 0 8px;color:#ffd900;font-size:12px;font-weight:700;line-height:1.35;}
   .hero-cta{display:flex;gap:10px;flex-wrap:wrap;margin-top:4px;}
   /* Плашки карьеры с меткой NEW — между описанием и дверями (были в полосе). */
   .hero-chips{align-items:center;margin-top:-2px;}
@@ -9965,6 +9966,7 @@
       <div class="hero-collage hc-players" aria-hidden="true"><img src="photos/BUGHA.jpg" alt="" loading="lazy" onerror="this.remove()"><img src="photos/aqua.png" alt="" loading="lazy" onerror="this.remove()"><img src="photos/Mongraal.jpg" alt="" loading="lazy" onerror="this.remove()"><img src="photos/Benjyfishy.jpg" alt="" loading="lazy" onerror="this.remove()"><img src="photos/Clix.jpg" alt="" loading="lazy" onerror="this.remove()"><img src="photos/MrSavage.jpg" alt="" loading="lazy" onerror="this.remove()"><img src="photos/nyhrox.png" alt="" loading="lazy" onerror="this.remove()"><img src="photos/Bizzle.png" alt="" loading="lazy" onerror="this.remove()"><img src="photos/TaySon.jpg" alt="" loading="lazy" onerror="this.remove()"><img src="photos/Mero.png" alt="" loading="lazy" onerror="this.remove()"><img src="photos/Th0masHD.jpg" alt="" loading="lazy" onerror="this.remove()"><img src="photos/Setty.jpg" alt="" loading="lazy" onerror="this.remove()"><img src="photos/Reet.jpg" alt="" loading="lazy" onerror="this.remove()"><img src="photos/Kami.jpg" alt="" loading="lazy" onerror="this.remove()"><img src="photos/Edgey.jpg" alt="" loading="lazy" onerror="this.remove()"><img src="photos/Khanada.jpg" alt="" loading="lazy" onerror="this.remove()"><img src="photos/Queasy.jpg" alt="" loading="lazy" onerror="this.remove()"><img src="photos/Malibuca.jpg" alt="" loading="lazy" onerror="this.remove()"><img src="photos/Peterbot.jpg" alt="" loading="lazy" onerror="this.remove()"><img src="photos/Pollo.jpg" alt="" loading="lazy" onerror="this.remove()"><img src="photos/Veno.jpg" alt="" loading="lazy" onerror="this.remove()"><img src="photos/Cooper.jpg" alt="" loading="lazy" onerror="this.remove()"><img src="photos/vic0.jpg" alt="" loading="lazy" onerror="this.remove()"><img src="photos/SwizzY.jpg" alt="" loading="lazy" onerror="this.remove()"></div>
       <div class="hero-body">
         <span class="dp-tag hero-mode-tag" data-i18n="hmCareerTag"></span>
+        <p class="hero-what" data-i18n="hmWhatIs"></p>
         <h1 class="hero-title" id="heroTitle" data-i18n="hcHeroTitle"></h1>
         <p class="hero-sub" id="tagline" data-i18n="hmCareerSub"></p>
         <div class="cstrip-chips hero-chips">
@@ -24388,7 +24390,7 @@ Object.assign(I18N.it=I18N.it||{},
 /* Дозаливка «pt» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
 Object.assign(I18N.pt=I18N.pt||{},
 ({ ccRacePairHint:'A dupla joga como um time: vocês dois, o IGL decide o estilo, o drop, o loot e as rotações, o fragger decide as lutas e o fim de jogo, o dinheiro é dividido, cada carreira segue sendo sua' }));
-let CC_I18N_V={de:'543d4e2f', es:'d5df8411'};   // ==== CC_I18N_V (tools/build-i18n.js) ====
+let CC_I18N_V={de:'bc3dac07', es:'a33dc9dd'};   // ==== CC_I18N_V (tools/build-i18n.js) ====
 // Версия fn-shop.js (магазин Fortnite по дням, tools/build-fn-shop.js) — для ?v= ленивой загрузки.
 let CC_FN_SHOP_V='dc62e7dc';
 const CC_LANG_WAIT={};
@@ -25022,11 +25024,11 @@ Object.assign(I18N.en, {hmContinue:'Continue', hmContinueSub:'Your saves, from t
   hmSceneDone:'The FNCS 2026 season is over.', hmBoardSub:'Careers of the players on this site, by prize money.', hmBoardList:'Full list',
   hmBoardMore:n=>'Show '+n, hmBoardLess:'Show less', hmHistSub:'Past drafts, records and awards.'});
 /* Главная: два режима и драфт по годам (29.09). */
-Object.assign(I18N.ru, {hcHeroTitle:'Стань про. <em>Сезон за сезоном.</em>', hdHeroTitle:'Собери состав. <em>Любой год FNCS.</em>', hdChipFormats:'Дуо · Трио · Сквады', hdPlay:'Играть драфт'});
-Object.assign(I18N.en, {hcHeroTitle:'Go pro. <em>Season after season.</em>', hdHeroTitle:'Build a squad. <em>Any FNCS year.</em>', hdChipFormats:'Duos · Trios · Squads', hdPlay:'Play the draft'});
-Object.assign(I18N.fr, {hcHeroTitle:'Deviens pro. <em>Saison après saison.</em>', hdHeroTitle:'Monte ton équipe. <em>N’importe quelle année FNCS.</em>', hdChipFormats:'Duos · Trios · Squads', hdPlay:'Jouer le draft'});
-Object.assign(I18N.it, {hcHeroTitle:'Diventa pro. <em>Stagione dopo stagione.</em>', hdHeroTitle:'Crea la squadra. <em>Qualsiasi anno FNCS.</em>', hdChipFormats:'Duo · Trio · Squad', hdPlay:'Gioca il draft'});
-Object.assign(I18N.pt, {hcHeroTitle:'Vire pro. <em>Temporada após temporada.</em>', hdHeroTitle:'Monte o time. <em>Qualquer ano do FNCS.</em>', hdChipFormats:'Duplas · Trios · Squads', hdPlay:'Jogar o draft'});
+Object.assign(I18N.ru, {hmWhatIs:"Бесплатная карьера в Fortnite прямо в браузере. Ничего не нужно скачивать.", hcHeroTitle:'Стань про. <em>Сезон за сезоном.</em>', hdHeroTitle:'Собери состав. <em>Любой год FNCS.</em>', hdChipFormats:'Дуо · Трио · Сквады', hdPlay:'Играть драфт'});
+Object.assign(I18N.en, {hmWhatIs:"Free Fortnite career game in your browser. No download.", hcHeroTitle:'Go pro. <em>Season after season.</em>', hdHeroTitle:'Build a squad. <em>Any FNCS year.</em>', hdChipFormats:'Duos · Trios · Squads', hdPlay:'Play the draft'});
+Object.assign(I18N.fr, {hmWhatIs:"Jeu de carrière Fortnite gratuit dans ton navigateur. Aucun téléchargement.", hcHeroTitle:'Deviens pro. <em>Saison après saison.</em>', hdHeroTitle:'Monte ton équipe. <em>N’importe quelle année FNCS.</em>', hdChipFormats:'Duos · Trios · Squads', hdPlay:'Jouer le draft'});
+Object.assign(I18N.it, {hmWhatIs:"Gioco di carriera Fortnite gratis nel browser. Nessun download.", hcHeroTitle:'Diventa pro. <em>Stagione dopo stagione.</em>', hdHeroTitle:'Crea la squadra. <em>Qualsiasi anno FNCS.</em>', hdChipFormats:'Duo · Trio · Squad', hdPlay:'Gioca il draft'});
+Object.assign(I18N.pt, {hmWhatIs:"Jogo de carreira de Fortnite grátis no navegador. Sem download.", hcHeroTitle:'Vire pro. <em>Temporada após temporada.</em>', hdHeroTitle:'Monte o time. <em>Qualquer ano do FNCS.</em>', hdChipFormats:'Duplas · Trios · Squads', hdPlay:'Jogar o draft'});
 Object.assign(I18N.ru, {hmMgrNav:"Менеджер", hmMgrCareer:"Карьера менеджера", hmMgrTag:"Режим 2 · Карьера менеджера", hmMgrTitle:"Собери клуб. <em>Веди его через сезон.</em>", hmMgrSub:"Ты Head of Fortnite: настоящий клуб и состав года, турниры по реальному календарю, смотришь вечера и решаешь между играми.", hmMgrBtn:"Стать менеджером", hmCareerTag:'Режим 1 · Карьера', hmCareerTitle:'Карьера', hmCareerSub:'Один игрок, сезон за сезоном по настоящему календарю 2019–2026: дивизионы, Мейджоры, клубы, ЛАНы', hmPlay:'Играть',
   hmDraftTag:'Режим 3 · Драфт', hmDraftTitle:'Драфт', hmDraftSub:'Собери команду из реальных карточек и пройди турнир: любой год 2019–2026, All FNCS, дуо, трио, сквады',
   dpFormats:'All FNCS · форматы', dpBack:'Назад', dpRealCards:'Реальные карточки', dpPastDesc:'Карточки игроков по их настоящим результатам на этом турнире. Круг — Play-In, хиты и финал.'});
@@ -120929,7 +120931,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='208addb3';
+const CC_BUILD='1656e5ba';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
