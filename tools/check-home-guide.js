@@ -2,7 +2,7 @@
 //   node tools/check-home-guide.js
 const fs=require('fs'),os=require('os'),path=require('path');const {execFileSync}=require('child_process');
 const fails=[]; const check=(n, ok, d)=>{ if(!ok) fails.push(n+(d!=null ? ': '+d : '')); };
-const KEYS=['hmGuideBtn','hmGuideH','hmGuide1','hmGuide2','hmGuide3','hmGuideGo','hmGuideMore'];
+const KEYS=['hmGuideBtn','hmGuideH','hmGuide1','hmGuide2','hmGuide3','hmGuideGo','hmGuideMore','hmGmH','hmGm1','hmGm2','hmGm3','hmGm4','hmGm5','hmGm6','hmGm7'];
 for(const l of ['de','es']){ const s=fs.readFileSync(path.join(__dirname,'..','i18n-'+l+'.js'),'utf8'); KEYS.forEach(k=>check(l+' '+k, s.includes('"'+k+'":'))); }
 const body=String.raw`
 const fails=[]; const check=(n, ok, d)=>{ if(!ok) fails.push(n+(d!=null ? ': '+d : '')); };
