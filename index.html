@@ -685,6 +685,20 @@
     text-shadow:0 3px 0 rgba(0,0,0,.35),0 0 24px rgba(0,0,0,.25);max-width:19ch;}
   .hero-title em{font-style:normal;color:#7ef0dd;}
   .hero-sub{margin:0;max-width:52ch;color:#c9dfe0;font-size:14px;line-height:1.55;}
+  /* Кнопка гайда нужна только на главной: дальше есть своё обучение. */
+  .nav-pill.nav-guide{display:none;}
+  body:has(#screen-mode.active) .nav-pill.nav-guide{display:inline-flex;align-items:center;}
+  #homeGuide{display:none;position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:260;align-items:center;justify-content:center;padding:16px;}
+  #homeGuide.on{display:flex;}
+  .home-guide-box{position:relative;width:100%;max-width:440px;max-height:100%;overflow:auto;box-sizing:border-box;border-radius:14px;background:#0f2160;border:1px solid rgba(228,235,247,.28);padding:22px;box-shadow:0 20px 60px rgba(0,0,0,.6);}
+  .home-guide-box h2{margin:0 28px 14px 0;color:#fff;font-family:var(--font-display);font-size:26px;font-style:italic;text-transform:uppercase;}
+  .home-guide-box ol{margin:0;padding:0 0 0 22px;color:#e6ecff;font-size:15px;line-height:1.45;}
+  .home-guide-box li{margin-bottom:10px;}
+  .home-guide-box li::marker{color:#ffd900;font-weight:800;}
+  .home-guide-x{position:absolute;top:10px;right:10px;width:36px;height:36px;border:none;border-radius:8px;background:transparent;color:#e6ecff;font-size:24px;line-height:1;cursor:pointer;}
+  .home-guide-x:hover{background:rgba(255,255,255,.12);}
+  .home-guide-btns{display:flex;flex-wrap:wrap;align-items:center;gap:16px;margin-top:18px;}
+  .home-guide-btns a{color:#c9d5f0;font-size:14px;font-weight:700;}
   .hero-what{margin:0 0 8px;color:#ffd900;font-size:12px;font-weight:700;line-height:1.35;}
   .hero-cta{display:flex;gap:10px;flex-wrap:wrap;margin-top:4px;}
   /* Плашки карьеры с меткой NEW — между описанием и дверями (были в полосе). */
@@ -9927,6 +9941,7 @@
       <button class="nav-pill nav-main on" type="button" onclick="requestReset()" data-i18n="navGrpCareer"></button>
       <a class="nav-pill" id="navComp" href="competitive" data-i18n="navGrpComp"></a>
       <button class="nav-pill nav-me" type="button" onclick="openProfileScreen()" data-i18n="navGrpProfile"></button>
+      <button class="nav-pill nav-guide" type="button" onclick="homeGuideOpen()" data-i18n="hmGuideBtn"></button>
     </nav>
     <div style="display:flex;align-items:center;gap:10px;">
       <div class="badge" id="topBadge" data-i18n="badgeMode"></div>
@@ -10832,6 +10847,21 @@
     <button onclick="ccDuoFindClose()" style="width:100%;margin-top:12px;padding:11px;border:none;border-radius:10px;
       background:rgba(200,225,220,.18);color:#eaf5f3;font-weight:800;font-size:14px;cursor:pointer;letter-spacing:.02em;"
       data-i18n="closeBtn"></button>
+  </div>
+</div>
+<div id="homeGuide" role="dialog" aria-modal="true" aria-labelledby="homeGuideH" onclick="if(event.target===this) homeGuideClose();">
+  <div class="home-guide-box">
+    <button class="home-guide-x" type="button" aria-label="Close" onclick="homeGuideClose()">×</button>
+    <h2 id="homeGuideH" data-i18n="hmGuideH"></h2>
+    <ol>
+      <li data-i18n="hmGuide1"></li>
+      <li data-i18n="hmGuide2"></li>
+      <li data-i18n="hmGuide3"></li>
+    </ol>
+    <div class="home-guide-btns">
+      <button class="hero-btn hero-btn-go" type="button" onclick="homeGuideClose();careerStart()"><span data-i18n="hmGuideGo"></span></button>
+      <a id="homeGuideMore" href="about.html" data-i18n="hmGuideMore"></a>
+    </div>
   </div>
 </div>
 <div id="ccAskModal" onclick="if(event.target===this) ccAskGo(false);">
@@ -24390,7 +24420,7 @@ Object.assign(I18N.it=I18N.it||{},
 /* Дозаливка «pt» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
 Object.assign(I18N.pt=I18N.pt||{},
 ({ ccRacePairHint:'A dupla joga como um time: vocês dois, o IGL decide o estilo, o drop, o loot e as rotações, o fragger decide as lutas e o fim de jogo, o dinheiro é dividido, cada carreira segue sendo sua' }));
-let CC_I18N_V={de:'bc3dac07', es:'a33dc9dd'};   // ==== CC_I18N_V (tools/build-i18n.js) ====
+let CC_I18N_V={de:'e0aca1da', es:'a8aa0fd8'};   // ==== CC_I18N_V (tools/build-i18n.js) ====
 // Версия fn-shop.js (магазин Fortnite по дням, tools/build-fn-shop.js) — для ?v= ленивой загрузки.
 let CC_FN_SHOP_V='dc62e7dc';
 const CC_LANG_WAIT={};
@@ -25024,11 +25054,11 @@ Object.assign(I18N.en, {hmContinue:'Continue', hmContinueSub:'Your saves, from t
   hmSceneDone:'The FNCS 2026 season is over.', hmBoardSub:'Careers of the players on this site, by prize money.', hmBoardList:'Full list',
   hmBoardMore:n=>'Show '+n, hmBoardLess:'Show less', hmHistSub:'Past drafts, records and awards.'});
 /* Главная: два режима и драфт по годам (29.09). */
-Object.assign(I18N.ru, {hmWhatIs:"Бесплатная карьера в Fortnite прямо в браузере. Ничего не нужно скачивать.", hcHeroTitle:'Стань про. <em>Сезон за сезоном.</em>', hdHeroTitle:'Собери состав. <em>Любой год FNCS.</em>', hdChipFormats:'Дуо · Трио · Сквады', hdPlay:'Играть драфт'});
-Object.assign(I18N.en, {hmWhatIs:"Free Fortnite career game in your browser. No download.", hcHeroTitle:'Go pro. <em>Season after season.</em>', hdHeroTitle:'Build a squad. <em>Any FNCS year.</em>', hdChipFormats:'Duos · Trios · Squads', hdPlay:'Play the draft'});
-Object.assign(I18N.fr, {hmWhatIs:"Jeu de carrière Fortnite gratuit dans ton navigateur. Aucun téléchargement.", hcHeroTitle:'Deviens pro. <em>Saison après saison.</em>', hdHeroTitle:'Monte ton équipe. <em>N’importe quelle année FNCS.</em>', hdChipFormats:'Duos · Trios · Squads', hdPlay:'Jouer le draft'});
-Object.assign(I18N.it, {hmWhatIs:"Gioco di carriera Fortnite gratis nel browser. Nessun download.", hcHeroTitle:'Diventa pro. <em>Stagione dopo stagione.</em>', hdHeroTitle:'Crea la squadra. <em>Qualsiasi anno FNCS.</em>', hdChipFormats:'Duo · Trio · Squad', hdPlay:'Gioca il draft'});
-Object.assign(I18N.pt, {hmWhatIs:"Jogo de carreira de Fortnite grátis no navegador. Sem download.", hcHeroTitle:'Vire pro. <em>Temporada após temporada.</em>', hdHeroTitle:'Monte o time. <em>Qualquer ano do FNCS.</em>', hdChipFormats:'Duplas · Trios · Squads', hdPlay:'Jogar o draft'});
+Object.assign(I18N.ru, {hmGuideBtn:"Как играть", hmGuideH:"Как играть", hmGuide1:"Создай игрока или возьми настоящего про", hmGuide2:"Тренируйся и выбирай, чем занять день", hmGuide3:"Играй турниры FNCS по настоящему календарю 2019–2026 и поднимайся из дивизиона 5 в дивизион 1", hmGuideGo:"Начать карьеру", hmGuideMore:"Подробнее", hmWhatIs:"Бесплатная карьера в Fortnite прямо в браузере. Ничего не нужно скачивать.", hcHeroTitle:'Стань про. <em>Сезон за сезоном.</em>', hdHeroTitle:'Собери состав. <em>Любой год FNCS.</em>', hdChipFormats:'Дуо · Трио · Сквады', hdPlay:'Играть драфт'});
+Object.assign(I18N.en, {hmGuideBtn:"How to play", hmGuideH:"How to play", hmGuide1:"Create a player or pick a real pro", hmGuide2:"Train and choose how to spend each day", hmGuide3:"Play FNCS tournaments on the real 2019–2026 calendar and climb from Division 5 to Division 1", hmGuideGo:"Start a career", hmGuideMore:"Learn more", hmWhatIs:"Free Fortnite career game in your browser. No download.", hcHeroTitle:'Go pro. <em>Season after season.</em>', hdHeroTitle:'Build a squad. <em>Any FNCS year.</em>', hdChipFormats:'Duos · Trios · Squads', hdPlay:'Play the draft'});
+Object.assign(I18N.fr, {hmGuideBtn:"Comment jouer", hmGuideH:"Comment jouer", hmGuide1:"Crée un joueur ou prends un vrai pro", hmGuide2:"Entraîne-toi et choisis comment occuper chaque journée", hmGuide3:"Joue les tournois FNCS sur le vrai calendrier 2019–2026 et monte de la Division 5 à la Division 1", hmGuideGo:"Lancer une carrière", hmGuideMore:"En savoir plus", hmWhatIs:"Jeu de carrière Fortnite gratuit dans ton navigateur. Aucun téléchargement.", hcHeroTitle:'Deviens pro. <em>Saison après saison.</em>', hdHeroTitle:'Monte ton équipe. <em>N’importe quelle année FNCS.</em>', hdChipFormats:'Duos · Trios · Squads', hdPlay:'Jouer le draft'});
+Object.assign(I18N.it, {hmGuideBtn:"Come si gioca", hmGuideH:"Come si gioca", hmGuide1:"Crea un giocatore o scegli un vero pro", hmGuide2:"Allenati e scegli come usare ogni giornata", hmGuide3:"Gioca i tornei FNCS sul vero calendario 2019–2026 e sali dalla Divisione 5 alla Divisione 1", hmGuideGo:"Inizia una carriera", hmGuideMore:"Scopri di più", hmWhatIs:"Gioco di carriera Fortnite gratis nel browser. Nessun download.", hcHeroTitle:'Diventa pro. <em>Stagione dopo stagione.</em>', hdHeroTitle:'Crea la squadra. <em>Qualsiasi anno FNCS.</em>', hdChipFormats:'Duo · Trio · Squad', hdPlay:'Gioca il draft'});
+Object.assign(I18N.pt, {hmGuideBtn:"Como jogar", hmGuideH:"Como jogar", hmGuide1:"Crie um jogador ou escolha um pro de verdade", hmGuide2:"Treine e escolha como usar cada dia", hmGuide3:"Jogue torneios FNCS no calendário real de 2019–2026 e suba da Divisão 5 para a Divisão 1", hmGuideGo:"Começar carreira", hmGuideMore:"Saiba mais", hmWhatIs:"Jogo de carreira de Fortnite grátis no navegador. Sem download.", hcHeroTitle:'Vire pro. <em>Temporada após temporada.</em>', hdHeroTitle:'Monte o time. <em>Qualquer ano do FNCS.</em>', hdChipFormats:'Duplas · Trios · Squads', hdPlay:'Jogar o draft'});
 Object.assign(I18N.ru, {hmMgrNav:"Менеджер", hmMgrCareer:"Карьера менеджера", hmMgrTag:"Режим 2 · Карьера менеджера", hmMgrTitle:"Собери клуб. <em>Веди его через сезон.</em>", hmMgrSub:"Ты Head of Fortnite: настоящий клуб и состав года, турниры по реальному календарю, смотришь вечера и решаешь между играми.", hmMgrBtn:"Стать менеджером", hmCareerTag:'Режим 1 · Карьера', hmCareerTitle:'Карьера', hmCareerSub:'Один игрок, сезон за сезоном по настоящему календарю 2019–2026: дивизионы, Мейджоры, клубы, ЛАНы', hmPlay:'Играть',
   hmDraftTag:'Режим 3 · Драфт', hmDraftTitle:'Драфт', hmDraftSub:'Собери команду из реальных карточек и пройди турнир: любой год 2019–2026, All FNCS, дуо, трио, сквады',
   dpFormats:'All FNCS · форматы', dpBack:'Назад', dpRealCards:'Реальные карточки', dpPastDesc:'Карточки игроков по их настоящим результатам на этом турнире. Круг — Play-In, хиты и финал.'});
@@ -120931,7 +120961,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='1656e5ba';
+const CC_BUILD='76f6f986';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -125117,6 +125147,16 @@ function careerRenderSlots(){
    каждый ждёт хаб, а не выбор. Первая попытка положить выбор внутрь careerEntry
    покрасила четырнадцать проверок из сорока четырёх. Выбор — решение кнопки,
    загрузка — дело careerEntry. */
+function homeGuideOpen(){
+  const m=document.getElementById('homeGuide'); if(!m) return;
+  // Подробности на языке игрока: та же схема адресов, что у ссылки на Competitive.
+  const lg=LANG, a=document.getElementById('homeGuideMore');
+  if(a) a.setAttribute('href', (/\/(ru|fr|it|pt|de|es)\/(index\.html)?$/.test(location.pathname) ? '../' : '')+(lg==='en' ? '' : lg+'/')+'about');
+  m.classList.add('on');
+  const go=m.querySelector('.hero-btn-go'); if(go) go.focus();
+}
+function homeGuideClose(){ const m=document.getElementById('homeGuide'); if(m) m.classList.remove('on'); }
+document.addEventListener('keydown', e=>{ if(e.key==='Escape') homeGuideClose(); });
 function careerStart(){
   mgrLeaveIfActive();
   CC_MP_NEW=null;
