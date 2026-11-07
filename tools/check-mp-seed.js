@@ -39,7 +39,7 @@ window.__errs=[];
 window.addEventListener('error', function(e){ window.__errs.push(String(e.message)+' @'+e.lineno); });
 <\/script>`;
 
-const boot = (seed, skip) => `
+const boot = (seed, skip, dangle) => `
 <pre id="__out" style="display:none"></pre>
 <script>
 (async function(){
@@ -123,6 +123,8 @@ const boot = (seed, skip) => `
     const sk=setInterval(()=>{ if(!${skip?"true":"false"}) return;
       const b=document.getElementById('majorSkipBtn');
       if(b && !b.disabled) b.click(); }, 20);
+    /* Пауза, которую никто не закроет (брошенный ждущий): вечер обязан считаться общим сидом и при ней. */
+    if(${dangle?"true":"false"}){ const on=ccMpSeedOn; ccMpSeedOn=function(x){ on(x); ccMpIdle(new Promise(function(){})); }; }
     play.click();
     let card=null;
     for(let i=0;i<16000 && !card;i++){
@@ -146,6 +148,7 @@ const boot = (seed, skip) => `
     // И генератор вкладки вернулся себе: оставленный сид заморозил бы
     // страницу до перезагрузки.
     out.notes.сидСнят=(CC_MP_RAND===null);
+    out.notes.foreign=CC_MP_FOREIGN;
     out.notes.решения=(window.__acts||[]).join(' | ');
   }catch(e){ if(!out.fail) out.fail=String(e && e.stack || e); }
   out.errs=(window.__errs||[]).slice(0,3);
@@ -155,10 +158,10 @@ const boot = (seed, skip) => `
 <\/script>`;
 
 const src = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
-const run = (tag, seed, skip) => {
+const run = (tag, seed, skip, dangle) => {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'mpseed-'));
   const tmp = path.join(dir, 'index.html');
-  fs.writeFileSync(tmp, head + src + boot(seed, skip !== false));
+  fs.writeFileSync(tmp, head + src + boot(seed, skip !== false, !!dangle));
   const dom = execFileSync(CHROME, ['--headless=new', '--disable-gpu', '--no-sandbox',
     '--allow-file-access-from-files', '--virtual-time-budget=600000', '--dump-dom',
     'file:///' + tmp.split(String.fromCharCode(92)).join('/')],
@@ -181,12 +184,13 @@ const b = run('клиент B', SEED);
 const c = run('контроль', SEED + '|другой');
 // Тот же сид, но этот клиент вечер досматривает целиком.
 const d = run('без скипа', SEED, false);
+const e = run('висячая пауза', SEED, true, true);
 const hash = t => crypto.createHash('sha1').update(t.join('\n')).digest('hex').slice(0, 12);
 const show = (n, r) => console.log(n + ': решений ' +
   (r.решения ? r.решения.split(' | ').length : 0) + ' · строк ' + r.table.length +
   ' · след ' + JSON.stringify(r.след) + ' · хеш ' + hash(r.table) +
   ' · сид снят: ' + r.сидСнят);
-show('A        ', a); show('B        ', b); show('контроль ', c); show('без скипа', d);
+show('A        ', a); show('B        ', b); show('контроль ', c); show('без скипа', d); show('пауза    ', e);
 
 let bad = 0;
 if (hash(a.table) !== hash(b.table)) {
@@ -225,6 +229,10 @@ if (!a.table.length) {
 }
 if (!a.сидСнят || !b.сидСнят) {
   console.error('FAIL после вечера Math.random остался подменённым: вкладка заморожена');
+  bad++;
+}
+if (e.foreign || hash(a.table) !== hash(e.table)) {
+  console.error('FAIL висячая пауза увела броски мимо сида: foreign ' + e.foreign);
   bad++;
 }
 if (bad) process.exit(1);

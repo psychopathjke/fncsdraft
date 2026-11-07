@@ -105906,6 +105906,7 @@ async function simulateGamesLive(teams, numGames, pointsFn, killMult, fieldPrefi
   CC_DROP_STAGE=stageDay+'s'+(++CC_DROP_STAGE_N)+'|'+fieldPrefix;
   // Первый раунд пропущен — перед вторым спросить: играть или симулировать (ccRoundChoice).
   if(CC_DROP_STAGE_N>1) await ccRoundChoiceMaybe();
+  ccMpCalcStart();
   applyStageBias(pointsFn);
   beginAnimatedStage();
   const ptsKey=fieldPrefix+'Pts', elimsKey=fieldPrefix+'Elims';
@@ -106422,6 +106423,7 @@ async function simulateGamesLive(teams, numGames, pointsFn, killMult, fieldPrefi
       await ccMpSync('game', (g+1)+'|'+ccTableHash(teams)+'|'+CC_MP_ROLLS+'|'+ccFieldSig(teams)+'|'+CC_MP_LEDGER.join(',')+'|'+ccTableTop(teams)+'|'+(CC_MP_FIELD_FP||'')+ccMpHumansTag(teams), ccMpQn('game'));   // 7-е поле — отпечаток сборки, только для показа
       CC_MP_FIELD_LIST=null;
       ccMpLedgerReset();
+      ccMpCalcStart();
     }
 
     /* Остров ЭТОЙ игры, если вечер играется на двух.
@@ -121390,6 +121392,8 @@ function ccMpIdle(p){
   return Promise.resolve(p).finally(function(){ if(ep===CC_MP_IDLE_EPOCH && CC_MP_IDLE>0) CC_MP_IDLE--; });
 }
 function ccMpIdleEpoch(){ CC_MP_IDLE_EPOCH++; CC_MP_IDLE=0; }
+// Раннер считает, значит никто из него не ждёт: брошенная пауза не должна уводить броски вечера мимо общего сида.
+function ccMpCalcStart(){ if(CC_MP_RAND && CC_MP_IDLE>0) ccMpIdleEpoch(); }
 function ccMpSeedOn(seed){
   ccMpSeedOff();
   // Новый вечер — пропуск снова спрашивается у обоих, вопросы считаются заново.
@@ -124122,6 +124126,7 @@ function ccTeamState(){
                                 : JSON.parse(JSON.stringify(src[k])); };
   CC_TEAM_KEYS.forEach(k=>put(cr, k));
   CC_TEAM_TOP.forEach(k=>put(CAREER, k));
+  out.size=cr.size;   // формат сезона без записи в sizes, см. ccApplyTeamState
   return out;
 }
 /* Состояние команды, пришедшее от сервера.
@@ -124283,7 +124288,11 @@ function ccApplyTeamState(t){
           оставался формат прошлого года. sizes[сезон] пишет careerNewSeason того, кто жал, — по нему и живёт формат.
           2019–2020 меняют формат по датам внутри года — там его ставит ccSyncPhaseRoster. */
        { const cr=CAREER.career, rec=cr.sizes && cr.sizes[cr.season];
-         if((rec===2 || rec===3 || rec===4) && !ccPhaseRoster()) cr.size=rec; }
+         if((rec===2 || rec===3 || rec===4) && !ccPhaseRoster()) cr.size=rec;
+         /* Записи ещё нет (первый сезон): у второго оставался формат своего старого сейва, вечера расходились
+            дуо против сквада. Решает владелец лобби, его роль едет в t.mp. */
+         else if(!rec && !ccPhaseRoster() && (t.size===2 || t.size===3 || t.size===4) 
+                 && t.mp && t.mp.role==='a' && cr.mp && cr.mp.role!=='a') cr.size=t.size; }
        // Сид лобби старше присланного. См. ccMpLobbySeed.
        if(CAREER.career.lobbySeed) CAREER.career.seed=CAREER.career.lobbySeed; }
   finally{ CC_MP_ADVANCE=false; }

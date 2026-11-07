@@ -32,6 +32,16 @@ const BOOT=`
       ccApplyTeamState(t);
       out.rows.push({y0, sn, a, b:{season:CAREER.career.season, size:careerSquadSize(), age:CAREER.player.age, pr:JSON.stringify(CAREER.career.pr||{})}});
     }
+    // Сезон ещё без записи в sizes (первый): формат решает владелец лобби, а не свой старый сейв.
+    const base=(size, role)=>({v:1, player:{nick:'SzP', age:20, source:'rookie', country:'de', countryPing:15, closeRangeEdge:6,
+        region:'EU', ovr:88, role:'roleIGL', attrs:ccRookieAttrs(88,'roleIGL'), ageEdge:4, photo:null, handle:null, cardRegion:null, nat:null},
+      career:{season:1, size:size, year:2024, year0:2024, day:'2024-08-17', division:1, earnings:0, balance:0, reach:0,
+        tokens:[], log:[], news:[], seed:'trn', mp:{code:'ABCDE', role:role}}, partners:[]});
+    const enter=(size, role)=>{ localStorage.setItem('fncsdraft_career', JSON.stringify(base(size, role))); careerEntry();
+      MP.peer={handle:'FriendNick', region:'EU', _ovr:87, rating:87, tier:'ladder', event:'ladder', nat:'de'}; };
+    enter(2, 'a'); const host=ccTeamState();
+    enter(4, 'b'); const guest=ccTeamState(); ccApplyTeamState(host); out.guestSize=careerSquadSize();
+    enter(2, 'a'); ccApplyTeamState(guest); out.hostSize=careerSquadSize();
   }catch(e){ out.fail=String(e.stack||e); }
   document.getElementById('__out').textContent='BEGIN'+encodeURIComponent(JSON.stringify(out))+'END';
 })();
@@ -53,7 +63,10 @@ out.rows.forEach(r=>{
   if(r.b.pr!==r.a.pr) fails.push(tag+': PR после стыка разный');
   if(r.b.size!==r.a.size) fails.push(tag+': формат у нажавшего '+r.a.size+', у второго '+r.b.size);
 });
+if(out.guestSize!==2) fails.push('второй не взял формат владельца: у него '+out.guestSize+' вместо 2');
+if(out.hostSize!==2) fails.push('владелец взял формат второго: у него '+out.hostSize+' вместо 2');
 if(out.rows.length!==2) fails.push('строк '+out.rows.length+' из 2');
+console.log('без записи sizes: второй '+out.guestSize+', владелец '+out.hostSize);
 console.log(JSON.stringify(out.rows.map(r=>({y0:r.y0, sn:r.sn, a:[r.a.season, r.a.size, r.a.age], b:[r.b.season, r.b.size, r.b.age]}))));
 if(fails.length){ console.log(['FAIL'].concat(fails).join(String.fromCharCode(10))); process.exit(1); }
 console.log('OK: формат нового сезона у обоих в команде один');
