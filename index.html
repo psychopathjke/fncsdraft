@@ -98601,6 +98601,9 @@ const ATTR_SRC={aim:'attrAimSrc', end:'attrEndSrc', sur:'attrSurSrc', exp:'attrE
 // to survive the trip even though today every string is our own.
 function esc(s){ return ccTameMarks(String(s==null?'':s)).replace(/&/g,'&amp;').replace(/</g,'&lt;')
   .replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+/* Строка внутри onclick="f('…')": сначала правила строки JS (обратный слэш, кавычка, перенос), потом атрибута.
+   Одна замена кавычки без слэша пропускала ник вида \'); код; // — так ник напарника из онлайна запускал код. */
+function jsq(s){ return esc(String(s==null?'':s).replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/[\r\n\u2028\u2029]/g,' ')); }
 /* Стопки диакритики в никах. Игрок, 3.10: «у одного чела в 5 главе вместо ника
    огромное количество символов». Это настоящие ники лестницы, где над одной
    буквой висело до одиннадцати огласовок, и строка таблицы рисовала из них
@@ -101486,8 +101489,9 @@ function portraitHTML(p, h, skin){
   const rnd=seededRng(hashStr(p.handle+'|portrait'));
   const hue=Math.floor(rnd()*360);
   const ini=initialsFor(p.handle);
-  const alt=String(p.handle).replace(/"/g,'&quot;');
-  const photo = url ? `<img src="${url}" alt="${alt}" loading="lazy" onerror="this.remove()"
+  // Фото и ник карточки напарника приезжают по сети: оба экранируются целиком, не только кавычка.
+  const alt=esc(String(p.handle));
+  const photo = url ? `<img src="${esc(url)}" alt="${alt}" loading="lazy" onerror="this.remove()"
       style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
       object-position:top center;display:block;">` : '';
   return `<div style="${box}background:radial-gradient(120% 100% at 50% 0%, hsl(${hue} 45% 34%) 0%, rgba(0,0,0,.55) 100%);">
@@ -101622,7 +101626,7 @@ function futCardHTML(p, opts){
      она съедала низ, а посмотреть стату было нечем. noEvent прячет строку,
      peek вешает тот же openCardPeek, что открывает драфт. */
   const peekAttr = opts.peek
-    ? ` onclick="ccPeekByHandle('${esc(String(p.handle||'')).replace(/'/g,"\\'")}')"`+
+    ? ` onclick="ccPeekByHandle('${jsq(String(p.handle||''))}')"`+
       ` title="${esc(L().cardPeekHint)}"` : '';
   return `
   <div class="fut-card" style="background:${skin.bg};color:#fff;${opts.peek?'cursor:zoom-in;':''}
@@ -101643,7 +101647,7 @@ function futCardHTML(p, opts){
     </div>
     <div class="fut-name" style="font-size:${wide?20:15}px;margin-top:${wide?10:8}px;text-align:center;
       height:${wide?46:34}px;display:flex;align-items:center;justify-content:center;overflow:hidden;
-      line-height:1.05;">${p.handle}</div>
+      line-height:1.05;">${esc(p.handle)}</div>
     <div style="text-align:center;margin-top:5px;display:flex;gap:5px;justify-content:center;
       align-items:center;height:${wide?18:16}px;overflow:hidden;">
       ${(()=>{
@@ -115454,7 +115458,7 @@ function ccTrendsHTML(){
   const ru=(typeof LANG!=='undefined' && LANG==='ru');
   const T=ru ? {h:'Тренды', p:'В тренде в Fortnite', e:'Киберспорт · в тренде', posts:'постов'} : {h:'Trends for you', p:'Trending in Fortnite', e:'Esports · Trending', posts:'posts'};
   return '<div class="ch-tile x-trends"><h4>'+T.h+'</h4>'+list.map(([k,v],i)=>{ const t=name.get(k), tag=/^#/.test(t) || /^C\d+/.test(t);
-    return '<button class="x-trend" onclick="careerTrend(\''+esc(t).replace(/'/g,"\\'")+'\')"><em>'+(i+1)+' · '+(tag ? T.e : T.p)+'</em><b>'+esc(t)+'</b><span>'+ccFollowers(Math.round(v/3)+40)+' '+T.posts+'</span></button>'; }).join('')+'</div>';
+    return '<button class="x-trend" onclick="careerTrend(\''+jsq(t)+'\')"><em>'+(i+1)+' · '+(tag ? T.e : T.p)+'</em><b>'+esc(t)+'</b><span>'+ccFollowers(Math.round(v/3)+40)+' '+T.posts+'</span></button>'; }).join('')+'</div>';
 }
 function careerTrend(t){ CH_FEED_Q=t||null; CH_SOCIAL='feed'; CH_FEED='all'; careerRenderHub('social'); }
 /* СОВЕТ КОУЧА (Notion 15.10, фидбек: «the option to get a coach doesn't really do anything»; ответ игроку — «coach
@@ -119982,7 +119986,7 @@ function ccRenderList(){
       const on = CC.creator===n ? ' on' : '';
       // Лицо канала — там же, где у карточек ростера портрет. См. CC_PROAM_AVA.
       const ava=ccProAmAvatar(n);
-      return `<button class="cc-card cc-card-cre${on}" onclick="ccPickCreator('${n.replace(/'/g,"\\'")}')">
+      return `<button class="cc-card cc-card-cre${on}" onclick="ccPickCreator('${jsq(n)}')">
         ${ava ? `<img class="cc-card-ph" src="${ava}" alt="" loading="lazy" onerror="this.remove()">`
               : `<span class="cc-card-ph"></span>`}
         <span class="cc-card-in">
@@ -120039,7 +120043,7 @@ function ccRenderList(){
   cards.innerHTML = shown.length ? shown.map(x=>{
     const url=photoURL(x.p);
     const on = CC.card && CC.card.handle===x.p.handle ? ' on' : '';
-    return `<button class="cc-card${on}" onclick="ccPickCard('${x.p.handle.replace(/'/g,"\\'")}')">
+    return `<button class="cc-card${on}" onclick="ccPickCard('${jsq(x.p.handle)}')">
       ${url?`<img class="cc-card-ph" src="${url}" alt="">`:`<span class="cc-card-ph"></span>`}
       <span class="cc-card-in">
         <span class="cc-card-n">${cardFlag(x.p,13)}${esc(x.p.handle)}<span class="cc-card-in-ico" title="${esc(L()['ccInput_'+ccProInput(x.p)]||'')}">${ccInputIcon(ccProInput(x.p))}</span>${ccTraitTag(x.p.handle)}</span>
@@ -140312,7 +140316,7 @@ function ccAgentPickOpen(){
         <span class="cc-buy-chips"><em>${L().ccAgentCutRow} ${Math.round(cut*100)}%</em><em class="up">${L().ccAgentReachRow} +${reach}</em><em class="up">${L().ccAgentWageRow} +${Math.round((wage-1)*100)}%</em></span></div>
       ${mine ? `<span class="cc-owned">${L().ccAgentYours}</span>`
              : `<button class="ch-sign"${can?'':' disabled'} onclick="careerSignAgent('${
-                 esc(a.name).replace(/'/g,"\\'")}')">${!on && ovr<need && need>CC_AGENT_FROM ? esc(L().ccAgentNeed(need)) : L().ccAgentSign}</button>`}
+                 jsq(a.name)}')">${!on && ovr<need && need>CC_AGENT_FROM ? esc(L().ccAgentNeed(need)) : L().ccAgentSign}</button>`}
     </div>`;
   }).join('');
   document.getElementById('agentPickBody').innerHTML=
@@ -140336,7 +140340,7 @@ function ccAgentPickOpen(){
 function ccClubPickOpen(id){
   if(!careerAgent() || careerPitchOn()) return;
   const pl=CAREER && CAREER.player;
-  const q=s=>String(s).replace(/'/g, "\\'");
+  const q=s=>jsq(s);
   const rows=careerPitchClubs().map(o=>`<div class="cc-buy">
       <div class="cc-buy-in"><b>${clubLogoHTML(o.name, true)}${esc(o.name)}</b>
         <span>${L().ccPitchTier(o.tier)}${
@@ -142801,6 +142805,17 @@ function ccMateReMerge(){
   }catch(e){ return false; }
 }
 function ccMpSendCardSoon(){ try{ if(typeof ccMpOn==='function' && ccMpOn() && typeof MP!=='undefined' && MP.sendCard) MP.sendCard(); }catch(e){} }
+/* Посты живого соседа приезжают по сети как есть, а лента рисует их разметкой: из каждой строки поста убираются
+   знаки, которыми можно открыть тег, атрибут или строку JS. Свои посты и посты сцены сюда не ходят. */
+function ccPeerStr(s){ return String(s==null?'':s).replace(/[<>"`\\\u0000-\u001f]/g, ''); }
+function ccPeerSafe(o, d){
+  if(typeof o==='string') return ccPeerStr(o);
+  if(!o || typeof o!=='object' || (d||0)>6) return (typeof o==='number' || typeof o==='boolean') ? o : null;
+  if(Array.isArray(o)) return o.slice(0, 200).map(v=>ccPeerSafe(v, (d||0)+1));
+  const r={};
+  Object.keys(o).slice(0, 60).forEach(k=>{ if(k!=='__proto__' && k!=='constructor' && k!=='prototype') r[ccPeerStr(k)]=ccPeerSafe(o[k], (d||0)+1); });
+  return r;
+}
 function ccMatePosts(){
   try{
     // Гонка: посты соперников-людей приезжают в их строке (careerRaceCard posts), на них можно ответить.
@@ -142808,17 +142823,17 @@ function ccMatePosts(){
       const out=[];
       (typeof ccRaceRivals==='function' ? ccRaceRivals() : []).forEach(p=>{
         if(!p || !p.card || !Array.isArray(p.posts)) return;
-        const c=p.card, by={name:c.handle, handle:ccHandle(c.handle), card:c, ovr:c._ovr};
-        p.posts.forEach(x=>{ if(x && x.id!=null) out.push(Object.assign({}, x, {id:'race:'+hKey(c)+':'+x.id, by:by, mate:true})); });
+        const c=p.card, by={name:ccPeerStr(c.handle), handle:ccHandle(ccPeerStr(c.handle)), card:c, ovr:c._ovr};
+        p.posts.map(x=>ccPeerSafe(x)).forEach(x=>{ if(x && x.id!=null) out.push(Object.assign({}, x, {id:'race:'+hKey(c)+':'+x.id, by:by, mate:true})); });
       });
       return out;
     }
     if(!(typeof ccMpOn==='function' && ccMpOn()) || typeof MP==='undefined' || !MP.peer || !Array.isArray(MP.peerPosts)) return [];
-    const p=MP.peer, by={name:p.handle, handle:ccHandle(p.handle), card:p, ovr:p._ovr};
+    const p=MP.peer, by={name:ccPeerStr(p.handle), handle:ccHandle(ccPeerStr(p.handle)), card:p, ovr:p._ovr};
     // Под постом: ответы, что он получил (свои мои — из cr.mateRe, чтобы не задваивать), и мои.
     const myK=hKey(careerCard()||{handle:''}), mine=(CAREER.career.mateRe||[]);
-    return MP.peerPosts.map(x=>{
-      const theirs=(x.res||[]).filter(r=>!(r.by && hKey(r.by)===myK)).map(r=>r.by ? r : Object.assign({}, r, {by:p.handle}));
+    return MP.peerPosts.map(x=>ccPeerSafe(x)).map(x=>{
+      const theirs=(x.res||[]).filter(r=>!(r.by && hKey(r.by)===myK)).map(r=>r.by ? r : Object.assign({}, r, {by:ccPeerStr(p.handle)}));
       const res=theirs.concat(mine.filter(r=>String(r.id)===String(x.id)).map(r=>({t:r.t, day:r.day})));
       return Object.assign({}, x, {id:'mate:'+x.id, by:by, mate:true, res:res});
     });
@@ -142849,7 +142864,7 @@ function careerFeedHTML(){
 function careerWho(h){ CH_WHO=String(h||''); CH_SOCIAL='who'; careerRenderHub('social'); }
 function careerWhoHTML(h){
   if(!h) return `<div class="ch-tile"><div class="ch-empty">${L().ccNewsEmpty}</div></div>`;
-  const card=ccWhoCard(h), esh=esc(h).replace(/'/g,"\\'");
+  const card=ccWhoCard(h), esh=jsq(h);
   const who={name:h, handle:ccHandle(h), card:card, logo:null};
   // Живой напарник: его посты едут с карточкой (ccMatePosts), в своей ленте их нет.
   const matePosts=ccMatePosts().filter(x=>x.by && hKey(x.by.name)===hKey(h));
@@ -143367,7 +143382,7 @@ function ccPostComments(n, who, st){
         (r.ratio ? '<i class="x-ratio">Ratio</i>' : '')+(r.likes>0 ? '<em class="x-co-l">♥ '+ccFollowers(r.likes)+'</em>' : '')+
         // Под своим постом у каждой строки — «Ответить»: см. careerReplyTo.
         (who.you && !r.sub ? '<button class="x-co-re" onclick="careerReplyTo(\''+idAt+'\',\''+
-           esc(r.h).replace(/'/g,"\\'")+'\')">'+esc(L().ccReplyBtn)+'</button>' : '')+
+           jsq(r.h)+'\')">'+esc(L().ccReplyBtn)+'</button>' : '')+
       '</div>';
     if(!who.you) return s;
     const k=hKey(r.h);
@@ -143780,7 +143795,7 @@ function ccPostActsHTML(n, who, st){
      под его же объявлением, где решение и принимается. */
   if(who.handle && typeof ccAdOf==='function' && ccAdOf(who.handle))
     bits.push(`<button class="x-act" onclick="careerPostDm('${
-      esc(who.handle).replace(/'/g,"\\'")}')">${L().ccPostDmBtn}</button>`);
+      jsq(who.handle)}')">${L().ccPostDmBtn}</button>`);
   // И короткий ответ, если под этим постом есть что сказать. См. careerReply.
   const opts=ccReplyOpts(n);
   if(opts){
@@ -143819,7 +143834,7 @@ function ccPostHTML(n){
         // По нику можно нажать и попасть в его профиль — так ходят по X.
         `<header>${who.you
           ? `<b>${esc(who.name)}</b>`
-          : `<b class="x-who-link" onclick="careerWho('${esc(who.name).replace(/'/g,"\\'")}')">${
+          : `<b class="x-who-link" onclick="careerWho('${jsq(who.name)}')">${
               esc(who.name)}</b>`}${who.verified?'<i class="x-tick">✓</i>':''}`+
         // Статус — на самом человеке, как в настоящей ленте: «F/A», «LFT» или
         // клуб. См. ccWhoStatus.
@@ -147473,7 +147488,7 @@ function careerSocialHTML(){
             return `<div class="dm-foot">${held ? `<div class="dm-asked">${
               L().ccSlotLoseHint(careerPartnerCard().handle, held.what)}</div>` : ''}
               <button class="ch-sign" onclick="careerDmAcceptAsk(\'${open.id}\')">${ccSay('dmTakeIt')}</button></div>`; })()
-        : `<div class="dm-foot"><button class="ch-sign" onclick="careerDmWrite('${esc(open.who.handle).replace(/'/g,"\\'")}', null, ${open.fmt||'null'})">${L()[ccSquadKey('dmAskBtn', open.fmt)]}</button></div>`}`
+        : `<div class="dm-foot"><button class="ch-sign" onclick="careerDmWrite('${jsq(open.who.handle)}', null, ${open.fmt||'null'})">${L()[ccSquadKey('dmAskBtn', open.fmt)]}</button></div>`}`
     : `<div class="ch-empty">${L().dmPickThread}</div>`;
 
   /* And why everybody writing to you is worse than you.
@@ -147491,7 +147506,7 @@ function careerSocialHTML(){
     (overRung ? `<div class="ch-hint dm-over">${
       L().dmOverRung(CAREER.career.division, ccDivCeil(CAREER.career.division))}</div>` : '')+
     (ccDmAsksLeft()<=0 && pool.length ? `<div class="ch-hint dm-over">${esc(L().ccDuoLimit)}</div>` : '')+
-    pool.slice(0,6).map(w=>`<button class="dm-item dm-new" onclick="careerDmWrite('${esc(w.handle).replace(/'/g,"\\'")}')">
+    pool.slice(0,6).map(w=>`<button class="dm-item dm-new" onclick="careerDmWrite('${jsq(w.handle)}')">
       ${avatar(w,30)}
       <span class="dm-item-in"><b>${esc(w.handle)}<i>${w.ovr}</i></b>
       <span>${[L()[w.role]||'', w.club ? esc(w.club) : L().ccFreeAgent]
@@ -147549,7 +147564,7 @@ function careerSocialHTML(){
                 b && b.agent ? `<em class="dm-tag-agent">${L().ccAgentTag}</em>` : ''}</b>
               <span>${L().dmBlockedSub}</span></span></button>
             <button class="dm-x dm-unblock" title="${esc(L().dmUnblock)}"
-              onclick="careerDmUnblock('${esc(ccBlockedKey(b)).replace(/'/g,"\\'")}')">${L().dmUnblock}</button>
+              onclick="careerDmUnblock('${jsq(ccBlockedKey(b))}')">${L().dmUnblock}</button>
           </div>`).join('');
       })()}
     </div>
@@ -147592,7 +147607,7 @@ function careerSocialHTML(){
       .concat(sugList.filter(w=>hKey(w.handle)!==hKey(ph))).slice(0, 4);
   }
   const sugRows=sugList.map(w=>{
-    const h=esc(w.handle).replace(/'/g,"\\'");
+    const h=jsq(w.handle);
     return `<div class="x-sug">${avatar(w,32)}
       <span class="x-sug-in"><b>${esc(w.handle)}</b><span>${
         sugReg ? esc(regionName(sugReg)) : (L()[w.role]||'')} · ${w.ovr}</span></span>
@@ -147734,7 +147749,7 @@ function careerSocialHTML(){
         const fr=(CAREER.career.friends||[]);
         return `<div class="ch-tile"><h4>${L().ccFriends}</h4>
           ${fr.length ? fr.map(h=>`<div class="ch-row"><em>${esc(h)}</em>
-              <b><button class="cc-job-h" onclick="careerFriend1v1('${esc(h).replace(/'/g,"\\'")}')">1v1 · 20⚡</button></b></div>`).join('')
+              <b><button class="cc-job-h" onclick="careerFriend1v1('${jsq(h)}')">1v1 · 20⚡</button></b></div>`).join('')
             : `<div class="ch-empty">${ccSay('ccFriendsNone')}</div>`}
         </div>`;
       })()}
@@ -148172,14 +148187,14 @@ function ccDuoFindRender(keepFocus){
         })()}
       <div class="cc-buy-in"><b>${esc(w.handle)} <i>${w.ovr}</i>${w.cardRegion && w.cardRegion!==ccCareerRegion() ? ` <small class="cc-duo-regtag">${esc(w.cardRegion)}</small>` : ''}</b><i>${under}</i>${
         ad ? `<i class="cc-buy-ad${fits?'':' no'}">${esc(L().ccAdWant(L()[ad.want]||'', ad.div, ad.pr))}</i>` : ''}</div>
-      ${(CC_DUO_FMT && typeof ccMpOn==='function' && ccMpOn()) ? `<button class="ch-sign" onclick="ccDuoFindWrite('${esc(w.handle).replace(/'/g,"\\'")}')">${L().lfRosterAsk}</button>`
+      ${(CC_DUO_FMT && typeof ccMpOn==='function' && ccMpOn()) ? `<button class="ch-sign" onclick="ccDuoFindWrite('${jsq(w.handle)}')">${L().lfRosterAsk}</button>`
         : wrote ? `<span class="cc-owned">${L().ccDuoYouWrote}</span>`
               : !fits ? `<span class="cc-owned cc-ad-no">${L().ccAdNoFit(ad.pr)}</span>`
               : ccDmAsksLeft()<=0 ? `<span class="cc-owned cc-ad-no">${L().ccDuoLimit}</span>`
-              : `<button class="ch-sign" onclick="ccDuoFindWrite('${esc(w.handle).replace(/'/g,"\\'")}')">${L().ccDuoWrite}</button>`}
+              : `<button class="ch-sign" onclick="ccDuoFindWrite('${jsq(w.handle)}')">${L().ccDuoWrite}</button>`}
       ${(CAREER.career.friends||[]).indexOf(w.handle)>=0
         ? `<span class="cc-owned">${L().ccFriendIs}</span>`
-        : `<button class="cc-job-h cc-duo-fr" onclick="careerFriendAsk('${esc(w.handle).replace(/'/g,"\\'")}')">${L().ccFriendAdd}</button>`}
+        : `<button class="cc-job-h cc-duo-fr" onclick="careerFriendAsk('${jsq(w.handle)}')">${L().ccFriendAdd}</button>`}
     </div>`;
   }).join('');
   // Вид «Пары» (ccJoinPairs): готовые дуо сцены, к которым можно попроситься третьим.
@@ -148194,7 +148209,7 @@ function ccDuoFindRender(keepFocus){
     return `<div class="cc-buy cc-join-pair" data-key="${esc(p.key)}">${face(p.a)}${face(p.b)}
       <div class="cc-buy-in"><b>${esc(p.a.handle)} <i>${p.ao}</i> &amp; ${esc(p.b.handle)} <i>${p.bo}</i></b><i>${under}</i></div>
       ${asked ? `<span class="cc-owned">${L().ccDuoYouWrote}</span>`
-              : `<button class="ch-sign cc-join-ask" onclick="ccJoinAsk('${esc(p.key).replace(/'/g,"\\'")}')">${esc(L().ccJoinPairBtn)}</button>`}
+              : `<button class="ch-sign cc-join-ask" onclick="ccJoinAsk('${jsq(p.key)}')">${esc(L().ccJoinPairBtn)}</button>`}
     </div>`;
   }).join('');
   document.getElementById('duoFindBody').innerHTML=
@@ -168090,7 +168105,7 @@ function ccNatSquadHTML(){
     if(k===capK) tags.push(T.ccNatCaptain);
     if(k===myK) tags.push(T.ccNatYou);
     if(i===CC_NATIONS_SQUAD-1 && (mine.captain || (!mine.inSquad && !N.trial))) tags.push(T.ccNatTrialSlot);
-    const drop=(canPick && mine.picks.some(p=>hKey(p)===k)) ? ' <button class="cc-nat-chip cc-nat-chip-x" onclick="ccNatPick(\''+esc(k).replace(/'/g,"\\'")+'\')">'+esc(T.ccNatUnpickBtn)+'</button>' : '';
+    const drop=(canPick && mine.picks.some(p=>hKey(p)===k)) ? ' <button class="cc-nat-chip cc-nat-chip-x" onclick="ccNatPick(\''+jsq(k)+'\')">'+esc(T.ccNatUnpickBtn)+'</button>' : '';
     return '<li><b>'+esc(c.handle)+'</b> <span>'+ccCardOvr(c)+'</span>'+(k!==myK ? placeOf(k) : '')+(tags.length ? ' <em>'+esc(tags.join(' · '))+'</em>' : '')+drop+'</li>';
   };
   let pick='';
@@ -175059,7 +175074,7 @@ function ccNamesPeekHTML(t){
   const on=(typeof CAREER_RUN!=='undefined' && CAREER_RUN) && CAREER && CAREER.career && Array.isArray(t.squad) && t.squad.length && t.squad.every(c=>c && c.handle);
   if(!on) return String(t.name||'');
   // С флагом, как teamLabel, и span, а не <u>: у <u> в таблице своя рамка (скриншот: «ники вот так выглядят», флагов нет).
-  const links=t.squad.map(c=>flagFor(c)+'<span class="cc-peek-nick" title="'+esc(L().cardPeekHint)+'" onclick="event.stopPropagation();ccPeekByHandle(\''+esc(String(c.handle)).replace(/'/g,"\\'")+'\')">'+esc(String(c.handle))+'</span>').join(' &amp; ');
+  const links=t.squad.map(c=>flagFor(c)+'<span class="cc-peek-nick" title="'+esc(L().cardPeekHint)+'" onclick="event.stopPropagation();ccPeekByHandle(\''+jsq(String(c.handle))+'\')">'+esc(String(c.handle))+'</span>').join(' &amp; ');
   // Свой состав подписан («Твой состав: …») — подпись остаётся, имена — ссылками.
   const m=String(t.name||'').match(/^([^:<]{1,40}:)\s*/);
   return (m ? esc(m[1])+' ' : '')+links;
@@ -177205,7 +177220,7 @@ function ccNoteWho(n, salt){
   return list[Math.floor(rnd()*list.length)];
 }
 function careerNoteRowHTML(t){
-  const h=esc(t.who||'').replace(/'/g,"\\'");
+  const h=jsq(t.who||'');
   const who=t.who ? ccHandle(t.who) : '';
   const rest=Math.max(0, (t.n||0)-1);
   const head = t.kind==='follow' ? L().ccNoteFollow(who)
@@ -177697,7 +177712,7 @@ function ccColabPanelHTML(){
       const mine=deal && deal.name===n;
       const act = mine ? `<span class="tv-colab-deal">${esc(T.ccColabDeal(ccDayLabel(deal.until)))}</span>`
         : (deal || asked) ? `<button class="tv-colab-go" disabled>${esc(asked && !deal ? T.ccColabAsked : T.ccColabAsk)}</button>`
-        : `<button class="tv-colab-go" onclick="careerColabAsk('${esc(n).replace(/'/g,"\\'")}')">${esc(T.ccColabAsk)}</button>`;
+        : `<button class="tv-colab-go" onclick="careerColabAsk('${jsq(n)}')">${esc(T.ccColabAsk)}</button>`;
       return `<div class="tv-colab-row"><span class="tv-av">${ava?`<img src="${ava}" alt="" loading="lazy" onerror="this.remove()">`:esc(n.slice(0,2).toUpperCase())}</span>
         <div class="tv-colab-in"><b>@${esc(ccHandle(n))}</b><em>${ccFollowers(ccProAmFollowers(n))} Twitch · ${esc(T.ccColabOdds(Math.round(ccColabOdds(n)*100)))}${times?' · '+esc(T.ccColabTimes(times)):''}</em></div>
         ${act}</div>`; }).join('')}</div>`;
@@ -178282,8 +178297,8 @@ function ccTvHostBtnsHTML(host){
     '<button type="button" class="cc-tv-btn cc-tv-btn-sub">★ '+esc(T.ccStreamSub)+'</button>';
   const q=String(host.name).replace(/\\/g,'\\\\').replace(/'/g,"\\'");
   const fol=ccTwFollowing(host.name), sub=ccTwSubbed(host.name);
-  return '<button type="button" class="cc-tv-btn cc-tv-btn-fol'+(fol?' on':'')+'" onclick="ccTwFollowToggle(\''+esc(q).replace(/'/g,"\\'")+'\')">♥ '+esc(fol ? T.ccTwFollowOn : T.ccTvFollow)+'</button>'+
-    (host.creator ? '<button type="button" class="cc-tv-btn cc-tv-btn-sub'+(sub?' on':'')+'" onclick="ccTwSubToggle(\''+esc(q).replace(/'/g,"\\'")+'\')">★ '+esc(sub ? T.ccTwSubOn : T.ccTwSubPrice(CC_TW_SUB_PRICE))+'</button>' : '');
+  return '<button type="button" class="cc-tv-btn cc-tv-btn-fol'+(fol?' on':'')+'" onclick="ccTwFollowToggle(\''+jsq(host.name)+'\')">♥ '+esc(fol ? T.ccTwFollowOn : T.ccTvFollow)+'</button>'+
+    (host.creator ? '<button type="button" class="cc-tv-btn cc-tv-btn-sub'+(sub?' on':'')+'" onclick="ccTwSubToggle(\''+jsq(host.name)+'\')">★ '+esc(sub ? T.ccTwSubOn : T.ccTwSubPrice(CC_TW_SUB_PRICE))+'</button>' : '');
 }
 function ccTvHostRedraw(){
   const el=document.getElementById('ccTvHostBtns'); if(el) el.innerHTML=ccTvHostBtnsHTML(CC_TV_HOST);
