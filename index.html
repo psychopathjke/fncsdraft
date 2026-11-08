@@ -1482,7 +1482,6 @@
     border-bottom:1px solid rgba(255,255,255,.06);}
   .prize-row b{color:#ffd166;font-variant-numeric:tabular-nums;}
 
-  .syn-hint.neg{background:rgba(255,90,90,.12);border-color:rgba(255,90,90,.45);color:#ff9b9b;}
   .syn-role{margin-top:4px;padding:2px 8px;border-radius:6px;border:1px solid var(--line);color:var(--ink-dim);font-size:11px;font-weight:800;text-align:center;letter-spacing:.04em;}
   .syn-role.igl{border-color:rgba(255,210,0,.55);color:var(--mythic);}
   .syn-hint{margin-top:4px;padding:3px 8px;border-radius:6px;background:rgba(48,209,88,.14);border:1px solid rgba(48,209,88,.45);color:#7ee2a0;font-size:11px;font-weight:800;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
@@ -104415,7 +104414,6 @@ function synPickHint(p){
   const cap=b=>Math.min(b, SYN_POW_CAP);
   const before=draftSynergy(drafted), after=draftSynergy(drafted.concat([p]));
   const d=cap(after.bonus)-cap(before.bonus);
-  if(daily && d<0) return roleChip+'<div class="syn-hint neg">🔗 '+d+(after.role<before.role ? ' · '+esc(dailySynWords().igl2) : '')+'</div>';
   if(d<=0) return roleChip;
   const was=new Set(before.links.map(l=>l.type+'|'+l.a+'|'+l.b));
   const fresh=after.links.filter(l=>(l.a===p.handle || l.b===p.handle) && !was.has(l.type+'|'+l.a+'|'+l.b));
