@@ -104410,7 +104410,7 @@ function synPickHint(p){
   const daily=(typeof DAILY!=='undefined' && DAILY);
   // В драфте дня роль решает силу, поэтому она видна на каждой карточке.
   const roleKey=daily ? dailyRoleOf(p) : null;
-  const roleChip=roleKey ? '<div class="syn-role'+(roleKey==='roleIGL' ? ' igl' : '')+'">'+esc(L()[roleKey]||'')+'</div>' : '';
+  const roleChip=daily && (roleKey || p.org) ? '<div class="syn-role'+(roleKey==='roleIGL' ? ' igl' : '')+'">'+esc([roleKey ? L()[roleKey]||'' : '', p.org||''].filter(Boolean).join(' · '))+'</div>' : '';
   if(!drafted.length) return roleChip;
   const cap=b=>Math.min(b, SYN_POW_CAP);
   const before=draftSynergy(drafted), after=draftSynergy(drafted.concat([p]));
@@ -104430,6 +104430,7 @@ function synPickHint(p){
   if(has(after, 'language') && !has(before, 'language')) why.push(W[1]);
   if(daily && after.role>before.role) why.push(L().roleIGL||'IGL');
   if(daily && after.chain && !before.chain) why.push(dailySynWords().chain+' '+after.chain.via);
+  if(daily && after.club && !before.club) why.push(after.club.org);
   return roleChip+'<div class="syn-hint" title="'+esc(L().synergyLabel||'')+'">🔗 +'+d+(why.length ? ' · '+esc(why.join(' · ')) : '')+'</div>';
 }
 function renderCandidates(list){
@@ -104500,7 +104501,7 @@ function renderSynergySvg(syn){
       const a=drafted[i], b=drafted[j];
       let link=null;
       if(a&&b) link=syn.links.find(l=>(l.a===a.handle&&l.b===b.handle)||(l.a===b.handle&&l.b===a.handle));
-      const stroke = link ? (link.type==='partner' ? 'var(--accent)' : link.type==='language' ? 'var(--epic)' : link.type==='chain' ? 'var(--legendary, #f5a623)' : 'var(--rare)') : 'var(--line)';
+      const stroke = link ? (link.type==='partner' ? 'var(--accent)' : link.type==='language' ? 'var(--epic)' : link.type==='chain' ? 'var(--legendary, #f5a623)' : link.type==='club' ? 'var(--mythic, #ffd200)' : 'var(--rare)') : 'var(--line)';
       const width = link ? 2.5 : 1;
       lines += `<line x1="${pos[i].x}" y1="${pos[i].y}" x2="${pos[j].x}" y2="${pos[j].y}" stroke="${stroke}" stroke-width="${width}"/>`;
       if(link){
@@ -116963,6 +116964,7 @@ function dailySynWord(){ return ({ru:'синергия', fr:'synergie', it:'sine
    Клуб и общий финал пробовали замером: складываются в 1-7% и 0-3% паков, их не взяли.
    Цепочка открывается в 6-35% паков по годам, роль последним паком в 3-65%. */
 const DAILY_SYN_CHAIN=2;
+const DAILY_SYN_CLUB=3;   // один клуб в год карточек, раз на состав; редкий, поэтому выше цепочки
 let _dyMates=null, _dyMatesLen=-1;
 function dailyMatesOf(h){
   if(_dyMatesLen!==TEAMMATE_GROUPS.length){
@@ -116982,18 +116984,29 @@ function dailyChainVia(a, b){
 }
 function dailyRoleOf(p){ try{ return (attrsFor(p)||{}).roleKey||null; }catch(e){ return null; } }
 function dailySynWords(){
-  return ({ru:{role:'один ИГЛ в составе', chain:'общий напарник', igl2:'второй ИГЛ'}, fr:{role:'un seul IGL', chain:'coéquipier commun', igl2:'deuxième IGL'},
-    it:{role:'un solo IGL', chain:'compagno in comune', igl2:'secondo IGL'}, pt:{role:'só um IGL', chain:'parceiro em comum', igl2:'segundo IGL'},
-    de:{role:'genau ein IGL', chain:'gemeinsamer Partner', igl2:'zweiter IGL'}, es:{role:'un solo IGL', chain:'compañero en común', igl2:'segundo IGL'}}[LANG])
-    || {role:'exactly one IGL', chain:'shared teammate', igl2:'second IGL'};
+  return ({ru:{role:'один ИГЛ в составе', chain:'общий напарник', igl2:'второй ИГЛ', club:'один клуб'}, fr:{role:'un seul IGL', chain:'coéquipier commun', igl2:'deuxième IGL', club:'même club'},
+    it:{role:'un solo IGL', chain:'compagno in comune', igl2:'secondo IGL', club:'stesso club'}, pt:{role:'só um IGL', chain:'parceiro em comum', igl2:'segundo IGL', club:'mesmo clube'},
+    de:{role:'genau ein IGL', chain:'gemeinsamer Partner', igl2:'zweiter IGL', club:'gleicher Klub'}, es:{role:'un solo IGL', chain:'compañero en común', igl2:'segundo IGL', club:'mismo club'}}[LANG])
+    || {role:'exactly one IGL', chain:'shared teammate', igl2:'second IGL', club:'same club'};
 }
 function dailySynergy(sq){
   const s=computeSynergy(sq), W=dailySynWords();
-  const out={bonus:s.bonus, details:s.details.slice(), links:s.links.slice(), role:0, chain:null};
+  const out={bonus:s.bonus, details:s.details.slice(), links:s.links.slice(), role:0, chain:null, club:null};
   if(!sq || sq.length<2) return out;
   if(sq.filter(p=>dailyRoleOf(p)==='roleIGL').length===1){
     out.role=ROLE_BONUS_STEP; out.bonus+=ROLE_BONUS_STEP;
     out.details.push(W.role+' (+'+ROLE_BONUS_STEP+')');
+  }
+  // Один клуб: двое с одним org, но не сыгранная пара (та уже взяла своё, дуо почти всегда в одном клубе).
+  for(let i=0;i<sq.length && !out.club;i++) for(let j=i+1;j<sq.length;j++){
+    const a=sq[i], b=sq[j];
+    if(!a.org || a.org!==b.org || ccWereTeammates(a.handle, b.handle)) continue;
+    out.club={a:a.handle, b:b.handle, org:a.org}; break;
+  }
+  if(out.club){
+    out.bonus+=DAILY_SYN_CLUB;
+    out.details.push(out.club.a+' + '+out.club.b+': '+W.club+' '+out.club.org+' (+'+DAILY_SYN_CLUB+')');
+    out.links.push({a:out.club.a, b:out.club.b, type:'club', val:DAILY_SYN_CLUB});
   }
   for(let i=0;i<sq.length && !out.chain;i++) for(let j=i+1;j<sq.length;j++){
     const via=dailyChainVia(sq[i].handle, sq[j].handle);
