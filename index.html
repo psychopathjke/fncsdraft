@@ -1482,6 +1482,9 @@
     border-bottom:1px solid rgba(255,255,255,.06);}
   .prize-row b{color:#ffd166;font-variant-numeric:tabular-nums;}
 
+  .syn-hint.neg{background:rgba(255,90,90,.12);border-color:rgba(255,90,90,.45);color:#ff9b9b;}
+  .syn-role{margin-top:4px;padding:2px 8px;border-radius:6px;border:1px solid var(--line);color:var(--ink-dim);font-size:11px;font-weight:800;text-align:center;letter-spacing:.04em;}
+  .syn-role.igl{border-color:rgba(255,210,0,.55);color:var(--mythic);}
   .syn-hint{margin-top:4px;padding:3px 8px;border-radius:6px;background:rgba(48,209,88,.14);border:1px solid rgba(48,209,88,.45);color:#7ee2a0;font-size:11px;font-weight:800;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   .pick-btn{margin-top:10px;width:100%;background:transparent;border:1px solid var(--r-color);color:var(--r-color);
     font-size:11px;text-transform:uppercase;letter-spacing:.05em;padding:7px 0;border-radius:4px;cursor:pointer;font-weight:700;}
@@ -10210,7 +10213,7 @@
       </div>
       <div class="dy-top"><h3 class="dy-top-h"><span data-i18n="dyBoard"></span><span id="dyTotal"></span></h3><div id="homeDailyRows"></div></div>
     </section>
-    <script>(function(){try{var M=["Chapter 7 Season 2","Chapter 7 Season 3","Chapter 6 Season 1","Chapter 6 Season 2","Chapter 6 Season 3","Chapter 5 Season 1","Chapter 5 Season 2","Chapter 5 Season 3","Chapter 5 Season 4","Chapter 4 Season 1","Chapter 4 Season 2","Chapter 4 Season 3","Chapter 4 Season 4","Chapter 3 Season 1","Chapter 3 Season 2","Chapter 3 Season 3","Chapter 3 Season 4","Chapter 2 Season 5","Chapter 2 Season 6","Chapter 2 Season 7","Chapter 2 Season 8","Chapter 1 Season 9","Chapter 1 Season X","Chapter 2 Season 1","Chapter 2 Season 2","Chapter 2 Season 3","Chapter 2 Season 4"];var d=new Date().toISOString().slice(0,10),h=2166136261,s="daily-map|"+d;
+    <script>(function(){try{var M=["Chapter 7 Season 2","Chapter 7 Season 3","Chapter 6 Season 1","Chapter 6 Season 2","Chapter 6 Season 3","Chapter 6 Season 4","Chapter 5 Season 1","Chapter 5 Season 2","Chapter 5 Season 3","Chapter 5 Season 4","Chapter 4 Season 1","Chapter 4 Season 2","Chapter 4 Season 3","Chapter 4 Season 4","Chapter 3 Season 1","Chapter 3 Season 2","Chapter 3 Season 3","Chapter 3 Season 4","Chapter 2 Season 5","Chapter 2 Season 6","Chapter 2 Season 7","Chapter 2 Season 8","Chapter 1 Season 9","Chapter 1 Season X","Chapter 2 Season 1","Chapter 2 Season 2","Chapter 2 Season 3","Chapter 2 Season 4"];var d=new Date().toISOString().slice(0,10),h=2166136261,s="daily-map|"+d;
       for(var i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619);}
       document.getElementById("dyNum").textContent="#"+(Math.round((Date.parse(d+"T00:00:00Z")-Date.parse("2026-10-17T00:00:00Z"))/864e5)+1);
       document.getElementById("dyMap").textContent=M[Math.abs(h)%M.length];
@@ -104403,11 +104406,17 @@ function pickTeam(team){
    терял до +10 силы. Здесь — сколько синергии прибавит именно этот выбор: та же computeSynergy на составе с ним и
    без него, оба с потолком SYN_POW_CAP (столько и пойдёт в силу), и откуда она: с кем сыгран, страна, язык. */
 function synPickHint(p){
-  if(!drafted.length || !p) return '';
+  if(!p) return '';
+  const daily=(typeof DAILY!=='undefined' && DAILY);
+  // В драфте дня роль решает силу, поэтому она видна на каждой карточке.
+  const roleKey=daily ? dailyRoleOf(p) : null;
+  const roleChip=roleKey ? '<div class="syn-role'+(roleKey==='roleIGL' ? ' igl' : '')+'">'+esc(L()[roleKey]||'')+'</div>' : '';
+  if(!drafted.length) return roleChip;
   const cap=b=>Math.min(b, SYN_POW_CAP);
-  const before=computeSynergy(drafted), after=computeSynergy(drafted.concat([p]));
+  const before=draftSynergy(drafted), after=draftSynergy(drafted.concat([p]));
   const d=cap(after.bonus)-cap(before.bonus);
-  if(d<=0) return '';
+  if(daily && d<0) return roleChip+'<div class="syn-hint neg">🔗 '+d+(after.role<before.role ? ' · '+esc(dailySynWords().igl2) : '')+'</div>';
+  if(d<=0) return roleChip;
   const was=new Set(before.links.map(l=>l.type+'|'+l.a+'|'+l.b));
   const fresh=after.links.filter(l=>(l.a===p.handle || l.b===p.handle) && !was.has(l.type+'|'+l.a+'|'+l.b));
   const W=({ru:['страна', 'язык', 'с'], fr:['pays', 'langue', 'avec'], it:['paese', 'lingua', 'con'], pt:['país', 'idioma', 'com'],
@@ -104419,7 +104428,9 @@ function synPickHint(p){
   const has=(s, t)=>s.links.some(l=>l.type===t);
   if(has(after, 'nation') && !has(before, 'nation')) why.push(W[0]);
   if(has(after, 'language') && !has(before, 'language')) why.push(W[1]);
-  return '<div class="syn-hint" title="'+esc(L().synergyLabel||'')+'">🔗 +'+d+(why.length ? ' · '+esc(why.join(' · ')) : '')+'</div>';
+  if(daily && after.role>before.role) why.push(L().roleIGL||'IGL');
+  if(daily && after.chain && !before.chain) why.push(dailySynWords().chain+' '+after.chain.via);
+  return roleChip+'<div class="syn-hint" title="'+esc(L().synergyLabel||'')+'">🔗 +'+d+(why.length ? ' · '+esc(why.join(' · ')) : '')+'</div>';
 }
 function renderCandidates(list){
   const el=document.getElementById('candidates');
@@ -104489,7 +104500,7 @@ function renderSynergySvg(syn){
       const a=drafted[i], b=drafted[j];
       let link=null;
       if(a&&b) link=syn.links.find(l=>(l.a===a.handle&&l.b===b.handle)||(l.a===b.handle&&l.b===a.handle));
-      const stroke = link ? (link.type==='partner' ? 'var(--accent)' : link.type==='language' ? 'var(--epic)' : 'var(--rare)') : 'var(--line)';
+      const stroke = link ? (link.type==='partner' ? 'var(--accent)' : link.type==='language' ? 'var(--epic)' : link.type==='chain' ? 'var(--legendary, #f5a623)' : 'var(--rare)') : 'var(--line)';
       const width = link ? 2.5 : 1;
       lines += `<line x1="${pos[i].x}" y1="${pos[i].y}" x2="${pos[j].x}" y2="${pos[j].y}" stroke="${stroke}" stroke-width="${width}"/>`;
       if(link){
@@ -104522,7 +104533,7 @@ function renderSlots(){
   } else {
     avgEl.innerHTML='-';
   }
-  const syn=computeSynergy(drafted);
+  const syn=draftSynergy(drafted);
   document.getElementById('synergyVal').textContent='+'+syn.bonus;
   document.getElementById('synergyDetails').innerHTML=syn.details.map(d=>'· '+d).join('<br>');
   renderSynergySvg(syn);
@@ -116946,9 +116957,60 @@ function dailySynWord(){ return ({ru:'синергия', fr:'synergie', it:'sine
    средний рейтинг карточек до сотых + синергия так, как её считает игра (computeSynergy: сыгранная пара +5, одна
    страна +2, общий язык +1; в силу не больше SYN_POW_CAP = 12 — как в buildTeam). Без ничьих в таблице, и
    выигрывает не только тот, кто брал самые большие цифры, но и тот, кто собрал сыгранный состав. */
+/* Синергия драфта дня: та же computeSynergy плюс две связи только для этого режима.
+   Роли: ровно один ИГЛ +ROLE_BONUS_STEP, правило карточного режима из гранд-финалов.
+   Цепочка: двое не играли вместе, но у них общий напарник, +DAILY_SYN_CHAIN раз на состав.
+   Клуб и общий финал пробовали замером: складываются в 1-7% и 0-3% паков, их не взяли.
+   Цепочка открывается в 6-35% паков по годам, роль последним паком в 3-65%. */
+const DAILY_SYN_CHAIN=2;
+let _dyMates=null, _dyMatesLen=-1;
+function dailyMatesOf(h){
+  if(_dyMatesLen!==TEAMMATE_GROUPS.length){
+    _dyMates=new Map();
+    TEAMMATE_GROUPS.forEach(g=>g.forEach(a=>{ let s=_dyMates.get(a); if(!s){ s=new Set(); _dyMates.set(a, s); } g.forEach(b=>{ if(b!==a) s.add(b); }); }));
+    _dyMatesLen=TEAMMATE_GROUPS.length;
+  }
+  return _dyMates.get(h) || null;
+}
+// Общий напарник двоих, которые сами вместе не играли; иначе null.
+function dailyChainVia(a, b){
+  const A=dailyMatesOf(a), B=dailyMatesOf(b);
+  if(!A || !B || A.has(b)) return null;
+  const small=A.size<B.size ? A : B, big=small===A ? B : A;
+  let best=null; for(const x of small) if(big.has(x) && (best===null || x<best)) best=x;
+  return best;
+}
+function dailyRoleOf(p){ try{ return (attrsFor(p)||{}).roleKey||null; }catch(e){ return null; } }
+function dailySynWords(){
+  return ({ru:{role:'один ИГЛ в составе', chain:'общий напарник', igl2:'второй ИГЛ'}, fr:{role:'un seul IGL', chain:'coéquipier commun', igl2:'deuxième IGL'},
+    it:{role:'un solo IGL', chain:'compagno in comune', igl2:'secondo IGL'}, pt:{role:'só um IGL', chain:'parceiro em comum', igl2:'segundo IGL'},
+    de:{role:'genau ein IGL', chain:'gemeinsamer Partner', igl2:'zweiter IGL'}, es:{role:'un solo IGL', chain:'compañero en común', igl2:'segundo IGL'}}[LANG])
+    || {role:'exactly one IGL', chain:'shared teammate', igl2:'second IGL'};
+}
+function dailySynergy(sq){
+  const s=computeSynergy(sq), W=dailySynWords();
+  const out={bonus:s.bonus, details:s.details.slice(), links:s.links.slice(), role:0, chain:null};
+  if(!sq || sq.length<2) return out;
+  if(sq.filter(p=>dailyRoleOf(p)==='roleIGL').length===1){
+    out.role=ROLE_BONUS_STEP; out.bonus+=ROLE_BONUS_STEP;
+    out.details.push(W.role+' (+'+ROLE_BONUS_STEP+')');
+  }
+  for(let i=0;i<sq.length && !out.chain;i++) for(let j=i+1;j<sq.length;j++){
+    const via=dailyChainVia(sq[i].handle, sq[j].handle);
+    if(via){ out.chain={a:sq[i].handle, b:sq[j].handle, via}; break; }
+  }
+  if(out.chain){
+    out.bonus+=DAILY_SYN_CHAIN;
+    out.details.push(out.chain.a+' + '+out.chain.b+': '+W.chain+' '+out.chain.via+' (+'+DAILY_SYN_CHAIN+')');
+    out.links.push({a:out.chain.a, b:out.chain.b, type:'chain', val:DAILY_SYN_CHAIN});
+  }
+  return out;
+}
+// Синергия, которую показывает драфт: в драфте дня своя, в остальных обычная.
+function draftSynergy(sq){ return (typeof DAILY!=='undefined' && DAILY) ? dailySynergy(sq) : computeSynergy(sq); }
 function dailyPowerOf(sq){
   if(!sq || !sq.length) return {power:0, syn:0, avg:0};
-  const avg=sq.reduce((s,p)=>s+p.rating,0)/sq.length, syn=Math.min(computeSynergy(sq).bonus, SYN_POW_CAP);
+  const avg=sq.reduce((s,p)=>s+p.rating,0)/sq.length, syn=Math.min(dailySynergy(sq).bonus, SYN_POW_CAP);
   return {power:Math.round((avg+syn)*100)/100, syn, avg:Math.round(avg*100)/100};
 }
 // Строка с сервера несёт p100 (сотые); своя запись — power с сотыми и avg.
@@ -118411,7 +118473,7 @@ function roundRect(ctx,x,y,w,h,r){
 
 function finalizeRunStats(mode, isMajor, place, totalTeams, championMajor, cameFromLcq, reachedFinals, you, allTeams){
   const avgRating = drafted.length ? Math.round(drafted.reduce((s,p)=>s+p.rating,0)/drafted.length) : 0;
-  const syn = computeSynergy(drafted);
+  const syn = draftSynergy(drafted);
   const grade = computeDraftGrade(avgRating, syn.bonus);
   const rerollsUsed = 2-rerollsLeft;
 
