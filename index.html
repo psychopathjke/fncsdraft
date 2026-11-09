@@ -120738,7 +120738,7 @@ function ccStart(){
     // Пустой список — как его отсутствие: careerMigratePartners тогда возьмёт partner.
     if(!save.partners.length) delete save.partners;
     CAREER=was; }
-  try{ localStorage.setItem(LS_SLOT(ccSlotMine()), JSON.stringify(save)); }catch(e){}
+  try{ ccLzDrop(LS_SLOT(ccSlotMine())); localStorage.setItem(LS_SLOT(ccSlotMine()), JSON.stringify(save)); }catch(e){}
   try{ ccSaveMarkAdopt(); }catch(e){}
   openCareerHub();
   /* И если карьеру заводили ради команды — сразу в лобби. Намерение ставит
@@ -120815,10 +120815,10 @@ function ccSlotUse(n){
   try{ localStorage.setItem(LS_ACTIVE, String(n)); }catch(e){}
 }
 function ccSlotRead(n){
-  try{ return ccSaveParse(localStorage.getItem(LS_SLOT(n))); }catch(e){ return null; }
+  try{ ccLzFlush(LS_SLOT(n)); return ccSaveParse(localStorage.getItem(LS_SLOT(n))); }catch(e){ return null; }
 }
 function ccSlotWipe(n){
-  try{ localStorage.removeItem(LS_SLOT(n)); }catch(e){}
+  try{ ccLzDrop(LS_SLOT(n)); localStorage.removeItem(LS_SLOT(n)); }catch(e){}
 }
 // What a slot says about itself on the picker, without loading it.
 // Старый сейв без флага: годы без дивизионных кубков по сезону дня — до S18 (2019–2021) и
@@ -120892,7 +120892,7 @@ function careerLoad(){
   CC_SLOT_TAB=ccSlotMine();   // слот этой вкладки — с первой загрузки
   CC_LOAD_BAD=null;
   let raw=null;
-  try{ raw=localStorage.getItem(LS_SLOT(CC_SLOT_TAB)); CAREER=ccSaveParse(raw); }catch(e){ CAREER=null; }
+  try{ ccLzFlush(LS_SLOT(CC_SLOT_TAB)); raw=localStorage.getItem(LS_SLOT(CC_SLOT_TAB)); CAREER=ccSaveParse(raw); }catch(e){ CAREER=null; }
   try{ ccSaveMarkAdopt(); }catch(e){}   // отметка записи слота — своя с этой загрузки (см. ccSaveStale)
   if(raw && !CAREER){
     CC_LOAD_BAD={slot:CC_SLOT_TAB};
@@ -124433,6 +124433,7 @@ async function ccCloudPost(o){
 function ccCloudSent(){ try{ return JSON.parse(localStorage.getItem(CC_CLOUD_SENT)||'{}')||{}; }catch(e){ return {}; } }
 async function ccCloudPush(){
   const code=ccCloudCode(); if(!code || CC_CLOUD_BUSY) return;
+  try{ ccLzFlush(); }catch(e){}
   CC_CLOUD_BUSY=true;
   const sent=ccCloudSent();
   try{
@@ -124612,6 +124613,60 @@ function ccSaveMakeRoom(own, level){
   });
   return freed;
 }
+/* СЖАТИЕ В ФОНЕ (Notion 9.11, игрок на ПК: «если тренируюсь, жду 2–4 секунды… в новой карьере лагов нет»). Большой сейв
+   не влезает обычным JSON и каждое сохранение сжималось lz-string прямо на клике (замер: 9 мс → 100–180 мс, на слабом ПК
+   в разы дольше), а перед этим ещё раз пробовалась заведомо не влезающая запись. Теперь слот, раз ушедший в сжатие, сразу
+   идёт в сжатие, а сжимает воркер: на клике остаётся только JSON.stringify. Очередь по ключу хранит последнее состояние,
+   старые задачи не досчитываются. Уход со страницы и чтение слота дописывают очередь синхронно. */
+var CC_LZ_ON={}, CC_LZ_SYNC=false, CC_LZ_Q={}, CC_LZ_W, CC_LZ_BUSY=null, CC_LZ_N=0;
+function ccLzWorker(){
+  if(CC_LZ_W!==undefined) return CC_LZ_W;
+  CC_LZ_W=null;
+  try{
+    if(typeof Worker==='undefined' || typeof Blob==='undefined' || typeof URL==='undefined') return null;
+    let src=null;
+    for(const s of document.scripts){ const t=s.textContent||''; if(t.length<20000 && t.indexOf('var LZString=function')>=0){ src=t; break; } }
+    if(!src) return null;
+    const url=URL.createObjectURL(new Blob([src+'\n;onmessage=function(e){postMessage({key:e.data.key,n:e.data.n,z:LZString.compressToUTF16(e.data.json)});};'], {type:'text/javascript'}));
+    const w=new Worker(url);
+    w.onmessage=e=>ccLzDone(e.data);
+    w.onerror=()=>{ CC_LZ_W=null; CC_LZ_BUSY=null; ccLzFlush(); };
+    CC_LZ_W=w;
+  }catch(e){ CC_LZ_W=null; }
+  return CC_LZ_W;
+}
+function ccLzPut(key, json, write){
+  CC_LZ_Q[key]={n:++CC_LZ_N, json:json, write:write};
+  if(!ccLzWorker()) return ccLzFlush(key);
+  ccLzKick();
+}
+function ccLzKick(){
+  if(CC_LZ_BUSY || !CC_LZ_W) return;
+  const key=Object.keys(CC_LZ_Q)[0]; if(!key) return;
+  const j=CC_LZ_Q[key]; CC_LZ_BUSY={key:key, n:j.n};
+  try{ CC_LZ_W.postMessage({key:key, n:j.n, json:j.json}); }catch(e){ CC_LZ_BUSY=null; ccLzFlush(); }
+}
+function ccLzDone(d){
+  CC_LZ_BUSY=null;
+  const j=d && CC_LZ_Q[d.key];
+  if(j && j.n===d.n){ delete CC_LZ_Q[d.key]; try{ j.write(d.z); }catch(e){} }
+  ccLzKick();
+}
+// key не задан — вся очередь. Синхронно: перед уходом со страницы и перед чтением слота.
+function ccLzFlush(key){
+  Object.keys(CC_LZ_Q).forEach(k=>{
+    if(key && k!==key) return;
+    const j=CC_LZ_Q[k]; delete CC_LZ_Q[k];
+    try{ j.write(LZString.compressToUTF16(j.json)); }catch(e){}
+  });
+}
+function ccLzDrop(key){ delete CC_LZ_Q[key]; }
+try{
+  const out=()=>{ if(CC_TAB_STALE) CC_LZ_Q={}; else ccLzFlush(); };
+  window.addEventListener('pagehide', out);
+  window.addEventListener('beforeunload', out);
+  document.addEventListener('visibilitychange', ()=>{ if(document.visibilityState==='hidden') out(); });
+}catch(e){}
 function careerSave(){
   if(!CAREER) return;
   if(CAREER._mgr){ if(typeof mgrSave==='function') mgrSave(); return; }   // теневая карьера Fortnite Manager
@@ -124652,9 +124707,17 @@ function careerSave(){
   for(let step=0; step<=CC_SAVE_TRIM.length; step++){
     try{
       const json=JSON.stringify(CAREER);
-      if(!lz){ try{ localStorage.setItem(key, json); }
+      if(!lz && CC_LZ_ON[key] && typeof LZString!=='undefined') lz=true;   // этот слот уже не влезал — сразу в сжатие
+      if(!lz){ try{ localStorage.setItem(key, json); ccLzDrop(key); }
                catch(e1){ if(!/quota|exceed/i.test(String(e1&&e1.name||e1)) || typeof LZString==='undefined') throw e1; lz=true; } }
-      if(lz) localStorage.setItem(key, CC_SAVE_LZ+LZString.compressToUTF16(json));
+      if(lz){
+        // В фон — только слот, уже писавшийся сжатым; первый раз, после чистки места и обрезки (room, step) — синхронно,
+        // чтобы нехватку места увидел этот цикл.
+        if(CC_LZ_ON[key] && step===0 && !room && !CC_LZ_SYNC)
+          ccLzPut(key, json, z=>{ try{ localStorage.setItem(key, CC_SAVE_LZ+z); }
+                                  catch(e2){ CC_LZ_SYNC=true; if(CAREER && !CAREER._mgr && LS_SLOT(ccSlotMine())===key) careerSave(); } });
+        else { ccLzDrop(key); localStorage.setItem(key, CC_SAVE_LZ+LZString.compressToUTF16(json)); CC_LZ_ON[key]=1; }
+      }
       try{ if(!CC_TAB_ID) CC_TAB_ID=Math.random().toString(36).slice(2, 10); CC_SAVE_N=(CC_SAVE_N||0)+1;
            const mk=CC_TAB_ID+':'+CC_SAVE_N; localStorage.setItem(ccSaveMarkKey(), mk); CC_SAVE_MARK=mk; }catch(e){}
       CC_SAVE_FAIL=null;
@@ -153725,19 +153788,26 @@ function ccUndoSnap(){
   if(!CAREER || !CAREER.career || !ccUndoOk() || typeof LZString==='undefined') return;
   if((typeof CC_FF!=='undefined' && CC_FF) || CC_SKIP_ALL) return;
   const day=careerToday(), key=ccUndoKey();
+  if(CC_LZ_Q[key] && CC_LZ_Q[key].day===day) return;
   try{ const old=JSON.parse(localStorage.getItem(key)||'null'); if(old && old.day===day) return; }catch(e){}
-  try{ localStorage.removeItem(key); localStorage.setItem(key, JSON.stringify({day:day, data:CC_SAVE_LZ+LZString.compressToUTF16(JSON.stringify(CAREER))})); }
+  // Сжатие в воркере, как у сейва (ccLzPut): снимок снят сейчас, на диск ляжет, когда досчитается.
+  try{ localStorage.removeItem(key);
+       ccLzPut(key, JSON.stringify(CAREER), z=>{ try{ localStorage.setItem(key, JSON.stringify({day:day, data:CC_SAVE_LZ+z})); }catch(e){ try{ localStorage.removeItem(key); }catch(e2){} } });
+       if(CC_LZ_Q[key]) CC_LZ_Q[key].day=day; }
   catch(e){ try{ localStorage.removeItem(key); }catch(e2){} }
 }
 function ccUndoInfo(){
   if(!CAREER || !CAREER.career || !ccUndoOk()) return null;
-  try{ const u=JSON.parse(localStorage.getItem(ccUndoKey())||'null');
+  // Снимок ещё сжимается в воркере: день уже известен, данные дочитает ccUndoRestore.
+  const q=CC_LZ_Q[ccUndoKey()];
+  try{ const u=q && q.day ? {day:q.day, data:'pend'} : JSON.parse(localStorage.getItem(ccUndoKey())||'null');
        return (u && u.day && u.data && u.day<=careerToday() && (u.day<careerToday() || ccUndoPlayed(u.day))) ? u : null; }catch(e){ return null; }
 }
 // Вечер этого дня уже в журнале — откатывать есть что, даже если день ещё не сменился.
 function ccUndoPlayed(day){ try{ return (CAREER.career.log||[]).some(x=>x && x.day===day); }catch(e){ return false; } }
 function ccUndoRestore(u){
-  try{ localStorage.setItem(LS_SLOT(ccSlotMine()), u.data); }catch(e){ return; }
+  try{ if(u.data==='pend'){ ccLzFlush(ccUndoKey()); u=JSON.parse(localStorage.getItem(ccUndoKey())||'null'); if(!u || !u.data) return; } }catch(e){ return; }
+  try{ CC_LZ_Q={}; localStorage.setItem(LS_SLOT(ccSlotMine()), u.data); }catch(e){ return; }
   if(ccUndoShared()) try{ localStorage.setItem(ccUndoKey()+'go', u.day); }catch(e){}
   location.reload();
 }
