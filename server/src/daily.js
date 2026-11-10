@@ -38,8 +38,8 @@ function normalize(e, now){
   const country=/^[a-z]{2}$/.test(String(e.country||'')) ? e.country : '';
   // Сила состава (16.10): средний рейтинг карточек до сотых + синергия (до +12) — «точная сила». Хранится в сотых
   // (p100), чтобы порядок был без ничьих; syn — сколько из неё синергия, для подписи. Нет — 0.
-  const p100=int(Math.round(Number(e.power)*100), 0, 15000)||0;
-  const syn=int(e.syn, 0, 12)||0;
+  const p100=int(Math.round(Number(e.power)*100), 0, 25000)||0;   // 10.11: синергия дня без потолка, сила до ~160
+  const syn=int(e.syn, 0, 99)||0;
   return {row:{day, id, nick, country, score, place, field, team, power:Math.floor(p100/100), p100, syn, at:now}};
 }
 

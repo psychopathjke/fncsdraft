@@ -96412,6 +96412,8 @@ const SYN_TEAMMATES=5;   // was 12 — a pair who really played together
 const SYN_NATION=2;      // was 5  — per extra player sharing a nationality
 const SYN_LANGUAGE=1;    // was 3  — different passports, one shared language
 const SYN_POW_CAP=12;    // was 40 — the most synergy can ever add to power
+// Драфт дня без потолка (его слово 10.11: «убери лимит именно в дейли драфте»): в силу таблицы идёт вся синергия.
+function synCap(b){ return (typeof DAILY!=='undefined' && DAILY) ? b : Math.min(b, SYN_POW_CAP); }
 // Per extra role covered. A duo is either IGL+fragger or two of a kind, so in
 // practice this is the whole mechanic: mixed gets it, matched does not.
 //
@@ -104411,7 +104413,7 @@ function synPickHint(p){
   const roleKey=daily ? dailyRoleOf(p) : null;
   const roleChip=daily && (roleKey || p.org) ? '<div class="syn-role'+(roleKey==='roleIGL' ? ' igl' : '')+'">'+esc([roleKey ? L()[roleKey]||'' : '', p.org||''].filter(Boolean).join(' · '))+'</div>' : '';
   if(!drafted.length) return roleChip;
-  const cap=b=>Math.min(b, SYN_POW_CAP);
+  const cap=b=>synCap(b);
   const before=draftSynergy(drafted), after=draftSynergy(drafted.concat([p]));
   const d=cap(after.bonus)-cap(before.bonus);
   if(d<=0) return roleChip;
@@ -113064,7 +113066,7 @@ function sqRender(){
     const coll=SQ.cards.filter(c=>!c.un && !sqInUse(c.id)).map(c=>({id:c.id, c:sqCardOf(c.id)})).filter(x=>x.c).sort((a, b)=>sqOvr(b.c)-sqOvr(a.c));
     body='<div class="sq-row sq-fmt">'+[2, 3, 4].map(n=>'<button class="'+(SQ.size===n ? 'on' : '')+'" onclick="sqSetSize('+n+')">'+esc(T.fmt[n])+'</button>').join('')+'</div>'+
       '<div class="sq-stats">'+(myT ? '<span><em>'+esc(T.pow)+'</em><b>'+myT.pow+'</b></span><span><em>'+esc(T.ovr)+'</em><b>'+Math.round(myT.ovrAvg||0)+'</b></span>'+
-        '<span><em>'+esc(T.syn)+'</em><b>+'+Math.min(myT.syn.bonus, SYN_POW_CAP)+'</b></span>'+
+        '<span><em>'+esc(T.syn)+'</em><b>+'+synCap(myT.syn.bonus)+'</b></span>'+
         '<span class="'+(myT.roleBonus ? 'ok' : 'warn')+'">'+esc(myT.roleBonus ? T.igl : T.noIgl)+'</span>' : '<span class="warn">'+esc(T.needXi(SQ.size))+'</span>')+'</div>'+
       '<div class="sq-pitch"><h3 class="sq-h">'+esc(T.starters)+'</h3><div class="sq-grid sq-xi">'+Array.from({length:SQ.size}, (_, i)=>slot(SQ.xi, i, 'xi')).join('')+'</div></div>'+
       '<h3 class="sq-h">'+esc(T.bench)+'</h3><div class="sq-mgrid">'+Array.from({length:SQ_BENCH}, (_, i)=>{ const id=SQ.bench[i];
@@ -113126,7 +113128,7 @@ function sqRender(){
       const prev=SQ.size; SQ.size=dr.size;
       const pow0=got.length ? sqWithCards(()=>buildTeam(got)).pow : 0;
       SQ.size=prev;
-      body=(got.length ? '<div class="sq-stats"><span><em>'+esc(T.pow)+'</em><b>'+pow0+'</b></span><span><em>'+esc(T.syn)+'</em><b>+'+Math.min(syn0, SYN_POW_CAP)+'</b></span></div>' : '')+
+      body=(got.length ? '<div class="sq-stats"><span><em>'+esc(T.pow)+'</em><b>'+pow0+'</b></span><span><em>'+esc(T.syn)+'</em><b>+'+synCap(syn0)+'</b></span></div>' : '')+
         '<div class="sq-mgrid sq-dpicks">'+got.map(c=>sqMini(c)).join('')+Array.from({length:dr.size-dr.picks.length}, ()=>'<div class="sq-m sq-empty">?</div>').join('')+'</div>'+
         '<h3 class="sq-h">'+esc(cap ? T.drPickCap : T.drPick(dr.picks.length+1, dr.size))+'</h3>'+
         '<div class="sq-mgrid">'+dr.opts.map((k, i)=>{ const c=sqPool().byK.get(k);
@@ -113138,7 +113140,7 @@ function sqRender(){
     } else {
       const cards=dr.picks.map(k=>sqPool().byK.get(k)).filter(Boolean);
       const prev=SQ.size; SQ.size=dr.size; const t=sqWithCards(()=>buildTeam(cards)); SQ.size=prev;
-      body='<div class="sq-stats"><span><em>'+esc(T.pow)+'</em><b>'+t.pow+'</b></span><span><em>'+esc(T.syn)+'</em><b>+'+Math.min(t.syn.bonus, SYN_POW_CAP)+'</b></span>'+
+      body='<div class="sq-stats"><span><em>'+esc(T.pow)+'</em><b>'+t.pow+'</b></span><span><em>'+esc(T.syn)+'</em><b>+'+synCap(t.syn.bonus)+'</b></span>'+
         '<span class="'+(t.roleBonus ? 'ok' : 'warn')+'">'+esc(t.roleBonus ? T.igl : T.noIgl)+'</span></div>'+
         '<div class="sq-mgrid">'+cards.map(c=>sqMini(c)).join('')+'</div>'+
         '<p class="sq-hint">'+esc(T.drRound(dr.round+1))+' · '+esc(T.drNeed(Math.ceil(Math.round(100/dr.size)/4)))+'</p>'+
@@ -116954,12 +116956,12 @@ function dailyPowerWord(){ return ({ru:'сила', fr:'force', it:'forza', pt:'f
 function dailySynWord(){ return ({ru:'синергия', fr:'synergie', it:'sinergia', pt:'sinergia', de:'Synergie', es:'sinergia'}[LANG]) || 'synergy'; }
 /* ТОЧНАЯ СИЛА (16.10, его слово «пусть будет точная сила» — и вопрос «а синергия за язык, страну есть?»):
    средний рейтинг карточек до сотых + синергия так, как её считает игра (computeSynergy: сыгранная пара +5, одна
-   страна +2, общий язык +1; в силу не больше SYN_POW_CAP = 12 — как в buildTeam). Без ничьих в таблице, и
+   страна +2, общий язык +1; с 10.11 без потолка, в остальных режимах SYN_POW_CAP = 12). Без ничьих в таблице, и
    выигрывает не только тот, кто брал самые большие цифры, но и тот, кто собрал сыгранный состав. */
 /* Синергия драфта дня: та же computeSynergy плюс две связи только для этого режима.
    Роли: ровно один ИГЛ +ROLE_BONUS_STEP, правило карточного режима из гранд-финалов.
    Цепочка: двое не играли вместе, но у них общий напарник, +DAILY_SYN_CHAIN раз на состав.
-   Клуб и общий финал пробовали замером: складываются в 1-7% и 0-3% паков, их не взяли.
+   Клуб (+DAILY_SYN_CLUB, раз на состав) добавлен 8.11; общий финал пробовали замером (0-3% паков) и не взяли.
    Цепочка открывается в 6-35% паков по годам, роль последним паком в 3-65%. */
 const DAILY_SYN_CHAIN=2;
 const DAILY_SYN_CLUB=3;   // один клуб в год карточек, раз на состав; редкий, поэтому выше цепочки
@@ -117021,7 +117023,7 @@ function dailySynergy(sq){
 function draftSynergy(sq){ return (typeof DAILY!=='undefined' && DAILY) ? dailySynergy(sq) : computeSynergy(sq); }
 function dailyPowerOf(sq){
   if(!sq || !sq.length) return {power:0, syn:0, avg:0};
-  const avg=sq.reduce((s,p)=>s+p.rating,0)/sq.length, syn=Math.min(dailySynergy(sq).bonus, SYN_POW_CAP);
+  const avg=sq.reduce((s,p)=>s+p.rating,0)/sq.length, syn=dailySynergy(sq).bonus;   // без потолка: драфт дня
   return {power:Math.round((avg+syn)*100)/100, syn, avg:Math.round(avg*100)/100};
 }
 // Строка с сервера несёт p100 (сотые); своя запись — power с сотыми и avg.
@@ -134234,7 +134236,7 @@ function careerTeam(cards, keepRoles, strangers){
     t.syn.links.push({a:cards[0].handle, b:cards[1].handle, type:'partner', val:SYN_TEAMMATES});
   }
   if(lad.size || (duoReal && !already)){
-    const after=Math.min(t.syn.bonus, SYN_POW_CAP);
+    const after=synCap(t.syn.bonus);
     // Rebuilt from the parts buildTeam left on the team rather than nudged, so
     // the number is the one buildTeam would have produced with this synergy.
     const ageEdge=ageEdgeOf(cards);
@@ -168318,7 +168320,7 @@ function ccNatStripSyn(t, cards){
   t.syn.links=links.filter(l=>l.type!=='nation' && l.type!=='language');
   const T=L();
   t.syn.details=(t.syn.details||[]).filter(d=>!(T.synergyNation && String(d).indexOf(T.synergyNation)>=0) && !(T.synergyLanguage && String(d).indexOf(T.synergyLanguage)>=0));
-  const after=Math.min(t.syn.bonus, SYN_POW_CAP);
+  const after=synCap(t.syn.bonus);
   const ageEdge=ageEdgeOf(cards);
   t.pow = CARD_MODE
     ? Math.round((t.ovrAvg+after+t.roleBonus)*t.regionMult + ageEdge)
