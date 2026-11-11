@@ -7502,6 +7502,10 @@
   .dm-ask-wide .cc-back i{display:block;font-style:normal;font-weight:400;
     font-size:10.5px;opacity:.65;letter-spacing:0;}
   /* Выбор пары на Про-Ам: весь список креаторов, с аватарками, в своём окне прокрутки. */
+  /* Выбор карты после 2026: главы фишками в строку, выбранная залита жёлтым. */
+  .cc-mappick .dm-ask{gap:6px;}
+  .cc-mappick .cc-back{padding:5px 10px;}
+  #screen-career-hub .cc-mappick .cc-back.on{background:#ffdd00;color:#0b1a3a;border-color:#ffdd00;}
   .dm-ask-creators{max-height:340px;overflow-y:auto;padding-right:4px;}
   .dm-ask-creators .cc-back{display:flex;align-items:center;gap:8px;}
   .dm-pick-ava{width:28px;height:28px;border-radius:50%;object-fit:cover;flex:none;}
@@ -124285,6 +124289,11 @@ function ccApplyTeamState(t){
      Гонка не делит ничего, кроме сводок (см. careerRaceEnter), значит и брать
      ей нечего. */
   if(typeof ccRaceOn==='function' && ccRaceOn() && !ccMpTeam()) return;
+  /* Мир пересобирается, только если командное состояние что-то поменяло: напарник шлёт его на каждое своё
+     сохранение (магазин, тренировка), и сброс кэшей на каждое такое письмо стоил до 20 мс на вкладку (до 4 раз
+     дороже на телефоне) — подёргивания у пары онлайн. */
+  const sigOf=()=>{ try{ return JSON.stringify([CC_TEAM_KEYS.map(k=>CAREER.career[k]), CC_TEAM_TOP.map(k=>CAREER[k]), CAREER.career.size]); }catch(e){ return Math.random(); } };
+  const sig0=sigOf();
   /* СТЫК СЕЗОНА У ТОГО, КТО ЕГО НЕ ЖАЛ (errlog 26.10). «Новый сезон» жмёт один; второму приезжало только командное
      состояние, а личная половина careerNewSeason (формат года, обрезка PR, возраст, оборот клуба, предложения) у него
      не шла никогда: в 2026-м у одного дуо, у другого трио, PR второго сезона расходился на тысячи строк (проба
@@ -124377,7 +124386,7 @@ function ccApplyTeamState(t){
        // Сид лобби старше присланного. См. ccMpLobbySeed.
        if(CAREER.career.lobbySeed) CAREER.career.seed=CAREER.career.lobbySeed; }
   finally{ CC_MP_ADVANCE=false; }
-  ccWorldReset();
+  if(!CAREER || !CAREER.career || sigOf()!==sig0) ccWorldReset();
 }
 /* ОБЛАЧНЫЕ СОХРАНЕНИЯ (16.10, «что ещё глобального» → «1»). Карьера жила только в localStorage: почистил браузер или
    сменил телефон — её нет. Теперь по коду-ключу (16 знаков, без путаных букв) сейвы карьер и менеджера уходят на сервер
@@ -130460,7 +130469,7 @@ function ccMapPickHTML(){
   const cr=CAREER.career, cur=Number.isInteger(cr.mapCh) ? cr.mapCh : -1, T=L();
   const b=(i, label)=>'<button class="cc-back'+(i===cur ? ' on' : '')+'" onclick="ccMapPick('+i+')"'+(i===cur ? ' aria-pressed="true"' : '')+'>'+esc(label)+'</button>';
   return '<div class="ch-tile cc-soon cc-mappick"><div class="cc-soon-h">'+esc(T.mapPickH||'Map this year')+'</div>'+
-    '<div class="dm-ask dm-ask-wide">'+b(-1, T.mapPickCycle||'Rotation')+CC_CYCLE_NAMES.map((n, i)=>b(i, n)).join('')+'</div></div>';
+    '<div class="dm-ask">'+b(-1, T.mapPickCycle||'Rotation')+CC_CYCLE_NAMES.map((n, i)=>b(i, n)).join('')+'</div></div>';
 }
 function ccMapPick(i){
   if(!CAREER || !CAREER.career) return;
@@ -141314,7 +141323,7 @@ function ccText(e){
     // Вариант реплики (m.vi от careerDmPush): 0 — исходная, дальше — CC_LINES_MORE.dm своего языка.
     if(e.vi!=null){
       const ex=((CC_LINES_MORE[LANG]||{}).dm||{})[e.k];
-      if(ex && ex.length){ const i=e.vi%(ex.length+1); if(i>0) return ccMoreFill(ex[i-1], args); }
+      if(ex && ex.length){ const i=e.vi%(ex.length+1); if(i>0) return ccNoDash(ccMoreFill(ex[i-1], args)); }   // варианты из lines-more.js идут мимо L() — тире чистятся здесь
     }
     const line=L()[e.k];
     if(typeof line==='function') return line.apply(null, args);
@@ -154503,6 +154512,17 @@ async function careerPlay(){
   const next=careerNext();
   if(!next) return;
   ccUndoSnap();   // снимок до вечера — для «Переиграть день»
+  /* Кап крупнее формата года в команде собирает третьего из карточки напарника (ccMpFmtBegin). Пока после загрузки
+     не пришло состояние лобби, карточки нет, и этот клиент играл кап парой в дуо-лобби, а напарник тройкой (errlog 9.11:
+     CashCup_Trios n2410 против n1587, Major1_LCQ 39 против 27). Ждём карточку; нет её — вечер не начинается. */
+  if(next.type==='victory' && typeof ccMpOn==='function' && ccMpOn() && !(typeof ccRaceOn==='function' && ccRaceOn())){
+    const fm=ccVictoryFormat(careerVictoryOn(careerToday()));
+    const peerIn=()=>typeof MP!=='undefined' && !!MP.peer;
+    if(fm>careerSquadSize() && !peerIn()){
+      for(let i=0;i<40 && !peerIn();i++) await new Promise(r=>setTimeout(r, 250));
+      if(!peerIn()){ ccTell(L().ccMpLost); return; }
+    }
+  }
   // Кап другого формата с неполным составом — сначала вопрос: позвать людей в личке или стэнд-ины на вечер.
   if(next.type==='victory'){
     const ev0=careerVictoryOn(careerToday()), f0=ccPickFormat(ev0);
@@ -166998,6 +167018,8 @@ async function runCareerVictoryNight(){
        причём команда с шестью элимами стояла ниже команды с нулём. */
     const ranked2=careerRankField(r2);
     vicFinal=ranked2;
+    // Тройка и MVP в итоге вечера — по второму раунду, как таблица этапа над ними; своя оценка остаётся за вечер.
+    try{ const nr2=ccNightRate(ranked2); if(nr2 && CC_NIGHT_RATE){ ['podium','mvp','mvpYou','mvpCard'].forEach(k=>{ CC_NIGHT_RATE[k]=nr2[k]; }); } }catch(e){}
     place2=ranked2.indexOf(you)+1;
     wins=you.wins||0;
     cash=payCup ? ccVictoryPayOf(ev, place2) : byWins ? vicPay(ranked2)(place2) : wins*rate;
@@ -169183,7 +169205,7 @@ function careerTwoRoundResultCard(r){
   box.innerHTML=`<h4>${esc(r.title)} <span class="stage-badge ${r.through?'pass':'fail'}">${ccTopC(r.place)}</span></h4>
     <div class="stage-detail">
       ${line ? `<div>${line}</div>` : ''}
-      ${r.placed ? '' : `<div>${L().ccResEarned}: ${r.cash ? ccMoney(r.cash) : r.cut && !ccNoDivisions() ? L().ccResNoMoney : ccMoney(0)}</div>`}
+      ${r.placed ? '' : `<div>${L().ccResEarned}: ${r.cash ? ccMoney(r.cash) : r.cut && !r.through && !ccNoDivisions() && CAREER.career.division>1 ? L().ccResNoMoney : ccMoney(0)}</div>`}
       <div>${L().chEarnings}: ${ccMoney(CAREER.career.earnings||0)}</div>
       ${ccNightRateLine()}
     </div>
