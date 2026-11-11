@@ -4224,3 +4224,4 @@ Object.assign(I18N.de=I18N.de||{},
 /* Дозаливка «de» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
 Object.assign(I18N.de=I18N.de||{},
 ({ chTabBp: 'Battle Pass' }));
+Object.assign(I18N.de, {mapPickH:'Karte des Jahres', mapPickCycle:'Rotation'});

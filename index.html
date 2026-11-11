@@ -24629,6 +24629,8 @@ Object.assign(I18N.en, {rsSoonH:(k,d)=>(k===0 ? 'Today' : k===1 ? 'Tomorrow' : '
 Object.assign(I18N.fr, {rsSoonH:(k,d)=>(k===0 ? 'Aujourd’hui' : k===1 ? 'Demain' : 'Dans '+k+' jours')+' · '+d, rsFmt:n=>({2:'duo',3:'trio',4:'squad'})[n]||'', rsHave:(who,n,f)=>'Roster : '+who+' · '+n+' sur '+f, rsGo:n=>'Compléter le roster · ajouter '+n});
 Object.assign(I18N.it, {rsSoonH:(k,d)=>(k===0 ? 'Oggi' : k===1 ? 'Domani' : 'Tra '+k+' giorni')+' · '+d, rsFmt:n=>({2:'duo',3:'trio',4:'squad'})[n]||'', rsHave:(who,n,f)=>'Roster: '+who+' · '+n+' su '+f, rsGo:n=>'Completa il roster · aggiungi '+n});
 Object.assign(I18N.pt, {rsSoonH:(k,d)=>(k===0 ? 'Hoje' : k===1 ? 'Amanhã' : 'Em '+k+' dias')+' · '+d, rsFmt:n=>({2:'duo',3:'trio',4:'squad'})[n]||'', rsHave:(who,n,f)=>'Line-up: '+who+' · '+n+' de '+f, rsGo:n=>'Montar a line-up · adicionar '+n});
+Object.assign(I18N.ru, {mapPickH:'Карта года', mapPickCycle:'По кругу'}); Object.assign(I18N.en, {mapPickH:'Map this year', mapPickCycle:'Rotation'});
+Object.assign(I18N.fr, {mapPickH:'Carte de l’année', mapPickCycle:'Rotation'}); Object.assign(I18N.it, {mapPickH:'Mappa dell’anno', mapPickCycle:'A rotazione'}); Object.assign(I18N.pt, {mapPickH:'Mapa do ano', mapPickCycle:'Rotação'});
 /* Драфт прошлых лет: этапы (29.09). */
 Object.assign(I18N.ru, {dpPastDesc2:'Карточки — по настоящим результатам игроков на этом турнире. Формат, очки, призы и остров — того же сезона.'});
 Object.assign(I18N.en, {dpPastDesc2:'Cards built from the players’ real results at this event. Format, scoring, prize money and island of that season.'});
@@ -126823,6 +126825,7 @@ function careerCentreHTML(card, a){
   </div>`;
   const lbPlay=`<div class="ch-col-play cc-lb-playcol">
       ${typeof ccRosterSoonHTML==='function' ? ccRosterSoonHTML() : ''}
+      ${typeof ccMapPickHTML==='function' ? ccMapPickHTML() : ''}
       ${careerMpTileHTML()}
       ${careerRaceTileHTML()}
       ${/* Закрытый старший вечер (не прошёл в Weekly Final) — кап того же дня кнопкой здесь, иначе день уходит перемоткой. */
@@ -130438,10 +130441,32 @@ function ccCycleSlot(day){
   // остаются своими сезонами.
   if(d<'2025-11-29' || d>='2027-01-01') return null;
   let w=0; CC_CYCLE_CUTS.forEach(c=>{ if(d>=c) w++; });
-  const slot=CC_CYCLE[(k-1)%CC_CYCLE.length][w];
+  const slot=CC_CYCLE[ccCycleChapter(k)][w];
   return (slot && ZONE_SETS[slot[0]]) ? slot : null;
 }
 function ccCycleIsland(day){ const s=ccCycleSlot(day); return s ? s[0] : null; }
+/* СВОЯ КАРТА ПОСЛЕ 2026 (отзыв игрока 11.11: «не возвращай OG-карту после 2026, дай выбрать карту»). cr.mapCh — номер строки
+   CC_CYCLE (глава), null — по кругу, как было. Выбор держится, пока его не сменят; в команде и гонке не показывается,
+   там год общий. */
+function ccCycleChapter(k){
+  const cr=(typeof CAREER!=='undefined' && CAREER && CAREER.career) || null;
+  const m=cr && cr.mapCh;
+  return (Number.isInteger(m) && m>=0 && m<CC_CYCLE.length) ? m : (k-1)%CC_CYCLE.length;
+}
+const CC_CYCLE_NAMES=['C1', 'C2 S1-4', 'C2 S5-8', 'C3', 'C4', 'C5', 'C6', 'C7'];
+function ccMapPickHTML(){
+  if(!(ccYearShift()>0) || ccPastYearIsland()) return '';
+  if((typeof ccMpOn==='function' && ccMpOn()) || (typeof ccRaceOn==='function' && ccRaceOn())) return '';
+  const cr=CAREER.career, cur=Number.isInteger(cr.mapCh) ? cr.mapCh : -1, T=L();
+  const b=(i, label)=>'<button class="cc-back'+(i===cur ? ' on' : '')+'" onclick="ccMapPick('+i+')"'+(i===cur ? ' aria-pressed="true"' : '')+'>'+esc(label)+'</button>';
+  return '<div class="ch-tile cc-soon cc-mappick"><div class="cc-soon-h">'+esc(T.mapPickH||'Map this year')+'</div>'+
+    '<div class="dm-ask dm-ask-wide">'+b(-1, T.mapPickCycle||'Rotation')+CC_CYCLE_NAMES.map((n, i)=>b(i, n)).join('')+'</div></div>';
+}
+function ccMapPick(i){
+  if(!CAREER || !CAREER.career) return;
+  CAREER.career.mapCh=(Number.isInteger(i) && i>=0 && i<CC_CYCLE.length) ? i : null;
+  careerSave(); careerRenderHub('centre');
+}
 function careerBrSet(){
   const py=ccPastYearIsland(); if(py) return py;
   const cy=ccCycleIsland(careerToday()); if(cy) return cy;
@@ -132458,6 +132483,19 @@ function ccVictoryPayOf(ev, place){
   const t=ev.pay==='RDCC' ? CC_RDCC_PAY_2024 : (ccIs2019() && CC_DCC_PAY_2019[ev.pay]) ? CC_DCC_PAY_2019[ev.pay] : (ccIs2021() && CC_DCC_PAY_2021[ev.pay]) ? CC_DCC_PAY_2021[ev.pay] : (ccIs2022() && CC_DCC_PAY_2022[ev.pay]) ? CC_DCC_PAY_2022[ev.pay] : (ccIs2023() && CC_DCC_PAY_2023[ev.pay]) ? CC_DCC_PAY_2023[ev.pay] : CC_DCC_PAY_2024[ev.pay];
   // Соло-кап 2022-го платит таблицей на одного.
   return ccPay24(t, place)*(ev.mode==='solo' ? 1 : ccVictoryTeamSize(ev));
+}
+/* Victory Cash Cup из архива: таблица Epic у него по очкам раунда 2 (100 за победу → $100, 200 → $200,
+   300 → $300 на игрока), а не по месту. Читали её как места 1–100, и в комнате прошедших платили всем,
+   в том числе командам без побед. Перевод: сумма на игрока за одну победу, 0 — таблица обычная. */
+function ccVicPerWin(ev){
+  const t=ev && ev.payT ? ccPay24Table(ev.payT) : null;
+  if(!t || !t.length || !t.every(function(r, i){ return r[0]===100*(i+1); })) return 0;
+  return t[0][1];
+}
+// Деньги команды за победы: строка таблицы по числу побед, побед больше строк — последняя строка.
+function ccVicWinsCash(ev, wins, size){
+  const t=ccPay24Table(ev.payT), w=Math.min(wins||0, t ? t.length : 0);
+  return w ? t[w-1][1]*Math.max(1, size||1) : 0;
 }
 /* Снимки сцены 2024-го: дивизион 1 — сотня полуфиналов ближайшего Мейджора (верхняя
    и нижняя сетки), других дверей в 2024-м не было. Набор f2 — с первого квалификатора
@@ -147623,9 +147661,15 @@ function careerSocialHTML(){
                 ${open.roleMineOk===false && open.roleMate && open.roleMate.swap ? `<button class="cc-back" onclick="careerDmRoleReplace(\'${open.id}\')">${
                   L().dmRoleReplace(esc(ccHandle(open.roleMate.handle)))}</button>` : ''}
               </div></div>`;
+            /* Не в пару, а в другой формат года (отзыв игрока: «может, в дуо он не нужен, а в трио да») — ответить
+               письмом «трио?/сквад?», как из поиска: тот же careerDmWrite с форматом. Только где формат ещё впереди и
+               в его составе есть место. */
+            const other=[2,3,4].filter(f=>f!==careerSquadSize() && (typeof ccFormatNext!=='function' || ccFormatNext(f))
+              && ccFmtRoster(f).length<f-1 && !ccFmtRoster(f).some(r=>hKey((ccMateCardOf(r)||{}).handle||'')===hKey(open.who.handle)));
             return `<div class="dm-foot">${held ? `<div class="dm-asked">${
               L().ccSlotLoseHint(careerPartnerCard().handle, held.what)}</div>` : ''}
-              <button class="ch-sign" onclick="careerDmAcceptAsk(\'${open.id}\')">${ccSay('dmTakeIt')}</button></div>`; })()
+              <div class="dm-ask"><button class="ch-sign" onclick="careerDmAcceptAsk(\'${open.id}\')">${ccSay('dmTakeIt')}</button>${
+              other.map(f=>`<button class="cc-back" onclick="careerDmWrite('${jsq(open.who.handle)}', null, ${f})">${L()[ccSquadKey('dmAskBtn', f)]}</button>`).join('')}</div></div>`; })()
         : `<div class="dm-foot"><button class="ch-sign" onclick="careerDmWrite('${jsq(open.who.handle)}', null, ${open.fmt||'null'})">${L()[ccSquadKey('dmAskBtn', open.fmt)]}</button></div>`}`
     : `<div class="ch-empty">${L().dmPickThread}</div>`;
 
@@ -165881,11 +165925,19 @@ function ccRosterSoonOpen(){
 const CC_EV_PICK_MS=600000;
 /* Состав другого формата — свой: напарников года в нём нет и по умолчанию они туда не копируются
    (дуо на EWC и трио на FNCS — разные люди, один человек в двух составах не стоит). */
+/* Трио-кап в дуо-год — «дуо +1»: напарники года встают в состав большего формата сами, добирать остаётся
+   недостающих. Записанный состав формата идёт первым; полный — напарников не добавляет. В меньший формат
+   (дуо-кап в трио-год) напарник года сам не встаёт, но выбрать его можно (ccEventRosterPick). */
 function ccFmtRoster(f){
   if(!CAREER) return [];
-  if(!f || f===careerSquadSize()) return (CAREER.partners||[]).filter(Boolean);
-  const year=new Set((CAREER.partners||[]).map(r=>{ const c=ccMateCardOf(r); return c ? hKey(c.handle) : ''; }).filter(Boolean));
-  return (((CAREER.rosters||{})[f])||[]).filter(r=>{ const c=r && ccMateCardOf(r); return c && !year.has(hKey(c.handle)); }).slice(0, f-1);
+  const year=(CAREER.partners||[]).filter(Boolean);
+  if(!f || f===careerSquadSize()) return year;
+  const seen=new Set(), out=[];
+  const add=r=>{ const c=r && ccMateCardOf(r), k=c ? hKey(c.handle) : '';
+    if(k && !seen.has(k) && out.length<f-1){ seen.add(k); out.push(r); } };
+  (((CAREER.rosters||{})[f])||[]).forEach(add);
+  if(f>careerSquadSize()) year.forEach(add);
+  return out;
 }
 function ccEventRosterPick(ev, fmt){
   if(!fmt || fmt===1 || !CAREER || CC_EVENT_SIZE) return Promise.resolve('go');
@@ -165905,9 +165957,9 @@ function ccEventRosterPick(ev, fmt){
   const hOf=r=>(ccMateCardOf(r)||{}).handle||'';
   const names=[CAREER.player.nick||CAREER.player.handle||''].concat(own.map(hOf).filter(Boolean));
   // Кого можно взять кнопкой: уже стоящие в составе формата и свободные со сцены региона, ближайшие по рейтингу.
-  // Напарников года здесь нет: один человек в двух составах не стоит.
+  // Напарники года — тоже в списке, сразу за составом формата («трио — это дуо +1»).
   const pool=[];
-  own.forEach(r=>{ const h=hOf(r); if(h && !pool.some(p=>hKey(p.h)===hKey(h))) pool.push({r, h, ovr:(ccMateCardOf(r)||{}).rating||0}); });
+  own.concat((CAREER.partners||[]).filter(Boolean)).forEach(r=>{ const h=hOf(r); if(h && !pool.some(p=>hKey(p.h)===hKey(h))) pool.push({r, h, ovr:(ccMateCardOf(r)||{}).rating||0}); });
   { const busy=new Set([hKey(CAREER.player.handle||CAREER.player.nick||'')].concat((CAREER.partners||[]).map(hOf).filter(Boolean).map(hKey)));
     const me=CAREER.player.ovr||80;
     ccSceneRoster(ccCareerRegion()).filter(c=>c && c.handle && !busy.has(hKey(c)) && !pool.some(p=>hKey(p.h)===hKey(c.handle)))
@@ -166792,6 +166844,9 @@ async function runCareerVictoryNight(){
   // Кап в одно окно у Epic (ccCupRounds — Solo Cash Cup 2019–20, дейли, капы 2021) — один раунд,
   // деньги по месту сразу, как у ЛАНа.
   const oneRound=!lanN && !ev.single && (!!(ev.pay || ev.payT) && ccCupRounds(ev)===1 || !!ev.ownQual);
+  // Victory Cash Cup из архива платит за победы (ccVicPerWin), не за место.
+  const byWins=!lanN && ccVicPerWin(ev)>0;
+  const vicPay=function(ranked){ return function(place){ return byWins ? ccVicWinsCash(ev, (ranked[place-1]||{}).wins, ccVictoryTeamSize(ev)) : ccVictoryPayOf(ev, place); }; };
   // Очки раундов — как у Epic в этом капе (ccCupScore); у ЛАНов и своих событий — прежняя таблица.
   const vSc1=lanN ? null : ccCupScore(ev, 1), vSc2=lanN ? null : ccCupScore(ev, 2);
   /* Число игр — тоже Epic'ово (MatchCap окна в CC_CUP_SCORE, третье/четвёртое поле): Solo Victory Cup S41 — 8 в раунде 1,
@@ -166869,9 +166924,9 @@ async function runCareerVictoryNight(){
   let vicFinal=ranked1;
   const through=!lanN && place1<=vCut;
   // ЛАН платит за место единственной серии — сразу, до карточки.
-  const lanCash=(lanN || oneRound) ? ccVictoryPayOf(ev, place1) : 0;
+  const lanCash=(lanN || oneRound) ? vicPay(ranked1)(place1) : 0;
   const ownCut=ev.ownQual ? ccOwnQualDone(ev, ranked1, you) : 0;
-  if(lanN || oneRound) careerMoneyAdd(ranked1, function(place){ return ccVictoryPayOf(ev, place); });
+  if(lanN || oneRound) careerMoneyAdd(ranked1, vicPay(ranked1));
 
   const shell1=createStageCardShell(lanN ? ev.lan+' — '+field.length : oneRound ? (ev.name||'Cash Cup')+' — '+field.length : L().ccVicR1Title(field.length));
   await revealStageLog(you, shell1, true);
@@ -166883,13 +166938,13 @@ async function runCareerVictoryNight(){
          : ev.placement ? L().lfNewsPlaced(ccPlacementDivOf(false, null, vCut, ev, place1, field.length))
          : L().ccVicFail(vCut));
   await revealStandings(shell1, ranked1, you, ownCut || vCut, null, null,
-    (lanN || oneRound) ? function(place){ return ccVictoryPayOf(ev, place); } : null, null, lanN || oneRound);
+    (lanN || oneRound) ? vicPay(ranked1) : null, null, lanN || oneRound);
 
   // cash — на игрока: соло-кап платит одному, дуо/трио — составу.
   const rate=ev.skin ? 0 : ev.cash ? ev.cash*(solo ? 1 : careerSquadSize()) : (solo ? CC_VICTORY_CASH_SOLO : CC_VICTORY_CASH_DUO);
   // Кап с таблицей мест (Duos Cash Cup 2024): шесть игр, очки как в первом раунде, деньги по месту.
   // Placement Cup считает место (очки за место и элимы), как кап с таблицей, только без денег.
-  const payCup=!!(ev.pay || ev.payT || ev.placement);
+  const payCup=!!(ev.pay || (ev.payT && !byWins) || ev.placement);
   let wins=0, cash=lanCash, place2=null;
   /* ВТОРОЙ РАУНД В ОБЩЕЙ КОМНАТЕ — ТОЛЬКО ЕСЛИ ПРОШЛИ ВСЕ ЛЮДИ.
      Второй раунд идёт только у прошедшего (through). Вылетевший в первом заканчивал
@@ -166925,7 +166980,7 @@ async function runCareerVictoryNight(){
     const humans2=humans.filter(h=>r2.indexOf(h)>=0);
     /* Раунд 2 по правилу Epic: у денежного капа — своё правило раунда (S19–S21: те же места,
        элим за два), иначе как в раунде 1; у Victory — «только победа», как было. */
-    const r2Sc=payCup ? (vSc2 || vSc1) : null;
+    const r2Sc=(payCup || byWins) ? (vSc2 || vSc1) : null;
     await simulateGamesLive(r2, (vSc2 && capOk(vSc2.cap)) ? vSc2.cap : (payCup ? 6 : CC_VICTORY_R2_GAMES),
       r2Sc ? r2Sc.pts : payCup ? victoryR1Points : victoryR2Points, r2Sc ? r2Sc.kill : payCup ? CC_VICTORY_R1_KILL : 0, 'stage', 0, null, zones2,
       {lobbySize:ccVictoryLobby(ev, solo), stageName:L().ccVicR2Live,
@@ -166945,10 +167000,10 @@ async function runCareerVictoryNight(){
     vicFinal=ranked2;
     place2=ranked2.indexOf(you)+1;
     wins=you.wins||0;
-    cash=payCup ? ccVictoryPayOf(ev, place2) : wins*rate;
+    cash=payCup ? ccVictoryPayOf(ev, place2) : byWins ? vicPay(ranked2)(place2) : wins*rate;
     // Not a placement table: every team in the lobby is paid for the games it
     // won, so the cheque is read off the team rather than off its row.
-    if(payCup) careerMoneyAdd(ranked2, function(place){ return ccVictoryPayOf(ev, place); });
+    if(payCup || byWins) careerMoneyAdd(ranked2, payCup ? function(place){ return ccVictoryPayOf(ev, place); } : vicPay(ranked2));
     else careerMoneyAdd(r2, function(_place, t){ return (t.wins||0)*rate; });
     const shell2=createStageCardShell(L().ccVicR2Title(r2.length));
     await revealStageLog(you, shell2, true);
@@ -166960,7 +167015,7 @@ async function runCareerVictoryNight(){
     // Колонка «Приз» у кэш-капа — сколько взяло каждое место (его правка 28.09: «призы у
     // каждого не пишутся в таблице второго раунда»). Кап за победы платит не по месту — без колонки.
     await revealStandings(shell2, ranked2, you, 0, null, null,
-      payCup ? function(place){ return ccVictoryPayOf(ev, place); } : null, null, true);
+      payCup ? function(place){ return ccVictoryPayOf(ev, place); } : byWins ? vicPay(ranked2) : null, null, true);
   }
   removeSkipButton();
   // Посев: итог вечера ставит ступень дивизиона.
@@ -166996,8 +167051,9 @@ async function runCareerVictoryNight(){
     const tPlace2=(tThrough && ranked2v) ? ranked2v.indexOf(t)+1 : null;
     // Кап с таблицей мест платит за место второго раунда, а не за победы — и журнал пишет то же.
     // Кап в один раунд платит за место этого раунда, как ЛАН (аудит 29.09: журнал писал $0 и «не прошёл»).
-    const tCash=(lanN || oneRound) ? ccVictoryPayOf(ev, ranked1.indexOf(t)+1)
-               : payCup ? (tPlace2 ? ccVictoryPayOf(ev, tPlace2) : 0) : (t.wins||0)*rate*(tThrough ? 1 : 0);
+    const tCash=(lanN || oneRound) ? vicPay(ranked1)(ranked1.indexOf(t)+1)
+               : payCup ? (tPlace2 ? ccVictoryPayOf(ev, tPlace2) : 0)
+               : byWins ? (tThrough ? ccVicWinsCash(ev, t.wins, ccVictoryTeamSize(ev)) : 0) : (t.wins||0)*rate*(tThrough ? 1 : 0);
     const placesT=(t.stageLog||[]).map(g=>g.place);
     cr.log.push({season:cr.season, day:careerToday(), div:cr.division, place:tPlace2||(ranked1.indexOf(t)+1),
                of:tThrough?vCut:field.length, pts:t.stagePts, passed:tThrough || ((lanN || oneRound) && tCash>0),
@@ -171233,6 +171289,7 @@ function mgrCupFieldOf(ev, n, salt){
    тем же правилом, что runCareerVictoryNight (cash=wins*rate). Сетка есть — по месту (mgrPrize). */
 function mgrCupPrize(ev, place, size, wins){
   if(!ev) return 0;
+  if(ccVicPerWin(ev)) return ccVicWinsCash(ev, wins, size);
   if(ev.pay || ev.payT || ev.placement) return mgrPrize(ev, place, size)||0;
   const solo=ev.mode==='solo';
   const rate=ev.cash ? ev.cash*(solo ? 1 : size) : (solo ? CC_VICTORY_CASH_SOLO : Math.round(CC_VICTORY_CASH_DUO*size/2));
@@ -171255,6 +171312,8 @@ function mgrWorldStore(ev, ranked, played, stage){
   MGR.results=MGR.results||[];
   const id=ev.id+(stage ? '#'+stage : '');
   if(MGR.results.some(r=>r.id===id && r.day===ev.day && r.year===MGR.year)) return;
+  // Клуб уже сыграл это событие своим вечером (mgrCarWorldStore, id 'car:…') — вторая, мировая таблица не нужна.
+  if(!played && MGR.results.some(r=>r.id==='car:'+ev.id && r.day===ev.day && r.year===MGR.year)){ if(!stage) mgrWorldMark(ev); return; }
   const rows=[];
   ranked.forEach((tm,i)=>{ if(i<MGR_RESULTS_ROWS || tm.isClub || (tm.squad||[]).some(c=>mgrOrgOf(c)===MGR.club.name)) rows.push(mgrWorldRow(tm, i+1, ev, size, stage)); });
   MGR.results.unshift({id, day:ev.day, year:MGR.year, name:ev.name+(stage ? ' · '+stage : ''), played:!!played, n:ranked.length, rows, mode:ev.mode});
@@ -171299,7 +171358,9 @@ function mgrWorldSim(ev){
       }
     } else if(ev.kind==='fncsSolo'){
       const sp=CC_SOLOS_STAGES[ev.stage]||{}, n=sp.field||100;
-      const field=careerSoloField(cr, [], n+1, false, 'final')||[];   // отдаёт size-1 (место под «тебя»)
+      /* Игроки клуба в мировом поле не сидят: в финал они попадают только своими вечерами (mgrCarEvents). Иначе мир сажал
+         вылетевших в Гранд-финал — в таблице «мои прошли в гранды», а вечера у клуба нет и призовые не идут (ТГ 8.11). */
+      const field=careerSoloField(cr, mgrOwned(), n+1, false, 'final')||[];   // отдаёт size-1 (место под «тебя»)
       if(field.length) mgrWorldStore(ev, mgrEngineRank(field.slice(0, n), sp.games||10, sp.pts||victoryR1Points, sp.kill||2, sp.reload ? ccReloadLobby(1) : 100, seed, []), false);
     } else {
       const field=mgrCupFieldOf(ev, Math.max(20, careerVictoryField(size===1)||50), 'mgrw|'+ev.id+'|'+MGR.year);
@@ -174843,6 +174904,8 @@ function mgrCarPayNote(ranked, prize){
 function mgrCarWorldStore(ev, pays){
   if(!pays || !pays.length || !MGR) return;
   MGR.results=MGR.results||[];
+  // Клуб сыграл вечер сам — мировая таблица того же события (без клуба, mgrWorldSim) больше не нужна: одна таблица на событие.
+  if(ev.cid) MGR.results=MGR.results.filter(r=>!(r.id===ev.cid && r.day===ev.day && r.year===MGR.year && !r.played));
   if(!MGR.ctab || MGR.ctab.year!==MGR.year) MGR.ctab={year:MGR.year, by:{}};
   const counted=new Set();
   pays.forEach((p, k)=>{
