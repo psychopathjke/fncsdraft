@@ -720,6 +720,41 @@
   color:var(--ink-dim,#96a3b5);text-decoration:none;border:1px solid rgba(255,255,255,.16);
   background:rgba(255,255,255,.03);transition:color .15s,border-color .15s;}
 .hero-about a:hover{color:var(--ink,#e6ecf5);border-color:rgba(255,255,255,.34);}
+/* Больше или меньше (#hl). */
+.hl-wrap{max-width:640px;margin:0 auto;padding:16px 16px 40px;color:var(--ink,#e6ecf5);}
+.hl-top{display:flex;align-items:center;justify-content:space-between;gap:12px;}
+.hl-back{background:none;border:1px solid rgba(255,255,255,.18);color:inherit;border-radius:8px;padding:6px 12px;font:inherit;font-size:13px;cursor:pointer;}
+.hl-back:focus-visible,.hl-card:focus-visible{outline:2px solid var(--go,#ffdd00);outline-offset:2px;}
+.hl-score{display:flex;flex-direction:column;align-items:flex-end;font-variant-numeric:tabular-nums;}
+.hl-score b{font-family:var(--font-display);font-size:18px;color:var(--go,#ffdd00);}
+.hl-score small{font-size:12px;opacity:.7;}
+.hl-title{font-family:var(--font-display);font-size:28px;text-transform:uppercase;margin:18px 0 6px;letter-spacing:.5px;}
+.hl-q{font-size:16px;margin:0 0 14px;line-height:1.35;}
+.hl-q small{display:block;font-size:12px;opacity:.65;margin-top:4px;}
+.hl-pair{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:center;}
+.hl-vs{font-family:var(--font-display);font-size:18px;opacity:.6;}
+.hl-card{display:flex;flex-direction:column;align-items:center;gap:6px;min-width:0;padding:16px 10px;border-radius:14px;
+  background:rgba(255,255,255,.05);border:2px solid rgba(255,255,255,.12);color:inherit;font:inherit;cursor:pointer;
+  transition:transform .15s ease,border-color .15s ease,background-color .15s ease;}
+@media (hover:hover){.hl-card:not([disabled]):hover{border-color:var(--go,#ffdd00);transform:translateY(-2px);}}
+.hl-card[disabled]{cursor:default;}
+.hl-ph{position:relative;display:grid;place-items:center;width:84px;height:84px;border-radius:50%;overflow:hidden;
+  background:#1b2c52;font-family:var(--font-display);font-size:34px;color:rgba(255,255,255,.55);}
+.hl-ph img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
+.hl-nm{display:block;max-width:100%;font-size:16px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.hl-org{display:block;max-width:100%;font-size:12px;opacity:.6;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.hl-val{font-family:var(--font-display);font-size:22px;font-variant-numeric:tabular-nums;color:rgba(255,255,255,.5);}
+.hl-win{border-color:#3ecf6e;background:rgba(62,207,110,.12);}
+.hl-win .hl-val{color:#3ecf6e;}
+.hl-lose .hl-val{color:#ff6b6b;}
+.hl-mine.hl-lose{border-color:#ff6b6b;background:rgba(255,107,107,.1);}
+.hl-hint{text-align:center;font-size:13px;opacity:.6;margin:14px 0 0;}
+.hl-end{margin-top:20px;text-align:center;display:flex;flex-direction:column;gap:6px;align-items:center;}
+.hl-end b{font-family:var(--font-display);font-size:22px;}
+.hl-end small{color:var(--go,#ffdd00);font-size:13px;}
+.hl-btns{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:8px;}
+@media (max-width:420px){.hl-ph{width:64px;height:64px;font-size:26px;}.hl-pair{gap:6px;}.hl-card{padding:12px 6px;}.hl-nm{font-size:14px;}}
+@media (prefers-reduced-motion:reduce){.hl-card{transition:none;}}
 .hero-about a:focus-visible{outline:2px solid var(--go,#ffdd00);outline-offset:2px;}
 .hero-team{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:2px;}
   .hero-team[hidden]{display:none;}
@@ -10012,7 +10047,7 @@
             <button class="cstrip-btn cstrip-btn-code" id="cstripCode" type="button" onclick="careerMpJoinNew()" data-i18n="ccMpEnter"></button>
           </span>
         </div>
-        <div class="hero-about"><a href="about.html"><span data-i18n="aboutLink"></span></a><a href="/players"><span data-i18n="playersLink"></span></a></div>
+        <div class="hero-about"><a href="about.html"><span data-i18n="aboutLink"></span></a><a href="/players"><span data-i18n="playersLink"></span></a><a href="#hl" onclick="event.preventDefault();hlOpen()"><span data-i18n="hlLink"></span></a></div>
         <div class="hero-cta">
           <button class="hero-btn hero-btn-go" type="button" onclick="careerStart()"><span data-i18n="heroCareer"></span></button>
           <button class="hero-btn hero-btn-alt hero-mgr-btn" type="button" onclick="mgrStart()"><span id="mgCareerBtn" data-i18n="hmMgrCareer"></span></button>
@@ -129762,6 +129797,7 @@ function ccLifeTick(){
       lf.case={k, until:ccAddDays(d, 3+Math.floor(rng()*5))};
       careerNews('bad', 'lfNewsCase', [L()['lfCase'+k]]);
     }
+    ccLiveEventTick(d);
     // Бан на сцене — у чужих тоже (новость).
     if(rng()<1/75){
       const reg=ccCareerRegion(), pool=PLAYERS.filter(p=>p.region===reg && (p._ovr||0)>=80);
@@ -169720,6 +169756,191 @@ function ccHeroCareerText(){
 }
 // Главная рисуется сразу после загрузки app.js (раньше это делал mgrHeroText из mgr.js — то есть никогда до входа в менеджер).
 setTimeout(function(){ try{ ccHeroCareerText(); }catch(e){} }, 0);
+/* Больше или меньше: два настоящих игрока, кто выше. Вопросы только из данных сайта: место в одном и том же
+   финале (карточки PLAYERS_BASE с местом) и призовые 2026 по Liquipedia (HOME_EARN_LQ). Серия до первой ошибки,
+   рекорд на устройстве. Адрес #hl открывает экран сразу. */
+let HL=null;
+const HL_BEST_KEY='fncsdraft_hl_best', HL_EARN_SHARE=0.25;
+function hlBest(){ try{ return +(localStorage.getItem(HL_BEST_KEY)||0)||0; }catch(e){ return 0; } }
+function hlBestSet(n){ try{ localStorage.setItem(HL_BEST_KEY, String(n)); }catch(e){} }
+function hlPhoto(p){ try{ return (typeof photoURLReal==='function' && photoURLReal(p)) || null; }catch(e){ return null; } }
+// Финалы, где у карточек есть места: ник один раз (лучшее место), только топ-50, хотя бы четыре разных места.
+function hlGroups(){
+  if(hlGroups.c) return hlGroups.c;
+  const by=new Map();
+  PLAYERS_BASE.forEach(p=>{
+    if(!p || !p.handle || p.tier==='qualifier' || !(p.placement>0) || !p.event) return;
+    const k=p.event+'|'+p.region;
+    let g=by.get(k); if(!g){ g={ev:p.event, date:p.date, rows:new Map()}; by.set(k, g); }
+    const hk=hKey(p), old=g.rows.get(hk);
+    if(!old || p.placement<old.placement) g.rows.set(hk, p);
+  });
+  const out=[];
+  by.forEach(g=>{
+    const rows=[...g.rows.values()].filter(p=>p.placement<=50);
+    if(new Set(rows.map(p=>p.placement)).size>=4) out.push({ev:g.ev, date:g.date, rows});
+  });
+  return hlGroups.c=out;
+}
+// Сначала те, у кого есть фото: их узнают, и вопрос интереснее.
+function hlPickTwo(rows, val){
+  const known=rows.filter(r=>r.photo);
+  const pool=known.length>=2 && Math.random()<0.8 ? known : rows;
+  for(let t=0; t<30; t++){
+    const a=pool[Math.floor(Math.random()*pool.length)], b=pool[Math.floor(Math.random()*pool.length)];
+    if(a!==b && val(a)!==val(b) && hKey({handle:a.name})!==hKey({handle:b.name})) return [a, b];
+  }
+  return null;
+}
+function hlRoundPlace(){
+  const gs=hlGroups(); if(!gs.length) return null;
+  for(let t=0; t<20; t++){
+    const g=gs[Math.floor(Math.random()*gs.length)];
+    const rows=g.rows.map(p=>({name:p.handle, flag:flagImg(p.nat, 14), photo:hlPhoto(p), org:p.org||'', val:p.placement}));
+    const two=hlPickTwo(rows, r=>r.val);
+    if(two) return {kind:'place', ev:ccNoDash(String(g.ev)).replace(/\s+-\s+/g, ' · '), date:String(g.date||''), a:two[0], b:two[1]};
+  }
+  return null;
+}
+function hlRoundEarn(){
+  const list=(typeof HOME_EARN_LQ!=='undefined') ? HOME_EARN_LQ : [];
+  if(list.length<2) return null;
+  const card=n=>PLAYERS_BASE.find(p=>p && hKey(p)===hKey({handle:n}));
+  const rows=list.map(x=>{ const c=card(x.n);
+    return {name:x.n, flag:x.c ? '<img src="flags/w20/'+esc(x.c)+'.png" alt="" width="18" height="13" style="vertical-align:-1px;margin-right:4px" onerror="this.remove()">' : '',
+            photo:c ? hlPhoto(c) : null, org:(c && c.org)||'', val:x.e}; });
+  const two=hlPickTwo(rows, r=>r.val);
+  return two ? {kind:'earn', a:two[0], b:two[1]} : null;
+}
+function hlNext(){
+  const r=(Math.random()<HL_EARN_SHARE && hlRoundEarn()) || hlRoundPlace() || hlRoundEarn();
+  HL.round=r; HL.picked=null;
+  hlDraw();
+}
+function hlOpen(){
+  HL={streak:0, best:hlBest(), round:null, picked:null, over:false};
+  let s=document.getElementById('screen-hl');
+  if(!s){ s=document.createElement('div'); s.className='screen'; s.id='screen-hl'; s.innerHTML='<div class="hl-wrap" id="hlBody"></div>';
+    const ref=document.getElementById('screen-profile'); (ref ? ref.parentNode : document.body).insertBefore(s, ref ? ref.nextSibling : null); }
+  show('screen-hl');
+  try{ if(location.hash!=='#hl') history.replaceState(null, '', '#hl'); }catch(e){}
+  hlNext();
+}
+function hlHome(){
+  try{ if(location.hash==='#hl') history.replaceState(null, '', location.pathname+location.search); }catch(e){}
+  show('screen-mode');
+}
+function hlValText(r, v){ return r.kind==='earn' ? '$'+ccNum(v) : L().hlPlaceV(v); }
+// Выше: в финале меньшее место, в призовых большая сумма.
+function hlWinner(r){ return r.kind==='earn' ? (r.a.val>r.b.val ? 0 : 1) : (r.a.val<r.b.val ? 0 : 1); }
+function hlCardHTML(r, side){
+  const p=side ? r.b : r.a, done=HL.picked!=null, win=hlWinner(r)===side;
+  const cls='hl-card'+(done ? (win ? ' hl-win' : ' hl-lose') : '')+(done && HL.picked===side ? ' hl-mine' : '');
+  // Буква ника под фото: не загрузилось фото, остаётся буква.
+  const ph='<span class="hl-ph" aria-hidden="true">'+esc(String(p.name).slice(0,1).toUpperCase())+
+    (p.photo ? '<img src="'+esc(p.photo)+'" alt="" loading="lazy" onerror="this.remove()">' : '')+'</span>';
+  return '<button type="button" class="'+cls+'" onclick="hlPick('+side+')"'+(done ? ' disabled' : '')+'>'+ph+
+    '<b class="hl-nm">'+p.flag+esc(p.name)+'</b>'+(p.org ? '<small class="hl-org">'+esc(p.org)+'</small>' : '<small class="hl-org">&nbsp;</small>')+
+    '<span class="hl-val">'+(done ? esc(hlValText(r, p.val)) : '?')+'</span></button>';
+}
+function hlDraw(){
+  const box=document.getElementById('hlBody'); if(!box || !HL) return;
+  const T=L(), r=HL.round;
+  const top='<div class="hl-top"><button type="button" class="hl-back" onclick="hlHome()">‹ '+esc(T.hlBack)+'</button>'+
+    '<span class="hl-score"><b>'+esc(T.hlStreak(HL.streak))+'</b><small>'+esc(T.hlBest(HL.best))+'</small></span></div>';
+  if(!r){ box.innerHTML=top+'<p class="hl-q">'+esc(T.hlEmpty)+'</p>'; return; }
+  const q=r.kind==='earn' ? '<p class="hl-q">'+esc(T.hlQEarn)+'<small>'+esc(T.hlSrcEarn)+'</small></p>'
+                          : '<p class="hl-q">'+esc(T.hlQPlace)+'<small>'+esc(r.ev)+(r.date ? ' · '+esc(r.date) : '')+'</small></p>';
+  let end='';
+  if(HL.over){
+    end='<div class="hl-end"><b>'+esc(T.hlOver(HL.streak))+'</b>'+(HL.streak>0 && HL.streak>=HL.best ? '<small>'+esc(T.hlNewBest)+'</small>' : '')+
+      '<div class="hl-btns"><button type="button" class="hero-btn hero-btn-go" onclick="hlOpen()">'+esc(T.hlAgain)+'</button>'+
+      '<button type="button" class="hero-btn hero-btn-alt" id="hlCopyBtn" onclick="hlCopy()">'+esc(T.hlCopy)+'</button></div></div>';
+  }
+  box.innerHTML=top+'<h1 class="hl-title">'+esc(T.hlTitle)+'</h1>'+q+
+    '<div class="hl-pair">'+hlCardHTML(r, 0)+'<span class="hl-vs">VS</span>'+hlCardHTML(r, 1)+'</div>'+
+    (HL.picked==null ? '<p class="hl-hint">'+esc(T.hlHint)+'</p>' : '')+end;
+}
+function hlPick(side){
+  if(!HL || !HL.round || HL.picked!=null || HL.over) return;
+  HL.picked=side;
+  const ok=hlWinner(HL.round)===side;
+  if(ok){ HL.streak++; if(HL.streak>HL.best){ HL.best=HL.streak; hlBestSet(HL.best); } }
+  else HL.over=true;
+  hlDraw();
+  if(ok) setTimeout(()=>{ if(HL && !HL.over && HL.picked!=null) hlNext(); }, 1200);
+}
+function hlCopy(){
+  const t='fncsdraft higher or lower: '+(HL ? HL.streak : 0)+'\nfncsdraft.com/#hl';
+  const done=()=>{ const b=document.getElementById('hlCopyBtn'); if(b) b.textContent=L().hlCopied; };
+  try{ navigator.clipboard.writeText(t).then(done, done); }catch(e){ done(); }
+}
+window.addEventListener('load', ()=>{ if(location.hash==='#hl') setTimeout(()=>{ try{ hlOpen(); }catch(e){} }, 300); });
+Object.assign(I18N.ru, {hlLink:'Больше или меньше', hlTitle:'Больше или меньше', hlBack:'Главная', hlStreak:n=>'Серия: '+n, hlBest:n=>'Рекорд: '+n,
+  hlQPlace:'Кто занял место выше в этом финале?', hlQEarn:'Кто заработал больше призовых в 2026?', hlSrcEarn:'Liquipedia, все турниры года',
+  hlHint:'Нажми на того, кто выше', hlPlaceV:p=>p+' место', hlOver:n=>'Серия окончена: '+n, hlNewBest:'Новый рекорд',
+  hlAgain:'Ещё раз', hlCopy:'Скопировать результат', hlCopied:'Скопировано', hlEmpty:'Нет данных для вопроса'});
+Object.assign(I18N.en, {hlLink:'Higher or lower', hlTitle:'Higher or lower', hlBack:'Home', hlStreak:n=>'Streak: '+n, hlBest:n=>'Best: '+n,
+  hlQPlace:'Who placed higher in this final?', hlQEarn:'Who earned more prize money in 2026?', hlSrcEarn:'Liquipedia, every event of the year',
+  hlHint:'Tap the one who is higher', hlPlaceV:p=>'#'+p, hlOver:n=>'Streak over: '+n, hlNewBest:'New best',
+  hlAgain:'Play again', hlCopy:'Copy result', hlCopied:'Copied', hlEmpty:'No data for a question'});
+Object.assign(I18N.fr, {hlLink:'Plus ou moins', hlTitle:'Plus ou moins', hlBack:'Accueil', hlStreak:n=>'Série : '+n, hlBest:n=>'Record : '+n,
+  hlQPlace:'Qui a fini plus haut dans cette finale ?', hlQEarn:'Qui a gagné le plus en 2026 ?', hlSrcEarn:'Liquipedia, tous les tournois de l’année',
+  hlHint:'Touche celui qui est au-dessus', hlPlaceV:p=>p+(p===1 ? 're' : 'e')+' place', hlOver:n=>'Série terminée : '+n, hlNewBest:'Nouveau record',
+  hlAgain:'Rejouer', hlCopy:'Copier le résultat', hlCopied:'Copié', hlEmpty:'Pas de données pour une question'});
+Object.assign(I18N.it, {hlLink:'Più o meno', hlTitle:'Più o meno', hlBack:'Home', hlStreak:n=>'Serie: '+n, hlBest:n=>'Record: '+n,
+  hlQPlace:'Chi è arrivato più in alto in questa finale?', hlQEarn:'Chi ha guadagnato di più nel 2026?', hlSrcEarn:'Liquipedia, tutti i tornei dell’anno',
+  hlHint:'Tocca chi sta più in alto', hlPlaceV:p=>p+'° posto', hlOver:n=>'Serie finita: '+n, hlNewBest:'Nuovo record',
+  hlAgain:'Gioca ancora', hlCopy:'Copia il risultato', hlCopied:'Copiato', hlEmpty:'Nessun dato per una domanda'});
+Object.assign(I18N.pt, {hlLink:'Maior ou menor', hlTitle:'Maior ou menor', hlBack:'Início', hlStreak:n=>'Sequência: '+n, hlBest:n=>'Recorde: '+n,
+  hlQPlace:'Quem ficou mais alto nesta final?', hlQEarn:'Quem ganhou mais prêmios em 2026?', hlSrcEarn:'Liquipedia, todos os torneios do ano',
+  hlHint:'Toque em quem ficou acima', hlPlaceV:p=>p+'º lugar', hlOver:n=>'Sequência encerrada: '+n, hlNewBest:'Novo recorde',
+  hlAgain:'Jogar de novo', hlCopy:'Copiar resultado', hlCopied:'Copiado', hlEmpty:'Sem dados para uma pergunta'});
+/* Live-ивенты Fortnite в карьере: новость в ленте в сам день. Даты и типы с вики Fortnite
+   (tools/measured/wiki-live-events.txt). Только в настоящем году: карьера после 2026-го живёт по календарю 2026-го,
+   и «Shattered» второй раз там не случается. Турниров не двигает. */
+const CC_LIVE_EVENTS={'2019-02-02':['Showtime','concert'],'2019-05-04':['The Unvaulting','major'],'2019-07-20':['The Final Showdown','major'],
+  '2019-10-13':['The End','finale'],'2019-12-14':['Live At Risky','major'],'2020-04-23':["Travis Scott's Astronomical",'concert'],
+  '2020-06-15':['The Device','major'],'2020-12-01':['The Devourer of Worlds','major'],'2021-08-06':['Rift Tour','concert'],
+  '2021-09-12':['Operation: Sky Fire','major'],'2021-12-04':['The End','finale'],'2022-06-04':['Collision','major'],
+  '2022-12-03':['Fracture','finale'],'2023-12-02':['The Big Bang','finale'],'2024-11-01':['Remix: The Prelude','concert'],
+  '2024-11-30':['Remix: The Finale','finale'],'2024-12-20':['Defrosting','concert'],'2025-06-07':['Death Star Sabotage','major'],
+  '2025-08-02':['Super Showdown','major'],'2025-09-27':['Daft Punk Experience','concert'],'2025-11-29':['Zero Hour','finale'],
+  '2026-06-05':['Shattered','major']};
+function ccLiveEventOn(d){
+  const cr=CAREER && CAREER.career, e=CC_LIVE_EVENTS[d];
+  return e && cr && +String(d).slice(0,4)===+cr.year ? {name:e[0], type:e[1]} : null;
+}
+function ccLiveEventTick(d){
+  const e=ccLiveEventOn(d); if(!e) return;
+  const lf=ccLife(); lf.live=lf.live||[];
+  if(lf.live.indexOf(d)>=0) return;
+  lf.live.push(d);
+  careerNews('flat', 'lfNewsLive'+e.type, [e.name], {day:d});
+}
+// Под постом ивента своя реакция зрителей, не «бывает» плохого вечера.
+CC_CO_BY_KIND.unshift([/^lfNewsLive/, 'Live']);
+Object.assign(I18N.ru, {ccCoLive:['кто смотрел','лучший ивент главы','сервера опять легли','я на скримах был лол','мурашки','где награды','ну это было мощно']});
+Object.assign(I18N.en, {ccCoLive:['who watched','best event of the chapter','servers died again','i was in scrims lol','goosebumps','where are the rewards','that was insane']});
+Object.assign(I18N.fr, {ccCoLive:['qui a regardé','meilleur event du chapitre','serveurs encore morts','j’étais en scrim mdr','frissons','où sont les récompenses','c’était fou']});
+Object.assign(I18N.it, {ccCoLive:['chi l’ha visto','miglior evento del capitolo','server di nuovo giù','ero in scrim lol','pelle d’oca','dove sono le ricompense','pazzesco']});
+Object.assign(I18N.pt, {ccCoLive:['quem assistiu','melhor evento do capítulo','servidor caiu de novo','eu tava no scrim kkk','arrepiei','cadê as recompensas','foi insano']});
+CC_POST_BY.lfNewsLivemajor='press'; CC_POST_BY.lfNewsLivefinale='press'; CC_POST_BY.lfNewsLiveconcert='press';
+Object.assign(I18N.ru, {lfNewsLivemajor:n=>'Live-ивент в Fortnite: '+n+'. Вся сцена смотрела его вместо скримов',
+  lfNewsLivefinale:n=>'Финал главы: '+n+'. После ивента серверы ушли в даунтайм, дальше новая глава',
+  lfNewsLiveconcert:n=>'В Fortnite прошёл '+n+'. Про шутят, что лобби вечера было тише обычного'});
+Object.assign(I18N.en, {lfNewsLivemajor:n=>'Fortnite live event: '+n+'. The whole scene watched it instead of scrims',
+  lfNewsLivefinale:n=>'Chapter finale: '+n+'. Servers went into downtime after the event, a new chapter is next',
+  lfNewsLiveconcert:n=>n+' played in Fortnite. Pros joke the evening lobbies were quieter than usual'});
+Object.assign(I18N.fr, {lfNewsLivemajor:n=>'Événement live Fortnite : '+n+'. Toute la scène l’a regardé au lieu des scrims',
+  lfNewsLivefinale:n=>'Fin de chapitre : '+n+'. Les serveurs sont en maintenance après l’événement, un nouveau chapitre arrive',
+  lfNewsLiveconcert:n=>n+' a eu lieu dans Fortnite. Les pros disent que les lobbys du soir étaient plus calmes'});
+Object.assign(I18N.it, {lfNewsLivemajor:n=>'Evento live di Fortnite: '+n+'. Tutta la scena l’ha guardato invece degli scrim',
+  lfNewsLivefinale:n=>'Finale di capitolo: '+n+'. Dopo l’evento i server sono andati in manutenzione, arriva un nuovo capitolo',
+  lfNewsLiveconcert:n=>n+' si è tenuto in Fortnite. I pro scherzano che le lobby serali erano più tranquille'});
+Object.assign(I18N.pt, {lfNewsLivemajor:n=>'Evento ao vivo no Fortnite: '+n+'. A cena toda assistiu em vez dos scrims',
+  lfNewsLivefinale:n=>'Final de capítulo: '+n+'. Depois do evento os servidores entraram em manutenção, vem um novo capítulo',
+  lfNewsLiveconcert:n=>n+' rolou no Fortnite. Os pros brincam que os lobbies da noite estavam mais calmos'});
 /*@@MGR-FROM@@*/
 /* ============================================================================
    FORTNITE MANAGER (его идея 1.10: «режим fortnite manager», «как football manager»). Спека —
