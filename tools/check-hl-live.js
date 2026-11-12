@@ -18,13 +18,28 @@ window.addEventListener("load", function(){ setTimeout(async function(){
     for(let i=0;i<200;i++){ const r=i%2 ? hlRoundPlace() : hlRoundEarn(); if(!r){ bad++; continue; } kinds[r.kind]++;
       if(r.a.val===r.b.val || r.a.name===r.b.name || /[\u2014\u2013]/.test(r.ev||'')) bad++; }
     check('пары разные, без ничьих и длинных тире', bad===0 && kinds.place>0 && kinds.earn>0, bad+' '+JSON.stringify(kinds));
-    hlOpen();
+    hlOpen('mix');
     check('экран открыт', document.querySelector('.screen.active').id==='screen-hl');
     for(let i=0;i<3;i++){ hlPick(hlWinner(HL.round)); await wait(1300); }
     check('три верных = серия 3', HL.streak===3 && !HL.over, HL.streak+' '+HL.over);
     hlPick(1-hlWinner(HL.round));
     check('ошибка заканчивает серию', HL.over && document.querySelector('.hl-end')!=null);
-    check('рекорд записан', hlBest()>=3, String(hlBest()));
+    check('рекорд записан', hlBest('mix')>=3, String(hlBest('mix')));
+    // ---- За всё время: сумма первого видна, «Больше / Меньше» про второго, угаданный встаёт первым.
+    check('призовые за всё время есть', HL_ALL_P.length>=300 && HL_ALL_T.length>=100 && HL_ALL_P[0].n==='Bugha', HL_ALL_P.length+' '+HL_ALL_T.length);
+    for(const m of ['pl','org']){
+      hlOpen(m);
+      check(m+': две кнопки', document.querySelectorAll('.hl-hilo button').length===2 && document.querySelector('.hl-val-on')!=null);
+      check(m+': узнаваемых хватает', hlAllPool(m).filter(r=>r.photo).length>=(m==='pl' ? 100 : 30), String(hlAllPool(m).filter(r=>r.photo).length));
+      for(let i=0;i<3;i++){ const r=HL.round, b=r.b; hlPickDir(r.b.val>r.a.val ? 1 : -1); await wait(1500);
+        check(m+': угаданный встал первым', HL.round.a===b && HL.round.b!==b && HL.round.b.val!==b.val); }
+      check(m+': серия 3', HL.streak===3 && !HL.over, HL.streak+' '+HL.over);
+      const r=HL.round; hlPickDir(r.b.val>r.a.val ? -1 : 1);
+      check(m+': ошибка заканчивает', HL.over && document.querySelector('.hl-end')!=null);
+      check(m+': свой рекорд', hlBest(m)>=3, String(hlBest(m)));
+    }
+    check('режим запомнился', hlMode()==='org');
+    ['ru','en','fr','it','pt'].forEach(lg=>['hlMode_pl','hlMode_org','hlMode_mix','hlHigher','hlLower','hlSrcAll','hlQAll'].forEach(k=>check(lg+' '+k, I18N[lg][k]!=null)));
     hlHome(); check('назад на главную', document.querySelector('.screen.active').id==='screen-mode');
     // ---- Live-ивенты.
     const card=(h,o)=>({handle:h, region:'EU', rating:o, _ovr:o, nat:'de', tier:'ladder', event:'ladder', placement:null, rarity:'common', partner:null});
