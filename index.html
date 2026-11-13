@@ -3243,6 +3243,11 @@
   .cc-fmt-btns button{flex:1;border:none;border-radius:10px;padding:12px 8px;font-weight:800;font-size:13px;
     cursor:pointer;letter-spacing:.02em;background:rgba(200,225,220,.18);color:#eaf5f3;}
   .cc-fmt-btns button.on{background:#ffd400;color:#151515;}
+  .cc-fmt-h{margin:16px 0 0;font-weight:800;}
+  .cc-fmt-maps{flex-wrap:wrap;}
+  .cc-fmt-maps button{flex:1 1 22%;min-width:64px;}
+  .cc-fmt-go{margin-top:16px;}
+  .cc-fmt-go button{width:100%;min-height:44px;border:none;border-radius:10px;font-weight:900;font-size:14px;letter-spacing:.04em;text-transform:uppercase;cursor:pointer;background:#ffd400;color:#151515;}
   #ccAskNo{background:rgba(200,225,220,.18);color:#eaf5f3;}
   #ccAskYes{background:#ffd400;color:#151515;}
 
@@ -24776,8 +24781,8 @@ Object.assign(I18N.en, {rsSoonH:(k,d)=>(k===0 ? 'Today' : k===1 ? 'Tomorrow' : '
 Object.assign(I18N.fr, {rsSoonH:(k,d)=>(k===0 ? 'Aujourd’hui' : k===1 ? 'Demain' : 'Dans '+k+' jours')+' · '+d, rsFmt:n=>({2:'duo',3:'trio',4:'squad'})[n]||'', rsHave:(who,n,f)=>'Roster : '+who+' · '+n+' sur '+f, rsGo:n=>'Compléter le roster · ajouter '+n});
 Object.assign(I18N.it, {rsSoonH:(k,d)=>(k===0 ? 'Oggi' : k===1 ? 'Domani' : 'Tra '+k+' giorni')+' · '+d, rsFmt:n=>({2:'duo',3:'trio',4:'squad'})[n]||'', rsHave:(who,n,f)=>'Roster: '+who+' · '+n+' su '+f, rsGo:n=>'Completa il roster · aggiungi '+n});
 Object.assign(I18N.pt, {rsSoonH:(k,d)=>(k===0 ? 'Hoje' : k===1 ? 'Amanhã' : 'Em '+k+' dias')+' · '+d, rsFmt:n=>({2:'duo',3:'trio',4:'squad'})[n]||'', rsHave:(who,n,f)=>'Line-up: '+who+' · '+n+' de '+f, rsGo:n=>'Montar a line-up · adicionar '+n});
-Object.assign(I18N.ru, {mapPickH:'Карта года', mapPickCycle:'По кругу'}); Object.assign(I18N.en, {mapPickH:'Map this year', mapPickCycle:'Rotation'});
-Object.assign(I18N.fr, {mapPickH:'Carte de l’année', mapPickCycle:'Rotation'}); Object.assign(I18N.it, {mapPickH:'Mappa dell’anno', mapPickCycle:'A rotazione'}); Object.assign(I18N.pt, {mapPickH:'Mapa do ano', mapPickCycle:'Rotação'});
+Object.assign(I18N.ru, {mapPickH:'Карта года', mapPickCycle:'По кругу', ccFmtGo:'Начать год'}); Object.assign(I18N.en, {mapPickH:'Map this year', mapPickCycle:'Rotation', ccFmtGo:'Start the year'});
+Object.assign(I18N.fr, {mapPickH:'Carte de l’année', mapPickCycle:'Rotation', ccFmtGo:'Commencer l’année'}); Object.assign(I18N.it, {mapPickH:'Mappa dell’anno', mapPickCycle:'A rotazione', ccFmtGo:'Inizia l’anno'}); Object.assign(I18N.pt, {mapPickH:'Mapa do ano', mapPickCycle:'Rotação', ccFmtGo:'Começar o ano'});
 /* Драфт прошлых лет: этапы (29.09). */
 Object.assign(I18N.ru, {dpPastDesc2:'Карточки — по настоящим результатам игроков на этом турнире. Формат, очки, призы и остров — того же сезона.'});
 Object.assign(I18N.en, {dpPastDesc2:'Cards built from the players’ real results at this event. Format, scoring, prize money and island of that season.'});
@@ -130652,10 +130657,22 @@ function ccFmtYearCan(){
   if((typeof ccMpTeam==='function' && ccMpTeam()) || (typeof ccRaceOn==='function' && ccRaceOn())) return false;
   return !(cr.log||[]).some(e=>e && e.season===cr.season);
 }
-function ccFmtYearSet(n){
+/* Карта года выбирается в том же окне, что и формат (его слово 13.11: «пусть карта года выбирается так же, как и мод»,
+   «по кругу не надо»). По умолчанию отмечена глава, на которую год встал бы сам. */
+let CC_FMT_SEL=null;
+function ccFmtMapOn(){ return ccYearShift()>0 && !ccPastYearIsland(); }
+function ccFmtYearSel(k, v){
+  if(!CC_FMT_SEL) return;
+  CC_FMT_SEL[k]=v;
+  const m=document.getElementById('ccFmtModal'); if(!m) return;
+  m.querySelectorAll('[data-fk="'+k+'"]').forEach(b=>{ const on=+b.dataset.fv===v; b.classList.toggle('on', on); b.setAttribute('aria-pressed', on ? 'true' : 'false'); });
+}
+function ccFmtYearGo(){ const s=CC_FMT_SEL; if(s) ccFmtYearSet(s.n, s.m); }
+function ccFmtYearSet(n, map){
   const cr=CAREER && CAREER.career; if(!cr || !ccFmtYearCan() || [2,3,4].indexOf(n)<0) return;
   delete cr.fmtOpen;
   ccFmtYearClose();
+  if(Number.isInteger(map) && map>=0 && map<CC_CYCLE.length && ccFmtMapOn()){ cr.mapCh=map; CC_YEAR_DAYS=null; }
   if(cr.size!==n){
     cr.size=n; (cr.sizes=cr.sizes||{})[cr.season]=n;
     CC_POOLS=null; CC_NOW_CARDS={}; CC_YEAR_DAYS=null;
@@ -130673,10 +130690,14 @@ function ccFmtYearOpen(){
   let ch=null; try{ ch=ccChapterOf(ccSeasonNumOn(careerToday())); }catch(e){}
   const m=document.createElement('div');
   m.id='ccFmtModal';
+  const mapOn=ccFmtMapOn(), mapNow=ccCycleChapter(ccYearShift());
+  CC_FMT_SEL={n:now, m:mapOn ? mapNow : null};
+  const btn=(k, v, w, on)=>'<button type="button" data-fk="'+k+'" data-fv="'+v+'" class="'+(on ? 'on' : '')+'" aria-pressed="'+(on ? 'true' : 'false')+'" onclick="ccFmtYearSel(\''+k+'\','+v+')">'+esc(w)+'</button>';
   m.innerHTML='<div class="cc-ask-box"><p>'+esc(T.ccFmtYearQ(ccSeasonYear(), ch && ch.c ? ch.c : ''))+'</p><div class="cc-fmt-btns">'+
-    [[2, T.ccFmtDuo], [3, T.ccFmtTrio], [4, T.ccFmtSquad]].map(([n, w])=>
-      '<button class="'+(n===now ? 'on' : '')+'" onclick="ccFmtYearSet('+n+')">'+esc(w)+'</button>').join('')+
-    '</div></div>';
+    [[2, T.ccFmtDuo], [3, T.ccFmtTrio], [4, T.ccFmtSquad]].map(([n, w])=>btn('n', n, w, n===now)).join('')+'</div>'+
+    (mapOn ? '<p class="cc-fmt-h">'+esc(T.mapPickH||'Map this year')+'</p><div class="cc-fmt-btns cc-fmt-maps">'+
+      CC_CYCLE_NAMES.map((w, i)=>btn('m', i, w, i===mapNow)).join('')+'</div>' : '')+
+    '<div class="cc-fmt-go"><button type="button" onclick="ccFmtYearGo()">'+esc(T.ccFmtGo||'Play')+'</button></div></div>';
   document.body.appendChild(m);
 }
 function ccFmtYearNudge(){
@@ -130848,6 +130869,8 @@ function ccCycleChapter(k){
 }
 const CC_CYCLE_NAMES=['C1', 'C2 S1-4', 'C2 S5-8', 'C3', 'C4', 'C5', 'C6', 'C7'];
 function ccMapPickHTML(){
+  // Плитки в лобби больше нет: карта выбирается в окне нового года вместе с форматом (ccFmtYearOpen).
+  return '';
   if(!(ccYearShift()>0) || ccPastYearIsland()) return '';
   if((typeof ccMpOn==='function' && ccMpOn()) || (typeof ccRaceOn==='function' && ccRaceOn())) return '';
   const cr=CAREER.career, cur=Number.isInteger(cr.mapCh) ? cr.mapCh : -1, T=L();
