@@ -688,6 +688,7 @@ test('the storm kills, regularly, but is never the main cause of death', () => {
     teams.forEach(t => { if(t._deathCause){ total++; if(t._deathCause === 'storm') storm++; } });
   }
   const perGame = storm / GAMES;
+  if(process.env.ZS_PRINT) console.log('  [замер] шторм: '+perGame.toFixed(2)+' отряда за игру, '+(100*storm/total).toFixed(1)+'% смертей');
   assert(perGame >= 0.4,
     'the storm killed ' + perGame.toFixed(2) + ' squads a game — it is not catching anybody');
   assert(storm / total < 0.25,
@@ -843,6 +844,7 @@ test('the lobby thins out the way it did in the real match', () => {
     sum += gap;
     if(gap > worst) worst = gap;
   });
+  if(process.env.ZS_PRINT) console.log('  [замер] кривая живых: в среднем '+(100*sum/real.length).toFixed(1)+' п. от реплеев, худшая зона '+(100*worst).toFixed(1)+' · движок '+alive.map(a=>Math.round(100*a/RUNS)).join('/')+' · реплеи '+real.map(a=>Math.round(100*a)).join('/'));
   assert(sum/real.length < 0.12,
     'the survival curve is ' + (100*sum/real.length).toFixed(1) +
     ' points off the logged match on average — run tools/real-match.js to see where');

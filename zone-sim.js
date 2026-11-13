@@ -398,13 +398,26 @@
     });
   }
 
-  function chooseTarget(squad, phase, squads, rng){
+  /* Сторона следующей зоны и удержание позиции (13.11, «делай, что реально нужно» про движок).
+     after — круг ПОСЛЕ того, в который идём. Игрок его не видит, но про читают, куда тянет зона, и встают с её стороны:
+     дальняя сторона — это потом долгая ротация через чужие отряды. Чтение — по навыку: ZONE_SIDE·skill за точку на стороне
+     следующего центра, со своим шумом (READ_NOISE и так смазывает карту слабому). И своё место — тоже кандидат: если оно
+     внутри круга, отряд может остаться (travel 0), как остаются в доме или в своих постройках, а не бегают каждый круг. */
+  var ZONE_SIDE = 1.0, HOLD_IN = 0.9;
+  function chooseTarget(squad, phase, squads, rng, after){
     var best = null, bestScore = -Infinity;
-    for(var i=0;i<CANDIDATES;i++){
-      var ang = rng() * Math.PI * 2;
-      var rad = Math.sqrt(rng()) * phase.radius;
-      var x = phase.cx + Math.cos(ang) * rad;
-      var y = phase.cy + Math.sin(ang) * rad;
+    var ax = 0, ay = 0, al = 0;
+    if(after){ ax = after.cx - phase.cx; ay = after.cy - phase.cy; al = Math.hypot(ax, ay); }
+    var stayIn = Math.hypot(squad.x - phase.cx, squad.y - phase.cy) < phase.radius * HOLD_IN;
+    for(var i=0;i<CANDIDATES + (stayIn ? 1 : 0);i++){
+      var x, y, rad;
+      if(i === CANDIDATES){ x = squad.x; y = squad.y; rad = Math.hypot(x - phase.cx, y - phase.cy); }
+      else {
+        var ang = rng() * Math.PI * 2;
+        rad = Math.sqrt(rng()) * phase.radius;
+        x = phase.cx + Math.cos(ang) * rad;
+        y = phase.cy + Math.sin(ang) * rad;
+      }
 
       // Crowding: how many other living squads are already near this point.
       var crowd = 0;
@@ -425,6 +438,8 @@
       var edge = rad / Math.max(phase.radius, 0.001);
 
       var score = -(CROWD_WEIGHT - CROWD_SEEK * squad.seek) * crowd - travel + edge;
+      // Сторона следующей зоны: +1 точно в её сторону от центра, −1 с противоположной, по краю круга.
+      if(al > 1e-6) score += ZONE_SIDE * squad.skill * ((x - phase.cx) * ax + (y - phase.cy) * ay) / (Math.max(phase.radius, 0.001) * al);
 
       // Noise scaled by the inverse of skill. A perfect rotator reads the map
       // as it is; a poor one reads a smeared version of it and picks the
@@ -1853,7 +1868,7 @@
       }
       for(var i=0;i<squads.length;i++) if(squads[i].alive){
         var s0 = squads[i];
-        s0.target = chooseTarget(s0, {cx: to.cx, cy: to.cy, radius: to.radius}, squads, rng);
+        s0.target = chooseTarget(s0, {cx: to.cx, cy: to.cy, radius: to.radius}, squads, rng, phase.after || null);
         // When a squad leaves, which is the thing END was always supposed to
         // mean and did not. Everybody used to set off the instant the circle
         // appeared, so nobody was ever caught and the storm killed 0.3% of the
@@ -1951,6 +1966,8 @@
       for(; phaseAt<plan.length && aliveCount() > 1; phaseAt++){
         var ph = plan[phaseAt];
         if(untilZone != null && ph.zone >= untilZone) return false;   // ждём решения
+        // Круг после этого — для стороны следующей зоны в chooseTarget.
+        var nx = plan[phaseAt + 1]; ph.after = nx ? {cx: nx.cx, cy: nx.cy} : null;
         runPhase(circle, {cx: ph.cx, cy: ph.cy, radius: ph.radius}, ph);
         circle = {cx: ph.cx, cy: ph.cy, radius: ph.radius};
       }
