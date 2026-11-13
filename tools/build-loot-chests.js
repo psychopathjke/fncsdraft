@@ -1,7 +1,8 @@
 // Сундуки на приближенной точке (лут руками, ccLootRoom) для островов, где у нас есть точки fortnite.gg:
 //   s42 — tools/fgg/spawns.js (патч 42.03) в кадр art/map-s42.jpg подгонкой из tools/fgg/chests-by-zone.json (build-fgg-chests.js);
-//   r5  — tools/fgg/r5-nitemare-points.json, вырез lng 29..233, lat -22..-226 (как build-reload-nitemare.js).
-// S43 пишет build-s43-chests.js (CC_S43_CHESTS). Здесь — CC_LR_CHESTS между метками @@LR-CHESTS в index.html.
+//   r5  — tools/fgg/r5-nitemare-points.json, вырез lng 29..233, lat -22..-226 (как build-reload-nitemare.js);
+//   s43 — tools/fgg/s43-points.json, вырез lng 64..212, lat -68..-216 (как build-s43-chests.js).
+// n — сундуки, r — редкие сундуки, a — ящики с патронами. CC_LR_CHESTS между метками @@LR-CHESTS в index.html.
 //   node tools/build-loot-chests.js
 const fs=require('fs'), path=require('path'), vm=require('vm');
 const ROOT=path.resolve(__dirname, '..'), F=path.join(ROOT, 'index.html'), G=path.join(__dirname, 'fgg');
@@ -15,10 +16,13 @@ const s42=c=>({X:fit.fx.a*c[1]+fit.fx.b, Y:fit.fy.a*(-c[0])+fit.fy.b});
 
 const R=JSON.parse(fs.readFileSync(path.join(G, 'r5-nitemare-points.json'), 'utf8'));
 const r5=c=>({X:(c[1]-29)/204*100, Y:(-22-c[0])/204*100});
+const S=JSON.parse(fs.readFileSync(path.join(G, 's43-points.json'), 'utf8'));
+const s43=c=>({X:(c[1]-64)/148*100, Y:(-68-c[0])/148*100});
 
 const data={
-  s42:{n:flat(pts(w.Spawns.chests).map(s42)), r:flat(pts(w.Spawns.rare_chests).map(s42))},
-  r5:{n:flat((R.chests||[]).map(r5)), r:flat((R.rare||[]).map(r5))}
+  s42:{n:flat(pts(w.Spawns.chests).map(s42)), r:flat(pts(w.Spawns.rare_chests).map(s42)), a:flat(pts(w.Spawns.ammo_boxes).map(s42))},
+  r5:{n:flat((R.chests||[]).map(r5)), r:flat((R.rare||[]).map(r5)), a:flat((R.ammo||[]).map(r5))},
+  s43:{n:flat((S.chests||[]).map(s43)), r:flat((S.rare||[]).map(s43)), a:flat((S.ammo||[]).map(s43))}
 };
 const line='/*@@LR-CHESTS-FROM@@*/const CC_LR_CHESTS='+JSON.stringify(data)+';/*@@LR-CHESTS-TILL@@*/';
 let t=fs.readFileSync(F, 'utf8');
@@ -26,4 +30,4 @@ const m=/\/\*@@LR-CHESTS-FROM@@\*\/[^\n]*\/\*@@LR-CHESTS-TILL@@\*\//;
 if(!m.test(t)) throw new Error('нет меток @@LR-CHESTS в index.html');
 t=t.replace(m, ()=>line);
 fs.writeFileSync(F, t);
-Object.keys(data).forEach(k=>console.log(k+': сундуков '+data[k].n.length/2+', редких '+data[k].r.length/2));
+Object.keys(data).forEach(k=>console.log(k+': сундуков '+data[k].n.length/2+', редких '+data[k].r.length/2+', ящиков '+data[k].a.length/2));

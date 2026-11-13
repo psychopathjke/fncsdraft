@@ -30,7 +30,7 @@ window.addEventListener("load", function(){ setTimeout(async function(){
     const inv=qa('.lr-slot[data-d]').map(b=>b.textContent);
     out.notes.inv=inv;
     // Выбросить первый слот и взять с земли.
-    const n0=qa('.lr-g').length; q('.lr-slot[data-d="0"]').click();
+    const n0=qa('.lr-g').length; q('.lr-slot[data-d="0.0"]').click();
     check('выброшенное легло на землю', qa('.lr-g').length>=n0 && qa('.lr-slot[data-d]').length<=4);
     q('.lr-g[data-g="0"]').click();
     check('взял с земли', qa('.lr-slot[data-d]').length>=1);
@@ -39,7 +39,7 @@ window.addEventListener("load", function(){ setTimeout(async function(){
     // Предметов столько, сколько выпало: «Собрать лучшее» и перекладывание ничего не множат.
     const total=()=>qa('.lr-slot[data-d], .lr-g').reduce((s,b)=>{ const e=b.querySelector('em'); return s+(e ? +e.textContent.replace(/\\D/g,'') : 1); }, 0);
     const t0=total();
-    for(let k=0;k<6;k++){ q('[data-a="auto"]').click(); if(q('.lr-g')) q('.lr-g').click(); if(q('.lr-slot[data-d="0"]')) q('.lr-slot[data-d="0"]').click(); }
+    for(let k=0;k<6;k++){ q('[data-a="auto"]').click(); if(q('.lr-g')) q('.lr-g').click(); if(q('.lr-slot[data-d="0.0"]')) q('.lr-slot[data-d="0.0"]').click(); }
     q('[data-a="auto"]').click();
     check('предметы не множатся', total()===t0, t0+' → '+total());
     q('[data-a="go"]').click();
@@ -56,28 +56,61 @@ window.addEventListener("load", function(){ setTimeout(async function(){
     const r2=await pr2; const p2=ccPackFloor(r2.pack, set, Math.random);
     check('ушёл без сундуков: ресы +300, пак с пола, сила минимальна', r2.opened===0 && r2.mats===300 && ccPackPow(p2)<=-3, r2.mats+' '+ccPackPow(p2));
     check('онлайн и пропуск экран не открывают', (()=>{ const s=skipAnimation; skipAnimation=true; const v=ccLootRoomOn(); skipAnimation=s; return v===false; })());
-    // Точка крупно: сундуки на карте острова, у S43 и S42 — на точках fortnite.gg внутри коробки.
-    const keep=ACTIVE_LANDING_SET;
+    // Точка крупно: сундуки на карте острова, у S43 и S42 — на точках fortnite.gg внутри коробки; там же редкие и ящики.
+    const keep=ACTIVE_LANDING_SET, keepSq=squadSize;
     ['s43','s42','m2'].forEach(key=>{
-      ACTIVE_LANDING_SET=key;
+      ACTIVE_LANDING_SET=key; squadSize=1;
       const zs=ZONE_SETS[key]||[]; const z=zs.slice().sort((a,b)=>(b.chests||0)-(a.chests||0))[0];
       const v=ccLrView(z, 20);
-      check(key+': вид точки', v && v.spots.length===20, v && v.spots.length);
+      const nc=v ? v.spots.filter(p=>p.k==='c').length : 0, na=v ? v.spots.filter(p=>p.k==='a').length : 0;
+      check(key+': вид точки, 20 сундуков', v && nc===20, nc);
+      check(key+': ящики с патронами есть', na>=1, na);
       if(key!=='m2') check(key+': настоящие сундуки внутри коробки', v && v.real>=10, v && v.real);
-      check(key+': все сундуки в коробке', v && v.spots.every(p=>p.x>=z.x && p.x<=z.x+z.w && p.y>=z.y && p.y<=z.y+z.h));
+      check(key+': всё в коробке', v && v.spots.every(p=>p.x>=z.x && p.x<=z.x+z.w && p.y>=z.y && p.y<=z.y+z.h));
       const h3=document.createElement('div'); document.body.appendChild(h3);
-      const pr3=ccLootRoom(h3, {rolls, nFast:4, nOpen:12, at:'', zone:z});
-      const pins=()=>h3.querySelectorAll('.lr-pin[data-c]').length;
+      const pr3=ccLootRoom(h3, {rolls, nFast:4, nOpen:12, at:'', zone:z, set});
+      const pins=()=>h3.querySelectorAll('.lr-pin.lr-c[data-c]').length;
       check(key+': 20 сундуков на карте', pins()===20 && h3.querySelector('.lr-map-l'), String(pins()));
-      h3.querySelector('.lr-pin[data-c="7"]').click();
-      check(key+': открыт тот сундук, по которому нажал', !h3.querySelector('.lr-pin[data-c="7"]') && h3.querySelectorAll('.lr-pin.open').length===1);
+      const c7=h3.querySelectorAll('.lr-pin.lr-c[data-c]')[7].dataset.c;
+      h3.querySelector('.lr-pin[data-c="'+c7+'"]').click();
+      check(key+': открыт тот сундук, по которому нажал', !h3.querySelector('.lr-pin[data-c="'+c7+'"]') && h3.querySelectorAll('.lr-pin.open').length===1);
+      const ammo0=h3.querySelector('.lr-time').textContent;
+      const a1=h3.querySelector('.lr-pin.lr-a[data-c]'); a1.click();
+      check(key+': ящик даёт патроны', h3.querySelector('.lr-time').textContent!==ammo0 && h3.querySelectorAll('.lr-pin.open.lr-a').length===1);
       h3.querySelector('[data-a="o5"]').click();
-      check(key+': «Открыть 5» открывает ещё пять', h3.querySelectorAll('.lr-pin.open').length===6 && pins()===14);
+      check(key+': «Открыть 5» открывает ещё пять', h3.querySelectorAll('.lr-pin.open').length===7, String(h3.querySelectorAll('.lr-pin.open').length));
       h3.querySelector('[data-a="go"]').click();
-      out.notes[key]=v && {real:v.real, zoom:+v.zoom.toFixed(2)};
+      out.notes[key]=v && {real:v.real, zoom:+v.zoom.toFixed(2), ammo:na, rare:v.spots.filter(p=>p.k==='r').length};
     });
-    ACTIVE_LANDING_SET=keep;
-    ['ru','en','fr','it','pt'].forEach(lg=>['lrTitle','lrHint','lrOpened','lrGo','lrAuto','lrInv','lrGround','lrFull'].forEach(k=>check(lg+' '+k, I18N[lg][k]!=null)));
+    // Дуо: напарник открывает свой сундук на каждый твой, его находки в его слотах, «Поделить» даёт обоим по два ствола.
+    ACTIVE_LANDING_SET='s42'; squadSize=2;
+    { const zs=ZONE_SETS.s42; const z=zs.slice().sort((a,b)=>(b.chests||0)-(a.chests||0))[0];
+      const h4=document.createElement('div'); document.body.appendChild(h4);
+      const pr4=ccLootRoom(h4, {rolls, nFast:4, nOpen:12, at:'', zone:z, set, mates:['Mate']});
+      h4.querySelector('.lr-pin.lr-c[data-c]').click();
+      check('дуо: напарник открыл свой', h4.querySelectorAll('.lr-pin.open').length===2 && h4.querySelectorAll('.lr-pin.open.by1').length===1);
+      check('дуо: два инвентаря', h4.querySelectorAll('.lr-inv').length===2 && h4.querySelectorAll('.lr-slot[data-d^="1."]').length>=1);
+      h4.querySelector('[data-a="o5"]').click(); h4.querySelector('[data-a="o5"]').click();
+      const t4=()=>[...h4.querySelectorAll('.lr-slot[data-d], .lr-g')].reduce((s,b)=>{ const e=b.querySelector('em'); return s+(e ? +e.textContent.replace(/\\D/g,'') : 1); }, 0);
+      const before=t4(); h4.querySelector('[data-a="auto"]').click();
+      check('дуо: «Поделить» ничего не множит', t4()===before, before+' → '+t4());
+      const w0=h4.querySelectorAll('.lr-inv')[0].querySelectorAll('.lr-slot[data-d]').length, w1=h4.querySelectorAll('.lr-inv')[1].querySelectorAll('.lr-slot[data-d]').length;
+      check('дуо: у обоих что-то в руках', w0>=2 && w1>=2, w0+' '+w1);
+      h4.querySelector('[data-to="1"]').click();
+      check('дуо: переключатель «брать для напарника»', h4.querySelector('[data-to="1"]').classList.contains('on'));
+      h4.querySelector('[data-a="go"]').click();
+      const r4=await pr4;
+      check('дуо: сила отряда считается из всех рук', r4.powPack && r4.mates.length===1 && typeof r4.pen==='number', JSON.stringify({pen:r4.pen, split:r4.split}));
+    }
+    // Автобус: линия через остров, далеко от неё сундуков меньше, а ближе всего — без потерь.
+    { const g={frames:()=>[{circle:{cx:40.5, cy:51.2, radius:30}}]}; CC_BUS_GAME=g; CC_BUS=null;
+      const b=ccBus(); check('автобус: отрезок от края до края', b && Math.min(b.x1,b.x2,b.y1,b.y2)>=-0.01 && Math.max(b.x1,b.x2,b.y1,b.y2)<=100.01, JSON.stringify(b));
+      const zs=ZONE_SETS.s42, d=zs.map(z=>ccBusDist(z)), lates=zs.map(z=>ccBusLate(z));
+      check('автобус: рядом без потерь, далеко с потерями', Math.min(...lates)===0 && Math.max(...lates)>0, Math.min(...d).toFixed(1)+'..'+Math.max(...d).toFixed(1));
+      check('автобус: одна и та же линия на ту же игру', (CC_BUS=null, JSON.stringify(ccBus()))===JSON.stringify(b));
+      CC_BUS_GAME=null; CC_BUS=null; }
+    ACTIVE_LANDING_SET=keep; squadSize=keepSq;
+    ['ru','en','fr','it','pt'].forEach(lg=>['lrTitle','lrHint','lrOpened','lrGo','lrAuto','lrInv','lrGround','lrFull','lrAmmo','lrAmmoBox','lrRare','lrAmmoLow','lrSplitPen','lrTakeFor','lrMe','lrInvOf','lrSplit','lrBusLate','lrBusNear'].forEach(k=>check(lg+' '+k, I18N[lg][k]!=null)));
   }catch(e){ out.fails.push('ERR '+(e && e.stack || e)); }
   document.getElementById('__out').textContent='BEGIN'+encodeURIComponent(JSON.stringify(out))+'END';
 }, 800); });<\/script>`;

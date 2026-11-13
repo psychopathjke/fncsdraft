@@ -78,7 +78,7 @@ const BOOT = `
     check('сёрдж называет живых, порог и линию', /76/.test(seen[1].note) && /60/.test(seen[1].note) && /30/.test(seen[1].note), seen[1].note);
     check('полные ресы — сам ротейтит', seen.find(o=>o.def).id==='stay' && you._pf===90 && you._mats===550);
     check('у файта — картинка ствола из пака', /<img/.test(seen.find(o=>o.id==='fight').icon), seen.find(o=>o.id==='fight').icon.slice(0,60));
-    check('у ресов — три стопки', (seen.find(o=>o.id==='go').icon.match(/<svg/g)||[]).length===3 && seen.find(o=>o.id==='go').icoCls==='wide');
+    check('у ресов — три стопки (картинки ресов из игры)', (seen.find(o=>o.id==='go').icon.match(/mat-(wood|brick|metal)/g)||[]).length===3 && seen.find(o=>o.id==='go').icoCls==='wide');
     // Картинки высадки — внутри кнопок: квадратик точки у дома, остров у контеста.
     skipAnimation=false;
     const q=realBox('D', '', [{id:'home', title:'H', icon:side.left, icoCls:'pic'}, {id:'contest', title:'C', icon:side.right, icoCls:'pic pic-wide'}], host);
