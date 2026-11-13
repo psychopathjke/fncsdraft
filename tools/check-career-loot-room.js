@@ -154,6 +154,19 @@ window.addEventListener("load", function(){ setTimeout(async function(){
       check('босс '+kill+': итог', kill ? (r6.bossDown && r6.medals.length>=1) : (!r6.bossDown && r6.pen>=CC_MYTHIC_POW), JSON.stringify({d:r6.bossDown, pen:r6.pen, m:(r6.medals||[]).length}));
     }
     ['ru','en','fr','it','pt'].forEach(lg=>['lrBoss','lrBossLeft'].forEach(k=>check(lg+' '+k, I18N[lg][k]!=null)));
+    // Один ствол на класс при автоподборе (его «2 снапы 2 дробовика»), лут на полу, строка шансов.
+    { ACTIVE_LANDING_SET='s42'; squadSize=1;
+      const z=ZONE_SETS.s42.slice().sort((a,b)=>(b.chests||0)-(a.chests||0))[0];
+      const pr7=ccLootRoom(document.body, {rolls, nFast:4, nOpen:12, at:'', zone:z, set});
+      for(let k=0;k<4;k++) document.querySelector('[data-a="o5"]').click();
+      const fl=document.querySelectorAll('.lr-pin.lr-f').length;
+      check('лут на полу на карте', fl>=3, String(fl));
+      const f1=document.querySelector('.lr-pin.lr-f[data-c]'); if(f1) f1.click();
+      check('строка шансов', !!document.querySelector('.lr-odds') && /%/.test(document.querySelector('.lr-odds').textContent));
+      document.querySelector('[data-a="go"]').click();
+      const r7=await pr7, cls=(r7.pack.weapons||[]).map(w=>w.icon);
+      check('автоподбор: в руках по одному стволу на класс', new Set(cls).size===cls.length, cls.join(','));
+    }
     ACTIVE_LANDING_SET=keep; squadSize=keepSq;
     ['ru','en','fr','it','pt'].forEach(lg=>['lrTitle','lrHint','lrOpened','lrGo','lrAuto','lrInv','lrGround','lrFull','lrAmmo','lrAmmoBox','lrRare','lrAmmoLow','lrSplitPen','lrTakeFor','lrMe','lrInvOf','lrSplit','lrBusLate','lrBusNear'].forEach(k=>check(lg+' '+k, I18N[lg][k]!=null)));
   }catch(e){ out.fails.push('ERR '+(e && e.stack || e)); }
