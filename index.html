@@ -113861,6 +113861,7 @@ async function playGameWithChoices(teams, lobbyOpts, ui){
   const exponent = DUEL_POW_EXPONENT_BY_MODE[squadSize] || 5;
   teams.forEach(t=>{
     t._elims=0; t._feed=[];
+    t._pos=null;   // «где встаём в круге» (ccAskPos) — на одну игру
     t._pf=Math.max(1, t.pow*gameForm());
     /* Что выпало форме — отдельно от того, что сделал игрок.
 
@@ -117243,6 +117244,7 @@ async function ccAskLate(you, ui){
 function simulateGameOnMap(teams, lobbyOpts){
   teams.forEach(t=>{
     t._elims=0; t._feed=[];
+    t._pos=null;   // «где встаём в круге» (ccAskPos) — на одну игру
     t._pf=Math.max(1, t.pow*gameForm());
     /* Что выпало форме — отдельно от того, что сделал игрок.
 
