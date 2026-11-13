@@ -36,19 +36,51 @@ const BOOT = `
   };
   const freeDay=(from)=>{ let d=from; for(let i=0;i<60;i++){ if(!(careerYearDays().get(d)||[]).length) return d; d=ccAddDays(d,1); } return from; };
   try{
-    // ---- Арены и ранкеда нет (его слово 30.09: «убери механику ранкеда и арену»).
+    // ---- Арена (до 17.05.2023): сессия матчей с Hype. Кэш-капы ни лигу, ни ранг не спрашивают (замков нет).
     seed(2021, '2021-03-01', 64, 3);
     CAREER.career.day=freeDay('2021-03-02'); careerSave();
     check('год 2021', ccCalYear()===2021, String(ccCalYear()));
-    check('функций Арены и ранга нет', typeof ccArenaRun==='undefined' && typeof ccRankAdd==='undefined');
     const cup=ccVictoryList().find(v=>!v.invite && !v.lan && v.day>=careerToday());
     check('в 2021-м есть открытый кэш-кап', !!cup);
     if(cup) check('кэш-кап не спрашивает ни лигу, ни ранг', ccLifeWhy(cup.day, 'victory')==null, String(ccLifeWhy(cup.day, 'victory')));
-    check('занятие «Выживание» зовётся Pubs', ccActName('trSur')===L().ccActtrSur && !/Arena|Ranked/.test(ccActName('trSur')), ccActName('trSur'));
+    check('занятие зовётся Арена', ccActName('trSur')===L().rkArenaTitle, ccActName('trSur'));
     const e0=careerEnergy();
     const ok=careerDoAct('trSur');
     check('занятие сыграно', !!ok && careerEnergy()<e0);
-    check('Hype и ранг не пишутся', ccLife().hype==null && ccLife().rp==null, JSON.stringify({h:ccLife().hype, rp:ccLife().rp}));
+    const rkAr=ccLife().rk.last;
+    check('сессия Арены: три матча трио из 33 команд, Hype со вычетом автобуса', rkAr && rkAr.arena && rkAr.games.length===3 && rkAr.games.every(m=>m.of===33 && m.place>=1 && m.place<=33 && typeof m.d==='number'), JSON.stringify(rkAr && rkAr.games.map(m=>[m.place,m.d])));
+    check('Hype не ниже нуля', ccLife().rk.hype>=0);
+    check('у матча есть кто выбил (не победа)', rkAr.games.every(m=>m.place===1 || (m.by && m.by.h)), JSON.stringify(rkAr.games.map(m=>m.by)));
+    check('плитка Арены во вкладке', /rk-tile/.test(careerTrainTabHTML()) && /Hype/.test(ccRkTileHTML()));
+    // ---- Ранкед (с 2023): квалификация, проценты, Unreal, сброс сезона.
+    seed(2024, '2024-03-01', 92, 2);
+    CAREER.career.day=freeDay('2024-03-02'); careerSave();
+    check('занятие зовётся Ранкед', ccActName('trSur')===L().rkTitle, ccActName('trSur'));
+    careerDoAct('trSur');
+    const rkS=ccLife().rk, rkS1=rkS.last;
+    check('первый матч квалификационный, ранг не выше Diamond III', rkS1.games[0].place0 && rkS1.games[0].rank<=14 && rkS.p!=null, JSON.stringify(rkS1.games[0]));
+    check('дуо: 50 команд', rkS1.games.every(m=>m.of===50));
+    // Про 92 доходит до Unreal за разумное число сессий, слабый — нет.
+    let rkN=0; while(ccRkIdx(rkS.p)<CC_RANK_UNREAL && rkN<80){ CAREER.career.day=ccAddDays(careerToday(),1); ccRkSession(); rkN++; }
+    out.notes.unrealSessions=rkN;
+    check('про 92 доходит до Unreal за 6…40 сессий', ccRkIdx(rkS.p)===CC_RANK_UNREAL && rkN>=6 && rkN<=40, String(rkN));
+    check('Unreal: место в таблице', /rk-pos/.test(ccRkTileHTML()));
+    const rkU0=rkS.unr; for(let i=0;i<10;i++) ccRkSession();
+    check('Unreal не падает и копит очки', ccRkIdx(rkS.p)===CC_RANK_UNREAL && rkS.unr>=0, rkS.unr+' '+rkU0);
+    // Сброс в новом сезоне: квалификация от прошлого ранга.
+    const rkSid=rkS.sid; let rkD=careerToday(); for(let i=0;i<200 && ccRkSeasonKey(rkD)===rkSid;i++) rkD=ccAddDays(rkD, 1);
+    CAREER.career.day=rkD; ccRk();
+    check('новый сезон сбрасывает ранг', rkS.p==null && rkS.prev===CC_RANK_UNREAL, JSON.stringify({p:rkS.p, prev:rkS.prev}));
+    ccRkSession();
+    check('квалификация после Unreal не выше Diamond III', rkS.last.games[0].place0 && rkS.last.games[0].rank<=14 && rkS.last.games[0].rank>=10, String(rkS.last.games[0].rank));
+    check('пик прошлого сезона виден', /rk-peak/.test(ccRkTileHTML()));
+    // Слабый игрок не улетает.
+    seed(2024, '2024-03-01', 60, 2); CAREER.career.day=freeDay('2024-03-02');
+    for(let i=0;i<30;i++){ CAREER.career.day=ccAddDays(careerToday(),1); ccRkSession(); }
+    check('карточка 60 за 30 сессий не выше Platinum I', ccRkIdx(ccLife().rk.p)<=9, String(ccRkIdx(ccLife().rk.p)));
+    out.notes.weakRank=ccRkName(ccRkIdx(ccLife().rk.p));
+    ['ru','en','fr','it','pt'].forEach(lg=>['rkTitle','rkArenaTitle','rkPlay','rkNewsUp','rkNewsReset','rkBy','rkLobby','rkToNext'].forEach(k=>check(lg+' '+k, I18N[lg][k]!=null)));
+    seed(2021, '2021-03-01', 64, 3); CAREER.career.day=freeDay('2021-03-02'); careerSave();
 
     // ---- Оценка занятия.
     careerDoAct('trBox');
@@ -135,7 +167,7 @@ const tmp = path.join(dir, 'index.html');
 fs.writeFileSync(tmp, '<base href="file:///' + ROOT.split(SL).join('/') + '/">' +
   fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8') + BOOT);
 const html = execFileSync(CHROME, ['--headless=new', '--disable-gpu', '--no-sandbox',
-  '--allow-file-access-from-files', '--virtual-time-budget=120000', '--dump-dom',
+  '--allow-file-access-from-files', '--user-data-dir=' + path.join(dir, 'prof'), '--virtual-time-budget=120000', '--dump-dom',
   'file:///' + tmp.split(SL).join('/')], { maxBuffer: 1 << 28, timeout: 600000 }).toString();
 fs.rmSync(dir, { recursive: true, force: true });
 const m = /PBEGIN(.*?)PEND/.exec(html);

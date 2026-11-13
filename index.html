@@ -9376,6 +9376,47 @@
   .dy-pow small span{color:#7ef0dd;}
   .hr-box{max-width:calc(100vw - 24px);}
   @media(max-width:900px){ .home-daily{grid-template-columns:1fr;} }
+  /* Ранкед / Арена во вкладке «Тренировка» (ccRkTileHTML). */
+  .rk-head{display:flex;align-items:center;gap:12px;margin:6px 0 8px;}
+  .rk-badge{flex:none;display:grid;place-items:center;width:48px;height:48px;border-radius:12px;transform:rotate(45deg);
+    font-family:var(--font-display);font-weight:800;font-size:15px;color:#0b1640;box-shadow:inset 0 0 0 2px rgba(255,255,255,.35);}
+  .rk-badge{line-height:1;} .rk-badge>i{font-style:normal;transform:rotate(-45deg);}
+  .rk-bronze{background:linear-gradient(135deg,#e2a06a,#9a5a2c);} .rk-silver{background:linear-gradient(135deg,#eef2f8,#9aa6ba);}
+  .rk-gold{background:linear-gradient(135deg,#ffe36b,#d79a00);} .rk-plat{background:linear-gradient(135deg,#9ff3e6,#2fb3a5);}
+  .rk-dia{background:linear-gradient(135deg,#a9c8ff,#4a72e8);} .rk-elite{background:linear-gradient(135deg,#d9c2ff,#7b4fd6);color:#fff;}
+  .rk-champ{background:linear-gradient(135deg,#ff9a8a,#d8344a);color:#fff;} .rk-unreal{background:linear-gradient(135deg,#ffd4ff,#9a3cff 55%,#2b0f5c);color:#fff;}
+  .rk-none{background:rgba(255,255,255,.12);color:#c9d6f5;}
+  .rk-nm b{display:block;font-family:var(--font-display);font-size:22px;font-weight:700;color:#fff;line-height:1.1;}
+  .rk-nm small{display:block;margin-top:3px;font-size:12px;color:#8ea6d6;font-weight:600;}
+  .rk-bar{display:block;height:8px;border-radius:99px;background:rgba(255,255,255,.1);overflow:hidden;text-decoration:none;}
+  .rk-bar s{display:block;height:100%;background:#ffdd00;border-radius:inherit;}
+  .rk-bar.rk-unreal s,.rk-bar.rk-champ s,.rk-bar.rk-elite s{background:#c58bff;}
+  .rk-hint{margin-top:6px;font-size:12px;color:#a9bbe3;}
+  .rk-pos{display:flex;align-items:baseline;gap:8px;margin:2px 0 6px;}
+  .rk-pos b{font-family:var(--font-display);font-size:28px;color:#ffdd00;line-height:1;}
+  .rk-pos span{font-size:12px;color:#a9bbe3;font-weight:700;}
+  .rk-near{display:flex;flex-direction:column;gap:2px;margin:0 0 6px;}
+  .rk-nb{display:flex;gap:10px;align-items:baseline;padding:4px 8px;border-radius:8px;font-size:13px;color:#cfe0ff;}
+  .rk-nb b{min-width:44px;font-variant-numeric:tabular-nums;color:#8ea6d6;}
+  .rk-nb.me{background:rgba(255,221,0,.1);box-shadow:inset 3px 0 0 #ffdd00;color:#fff;font-weight:800;}
+  .rk-play{display:block;width:100%;margin-top:10px;min-height:44px;}
+  .rk-last{margin-top:12px;}
+  .rk-last>em{display:block;font-style:normal;font-size:11px;font-weight:900;letter-spacing:.05em;text-transform:uppercase;color:#8fa1cc;margin-bottom:4px;}
+  .rk-m{display:grid;grid-template-columns:62px minmax(0,1fr) auto auto;gap:10px;align-items:center;padding:8px 4px;border-bottom:1px solid rgba(140,175,255,.1);}
+  .rk-m>b{font-family:var(--font-display);font-size:20px;color:#fff;font-variant-numeric:tabular-nums;}
+  .rk-m>b small{font-size:11px;color:#8ea6d6;}
+  .rk-mw{min-width:0;font-size:13px;color:#e6edfb;}
+  .rk-mw span,.rk-mw small{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .rk-mw small{font-size:11.5px;color:#8ea6d6;margin-top:2px;}
+  .rk-mw img{width:16px;height:auto;vertical-align:-1px;margin-right:3px;border-radius:2px;}
+  .rk-vr{color:#ffdd00;font-weight:800;}
+  .rk-k{font-size:12px;color:#a9bbe3;white-space:nowrap;}
+  .rk-m>i{font-style:normal;font-weight:800;font-variant-numeric:tabular-nums;white-space:nowrap;text-align:right;min-width:52px;}
+  .rk-m>i.up{color:#3ecf6e;} .rk-m>i.down{color:#ff6b6b;} .rk-m>i.rk-pl{color:#ffdd00;font-size:12px;}
+  .rk-peaks{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;align-items:center;}
+  .rk-peaks em{font-style:normal;font-size:11px;font-weight:800;color:#8fa1cc;margin-right:4px;}
+  .rk-peak{font-size:11.5px;font-weight:700;color:#cfe0ff;padding:3px 8px;border-radius:99px;border:1px solid rgba(255,255,255,.16);}
+  @media(max-width:420px){ .rk-m{grid-template-columns:50px minmax(0,1fr) auto;} .rk-k{display:none;} }
   /* Больше или меньше на главной: слева как у драфта дня, справа пара карточек из игры. */
   .home-hl{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px;align-items:center;}
   .home-hl .hero-mode-tag{margin-bottom:6px;display:inline-block;}
@@ -129495,6 +129536,7 @@ function careerDoAct(id){
   // Разбор меты: день в новом сезоне, который снимает штраф. См. careerMetaDay.
   if(act.meta) careerMetaDay();
   if(act.noble) ccNobleRun();
+  if(act.id==='trSur') ccRkSession();
   if(act.versus) ccChemBump(2);   // скрим вместе — сыгранность
   // Прирост недели — для панели Тренировочного центра (ccTrainPanelHTML).
   try{ const lf=ccLife(), wk=ccWeekTag(); if(!lf.tw || lf.tw.wk!==wk) lf.tw={wk, g:{}};
@@ -129825,6 +129867,244 @@ function ccNobleRivals(sv, wk){
   const rng=careerRng(ccHashStr('noblewk|'+wk+'|'+reg));
   for(let i=0;i<12 && pool.length;i++){ const p=pool.splice(Math.floor(rng()*pool.length),1)[0]; if(p && p.handle && !rows[p.handle]) rows[p.handle]={p:0}; }
   return rows;
+}
+
+/* ---- РАНКЕД И АРЕНА. Занятие trSur — это сессия настоящих матчей: место, киллы, кто выбил, кто был в лобби.
+   До 17.05.2023 (v24.40) — Арена с Hype, дальше — Ranked. Пороги, очки и автобус Арены — вики Fortnite по эпохам
+   (tools/measured/arena-ranked-history.json). Ranked: Bronze–Diamond по три ступени, Elite, Champion, Unreal;
+   Unreal не падает, у него место в таблице; с v26.00 (25.08.2023) ранг каждый сезон сбрасывается и первый матч
+   сезона — квалификационный. Сколько процентов даёт матч, Epic не публикует — таблица мест, цена входа по рангу и
+   сила лобби — ОЦЕНКА режима. Кэш-капы ранг не спрашивает (замков нет по его слову 30.09). */
+const CC_ARENA_OLD=[0,250,500,1000,1500,2500,4000,6000,12000,16000];
+const CC_ARENA_NEW=[0,400,800,1200,2000,3000,5000,7500,10000,15000];
+const CC_ARENA_CHAMP=7;   // индекс дивизиона 8
+const CC_ARENA_ERAS=[
+  {id:'s8', from:'2019-03-27', upd:'v8.20', guess:true, thr:CC_ARENA_OLD, fare:[0,0,0,10,20,30,30,60,60,60], pts:{
+    1:{teams:100, rows:[[1,60],[5,30],[15,30],[25,60]], elim:20},
+    2:{teams:50,  rows:[[1,60],[3,30],[7,30],[12,60]], elim:10},
+    3:{teams:33,  rows:[[1,60],[2,30],[4,30],[8,60]],  elim:7}}},
+  {id:'x', from:'2019-08-01', upd:'v10.00', reset:true, thr:CC_ARENA_OLD, fare:[0,0,0,10,20,30,30,60,60,60], pts:null},
+  {id:'v18', from:'2021-09-28', upd:'v18.10', reset:true, thr:CC_ARENA_NEW, fare:[0,0,0,10,20,30,50,60,70,80], pts:{
+    1:{teams:100, rows:[[1,50],[2,25],[3,10],[4,10],[5,20],[10,10],[20,15],[25,15],[30,10],[40,10],[50,10]], elim:[20,20,20,15,15,15,15,10,10,10], lastOff:true},
+    2:{teams:50,  rows:[[1,50],[2,25],[3,10],[4,10],[5,20],[10,10],[12,15],[15,15],[17,10],[20,10],[25,10]], elim:[20,20,20,10,10,10,10,10,10,10], lastOff:true},
+    3:{teams:33,  rows:[[1,50],[2,25],[3,10],[4,10],[5,20],[6,10],[7,15],[8,15],[9,10],[10,10],[15,10]], elim:[15,15,15,15,10,10,10,10,10,10], lastOff:true}}},
+  {id:'v21', from:'2022-06-21', upd:'v21.10', thr:CC_ARENA_NEW, fare:[0,0,0,0,30,40,50,60,70,70], pts:{
+    1:{teams:100, rows:[[1,50],[2,25],[3,10],[4,10],[5,20],[10,10],[20,15],[25,15],[30,10],[40,10],[50,10]], elim:[15,15,15,10,10,10,10,5,5,5], lastOff:true},
+    2:{teams:50,  rows:[[1,50],[2,25],[3,10],[4,10],[5,20],[10,10],[12,15],[15,15],[17,10],[20,10],[25,10]], elim:[15,15,15,5,5,5,5,5,5,5], lastOff:true},
+    3:{teams:33,  rows:[[1,50],[2,25],[3,10],[4,10],[5,20],[6,10],[7,15],[8,15],[9,10],[10,10],[15,10]], elim:[10,10,10,10,5,5,5,5,5,5], lastOff:true}}}
+];
+CC_ARENA_ERAS[1].pts=CC_ARENA_ERAS[0].pts;   // Season X — те же числа (у s8 они взяты с неё)
+const CC_RANKS=['Bronze I','Bronze II','Bronze III','Silver I','Silver II','Silver III','Gold I','Gold II','Gold III',
+  'Platinum I','Platinum II','Platinum III','Diamond I','Diamond II','Diamond III','Elite','Champion','Unreal'];
+const CC_RANK_UNREAL=17, CC_RANK_RESET_FROM='2023-08-25', CC_RANK_SPLIT_FROM='2026-04-17';
+const CC_RK_GAMES=3;   // матчей за сессию — оценка режима
+// Сила лобби по рангу и по дивизиону Арены (рейтинг карточки) — оценка: про 90+ живут в Unreal/Champion League.
+const CC_RK_LOBBY=[52,54,56,58,60,62,64,66,68,70,72,74,77,79,81,86,90,93];
+const CC_AR_LOBBY=[54,57,60,63,66,69,72,76,80,84];
+// Цена входа (вычет за матч) по тиру ранга и множитель прироста: чем выше, тем дороже ошибка — оценка.
+const CC_RK_COST=[0,0,0,0,0,0,4,4,4,8,8,8,12,12,12,18,24,0];
+const CC_RK_UNREAL_N=6000, CC_RK_UNREAL_K=420;
+function ccRkTier(i){ return ['bronze','bronze','bronze','silver','silver','silver','gold','gold','gold','plat','plat','plat','dia','dia','dia','elite','champ','unreal'][i]||'bronze'; }
+function ccArenaEra(day){ day=day||careerToday(); let e=CC_ARENA_ERAS[0]; CC_ARENA_ERAS.forEach(x=>{ if(day>=x.from) e=x; }); return e; }
+function ccArenaOn(day){ return (day||careerToday())<CC_RANKED_FROM; }
+function ccArenaLeague(i){ return i>=CC_ARENA_CHAMP ? 'Champion' : i>=4 ? 'Contender' : 'Open'; }
+function ccArenaDivOf(h, day){ const t=ccArenaEra(day).thr; let i=0; t.forEach((v,j)=>{ if(h>=v) i=j; }); return i; }
+function ccArenaName(i){ return ccArenaLeague(i)+' · '+(L().rkDiv||'div.')+' '+(i+1); }
+function ccRkSize(){ return Math.min(3, Math.max(1, careerSquadSize()||2)); }
+function ccRkTeams(){ return {1:100, 2:50, 3:33}[ccRkSize()]; }
+// Ключ сезона: после 2026-го даты повторяются, поэтому с годом карьеры.
+function ccRkSeasonKey(day){ const s=careerFncsSeason(day||careerToday()); return s ? (s.id||s.from)+'|'+(CAREER.career.year||'') : null; }
+function ccRk(){
+  const lf=ccLife();
+  if(!lf.rk || lf.rk.v!==1) lf.rk={v:1, p:null, unr:0, hype:null, era:null, sid:null, peak:{}, last:null, prev:null};
+  const rk=lf.rk, day=careerToday();
+  if(ccArenaOn(day)){
+    const era=ccArenaEra(day);
+    if(rk.hype==null) rk.hype=0;
+    if(rk.era!==era.id){ if(rk.era!=null && era.reset){ rk.hype=0; careerNews('flat', 'rkNewsArenaReset', [era.upd]); } rk.era=era.id; }
+  } else {
+    // Сброс сезона с v26.00: ранг уходит, первый матч сезона ставит заново от прошлого ранга.
+    const sid=ccRkSeasonKey(day);
+    if(sid && rk.sid!==sid){
+      if(rk.sid!=null && day>=CC_RANK_RESET_FROM && rk.p!=null){ rk.prev=ccRkIdx(rk.p); rk.p=null; rk.unr=0; careerNews('flat', 'rkNewsReset', []); }
+      rk.sid=sid;
+    }
+  }
+  return rk;
+}
+function ccRkIdx(p){ return Math.min(CC_RANK_UNREAL, Math.floor((p||0)/100)); }
+function ccRkName(i, p){
+  if(i==null) return L().rkUnranked;
+  if((i===15 || i===16) && careerToday()>=CC_RANK_SPLIT_FROM) return CC_RANKS[i]+' '+['I','II','III'][Math.min(2, Math.floor(((p||0)%100)/34))];
+  return CC_RANKS[i];
+}
+function ccRkUnrealPos(unr){ return Math.max(1, Math.round(CC_RK_UNREAL_N*Math.exp(-(unr||0)/CC_RK_UNREAL_K))); }
+// Про своего региона на верху таблицы Unreal / Champion League: сильнейшие по рейтингу, по полтора места на человека.
+function ccRkLadder(){
+  const reg=ccCareerRegion(), key=reg+'|'+(CAREER.career.year||'');
+  if(ccRkLadder.c && ccRkLadder.k===key) return ccRkLadder.c;
+  const seen=new Set(), me=hKey({handle:CAREER.player.handle||CAREER.player.nick||''});
+  const pool=PLAYERS.filter(p=>p && p.handle && p.region===reg).sort((a,b)=>(b._ovr||b.rating||0)-(a._ovr||a.rating||0))
+    .filter(p=>{ const k=hKey(p); if(k===me || seen.has(k)) return false; seen.add(k); return true; }).slice(0, 100);
+  ccRkLadder.k=key;
+  return ccRkLadder.c=pool.map((p,i)=>({h:p.handle, nat:p.nat, pos:Math.round(1+i*1.5)}));
+}
+function ccRkNear(pos){
+  if(!(pos<=160)) return null;
+  const lad=ccRkLadder(); let up=null, down=null;
+  lad.forEach(r=>{ if(r.pos<=pos && (!up || r.pos>up.pos)) up=r; if(r.pos>pos && (!down || r.pos<down.pos)) down=r; });
+  return {up, down};
+}
+// Игроки сцены под силу лобби — из них «кто выбил» и «кто был в лобби».
+function ccRkLobbyPool(lvl){
+  const reg=ccCareerRegion(), k=reg+'|'+lvl, c=ccRkLobbyPool.c||(ccRkLobbyPool.c=new Map());
+  if(!c.has(k)) c.set(k, PLAYERS.filter(p=>p && p.handle && p.region===reg && Math.abs((p._ovr||p.rating||0)-lvl)<=4));
+  return c.get(k);
+}
+function ccRkMatch(rnd, lvl, teams){
+  const g=()=>{ let s=0; for(let i=0;i<6;i++) s+=rnd(); return (s-3)/Math.sqrt(0.5); };
+  const six=CAREER.player.attrs||{}, o=ccMyShownOvr();
+  const z=(o+careerForm()+g()*4-lvl)/5.5, pct=1/(1+Math.exp(-1.7*z));
+  const place=clamp(Math.round((1-pct)*(teams-1)+g()*teams*0.04)+1, 1, teams);
+  const kills=Math.max(0, Math.round(pct*4.5+g()*1.3+((six.aim||70)-70)/15));
+  const pool=ccRkLobbyPool(lvl), pick=()=>pool.length ? pool[Math.floor(rnd()*pool.length)] : null;
+  const by=place>1 ? pick() : null;
+  const stars=[]; for(let i=0;i<8 && stars.length<2;i++){ const p=pick(); if(p && (!by || p.handle!==by.handle) && !stars.some(s=>s.h===p.handle)) stars.push({h:p.handle, nat:p.nat}); }
+  return {place, of:teams, kills, by:by ? {h:by.handle, nat:by.nat} : null, stars};
+}
+// Ranked: проценты за место (доля лобби) и за киллы, множитель по рангу, вычет входа — ОЦЕНКА.
+function ccRkGain(i, place, of, kills){
+  const f=place/of;
+  const pg=place===1 ? 50 : f<=0.03 ? 32 : f<=0.05 ? 26 : f<=0.10 ? 20 : f<=0.15 ? 15 : f<=0.25 ? 10 : f<=0.5 ? 4 : 0;
+  const kg=6*(1+(1-f));
+  const m=1.25-0.95*Math.min(16, i)/16;
+  return Math.round((pg+kills*kg)*m)-(CC_RK_COST[i]||0);
+}
+function ccArenaPts(div, place, kills, day){
+  const era=ccArenaEra(day), t=era.pts[ccRkSize()];
+  const pl=t.rows.reduce((s,r,j)=>s+((place<=r[0] && (!t.lastOff || j<t.rows.length-1 || div<CC_ARENA_CHAMP)) ? r[1] : 0), 0);
+  const el=Array.isArray(t.elim) ? t.elim[div] : t.elim;
+  return pl+kills*el-(era.fare[div]||0);
+}
+function ccRkSession(){
+  const rk=ccRk(), rnd=ccLifeRng('ranked|'+(ccRk().n||0)), day=careerToday(), arena=ccArenaOn(day);
+  const games=[], sess={day, arena, games};
+  if(arena){
+    const teams=ccArenaEra(day).pts[ccRkSize()].teams, h0=rk.hype, d0=ccArenaDivOf(h0, day);
+    for(let n=0;n<CC_RK_GAMES;n++){
+      const div=ccArenaDivOf(rk.hype, day), m=ccRkMatch(rnd, CC_AR_LOBBY[div], teams);
+      m.div=div; m.fare=ccArenaEra(day).fare[div]||0; m.d=ccArenaPts(div, m.place, m.kills, day);
+      rk.hype=Math.max(0, rk.hype+m.d); games.push(m);
+    }
+    sess.from=h0; sess.to=rk.hype;
+    const d1=ccArenaDivOf(rk.hype, day);
+    if(d1>d0) careerNews('good', d1>=CC_ARENA_CHAMP && d0<CC_ARENA_CHAMP ? 'rkNewsChamp' : 'rkNewsArenaUp', [ccArenaName(d1)]);
+    const k='a|'+ccArenaEra(day).id+'|'+(CAREER.career.year||'');
+    rk.peak[k]=Math.max(rk.peak[k]||0, rk.hype);
+  } else {
+    const teams=ccRkTeams(), i0=rk.p==null ? null : ccRkIdx(rk.p), u0=rk.unr||0;
+    for(let n=0;n<CC_RK_GAMES;n++){
+      if(rk.p==null){
+        // Квалификационный матч: от прошлого ранга (минус две ступени) или от рейтинга, не выше Diamond III.
+        const o=ccMyShownOvr(), byOvr=clamp(Math.round((o-58)/2.2), 0, 14);
+        const lvl=CC_RK_LOBBY[byOvr], m=ccRkMatch(rnd, lvl, teams);
+        const perf=m.place/m.of<=0.1 ? 1 : m.place/m.of>0.5 ? -1 : 0;
+        const base=rk.prev!=null ? Math.min(rk.prev-2, byOvr+1) : byOvr;
+        const idx=clamp(base+perf, 0, 14);
+        rk.p=idx*100+20; m.place0=true; m.d=null; m.rank=idx; games.push(m); continue;
+      }
+      const i=ccRkIdx(rk.p), m=ccRkMatch(rnd, CC_RK_LOBBY[i], teams);
+      if(i>=CC_RANK_UNREAL){
+        const pg=ccRkGain(16, m.place, m.of, m.kills)+(CC_RK_COST[16]||0)-10;
+        m.d=null; m.u=pg; rk.unr=Math.max(0, (rk.unr||0)+pg);
+      } else {
+        m.d=ccRkGain(i, m.place, m.of, m.kills);
+        rk.p=clamp(rk.p+m.d, 0, CC_RANK_UNREAL*100);
+      }
+      m.rank=ccRkIdx(rk.p); games.push(m);
+    }
+    const i1=ccRkIdx(rk.p);
+    sess.from=i0; sess.to=i1; sess.u0=u0; sess.u1=rk.unr||0;
+    if(i0!=null && i1>i0){
+      careerNews('good', i1>=CC_RANK_UNREAL ? 'rkNewsUnreal' : 'rkNewsUp', [ccRkName(i1, rk.p)]);
+      if(i1>=15) careerReachAdd(Math.round(4000*(i1-14)));
+    } else if(i0!=null && i1<i0) careerNews('bad', 'rkNewsDown', [ccRkName(i1, rk.p)]);
+    else if(i0==null) careerNews('flat', 'rkNewsPlaced', [ccRkName(i1, rk.p)]);
+    if(i1>=CC_RANK_UNREAL){
+      const p0=ccRkUnrealPos(u0), p1=ccRkUnrealPos(rk.unr);
+      if(p1<=100 && p0>100){ careerNews('good', 'rkNewsTop100', [p1]); careerReachAdd(15000); }
+      if(p1===1 && p0>1){ careerNews('good', 'rkNewsTop1', []); careerReachAdd(40000); }
+    }
+    const k='r|'+(rk.sid||'');
+    rk.peak[k]=Math.max(rk.peak[k]||0, (rk.p||0)+(i1>=CC_RANK_UNREAL ? Math.min(99, Math.round((rk.unr||0)/40)) : 0));
+  }
+  // Сессия даёт и форму: хорошая — плюс, провал — минус, по-малому.
+  const good=games.filter(m=>m.place/m.of<=0.1).length, bad=games.filter(m=>m.place/m.of>0.6).length;
+  const fg=good>=2 ? 0.3 : bad>=2 ? -0.2 : 0;
+  if(fg){ const cr=CAREER.career; cr.form=clamp((cr.form||0)+fg, -CC_FORM_MAX, CC_FORM_MAX); }
+  sess.form=fg;
+  rk.last=sess;
+  rk.n=(rk.n||0)+games.length;
+  return sess;
+}
+// ---- Плитка во вкладке «Тренировка».
+function ccRkBadge(i){ return '<span class="rk-badge rk-'+ccRkTier(i)+'" aria-hidden="true"><i>'+(i>=CC_RANK_UNREAL ? '◆' : i>=15 ? '★' : ['I','II','III'][i%3])+'</i></span>'; }
+function ccRkTileHTML(){
+  if(!CAREER || !CAREER.career) return '';
+  const T=L(), rk=ccRk(), day=careerToday(), arena=ccArenaOn(day), last=rk.last;
+  let head='', bar='', side='';
+  if(arena){
+    const div=ccArenaDivOf(rk.hype, day), thr=ccArenaEra(day).thr, next=thr[div+1];
+    head='<span class="rk-badge rk-a'+(div>=CC_ARENA_CHAMP ? ' rk-champ' : div>=4 ? ' rk-gold' : ' rk-silver')+'" aria-hidden="true"><i>'+(div+1)+'</i></span>'+
+      '<div class="rk-nm"><b>'+esc(ccArenaName(div))+'</b><small>'+ccNum(rk.hype)+' Hype · '+esc(T.rkRules(ccArenaEra(day).upd))+'</small></div>';
+    if(next!=null){ const pc=Math.max(0, Math.min(100, (rk.hype-thr[div])/(next-thr[div])*100));
+      bar='<u class="rk-bar"><s style="width:'+pc.toFixed(1)+'%"></s></u><div class="rk-hint">'+esc(T.rkToNext(ccNum(next-rk.hype)+' Hype', ccArenaName(div+1)))+'</div>'; }
+    else { const pos=Math.max(1, Math.round(4000*Math.exp(-(rk.hype-thr[9])/2500)));
+      side='<div class="rk-pos"><b>#'+ccNum(pos)+'</b><span>'+esc(T.rkHypeBoard)+'</span></div>'+ccRkNearHTML(pos); }
+  } else if(rk.p==null){
+    head=ccRkBadge(0).replace('rk-bronze', 'rk-none')+'<div class="rk-nm"><b>'+esc(T.rkUnranked)+'</b><small>'+esc(rk.prev!=null ? T.rkPlaceFrom(ccRkName(rk.prev)) : T.rkPlaceFirst)+'</small></div>';
+  } else {
+    const i=ccRkIdx(rk.p);
+    head=ccRkBadge(i)+'<div class="rk-nm"><b>'+esc(ccRkName(i, rk.p))+'</b><small>'+esc(T.rkSeasonLine(rk.n||0))+'</small></div>';
+    if(i<CC_RANK_UNREAL){ const pc=rk.p%100;
+      bar='<u class="rk-bar rk-'+ccRkTier(i)+'"><s style="width:'+pc+'%"></s></u><div class="rk-hint">'+esc(T.rkToNext(pc+'%', ccRkName(i+1)))+(CC_RK_COST[i] ? ' · '+esc(T.rkCost(CC_RK_COST[i])) : '')+'</div>'; }
+    else { const pos=ccRkUnrealPos(rk.unr); side='<div class="rk-pos"><b>#'+ccNum(pos)+'</b><span>'+esc(T.rkUnrealBoard)+'</span></div>'+ccRkNearHTML(pos); }
+  }
+  const flag=n=>(n && typeof flagImg==='function') ? flagImg(n, 14) : '';
+  let games='';
+  if(last && last.games && last.games.length){
+    games='<div class="rk-last"><em>'+esc(T.rkLast(ccFmtDay(last.day)))+(last.form ? ' · '+esc(T.rkForm(last.form)) : '')+'</em>'+last.games.map((m,n)=>{
+      const d=m.place0 ? '<i class="rk-pl">'+esc(T.rkPlaced(ccRkName(m.rank)))+'</i>'
+        : m.u!=null ? '<i class="'+(m.u>=0?'up':'down')+'">'+(m.u>=0?'+':'')+m.u+' '+esc(T.rkUnrealPts)+'</i>'
+        : '<i class="'+(m.d>=0?'up':'down')+'">'+(m.d>=0?'+':'')+m.d+(last.arena ? ' Hype' : '%')+'</i>';
+      const who=m.place===1 ? '<span class="rk-vr">'+esc(T.rkVictory)+'</span>' : m.by ? '<span>'+esc(T.rkBy)+' '+flag(m.by.nat)+esc(m.by.h)+'</span>' : '';
+      const lob=m.stars && m.stars.length ? '<small>'+esc(T.rkLobby)+' '+m.stars.map(s=>flag(s.nat)+esc(s.h)).join(', ')+'</small>' : '';
+      return '<div class="rk-m"><b>#'+m.place+'<small>/'+m.of+'</small></b><div class="rk-mw">'+who+lob+'</div><span class="rk-k">'+m.kills+' '+esc(T.rkKills)+'</span>'+d+'</div>';
+    }).join('')+'</div>';
+  }
+  // Пики прошлых сезонов.
+  const peaks=Object.keys(rk.peak||{}).filter(k=>k[0]==='r' && k!=='r|'+(rk.sid||'')).slice(-4).map(k=>{
+    const v=rk.peak[k], i=ccRkIdx(v); return '<span class="rk-peak">'+esc(String(k.split('|')[1]||''))+' · '+esc(CC_RANKS[i])+'</span>'; }).join('');
+  const why=(typeof ccArenaPlayWhy==='function') ? ccArenaPlayWhy() : '';
+  const act=ccActById('trSur');
+  return '<div class="ch-tile rk-tile"><h4>'+esc(arena ? T.rkArenaTitle : T.rkTitle)+'</h4>'+
+    '<div class="rk-head">'+head+'</div>'+bar+side+
+    '<button class="hero-btn hero-btn-go rk-play" '+(why ? 'disabled' : 'onclick="careerPickDay(\'trSur\')"')+'>'+esc(T.rkPlay(CC_RK_GAMES))+' · '+(act ? act.energy : 30)+(T.ccEnergyMark||'')+'</button>'+
+    (why ? '<div class="rk-hint">'+esc(why)+'</div>' : '')+games+
+    (peaks ? '<div class="rk-peaks"><em>'+esc(T.rkPeaks)+'</em>'+peaks+'</div>' : '')+'</div>';
+}
+function ccRkNearHTML(pos){
+  const n=ccRkNear(pos); if(!n || (!n.up && !n.down)) return '';
+  const row=(r, cls)=>r ? '<div class="rk-nb '+cls+'"><b>#'+r.pos+'</b><span>'+esc(r.h)+'</span></div>' : '';
+  return '<div class="rk-near">'+row(n.up, 'up')+'<div class="rk-nb me"><b>#'+pos+'</b><span>'+esc(CAREER.player.nick||'')+'</span></div>'+row(n.down, 'down')+'</div>';
+}
+function ccArenaPlayWhy(){
+  const act=ccActById('trSur');
+  if(CAREER.career.seasonOver) return L().ccSeasonOver;
+  if(typeof ccLifeHurt==='function' && ccLifeHurt()) return L().lfWhyHurt;
+  if(!ccCentreDayOpen() || careerDayClosed()) return L().rkDayBusy;
+  if(act && careerEnergy()<act.energy) return L().ccNeedEnergy(act.energy-careerEnergy());
+  return '';
 }
 
 // ---- Икон-скин: титул Глобалов, два титула Мейджора или миллион призовых.
@@ -148713,6 +148993,7 @@ function ccTrainPanelHTML(six, wide){
       '<b>'+L()[state]+'</b></div></div>';
 }
 function ccActName(id){
+  if(id==='trSur') return ccArenaOn() ? L().rkArenaTitle : L().rkTitle;
   return L()['ccAct'+id]||id;
 }
 function ccStatNum(v){ const r=Math.round(v*10)/10; return r%1 ? r.toFixed(1) : String(r); }
@@ -149077,7 +149358,7 @@ function careerTrainTabHTML(){
   const six=CAREER.player.attrs || ccOwnAttrs();
   // Сначала карты, под ними план недели и таблица Noble (если на неделе были сессии).
   const noble=ccNobleBoardHTML();
-  const below=ccTrainPlanHTML()+(noble ? '<div class="ch-tile tw-tile"><h4><img class="tw-noble-ic" src="items/creative/noble-crown.png" alt="">Noble Pro Scrims</h4>'+noble+'</div>' : '');
+  const below=ccRkTileHTML()+ccTrainPlanHTML()+(noble ? '<div class="ch-tile tw-tile"><h4><img class="tw-noble-ic" src="items/creative/noble-crown.png" alt="">Noble Pro Scrims</h4>'+noble+'</div>' : '');
   if(ccCentreDayOpen()){
     CC_DAY_VIEW='train';
     try{ return '<div class="cc-train-tab">'+careerDayPanelHTML(null)+below+'</div>'; } finally{ CC_DAY_VIEW=''; }
@@ -170059,6 +170340,61 @@ Object.assign(I18N.it, {hhTag:'Nuovo', hhSub:'Chi ha più montepremi in totale: 
   hlQPlace:'Chi è arrivato più in alto in questa finale?', hlQEarn:'Chi ha guadagnato di più nel 2026?', hlSrcEarn:'Liquipedia, tutti i tornei dell’anno',
   hlHint:'Tocca chi sta più in alto', hlPlaceV:p=>p+'° posto', hlOver:n=>'Serie finita: '+n, hlNewBest:'Nuovo record',
   hlAgain:'Gioca ancora', hlCopy:'Copia il risultato', hlCopied:'Copiato', hlEmpty:'Nessun dato per una domanda'});
+Object.assign(I18N.ru, {rkTitle:'Ранкед', rkArenaTitle:'Арена', rkDiv:'див.', rkUnranked:'Без ранга',
+  rkPlaceFirst:'Первый матч сезона поставит ранг', rkPlaceFrom:n=>'Квалификация сезона, прошлый ранг: '+n,
+  rkSeasonLine:n=>'Матчей за карьеру: '+n, rkToNext:(a,b)=>a+' до '+b, rkCost:n=>'вход −'+n+'% за матч',
+  rkUnrealBoard:'место в таблице Unreal', rkHypeBoard:'место в Champion League', rkRules:u=>'правила '+u,
+  rkLast:d=>'Сессия '+d, rkForm:f=>'форма '+(f>0?'+':'')+f, rkPlaced:n=>'квалификация: '+n, rkUnrealPts:'очк. Unreal',
+  rkVictory:'Королевская победа', rkBy:'Выбил', rkLobby:'В лобби:', rkKills:'килл.', rkPeaks:'Пик прошлых сезонов',
+  rkPlay:n=>'Играть '+n+' матча', rkDayBusy:'Сегодня турнирный день, сессия в свободный день',
+  rkNewsUp:n=>'Ранкед: повышение до '+n, rkNewsDown:n=>'Ранкед: понижение до '+n, rkNewsPlaced:n=>'Ранкед: квалификация, ранг '+n,
+  rkNewsUnreal:n=>'Ранкед: '+n+'! Теперь место в мировой таблице', rkNewsTop100:p=>'Ранкед: топ-100 Unreal, место #'+p,
+  rkNewsTop1:()=>'Ранкед: первое место в таблице Unreal', rkNewsReset:()=>'Новый сезон: ранг сброшен, первый матч квалификационный',
+  rkNewsArenaUp:n=>'Арена: '+n, rkNewsChamp:n=>'Арена: Champion League! '+n, rkNewsArenaReset:u=>'Обновление '+u+': Hype на Арене сброшен'});
+Object.assign(I18N.en, {rkTitle:'Ranked', rkArenaTitle:'Arena', rkDiv:'div.', rkUnranked:'Unranked',
+  rkPlaceFirst:'The first match of the season sets your rank', rkPlaceFrom:n=>'Season placement, last rank: '+n,
+  rkSeasonLine:n=>'Career matches: '+n, rkToNext:(a,b)=>a+' to '+b, rkCost:n=>'entry −'+n+'% per match',
+  rkUnrealBoard:'Unreal leaderboard', rkHypeBoard:'Champion League standing', rkRules:u=>'rules '+u,
+  rkLast:d=>'Session '+d, rkForm:f=>'form '+(f>0?'+':'')+f, rkPlaced:n=>'placed: '+n, rkUnrealPts:'Unreal pts',
+  rkVictory:'Victory Royale', rkBy:'Eliminated by', rkLobby:'In the lobby:', rkKills:'kills', rkPeaks:'Peak in past seasons',
+  rkPlay:n=>'Play '+n+' matches', rkDayBusy:'Tournament day today, play a session on a free day',
+  rkNewsUp:n=>'Ranked: promoted to '+n, rkNewsDown:n=>'Ranked: dropped to '+n, rkNewsPlaced:n=>'Ranked: placed at '+n,
+  rkNewsUnreal:n=>'Ranked: '+n+'! On the world leaderboard now', rkNewsTop100:p=>'Ranked: top 100 Unreal, #'+p,
+  rkNewsTop1:()=>'Ranked: number one on the Unreal leaderboard', rkNewsReset:()=>'New season: rank reset, the first match is a placement',
+  rkNewsArenaUp:n=>'Arena: '+n, rkNewsChamp:n=>'Arena: Champion League! '+n, rkNewsArenaReset:u=>'Update '+u+': Arena Hype reset'});
+Object.assign(I18N.fr, {rkTitle:'Classé', rkArenaTitle:'Arène', rkDiv:'div.', rkUnranked:'Non classé',
+  rkPlaceFirst:'Le premier match de la saison fixe ton rang', rkPlaceFrom:n=>'Placement de saison, dernier rang : '+n,
+  rkSeasonLine:n=>'Matchs en carrière : '+n, rkToNext:(a,b)=>a+' avant '+b, rkCost:n=>'entrée −'+n+' % par match',
+  rkUnrealBoard:'classement Unreal', rkHypeBoard:'place en Champion League', rkRules:u=>'règles '+u,
+  rkLast:d=>'Session '+d, rkForm:f=>'forme '+(f>0?'+':'')+f, rkPlaced:n=>'placé : '+n, rkUnrealPts:'pts Unreal',
+  rkVictory:'Top 1', rkBy:'Éliminé par', rkLobby:'Dans le lobby :', rkKills:'kills', rkPeaks:'Pic des saisons passées',
+  rkPlay:n=>'Jouer '+n+' matchs', rkDayBusy:'Jour de tournoi, joue une session un jour libre',
+  rkNewsUp:n=>'Classé : promu '+n, rkNewsDown:n=>'Classé : redescendu '+n, rkNewsPlaced:n=>'Classé : placé '+n,
+  rkNewsUnreal:n=>'Classé : '+n+' ! Dans le classement mondial', rkNewsTop100:p=>'Classé : top 100 Unreal, #'+p,
+  rkNewsTop1:()=>'Classé : numéro un du classement Unreal', rkNewsReset:()=>'Nouvelle saison : rang remis à zéro, premier match de placement',
+  rkNewsArenaUp:n=>'Arène : '+n, rkNewsChamp:n=>'Arène : Champion League ! '+n, rkNewsArenaReset:u=>'Mise à jour '+u+' : Hype d’Arène remis à zéro'});
+Object.assign(I18N.it, {rkTitle:'Classificate', rkArenaTitle:'Arena', rkDiv:'div.', rkUnranked:'Senza grado',
+  rkPlaceFirst:'La prima partita della stagione fissa il grado', rkPlaceFrom:n=>'Piazzamento di stagione, grado precedente: '+n,
+  rkSeasonLine:n=>'Partite in carriera: '+n, rkToNext:(a,b)=>a+' a '+b, rkCost:n=>'ingresso −'+n+'% a partita',
+  rkUnrealBoard:'classifica Unreal', rkHypeBoard:'posto in Champion League', rkRules:u=>'regole '+u,
+  rkLast:d=>'Sessione '+d, rkForm:f=>'forma '+(f>0?'+':'')+f, rkPlaced:n=>'piazzato: '+n, rkUnrealPts:'pt Unreal',
+  rkVictory:'Vittoria Reale', rkBy:'Eliminato da', rkLobby:'Nella lobby:', rkKills:'kill', rkPeaks:'Picco delle stagioni passate',
+  rkPlay:n=>'Gioca '+n+' partite', rkDayBusy:'Oggi c’è un torneo, gioca una sessione in un giorno libero',
+  rkNewsUp:n=>'Classificate: promosso a '+n, rkNewsDown:n=>'Classificate: sceso a '+n, rkNewsPlaced:n=>'Classificate: piazzato a '+n,
+  rkNewsUnreal:n=>'Classificate: '+n+'! Ora in classifica mondiale', rkNewsTop100:p=>'Classificate: top 100 Unreal, #'+p,
+  rkNewsTop1:()=>'Classificate: primo nella classifica Unreal', rkNewsReset:()=>'Nuova stagione: grado azzerato, prima partita di piazzamento',
+  rkNewsArenaUp:n=>'Arena: '+n, rkNewsChamp:n=>'Arena: Champion League! '+n, rkNewsArenaReset:u=>'Aggiornamento '+u+': Hype dell’Arena azzerato'});
+Object.assign(I18N.pt, {rkTitle:'Ranqueada', rkArenaTitle:'Arena', rkDiv:'div.', rkUnranked:'Sem rank',
+  rkPlaceFirst:'A primeira partida da temporada define o rank', rkPlaceFrom:n=>'Posicionamento da temporada, rank anterior: '+n,
+  rkSeasonLine:n=>'Partidas na carreira: '+n, rkToNext:(a,b)=>a+' até '+b, rkCost:n=>'entrada −'+n+'% por partida',
+  rkUnrealBoard:'placar Unreal', rkHypeBoard:'posição na Champion League', rkRules:u=>'regras '+u,
+  rkLast:d=>'Sessão '+d, rkForm:f=>'forma '+(f>0?'+':'')+f, rkPlaced:n=>'posicionado: '+n, rkUnrealPts:'pts Unreal',
+  rkVictory:'Vitória Royale', rkBy:'Eliminado por', rkLobby:'No lobby:', rkKills:'abates', rkPeaks:'Pico das temporadas passadas',
+  rkPlay:n=>'Jogar '+n+' partidas', rkDayBusy:'Hoje é dia de torneio, jogue uma sessão num dia livre',
+  rkNewsUp:n=>'Ranqueada: subiu para '+n, rkNewsDown:n=>'Ranqueada: caiu para '+n, rkNewsPlaced:n=>'Ranqueada: posicionado em '+n,
+  rkNewsUnreal:n=>'Ranqueada: '+n+'! Agora no placar mundial', rkNewsTop100:p=>'Ranqueada: top 100 Unreal, #'+p,
+  rkNewsTop1:()=>'Ranqueada: primeiro no placar Unreal', rkNewsReset:()=>'Nova temporada: rank zerado, primeira partida de posicionamento',
+  rkNewsArenaUp:n=>'Arena: '+n, rkNewsChamp:n=>'Arena: Champion League! '+n, rkNewsArenaReset:u=>'Atualização '+u+': Hype da Arena zerado'});
 Object.assign(I18N.pt, {hhTag:'Novo', hhSub:'Quem tem mais prêmios no total: dois jogadores ou dois times, o total do primeiro aparece. Até o primeiro erro.', hhCntP:n=>n+' jogadores', hhCntT:n=>n+' times', hhPlayP:'Jogar', hhPlayT:'Times', hlHas:'ganhou', hlPrize:'em prêmios no total', hlThan:a=>'que '+a, hlRank:n=>n+'º de todos os tempos', hlMode_pl:'Jogadores', hlMode_org:'Times', hlMode_mix:'Finais e 2026', hlHigher:'Mais', hlLower:'Menos', hlSrcAll:'Liquipedia, prêmios de todos os tempos', hlQAll:(b,a)=>b+' ganhou mais ou menos que '+a+' no total?', hlLink:'Maior ou menor', hlTitle:'Maior ou menor', hlBack:'Início', hlStreak:n=>'Sequência: '+n, hlBest:n=>'Recorde: '+n,
   hlQPlace:'Quem ficou mais alto nesta final?', hlQEarn:'Quem ganhou mais prêmios em 2026?', hlSrcEarn:'Liquipedia, todos os torneios do ano',
   hlHint:'Toque em quem ficou acima', hlPlaceV:p=>p+'º lugar', hlOver:n=>'Sequência encerrada: '+n, hlNewBest:'Novo recorde',
