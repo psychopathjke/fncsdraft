@@ -69,17 +69,17 @@ window.addEventListener("load", function(){ setTimeout(async function(){
       check(key+': всё в коробке', v && v.spots.every(p=>p.x>=z.x && p.x<=z.x+z.w && p.y>=z.y && p.y<=z.y+z.h));
       const h3=document.createElement('div'); document.body.appendChild(h3);
       const pr3=ccLootRoom(h3, {rolls, nFast:4, nOpen:12, at:'', zone:z, set});
-      const pins=()=>h3.querySelectorAll('.lr-pin.lr-c[data-c]').length;
-      check(key+': 20 сундуков на карте', pins()===20 && h3.querySelector('.lr-map-l'), String(pins()));
-      const c7=h3.querySelectorAll('.lr-pin.lr-c[data-c]')[7].dataset.c;
-      h3.querySelector('.lr-pin[data-c="'+c7+'"]').click();
-      check(key+': открыт тот сундук, по которому нажал', !h3.querySelector('.lr-pin[data-c="'+c7+'"]') && h3.querySelectorAll('.lr-pin.open').length===1);
-      const ammo0=h3.querySelector('.lr-time').textContent;
-      const a1=h3.querySelector('.lr-pin.lr-a[data-c]'); a1.click();
-      check(key+': ящик даёт патроны', h3.querySelector('.lr-time').textContent!==ammo0 && h3.querySelectorAll('.lr-pin.open.lr-a').length===1);
-      h3.querySelector('[data-a="o5"]').click();
-      check(key+': «Открыть 5» открывает ещё пять', h3.querySelectorAll('.lr-pin.open').length===7, String(h3.querySelectorAll('.lr-pin.open').length));
-      h3.querySelector('[data-a="go"]').click();
+      const pins=()=>document.querySelectorAll('.lr-pin.lr-c[data-c]').length;
+      check(key+': 20 сундуков на карте', pins()===20 && document.querySelector('.lr-map-l'), String(pins()));
+      const c7=document.querySelectorAll('.lr-pin.lr-c[data-c]')[7].dataset.c;
+      document.querySelector('.lr-pin[data-c="'+c7+'"]').click();
+      check(key+': открыт тот сундук, по которому нажал', !document.querySelector('.lr-pin[data-c="'+c7+'"]') && document.querySelectorAll('.lr-pin.open').length===1);
+      const ammo0=document.querySelector('.lr-time').textContent;
+      const a1=document.querySelector('.lr-pin.lr-a[data-c]'); a1.click();
+      check(key+': ящик даёт патроны', document.querySelector('.lr-time').textContent!==ammo0 && document.querySelectorAll('.lr-pin.open.lr-a').length===1);
+      document.querySelector('[data-a="o5"]').click();
+      check(key+': «Открыть 5» открывает ещё пять', document.querySelectorAll('.lr-pin.open').length===7, String(document.querySelectorAll('.lr-pin.open').length));
+      document.querySelector('[data-a="go"]').click();
       out.notes[key]=v && {real:v.real, zoom:+v.zoom.toFixed(2), ammo:na, rare:v.spots.filter(p=>p.k==='r').length};
     });
     // Дуо: напарник открывает свой сундук на каждый твой, его находки в его слотах, «Поделить» даёт обоим по два ствола.
@@ -87,18 +87,20 @@ window.addEventListener("load", function(){ setTimeout(async function(){
     { const zs=ZONE_SETS.s42; const z=zs.slice().sort((a,b)=>(b.chests||0)-(a.chests||0))[0];
       const h4=document.createElement('div'); document.body.appendChild(h4);
       const pr4=ccLootRoom(h4, {rolls, nFast:4, nOpen:12, at:'', zone:z, set, mates:['Mate']});
-      h4.querySelector('.lr-pin.lr-c[data-c]').click();
-      check('дуо: напарник открыл свой', h4.querySelectorAll('.lr-pin.open').length===2 && h4.querySelectorAll('.lr-pin.open.by1').length===1);
-      check('дуо: два хотбара поверх карты', h4.querySelector('.lr-map .lr-hud-b') && h4.querySelectorAll('.lr-hb').length===2 && h4.querySelectorAll('.lr-slot[data-d^="1."]').length>=1);
-      h4.querySelector('[data-a="o5"]').click(); h4.querySelector('[data-a="o5"]').click();
-      const t4=()=>[...h4.querySelectorAll('.lr-slot[data-d], .lr-g')].reduce((s,b)=>{ const e=b.querySelector('em'); return s+(e ? +e.textContent.replace(/\\D/g,'') : 1); }, 0);
-      const before=t4(); h4.querySelector('[data-a="auto"]').click();
+      document.querySelector('.lr-pin.lr-c[data-c]').click();
+      check('дуо: напарник открыл свой', document.querySelectorAll('.lr-pin.open').length===2 && document.querySelectorAll('.lr-pin.open.by1').length===1);
+      check('дуо: два хотбара поверх карты', document.querySelector('.lr-map .lr-hud-b') && document.querySelectorAll('.lr-hb').length===2 && document.querySelectorAll('.lr-slot[data-d^="1."]').length>=1);
+      document.querySelector('[data-a="o5"]').click(); document.querySelector('[data-a="o5"]').click();
+      const t4=()=>[...document.querySelectorAll('.lr-slot[data-d], .lr-g')].reduce((s,b)=>{ const e=b.querySelector('em'); return s+(e ? +e.textContent.replace(/\\D/g,'') : 1); }, 0);
+      const before=t4(); document.querySelector('[data-a="auto"]').click();
       check('дуо: «Поделить» ничего не множит', t4()===before, before+' → '+t4());
-      const w0=h4.querySelectorAll('.lr-hb')[0].querySelectorAll('.lr-slot[data-d]').length, w1=h4.querySelectorAll('.lr-hb')[1].querySelectorAll('.lr-slot[data-d]').length;
+      check('стаки на земле не выше потолка вики', [...document.querySelectorAll('.lr-g')].every(b=>{ const e=b.querySelector('em'); const n=e ? +e.textContent.replace(/\\D/g,'') : 1; const nm=b.getAttribute('aria-label')||''; return n<=ccHealOf({name:nm}).stack || !CC_HEAL_KIT[nm]; }), [...document.querySelectorAll('.lr-g')].map(b=>(b.getAttribute('aria-label')||'')+':'+((b.querySelector('em')||{}).textContent||1)).join(', '));
+      check('на весь экран', !!document.querySelector('.cc-loot.lr-full .lr-map .lr-hud-b .lr-btns'));
+      const w0=document.querySelectorAll('.lr-hb')[0].querySelectorAll('.lr-slot[data-d]').length, w1=document.querySelectorAll('.lr-hb')[1].querySelectorAll('.lr-slot[data-d]').length;
       check('дуо: у обоих что-то в руках', w0>=2 && w1>=2, w0+' '+w1);
-      h4.querySelector('[data-to="1"]').click();
-      check('дуо: переключатель «брать для напарника»', h4.querySelector('[data-to="1"]').getAttribute('aria-pressed')==='true');
-      h4.querySelector('[data-a="go"]').click();
+      document.querySelector('[data-to="1"]').click();
+      check('дуо: переключатель «брать для напарника»', document.querySelector('[data-to="1"]').getAttribute('aria-pressed')==='true');
+      document.querySelector('[data-a="go"]').click();
       const r4=await pr4;
       check('дуо: сила отряда считается из всех рук', r4.powPack && r4.mates.length===1 && typeof r4.pen==='number', JSON.stringify({pen:r4.pen, split:r4.split}));
     }
@@ -125,7 +127,7 @@ window.addEventListener("load", function(){ setTimeout(async function(){
       for(let i=0;i<120 && !lr;i++){
         const b=[...h5.querySelectorAll('[data-at]')].find(x=>x.textContent.indexOf(pickBtn==='leave' ? L().ccSiteLeave : L().ccSiteFight)>=0);
         if(b) b.click(); else { const ok=h5.querySelector('.cc-choice-result button, .cc-res-ok'); if(ok) ok.click(); }
-        await new Promise(r=>setTimeout(r, 40)); lr=h5.querySelector('.cc-loot');
+        await new Promise(r=>setTimeout(r, 40)); lr=document.querySelector('.cc-loot');
       }
       Math.random=r0;
       check('BR '+pickBtn+': открылась комната лута', !!lr);

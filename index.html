@@ -9454,6 +9454,16 @@
   .lr-hud .lr-slot .lr-ic,.lr-hud .lr-g .lr-ic{width:38px;height:38px;}
   .lr-hud .lr-slot em,.lr-hud .lr-g em{top:1px;right:3px;font-size:10px;text-shadow:0 1px 2px #000;}
   .cc-loot:has(.lr-hud){max-height:none;overflow:visible;}
+  /* На весь экран: окно лута поверх всего, кадр карты = экран, HUD по краям, отступы под вырезы iPhone. */
+  .cc-choice.cc-loot.lr-full{position:fixed;inset:0;left:0;right:0;top:0;bottom:0;transform:none;margin:0;padding:0;border:0;border-radius:0;z-index:9000;background:#05091c;max-height:none;overflow:hidden;animation:none;box-shadow:none;}
+  .lr-full .lr-map{border:0;border-radius:0;margin:0;width:100%!important;height:100%!important;}
+  .lr-full .lr-hud-t{padding:calc(8px + env(safe-area-inset-top)) 12px 22px;display:flex;flex-direction:column;gap:3px;}
+  .lr-hud-ttl{font-size:12px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;color:#ffdd00;text-shadow:0 1px 2px #000;}
+  .lr-hud-t small{font-size:11px;color:#cfe0ff;text-shadow:0 1px 2px #000;}
+  .lr-full .lr-hud-b{padding:26px 12px calc(10px + env(safe-area-inset-bottom));}
+  .lr-hud .lr-btns{margin:4px 0 0;pointer-events:auto;}
+  .lr-hud .lr-b{min-height:42px;}
+  .lr-hud .lr-warn{margin:0;pointer-events:none;text-shadow:0 1px 2px #000;}
   @media (max-width:520px){ .lr-hb-n{font-size:10px;} .lr-hud .lr-slot{flex:0 1 40px;width:auto;min-width:32px;height:40px;min-height:40px;} .lr-hud .lr-slot .lr-ic{width:32px;height:32px;} .lr-hud .lr-g{width:40px;height:40px;min-height:40px;} .lr-hud-b{padding:18px 6px 6px;} }
   .lr-to{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:12px 0 0;font-size:12px;color:#8fa1cc;font-weight:800;}
   .lr-to button{min-height:36px;padding:0 12px;border-radius:99px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.05);color:#fff;font:inherit;cursor:pointer;}
@@ -116532,22 +116542,29 @@ function ccLootRoom(host, opt){
     const st={opened:0, t:0, ammo:0, invs:names.map(()=>[]), ground:[], at:[], to:0};
     const box=document.createElement('div');
     box.className='cc-choice cc-choice-map cc-loot';
-    host.appendChild(box);
-    // Кадр карты: широкий 4/3, на телефоне стоячий 3/4; HUD сверху (время) и снизу (земля, хотбары) поверх карты.
-    const cam=(()=>{ const cs=getComputedStyle(box), w0=box.clientWidth-(parseFloat(cs.paddingLeft)||0)-(parseFloat(cs.paddingRight)||0);
-      const W0=w0>200 ? w0 : 600, R=W0>=560 ? 4/3 : 3/4, H=Math.max(320, Math.min(W0/R, (window.innerHeight||800)*0.8, 760)), W=Math.min(W0, H*R);
-      const m=names.length, per=Math.max(1, Math.floor((W-16)/(5*(W>=560 ? 46 : 42)+14))), rows=Math.ceil(m/per);
-      return {W, H, top:36/H, bot:(rows*(W>=560 ? 66 : 60)+52+30)/H}; })();
-    const view=ccLrView(opt.zone, nFull, cam);
+    const full=!!(opt.zone && MAP_ART[(typeof ACTIVE_LANDING_SET!=='undefined') ? ACTIVE_LANDING_SET : '']);
+    // На весь экран — в body: у карты игры бывает transform, и fixed внутри неё прилипал бы к карте.
+    if(full) box.classList.add('lr-full');
+    (full ? document.body : host).appendChild(box);
+    const cam=(()=>{ const vv=window.visualViewport, W=Math.max(320, (full && box.clientWidth) || (vv && vv.width) || window.innerWidth || 800), H=Math.max(400, (full && box.clientHeight) || (vv && vv.height) || window.innerHeight || 700);
+      const m=names.length, wide=W>=560, per=Math.max(1, Math.floor((W-24)/(5*(wide ? 46 : 42)+18))), rows=Math.ceil(m/per);
+      return {W, H, top:78/H, bot:(rows*(wide ? 66 : 60)+50+52+30)/H}; })();
+    const view=full ? ccLrView(opt.zone, nFull, cam) : null;
+    if(!view) box.classList.remove('lr-full');
     const pos=[]; // где стоит каждый (индекс точки), для «ближайшего» у напарника
     const mats=()=>{ const o=st.t, span=Math.max(1, nOpen-nFast); return Math.round(CC_MATS_ZONE*clamp((nOpen-o)/span, -1, 1)); };
+    const groundPut=it=>{
+      if(it.kind!=='h'){ st.ground.push(it); return; }
+      const cap=ccHealOf(it.o).stack; let n=it.n;
+      for(const g of st.ground){ if(n<=0) break; if(g.kind==='h' && g.o.name===it.o.name && g.n<cap){ const mv=Math.min(cap-g.n, n); g.n+=mv; n-=mv; } }
+      while(n>0){ const k=Math.min(cap, n); st.ground.push({o:it.o, kind:'h', n:k}); n-=k; }
+    };
     const add=(o, kind, who)=>{
       const inv=st.invs[who], it={o, kind, n:1};
       if(kind==='h'){ const same=inv.find(x=>x.kind==='h' && x.o.name===o.name && x.n<ccHealOf(o).stack); if(same){ same.n++; return; } }
       if(kind==='m' && inv.some(x=>x.kind==='m')){ st.ground.push(it); return; }
       if(inv.length<5){ inv.push(it); return; }
-      const g=st.ground.find(x=>x.kind==='h' && x.o.name===o.name); if(kind==='h' && g){ g.n++; return; }
-      st.ground.push(it);
+      groundPut(it);
     };
     const giveRoll=(r, who)=>{ if(r.weapon) add(r.weapon, 'w', who); if(r.cons) add(r.cons, ccLrKind(r.cons), who); };
     // Открыть точку i тем, кто who. Сундук берёт следующий бросок, редкий бросает свой, ящик — патроны.
@@ -116574,8 +116591,7 @@ function ccLootRoom(host, opt){
       if(it.kind==='h'){ const same=inv.find(x=>x.kind==='h' && x.o.name===it.o.name); if(same){ const cap=ccHealOf(it.o).stack, mv=Math.min(it.n, cap-same.n); if(mv>0){ same.n+=mv; it.n-=mv; if(!it.n) st.ground.splice(i,1); draw(); return; } } }
       if(inv.length>=5){ st.full=true; draw(); return; }
       inv.push(it); st.ground.splice(i,1); draw(); };
-    const drop=(who, i)=>{ const inv=st.invs[who], it=inv[i]; if(!it) return; inv.splice(i,1);
-      const g=it.kind==='h' ? st.ground.find(x=>x.kind==='h' && x.o.name===it.o.name) : null; if(g) g.n+=it.n; else st.ground.unshift(it); draw(); };
+    const drop=(who, i)=>{ const inv=st.invs[who], it=inv[i]; if(!it) return; inv.splice(i,1); groundPut(it); draw(); };
     /* «Собрать лучшее» / «Поделить»: всё, что у отряда, раскладывается заново. Один — лучший пак себе. Отряд — змейкой:
        автоматы по порядку (ты, напарник…), дробовики в обратном, хилки и мувмент по кругу; у каждого потом ccPackFrom
        из доставшегося. Остаток считается по имени (хилки ccPackFrom отдаёт копиями), иначе стаки множились. */
@@ -116597,7 +116613,7 @@ function ccLootRoom(host, opt){
       const key=x=>x.kind==='w' ? x.o : x.kind+':'+x.o.name, left=new Map();
       all.forEach(x=>{ const e=left.get(key(x)); if(e) e.n+=x.n; else left.set(key(x), {o:x.o, kind:x.kind, n:x.n}); });
       st.invs.forEach(inv=>inv.forEach(x=>{ const e=left.get(key(x)); if(e) e.n-=x.n; }));
-      st.ground=[]; left.forEach(e=>{ if(e.n<=0) return; if(e.kind==='h') st.ground.push(e); else for(let k=0;k<e.n;k++) st.ground.push({o:e.o, kind:e.kind, n:1}); });
+      st.ground=[]; left.forEach(e=>{ if(e.n<=0) return; if(e.kind==='h') groundPut(e); else for(let k=0;k<e.n;k++) st.ground.push({o:e.o, kind:e.kind, n:1}); });
       draw(); };
     const packOf=inv=>{ const pack={weapons:[], heals:[], move:null, dropped:[], manual:true};
       inv.forEach(x=>{ if(x.kind==='w') pack.weapons.push(x.o); else if(x.kind==='m' && !pack.move) pack.move=x.o; else pack.heals.push(Object.assign({}, x.o, {n:x.n})); });
@@ -116625,27 +116641,28 @@ function ccLootRoom(host, opt){
       const ground=st.ground.map((x,i)=>'<button type="button" class="lr-g" data-g="'+i+'">'+icon(x.o)+tag(x)+'<small>'+esc(x.o.name)+'</small></button>').join('');
       const toSel=names.length>1 ? '<div class="lr-to" role="group" aria-label="'+esc(T.lrTakeFor)+'"><span>'+esc(T.lrTakeFor)+'</span>'+
         names.map((n, w)=>'<button type="button" data-to="'+w+'" aria-pressed="'+(st.to===w)+'"'+(st.to===w?' class="on"':'')+'>'+esc(w ? n : T.lrMe)+'</button>').join('')+'</div>' : '';
+      const done=view ? firstFree()<0 : st.opened>=nFull;
       const timeHTML='<div class="lr-time lr-'+zone+'"><u><s style="width:'+pct+'%"></s><i style="left:'+(nFast/nFull*100)+'%"></i><i style="left:'+(nOpen/nFull*100)+'%"></i></u>'+
         '<span>'+esc(T.lrOpened(st.opened, nFull))+' · '+ccMatsIconHTML()+' <b class="'+(m>0?'up':m<0?'down':'')+'">'+(m>0?'+':'')+m+'</b>'+
         ' · <img src="'+CC_LR_ART.a+'" alt=""> <b class="'+(st.ammo<need?'down':'up')+'">'+esc(T.lrAmmo(st.ammo, need))+'</b></span></div>';
-      const hud=view ? '<div class="lr-hud-t">'+timeHTML+'</div><div class="lr-hud-b">'+
+      const btns='<div class="lr-btns"><button type="button" class="lr-b" data-a="o5"'+(done?' disabled':'')+'>'+esc(T.lrOpen5)+'</button>'+
+        '<button type="button" class="lr-b" data-a="auto"'+(st.opened?'':' disabled')+'>'+esc(names.length>1 ? T.lrSplit : T.lrAuto)+'</button>'+
+        '<button type="button" class="lr-b lr-go" data-a="go">'+esc(T.lrGo)+'</button></div>';
+      const hud=view ? '<div class="lr-hud-t"><b class="lr-hud-ttl">'+esc(T.lrTitle)+'</b><small>'+esc(opt.at+T.lrHint(nOpen))+(opt.busLine ? ' · '+esc(opt.busLine) : '')+'</small>'+timeHTML+'</div><div class="lr-hud-b">'+
+        (st.full ? '<div class="lr-warn">'+esc(T.lrFull)+'</div>' : '')+
         '<div class="lr-gs" aria-label="'+esc(T.lrGround)+'">'+(st.ground.length ? st.ground.map((x,i)=>'<button type="button" class="lr-g" data-g="'+i+'" title="'+esc(x.o.name)+'" aria-label="'+esc(x.o.name)+'">'+icon(x.o)+tag(x)+'</button>').join('') : '<span class="lr-gs-e">'+esc(T.lrGround)+'</span>')+'</div>'+
         '<div class="lr-hbs">'+names.map((n, w)=>'<div class="lr-hb'+(names.length>1 && st.to===w ? ' to' : '')+'">'+
           (names.length>1 ? '<button type="button" class="lr-hb-n" data-to="'+w+'" aria-pressed="'+(st.to===w)+'" title="'+esc(T.lrTakeFor)+'">'+esc(w ? n : T.lrMe)+'</button>'
                           : '<span class="lr-hb-n">'+esc(T.lrMe)+'</span>')+
-          '<div class="lr-hb-s">'+slotsOf(w)+'</div></div>').join('')+'</div></div>' : '';
+          '<div class="lr-hb-s">'+slotsOf(w)+'</div></div>').join('')+'</div>'+btns+'</div>' : '';
       const chests=view ? ccLrMapHTML(view, st, icon, T, !st.drawn, opt.bus, hud, cam) : '<div class="lr-chests">'+rolls.map((r,i)=>i<st.opened
         ? '<span class="lr-ch open" title="'+esc(ccItemLabel(r.weapon))+'">'+icon(r.weapon)+'</span>'
         : '<button type="button" class="lr-ch" data-c="'+i+'" aria-label="'+esc(T.lrOpen1)+'">'+CC_CHOICE_ICON.chest+'</button>').join('')+'</div>';
       const invs=names.map((n, w)=>'<div class="lr-lab">'+esc(w ? T.lrInvOf(n) : T.lrInv)+'</div><div class="lr-inv">'+slotsOf(w)+'</div>').join('');
-      const done=view ? firstFree()<0 : st.opened>=nFull;
-      box.innerHTML='<div class="cc-choice-head"><b><span class="cc-choice-t">'+esc(T.lrTitle)+'</span></b><div class="cc-choice-sub"><span>'+esc(opt.at+T.lrHint(nOpen))+(opt.busLine ? '<br>'+esc(opt.busLine) : '')+'</span></div></div>'+
-        (view ? chests : timeHTML+chests+toSel+invs)+
+      box.innerHTML=view ? chests : '<div class="cc-choice-head"><b><span class="cc-choice-t">'+esc(T.lrTitle)+'</span></b><div class="cc-choice-sub"><span>'+esc(opt.at+T.lrHint(nOpen))+(opt.busLine ? '<br>'+esc(opt.busLine) : '')+'</span></div></div>'+
+        timeHTML+chests+toSel+invs+
         (st.full ? '<div class="lr-warn">'+esc(T.lrFull)+'</div>' : '')+
-        (!view && ground ? '<div class="lr-lab">'+esc(T.lrGround)+'</div><div class="lr-ground">'+ground+'</div>' : '')+
-        '<div class="lr-btns"><button type="button" class="lr-b" data-a="o5"'+(done?' disabled':'')+'>'+esc(T.lrOpen5)+'</button>'+
-        '<button type="button" class="lr-b" data-a="auto"'+(st.opened?'':' disabled')+'>'+esc(names.length>1 ? T.lrSplit : T.lrAuto)+'</button>'+
-        '<button type="button" class="lr-b lr-go" data-a="go">'+esc(T.lrGo)+'</button></div>';
+        (ground ? '<div class="lr-lab">'+esc(T.lrGround)+'</div><div class="lr-ground">'+ground+'</div>' : '')+btns;
       st.full=false; st.drawn=1;
     }
     box.addEventListener('click', e=>{
