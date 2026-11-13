@@ -55,17 +55,6 @@ window.addEventListener("load", function(){ setTimeout(async function(){
     check('под пропуском вопроса нет', host.children.length===n0 && you._mats===900);
     // Уже в круге: вопроса нет.
     you=mk(); you._sq.x=62; you._sq.y=62; check('внутри круга плана нет', ccPathPlan(you)===null);
-    // Где встаём в круге (ccAskPos): четыре хода, ответ — team._pos для движка; «как обычно» снимает выбор.
-    { const y=mk(); let pp=ccAskPos(y, {map:host}); await tick();
-      const ps=[...host.querySelectorAll('[data-at]')];
-      check('позиция: четыре хода', ps.length===4, String(ps.length));
-      const hb=ps.find(b=>b.textContent.indexOf(L().psHold)>=0); if(hb) hb.click(); await tick();
-      for(let i=0;i<10 && host.querySelector('button'); i++){ host.querySelector('button').click(); await tick(); }
-      await pp;
-      check('позиция: «держать место» ушло движку', y._pos==='hold', String(y._pos));
-      skipAnimation=true; const y2=mk(); await ccAskPos(y2, {map:host}); skipAnimation=false;
-      check('позиция: под пропуском вопроса нет', y2._pos==null);
-      ['ru','en','fr','it','pt'].forEach(lg=>['psTitle','psAuto','psSide','psHold','psCenter','psSet'].forEach(k=>check(lg+' '+k, I18N[lg][k]!=null))); }
     ['ru','en','fr','it','pt'].forEach(lg=>['rpTitle','rpHint','rpDirect','rpLeft','rpRight','rpNote','rpSafest','rpClear','rpMet'].forEach(k=>check(lg+' '+k, I18N[lg][k]!=null)));
   }catch(e){ out.fails.push('ERR '+(e && e.stack || e)); }
   document.getElementById('__out').textContent='BEGIN'+encodeURIComponent(JSON.stringify(out))+'END';

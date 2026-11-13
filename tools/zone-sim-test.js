@@ -627,7 +627,7 @@ test('the same seed produces the same result', () => {
 });
 
 test('the player can choose where to stand: hold stays, centre goes in, zone side leans to the next pull', () => {
-  // team._pos — выбор игрока «где встаём в круге» (ccAskPos). Мерим по кадрам: сколько отряд прошёл и где стоял.
+  // team._pos — позиция в круге для людей (сейчас из интерфейса не задаётся). Мерим по кадрам: сколько отряд прошёл и где стоял.
   const runWith = pos => {
     let walked = 0, edge = 0, n = 0;
     for(let seed=1; seed<=12; seed++){
