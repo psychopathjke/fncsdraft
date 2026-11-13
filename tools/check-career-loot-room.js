@@ -97,7 +97,7 @@ window.addEventListener("load", function(){ setTimeout(async function(){
       const w0=h4.querySelectorAll('.lr-hb')[0].querySelectorAll('.lr-slot[data-d]').length, w1=h4.querySelectorAll('.lr-hb')[1].querySelectorAll('.lr-slot[data-d]').length;
       check('дуо: у обоих что-то в руках', w0>=2 && w1>=2, w0+' '+w1);
       h4.querySelector('[data-to="1"]').click();
-      check('дуо: переключатель «брать для напарника»', h4.querySelector('[data-to="1"]').classList.contains('on'));
+      check('дуо: переключатель «брать для напарника»', h4.querySelector('[data-to="1"]').getAttribute('aria-pressed')==='true');
       h4.querySelector('[data-a="go"]').click();
       const r4=await pr4;
       check('дуо: сила отряда считается из всех рук', r4.powPack && r4.mates.length===1 && typeof r4.pen==='number', JSON.stringify({pen:r4.pen, split:r4.split}));
