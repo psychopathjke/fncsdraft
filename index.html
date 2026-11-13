@@ -12455,7 +12455,7 @@ ccMatsGoNote:(v,f,p)=>p+'%: нашёл — +'+v+' и полные ресы, не
 ccMatsStayNote:v=>'Ничего не тратишь, но в концовке без ресов минус '+v,
 ccMatsFound:v=>'Рефреш найден, +'+v+' к силе и полные ресы', ccMatsMissed:v=>'Не нашёл, −'+v+' к силе',
 ccMatsStayGot:'Играем тем, что есть',
-ccLateLg:'Играть снизу', ccLateLgNote:'Без прибавки — зато без риска',
+ccLateLg:'Играть снизу', ccLateTunnel:'Тоннель низом', ccLateTag:'Тэгать на сюрдж', ccLatePro:n=>'Живы '+n+' · у про в финалах FNCS 2026 к 8-й зоне живы 21–25 из 50, 44% киллов после неё', ccLateLgNote:'Без прибавки — зато без риска',
 ccLateMidWon:v=>'Удержали середину — +'+v+' к силе', ccLateMidLost:v=>'Сбили — играем снизу, −'+v+' к силе', ccLateHgWon:v=>'Удачно — хайграунд взят, +'+v+' к силе', ccLateHgLost:v=>'Не вышло — сбили с высоты, −'+v+' к силе',
 ccLateRefreshGot:v=>'Рефреш найден, +'+v+' к силе', ccLateLgGot:'Играем снизу — без прибавки',
 ccSpotTitle:'Своя точка',
@@ -14580,7 +14580,7 @@ ccMatsGoNote:(v,f,p)=>p+'%: found it — +'+v+' and full mats, did not — minus
 ccMatsStayNote:v=>'Costs nothing now, but an endgame without mats is minus '+v,
 ccMatsFound:v=>'Refresh found, +'+v+' power and full mats', ccMatsMissed:v=>'Nothing there, −'+v+' power',
 ccMatsStayGot:'Playing with what we have',
-ccLateLg:'Play low', ccLateLgNote:'No bonus — and no risk',
+ccLateLg:'Play low', ccLateTunnel:'Tunnel low', ccLateTag:'Tag for surge', ccLatePro:n=>n+' alive · in FNCS 2026 finals 21–25 of 50 are alive at zone 8, 44% of kills come after it', ccLateLgNote:'No bonus — and no risk',
 ccLateMidWon:v=>'Held the middle — +'+v+' power', ccLateMidLost:v=>'Knocked down — playing from below, −'+v+' power', ccLateHgWon:v=>'It worked — high ground taken, +'+v+' power', ccLateHgLost:v=>'No luck — run off the high ground, −'+v+' power',
 ccLateRefreshGot:v=>'Refresh found, +'+v+' power', ccLateLgGot:'Playing low — no bonus',
 ccSpotTitle:'Your spot',
@@ -16733,7 +16733,7 @@ ccMatsGoNote:(v,f,p)=>p+' % : trouvé — +'+v+' et mats pleins, sinon — moins
 ccMatsStayNote:v=>'Ça ne coûte rien maintenant, mais une fin de partie sans mats coûte '+v,
 ccMatsFound:v=>'Refresh trouvé, +'+v+' de puissance et mats pleins', ccMatsMissed:v=>'Rien trouvé, −'+v+' de puissance',
 ccMatsStayGot:'On joue avec ce qu\'on a',
-ccLateLg:'Jouer en bas', ccLateLgNote:'Aucun bonus — aucun risque',
+ccLateLg:'Jouer en bas', ccLateTunnel:'Tunnel en bas', ccLateTag:'Taguer pour la surge', ccLatePro:n=>n+' en vie · en finale FNCS 2026, 21–25 sur 50 en vie en zone 8, 44% des kills après', ccLateLgNote:'Aucun bonus — aucun risque',
 ccLateMidWon:v=>'Le milieu tenu — +'+v+' de puissance', ccLateMidLost:v=>'Descendu — on joue d’en bas, −'+v+' de puissance', ccLateHgWon:v=>'Réussi — high ground pris, +'+v+' de puissance', ccLateHgLost:v=>'Raté — chassé de la hauteur, −'+v+' de puissance',
 ccLateRefreshGot:v=>'Refresh trouvé, +'+v+' de puissance', ccLateLgGot:'On joue en bas — aucun bonus',
 ccSpotTitle:'Ton spot',
@@ -20060,7 +20060,7 @@ ccLateTake:"Togliere il punto ai più deboli",
 ccLateTakeNote:(p,f,o)=>o+" su 100: funziona — +"+p+", no — meno "+f,
 ccLateTakeWon:v=>"Punto preso, +"+v+" di potenza",
 ccLateTakeLost:v=>"Hanno tenuto il punto, −"+v+" di potenza",
-ccLateLg:"Gioca basso",
+ccLateLg:"Gioca basso", ccLateTunnel:'Tunnel in basso', ccLateTag:'Taggare per la surge', ccLatePro:n=>n+' vivi · nelle finali FNCS 2026 in zona 8 ne restano 21–25 su 50, 44% delle kill dopo',
 ccLateLgNote:"Nessun bonus — e nessun rischio",
 ccLateLgGot:"Giochi basso — nessun bonus",
 ccSpotTitle:"Il tuo punto",
@@ -22614,7 +22614,7 @@ ccLateTake:"Tomar o ponto dos mais fracos",
 ccLateTakeNote:(p,f,o)=>o+" em 100: funciona — +"+p+", não — menos "+f,
 ccLateTakeWon:v=>"Ponto tomado, +"+v+" de força",
 ccLateTakeLost:v=>"Eles seguraram o ponto, −"+v+" de força",
-ccLateLg:"Jogar por baixo",
+ccLateLg:"Jogar por baixo", ccLateTunnel:'Túnel por baixo', ccLateTag:'Tagar pelo surge', ccLatePro:n=>n+' vivos · nas finais da FNCS 2026, 21–25 de 50 vivos na zona 8, 44% dos abates depois',
 ccLateLgNote:"Sem bônus — e sem risco",
 ccLateLgGot:"Jogando por baixo — sem bônus",
 ccSpotTitle:"Seu ponto",
@@ -116897,6 +116897,27 @@ function ccEndZones(){
   return n>=11 ? {move:10, last:11} : n>=9 ? {move:9, last:0} : {move:0, last:0};
 }
 const ccFoeName=foe=>foe ? String(foe.name||'').replace(/<[^>]+>/g,'') : '';
+/* КОНЦОВКА КАК У ПРО (его «лейт реалистичней выборы, посмотри как у про игроков», 13.11).
+   1) Тэг на сюрдж — и в концовке. В финалах FNCS 2026 EU сюрдж шёл с 4-й по 10-ю зону в двух играх из трёх (см.
+      CC_SURGE_FARM), и про в двигающихся кругах «тэгают» — бьют по кому угодно ради урона, чтобы не срезало. Ход тот же, что в
+      меню середины (те же числа замера), и появляется по тому же правилу: сюрдж включён и запас над линией меньше CC_SURGE_SAFE.
+   2) Низ в эпоху двигающихся кругов — тоннель (ccLateLowName): с 2023 года концовки FNCS играются низом через тоннели,
+      высоту берут редко. Числа хода прежние, меняется название.
+   3) Строка над вопросом — замер тех же реплеев (tools/real-matches.json): к 8-й зоне живы 21–25 отрядов из 50, 44% киллов
+      игры случаются после неё. */
+function ccLateSurgeOpt(you, T){
+  const sg=ccSurgeState(you);
+  if(!(sg && sg.on && (sg.gap==null || sg.gap<CC_SURGE_SAFE))) return null;
+  return {id:'surge', icon:CC_CHOICE_ICON.surge, title:T.ccLateTag,
+    note:T.ccMidSurgeNote(CC_SURGE_FARM, CC_SURGE_TAKEN, CC_SURGE_FARM_POW)+' · '+T.ccMidSurgeLine(sg.players, sg.at, sg.gap)};
+}
+async function ccLateSurgeApply(you, say, T){
+  if(you._sq){ you._sq.dealt=(you._sq.dealt||0)+CC_SURGE_FARM; you._sq.taken=(you._sq.taken||0)+CC_SURGE_TAKEN; }
+  ccAddGamePow(you, -CC_SURGE_FARM_POW);
+  await say(T.ccMidSurgeGot(CC_SURGE_FARM, CC_SURGE_TAKEN, CC_SURGE_FARM_POW), true);
+}
+function ccLateLowName(T){ const y=(typeof ccCalYear==='function') ? ccCalYear() : 2026; return y>=2023 ? T.ccLateTunnel : T.ccLateLg; }
+function ccLateProLine(you, T){ const g=you && you._game, n=g && g.aliveCount ? g.aliveCount() : 0; return n ? T.ccLatePro(n) : ''; }
 async function ccAskMoving(you, ui){
   if(!you) return;
   ccMpMark('mv0'+(you.mpTag||''));
@@ -116914,15 +116935,17 @@ async function ccAskMoving(you, ui){
      note:T.ccLateThirdNote(Math.round(CC_THIRD.kill*100), Math.round(CC_THIRD.die*100), CC_THIRD.pow)}
   ];
   if(mv) opts.push({id:'move', icon:ccItemIconHTML(mv, CC_CHOICE_ICON.run), title:T.ccRotMove, note:T.ccRotMoveNote(mv.name, CC_ROT_MOVE_POW)+' · '+cost('move')});
+  const tagM=ccLateSurgeOpt(you, T); if(tagM) opts.push(tagM);
   // Ход по умолчанию первым: пропуск и сторожа берут первую кнопку.
   opts.forEach(o=>{ o.def=o.id===cur; });
   opts=opts.filter(o=>o.def).concat(opts.filter(o=>!o.def));
-  const name=id=>({early:T.mvEarly, with:T.mvEdge, late:T.mvTarp, third:T.mvThird, move:T.ccRotMove})[id]||'';
+  const name=id=>({early:T.mvEarly, with:T.mvEdge, late:T.mvTarp, third:T.mvThird, move:T.ccRotMove, surge:T.ccLateTag})[id]||'';
   const pickId=(await ccMpChoose('moving'+(you.mpTag||''), async function(){
     return (await ccChoiceBox(T.mvTitle(n), ccKitLine(you), opts, ui && ui.map, null, 'moving')).id;
   }, name)).v;
   ccMpMark('a10:'+pickId);
   const say=async (line, ok)=>{ if(ui && ui.note) ui.note(line); await ccChoiceResult(ui && ui.map, line, ok); };
+  if(pickId==='surge'){ await ccLateSurgeApply(you, say, T); return; }
   if(pickId==='third'){
     const r=Math.random(), foe=game && game.nearest ? game.nearest(you) : null;
     const out=ccThirdApply(you, r, foe);
@@ -116952,13 +116975,15 @@ async function ccAskLast(you, ui){
     {id:'push', icon:ccItemIconHTML(gun, CC_CHOICE_ICON.fight), title:T.lsPush+(foe0 && foe0.name ? ' · '+ccFoeName(foe0) : ''),
      note:T.ccMidFightNote(Math.round(F.decide*pw*100), F.pow, Math.round(F.decide*(1-pw)*100), Math.round(F.trade*100), F.pokeDmg)}
   ];
-  const name=id=>({hold:T.lsHold, third:T.ccLateThird, push:T.lsPush})[id]||'';
+  const tagL=ccLateSurgeOpt(you, T); if(tagL) opts.push(tagL);
+  const name=id=>({hold:T.lsHold, third:T.ccLateThird, push:T.lsPush, surge:T.ccLateTag})[id]||'';
   const pickId=(await ccMpChoose('last'+(you.mpTag||''), async function(){
     return (await ccChoiceBox(T.lsTitle(n), ccKitLine(you), opts, ui && ui.map, null, 'last')).id;
   }, name)).v;
   ccMpMark('a11:'+pickId);
   const say=async (line, ok)=>{ if(ui && ui.note) ui.note(line); await ccChoiceResult(ui && ui.map, line, ok); };
   if(pickId==='hold'){ await say(T.lsHoldGot, null); return; }
+  if(pickId==='surge'){ await ccLateSurgeApply(you, say, T); return; }
   const r=Math.random(), foe=game && game.nearest ? game.nearest(you) : null, fn=ccFoeName(foe);
   if(pickId==='third'){
     const out=ccThirdApply(you, r, foe);
@@ -116981,19 +117006,22 @@ async function ccAskLate(you, ui){
      стало пять, снова стало три — и каждый раз это одна строка в
      CC_LATE_MOVES плюс словарные, вместо правки в четырёх местах, где раньше
      стояло 'hg'. */
-  const nameOf=id=>L()[CC_LATE_NAME[id]];
+  const nameOf=id=>id==='surge' ? L().ccLateTag : id==='lg' ? ccLateLowName(L()) : L()[CC_LATE_NAME[id]];
+  const tag8=ccLateSurgeOpt(you, L());
   // Ход, у которого цена зависит от ресов, называет её по СЕГОДНЯШНИМ ресам.
   const powOf=m=>m.mats ? ccRefreshPow(you) : m.pow;
   const pickId=(await ccMpChoose('late'+(you.mpTag||''), async function(){
     // Подсказкой идёт не общая фраза, а что у тебя есть: ресы и лут. Ради
     // этого вопрос и задан — см. ccKitLine.
-    return (await ccChoiceBox(L().ccLateTitle, ccKitLine(you),
+    const pro=ccLateProLine(you, L());
+    return (await ccChoiceBox(L().ccLateTitle, ccKitLine(you)+(pro ? '<br>'+esc(pro) : ''),
       ccLateMovesNow().map(m=>({id:m.id, title:nameOf(m.id), note:ccLateNote(m, powOf(m)),
         // Картинка хода — по id, см. CC_LATE_ICON; у рефреша сундук, у низа «остаёмся».
-        icon:CC_CHOICE_ICON[CC_LATE_ICON[m.id]]||CC_CHOICE_ICON.stay})),
+        icon:CC_CHOICE_ICON[CC_LATE_ICON[m.id]]||CC_CHOICE_ICON.stay})).concat(tag8 ? [tag8] : []),
       ui && ui.map, null, 'late')).id;
   }, function(v){ return nameOf(v); })).v;
   ccMpMark('a8:'+pickId);
+  if(pickId==='surge'){ await ccLateSurgeApply(you, async (line, ok)=>{ if(ui && ui.note) ui.note(line); await ccChoiceResult(ui && ui.map, line, ok); }, L()); return; }
   const move=ccLateMove(pickId);
   // Третья сторона — стычка через движок, один бросок на обоих клиентах.
   if(move.real){

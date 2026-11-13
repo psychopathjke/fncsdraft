@@ -61,6 +61,21 @@ window.addEventListener("load", function(){ setTimeout(async function(){
     check('концовка: 0.75 разошлись', ccFightApply(mk(), 0.75, foe, CC_FIGHT_LATE)==='poke');
     ['ru','en','fr','it','pt'].forEach(lg=>['mvTitle','mvEarly','mvEarlyNote','mvEdge','mvEdgeNote','mvTarp','mvTarpNote','mvThird','lsTitle','lsHold','lsHoldNote','lsHoldGot','lsPush'].forEach(k=>check(lg+' '+k, I18N[lg][k]!=null)));
     check('тексты без длинного тире', !/\u2014/.test(L().mvEarlyNote(63)+L().lsHoldNote));
+    // Как у про: тэг на сюрдж в концовке, когда сюрдж включён и запас мал; без сюрджа хода нет. Тоннель — название низа с 2023.
+    { const sgYou=()=>{ const y=mk(); y._sq.dealt=0; y._sq.taken=200; y._game.frames=()=>[{surgeAt:60, players:80, surgeLine:-50}]; return y; };
+      let y=sgYou(); let pp=ccAskLast(y, {map:host}); await tick();
+      const tagB=[...host.querySelectorAll('[data-at]')].find(b=>b.textContent.indexOf(L().ccLateTag)>=0);
+      check('последние отряды: есть «тэгать на сюрдж» при сюрдже', !!tagB);
+      if(tagB) tagB.click(); await tick();
+      for(let i=0;i<20 && host.querySelector('button'); i++){ host.querySelector('button').click(); await tick(); }
+      await pp;
+      check('тэг добавил урон в сюрдж', y._sq.dealt===CC_SURGE_FARM, String(y._sq.dealt));
+      y=mk(); pp=ccAskMoving(y, {map:host}); await tick();
+      check('без сюрджа тэга нет', ![...host.querySelectorAll('[data-at]')].some(b=>b.textContent.indexOf(L().ccLateTag)>=0));
+      for(let i=0;i<20 && host.querySelector('button'); i++){ host.querySelector('button').click(); await tick(); }
+      await pp;
+      ['ru','en','fr','it','pt'].forEach(lg=>['ccLateTunnel','ccLateTag','ccLatePro'].forEach(k=>check(lg+' '+k, I18N[lg][k]!=null)));
+    }
   }catch(e){ out.fails.push('ERR '+(e && e.stack || e)); }
   document.getElementById('__out').textContent='BEGIN'+encodeURIComponent(JSON.stringify(out))+'END';
 }, 800); });<\/script>`;
