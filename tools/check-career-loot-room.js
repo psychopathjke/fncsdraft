@@ -109,6 +109,32 @@ window.addEventListener("load", function(){ setTimeout(async function(){
       check('автобус: рядом без потерь, далеко с потерями', Math.min(...lates)===0 && Math.max(...lates)>0, Math.min(...d).toFixed(1)+'..'+Math.max(...d).toFixed(1));
       check('автобус: одна и та же линия на ту же игру', (CC_BUS=null, JSON.stringify(ccBus()))===JSON.stringify(b));
       CC_BUS_GAME=null; CC_BUS=null; }
+    // BR: на своей коробке соседи («в батл рояль не лутаются сундуки») — ушёл или выиграл, и всё равно лутаешь руками.
+    for(const pickBtn of ['leave','fight']){
+      ACTIVE_LANDING_SET='s42'; squadSize=1; const keepRun=CAREER_RUN; CAREER_RUN=CAREER_RUN||{};
+      const zs=ZONE_SETS.s42, z0=zs[3], z1=zs[4];
+      const you={name:'You', pow:200, _pf:200, _pc:200, landingZone:z0, _mats:300};
+      const foe={name:'Foe', pow:1, _pf:1, _pc:1, landingZone:z0};
+      const other={name:'Far', pow:50, landingZone:z1};
+      const sq={team:you, alive:true, x:0, y:0}, fsq={team:foe, alive:true}, osq={team:other, alive:true};
+      you._sq=sq; you._game={squads:[sq, fsq, osq], eliminate:(a)=>{ (a===you?sq:fsq).alive=false; }};
+      const h5=document.createElement('div'); document.body.appendChild(h5);
+      const r0=Math.random; if(pickBtn==='fight') Math.random=(()=>{ let k=0; return ()=>{ k++; return k===1 ? r0() : 0.01; }; })();
+      const pr5=ccAskSite(you, {map:h5});
+      let lr=null;
+      for(let i=0;i<120 && !lr;i++){
+        const b=[...h5.querySelectorAll('[data-at]')].find(x=>x.textContent.indexOf(pickBtn==='leave' ? L().ccSiteLeave : L().ccSiteFight)>=0);
+        if(b) b.click(); else { const ok=h5.querySelector('.cc-choice-result button, .cc-res-ok'); if(ok) ok.click(); }
+        await new Promise(r=>setTimeout(r, 40)); lr=h5.querySelector('.cc-loot');
+      }
+      Math.random=r0;
+      check('BR '+pickBtn+': открылась комната лута', !!lr);
+      if(lr){ lr.querySelector('.lr-pin.lr-c[data-c]') && lr.querySelector('.lr-pin.lr-c[data-c]').click(); lr.querySelector('[data-a="go"]').click(); }
+      for(let i=0;i<40;i++){ const b=h5.querySelector('button'); if(!b) break; b.click(); await new Promise(r=>setTimeout(r, 40)); }
+      await Promise.race([pr5, new Promise(r=>setTimeout(r, 3000))]);
+      check('BR '+pickBtn+': пак в руках', you._loot && (you._loot.weapons||[]).length>=1, JSON.stringify(you._loot||null).slice(0,120));
+      CAREER_RUN=keepRun;
+    }
     ACTIVE_LANDING_SET=keep; squadSize=keepSq;
     ['ru','en','fr','it','pt'].forEach(lg=>['lrTitle','lrHint','lrOpened','lrGo','lrAuto','lrInv','lrGround','lrFull','lrAmmo','lrAmmoBox','lrRare','lrAmmoLow','lrSplitPen','lrTakeFor','lrMe','lrInvOf','lrSplit','lrBusLate','lrBusNear'].forEach(k=>check(lg+' '+k, I18N[lg][k]!=null)));
   }catch(e){ out.fails.push('ERR '+(e && e.stack || e)); }
