@@ -137,6 +137,23 @@ window.addEventListener("load", function(){ setTimeout(async function(){
       check('BR '+pickBtn+': пак в руках', you._loot && (you._loot.weapons||[]).length>=1, JSON.stringify(you._loot||null).slice(0,120));
       CAREER_RUN=keepRun;
     }
+    // Мифическая точка: босс на карте, его дроп — мифик в слот и медальон у хотбара; ушёл без босса — минус CC_MYTHIC_POW.
+    for(const kill of [true, false]){
+      ACTIVE_LANDING_SET='f1'; squadSize=1;
+      const zb=Object.assign({}, ZONE_SETS.f1[7], {mythic:'Oscar', mythicSet:'f1'});
+      const pr6=ccLootRoom(document.body, {rolls, nFast:4, nOpen:12, at:'', zone:zb, set});
+      const bp=document.querySelector('.lr-pin.lr-b[data-c]');
+      check('босс '+kill+': значок босса на карте', !!bp);
+      if(kill && bp){ bp.click();
+        check('босс: мифик в слоте', [...document.querySelectorAll('.lr-slot[data-d] img')].some(im=>String(im.getAttribute('src')).indexOf('items/boss/')>=0));
+        check('босс: медальон у хотбара', !!document.querySelector('.lr-medal img')); }
+      document.querySelector('.lr-pin.lr-c[data-c]').click();
+      check('«Открыть 5» босса не трогает', (document.querySelector('[data-a="o5"]').click(), kill || !!document.querySelector('.lr-pin.lr-b[data-c]')));
+      document.querySelector('[data-a="go"]').click();
+      const r6=await pr6;
+      check('босс '+kill+': итог', kill ? (r6.bossDown && r6.medals.length>=1) : (!r6.bossDown && r6.pen>=CC_MYTHIC_POW), JSON.stringify({d:r6.bossDown, pen:r6.pen, m:(r6.medals||[]).length}));
+    }
+    ['ru','en','fr','it','pt'].forEach(lg=>['lrBoss','lrBossLeft'].forEach(k=>check(lg+' '+k, I18N[lg][k]!=null)));
     ACTIVE_LANDING_SET=keep; squadSize=keepSq;
     ['ru','en','fr','it','pt'].forEach(lg=>['lrTitle','lrHint','lrOpened','lrGo','lrAuto','lrInv','lrGround','lrFull','lrAmmo','lrAmmoBox','lrRare','lrAmmoLow','lrSplitPen','lrTakeFor','lrMe','lrInvOf','lrSplit','lrBusLate','lrBusNear'].forEach(k=>check(lg+' '+k, I18N[lg][k]!=null)));
   }catch(e){ out.fails.push('ERR '+(e && e.stack || e)); }
