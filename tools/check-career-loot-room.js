@@ -167,6 +167,23 @@ window.addEventListener("load", function(){ setTimeout(async function(){
       const r7=await pr7, cls=(r7.pack.weapons||[]).map(w=>w.icon);
       check('автоподбор: в руках по одному стволу на класс', new Set(cls).size===cls.length, cls.join(','));
     }
+    // Хранилище S42 (fortnite.gg Vaults) и сундуки со 100 % спавном.
+    { ACTIVE_LANDING_SET='s42'; squadSize=1;
+      const zv=ZONE_SETS.s42.find(z=>ccLrCount(CC_LR_CHESTS.s42.v, z)+ccLrCount(CC_LR_CHESTS.s42.V, z)>0);
+      check('на S42 есть коробка с хранилищем', !!zv);
+      if(zv){
+        const pr8=ccLootRoom(document.body, {rolls, nFast:4, nOpen:12, at:'', zone:zv, set});
+        const vb=document.querySelector('.lr-pin.lr-v[data-c]');
+        check('хранилище на карте', !!vb);
+        const n0=document.querySelectorAll('.lr-slot[data-d], .lr-g').length;
+        if(vb) vb.click();
+        check('хранилище дало лут', document.querySelectorAll('.lr-slot[data-d], .lr-g').length>=n0+2, n0+' → '+document.querySelectorAll('.lr-slot[data-d], .lr-g').length);
+        document.querySelector('[data-a="go"]').click(); await pr8;
+      }
+      const zg=ZONE_SETS.s42.find(z=>ccLrCount(CC_LR_CHESTS.s42.g, z)>0);
+      check('сундуки со 100 % спавном учтены', zg && ccSiteChests(Object.assign({}, zg, {chests:zg.chests||ccLrCount(CC_LR_CHESTS.s42.n, zg)}))>=ccLrCount(CC_LR_CHESTS.s42.g, zg));
+      ['ru','en','fr','it','pt'].forEach(lg=>['lrVault','lrVaultBig'].forEach(k=>check(lg+' '+k, I18N[lg][k]!=null)));
+    }
     ACTIVE_LANDING_SET=keep; squadSize=keepSq;
     ['ru','en','fr','it','pt'].forEach(lg=>['lrTitle','lrHint','lrOpened','lrGo','lrAuto','lrInv','lrGround','lrFull','lrAmmo','lrAmmoBox','lrRare','lrAmmoLow','lrSplitPen','lrTakeFor','lrMe','lrInvOf','lrSplit','lrBusLate','lrBusNear'].forEach(k=>check(lg+' '+k, I18N[lg][k]!=null)));
   }catch(e){ out.fails.push('ERR '+(e && e.stack || e)); }

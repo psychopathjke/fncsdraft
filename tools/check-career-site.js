@@ -195,7 +195,7 @@ const BOOT = `
         const zs=ALL_LANDING_ZONES;
         if(!zs.length || !zs.every(ccSiteReal)) fail(key+': not every box carries a counted chest number');
         // Сундук спавнится не всегда (вики: 50 % с v14.00, 40 % с v28.00): места коробки × доля на дату острова.
-        zs.forEach(z=>{ const want=Math.max(0, Math.round(z.chests*ccChestSpawnRate())); if(ccSiteChests(z)!==want) fail(key+': box says '+z.chests+' places, spawn '+ccChestSpawnRate()+' -> '+want+' but ccSiteChests gives '+ccSiteChests(z)); });
+        zs.forEach(z=>{ const src=ccLrSrc(key), g=src && src.g ? Math.min(z.chests, ccLrCount(src.g, z)) : 0, want=Math.max(0, Math.round(g+(z.chests-g)*ccChestSpawnRate())); if(ccSiteChests(z)!==want) fail(key+': box says '+z.chests+' places, spawn '+ccChestSpawnRate()+' -> '+want+' but ccSiteChests gives '+ccSiteChests(z)); });
         if(key==='s42' && ccChestSpawnRate()!==0.4) fail('s42 (2025-26): chest spawn should be 40%, got '+ccChestSpawnRate());
         const maxBox=Math.max(...zs.map(z=>z.chests));
         if(maxBox<20) fail(key+': the richest box has only '+maxBox+' chests — that is not a counted island');
