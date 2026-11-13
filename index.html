@@ -9376,6 +9376,26 @@
   .dy-pow small span{color:#7ef0dd;}
   .hr-box{max-width:calc(100vw - 24px);}
   @media(max-width:900px){ .home-daily{grid-template-columns:1fr;} }
+  /* Больше или меньше на главной: слева как у драфта дня, справа пара карточек из игры. */
+  .home-hl{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px;align-items:center;}
+  .home-hl .hero-mode-tag{margin-bottom:6px;display:inline-block;}
+  .home-hl .cstrip-chips{margin:0 0 4px;}
+  .home-hl .cstrip-chip:empty{display:none;}
+  .hh-pair{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:8px;align-items:stretch;width:100%;padding:0;
+    background:none;border:0;color:inherit;font:inherit;cursor:pointer;text-align:center;}
+  .hh-pair:empty{display:none;}
+  .hh-pair:focus-visible{outline:2px solid #ffdd00;outline-offset:4px;border-radius:14px;}
+  .hh-card{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-width:0;padding:16px 8px;border-radius:14px;
+    background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);}
+  .hh-card .hl-ph{width:76px;height:76px;font-size:28px;margin-bottom:4px;}
+  .hh-card b{display:block;max-width:100%;font-size:15px;font-weight:800;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .hh-card b img{width:18px;height:auto;vertical-align:-1px;margin-right:4px;}
+  .hh-card strong{font-family:var(--font-display);font-size:22px;color:#ffdd00;font-variant-numeric:tabular-nums;}
+  .hh-card strong.q{color:#fff;}
+  .hh-vs{display:grid;place-items:center;width:34px;height:34px;border-radius:50%;align-self:center;background:#fff;color:#0b1640;
+    font-family:var(--font-display);font-size:13px;}
+  @media(hover:hover){ .hh-pair:hover .hh-card{border-color:rgba(255,221,0,.55);} }
+  @media(max-width:900px){ .home-hl{grid-template-columns:1fr;} }
   @media(max-width:700px){ .hf-grid{grid-template-columns:1fr;} .home-h{font-size:19px;} }
   /* Результаты 2026 на главной и окно полной таблицы. */
   .hr-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,420px),1fr));gap:10px;}
@@ -10285,6 +10305,18 @@
         <p class="home-sub dy-next" id="dyNext">&nbsp;</p>
       </div>
       <div class="dy-top"><h3 class="dy-top-h"><span data-i18n="dyBoard"></span><span id="dyTotal"></span></h3><div id="homeDailyRows"></div></div>
+    </section>
+
+    <!-- Больше или меньше: рядом с драфтом дня, справа настоящая пара из игры — рисует homeHlDraw. -->
+    <section class="home-block home-hl" id="homeHl">
+      <div class="hh-main">
+        <span class="dp-tag hero-mode-tag" data-i18n="hhTag"></span>
+        <h2 class="home-h" data-i18n="hlTitle"></h2>
+        <p class="home-sub" data-i18n="hhSub"></p>
+        <div class="cstrip-chips"><span class="cstrip-chip" id="hhCntP"></span><span class="cstrip-chip" id="hhCntT"></span><span class="cstrip-chip" id="hhBest"></span></div>
+        <div class="dy-acts"><button class="hero-btn hero-btn-go" type="button" onclick="hlOpen('pl')"><span data-i18n="hhPlayP"></span></button><button class="home-more" type="button" onclick="hlOpen('org')"><span data-i18n="hhPlayT"></span></button></div>
+      </div>
+      <button type="button" class="hh-pair" id="hhPair" onclick="hlOpen('pl')" aria-label=""></button>
     </section>
     <script>(function(){try{var M=["Chapter 7 Season 2","Chapter 7 Season 3","Chapter 6 Season 1","Chapter 6 Season 2","Chapter 6 Season 3","Chapter 6 Season 4","Chapter 5 Season 1","Chapter 5 Season 2","Chapter 5 Season 3","Chapter 5 Season 4","Chapter 4 Season 1","Chapter 4 Season 2","Chapter 4 Season 3","Chapter 4 Season 4","Chapter 3 Season 1","Chapter 3 Season 2","Chapter 3 Season 3","Chapter 3 Season 4","Chapter 2 Season 5","Chapter 2 Season 6","Chapter 2 Season 7","Chapter 2 Season 8","Chapter 1 Season 9","Chapter 1 Season X","Chapter 2 Season 1","Chapter 2 Season 2","Chapter 2 Season 3","Chapter 2 Season 4"];var d=new Date().toISOString().slice(0,10),h=2166136261,s="daily-map|"+d;
       for(var i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619);}
@@ -26037,6 +26069,7 @@ function setLang(lang, persist){
   if(typeof homeDraftInit==='function') try{ homeDraftInit(); }catch(e){}
   // Таблица дня на главной — тоже (Notion «20.10»: английская главная с русской шапкой таблицы).
   if(typeof homeDailyDraw==='function' && document.getElementById('homeDaily') && !document.getElementById('homeDaily').hidden) try{ homeDailyDraw(); }catch(e){}
+  if(typeof homeHlDraw==='function') try{ homeHlDraw(); }catch(e){}
   document.documentElement.classList.remove('i18n-wait');   // язык стоит — страницу можно показать (см. <head>)
 }
 
@@ -169997,23 +170030,36 @@ function hlCopy(){
   try{ navigator.clipboard.writeText(t).then(done, done); }catch(e){ done(); }
 }
 window.addEventListener('load', ()=>{ if(location.hash==='#hl') setTimeout(()=>{ try{ hlOpen(); }catch(e){} }, 300); });
-Object.assign(I18N.ru, {hlHas:'', hlPrize:'призовых за всё время', hlThan:a=>'призовых, чем у '+a, hlRank:n=>n+'-й в мире', hlMode_pl:'Игроки', hlMode_org:'Клубы', hlMode_mix:'Финалы и 2026', hlHigher:'Больше', hlLower:'Меньше', hlSrcAll:'Liquipedia, призовые за всё время', hlQAll:(b,a)=>'У '+b+' призовых за всё время больше или меньше, чем у '+a+'?', hlLink:'Больше или меньше', hlTitle:'Больше или меньше', hlBack:'Главная', hlStreak:n=>'Серия: '+n, hlBest:n=>'Рекорд: '+n,
+// Плашка на главной: числа таблиц, рекорд и настоящая пара (обе с фото), у второго вопрос.
+function homeHlDraw(){
+  const T=L(), set=(id, v)=>{ const e=document.getElementById(id); if(e) e.textContent=v; };
+  set('hhCntP', T.hhCntP(HL_ALL_P.length)); set('hhCntT', T.hhCntT(HL_ALL_T.length));
+  const best=Math.max(hlBest('pl'), hlBest('org')); set('hhBest', best ? T.hlBest(best) : '');
+  const box=document.getElementById('hhPair'); if(!box) return;
+  if(!homeHlDraw.pair){ const a=hlAllNext('pl', null), b=a && hlAllNext('pl', a); homeHlDraw.pair=b ? [a, b] : null; }
+  const pr=homeHlDraw.pair; if(!pr){ box.innerHTML=''; return; }
+  const card=(p, v)=>'<span class="hh-card">'+hlPhHTML(p)+'<b>'+p.flag+esc(p.name)+'</b><strong'+(v ? '' : ' class="q"')+'>'+(v ? '$'+ccNum(p.val) : '?')+'</strong></span>';
+  box.innerHTML=card(pr[0], true)+'<span class="hh-vs">VS</span>'+card(pr[1], false);
+  box.setAttribute('aria-label', T.hlTitle);
+}
+window.addEventListener('load', ()=>setTimeout(()=>{ try{ homeHlDraw(); }catch(e){} }, 0));
+Object.assign(I18N.ru, {hhTag:'Новое', hhSub:'Чьи призовые за всё время больше: два игрока или два клуба, сумма первого видна. Серия до первой ошибки.', hhCntP:n=>n+' игроков', hhCntT:n=>n+' клубов', hhPlayP:'Играть', hhPlayT:'Клубы', hlHas:'', hlPrize:'призовых за всё время', hlThan:a=>'призовых, чем у '+a, hlRank:n=>n+'-й в мире', hlMode_pl:'Игроки', hlMode_org:'Клубы', hlMode_mix:'Финалы и 2026', hlHigher:'Больше', hlLower:'Меньше', hlSrcAll:'Liquipedia, призовые за всё время', hlQAll:(b,a)=>'У '+b+' призовых за всё время больше или меньше, чем у '+a+'?', hlLink:'Больше или меньше', hlTitle:'Больше или меньше', hlBack:'Главная', hlStreak:n=>'Серия: '+n, hlBest:n=>'Рекорд: '+n,
   hlQPlace:'Кто занял место выше в этом финале?', hlQEarn:'Кто заработал больше призовых в 2026?', hlSrcEarn:'Liquipedia, все турниры года',
   hlHint:'Нажми на того, кто выше', hlPlaceV:p=>p+' место', hlOver:n=>'Серия окончена: '+n, hlNewBest:'Новый рекорд',
   hlAgain:'Ещё раз', hlCopy:'Скопировать результат', hlCopied:'Скопировано', hlEmpty:'Нет данных для вопроса'});
-Object.assign(I18N.en, {hlHas:'has', hlPrize:'all-time prize money', hlThan:a=>'prize money than '+a, hlRank:n=>'#'+n+' all-time', hlMode_pl:'Players', hlMode_org:'Teams', hlMode_mix:'Finals and 2026', hlHigher:'Higher', hlLower:'Lower', hlSrcAll:'Liquipedia, all-time prize money', hlQAll:(b,a)=>'Has '+b+' won more or less than '+a+' all-time?', hlLink:'Higher or lower', hlTitle:'Higher or lower', hlBack:'Home', hlStreak:n=>'Streak: '+n, hlBest:n=>'Best: '+n,
+Object.assign(I18N.en, {hhTag:'New', hhSub:'Who has more all-time prize money: two players or two teams, the first one’s total is shown. Go until your first miss.', hhCntP:n=>n+' players', hhCntT:n=>n+' teams', hhPlayP:'Play', hhPlayT:'Teams', hlHas:'has', hlPrize:'all-time prize money', hlThan:a=>'prize money than '+a, hlRank:n=>'#'+n+' all-time', hlMode_pl:'Players', hlMode_org:'Teams', hlMode_mix:'Finals and 2026', hlHigher:'Higher', hlLower:'Lower', hlSrcAll:'Liquipedia, all-time prize money', hlQAll:(b,a)=>'Has '+b+' won more or less than '+a+' all-time?', hlLink:'Higher or lower', hlTitle:'Higher or lower', hlBack:'Home', hlStreak:n=>'Streak: '+n, hlBest:n=>'Best: '+n,
   hlQPlace:'Who placed higher in this final?', hlQEarn:'Who earned more prize money in 2026?', hlSrcEarn:'Liquipedia, every event of the year',
   hlHint:'Tap the one who is higher', hlPlaceV:p=>'#'+p, hlOver:n=>'Streak over: '+n, hlNewBest:'New best',
   hlAgain:'Play again', hlCopy:'Copy result', hlCopied:'Copied', hlEmpty:'No data for a question'});
-Object.assign(I18N.fr, {hlHas:'a gagné', hlPrize:'de gains au total', hlThan:a=>'que '+a, hlRank:n=>n+(n===1?'er':'e')+' de tous les temps', hlMode_pl:'Joueurs', hlMode_org:'Équipes', hlMode_mix:'Finales et 2026', hlHigher:'Plus', hlLower:'Moins', hlSrcAll:'Liquipedia, gains de tous les temps', hlQAll:(b,a)=>b+' a gagné plus ou moins que '+a+' au total ?', hlLink:'Plus ou moins', hlTitle:'Plus ou moins', hlBack:'Accueil', hlStreak:n=>'Série : '+n, hlBest:n=>'Record : '+n,
+Object.assign(I18N.fr, {hhTag:'Nouveau', hhSub:'Qui a le plus de gains au total : deux joueurs ou deux équipes, le total du premier est affiché. Jusqu’à la première erreur.', hhCntP:n=>n+' joueurs', hhCntT:n=>n+' équipes', hhPlayP:'Jouer', hhPlayT:'Équipes', hlHas:'a gagné', hlPrize:'de gains au total', hlThan:a=>'que '+a, hlRank:n=>n+(n===1?'er':'e')+' de tous les temps', hlMode_pl:'Joueurs', hlMode_org:'Équipes', hlMode_mix:'Finales et 2026', hlHigher:'Plus', hlLower:'Moins', hlSrcAll:'Liquipedia, gains de tous les temps', hlQAll:(b,a)=>b+' a gagné plus ou moins que '+a+' au total ?', hlLink:'Plus ou moins', hlTitle:'Plus ou moins', hlBack:'Accueil', hlStreak:n=>'Série : '+n, hlBest:n=>'Record : '+n,
   hlQPlace:'Qui a fini plus haut dans cette finale ?', hlQEarn:'Qui a gagné le plus en 2026 ?', hlSrcEarn:'Liquipedia, tous les tournois de l’année',
   hlHint:'Touche celui qui est au-dessus', hlPlaceV:p=>p+(p===1 ? 're' : 'e')+' place', hlOver:n=>'Série terminée : '+n, hlNewBest:'Nouveau record',
   hlAgain:'Rejouer', hlCopy:'Copier le résultat', hlCopied:'Copié', hlEmpty:'Pas de données pour une question'});
-Object.assign(I18N.it, {hlHas:'ha vinto', hlPrize:'di montepremi in totale', hlThan:a=>'di '+a, hlRank:n=>n+'° di sempre', hlMode_pl:'Giocatori', hlMode_org:'Team', hlMode_mix:'Finali e 2026', hlHigher:'Di più', hlLower:'Di meno', hlSrcAll:'Liquipedia, montepremi di sempre', hlQAll:(b,a)=>b+' ha guadagnato più o meno di '+a+' in totale?', hlLink:'Più o meno', hlTitle:'Più o meno', hlBack:'Home', hlStreak:n=>'Serie: '+n, hlBest:n=>'Record: '+n,
+Object.assign(I18N.it, {hhTag:'Nuovo', hhSub:'Chi ha più montepremi in totale: due giocatori o due team, il totale del primo è visibile. Fino al primo errore.', hhCntP:n=>n+' giocatori', hhCntT:n=>n+' team', hhPlayP:'Gioca', hhPlayT:'Team', hlHas:'ha vinto', hlPrize:'di montepremi in totale', hlThan:a=>'di '+a, hlRank:n=>n+'° di sempre', hlMode_pl:'Giocatori', hlMode_org:'Team', hlMode_mix:'Finali e 2026', hlHigher:'Di più', hlLower:'Di meno', hlSrcAll:'Liquipedia, montepremi di sempre', hlQAll:(b,a)=>b+' ha guadagnato più o meno di '+a+' in totale?', hlLink:'Più o meno', hlTitle:'Più o meno', hlBack:'Home', hlStreak:n=>'Serie: '+n, hlBest:n=>'Record: '+n,
   hlQPlace:'Chi è arrivato più in alto in questa finale?', hlQEarn:'Chi ha guadagnato di più nel 2026?', hlSrcEarn:'Liquipedia, tutti i tornei dell’anno',
   hlHint:'Tocca chi sta più in alto', hlPlaceV:p=>p+'° posto', hlOver:n=>'Serie finita: '+n, hlNewBest:'Nuovo record',
   hlAgain:'Gioca ancora', hlCopy:'Copia il risultato', hlCopied:'Copiato', hlEmpty:'Nessun dato per una domanda'});
-Object.assign(I18N.pt, {hlHas:'ganhou', hlPrize:'em prêmios no total', hlThan:a=>'que '+a, hlRank:n=>n+'º de todos os tempos', hlMode_pl:'Jogadores', hlMode_org:'Times', hlMode_mix:'Finais e 2026', hlHigher:'Mais', hlLower:'Menos', hlSrcAll:'Liquipedia, prêmios de todos os tempos', hlQAll:(b,a)=>b+' ganhou mais ou menos que '+a+' no total?', hlLink:'Maior ou menor', hlTitle:'Maior ou menor', hlBack:'Início', hlStreak:n=>'Sequência: '+n, hlBest:n=>'Recorde: '+n,
+Object.assign(I18N.pt, {hhTag:'Novo', hhSub:'Quem tem mais prêmios no total: dois jogadores ou dois times, o total do primeiro aparece. Até o primeiro erro.', hhCntP:n=>n+' jogadores', hhCntT:n=>n+' times', hhPlayP:'Jogar', hhPlayT:'Times', hlHas:'ganhou', hlPrize:'em prêmios no total', hlThan:a=>'que '+a, hlRank:n=>n+'º de todos os tempos', hlMode_pl:'Jogadores', hlMode_org:'Times', hlMode_mix:'Finais e 2026', hlHigher:'Mais', hlLower:'Menos', hlSrcAll:'Liquipedia, prêmios de todos os tempos', hlQAll:(b,a)=>b+' ganhou mais ou menos que '+a+' no total?', hlLink:'Maior ou menor', hlTitle:'Maior ou menor', hlBack:'Início', hlStreak:n=>'Sequência: '+n, hlBest:n=>'Recorde: '+n,
   hlQPlace:'Quem ficou mais alto nesta final?', hlQEarn:'Quem ganhou mais prêmios em 2026?', hlSrcEarn:'Liquipedia, todos os torneios do ano',
   hlHint:'Toque em quem ficou acima', hlPlaceV:p=>p+'º lugar', hlOver:n=>'Sequência encerrada: '+n, hlNewBest:'Novo recorde',
   hlAgain:'Jogar de novo', hlCopy:'Copiar resultado', hlCopied:'Copiado', hlEmpty:'Sem dados para uma pergunta'});
