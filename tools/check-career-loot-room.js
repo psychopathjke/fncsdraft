@@ -89,12 +89,12 @@ window.addEventListener("load", function(){ setTimeout(async function(){
       const pr4=ccLootRoom(h4, {rolls, nFast:4, nOpen:12, at:'', zone:z, set, mates:['Mate']});
       h4.querySelector('.lr-pin.lr-c[data-c]').click();
       check('дуо: напарник открыл свой', h4.querySelectorAll('.lr-pin.open').length===2 && h4.querySelectorAll('.lr-pin.open.by1').length===1);
-      check('дуо: два инвентаря', h4.querySelectorAll('.lr-inv').length===2 && h4.querySelectorAll('.lr-slot[data-d^="1."]').length>=1);
+      check('дуо: два хотбара поверх карты', h4.querySelector('.lr-map .lr-hud-b') && h4.querySelectorAll('.lr-hb').length===2 && h4.querySelectorAll('.lr-slot[data-d^="1."]').length>=1);
       h4.querySelector('[data-a="o5"]').click(); h4.querySelector('[data-a="o5"]').click();
       const t4=()=>[...h4.querySelectorAll('.lr-slot[data-d], .lr-g')].reduce((s,b)=>{ const e=b.querySelector('em'); return s+(e ? +e.textContent.replace(/\\D/g,'') : 1); }, 0);
       const before=t4(); h4.querySelector('[data-a="auto"]').click();
       check('дуо: «Поделить» ничего не множит', t4()===before, before+' → '+t4());
-      const w0=h4.querySelectorAll('.lr-inv')[0].querySelectorAll('.lr-slot[data-d]').length, w1=h4.querySelectorAll('.lr-inv')[1].querySelectorAll('.lr-slot[data-d]').length;
+      const w0=h4.querySelectorAll('.lr-hb')[0].querySelectorAll('.lr-slot[data-d]').length, w1=h4.querySelectorAll('.lr-hb')[1].querySelectorAll('.lr-slot[data-d]').length;
       check('дуо: у обоих что-то в руках', w0>=2 && w1>=2, w0+' '+w1);
       h4.querySelector('[data-to="1"]').click();
       check('дуо: переключатель «брать для напарника»', h4.querySelector('[data-to="1"]').classList.contains('on'));
