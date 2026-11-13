@@ -116133,9 +116133,22 @@ function ccSiteOpen(n){
   const cap=CC_CHESTS_OPEN_PER_PLAYER*Math.max(1, (typeof squadSize==='number' && squadSize) || 1);
   return Math.max(1, Math.min(Math.round(n), cap));
 }
+/* СУНДУКИ СТОЯТ НЕ ВСЕ (его «сундуки не 100% с какого-то сезона», 13.11). Вики Fortnite, Chest: v14.00 (27.08.2020) —
+   спавн обычного сундука 50 %, v28.00 (3.12.2023) — 40 %. Счёт fortnite.gg и инфобоксов вики — это места сундуков, поэтому
+   стоит из них доля спавна на дату. До v14.00 вики доли не называет — там как было, все места. Дата — день карьеры, вне карьеры
+   — остров (2019/m* без доли, j/k/e* 50 %, f/t/s/r* 40 %). Комнате то же правило (ccRoomSite зовёт эту же функцию). */
+const CC_CHEST_SPAWN=[['2023-12-03', 0.4], ['2020-08-27', 0.5]];
+function ccChestSpawnRate(){
+  let d='';
+  try{ if(typeof CAREER!=='undefined' && CAREER && CAREER.career && typeof careerToday==='function') d=String(careerToday()||''); }catch(e){ d=''; }
+  if(!d){ const k=String((typeof ACTIVE_LANDING_SET!=='undefined') ? ACTIVE_LANDING_SET : '');
+    d=/^[ftsr]/.test(k) ? '2024-01-01' : /^[jke]/.test(k) ? '2021-06-01' : '2019-01-01'; }
+  for(const [from, r] of CC_CHEST_SPAWN) if(d>=from) return r;
+  return 1;
+}
 function ccSiteChests(zone, share){
   share = share==null ? 1 : share;
-  if(ccSiteReal(zone)) return Math.max(0, Math.round(zone.chests*share));
+  if(ccSiteReal(zone)) return Math.max(0, Math.round(zone.chests*share*ccChestSpawnRate()));
   let n=CC_CHESTS_POI;
   const zones=(typeof ALL_LANDING_ZONES!=='undefined') ? ALL_LANDING_ZONES : [];
   const loots=zones.map(z=>z.loot).filter(v=>v>0).sort((a,b)=>a-b);
