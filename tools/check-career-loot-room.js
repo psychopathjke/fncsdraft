@@ -56,6 +56,27 @@ window.addEventListener("load", function(){ setTimeout(async function(){
     const r2=await pr2; const p2=ccPackFloor(r2.pack, set, Math.random);
     check('ушёл без сундуков: ресы +300, пак с пола, сила минимальна', r2.opened===0 && r2.mats===300 && ccPackPow(p2)<=-3, r2.mats+' '+ccPackPow(p2));
     check('онлайн и пропуск экран не открывают', (()=>{ const s=skipAnimation; skipAnimation=true; const v=ccLootRoomOn(); skipAnimation=s; return v===false; })());
+    // Точка крупно: сундуки на карте острова, у S43 и S42 — на точках fortnite.gg внутри коробки.
+    const keep=ACTIVE_LANDING_SET;
+    ['s43','s42','m2'].forEach(key=>{
+      ACTIVE_LANDING_SET=key;
+      const zs=ZONE_SETS[key]||[]; const z=zs.slice().sort((a,b)=>(b.chests||0)-(a.chests||0))[0];
+      const v=ccLrView(z, 20);
+      check(key+': вид точки', v && v.spots.length===20, v && v.spots.length);
+      if(key!=='m2') check(key+': настоящие сундуки внутри коробки', v && v.real>=10, v && v.real);
+      check(key+': все сундуки в коробке', v && v.spots.every(p=>p.x>=z.x && p.x<=z.x+z.w && p.y>=z.y && p.y<=z.y+z.h));
+      const h3=document.createElement('div'); document.body.appendChild(h3);
+      const pr3=ccLootRoom(h3, {rolls, nFast:4, nOpen:12, at:'', zone:z});
+      const pins=()=>h3.querySelectorAll('.lr-pin[data-c]').length;
+      check(key+': 20 сундуков на карте', pins()===20 && h3.querySelector('.lr-map-l'), String(pins()));
+      h3.querySelector('.lr-pin[data-c="7"]').click();
+      check(key+': открыт тот сундук, по которому нажал', !h3.querySelector('.lr-pin[data-c="7"]') && h3.querySelectorAll('.lr-pin.open').length===1);
+      h3.querySelector('[data-a="o5"]').click();
+      check(key+': «Открыть 5» открывает ещё пять', h3.querySelectorAll('.lr-pin.open').length===6 && pins()===14);
+      h3.querySelector('[data-a="go"]').click();
+      out.notes[key]=v && {real:v.real, zoom:+v.zoom.toFixed(2)};
+    });
+    ACTIVE_LANDING_SET=keep;
     ['ru','en','fr','it','pt'].forEach(lg=>['lrTitle','lrHint','lrOpened','lrGo','lrAuto','lrInv','lrGround','lrFull'].forEach(k=>check(lg+' '+k, I18N[lg][k]!=null)));
   }catch(e){ out.fails.push('ERR '+(e && e.stack || e)); }
   document.getElementById('__out').textContent='BEGIN'+encodeURIComponent(JSON.stringify(out))+'END';
