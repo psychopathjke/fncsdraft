@@ -92,6 +92,8 @@ window.addEventListener("load", function(){ setTimeout(async function(){
       check('дуо: два хотбара поверх карты', document.querySelector('.lr-map .lr-hud-b') && document.querySelectorAll('.lr-hb').length===2 && document.querySelectorAll('.lr-slot[data-d^="1."]').length>=1);
       document.querySelector('[data-a="o5"]').click(); document.querySelector('[data-a="o5"]').click();
       const t4=()=>[...document.querySelectorAll('.lr-slot[data-d], .lr-g')].reduce((s,b)=>{ const e=b.querySelector('em'); return s+(e ? +e.textContent.replace(/\\D/g,'') : 1); }, 0);
+      { const m1=document.querySelectorAll('.lr-hb')[1].querySelectorAll('.lr-slot[data-d]').length, ng=document.querySelectorAll('.lr-g').length;
+        check('дуо: напарник добирает пустые слоты с земли', m1===5 || ng===0, m1+' слотов, на земле '+ng); }
       const before=t4(); document.querySelector('[data-a="auto"]').click();
       check('дуо: «Поделить» ничего не множит', t4()===before, before+' → '+t4());
       check('стаки на земле не выше потолка вики', [...document.querySelectorAll('.lr-g')].every(b=>{ const e=b.querySelector('em'); const n=e ? +e.textContent.replace(/\\D/g,'') : 1; const nm=b.getAttribute('aria-label')||''; return n<=ccHealOf({name:nm}).stack || !CC_HEAL_KIT[nm]; }), [...document.querySelectorAll('.lr-g')].map(b=>(b.getAttribute('aria-label')||'')+':'+((b.querySelector('em')||{}).textContent||1)).join(', '));
@@ -103,6 +105,17 @@ window.addEventListener("load", function(){ setTimeout(async function(){
       document.querySelector('[data-a="go"]').click();
       const r4=await pr4;
       check('дуо: сила отряда считается из всех рук', r4.powPack && r4.mates.length===1 && typeof r4.pen==='number', JSON.stringify({pen:r4.pen, split:r4.split}));
+      // Пустой слот напарника при полной земле: тебе второй SMG (на землю), напарнику второй автомат (на землю) —
+      // напарник должен поднять SMG, которого у него нет, а второй автомат не брать.
+      { const ws=ccLootPool(set).weapons, ar=ws.find(w=>w.icon==='rifle'), smg=ws.find(w=>w.icon==='smg');
+        if(ar && smg){ const fr=[ar, ar, smg, ar, smg, ar].map(w=>({weapon:Object.assign({}, w, {rarity:'common'})}));
+          const h5=document.createElement('div'); document.body.appendChild(h5);
+          const pr5=ccLootRoom(h5, {rolls:fr, nFast:4, nOpen:12, at:'', zone:z, set, mates:['Mate']});
+          for(let k=0;k<3;k++){ const b=document.querySelector('.lr-pin.lr-c[data-c]'); if(b) b.click(); }
+          const ms=[...document.querySelectorAll('.lr-hb')[1].querySelectorAll('.lr-slot[data-d] small')].map(s=>s.textContent);
+          check('дуо: напарник поднял с земли ствол нового класса', ms.indexOf(smg.name)>=0, ms.join(', '));
+          check('дуо: второй автомат напарник не взял', ms.filter(n=>n===ar.name).length===1, ms.join(', '));
+          document.querySelector('[data-a="go"]').click(); await pr5; } }
     }
     // Автобус: линия через остров, далеко от неё сундуков меньше, а ближе всего — без потерь.
     { const g={frames:()=>[{circle:{cx:40.5, cy:51.2, radius:30}}]}; CC_BUS_GAME=g; CC_BUS=null;
