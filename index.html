@@ -767,6 +767,28 @@
 .hl-end small{color:var(--go,#ffdd00);font-size:13px;}
 .hl-btns{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:8px;}
 @media (max-width:420px){.hl-ph{width:64px;height:64px;font-size:26px;}.hl-pair{gap:6px;}.hl-card{padding:12px 6px;}.hl-nm{font-size:14px;}}
+/* За всё время: карточки одной высоты, фраза «у X … призовых» внутри карточек, как у сайтов higher/lower. */
+.hl-wrap.hl-big{max-width:760px;}
+.hl-big .hl-tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;padding:4px;border-radius:12px;background:rgba(255,255,255,.05);}
+.hl-big .hl-tab{border:0;border-radius:9px;min-height:40px;padding:6px 4px;}
+.hl-big .hl-pair{align-items:stretch;margin-top:6px;}
+.hl-big .hl-card{justify-content:center;padding:22px 12px;gap:4px;min-height:340px;}
+.hl-big .hl-ph{width:120px;height:120px;font-size:44px;margin-bottom:8px;}
+.hl-big .hl-nm{font-size:20px;}
+.hl-said{font-size:13px;opacity:.65;}
+.hl-big .hl-val{font-size:34px;line-height:1.1;margin:2px 0;}
+.hl-rank{font-size:12px;opacity:.6;min-height:16px;text-align:center;}
+.hl-big .hl-said,.hl-big .hl-org{text-align:center;}
+.hl-big .hl-hilo{margin:8px 0 6px;}
+.hl-vsdot{display:grid;place-items:center;width:44px;height:44px;border-radius:50%;align-self:center;background:#fff;color:#0b1640;
+  font-family:var(--font-display);font-size:16px;}
+.hl-vsdot.ok{background:#3ecf6e;color:#06210f;font-size:22px;}
+.hl-vsdot.bad{background:#ff6b6b;color:#2a0707;font-size:22px;}
+.hl-big .hl-end{padding:16px;border-radius:14px;background:rgba(255,255,255,.05);}
+.hl-big .hl-end b{font-size:26px;}
+@media (max-width:520px){.hl-big .hl-card{min-height:300px;padding:16px 8px;}.hl-big .hl-ph{width:88px;height:88px;font-size:34px;}
+  .hl-big .hl-nm{font-size:16px;}.hl-big .hl-val{font-size:24px;}.hl-vsdot{width:34px;height:34px;font-size:13px;}.hl-big .hl-pair{gap:6px;}
+  .hl-big .hl-hilo button{font-size:14px;}}
 @media (prefers-reduced-motion:reduce){.hl-card{transition:none;}}
 .hero-about a:focus-visible{outline:2px solid var(--go,#ffdd00);outline-offset:2px;}
 .hero-team{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:2px;}
@@ -169795,11 +169817,12 @@ function hlAllPool(m){
     const by=new Map(); PLAYERS_BASE.forEach(p=>{ if(p && p.handle){ const k=hKey(p); if(!by.has(k) || (!by.get(k).photo && p.photo)) by.set(k, p); } });
     out=HL_ALL_P.map(x=>{ const c=by.get(hKey({handle:x.n}));
       return {name:x.n, flag:x.c ? '<img src="flags/w20/'+esc(x.c)+'.png" alt="" width="18" height="13" style="vertical-align:-1px;margin-right:4px" onerror="this.remove()">' : '',
-              photo:c ? hlPhoto(c) : null, org:(c && c.org)||'', val:x.e}; });
+              photo:c ? hlPhoto(c) : null, org:(c && c.org)||'', val:x.e, rank:0}; });
   } else {
     out=HL_ALL_T.map(x=>{ const fl=clubLogoFile(x.n);
-      return {name:x.n, flag:'', photo:ccHasCrest(fl) ? LOGO_DIR+fl : null, logo:true, org:'', val:x.e}; });
+      return {name:x.n, flag:'', photo:ccHasCrest(fl) ? LOGO_DIR+fl : null, logo:true, org:'', val:x.e, rank:0}; });
   }
+  out.forEach((r,i)=>{ r.rank=i+1; });
   return hlAllPool[m]=out;
 }
 // Следующий соперник: чаще узнаваемый (с фото/гербом), не тот же и не с той же суммой.
@@ -169909,13 +169932,15 @@ function hlPhHTML(p){
 function hlChainCardHTML(r, side){
   const p=side ? r.b : r.a, T=L(), done=HL.picked!=null, ok=done && hlChainOk(r, HL.picked);
   const sub='<small class="hl-org">'+(p.org ? esc(p.org) : '&nbsp;')+'</small>';
-  if(!side) return '<div class="hl-card hl-known">'+hlPhHTML(p)+'<b class="hl-nm">'+p.flag+esc(p.name)+'</b>'+sub+
-    '<span class="hl-val hl-val-on">'+esc(hlValText(r, p.val))+'</span></div>';
+  const rank=n=>'<small class="hl-rank">'+(n ? esc(T.hlRank(n)) : '&nbsp;')+'</small>';
+  const head=hlPhHTML(p)+'<b class="hl-nm">'+p.flag+esc(p.name)+'</b>'+sub+(T.hlHas ? '<span class="hl-said">'+esc(T.hlHas)+'</span>' : '');
+  if(!side) return '<div class="hl-card hl-known">'+head+'<span class="hl-val hl-val-on">'+esc(hlValText(r, p.val))+'</span>'+
+    '<span class="hl-said">'+esc(T.hlPrize)+'</span>'+rank(p.rank)+'</div>';
   const cls='hl-card hl-known'+(done ? (ok ? ' hl-win hl-mine' : ' hl-lose hl-mine') : '');
-  const btns=done ? '<span class="hl-val">'+esc(hlValText(r, p.val))+'</span>'
+  const mid=done ? '<span class="hl-val">'+esc(hlValText(r, p.val))+'</span>'
     : '<span class="hl-hilo"><button type="button" class="hl-hi" onclick="hlPickDir(1)">▲ '+esc(T.hlHigher)+'</button>'+
       '<button type="button" class="hl-lo" onclick="hlPickDir(-1)">▼ '+esc(T.hlLower)+'</button></span>';
-  return '<div class="'+cls+'">'+hlPhHTML(p)+'<b class="hl-nm">'+p.flag+esc(p.name)+'</b>'+sub+btns+'</div>';
+  return '<div class="'+cls+'">'+head+mid+'<span class="hl-said">'+esc(done ? T.hlPrize : T.hlThan(r.a.name))+'</span>'+rank(done ? p.rank : 0)+'</div>';
 }
 function hlChainOk(r, dir){ return dir>0 ? r.b.val>r.a.val : r.b.val<r.a.val; }
 function hlPickDir(dir){
@@ -169948,8 +169973,13 @@ function hlDraw(){
       '<div class="hl-btns"><button type="button" class="hero-btn hero-btn-go" onclick="hlOpen(HL.mode)">'+esc(T.hlAgain)+'</button>'+
       '<button type="button" class="hero-btn hero-btn-alt" id="hlCopyBtn" onclick="hlCopy()">'+esc(T.hlCopy)+'</button></div></div>';
   }
-  box.innerHTML=top+'<h1 class="hl-title">'+esc(T.hlTitle)+'</h1>'+hlTabsHTML()+q+
-    '<div class="hl-pair">'+hlCardHTML(r, 0)+'<span class="hl-vs">VS</span>'+hlCardHTML(r, 1)+'</div>'+
+  const big=hlChain();
+  box.classList.toggle('hl-big', big);
+  const vs=big ? '<span class="hl-vsdot'+(HL.picked!=null ? (hlChainOk(r, HL.picked) ? ' ok">✓' : ' bad">✕') : '">VS')+'</span>'
+               : '<span class="hl-vs">VS</span>';
+  box.innerHTML=top+'<h1 class="hl-title">'+esc(T.hlTitle)+'</h1>'+hlTabsHTML()+(big ? '' : q)+
+    '<div class="hl-pair">'+hlCardHTML(r, 0)+vs+hlCardHTML(r, 1)+'</div>'+
+    (big ? '<p class="hl-hint">'+esc(T.hlSrcAll)+'</p>' : '')+
     (HL.picked==null && !hlChain() ? '<p class="hl-hint">'+esc(T.hlHint)+'</p>' : '')+end;
 }
 function hlPick(side){
@@ -169967,23 +169997,23 @@ function hlCopy(){
   try{ navigator.clipboard.writeText(t).then(done, done); }catch(e){ done(); }
 }
 window.addEventListener('load', ()=>{ if(location.hash==='#hl') setTimeout(()=>{ try{ hlOpen(); }catch(e){} }, 300); });
-Object.assign(I18N.ru, {hlMode_pl:'Игроки', hlMode_org:'Клубы', hlMode_mix:'Финалы и 2026', hlHigher:'Больше', hlLower:'Меньше', hlSrcAll:'Liquipedia, призовые за всё время', hlQAll:(b,a)=>'У '+b+' призовых за всё время больше или меньше, чем у '+a+'?', hlLink:'Больше или меньше', hlTitle:'Больше или меньше', hlBack:'Главная', hlStreak:n=>'Серия: '+n, hlBest:n=>'Рекорд: '+n,
+Object.assign(I18N.ru, {hlHas:'', hlPrize:'призовых за всё время', hlThan:a=>'призовых, чем у '+a, hlRank:n=>n+'-й в мире', hlMode_pl:'Игроки', hlMode_org:'Клубы', hlMode_mix:'Финалы и 2026', hlHigher:'Больше', hlLower:'Меньше', hlSrcAll:'Liquipedia, призовые за всё время', hlQAll:(b,a)=>'У '+b+' призовых за всё время больше или меньше, чем у '+a+'?', hlLink:'Больше или меньше', hlTitle:'Больше или меньше', hlBack:'Главная', hlStreak:n=>'Серия: '+n, hlBest:n=>'Рекорд: '+n,
   hlQPlace:'Кто занял место выше в этом финале?', hlQEarn:'Кто заработал больше призовых в 2026?', hlSrcEarn:'Liquipedia, все турниры года',
   hlHint:'Нажми на того, кто выше', hlPlaceV:p=>p+' место', hlOver:n=>'Серия окончена: '+n, hlNewBest:'Новый рекорд',
   hlAgain:'Ещё раз', hlCopy:'Скопировать результат', hlCopied:'Скопировано', hlEmpty:'Нет данных для вопроса'});
-Object.assign(I18N.en, {hlMode_pl:'Players', hlMode_org:'Teams', hlMode_mix:'Finals and 2026', hlHigher:'Higher', hlLower:'Lower', hlSrcAll:'Liquipedia, all-time prize money', hlQAll:(b,a)=>'Has '+b+' won more or less than '+a+' all-time?', hlLink:'Higher or lower', hlTitle:'Higher or lower', hlBack:'Home', hlStreak:n=>'Streak: '+n, hlBest:n=>'Best: '+n,
+Object.assign(I18N.en, {hlHas:'has', hlPrize:'all-time prize money', hlThan:a=>'prize money than '+a, hlRank:n=>'#'+n+' all-time', hlMode_pl:'Players', hlMode_org:'Teams', hlMode_mix:'Finals and 2026', hlHigher:'Higher', hlLower:'Lower', hlSrcAll:'Liquipedia, all-time prize money', hlQAll:(b,a)=>'Has '+b+' won more or less than '+a+' all-time?', hlLink:'Higher or lower', hlTitle:'Higher or lower', hlBack:'Home', hlStreak:n=>'Streak: '+n, hlBest:n=>'Best: '+n,
   hlQPlace:'Who placed higher in this final?', hlQEarn:'Who earned more prize money in 2026?', hlSrcEarn:'Liquipedia, every event of the year',
   hlHint:'Tap the one who is higher', hlPlaceV:p=>'#'+p, hlOver:n=>'Streak over: '+n, hlNewBest:'New best',
   hlAgain:'Play again', hlCopy:'Copy result', hlCopied:'Copied', hlEmpty:'No data for a question'});
-Object.assign(I18N.fr, {hlMode_pl:'Joueurs', hlMode_org:'Équipes', hlMode_mix:'Finales et 2026', hlHigher:'Plus', hlLower:'Moins', hlSrcAll:'Liquipedia, gains de tous les temps', hlQAll:(b,a)=>b+' a gagné plus ou moins que '+a+' au total ?', hlLink:'Plus ou moins', hlTitle:'Plus ou moins', hlBack:'Accueil', hlStreak:n=>'Série : '+n, hlBest:n=>'Record : '+n,
+Object.assign(I18N.fr, {hlHas:'a gagné', hlPrize:'de gains au total', hlThan:a=>'que '+a, hlRank:n=>n+(n===1?'er':'e')+' de tous les temps', hlMode_pl:'Joueurs', hlMode_org:'Équipes', hlMode_mix:'Finales et 2026', hlHigher:'Plus', hlLower:'Moins', hlSrcAll:'Liquipedia, gains de tous les temps', hlQAll:(b,a)=>b+' a gagné plus ou moins que '+a+' au total ?', hlLink:'Plus ou moins', hlTitle:'Plus ou moins', hlBack:'Accueil', hlStreak:n=>'Série : '+n, hlBest:n=>'Record : '+n,
   hlQPlace:'Qui a fini plus haut dans cette finale ?', hlQEarn:'Qui a gagné le plus en 2026 ?', hlSrcEarn:'Liquipedia, tous les tournois de l’année',
   hlHint:'Touche celui qui est au-dessus', hlPlaceV:p=>p+(p===1 ? 're' : 'e')+' place', hlOver:n=>'Série terminée : '+n, hlNewBest:'Nouveau record',
   hlAgain:'Rejouer', hlCopy:'Copier le résultat', hlCopied:'Copié', hlEmpty:'Pas de données pour une question'});
-Object.assign(I18N.it, {hlMode_pl:'Giocatori', hlMode_org:'Team', hlMode_mix:'Finali e 2026', hlHigher:'Di più', hlLower:'Di meno', hlSrcAll:'Liquipedia, montepremi di sempre', hlQAll:(b,a)=>b+' ha guadagnato più o meno di '+a+' in totale?', hlLink:'Più o meno', hlTitle:'Più o meno', hlBack:'Home', hlStreak:n=>'Serie: '+n, hlBest:n=>'Record: '+n,
+Object.assign(I18N.it, {hlHas:'ha vinto', hlPrize:'di montepremi in totale', hlThan:a=>'di '+a, hlRank:n=>n+'° di sempre', hlMode_pl:'Giocatori', hlMode_org:'Team', hlMode_mix:'Finali e 2026', hlHigher:'Di più', hlLower:'Di meno', hlSrcAll:'Liquipedia, montepremi di sempre', hlQAll:(b,a)=>b+' ha guadagnato più o meno di '+a+' in totale?', hlLink:'Più o meno', hlTitle:'Più o meno', hlBack:'Home', hlStreak:n=>'Serie: '+n, hlBest:n=>'Record: '+n,
   hlQPlace:'Chi è arrivato più in alto in questa finale?', hlQEarn:'Chi ha guadagnato di più nel 2026?', hlSrcEarn:'Liquipedia, tutti i tornei dell’anno',
   hlHint:'Tocca chi sta più in alto', hlPlaceV:p=>p+'° posto', hlOver:n=>'Serie finita: '+n, hlNewBest:'Nuovo record',
   hlAgain:'Gioca ancora', hlCopy:'Copia il risultato', hlCopied:'Copiato', hlEmpty:'Nessun dato per una domanda'});
-Object.assign(I18N.pt, {hlMode_pl:'Jogadores', hlMode_org:'Times', hlMode_mix:'Finais e 2026', hlHigher:'Mais', hlLower:'Menos', hlSrcAll:'Liquipedia, prêmios de todos os tempos', hlQAll:(b,a)=>b+' ganhou mais ou menos que '+a+' no total?', hlLink:'Maior ou menor', hlTitle:'Maior ou menor', hlBack:'Início', hlStreak:n=>'Sequência: '+n, hlBest:n=>'Recorde: '+n,
+Object.assign(I18N.pt, {hlHas:'ganhou', hlPrize:'em prêmios no total', hlThan:a=>'que '+a, hlRank:n=>n+'º de todos os tempos', hlMode_pl:'Jogadores', hlMode_org:'Times', hlMode_mix:'Finais e 2026', hlHigher:'Mais', hlLower:'Menos', hlSrcAll:'Liquipedia, prêmios de todos os tempos', hlQAll:(b,a)=>b+' ganhou mais ou menos que '+a+' no total?', hlLink:'Maior ou menor', hlTitle:'Maior ou menor', hlBack:'Início', hlStreak:n=>'Sequência: '+n, hlBest:n=>'Recorde: '+n,
   hlQPlace:'Quem ficou mais alto nesta final?', hlQEarn:'Quem ganhou mais prêmios em 2026?', hlSrcEarn:'Liquipedia, todos os torneios do ano',
   hlHint:'Toque em quem ficou acima', hlPlaceV:p=>p+'º lugar', hlOver:n=>'Sequência encerrada: '+n, hlNewBest:'Novo recorde',
   hlAgain:'Jogar de novo', hlCopy:'Copiar resultado', hlCopied:'Copiado', hlEmpty:'Sem dados para uma pergunta'});
