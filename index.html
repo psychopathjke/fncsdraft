@@ -113835,6 +113835,7 @@ async function playGameWithChoices(teams, lobbyOpts, ui){
   ccKitInit(teams);
   let zoneWas=0;
   for(const stop of CC_GAME_STOPS){
+    if(!(stop.zone>zoneWas)) continue;   // у шторма вечера нет такого круга (ccEndZones)
     /* По одному кругу за раз — и отметка на каждый. Движок от этого не меняется
        (playPhases докручивает до названного круга и помнит, где стоял), а книга
        начинает называть КРУГ, на котором вечера разъехались, а не «где-то между
@@ -114343,7 +114344,10 @@ const CC_GAME_STOPS=[
   // но только когда есть о чём: ресы кончились или щит снят.
   {zone:5, ask:(you, ui)=>ccAskMid(you, ui), room:(field, you)=>{ if(!CC_ZB) ccRoomMats(field, you); ccRoomHeal(field, you); }},
   {zone:7, ask:(you, ui)=>ccAskMid(you, ui), room:(field, you)=>{ if(!CC_ZB) ccRoomMats(field, you); ccRoomHeal(field, you); }, quiet:ccMidQuiet},
-  {zone:8, ask:(you, ui)=>ccAskLate(you, ui), room:ccRoomLate}
+  {zone:8, ask:(you, ui)=>ccAskLate(you, ui), room:ccRoomLate},
+  // Концовка: двигающиеся круги и последние отряды (ccEndZones). Комнату ведёт движок, как и раньше.
+  {get zone(){ return ccEndZones().move; }, ask:(you, ui)=>ccAskMoving(you, ui)},
+  {get zone(){ return ccEndZones().last; }, ask:(you, ui)=>ccAskLast(you, ui)}
 ];
 // Молчаливая остановка: вопрос не задаётся, когда отвечать не на что.
 function ccMatsQuiet(t){ return !ccMatsLow(t); }
@@ -114809,12 +114813,12 @@ function ccLootUpgrade(you, foe){
 /* Что делает файт с отрядом — отдельно от вопроса, чтобы проверялось.
    r — бросок [0,1); foe — команда соседа (может не быть: тогда выбить некого
    и погибнуть не от кого — исход «разменялись»). */
-function ccFightApply(you, r, foe){
-  const sq=you._sq, game=you._game;
+function ccFightApply(you, r, foe, tb){
+  const sq=you._sq, game=you._game, F=tb||CC_FIGHT;
   const can=!!(foe && game && game.eliminate);
   // Решающая доля стычек — CC_FIGHT.decide; внутри неё победителя называет сила.
   const p=ccFightWinOdds(you, foe);
-  const winTo=CC_FIGHT.decide*p, dieTo=CC_FIGHT.decide;
+  const winTo=F.decide*p, dieTo=F.decide;
   if(r<winTo){
     if(can) game.eliminate(foe, you);
     else if(sq) sq.dealt=(sq.dealt||0)+CC_FIGHT.dmg;
@@ -114829,7 +114833,7 @@ function ccFightApply(you, r, foe){
     game.eliminate(you, foe);
     return 'die';
   }
-  if(r<dieTo+CC_FIGHT.trade || (r<dieTo && !can)){
+  if(r<dieTo+F.trade || (r<dieTo && !can)){
     ccAddGamePow(you, -CC_FIGHT.tradePow);
     you._mats=Math.max(0, ccMats(you)-CC_FIGHT.tradeMats);
     if(sq){ sq.shield=0; sq.hp=Math.max(1, (sq.hp!=null?sq.hp:100)-CC_FIGHT.tradeHp); sq.taken=(sq.taken||0)+CC_FIGHT.dmg; }
@@ -115695,7 +115699,9 @@ const CC_CHOICE_THEME={
   mid:   {th:'#ff7a3d', zone:5},    // урон сёрджа
   heal:  {th:'#3ddc9a', zone:5},    // хилки
   mats:  {th:'#c98d4e', zone:5},
-  late:  {th:'#ff3d6e', zone:8}     // последний круг
+  late:  {th:'#ff3d6e', zone:8},    // последний круг
+  moving:{th:'#b36bff', zone:10},   // двигающиеся круги, фиолет шторма
+  last:  {th:'#ff3d6e', zone:11}
 };
 /* Кольцо круга: сколько вечера позади и на каком мы круге. Чистая геометрия, без
    анимации — у него в браузере всегда включён «меньше движения». */
@@ -116516,6 +116522,99 @@ async function ccAskLoot(you, ui){
 }
 /* Восьмая зона. Хайграунд — монетка: выиграл контест, забрал высоту, иначе
    ничего и остаток игры снизу. Рефреш даёт меньше, но наверняка. */
+/* КОНЦОВКА ДВУМЯ ОСТАНОВКАМИ. В трёх играх Гранд-финала FNCS 2026 EU (tools/real-matches.json) к восьмому кругу
+   живы 21–25 отрядов из 50, и дальше до конца уходят 44% всех убийств игры, а вопрос там был один.
+   Двигающиеся круги (ccAskMoving): ротация заново, её читает движок (team._rot, zone-sim runPhase), или третья
+   сторона через движок (ccThirdApply). Выживание по реплеям Major 2 EU, зоны 8+: вышли сразу, дожили 63%; со
+   штормом 49% (CC_END_ROT). По умолчанию ответ четвёртой зоны, так что под пропуском баланс не сдвинут.
+   Последние отряды (ccAskLast): держать место, третьить или давить ради элимов. Исходы стычки концовки по тем же
+   реплеям (312 сторон): разошлись 30%, размен 20%, соседа выбили 19%, выбили самих 31% (CC_FIGHT_LATE).
+   В финале победитель в среднем брал 6.3 элима, места 2–5 по 5.2, 11–20 по 2.5. */
+const CC_END_ROT={early:63, with:49};
+const CC_FIGHT_LATE=Object.assign({}, CC_FIGHT, {decide:0.50, trade:0.20});
+// Номера кругов двух остановок по шторму вечера: 11 кругов → 10 и 11, 9 кругов → только 9.
+function ccEndZones(){
+  const n=(typeof CC_GAME_PHASES!=='undefined' && CC_GAME_PHASES && CC_GAME_PHASES.length) || 0;
+  return n>=11 ? {move:10, last:11} : n>=9 ? {move:9, last:0} : {move:0, last:0};
+}
+const ccFoeName=foe=>foe ? String(foe.name||'').replace(/<[^>]+>/g,'') : '';
+async function ccAskMoving(you, ui){
+  if(!you) return;
+  ccMpMark('mv0'+(you.mpTag||''));
+  const T=L(), game=you._game;
+  const n=game && game.aliveCount ? game.aliveCount() : 0;
+  const mv=you._loot && you._loot.move && !you._loot.move.floor ? you._loot.move : null;
+  const foe0=game && game.nearest ? game.nearest(you) : null;
+  const cur=(you._rot==='with' || you._rot==='late') ? you._rot : 'early';
+  const cost=id=>T.ccRotCost(ccRotMats(id, you), CC_ROT_FARM[id]||0);
+  let opts=[
+    {id:'early', icon:CC_CHOICE_ICON.run,   title:T.mvEarly, note:T.mvEarlyNote(CC_END_ROT.early)+' · '+cost('early')},
+    {id:'with',  icon:CC_CHOICE_ICON.storm, title:T.mvEdge,  note:T.mvEdgeNote(CC_END_ROT.with)+' · '+cost('with')},
+    {id:'late',  icon:CC_CHOICE_ICON.wall1, title:T.mvTarp,  note:T.mvTarpNote+' · '+cost('late')},
+    {id:'third', icon:CC_CHOICE_ICON.fight, title:T.mvThird+(foe0 && foe0.name ? ' · '+ccFoeName(foe0) : ''),
+     note:T.ccLateThirdNote(Math.round(CC_THIRD.kill*100), Math.round(CC_THIRD.die*100), CC_THIRD.pow)}
+  ];
+  if(mv) opts.push({id:'move', icon:ccItemIconHTML(mv, CC_CHOICE_ICON.run), title:T.ccRotMove, note:T.ccRotMoveNote(mv.name, CC_ROT_MOVE_POW)+' · '+cost('move')});
+  // Ход по умолчанию первым: пропуск и сторожа берут первую кнопку.
+  opts.forEach(o=>{ o.def=o.id===cur; });
+  opts=opts.filter(o=>o.def).concat(opts.filter(o=>!o.def));
+  const name=id=>({early:T.mvEarly, with:T.mvEdge, late:T.mvTarp, third:T.mvThird, move:T.ccRotMove})[id]||'';
+  const pickId=(await ccMpChoose('moving'+(you.mpTag||''), async function(){
+    return (await ccChoiceBox(T.mvTitle(n), ccKitLine(you), opts, ui && ui.map, null, 'moving')).id;
+  }, name)).v;
+  ccMpMark('a10:'+pickId);
+  const say=async (line, ok)=>{ if(ui && ui.note) ui.note(line); await ccChoiceResult(ui && ui.map, line, ok); };
+  if(pickId==='third'){
+    const r=Math.random(), foe=game && game.nearest ? game.nearest(you) : null;
+    const out=ccThirdApply(you, r, foe);
+    ccMpMark('w10t:'+out);
+    await say(out==='win' ? T.ccLateThirdWon(CC_THIRD.pow, ccFoeName(foe)) : out==='die' ? T.ccLateThirdLost(ccFoeName(foe)) : T.ccLateThirdNone(CC_THIRD.dmg),
+              out==='win' ? true : out==='die' ? false : null);
+    return;
+  }
+  you._rot=pickId;
+  you._rotMul=CC_ROT_MATS[pickId]||1;
+  if(CC_ROT_FARM[pickId]) ccMatsAdd(you, CC_ROT_FARM[pickId]);
+  if(pickId==='move' && you._loot){ you._loot.move=null; ccPackFloor(you._loot, null, null); ccAddGamePow(you, -CC_ROT_MOVE_POW); }
+  await say(T.ccRotSet(name(pickId)), null);
+}
+async function ccAskLast(you, ui){
+  if(!you) return;
+  ccMpMark('ls0'+(you.mpTag||''));
+  const T=L(), game=you._game;
+  const n=game && game.aliveCount ? game.aliveCount() : 0;
+  const gun=you._loot && you._loot.weapons && you._loot.weapons[0];
+  const foe0=game && game.nearest ? game.nearest(you) : null;
+  const pw=ccFightWinOdds(you, foe0), F=CC_FIGHT_LATE;
+  const opts=[
+    {id:'hold', def:true, icon:CC_CHOICE_ICON.wall2, title:T.lsHold, note:T.lsHoldNote},
+    {id:'third', icon:CC_CHOICE_ICON.contest, title:T.ccLateThird,
+     note:T.ccLateThirdNote(Math.round(CC_THIRD.kill*100), Math.round(CC_THIRD.die*100), CC_THIRD.pow)},
+    {id:'push', icon:ccItemIconHTML(gun, CC_CHOICE_ICON.fight), title:T.lsPush+(foe0 && foe0.name ? ' · '+ccFoeName(foe0) : ''),
+     note:T.ccMidFightNote(Math.round(F.decide*pw*100), F.pow, Math.round(F.decide*(1-pw)*100), Math.round(F.trade*100), F.pokeDmg)}
+  ];
+  const name=id=>({hold:T.lsHold, third:T.ccLateThird, push:T.lsPush})[id]||'';
+  const pickId=(await ccMpChoose('last'+(you.mpTag||''), async function(){
+    return (await ccChoiceBox(T.lsTitle(n), ccKitLine(you), opts, ui && ui.map, null, 'last')).id;
+  }, name)).v;
+  ccMpMark('a11:'+pickId);
+  const say=async (line, ok)=>{ if(ui && ui.note) ui.note(line); await ccChoiceResult(ui && ui.map, line, ok); };
+  if(pickId==='hold'){ await say(T.lsHoldGot, null); return; }
+  const r=Math.random(), foe=game && game.nearest ? game.nearest(you) : null, fn=ccFoeName(foe);
+  if(pickId==='third'){
+    const out=ccThirdApply(you, r, foe);
+    ccMpMark('w11t:'+out);
+    await say(out==='win' ? T.ccLateThirdWon(CC_THIRD.pow, fn) : out==='die' ? T.ccLateThirdLost(fn) : T.ccLateThirdNone(CC_THIRD.dmg),
+              out==='win' ? true : out==='die' ? false : null);
+    return;
+  }
+  const out=ccFightApply(you, r, foe, F);
+  ccMpMark('w11f:'+out);
+  if(out==='win') await say(T.ccMidFightWon(F.pow, fn, gun && gun.name)+(you._lootUp ? ' · '+T.ccLootUpgraded(you._lootUp.name) : ''), true);
+  else if(out==='die') await say(T.ccMidFightDied(fn), false);
+  else if(out==='poke') await say(T.ccMidFightPoke(F.pokeDmg, F.pokeMats), null);
+  else await say(T.ccMidFightTraded(F.tradePow), false);
+}
 async function ccAskLate(you, ui){
   if(!you) return;
   // Одно решение на команду, как и на луте: см. ccAskLoot.
@@ -121831,7 +121930,8 @@ function ccMpSeedOff(){
    Было: фраггеру только восьмая зона, остальное иглу. Теперь игл — стиль, точка, лут, ротации; фраггер — мид, фарм,
    маты, билд-файты, конец игры. Одно деление на командную карьеру и пару в гонке (ccMpMine). */
 const CC_MP_WHO={drop:'roleIGL', site:'roleIGL', own:'roleIGL', loot:'roleIGL', rot:'roleIGL', style:'roleIGL',
-                 mid:'roleFRG', farm:'roleFRG', mats:'roleFRG', build:'roleFRG', late:'roleFRG'};
+                 mid:'roleFRG', farm:'roleFRG', mats:'roleFRG', build:'roleFRG', late:'roleFRG',
+                 moving:'roleIGL', last:'roleFRG'};
 const CC_RACE_PAIR_WHO=CC_MP_WHO;
 function ccMpRoleKey(c){
   if(!c) return null;
@@ -170492,7 +170592,7 @@ Object.assign(I18N.it, {hhTag:'Nuovo', hhSub:'Chi ha più montepremi in totale: 
   hlQPlace:'Chi è arrivato più in alto in questa finale?', hlQEarn:'Chi ha guadagnato di più nel 2026?', hlSrcEarn:'Liquipedia, tutti i tornei dell’anno',
   hlHint:'Tocca chi sta più in alto', hlPlaceV:p=>p+'° posto', hlOver:n=>'Serie finita: '+n, hlNewBest:'Nuovo record',
   hlAgain:'Gioca ancora', hlCopy:'Copia il risultato', hlCopied:'Copiato', hlEmpty:'Nessun dato per una domanda'});
-Object.assign(I18N.ru, {lrTitle:'Лут на точке', lrHint:n=>'Открывай сундуки сам. До зоны успеешь около '+n+', дальше теряешь ресы', lrOpened:(o,n)=>'Открыто '+o+' из '+n, lrOpen1:'Открыть сундук', lrOpen5:'Открыть 5', lrAuto:'Собрать лучшее', lrGo:'Ротироваться', lrInv:'Инвентарь', lrGround:'На земле: тап, чтобы взять', lrDrop:'Выбросить', lrFull:'Инвентарь полон: выброси что-нибудь из слота', rkTitle:'Ранкед', rkArenaTitle:'Арена', rkDiv:'див.', rkUnranked:'Без ранга',
+Object.assign(I18N.ru, {mvTitle:n=>'Двигающиеся круги · живы '+n, mvEarly:'Заходить первыми', mvEarlyNote:v=>'Сразу в новый круг, пока его не заняли: в концовках финала так дожили '+v+'%', mvEdge:'Краем со штормом', mvEdgeNote:v=>'Едем по стене шторма и забираем тех, кто опоздал: так дожили '+v+'%', mvTarp:'Тарп через шторм', mvTarpNote:'Ждём до последнего и тарпим сквозь шторм: тише на входе, но здоровье и ресы уходят', mvThird:'Третьить ротирующих', lsTitle:n=>'Последние отряды · живы '+n, lsHold:'Держать место', lsHoldNote:'Сидим в своей коробке и ждём, пока другие разменяются: место решат круги', lsHoldGot:'Держим место, ждём размена', lsPush:'Давить ради элимов', lrTitle:'Лут на точке', lrHint:n=>'Открывай сундуки сам. До зоны успеешь около '+n+', дальше теряешь ресы', lrOpened:(o,n)=>'Открыто '+o+' из '+n, lrOpen1:'Открыть сундук', lrOpen5:'Открыть 5', lrAuto:'Собрать лучшее', lrGo:'Ротироваться', lrInv:'Инвентарь', lrGround:'На земле: тап, чтобы взять', lrDrop:'Выбросить', lrFull:'Инвентарь полон: выброси что-нибудь из слота', rkTitle:'Ранкед', rkArenaTitle:'Арена', rkDiv:'див.', rkUnranked:'Без ранга',
   rkPlaceFirst:'Первый матч сезона поставит ранг', rkPlaceFrom:n=>'Квалификация сезона, прошлый ранг: '+n,
   rkSeasonLine:n=>'Матчей за карьеру: '+n, rkToNext:(a,b)=>a+' до '+b, rkCost:n=>'вход −'+n+'% за матч',
   rkUnrealBoard:'место в таблице Unreal', rkHypeBoard:'место в Champion League', rkRules:u=>'правила '+u,
@@ -170503,7 +170603,7 @@ Object.assign(I18N.ru, {lrTitle:'Лут на точке', lrHint:n=>'Откры�
   rkNewsUnreal:n=>'Ранкед: '+n+'! Теперь место в мировой таблице', rkNewsTop100:p=>'Ранкед: топ-100 Unreal, место #'+p,
   rkNewsTop1:()=>'Ранкед: первое место в таблице Unreal', rkNewsReset:()=>'Новый сезон: ранг сброшен, первый матч квалификационный',
   rkNewsArenaUp:n=>'Арена: '+n, rkNewsChamp:n=>'Арена: Champion League! '+n, rkNewsArenaReset:u=>'Обновление '+u+': Hype на Арене сброшен'});
-Object.assign(I18N.en, {lrTitle:'Loot at your spot', lrHint:n=>'Open chests yourself. About '+n+' before the zone, after that you lose mats', lrOpened:(o,n)=>'Opened '+o+' of '+n, lrOpen1:'Open chest', lrOpen5:'Open 5', lrAuto:'Take the best', lrGo:'Rotate', lrInv:'Inventory', lrGround:'On the ground: tap to pick up', lrDrop:'Drop', lrFull:'Inventory full: drop something from a slot', rkTitle:'Ranked', rkArenaTitle:'Arena', rkDiv:'div.', rkUnranked:'Unranked',
+Object.assign(I18N.en, {mvTitle:n=>'Moving zones · '+n+' alive', mvEarly:'Rotate first', mvEarlyNote:v=>'Straight into the new circle before it fills up: '+v+'% survived this in the final endgames', mvEdge:'Ride the storm edge', mvEdgeNote:v=>'Move along the storm wall and pick off the late ones: '+v+'% survived this', mvTarp:'Tarp through the storm', mvTarpNote:'Wait till the end and tarp through: quieter on the way in, but it costs health and mats', mvThird:'Third-party the rotators', lsTitle:n=>'Last squads · '+n+' alive', lsHold:'Hold placement', lsHoldNote:'Stay in our box and let the others trade: the circles decide the placement', lsHoldGot:'Holding placement, waiting for a trade', lsPush:'Push for elims', lrTitle:'Loot at your spot', lrHint:n=>'Open chests yourself. About '+n+' before the zone, after that you lose mats', lrOpened:(o,n)=>'Opened '+o+' of '+n, lrOpen1:'Open chest', lrOpen5:'Open 5', lrAuto:'Take the best', lrGo:'Rotate', lrInv:'Inventory', lrGround:'On the ground: tap to pick up', lrDrop:'Drop', lrFull:'Inventory full: drop something from a slot', rkTitle:'Ranked', rkArenaTitle:'Arena', rkDiv:'div.', rkUnranked:'Unranked',
   rkPlaceFirst:'The first match of the season sets your rank', rkPlaceFrom:n=>'Season placement, last rank: '+n,
   rkSeasonLine:n=>'Career matches: '+n, rkToNext:(a,b)=>a+' to '+b, rkCost:n=>'entry −'+n+'% per match',
   rkUnrealBoard:'Unreal leaderboard', rkHypeBoard:'Champion League standing', rkRules:u=>'rules '+u,
@@ -170514,7 +170614,7 @@ Object.assign(I18N.en, {lrTitle:'Loot at your spot', lrHint:n=>'Open chests your
   rkNewsUnreal:n=>'Ranked: '+n+'! On the world leaderboard now', rkNewsTop100:p=>'Ranked: top 100 Unreal, #'+p,
   rkNewsTop1:()=>'Ranked: number one on the Unreal leaderboard', rkNewsReset:()=>'New season: rank reset, the first match is a placement',
   rkNewsArenaUp:n=>'Arena: '+n, rkNewsChamp:n=>'Arena: Champion League! '+n, rkNewsArenaReset:u=>'Update '+u+': Arena Hype reset'});
-Object.assign(I18N.fr, {lrTitle:'Loot sur ton spot', lrHint:n=>'Ouvre les coffres toi-même. Environ '+n+' avant la zone, ensuite tu perds des matériaux', lrOpened:(o,n)=>'Ouverts '+o+' sur '+n, lrOpen1:'Ouvrir un coffre', lrOpen5:'Ouvrir 5', lrAuto:'Prendre le meilleur', lrGo:'Rotation', lrInv:'Inventaire', lrGround:'Au sol : touche pour ramasser', lrDrop:'Jeter', lrFull:'Inventaire plein : jette quelque chose', rkTitle:'Classé', rkArenaTitle:'Arène', rkDiv:'div.', rkUnranked:'Non classé',
+Object.assign(I18N.fr, {mvTitle:n=>'Zones mobiles · '+n+' en vie', mvEarly:'Entrer les premiers', mvEarlyNote:v=>'Direct dans la nouvelle zone avant qu’elle se remplisse : '+v+'% ont survécu ainsi en fin de finale', mvEdge:'Longer la tempête', mvEdgeNote:v=>'On suit le mur de la tempête et on prend les retardataires : '+v+'% ont survécu', mvTarp:'Tarp dans la tempête', mvTarpNote:'On attend la fin et on tarp à travers : plus calme à l’entrée, mais ça coûte de la vie et des matériaux', mvThird:'Third-party les rotations', lsTitle:n=>'Dernières équipes · '+n+' en vie', lsHold:'Tenir la place', lsHoldNote:'On reste dans notre box et on laisse les autres s’échanger : les zones décident la place', lsHoldGot:'On tient la place, on attend un échange', lsPush:'Pousser pour les kills', lrTitle:'Loot sur ton spot', lrHint:n=>'Ouvre les coffres toi-même. Environ '+n+' avant la zone, ensuite tu perds des matériaux', lrOpened:(o,n)=>'Ouverts '+o+' sur '+n, lrOpen1:'Ouvrir un coffre', lrOpen5:'Ouvrir 5', lrAuto:'Prendre le meilleur', lrGo:'Rotation', lrInv:'Inventaire', lrGround:'Au sol : touche pour ramasser', lrDrop:'Jeter', lrFull:'Inventaire plein : jette quelque chose', rkTitle:'Classé', rkArenaTitle:'Arène', rkDiv:'div.', rkUnranked:'Non classé',
   rkPlaceFirst:'Le premier match de la saison fixe ton rang', rkPlaceFrom:n=>'Placement de saison, dernier rang : '+n,
   rkSeasonLine:n=>'Matchs en carrière : '+n, rkToNext:(a,b)=>a+' avant '+b, rkCost:n=>'entrée −'+n+' % par match',
   rkUnrealBoard:'classement Unreal', rkHypeBoard:'place en Champion League', rkRules:u=>'règles '+u,
@@ -170525,7 +170625,7 @@ Object.assign(I18N.fr, {lrTitle:'Loot sur ton spot', lrHint:n=>'Ouvre les coffre
   rkNewsUnreal:n=>'Classé : '+n+' ! Dans le classement mondial', rkNewsTop100:p=>'Classé : top 100 Unreal, #'+p,
   rkNewsTop1:()=>'Classé : numéro un du classement Unreal', rkNewsReset:()=>'Nouvelle saison : rang remis à zéro, premier match de placement',
   rkNewsArenaUp:n=>'Arène : '+n, rkNewsChamp:n=>'Arène : Champion League ! '+n, rkNewsArenaReset:u=>'Mise à jour '+u+' : Hype d’Arène remis à zéro'});
-Object.assign(I18N.it, {lrTitle:'Loot sul tuo spot', lrHint:n=>'Apri i forzieri da solo. Circa '+n+' prima della zona, poi perdi materiali', lrOpened:(o,n)=>'Aperti '+o+' su '+n, lrOpen1:'Apri forziere', lrOpen5:'Apri 5', lrAuto:'Prendi il meglio', lrGo:'Ruota', lrInv:'Inventario', lrGround:'A terra: tocca per raccogliere', lrDrop:'Butta', lrFull:'Inventario pieno: butta qualcosa', rkTitle:'Classificate', rkArenaTitle:'Arena', rkDiv:'div.', rkUnranked:'Senza grado',
+Object.assign(I18N.it, {mvTitle:n=>'Zone mobili · vivi '+n, mvEarly:'Entrare per primi', mvEarlyNote:v=>'Subito nel nuovo cerchio prima che si riempia: così è sopravvissuto il '+v+'% nei finali', mvEdge:'Lungo la tempesta', mvEdgeNote:v=>'Seguiamo il muro della tempesta e prendiamo i ritardatari: sopravvissuto il '+v+'%', mvTarp:'Tarp nella tempesta', mvTarpNote:'Aspettiamo fino alla fine e tarpiamo attraverso: ingresso più tranquillo, ma costa vita e materiali', mvThird:'Third-party chi ruota', lsTitle:n=>'Ultime squadre · vivi '+n, lsHold:'Tenere la posizione', lsHoldNote:'Restiamo nel nostro box e lasciamo che gli altri si scambino: la posizione la decidono i cerchi', lsHoldGot:'Teniamo la posizione, aspettiamo uno scambio', lsPush:'Spingere per le kill', lrTitle:'Loot sul tuo spot', lrHint:n=>'Apri i forzieri da solo. Circa '+n+' prima della zona, poi perdi materiali', lrOpened:(o,n)=>'Aperti '+o+' su '+n, lrOpen1:'Apri forziere', lrOpen5:'Apri 5', lrAuto:'Prendi il meglio', lrGo:'Ruota', lrInv:'Inventario', lrGround:'A terra: tocca per raccogliere', lrDrop:'Butta', lrFull:'Inventario pieno: butta qualcosa', rkTitle:'Classificate', rkArenaTitle:'Arena', rkDiv:'div.', rkUnranked:'Senza grado',
   rkPlaceFirst:'La prima partita della stagione fissa il grado', rkPlaceFrom:n=>'Piazzamento di stagione, grado precedente: '+n,
   rkSeasonLine:n=>'Partite in carriera: '+n, rkToNext:(a,b)=>a+' a '+b, rkCost:n=>'ingresso −'+n+'% a partita',
   rkUnrealBoard:'classifica Unreal', rkHypeBoard:'posto in Champion League', rkRules:u=>'regole '+u,
@@ -170536,7 +170636,7 @@ Object.assign(I18N.it, {lrTitle:'Loot sul tuo spot', lrHint:n=>'Apri i forzieri 
   rkNewsUnreal:n=>'Classificate: '+n+'! Ora in classifica mondiale', rkNewsTop100:p=>'Classificate: top 100 Unreal, #'+p,
   rkNewsTop1:()=>'Classificate: primo nella classifica Unreal', rkNewsReset:()=>'Nuova stagione: grado azzerato, prima partita di piazzamento',
   rkNewsArenaUp:n=>'Arena: '+n, rkNewsChamp:n=>'Arena: Champion League! '+n, rkNewsArenaReset:u=>'Aggiornamento '+u+': Hype dell’Arena azzerato'});
-Object.assign(I18N.pt, {lrTitle:'Loot no seu ponto', lrHint:n=>'Abra os baús você mesmo. Cerca de '+n+' antes da zona, depois perde materiais', lrOpened:(o,n)=>'Abertos '+o+' de '+n, lrOpen1:'Abrir baú', lrOpen5:'Abrir 5', lrAuto:'Pegar o melhor', lrGo:'Rotacionar', lrInv:'Inventário', lrGround:'No chão: toque para pegar', lrDrop:'Largar', lrFull:'Inventário cheio: largue algo', rkTitle:'Ranqueada', rkArenaTitle:'Arena', rkDiv:'div.', rkUnranked:'Sem rank',
+Object.assign(I18N.pt, {mvTitle:n=>'Zonas móveis · '+n+' vivos', mvEarly:'Entrar primeiro', mvEarlyNote:v=>'Direto para o novo círculo antes que lote: '+v+'% sobreviveram assim nos finais', mvEdge:'Pela borda da tempestade', mvEdgeNote:v=>'Seguimos a parede da tempestade e pegamos quem atrasou: '+v+'% sobreviveram', mvTarp:'Tarp pela tempestade', mvTarpNote:'Esperamos até o fim e passamos de tarp: entrada mais calma, mas custa vida e materiais', mvThird:'Third-party em quem rotaciona', lsTitle:n=>'Últimos times · '+n+' vivos', lsHold:'Segurar a posição', lsHoldNote:'Ficamos na nossa box e deixamos os outros trocarem: os círculos decidem a posição', lsHoldGot:'Segurando a posição, esperando uma troca', lsPush:'Pressionar por kills', lrTitle:'Loot no seu ponto', lrHint:n=>'Abra os baús você mesmo. Cerca de '+n+' antes da zona, depois perde materiais', lrOpened:(o,n)=>'Abertos '+o+' de '+n, lrOpen1:'Abrir baú', lrOpen5:'Abrir 5', lrAuto:'Pegar o melhor', lrGo:'Rotacionar', lrInv:'Inventário', lrGround:'No chão: toque para pegar', lrDrop:'Largar', lrFull:'Inventário cheio: largue algo', rkTitle:'Ranqueada', rkArenaTitle:'Arena', rkDiv:'div.', rkUnranked:'Sem rank',
   rkPlaceFirst:'A primeira partida da temporada define o rank', rkPlaceFrom:n=>'Posicionamento da temporada, rank anterior: '+n,
   rkSeasonLine:n=>'Partidas na carreira: '+n, rkToNext:(a,b)=>a+' até '+b, rkCost:n=>'entrada −'+n+'% por partida',
   rkUnrealBoard:'placar Unreal', rkHypeBoard:'posição na Champion League', rkRules:u=>'regras '+u,
