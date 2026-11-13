@@ -36,7 +36,12 @@ window.addEventListener("load", function(){ setTimeout(async function(){
     check('взял с земли', qa('.lr-slot[data-d]').length>=1);
     q('[data-a="o5"]').click(); q('[data-a="o5"]').click();
     check('сверх обычного счёта ресы в минус', /−|-\\d/.test(q('.lr-time b').textContent) || q('.lr-time b').classList.contains('down'), q('.lr-time').textContent);
+    // Предметов столько, сколько выпало: «Собрать лучшее» и перекладывание ничего не множат.
+    const total=()=>qa('.lr-slot[data-d], .lr-g').reduce((s,b)=>{ const e=b.querySelector('em'); return s+(e ? +e.textContent.replace(/\\D/g,'') : 1); }, 0);
+    const t0=total();
+    for(let k=0;k<6;k++){ q('[data-a="auto"]').click(); if(q('.lr-g')) q('.lr-g').click(); if(q('.lr-slot[data-d="0"]')) q('.lr-slot[data-d="0"]').click(); }
     q('[data-a="auto"]').click();
+    check('предметы не множатся', total()===t0, t0+' → '+total());
     q('[data-a="go"]').click();
     const res=await pr;
     check('окно закрылось', !host.querySelector('.cc-loot'));
@@ -56,7 +61,7 @@ window.addEventListener("load", function(){ setTimeout(async function(){
   document.getElementById('__out').textContent='BEGIN'+encodeURIComponent(JSON.stringify(out))+'END';
 }, 800); });<\/script>`;
 const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'lroom-')), tmp = path.join(dir, 'index.html');
-fs.writeFileSync(tmp, '<base href="file:///' + ROOT.split(path.sep).join('/') + '/">' + fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8').replace('</body>', BOOT + '</body>'));
+fs.writeFileSync(tmp, '<base href="file:///' + ROOT.split(path.sep).join('/') + '/">' + fs.readFileSync(process.env.INDEX || path.join(ROOT, 'index.html'), 'utf8').replace('</body>', BOOT + '</body>'));
 let dom;
 try {
   dom = execFileSync(CHROME, ['--headless=new', '--disable-gpu', '--no-sandbox', '--allow-file-access-from-files', '--user-data-dir=' + path.join(dir, 'prof'),

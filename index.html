@@ -116303,8 +116303,11 @@ function ccLootRoom(host, opt){
       (p.weapons||[]).forEach(w=>st.inv.push({o:w, kind:'w', n:1}));
       (p.heals||[]).forEach(h=>st.inv.push({o:h, kind:'h', n:h.n||1}));
       if(p.move) st.inv.push({o:p.move, kind:'m', n:1});
-      const used=new Map(); st.inv.forEach(x=>used.set(x.o, (used.get(x.o)||0)+x.n));
-      all.forEach(x=>{ const u=used.get(x.o)||0; if(u>=x.n){ used.set(x.o, u-x.n); return; } used.set(x.o, 0); st.ground.push({o:x.o, kind:x.kind, n:x.n-u}); });
+      // Остаток на землю: хилки ccPackFrom отдаёт копиями, поэтому счёт по имени, а не по объекту, иначе стаки множились.
+      const key=x=>x.kind==='w' ? x.o : x.kind+':'+x.o.name, left=new Map();
+      all.forEach(x=>{ const e=left.get(key(x)); if(e) e.n+=x.n; else left.set(key(x), {o:x.o, kind:x.kind, n:x.n}); });
+      st.inv.forEach(x=>{ const e=left.get(key(x)); if(e) e.n-=x.n; });
+      left.forEach(e=>{ if(e.n<=0) return; if(e.kind==='h') st.ground.push(e); else for(let k=0;k<e.n;k++) st.ground.push({o:e.o, kind:e.kind, n:1}); });
       draw(); };
     const finish=()=>{ if(!box.isConnected) return; box.remove();
       const pack={weapons:[], heals:[], move:null, dropped:[], manual:true};
