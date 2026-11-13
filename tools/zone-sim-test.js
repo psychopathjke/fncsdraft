@@ -626,6 +626,32 @@ test('the same seed produces the same result', () => {
   assert(JSON.stringify(a) === JSON.stringify(b), 'the same seed produced two different games');
 });
 
+test('the player can choose where to stand: hold stays, centre goes in, zone side leans to the next pull', () => {
+  // team._pos — выбор игрока «где встаём в круге» (ccAskPos). Мерим по кадрам: сколько отряд прошёл и где стоял.
+  const runWith = pos => {
+    let walked = 0, edge = 0, n = 0;
+    for(let seed=1; seed<=12; seed++){
+      const rng = ZoneSim.createRng(900 + seed);
+      const teams = fakeField(50);
+      teams[0]._pos = pos; teams[0].pow = 999;   // не умирает рано, чтобы было что мерить
+      const g = ZoneSim.simulateZoneGame(teams, {rng: rng, land: LAND, aspect: ASPECT,
+        startOf: dropOnGrid(teams, rng), duel: makeDuel(rng), record: true});
+      const fr = g.timeline || (g.frames && g.frames()) || [];
+      for(let i=1;i<fr.length;i++){
+        const a = fr[i-1].dots && fr[i-1].dots[0], b = fr[i].dots && fr[i].dots[0];
+        if(!a || !b || !b.alive) continue;
+        walked += Math.hypot(b.x - a.x, b.y - a.y);
+        const c = fr[i].circle; if(c && c.radius > 0){ edge += Math.hypot(b.x - c.cx, b.y - c.cy) / c.radius; n++; }
+      }
+    }
+    return {walked, edge: n ? edge / n : 0};
+  };
+  const auto = runWith(null), hold = runWith('hold'), centre = runWith('center');
+  assert(hold.walked < auto.walked, 'hold walked ' + hold.walked.toFixed(0) + ' vs auto ' + auto.walked.toFixed(0));
+  assert(centre.edge < auto.edge, 'centre stood at ' + centre.edge.toFixed(2) + ' of the radius vs auto ' + auto.edge.toFixed(2));
+});
+
+
 test('a stepwise game can settle a fight the app chose: nearest and eliminate', () => {
   // The player's mid-game "go fight" (6 September 2026) goes through the
   // engine so the death is a real one: place, feed line, elims — as a duel.

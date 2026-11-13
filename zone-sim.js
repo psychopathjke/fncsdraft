@@ -404,8 +404,17 @@
      следующего центра, со своим шумом (READ_NOISE и так смазывает карту слабому). И своё место — тоже кандидат: если оно
      внутри круга, отряд может остаться (travel 0), как остаются в доме или в своих постройках, а не бегают каждый круг. */
   var ZONE_SIDE = 1.0, HOLD_IN = 0.9;
+  /* Позиция по выбору игрока (team._pos, ccAskPos в index.html): только у людей, бота не касается.
+       side   — со стороны следующей зоны, читает как сильнейший (вес ZONE_SIDE×POS_SIDE_MUL, навык 1);
+       hold   — своё место, если оно внутри круга (как дом или свои постройки); снаружи — как обычно;
+       center — к центру: край не тянет (edge с минусом), зато ближе к толпе. */
+  var POS_SIDE_MUL = 2;
   function chooseTarget(squad, phase, squads, rng, after){
     var best = null, bestScore = -Infinity;
+    var pos = squad.team && squad.team._pos;
+    if(pos === 'hold' && Math.hypot(squad.x - phase.cx, squad.y - phase.cy) < phase.radius * HOLD_IN){
+      rng(); return {x: squad.x, y: squad.y};
+    }
     var ax = 0, ay = 0, al = 0;
     if(after){ ax = after.cx - phase.cx; ay = after.cy - phase.cy; al = Math.hypot(ax, ay); }
     var stayIn = Math.hypot(squad.x - phase.cx, squad.y - phase.cy) < phase.radius * HOLD_IN;
@@ -436,10 +445,11 @@
       // edge is where you want to be — behind you is storm rather than an enemy,
       // so it is one direction you do not have to hold.
       var edge = rad / Math.max(phase.radius, 0.001);
+      if(pos === 'center') edge = -edge;
 
       var score = -(CROWD_WEIGHT - CROWD_SEEK * squad.seek) * crowd - travel + edge;
       // Сторона следующей зоны: +1 точно в её сторону от центра, −1 с противоположной, по краю круга.
-      if(al > 1e-6) score += ZONE_SIDE * squad.skill * ((x - phase.cx) * ax + (y - phase.cy) * ay) / (Math.max(phase.radius, 0.001) * al);
+      if(al > 1e-6) score += ZONE_SIDE * (pos === 'side' ? POS_SIDE_MUL : squad.skill) * ((x - phase.cx) * ax + (y - phase.cy) * ay) / (Math.max(phase.radius, 0.001) * al);
 
       // Noise scaled by the inverse of skill. A perfect rotator reads the map
       // as it is; a poor one reads a smeared version of it and picks the
