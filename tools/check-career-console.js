@@ -195,10 +195,36 @@ const BOOT = `
     if(!ccMobileOwn() || !ccConsoleOk({id:'S41_MobileVictoryCup_BR'})) fail('iPad does not open mobile cups');
     if(ccMobileSelfPow()!==p0+2) fail('iPad should add 2 power on mobile: '+p0+' -> '+ccMobileSelfPow());
     out.steps.push('shop: Android / iPhone 15 Pro Max / iPad Pro in «'+L().ccShopConsoles+'»; iPad opens mobile cups, mobile power '+p0+' -> '+ccMobileSelfPow());
+    // ---- тренировка на телефоне и галочка «Турниры в календаре» ------------------------------------------
+    { seed('2026-06-24');
+      CAREER.career.energy=100; CAREER.career.balance=5000;
+      if(careerDoAct('mobile')) fail('phone practice worked without a device');
+      careerRenderHub('centre');
+      if(((document.getElementById('chBody')||{}).innerHTML||'').indexOf("careerPickDay('mobile')")>=0) fail('phone practice offered without a device');
+      careerBuy('phone');
+      careerRenderHub('centre');
+      if(((document.getElementById('chBody')||{}).innerHTML||'').indexOf("careerPickDay('mobile')")<0) fail('no phone practice button with a phone');
+      const m0=ccMobileOvr(), r1=careerDoAct('mobile'), m1=ccMobileOvr();
+      if(!r1 || !(m1>m0) || CAREER.player.ovr!==CAREER.player.ovr) fail('phone practice did not raise the mobile rating: '+m0+' -> '+m1);
+      CAREER.career.mobOvr=84.5; const g84=ccMobileTrain(); CAREER.career.mobOvr=85; const g85=ccMobileTrain();
+      if(!(g84>0 && g84<r1.mobile) || g85!==0) fail('practice should slow near 85 and stop there: '+g84+' / '+g85);
+      // Галочка: мобильные капы прочь из календаря и обратно; консольные не трогаются.
+      careerBuy('ps5');
+      const cnt=g=>ccVictoryList().filter(v=>ccPlatGroup(ccConsoleNeed(v))===g).length;
+      const mobOn=cnt('mobile'), conOn=cnt('console');
+      if(!mobOn || !conOn) fail('no platform cups to toggle: '+mobOn+'/'+conOn);
+      CH_TAB='shop'; careerRenderHub('shop');
+      const sw=document.querySelectorAll('#chBody .cc-platcal');
+      if(sw.length<2) fail('no calendar switch on owned devices: '+sw.length);
+      ccPlatCalToggle('mobile');
+      if(cnt('mobile')!==0 || cnt('console')!==conOn) fail('mobile switch off: mobile '+cnt('mobile')+', console '+cnt('console'));
+      ccPlatCalToggle('mobile');
+      if(cnt('mobile')!==mobOn) fail('mobile switch back on: '+cnt('mobile')+' of '+mobOn);
+      out.steps.push('phone practice +'+r1.mobile+' (mobile '+m0+' -> '+m1+'), slows near 85, stops there; switch: mobile cups '+mobOn+' -> 0 -> '+mobOn+', console '+conOn+' untouched'); }
     // ---- магазин и языки ---------------------------------------------------------------------
     CH_TAB='shop'; try{ careerTab('shop'); }catch(e){}
     ['ru','en','fr','it','pt'].forEach(l=>{ LANG=l; CC_L_CACHE={}; const D=L();
-      ['ccShopps5','ccShopxbox','ccShopphone','ccShopphonebase','ccShopipad','ccShopConsoles','ccShopConsoleHint','ccShopConsoleFx','ccNeedPs','ccNeedXbox','ccNeedConsole','ccNeedPhone'].forEach(k=>{ if(!D[k] || /—/.test(D[k])) fail(l+': '+k); }); });
+      ['ccShopps5','ccShopxbox','ccShopphone','ccShopphonebase','ccShopipad','ccShopConsoles','ccPlatCal','ccActmobile','ccShopConsoleHint','ccShopConsoleFx','ccNeedPs','ccNeedXbox','ccNeedConsole','ccNeedPhone'].forEach(k=>{ if(!D[k] || /—/.test(D[k])) fail(l+': '+k); }); });
     out.steps.push('five languages');
   } catch(e){ if(!out.fail) out.fail = String(e && e.message || e); }
   out.errs = window.__errs;
