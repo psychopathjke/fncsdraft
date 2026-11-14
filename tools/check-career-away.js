@@ -71,7 +71,8 @@ const BOOT = `
     const afterTx=(row.querySelector('.cc-away-after')||{}).textContent||'';
     if(afterTx.indexOf(regionName('NAC'))<0) fail('no hint that NAC comes after the home cup: '+afterTx);
     const oce=btns[0];
-    if(!/290/.test(oce.textContent) || !/-35/.test(oce.textContent)) fail('OCE button does not show ping and penalty: '+oce.textContent);
+    const oceRow=oce.closest('.cc-aw-r');
+    if(!oceRow || !/290/.test(oceRow.textContent) || !/-35/.test(oceRow.textContent) || oce.textContent!==L().awGo) fail('OCE row does not show ping, penalty and Play: '+(oceRow && oceRow.textContent));
     if(/\u2014/.test(row.textContent)) fail('long dash on the row');
     out.steps.push('hub before home: '+order0.join(' ')+' \u00b7 '+afterTx);
     const btns2=btns;
@@ -148,7 +149,7 @@ const BOOT = `
     const late=document.querySelector('#screen-career-hub .cc-away');
     const lateRegs=late ? [...late.querySelectorAll('button')].map(b=>((b.getAttribute('onclick')||'').match(/'([A-Z]+)'/)||[])[1]) : [];
     if(lateRegs.join()!=='NAC,NAW') fail('night row should be NAC, NAW (BR 16:00 over): '+lateRegs.join());
-    if(late.textContent.indexOf(L().awLate(CC_AWAY_ENERGY))<0) fail('night row has no title');
+    if(late.textContent.indexOf(L().awLateT)<0 || !late.classList.contains('cc-away-late')) fail('night block has no title');
     await play('NAC', DAY);
     if(careerToday()!==ccAddDays(DAY, 1)) fail('night NAC moved the day: '+careerToday());
     const ln=(CAREER.career.log||[]).slice(-1)[0];
@@ -216,7 +217,7 @@ const BOOT = `
     const lateDivRegs=lateDiv ? [...lateDiv.querySelectorAll('button')].map(b=>((b.getAttribute('onclick')||'').match(/'([A-Z]+)'/)||[])[1]) : [];
     if(lateDivRegs.indexOf('NAC')<0) fail('night row after the home div cup has no NAC: '+lateDivRegs.join());
     { const nbD=[...lateDiv.querySelectorAll('button')].find(b=>(b.getAttribute('onclick')||'').indexOf("'NAC'")>=0);
-      if(!nbD || nbD.textContent.indexOf(L().awDivD(ccDivCount('NAC')))<0) fail('NAC button does not show its division: '+(nbD && nbD.textContent)); }
+      const rD=nbD && nbD.closest('.cc-aw-r'); if(!rD || rD.textContent.indexOf(L().awDivD(ccDivCount('NAC')))<0) fail('NAC row does not show its division: '+(rD && rD.textContent)); }
     let dBase=null, dPow=null;
     const cyt3=careerYouTeam; careerYouTeam=function(){ const t=cyt3.apply(this, arguments); dBase=t.pow; return t; };
     const sgl3=simulateGamesLive; simulateGamesLive=function(field){ if(dPow==null){ const y=field.find(t=>t.isYou); dPow=y && y.pow; } return sgl3.apply(this, arguments); };
