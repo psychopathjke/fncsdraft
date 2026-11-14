@@ -158731,10 +158731,14 @@ function ccMajorSeatedHandles(ev){
 function ccMajorSeedThrough(cr, rows, heatNo){
   const s=cr && cr.majorSeed;
   if(!s) return;
-  const seen=new Set();
+  const seen=new Set(), ppl=new Set();
+  // И по людям: та же тройка с другим четвёртым — уже записанная команда, а не новая (см. ccMajorFinalRoom).
+  const who=r=>Array.isArray(r) ? r.map(e=>hKey(typeof e==='string' ? e : (e && e.h) || '')).filter(Boolean) : [];
   s.through=(s.through||[]).concat(rows||[])
     .filter(r=>{ const k=(r==='you') ? 'you' : JSON.stringify(r);
-                 if(seen.has(k)) return false; seen.add(k); return true; });
+                 if(seen.has(k)) return false;
+                 const ks=who(r); if(ks.some(x=>ppl.has(x))) return false;
+                 seen.add(k); ks.forEach(x=>ppl.add(x)); return true; });
   // Помечается НОМЕР ХИТА, а не день: игрок может сыграть свой хит в любой
   // день блока, а мир не должен потом сыграть его второй раз. Номера соседних,
   // уже сыгранных миром, остаются на месте по той же причине.
@@ -164057,8 +164061,13 @@ function ccMajorFinalRoom(you, lobbyCr, drafted, ev, st, sharp){
   const world=!rows && s && s.world && s.n===ev.n && s.season===CAREER.career.season;
   if(!rows && !world) return [you, ...careerCupField(lobbyCr, drafted, st.field, null, false, sharp)];
   const seen=new Set([ccSeatKey(you)]);
+  /* Один человек — одна команда. Ключ всей команды пропускал ту же тройку с другим четвёртым (запись прошедших,
+     дописанная до и после «Переиграть день», ладдер-четвёртый другой): Crue, Pez1x, Hanckee сидели в финале трижды. */
+  const ppl=new Set((you.squad||[]).map(c=>hKey(c)));
   const take=[];
-  const add=t=>{ const k=ccSeatKey(t); if(seen.has(k)) return; seen.add(k); take.push(t); };
+  const add=t=>{ const k=ccSeatKey(t); if(seen.has(k)) return;
+    const ks=(t.squad||[]).map(c=>hKey(c)); if(ks.some(x=>ppl.has(x))) return;
+    seen.add(k); ks.forEach(x=>ppl.add(x)); take.push(t); };
   ((s && s.through) || []).forEach(r=>{ if(r!=='you') add(ccMajorTeamFrom(r)); });
   const qual=take.length;
   (rows||[]).filter(r=>r!=='you').map(ccMajorTeamFrom)
