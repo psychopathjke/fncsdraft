@@ -48,10 +48,11 @@ const BOOT = `
     if(careerNext().type!=='victory') fail(DAY+' is not a cup day: '+careerNext().type);
 
     // ---- числа ------------------------------------------------------------------
-    if(ccXregMs('EU','NAC')!==90 || ccXregMs('NAC','EU')!==90) fail('EU-NAC ping is not symmetric 90');
-    if(ccAwayPen(90)!==18 || ccAwayPen(95)!==19) fail('penalty: NAC '+ccAwayPen(90)+', ME '+ccAwayPen(95));
+    // Пинг — замер cloudping (AWS): EU–NAC 92, EU–ME 85, EU–OCE 251.
+    if(ccXregMs('EU','NAC')!==92 || ccXregMs('NAC','EU')!==92 || ccXregMs('EU','ME')!==85 || ccXregMs('EU','OCE')!==251) fail('ping matrix is not the measured one');
+    if(ccAwayPen(92)!==18 || ccAwayPen(85)!==16) fail('penalty: NAC '+ccAwayPen(92)+', ME '+ccAwayPen(85));
     if(ccAwayPen(400)!==CC_AWAY_PEN_MAX || ccAwayPen(10)!==0) fail('penalty is not clamped');
-    out.steps.push('ping EU-NAC 90 ms, penalty NAC -18, ME -19, cap -'+CC_AWAY_PEN_MAX);
+    out.steps.push('ping EU-NAC 92 ms, EU-ME 85 (cloudping), penalty NAC -18, ME -16, cap -'+CC_AWAY_PEN_MAX);
 
     // ---- region lock: FNCS, Trial, дивизионные капы на выезд не идут ------------------------
     if(ccAwayFits({id:'S39_FNCSDivisionalCupTrial', placement:true, single:true})) fail('FNCS Trial is open away');
@@ -72,7 +73,7 @@ const BOOT = `
     if(afterTx.indexOf(regionName('NAC'))<0) fail('no hint that NAC comes after the home cup: '+afterTx);
     const oce=btns[0];
     const oceRow=oce.closest('.cc-aw-r');
-    if(!oceRow || !/290/.test(oceRow.textContent) || !/-35/.test(oceRow.textContent) || oce.textContent!==L().awGo) fail('OCE row does not show ping, penalty and Play: '+(oceRow && oceRow.textContent));
+    if(!oceRow || !/251/.test(oceRow.textContent) || !/-35/.test(oceRow.textContent) || oce.textContent!==L().awGo) fail('OCE row does not show ping, penalty and Play: '+(oceRow && oceRow.textContent));
     if(/\u2014/.test(row.textContent)) fail('long dash on the row');
     out.steps.push('hub before home: '+order0.join(' ')+' \u00b7 '+afterTx);
     const btns2=btns;
@@ -108,9 +109,9 @@ const BOOT = `
     careerYouTeam=cyt; careerSoloField=csf; simulateGamesLive=sgl;
     if(!card) fail('no result card after the away cup');
     if(fieldReg!=='NAC') fail('the field was built for '+fieldReg);
-    if(ping!==90) fail('ping during the night was '+ping);
+    if(ping!==92) fail('ping during the night was '+ping);
     if(!(basePow-youPow===18)) fail('power penalty: '+basePow+' -> '+youPow);
-    out.steps.push('night: field NAC, ping 90, power '+basePow+' -> '+youPow);
+    out.steps.push('night: field NAC, ping 92, power '+basePow+' -> '+youPow);
     const cr=CAREER.career;
     if(careerToday()!==ccAddDays(DAY, 1)) fail('the night NAC moved the day: '+careerToday());
     if(Math.round(en0-careerEnergy())!==CC_AWAY_ENERGY) fail('energy spent '+(en0-careerEnergy()));
