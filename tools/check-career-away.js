@@ -55,9 +55,9 @@ const BOOT = `
 
     // ---- region lock: FNCS, Trial, дивизионные капы на выезд не идут ------------------------
     if(ccAwayFits({id:'S39_FNCSDivisionalCupTrial', placement:true, single:true})) fail('FNCS Trial is open away');
-    if(ccAwayFits({id:'S37_DuosDivisionalCup_Division1'})) fail('a divisional cup is open away');
+    if(!ccAwayFits({id:'S37_DuosDivisionalCup_Division1'})) fail('a divisional cup is closed away');
     if(!ccAwayFits({id:'S40_SoloVictoryCup'}) || !ccAwayFits({id:'S43_TriosCashCup'})) fail('ordinary cups are closed away');
-    out.steps.push('region lock: Trial and divisional cups stay home, Victory/Cash cups travel');
+    out.steps.push('region lock: FNCS and Trial stay home, divisional and Victory/Cash cups travel');
 
     // ---- кнопки на хабе -----------------------------------------------------------
     careerRenderHub('centre');
@@ -193,6 +193,40 @@ const BOOT = `
     if(careerNext().type!=='eval') fail('home evaluation of the day is gone from the calendar');
     if(!ccAwayHomeBusy(EV_DAY)) fail('home evaluation 17:00 still open after NAC 23:00');
     out.steps.push('evaluation: NAC only (23:00 UTC), power '+eBase+' -> '+ePow+', day stays, home 17:00 now over');
+
+    // ---- кап дивизиона: тоже на выезд, по часам, без перехода между дивизионами ----------------
+    const seedDiv=(day)=>{ localStorage.setItem('fncsdraft_career', JSON.stringify({
+      v:1, player:{nick:'AwayDiv', age:17, source:'rookie', country:'de', countryPing:7,
+        closeRangeEdge:6, region:'EU', ovr:82, role:'roleIGL', attrs:ccRookieAttrs(82, 'roleIGL'), ageEdge:4},
+      career:{season:1, day, division:2, earnings:0, balance:0, reach:0, energy:100, tokens:[], log:[], news:[], life:{rp:500}},
+      partner:null})); careerEntry();
+      const sd=careerDms().find(x=>x.state==='offer' && !x.who.org && !x.who.brand); if(!careerPartnerCard() && sd) careerDmAccept(sd.id); };
+    const divDays=Object.keys(CC_AWAY_SCHED).filter(k=>k.indexOf('_FNCSDivisionalCup_Division2_Event')>0).map(k=>k.split('|')[0]);
+    let DD=null;
+    for(const d of divDays){ seedDiv(d); if(careerNext().type==='cup' && careerNext().day===d){ DD=d; break; } }
+    if(!DD) fail('no Division 2 cup day with an Epic schedule in the career calendar');
+    if(ccAwayKind('NAC')!=='cup') fail('NAC div cup not offered on '+DD+': '+ccAwayKind('NAC'));
+    if(ccAwayWhy('NAC')) fail('NAC div cup closed: '+ccAwayWhy('NAC'));
+    const divSlot=ccAwaySlot('NAC'), homeSlot=ccAwaySlot('EU');
+    if(!(divSlot instanceof Date) || !(homeSlot instanceof Date) || divSlot<=homeSlot) fail('div cup slots: EU '+homeSlot+' NAC '+divSlot);
+    // Свой вечер сыгран: часы и перенос, как в конце runCareerCup.
+    ccAwayHomeDone(DD, 'cup'); careerAdvanceTo(ccAddDays(DD, 1)); careerSave();
+    careerRenderHub('centre');
+    const lateDiv=document.querySelector('#screen-career-hub .cc-away');
+    const lateDivRegs=lateDiv ? [...lateDiv.querySelectorAll('button')].map(b=>((b.getAttribute('onclick')||'').match(/'([A-Z]+)'/)||[])[1]) : [];
+    if(lateDivRegs.indexOf('NAC')<0) fail('night row after the home div cup has no NAC: '+lateDivRegs.join());
+    let dBase=null, dPow=null;
+    const cyt3=careerYouTeam; careerYouTeam=function(){ const t=cyt3.apply(this, arguments); dBase=t.pow; return t; };
+    const sgl3=simulateGamesLive; simulateGamesLive=function(field){ if(dPow==null){ const y=field.find(t=>t.isYou); dPow=y && y.pow; } return sgl3.apply(this, arguments); };
+    await play('NAC', DD);
+    careerYouTeam=cyt3; simulateGamesLive=sgl3;
+    if(CAREER.career.division!==2) fail('away div cup moved the division: '+CAREER.career.division);
+    if(careerToday()!==ccAddDays(DD, 1)) fail('away div cup moved the day: '+careerToday());
+    if(!(dBase-dPow===18)) fail('away div cup penalty: '+dBase+' -> '+dPow);
+    const ld=(CAREER.career.log||[]).slice(-1)[0];
+    if(!ld || ld.away!=='NAC' || ld.day!==DD || ld.div!==2) fail('away div cup log: '+JSON.stringify(ld));
+    if(CAREER.career.wf && CAREER.career.wf.monday===careerMonday(DD)) fail('away div cup gave a Weekly Final seat');
+    out.steps.push('div cup '+DD+': NAC at night after the home cup, power '+dBase+' -> '+dPow+', division stays 2, day stays');
 
     // ---- пять языков ---------------------------------------------------------------------
     ['ru','en','fr','it','pt'].forEach(l=>{ LANG=l; CC_L_CACHE={}; const D=L();
