@@ -6151,6 +6151,13 @@
   .cc-awayb:disabled{opacity:.45;cursor:default;}
   .cc-away-after{flex:1 1 100%;font-size:11px;opacity:.75;}
   .cc-away-card{margin:10px 0 2px;}
+  .cc-away-late{background:rgba(255,221,0,.08);border:1px solid rgba(255,221,0,.6);border-radius:10px;padding:10px 12px;gap:8px;margin:8px 0;}
+  .cc-away-late-h{flex:1 1 100%;display:flex;align-items:center;gap:8px;font-family:var(--font-display);font-weight:700;font-size:16px;letter-spacing:.04em;text-transform:uppercase;color:#ffdd00;}
+  .cc-away-late-h i{width:9px;height:9px;border-radius:50%;background:#ff3b3b;box-shadow:0 0 0 0 rgba(255,59,59,.6);animation:ccAwayLive 1.6s ease-out infinite;}
+  @keyframes ccAwayLive{0%{box-shadow:0 0 0 0 rgba(255,59,59,.6);}70%{box-shadow:0 0 0 7px rgba(255,59,59,0);}100%{box-shadow:0 0 0 0 rgba(255,59,59,0);}}
+  @media(prefers-reduced-motion:reduce){ .cc-away-late-h i{animation:none;} }
+  .cc-away-late .cc-awayb{font-size:14px;font-weight:800;padding:10px 14px;border:1px solid rgba(255,221,0,.7);background:rgba(255,221,0,.14);}
+  .cc-away-late .cc-awayb:not(:disabled):first-of-type{background:#ffdd00;border-color:#ffdd00;color:#0b0f12;}
   .cc-valt:focus-visible{outline:2px solid #00ffd0;outline-offset:2px;}
   .cc-duo-regsel{flex:0 0 auto;height:38px;padding:0 10px;border-radius:10px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.06);color:#fff;font:inherit;font-size:13px;font-weight:800;cursor:pointer;}
   .cc-duo-regsel option{color:#0b0f12;}
@@ -161096,7 +161103,8 @@ function ccAwayRowHTML(day, late){
   // Время старта по часам устройства.
   const hm=d=>{ try{ return d.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit', hour12:false}); }catch(e){ return ''; } };
   // Свои классы: кнопки выезда не капы дня (.cc-valt), выбор капа их не считает.
-  return '<div class="cc-away"><em>'+esc(late ? T.awLate(CC_AWAY_ENERGY) : T.awH(CC_AWAY_ENERGY))+'</em>'+regs.map(r=>{
+  // Ночная строка — плашкой (его «больше должно смотреться, что NAC ещё»): заголовок крупно, кнопки крупные, первая жёлтая.
+  return '<div class="cc-away'+(late ? ' cc-away-late' : '')+'">'+(late ? '<b class="cc-away-late-h"><i></i>'+esc(T.awLate(CC_AWAY_ENERGY))+'</b>' : '<em>'+esc(T.awH(CC_AWAY_ENERGY))+'</em>')+regs.map(r=>{
     const why=ccAwayWhy(r, day), ms=ccXregMs(home, r), at=slot[r] ? ' '+hm(slot[r]) : '';
     return '<button class="cc-awayb" type="button"'+(why ? ' disabled' : '')+' onclick="ccAwayPlay(\''+r+'\',\''+day+'\')">'+
       esc(T.awBtn(regionName(r)+at, ms, ccAwayPen(ms))+(why ? ' · '+T['aw_'+why]+(why==='tired' ? ' '+Math.floor(careerEnergy())+'/'+CC_AWAY_ENERGY : '') : ''))+'</button>';
