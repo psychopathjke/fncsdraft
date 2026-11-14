@@ -11744,6 +11744,7 @@ ccEvalFail:n=>'Мимо топ-'+n+' — вечер закончен',
 ccEvalCash:(w,c)=>w+(w===1?' победа':' победы')+' — $'+c,
 ccEvalTop5Cash:c=>'Топ-5 — $'+c, ccVicPlaceCash:(p,c)=>'Место '+p+' — $'+c,
 ccEvalNoWin:'Ни одной победы — денег нет',
+ccNewsEvalPlace:(p,c)=>'Перфоманс: место '+p+' во втором раунде, $'+c,
 ccNewsEvalCash:(w,c)=>'Перфоманс: '+w+(w===1?' победа':' победы')+', $'+c,
 ccNewsEvalNoWin:'Перфоманс: второй раунд без побед',
 ccNewsEvalOut:p=>'Перфоманс: '+ccTop(p)+' в первом раунде, дальше не прошёл',
@@ -13874,6 +13875,7 @@ ccEvalFail:n=>'Missed the top '+n+' — the night is over',
 ccEvalCash:(w,c)=>w+(w===1?' win':' wins')+' — $'+c,
 ccEvalTop5Cash:c=>'Top 5 — $'+c, ccVicPlaceCash:(p,c)=>'Place '+p+' — $'+c,
 ccEvalNoWin:'No wins, no money',
+ccNewsEvalPlace:(p,c)=>'Evaluation: place '+p+' in Round 2, $'+c,
 ccNewsEvalCash:(w,c)=>'Evaluation: '+w+(w===1?' win':' wins')+', $'+c,
 ccNewsEvalNoWin:'Evaluation: Round 2 without a win',
 ccNewsEvalOut:p=>'Evaluation: '+ccTop(p)+' in Round 1, no further',
@@ -16544,6 +16546,7 @@ ccEvalPass:n=>'Top '+n+' — qualifié pour la Manche 2',
 ccEvalFail:n=>'Top '+n+' manqué — la soirée est finie',
 ccEvalCash:(w,c)=>w+(w===1?' victoire':' victoires')+' — '+c,
 ccEvalTop5Cash:c=>'Top 5 — $'+c, ccVicPlaceCash:(p,c)=>'Place '+p+' — $'+c,
+ccNewsEvalPlace:(p,c)=>'Évaluation : place '+p+' en Manche 2, '+c,
 ccNewsEvalCash:(w,c)=>'Évaluation : '+w+(w===1?' victoire':' victoires')+', '+c,
 ccNewsEvalOut:p=>'Évaluation : '+ccTop(p)+' en Manche 1, pas plus loin',
 ccDayOver:v=>'La journée est déjà passée : '+v+'. L’énergie reste jusqu’à demain — appuie sur Jour suivant',
@@ -18468,6 +18471,7 @@ ccEvalPass:n=>'Primi '+n+' — al Round 2',
 ccEvalFail:n=>'Fuori dai primi '+n+' — la serata finisce qui',
 ccEvalCash:(w,c)=>w+(w===1?' vittoria':' vittorie')+' — $'+c,
 ccEvalTop5Cash:c=>'Top 5 — $'+c, ccVicPlaceCash:(p,c)=>'Posto '+p+' — $'+c,
+ccNewsEvalPlace:(p,c)=>'Evaluation: posto '+p+' nel Round 2, $'+c,
 ccNewsEvalCash:(w,c)=>'Evaluation: '+w+(w===1?' vittoria':' vittorie')+', $'+c,
 ccNewsEvalOut:p=>'Evaluation: '+ccTop(p)+' nel Round 1, niente di pi\u00f9',
 ccDayOver:v=>'La giornata \u00e8 gi\u00e0 spesa: '+v+'. L\u2019energia resta per domani — premi Giorno successivo',
@@ -21022,6 +21026,7 @@ ccEvalPass:n=>'Top '+n+' — passou para a Rodada 2',
 ccEvalFail:n=>'Fora do top '+n+' — a noite acabou',
 ccEvalCash:(w,c)=>w+(w===1?' vit\u00f3ria':' vit\u00f3rias')+' — $'+c,
 ccEvalTop5Cash:c=>'Top 5 — $'+c, ccVicPlaceCash:(p,c)=>'Lugar '+p+' — $'+c,
+ccNewsEvalPlace:(p,c)=>'Evaluation: lugar '+p+' na Rodada 2, $'+c,
 ccNewsEvalCash:(w,c)=>'Evaluation: '+w+(w===1?' vit\u00f3ria':' vit\u00f3rias')+', $'+c,
 ccNewsEvalOut:p=>'Evaluation: '+ccTop(p)+' na Rodada 1, e parou por a\u00ed',
 ccDayOver:v=>'O dia j\u00e1 foi gasto: '+v+'. A energia fica para amanh\u00e3 — aperte Pr\u00f3ximo dia',
@@ -142960,7 +142965,7 @@ const CC_POST_BY={
   // these through — but what they say is where the player finished, and a
   // scene account does not post "I went out in Round 1". Same rule that moved
   // ccNewsResult across: a placing is the player's own line.
-  ccNewsEvalCash:'you', ccNewsEvalNoWin:'you', ccNewsEvalOut:'you',
+  ccNewsEvalCash:'you', ccNewsEvalPlace:'you', ccNewsEvalNoWin:'you', ccNewsEvalOut:'you',
   // Поздравление сверху приносит лента сцены; подарок — твоя строка.
   // Эти строки говорят люди сцены — автором стоит тот, чьё имя первым
   // аргументом. См. 'arg0' в ccPostAuthor.
@@ -161097,13 +161102,16 @@ async function runCareerEval(){
     await revealStandings(shell2, ranked2, you, 0, null, null,
       top5 ? (p=>p<=5 ? top5 : 0) : (p=>((ranked2[p-1]||{}).wins||0)*ccEvalWinCash()), null, true);
   }
+  const evalByPlace=!!ccEvalTop5Cash();   // до careerAdvanceTo: правило топ-5 зависит от дня
   removeSkipButton();
   ccBoardAfter(evalFinal, you, L().calPerfEval);
 
   if(cash){
     const mine=ccShareOf(cash, you);
     ccPayIn(mine);
-    careerNews('good', 'ccNewsEvalCash', [wins, mine]);
+    // Топ-5 платит за место: без победы строка «0 побед, $» читалась как выигрыш.
+    if(evalByPlace) careerNews('good', 'ccNewsEvalPlace', [place2, mine]);
+    else careerNews('good', 'ccNewsEvalCash', [wins, mine]);
   } else {
     if(through) careerNews('flat', 'ccNewsEvalNoWin');
     else careerNews('flat', 'ccNewsEvalOut', [place1]);
@@ -161129,7 +161137,7 @@ async function runCareerEval(){
   CARD_MODE=prevMode; squadSize=prevSize; drafted=prevDrafted; CC_KILL_CAP=0;
   careerRenderHub('centre');
   careerTwoRoundResultCard({title:L().calPerfEval, place:place2||place1, through:through,
-    wins:wins, cash:cash, cut:evalCut});
+    wins:wins, cash:cash, cut:evalCut, byPlace:evalByPlace});
 }
 
 /* Playing one.
