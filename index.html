@@ -131247,7 +131247,9 @@ function ccArenaPlayWhy(){
   const act=ccActById('trSur');
   if(CAREER.career.seasonOver) return L().ccSeasonOver;
   if(typeof ccLifeHurt==='function' && ccLifeHurt()) return L().lfWhyHurt;
-  if(!ccCentreDayOpen() || careerDayClosed()) return L().rkDayBusy;
+  /* Ранкед — и в турнирный день (его «ранкед не играется», 15.11: капов в календаре стало почти каждый день): днём сессия,
+     вечером турнир, как в игре. Закрывает только закрытый день (ccDayShuts), не сам вечер. */
+  if(careerDayClosed()) return L().rkDayBusy;
   if(act && careerEnergy()<act.energy) return L().ccNeedEnergy(act.energy-careerEnergy());
   return '';
 }
