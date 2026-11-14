@@ -23,17 +23,24 @@ for (const [k, e] of Object.entries(ev)) {
   if (!/_EU$/.test(k) || !/Console|PlayStation|Playstation|Xbox|Mobile|Touch/i.test(k + ' ' + (ev[k].t1 || ''))) continue;
   const id = k.replace(/^epicgames_/, '').replace(/_EU$/, '');
   const name = String(e.t1 || id).trim();
+  /* MOBILE SERIES — серия: раунды (открытые, без денег) → хиты (деньги, комната 100) → кап (финал, деньги). Раунды
+     берутся и без выплаты (series:'round'), хиты и кап — series:'heats' / 'cup', invite:100 (одна комната сильнейших).
+     Проход между этапами — в карьере (ccMobSeriesOk). Last Chance, групповой этап и полуфинал S42 — не берём. */
+  const series = /MobileSeries/.test(id) ? (/Heat/.test(id) ? 'heats' : /CupQual|CupFebQual|CupJanQual|CupMarQual/.test(id) ? 'cup'
+    : /LCQ|Group|SemiFinal/.test(id) ? null : 'round') : null;
+  if (/MobileSeries/.test(id) && !series) continue;
   const days = {};
   for (const w of e.w || []) {
     const stem = w.w.replace(RX, ''), pay = payOf[stem];
-    if (!pay || !pay.EU) continue;   // вечер без денег (квалы, ZB без призов) не берём
+    if ((!pay || !pay.EU) && series !== 'round') continue;   // вечер без денег (квалы, ZB без призов) не берём; раунды серии — да
     const d = w.b.slice(0, 10);
-    if (!days[d]) days[d] = {pay, team: w.team};
+    if (!days[d]) days[d] = {pay: pay || null, team: w.team};
   }
   Object.keys(days).sort().forEach(d => {
     n[id] = (n[id] || 0) + 1;
-    const payT = {}; REGS.forEach(r => { if (days[d].pay[r]) payT[r] = days[d].pay[r]; });
+    const payT = {}; REGS.forEach(r => { if (days[d].pay && days[d].pay[r]) payT[r] = days[d].pay[r]; });
     const row = {day: d, id, mode: MODE[days[d].team] || 'solo', n: n[id], name, payT};
+    if (series) { row.series = series; if (series !== 'round') row.invite = 100; }
     if (/ZB|ZeroBuild|Zero Build/i.test(id + ' ' + name)) row.zb = true;
     // Платформа — по id и имени (у части PlayStation-капов id без слова PlayStation: PSTypicalGamer, PSNickEh30).
     const t = id + ' ' + name;

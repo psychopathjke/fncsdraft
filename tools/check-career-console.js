@@ -92,7 +92,7 @@ const BOOT = `
     if(pcIn) fail('PC scene in a mobile field: '+pcIn);
     out.steps.push('mobile: '+mob26.length+' cups 2026, on the calendar without a phone '+mobBefore+', with '+mobList.length+'; field 100 = '+realN+' real mobile players (e.g. '+mf[0].squad[0].handle+'); mobile rating starts at '+CC_MOB_START+' (PC '+pcO+'), power independent of PC');
     // Полный мобильный вечер.
-    const mc=mobList.find(v=>v.mode==='solo' && v.day>=careerToday());
+    const mc=mobList.find(v=>v.mode==='solo' && v.day>=careerToday() && (!v.series || v.series==='round'));
     seed(mc.day, ['phone']);
     ccVictoryPick(mc.id);
     if(careerVictoryOn(mc.day).id!==mc.id) fail('mobile cup not picked: '+careerVictoryOn(mc.day).id);
@@ -134,13 +134,55 @@ const BOOT = `
       out.steps.push('mobile field 3000: '+realBig+' real mobile players (all regions), then generated'); }
     seed(mc.day);
     ccVictoryPick(mc.id);
-    if(ccAwayWhy('NAC')!=='later' && ccAwayWhy('NAC')!=='dev') fail('NAC mobile away without a device: '+ccAwayWhy('NAC'));
+    // Без устройства мобильного капа на выезде нет: кнопки нет совсем, ждёт свой кап или «нужно устройство».
+    if(!['later','dev','off'].includes(ccAwayWhy('NAC')) || (ccAwayEv('NAC') && ccConsoleNeed(ccAwayEv('NAC'))==='mobile' && !ccAwayWhy('NAC'))) fail('NAC mobile away without a device: '+ccAwayWhy('NAC'));
     const devWhy=CC_REGIONS.filter(r=>r!=='EU').map(r=>ccAwayWhy(r)).filter(w=>w==='dev').length;
     careerBuy('phonebase'); ccVictoryPick(mc.id);
     const evA=ccAwayEv('OCE');
     if(!evA || ccConsoleNeed(evA)!=='mobile') fail('away cup is not the picked mobile cup: '+(evA && evA.id));
     const slA=ccAwaySlot('NAC'); if(!(slA instanceof Date)) fail('no Epic schedule for the mobile cup in NAC');
     out.steps.push('mobile away: without a device '+devWhy+' regions say «'+L().aw_dev+'»; with a phone '+mc.id+' NAC at '+slA.toISOString().slice(11,16)+' UTC');
+    // ---- Mobile Series: раунд → хиты → кап -----------------------------------------------------------
+    { seed('2026-06-13', ['phonebase']);
+      // Раунд, после которого ближайший хит реально стоит в календаре (хит в день ЛАНа или FNCS уступает день).
+      let round=null, heat=null, cup=null;
+      for(const r of ccVictoryList().filter(v=>v.series==='round' && v.day>='2026-06-01')){
+        delete CAREER.career.mobSer; CC_VICTORY_LIST=null; CAREER.career.day=r.day;
+        const h0=CC_CONSOLE_2026.find(v=>v.series==='heats' && v.day>r.day && v.day<=ccAddDays(r.day, 21));
+        if(h0 && ccConsoleOk(h0)) fail('heats open without qualifying');
+        if(ccMobSeriesAfter(r, 50, 1000)!=='heats') continue;
+        const h=ccVictoryList().find(v=>v.series==='heats' && v.day>r.day && v.day<=CAREER.career.mobSer.until);
+        if(h){ round=r; heat=h; cup=CC_CONSOLE_2026.find(v=>v.series==='cup' && v.day>h.day); break; }
+      }
+      if(!round || !heat || !cup){ CAREER.career.mobSer={next:'heats', until:'2026-12-31'}; CC_VICTORY_LIST=null;
+        const L1=ccVictoryList(), yd=careerYearDays();
+        fail('no Mobile Series round with a listed heat after it · rounds '+L1.filter(v=>v.series==='round').map(v=>v.day.slice(5)).join(' ')+' · heats in CC '+CC_CONSOLE_2026.filter(v=>v.series==='heats').map(v=>v.day.slice(5)).join(' ')+' · heats listed '+L1.filter(v=>v.series==='heats').map(v=>v.day.slice(5)).join(' ')+' · 06-20 kinds '+(yd.get('2026-06-20')||[]).map(e=>e.kind+':'+(e.id||'')).join(',')+' · 07-25 kinds '+(yd.get('2026-07-25')||[]).map(e=>e.kind+':'+(e.id||'')).join(',')); }
+      if(!ccConsoleOk(round)) fail('a round is closed with a phone');
+      if(ccConsoleOk(cup)) fail('cup open after a round only');
+      { const keep=CAREER.career.mobSer; delete CAREER.career.mobSer; if(ccConsoleWhy(heat)!==L().ccMobSerNeedRound) fail('heat reason: '+ccConsoleWhy(heat)); CAREER.career.mobSer=keep; }
+      // Полный вечер хита: комната 100 сильнейших мобильных игроков.
+      CAREER.career.day=heat.day; CAREER.career.energy=100; careerSave(); careerEntry();
+      ccVictoryPick(heat.id);
+      if(careerVictoryOn(heat.day).id!==heat.id) fail('heat not picked: '+careerVictoryOn(heat.day).id);
+      let roomN=0, roomMin=99;
+      const sgl=simulateGamesLive; simulateGamesLive=function(field){ if(!roomN){ roomN=field.length; field.forEach(t=>{ if(!t.isYou){ const c=t.squad[0]; roomMin=Math.min(roomMin, c.rating||99); } }); } return sgl.apply(this, arguments); };
+      const iv=setInterval(()=>{ const am=document.getElementById('ccAskModal'); if(am && am.style.display==='flex'){ const n=document.getElementById('ccAskNo'); if(n) n.click(); }
+        const b=document.getElementById('majorSkipBtn'); if(b && !b.disabled) b.click(); const c0=document.querySelector('.cc-choice-btn'); if(c0) c0.click(); }, 20);
+      document.getElementById('majorStages').innerHTML='';
+      try{ careerSpotEnsure(); }catch(e){}
+      await careerPlay();
+      clearInterval(iv); simulateGamesLive=sgl;
+      if(roomN!==100) fail('heat room is not 100: '+roomN);
+      if(roomMin<=68) fail('heat room has generated players, not the strongest mobile ones: weakest '+roomMin);
+      const lh=(CAREER.career.log||[]).slice(-1)[0];
+      const ms=CAREER.career.mobSer;
+      if(lh && lh.place/100<=CC_MOBSER_HEAT_CUT ? !(ms && ms.next==='cup') : !!ms) fail('heat result did not move the series right: #'+(lh && lh.place)+' '+JSON.stringify(ms));
+      // Кап после хита и закрытие серии.
+      CAREER.career.mobSer={next:'cup', until:'2026-07-04'};
+      if(!ccConsoleOk(cup)) fail('cup closed after clearing a heat');
+      ccMobSeriesAfter(cup, 3, 100);
+      if(CAREER.career.mobSer) fail('series not closed after the cup');
+      out.steps.push('Mobile Series: round open, heats/cup closed («'+L().ccMobSerNeedRound+'»); round top 5% -> heats; heat room 100, weakest '+roomMin+', #'+(lh && lh.place)+' -> '+(ms ? ms.next : 'out')+'; cup closes the series'); }
     // ---- мобильные устройства: Android, iPhone, iPad — любое открывает, iPhone/iPad дают силу на мобиле ----------
     seed('2026-06-27');
     CAREER.career.balance=5000;
