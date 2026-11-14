@@ -40,34 +40,33 @@ const BOOT = `
       career:{year:+day.slice(0,4), season:1, day, division:4, earnings:0, balance:5000, reach:0, tokens:[], log:[], news:[], life:{rp:500}},
       gear:{own:own||[]}, partner:null})); careerEntry(); };
     seed('2024-01-14');
-    const alts=ccVictoryAlts('2024-01-14'), ps=alts.find(v=>/PlaystationCup/i.test(v.id));
-    if(!ps) fail('no PlayStation Cup among the cups of 14.01.2024: '+alts.map(v=>v.id).join(','));
-    if(ccConsoleOk(ps)) fail('PlayStation Cup open without a console');
-    ccVictoryPick(ps.id);
-    // Нет ПК-капа в этот день — кап дня и есть PlayStation Cup: тогда закрыт сам вечер.
-    if(careerVictoryOn('2024-01-14').id===ps.id && careerCanPlayKindOn('2024-01-14', 'victory')) fail('PlayStation Cup night playable without a console');
-    out.steps.push('cups that day: '+alts.map(v=>v.id).join(', '));
-    careerRenderHub('centre');
-    const btn=[...document.querySelectorAll('#screen-career-hub .cc-valt')].find(b=>(b.getAttribute('onclick')||'').indexOf(ps.id)>=0);
-    if(btn && !btn.disabled) fail('PlayStation Cup button is not greyed');
-    if(careerVictoryOn('2024-01-14').id===ps.id){ const tx=(document.getElementById('screen-career-hub')||{}).textContent||'';
-      if(tx.indexOf(L().ccNeedPs)<0) fail('the day panel does not say a PlayStation is needed'); }
-    out.steps.push('without a console: PlayStation Cup greyed'+(btn ? ' ('+btn.textContent+')' : ' (not on the hub)'));
+    // Без консоли день, где только PlayStation Cup, в календарь не идёт (был бы закрытым вечером).
+    if(ccVictoryAlts('2024-01-14').some(v=>/PlaystationCup/i.test(v.id))) fail('PlayStation-only day listed without a console');
+    out.steps.push('without a console: 14.01.2024 (PlayStation Cup only) is not on the calendar');
     // ---- купить консоль в магазине --------------------------------------------------------
     careerBuy('ps5');
     if(!careerOwns('ps5')) fail('PlayStation 5 not bought');
-    if(!ccConsoleOk(ps)) fail('PlayStation Cup still closed with a PlayStation');
-    ccVictoryPick(ps.id);
-    if(careerVictoryOn('2024-01-14').id!==ps.id) fail('PlayStation Cup not picked after buying');
+    const ps=ccVictoryAlts('2024-01-14').find(v=>/PlaystationCup/i.test(v.id));
+    if(!ps) fail('PlayStation Cup did not appear after buying a PlayStation');
+    if(careerVictoryOn('2024-01-14').id!==ps.id) fail('PlayStation Cup is not the cup of the day: '+careerVictoryOn('2024-01-14').id);
     if(!careerCanPlayKindOn('2024-01-14', 'victory')) fail('the PlayStation Cup night cannot be played with a PlayStation');
-    out.steps.push('bought PS5 for $'+CC_SHOP.find(x=>x.id==='ps5').cost+': PlayStation Cup picked and playable');
-    // ---- Xbox Cup: одна в день, без Xbox вечер закрыт --------------------------------------------
-    seed('2019-07-21', ['ps5']);
-    const xb=careerVictoryOn('2019-07-21');
-    if(xb && /Xbox/i.test(xb.id)){
-      if(careerCanPlayKindOn('2019-07-21', 'victory')) fail('Xbox Cup playable with only a PlayStation');
-      out.steps.push('Xbox Cup alone that day: closed with a PlayStation only');
-    } else out.steps.push('19.07.2019: day cup is '+(xb && xb.id));
+    if(!(careerYearDays().get('2024-01-14')||[]).some(e=>e.kind==='victory')) fail('the calendar did not pick the PlayStation Cup day up');
+    out.steps.push('bought PS5 for $'+CC_SHOP.find(x=>x.id==='ps5').cost+': PlayStation Cup on the calendar and playable');
+    // ---- 2026: консольные капы Epic ----------------------------------------------------------------
+    seed('2026-01-10');
+    const c26=CC_CONSOLE_2026.length, ids26=[...new Set(CC_CONSOLE_2026.map(v=>v.id))];
+    if(c26<30 || !ids26.some(x=>/PlayStationCup/.test(x)) || !ids26.some(x=>/ConsoleVCC/.test(x))) fail('2026 console cups missing: '+c26);
+    const before=ccVictoryList().filter(v=>ccConsoleNeed(v)).length;
+    careerBuy('ps5');
+    const inList=ccVictoryList().filter(v=>ccConsoleNeed(v));
+    if(inList.length<=before) fail('buying a PlayStation added no console cups: '+before+' -> '+inList.length);
+    const ps26=inList.find(v=>/PlayStationCup/.test(v.id));
+    if(!ps26) fail('no 2026 PlayStation Cup on the calendar with a PlayStation');
+    if(!(ps26.payT && ps26.payT.EU && ps26.payT.EU.length)) fail('PlayStation Cup 2026 has no payouts');
+    const day26=[before, inList.length, ps26.day+' '+ps26.id];
+    const vcc=inList.find(v=>/ConsoleVictoryCup|ConsoleVCC/.test(v.id));
+    if(!vcc || ccVicPerWin(vcc)!==100 || !vcc.zb) fail('Console Victory Cup 2026: '+JSON.stringify(vcc && {id:vcc.id, zb:vcc.zb})+' · listed '+inList.map(v=>v.day+' '+v.id).join(', '));
+    out.steps.push('2026: '+c26+' console cups ('+ids26.length+' kinds); on the calendar without a console '+day26[0]+', with a PlayStation '+day26[1]+'; e.g. '+day26[2]+'; '+vcc.day+' '+vcc.id+' $100 a win, ZB · days '+inList.map(v=>v.day.slice(5)).join(' '));
     // ---- магазин и языки ---------------------------------------------------------------------
     CH_TAB='shop'; try{ careerTab('shop'); }catch(e){}
     ['ru','en','fr','it','pt'].forEach(l=>{ LANG=l; CC_L_CACHE={}; const D=L();
