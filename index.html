@@ -160950,7 +160950,13 @@ function ccXregMs(a, b){ return a===b ? 0 : (CC_XREG_MS[a+'|'+b] || CC_XREG_MS[b
 const CC_AWAY_PEN_MAX=35;
 function ccAwayPen(ms){ return clamp(Math.round((ms-20)/4), 0, CC_AWAY_PEN_MAX); }
 function ccAwayEv(reg){ try{ return ccAsRegion(reg, ()=>careerVictoryOn(careerToday())); }catch(e){ return null; } }
-function ccAwayFits(ev){ return !!ev && !ev.own && !ev.lan && !ev.invite && !ev.fight && !ev.ewc24 && !ev.reshuffle && !ev.finalOf && !ev.ownQual; }
+/* Region lock по данным Epic (meta.RegionLockType в tracker-2025-eu.json, 143 события): у Мейджоров FNCS Season, у FNCS
+   Trial и Duos Trial Window, у всех 130 капов (Cash, Victory, Solo Cash, Performance, OG, Icon) блокировки нет. Поэтому
+   на выезд не идут FNCS, Trial (он же расставляет по дивизионам, placement) и дивизионные капы: дивизион у игрока свой
+   в своём регионе. */
+const CC_AWAY_LOCKED=/FNCS|Trial|Divisional/i;
+function ccAwayFits(ev){ return !!ev && !ev.own && !ev.lan && !ev.invite && !ev.fight && !ev.ewc24 && !ev.reshuffle && !ev.finalOf && !ev.ownQual
+  && !ev.placement && !CC_AWAY_LOCKED.test(String(ev.id||'')); }
 /* Старт капа дня в регионе по расписанию Epic: Date; null — в этот вечер у региона капа не было (кнопки нет);
    undefined — расписания на этот день нет (прошлые годы, годы после 2026): регион открыт без времени. */
 function ccAwaySlot(reg){

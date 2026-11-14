@@ -53,6 +53,12 @@ const BOOT = `
     if(ccAwayPen(400)!==CC_AWAY_PEN_MAX || ccAwayPen(10)!==0) fail('penalty is not clamped');
     out.steps.push('ping EU-NAC 90 ms, penalty NAC -18, ME -19, cap -'+CC_AWAY_PEN_MAX);
 
+    // ---- region lock: FNCS, Trial, дивизионные капы на выезд не идут ------------------------
+    if(ccAwayFits({id:'S39_FNCSDivisionalCupTrial', placement:true, single:true})) fail('FNCS Trial is open away');
+    if(ccAwayFits({id:'S37_DuosDivisionalCup_Division1'})) fail('a divisional cup is open away');
+    if(!ccAwayFits({id:'S40_SoloVictoryCup'}) || !ccAwayFits({id:'S43_TriosCashCup'})) fail('ordinary cups are closed away');
+    out.steps.push('region lock: Trial and divisional cups stay home, Victory/Cash cups travel');
+
     // ---- кнопки на хабе -----------------------------------------------------------
     careerRenderHub('centre');
     const row=document.querySelector('#screen-career-hub .cc-away');
