@@ -118,10 +118,22 @@ const BOOT = `
     CH_TAB='log'; careerRenderHub('log');
     if(((document.getElementById('chBody')||{}).textContent||'').indexOf(L().ccMobShort)<0) fail('no mobile rating on the profile');
     out.steps.push('mobile night '+mc.day+' '+mc.id+': mobile scene, power '+mPow+' from mobile rating (PC team '+mBase+'), PC rating stays '+CAREER.player.ovr+', scene ratings moved '+devN+', #'+(lastM && lastM.place)+' -> mobile rating '+CAREER.career.mobOvr+'; board: '+mobTile.querySelector('.ct-note').textContent);
+    // ---- мобильные устройства: Android, iPhone, iPad — любое открывает, iPhone/iPad дают силу на мобиле ----------
+    seed('2026-06-27');
+    CAREER.career.balance=5000;
+    CH_TAB='shop'; careerRenderHub('shop');
+    const shopTx=((document.getElementById('chBody')||{}).textContent||'');
+    ['ccShopphonebase','ccShopphone','ccShopipad','ccShopConsoles'].forEach(k=>{ if(shopTx.indexOf(L()[k])<0) fail('shop has no '+k+': '+L()[k]); });
+    if(ccMobileOwn()) fail('mobile device owned before buying');
+    const p0=ccMobileSelfPow();
+    careerBuy('ipad');
+    if(!ccMobileOwn() || !ccConsoleOk({id:'S41_MobileVictoryCup_BR'})) fail('iPad does not open mobile cups');
+    if(ccMobileSelfPow()!==p0+2) fail('iPad should add 2 power on mobile: '+p0+' -> '+ccMobileSelfPow());
+    out.steps.push('shop: Android / iPhone 15 Pro Max / iPad Pro in «'+L().ccShopConsoles+'»; iPad opens mobile cups, mobile power '+p0+' -> '+ccMobileSelfPow());
     // ---- магазин и языки ---------------------------------------------------------------------
     CH_TAB='shop'; try{ careerTab('shop'); }catch(e){}
     ['ru','en','fr','it','pt'].forEach(l=>{ LANG=l; CC_L_CACHE={}; const D=L();
-      ['ccShopps5','ccShopxbox','ccShopphone','ccShopConsoles','ccShopConsoleHint','ccShopConsoleFx','ccNeedPs','ccNeedXbox','ccNeedConsole','ccNeedPhone'].forEach(k=>{ if(!D[k] || /—/.test(D[k])) fail(l+': '+k); }); });
+      ['ccShopps5','ccShopxbox','ccShopphone','ccShopphonebase','ccShopipad','ccShopConsoles','ccShopConsoleHint','ccShopConsoleFx','ccNeedPs','ccNeedXbox','ccNeedConsole','ccNeedPhone'].forEach(k=>{ if(!D[k] || /—/.test(D[k])) fail(l+': '+k); }); });
     out.steps.push('five languages');
   } catch(e){ if(!out.fail) out.fail = String(e && e.message || e); }
   out.errs = window.__errs;
