@@ -122,10 +122,13 @@ const BOOT = `
       _loot:{weapons:[{name:'Striker Pump Shotgun', rarity:'rare', icon:'shotgun'}], heals:[], move:move||null}});
     let WANT=null; ccChoiceBox=async function(title, hint, options){ seen=options; return options.find(o=>o.id===WANT)||options.find(o=>o.def)||options[0]; };
     let r=mk({name:'Shockwave Grenade', rarity:'epic'}, 600); WANT='move';
+    // Ход сам стоит по ситуации (ccSitValue против «рано»); сгоревший предмет — сверху ещё CC_ROT_MOVE_POW.
+    const sitM=ccSitOf(r), gainM=Math.round(ccSitValue('rot','move',sitM)-ccSitValue('rot','early',sitM));
     await ccAskRot(r, null);
     if(r._rot!=='move') fail('move did not take');
     if(r._loot.move && !r._loot.move.floor) fail('the movement item did not burn');
-    if(r._pf!==90-CC_ROT_MOVE_POW || r._pc!==90-CC_ROT_MOVE_POW) fail('burning the item did not cost '+CC_ROT_MOVE_POW+' power: '+r._pf+'/'+r._pc);
+    const wantM=90+gainM-CC_ROT_MOVE_POW;
+    if(r._pf!==wantM || r._pc!==wantM) fail('burning the item did not cost '+CC_ROT_MOVE_POW+' power on top of the move ('+gainM+'): '+r._pf+'/'+r._pc+' want '+wantM);
     r=mk(null, 600); WANT='late'; await ccAskRot(r, null);
     if(r._mats!==600+CC_ROT_FARM.late) fail('late did not farm +'+CC_ROT_FARM.late+': '+r._mats);
     r=mk(null, 600); WANT='with'; await ccAskRot(r, null);

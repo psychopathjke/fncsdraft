@@ -95,7 +95,8 @@ const BOOT = `
     if (!card) { out.fail = 'no result card after the Pro-Am · title '+((document.getElementById('finalsLiveTitle')||{}).textContent||'').trim().slice(0,80)+' · run '+(typeof CAREER_RUN!=='undefined' && CAREER_RUN)+' · game '+(typeof CC_MP_GAME!=='undefined'?CC_MP_GAME:'-')+' · ask '+(function(){ const am=document.getElementById('ccAskModal'); return am && am.style.display==='flex' ? String(am.textContent||'').replace(/s+/g,' ').trim().slice(0,120) : '-'; })()+' · choice '+(document.querySelector('.cc-choice-map, .cc-choice') ? String(document.querySelector('.cc-choice-map, .cc-choice').textContent||'').replace(/s+/g,' ').trim().slice(0,120) : '-')+' · stages '+document.querySelectorAll('#majorStages .stage-card').length; throw new Error(out.fail); }
     out.steps.push('result: ' + card.querySelector('h4').textContent.replace(/\\s+/g, ' ').trim());
     out.steps.push('calls: ' + JSON.stringify(cnt) + ' · zb panel ' + out.seen.zb + ' · mats panel ' + out.seen.mats);
-    if (!cnt.loot) { out.fail = 'no loot stop was asked'; throw new Error(out.fail); }
+    // Отдельной остановки лута нет (три остановки: точка, ротация, концовка) — лут собирается на точке.
+    if (cnt.loot) { out.fail = 'the old loot stop is still asked: ' + cnt.loot; throw new Error(out.fail); }
     if (ZB) {
       if (!cnt.zb) { out.fail = 'CC_ZB was never on during the night'; throw new Error(out.fail); }
       if (cnt.farm || cnt.roomFarm || cnt.roomMats || cnt.spend || cnt.pen) { out.fail = 'mats logic ran in a Zero Build night'; throw new Error(out.fail); }

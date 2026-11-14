@@ -70,12 +70,15 @@ const BOOT = `
     if(roomMoves.indexOf('third')>=0) fail('the room can third-party by a power roll');
     out.steps.push('the room plays '+roomMoves.join(', ')+' — no third-party roll');
     // ---- через меню целиком ---------------------------------------------------
-    const realBox=ccChoiceBox; ccChoiceBox=async function(title, hint, options){ return options.find(o=>o.id==='third'); };
-    const r0=Math.random; Math.random=()=>0.05;
+    // Окно концовки предлагает «третьить» только при паре дерущихся рядом (ccThirdPair); сама стычка пары — check-career-tactic.
+    let offered=null;
+    const realBox=ccChoiceBox; ccChoiceBox=async function(title, hint, options){ offered=options.map(o=>o.id); return options.find(o=>o.def)||options[0]; };
     you=mk(); log.length=0; await ccAskLate(you, null);
-    Math.random=r0; ccChoiceBox=realBox;
-    if(log.join()!=='FOE<ME') fail('through the menu the kill did not land: '+log.join());
-    out.steps.push('through the menu: the neighbour goes down by the engine');
+    ccChoiceBox=realBox;
+    if(!offered) fail('the endgame window did not open');
+    if(!ccThirdPair(you) && offered.indexOf('third')>=0) fail('third-party is offered with nobody fighting nearby: '+offered.join());
+    if(log.length) fail('the default endgame move started a fight: '+log.join());
+    out.steps.push('through the window: no pair nearby, no third-party offered ('+offered.join(', ')+')');
     // ---- словарь ---------------------------------------------------------------
     ['ru','en','fr','it','pt'].forEach(l=>{ LANG=l; CC_L_CACHE={}; const D=L();
       if(!(typeof D.ccLateThird==='string' && D.ccLateThirdNote(33,17,6).length>5 && D.ccLateThirdWon(6,'x').length>3 && D.ccLateThirdLost('x').length>3 && D.ccLateThirdNone(70).length>3))
