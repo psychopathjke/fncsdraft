@@ -70,8 +70,8 @@ const BOOT = `
     // До своего капа (EU 13:00–17:00): OCE и ASIA обычной кнопкой, поздние (BR, NAC, NAW) — с пометкой и вопросом о пропуске.
     if(order0.slice(0,2).join()!=='OCE,ASIA') fail('morning regions first: '+order0.join());
     if(ccAwayWhy('NAC')!=='later' || ccAwayWhy('BR')!=='later') fail('NAC/BR not marked as after the home cup: '+ccAwayWhy('NAC')+'/'+ccAwayWhy('BR'));
-    const nacB=btns.find(b=>(b.getAttribute('onclick')||'').indexOf("ccAwayLaterAsk('NAC'")===0);
-    if(!nacB || nacB.disabled || nacB.closest('.cc-aw-r').textContent.indexOf(L().awAfterOwn)<0) fail('NAC before the home cup: no button with «'+L().awAfterOwn+'»');
+    const nacB=btns.find(b=>(b.getAttribute('onclick')||'').indexOf("ccAwayPlay('NAC'")===0);
+    if(!nacB || !nacB.disabled || nacB.textContent!==L().awAfterOwn) fail('NAC before the home cup should be a grey «'+L().awAfterOwn+'» button: '+(nacB && nacB.outerHTML.slice(0,160)));
     const afterTx=L().awAfterOwn;
     const oce=btns[0];
     const oceRow=oce.closest('.cc-aw-r');
@@ -132,19 +132,11 @@ const BOOT = `
     CAREER.career.awayClock={day:DAY, t:Date.parse(DAY+'T22:00:00Z')};
     if(ccAwayHomeBusy(DAY) || !careerCanPlayKindOn(DAY, 'victory')) fail('home cup closed by an earlier away night');
     out.steps.push('home cup never closed by an away night');
-    // NAC до своего капа: вопрос «пропустить свой?», да — NAC играется, свой кап этого дня закрыт.
+    // До своего капа поздний регион не играется (его время не настало).
     localStorage.setItem('fncsdraft_career', JSON.stringify(s)); careerEntry();
-    ccAwayLaterAsk('NAC', DAY);
-    const am=document.getElementById('ccAskModal');
-    if(!am || am.style.display!=='flex' || am.textContent.indexOf(regionName('NAC'))<0) fail('no «skip your own cup» question');
-    { const sk5=setInterval(()=>{ const b=document.getElementById('majorSkipBtn'); if(b && !b.disabled) b.click(); const c0=document.querySelector('.cc-choice-btn'); if(c0) c0.click(); }, 20);
-      document.getElementById('ccAskYes').click();
-      let c=null; for(let i=0;i<8000 && !c;i++){ await wait(25); c=[...document.querySelectorAll('#majorStages .stage-card')].find(x=>x.querySelector('button[onclick*="careerBackToHub"]') && (CAREER.career.log||[]).some(e=>e.away==='NAC')); }
-      clearInterval(sk5); if(!c) fail('NAC did not play after skipping the home cup'); c.querySelector('button[onclick*="careerBackToHub"]').click(); await wait(50); }
-    if(!ccAwayHomeBusy(DAY) || careerCanPlayKindOn(DAY, 'victory')) fail('home cup still open after choosing NAC instead');
-    careerRenderHub('centre');
-    if(((document.getElementById('screen-career-hub')||{}).textContent||'').indexOf(L().awBusy)<0) fail('day panel does not say you are away');
-    out.steps.push('NAC before the home cup: asked, played, home cup of the day closed («'+L().awBusy+'»)');
+    { const n0=(CAREER.career.log||[]).length; await ccAwayPlay('NAC', DAY);
+      if((CAREER.career.log||[]).length!==n0 || ccAwayHomeBusy(DAY) || !careerCanPlayKindOn(DAY, 'victory')) fail('NAC played before its time or closed the home cup'); }
+    out.steps.push('NAC before the home cup: grey, does not play, home cup open');
 
     // ---- в порядке расписания: OCE утром, свой EU, ночью NAC ---------------------------------
     const play=async (reg, day)=>{
