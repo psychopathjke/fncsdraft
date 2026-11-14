@@ -64,33 +64,38 @@ const BOOT = `
     const row=document.querySelector('#screen-career-hub .cc-away');
     if(!row) fail('no other-regions row on a cup day');
     const btns=[...row.querySelectorAll('button')];
-    const nac=btns.find(b=>/onclick/.test(b.outerHTML) && (b.getAttribute('onclick')||'').indexOf("'NAC'")>=0);
-    if(!nac || nac.disabled) fail('no usable NAC button: '+btns.map(b=>b.textContent).join(' | '));
-    if(btns.some(b=>(b.getAttribute('onclick')||'').indexOf("'EU'")>=0)) fail('home region is offered as away');
-    if(!/90/.test(nac.textContent) || !/-18/.test(nac.textContent)) fail('NAC button does not show ping and penalty: '+nac.textContent);
+    // \u0414\u043e \u0441\u0432\u043e\u0435\u0433\u043e \u043a\u0430\u043f\u0430 (EU 13:00\u201317:00) \u2014 \u0442\u043e\u043b\u044c\u043a\u043e \u0442\u043e, \u0447\u0442\u043e \u0443\u0441\u043f\u0435\u0432\u0430\u0435\u0442 \u0437\u0430\u043a\u043e\u043d\u0447\u0438\u0442\u044c\u0441\u044f \u0440\u0430\u043d\u044c\u0448\u0435: OCE 02:00, ASIA 04:00.
+    const order0=btns.map(b=>((b.getAttribute('onclick')||'').match(/'([A-Z]+)'/)||[])[1]);
+    if(order0.join()!=='OCE,ASIA') fail('before the home cup only OCE, ASIA: '+order0.join());
+    if(ccAwayWhy('NAC')!=='later' || ccAwayWhy('BR')!=='later') fail('NAC/BR not waiting for the home cup: '+ccAwayWhy('NAC')+'/'+ccAwayWhy('BR'));
+    const afterTx=(row.querySelector('.cc-away-after')||{}).textContent||'';
+    if(afterTx.indexOf(regionName('NAC'))<0) fail('no hint that NAC comes after the home cup: '+afterTx);
+    const oce=btns[0];
+    if(!/290/.test(oce.textContent) || !/-35/.test(oce.textContent)) fail('OCE button does not show ping and penalty: '+oce.textContent);
     if(/\u2014/.test(row.textContent)) fail('long dash on the row');
-    out.steps.push('hub: '+btns.length+' regions, '+nac.textContent);
+    out.steps.push('hub before home: '+order0.join(' ')+' \u00b7 '+afterTx);
+    const btns2=btns;
     // \u0420\u0430\u0441\u043f\u0438\u0441\u0430\u043d\u0438\u0435 Epic: 22.03 Solo Victory Cup EU 13:00 UTC, NAC +5 \u0447; \u0443 ME \u0442\u043e\u0442 \u0436\u0435 \u00abDay 1\u00bb \u0448\u0451\u043b \u043d\u0430\u043a\u0430\u043d\u0443\u043d\u0435.
     const sl=ccAwaySlot('NAC');
     if(!(sl instanceof Date) || sl.getUTCHours()!==18) fail('NAC start is not 18:00 UTC: '+sl);
     if(ccAwaySlot('ME')!==null || ccAwayWhy('ME')!=='off') fail('ME is offered on a day it had no cup');
-    if(btns.some(b=>(b.getAttribute('onclick')||'').indexOf("'ME'")>=0)) fail('ME button on the hub');
-    const order=btns.map(b=>((b.getAttribute('onclick')||'').match(/'([A-Z]+)'/)||[])[1]);
-    if(order.indexOf('OCE')>order.indexOf('NAW')) fail('regions not in start order: '+order.join(','));
-    out.steps.push('schedule: NAC '+sl.toISOString().slice(11,16)+' UTC, no ME that day, order '+order.join(' '));
+    if(btns2.some(b=>(b.getAttribute('onclick')||'').indexOf("'ME'")>=0)) fail('ME button on the hub');
+    out.steps.push('schedule: NAC '+sl.toISOString().slice(11,16)+' UTC, no ME that day');
     // \u0414\u0435\u043d\u044c \u0431\u0435\u0437 \u0440\u0430\u0441\u043f\u0438\u0441\u0430\u043d\u0438\u044f (\u043f\u0440\u043e\u0448\u043b\u044b\u0439 \u0433\u043e\u0434) \u2014 \u0440\u0435\u0433\u0438\u043e\u043d\u044b \u043e\u0442\u043a\u0440\u044b\u0442\u044b \u0431\u0435\u0437 \u0432\u0440\u0435\u043c\u0435\u043d\u0438.
     const keep=careerVictoryOn; careerVictoryOn=()=>({id:'NoSuchCup_X', name:'X'});
     if(ccAwaySlot('NAC')!==undefined) fail('a cup without schedule got a slot');
     careerVictoryOn=keep;
 
-    // ---- вечер в NAC ---------------------------------------------------------------
+    // ---- вечер в NAC: после своего капа, ночью ------------------------------------------
+    ccAwayHomeDone(DAY, 'victory'); careerAdvanceTo(ccAddDays(DAY, 1)); careerSave();
+    CAREER.career.energy=100;
     const en0=careerEnergy();
     let fieldReg=null, ping=null, youPow=null, basePow=null;
     const cyt=careerYouTeam; careerYouTeam=function(){ const t=cyt.apply(this, arguments); basePow=t.pow; ping=ccPingNow(); return t; };
     const csf=careerSoloField; careerSoloField=function(){ fieldReg=ccCareerRegion(); return csf.apply(this, arguments); };
     const sgl=simulateGamesLive; simulateGamesLive=function(field){ if(youPow==null){ const y=field.find(t=>t.isYou); youPow=y && y.pow; } return sgl.apply(this, arguments); };
     const sk=setInterval(()=>{ const b=document.getElementById('majorSkipBtn'); if(b && !b.disabled) b.click(); }, 20);
-    const pr=ccAwayPlay('NAC');
+    const pr=ccAwayPlay('NAC', DAY);
     let card=null;
     for(let i=0; i<8000 && !card; i++){
       await wait(25);
@@ -105,25 +110,23 @@ const BOOT = `
     if(!(basePow-youPow===18)) fail('power penalty: '+basePow+' -> '+youPow);
     out.steps.push('night: field NAC, ping 90, power '+basePow+' -> '+youPow);
     const cr=CAREER.career;
-    if(careerToday()!==DAY) fail('the day moved: '+careerToday());
+    if(careerToday()!==ccAddDays(DAY, 1)) fail('the night NAC moved the day: '+careerToday());
     if(Math.round(en0-careerEnergy())!==CC_AWAY_ENERGY) fail('energy spent '+(en0-careerEnergy()));
     if(!(cr.away && (cr.away[DAY]||[]).indexOf('NAC')>=0)) fail('the away night is not remembered');
     const last=(cr.log||[]).slice(-1)[0];
     if(!last || last.away!=='NAC' || last.day!==DAY) fail('the log row is not tagged NAC: '+JSON.stringify(last));
     if(CC_REGION_AS!==null || CC_AWAY!==null) fail('the region switch leaked: '+CC_REGION_AS);
     if(ccCareerRegion()!=='EU') fail('home region changed: '+ccCareerRegion());
-    if(ccAwayWhy('NAC')!=='done') fail('NAC can be played twice: '+ccAwayWhy('NAC'));
-    out.steps.push('after: day '+careerToday()+', energy -'+CC_AWAY_ENERGY+', log #'+last.place+' $'+(last.prize||0));
+    if(ccAwayWhy('NAC', DAY)!=='done') fail('NAC can be played twice: '+ccAwayWhy('NAC', DAY));
+    if(ccAwayWhy('NAW', DAY)!=='past') fail('NAW 20:00 not over after NAC until 22:00: '+ccAwayWhy('NAW', DAY));
+    card.querySelector('button[onclick*="careerBackToHub"]').click(); await wait(50);
+    out.steps.push('after: day '+careerToday()+', energy -'+CC_AWAY_ENERGY+', log #'+last.place+' on '+last.day+', NAW over');
 
-    // ---- по часам: NAC 18:00–22:00 UTC, свой EU 13:00 и NAW 20:00 уже прошли -----------------
-    card.querySelector('button[onclick*="careerBackToHub"]').click();
-    await wait(50);
-    if(careerNext().type!=='victory' || careerNext().day!==DAY) fail('the home cup of the day is gone from the calendar');
-    if(!ccAwayHomeBusy(DAY) || careerCanPlayKindOn(DAY, 'victory')) fail('home cup at 13:00 playable after NAC 18:00-22:00');
-    if(ccAwayWhy('NAW')!=='past') fail('NAW 20:00 not over after NAC until 22:00: '+ccAwayWhy('NAW'));
-    careerRenderHub('centre');
-    if(((document.getElementById('screen-career-hub')||{}).textContent||'').indexOf(L().awBusy)<0) fail('the day panel does not say you are away');
-    out.steps.push('after NAC: home 13:00 closed ('+L().awBusy+'), NAW 20:00 over');
+    // ---- старый сейв, где часы ушли за свой кап: свой кап всё равно открыт --------------------------
+    localStorage.setItem('fncsdraft_career', JSON.stringify(s)); careerEntry();
+    CAREER.career.awayClock={day:DAY, t:Date.parse(DAY+'T22:00:00Z')};
+    if(ccAwayHomeBusy(DAY) || !careerCanPlayKindOn(DAY, 'victory')) fail('home cup closed by an earlier away night');
+    out.steps.push('home cup never closed by an away night');
 
     // ---- в порядке расписания: OCE утром, свой EU, ночью NAC ---------------------------------
     const play=async (reg, day)=>{
@@ -154,8 +157,8 @@ const BOOT = `
 
     // ---- нет сил -----------------------------------------------------------------------
     localStorage.setItem('fncsdraft_career', JSON.stringify(s)); careerEntry(); CAREER.career.energy=10;
-    if(ccAwayWhy('NAC')!=='tired') fail('a tired player can go away: '+ccAwayWhy('NAC'));
-    out.steps.push('with 10 energy: '+ccAwayWhy('NAC'));
+    if(ccAwayWhy('OCE')!=='tired') fail('a tired player can go away: '+ccAwayWhy('OCE'));
+    out.steps.push('with 10 energy: '+ccAwayWhy('OCE'));
 
     // ---- Performance Evaluation: у Epic только EU и NAC, в карьере Д1 ------------------------
     const EV_DAY='2026-03-20';
@@ -174,25 +177,21 @@ const BOOT = `
     const esl=ccAwaySlot('NAC'); if(!(esl instanceof Date) || esl.getUTCHours()!==23) fail('NAC evaluation start: '+esl);
     careerRenderHub('centre');
     if(!document.querySelector('#screen-career-hub .cc-away')) fail('no away row on an evaluation night');
+    if(ccAwayWhy('NAC')!=='later') fail('NAC evaluation 23:00 open before the home one at 17:00: '+ccAwayWhy('NAC'));
+    // Своя оценка сыграна — NAC ночью.
+    ccAwayHomeDone(EV_DAY, 'eval'); careerAdvanceTo(ccAddDays(EV_DAY, 1)); careerSave(); CAREER.career.energy=100;
     let eBase=null, ePow=null;
     const cyt2=careerYouTeam; careerYouTeam=function(){ const t=cyt2.apply(this, arguments); eBase=t.pow; return t; };
     const sgl2=simulateGamesLive; simulateGamesLive=function(field){ if(ePow==null){ const y=field.find(t=>t.isYou); ePow=y && y.pow; } return sgl2.apply(this, arguments); };
-    const sk2=setInterval(()=>{ const b=document.getElementById('majorSkipBtn'); if(b && !b.disabled) b.click(); }, 20);
-    const en1=careerEnergy(); const pr2=ccAwayPlay('NAC');
-    let card2=null;
-    for(let i=0; i<8000 && !card2; i++){ await wait(25);
-      card2=[...document.querySelectorAll('#majorStages .stage-card')].find(c=>c.querySelector('button[onclick*="careerBackToHub"]')); }
-    clearInterval(sk2); await pr2; careerYouTeam=cyt2; simulateGamesLive=sgl2;
-    if(!card2) fail('no result card after the away evaluation');
-    if(careerToday()!==EV_DAY) fail('the evaluation away moved the day: '+careerToday());
+    const en1=careerEnergy();
+    await play('NAC', EV_DAY);
+    careerYouTeam=cyt2; simulateGamesLive=sgl2;
+    if(careerToday()!==ccAddDays(EV_DAY, 1)) fail('the evaluation away moved the day: '+careerToday());
     if(Math.round(en1-careerEnergy())!==CC_AWAY_ENERGY) fail('evaluation away energy: '+(en1-careerEnergy()));
     if(!(eBase-ePow===18)) fail('evaluation away penalty: '+eBase+' -> '+ePow);
     const lr=(CAREER.career.log||[]).slice(-1)[0];
-    if(!lr || lr.kind!=='eval' || lr.away!=='NAC') fail('evaluation log row: '+JSON.stringify(lr));
-    card2.querySelector('button[onclick*="careerBackToHub"]').click(); await wait(50);
-    if(careerNext().type!=='eval') fail('home evaluation of the day is gone from the calendar');
-    if(!ccAwayHomeBusy(EV_DAY)) fail('home evaluation 17:00 still open after NAC 23:00');
-    out.steps.push('evaluation: NAC only (23:00 UTC), power '+eBase+' -> '+ePow+', day stays, home 17:00 now over');
+    if(!lr || lr.kind!=='eval' || lr.away!=='NAC' || lr.day!==EV_DAY) fail('evaluation log row: '+JSON.stringify(lr));
+    out.steps.push('evaluation: NAC only (23:00 UTC), after the home one, power '+eBase+' -> '+ePow+', logged on '+lr.day);
 
     // ---- кап дивизиона: тоже на выезд, по часам, без перехода между дивизионами ----------------
     const seedDiv=(day)=>{ localStorage.setItem('fncsdraft_career', JSON.stringify({
@@ -206,7 +205,7 @@ const BOOT = `
     for(const d of divDays){ seedDiv(d); if(careerNext().type==='cup' && careerNext().day===d){ DD=d; break; } }
     if(!DD) fail('no Division 2 cup day with an Epic schedule in the career calendar');
     if(ccAwayKind('NAC')!=='cup') fail('NAC div cup not offered on '+DD+': '+ccAwayKind('NAC'));
-    if(ccAwayWhy('NAC')) fail('NAC div cup closed: '+ccAwayWhy('NAC'));
+    if(ccAwayWhy('NAC')!=='later') fail('NAC div cup should wait for the home one: '+ccAwayWhy('NAC'));
     const divSlot=ccAwaySlot('NAC'), homeSlot=ccAwaySlot('EU');
     if(!(divSlot instanceof Date) || !(homeSlot instanceof Date) || divSlot<=homeSlot) fail('div cup slots: EU '+homeSlot+' NAC '+divSlot);
     // Свой вечер сыгран: часы и перенос, как в конце runCareerCup.
