@@ -115147,6 +115147,95 @@ function ccFightLine(T, out, F, foeName, gun, you, tac){
   if(out==='poke') return head+T.ccMidFightPoke(F.pokeDmg, F.pokeMats);
   return head+T.ccMidFightTraded(F.tradePow);
 }
+/* СИТУАЦИЯ И ЦЕННОСТЬ ХОДОВ. Три окна за игру (ротация, концовка, стойка до конца), и у каждого хода сила зависит от того,
+   что на экране: далеко ли круг, сколько ресов, какой AR, сколько отрядов рядом, какое место. Лучший ход не называется,
+   под ходом только факты (ccSitFacts). Масштаб: лучший в ситуации на 8–15 силы впереди худшего. Числа — решение, не замер. */
+const CC_SIT_ROT_IDS=['early','with','late','move'], CC_SIT_END_IDS=['hg','mid','edge','refresh','lg','third'], CC_SIT_STANCE_IDS=['hold','push'];
+const CC_SIT_NEAR=22, CC_SIT_USELESS=8;
+// Недостающие поля — средняя ситуация; в Zero Build ресы не читаются.
+function ccSitNorm(s){
+  const o=Object.assign({dist:0, rNext:1, inside:false, away:false, edge:false, mats:900, heals:2, move:false, ar:3, nearBy:2, pair:false, place:10, alive:25}, s||{});
+  if(CC_ZB) o.mats=900;
+  if(o.low==null || CC_ZB) o.low=!CC_ZB && o.mats<CC_MATS_LOW;
+  return o;
+}
+function ccSitOf(you){
+  const game=you && you._game, sq=you && you._sq;
+  const s={};
+  const c=game && game.upcoming && game.upcoming();
+  const fr=game && game.frames ? game.frames() : null, f=fr && fr[fr.length-1];
+  if(sq && c){
+    s.dist=Math.hypot(sq.x-c.cx, sq.y-c.cy); s.rNext=Math.max(1, c.radius); s.inside=s.dist<c.radius;
+    const cur=f && f.circle;
+    if(cur){ s.away=Math.hypot(sq.x-c.cx, sq.y-c.cy)>Math.hypot(sq.x-cur.cx, sq.y-cur.cy)+1;
+      s.edge=Math.hypot(sq.x-cur.cx, sq.y-cur.cy)>cur.radius*0.75; }
+  }
+  s.mats=ccMats(you);
+  s.heals=ccHealSlots(you);
+  s.move=!!(you && you._loot && you._loot.move && !you._loot.move.floor);
+  const ar=ccGunTier(you, 'rifle'); s.ar=ar==null ? 3 : ar;
+  if(game && game.squads && sq){
+    const others=game.squads.filter(o=>o.alive && o!==sq && o.team!==you && !o.team.isMate);
+    s.nearBy=others.filter(o=>Math.hypot(o.x-sq.x, o.y-sq.y)<CC_SIT_NEAR).length;
+    s.alive=others.length+1;
+    const mine=Math.max(1, you._pc||you._pf||you.pow||1);
+    s.place=1+others.filter(o=>Math.max(1, o.team._pc||o.team._pf||o.team.pow||1)>mine).length;
+  }
+  s.pair=!!(ccLootRoomOn() && ccThirdPair(you));
+  return s;
+}
+function ccSitAvail(kind, id, s){
+  const o=ccSitNorm(s);
+  if(kind==='rot' && id==='move') return o.move;
+  if(kind==='end' && id==='third') return o.pair;
+  if(kind==='end' && id==='refresh') return !CC_ZB;
+  return true;
+}
+function ccSitValue(kind, id, s){
+  const o=ccSitNorm(s), d=o.dist/Math.max(1, o.rNext), far=clamp((d-1)/2, 0, 1);
+  if(kind==='rot'){
+    if(id==='early') return 6*far+(o.away ? 3 : 0)-(o.inside ? 4 : 0);
+    if(id==='with') return 3-3*Math.abs(clamp(d, 0, 3)-1.5)/1.5+(o.edge ? 2 : 0);
+    if(id==='late') return (o.inside ? 6 : -6*clamp((d-1)/2, 0, 1))+(o.mats>=1200 ? 4 : o.mats<600 ? -4 : 0)-(o.away ? 3 : 0);
+    if(id==='move') return 8*far+3-(o.inside ? 8 : 0);
+  }
+  if(kind==='end'){
+    const hg=(o.mats-800)/700*5+(o.ar-3)*2-Math.max(0, o.nearBy-2)*2;
+    if(id==='hg') return hg;
+    if(id==='mid') return hg*0.5+1;
+    if(id==='edge') return (o.edge ? 4 : -2)+(o.move ? 3 : 0);
+    if(id==='refresh') return (o.low ? 6 : o.mats>=1400 ? -6 : 2-(o.mats-600)/400*2)+(o.heals<2 ? 3 : -1);
+    if(id==='lg') return (o.low ? 4 : 0)+(o.away ? -2 : 3);
+    if(id==='third') return 5-Math.max(0, o.nearBy-3);
+  }
+  if(kind==='stance'){
+    if(id==='hold') return clamp((14-o.place)/10, -1, 1)*7;
+    if(id==='push') return (o.ar-3)*2+(o.mats-900)/600*2+(o.place-14)/10*5;
+  }
+  return 0;
+}
+// Явно плохой ход сейчас: сам не в плюсе и на CC_SIT_USELESS ниже лучшего доступного.
+function ccSitUseless(kind, id, s){
+  const ids=kind==='rot' ? CC_SIT_ROT_IDS : kind==='end' ? CC_SIT_END_IDS : CC_SIT_STANCE_IDS;
+  const v=ccSitValue(kind, id, s), top=Math.max(...ids.filter(x=>ccSitAvail(kind, x, s)).map(x=>ccSitValue(kind, x, s)));
+  return v<=0 && top-v>=CC_SIT_USELESS;
+}
+// Факты под ходом: что на экране сдвигает его ценность. Без вердикта.
+function ccSitFacts(T, kind, id, s){
+  const o=ccSitNorm(s), d=o.dist/Math.max(1, o.rNext);
+  const circle=o.inside ? T.sitFInside : d>2 ? T.sitFFar : T.sitFNear;
+  const dir=o.away ? T.sitFAway : T.sitFToward;
+  const mats=CC_ZB ? '' : T.sitFMats(Math.round(o.mats));
+  const ar=T.sitFAr(o.ar ? ccRarityWord(Object.keys(RARITY_MOD).find(k=>RARITY_MOD[k]===o.ar)) : T.tcNone);
+  const pick={
+    rot:{early:[circle, dir], with:[circle, o.edge ? T.sitFEdge : ''], late:[circle, mats], move:[o.move ? T.sitFMove : '', circle]},
+    end:{hg:[mats, ar, T.sitFNearBy(o.nearBy)], mid:[mats, T.sitFNearBy(o.nearBy)], edge:[o.edge ? T.sitFEdge : T.sitFMid, o.move ? T.sitFMove : ''],
+         refresh:[mats, T.sitFHeals(o.heals)], lg:[mats, dir], third:[o.pair ? T.sitFPair : '', T.sitFNearBy(o.nearBy)]},
+    stance:{hold:[T.sitFPlace(o.place)], push:[ar, mats, T.sitFPlace(o.place)]}
+  }[kind];
+  const parts=((pick && pick[id])||[]).filter(Boolean);
+  return parts.length ? parts.join(' · ') : circle;
+}
 /* Вопрос середины: идти за рефрешем или ротейтить тем, что есть.
    Те же числа, что у рефреша в меню восьмой зоны, — это тот же ход, просто
    раньше по времени: сходил — ресы полные и прибавка, не сходил — играешь как
@@ -171407,7 +171496,7 @@ Object.assign(I18N.pt, {hhTag:'Novo', hhSub:'Quem tem mais prêmios no total: do
   hlHint:'Toque em quem ficou acima', hlPlaceV:p=>p+'º lugar', hlOver:n=>'Sequência encerrada: '+n, hlNewBest:'Novo recorde',
   hlAgain:'Jogar de novo', hlCopy:'Copiar resultado', hlCopied:'Copiado', hlEmpty:'Sem dados para uma pergunta'});
 /* План 125 (14.11): тактика файта (tc*), третья сторона в середине (tp*), точка пути кликом (rpGo, rpHint). */
-Object.assign(I18N.ru, {tcFoe:(n,t)=>(n||'Соперник')+' скорее всего: '+t.toLowerCase(), tcFoeDid:t=>'они: '+t.toLowerCase(), tcTitle:n=>'Как играем файт'+(n ? ' · '+n : ''), tcPush:'Пушить', tcBox:'Бокс-файт, тянуть', tcBack:'Отойти',
+Object.assign(I18N.ru, {sitUseless:'бесполезно сейчас', sitFInside:'ты уже в круге', sitFFar:'круг далеко', sitFNear:'круг рядом', sitFAway:'круг уходит от тебя', sitFToward:'круг идёт к тебе', sitFMats:m=>'ресов '+m, sitFAr:r=>'AR '+r, sitFNearBy:n=>'рядом отрядов: '+n, sitFHeals:h=>'хилок '+h, sitFPlace:p=>'идёте примерно '+p+'-ми', sitFPair:'рядом дерутся двое', sitFEdge:'ты у края круга', sitFMid:'ты в середине круга', sitFMove:'есть мувмент', tcFoe:(n,t)=>(n||'Соперник')+' скорее всего: '+t.toLowerCase(), tcFoeDid:t=>'они: '+t.toLowerCase(), tcTitle:n=>'Как играем файт'+(n ? ' · '+n : ''), tcPush:'Пушить', tcBox:'Бокс-файт, тянуть', tcBack:'Отойти',
   tcNone:'нет', tcOdds:(w,d,t)=>w+'% выбить · '+d+'% выбиты · '+t+'% размен',
   tcPushNote:(a,b)=>'решает дробовик: у нас '+a+', у них '+b,
   tcBoxNote:(m1,m2,h1,h2,c)=>'решают ресы и хилки: ресы '+m1+' против '+m2+', хилок '+h1+' против '+h2+' · −'+c+' ресов',
@@ -171416,7 +171505,7 @@ Object.assign(I18N.ru, {tcFoe:(n,t)=>(n||'Соперник')+' скорее вс
   tpNote:(s,k,d,p,b)=>'дерутся рядом · '+s+'%: их файт кончится до нас · '+k+'% выбить, +'+p+' к силе · '+d+'% выбиты · '+b+'%: добить и второго',
   tpGot:r=>(r.self ? r.w+' выбили '+r.l+' до нас · ' : '')+(r.out==='win' ? 'выбили '+r.t+(r.both ? ' и '+r.o : '')+', +'+r.pow+' к силе' : r.out==='die' ? r.t+' развернулись на нас, выбиты' : 'зашли третьими, постреляли и ушли: +'+r.dmg+' урона'),
   rpGo:'Идём к точке', rpHint:'Тапни по кругу, куда встать. Красные точки: отряды, кто у линии, с тем можно встретиться'});
-Object.assign(I18N.en, {tcFoe:(n,t)=>(n||'The other squad')+' will likely: '+t.toLowerCase(), tcFoeDid:t=>'they: '+t.toLowerCase(), tcTitle:n=>'How do we play the fight'+(n ? ' · '+n : ''), tcPush:'Push', tcBox:'Box fight, drag it out', tcBack:'Back off',
+Object.assign(I18N.en, {sitUseless:'useless right now', sitFInside:'you are already in the zone', sitFFar:'the zone is far', sitFNear:'the zone is close', sitFAway:'the zone moves away from you', sitFToward:'the zone moves toward you', sitFMats:m=>'mats '+m, sitFAr:r=>'AR '+r, sitFNearBy:n=>'squads nearby: '+n, sitFHeals:h=>'heals '+h, sitFPlace:p=>'you are about #'+p, sitFPair:'two squads fighting nearby', sitFEdge:'you are on the zone edge', sitFMid:'you are mid zone', sitFMove:'you have mobility', tcFoe:(n,t)=>(n||'The other squad')+' will likely: '+t.toLowerCase(), tcFoeDid:t=>'they: '+t.toLowerCase(), tcTitle:n=>'How do we play the fight'+(n ? ' · '+n : ''), tcPush:'Push', tcBox:'Box fight, drag it out', tcBack:'Back off',
   tcNone:'none', tcOdds:(w,d,t)=>w+'% we take them · '+d+'% we go down · '+t+'% trade',
   tcPushNote:(a,b)=>'the shotgun decides: ours '+a+', theirs '+b,
   tcBoxNote:(m1,m2,h1,h2,c)=>'mats and heals decide: mats '+m1+' vs '+m2+', heals '+h1+' vs '+h2+' · −'+c+' mats',
@@ -171425,7 +171514,7 @@ Object.assign(I18N.en, {tcFoe:(n,t)=>(n||'The other squad')+' will likely: '+t.t
   tpNote:(s,k,d,p,b)=>'fighting nearby · '+s+'%: their fight ends before we arrive · '+k+'% we take one, +'+p+' power · '+d+'% we go down · '+b+'%: finish the second too',
   tpGot:r=>(r.self ? r.w+' took out '+r.l+' before we got there · ' : '')+(r.out==='win' ? 'took out '+r.t+(r.both ? ' and '+r.o : '')+', +'+r.pow+' power' : r.out==='die' ? r.t+' turned on us, we went down' : 'came in third, shots exchanged, we left: +'+r.dmg+' damage'),
   rpGo:'Go to the point', rpHint:'Tap the circle where to stand. Red dots are squads: whoever is by the line, you may run into'});
-Object.assign(I18N.fr, {tcFoe:(n,t)=>(n||'L’adversaire')+' va sûrement : '+t.toLowerCase(), tcFoeDid:t=>'eux : '+t.toLowerCase(), tcTitle:n=>'Comment on joue le combat'+(n ? ' · '+n : ''), tcPush:'Push', tcBox:'Box fight, faire durer', tcBack:'Reculer',
+Object.assign(I18N.fr, {sitUseless:'inutile maintenant', sitFInside:'tu es déjà dans la zone', sitFFar:'la zone est loin', sitFNear:'la zone est proche', sitFAway:'la zone s’éloigne de toi', sitFToward:'la zone vient vers toi', sitFMats:m=>'matériaux '+m, sitFAr:r=>'FA '+r, sitFNearBy:n=>'escouades proches : '+n, sitFHeals:h=>'soins '+h, sitFPlace:p=>'vous êtes environ #'+p, sitFPair:'deux escouades se battent à côté', sitFEdge:'tu es au bord de la zone', sitFMid:'tu es au milieu de la zone', sitFMove:'tu as une mobilité', tcFoe:(n,t)=>(n||'L’adversaire')+' va sûrement : '+t.toLowerCase(), tcFoeDid:t=>'eux : '+t.toLowerCase(), tcTitle:n=>'Comment on joue le combat'+(n ? ' · '+n : ''), tcPush:'Push', tcBox:'Box fight, faire durer', tcBack:'Reculer',
   tcNone:'aucun', tcOdds:(w,d,t)=>w+'% on les élimine · '+d+'% éliminés · '+t+'% échange',
   tcPushNote:(a,b)=>'le pompe décide : le nôtre '+a+', le leur '+b,
   tcBoxNote:(m1,m2,h1,h2,c)=>'matériaux et soins décident : matériaux '+m1+' contre '+m2+', soins '+h1+' contre '+h2+' · −'+c+' matériaux',
@@ -171434,7 +171523,7 @@ Object.assign(I18N.fr, {tcFoe:(n,t)=>(n||'L’adversaire')+' va sûrement : '+t.
   tpNote:(s,k,d,p,b)=>'ils se battent à côté · '+s+'% : leur combat finit avant nous · '+k+'% on en élimine un, +'+p+' puissance · '+d+'% éliminés · '+b+'% : finir le second aussi',
   tpGot:r=>(r.self ? r.w+' a éliminé '+r.l+' avant nous · ' : '')+(r.out==='win' ? r.t+(r.both ? ' et '+r.o : '')+' éliminés, +'+r.pow+' puissance' : r.out==='die' ? r.t+' se sont retournés, éliminés' : 'arrivés en troisième, on a tiré et on est partis : +'+r.dmg+' dégâts'),
   rpGo:'Aller au point', rpHint:'Touche la zone où te placer. Points rouges : les escouades, celles près de la ligne, tu peux les croiser'});
-Object.assign(I18N.it, {tcFoe:(n,t)=>(n||'L’avversario')+' probabilmente: '+t.toLowerCase(), tcFoeDid:t=>'loro: '+t.toLowerCase(), tcTitle:n=>'Come giochiamo lo scontro'+(n ? ' · '+n : ''), tcPush:'Spingere', tcBox:'Box fight, tirarla lunga', tcBack:'Ritirarsi',
+Object.assign(I18N.it, {sitUseless:'inutile adesso', sitFInside:'sei già nella zona', sitFFar:'la zona è lontana', sitFNear:'la zona è vicina', sitFAway:'la zona si allontana da te', sitFToward:'la zona viene verso di te', sitFMats:m=>'materiali '+m, sitFAr:r=>'AR '+r, sitFNearBy:n=>'squadre vicine: '+n, sitFHeals:h=>'cure '+h, sitFPlace:p=>'siete circa #'+p, sitFPair:'due squadre combattono vicino', sitFEdge:'sei al bordo della zona', sitFMid:'sei al centro della zona', sitFMove:'hai mobilità', tcFoe:(n,t)=>(n||'L’avversario')+' probabilmente: '+t.toLowerCase(), tcFoeDid:t=>'loro: '+t.toLowerCase(), tcTitle:n=>'Come giochiamo lo scontro'+(n ? ' · '+n : ''), tcPush:'Spingere', tcBox:'Box fight, tirarla lunga', tcBack:'Ritirarsi',
   tcNone:'nessuno', tcOdds:(w,d,t)=>w+'% li eliminiamo · '+d+'% eliminati · '+t+'% scambio',
   tcPushNote:(a,b)=>'decide il fucile a pompa: il nostro '+a+', il loro '+b,
   tcBoxNote:(m1,m2,h1,h2,c)=>'decidono materiali e cure: materiali '+m1+' contro '+m2+', cure '+h1+' contro '+h2+' · −'+c+' materiali',
@@ -171443,7 +171532,7 @@ Object.assign(I18N.it, {tcFoe:(n,t)=>(n||'L’avversario')+' probabilmente: '+t.
   tpNote:(s,k,d,p,b)=>'combattono vicino · '+s+'%: il loro scontro finisce prima di noi · '+k+'% ne eliminiamo uno, +'+p+' potenza · '+d+'% eliminati · '+b+'%: finire anche il secondo',
   tpGot:r=>(r.self ? r.w+' ha eliminato '+r.l+' prima di noi · ' : '')+(r.out==='win' ? 'eliminati '+r.t+(r.both ? ' e '+r.o : '')+', +'+r.pow+' potenza' : r.out==='die' ? r.t+' si sono girati su di noi, eliminati' : 'entrati per terzi, sparato e via: +'+r.dmg+' danni'),
   rpGo:'Vai al punto', rpHint:'Tocca il cerchio dove metterti. Punti rossi: le squadre, chi sta vicino alla linea, puoi incontrarlo'});
-Object.assign(I18N.pt, {tcFoe:(n,t)=>(n||'O adversário')+' provavelmente: '+t.toLowerCase(), tcFoeDid:t=>'eles: '+t.toLowerCase(), tcTitle:n=>'Como jogamos a luta'+(n ? ' · '+n : ''), tcPush:'Pressionar', tcBox:'Box fight, segurar', tcBack:'Recuar',
+Object.assign(I18N.pt, {sitUseless:'inútil agora', sitFInside:'você já está na zona', sitFFar:'a zona está longe', sitFNear:'a zona está perto', sitFAway:'a zona se afasta de você', sitFToward:'a zona vem até você', sitFMats:m=>'materiais '+m, sitFAr:r=>'AR '+r, sitFNearBy:n=>'squads perto: '+n, sitFHeals:h=>'curas '+h, sitFPlace:p=>'vocês estão por volta de #'+p, sitFPair:'dois squads lutando perto', sitFEdge:'você está na borda da zona', sitFMid:'você está no meio da zona', sitFMove:'você tem mobilidade', tcFoe:(n,t)=>(n||'O adversário')+' provavelmente: '+t.toLowerCase(), tcFoeDid:t=>'eles: '+t.toLowerCase(), tcTitle:n=>'Como jogamos a luta'+(n ? ' · '+n : ''), tcPush:'Pressionar', tcBox:'Box fight, segurar', tcBack:'Recuar',
   tcNone:'nenhuma', tcOdds:(w,d,t)=>w+'% eliminamos · '+d+'% eliminados · '+t+'% troca',
   tcPushNote:(a,b)=>'a escopeta decide: a nossa '+a+', a deles '+b,
   tcBoxNote:(m1,m2,h1,h2,c)=>'materiais e curas decidem: materiais '+m1+' contra '+m2+', curas '+h1+' contra '+h2+' · −'+c+' de materiais',
