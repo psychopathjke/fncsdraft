@@ -30,7 +30,7 @@ const coreB=B.key.split('+'); const takeB=B.s.find(c=>hKey(c)===coreB[0]); const
 const mine=[thirdCard, takeB];
 const others=()=>{ const o=new Set(); Object.keys(cr.trios).forEach(k=>{ if(!k.split('+').some(x=>x===hKey(thirdCard)||x===hKey(takeB)||x===leftB)) o.add(cr.trios[k]); }); return o; };
 const rows=[], sizes=[['cup', careerCupSize(1), false], ['final', ccTeams(50), false], ['open', 2100, true]];
-const aSeen=new Set(), bSeen=new Set();
+const aSeen=new Set(), bSeen=new Set(), out_note=[];
 for(let w=0; w<6; w++){
   const [nm, sz, op]=sizes[w%3];
   const before=others();
@@ -39,7 +39,16 @@ for(let w=0; w<6; w++){
   const aCore=A.key.split('+'), a=sqOf(aCore[0]), b=sqOf(leftB);
   if(a){ const t=a.find(c=>aCore.indexOf(hKey(c))<0); if(t){ aSeen.add(hKey(t));
     const avg=(ccCardOvr(a.find(c=>hKey(c)===aCore[0]))+ccCardOvr(a.find(c=>hKey(c)===aCore[1])))/2;
-    if(avg-ccCardOvr(t)>6) fails.push(nm+': у A слабый третий '+t.handle+' '+ovr(t)+' при '+avg.toFixed(1)); } }
+    // Близкий по силе, если такой есть на рынке. Когда в регионе свободных сильнее нет (все сильные разобраны в тройки,
+    // ядра троек не разбирают), годится лучший из доступных: слабее его быть не должен.
+    if(avg-ccCardOvr(t)>6){
+      const pl=ccAsWorld(()=>careerPools()), inDuo=new Set(), held=new Set(Object.values(cr.trios||{}));
+      (pl.duos||[]).forEach(d=>d.cards.forEach(c=>inDuo.add(hKey(c))));
+      const reg=c=>String((c && (c.region||c.cardRegion)) || 'EU'), r0=reg(a[0]), mk=new Set(mine.map(hKey));
+      const better=(pl.players||[]).filter(c=>{ const k=hKey(c); return reg(c)===r0 && !inDuo.has(k) && !held.has(k) && !mk.has(k) && k!==hKey(t) && ccCardOvr(c)>ccCardOvr(t); });
+      if(better.length) fails.push(nm+': у A слабый третий '+t.handle+' '+ovr(t)+' при '+avg.toFixed(1)+', а свободен '+better[0].handle+' '+ovr(better[0]));
+      else out_note.push(nm+': рынок пуст, третий '+t.handle+' '+ovr(t)+' лучший из свободных');
+    } } }
   if(b){ b.forEach(c=>{ if(hKey(c)!==leftB) bSeen.add(hKey(c)); });
     if(!b.some(c=>hKey(c)===B.third)) fails.push(nm+': у B нет бывшего третьего '+B.third);
     b.filter(c=>hKey(c)!==leftB && before.has(hKey(c))).forEach(c=>fails.push(nm+': B увёл чужого третьего '+c.handle)); }
@@ -49,7 +58,7 @@ if(aSeen.size>1) fails.push('у A третий меняется: '+[...aSeen].jo
 if(bSeen.size>2) fails.push('у B состав меняется: '+[...bSeen].join(','));
 if(!aSeen.size) fails.push('A ни разу не в комнате');
 if(!bSeen.size) fails.push('B ни разу не в комнате');
-return {fails, notes:{A:A.s.map(c=>c.handle).join(' & ')+' без '+thirdCard.handle, B:B.s.map(c=>c.handle).join(' & ')+' без '+takeB.handle, rows}};
+return {fails, notes:{A:A.s.map(c=>c.handle).join(' & ')+' без '+thirdCard.handle, B:B.s.map(c=>c.handle).join(' & ')+' без '+takeB.handle, rows, market:out_note}};
 `;
 const tmp=path.join(fs.mkdtempSync(path.join(os.tmpdir(),'tsteal-')),'body.js'); fs.writeFileSync(tmp, body);
 const res=JSON.parse(execFileSync(process.execPath,[path.join(__dirname,'probe-run.js'), tmp, '300000'],{encoding:'utf8',maxBuffer:1<<26,stdio:['ignore','pipe','ignore']}));

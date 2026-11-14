@@ -156520,7 +156520,9 @@ function ccTrioRefill(mine){
         if(!best || dist<best.dist) best={card:c, duo:v, dist};
       });
     });
-    if(!best) return;
+    /* Переманить некого (в EU после 2026 все сильные пары — ядра троек, их не разбираем): берём лучшего свободного,
+       пусть и вне полосы. Иначе запись пустая и третьего даёт случайный добор комнаты (Layn 82 при 95.5 вместо 90). */
+    if(!best){ if(free.length){ memo[n.key]=hKey(free[0]); held.add(memo[n.key]); } return; }
     cr.duoSplits[keyOf(best.duo.cards)]=careerToday();
     memo[n.key]=hKey(best.card); held.add(memo[n.key]);
     best.duo.cards.forEach(c=>paired.delete(hKey(c)));
