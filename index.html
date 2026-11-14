@@ -115035,6 +115035,7 @@ function ccFightApply(you, r, foe, tb, tac){
   // Тактика (ccAskTactic): доля решающих, размен, поправка шанса, ресы на бокс. Без неё как было.
   const dec=tac ? tac.dec : 1, trM=tac ? tac.trade : 1;
   if(tac && tac.mats) you._mats=Math.max(0, ccMats(you)-tac.mats);
+  if(tac && tac.foeMats && foe) foe._mats=Math.max(0, ccMats(foe)-tac.foeMats);
   // Решающая доля стычек — CC_FIGHT.decide; внутри неё победителя называет сила.
   const p=tac ? clamp(ccFightWinOdds(you, foe)+(tac.dp||0), 0.05, 0.95) : ccFightWinOdds(you, foe);
   const winTo=F.decide*dec*p, dieTo=F.decide*dec;
@@ -115092,10 +115093,30 @@ function ccTacDp(you, foe, id){
   }
   return 0;
 }
-function ccTacOf(id, you, foe){
-  if(id==='box') return {id, dec:CC_TAC_BOX_DEC, trade:1, dp:ccTacDp(you, foe, 'box'), mats:CC_TAC_BOX_MATS};
-  if(id==='back') return {id, dec:CC_TAC_BACK_DEC, trade:CC_TAC_BACK_TRADE, dp:0, mats:0};
-  return {id:'push', dec:1, trade:1, dp:ccTacDp(you, foe, 'push'), mats:0};
+/* Соперник тоже выбирает, как играть (14.11, «боты выбирают тактику»): по своему луту, ресам и силе, не глядя на твой
+   выбор. Сильнее дробовик — пушит; слабее по силе (шанс < CC_FOE_BACK) — отходит; ресов на CC_FOE_BOX_GAP больше — тянет
+   бокс. Иначе пушит. Стычка решается так часто, как хочет самый осторожный (dec и размен — меньший из двух); дробовик
+   считается, если пушит хоть один, ресы и хилки — если хоть один тянет бокс. Бокс соперника стоит ему тех же ресов.
+   Пороги — решение, не замер. Дуэли ботов между собой — движок (resolveDuel), там лут уже в силе пака, их не трогаем. */
+const CC_FOE_BACK=0.35, CC_FOE_BOX_GAP=300;
+function ccFoeTactic(foe, you){
+  if(!foe) return 'push';
+  const sgF=ccGunTier(foe, 'shotgun'), sgY=ccGunTier(you, 'shotgun');
+  const sgAdv=sgF!=null && sgY!=null && sgF>sgY;
+  if(sgAdv) return 'push';
+  if(ccFightWinOdds(foe, you)<CC_FOE_BACK) return 'back';
+  if(!CC_ZB && ccMats(foe)>=CC_TAC_BOX_MATS && ccMats(foe)-ccMats(you)>=CC_FOE_BOX_GAP) return 'box';
+  return 'push';
+}
+const CC_TAC_BASE={push:{dec:1, trade:1}, box:{dec:CC_TAC_BOX_DEC, trade:1}, back:{dec:CC_TAC_BACK_DEC, trade:CC_TAC_BACK_TRADE}};
+function ccTacOf(id, you, foe, foeId){
+  const me=CC_TAC_BASE[id] ? id : 'push', fo=foeId || ccFoeTactic(foe, you);
+  const A=CC_TAC_BASE[me], B=CC_TAC_BASE[fo];
+  let dp=0;
+  if(me==='push' || fo==='push') dp+=ccTacDp(you, foe, 'push');
+  if(me==='box' || fo==='box') dp+=ccTacDp(you, foe, 'box');
+  return {id:me, foeId:fo, dec:Math.min(A.dec, B.dec), trade:Math.min(A.trade, B.trade), dp:clamp(dp, -CC_TAC_CAP, CC_TAC_CAP),
+          mats:me==='box' ? CC_TAC_BOX_MATS : 0, foeMats:fo==='box' ? CC_TAC_BOX_MATS : 0};
 }
 function ccTacName(T, id){ return ({push:T.tcPush, box:T.tcBox, back:T.tcBack})[id]||''; }
 /* Вопрос тактики. null — вопроса нет (онлайн/пропуск/симуляция): ccFightApply идёт без поправок. */
@@ -115113,12 +115134,14 @@ async function ccAskTactic(you, ui, foe, tb){
   if(!CC_ZB && ccMats(you)>=CC_TAC_BOX_MATS) opts.push({id:'box', icon:CC_CHOICE_ICON.wall2, title:T.tcBox,
     note:T.tcOdds(...pct(box))+' · '+T.tcBoxNote(ccMats(you), ccMats(foe), ccHealSlots(you), foe && foe._loot ? ccHealSlots(foe) : '?', CC_TAC_BOX_MATS)});
   opts.push({id:'back', icon:CC_CHOICE_ICON.run, title:T.tcBack, note:T.tcOdds(...pct(back))+' · '+T.tcBackNote});
-  const pick=(await ccChoiceBox(T.tcTitle(ccFoeName(foe)), ccKitLine(you), opts, ui && ui.map, null, 'tactic')).id;
+  // Как поведёт себя соперник, видно заранее: так и в игре, по тому, как он стоит и строит.
+  const fid=push.foeId;
+  const pick=(await ccChoiceBox(T.tcTitle(ccFoeName(foe)), ccKitLine(you)+'<br>'+esc(T.tcFoe(ccFoeName(foe), ccTacName(T, fid))), opts, ui && ui.map, null, 'tactic')).id;
   return ccTacOf(pick, you, foe);
 }
 // Строка исхода стычки — одна на все места, где дерутся (ферма, середина, путь, последние).
 function ccFightLine(T, out, F, foeName, gun, you, tac){
-  const head=tac ? ccTacName(T, tac.id)+' · ' : '';
+  const head=tac ? ccTacName(T, tac.id)+(tac.foeId && tac.foeId!=='push' ? ' · '+T.tcFoeDid(ccTacName(T, tac.foeId)) : '')+' · ' : '';
   if(out==='win') return head+T.ccMidFightWon(F.pow, foeName, gun && gun.name)+(you._lootUp ? ' · '+T.ccLootUpgraded(you._lootUp.name) : '');
   if(out==='die') return head+T.ccMidFightDied(foeName);
   if(out==='poke') return head+T.ccMidFightPoke(F.pokeDmg, F.pokeMats);
@@ -171370,7 +171393,7 @@ Object.assign(I18N.pt, {hhTag:'Novo', hhSub:'Quem tem mais prêmios no total: do
   hlHint:'Toque em quem ficou acima', hlPlaceV:p=>p+'º lugar', hlOver:n=>'Sequência encerrada: '+n, hlNewBest:'Novo recorde',
   hlAgain:'Jogar de novo', hlCopy:'Copiar resultado', hlCopied:'Copiado', hlEmpty:'Sem dados para uma pergunta'});
 /* План 125 (14.11): тактика файта (tc*), третья сторона в середине (tp*), точка пути кликом (rpGo, rpHint). */
-Object.assign(I18N.ru, {tcTitle:n=>'Как играем файт'+(n ? ' · '+n : ''), tcPush:'Пушить', tcBox:'Бокс-файт, тянуть', tcBack:'Отойти',
+Object.assign(I18N.ru, {tcFoe:(n,t)=>(n||'Соперник')+' скорее всего: '+t.toLowerCase(), tcFoeDid:t=>'они: '+t.toLowerCase(), tcTitle:n=>'Как играем файт'+(n ? ' · '+n : ''), tcPush:'Пушить', tcBox:'Бокс-файт, тянуть', tcBack:'Отойти',
   tcNone:'нет', tcOdds:(w,d,t)=>w+'% выбить · '+d+'% выбиты · '+t+'% размен',
   tcPushNote:(a,b)=>'решает дробовик: у нас '+a+', у них '+b,
   tcBoxNote:(m1,m2,h1,h2,c)=>'решают ресы и хилки: ресы '+m1+' против '+m2+', хилок '+h1+' против '+h2+' · −'+c+' ресов',
@@ -171379,7 +171402,7 @@ Object.assign(I18N.ru, {tcTitle:n=>'Как играем файт'+(n ? ' · '+n 
   tpNote:(s,k,d,p,b)=>'дерутся рядом · '+s+'%: их файт кончится до нас · '+k+'% выбить, +'+p+' к силе · '+d+'% выбиты · '+b+'%: добить и второго',
   tpGot:r=>(r.self ? r.w+' выбили '+r.l+' до нас · ' : '')+(r.out==='win' ? 'выбили '+r.t+(r.both ? ' и '+r.o : '')+', +'+r.pow+' к силе' : r.out==='die' ? r.t+' развернулись на нас, выбиты' : 'зашли третьими, постреляли и ушли: +'+r.dmg+' урона'),
   rpGo:'Идём к точке', rpHint:'Тапни по кругу, куда встать. Красные точки: отряды, кто у линии, с тем можно встретиться'});
-Object.assign(I18N.en, {tcTitle:n=>'How do we play the fight'+(n ? ' · '+n : ''), tcPush:'Push', tcBox:'Box fight, drag it out', tcBack:'Back off',
+Object.assign(I18N.en, {tcFoe:(n,t)=>(n||'The other squad')+' will likely: '+t.toLowerCase(), tcFoeDid:t=>'they: '+t.toLowerCase(), tcTitle:n=>'How do we play the fight'+(n ? ' · '+n : ''), tcPush:'Push', tcBox:'Box fight, drag it out', tcBack:'Back off',
   tcNone:'none', tcOdds:(w,d,t)=>w+'% we take them · '+d+'% we go down · '+t+'% trade',
   tcPushNote:(a,b)=>'the shotgun decides: ours '+a+', theirs '+b,
   tcBoxNote:(m1,m2,h1,h2,c)=>'mats and heals decide: mats '+m1+' vs '+m2+', heals '+h1+' vs '+h2+' · −'+c+' mats',
@@ -171388,7 +171411,7 @@ Object.assign(I18N.en, {tcTitle:n=>'How do we play the fight'+(n ? ' · '+n : ''
   tpNote:(s,k,d,p,b)=>'fighting nearby · '+s+'%: their fight ends before we arrive · '+k+'% we take one, +'+p+' power · '+d+'% we go down · '+b+'%: finish the second too',
   tpGot:r=>(r.self ? r.w+' took out '+r.l+' before we got there · ' : '')+(r.out==='win' ? 'took out '+r.t+(r.both ? ' and '+r.o : '')+', +'+r.pow+' power' : r.out==='die' ? r.t+' turned on us, we went down' : 'came in third, shots exchanged, we left: +'+r.dmg+' damage'),
   rpGo:'Go to the point', rpHint:'Tap the circle where to stand. Red dots are squads: whoever is by the line, you may run into'});
-Object.assign(I18N.fr, {tcTitle:n=>'Comment on joue le combat'+(n ? ' · '+n : ''), tcPush:'Push', tcBox:'Box fight, faire durer', tcBack:'Reculer',
+Object.assign(I18N.fr, {tcFoe:(n,t)=>(n||'L’adversaire')+' va sûrement : '+t.toLowerCase(), tcFoeDid:t=>'eux : '+t.toLowerCase(), tcTitle:n=>'Comment on joue le combat'+(n ? ' · '+n : ''), tcPush:'Push', tcBox:'Box fight, faire durer', tcBack:'Reculer',
   tcNone:'aucun', tcOdds:(w,d,t)=>w+'% on les élimine · '+d+'% éliminés · '+t+'% échange',
   tcPushNote:(a,b)=>'le pompe décide : le nôtre '+a+', le leur '+b,
   tcBoxNote:(m1,m2,h1,h2,c)=>'matériaux et soins décident : matériaux '+m1+' contre '+m2+', soins '+h1+' contre '+h2+' · −'+c+' matériaux',
@@ -171397,7 +171420,7 @@ Object.assign(I18N.fr, {tcTitle:n=>'Comment on joue le combat'+(n ? ' · '+n : '
   tpNote:(s,k,d,p,b)=>'ils se battent à côté · '+s+'% : leur combat finit avant nous · '+k+'% on en élimine un, +'+p+' puissance · '+d+'% éliminés · '+b+'% : finir le second aussi',
   tpGot:r=>(r.self ? r.w+' a éliminé '+r.l+' avant nous · ' : '')+(r.out==='win' ? r.t+(r.both ? ' et '+r.o : '')+' éliminés, +'+r.pow+' puissance' : r.out==='die' ? r.t+' se sont retournés, éliminés' : 'arrivés en troisième, on a tiré et on est partis : +'+r.dmg+' dégâts'),
   rpGo:'Aller au point', rpHint:'Touche la zone où te placer. Points rouges : les escouades, celles près de la ligne, tu peux les croiser'});
-Object.assign(I18N.it, {tcTitle:n=>'Come giochiamo lo scontro'+(n ? ' · '+n : ''), tcPush:'Spingere', tcBox:'Box fight, tirarla lunga', tcBack:'Ritirarsi',
+Object.assign(I18N.it, {tcFoe:(n,t)=>(n||'L’avversario')+' probabilmente: '+t.toLowerCase(), tcFoeDid:t=>'loro: '+t.toLowerCase(), tcTitle:n=>'Come giochiamo lo scontro'+(n ? ' · '+n : ''), tcPush:'Spingere', tcBox:'Box fight, tirarla lunga', tcBack:'Ritirarsi',
   tcNone:'nessuno', tcOdds:(w,d,t)=>w+'% li eliminiamo · '+d+'% eliminati · '+t+'% scambio',
   tcPushNote:(a,b)=>'decide il fucile a pompa: il nostro '+a+', il loro '+b,
   tcBoxNote:(m1,m2,h1,h2,c)=>'decidono materiali e cure: materiali '+m1+' contro '+m2+', cure '+h1+' contro '+h2+' · −'+c+' materiali',
@@ -171406,7 +171429,7 @@ Object.assign(I18N.it, {tcTitle:n=>'Come giochiamo lo scontro'+(n ? ' · '+n : '
   tpNote:(s,k,d,p,b)=>'combattono vicino · '+s+'%: il loro scontro finisce prima di noi · '+k+'% ne eliminiamo uno, +'+p+' potenza · '+d+'% eliminati · '+b+'%: finire anche il secondo',
   tpGot:r=>(r.self ? r.w+' ha eliminato '+r.l+' prima di noi · ' : '')+(r.out==='win' ? 'eliminati '+r.t+(r.both ? ' e '+r.o : '')+', +'+r.pow+' potenza' : r.out==='die' ? r.t+' si sono girati su di noi, eliminati' : 'entrati per terzi, sparato e via: +'+r.dmg+' danni'),
   rpGo:'Vai al punto', rpHint:'Tocca il cerchio dove metterti. Punti rossi: le squadre, chi sta vicino alla linea, puoi incontrarlo'});
-Object.assign(I18N.pt, {tcTitle:n=>'Como jogamos a luta'+(n ? ' · '+n : ''), tcPush:'Pressionar', tcBox:'Box fight, segurar', tcBack:'Recuar',
+Object.assign(I18N.pt, {tcFoe:(n,t)=>(n||'O adversário')+' provavelmente: '+t.toLowerCase(), tcFoeDid:t=>'eles: '+t.toLowerCase(), tcTitle:n=>'Como jogamos a luta'+(n ? ' · '+n : ''), tcPush:'Pressionar', tcBox:'Box fight, segurar', tcBack:'Recuar',
   tcNone:'nenhuma', tcOdds:(w,d,t)=>w+'% eliminamos · '+d+'% eliminados · '+t+'% troca',
   tcPushNote:(a,b)=>'a escopeta decide: a nossa '+a+', a deles '+b,
   tcBoxNote:(m1,m2,h1,h2,c)=>'materiais e curas decidem: materiais '+m1+' contra '+m2+', curas '+h1+' contra '+h2+' · −'+c+' de materiais',

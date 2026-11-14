@@ -45,6 +45,20 @@ window.addEventListener("load", function(){ setTimeout(async function(){
     check('отойти: стычка не решилась', outBack!=='win' && outBack!=='die' && !gone.length, outBack);
     gone=[]; w=mk(); const outPush=ccFightApply(w.you, 0.2, w.foe, null, ccTacOf('push', w.you, w.foe));
     check('пушить: тот же бросок решает', outPush==='win' || outPush==='die', outPush);
+    // Соперник выбирает сам: слабый отходит, и пуш уже не решает стычку.
+    w=mk(); w.foe.pow=60; w.foe._pf=60;
+    check('слабый соперник отходит', ccFoeTactic(w.foe, w.you)==='back', ccFoeTactic(w.foe, w.you));
+    gone=[]; check('его отход гасит наш пуш', ccFightApply(w.you, 0.2, w.foe, null, ccTacOf('push', w.you, w.foe))!=='win' && !gone.length);
+    // С лучшим дробовиком пушит, даже если слабее.
+    w=mk({weapons:[W('shotgun','common')]}, {weapons:[W('shotgun','legendary')]}); w.foe.pow=60; w.foe._pf=60;
+    check('с лучшим дробовиком пушит', ccFoeTactic(w.foe, w.you)==='push');
+    // Ресов сильно больше: тянет бокс и платит за него.
+    w=mk(); w.foe._mats=1500;
+    t=ccTacOf('push', w.you, w.foe);
+    check('богатый на ресы тянет бокс', t.foeId==='box' && t.dec===CC_TAC_BOX_DEC && t.foeMats===CC_TAC_BOX_MATS, JSON.stringify(t));
+    ccFightApply(w.you, 0.99, w.foe, null, t);
+    check('бокс соперника стоит ему ресов', w.foe._mats===1500-CC_TAC_BOX_MATS, String(w.foe._mats));
+    check('строка с ответом соперника', ccFightLine(L(), 'poke', CC_FIGHT, 'Foe', null, w.you, t).indexOf(L().tcBox.toLowerCase())>=0);
     // Без тактики числа как раньше.
     gone=[]; w=mk(); check('без тактики как было', ccFightApply(w.you, 0.1, w.foe)==='win');
     // 4. Вопрос тактики: три кнопки, бокс прячется без ресов, под пропуском вопроса нет.
@@ -79,7 +93,7 @@ window.addEventListener("load", function(){ setTimeout(async function(){
     bs=[...host.querySelectorAll('[data-at]')];
     check('в середине есть третьить', bs.some(b=>b.textContent.indexOf('Alpha')>=0 && b.textContent.indexOf('Bravo')>=0), bs.map(b=>b.textContent.slice(0,30)).join('|'));
     bs[0].click(); for(let i=0;i<10 && host.querySelector('button'); i++){ host.querySelector('button').click(); await tick(); } await p;
-    ['ru','en','fr','it','pt'].forEach(lg=>['tcTitle','tcPush','tcBox','tcBack','tcNone','tcOdds','tcPushNote','tcBoxNote','tcBackNote','tpTitle','tpNote','tpGot','rpGo'].forEach(k=>check(lg+' '+k, I18N[lg][k]!=null)));
+    ['ru','en','fr','it','pt'].forEach(lg=>['tcFoe','tcFoeDid','tcTitle','tcPush','tcBox','tcBack','tcNone','tcOdds','tcPushNote','tcBoxNote','tcBackNote','tpTitle','tpNote','tpGot','rpGo'].forEach(k=>check(lg+' '+k, I18N[lg][k]!=null)));
     // Без длинных тире в новых строках.
     ['ru','en'].forEach(lg=>{ const s=[I18N[lg].tcOdds(1,2,3), I18N[lg].tcBoxNote(1,2,3,4,5), I18N[lg].tpNote(1,2,3,4,5), I18N[lg].tcBackNote].join(' '); check(lg+' без длинного тире', s.indexOf('—')<0); });
   }catch(e){ out.fails.push('ERR '+(e && e.stack || e)); }
