@@ -64,6 +64,18 @@ const BOOT = `
     if(!/90/.test(nac.textContent) || !/-18/.test(nac.textContent)) fail('NAC button does not show ping and penalty: '+nac.textContent);
     if(/\u2014/.test(row.textContent)) fail('long dash on the row');
     out.steps.push('hub: '+btns.length+' regions, '+nac.textContent);
+    // \u0420\u0430\u0441\u043f\u0438\u0441\u0430\u043d\u0438\u0435 Epic: 22.03 Solo Victory Cup EU 13:00 UTC, NAC +5 \u0447; \u0443 ME \u0442\u043e\u0442 \u0436\u0435 \u00abDay 1\u00bb \u0448\u0451\u043b \u043d\u0430\u043a\u0430\u043d\u0443\u043d\u0435.
+    const sl=ccAwaySlot('NAC');
+    if(!(sl instanceof Date) || sl.getUTCHours()!==18) fail('NAC start is not 18:00 UTC: '+sl);
+    if(ccAwaySlot('ME')!==null || ccAwayWhy('ME')!=='off') fail('ME is offered on a day it had no cup');
+    if(btns.some(b=>(b.getAttribute('onclick')||'').indexOf("'ME'")>=0)) fail('ME button on the hub');
+    const order=btns.map(b=>((b.getAttribute('onclick')||'').match(/'([A-Z]+)'/)||[])[1]);
+    if(order.indexOf('OCE')>order.indexOf('NAW')) fail('regions not in start order: '+order.join(','));
+    out.steps.push('schedule: NAC '+sl.toISOString().slice(11,16)+' UTC, no ME that day, order '+order.join(' '));
+    // \u0414\u0435\u043d\u044c \u0431\u0435\u0437 \u0440\u0430\u0441\u043f\u0438\u0441\u0430\u043d\u0438\u044f (\u043f\u0440\u043e\u0448\u043b\u044b\u0439 \u0433\u043e\u0434) \u2014 \u0440\u0435\u0433\u0438\u043e\u043d\u044b \u043e\u0442\u043a\u0440\u044b\u0442\u044b \u0431\u0435\u0437 \u0432\u0440\u0435\u043c\u0435\u043d\u0438.
+    const keep=careerVictoryOn; careerVictoryOn=()=>({id:'NoSuchCup_X', name:'X'});
+    if(ccAwaySlot('NAC')!==undefined) fail('a cup without schedule got a slot');
+    careerVictoryOn=keep;
 
     // ---- вечер в NAC ---------------------------------------------------------------
     const en0=careerEnergy();
@@ -105,8 +117,8 @@ const BOOT = `
 
     // ---- нет сил -----------------------------------------------------------------------
     cr.energy=10;
-    if(ccAwayWhy('ME')!=='tired') fail('a tired player can go away: '+ccAwayWhy('ME'));
-    out.steps.push('with 10 energy: '+ccAwayWhy('ME'));
+    if(ccAwayWhy('NAW')!=='tired') fail('a tired player can go away: '+ccAwayWhy('NAW'));
+    out.steps.push('with 10 energy: '+ccAwayWhy('NAW'));
 
     // ---- пять языков ---------------------------------------------------------------------
     ['ru','en','fr','it','pt'].forEach(l=>{ LANG=l; CC_L_CACHE={}; const D=L();
