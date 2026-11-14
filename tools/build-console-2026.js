@@ -1,4 +1,5 @@
-// Консольные капы 2026 года (PlayStation Cup, Console Victory/Cash Cups) из окон Epic: tools/measured/comp-events-2026.json.
+// Капы с платформой 2026 года — консольные (PlayStation Cup, Console Victory/Cash Cups) и мобильные (Mobile Victory Cups,
+// Mobile Series, Touch-Only Test Cup) — из окон Epic: tools/measured/comp-events-2026.json. Играются с консолью или телефоном.
 // Один кап — вечер EU с выплатой (окно с payoutTable). Таблица выплат — по регионам (то же окно у каждого региона),
 // 'value' (100, 200, 300 очков = победы) карьера читает как плату за победу (ccVicPerWin), 'rank' — как места.
 // Печатает const CC_CONSOLE_2026=[...]; вставляется в index.html вместо прежней строки.
@@ -19,7 +20,7 @@ for (const [k, e] of Object.entries(ev)) {
 }
 const out = [], n = {};
 for (const [k, e] of Object.entries(ev)) {
-  if (!/_EU$/.test(k) || !/Console|PlayStation|Playstation|Xbox/i.test(k)) continue;
+  if (!/_EU$/.test(k) || !/Console|PlayStation|Playstation|Xbox|Mobile|Touch/i.test(k + ' ' + (ev[k].t1 || ''))) continue;
   const id = k.replace(/^epicgames_/, '').replace(/_EU$/, '');
   const name = String(e.t1 || id).trim();
   const days = {};
@@ -34,6 +35,9 @@ for (const [k, e] of Object.entries(ev)) {
     const payT = {}; REGS.forEach(r => { if (days[d].pay[r]) payT[r] = days[d].pay[r]; });
     const row = {day: d, id, mode: MODE[days[d].team] || 'solo', n: n[id], name, payT};
     if (/ZB|ZeroBuild|Zero Build/i.test(id + ' ' + name)) row.zb = true;
+    // Платформа — по id и имени (у части PlayStation-капов id без слова PlayStation: PSTypicalGamer, PSNickEh30).
+    const t = id + ' ' + name;
+    row.plat = /Mobile|Touch/i.test(t) ? 'mobile' : /Xbox/i.test(t) ? 'xbox' : /PlayStation|Playstation|_PS[A-Z]/.test(t) ? 'ps' : 'any';
     out.push(row);
   });
 }

@@ -67,10 +67,52 @@ const BOOT = `
     const vcc=inList.find(v=>/ConsoleVictoryCup|ConsoleVCC/.test(v.id));
     if(!vcc || ccVicPerWin(vcc)!==100 || !vcc.zb) fail('Console Victory Cup 2026: '+JSON.stringify(vcc && {id:vcc.id, zb:vcc.zb})+' · listed '+inList.map(v=>v.day+' '+v.id).join(', '));
     out.steps.push('2026: '+c26+' console cups ('+ids26.length+' kinds); on the calendar without a console '+day26[0]+', with a PlayStation '+day26[1]+'; e.g. '+day26[2]+'; '+vcc.day+' '+vcc.id+' $100 a win, ZB · days '+inList.map(v=>v.day.slice(5)).join(' '));
+    // ---- мобильные капы: телефон, своя сцена, своя сила ----------------------------------------------
+    const wait=ms=>new Promise(r=>setTimeout(r,ms));
+    if(ccConsoleNeed({id:'S41_MobileVictoryCup_BR'})!=='mobile' || ccConsoleNeed({id:'S11_WinterRoyale_Mobile'})!=='mobile') fail('mobile cups do not need a phone');
+    if(ccConsoleNeed({id:'S41_PSTypicalGamer', plat:'ps'})!=='ps') fail('platform from the cup is ignored');
+    const mob26=CC_CONSOLE_2026.filter(v=>v.plat==='mobile');
+    if(mob26.length<20) fail('2026 mobile cups missing: '+mob26.length);
+    seed('2026-06-27');
+    const mobBefore=ccVictoryList().filter(v=>ccConsoleNeed(v)==='mobile').length;
+    careerBuy('phone');
+    if(!careerOwns('phone')) fail('phone not bought');
+    const mobList=ccVictoryList().filter(v=>ccConsoleNeed(v)==='mobile');
+    if(mobList.length<=mobBefore) fail('buying a phone added no mobile cups: '+mobBefore+' -> '+mobList.length);
+    if(ccMobilePen()!==16) fail('first mobile cup penalty should be 16: '+ccMobilePen());
+    CAREER.career.mobN=3; if(ccMobilePen()!==10) fail('after three mobile cups penalty should be 10: '+ccMobilePen());
+    CAREER.career.mobN=50; if(ccMobilePen()!==4) fail('mobile penalty floor 4: '+ccMobilePen());
+    CAREER.career.mobN=0;
+    const mf=ccMobileField(100), roster=CC_MOBILE_ROSTER.EU, rnames=new Set(roster.map(x=>x[0]));
+    const realN=mf.filter(t=>rnames.has(t.squad[0].handle)).length;
+    if(mf.length!==100 || realN!==Math.min(100, roster.length)) fail('mobile field: '+mf.length+' teams, '+realN+' real mobile players');
+    const pcSet=new Set(ccSceneRoster('EU').map(c=>hKey(c)));
+    const pcIn=mf.filter(t=>pcSet.has(hKey(t.squad[0])) && !rnames.has(t.squad[0].handle)).length;
+    if(pcIn) fail('PC scene in a mobile field: '+pcIn);
+    out.steps.push('mobile: '+mob26.length+' cups 2026, on the calendar without a phone '+mobBefore+', with '+mobList.length+'; field 100 = '+realN+' real mobile players (e.g. '+mf[0].squad[0].handle+'); penalty 16 -> 10 -> 4');
+    // Полный мобильный вечер.
+    const mc=mobList.find(v=>v.mode==='solo' && v.day>=careerToday());
+    seed(mc.day, ['phone']);
+    ccVictoryPick(mc.id);
+    if(careerVictoryOn(mc.day).id!==mc.id) fail('mobile cup not picked: '+careerVictoryOn(mc.day).id);
+    let usedMob=false, mBase=null, mPow=null;
+    const mfk=ccMobileField; ccMobileField=function(){ usedMob=true; return mfk.apply(this, arguments); };
+    const cyt=careerYouTeam; careerYouTeam=function(){ const t=cyt.apply(this, arguments); mBase=t.pow; return t; };
+    const sgl=simulateGamesLive; simulateGamesLive=function(field){ if(mPow==null){ const y=field.find(t=>t.isYou); mPow=y && y.pow; } return sgl.apply(this, arguments); };
+    const iv=setInterval(()=>{ const am=document.getElementById('ccAskModal'); if(am && am.style.display==='flex'){ const n=document.getElementById('ccAskNo'); if(n) n.click(); }
+      const b=document.getElementById('majorSkipBtn'); if(b && !b.disabled) b.click(); const c0=document.querySelector('.cc-choice-btn'); if(c0) c0.click(); }, 20);
+    document.getElementById('majorStages').innerHTML='';
+    try{ careerSpotEnsure(); }catch(e){}
+    await careerPlay();
+    clearInterval(iv); ccMobileField=mfk; careerYouTeam=cyt; simulateGamesLive=sgl;
+    if(!usedMob) fail('mobile night did not use the mobile scene');
+    if(!(mBase-mPow===16)) fail('mobile night penalty: '+mBase+' -> '+mPow);
+    if((CAREER.career.mobN||0)!==1) fail('mobile cups played not counted: '+CAREER.career.mobN);
+    out.steps.push('mobile night '+mc.day+' '+mc.id+': mobile scene, power '+mBase+' -> '+mPow+', next penalty '+ccMobilePen());
     // ---- магазин и языки ---------------------------------------------------------------------
     CH_TAB='shop'; try{ careerTab('shop'); }catch(e){}
     ['ru','en','fr','it','pt'].forEach(l=>{ LANG=l; CC_L_CACHE={}; const D=L();
-      ['ccShopps5','ccShopxbox','ccShopConsoles','ccShopConsoleHint','ccShopConsoleFx','ccNeedPs','ccNeedXbox','ccNeedConsole'].forEach(k=>{ if(!D[k] || /—/.test(D[k])) fail(l+': '+k); }); });
+      ['ccShopps5','ccShopxbox','ccShopphone','ccShopConsoles','ccShopConsoleHint','ccShopConsoleFx','ccNeedPs','ccNeedXbox','ccNeedConsole','ccNeedPhone'].forEach(k=>{ if(!D[k] || /—/.test(D[k])) fail(l+': '+k); }); });
     out.steps.push('five languages');
   } catch(e){ if(!out.fail) out.fail = String(e && e.message || e); }
   out.errs = window.__errs;
@@ -83,7 +125,7 @@ const tmp = path.join(dir, 'index.html');
 fs.writeFileSync(tmp, '<base href="file:///' + ROOT.replace(/\\/g,'/') + '/">' + HEAD +
   fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8') + BOOT);
 const dom = execFileSync(CHROME, ['--headless=new','--disable-gpu','--no-sandbox',
-  '--allow-file-access-from-files','--virtual-time-budget=120000','--dump-dom',
+  '--allow-file-access-from-files','--virtual-time-budget=400000','--dump-dom',
   'file:///' + tmp.replace(/\\/g,'/')], {maxBuffer:512*1024*1024, encoding:'utf8', stdio:['ignore','pipe','ignore']});
 fs.rmSync(dir, {recursive:true, force:true});
 
