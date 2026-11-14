@@ -9442,6 +9442,9 @@
   .rp-foe{fill:#ff4d5e;stroke:#fff;stroke-width:1px;vector-effect:non-scaling-stroke;}
   .rp-me{fill:#ffdd00;stroke:#151515;stroke-width:2px;vector-effect:non-scaling-stroke;}
   .rp-chip{display:block;width:22px;height:6px;border-radius:3px;}
+  .rp-svg[data-hold]{cursor:crosshair;touch-action:none;}
+  .rp-line{stroke:#ffdd00;}
+  .rp-to{fill:#ffdd00;stroke:#151515;stroke-width:2px;vector-effect:non-scaling-stroke;}
   /* Стиль игры моделями из игры (ccStyleBox); у W-key клавиша W в углу. */
   .cc-style-ic{position:relative;display:grid;place-items:center;width:100%;height:100%;}
   .cc-choice-ico .cc-style-ic img{width:26px;height:26px;object-fit:contain;filter:drop-shadow(0 1px 1px rgba(0,0,0,.7));}
@@ -114615,81 +114618,105 @@ const CC_ROT_FARM={early:0, with:Math.round(CC_MATS_ZONE/2), late:CC_MATS_ZONE, 
 const CC_ROT_MOVE_POW=1;
 // Ресы за круг при таком выходе — с учётом стиля стройки (ccAskFarm/ccAskBuild).
 function ccRotMats(id, t){ return Math.round(CC_MATS_ZONE*(CC_ROT_MATS[id]||1)*((t && t._buildMul)||1)); }
-/* ПУТЬ РОТАЦИИ НА КАРТЕ (выбор 5, 13.11). После «когда выходим» — «каким путём»: прямо или обходом слева/справа, три линии
-   на карте от твоего отряда к следующему кругу, и на ней видно, кто где стоит (живые отряды движка, game.squads). Отряд «на
-   пути», если он ближе CC_PATH_CORR единиц мира к линии; встреча с вероятностью 1−(1−CC_PATH_MEET)^k, не выше CC_PATH_MAX.
-   Встреча — это файт середины с ближайшим из них (ccFightApply, те же числа замера: чаще постреляли и разошлись). Обход
-   длиннее: CC_PATH_MATS ресов на стройку по дороге. Числа — решение, не замер. Только одиночная игра без пропуска
-   (ccLootRoomOn): в онлайне и под симуляцией вопроса нет, как и встречи, — баланс там прежний. */
-const CC_PATH_CORR=7, CC_PATH_MEET=0.22, CC_PATH_MAX=0.75, CC_PATH_MATS=90, CC_PATH_BEND=0.38;
-const CC_PATH_COLOR={direct:'#ffdd00', left:'#00d0a8', right:'#ff7ad9'};
+/* ПУТЬ РОТАЦИИ НА КАРТЕ (выбор 5, 13.11; 14.11 план 125: точка кликом). После «когда выходим» — куда идём: тап по карте
+   ставит точку в следующем круге (не дальше CC_PATH_IN его радиуса), отряд идёт к ней прямо, на карте видно, кто где стоит
+   (живые отряды движка, game.squads). Отряд «на пути», если он ближе CC_PATH_CORR единиц мира к линии; встреча с вероятностью
+   1−(1−CC_PATH_MEET)^k, не выше CC_PATH_MAX. Встреча — файт середины с ближайшим (тактика ccAskTactic, ccFightApply). Путь
+   длиннее прямого к ближней стороне больше чем на CC_PATH_LONG — CC_PATH_MATS ресов на стройку. Точка уходит в движок
+   (team._pos {x,y,cx,cy}, zone-sim chooseTarget): в этом круге отряд встаёт там. Числа — решение, не замер. Только одиночная
+   игра без пропуска (ccLootRoomOn): в онлайне и под симуляцией вопроса нет, как и встречи, — баланс там прежний. */
+const CC_PATH_CORR=7, CC_PATH_MEET=0.22, CC_PATH_MAX=0.75, CC_PATH_MATS=90, CC_PATH_IN=0.9, CC_PATH_LONG=1.15;
 function ccPathPlan(you){
   const game=you && you._game, sq=you && you._sq;
   if(!game || !game.squads || !sq || !sq.alive || !game.frames) return null;
+  // Круг, в который движок пойдёт дальше (upcoming). f.next последнего кадра — круг, в котором уже стоим.
   const fr=game.frames(), f=fr && fr[fr.length-1];
-  const c=f && (f.next || f.circle);
+  const c=(game.upcoming && game.upcoming()) || (f && (f.next || f.circle));
   if(!c) return null;
   const me={x:sq.x, y:sq.y}, dx=c.cx-me.x, dy=c.cy-me.y, d=Math.hypot(dx, dy);
   if(!(d>c.radius*0.85)) return null;   // уже внутри следующего круга — идти некуда
-  // Куда: точка круга на 0.6 радиуса от центра, со стороны отряда.
+  // Точка по умолчанию: на 0.6 радиуса от центра, со стороны отряда.
   const to={x:c.cx-dx/d*c.radius*0.6, y:c.cy-dy/d*c.radius*0.6};
-  const L=Math.hypot(to.x-me.x, to.y-me.y), ux=(to.x-me.x)/L, uy=(to.y-me.y)/L;
-  // Лево по ходу на экране (y вниз): (uy, −ux).
-  const mid={x:(me.x+to.x)/2, y:(me.y+to.y)/2};
-  const ctl=s=>({x:mid.x+s*uy*L*CC_PATH_BEND, y:mid.y-s*ux*L*CC_PATH_BEND});
-  const curve=(p1)=>{ const pts=[]; for(let i=0;i<=24;i++){ const t=i/24, a=(1-t)*(1-t), b=2*(1-t)*t, e=t*t;
-    pts.push({x:a*me.x+b*p1.x+e*to.x, y:a*me.y+b*p1.y+e*to.y}); } return pts; };
+  const base=Math.hypot(to.x-me.x, to.y-me.y);
   const foes=game.squads.filter(s=>s.alive && s!==sq && s.team!==you && !s.team.isMate);
-  const mk=(id, p1)=>{ const pts=curve(p1);
+  // Путь к точке pt: точка зажата в круг, линия прямая, отряды у линии, шанс встречи, ресы за длинный путь.
+  const at=pt=>{
+    let x=pt.x, y=pt.y;
+    const ox=x-c.cx, oy=y-c.cy, od=Math.hypot(ox, oy), R=c.radius*CC_PATH_IN;
+    if(od>R){ x=c.cx+ox/od*R; y=c.cy+oy/od*R; }
+    const pts=[]; for(let i=0;i<=24;i++){ const t=i/24; pts.push({x:me.x+(x-me.x)*t, y:me.y+(y-me.y)*t}); }
     const on=foes.map(s=>({s, d:Math.min(...pts.map(p=>Math.hypot(p.x-s.x, p.y-s.y)))})).filter(o=>o.d<CC_PATH_CORR).sort((a,b)=>a.d-b.d);
     const p=Math.min(CC_PATH_MAX, 1-Math.pow(1-CC_PATH_MEET, on.length));
-    return {id, pts, on, p, len:pts.reduce((s, q, i)=>i ? s+Math.hypot(q.x-pts[i-1].x, q.y-pts[i-1].y) : 0, 0)}; };
-  return {me, to, c, foes, paths:[mk('direct', mid), mk('left', ctl(1)), mk('right', ctl(-1))]};
+    const len=Math.hypot(x-me.x, y-me.y);
+    return {pt:{x, y}, pts, on, p, len, mats:len>base*CC_PATH_LONG ? CC_PATH_MATS : 0};
+  };
+  return {me, to, c, foes, at, def:at(to)};
 }
+function ccPathLineAttr(path){ return path.pts.map(q=>q.x.toFixed(2)+','+q.y.toFixed(2)).join(' '); }
 function ccPathMapHTML(plan){
   const key=(typeof ACTIVE_LANDING_SET!=='undefined') ? ACTIVE_LANDING_SET : '', art=MAP_ART[key];
   if(!art) return '';
   const asp=MAP_ASPECT[key]||'1100/970', ar=String(asp).split('/'), k=(Number(ar[1])||1)/(Number(ar[0])||1);
-  // Рамка: всё, что нарисовано, плюс поля; в процентах картинки (мир: x как есть, y/k).
-  const xs=[plan.me.x, plan.to.x, plan.c.cx-plan.c.radius, plan.c.cx+plan.c.radius], ys=[plan.me.y, plan.to.y, plan.c.cy-plan.c.radius, plan.c.cy+plan.c.radius];
-  plan.paths.forEach(p=>p.pts.forEach(q=>{ xs.push(q.x); ys.push(q.y); }));
+  // Рамка: отряд и весь следующий круг, плюс поля; в процентах картинки (мир: x как есть, y/k).
+  const xs=[plan.me.x, plan.c.cx-plan.c.radius, plan.c.cx+plan.c.radius], ys=[plan.me.y, plan.c.cy-plan.c.radius, plan.c.cy+plan.c.radius];
   const x0=Math.min(...xs)-4, x1=Math.max(...xs)+4, y0=Math.min(...ys)/k-4, y1=Math.max(...ys)/k+4;
   const RATIO=16/10, w=Math.max(8, x1-x0), h=Math.max(8, y1-y0);
   const zoom=Math.max(1, Math.min(6, Math.min(100/w, 100/(h*k*RATIO))));
   const halfW=Math.min(50, 50/zoom), halfH=Math.min(50, 50/(zoom*k*RATIO));
   const cx=clamp((x0+x1)/2, halfW, 100-halfW), cy=clamp((y0+y1)/2, halfH, 100-halfH);
-  const H=(100*k).toFixed(2), sw=(0.9/zoom).toFixed(3), r=(1.3/zoom).toFixed(3);
-  const line=p=>'<polyline points="'+p.pts.map(q=>q.x.toFixed(2)+','+q.y.toFixed(2)).join(' ')+'" stroke="'+CC_PATH_COLOR[p.id]+'"/>';
+  const H=(100*k).toFixed(2), sw=(0.9/zoom).toFixed(3), r=(1.3/zoom).toFixed(3), d=plan.def;
   const foes=plan.foes.map(s=>'<circle cx="'+s.x.toFixed(2)+'" cy="'+s.y.toFixed(2)+'" r="'+r+'" class="rp-foe"/>').join('');
-  const svg='<svg class="rp-svg" viewBox="0 0 100 '+H+'" preserveAspectRatio="none" style="--sw:'+sw+'">'+
+  const svg='<svg class="rp-svg" data-hold="1" data-h="'+H+'" viewBox="0 0 100 '+H+'" preserveAspectRatio="none" style="--sw:'+sw+'">'+
     '<circle cx="'+plan.c.cx.toFixed(2)+'" cy="'+plan.c.cy.toFixed(2)+'" r="'+plan.c.radius.toFixed(2)+'" class="rp-zone"/>'+
-    plan.paths.map(line).join('')+foes+
+    '<polyline class="rp-line" points="'+ccPathLineAttr(d)+'"/>'+foes+
+    '<circle cx="'+d.pt.x.toFixed(2)+'" cy="'+d.pt.y.toFixed(2)+'" r="'+(r*1.6).toFixed(3)+'" class="rp-to"/>'+
     '<circle cx="'+plan.me.x.toFixed(2)+'" cy="'+plan.me.y.toFixed(2)+'" r="'+(r*1.5).toFixed(3)+'" class="rp-me"/></svg>';
   return '<div class="rp-map"><div class="lr-map-l" style="--zw:'+(zoom*100).toFixed(0)+'%;--tx:'+(-cx).toFixed(2)+'%;--ty:'+(-cy).toFixed(2)+'%;aspect-ratio:'+asp+';background-image:url(\''+art+'\')">'+svg+'</div></div>';
 }
+// Подпись пути: кто на линии, шанс встречи, ресы за длинный путь.
+function ccPathNote(T, path){ return T.rpNote(path.on.length, Math.round(path.p*100), path.mats); }
 async function ccAskPath(you, ui){
   if(!you || !ccLootRoomOn()) return;
   const plan=ccPathPlan(you);
   if(!plan) return;
   const T=L();
-  const name=id=>({direct:T.rpDirect, left:T.rpLeft, right:T.rpRight})[id];
-  const best=plan.paths.slice().sort((a,b)=>a.p-b.p)[0];
-  const opts=plan.paths.map(p=>({id:p.id, def:p.id==='direct', title:name(p.id),
-    icon:'<span class="rp-chip" style="background:'+CC_PATH_COLOR[p.id]+'"></span>',
-    note:T.rpNote(p.on.length, Math.round(p.p*100), p.id==='direct' ? 0 : CC_PATH_MATS)+(p===best && p.id!=='direct' ? ' · '+T.rpSafest : '')}));
-  const pick=(await ccChoiceBox(T.rpTitle, ccPathMapHTML(plan)+'<span>'+esc(T.rpHint)+'</span>', opts, ui && ui.map, null, 'path')).id;
-  const p=plan.paths.find(x=>x.id===pick)||plan.paths[0];
-  if(p.id!=='direct') you._mats=Math.max(0, ccMats(you)-CC_PATH_MATS);
+  let cur=plan.def;
+  const opts=[{id:'go', def:true, icon:CC_CHOICE_ICON.run, title:T.rpGo, note:ccPathNote(T, cur)}];
+  const pr=ccChoiceBox(T.rpTitle, ccPathMapHTML(plan)+'<span>'+esc(T.rpHint)+'</span>', opts, ui && ui.map, null, 'path');
+  // Вопрос уже на странице (ccChoiceBox строит его сразу): тап по карте двигает точку и переписывает подпись.
+  const host=(ui && ui.map) || document.getElementById('majorStages');
+  const boxes=host ? host.querySelectorAll('.cc-choice') : [];
+  const box=boxes.length ? boxes[boxes.length-1] : null, svg=box && box.querySelector('.rp-svg');
+  if(svg){
+    const H=Number(svg.dataset.h)||100;
+    const put=ev=>{
+      const rc=svg.getBoundingClientRect();
+      if(!rc.width || !rc.height) return;
+      cur=plan.at({x:(ev.clientX-rc.left)/rc.width*100, y:(ev.clientY-rc.top)/rc.height*H});
+      const ln=svg.querySelector('.rp-line'), to=svg.querySelector('.rp-to');
+      if(ln) ln.setAttribute('points', ccPathLineAttr(cur));
+      if(to){ to.setAttribute('cx', cur.pt.x.toFixed(2)); to.setAttribute('cy', cur.pt.y.toFixed(2)); }
+      const em=box.querySelector('.cc-choice-btn em');
+      if(em) em.textContent=ccPathNote(T, cur);
+    };
+    let down=false;
+    const up=()=>{ down=false; };
+    svg.addEventListener('pointerdown', ev=>{ down=true; put(ev); });
+    svg.addEventListener('pointermove', ev=>{ if(down) put(ev); });
+    window.addEventListener('pointerup', up);
+    pr.then(()=>window.removeEventListener('pointerup', up));
+  }
+  await pr;
+  const p=cur;
+  you._pos={x:p.pt.x, y:p.pt.y, cx:plan.c.cx, cy:plan.c.cy};
+  if(p.mats) you._mats=Math.max(0, ccMats(you)-p.mats);
   const say=async (line, ok)=>{ if(ui && ui.note) ui.note(line); await ccChoiceResult(ui && ui.map, line, ok); };
-  if(!p.on.length || Math.random()>=p.p){ await say(T.rpClear(name(p.id)), true); return; }
-  const foe=p.on[0].s.team, foeName=String(foe.name||'').replace(/<[^>]+>/g,'');
+  if(!p.on.length || Math.random()>=p.p){ await say(T.rpClear(T.rpGo), true); return; }
+  const foe=p.on[0].s.team, foeName=ccFoeName(foe);
   const gun=you._loot && you._loot.weapons && you._loot.weapons[0];
-  const out=ccFightApply(you, Math.random(), foe);
-  const head=T.rpMet(foeName)+' · ';
-  if(out==='win') await say(head+T.ccMidFightWon(CC_FIGHT.pow, foeName, gun && gun.name), true);
-  else if(out==='die') await say(head+T.ccMidFightDied(foeName), false);
-  else if(out==='poke') await say(head+T.ccMidFightPoke(CC_FIGHT.pokeDmg, CC_FIGHT.pokeMats), null);
-  else await say(head+T.ccMidFightTraded(CC_FIGHT.tradePow), false);
+  const tac=await ccAskTactic(you, ui, foe, CC_FIGHT);
+  const out=ccFightApply(you, Math.random(), foe, null, tac);
+  await say(T.rpMet(foeName)+' · '+ccFightLine(T, out, CC_FIGHT, foeName, gun, you, tac), out==='win' ? true : out==='poke' ? null : false);
 }
 async function ccAskRot(you, ui){
   if(!you) return;
@@ -114874,12 +114901,10 @@ async function ccAskFarm(you, ui){
     const r=Math.random();
     const game=you._game, foe=(game && game.nearest) ? game.nearest(you) : null;
     const foeName=foe ? String(foe.name||'').replace(/<[^>]+>/g,'') : '';
-    const out=ccFightApply(you, r, foe);
+    const tac=await ccAskTactic(you, ui, foe, CC_FIGHT);
+    const out=ccFightApply(you, r, foe, null, tac);
     ccMpMark('w3f:'+out);
-    if(out==='win')   await say(T.ccMidFightWon(CC_FIGHT.pow, foeName, gun && gun.name)+(you._lootUp ? ' · '+T.ccLootUpgraded(you._lootUp.name) : ''), true);
-    else if(out==='die') await say(T.ccMidFightDied(foeName), false);
-    else if(out==='poke') await say(T.ccMidFightPoke(CC_FIGHT.pokeDmg, CC_FIGHT.pokeMats), null);
-    else await say(T.ccMidFightTraded(CC_FIGHT.tradePow), false);
+    await say(ccFightLine(T, out, CC_FIGHT, foeName, gun, you, tac), out==='win' ? true : out==='poke' ? null : false);
     return;
   }
   ccMatsAdd(you, CC_MATS_FARM);
@@ -114936,11 +114961,24 @@ async function ccAskMenu(you, ui){
        note:T.ccMidFightNote(winPct, CC_FIGHT.pow, diePct, tradePct, CC_FIGHT.pokeDmg)};
   // Zero Build: за ресами идти некуда — остаёмся, сёрдж, файт.
   const opts=CC_ZB ? [optStay, ...surgeOpt, optFight] : (low ? [optGo, optStay, ...surgeOpt, optFight] : [optStay, ...surgeOpt, optGo, optFight]);
+  // Третья сторона: рядом дерутся двое (ccThirdPair). Только одиночная игра без пропуска, как и тактика.
+  const pair=ccLootRoomOn() ? ccThirdPair(you) : null;
+  if(pair){
+    const o=ccThirdOdds(you, pair.a.team);
+    opts.push({id:'third', icon:CC_CHOICE_ICON.contest, title:T.tpTitle(ccFoeName(pair.a.team), ccFoeName(pair.b.team)),
+      note:T.tpNote(Math.round(CC_THIRD_SELF*100), Math.round(o.kill*100), Math.round(o.die*100), CC_THIRD.pow, Math.round(CC_THIRD_BOTH*100))});
+  }
   const pickId=(await ccMpChoose('mid'+(you.mpTag||''), async function(){
     return (await ccChoiceBox(T.ccMidTitle, ccKitLine(you), opts, ui && ui.map, null, 'mid')).id;
-  }, function(v){ return ({stay:T.ccMatsStay, surge:T.ccMidSurge, go:T.ccMatsGo, fight:T.ccMidFight})[v]||''; })).v;
+  }, function(v){ return ({stay:T.ccMatsStay, surge:T.ccMidSurge, go:T.ccMatsGo, fight:T.ccMidFight, third:T.ccLateThird})[v]||''; })).v;
   ccMpMark('a5:'+pickId);
   const say=async (line, ok)=>{ if(ui && ui.note) ui.note(line); await ccChoiceResult(ui && ui.map, line, ok); };
+  if(pickId==='third' && pair){
+    const res=ccThirdPairApply(you, pair);
+    const ok=res.out==='win' ? true : res.out==='die' ? false : null;
+    await say(T.tpGot(res), ok);
+    return;
+  }
   if(pickId==='stay'){
     await say(low ? T.ccMatsStayGot : T.ccMidStayGot, low ? true : null);
     return;
@@ -114963,12 +115001,10 @@ async function ccAskMenu(you, ui){
   const r=Math.random();
   const game=you._game, foe=(game && game.nearest) ? game.nearest(you) : null;
   const foeName=foe ? String(foe.name||'').replace(/<[^>]+>/g,'') : '';
-  const out=ccFightApply(you, r, foe);
+  const tac=await ccAskTactic(you, ui, foe, CC_FIGHT);
+  const out=ccFightApply(you, r, foe, null, tac);
   ccMpMark('w5f:'+out);
-  if(out==='win')   await say(T.ccMidFightWon(CC_FIGHT.pow, foeName, gun && gun.name)+(you._lootUp ? ' · '+T.ccLootUpgraded(you._lootUp.name) : ''), true);
-  else if(out==='die') await say(T.ccMidFightDied(foeName), false);
-  else if(out==='poke') await say(T.ccMidFightPoke(CC_FIGHT.pokeDmg, CC_FIGHT.pokeMats), null);
-  else await say(T.ccMidFightTraded(CC_FIGHT.tradePow), false);
+  await say(ccFightLine(T, out, CC_FIGHT, foeName, gun, you, tac), out==='win' ? true : out==='poke' ? null : false);
 }
 /* Лут с трупа: лучший ствол соперника того же класса встаёт на место худшего
    своего, если он выше по редкости. Возвращает взятый предмет или null. Пак
@@ -114993,12 +115029,15 @@ function ccLootUpgrade(you, foe){
 /* Что делает файт с отрядом — отдельно от вопроса, чтобы проверялось.
    r — бросок [0,1); foe — команда соседа (может не быть: тогда выбить некого
    и погибнуть не от кого — исход «разменялись»). */
-function ccFightApply(you, r, foe, tb){
+function ccFightApply(you, r, foe, tb, tac){
   const sq=you._sq, game=you._game, F=tb||CC_FIGHT;
   const can=!!(foe && game && game.eliminate);
+  // Тактика (ccAskTactic): доля решающих, размен, поправка шанса, ресы на бокс. Без неё как было.
+  const dec=tac ? tac.dec : 1, trM=tac ? tac.trade : 1;
+  if(tac && tac.mats) you._mats=Math.max(0, ccMats(you)-tac.mats);
   // Решающая доля стычек — CC_FIGHT.decide; внутри неё победителя называет сила.
-  const p=ccFightWinOdds(you, foe);
-  const winTo=F.decide*p, dieTo=F.decide;
+  const p=tac ? clamp(ccFightWinOdds(you, foe)+(tac.dp||0), 0.05, 0.95) : ccFightWinOdds(you, foe);
+  const winTo=F.decide*dec*p, dieTo=F.decide*dec;
   if(r<winTo){
     if(can) game.eliminate(foe, you);
     else if(sq) sq.dealt=(sq.dealt||0)+CC_FIGHT.dmg;
@@ -115013,7 +115052,7 @@ function ccFightApply(you, r, foe, tb){
     game.eliminate(you, foe);
     return 'die';
   }
-  if(r<dieTo+F.trade || (r<dieTo && !can)){
+  if(r<dieTo+F.trade*trM || (r<dieTo && !can)){
     ccAddGamePow(you, -CC_FIGHT.tradePow);
     you._mats=Math.max(0, ccMats(you)-CC_FIGHT.tradeMats);
     if(sq){ sq.shield=0; sq.hp=Math.max(1, (sq.hp!=null?sq.hp:100)-CC_FIGHT.tradeHp); sq.taken=(sq.taken||0)+CC_FIGHT.dmg; }
@@ -115024,6 +115063,66 @@ function ccFightApply(you, r, foe, tb){
   if(sq){ sq.dealt=(sq.dealt||0)+CC_FIGHT.pokeDmg; sq.taken=(sq.taken||0)+Math.round(CC_FIGHT.pokeDmg/2); }
   you._mats=Math.max(0, ccMats(you)-CC_FIGHT.pokeMats);
   return 'poke';
+}
+/* ТАКТИКА ФАЙТА (план 125, 14.11): «чтоб лут и ресы решали файты». Перед стычкой — как играем её:
+     пушить — числа замера как есть (dec 1), плюс CC_TAC_SG к шансу за каждую ступень редкости своего дробовика над чужим;
+     бокс — решается реже (0.7), шанс сдвигают ресы и хилки против чужих, стоит CC_TAC_BOX_MATS ресов; нет в ZB и без ресов;
+     отойти — решается редко (0.3), размен в CC_TAC_BACK_TRADE раз реже: тише, но и выбить почти некого.
+   Пак соперника — foe._loot (комната лутает точку тем же сундуком), ресы — ccMats(foe). Числа — решение, не замер.
+   Только ccLootRoomOn: онлайн, пропуск и симуляция идут без вопроса и без поправок, баланс там прежний. */
+const CC_TAC_SG=0.06, CC_TAC_BOX_MATS=150, CC_TAC_BOX_DEC=0.7, CC_TAC_BOX_MW=0.12, CC_TAC_BOX_HW=0.04,
+      CC_TAC_BACK_DEC=0.3, CC_TAC_BACK_TRADE=0.4, CC_TAC_CAP=0.18;
+// Лучший ствол класса в паке: ступень редкости (RARITY_MOD), 0 — такого нет, null — пака нет вовсе.
+function ccGunTier(t, cls){
+  const ws=t && t._loot && t._loot.weapons;
+  if(!ws) return null;
+  return ws.reduce((m, o)=>o && o.icon===cls && !o.floor ? Math.max(m, RARITY_MOD[o.rarity]||0) : m, 0);
+}
+function ccHealSlots(t){ return ((t && t._loot && t._loot.heals)||[]).filter(h=>h && !h.floor && (h.n==null || h.n>0)).length; }
+function ccTacDp(you, foe, id){
+  if(id==='push'){
+    const a=ccGunTier(you, 'shotgun'), b=ccGunTier(foe, 'shotgun');
+    if(a==null || b==null) return 0;
+    return clamp((a-b)*CC_TAC_SG, -CC_TAC_CAP, CC_TAC_CAP);
+  }
+  if(id==='box'){
+    const m=(ccMats(you)-ccMats(foe))/CC_MATS_FULL*CC_TAC_BOX_MW;
+    const h=(foe && foe._loot) ? (ccHealSlots(you)-ccHealSlots(foe))*CC_TAC_BOX_HW : 0;
+    return clamp(m+h, -CC_TAC_CAP, CC_TAC_CAP);
+  }
+  return 0;
+}
+function ccTacOf(id, you, foe){
+  if(id==='box') return {id, dec:CC_TAC_BOX_DEC, trade:1, dp:ccTacDp(you, foe, 'box'), mats:CC_TAC_BOX_MATS};
+  if(id==='back') return {id, dec:CC_TAC_BACK_DEC, trade:CC_TAC_BACK_TRADE, dp:0, mats:0};
+  return {id:'push', dec:1, trade:1, dp:ccTacDp(you, foe, 'push'), mats:0};
+}
+function ccTacName(T, id){ return ({push:T.tcPush, box:T.tcBox, back:T.tcBack})[id]||''; }
+/* Вопрос тактики. null — вопроса нет (онлайн/пропуск/симуляция): ccFightApply идёт без поправок. */
+async function ccAskTactic(you, ui, foe, tb){
+  if(!you || !ccLootRoomOn()) return null;
+  const T=L(), F=tb||CC_FIGHT, p0=ccFightWinOdds(you, foe);
+  const pct=t=>{ const p=clamp(p0+t.dp, 0.05, 0.95);
+    return [Math.round(F.decide*t.dec*p*100), Math.round(F.decide*t.dec*(1-p)*100), Math.round(F.trade*t.trade*100)]; };
+  const rw=v=>v ? ccRarityWord(Object.keys(RARITY_MOD).find(k=>RARITY_MOD[k]===v)) : T.tcNone;
+  const sgA=ccGunTier(you, 'shotgun'), sgB=ccGunTier(foe, 'shotgun');
+  const push=ccTacOf('push', you, foe), box=ccTacOf('box', you, foe), back=ccTacOf('back', you, foe);
+  const sg=you._loot && (you._loot.weapons||[]).find(o=>o && o.icon==='shotgun');
+  const opts=[{id:'push', def:true, icon:ccItemIconHTML(sg, CC_CHOICE_ICON.fight), title:T.tcPush,
+    note:T.tcOdds(...pct(push))+' · '+T.tcPushNote(rw(sgA), sgB==null ? '?' : rw(sgB))}];
+  if(!CC_ZB && ccMats(you)>=CC_TAC_BOX_MATS) opts.push({id:'box', icon:CC_CHOICE_ICON.wall2, title:T.tcBox,
+    note:T.tcOdds(...pct(box))+' · '+T.tcBoxNote(ccMats(you), ccMats(foe), ccHealSlots(you), foe && foe._loot ? ccHealSlots(foe) : '?', CC_TAC_BOX_MATS)});
+  opts.push({id:'back', icon:CC_CHOICE_ICON.run, title:T.tcBack, note:T.tcOdds(...pct(back))+' · '+T.tcBackNote});
+  const pick=(await ccChoiceBox(T.tcTitle(ccFoeName(foe)), ccKitLine(you), opts, ui && ui.map, null, 'tactic')).id;
+  return ccTacOf(pick, you, foe);
+}
+// Строка исхода стычки — одна на все места, где дерутся (ферма, середина, путь, последние).
+function ccFightLine(T, out, F, foeName, gun, you, tac){
+  const head=tac ? ccTacName(T, tac.id)+' · ' : '';
+  if(out==='win') return head+T.ccMidFightWon(F.pow, foeName, gun && gun.name)+(you._lootUp ? ' · '+T.ccLootUpgraded(you._lootUp.name) : '');
+  if(out==='die') return head+T.ccMidFightDied(foeName);
+  if(out==='poke') return head+T.ccMidFightPoke(F.pokeDmg, F.pokeMats);
+  return head+T.ccMidFightTraded(F.tradePow);
 }
 /* Вопрос середины: идти за рефрешем или ротейтить тем, что есть.
    Те же числа, что у рефреша в меню восьмой зоны, — это тот же ход, просто
@@ -115999,6 +116098,11 @@ function ccChoiceBox(title, hint, options, onMap, side, kind){
       clearTimeout(bell); bell=null;
       if(bar){ bar.style.transition='none'; bar.style.transform='scaleX(1)'; }
     });
+    // Тронул карту (точка пути, ccAskPath) — тоже ждём: человек выбирает руками.
+    box.querySelectorAll('[data-hold]').forEach(el=>el.addEventListener('pointerdown', ()=>{
+      clearTimeout(bell); bell=null;
+      if(bar){ bar.style.transition='none'; bar.style.transform='scaleX(1)'; }
+    }));
     // Скип, нажатый посреди вопроса, тоже отвечает — иначе кнопка «пропустить»
     // переставала пропускать ровно там, где это нужнее всего.
     watch=setInterval(()=>{ if(skipAnimation) auto(); }, 120);
@@ -117165,12 +117269,10 @@ async function ccAskLast(you, ui){
               out==='win' ? true : out==='die' ? false : null);
     return;
   }
-  const out=ccFightApply(you, r, foe, F);
+  const tac=await ccAskTactic(you, ui, foe, F);
+  const out=ccFightApply(you, r, foe, F, tac);
   ccMpMark('w11f:'+out);
-  if(out==='win') await say(T.ccMidFightWon(F.pow, fn, gun && gun.name)+(you._lootUp ? ' · '+T.ccLootUpgraded(you._lootUp.name) : ''), true);
-  else if(out==='die') await say(T.ccMidFightDied(fn), false);
-  else if(out==='poke') await say(T.ccMidFightPoke(F.pokeDmg, F.pokeMats), null);
-  else await say(T.ccMidFightTraded(F.tradePow), false);
+  await say(ccFightLine(T, out, F, fn, gun, you, tac), out==='win' ? true : out==='poke' ? null : false);
 }
 async function ccAskLate(you, ui){
   if(!you) return;
@@ -117400,6 +117502,58 @@ function ccThirdApply(you, r, foe){
   }
   if(sq){ sq.dealt=(sq.dealt||0)+CC_THIRD.dmg; sq.taken=(sq.taken||0)+Math.round(CC_THIRD.dmg/2); }
   return 'none';
+}
+/* ТРЕТЬЯ СТОРОНА В СЕРЕДИНЕ (план 125, пункт 2). На 5-й и 7-й зоне, если два чужих отряда стоят ближе CC_THIRD_PAIR друг к
+   другу (дерутся) и оба ближе CC_THIRD_NEAR к нам, в меню середины есть «третьить». Пока доехали, их файт мог решиться сам
+   (CC_THIRD_SELF): проигравшего выбивает движок, третьим идём на выжившего. Шансы — CC_THIRD (замер концовки) с поправкой на
+   силу: ×(0.5+p) на кил, ×(1.5−p) на смерть, p — дуэльная формула против цели. Если оба живы и цель выбита, второго
+   добиваем с CC_THIRD_BOTH (он тоже битый) за половину прибавки. Поправки и CC_THIRD_SELF/BOTH — решение, не замер. */
+const CC_THIRD_PAIR=6, CC_THIRD_NEAR=22, CC_THIRD_SELF=0.5, CC_THIRD_BOTH=0.5;
+function ccThirdPair(you){
+  const game=you && you._game, me=you && you._sq;
+  if(!game || !game.squads || !me || !me.alive || !game.eliminate) return null;
+  const near=game.squads.filter(s=>s.alive && s!==me && s.team!==you && !s.team.isMate && Math.hypot(s.x-me.x, s.y-me.y)<CC_THIRD_NEAR);
+  let best=null, bd=Infinity;
+  for(let i=0;i<near.length;i++) for(let j=i+1;j<near.length;j++){
+    const d=Math.hypot(near[i].x-near[j].x, near[i].y-near[j].y);
+    if(d<CC_THIRD_PAIR && d<bd){ bd=d; best={a:near[i], b:near[j]}; }
+  }
+  return best;
+}
+function ccThirdOdds(you, foe){
+  const p=ccFightWinOdds(you, foe);
+  const kill=clamp(CC_THIRD.kill*(0.5+p), 0.05, 0.7), die=clamp(CC_THIRD.die*(1.5-p), 0.02, 0.5);
+  return {kill, die:Math.min(die, 1-kill)};
+}
+function ccThirdPairApply(you, pair, rr){
+  const rnd=rr||Math.random, game=you._game, sq=you._sq;
+  const res={out:'none', self:false, both:false, pow:CC_THIRD.pow, dmg:CC_THIRD.dmg};
+  let tgt=pair.a.team, oth=pair.b.team;
+  if(rnd()<CC_THIRD_SELF){
+    // Их файт кончился без нас: победителя называет та же дуэльная формула.
+    const pa=ccFightWinOdds(pair.a.team, pair.b.team), aWon=rnd()<pa;
+    const w=aWon ? pair.a.team : pair.b.team, l=aWon ? pair.b.team : pair.a.team;
+    game.eliminate(l, w);
+    res.self=true; res.w=ccFoeName(w); res.l=ccFoeName(l);
+    tgt=w; oth=null;
+  }
+  res.t=ccFoeName(tgt); res.o=oth ? ccFoeName(oth) : '';
+  const o=ccThirdOdds(you, tgt), r=rnd();
+  if(r<o.kill){
+    game.eliminate(tgt, you);
+    ccAddGamePow(you, CC_THIRD.pow);
+    you._mats=Math.min(CC_MATS_FULL, ccMats(you)+CC_FIGHT.mats);
+    res.out='win';
+    if(oth && rnd()<CC_THIRD_BOTH){
+      game.eliminate(oth, you);
+      const half=Math.round(CC_THIRD.pow/2);
+      ccAddGamePow(you, half); res.pow+=half; res.both=true;
+    }
+    return res;
+  }
+  if(r<o.kill+o.die){ game.eliminate(you, tgt); res.out='die'; return res; }
+  if(sq){ sq.dealt=(sq.dealt||0)+CC_THIRD.dmg; sq.taken=(sq.taken||0)+Math.round(CC_THIRD.dmg/2); }
+  return res;
 }
 // Ход с монеткой — тот, у которого есть чем платить за провал. Так и панель, и
 // строка исхода, и комната узнают новый ход, не перечисляя его по имени.
@@ -171215,6 +171369,52 @@ Object.assign(I18N.pt, {hhTag:'Novo', hhSub:'Quem tem mais prêmios no total: do
   hlQPlace:'Quem ficou mais alto nesta final?', hlQEarn:'Quem ganhou mais prêmios em 2026?', hlSrcEarn:'Liquipedia, todos os torneios do ano',
   hlHint:'Toque em quem ficou acima', hlPlaceV:p=>p+'º lugar', hlOver:n=>'Sequência encerrada: '+n, hlNewBest:'Novo recorde',
   hlAgain:'Jogar de novo', hlCopy:'Copiar resultado', hlCopied:'Copiado', hlEmpty:'Sem dados para uma pergunta'});
+/* План 125 (14.11): тактика файта (tc*), третья сторона в середине (tp*), точка пути кликом (rpGo, rpHint). */
+Object.assign(I18N.ru, {tcTitle:n=>'Как играем файт'+(n ? ' · '+n : ''), tcPush:'Пушить', tcBox:'Бокс-файт, тянуть', tcBack:'Отойти',
+  tcNone:'нет', tcOdds:(w,d,t)=>w+'% выбить · '+d+'% выбиты · '+t+'% размен',
+  tcPushNote:(a,b)=>'решает дробовик: у нас '+a+', у них '+b,
+  tcBoxNote:(m1,m2,h1,h2,c)=>'решают ресы и хилки: ресы '+m1+' против '+m2+', хилок '+h1+' против '+h2+' · −'+c+' ресов',
+  tcBackNote:'постреляли и ушли: решается редко, размен реже',
+  tpTitle:(a,b)=>'Третьить: '+a+' и '+b,
+  tpNote:(s,k,d,p,b)=>'дерутся рядом · '+s+'%: их файт кончится до нас · '+k+'% выбить, +'+p+' к силе · '+d+'% выбиты · '+b+'%: добить и второго',
+  tpGot:r=>(r.self ? r.w+' выбили '+r.l+' до нас · ' : '')+(r.out==='win' ? 'выбили '+r.t+(r.both ? ' и '+r.o : '')+', +'+r.pow+' к силе' : r.out==='die' ? r.t+' развернулись на нас, выбиты' : 'зашли третьими, постреляли и ушли: +'+r.dmg+' урона'),
+  rpGo:'Идём к точке', rpHint:'Тапни по кругу, куда встать. Красные точки: отряды, кто у линии, с тем можно встретиться'});
+Object.assign(I18N.en, {tcTitle:n=>'How do we play the fight'+(n ? ' · '+n : ''), tcPush:'Push', tcBox:'Box fight, drag it out', tcBack:'Back off',
+  tcNone:'none', tcOdds:(w,d,t)=>w+'% we take them · '+d+'% we go down · '+t+'% trade',
+  tcPushNote:(a,b)=>'the shotgun decides: ours '+a+', theirs '+b,
+  tcBoxNote:(m1,m2,h1,h2,c)=>'mats and heals decide: mats '+m1+' vs '+m2+', heals '+h1+' vs '+h2+' · −'+c+' mats',
+  tcBackNote:'shoot and leave: rarely decided, fewer trades',
+  tpTitle:(a,b)=>'Third-party: '+a+' and '+b,
+  tpNote:(s,k,d,p,b)=>'fighting nearby · '+s+'%: their fight ends before we arrive · '+k+'% we take one, +'+p+' power · '+d+'% we go down · '+b+'%: finish the second too',
+  tpGot:r=>(r.self ? r.w+' took out '+r.l+' before we got there · ' : '')+(r.out==='win' ? 'took out '+r.t+(r.both ? ' and '+r.o : '')+', +'+r.pow+' power' : r.out==='die' ? r.t+' turned on us, we went down' : 'came in third, shots exchanged, we left: +'+r.dmg+' damage'),
+  rpGo:'Go to the point', rpHint:'Tap the circle where to stand. Red dots are squads: whoever is by the line, you may run into'});
+Object.assign(I18N.fr, {tcTitle:n=>'Comment on joue le combat'+(n ? ' · '+n : ''), tcPush:'Push', tcBox:'Box fight, faire durer', tcBack:'Reculer',
+  tcNone:'aucun', tcOdds:(w,d,t)=>w+'% on les élimine · '+d+'% éliminés · '+t+'% échange',
+  tcPushNote:(a,b)=>'le pompe décide : le nôtre '+a+', le leur '+b,
+  tcBoxNote:(m1,m2,h1,h2,c)=>'matériaux et soins décident : matériaux '+m1+' contre '+m2+', soins '+h1+' contre '+h2+' · −'+c+' matériaux',
+  tcBackNote:'on tire et on part : rarement décisif, moins d’échanges',
+  tpTitle:(a,b)=>'Third-party : '+a+' et '+b,
+  tpNote:(s,k,d,p,b)=>'ils se battent à côté · '+s+'% : leur combat finit avant nous · '+k+'% on en élimine un, +'+p+' puissance · '+d+'% éliminés · '+b+'% : finir le second aussi',
+  tpGot:r=>(r.self ? r.w+' a éliminé '+r.l+' avant nous · ' : '')+(r.out==='win' ? r.t+(r.both ? ' et '+r.o : '')+' éliminés, +'+r.pow+' puissance' : r.out==='die' ? r.t+' se sont retournés, éliminés' : 'arrivés en troisième, on a tiré et on est partis : +'+r.dmg+' dégâts'),
+  rpGo:'Aller au point', rpHint:'Touche la zone où te placer. Points rouges : les escouades, celles près de la ligne, tu peux les croiser'});
+Object.assign(I18N.it, {tcTitle:n=>'Come giochiamo lo scontro'+(n ? ' · '+n : ''), tcPush:'Spingere', tcBox:'Box fight, tirarla lunga', tcBack:'Ritirarsi',
+  tcNone:'nessuno', tcOdds:(w,d,t)=>w+'% li eliminiamo · '+d+'% eliminati · '+t+'% scambio',
+  tcPushNote:(a,b)=>'decide il fucile a pompa: il nostro '+a+', il loro '+b,
+  tcBoxNote:(m1,m2,h1,h2,c)=>'decidono materiali e cure: materiali '+m1+' contro '+m2+', cure '+h1+' contro '+h2+' · −'+c+' materiali',
+  tcBackNote:'spariamo e andiamo: si decide di rado, meno scambi',
+  tpTitle:(a,b)=>'Third-party: '+a+' e '+b,
+  tpNote:(s,k,d,p,b)=>'combattono vicino · '+s+'%: il loro scontro finisce prima di noi · '+k+'% ne eliminiamo uno, +'+p+' potenza · '+d+'% eliminati · '+b+'%: finire anche il secondo',
+  tpGot:r=>(r.self ? r.w+' ha eliminato '+r.l+' prima di noi · ' : '')+(r.out==='win' ? 'eliminati '+r.t+(r.both ? ' e '+r.o : '')+', +'+r.pow+' potenza' : r.out==='die' ? r.t+' si sono girati su di noi, eliminati' : 'entrati per terzi, sparato e via: +'+r.dmg+' danni'),
+  rpGo:'Vai al punto', rpHint:'Tocca il cerchio dove metterti. Punti rossi: le squadre, chi sta vicino alla linea, puoi incontrarlo'});
+Object.assign(I18N.pt, {tcTitle:n=>'Como jogamos a luta'+(n ? ' · '+n : ''), tcPush:'Pressionar', tcBox:'Box fight, segurar', tcBack:'Recuar',
+  tcNone:'nenhuma', tcOdds:(w,d,t)=>w+'% eliminamos · '+d+'% eliminados · '+t+'% troca',
+  tcPushNote:(a,b)=>'a escopeta decide: a nossa '+a+', a deles '+b,
+  tcBoxNote:(m1,m2,h1,h2,c)=>'materiais e curas decidem: materiais '+m1+' contra '+m2+', curas '+h1+' contra '+h2+' · −'+c+' de materiais',
+  tcBackNote:'atiramos e saímos: decide pouco, menos trocas',
+  tpTitle:(a,b)=>'Third-party: '+a+' e '+b,
+  tpNote:(s,k,d,p,b)=>'lutando perto · '+s+'%: a luta deles acaba antes de chegarmos · '+k+'% eliminamos um, +'+p+' de força · '+d+'% eliminados · '+b+'%: acabar com o segundo também',
+  tpGot:r=>(r.self ? r.w+' eliminou '+r.l+' antes de nós · ' : '')+(r.out==='win' ? 'eliminamos '+r.t+(r.both ? ' e '+r.o : '')+', +'+r.pow+' de força' : r.out==='die' ? r.t+' viraram em nós, eliminados' : 'entramos como terceiro, trocamos tiros e saímos: +'+r.dmg+' de dano'),
+  rpGo:'Ir ao ponto', rpHint:'Toque no círculo onde ficar. Pontos vermelhos são squads: quem está perto da linha, você pode encontrar'});
 /* Live-ивенты Fortnite в карьере: новость в ленте в сам день. Даты и типы с вики Fortnite
    (tools/measured/wiki-live-events.txt). Только в настоящем году: карьера после 2026-го живёт по календарю 2026-го,
    и «Shattered» второй раз там не случается. Турниров не двигает. */

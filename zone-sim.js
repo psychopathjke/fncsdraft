@@ -415,6 +415,13 @@
     if(pos === 'hold' && Math.hypot(squad.x - phase.cx, squad.y - phase.cy) < phase.radius * HOLD_IN){
       rng(); return {x: squad.x, y: squad.y};
     }
+    /* Точка, поставленная на карте (ccAskPath, 14.11): {x, y, cx, cy} — для того круга, центр которого cx/cy. В нём отряд
+       идёт ровно туда, если точка внутри; в других кругах — как обычно. */
+    if(pos && typeof pos === 'object' && Math.abs(pos.cx - phase.cx) < 0.5 && Math.abs(pos.cy - phase.cy) < 0.5 &&
+       Math.hypot(pos.x - phase.cx, pos.y - phase.cy) < phase.radius){
+      rng(); return {x: pos.x, y: pos.y};
+    }
+    if(pos && typeof pos === 'object') pos = null;
     var ax = 0, ay = 0, al = 0;
     if(after){ ax = after.cx - phase.cx; ay = after.cy - phase.cy; al = Math.hypot(ax, ay); }
     var stayIn = Math.hypot(squad.x - phase.cx, squad.y - phase.cy) < phase.radius * HOLD_IN;
@@ -1990,6 +1997,8 @@
       // Доиграть остаток и собрать результат — тем же кодом, что и полный
       // прогон: хвост ниже вынесен в finish(), а не скопирован.
       playTo: function(zone){ return playPhases(zone); },
+      // Круг, который движок сыграет следующим (на остановке вопроса): в него и ставит точку ccAskPath.
+      upcoming: function(){ var ph = plan[phaseAt]; return ph ? {cx: ph.cx, cy: ph.cy, radius: ph.radius} : null; },
       finish: function(){ playPhases(null); return finish(); },
       aliveCount: aliveCount,
       // Кадры, записанные к этой секунде. Растут по мере игры, поэтому вызвавший
