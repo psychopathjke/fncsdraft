@@ -15,12 +15,14 @@ const RX = /_(EU|NAC|NAW|BR|ASIA|ME|OCE)$/;
 const wins = [];   // {stem, reg, b, e}
 for (const [k, e] of Object.entries(require(M('comp-events-2026.json')))) {
   const r = (k.match(RX) || [])[1]; if (!r) continue;
-  for (const w of e.w || []) wins.push({stem: w.w.replace(RX, ''), reg: r, b: w.b.slice(0, 16), e: (w.e || '').slice(0, 16)});
+  const eid = k.replace(/^epicgames_/, '').replace(RX, '');
+  for (const w of e.w || []) wins.push({stem: w.w.replace(RX, ''), reg: r, b: w.b.slice(0, 16), e: (w.e || '').slice(0, 16), eid});
 }
 for (const w of require(M('comp-calendar.json')).events || [])
   if (REGS.includes(w.region)) wins.push({stem: w.w.replace(RX, ''), reg: w.region, b: w.begin.slice(0, 16), e: (w.end || '').slice(0, 16)});
-const byStem = {}, endOf = {};
+const byStem = {}, endOf = {}, evOf = {};   // evOf — id события окна (у мобильных окна названы не как кап)
 wins.forEach(w => {
+  if (w.eid && w.reg === 'EU') evOf[w.stem] = w.eid;
   const s = (byStem[w.stem] = byStem[w.stem] || {}); if (!s[w.reg] || w.b < s[w.reg]) s[w.reg] = w.b;
   if (w.reg === 'EU' && w.e) { if (!endOf[w.stem] || w.e > endOf[w.stem]) endOf[w.stem] = w.e; }
 });
@@ -30,7 +32,9 @@ const nightEnd = {};
 Object.keys(endOf).forEach(st => { const k = night(st); if (!nightEnd[k] || endOf[st] > nightEnd[k]) nightEnd[k] = endOf[st]; });
 
 const html = fs.readFileSync(path.join(__dirname, '..', 'index.html'), 'utf8');
-const ids = [...new Set((html.match(/id:'S\d+_[A-Za-z0-9_]+'/g) || []).map(x => x.slice(4, -1)))];
+// id капов карьеры: записи id:'…' и JSON-списки ("id":"…" — консольные и мобильные капы CC_CONSOLE_2026).
+const ids = [...new Set((html.match(/id:'S\d+_[A-Za-z0-9_]+'/g) || []).map(x => x.slice(4, -1))
+  .concat((html.match(/"id":"S\d+_[A-Za-z0-9_]+"/g) || []).map(x => x.slice(6, -1))))];
 // Первое окно вечера: без Round2/Round3 и т.п. (Round1 или окно без раундов).
 const first = s => !/Round[2-9]|_R[2-9]\b|Round_?[2-9]/.test(s);
 const flat = {};
@@ -40,7 +44,8 @@ Object.keys(byStem).sort().forEach(stem => {
   const perf = /^S\d+_PerformanceEvaluation_/.test(stem);
   // Кап дивизиона (див кап) — тоже свой вечер карьеры: окна EventN каждого дивизиона, без финала недели.
   const div = /^S\d+_FNCSDivisionalCup_Division\d_Event\d+$/.test(stem);
-  if (!perf && !div && !ids.some(id => stem === id || stem.startsWith(id + '_'))) return;
+  const eid = evOf[stem], byEv = !!eid && ids.includes(eid) && !stem.startsWith(eid);
+  if (!perf && !div && !byEv && !ids.some(id => stem === id || stem.startsWith(id + '_'))) return;
   const eu = Date.parse(row.EU + 'Z');
   const others = Object.entries(row).filter(([r]) => r !== 'EU')
     .map(([r, b]) => [r, Math.round((Date.parse(b + 'Z') - eu) / 60000)])
@@ -48,7 +53,8 @@ Object.keys(byStem).sort().forEach(stem => {
   if (!others.length) return;
   const end = nightEnd[night(stem)];
   const dur = end ? Math.min(360, Math.max(60, Math.round((Date.parse(end + "Z") - eu) / 60000))) : 180;   // окна разных дней с одним id склеиваются: вечер не дольше 6 ч
-  flat[row.EU.slice(0, 10) + '|' + stem] = row.EU.slice(11) + '/' + dur + ';' + others.map(([r, d]) => r + d).join(',');
+  // Окно, названное не как кап, ключом идёт с id капа впереди: «день|кап__окно» (ccAwaySlot ищет «день|кап_…»).
+  flat[row.EU.slice(0, 10) + '|' + (byEv ? eid + '__' + stem : stem)] = row.EU.slice(11) + '/' + dur + ';' + others.map(([r, d]) => r + d).join(',');
 });
 process.stdout.write('const CC_AWAY_SCHED=' + JSON.stringify(flat) + ';\n');
 console.error(Object.keys(flat).length + ' EU evenings, ' + JSON.stringify(flat).length + ' bytes');

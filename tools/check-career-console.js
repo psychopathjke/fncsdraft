@@ -118,6 +118,20 @@ const BOOT = `
     CH_TAB='log'; careerRenderHub('log');
     if(((document.getElementById('chBody')||{}).textContent||'').indexOf(L().ccMobShort)<0) fail('no mobile rating on the profile');
     out.steps.push('mobile night '+mc.day+' '+mc.id+': mobile scene, power '+mPow+' from mobile rating (PC team '+mBase+'), PC rating stays '+CAREER.player.ovr+', scene ratings moved '+devN+', #'+(lastM && lastM.place)+' -> mobile rating '+CAREER.career.mobOvr+'; board: '+mobTile.querySelector('.ct-note').textContent);
+    // ---- поле шире своего региона, выезд на мобильный кап -------------------------------------------
+    { const all=new Set([].concat(...Object.values(CC_MOBILE_ROSTER)).map(x=>String(x[0]).toLowerCase()));
+      const big=ccMobileField(3000), realBig=big.filter(t=>all.has(String(t.squad[0].handle).toLowerCase())).length;
+      if(realBig<all.size) fail('mobile field does not take the other regions first: '+realBig+' of '+all.size);
+      out.steps.push('mobile field 3000: '+realBig+' real mobile players (all regions), then generated'); }
+    seed(mc.day);
+    ccVictoryPick(mc.id);
+    if(ccAwayWhy('NAC')!=='later' && ccAwayWhy('NAC')!=='dev') fail('NAC mobile away without a device: '+ccAwayWhy('NAC'));
+    const devWhy=CC_REGIONS.filter(r=>r!=='EU').map(r=>ccAwayWhy(r)).filter(w=>w==='dev').length;
+    careerBuy('phonebase'); ccVictoryPick(mc.id);
+    const evA=ccAwayEv('OCE');
+    if(!evA || ccConsoleNeed(evA)!=='mobile') fail('away cup is not the picked mobile cup: '+(evA && evA.id));
+    const slA=ccAwaySlot('NAC'); if(!(slA instanceof Date)) fail('no Epic schedule for the mobile cup in NAC');
+    out.steps.push('mobile away: without a device '+devWhy+' regions say «'+L().aw_dev+'»; with a phone '+mc.id+' NAC at '+slA.toISOString().slice(11,16)+' UTC');
     // ---- мобильные устройства: Android, iPhone, iPad — любое открывает, iPhone/iPad дают силу на мобиле ----------
     seed('2026-06-27');
     CAREER.career.balance=5000;
