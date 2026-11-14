@@ -114443,17 +114443,14 @@ function ccMatsPenalty(teams){
 const CC_GAME_STOPS=[
   // Первая: точка — сундуки, а на занятой точке стычка или уход (ccAskSite).
   {zone:1, ask:(you, ui)=>ccAskSite(you, ui), room:ccRoomSite},
-  // Третья зона: лут и как фармим ресы (ccAskFarm — стиль стройки внутри него).
-  {zone:3, ask:async (you, ui)=>{ await ccAskLoot(you, ui); if(!CC_ZB) await ccAskFarm(you, ui); },
+  // Третья зона: фарм сам (ccAutoFarm), лут уже собран на точке. Окна нет.
+  {zone:3, ask:async (you, ui)=>{ if(!CC_ZB) await ccAutoFarm(you, ui); },
    room:(field, you)=>{ ccRoomLoot(field, you); if(!CC_ZB) ccRoomFarm(field, you); }},
-  // Четвёртая: ротация — когда выходим к следующему кругу (ccAskRot). Комната
-  // ходит по навыку, как ходила: движок читает team._rot только у людей.
-  {zone:4, ask:(you, ui)=>ccAskRot(you, ui)},
-  // Пятая и седьмая: ресы, если кончились, и лечение, если щит снят (ccAskMid).
-  // Пятая: меню середины (сёрдж, ресы, файт) — всегда; седьмая — то же меню,
-  // но только когда есть о чём: ресы кончились или щит снят.
-  {zone:5, ask:(you, ui)=>ccAskMid(you, ui), room:(field, you)=>{ if(!CC_ZB) ccRoomMats(field, you); ccRoomHeal(field, you); }},
-  {zone:7, ask:(you, ui)=>ccAskMid(you, ui), room:(field, you)=>{ if(!CC_ZB) ccRoomMats(field, you); ccRoomHeal(field, you); }, quiet:ccMidQuiet},
+  // Четвёртая: окно ротации (когда выходим, точка, тактика встреч). Комната ходит по навыку в движке.
+  {zone:4, ask:(you, ui)=>ccAskRotWindow(you, ui)},
+  // Пятая и седьмая: середина сама (ccAutoMid): ресы при нехватке, третья сторона при «пушить», сёрдж, хилки.
+  {zone:5, ask:(you, ui)=>ccAutoMid(you, ui), room:(field, you)=>{ if(!CC_ZB) ccRoomMats(field, you); ccRoomHeal(field, you); }},
+  {zone:7, ask:(you, ui)=>ccAutoMid(you, ui), room:(field, you)=>{ if(!CC_ZB) ccRoomMats(field, you); ccRoomHeal(field, you); }},
   {zone:8, ask:(you, ui)=>ccAskLate(you, ui), room:ccRoomLate},
   // Концовка: двигающиеся круги и последние отряды (ccEndZones). Комнату ведёт движок, как и раньше.
   {get zone(){ return ccEndZones().move; }, ask:(you, ui)=>ccAskMoving(you, ui)},
@@ -114856,6 +114853,47 @@ function ccMatsPileHTML(){ return '<span class="cc-mat-pile">'+ccMatsIconHTML()+
 function ccItemIconHTML(o, fallback){
   let h=''; try{ h=o ? (weaponIconHTML(o, ccLootSet())||'') : ''; }catch(e){ h=''; }
   return /<img/.test(h) ? h : fallback;
+}
+/* ТИХИЕ ОСТАНОВКИ (3-я, 5-я, 7-я зоны): ходы, которые раньше спрашивали окном, решаются сами по паку и идут строкой в ленту
+   под картой (ui.note), карта не встаёт. */
+const ccAutoSay=(ui, line)=>{ if(line && ui && ui.note) ui.note(line); };
+async function ccAutoFarm(you, ui){
+  if(!you) return;
+  ccMpMark('f0'+(you.mpTag||''));
+  const T=L(), eco=ccMatsLow(you);
+  if(eco){ const b=CC_BUILD_STYLE.eco; you._buildMul=b.mul; if(b.pow) ccAddGamePow(you, b.pow); }
+  ccMatsAdd(you, CC_MATS_FARM);
+  ccMpMark('a3f:'+(eco ? 'eco' : 'full'));
+  ccAutoSay(ui, T.ccFarmFullGot(ccMats(you))+(eco ? ' · '+T.ccBuildSet(T.ccBuildEco, String(CC_BUILD_STYLE.eco.pow||0)) : ''));
+}
+// Сёрдж сам, когда запас над линией меньше CC_SURGE_SAFE. В Reload сёрджа нет.
+function ccAutoSurge(you, ui){
+  if(!you || ccNoSurge()) return false;
+  const sg=ccSurgeState(you);
+  if(!(sg && sg.on && (sg.gap==null || sg.gap<CC_SURGE_SAFE))) return false;
+  if(you._sq){ you._sq.dealt=(you._sq.dealt||0)+CC_SURGE_FARM; you._sq.taken=(you._sq.taken||0)+CC_SURGE_TAKEN; }
+  ccAddGamePow(you, -CC_SURGE_FARM_POW);
+  ccAutoSay(ui, L().ccMidSurgeGot(CC_SURGE_FARM, CC_SURGE_TAKEN, CC_SURGE_FARM_POW));
+  return true;
+}
+async function ccAutoMid(you, ui){
+  if(!you) return;
+  ccMpMark('m0'+(you.mpTag||''));
+  const T=L();
+  let did='stay';
+  if(!CC_ZB && ccMatsLow(you)){
+    const m=CC_LATE_MOVES.find(x=>x.id==='refresh'), pow=ccRefreshPow(you), won=Math.random()<m.odds;
+    if(won){ ccAddGamePow(you, pow); ccMatsFill(you); } else ccAddGamePow(you, -m.fail);
+    ccAutoSay(ui, won ? T.ccMatsFound(pow) : T.ccMatsMissed(m.fail));
+    did='go';
+  } else if(you._tac==='push' && ccLootRoomOn()){
+    const pair=ccThirdPair(you);
+    if(pair){ const res=ccThirdPairApply(you, pair); ccAutoSay(ui, T.tpGot(res)); did='third'; }
+  }
+  ccMpMark('a5:'+did);
+  ccAutoSurge(you, ui);
+  const h=ccHealAuto(you);
+  if(h) ccAutoSay(ui, T.ccHealAuto(h.what, h.shield, h.hp, h.pow, h.left));
 }
 async function ccAskMid(you, ui){
   if(!you) return;

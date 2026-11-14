@@ -128,8 +128,8 @@ const BOOT = `
     ccChoiceBox=realBox;
     // ---- остановки: пятая всегда, седьмая — когда есть о чём ---------------------
     const z5=CC_GAME_STOPS.find(s=>s.zone===5), z7=CC_GAME_STOPS.find(s=>s.zone===7);
-    check('пятая зона спрашивает всегда', z5 && !z5.quiet);
-    check('седьмая молчит при полном наборе', z7 && z7.quiet && z7.quiet(mk(550)) && !z7.quiet(mk(100)));
+    // Середина больше не окно: обе остановки ходят сами (ccAutoMid), окно ротации и концовки только на 4-й и 8-й.
+    check('пятая и седьмая ходят сами', z5 && z7 && /ccAutoMid/.test(String(z5.ask)) && /ccAutoMid/.test(String(z7.ask)) && !z7.quiet);
     // ---- словарь ---------------------------------------------------------------
     ['ru','en'].forEach(l=>{ LANG=l; CC_L_CACHE={}; const D=L();
       check(l+': строки меню', typeof D.ccMidTitle==='string' && D.ccMidSurgeNote(80,40,1).length>5 && D.ccMidFightNote(14,4,15,15,70).length>5 &&
