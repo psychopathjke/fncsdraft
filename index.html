@@ -9453,6 +9453,20 @@
   .cc-chips small{flex-basis:100%;font-size:12px;opacity:.75;}
   .cc-chip{background:rgba(255,255,255,.06);color:inherit;border:1px solid rgba(255,255,255,.22);border-radius:999px;padding:6px 12px;font:inherit;font-size:13px;cursor:pointer;}
   .cc-chip.on{border-color:var(--th,#ffd600);background:rgba(255,214,0,.14);}
+  /* Ряд чипов в окне выбора (тактика встречи, стойка концовки): подпись строкой, чипы по тексту, выбранный жёлтый.
+     Подпись не <b>: .cc-choice-head b красит любой <b> в шапке плашкой заголовка. Общий .cc-chip тянет flex:1 с экрана
+     создания, отсюда кнопки разной высоты с переносом. */
+  .cc-choice-head .cc-chips{display:flex; flex-wrap:wrap; align-items:center; gap:6px; margin:8px 0 4px;}
+  .cc-choice-head .cc-chips-h{flex:0 0 auto; font-size:10px; font-weight:900; letter-spacing:.06em; text-transform:uppercase; color:#cfe0ff; margin-right:2px;}
+  .cc-choice-head .cc-chip{flex:0 0 auto; min-width:0; padding:6px 12px; border-radius:999px; border:1px solid rgba(255,255,255,.3);
+    background:rgba(0,0,0,.3); color:#fff; font-family:inherit; font-size:12px; font-weight:800; letter-spacing:0; text-transform:none;
+    white-space:nowrap; line-height:1.2; box-shadow:none; cursor:pointer;}
+  .cc-choice-head .cc-chip:hover{border-color:rgba(255,255,255,.7);}
+  .cc-choice-head .cc-chip.on{background:#ffdd00; border-color:#ffdd00; color:#0b0f12;}
+  .cc-choice-head .cc-chips small{flex:1 1 100%; font-size:11px; opacity:.8; color:var(--fn-dim, #b9c4e0);}
+  /* Окно над картой бывает выше карты (ротация: карта пути, чипы, ходы): не обрезается, а листается внутри. */
+  .cc-choice-map{max-height:calc(100% - 16px); overflow-y:auto; overscroll-behavior:contain;}
+  .cc-choice-map .rp-map{max-width:min(100%,420px); margin:4px auto 6px;}
   .rp-line{stroke:#ffdd00;}
   .rp-to{fill:#ffdd00;stroke:#151515;stroke-width:2px;vector-effect:non-scaling-stroke;}
   /* Стиль игры моделями из игры (ccStyleBox); у W-key клавиша W в углу. */
@@ -114725,7 +114739,7 @@ async function ccPathResolve(you, ui, plan, p){
 function ccTacChipsHTML(you, T){
   const ids=['push'].concat(!CC_ZB && ccMats(you)>=CC_TAC_BOX_MATS ? ['box'] : [], ['back']);
   const foe=you._game && you._game.nearest ? you._game.nearest(you) : null;
-  return '<div class="cc-chips" data-hold="1"><b>'+esc(T.tcChips)+'</b>'+ids.map(id=>'<button type="button" class="cc-chip'+(id==='push' ? ' on' : '')+'" data-chip="'+id+'">'+esc(ccTacName(T, id))+'</button>').join('')+
+  return '<div class="cc-chips" data-hold="1"><span class="cc-chips-h">'+esc(T.tcChips)+'</span>'+ids.map(id=>'<button type="button" class="cc-chip'+(id==='push' ? ' on' : '')+'" data-chip="'+id+'">'+esc(ccTacName(T, id))+'</button>').join('')+
     (foe ? '<small>'+esc(T.tcFoe(ccFoeName(foe), ccTacName(T, ccFoeTactic(foe, you))))+'</small>' : '')+'</div>';
 }
 /* ОКНО РОТАЦИИ (4-я зона): когда выходим, точка в следующем круге тапом и как играем встречу — одно окно. Сила хода — его
@@ -117424,7 +117438,7 @@ async function ccAskEndWindow(you, ui){
   const opts=ids.map(id=>({id, def:id===def, icon:CC_CHOICE_ICON[CC_LATE_ICON[id]]||CC_CHOICE_ICON.stay, title:ccEndName(T, id),
     note:ccSitFacts(T, 'end', id, sit)+(ccSitUseless('end', id, sit) ? ' · '+T.sitUseless : '')}));
   opts.sort((a,b)=>(b.def?1:0)-(a.def?1:0));   // ход по умолчанию первым: пропуск и сторожа берут первую кнопку
-  const chips='<div class="cc-chips" data-hold="1"><b>'+esc(T.esChips)+'</b>'+CC_SIT_STANCE_IDS.map(id=>
+  const chips='<div class="cc-chips" data-hold="1"><span class="cc-chips-h">'+esc(T.esChips)+'</span>'+CC_SIT_STANCE_IDS.map(id=>
     '<button type="button" class="cc-chip'+(id==='hold' ? ' on' : '')+'" data-chip="'+id+'">'+esc(id==='hold' ? T.lsHold : T.lsPush)+'</button>').join('')+
     '<small>'+esc(T.lsHold+': '+ccSitFacts(T, 'stance', 'hold', sit)+' · '+T.lsPush+': '+ccSitFacts(T, 'stance', 'push', sit))+'</small></div>';
   const pro=ccLateProLine(you, T);
