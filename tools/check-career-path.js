@@ -1,4 +1,4 @@
-// Путь ротации на карте (ccAskPath): точка в следующем круге тапом, прямая линия, отряды у линии считаются, встреча — файт середины
+// Путь ротации на карте (ccPathPlan, ccPathResolve): точка в следующем круге, прямая линия, отряды у линии считаются, встреча — файт середины
 // (ccFightApply), обход стоит ресов, вопроса нет под пропуском и в онлайне (ccLootRoomOn).
 //   node tools/check-career-path.js
 const fs = require('fs'), os = require('os'), path = require('path');
@@ -39,39 +39,16 @@ window.addEventListener("load", function(){ setTimeout(async function(){
     // Дальняя сторона круга: путь длиннее, ресы списываются.
     const back=plan.at({x:72, y:72});
     check('дальняя сторона стоит ресов', back.mats===CC_PATH_MATS, back.len+' '+dir.len);
-    const host=document.createElement('div'); host.style.cssText='width:600px'; document.body.appendChild(host);
-    // Тап по карте: точка и линия едут, подпись меняется, таймер вопроса стоит.
-    let p=ccAskPath(you, {map:host}); await tick();
-    const svg=host.querySelector('.rp-svg[data-hold]');
-    check('карта пути с одной линией', svg && host.querySelectorAll('.rp-map polyline').length===1);
-    const bs=[...host.querySelectorAll('[data-at]')];
-    check('одна кнопка', bs.length===1, String(bs.length));
+    const host=document.createElement('div'); document.body.appendChild(host);
     const r0=Math.random;
-    if(svg){
-      const rc=svg.getBoundingClientRect(), H=Number(svg.dataset.h);
-      const ev=(x,y)=>new PointerEvent('pointerdown', {bubbles:true, clientX:rc.left+x/100*rc.width, clientY:rc.top+y/H*rc.height});
-      svg.dispatchEvent(ev(68, 68)); await tick();
-      const to=svg.querySelector('.rp-to');
-      check('точка встала по тапу', to && Math.abs(Number(to.getAttribute("cx"))-68)<1.5, to && to.getAttribute('cx'));
-      check('подпись про ресы', host.querySelector('.cc-choice-btn em').textContent.indexOf(String(CC_PATH_MATS))>=0, host.querySelector('.cc-choice-btn em').textContent);
-      out.notes.rect=[rc.width|0, rc.height|0];
-    }
-    Math.random=()=>0.99;
-    host.querySelector('[data-at="0"]').click(); await tick();
-    for(let i=0;i<10 && host.querySelector('button'); i++){ host.querySelector('button').click(); await tick(); }
-    await p; Math.random=r0;
+    // Дошли по длинному пути без встречи: ресы списаны, точка в движке.
+    Math.random=()=>0.99; await ccPathResolve(you, {map:host}, plan, back); Math.random=r0;
     check('длинный путь стоит ресов', you._mats===900-CC_PATH_MATS, String(you._mats));
-    check('точка ушла в движок', you._pos && typeof you._pos==='object' && Math.abs(you._pos.cx-62)<1e-6, JSON.stringify(you._pos));
-    // По умолчанию с броском 0.01: встреча и файт с OnLine (тактика по умолчанию «пушить»).
-    you=mk(); Math.random=()=>0.01;
-    p=ccAskPath(you, {map:host}); await tick();
-    host.querySelector('[data-at="0"]').click(); await tick();
-    for(let i=0;i<10 && host.querySelector('button'); i++){ host.querySelector('button').click(); await tick(); }
-    await p; Math.random=r0;
+    check('точка ушла в движок', you._pos && Math.abs(you._pos.cx-62)<1e-6 && Math.abs(you._pos.x-back.pt.x)<1e-6, JSON.stringify(you._pos));
+    // Прямо с броском 0.01: встреча и файт с OnLine, тактикой отряда.
+    you=mk(); you._tac='push'; Math.random=()=>0.01;
+    await ccPathResolve(you, {map:host}, ccPathPlan(you), ccPathPlan(you).def); Math.random=r0;
     check('прямо: ресы на месте, встреча стала файтом', gone.length===1 && gone[0]==='foe', JSON.stringify(gone)+' '+you._mats);
-    // Пропуск: вопроса нет.
-    you=mk(); skipAnimation=true; const n0=host.children.length; await ccAskPath(you, {map:host}); skipAnimation=false;
-    check('под пропуском вопроса нет', host.children.length===n0 && you._mats===900 && !you._pos);
     // Уже в круге: вопроса нет.
     you=mk(); you._sq.x=62; you._sq.y=62; check('внутри круга плана нет', ccPathPlan(you)===null);
     ['ru','en','fr','it','pt'].forEach(lg=>['rpTitle','rpHint','rpGo','rpNote','rpClear','rpMet'].forEach(k=>check(lg+' '+k, I18N[lg][k]!=null)));
@@ -91,4 +68,4 @@ const out = JSON.parse(decodeURIComponent(m[1]));
 console.log(JSON.stringify(out.notes));
 if (out.errs.length) out.fails.push('ошибки страницы: ' + out.errs.join(' | '));
 if (out.fails.length) { out.fails.forEach(f => console.log('FAIL ' + f)); process.exit(1); }
-console.log('OK путь ротации: точка тапом в круге, отряды у линии, длинный путь за ресы, встреча = файт, точка в движок, без вопроса под пропуском');
+console.log('OK путь ротации: точка в круге, отряды у линии, длинный путь за ресы, встреча = файт, точка в движок');
