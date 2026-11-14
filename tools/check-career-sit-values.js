@@ -19,10 +19,12 @@ window.addEventListener("load", function(){ setTimeout(async function(){
     // Ротация.
     const far={dist:60, rNext:12, inside:false, away:true, mats:900, move:false};
     check('далеко: сразу лучше последних на 8+', V('rot','early',far)-V('rot','late',far)>=8, V('rot','early',far)+' '+V('rot','late',far));
+    // По замеру движка поздний выход плох всегда, кроме случая без ресов.
     const near={dist:8, rNext:12, inside:true, away:false, mats:1500};
-    const bn=best('rot', near);
-    check('рядом и много ресов: лучше последними', bn[0].id==='late', JSON.stringify(bn));
-    const gap=V('rot','late',near)-V('rot','early',near);
+    check('в круге с ресами: со штормом', best('rot', near)[0].id==='with', JSON.stringify(best('rot', near)));
+    const poorNear={dist:8, rNext:12, inside:true, away:false, mats:200, low:true};
+    check('в круге без ресов: последними', best('rot', poorNear)[0].id==='late', JSON.stringify(best('rot', poorNear)));
+    const gap=V('rot','late',poorNear)-V('rot','early',poorNear);
     check('отрыв от «сразу» 8..15', gap>=8 && gap<=15, String(gap));
     const moveFar=Object.assign({}, far, {move:true});
     check('далеко с мувментом: мувмент', best('rot', moveFar)[0].id==='move', JSON.stringify(best('rot', moveFar)));
@@ -50,7 +52,7 @@ window.addEventListener("load", function(){ setTimeout(async function(){
     ['rot','end','stance'].forEach(k=>{ const cnt={}; for(let i=0;i<500;i++){
       const rN=5+rnd()*25, d=rnd()*60, m=Math.round(rnd()*1600);
       const sit={dist:d, rNext:rN, inside:d<rN, away:rnd()<0.5, edge:rnd()<0.3, mats:m, low:m<CC_MATS_LOW, heals:Math.floor(rnd()*4),
-                 move:rnd()<0.4, ar:1+Math.floor(rnd()*5), nearBy:Math.floor(rnd()*7), pair:rnd()<0.3, place:1+Math.floor(rnd()*30), alive:25};
+                 move:rnd()<0.4, ar:1+Math.floor(rnd()*5), nearBy:Math.floor(rnd()*20), pair:rnd()<0.3, place:1+Math.floor(rnd()*24), alive:25};   // места и теснота как в настоящих играх (career-sit-probe: место 6–20, рядом 3–24)
       const b=best(k, sit)[0].id; cnt[b]=(cnt[b]||0)+1; }
       out.notes[k]=cnt;
       Object.keys(cnt).forEach(id=>check(k+': '+id+' лучший не чаще 60%', cnt[id]<=300, JSON.stringify(cnt))); });

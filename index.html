@@ -115207,9 +115207,16 @@ function ccFightLine(T, out, F, foeName, gun, you, tac){
 }
 /* СИТУАЦИЯ И ЦЕННОСТЬ ХОДОВ. Три окна за игру (ротация, концовка, стойка до конца), и у каждого хода сила зависит от того,
    что на экране: далеко ли круг, сколько ресов, какой AR, сколько отрядов рядом, какое место. Лучший ход не называется,
-   под ходом только факты (ccSitFacts). Масштаб: лучший в ситуации на 8–15 силы впереди худшего. Числа — решение, не замер. */
+   под ходом только факты (ccSitFacts). Масштаб: лучший в ситуации на 8–15 силы впереди худшего. Числа — решение, не замер.
+   Проверка tools/career-sit-probe.js (настоящие игры playGameWithChoices, кубок Д1, 92):
+     стратегия        ср. место   побед %   топ-10 %   (600 игр)
+     по умолчанию       21.3        1.8        34       старая версия по умолчанию 19.8 (вместе с 300 играми разница 0.8)
+     лучший             20.6        1.7        33
+     худший             25.5        0.3        18
+   Лучший ход по окну: ротация «со штормом» 55%, концовка максимум «низ» 40%, стойка 51/49. Ход по ситуации почти не
+   обгоняет ход по умолчанию: выбор решает тем, что ошибка дорогая. */
 const CC_SIT_ROT_IDS=['early','with','late','move'], CC_SIT_END_IDS=['hg','mid','edge','refresh','lg','third'], CC_SIT_STANCE_IDS=['hold','push'];
-const CC_SIT_NEAR=22, CC_SIT_USELESS=8;
+const CC_SIT_NEAR=10, CC_SIT_USELESS=8;
 // Недостающие поля — средняя ситуация; в Zero Build ресы не читаются.
 function ccSitNorm(s){
   const o=Object.assign({dist:0, rNext:1, inside:false, away:false, edge:false, mats:900, heals:2, move:false, ar:3, nearBy:2, pair:false, place:10, alive:25}, s||{});
@@ -115225,7 +115232,8 @@ function ccSitOf(you, game0){
   if(sq && c){
     s.dist=Math.hypot(sq.x-c.cx, sq.y-c.cy); s.rNext=Math.max(1, c.radius); s.inside=s.dist<c.radius;
     const cur=f && f.circle;
-    if(cur){ s.away=Math.hypot(sq.x-c.cx, sq.y-c.cy)>Math.hypot(sq.x-cur.cx, sq.y-cur.cy)+1;
+    // Круг уходит от тебя: ты вне следующего, и его центр по другую сторону от центра текущего.
+    if(cur){ s.away=!s.inside && ((c.cx-cur.cx)*(sq.x-cur.cx)+(c.cy-cur.cy)*(sq.y-cur.cy))<0;
       s.edge=Math.hypot(sq.x-cur.cx, sq.y-cur.cy)>cur.radius*0.75; }
   }
   s.mats=ccMats(you);
@@ -115234,7 +115242,9 @@ function ccSitOf(you, game0){
   const ar=ccGunTier(you, 'rifle'); s.ar=ar==null ? 3 : ar;
   if(game && game.squads && sq){
     const others=game.squads.filter(o=>o.alive && o!==sq && o.team!==you && !o.team.isMate);
-    s.nearBy=others.filter(o=>Math.hypot(o.x-sq.x, o.y-sq.y)<CC_SIT_NEAR).length;
+    // «Рядом» — от размера круга: к 8-й зоне весь круг уже ближе CC_SIT_NEAR, и счёт терял смысл.
+    const cur0=f && f.circle, nr=cur0 ? Math.max(2, cur0.radius*0.3) : CC_SIT_NEAR;
+    s.nearBy=others.filter(o=>Math.hypot(o.x-sq.x, o.y-sq.y)<nr).length;
     s.alive=others.length+1;
     const mine=Math.max(1, you._pc||you._pf||you.pow||1);
     s.place=1+others.filter(o=>Math.max(1, o.team._pc||o.team._pf||o.team.pow||1)>mine).length;
@@ -115252,13 +115262,17 @@ function ccSitAvail(kind, id, s){
 function ccSitValue(kind, id, s){
   const o=ccSitNorm(s), d=o.dist/Math.max(1, o.rNext), far=clamp((d-1)/2, 0, 1);
   if(kind==='rot'){
-    if(id==='early') return 6*far+(o.away ? 3 : 0)-(o.inside ? 4 : 0);
-    if(id==='with') return 3-3*Math.abs(clamp(d, 0, 3)-1.5)/1.5+(o.edge ? 2 : 0);
-    if(id==='late') return (o.inside ? 6 : -6*clamp((d-1)/2, 0, 1))+(o.mats>=1200 ? 4 : o.mats<600 ? -4 : 0)-(o.away ? 3 : 0);
-    if(id==='move') return 8*far+3-(o.inside ? 8 : 0);
+    /* Замер движка (career-sit-probe MEASURE, 4-я зона, ~250 игр на клетку): «последними» хуже на ~6 мест в любой ситуации,
+       «со штормом» лучше «сразу» на ~1. Поэтому последними выгодно только без ресов (пока ждём, фармим), со штормом — с края. */
+    if(id==='early') return 4*far+(o.away ? 4 : 0);
+    if(id==='with') return 1.5+(o.edge ? 2 : 0)-4*far;
+    if(id==='late') return (o.low ? 6 : -4)+(o.inside ? 2 : -2)-(o.away ? 4 : 0);
+    if(id==='move') return 8*far+3-(o.inside ? 10 : 0);
   }
   if(kind==='end'){
-    const hg=(o.mats-800)/700*5+(o.ar-3)*2-Math.max(0, o.nearBy-2)*2;
+    // Теснота — доля живых рядом, а не их число: к концовке живых всё меньше, и число само по себе ничего не говорит.
+    const crowd=o.nearBy/Math.max(1, o.alive);
+    const hg=(o.mats-800)/700*5+(o.ar-3)*2-8*clamp(crowd-0.3, 0, 1);
     if(id==='hg') return hg;
     if(id==='mid') return hg*0.5+1;
     if(id==='edge') return (o.edge ? 4 : -2)+(o.move ? 3 : 0);
@@ -115267,8 +115281,8 @@ function ccSitValue(kind, id, s){
     if(id==='third') return 5-Math.max(0, o.nearBy-3);
   }
   if(kind==='stance'){
-    if(id==='hold') return clamp((14-o.place)/10, -1, 1)*7;
-    if(id==='push') return (o.ar-3)*2+(o.mats-900)/600*2+(o.place-14)/10*5;
+    if(id==='hold') return clamp((12-o.place)/10, -1, 1)*7;
+    if(id==='push') return (o.ar-3)*2+(o.mats-900)/600*2+(o.place-12)/10*5;
   }
   return 0;
 }
@@ -115381,22 +115395,44 @@ function ccRoomLoot(field, you){
 
    Штраф за провал платит и комната: до правки боты рисковали
    высотой бесплатно, и их ожидание было выше игроковского на ровном месте. */
-/* Комната в окне концовки ходит той же ценностью, что игрок: с вероятностью навыка (skill отряда в движке) лучший ход,
-   иначе случайный из доступных. Третьить комната не ходит: её стычки считает движок. */
+/* Выбор бота по ситуации (для проверок и проб). Сама комната ходит старым откалиброванным броском (ccRoomLate ниже):
+   замер career-sit-probe — с выбором по ситуации комната слабела, и игрок «по умолчанию» поднимался на 2.5 места. */
 function ccRoomLateOne(t, game){
   const s=ccSitOf(t, game), ids=CC_SIT_END_IDS.filter(id=>id!=='third' && ccSitAvail('end', id, s));
   const sq=game && game.squads ? game.squads.find(q=>q.team===t) : null, sk=sq && sq.skill!=null ? sq.skill : 0.5;
   if(Math.random()<sk) return ids.slice().sort((x,y)=>ccSitValue('end', y, s)-ccSitValue('end', x, s))[0];
-  return ids[Math.floor(Math.random()*ids.length)];
+  return ccEndDefault(t);
 }
 function ccRoomLate(field, you){
-  const game=(you && you._game) || (field||[]).map(t=>t._game).find(Boolean) || null;
-  (field||[]).forEach(t=>{
-    if(you && (t===you || t.isMate || t.isRival)) return;   // людям (и сопернику по гонке) — окно, не бросок
-    const s=ccSitOf(t, game), id=ccRoomLateOne(t, game), def=ccEndDefault(t);
-    const gain=Math.round(ccSitValue('end', id, s)-ccSitValue('end', def, s));
-    if(gain) ccAddGamePow(t, gain);
-    if(id==='refresh') ccMatsFill(t);
+  const edgeOf=ccRoomEdge(field);
+  // Ходы с монеткой, разложенные по потолку: бросок ниже читает индекс как
+  // «насколько высоко метит». В самом CC_LATE_MOVES порядок другой — там он
+  // про то, как ходы стоят на панели у игрока, и совпадать эти два не обязаны.
+  /* ПРАВКА 4 СЕНТЯБРЯ. Корзин было две: «с монеткой» (одна высокая земля) и
+     «спокойные» (рефреш, верные +3). Рефреш стал риском — и вторая корзина
+     опустела, а с ней пропала половина ходов комнаты: сторож choice-stacking
+     поймал «лут получили только 8 из 19». Корзина теперь одна, все ходы с
+     прибавкой, и доля ходящих поднята так, чтобы комната ходила не реже
+     прежнего. Что это не подарок и не налог — меряет career-choice-balance-probe. */
+  // Ходы через движок (третья сторона) комната не ходит: её стычки движок
+  // и так считает сам, а второй раз давать ей элимы броском — подарок.
+  const risky=ccLateMovesNow().filter(m=>m.pow>0 && !m.real).slice().sort((a,b)=>a.pow-b.pow);
+  const calm=[];
+  field.forEach(t=>{
+    if(you && (t===you || t.isMate || t.isRival)) return;   // людям (и сопернику по гонке) — вопрос, не бросок
+    if(Math.random() < clamp(0.62+edgeOf(t)*4, 0.35, 0.9)){
+      // В размен. Кто именно из рискованных — тем же броском: чем выше сила
+      // над лобби, тем дальше по списку, то есть тем больше потолок.
+      const at=Math.min(risky.length-1,
+        Math.floor(Math.random()*risky.length*clamp(0.5+edgeOf(t)*3, 0.2, 1.4)));
+      const m=risky[Math.max(0, at)];
+      const won=Math.random()<m.odds;
+      // Рефреш у комнаты считается по её же ресам: полные — половина прибавки.
+      ccAddGamePow(t, won ? (m.mats ? ccRefreshPow(t) : m.pow) : -m.fail);
+      if(won && m.mats) ccMatsFill(t);
+    } else if(calm.length && Math.random()<0.55){
+      ccAddGamePow(t, calm[0].pow);
+    }
   });
 }
 /* Панель вопроса поверх карты. Живёт ровно столько, сколько идёт вопрос, и

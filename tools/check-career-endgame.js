@@ -57,11 +57,11 @@ window.addEventListener("load", function(){ setTimeout(async function(){
       room.push(t); }
     const g={squads:room.map((t,i)=>({team:t, alive:true, x:i%20, y:Math.floor(i/20), skill:1})), upcoming:()=>({cx:10, cy:5, radius:8}), frames:()=>[]};
     room.forEach(t=>{ t._game=g; t._sq=g.squads.find(q=>q.team===t); });
-    const pick=[]; const ro=ccRoomLateOne; ccRoomLateOne=function(t, game){ const r=ro(t, game); pick.push(r); return r; };
-    ccRoomLate(room, null);
-    const bestOf=t=>{ const s=ccSitOf(t); return CC_SIT_END_IDS.filter(id=>id!=='third' && ccSitAvail('end', id, s)).sort((x,y)=>ccSitValue('end',y,s)-ccSitValue('end',x,s))[0]; };
-    check('комната skill 1: лучший ход', pick.length===200 && pick.every((id,i)=>id===bestOf(room[i])), JSON.stringify(pick.slice(0,5)));
-    ccRoomLateOne=ro;
+    // Выбор бота по ситуации: skill 1 — всегда лучший ход (сама комната ходит старым броском, ccRoomLate).
+    const bestOf=t=>{ const s=ccSitOf(t, g); return CC_SIT_END_IDS.filter(id=>id!=='third' && ccSitAvail('end', id, s)).sort((x,y)=>ccSitValue('end',y,s)-ccSitValue('end',x,s))[0]; };
+    check('бот skill 1: лучший ход', room.every(t=>ccRoomLateOne(t, g)===bestOf(t)));
+    g.squads.forEach(q=>q.skill=0);
+    check('бот skill 0: ход по умолчанию', room.every(t=>ccRoomLateOne(t, g)===ccEndDefault(t)));
     ccFightApply=fa;
     ['ru','en','fr','it','pt'].forEach(lg=>['lsHold','lsPush','esChips'].forEach(k=>check(lg+' '+k, I18N[lg][k]!=null)));
   }catch(e){ out.fails.push('ERR '+(e && e.stack || e)); }
