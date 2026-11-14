@@ -79,17 +79,17 @@ const BOOT = `
     if(!careerOwns('phone')) fail('phone not bought');
     const mobList=ccVictoryList().filter(v=>ccConsoleNeed(v)==='mobile');
     if(mobList.length<=mobBefore) fail('buying a phone added no mobile cups: '+mobBefore+' -> '+mobList.length);
-    if(ccMobilePen()!==16) fail('first mobile cup penalty should be 16: '+ccMobilePen());
-    CAREER.career.mobN=3; if(ccMobilePen()!==10) fail('after three mobile cups penalty should be 10: '+ccMobilePen());
-    CAREER.career.mobN=50; if(ccMobilePen()!==4) fail('mobile penalty floor 4: '+ccMobilePen());
-    CAREER.career.mobN=0;
+    const pcO=CAREER.player.ovr;
+    if(ccMobileOvr()!==pcO-16 || ccMobilePen()!==16) fail('mobile rating should start at PC-16: '+ccMobileOvr()+' / pen '+ccMobilePen());
+    CAREER.career.mobOvr=pcO-6; if(ccMobilePen()!==6) fail('penalty is not the rating gap: '+ccMobilePen());
+    delete CAREER.career.mobOvr;
     const mf=ccMobileField(100), roster=CC_MOBILE_ROSTER.EU, rnames=new Set(roster.map(x=>x[0]));
     const realN=mf.filter(t=>rnames.has(t.squad[0].handle)).length;
     if(mf.length!==100 || realN!==Math.min(100, roster.length)) fail('mobile field: '+mf.length+' teams, '+realN+' real mobile players');
     const pcSet=new Set(ccSceneRoster('EU').map(c=>hKey(c)));
     const pcIn=mf.filter(t=>pcSet.has(hKey(t.squad[0])) && !rnames.has(t.squad[0].handle)).length;
     if(pcIn) fail('PC scene in a mobile field: '+pcIn);
-    out.steps.push('mobile: '+mob26.length+' cups 2026, on the calendar without a phone '+mobBefore+', with '+mobList.length+'; field 100 = '+realN+' real mobile players (e.g. '+mf[0].squad[0].handle+'); penalty 16 -> 10 -> 4');
+    out.steps.push('mobile: '+mob26.length+' cups 2026, on the calendar without a phone '+mobBefore+', with '+mobList.length+'; field 100 = '+realN+' real mobile players (e.g. '+mf[0].squad[0].handle+'); mobile rating '+ccMobileOvr()+' (PC '+pcO+')');
     // Полный мобильный вечер.
     const mc=mobList.find(v=>v.mode==='solo' && v.day>=careerToday());
     seed(mc.day, ['phone']);
@@ -107,8 +107,12 @@ const BOOT = `
     clearInterval(iv); ccMobileField=mfk; careerYouTeam=cyt; simulateGamesLive=sgl;
     if(!usedMob) fail('mobile night did not use the mobile scene');
     if(!(mBase-mPow===16)) fail('mobile night penalty: '+mBase+' -> '+mPow);
-    if((CAREER.career.mobN||0)!==1) fail('mobile cups played not counted: '+CAREER.career.mobN);
-    out.steps.push('mobile night '+mc.day+' '+mc.id+': mobile scene, power '+mBase+' -> '+mPow+', next penalty '+ccMobilePen());
+    if((CAREER.career.mobN||0)!==1 || CAREER.career.mobOvr==null) fail('mobile rating not moved by the night: '+JSON.stringify({n:CAREER.career.mobN, r:CAREER.career.mobOvr}));
+    const lastM=(CAREER.career.log||[]).slice(-1)[0];
+    CH_TAB='table'; careerRenderHub('table');
+    const mobTile=[...document.querySelectorAll('#chBody .ch-tile')].find(t=>t.textContent.indexOf(L().ccMobTitle)>=0);
+    if(!mobTile || !mobTile.querySelector('tr.you')) fail('no mobile rating board with the player on the boards tab');
+    out.steps.push('mobile night '+mc.day+' '+mc.id+': mobile scene, power '+mBase+' -> '+mPow+', #'+(lastM && lastM.place)+' -> mobile rating '+CAREER.career.mobOvr+'; board: '+mobTile.querySelector('.ct-note').textContent);
     // ---- магазин и языки ---------------------------------------------------------------------
     CH_TAB='shop'; try{ careerTab('shop'); }catch(e){}
     ['ru','en','fr','it','pt'].forEach(l=>{ LANG=l; CC_L_CACHE={}; const D=L();
