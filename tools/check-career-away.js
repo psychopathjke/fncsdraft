@@ -237,6 +237,36 @@ const BOOT = `
     if(CAREER.career.wf && CAREER.career.wf.monday===careerMonday(DD)) fail('away div cup gave a Weekly Final seat');
     out.steps.push('div cup '+DD+': NAC Division '+lowNAC+' at night, #'+ld.place+(upNAC?' promoted there':'')+', power '+dBase+' -> '+dPow+', home division stays 2, day stays');
 
+    // ---- финал недели из чужого Д1 ------------------------------------------------------------------------
+    { const wfDays=[...careerYearDays().entries()].filter(([d, l])=>l.some(e=>e.kind==='final') && d>'2026-01-15').map(([d])=>d).sort();
+      const WF=wfDays[0]; if(!WF) fail('no Weekly Final day in 2026');
+      // Путёвка: кап дивизиона в Д1 NAC на этой неделе, отсечку проходят все (careerCupCut подменён).
+      const cupDay=[...careerYearDays().entries()].filter(([d, l])=>l.some(e=>e.kind==='cup') && careerMonday(d)===careerMonday(WF) && d<WF).map(([d])=>d).sort()[0];
+      if(!cupDay) fail('no cup day in the week of '+WF);
+      seedDiv(cupDay); CAREER.career.regDiv={NAC:1};
+      const cutKeep=careerCupCut; careerCupCut=()=>999999;
+      const sl=ccAwaySlot('NAC'); if(ccAwayWhy('NAC')==='later'){ ccAwayHomeDone(cupDay, 'cup'); careerAdvanceTo(ccAddDays(cupDay, 1)); careerSave(); }
+      await play('NAC', cupDay);
+      careerCupCut=cutKeep;
+      const seat=(CAREER.career.regWf||{}).NAC;
+      if(!seat || seat.monday!==careerMonday(WF)) fail('NAC Division 1 cup gave no Weekly Final seat: '+JSON.stringify(CAREER.career.regWf));
+      if(CAREER.career.wf) fail('away seat leaked into the home seat');
+      // Финал недели NAC в субботу.
+      CAREER.career.day=WF; CAREER.career.energy=100; careerSave();
+      if(ccAwayKind('NAC')!=='final') fail('NAC Weekly Final not offered on '+WF+': '+ccAwayKind('NAC'));
+      let wfDay=WF;
+      if(ccAwayWhy('NAC')==='later'){ ccAwayHomeDone(WF, ccAwayKind('EU')||'victory'); careerAdvanceTo(ccAddDays(WF, 1)); careerSave(); }
+      if(ccAwayWhy('NAC', WF)) fail('NAC Weekly Final closed: '+ccAwayWhy('NAC', WF));
+      const tbl0=JSON.stringify(CAREER.career.table||null), div0=CAREER.career.division, today0=careerToday();
+      await play('NAC', wfDay);
+      const lw=(CAREER.career.log||[]).slice(-1)[0];
+      if(!lw || lw.kind!=='final' || lw.away!=='NAC' || lw.day!==WF) fail('NAC Weekly Final log: '+JSON.stringify(lw));
+      if(CAREER.career.division!==div0 || careerToday()!==today0) fail('away final moved division/day: D'+CAREER.career.division+' '+careerToday());
+      if(JSON.stringify(CAREER.career.table||null)!==tbl0) fail('away final wrote the home season table');
+      if((CAREER.career.regWf||{}).NAC) fail('the NAC seat was not spent');
+      if(CAREER.career.wf) fail('home seat appeared after the away final');
+      out.steps.push('Weekly Final from NAC D1: seat from the cup '+cupDay+', final '+WF+' played #'+lw.place+' of '+lw.of+', $'+(lw.prize||0)+', home D'+div0+' and table untouched'); }
+
     // ---- полный свой вечер, потом NAC кнопкой прямо с карточки итога ---------------------------------
     localStorage.setItem('fncsdraft_career', JSON.stringify(s)); careerEntry();
     const askNo=setInterval(()=>{ const am=document.getElementById('ccAskModal'); if(am && am.style.display==='flex'){ const n=document.getElementById('ccAskNo'); if(n) n.click(); } }, 20);
