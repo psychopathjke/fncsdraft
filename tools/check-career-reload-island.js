@@ -27,6 +27,8 @@ const BOOT = `
   const out = {fails: [], notes: {}, err: null};
   const check = (n, ok, d) => { if(!ok) out.fails.push(n + (d ? ': ' + d : '')); };
   try {
+    // Отвечаем на всё, что спрашивает вечер: комната лута (ccLootRoom), выборы, высадка.
+    setInterval(()=>{ const g=document.querySelector('.cc-loot [data-a="go"]'); if(g){ g.click(); return; } const cb=document.querySelector('.cc-choice-btn'); if(cb){ cb.click(); return; } const pk=document.querySelector('.landing-picker'); if(pk){ const z=pk.querySelector('.land-zone'); if(z) z.click(); const c=pk.querySelector('#gameLandingConfirm'); if(c && !c.disabled) c.click(); } }, 30);
     // ---- правило: чётные игры уходят на второй остров --------------------
     out.notes.чередование={};
     ['r1','r2','r3','r4'].forEach(set=>{

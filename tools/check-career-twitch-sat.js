@@ -46,7 +46,7 @@ const BOOT = `
       localStorage.removeItem('fncsdraft_career'); save(tw); careerEntry();
       const cr=CAREER.career;
       if(!careerStreamGo('grind')) fail('эфир не состоялся при '+tw+' фолловерах');
-      rate[tw]=(cr.twitch-tw)/tw;
+      rate[tw]=cr.streamLast.a[2]/tw;   // только свои фолловеры эфира; доля X (CC_TW_FROM_X) отдельно
     }
     if(!(rate[1000]>0.004 && rate[1000]<0.02)) fail('на тысяче фолловеров прирост за день '+(rate[1000]*100).toFixed(2)+'% — ждали около 1%');
     if(!(rate[100000]<0.005)) fail('на ста тысячах прирост за день '+(rate[100000]*100).toFixed(2)+'% — больше половины процента');

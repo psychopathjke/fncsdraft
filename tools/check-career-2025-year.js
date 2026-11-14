@@ -77,7 +77,7 @@ const BOOT = `
     check('мир сыграл финалы трёх Мейджоров', ['1|major1','1|major2','1|major3'].every(k=>paid.indexOf(k)>=0), paid.join(','));
     check('мир не играл Reload / Саммит / LCQ Глобалов', !paid.some(k=>/reload|summit|gclc|rc/i.test(k)), paid.join(','));
     check('снимок к осени — t3', ccSnapshotNow().tag==='t3', ccSnapshotNow().tag);
-    check('остров к осени — t3', careerBrSet()==='t3', careerBrSet());
+    check('остров к осени — t4', careerBrSet()==='t4', careerBrSet());   // C6S4 с 7.08.2025 (34c05135)
     check('ЛАН года — Лион', ccLanHostKey('globals')==='Lyo', ccLanHostKey('globals'));
     // 2. Лион — своими руками, с места из финала Мейджора 3.
     seed('2025-09-06', {log:[{kind:'major', stage:'final', day:'2025-08-02', place:1, of:33, games:12, season:1, passed:true}]});

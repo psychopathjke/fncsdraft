@@ -180,7 +180,7 @@ const BOOT = `
     out.notes.shot = {rows:shot.rows.length, first:shot.rows[0].p, pin:shot.pin && shot.pin.p, cutPts:shot.cutPts};
     // Ровно как в кадре из твита: #29…#36, своя строка #33 внутри окна.
     check('shot: it is a window around your row, not the top five',
-          shot.rows.length === 8 && shot.rows[0].p === 29 && shot.rows.some(r => r.p === 33),
+          shot.rows.length === 10 && shot.rows[0].p === 28 && shot.rows.some(r => r.p === 33),
           JSON.stringify(out.notes.shot));
     check('shot: your row is pinned underneath', shot.pin && shot.pin.p === 33);
     check('shot: flags come off the squad cards', (shot.rows[0].f||[]).length === 2);

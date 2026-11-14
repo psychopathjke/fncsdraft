@@ -80,7 +80,7 @@ const BOOT = `
       // ---- фото: ставится, снимается, доживает до сейва --------------------
       const PIC='data:image/gif;base64,R0lGODlhAQABAAAAACw=';
       out.notes.photoSet=careerPhotoSet(PIC)===true && CAREER.player.photo===PIC;
-      const key=Object.keys(localStorage).find(k=>/career/i.test(k));
+      const key=LS_SLOT(ccSlotMine());   // не fncsdraft_career_w: это метка сейва (fd5f9507), не JSON
       let saved=null; try{ saved=JSON.parse(localStorage.getItem(key)||'null'); }catch(e){}
       out.notes.photoSaved=!!(saved && saved.player && saved.player.photo);
       out.notes.photoCleared=careerPhotoSet(null)===true && CAREER.player.photo===null;

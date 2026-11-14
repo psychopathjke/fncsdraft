@@ -43,7 +43,7 @@ check('кирка сезона не в руках', CAREER.fnEq.p!==want.id, CAR
 check('Axe of Champions 3.0 в шкафчике и в руках', CAREER.fnOwn.Pickaxe_FNCSChampion && CAREER.fnEq.p==='Pickaxe_FNCSChampion', CAREER.fnEq.p);
 check('строка 3.0 в шкафчике', cr.locker.some(x=>x.id==='axe|Pickaxe_FNCSChampion'));
 check('строка шкафчика своя', cr.locker.some(x=>x.id==='axe|'+want.id && x.name===want.name));
-check('пост о награде', (cr.news||[]).some(n=>n.k==='ccNewsLocker'));
+check('поста о награде нет (f14ca221)', !(cr.news||[]).some(n=>n.k==='ccNewsLocker'));
 k=kitAxe(); notes.kitWon=k;
 check('в матче — Axe of Champions 3.0', k.indexOf('The Axe of Champions 3.0')===0, k);
 // Victory Umbrella: первая победа сезона — зонтик сезона, один на сезон.

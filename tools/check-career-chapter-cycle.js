@@ -16,7 +16,8 @@ const seed=(season, size, day)=>{ localStorage.setItem('fncsdraft_career', JSON.
   partners:size===3 ? [mate, {card:{handle:'Vadeal', region:'EU', rating:90, _ovr:90, tier:'ladder', event:'ladder'}, patience:60, since:'2026-01-01', dev:0}] : [mate]})); careerLoad(); };
 const at=(season, size, day)=>{ seed(season, size, day); return careerBrSet(); };
 check('2026 дуо весной — m1', at(1, 2, '2026-02-01')==='m1', at(1, 2, '2026-02-01'));
-check('2026 трио летом — t3', at(1, 3, '2026-07-15')==='t3', at(1, 3, '2026-07-15'));
+check('2026 трио летом — m2', at(1, 3, '2026-07-15')==='m2',   // один остров на сезон (3e8e3710)
+    at(1, 3, '2026-07-15'));
 check('2027 дуо зимой — g5', at(2, 2, '2026-02-01')==='g5', at(2, 2, '2026-02-01'));
 check('2027 трио летом — g7', at(2, 3, '2026-07-01')==='g7', at(2, 3, '2026-07-01'));
 check('2027 осень — h1', at(2, 2, '2026-10-01')==='h1', at(2, 2, '2026-10-01'));

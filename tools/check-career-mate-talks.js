@@ -54,7 +54,7 @@ try{
   } else out.fails.push('нет кандидата с другой ролью рядом с порогом');
 
   // ---- условие «пересядь»
-  seed(84);
+  seed(out.notes.ovr);
   if(nearSame){
     careerDmWrite(nearSame.handle);
     const t=careerDmFind(nearSame.handle);

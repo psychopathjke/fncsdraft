@@ -97,7 +97,7 @@ const BOOT = `
       check('новость о тройке', (cr.news||[]).some(n=>n.k==='ccNewsSquadNew' && n.a && n.a[0]==='TRIO'));
     }
     // 4. Состав другого формата: дуо-год, трио-кап.
-    seed({season:1, size:2, year:2026, year0:2026, day:'2026-03-01'});
+    seed({season:1, size:2, year:2026, year0:2026, day:'2026-04-10'});   // составы другого формата открываются за неделю (1a05e48f)
     CAREER.player.ovr=99; CAREER.player.ovrExact=99;
     const year0=careerMates().map(m=>hKey(m)).join(',');
     ccDuoFindOpen(null, 3);

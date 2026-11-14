@@ -110,7 +110,7 @@ const BOOT = `
        будущей линии. Красного баннера «активен» при этом нет. */
     check('до включения — предупреждение, не «активен»', !!q('.zk-banner.warn') && q('.zk-banner b').textContent===T.ccKitSurgeWarn &&
           q('.zk-banner .zk-sub').textContent===T.ccKitSurgeWarnSub && !map.querySelector('.zk-banner.on'), txt());
-    check('и число против будущей линии', !!q('.zk-thresh') && /^[0-9][0-9,]*$/.test(q('.zk-thresh b').textContent), (q('.zk-thresh')||{}).textContent);
+    check('и число против будущей линии', !!q('.zk-thresh') && /^[+-][0-9][0-9,]*$/.test(q('.zk-thresh b').textContent), (q('.zk-thresh')||{}).textContent);
     // Живых меньше порога следующего круга — тихая строка порога, без баннера.
     ccKitPanel(lobby, {zone:3, players:70, surgeAt:90, surgeLine:null, dots:[dot(), dot({h:64}), dot()]});
     check('живых меньше порога — ни баннера, ни числа', !map.querySelector('.zk-banner') && !map.querySelector('.zk-thresh') && !!q('.zk-surgeat'), txt());
@@ -119,8 +119,8 @@ const BOOT = `
     ccKitPanel(lobby, {zone:4, players:80, surgeAt:74, surgeLine:-30, dots:[dot(), dot({h:64, n:239}), dot()]});
     out.notes.push('z4: '+txt());
     check('баннер сёржа стоит', !!q('.zk-banner') && q('.zk-banner b').textContent===T.ccKitSurgeBanner, (q('.zk-banner')||{}).textContent);
-    check('справа — число над порогом и подпись', !!q('.zk-thresh.ok') && q('.zk-thresh b').textContent==='269' &&
-          q('.zk-thresh span').textContent===T.ccKitAboveCap, (q('.zk-thresh')||{}).textContent);
+    check('справа — число над порогом и подпись', !!q('.zk-thresh.ok') && q('.zk-thresh b').textContent==='+269' &&
+          q('.zk-thresh span').textContent===T.ccKitCapLbl, (q('.zk-thresh')||{}).textContent);
 
     // ---- лут выбран, ресы кончились, под сёржем -------------------------------
     you._loot={weapons:[{name:'Pump'},{name:'AR'}], heals:[{name:'Minis'},{name:'Medkit'}], move:{name:'Sliders'}};
@@ -132,13 +132,13 @@ const BOOT = `
     check('редкость цветом — и когда пул зовёт её цветом', (()=>{ const o={name:'Slurpfish', rarity:'purple'}; return ccRarityKey(o.rarity)==='epic' && ccRarityKey('rare')==='rare'; })());
     check('мало ресов — жёлтая пометка', !!map.querySelector('.zk-mats.low') && (q('.zk-mats').title||'').indexOf(T.ccKitLow)>=0, q('.zk-mats').title);
     check('под сёржем — красный баннер и сколько до порога', !!q('.zk-banner.on') && q('.zk-banner b').textContent===T.ccKitUnderBanner &&
-          !!q('.zk-thresh.on') && q('.zk-thresh b').textContent==='40' && q('.zk-thresh span').textContent===T.ccKitBelowCap, txt());
+          !!q('.zk-thresh.on') && q('.zk-thresh b').textContent==='-40' && q('.zk-thresh span').textContent===T.ccKitCapLbl, txt());
     check('все шесть слотов заняты: кирка и пять предметов', map.querySelectorAll('.zk-slot:not(.empty)').length===6,
           String(map.querySelectorAll('.zk-slot:not(.empty)').length));
 
     // ---- выбыли ----------------------------------------------------------------
     ccKitPanel(lobby, {zone:6, players:50, surgeAt:50, dots:[dot(), dot({alive:false, h:0, p:23}), dot()]});
-    check('выбывший отряд — одна строка', txt()===T.ccKitOut, txt());
+    check('выбывший отряд — одна строка', txt()===T.ccKitOut+' · #23'+T.ccKitWatch, txt());
 
     // ---- без карты панель молчит и не падает -----------------------------------
     CC_RUN_MAP=null;

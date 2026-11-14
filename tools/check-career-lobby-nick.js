@@ -25,6 +25,7 @@ const BOOT = `
   function done(){ document.title = 'PBEGIN' + encodeURIComponent(JSON.stringify(out)) + 'PEND'; }
   window.addEventListener('load', function(){
     try{
+      try{ localStorage.setItem('fncsdraft_tour1', '1'); }catch(e){}
       careerEntry();
       ccPickRole('roleFRG'); ccPickDiv(5); ccPickRegion('EU'); ccPickCountry('de');
       const nick = document.getElementById('ccNick');

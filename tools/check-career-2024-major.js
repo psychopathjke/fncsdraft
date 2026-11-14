@@ -18,6 +18,8 @@ const BOOT = `
 <script>
 (async function(){
   setInterval(function(){
+    // Комната лута на своей точке (ccLootRoom, 13.11): уходим с тем, что открыто.
+    const lr=document.querySelector('.cc-loot [data-a="go"]'); if(lr){ lr.click(); return; }
     const am=document.getElementById("ccAskModal");
     if(am && am.style.display==="flex"){ const no=document.getElementById("ccAskNo"), yes=document.getElementById("ccAskYes");
       if(no && no.textContent===L().ccSpotGatePlay){ no.click(); return; }
@@ -146,11 +148,12 @@ const BOOT = `
     check('верхняя — 50, нижняя — 200', st.upper.rows.length===50 && st.lower.rows.length===200, JSON.stringify(out.notes.semi));
     check('игрок с 96 — в какой-то сетке', !!st.bracket, JSON.stringify(out.notes.semi));
     check('полуфинал открыт', canSemi);
-    const s1=await playThrough('semi1'); r=last();
-    out.steps.push('semi1 ('+st.bracket+'): '+s1.head+' · #'+r.place+' of '+r.of+' · ticket '+m24().ticket);
-    const other=st.bracket==='upper' ? 'lower' : 'upper';
+    // Сетка ДО первого дня: после него 27-е место роняет в нижнюю, и st.bracket уже другая (st — живой объект).
+    const br=st.bracket; const s1=await playThrough('semi1'); r=last();
+    out.steps.push('semi1 ('+br+'): '+s1.head+' · #'+r.place+' of '+r.of+' · ticket '+m24().ticket);
+    const other=br==='upper' ? 'lower' : 'upper';
     check('чужая сетка сыграла первый день молча', Array.isArray(m24()[other].r1) && m24()[other].r1.length>0, JSON.stringify(m24()[other].r1 && m24()[other].r1.length));
-    if(st.bracket==='upper'){
+    if(br==='upper'){
       check('верхняя, день 1: пять игр, победа — билет', r.games===5, String(r.games));
       check('билеты верхней сетки — не больше пяти', (m24().upper.tickets||[]).length<=5, String((m24().upper.tickets||[]).length));
       /* ---- ВЕРХНЯЯ НЕ ВЫБИВАЕТ, А РОНЯЕТ В НИЖНЮЮ ----------------------

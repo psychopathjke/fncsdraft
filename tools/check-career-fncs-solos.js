@@ -49,6 +49,10 @@ const BOOT = `
   // Every closed room asks where to land; the harness answers with the first
   // zone the moment a picker appears, so a run never waits on a click.
   setInterval(function(){
+    // Комната лута на своей точке (ccLootRoom, 13.11): уходим с тем, что открыто.
+    const lr=document.querySelector('.cc-loot [data-a="go"]'); if(lr){ lr.click(); return; }
+    // careerPlay снимает skipAnimation, жмём пропуск сами: иначе 1800 с виртуального времени не хватает.
+    const sb=document.getElementById('majorSkipBtn'); if(sb && !sb.disabled) sb.click();
     const am=document.getElementById("ccAskModal"); if(am && am.style.display==="flex"){ const no=document.getElementById("ccAskNo"); if(document.getElementById("ccAskYes") && document.getElementById("ccAskYes").textContent===L().ccSpotGateSet){ careerSpotEnsure(); document.getElementById("ccAskModal").style.display="none"; careerPlay(); return; } if(no && no.textContent===L().ccSpotGatePlay){ no.click(); return; } } const c0=document.querySelector(".cc-choice-btn"); if(c0){ c0.click(); return; }
     const p=document.querySelector(".landing-picker"); if(!p) return;
     const z=p.querySelectorAll(".land-zone"); if(!z.length) return;

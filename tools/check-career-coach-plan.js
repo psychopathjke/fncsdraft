@@ -21,6 +21,7 @@ const BOOT = `
 <script>
 (async function(){
   setInterval(function(){
+    const lg=document.querySelector(".cc-loot .lr-go"); if(lg){ lg.click(); return; }
     const am=document.getElementById("ccAskModal");
     if(am && am.style.display==="flex"){ const no=document.getElementById("ccAskNo"), yes=document.getElementById("ccAskYes");
       if(no && no.textContent===L().ccSpotGatePlay){ no.click(); return; }

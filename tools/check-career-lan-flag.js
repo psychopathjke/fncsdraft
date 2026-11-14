@@ -119,11 +119,8 @@ const BOOT = `
     });
     out.notes.usAt = usAt;
     check('США за сорок сезонов выпадают', !!usStyle, 'ни разу');
-    check('у звёздно-полосатого есть размер кантона',
-          !!usStyle && usStyle.indexOf('background-size:') >= 0,
-          usStyle ? usStyle.slice(0, 80) : '-');
-    check('и полосы в нём повторяются',
-          !!usStyle && usStyle.indexOf('repeating-linear-gradient') >= 0,
+    // С bf63c069 (29.10) у страны с кодом настоящий флаг картинкой, полосы рисуются только без кода.
+    check('США: настоящий флаг картинкой', !!usStyle && usStyle.indexOf('url(flags/w320/us.png)') >= 0,
           usStyle ? usStyle.slice(0, 80) : '-');
   } catch(e) { out.err = String(e && e.stack || e); }
   document.getElementById('__out').textContent =

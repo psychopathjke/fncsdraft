@@ -85,9 +85,11 @@ const BOOT = `
     // Лобби нет — голос считается свой, без барьера.
     ccMpChoose=function(kind, mineFn){ return Promise.resolve(mineFn()).then(v=>({v:v, mine:true})); };
     groups=await careerLandingPick(field, you, 'solo', ['solo'], {tag:you.mpTag});
-    check('в команде раздача шла при обоих сидящих', seen.length===1 && seen[0].youHome && seen[0].mateIn, JSON.stringify(seen));
-    check('ботов раздали без людей', seen[0].n===bots.length-1, String(seen[0].n));
-    check('напарник остался дома один раз', sameZ(mate.landingZone, mz) && count(mate)===1, String(count(mate)));
+    // С a4cf0667 (23.10) в команде вдвоём живых заранее на дом не сажают: дом напарника не ездил по проводу, и вечера
+    // расходились. Раздача идёт по всем, а домой людей сажает ответ, ровно один раз (проверки ниже).
+    check('в команде заранее не сажаем никого', seen.length===1 && !seen[0].youHome && !seen[0].mateIn, JSON.stringify(seen));
+    check('раздали всех, кроме себя', seen[0].n===bots.length, String(seen[0].n));
+    check('напарник стоит один раз (домой его сажает его ответ, ниже)', count(mate)===1, String(count(mate)));
     check('и я дома один раз', sameZ(you.landingZone, home) && count(you)===1, String(count(you)));
     // Второй вопрос — напарнику, комната та же (pre): его снимают и сажают ответом.
     seen.length=0;

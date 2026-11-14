@@ -30,6 +30,8 @@ const BOOT = `
   const out={fails:[], notes:{}, err:null};
   const check=(n, ok, d)=>{ if(!ok) out.fails.push(n+(d?': '+d:'')); };
   setInterval(function(){
+    // Комната лута на своей точке (ccLootRoom, 13.11): уходим с тем, что открыто.
+    const lr=document.querySelector('.cc-loot [data-a="go"]'); if(lr){ lr.click(); return; }
     const c0=document.querySelector(".cc-choice-btn"); if(c0){ c0.click(); return; }
     const p=document.querySelector(".landing-picker"); if(!p) return;
     const z=p.querySelectorAll(".land-zone"); if(!z.length) return;

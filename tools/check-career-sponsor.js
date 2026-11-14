@@ -107,7 +107,7 @@ const BOOT = `
     const paid = CAREER.career.balance - before;
     out.notes.streamPaid = paid;
     const subs = Math.round(careerReach() / CC_STREAM_PER);
-    const viewers = Math.max(3, Math.round(twBefore * 0.06 + careerReach() * 0.008));
+    const viewers = CAREER.career.streamLast.a[0];   // зрители эфира считает ccTwViewersOf (2f817f06, ed4cd11b)
     const dono = Math.round(viewers * 0.04);
     out.notes.streamParts = {subs: subs, slot: ccSponsor().pay, dono: dono};
     check('a stream night pays the subs, the slot and the donations',

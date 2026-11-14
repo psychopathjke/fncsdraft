@@ -99,7 +99,7 @@ const BOOT = `
 
     // ---- 3. поиск клуба выключается и включается без клуба ---------------
     CAREER.org = null;
-    CAREER.scoutOff = true;
+    CAREER.scoutOff = true; CAREER.scoutOffFree = true;   // выключил свободным агентом (5b58c23a)
     const tile = careerOrgTileHTML();
     out.notes.tile = tile.replace(/<[^>]+>/g, ' ').replace(/\\s+/g, ' ').trim().slice(0, 140);
     check('переключатель поиска есть и без клуба',

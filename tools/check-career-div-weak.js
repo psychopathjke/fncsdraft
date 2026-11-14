@@ -82,7 +82,7 @@ const BOOT = `
     ccZoneTuneFor({type:'solo', stage:'qual', day:careerToday()});
     if(!last || !(last.DROP_WEAK_UNITS > 0) || CC_ZONE_PROFILE!=='finals') fail('the solo qualifier: ' + JSON.stringify(last) + ' ' + CC_ZONE_PROFILE);
     // Неизмеренное остаётся на запасной формуле и на таблице очков.
-    ccZoneTuneFor({type:'proam', day:careerToday()});
+    ccZoneTuneFor({type:'victory', mode:'duo', reload:true, day:careerToday()});
     if(!last || !('LOBBY_WEAK_UNITS' in last) || last.LOBBY_WEAK_UNITS !== null || last.DROP_WEAK_UNITS !== null || CC_ZONE_PROFILE !== null)
       fail('an unmeasured evening did not clear the units: ' + JSON.stringify(last) + ' ' + CC_ZONE_PROFILE);
     out.steps.push('solo 0/0, final 0/0, eval between D1 and D2, victory cups (solo open, duo finals, reload solo finals), play-in and solo qualifier carry drop units, pro-am cleared');
@@ -98,7 +98,7 @@ const BOOT = `
     if(CC_ZONE_PROFILE!=='finals') fail('the weekly final is not finals: ' + CC_ZONE_PROFILE);
     applyStageBias(wfPoints);
     if(ZoneSim.profile()!=='finals') fail('the weekly final points did not play finals: ' + ZoneSim.profile());
-    ccZoneTuneFor({type:'proam', day:careerToday()});
+    ccZoneTuneFor({type:'victory', mode:'duo', reload:true, day:careerToday()});
     applyStageBias(victoryR1Points);
     if(ZoneSim.profile()!=='open') fail('without a forced profile victory points are not open: ' + ZoneSim.profile());
     ccZoneTuneFor(null);

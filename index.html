@@ -116946,6 +116946,14 @@ function ccLootRoom(host, opt){
       else if(b.dataset.a==='auto') auto();
       else if(b.dataset.a==='go') finish();
     });
+    // Пропуск посреди комнаты: открыть то, что успели бы до зоны, собрать лучшее и уйти (как ccChoiceBox отвечает сам).
+    const watch=setInterval(()=>{
+      if(!box.isConnected){ clearInterval(watch); return; }
+      if(!skipAnimation) return;
+      clearInterval(watch);
+      if(st.opened<nOpen) open(nOpen-st.opened);
+      auto(); finish();
+    }, 120);
     draw();
   });
 }
@@ -143032,7 +143040,10 @@ const CC_POST_BY={
   // is a change to the words rather than to who says them.
   ccNewsPartnerHappy:'press', ccNewsPartnerCross:'press', ccNewsPartnerLeft:'press',
   ccNewsCongrats:'press', ccNewsD1Table:'press',
-  ccNewsWorldWon:'press'   // финал без игрока — пишет пресса, как таблицу Д1 (16.09)
+  ccNewsWorldWon:'press',   // финал без игрока — пишет пресса, как таблицу Д1 (16.09)
+  // Ранкед и Арена, свой буткемп, свой турнир: строки о самом игроке.
+  rkNewsArenaReset:'you', rkNewsReset:'you', rkNewsDown:'you', rkNewsPlaced:'you', rkNewsTop100:'you', rkNewsTop1:'you',
+  ccNewsHomeCamp:'you', ownNewsAnnounce:'you', ownNewsQualOut:'you'
 };
 /* What the scene's account covers: Division 1, the Majors, the Reload circuit
    — the rooms with real names in them — and congratulating whoever won. Real
@@ -156339,7 +156350,8 @@ function ccDuoBroken(d, cr){
   /* В году с настоящей сценой (до 2026 включительно) пары как в жизни: случайного развода нет. Игрок: «почему-то
      focus и thomas расходятся». С 01.11b в 2026 три сезона (S40–S42), и бросок шёл в каждом: на третьем сезоне
      пара настоящего года рвалась с шансом 19%, хотя в жизни Focus & Th0masHD вместе весь год. Свой развод (duoSplits) остаётся. */
-  if(ccCalYear()<=2026) return false;
+  // ccCalYear() после 2026 тоже отвечает 2026, поэтому «настоящий год» узнаётся по сдвигу: 0 = календарь жизни.
+  if(!(ccYearShift()>0)) return false;
   const s=Math.max(1, c.season||1);
   if(s<=1) return false;
   const churn=(typeof d==='string') ? CC_DUO_CHURN : ccDuoChurnOf(d);

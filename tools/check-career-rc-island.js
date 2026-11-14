@@ -40,7 +40,8 @@ const BOOT = `
         const no = document.getElementById('ccAskNo');
         if(document.getElementById("ccAskYes") && document.getElementById("ccAskYes").textContent===L().ccSpotGateSet){ careerSpotEnsure(); document.getElementById("ccAskModal").style.display="none"; careerPlay(); return; }
       }
-      document.querySelectorAll('.cc-choice-btn').forEach(b => b.click());
+      { const lr=document.querySelector('.cc-loot [data-a="go"]'); if(lr){ lr.click(); return; } }   // комната лута (ccLootRoom)
+    document.querySelectorAll('.cc-choice-btn').forEach(b => b.click());
     }, 30);
 
     const row = CAREER_YEAR.find(r => r[2] === 'ReloadChampionshipParis');

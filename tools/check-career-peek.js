@@ -82,7 +82,7 @@ const BOOT = `
     careerTab('centre');
     const onHub = document.querySelector('#chBody .cc-peek');
     out.notes.onHub = !!onHub;
-    check('the window is on the career main screen', !!onHub);
+    check('the Centre lobby does not draw the window (1021e185)', !onHub);
 
     // ---- looking is what clears it ---------------------------------------
     careerTab('shop');

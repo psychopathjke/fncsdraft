@@ -18,6 +18,8 @@ const BOOT = `
 <script>
 (async function(){
   setInterval(function(){
+    // Комната лута на своей точке (ccLootRoom, 13.11): уходим с тем, что открыто.
+    const lr=document.querySelector('.cc-loot [data-a="go"]'); if(lr){ lr.click(); return; }
     const am=document.getElementById("ccAskModal");
     if(am && am.style.display==="flex"){ const no=document.getElementById("ccAskNo"), yes=document.getElementById("ccAskYes");
       if(no && no.textContent===L().ccSpotGatePlay){ no.click(); return; }
@@ -88,7 +90,8 @@ const BOOT = `
     const p=ccEventRosterPick(ev, 4); await wait(30);
     check('окно спрашивает', !!document.querySelector('.cc-evpick [data-k="find"]'));
     const offered=[...document.querySelectorAll('.cc-evpick-p b')].map(b=>b.textContent);
-    check('в окне свободные со сцены, без напарника года', offered.length>=3 && offered.indexOf('M1')<0, JSON.stringify(offered));
+    // С 558b15c8 (11.11, «duo+1 trio») окно показывает и напарников года: M1 в списке по делу.
+    check('в окне свободные со сцены и напарники года', offered.length>=3, JSON.stringify(offered));
     document.querySelector('.cc-evpick [data-k="find"]').click();
     const ans=await p;
     check('ответ «написать»', ans==='find', String(ans));

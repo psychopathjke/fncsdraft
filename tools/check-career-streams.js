@@ -35,7 +35,7 @@ const BOOT = `
     // ---- виды эфира ---------------------------------------------------------
     fresh();
     out.notes.kinds = CC_STREAM_KINDS.map(k => k.id);
-    check('there are four kinds of stream', CC_STREAM_KINDS.length === 4,
+    check('there are five kinds of stream', CC_STREAM_KINDS.length === 5,
           JSON.stringify(out.notes.kinds));
     const grind = ccStreamKind('grind');
     check('"ranked" is yesterday\\'s button, multipliers of one',

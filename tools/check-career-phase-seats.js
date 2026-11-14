@@ -86,7 +86,7 @@ const BOOT = `
     // Вне стыка (2021, ушёл напарник) — не досаживает, но и мимо квала не прыгает.
     seed(2021, '2021-02-08'); one();
     check('2021: вне стыка не досаживает', careerMatesShort()===1);
-    check('2021: «До турнира» — на квал C2S5', careerSkipTarget().day==='2021-02-12', careerSkipTarget().day);
+    check('2021: «До турнира» — на квал C2S5', careerSkipTarget().day==='2021-02-10'   /* The Flash Cup перед квалом (7dc7fd2d) */, careerSkipTarget().day);
     // Слово «Victory Cup» — только с 2023-го.
     seed(2019, '2019-08-05', {size:3});
     check('2019: кубок, не Victory Cup', ccWkVictoryWord()===L().chWkCup);

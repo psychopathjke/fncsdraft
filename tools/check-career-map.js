@@ -55,6 +55,7 @@ const BOOT = `
   // the moment a picker appears, always the first zone, so the run is the same
   // every time. Without this a probe waits forever on a click nobody makes.
   setInterval(function(){
+    const lg=document.querySelector(".cc-loot .lr-go"); if(lg){ lg.click(); return; }
     const am=document.getElementById("ccAskModal"); if(am && am.style.display==="flex"){ const no=document.getElementById("ccAskNo"); if(document.getElementById("ccAskYes") && document.getElementById("ccAskYes").textContent===L().ccSpotGateSet){ careerSpotEnsure(); document.getElementById("ccAskModal").style.display="none"; careerPlay(); return; } } const c0=document.querySelector(".cc-choice-btn"); if(c0){ c0.click(); return; }
     const p=document.querySelector(".landing-picker"); if(!p) return;
     const z=p.querySelectorAll(".land-zone"); if(!z.length) return;
