@@ -93,7 +93,9 @@ window.addEventListener("load", function(){ setTimeout(async function(){
       document.querySelector('[data-a="o5"]').click(); document.querySelector('[data-a="o5"]').click();
       const t4=()=>[...document.querySelectorAll('.lr-slot[data-d], .lr-g')].reduce((s,b)=>{ const e=b.querySelector('em'); return s+(e ? +e.textContent.replace(/\\D/g,'') : 1); }, 0);
       { const m1=document.querySelectorAll('.lr-hb')[1].querySelectorAll('.lr-slot[data-d]').length, ng=document.querySelectorAll('.lr-g').length;
-        check('дуо: напарник добирает пустые слоты с земли', m1===5 || ng===0, m1+' слотов, на земле '+ng); }
+        check('дуо: напарник добирает пустые слоты с земли', m1===5 || ng===0, m1+' слотов, на земле '+ng);
+        const dup=[...document.querySelectorAll('.lr-hb')].map(hb=>[...hb.querySelectorAll('.lr-slot[data-d] small')].map(s=>s.textContent)).filter(ns=>new Set(ns).size<ns.length);
+        check('в хотбаре нет двух слотов одного предмета (две пиццы)', !dup.length, dup.map(d=>d.join(', ')).join(' | ')); }
       const before=t4(); document.querySelector('[data-a="auto"]').click();
       check('дуо: «Поделить» ничего не множит', t4()===before, before+' → '+t4());
       check('стаки на земле не выше потолка вики', [...document.querySelectorAll('.lr-g')].every(b=>{ const e=b.querySelector('em'); const n=e ? +e.textContent.replace(/\\D/g,'') : 1; const nm=b.getAttribute('aria-label')||''; return n<=ccHealOf({name:nm}).stack || !CC_HEAL_KIT[nm]; }), [...document.querySelectorAll('.lr-g')].map(b=>(b.getAttribute('aria-label')||'')+':'+((b.querySelector('em')||{}).textContent||1)).join(', '));
@@ -105,6 +107,15 @@ window.addEventListener("load", function(){ setTimeout(async function(){
       document.querySelector('[data-a="go"]').click();
       const r4=await pr4;
       check('дуо: сила отряда считается из всех рук', r4.powPack && r4.mates.length===1 && typeof r4.pen==='number', JSON.stringify({pen:r4.pen, split:r4.split}));
+      // Две пиццы: одна хилка из восьми сундуков подряд — один слот, лишнее на земле.
+      { const hs=ccLootPool(set).heals.filter(ccIsHealItem).sort((a,b)=>ccHealOf(a).stack-ccHealOf(b).stack), hl=hs[0];
+        if(hl){ const fr=[]; for(let k=0;k<8;k++) fr.push({cons:hl});
+          const h6=document.createElement('div'); document.body.appendChild(h6);
+          const pr6=ccLootRoom(h6, {rolls:fr, nFast:4, nOpen:12, at:'', zone:z, set, mates:['Mate']});
+          for(let k=0;k<4;k++){ const b=document.querySelector('.lr-pin.lr-c[data-c]'); if(b) b.click(); }
+          const per=[...document.querySelectorAll('.lr-hb')].map(hb=>[...hb.querySelectorAll('.lr-slot[data-d] small')].filter(s=>s.textContent===hl.name).length);
+          check('одна хилка — один слот ('+hl.name+')', per.every(n=>n<=1), per.join(' '));
+          document.querySelector('[data-a="go"]').click(); await pr6; } }
       // Пустой слот напарника при полной земле: тебе второй SMG (на землю), напарнику второй автомат (на землю) —
       // напарник должен поднять SMG, которого у него нет, а второй автомат не брать.
       { const ws=ccLootPool(set).weapons, ar=ws.find(w=>w.icon==='rifle'), smg=ws.find(w=>w.icon==='smg');

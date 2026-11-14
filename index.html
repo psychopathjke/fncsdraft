@@ -116682,7 +116682,8 @@ function ccLootRoom(host, opt){
       if(kind==='w'){ const md=x=>RARITY_MOD[x.rarity]||0, cls=x=>x.icon==='other' ? 'o:'+x.name : x.icon;
         const j=inv.findIndex(x=>x.kind==='w' && cls(x.o)===cls(o));
         if(j>=0){ if(md(o)>md(inv[j].o)){ groundPut(inv[j]); inv[j]=it; } else groundPut(it); return; } }
-      if(kind==='h'){ const same=inv.find(x=>x.kind==='h' && x.o.name===o.name && x.n<ccHealOf(o).stack); if(same){ same.n++; return; } }
+      // Хилка одного вида — один слот, как в игре (две пиццы в разных слотах нельзя): полный стак — лишнее на землю.
+      if(kind==='h'){ const same=inv.find(x=>x.kind==='h' && x.o.name===o.name); if(same){ if(same.n<ccHealOf(o).stack) same.n++; else groundPut(it); return; } }
       if(kind==='m' && inv.some(x=>x.kind==='m')){ st.ground.push(it); return; }
       if(inv.length<5){ inv.push(it); return; }
       groundPut(it);
@@ -116713,7 +116714,6 @@ function ccLootRoom(host, opt){
         st.ground.forEach((g, i)=>{ if(g.kind!=='w' || inv.some(x=>x.kind==='w' && cls(x.o)===cls(g.o))) return; if(best<0 || md(g.o)>md(st.ground[best].o)) best=i; });
         if(best<0 && !inv.some(x=>x.kind==='m')) best=st.ground.findIndex(g=>g.kind==='m');
         if(best<0) best=st.ground.findIndex(g=>g.kind==='h' && !inv.some(x=>x.kind==='h' && x.o.name===g.o.name));
-        if(best<0) best=st.ground.findIndex(g=>g.kind==='h');
         if(best<0) break;
         inv.push(st.ground.splice(best, 1)[0]); } };
     const mateTurn=()=>{ for(let w=1; w<names.length; w++){ const j=nearestFree(w, st.opened<nFull ? ['c','r'] : ['r']); if(j>=0) openSpot(j, w); mateFill(w); } };
@@ -116725,7 +116725,7 @@ function ccLootRoom(host, opt){
       draw(); };
     const take=i=>{ const it=st.ground[i]; if(!it) return; const inv=st.invs[st.to];
       if(it.kind==='m' && inv.some(x=>x.kind==='m')){ const j=inv.findIndex(x=>x.kind==='m'); st.ground[i]=inv[j]; inv[j]=it; draw(); return; }
-      if(it.kind==='h'){ const same=inv.find(x=>x.kind==='h' && x.o.name===it.o.name); if(same){ const cap=ccHealOf(it.o).stack, mv=Math.min(it.n, cap-same.n); if(mv>0){ same.n+=mv; it.n-=mv; if(!it.n) st.ground.splice(i,1); draw(); return; } } }
+      if(it.kind==='h'){ const same=inv.find(x=>x.kind==='h' && x.o.name===it.o.name); if(same){ const cap=ccHealOf(it.o).stack, mv=Math.min(it.n, cap-same.n); if(mv>0){ same.n+=mv; it.n-=mv; if(!it.n) st.ground.splice(i,1); } else st.full=true; draw(); return; } }
       if(inv.length>=5){ st.full=true; draw(); return; }
       inv.push(it); st.ground.splice(i,1); draw(); };
     const drop=(who, i)=>{ const inv=st.invs[who], it=inv[i]; if(!it) return; inv.splice(i,1); groundPut(it); draw(); };
