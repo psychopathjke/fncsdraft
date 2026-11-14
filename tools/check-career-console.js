@@ -118,6 +118,15 @@ const BOOT = `
     CH_TAB='log'; careerRenderHub('log');
     if(((document.getElementById('chBody')||{}).textContent||'').indexOf(L().ccMobShort)<0) fail('no mobile rating on the profile');
     out.steps.push('mobile night '+mc.day+' '+mc.id+': mobile scene, power '+mPow+' from mobile rating (PC team '+mBase+'), PC rating stays '+CAREER.player.ovr+', scene ratings moved '+devN+', #'+(lastM && lastM.place)+' -> mobile rating '+CAREER.career.mobOvr+'; board: '+mobTile.querySelector('.ct-note').textContent);
+    // ---- мобильный мир: сцена играет свои капы без игрока ------------------------------------------
+    { const mday=CC_CONSOLE_2026.filter(v=>v.plat==='mobile').map(v=>v.day).sort()[0];
+      seed(ccAddDays(mday, -3));
+      const n1=ccMobileWorld(ccAddDays(mday, -3), ccAddDays(mday, 2)), dev1=JSON.stringify(CAREER.career.mobDev||{});
+      if(!n1 || dev1==='{}') fail('mobile world did not play '+mday);
+      const n2=ccMobileWorld(ccAddDays(mday, -3), ccAddDays(mday, 2));
+      if(n2 || JSON.stringify(CAREER.career.mobDev||{})!==dev1) fail('mobile world counted the same days twice');
+      const top=careerMobileRows().slice(0,3).map(r=>r.name+' '+r.r).join(', ');
+      out.steps.push('mobile world: '+n1+' cup(s) around '+mday+' played by the scene, '+Object.keys(CAREER.career.mobDev).length+' ratings moved, not twice; top now '+top); }
     // ---- поле шире своего региона, выезд на мобильный кап -------------------------------------------
     { const all=new Set([].concat(...Object.values(CC_MOBILE_ROSTER)).map(x=>String(x[0]).toLowerCase()));
       const big=ccMobileField(3000), realBig=big.filter(t=>all.has(String(t.squad[0].handle).toLowerCase())).length;
