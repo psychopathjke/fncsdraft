@@ -228,6 +228,30 @@ const BOOT = `
     if(CAREER.career.wf && CAREER.career.wf.monday===careerMonday(DD)) fail('away div cup gave a Weekly Final seat');
     out.steps.push('div cup '+DD+': NAC at night after the home cup, power '+dBase+' -> '+dPow+', division stays 2, day stays');
 
+    // ---- полный свой вечер, потом NAC кнопкой прямо с карточки итога ---------------------------------
+    localStorage.setItem('fncsdraft_career', JSON.stringify(s)); careerEntry();
+    const askNo=setInterval(()=>{ const am=document.getElementById('ccAskModal'); if(am && am.style.display==='flex'){ const n=document.getElementById('ccAskNo'); if(n) n.click(); } }, 20);
+    const sk4=setInterval(()=>{ const b=document.getElementById('majorSkipBtn'); if(b && !b.disabled) b.click(); }, 20);
+    document.getElementById('majorStages').innerHTML='';   // старые карточки прошлых сценариев
+    try{ careerSpotEnsure(); }catch(e){}
+    const homeP=careerPlay();
+    let hc=null; for(let i=0; i<8000 && !hc; i++){ await wait(25);
+      hc=[...document.querySelectorAll('#majorStages .stage-card')].find(x=>x.querySelector('button[onclick*="careerBackToHub"]')); }
+    await homeP;
+    if(!hc) fail('no result card after the home cup');
+    const nb=[...hc.querySelectorAll('.cc-away-card button')].find(b=>(b.getAttribute('onclick')||'').indexOf("'NAC'")>=0);
+    if(!nb || nb.disabled) fail('no usable NAC button on the home result card: '+((hc.querySelector('.cc-away-card')||{}).textContent||'none'));
+    const n0=(CAREER.career.log||[]).length;
+    document.querySelectorAll('#majorStages .stage-card').forEach(c=>c.classList.add('old'));
+    nb.click();
+    let nc=null; for(let i=0; i<8000 && !nc; i++){ await wait(25);
+      nc=[...document.querySelectorAll('#majorStages .stage-card:not(.old)')].find(x=>x.querySelector('button[onclick*="careerBackToHub"]') && (CAREER.career.log||[]).length>n0); }
+    clearInterval(sk4); clearInterval(askNo);
+    const lnc=(CAREER.career.log||[]).slice(-1)[0];
+    if(!lnc || lnc.away!=='NAC' || lnc.day!==DAY) fail('NAC from the result card not played: '+JSON.stringify(lnc));
+    if(nc) nc.querySelector('button[onclick*="careerBackToHub"]').click();
+    out.steps.push('full home cup, then NAC from its result card: played, logged on '+lnc.day+', today '+careerToday());
+
     // ---- пять языков ---------------------------------------------------------------------
     ['ru','en','fr','it','pt'].forEach(l=>{ LANG=l; CC_L_CACHE={}; const D=L();
       if(!(typeof D.awH==='function' && D.awBtn('NA', 90, 18).indexOf('90')>=0 && D.aw_done && D.aw_tired && D.aw_mate)) fail(l+': away strings missing'); });
@@ -243,7 +267,7 @@ const tmp = path.join(dir, 'index.html');
 fs.writeFileSync(tmp, '<base href="file:///' + ROOT.replace(/\\/g,'/') + '/">' + HEAD +
   fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8') + BOOT);
 const dom = execFileSync(CHROME, ['--headless=new','--disable-gpu','--no-sandbox',
-  '--allow-file-access-from-files','--virtual-time-budget=240000','--dump-dom',
+  '--allow-file-access-from-files','--virtual-time-budget=600000','--dump-dom',
   'file:///' + tmp.replace(/\\/g,'/')], {maxBuffer:512*1024*1024, encoding:'utf8', stdio:['ignore','pipe','ignore']});
 fs.rmSync(dir, {recursive:true, force:true});
 

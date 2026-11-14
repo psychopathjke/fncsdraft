@@ -6150,6 +6150,7 @@
   .cc-awayb{padding:5px 10px;border-radius:999px;border:1px dashed rgba(255,255,255,.35);background:rgba(0,0,0,.35);color:#fff;font:inherit;font-size:12px;font-weight:700;cursor:pointer;}
   .cc-awayb:disabled{opacity:.45;cursor:default;}
   .cc-away-after{flex:1 1 100%;font-size:11px;opacity:.75;}
+  .cc-away-card{margin:10px 0 2px;}
   .cc-valt:focus-visible{outline:2px solid #00ffd0;outline-offset:2px;}
   .cc-duo-regsel{flex:0 0 auto;height:38px;padding:0 10px;border-radius:10px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.06);color:#fff;font:inherit;font-size:13px;font-weight:800;cursor:pointer;}
   .cc-duo-regsel option{color:#0b0f12;}
@@ -161098,11 +161099,23 @@ function ccAwayRowHTML(day, late){
   return '<div class="cc-away"><em>'+esc(late ? T.awLate(CC_AWAY_ENERGY) : T.awH(CC_AWAY_ENERGY))+'</em>'+regs.map(r=>{
     const why=ccAwayWhy(r, day), ms=ccXregMs(home, r), at=slot[r] ? ' '+hm(slot[r]) : '';
     return '<button class="cc-awayb" type="button"'+(why ? ' disabled' : '')+' onclick="ccAwayPlay(\''+r+'\',\''+day+'\')">'+
-      esc(T.awBtn(regionName(r)+at, ms, ccAwayPen(ms))+(why ? ' · '+T['aw_'+why] : ''))+'</button>';
+      esc(T.awBtn(regionName(r)+at, ms, ccAwayPen(ms))+(why ? ' · '+T['aw_'+why]+(why==='tired' ? ' '+Math.floor(careerEnergy())+'/'+CC_AWAY_ENERGY : '') : ''))+'</button>';
   }).join('')+afterHTML+'</div>';
 }
 function ccAwayHTML(){
   try{ if(ccVictoryLocked()) return ''; return ccAwayRowHTML(careerToday(), false); }catch(e){ return ''; }
+}
+/* Сразу после своего вечера (его «после EU хочу, чтоб игралось»): на карточке итога — те же кнопки «Ночью ещё идут», нажатие
+   уходит с экрана итога (show сбрасывает CAREER_RUN) и запускает выезд. */
+function ccAwayNow(reg, day){ try{ show('screen-career-hub'); careerRenderHub('centre'); }catch(e){} ccAwayPlay(reg, day); }
+function ccAwayAfterAppend(box){
+  try{
+    if(CC_AWAY || !box || ccVictoryLocked()) return;
+    const d=ccAwayCarryDay(); if(!d) return;
+    const h=ccAwayRowHTML(d, true); if(!h) return;
+    const w=document.createElement('div'); w.className='cc-away-card'; w.innerHTML=h.split('ccAwayPlay(').join('ccAwayNow(');
+    const act=box.querySelector('.stage-actions'); if(act && act.parentNode===box) box.insertBefore(w, act); else box.appendChild(w);
+  }catch(e){}
 }
 // Поздние регионы вчерашнего своего вечера — на хабе в любой день, даже без своего события.
 function ccAwayLateHTML(){
@@ -167476,6 +167489,7 @@ function careerReloadResultCard(r){
     '<div class="stage-actions"><button class="btn-primary" onclick="careerBackToHub()">'+
       L().ccBackToHub+'</button></div>';
   document.getElementById('majorStages').appendChild(box);
+  ccAwayAfterAppend(box);   // поздние регионы этого вечера — кнопками прямо на итоге
   box.scrollIntoView({block:'end', behavior:'smooth'});
 }
 
@@ -170921,6 +170935,7 @@ function careerCupResultCard(r){
     <div style="margin-top:12px;"><button class="go-btn" style="margin:0;width:auto;padding:10px 20px;"
       onclick="careerBackToHub()">${L().ccBackToHub}</button></div>`;
   document.getElementById('majorStages').appendChild(box);
+  ccAwayAfterAppend(box);   // поздние регионы этого вечера — кнопками прямо на итоге
   box.scrollIntoView({block:'end', behavior:'smooth'});
 }
 
@@ -170971,6 +170986,7 @@ function careerTwoRoundResultCard(r){
     <div class="stage-actions"><button class="btn-primary"
       onclick="careerBackToHub()">${L().ccBackToHub}</button></div>`;
   document.getElementById('majorStages').appendChild(box);
+  ccAwayAfterAppend(box);   // поздние регионы этого вечера — кнопками прямо на итоге
   box.scrollIntoView({block:'end', behavior:'smooth'});
 }
 // What Monday looks like when Monday is half of a table.
@@ -170989,6 +171005,7 @@ function careerBankedCard(place, of, pts, head, games){
     '<div class="stage-actions"><button class="btn-primary" onclick="careerBackToHub()">'+
       L().ccBackToHub+'</button></div>';
   document.getElementById('majorStages').appendChild(box);
+  ccAwayAfterAppend(box);   // поздние регионы этого вечера — кнопками прямо на итоге
   box.scrollIntoView({block:'end', behavior:'smooth'});
 }
 /* ВНЕ mgr.js (его вопрос 8.10 «почему с debug пропала карьера менеджера»): показ секции жил внутри ленивого mgr.js,
