@@ -160917,7 +160917,8 @@ function ccVictoryPick(id){
 // Капы этого дня — кнопками под названием вечера, если их больше одного.
 function ccVictoryAltsHTML(){
   const today=careerToday(), alts=ccVictoryAlts(today);
-  if(!alts.length || ccVictoryLocked()) return '';
+  if(ccVictoryLocked()) return '';
+  if(!alts.length) return ccAwayHTML();   // день без капа: выезд на оценку (ccAwayKind 'eval')
   // Старший турнир того же дня (Weekly Final) — тоже кнопкой: кап рядом с ним играется только по выбору.
   const senior=(careerEvents().get(today)||[]).filter(e=>e.kind!=='victory')
     .sort((a,b)=>CC_KIND_RANK.indexOf(a.kind)-CC_KIND_RANK.indexOf(b.kind))[0] || null;
@@ -160939,7 +160940,7 @@ function ccVictoryAltsHTML(){
    Орегон, Сан-Паулу, Бахрейн, Токио, Сидней); штраф к силе решение, не замер. */
 const CC_AWAY_ENERGY=25;
 // Расписание Epic по регионам (tools/build-away-schedule.js): «день EU|первое окно» -> время EU (UTC) и сдвиг регионов в минутах.
-const CC_AWAY_SCHED={"2025-12-20|S39_1MillionUnrealCup":"18:00;NAC360,NAW480,BR180,ASIA-540,ME-180,OCE-660","2025-12-19|S39_BleachCup":"18:00;NAC360,NAW480,BR180,ASIA-540,ME-180,OCE-660","2026-01-05|S39_DuosVictoryCup_Round1_Day1_January":"18:00;NAC360,NAW480,BR180,ASIA-540,OCE-660,ME-180","2026-01-12|S39_DuosVictoryCup_Round1_Day2_January":"18:00;NAC360,NAW480,BR180,ASIA-540,OCE-660,ME-180","2026-01-19|S39_DuosVictoryCup_Round1_Day3_January":"18:00;NAC360,NAW480,BR180,ASIA-540,OCE-660,ME-180","2026-01-13|S39_KizunaAICup":"18:00;NAW480,NAC360,ASIA-540,BR180,OCE-660,ME-180","2025-12-21|S39_NvidiaCup":"18:00;NAC360,NAW480,BR180,ASIA-540,ME-180,OCE-660","2026-03-06|S39_PickleRickCup":"18:00;NAW480,NAC360,BR180,ME60,ASIA-540,OCE-660","2026-03-08|S39_SoloVictoryCup_Round1_Day1":"18:00;NAC300,NAW420,BR180,ASIA-540,ME60,OCE-660","2026-03-15|S39_SoloVictoryCup_Round1_Day2":"18:00;NAC300,NAW420,BR180,ASIA-540,ME60,OCE-660","2026-05-20|S40_MandalorianCup":"17:00;NAW480,NAC360,BR240,ASIA-480,OCE-540,ME-120","2026-05-20|S40_MandalorianCup_ZB":"17:00;NAC360,BR240,NAW480,ASIA-480,ME-120,OCE-540","2026-03-22|S40_SoloVictoryCup_Round1_Day1":"13:00;NAC300,NAW420,BR180,ASIA-540,OCE-660","2026-03-29|S40_SoloVictoryCup_Round1_Day2":"17:00;NAC360,NAW480,BR240,ASIA-480,ME-120,OCE-600","2026-04-05|S40_SoloVictoryCup_Round1_Day3":"17:00;NAC360,NAW480,BR240,ASIA-480,ME-120,OCE-540","2026-04-12|S40_SoloVictoryCup_Round1_Day4":"17:00;NAC360,NAW480,BR240,ASIA-480,ME-120,OCE-540","2026-05-26|S40_TypicalGamerCup":"17:00;NAC360,NAW480,ASIA-480,ME-120,BR240,OCE-540","2026-07-17|S41_DavidBeckham":"17:00;NAC360,NAW480,BR120,ASIA-480,OCE-540,ME-120","2026-07-17|S41_DavidBeckham_ZB":"17:00;NAW480,NAC360,BR120,ASIA-480,ME-120,OCE-540","2026-06-27|S41_MongraalIconCup":"17:00;NAC360,NAW480,BR240,OCE-540,ME-120,ASIA-480","2026-08-01|S41_ReloadSoloVictoryCup_Round1_Day1":"12:00;NAC360,NAW480,BR240,ASIA-480,OCE-540,ME-120","2026-08-11|S41_ReloadSoloVictoryCup_Round1_Day2":"17:00;NAC360,NAW480,BR240,ASIA-480,OCE-540,ME-120","2026-08-15|S41_ReloadSoloVictoryCup_Round1_Day3":"12:00;NAC360,NAW480,BR240,ASIA-480,OCE-540,ME-120","2026-06-13|S41_SoloVictoryCup_Round1_Day1":"12:00;NAC360,NAW480,ME-120,BR240,ASIA-480,OCE-540","2026-06-20|S41_SoloVictoryCup_Round1_Day2":"12:00;NAC360,NAW480,ME-120,BR240,ASIA-480,OCE-540","2026-07-18|S41_SoloVictoryCup_Round1_Day3":"12:00;NAC360,NAW480,ME-120,BR240,ASIA-480,OCE-540","2026-07-25|S41_SoloVictoryCup_Round1_Day4":"10:00;NAC360,NAW600,ME0,BR360,ASIA-360,OCE-420","2026-06-24|S41_SupergirlCup":"17:00;NAC360,BR120,NAW480,ME-120,OCE-540,ASIA-480","2026-06-24|S41_SupergirlCup_ZB":"17:00;NAC360,NAW480,BR120,ASIA-480,OCE-540,ME-120","2026-07-15|S41_TheOdysseyCup":"15:30;NAC450,NAW570,ASIA-390,BR390,ME-30,OCE-450","2026-07-15|S41_TheOdysseyCup_Mobile":"16:00;NAC360,NAW480,BR240,ASIA-480,ME-120,OCE-540","2026-07-15|S41_TheOdysseyCup_ZB":"15:30;NAC450,NAW570,BR390,ME-30,ASIA-390,OCE-450","2026-06-10|S41_ViniJr":"17:00;NAC360,NAW480,BR240,ME-120,ASIA-480,OCE-540","2026-06-10|S41_ViniJr_Mobile":"16:00;NAC360,NAW480,BR240,OCE-540,ME-120,ASIA-480","2026-06-10|S41_ViniJr_ZB":"17:00;NAW480,BR240,NAC360,ASIA-480,ME-120,OCE-540","2026-08-28|S42_CrashBandicootCup":"17:00;BR240,NAC360,ASIA-480,OCE-540,ME-120,NAW480","2026-08-28|S42_CrashBandicootCup_ZB":"17:00;NAW480,BR240,NAC360,ASIA-480,OCE-540,ME-120","2026-09-15|S42_IronmouseIconCup":"17:00;NAC360,NAW480,BR240,ASIA-480,ME-120,OCE-540","2026-09-15|S42_IronmouseIconCup_ZB":"17:00;NAC360,NAW480,BR240,ASIA-480,ME-120,OCE-540","2026-09-18|S42_KingdomHeartsCup":"17:00;NAC360,NAW480,BR240,ASIA-480,ME-120,OCE-540","2026-09-18|S42_KingdomHeartsCup_Mobile":"16:00;NAC360,NAW480,BR240,ASIA-480,ME-120,OCE-540","2026-09-18|S42_KingdomHeartsCup_ZB":"17:00;NAC360,NAW480,BR240,ASIA-480,ME-120,OCE-540","2026-09-24|S42_MadisonBeerIconCup":"17:00;NAC360,NAW480,BR240,ASIA-480,ME-120,OCE-540","2026-09-24|S42_MadisonBeerIconCup_ZB":"17:00;NAC360,NAW480,BR240,ASIA-480,ME-120,OCE-540","2026-09-08|S42_MegaManCup":"17:00;NAC360,NAW480,BR240,ASIA-480,ME-120,OCE-540","2026-09-08|S42_MegaManCup_Mobile":"16:00;NAC360,NAW480,BR240,ASIA-480,OCE-540,ME-120","2026-09-08|S42_MegaManCup_ZB":"17:00;NAC360,NAW480,ASIA-480,ME-120,BR240,OCE-540","2026-09-25|S42_Persona5Cup":"17:00;NAC360,NAW480,BR240,ASIA-480,ME-120,OCE-540","2026-09-25|S42_Persona5Cup_ZB":"17:00;NAC360,NAW480,BR240,ASIA-480,ME-120,OCE-540","2026-09-12|S42_WeezyIconCup":"17:00;NAC360,NAW480,BR240,ASIA-480,ME-120,OCE-540","2026-09-12|S42_WeezyIconCup_ZB":"17:00;NAC360,NAW480,BR240,ASIA-480,ME-120,OCE-540","2026-11-06|S43_OnePieceZoroCup":"18:00;OCE-660,ASIA-540,ME-180,BR180,NAC360,NAW480","2026-11-06|S43_OnePieceZoroCup_Mobile":"17:00;OCE-660,ASIA-540,ME-180,BR180,NAC360,NAW480","2026-11-06|S43_OnePieceZoroCup_MobileAll":"17:00;OCE-660,ASIA-540,ME-180,BR180,NAC360,NAW480","2026-11-06|S43_OnePieceZoroCup_ZB":"18:00;OCE-660,ASIA-540,ME-180,BR180,NAC360,NAW480","2026-11-09|S43_SquadsVictoryCup_Event1_Round1":"18:00;OCE-660,ASIA-540,ME-180,BR180,NAC360,NAW480","2026-11-23|S43_SquadsVictoryCup_Event2_Round1":"18:00;OCE-660,ASIA-540,ME-180,BR180,NAC360,NAW480","2026-11-07|S43_TriosCashCup_Event1":"14:00;OCE-660,ASIA-540,ME-180,BR180,NAC360,NAW480","2026-11-14|S43_TriosCashCup_Event2":"14:00;OCE-660,ASIA-540,ME-180,BR180,NAC360,NAW480","2026-11-22|S43_TriosCashCup_Event3":"12:00;OCE-540,ASIA-420,ME-60,BR300,NAC480,NAW600"};
+const CC_AWAY_SCHED={"2025-12-20|S39_1MillionUnrealCup":"18:00;NAC360,NAW480,BR180,ASIA-540,ME-180,OCE-660","2025-12-19|S39_BleachCup":"18:00;NAC360,NAW480,BR180,ASIA-540,ME-180,OCE-660","2026-01-05|S39_DuosVictoryCup_Round1_Day1_January":"18:00;NAC360,NAW480,BR180,ASIA-540,OCE-660,ME-180","2026-01-12|S39_DuosVictoryCup_Round1_Day2_January":"18:00;NAC360,NAW480,BR180,ASIA-540,OCE-660,ME-180","2026-01-19|S39_DuosVictoryCup_Round1_Day3_January":"18:00;NAC360,NAW480,BR180,ASIA-540,OCE-660,ME-180","2026-01-13|S39_KizunaAICup":"18:00;NAW480,NAC360,ASIA-540,BR180,OCE-660,ME-180","2025-12-21|S39_NvidiaCup":"18:00;NAC360,NAW480,BR180,ASIA-540,ME-180,OCE-660","2026-02-19|S39_PerformanceEvaluation_Event10Round1":"17:00;NAC420","2026-02-26|S39_PerformanceEvaluation_Event11Round1":"17:00;NAC420","2026-03-05|S39_PerformanceEvaluation_Event12Round1":"17:00;NAC420","2026-03-12|S39_PerformanceEvaluation_Event13Round1":"17:00;NAC360","2025-12-04|S39_PerformanceEvaluation_Event1Round1":"17:00;NAC420","2025-12-11|S39_PerformanceEvaluation_Event2Round1":"17:00;NAC420","2025-12-18|S39_PerformanceEvaluation_Event3Round1":"17:00;NAC420","2026-01-09|S39_PerformanceEvaluation_Event4Round1":"17:00;NAC420","2026-01-15|S39_PerformanceEvaluation_Event5Round1":"17:00;NAC420","2026-01-22|S39_PerformanceEvaluation_Event6Round1":"17:00;NAC420","2026-01-29|S39_PerformanceEvaluation_Event7Round1":"17:00;NAC420","2026-02-05|S39_PerformanceEvaluation_Event8Round1":"17:00;NAC420","2026-02-12|S39_PerformanceEvaluation_Event9Round1":"17:00;NAC420","2026-03-06|S39_PickleRickCup":"18:00;NAW480,NAC360,BR180,ME60,ASIA-540,OCE-660","2026-03-08|S39_SoloVictoryCup_Round1_Day1":"18:00;NAC300,NAW420,BR180,ASIA-540,ME60,OCE-660","2026-03-15|S39_SoloVictoryCup_Round1_Day2":"18:00;NAC300,NAW420,BR180,ASIA-540,ME60,OCE-660","2026-05-20|S40_MandalorianCup":"17:00;NAW480,NAC360,BR240,ASIA-480,OCE-540,ME-120","2026-05-20|S40_MandalorianCup_ZB":"17:00;NAC360,BR240,NAW480,ASIA-480,ME-120,OCE-540","2026-05-21|S40_PerformanceEvaluation_Event10Round1":"16:00;NAC420","2026-06-03|S40_PerformanceEvaluation_Event11Round1":"16:00;NAC420","2026-03-20|S40_PerformanceEvaluation_Event1Round1":"17:00;NAC360","2026-03-26|S40_PerformanceEvaluation_Event2Round1":"17:00;NAC360","2026-04-01|S40_PerformanceEvaluation_Event3Round1":"16:00;NAC420","2026-04-09|S40_PerformanceEvaluation_Event4Round1":"16:00;NAC420","2026-04-16|S40_PerformanceEvaluation_Event5Round1":"16:00;NAC420","2026-04-23|S40_PerformanceEvaluation_Event6Round1":"16:00;NAC420","2026-04-30|S40_PerformanceEvaluation_Event7Round1":"16:00;NAC420","2026-05-07|S40_PerformanceEvaluation_Event8Round1":"16:00;NAC420","2026-05-14|S40_PerformanceEvaluation_Event9Round1":"16:00;NAC420","2026-03-22|S40_SoloVictoryCup_Round1_Day1":"13:00;NAC300,NAW420,BR180,ASIA-540,OCE-660","2026-03-29|S40_SoloVictoryCup_Round1_Day2":"17:00;NAC360,NAW480,BR240,ASIA-480,ME-120,OCE-600","2026-04-05|S40_SoloVictoryCup_Round1_Day3":"17:00;NAC360,NAW480,BR240,ASIA-480,ME-120,OCE-540","2026-04-12|S40_SoloVictoryCup_Round1_Day4":"17:00;NAC360,NAW480,BR240,ASIA-480,ME-120,OCE-540","2026-05-26|S40_TypicalGamerCup":"17:00;NAC360,NAW480,ASIA-480,ME-120,BR240,OCE-540","2026-07-17|S41_DavidBeckham":"17:00;NAC360,NAW480,BR120,ASIA-480,OCE-540,ME-120","2026-07-17|S41_DavidBeckham_ZB":"17:00;NAW480,NAC360,BR120,ASIA-480,ME-120,OCE-540","2026-06-27|S41_MongraalIconCup":"17:00;NAC360,NAW480,BR240,OCE-540,ME-120,ASIA-480","2026-06-07|S41_PerformanceEvaluation_Event1Round1":"16:00;NAC420","2026-06-18|S41_PerformanceEvaluation_Event2Round1":"16:00;NAC420","2026-06-25|S41_PerformanceEvaluation_Event3Round1":"16:00;NAC420","2026-07-16|S41_PerformanceEvaluation_Event4Round1":"16:00;NAC420","2026-07-23|S41_PerformanceEvaluation_Event5Round1":"16:00;NAC420","2026-07-30|S41_PerformanceEvaluation_Event6Round1":"16:00;NAC420","2026-08-06|S41_PerformanceEvaluation_Event8Round1":"16:00;NAC420","2026-08-13|S41_PerformanceEvaluation_Event9Round1":"16:00;NAC420","2026-08-01|S41_ReloadSoloVictoryCup_Round1_Day1":"12:00;NAC360,NAW480,BR240,ASIA-480,OCE-540,ME-120","2026-08-11|S41_ReloadSoloVictoryCup_Round1_Day2":"17:00;NAC360,NAW480,BR240,ASIA-480,OCE-540,ME-120","2026-08-15|S41_ReloadSoloVictoryCup_Round1_Day3":"12:00;NAC360,NAW480,BR240,ASIA-480,OCE-540,ME-120","2026-06-13|S41_SoloVictoryCup_Round1_Day1":"12:00;NAC360,NAW480,ME-120,BR240,ASIA-480,OCE-540","2026-06-20|S41_SoloVictoryCup_Round1_Day2":"12:00;NAC360,NAW480,ME-120,BR240,ASIA-480,OCE-540","2026-07-18|S41_SoloVictoryCup_Round1_Day3":"12:00;NAC360,NAW480,ME-120,BR240,ASIA-480,OCE-540","2026-07-25|S41_SoloVictoryCup_Round1_Day4":"10:00;NAC360,NAW600,ME0,BR360,ASIA-360,OCE-420","2026-06-24|S41_SupergirlCup":"17:00;NAC360,BR120,NAW480,ME-120,OCE-540,ASIA-480","2026-06-24|S41_SupergirlCup_ZB":"17:00;NAC360,NAW480,BR120,ASIA-480,OCE-540,ME-120","2026-07-15|S41_TheOdysseyCup":"15:30;NAC450,NAW570,ASIA-390,BR390,ME-30,OCE-450","2026-07-15|S41_TheOdysseyCup_Mobile":"16:00;NAC360,NAW480,BR240,ASIA-480,ME-120,OCE-540","2026-07-15|S41_TheOdysseyCup_ZB":"15:30;NAC450,NAW570,BR390,ME-30,ASIA-390,OCE-450","2026-06-10|S41_ViniJr":"17:00;NAC360,NAW480,BR240,ME-120,ASIA-480,OCE-540","2026-06-10|S41_ViniJr_Mobile":"16:00;NAC360,NAW480,BR240,OCE-540,ME-120,ASIA-480","2026-06-10|S41_ViniJr_ZB":"17:00;NAW480,BR240,NAC360,ASIA-480,ME-120,OCE-540","2026-08-28|S42_CrashBandicootCup":"17:00;BR240,NAC360,ASIA-480,OCE-540,ME-120,NAW480","2026-08-28|S42_CrashBandicootCup_ZB":"17:00;NAW480,BR240,NAC360,ASIA-480,OCE-540,ME-120","2026-09-15|S42_IronmouseIconCup":"17:00;NAC360,NAW480,BR240,ASIA-480,ME-120,OCE-540","2026-09-15|S42_IronmouseIconCup_ZB":"17:00;NAC360,NAW480,BR240,ASIA-480,ME-120,OCE-540","2026-09-18|S42_KingdomHeartsCup":"17:00;NAC360,NAW480,BR240,ASIA-480,ME-120,OCE-540","2026-09-18|S42_KingdomHeartsCup_Mobile":"16:00;NAC360,NAW480,BR240,ASIA-480,ME-120,OCE-540","2026-09-18|S42_KingdomHeartsCup_ZB":"17:00;NAC360,NAW480,BR240,ASIA-480,ME-120,OCE-540","2026-09-24|S42_MadisonBeerIconCup":"17:00;NAC360,NAW480,BR240,ASIA-480,ME-120,OCE-540","2026-09-24|S42_MadisonBeerIconCup_ZB":"17:00;NAC360,NAW480,BR240,ASIA-480,ME-120,OCE-540","2026-09-08|S42_MegaManCup":"17:00;NAC360,NAW480,BR240,ASIA-480,ME-120,OCE-540","2026-09-08|S42_MegaManCup_Mobile":"16:00;NAC360,NAW480,BR240,ASIA-480,OCE-540,ME-120","2026-09-08|S42_MegaManCup_ZB":"17:00;NAC360,NAW480,ASIA-480,ME-120,BR240,OCE-540","2026-08-23|S42_PerformanceEvaluation_Event1Round1":"16:00;NAC420","2026-09-03|S42_PerformanceEvaluation_Event2Round1":"16:00;NAC420","2026-09-10|S42_PerformanceEvaluation_Event3Round1":"16:00;NAC420","2026-09-17|S42_PerformanceEvaluation_Event4Round1":"16:00;NAC420","2026-09-24|S42_PerformanceEvaluation_Event5Round1":"16:00;NAC420","2026-10-01|S42_PerformanceEvaluation_Event6Round1":"16:00;NAC420","2026-10-08|S42_PerformanceEvaluation_Event7Round1":"16:00;NAC420","2026-10-15|S42_PerformanceEvaluation_Event8Round1":"16:00;NAC420","2026-10-22|S42_PerformanceEvaluation_Event9Round1":"16:00;NAC420","2026-09-25|S42_Persona5Cup":"17:00;NAC360,NAW480,BR240,ASIA-480,ME-120,OCE-540","2026-09-25|S42_Persona5Cup_ZB":"17:00;NAC360,NAW480,BR240,ASIA-480,ME-120,OCE-540","2026-09-12|S42_WeezyIconCup":"17:00;NAC360,NAW480,BR240,ASIA-480,ME-120,OCE-540","2026-09-12|S42_WeezyIconCup_ZB":"17:00;NAC360,NAW480,BR240,ASIA-480,ME-120,OCE-540","2026-11-06|S43_OnePieceZoroCup":"18:00;OCE-660,ASIA-540,ME-180,BR180,NAC360,NAW480","2026-11-06|S43_OnePieceZoroCup_Mobile":"17:00;OCE-660,ASIA-540,ME-180,BR180,NAC360,NAW480","2026-11-06|S43_OnePieceZoroCup_MobileAll":"17:00;OCE-660,ASIA-540,ME-180,BR180,NAC360,NAW480","2026-11-06|S43_OnePieceZoroCup_ZB":"18:00;OCE-660,ASIA-540,ME-180,BR180,NAC360,NAW480","2026-11-05|S43_PerformanceEvaluation_Event1Round1":"17:00;NAC420","2026-11-12|S43_PerformanceEvaluation_Event2Round1":"17:00;NAC420","2026-11-19|S43_PerformanceEvaluation_Event3Round1":"17:00;NAC420","2026-11-26|S43_PerformanceEvaluation_Event4Round1":"17:00;NAC420","2026-11-09|S43_SquadsVictoryCup_Event1_Round1":"18:00;OCE-660,ASIA-540,ME-180,BR180,NAC360,NAW480","2026-11-23|S43_SquadsVictoryCup_Event2_Round1":"18:00;OCE-660,ASIA-540,ME-180,BR180,NAC360,NAW480","2026-11-07|S43_TriosCashCup_Event1":"14:00;OCE-660,ASIA-540,ME-180,BR180,NAC360,NAW480","2026-11-14|S43_TriosCashCup_Event2":"14:00;OCE-660,ASIA-540,ME-180,BR180,NAC360,NAW480","2026-11-22|S43_TriosCashCup_Event3":"12:00;OCE-540,ASIA-420,ME-60,BR300,NAC480,NAW600"};
 const CC_XREG_MS={'EU|NAC':90, 'EU|NAW':150, 'EU|BR':200, 'EU|ME':95, 'EU|ASIA':230, 'EU|OCE':290,
   'NAC|NAW':65, 'NAC|BR':120, 'NAC|ME':180, 'NAC|ASIA':160, 'NAC|OCE':200,
   'NAW|BR':180, 'NAW|ME':240, 'NAW|ASIA':110, 'NAW|OCE':140,
@@ -160959,10 +160960,24 @@ function ccAwayFits(ev){ return !!ev && !ev.own && !ev.lan && !ev.invite && !ev.
   && !ev.placement && !CC_AWAY_LOCKED.test(String(ev.id||'')); }
 /* Старт капа дня в регионе по расписанию Epic: Date; null — в этот вечер у региона капа не было (кнопки нет);
    undefined — расписания на этот день нет (прошлые годы, годы после 2026): регион открыт без времени. */
+/* Что сегодня можно сыграть на выезде: 'victory' — кап дня, 'eval' — Performance Evaluation (у Epic без блокировки
+   региона; в карьере только Дивизион 1, как и дома), '' — ничего. */
+function ccAwayKind(reg){
+  if(ccAwayFits(ccAwayEv(reg))) return 'victory';
+  const cr=CAREER && CAREER.career, d=careerToday();
+  if(cr && cr.division===1 && ccEvalNights().indexOf(d)>=0 && ccAsRegion(reg, ()=>ccEvalNights().indexOf(d)>=0)) return 'eval';
+  return '';
+}
 function ccAwaySlot(reg){
-  const ev=careerVictoryOn(careerToday()); if(!ev || typeof CC_AWAY_SCHED==='undefined') return undefined;
-  const day=careerToday(), pre=day+'|'+ev.id;
-  const k=Object.keys(CC_AWAY_SCHED).find(x=>x===pre || x.indexOf(pre+'_')===0);
+  if(typeof CC_AWAY_SCHED==='undefined') return undefined;
+  const kind=ccAwayKind(reg), day=careerToday();
+  let k=null;
+  if(kind==='eval') k=Object.keys(CC_AWAY_SCHED).find(x=>x.indexOf(day+'|')===0 && x.indexOf('_PerformanceEvaluation_')>0);
+  else {
+    const ev=careerVictoryOn(day); if(!ev) return undefined;
+    const pre=day+'|'+ev.id;
+    k=Object.keys(CC_AWAY_SCHED).find(x=>x===pre || x.indexOf(pre+'_')===0);
+  }
   if(!k) return undefined;
   const parts=CC_AWAY_SCHED[k].split(';'), off={EU:0};
   (parts[1]||'').split(',').forEach(p=>{ const m=/^([A-Z]+)(-?\d+)$/.exec(p); if(m) off[m[1]]=Number(m[2]); });
@@ -160973,11 +160988,12 @@ function ccAwaySlot(reg){
 function ccAwayWhy(reg){
   const cr=CAREER && CAREER.career;
   if(!cr || cr.seasonOver || CC_AWAY || ccVictoryLocked()) return 'off';
-  if(!ccAwayFits(ccAwayEv(reg))) return 'off';
+  const kind=ccAwayKind(reg);
+  if(!kind) return 'off';
   if(ccAwaySlot(reg)===null) return 'off';   // по расписанию Epic в этот вечер у региона капа не было
   if(((cr.away||{})[careerToday()]||[]).indexOf(reg)>=0) return 'done';
   if(careerEnergy()<CC_AWAY_ENERGY) return 'tired';
-  if(careerNoMate('victory')) return 'mate';
+  if(careerNoMate(kind)) return 'mate';
   return '';
 }
 function ccAwayHTML(){
@@ -161002,20 +161018,23 @@ function ccAwayHTML(){
 async function ccAwayPlay(reg){
   if(CAREER_RUN || ccAwayWhy(reg)) return;
   const cr=CAREER.career, day=careerToday(), home=ccCareerRegion(), ms=ccXregMs(home, reg);
-  const ev=ccAwayEv(reg);
+  const kind=ccAwayKind(reg), ev=kind==='victory' ? ccAwayEv(reg) : null;
   const n0=(cr.log||[]).length, was=CC_REGION_AS;
   let paid=false;
   CC_AWAY={reg, ms, pen:ccAwayPen(ms)}; CC_REGION_AS=reg;
   try{
-    const next={type:'victory', day, id:ev.id, title:ev.lan||ev.name, label:ev.lan||ev.name};
-    const f0=ccPickFormat(ev);
-    if(await ccEventRosterPick(ev, f0)==='find'){ ccDuoFindOpen(null, f0); return; }
+    const next=ev ? {type:'victory', day, id:ev.id, title:ev.lan||ev.name, label:ev.lan||ev.name}
+                  : {type:'eval', day, title:L().calPerfEval, label:L().calPerfEval};
+    if(ev){
+      const f0=ccPickFormat(ev);
+      if(await ccEventRosterPick(ev, f0)==='find'){ ccDuoFindOpen(null, f0); return; }
+    }
     // Плата — когда вечер точно начинается: «позвать людей» выше энергию не тратит.
     careerSpend(CC_AWAY_ENERGY); paid=true;
     cr.away={[day]:((cr.away||{})[day]||[]).concat(reg)};   // хранится только сегодняшний день
     careerSave();
     useLandingSet((function(){ try{ const s=careerNightSet(next); return (s && ZONE_SETS[s]) ? s : careerBrSet(); }catch(e){ return careerBrSet(); } })());
-    CC_MP_NIGHT='victory:'+ev.id+':'+reg;
+    CC_MP_NIGHT=(ev ? 'victory:'+ev.id : 'eval')+':'+reg;
     await careerPlayRun(next);
   } finally {
     CC_REGION_AS=was; CC_AWAY=null;
@@ -161136,6 +161155,7 @@ async function runCareerEval(){
 
   const you=careerYouTeam(drafted);
   you.name=L().yourTeamPrefix+teamLabel(drafted); you.isYou=true;
+  if(CC_AWAY) you.pow=Math.max(1, Math.round(you.pow-CC_AWAY.pen));   // чужой сервер: пинг (ccAwayPen)
   // The evaluation's room and its cut are this season's, like every other night.
   const field=[you, ...careerCupField(cr, drafted, ccTeams(CAREER_CUP_FIELD))];
   const evalCut=ccTeams(CC_EVAL_CUT);
@@ -161248,7 +161268,7 @@ async function runCareerEval(){
   // — the user played it on a loop.
   // Командный вечер закрывает сервер: он же двигает день. См. ccMpClose.
   await ccMpClose(ranked1);
-  careerAdvanceTo(ccAddDays(careerToday(), 1));
+  if(!CC_AWAY) careerAdvanceTo(ccAddDays(careerToday(), 1));   // выезд день не берёт (ccAwayPlay)
   careerSave();
 
   CARD_MODE=prevMode; squadSize=prevSize; drafted=prevDrafted; CC_KILL_CAP=0;

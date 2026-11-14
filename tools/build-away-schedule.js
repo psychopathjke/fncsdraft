@@ -27,7 +27,9 @@ const first = s => !/Round[2-9]|_R[2-9]\b|Round_?[2-9]/.test(s);
 const flat = {};
 Object.keys(byStem).sort().forEach(stem => {
   const row = byStem[stem]; if (!row.EU || !first(stem)) return;
-  if (!ids.some(id => stem === id || stem.startsWith(id + '_'))) return;
+  // Performance Evaluation в карьере — свой вечер (ccEvalNights), без id в списке капов: берём его окна по имени.
+  const perf = /^S\d+_PerformanceEvaluation_/.test(stem);
+  if (!perf && !ids.some(id => stem === id || stem.startsWith(id + '_'))) return;
   const eu = Date.parse(row.EU + 'Z');
   const others = Object.entries(row).filter(([r]) => r !== 'EU')
     .map(([r, b]) => [r, Math.round((Date.parse(b + 'Z') - eu) / 60000)])

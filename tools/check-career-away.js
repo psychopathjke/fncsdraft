@@ -126,6 +126,42 @@ const BOOT = `
     if(ccAwayWhy('NAW')!=='tired') fail('a tired player can go away: '+ccAwayWhy('NAW'));
     out.steps.push('with 10 energy: '+ccAwayWhy('NAW'));
 
+    // ---- Performance Evaluation: у Epic только EU и NAC, в карьере Д1 ------------------------
+    const EV_DAY='2026-03-20';
+    localStorage.setItem('fncsdraft_career', JSON.stringify({
+      v:1, player:{nick:'AwayEval', age:17, source:'rookie', country:'de', countryPing:7,
+        closeRangeEdge:6, region:'EU', ovr:88, role:'roleIGL', attrs:ccRookieAttrs(88, 'roleIGL'), ageEdge:4},
+      career:{season:1, day:EV_DAY, division:1, earnings:0, balance:0, reach:0, energy:100,
+              tokens:[], log:[], news:[], life:{rp:500}},
+      partner:null}));
+    careerEntry();
+    { const s=careerDms().find(x=>x.state==='offer' && !x.who.org && !x.who.brand); if(!careerPartnerCard() && s){ careerDmAccept(s.id); } }
+    if(careerNext().type!=='eval') fail(EV_DAY+' is not an evaluation night in D1: '+careerNext().type);
+    if(ccAwayKind('NAC')!=='eval') fail('NAC evaluation not offered: '+ccAwayKind('NAC'));
+    const evRegs=CC_REGIONS.filter(r=>r!=='EU' && ccAwayWhy(r)!=='off');
+    if(evRegs.join()!=='NAC') fail('evaluation away regions should be NAC only: '+evRegs.join());
+    const esl=ccAwaySlot('NAC'); if(!(esl instanceof Date) || esl.getUTCHours()!==23) fail('NAC evaluation start: '+esl);
+    careerRenderHub('centre');
+    if(!document.querySelector('#screen-career-hub .cc-away')) fail('no away row on an evaluation night');
+    let eBase=null, ePow=null;
+    const cyt2=careerYouTeam; careerYouTeam=function(){ const t=cyt2.apply(this, arguments); eBase=t.pow; return t; };
+    const sgl2=simulateGamesLive; simulateGamesLive=function(field){ if(ePow==null){ const y=field.find(t=>t.isYou); ePow=y && y.pow; } return sgl2.apply(this, arguments); };
+    const sk2=setInterval(()=>{ const b=document.getElementById('majorSkipBtn'); if(b && !b.disabled) b.click(); }, 20);
+    const en1=careerEnergy(); const pr2=ccAwayPlay('NAC');
+    let card2=null;
+    for(let i=0; i<8000 && !card2; i++){ await wait(25);
+      card2=[...document.querySelectorAll('#majorStages .stage-card')].find(c=>c.querySelector('button[onclick*="careerBackToHub"]')); }
+    clearInterval(sk2); await pr2; careerYouTeam=cyt2; simulateGamesLive=sgl2;
+    if(!card2) fail('no result card after the away evaluation');
+    if(careerToday()!==EV_DAY) fail('the evaluation away moved the day: '+careerToday());
+    if(Math.round(en1-careerEnergy())!==CC_AWAY_ENERGY) fail('evaluation away energy: '+(en1-careerEnergy()));
+    if(!(eBase-ePow===18)) fail('evaluation away penalty: '+eBase+' -> '+ePow);
+    const lr=(CAREER.career.log||[]).slice(-1)[0];
+    if(!lr || lr.kind!=='eval' || lr.away!=='NAC') fail('evaluation log row: '+JSON.stringify(lr));
+    card2.querySelector('button[onclick*="careerBackToHub"]').click(); await wait(50);
+    if(careerNext().type!=='eval') fail('home evaluation of the day is gone');
+    out.steps.push('evaluation: NAC only (23:00 UTC), power '+eBase+' -> '+ePow+', day stays, home evaluation still on');
+
     // ---- пять языков ---------------------------------------------------------------------
     ['ru','en','fr','it','pt'].forEach(l=>{ LANG=l; CC_L_CACHE={}; const D=L();
       if(!(typeof D.awH==='function' && D.awBtn('NA', 90, 18).indexOf('90')>=0 && D.aw_done && D.aw_tired && D.aw_mate)) fail(l+': away strings missing'); });
