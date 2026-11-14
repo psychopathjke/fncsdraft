@@ -161024,8 +161024,12 @@ function ccAwaySlot(reg, day){
     const pre=day+'|'+ev.id;
     k=Object.keys(CC_AWAY_SCHED).find(x=>x===pre || x.indexOf(pre+'_')===0);
   }
-  if(!k) return undefined;
-  const parts=CC_AWAY_SCHED[k].split(';'), head=parts[0].split('/'), off={EU:0};
+  if(!kind) return undefined;
+  /* Расписания этого дня нет (прошлые годы, годы после 2026, свои дни без окон Epic): обычный вечер по медианам того же
+     расписания 2026 (245 вечеров): EU 17:00 UTC на 3 ч, ASIA -8 ч, OCE -9 ч, ME -2 ч, BR +4 ч, NAC +6 ч, NAW +8 ч. Без этого
+     у таких дней не было часов: NAC стоял до своего капа, а после него ночной строки не было. */
+  const sched=k ? CC_AWAY_SCHED[k] : '17:00/180;NAC360,NAW480,BR240,ASIA-480,ME-120,OCE-540';
+  const parts=sched.split(';'), head=parts[0].split('/'), off={EU:0};
   (parts[1]||'').split(',').forEach(p=>{ const m=/^([A-Z]+)(-?\d+)$/.exec(p); if(m) off[m[1]]=Number(m[2]); });
   if(!(reg in off)) return null;
   const at=Date.parse(day+'T'+head[0]+':00Z')+off[reg]*60000, d=new Date(at);

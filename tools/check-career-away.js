@@ -83,7 +83,8 @@ const BOOT = `
     out.steps.push('schedule: NAC '+sl.toISOString().slice(11,16)+' UTC, no ME that day');
     // \u0414\u0435\u043d\u044c \u0431\u0435\u0437 \u0440\u0430\u0441\u043f\u0438\u0441\u0430\u043d\u0438\u044f (\u043f\u0440\u043e\u0448\u043b\u044b\u0439 \u0433\u043e\u0434) \u2014 \u0440\u0435\u0433\u0438\u043e\u043d\u044b \u043e\u0442\u043a\u0440\u044b\u0442\u044b \u0431\u0435\u0437 \u0432\u0440\u0435\u043c\u0435\u043d\u0438.
     const keep=careerVictoryOn; careerVictoryOn=()=>({id:'NoSuchCup_X', name:'X'});
-    if(ccAwaySlot('NAC')!==undefined) fail('a cup without schedule got a slot');
+    // Без расписания — обычный вечер по медианам 2026: EU 17:00, NAC +6 ч.
+    { const fs0=ccAwaySlot('NAC'); if(!(fs0 instanceof Date) || fs0.getUTCHours()!==23) fail('a cup without schedule: NAC should be 23:00 UTC: '+fs0); }
     careerVictoryOn=keep;
 
     // ---- вечер в NAC: после своего капа, ночью ------------------------------------------
