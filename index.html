@@ -12023,7 +12023,7 @@ chSquad:'Дуо', ccDuoFindTitle:'Кому написать',
 ccDuoFindHint:'Любому игроку своего региона можно написать первым. Ответит он сам — и не всякий согласится.',
 ccDuoSearchPh:'Поиск по нику',
 ccDuoSortBy:'Сортировать', ccDuoSortNear:'мой уровень', ccDuoSortOvr:'рейтинг', ccDuoSortPr:'PR', ccDuoPrOf:(pr,rank)=>'PR '+pr+' · #'+rank,
-ccDuoNat:'Флаг', ccVAltH:'Капы дня',awH:n=>'Другие регионы · '+n+' энергии',awLate:n=>'Ночью ещё идут · '+n+' энергии',awCupLine:r=>'Выезд в '+r+': без перехода между дивизионами',awAfterHome:l=>'После твоего капа: '+l,aw_past:'уже прошёл',awBusy:'В это время ты играешь на выезде',awBtn:(r,ms,p)=>r+' · '+ms+' мс · -'+p+' силы',aw_done:'сыграно',aw_tired:'нет сил',aw_mate:'нет состава', roFirst:d=>'первый турнир — '+d, roGather:'Собрать состав', roFind:'Найти напарника', roWeek:'Собрать можно за неделю до турнира', roMpFill:n=>(n>1?'Ещё двоих':'Третьего')+' на вечер возьмёте филлом: игра подберёт по вашему рейтингу', roSpot:'Спот', roSpotNone:'не выбран — поставить', roNat:'Сборная', roCaptain:'ты капитан', roNatTrial:'Место в сборной — через отбор страны', ccDuoNatAll:'все', ccDuoReg:'Регион',
+ccDuoNat:'Флаг', ccVAltH:'Капы дня',awH:n=>'Другие регионы · '+n+' энергии',awLate:n=>'Ночью ещё идут · '+n+' энергии',awCupLine:(r,d)=>'Выезд в '+r+', Дивизион '+d+': переход по отсечке там',awDivUp:(r,d)=>'Переход в '+r+': Дивизион '+d,awDivD:d=>'Д'+d,awNewsDivUp:(r,d)=>'Выезд: в '+r+' теперь Дивизион '+d,awAfterHome:l=>'После твоего капа: '+l,aw_past:'уже прошёл',awBusy:'В это время ты играешь на выезде',awBtn:(r,ms,p)=>r+' · '+ms+' мс · -'+p+' силы',aw_done:'сыграно',aw_tired:'нет сил',aw_mate:'нет состава', roFirst:d=>'первый турнир — '+d, roGather:'Собрать состав', roFind:'Найти напарника', roWeek:'Собрать можно за неделю до турнира', roMpFill:n=>(n>1?'Ещё двоих':'Третьего')+' на вечер возьмёте филлом: игра подберёт по вашему рейтингу', roSpot:'Спот', roSpotNone:'не выбран — поставить', roNat:'Сборная', roCaptain:'ты капитан', roNatTrial:'Место в сборной — через отбор страны', ccDuoNatAll:'все', ccDuoReg:'Регион',
 ccDuoWrite:'Написать',
 ccDuoFree:'без дуо',
 ccDuoWith:n=>'дуо с '+n,
@@ -14152,7 +14152,7 @@ chSquad:'Duo', ccDuoFindTitle:'Who to write to',
 ccDuoFindHint:'You can write first to anybody in your region. They answer for themselves, and not everybody says yes.',
 ccDuoSearchPh:'Search by name',
 ccDuoSortBy:'Sort by', ccDuoSortNear:'my level', ccDuoSortOvr:'rating', ccDuoSortPr:'PR', ccDuoPrOf:(pr,rank)=>'PR '+pr+' · #'+rank,
-ccDuoNat:'Flag', ccVAltH:'Cups today',awH:n=>'Other regions · '+n+' energy',awLate:n=>'Still on tonight · '+n+' energy',awCupLine:r=>'Away in '+r+': no promotion or relegation',awAfterHome:l=>'After your own cup: '+l,aw_past:'already over',awBusy:'You are playing away at that time',awBtn:(r,ms,p)=>r+' · '+ms+' ms · -'+p+' power',aw_done:'played',aw_tired:'too tired',aw_mate:'no roster', roFirst:d=>'first event — '+d, roGather:'Build roster', roFind:'Find a partner', roWeek:'You can build it a week before', roMpFill:n=>(n>1?'Two more':'The third')+' will be a fill for the night, picked near your rating', roSpot:'Spot', roSpotNone:'not set — pick one', roNat:'National team', roCaptain:'you are captain', roNatTrial:'Your seat comes through the country trial', ccDuoNatAll:'all', ccDuoReg:'Region',
+ccDuoNat:'Flag', ccVAltH:'Cups today',awH:n=>'Other regions · '+n+' energy',awLate:n=>'Still on tonight · '+n+' energy',awCupLine:(r,d)=>'Away in '+r+', Division '+d+': promotion by its cut there',awDivUp:(r,d)=>'Promoted in '+r+': Division '+d,awDivD:d=>'D'+d,awNewsDivUp:(r,d)=>'Away: now Division '+d+' in '+r,awAfterHome:l=>'After your own cup: '+l,aw_past:'already over',awBusy:'You are playing away at that time',awBtn:(r,ms,p)=>r+' · '+ms+' ms · -'+p+' power',aw_done:'played',aw_tired:'too tired',aw_mate:'no roster', roFirst:d=>'first event — '+d, roGather:'Build roster', roFind:'Find a partner', roWeek:'You can build it a week before', roMpFill:n=>(n>1?'Two more':'The third')+' will be a fill for the night, picked near your rating', roSpot:'Spot', roSpotNone:'not set — pick one', roNat:'National team', roCaptain:'you are captain', roNatTrial:'Your seat comes through the country trial', ccDuoNatAll:'all', ccDuoReg:'Region',
 ccDuoWrite:'Write',
 ccDuoFree:'no duo',
 ccDuoWith:n=>'duo with '+n,
@@ -17194,7 +17194,7 @@ ccDuoFindTitle:'À qui écrire',
 ccDuoFindHint:'Tu peux écrire en premier à n’importe qui de ta région. Chacun répond pour soi, et tout le monde ne dit pas oui.',
 ccDuoSearchPh:'Chercher par nom',
 ccDuoSortBy:'Trier par', ccDuoSortNear:'mon niveau', ccDuoSortOvr:'note', ccDuoSortPr:'PR', ccDuoPrOf:(pr,rank)=>'PR '+pr+' · #'+rank,
-ccDuoNat:'Drapeau', ccVAltH:'Cups du jour',awH:n=>'Autres régions · '+n+' énergie',awLate:n=>'Encore cette nuit · '+n+' énergie',awCupLine:r=>'Ailleurs ('+r+') : pas de montée ni de descente',awAfterHome:l=>'Après ta cup : '+l,aw_past:'déjà fini',awBusy:'Tu joues ailleurs à cette heure-là',awBtn:(r,ms,p)=>r+' · '+ms+' ms · -'+p+' puissance',aw_done:'joué',aw_tired:'trop fatigué',aw_mate:'pas d’équipe', roFirst:d=>'premier tournoi — '+d, roGather:'Former l’équipe', roFind:'Trouver un coéquipier', roWeek:'À former une semaine avant', roMpFill:n=>(n>1?'Deux autres joueurs':'Le troisième')+' viendront en remplaçants pour la soirée, choisis selon votre niveau', roSpot:'Spot', roSpotNone:'pas choisi — en poser un', roNat:'Sélection', roCaptain:'tu es capitaine', roNatTrial:'Ta place passe par la sélection du pays', ccDuoNatAll:'tous', ccDuoReg:'Région',
+ccDuoNat:'Drapeau', ccVAltH:'Cups du jour',awH:n=>'Autres régions · '+n+' énergie',awLate:n=>'Encore cette nuit · '+n+' énergie',awCupLine:(r,d)=>'Ailleurs ('+r+'), Division '+d+' : montée selon la coupure là-bas',awDivUp:(r,d)=>'Montée en '+r+' : Division '+d,awDivD:d=>'D'+d,awNewsDivUp:(r,d)=>'Ailleurs : Division '+d+' en '+r,awAfterHome:l=>'Après ta cup : '+l,aw_past:'déjà fini',awBusy:'Tu joues ailleurs à cette heure-là',awBtn:(r,ms,p)=>r+' · '+ms+' ms · -'+p+' puissance',aw_done:'joué',aw_tired:'trop fatigué',aw_mate:'pas d’équipe', roFirst:d=>'premier tournoi — '+d, roGather:'Former l’équipe', roFind:'Trouver un coéquipier', roWeek:'À former une semaine avant', roMpFill:n=>(n>1?'Deux autres joueurs':'Le troisième')+' viendront en remplaçants pour la soirée, choisis selon votre niveau', roSpot:'Spot', roSpotNone:'pas choisi — en poser un', roNat:'Sélection', roCaptain:'tu es capitaine', roNatTrial:'Ta place passe par la sélection du pays', ccDuoNatAll:'tous', ccDuoReg:'Région',
 ccDuoWrite:'Écrire',
 ccDuoFree:'sans duo',
 ccDuoNobody:'Personne trouvé',
@@ -19532,7 +19532,7 @@ ccNewsVicNoWin:"Victory Cup: Round 2 senza vittorie",
 ccDuoFindTitle:"A chi scrivere",
 ccDuoSearchPh:"Cerca per nome",
 ccDuoSortBy:'Ordina per', ccDuoSortNear:'mio livello', ccDuoSortOvr:'valutazione', ccDuoSortPr:'PR', ccDuoPrOf:(pr,rank)=>'PR '+pr+' · #'+rank,
-ccDuoNat:'Bandiera', ccVAltH:'Cup di oggi',awH:n=>'Altre regioni · '+n+' energia',awLate:n=>'Ancora stanotte · '+n+' energia',awCupLine:r=>'Trasferta in '+r+': niente promozione o retrocessione',awAfterHome:l=>'Dopo la tua cup: '+l,aw_past:'già finita',awBusy:'A quell’ora giochi in un’altra regione',awBtn:(r,ms,p)=>r+' · '+ms+' ms · -'+p+' forza',aw_done:'giocato',aw_tired:'troppo stanco',aw_mate:'niente squadra', roFirst:d=>'primo torneo — '+d, roGather:'Forma la squadra', roFind:'Trova un compagno', roWeek:'Si forma una settimana prima', roMpFill:n=>(n>1?'Altri due':'Il terzo')+' sarà un sostituto per la serata, scelto vicino al vostro livello', roSpot:'Spot', roSpotNone:'non scelto — sceglilo', roNat:'Nazionale', roCaptain:'sei il capitano', roNatTrial:'Il posto passa dalla selezione del paese', ccDuoNatAll:'tutti', ccDuoReg:'Regione',
+ccDuoNat:'Bandiera', ccVAltH:'Cup di oggi',awH:n=>'Altre regioni · '+n+' energia',awLate:n=>'Ancora stanotte · '+n+' energia',awCupLine:(r,d)=>'Trasferta in '+r+', Divisione '+d+': promozione col taglio di lì',awDivUp:(r,d)=>'Promosso in '+r+': Divisione '+d,awDivD:d=>'D'+d,awNewsDivUp:(r,d)=>'Trasferta: ora Divisione '+d+' in '+r,awAfterHome:l=>'Dopo la tua cup: '+l,aw_past:'già finita',awBusy:'A quell’ora giochi in un’altra regione',awBtn:(r,ms,p)=>r+' · '+ms+' ms · -'+p+' forza',aw_done:'giocato',aw_tired:'troppo stanco',aw_mate:'niente squadra', roFirst:d=>'primo torneo — '+d, roGather:'Forma la squadra', roFind:'Trova un compagno', roWeek:'Si forma una settimana prima', roMpFill:n=>(n>1?'Altri due':'Il terzo')+' sarà un sostituto per la serata, scelto vicino al vostro livello', roSpot:'Spot', roSpotNone:'non scelto — sceglilo', roNat:'Nazionale', roCaptain:'sei il capitano', roNatTrial:'Il posto passa dalla selezione del paese', ccDuoNatAll:'tutti', ccDuoReg:'Regione',
 ccDuoWrite:"Scrivi",
 ccDuoFree:"senza duo",
 ccDuoNobody:"Nessun risultato",
@@ -22087,7 +22087,7 @@ ccNewsVicNoWin:"Victory Cup: Rodada 2 sem vitória",
 ccDuoFindTitle:"Para quem escrever",
 ccDuoSearchPh:"Buscar por nome",
 ccDuoSortBy:'Ordenar por', ccDuoSortNear:'meu nível', ccDuoSortOvr:'rating', ccDuoSortPr:'PR', ccDuoPrOf:(pr,rank)=>'PR '+pr+' · #'+rank,
-ccDuoNat:'Bandeira', ccVAltH:'Cups do dia',awH:n=>'Outras regiões · '+n+' energia',awLate:n=>'Ainda hoje à noite · '+n+' energia',awCupLine:r=>'Fora em '+r+': sem subir nem descer de divisão',awAfterHome:l=>'Depois da sua cup: '+l,aw_past:'já acabou',awBusy:'Nesse horário você joga em outra região',awBtn:(r,ms,p)=>r+' · '+ms+' ms · -'+p+' força',aw_done:'jogado',aw_tired:'sem energia',aw_mate:'sem time', roFirst:d=>'primeiro torneio — '+d, roGather:'Montar o time', roFind:'Achar parceiro', roWeek:'Monte uma semana antes', roMpFill:n=>(n>1?'Mais dois':'O terceiro')+' entra como substituto na noite, escolhido perto do seu nível', roSpot:'Spot', roSpotNone:'não escolhido — escolher', roNat:'Seleção', roCaptain:'você é o capitão', roNatTrial:'A vaga vem pela seletiva do país', ccDuoNatAll:'todos', ccDuoReg:'Região',
+ccDuoNat:'Bandeira', ccVAltH:'Cups do dia',awH:n=>'Outras regiões · '+n+' energia',awLate:n=>'Ainda hoje à noite · '+n+' energia',awCupLine:(r,d)=>'Fora em '+r+', Divisão '+d+': sobe pelo corte de lá',awDivUp:(r,d)=>'Subiu em '+r+': Divisão '+d,awDivD:d=>'D'+d,awNewsDivUp:(r,d)=>'Fora: agora Divisão '+d+' em '+r,awAfterHome:l=>'Depois da sua cup: '+l,aw_past:'já acabou',awBusy:'Nesse horário você joga em outra região',awBtn:(r,ms,p)=>r+' · '+ms+' ms · -'+p+' força',aw_done:'jogado',aw_tired:'sem energia',aw_mate:'sem time', roFirst:d=>'primeiro torneio — '+d, roGather:'Montar o time', roFind:'Achar parceiro', roWeek:'Monte uma semana antes', roMpFill:n=>(n>1?'Mais dois':'O terceiro')+' entra como substituto na noite, escolhido perto do seu nível', roSpot:'Spot', roSpotNone:'não escolhido — escolher', roNat:'Seleção', roCaptain:'você é o capitão', roNatTrial:'A vaga vem pela seletiva do país', ccDuoNatAll:'todos', ccDuoReg:'Região',
 ccDuoWrite:"Escrever",
 ccDuoFree:"sem dupla",
 ccDuoNobody:"Ninguém encontrado",
@@ -143000,7 +143000,7 @@ const CC_POST_BY={
   // these through — but what they say is where the player finished, and a
   // scene account does not post "I went out in Round 1". Same rule that moved
   // ccNewsResult across: a placing is the player's own line.
-  ccNewsEvalCash:'you', ccNewsEvalPlace:'you', ccNewsEvalNoWin:'you', ccNewsEvalOut:'you',
+  ccNewsEvalCash:'you', ccNewsEvalPlace:'you', awNewsDivUp:'you', ccNewsEvalNoWin:'you', ccNewsEvalOut:'you',
   // Поздравление сверху приносит лента сцены; подарок — твоя строка.
   // Эти строки говорят люди сцены — автором стоит тот, чьё имя первым
   // аргументом. См. 'arg0' в ccPostAuthor.
@@ -161000,6 +161000,13 @@ function ccAwayFits(ev){ return !!ev && !ev.own && !ev.lan && !ev.invite && !ev.
   && !ev.placement && !CC_AWAY_LOCKED.test(String(ev.id||'')); }
 /* Что в этот день можно сыграть на выезде: 'victory' — кап дня, 'eval' — Performance Evaluation (у Epic без блокировки
    региона; в карьере только Дивизион 1, как и дома), '' — ничего. */
+/* ДИВИЗИОН В ЧУЖОМ РЕГИОНЕ (его слово 14.11: «дивизионы я могу на разных регионах играть, в этом регионе точно»): у каждого
+   региона своя лестница. Первый раз в регионе — нижний дивизион, переход вверх по той же отсечке, что дома. Свой
+   дивизион это не трогает. cr.regDiv={NAC:3, ...}. Путёвки в финал недели из чужого Д1 нет: это отдельный вечер. */
+function ccAwayDiv(reg){
+  const cr=CAREER && CAREER.career, d=cr && cr.regDiv && cr.regDiv[reg], n=ccDivCount(reg);
+  return d>=1 ? Math.min(d, n) : n;
+}
 function ccAwayKind(reg, day){
   day=day||careerToday();
   const cr=CAREER && CAREER.career; if(!cr) return '';
@@ -161025,7 +161032,7 @@ function ccAwaySlot(reg, day){
   const kind=ccAwayKind(reg, day);
   let k=null;
   if(kind==='eval') k=Object.keys(CC_AWAY_SCHED).find(x=>x.indexOf(day+'|')===0 && x.indexOf('_PerformanceEvaluation_')>0);
-  else if(kind==='cup'){ const dv='_FNCSDivisionalCup_Division'+(CAREER.career.division||1)+'_Event';
+  else if(kind==='cup'){ const dv='_FNCSDivisionalCup_Division'+(reg===ccCareerRegion() ? (CAREER.career.division||1) : ccAwayDiv(reg))+'_Event';
     k=Object.keys(CC_AWAY_SCHED).find(x=>x.indexOf(day+'|')===0 && x.indexOf(dv)>0); }
   else {
     const ev=careerVictoryOn(day); if(!ev) return undefined;
@@ -161105,7 +161112,7 @@ function ccAwayRowHTML(day, late){
   // Свои классы: кнопки выезда не капы дня (.cc-valt), выбор капа их не считает.
   // Ночная строка — плашкой (его «больше должно смотреться, что NAC ещё»): заголовок крупно, кнопки крупные, первая жёлтая.
   return '<div class="cc-away'+(late ? ' cc-away-late' : '')+'">'+(late ? '<b class="cc-away-late-h"><i></i>'+esc(T.awLate(CC_AWAY_ENERGY))+'</b>' : '<em>'+esc(T.awH(CC_AWAY_ENERGY))+'</em>')+regs.map(r=>{
-    const why=ccAwayWhy(r, day), ms=ccXregMs(home, r), at=slot[r] ? ' '+hm(slot[r]) : '';
+    const why=ccAwayWhy(r, day), ms=ccXregMs(home, r), at=(slot[r] ? ' '+hm(slot[r]) : '')+(ccAwayKind(r, day)==='cup' ? ' · '+T.awDivD(ccAwayDiv(r)) : '');
     return '<button class="cc-awayb" type="button"'+(why ? ' disabled' : '')+' onclick="ccAwayPlay(\''+r+'\',\''+day+'\')">'+
       esc(T.awBtn(regionName(r)+at, ms, ccAwayPen(ms))+(why ? ' · '+T['aw_'+why]+(why==='tired' ? ' '+Math.floor(careerEnergy())+'/'+CC_AWAY_ENERGY : '') : ''))+'</button>';
   }).join('')+afterHTML+'</div>';
@@ -161139,6 +161146,9 @@ async function ccAwayPlay(reg, day){
   CC_AWAY={reg, ms, pen:ccAwayPen(ms)}; CC_REGION_AS=reg;
   // Ночной выезд (вчерашний кап) играется в свой день: вечер читает дату карьеры, потом она возвращается.
   if(day!==today) cr.day=day;
+  // Кап дивизиона — дивизионом того региона (ccAwayDiv); свой возвращается после вечера.
+  const homeDiv=cr.division;
+  if(kind==='cup') cr.division=ccAwayDiv(reg);
   try{
     const next=ev ? {type:'victory', day, id:ev.id, title:ev.lan||ev.name, label:ev.lan||ev.name}
              : kind==='cup' ? {type:'cup', day, title:L().ccCupLive, label:L().ccCupLive}
@@ -161158,6 +161168,7 @@ async function ccAwayPlay(reg, day){
   } finally {
     CC_REGION_AS=was; CC_AWAY=null;
     if(day!==today) cr.day=today;
+    cr.division=homeDiv;
     if(paid){ (cr.log||[]).slice(n0).forEach(e=>{ e.away=reg; }); careerSave(); }
   }
 }
@@ -170723,7 +170734,10 @@ async function runCareerCup(){
   /* ВЫЕЗД (ccAwayPlay): кап дивизиона в чужом регионе — одна сессия, место и рост рейтинга. Перехода между дивизионами,
      путёвки в финал недели и копилки Д1 нет: дивизион у игрока в своём регионе. День не двигается. */
   if(CC_AWAY){
-    finalizeStageCard(shell, place, field.length, you.stagePts, null, false, L().awCupLine(regionName(CC_AWAY.reg)));
+    const regA=CC_AWAY.reg, divA=cr.division, upA=passed && divA>1;
+    if(upA){ cr.regDiv=cr.regDiv||{}; cr.regDiv[regA]=divA-1; }
+    finalizeStageCard(shell, place, field.length, you.stagePts, upA ? true : null, false,
+      upA ? L().awDivUp(regionName(regA), divA-1) : L().awCupLine(regionName(regA), divA));
     await revealStandings(shell, ranked, you, 0);
     const growthA=careerApplyGrowth(place, field.length, you, field);
     const placesA=(you.stageLog||[]).map(g=>g.place);
@@ -170737,7 +170751,8 @@ async function runCareerCup(){
     careerSave();
     CARD_MODE=prevMode; squadSize=prevSize; drafted=prevDrafted; CC_KILL_CAP=0;
     careerRenderHub('centre');
-    careerTwoRoundResultCard({title:L().ccCupLive+' · '+regionName(CC_AWAY.reg), place, through:false, wins:you.wins||0, cash:0, cut:0});
+    if(upA) careerNews('good', 'awNewsDivUp', [regionName(regA), divA-1]);
+    careerTwoRoundResultCard({title:L().ccCupLive+' · '+regionName(regA)+' · '+L().awDivD(divA), place, through:upA, wins:you.wins||0, cash:0, cut:0});
     return;
   }
   const banking=careerBanking();

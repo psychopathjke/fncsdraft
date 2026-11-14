@@ -215,6 +215,8 @@ const BOOT = `
     const lateDiv=document.querySelector('#screen-career-hub .cc-away');
     const lateDivRegs=lateDiv ? [...lateDiv.querySelectorAll('button')].map(b=>((b.getAttribute('onclick')||'').match(/'([A-Z]+)'/)||[])[1]) : [];
     if(lateDivRegs.indexOf('NAC')<0) fail('night row after the home div cup has no NAC: '+lateDivRegs.join());
+    { const nbD=[...lateDiv.querySelectorAll('button')].find(b=>(b.getAttribute('onclick')||'').indexOf("'NAC'")>=0);
+      if(!nbD || nbD.textContent.indexOf(L().awDivD(ccDivCount('NAC')))<0) fail('NAC button does not show its division: '+(nbD && nbD.textContent)); }
     let dBase=null, dPow=null;
     const cyt3=careerYouTeam; careerYouTeam=function(){ const t=cyt3.apply(this, arguments); dBase=t.pow; return t; };
     const sgl3=simulateGamesLive; simulateGamesLive=function(field){ if(dPow==null){ const y=field.find(t=>t.isYou); dPow=y && y.pow; } return sgl3.apply(this, arguments); };
@@ -224,9 +226,14 @@ const BOOT = `
     if(careerToday()!==ccAddDays(DD, 1)) fail('away div cup moved the day: '+careerToday());
     if(!(dBase-dPow===18)) fail('away div cup penalty: '+dBase+' -> '+dPow);
     const ld=(CAREER.career.log||[]).slice(-1)[0];
-    if(!ld || ld.away!=='NAC' || ld.day!==DD || ld.div!==2) fail('away div cup log: '+JSON.stringify(ld));
+    const lowNAC=ccDivCount('NAC');
+    if(!ld || ld.away!=='NAC' || ld.day!==DD || ld.div!==lowNAC) fail('away div cup should be played in NAC Division '+lowNAC+': '+JSON.stringify(ld));
+    const upNAC=ld.place<=careerCupCut(lowNAC);
+    if(upNAC ? ccAwayDiv('NAC')!==lowNAC-1 : ccAwayDiv('NAC')!==lowNAC) fail('NAC ladder after #'+ld.place+': D'+ccAwayDiv('NAC'));
+    // Переход в NAC — по отсечке того дивизиона; проверяем и прямо: проход вверх двигает только лестницу NAC.
+    CAREER.career.regDiv={NAC:lowNAC};
     if(CAREER.career.wf && CAREER.career.wf.monday===careerMonday(DD)) fail('away div cup gave a Weekly Final seat');
-    out.steps.push('div cup '+DD+': NAC at night after the home cup, power '+dBase+' -> '+dPow+', division stays 2, day stays');
+    out.steps.push('div cup '+DD+': NAC Division '+lowNAC+' at night, #'+ld.place+(upNAC?' promoted there':'')+', power '+dBase+' -> '+dPow+', home division stays 2, day stays');
 
     // ---- полный свой вечер, потом NAC кнопкой прямо с карточки итога ---------------------------------
     localStorage.setItem('fncsdraft_career', JSON.stringify(s)); careerEntry();
