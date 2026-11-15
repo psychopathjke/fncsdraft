@@ -6255,6 +6255,7 @@
     background:#121c46;box-shadow:inset 0 0 0 1px rgba(255,255,255,.14),0 6px 16px rgba(0,0,0,.3);
     transition:transform .12s ease,box-shadow .12s ease;}
   .cc-dt-img{position:relative;display:block;aspect-ratio:16/9;background-size:cover;background-position:center;}
+  .cc-dt-img[style*="devices/"]{background-size:contain;background-repeat:no-repeat;background-color:#fff;}
   .cc-dt:hover:not(.off){transform:translateY(-2px);box-shadow:inset 0 0 0 2px #ffdd00,0 10px 22px rgba(0,0,0,.4);}
   .cc-dt:active:not(.off){transform:scale(.98);}
   .cc-dt.did{box-shadow:inset 0 0 0 2px #00d6a4,0 6px 16px rgba(0,0,0,.3);}
@@ -150419,7 +150420,8 @@ const CC_DISC={
   trEdit:{img:'items/creative/trEdit.webp', map:"Raider's Edit Course"},
   trPit:{img:'items/creative/trPit.webp', map:'The Pit · Free For All'},
   scrim:{img:'items/creative/scrim.webp', map:'Pro Realistics'},
-  noble:{img:'items/creative/noble.jpg', map:'Noble Pro Scrims'}
+  noble:{img:'items/creative/noble.jpg', map:'Noble Pro Scrims'},
+  mobile:{img:'devices/phone-s26u-shop.jpg'}
 };
 const CC_RANKED_FROM='2023-05-16';
 function ccDiscOf(id){
@@ -150427,7 +150429,7 @@ function ccDiscOf(id){
     : {img:'items/creative/trSur-arena.jpg', map:L().lfArena||'Arena'};
   return CC_DISC[id]||{};
 }
-function ccDiscTile(id){ return id!=='talk' && (String(id).indexOf('tr')===0 || id==='scrim' || id==='noble'); }
+function ccDiscTile(id){ return id!=='talk' && (String(id).indexOf('tr')===0 || id==='scrim' || id==='noble' || id==='mobile'); }
 // Сколько занятие поднимет каждый параметр сегодня: та же арифметика, что в careerDoAct.
 function ccDiscGains(a, o){
   return Object.keys(a.gain||{}).map(k=>{
@@ -150438,13 +150440,15 @@ function ccDiscGains(a, o){
 }
 function ccDiscTileHTML(a, o){
   const d=ccDiscOf(a.id), img=d.img || ccDayArt(), g=ccDrillLast(a.id), gains=ccDiscGains(a, o);
-  const why = o.closed ? '' : (o.maxed && !a.noble && !a.morale) ? L().ccAttrMaxed : (o.keys.length && !o.gainsMove && !a.noble && !a.morale) ? L().ccNoGain
+  const mob=a.mobile ? {own:ccMobileOwn(), now:ccMobileOvr(), g:ccMobileTrainGain()} : null, n1=v=>(Math.round(v*10)/10).toFixed(1);
+  const why = o.closed ? '' : (mob && !mob.own) ? L().ccMobTrainNeed : (mob && !(mob.g>0)) ? L().ccMobTrainCap : (o.maxed && !a.noble && !a.morale) ? L().ccAttrMaxed : (o.keys.length && !o.gainsMove && !a.noble && !a.morale) ? L().ccNoGain
             : o.left<a.energy ? L().ccNeedEnergy(a.energy-o.left) : (o.hostWhy || '');
   const chips=gains.slice(0, 2).map(x=>'<i>+'+x.by.toFixed(1)+' '+(L()['ccAttr'+x.k.toUpperCase()]||x.k)+'</i>').join('')+
     (gains.length>2 ? '<i>+'+(gains.length-2)+'</i>' : '')+
     (a.morale ? '<i class="m">'+esc(L().ccGiveMood)+'</i>' : '')+
     (a.noble ? '<i class="m">'+esc(L().lfNobleForm||'+ form')+'</i>' : '')+
-    (!a.gain || !Object.keys(a.gain).length ? '<i>'+esc(L().lfMetaGive)+'</i>' : '');
+    (mob ? (mob.own && mob.g>0 ? '<i>'+esc(L().ccMobTile)+' '+n1(mob.now)+' → '+n1(mob.now+mob.g)+'</i>' : '<i>'+esc(L().ccMobTile)+' '+n1(mob.now)+'</i>')
+      : (!a.gain || !Object.keys(a.gain).length) ? '<i>'+esc(L().lfMetaGive)+'</i>' : '');
   const tip=(d.map ? d.map+' · ' : '')+ccActName(a.id)+(gains.length ? ' · '+gains.map(x=>'+'+x.by.toFixed(1)+' '+ccAttrFull(x.k)).join(', ') : '');
   return '<button class="cc-dt'+(o.can?'':' off')+(o.did?' did':'')+'" title="'+esc(tip)+'" '+
     (o.can ? 'onclick="careerPickDay(\''+a.id+'\')"' : 'disabled')+'>'+
@@ -150530,7 +150534,9 @@ function careerDayPanelHTML(locked){
   const dayMult = careerDayGear()*clamp((careerTrainCap()-nowOvr)/CAREER_TAPER, 0, 1);
   const dayCoach = ccCoach();
   const six = CAREER.player.attrs || ccOwnAttrs();
-  const rows=CC_DAY_ACTS.filter(function(a){ return (!a.meta || ccMetaOpen()); }).map(function(a, ai, allActs){
+  const actsShown=CC_DAY_ACTS.filter(function(a){ return (!a.meta || ccMetaOpen()); });
+  if(CC_DAY_VIEW==='train') actsShown.sort((x, y)=>(ccDiscTile(x.id) ? 0 : 1)-(ccDiscTile(y.id) ? 0 : 1));
+  const rows=actsShown.map(function(a, ai, allActs){
     const noDev=!!a.mobile && !ccMobileOwn();
     const keys=Object.keys(a.gain||{});
     // A ninety-nine cannot be trained: the day would be spent on a number that
@@ -156354,13 +156360,20 @@ function ccMobileSelfPow(){
   return Math.max(1, Math.round(careerTeam([ccMobileCard(me, reg)]).pow+ccMobileDevBonus()));
 }
 /* Живой рейтинг мобильной сцены: база из таблиц Epic (CC_MOBILE_ROSTER) плюс то, что игрок наиграл в мобильных капах этой
-   карьеры (cr.mobDev[ник], по тем же ступеням, что у игрока, но вдвое мягче: их капы карьера не видит целиком). */
+   карьеры (cr.mobDev[ник]). Сдвиг как в Эло: место против ожидаемого по рейтингам, а не по ступеням места. Ступени давали
+   плюс сильным каждый кап, и к концу 2026 у трети сцены было 99. Ожидание: шанс обойти соперника по разнице рейтингов
+   при разбросе дня (sd 5.66 у разницы двух бросков мира), CC_MOB_K за весь разброс, CC_MOB_DECAY тянет наигранное к базе. */
+const CC_MOB_K=3, CC_MOB_DECAY=0.97, CC_MOB_SD=5.66;
 function ccMobileRate(name, base){ const d=CAREER && CAREER.career && CAREER.career.mobDev; return clamp(Math.round((base+((d && d[name])||0))*10)/10, 40, 99); }
 function ccMobileSceneGrow(ranked){
   const cr=CAREER.career, dev=cr.mobDev=cr.mobDev||{}, n=ranked.length;
+  if(n<2) return;
+  const rOf=t=>{ const c=(t.squad||[])[0]; return t.r!=null ? t.r : c && c.rating!=null ? c.rating : (t.pow||70); };
+  const rs=ranked.map(rOf), win=z=>1/(1+Math.exp(-1.702*z));
   ranked.forEach((t,i)=>{ const c=(t.squad||[])[0]; if(!c || !c.mobile || t.isYou) return;
-    const f=(i+1)/Math.max(1, n), d=f<=0.01 ? 1.5 : f<=0.05 ? 1 : f<=0.2 ? 0.5 : f<=0.5 ? 0.25 : -0.25;
-    dev[c.handle]=Math.round(((dev[c.handle]||0)+d)*100)/100; });
+    let e=0; for(let j=0;j<n;j++) if(j!==i) e+=win((rs[i]-rs[j])/CC_MOB_SD);
+    const d=clamp(((n-1-i)-e)/(n-1)*CC_MOB_K, -1.5, 1.5);
+    dev[c.handle]=Math.round(((dev[c.handle]||0)*CC_MOB_DECAY+d)*100)/100; });
 }
 // Таблица первого раунда мобильного вечера: поле, отсортированное по очкам (как ranked1).
 function evRanked1ForMobile(field){ return field.slice().sort((a,b)=>(b.stagePts||0)-(a.stagePts||0) || (b.wins||0)-(a.wins||0) || (b.stageElims||0)-(a.stageElims||0)); }
@@ -156381,7 +156394,7 @@ function ccMobileWorld(fromISO, toISO){
     if(cr.mobDays && cr.mobDays[d]) continue;
     ccMobileCupsOn(d).forEach(ev=>{
       const rnd=careerRng(ccHashStr('mobw|'+d+'|'+ev.id+'|'+reg));
-      const ranked=R.map(x=>({squad:[{mobile:true, handle:x[0]}], s:ccMobileRate(x[0], x[2])+(rnd()+rnd()+rnd()-1.5)*8}))
+      const ranked=R.map(x=>{ const r=ccMobileRate(x[0], x[2]); return {squad:[{mobile:true, handle:x[0]}], r, s:r+(rnd()+rnd()+rnd()-1.5)*8}; })
         .sort((a,b)=>b.s-a.s);
       ccMobileSceneGrow(ranked); n++;
     });
