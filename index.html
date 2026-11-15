@@ -6155,6 +6155,7 @@
   .cc-awayb{padding:5px 10px;border-radius:999px;border:1px dashed rgba(255,255,255,.35);background:rgba(0,0,0,.35);color:#fff;font:inherit;font-size:12px;font-weight:700;cursor:pointer;}
   .cc-awayb:disabled{opacity:.45;cursor:default;}
   .cc-away-card{margin:10px 0 2px;}
+  .cc-lad-plat{margin-top:6px;}
   .cc-platcal{display:inline-flex;align-items:center;gap:6px;padding:7px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.3);background:transparent;color:#cfe0ff;font:inherit;font-size:11.5px;font-weight:800;cursor:pointer;white-space:nowrap;}
   .cc-platcal i{width:16px;height:16px;border-radius:4px;border:1.5px solid rgba(255,255,255,.55);display:inline-flex;align-items:center;justify-content:center;font-style:normal;font-size:11px;line-height:1;}
   .cc-platcal.on{border-color:#ffdd00;color:#fff;}
@@ -12449,7 +12450,7 @@ ccSlot_mouse:'Мышь',
 ccSlot_keyboard:'Клавиатура',
 ccSlot_headset:'Наушники',
 ccSlot_monitor:'Монитор',
-ccSlot_pc:'Компьютер',
+ccSlot_pc:'Компьютер', ccSlot_ps:'PlayStation', ccSlot_xbox:'Xbox', ccSlot_mobile:'Телефон или планшет', ccShopConFx:n=>'+'+n+' силы на консоли',
 ccSlot_chair:'Кресло',
 ccSlot_stream:'Стрим',
 ccSlot_car:'Машина',
@@ -12662,7 +12663,7 @@ ccShopmonitor2:'ZOWIE XL2566X+', ccShopSpecmonitor2:'540 Гц и DyAc 2 — в �
 ccShopkeyboard2:'Wooting 80HE', ccShopSpeckeyboard2:'Магнитные свитчи, rapid trigger — строишь быстрее, чем думаешь',
 ccShopheadset2:'Audeze Maxwell', ccShopSpecheadset2:'Графеновые драйверы — шаги за два бокса, выживаешь до того, как увидел',
 ccShopkeyboard:'SteelSeries Apex Pro TKL Gen 3', ccShopheadset:'Razer BlackShark V3 Pro',
-ccShoppcbudget:'Бюджетный ПК · 144 FPS',ccShopphone:'iPhone 15 Pro Max',ccShopphonebase:'Android-смартфон',ccShopipad:'iPad Pro',ccShopMobFx:n=>'мобильные капы'+(n ? ' · +'+n+' силы на мобиле' : ''),ccMobTitle:'Мобильный рейтинг',ccPlatCal:'Турниры в календаре',ccActmobile:'Тренировка на телефоне',ccMobSerNeedRound:'сначала пройди раунд Mobile Series',ccMobSerNeedHeat:'сначала пройди хит Mobile Series',ccMobSerHeats:'хиты',ccMobSerCup:'кап',ccNewsMobSer:st=>'Mobile Series: прошёл дальше, впереди '+st,ccMobShort:'мобайл',ccMobPlayer:'Игрок',ccMobRating:'Рейтинг',ccMobNoPhone:'Мобильные капы — со смартфоном из магазина (Девайсы, Консоли). На мобиле своя сцена и свой рейтинг.',ccMobHint:r=>'Мобильная сцена '+r+': игроки мобильных капов Epic 2026, рейтинги меняются от мобильных капов. На мобиле твоя сила только от этого рейтинга, ПК не помогает.',ccMobYou:(p,n,r,k)=>'Ты #'+p+' из '+n+' · рейтинг '+r+' · мобильных капов '+k,ccNeedPhone:'нужен телефон или планшет',ccShopps5:'PlayStation 5',ccShopxbox:'Xbox Series X',ccShopConsoles:'Консоли и мобильные',ccShopConsoleHint:'Допуск на консольные и мобильные капы. Консоли силы не дают; на мобиле своя сцена и свой рейтинг, iPhone и iPad добавляют немного силы там.',ccShopConsoleFx:'открывает консольные капы',ccNeedPs:'нужна PlayStation',ccNeedXbox:'нужен Xbox',ccNeedConsole:'нужна консоль', ccShoppcpro:'PRO-сборка · 240+ FPS',
+ccShoppcbudget:'Бюджетный ПК · 144 FPS',ccShopphone:'iPhone 18 Pro Max',ccShopphonebase:'Android-смартфон',ccShopipad:'iPad Pro M5',ccShopMobFx:n=>'мобильные капы'+(n ? ' · +'+n+' силы на мобиле' : ''),ccMobTitle:'Мобильный рейтинг',ccPlatCal:'Турниры в календаре',ccActmobile:'Тренировка на телефоне',ccMobSerNeedRound:'сначала пройди раунд Mobile Series',ccMobSerNeedHeat:'сначала пройди хит Mobile Series',ccMobSerHeats:'хиты',ccMobSerCup:'кап',ccNewsMobSer:st=>'Mobile Series: прошёл дальше, впереди '+st,ccMobShort:'мобайл',ccMobPlayer:'Игрок',ccMobRating:'Рейтинг',ccMobNoPhone:'Мобильные капы — со смартфоном из магазина (Девайсы, Консоли). На мобиле своя сцена и свой рейтинг.',ccMobHint:r=>'Мобильная сцена '+r+': игроки мобильных капов Epic 2026, рейтинги меняются от мобильных капов. На мобиле твоя сила только от этого рейтинга, ПК не помогает.',ccMobYou:(p,n,r,k)=>'Ты #'+p+' из '+n+' · рейтинг '+r+' · мобильных капов '+k,ccNeedPhone:'нужен телефон или планшет',ccShopps5:'PlayStation 5',ccShopxbox:'Xbox Series X',ccShopConsoles:'Консоли и мобильные',ccShopConsoleHint:'Допуск на консольные и мобильные капы. Одно устройство на платформу, улучшается как ПК: консоль новее даёт немного силы на консольных капах, телефон или планшет лучше на мобильных. На мобиле своя сцена и свой рейтинг.',ccShopConsoleFx:'открывает консольные капы',ccNeedPs:'нужна PlayStation',ccNeedXbox:'нужен Xbox',ccNeedConsole:'нужна консоль', ccShoppcpro:'PRO-сборка · 240+ FPS',
 ccShoppcelite:'ELITE-сборка · 360 Гц',
 ccShoppc:'Новый ПК', ccShopcoach:'Коуч', ccShopcamp:'Буткемп',
 ccCoachTitle:'Коуч', ccCoachHint:'Ускоряет тренировки по своему профилю',
@@ -14578,7 +14579,7 @@ ccSlot_mouse:'Mouse',
 ccSlot_keyboard:'Keyboard',
 ccSlot_headset:'Headset',
 ccSlot_monitor:'Monitor',
-ccSlot_pc:'PC',
+ccSlot_pc:'PC', ccSlot_ps:'PlayStation', ccSlot_xbox:'Xbox', ccSlot_mobile:'Phone or tablet', ccShopConFx:n=>'+'+n+' power on console', ccShopps4:'PlayStation 4', ccShopps5pro:'PlayStation 5 Pro', ccShopxboxone:'Xbox One', ccShopxboxs:'Xbox Series S', ccShops26u:'Galaxy S26 Ultra',
 ccSlot_chair:'Chair',
 ccSlot_stream:'Stream',
 ccSlot_car:'Car',
@@ -14788,7 +14789,7 @@ ccShopmonitor2:'ZOWIE XL2566X+', ccShopSpecmonitor2:'540Hz with DyAc 2 — a clu
 ccShopkeyboard2:'Wooting 80HE', ccShopSpeckeyboard2:'Magnetic switches, rapid trigger — you build faster than you think',
 ccShopheadset2:'Audeze Maxwell', ccShopSpecheadset2:'Graphene drivers — footsteps two boxes away, you survive what you never saw',
 ccShopkeyboard:'SteelSeries Apex Pro TKL Gen 3', ccShopheadset:'Razer BlackShark V3 Pro',
-ccShoppcbudget:'Budget PC · 144 FPS',ccShopphone:'iPhone 15 Pro Max',ccShopphonebase:'Android phone',ccShopipad:'iPad Pro',ccShopMobFx:n=>'mobile cups'+(n ? ' · +'+n+' power on mobile' : ''),ccMobTitle:'Mobile rating',ccPlatCal:'Cups in the calendar',ccActmobile:'Phone practice',ccMobSerNeedRound:'clear a Mobile Series round first',ccMobSerNeedHeat:'clear a Mobile Series heat first',ccMobSerHeats:'the heats',ccMobSerCup:'the cup',ccNewsMobSer:st=>'Mobile Series: through, '+st+' next',ccMobShort:'mobile',ccMobPlayer:'Player',ccMobRating:'Rating',ccMobNoPhone:'Mobile cups need a phone from the shop (Devices, Consoles). Mobile has its own scene and its own rating.',ccMobHint:r=>'Mobile scene, '+r+': players of Epic mobile cups in 2026, ratings move with mobile cups. On mobile your power comes only from this rating, PC does not help.',ccMobYou:(p,n,r,k)=>'You are #'+p+' of '+n+' · rating '+r+' · mobile cups '+k,ccNeedPhone:'needs a phone or tablet',ccShopps5:'PlayStation 5',ccShopxbox:'Xbox Series X',ccShopConsoles:'Consoles and mobile',ccShopConsoleHint:'Entry to console and mobile cups. Consoles add no power; mobile has its own scene and rating, iPhone and iPad add a little power there.',ccShopConsoleFx:'unlocks console cups',ccNeedPs:'needs a PlayStation',ccNeedXbox:'needs an Xbox',ccNeedConsole:'needs a console', ccShoppcpro:'PRO build · 240+ FPS',
+ccShoppcbudget:'Budget PC · 144 FPS',ccShopphone:'iPhone 18 Pro Max',ccShopphonebase:'Android phone',ccShopipad:'iPad Pro M5',ccShopMobFx:n=>'mobile cups'+(n ? ' · +'+n+' power on mobile' : ''),ccMobTitle:'Mobile rating',ccPlatCal:'Cups in the calendar',ccActmobile:'Phone practice',ccMobSerNeedRound:'clear a Mobile Series round first',ccMobSerNeedHeat:'clear a Mobile Series heat first',ccMobSerHeats:'the heats',ccMobSerCup:'the cup',ccNewsMobSer:st=>'Mobile Series: through, '+st+' next',ccMobShort:'mobile',ccMobPlayer:'Player',ccMobRating:'Rating',ccMobNoPhone:'Mobile cups need a phone from the shop (Devices, Consoles). Mobile has its own scene and its own rating.',ccMobHint:r=>'Mobile scene, '+r+': players of Epic mobile cups in 2026, ratings move with mobile cups. On mobile your power comes only from this rating, PC does not help.',ccMobYou:(p,n,r,k)=>'You are #'+p+' of '+n+' · rating '+r+' · mobile cups '+k,ccNeedPhone:'needs a phone or tablet',ccShopps5:'PlayStation 5',ccShopxbox:'Xbox Series X',ccShopConsoles:'Consoles and mobile',ccShopConsoleHint:'Entry to console and mobile cups. One device per platform, upgraded like the PC: a newer console adds a little power in console cups, a better phone or tablet in mobile cups. Mobile has its own scene and rating.',ccShopConsoleFx:'unlocks console cups',ccNeedPs:'needs a PlayStation',ccNeedXbox:'needs an Xbox',ccNeedConsole:'needs a console', ccShoppcpro:'PRO build · 240+ FPS',
 ccShoppcelite:'ELITE build · 360Hz',
 ccShoppc:'New PC', ccShopcoach:'Coach', ccShopcamp:'Bootcamp',
 ccCoachTitle:'Coach', ccCoachHint:'Speeds up the training he is for',
@@ -16297,7 +16298,7 @@ ccShopheadset2:'Audeze Maxwell',
 ccShopSpecheadset2:'Drivers graphène — les pas à deux box, tu survis à ce que tu n’as pas vu',
 ccShopkeyboard:'SteelSeries Apex Pro TKL Gen 3',
 ccShopheadset:'Razer BlackShark V3 Pro',
-ccShoppcbudget:'PC d’entrée de gamme · 144 FPS',ccShopphone:'iPhone 15 Pro Max',ccShopphonebase:'Smartphone Android',ccShopipad:'iPad Pro',ccShopMobFx:n=>'cups mobiles'+(n ? ' · +'+n+' puissance sur mobile' : ''),ccMobTitle:'Classement mobile',ccPlatCal:'Cups au calendrier',ccActmobile:'Entraînement mobile',ccMobSerNeedRound:'passe d’abord une manche de la Mobile Series',ccMobSerNeedHeat:'passe d’abord une heat de la Mobile Series',ccMobSerHeats:'les heats',ccMobSerCup:'la cup',ccNewsMobSer:st=>'Mobile Series : qualifié, ensuite '+st,ccMobShort:'mobile',ccMobPlayer:'Joueur',ccMobRating:'Note',ccMobNoPhone:'Les cups mobiles demandent un téléphone (boutique, Consoles). Le mobile a sa scène et son classement.',ccMobHint:r=>'Scène mobile, '+r+' : joueurs des cups mobiles Epic 2026. Ta note sur téléphone est à part et monte avec les cups mobiles.',ccMobYou:(p,n,r,k)=>'Tu es #'+p+' sur '+n+' · note '+r+' · cups mobiles '+k,ccNeedPhone:'il faut un téléphone',ccShopps5:'PlayStation 5',ccShopxbox:'Xbox Series X',ccShopConsoles:'Consoles et mobile',ccShopConsoleHint:'Accès aux cups console et mobiles. Les consoles n’ajoutent pas de puissance ; le mobile a sa scène et son classement, iPhone et iPad y ajoutent un peu de puissance.',ccShopConsoleFx:'débloque les cups console',ccNeedPs:'il faut une PlayStation',ccNeedXbox:'il faut une Xbox',ccNeedConsole:'il faut une console',
+ccShoppcbudget:'PC d’entrée de gamme · 144 FPS',ccShopphone:'iPhone 18 Pro Max',ccShopphonebase:'Smartphone Android',ccShopipad:'iPad Pro M5',ccShopMobFx:n=>'cups mobiles'+(n ? ' · +'+n+' puissance sur mobile' : ''),ccMobTitle:'Classement mobile',ccPlatCal:'Cups au calendrier',ccActmobile:'Entraînement mobile',ccMobSerNeedRound:'passe d’abord une manche de la Mobile Series',ccMobSerNeedHeat:'passe d’abord une heat de la Mobile Series',ccMobSerHeats:'les heats',ccMobSerCup:'la cup',ccNewsMobSer:st=>'Mobile Series : qualifié, ensuite '+st,ccMobShort:'mobile',ccMobPlayer:'Joueur',ccMobRating:'Note',ccMobNoPhone:'Les cups mobiles demandent un téléphone (boutique, Consoles). Le mobile a sa scène et son classement.',ccMobHint:r=>'Scène mobile, '+r+' : joueurs des cups mobiles Epic 2026. Ta note sur téléphone est à part et monte avec les cups mobiles.',ccMobYou:(p,n,r,k)=>'Tu es #'+p+' sur '+n+' · note '+r+' · cups mobiles '+k,ccNeedPhone:'il faut un téléphone',ccShopps5:'PlayStation 5',ccShopxbox:'Xbox Series X',ccShopConsoles:'Consoles et mobile',ccShopConsoleHint:'Accès aux cups console et mobiles. Un appareil par plateforme, amélioré comme le PC : une console plus récente ajoute un peu de puissance en cups console, un meilleur téléphone ou une tablette en cups mobiles. Le mobile a sa scène et son classement.',ccShopConsoleFx:'débloque les cups console',ccNeedPs:'il faut une PlayStation',ccNeedXbox:'il faut une Xbox',ccNeedConsole:'il faut une console',
 ccShoppcpro:'Configuration PRO · 240+ FPS',
 ccShoppcelite:'Configuration ÉLITE · 360 Hz',
 ccSlotDelete:'Supprimer',
@@ -20284,7 +20285,7 @@ ccShopheadset2:"Audeze Maxwell",
 ccShopSpecheadset2:"Driver in grafene — passi a due case di distanza, sopravvivi a ciò che non hai visto",
 ccShopkeyboard:"SteelSeries Apex Pro TKL Gen 3",
 ccShopheadset:"Razer BlackShark V3 Pro",
-ccShoppcbudget:"PC economico · 144 FPS",ccShopphone:"iPhone 15 Pro Max",ccShopphonebase:"Smartphone Android",ccShopipad:"iPad Pro",ccShopMobFx:n=>"cup mobile"+(n ? " · +"+n+" forza su mobile" : ""),ccMobTitle:"Classifica mobile",ccPlatCal:"Cup nel calendario",ccActmobile:"Allenamento su mobile",ccMobSerNeedRound:"prima supera un round della Mobile Series",ccMobSerNeedHeat:"prima supera una heat della Mobile Series",ccMobSerHeats:"le heat",ccMobSerCup:"la cup",ccNewsMobSer:st=>"Mobile Series: passato, ora "+st,ccMobShort:"mobile",ccMobPlayer:"Giocatore",ccMobRating:"Valutazione",ccMobNoPhone:"Le cup mobile richiedono un telefono (negozio, Console). Il mobile ha la sua scena e la sua classifica.",ccMobHint:r=>"Scena mobile, "+r+": giocatori delle cup mobile Epic 2026. La tua valutazione sul telefono è a parte e sale con le cup mobile.",ccMobYou:(p,n,r,k)=>"Sei #"+p+" su "+n+" · valutazione "+r+" · cup mobile "+k,ccNeedPhone:"serve un telefono",ccShopps5:"PlayStation 5",ccShopxbox:"Xbox Series X",ccShopConsoles:"Console e mobile",ccShopConsoleHint:"Accesso alle cup console e mobile. Le console non danno forza; il mobile ha scena e classifica sue, iPhone e iPad lì aggiungono un po’ di forza.",ccShopConsoleFx:"sblocca le cup console",ccNeedPs:"serve una PlayStation",ccNeedXbox:"serve una Xbox",ccNeedConsole:"serve una console",
+ccShoppcbudget:"PC economico · 144 FPS",ccShopphone:"iPhone 18 Pro Max",ccShopphonebase:"Smartphone Android",ccShopipad:"iPad Pro M5",ccShopMobFx:n=>"cup mobile"+(n ? " · +"+n+" forza su mobile" : ""),ccMobTitle:"Classifica mobile",ccPlatCal:"Cup nel calendario",ccActmobile:"Allenamento su mobile",ccMobSerNeedRound:"prima supera un round della Mobile Series",ccMobSerNeedHeat:"prima supera una heat della Mobile Series",ccMobSerHeats:"le heat",ccMobSerCup:"la cup",ccNewsMobSer:st=>"Mobile Series: passato, ora "+st,ccMobShort:"mobile",ccMobPlayer:"Giocatore",ccMobRating:"Valutazione",ccMobNoPhone:"Le cup mobile richiedono un telefono (negozio, Console). Il mobile ha la sua scena e la sua classifica.",ccMobHint:r=>"Scena mobile, "+r+": giocatori delle cup mobile Epic 2026. La tua valutazione sul telefono è a parte e sale con le cup mobile.",ccMobYou:(p,n,r,k)=>"Sei #"+p+" su "+n+" · valutazione "+r+" · cup mobile "+k,ccNeedPhone:"serve un telefono",ccShopps5:"PlayStation 5",ccShopxbox:"Xbox Series X",ccShopConsoles:"Console e mobile",ccShopConsoleHint:"Accesso alle cup console e mobile. Un dispositivo per piattaforma, si migliora come il PC: una console più nuova dà un po’ di forza nelle cup console, un telefono o tablet migliore nelle cup mobile. Il mobile ha scena e classifica sue.",ccShopConsoleFx:"sblocca le cup console",ccNeedPs:"serve una PlayStation",ccNeedXbox:"serve una Xbox",ccNeedConsole:"serve una console",
 ccShoppcpro:"Build PRO · 240+ FPS",
 ccShoppcelite:"Build ELITE · 360Hz",
 ccShoppc:"PC nuovo",
@@ -22839,7 +22840,7 @@ ccShopheadset2:"Audeze Maxwell",
 ccShopSpecheadset2:"Drivers de grafeno — passos a duas casas de distância, você sobrevive ao que nem viu",
 ccShopkeyboard:"SteelSeries Apex Pro TKL Gen 3",
 ccShopheadset:"Razer BlackShark V3 Pro",
-ccShoppcbudget:"PC básico · 144 FPS",ccShopphone:"iPhone 15 Pro Max",ccShopphonebase:"Celular Android",ccShopipad:"iPad Pro",ccShopMobFx:n=>"cups mobile"+(n ? " · +"+n+" força no mobile" : ""),ccMobTitle:"Ranking mobile",ccPlatCal:"Cups no calendário",ccActmobile:"Treino no celular",ccMobSerNeedRound:"passe antes por uma rodada da Mobile Series",ccMobSerNeedHeat:"passe antes por uma heat da Mobile Series",ccMobSerHeats:"as heats",ccMobSerCup:"a cup",ccNewsMobSer:st=>"Mobile Series: classificado, agora "+st,ccMobShort:"mobile",ccMobPlayer:"Jogador",ccMobRating:"Rating",ccMobNoPhone:"Cups mobile precisam de um celular da loja (Dispositivos, Consoles). O mobile tem cena e ranking próprios.",ccMobHint:r=>"Cena mobile, "+r+": jogadores das cups mobile da Epic em 2026. Seu rating no celular é separado e sobe com as cups mobile.",ccMobYou:(p,n,r,k)=>"Você é #"+p+" de "+n+" · rating "+r+" · cups mobile "+k,ccNeedPhone:"precisa de um celular",ccShopps5:"PlayStation 5",ccShopxbox:"Xbox Series X",ccShopConsoles:"Consoles e mobile",ccShopConsoleHint:"Acesso às cups de console e mobile. Consoles não dão força; o mobile tem cena e ranking próprios, iPhone e iPad dão um pouco de força lá.",ccShopConsoleFx:"libera as cups de console",ccNeedPs:"precisa de um PlayStation",ccNeedXbox:"precisa de um Xbox",ccNeedConsole:"precisa de um console",
+ccShoppcbudget:"PC básico · 144 FPS",ccShopphone:"iPhone 18 Pro Max",ccShopphonebase:"Celular Android",ccShopipad:"iPad Pro M5",ccShopMobFx:n=>"cups mobile"+(n ? " · +"+n+" força no mobile" : ""),ccMobTitle:"Ranking mobile",ccPlatCal:"Cups no calendário",ccActmobile:"Treino no celular",ccMobSerNeedRound:"passe antes por uma rodada da Mobile Series",ccMobSerNeedHeat:"passe antes por uma heat da Mobile Series",ccMobSerHeats:"as heats",ccMobSerCup:"a cup",ccNewsMobSer:st=>"Mobile Series: classificado, agora "+st,ccMobShort:"mobile",ccMobPlayer:"Jogador",ccMobRating:"Rating",ccMobNoPhone:"Cups mobile precisam de um celular da loja (Dispositivos, Consoles). O mobile tem cena e ranking próprios.",ccMobHint:r=>"Cena mobile, "+r+": jogadores das cups mobile da Epic em 2026. Seu rating no celular é separado e sobe com as cups mobile.",ccMobYou:(p,n,r,k)=>"Você é #"+p+" de "+n+" · rating "+r+" · cups mobile "+k,ccNeedPhone:"precisa de um celular",ccShopps5:"PlayStation 5",ccShopxbox:"Xbox Series X",ccShopConsoles:"Consoles e mobile",ccShopConsoleHint:"Acesso às cups de console e mobile. Um aparelho por plataforma, melhora como o PC: um console mais novo dá um pouco de força nas cups de console, um celular ou tablet melhor nas cups mobile. O mobile tem cena e ranking próprios.",ccShopConsoleFx:"libera as cups de console",ccNeedPs:"precisa de um PlayStation",ccNeedXbox:"precisa de um Xbox",ccNeedConsole:"precisa de um console",
 ccShoppcpro:"Build PRO · 240+ FPS",
 ccShoppcelite:"Build ELITE · 360Hz",
 ccShoppc:"PC novo",
@@ -25037,7 +25038,7 @@ ccSecHint_fame:'Ta propre cup, le merch et le caritatif apportent des abonnés. 
 ccSecHint_lux:'La voiture garde ta confiance pendant les mauvaises semaines. Le reste n’ajoute aucun niveau — juste une étagère sur ton profil.',
 ccSecHint_club:'Ta propre organisation : roster, caisse et sponsors. Cher, mais le club est à toi.',
 ccShopRooms:'Pièces et déplacements', ccShopNow:'Actuel', ccShopMaxed:'Au max',
-ccSlot_mouse:'Souris', ccSlot_keyboard:'Clavier', ccSlot_headset:'Casque', ccSlot_monitor:'Écran', ccSlot_pc:'PC', ccSlot_chair:'Chaise', ccSlot_stream:'Stream', ccSlot_car:'Voiture',
+ccSlot_mouse:'Souris', ccSlot_keyboard:'Clavier', ccSlot_headset:'Casque', ccSlot_monitor:'Écran', ccSlot_pc:'PC', ccSlot_ps:'PlayStation', ccSlot_xbox:'Xbox', ccSlot_mobile:'Téléphone ou tablette', ccShopConFx:n=>'+'+n+' puissance sur console', ccSlot_chair:'Chaise', ccSlot_stream:'Stream', ccSlot_car:'Voiture',
 ccShopBest:'Meilleur achat maintenant', ccShopShort:n=>'Il manque '+n, ccShopBought:n=>'Acheté : '+n,
 ccDealsTitle:'Offres du jour', ccDealsHint:'Trois articles en promo. Demain, trois autres.',
 hmContinue:'Continuer', hmContinueSub:'Tes sauvegardes, au jour où tu t’es arrêté.', hmPlayOn:'Jouer', hmSlotCareer:'Carrière', hmSlotMgr:'Manager',
@@ -25067,7 +25068,7 @@ ccSecHint_fame:'La tua cup, il merch e la beneficenza portano follower. Il merch
 ccSecHint_lux:'L’auto tiene alta la fiducia nelle settimane storte. Il resto non dà forza — solo uno scaffale sul profilo.',
 ccSecHint_club:'La tua organizzazione: roster, cassa e sponsor. Costa, ma il club è tuo.',
 ccShopRooms:'Stanze e trasferte', ccShopNow:'Ora', ccShopMaxed:'Al massimo',
-ccSlot_mouse:'Mouse', ccSlot_keyboard:'Tastiera', ccSlot_headset:'Cuffie', ccSlot_monitor:'Monitor', ccSlot_pc:'PC', ccSlot_chair:'Sedia', ccSlot_stream:'Stream', ccSlot_car:'Auto',
+ccSlot_mouse:'Mouse', ccSlot_keyboard:'Tastiera', ccSlot_headset:'Cuffie', ccSlot_monitor:'Monitor', ccSlot_pc:'PC', ccSlot_ps:'PlayStation', ccSlot_xbox:'Xbox', ccSlot_mobile:'Telefono o tablet', ccShopConFx:n=>'+'+n+' potenza su console', ccSlot_chair:'Sedia', ccSlot_stream:'Stream', ccSlot_car:'Auto',
 ccShopBest:'Miglior acquisto adesso', ccShopShort:n=>'Mancano '+n, ccShopBought:n=>'Comprato: '+n,
 ccDealsTitle:'Offerte del giorno', ccDealsHint:'Tre articoli in sconto. Domani, altri tre.',
 hmContinue:'Continua', hmContinueSub:'I tuoi salvataggi, dal giorno in cui ti sei fermato.', hmPlayOn:'Gioca', hmSlotCareer:'Carriera', hmSlotMgr:'Manager',
@@ -25097,7 +25098,7 @@ ccSecHint_fame:'Sua própria cup, o merch e a caridade trazem seguidores. O merc
 ccSecHint_lux:'O carro segura sua confiança nas semanas ruins. O resto não dá força — só uma prateleira no perfil.',
 ccSecHint_club:'Sua própria organização: elenco, caixa e patrocinadores. Caro, mas o clube é seu.',
 ccShopRooms:'Cômodos e viagens', ccShopNow:'Agora', ccShopMaxed:'No máximo',
-ccSlot_mouse:'Mouse', ccSlot_keyboard:'Teclado', ccSlot_headset:'Headset', ccSlot_monitor:'Monitor', ccSlot_pc:'PC', ccSlot_chair:'Cadeira', ccSlot_stream:'Stream', ccSlot_car:'Carro',
+ccSlot_mouse:'Mouse', ccSlot_keyboard:'Teclado', ccSlot_headset:'Headset', ccSlot_monitor:'Monitor', ccSlot_pc:'PC', ccSlot_ps:'PlayStation', ccSlot_xbox:'Xbox', ccSlot_mobile:'Celular ou tablet', ccShopConFx:n=>'+'+n+' de força no console', ccSlot_chair:'Cadeira', ccSlot_stream:'Stream', ccSlot_car:'Carro',
 ccShopBest:'Melhor compra agora', ccShopShort:n=>'Faltam '+n, ccShopBought:n=>'Comprado: '+n,
 ccDealsTitle:'Ofertas do dia', ccDealsHint:'Três itens em promoção. Amanhã, outros três.',
 hmContinue:'Continuar', hmContinueSub:'Seus saves, do dia em que você parou.', hmPlayOn:'Jogar', hmSlotCareer:'Carreira', hmSlotMgr:'Manager',
@@ -151942,16 +151943,20 @@ const CC_SHOP=[
   {id:'pcbudget', cost:500,   train:0.10, img:'pc-budget.jpg', slot:'pc', rank:1, skill:{con:1}},
   {id:'pcpro',    cost:1500,  train:0.20, img:'pc-pro.jpg',    slot:'pc', rank:2, skill:{con:2}},
   {id:'pcelite',  cost:3000,  train:0.30, img:'pc-elite.jpg',  slot:'pc', rank:3, skill:{con:3}},
-  // Консоли: допуск на консольные капы (ccConsoleOk), силы не дают. Фото Wikimedia Commons (авторы: CC_CONSOLE_CREDIT),
-  // квадратные кадры только с устройством: на 54 px витрина и коробка съедали его целиком.
-  {id:'ps5',  cost:500, img:'console-ps5-sq.jpg',  unlock:'ps'},
-  {id:'xbox', cost:500, img:'console-xbox-sq.jpg', unlock:'xbox'},
-  /* Мобильные устройства (его «телефон в магазине или айпад»): любое открывает мобильные капы; mob — сила на мобиле сверх
-     мобильного рейтинга (экран, частота; на планшетах играет большинство мобильных про). Цены магазинные, mob — решение.
-     Фото Wikimedia Commons, CC BY-SA 4.0. */
-  {id:'phonebase', cost:449,  img:'phone-android-sq.jpg', unlock:'mobile', mob:0},
-  {id:'phone',     cost:1199, img:'phone-iphone-sq.jpg',  unlock:'mobile', mob:1},
-  {id:'ipad',      cost:1099, img:'tablet-ipad-sq.jpg',   unlock:'mobile', mob:2},
+  /* Консоли и мобильные — лесенкой, как ПК: одно устройство на платформу, следующая ступень заменяет прежнюю. Любая
+     ступень открывает капы своей платформы (ccConsoleOk); con — сила на консольном вечере, mob — на мобильном (кадры
+     и экран). Цены магазинные, con/mob решение, не замер. Фото Wikimedia Commons (авторы: CC_CONSOLE_CREDIT). */
+  {id:'ps4',     cost:300, img:'console-ps4-sq.jpg',     slot:'ps',   rank:1, unlock:'ps',   con:0},
+  {id:'ps5',     cost:500, img:'console-ps5-sq.jpg',     slot:'ps',   rank:2, unlock:'ps',   con:1},
+  {id:'ps5pro',  cost:700, img:'console-ps5pro-sq.jpg',  slot:'ps',   rank:3, unlock:'ps',   con:2},
+  {id:'xboxone', cost:300, img:'console-xboxone-sq.jpg', slot:'xbox', rank:1, unlock:'xbox', con:0},
+  {id:'xboxs',   cost:380, img:'console-xboxs-sq.jpg',   slot:'xbox', rank:2, unlock:'xbox', con:1},
+  {id:'xbox',    cost:500, img:'console-xbox-sq.jpg',    slot:'xbox', rank:3, unlock:'xbox', con:2},
+  // Мобильные до последних моделей ноября 2026 (цены США): S26 Ultra и iPhone 18 Pro Max по $1299, iPad Pro M5 13" $1499 после июньского подорожания.
+  {id:'phonebase', cost:449,  img:'phone-android-sq.jpg', slot:'mobile', rank:1, unlock:'mobile', mob:0},
+  {id:'s26u',      cost:1299, img:'phone-s26u-sq.jpg',    slot:'mobile', rank:2, unlock:'mobile', mob:1},
+  {id:'phone',     cost:1299, img:'phone-iphone18-sq.jpg', slot:'mobile', rank:3, unlock:'mobile', mob:2},
+  {id:'ipad',      cost:1499, img:'tablet-ipadm5-sq.jpg', slot:'mobile', rank:4, unlock:'mobile', mob:3},
   // Chairs — stamina, from a $20 start to the one people buy with prize money.
   {id:'chair0',   cost:20,    cap:2,  img:'chair-old.jpg',    slot:'chair', rank:1},
   {id:'chair1',   cost:150,   cap:5,  img:'chair-ikea.jpg',   slot:'chair', rank:2},
@@ -152163,8 +152168,8 @@ function careerHireCoach(id, months){
   return true;
 }
 const CC_DEVICE_DIR='devices/';
-// Консоли и мобильные по порядку плитки: PS5, Xbox, Android, iPhone, iPad.
-const CC_CONSOLE_CREDIT='Photos: Osh33m, Soberian (CC BY-SA 4.0), Der. Bellemer (CC BY-SA 4.0), Captainmorlypogi1959 (CC BY-SA 4.0), Ayamano2021 (CC BY 4.0), Wiikiipediia (CC BY-SA 4.0) · Wikimedia Commons';
+// Консоли и мобильные по порядку плитки: PS4 и Xbox One, PS5, PS5 Pro, Series S, Series X, Android, S26 Ultra, iPhone 18 Pro Max, iPad Pro M5.
+const CC_CONSOLE_CREDIT='Photos: Evan-Amos (public domain), Osh33m, Soberian (CC BY-SA 4.0), BeatEmUps (CC BY 3.0), AsmodeanUnderscore (CC BY-SA 4.0), Der. Bellemer (CC BY-SA 4.0), Captainmorlypogi1959 (CC BY-SA 4.0), Kyu3a (CC BY-SA 4.0), 茅野ふたば (CC BY-SA 4.0), P1898 (CC BY 4.0) · Wikimedia Commons';
 // What a slot already holds, by rank: a rig replaces a rig.
 function ccShopSlotRank(slot){
   return CC_SHOP.reduce((r,it)=>(it.slot===slot && careerOwns(it.id) && it.rank>r) ? it.rank : r, 0);
@@ -154849,7 +154854,7 @@ const CC_SHOP_SLOTS=['mouse','keyboard','headset','monitor','pc','chair','stream
 function ccShopSec(k){ CC_SHOP_SEC=k; careerRenderHub('shop'); }
 function ccShopEffect(it){
   if(it.unlock==='mobile') return L().ccShopMobFx(it.mob||0);
-  if(it.unlock) return L().ccShopConsoleFx;
+  if(it.unlock) return L().ccShopConsoleFx+(it.con ? ' · '+L().ccShopConFx(it.con) : '');
   return (it.reach ? L().ccShopReach+' +'+Math.round(it.reach*100)+'%'
         : it.conf ? L().ccShopConf+' +'+it.conf
         : it.cap ? L().ccShopCap+' +'+it.cap
@@ -154911,6 +154916,8 @@ function ccShopLadderHTML(slot, fresh){
         ? '<div class="cc-lad-next">'+esc(T['ccShop'+l.next.id]||l.next.id)+'</div>'+
           '<div class="cc-lad-fx">'+ccShopDeltaHTML(l.next)+'</div>'
         : '<div class="cc-lad-fx">'+esc(ccShopEffect(l.cur))+'</div>')+
+      // Купленная консоль или телефон: галочка «Турниры в календаре» на всю платформу.
+      (l.cur && l.cur.unlock ? '<div class="cc-lad-plat">'+ccPlatCalBtn(ccPlatGroup(l.cur.unlock==='mobile' ? 'mobile' : 'any'))+'</div>' : '')+
     '</div>'+
     '<div class="cc-lad-buy">'+(l.next
       ? '<button class="ch-sign"'+(can?'':' disabled')+' onclick="careerBuy(\''+l.next.id+'\')">$'+ccNum(l.next.cost)+'</button>'+ccShopGiftBtn(l.next, can)
@@ -155035,12 +155042,12 @@ function careerShopHTML(){
   '</div>'+ccDealsHTML()+'</div>';
   let body='';
   if(CC_SHOP_SEC==='gear'){
-    const rooms=CC_SHOP.filter(x=>!x.slot && !x.unlock), consoles=CC_SHOP.filter(x=>x.unlock);
+    const rooms=CC_SHOP.filter(x=>!x.slot && !x.unlock);
     body=ccShopBestHTML()+
       '<div class="ch-tile cc-shop"><h4>'+T.ccSecGear+'</h4><div class="cc-lads">'+
       CC_SHOP_SLOTS.map(s=>ccShopLadderHTML(s, fresh)).join('')+'</div></div>'+
       '<div class="ch-tile cc-shop"><h4>'+T.ccShopRooms+'</h4><div class="cc-buys">'+rooms.map(it=>ccShopRowHTML(it, fresh)).join('')+'</div></div>'+
-      '<div class="ch-tile cc-shop"><h4>'+T.ccShopConsoles+'</h4><div class="ch-hint">'+esc(T.ccShopConsoleHint)+'</div><div class="cc-buys">'+consoles.map(it=>ccShopRowHTML(it, fresh)).join('')+'</div>'+
+      '<div class="ch-tile cc-shop"><h4>'+T.ccShopConsoles+'</h4><div class="ch-hint">'+esc(T.ccShopConsoleHint)+'</div><div class="cc-lads">'+['ps','xbox','mobile'].map(s=>ccShopLadderHTML(s, fresh)).join('')+'</div>'+
         '<div class="cc-photo-credit">'+CC_CONSOLE_CREDIT+'</div></div>'+
       careerCheatHTML();
   } else if(CC_SHOP_SEC==='home') body=careerFlatHTML()+careerMoveHTML();
@@ -156214,9 +156221,14 @@ function ccConsoleOk(ev){
   const n=ccConsoleNeed(ev); if(!n) return true;
   try{
     if(n==='mobile') return ccMobileOwn();
-    const ps=careerOwns('ps5'), xb=careerOwns('xbox');
+    const ps=ccShopSlotRank('ps')>0, xb=ccShopSlotRank('xbox')>0;
     return n==='ps' ? ps : n==='xbox' ? xb : (ps || xb);
   }catch(e){ return true; }
+}
+// Сила купленной консоли на консольном вечере: лучшая из подходящих платформ (на «any» — любая из двух).
+function ccConsoleDevBonus(n){
+  const best=s=>CC_SHOP.reduce((v,x)=>(x.slot===s && careerOwns(x.id)) ? Math.max(v, x.con||0) : v, 0);
+  return n==='ps' ? best('ps') : n==='xbox' ? best('xbox') : n==='any' ? Math.max(best('ps'), best('xbox')) : 0;
 }
 function ccConsoleWhy(ev){ const n=ccConsoleNeed(ev), T=L(); if(!ccMobSeriesOk(ev)) return ev.series==='heats' ? T.ccMobSerNeedRound : T.ccMobSerNeedHeat; return n==='mobile' ? T.ccNeedPhone : n==='ps' ? T.ccNeedPs : n==='xbox' ? T.ccNeedXbox : T.ccNeedConsole; }
 /* МОБИЛЬНЫЙ РЕЙТИНГ (его слово 14.11: «у мобил свои игроки, сделать рейтинг нужно»): свой у игрока, отдельно от ПК. Старт —
@@ -160875,7 +160887,7 @@ function ccNextYearEvents(){
   const mp=typeof ccMpOn==='function' && ccMpOn();
   return CC_NEXT_YEAR_EVENTS.filter(v=>!(mp && v.fight));
 }
-function ccVictoryListKey(){ let cn=''; try{ cn=(careerOwns('ps5')?'p':'')+(careerOwns('xbox')?'x':'')+(ccMobileOwn()?'m':''); const ms=CAREER && CAREER.career && CAREER.career.mobSer; if(ms) cn+='|'+ms.next+ms.until; cn+='|'+(ccPlatCalOn('console')?1:0)+(ccPlatCalOn('mobile')?1:0); }catch(e){}
+function ccVictoryListKey(){ let cn=''; try{ cn=(ccShopSlotRank('ps')?'p':'')+(ccShopSlotRank('xbox')?'x':'')+(ccMobileOwn()?'m':''); const ms=CAREER && CAREER.career && CAREER.career.mobSer; if(ms) cn+='|'+ms.next+ms.until; cn+='|'+(ccPlatCalOn('console')?1:0)+(ccPlatCalOn('mobile')?1:0); }catch(e){}
   return ccCalYear()+'|'+ccYearShift()+'|'+((typeof ccMpOn==='function' && ccMpOn()) ? 1 : 0)+'|'+ccOwnCupsVer()+'|'+cn; }
 /* Остальные денежные капы года — всё, что в архиве Tracker платило деньгами (ecomm в
    PayoutTable) и не вошло выше: DreamHack Online Open, Winter Royale, капы стримеров и
@@ -168985,6 +168997,7 @@ async function runCareerVictoryNight(){
   // Мобильный вечер — сила только от мобильного рейтинга (ccMobileSelfPow), ПК-рейтинг, девайсы и бонусы ПК не участвуют.
   // До штрафа выезда: пинг на чужом сервере и на мобиле тот же.
   if(ccConsoleNeed(ev)==='mobile') you.pow=ccMobileSelfPow();
+  else if(ccConsoleNeed(ev)) you.pow+=ccConsoleDevBonus(ccConsoleNeed(ev));
   if(CC_AWAY) you.pow=Math.max(1, Math.round(you.pow-CC_AWAY.pen));   // чужой сервер: пинг (ccAwayPen)
   const humans=soloMate ? (hKey(me)<hKey(pc) ? [you, soloMate] : [soloMate, you]) : [you];
   /* Офлайн-турнир по приглашению (ev.invite — сколько человек там играло): одна комната
