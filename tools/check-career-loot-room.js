@@ -31,6 +31,8 @@ window.addEventListener("load", function(){ setTimeout(async function(){
     out.notes.inv=inv;
     // Выбросить первый слот и взять с земли.
     const n0=qa('.lr-g').length; q('.lr-slot[data-d="0.0"]').click();
+    check('первый тап выбирает слот', !!q('.lr-slot.sel[data-d="0.0"]') && !!q('.lr-selhint'));
+    q('.lr-slot[data-d="0.0"]').click();
     check('выброшенное легло на землю', qa('.lr-g').length>=n0 && qa('.lr-slot[data-d]').length<=4);
     q('.lr-g[data-g="0"]').click();
     check('взял с земли', qa('.lr-slot[data-d]').length>=1);
@@ -39,7 +41,7 @@ window.addEventListener("load", function(){ setTimeout(async function(){
     // Предметов столько, сколько выпало: «Собрать лучшее» и перекладывание ничего не множат.
     const total=()=>qa('.lr-slot[data-d], .lr-g').reduce((s,b)=>{ const e=b.querySelector('em'); return s+(e ? +e.textContent.replace(/\\D/g,'') : 1); }, 0);
     const t0=total();
-    for(let k=0;k<6;k++){ q('[data-a="auto"]').click(); if(q('.lr-g')) q('.lr-g').click(); if(q('.lr-slot[data-d="0.0"]')) q('.lr-slot[data-d="0.0"]').click(); }
+    for(let k=0;k<6;k++){ q('[data-a="auto"]').click(); if(q('.lr-g')) q('.lr-g').click(); if(q('.lr-slot[data-d="0.0"]')){ q('.lr-slot[data-d="0.0"]').click(); q('.lr-slot[data-d="0.0"]').click(); } }
     q('[data-a="auto"]').click();
     check('предметы не множатся', total()===t0, t0+' → '+total());
     q('[data-a="go"]').click();
@@ -98,6 +100,18 @@ window.addEventListener("load", function(){ setTimeout(async function(){
         check('в хотбаре нет двух слотов одного предмета (две пиццы)', !dup.length, dup.map(d=>d.join(', ')).join(' | ')); }
       const before=t4(); document.querySelector('[data-a="auto"]').click();
       check('дуо: «Поделить» ничего не множит', t4()===before, before+' → '+t4());
+      // После «Поделить» свободных слотов нет, пока на земле есть что взять (Notion 15.11).
+      { const hb=[...document.querySelectorAll('.lr-hb')].map(h=>h.querySelectorAll('.lr-slot[data-d]').length), takeable=[...document.querySelectorAll('.lr-g')].length;
+        check('дуо: «Поделить» добирает свободные слоты с земли', hb.every(n=>n===5) || takeable===0 || hb.every(n=>n>=4), hb.join(' ')+', на земле '+takeable); }
+      // Переложить: мой слот 0 → пустой или занятый слот напарника; предметы не множатся, у напарника появился мой.
+      { const before2=t4(), nm=document.querySelector('.lr-slot[data-d="0.0"] small').textContent;
+        document.querySelector('.lr-slot[data-d="0.0"]').click();
+        const dst=document.querySelectorAll('.lr-hb')[1].querySelector('.lr-slot.empty[data-e]') || document.querySelectorAll('.lr-hb')[1].querySelector('.lr-slot[data-d]');
+        dst.click();
+        const mate=[...document.querySelectorAll('.lr-hb')[1].querySelectorAll('.lr-slot[data-d] small')].map(x=>x.textContent);
+        check('дуо: предмет переложен напарнику', mate.indexOf(nm)>=0 || !!document.querySelector('.lr-warn'), nm+' → '+mate.join(', '));
+        check('дуо: перекладывание ничего не множит', t4()===before2, before2+' → '+t4());
+        check('после перекладывания выбор снят', !document.querySelector('.lr-slot.sel')); }
       check('стаки на земле не выше потолка вики', [...document.querySelectorAll('.lr-g')].every(b=>{ const e=b.querySelector('em'); const n=e ? +e.textContent.replace(/\\D/g,'') : 1; const nm=b.getAttribute('aria-label')||''; return n<=ccHealOf({name:nm}).stack || !CC_HEAL_KIT[nm]; }), [...document.querySelectorAll('.lr-g')].map(b=>(b.getAttribute('aria-label')||'')+':'+((b.querySelector('em')||{}).textContent||1)).join(', '));
       check('на весь экран', !!document.querySelector('.cc-loot.lr-full .lr-map .lr-hud-b .lr-btns'));
       const w0=document.querySelectorAll('.lr-hb')[0].querySelectorAll('.lr-slot[data-d]').length, w1=document.querySelectorAll('.lr-hb')[1].querySelectorAll('.lr-slot[data-d]').length;
