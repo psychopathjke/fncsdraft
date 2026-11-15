@@ -151942,15 +151942,16 @@ const CC_SHOP=[
   {id:'pcbudget', cost:500,   train:0.10, img:'pc-budget.jpg', slot:'pc', rank:1, skill:{con:1}},
   {id:'pcpro',    cost:1500,  train:0.20, img:'pc-pro.jpg',    slot:'pc', rank:2, skill:{con:2}},
   {id:'pcelite',  cost:3000,  train:0.30, img:'pc-elite.jpg',  slot:'pc', rank:3, skill:{con:3}},
-  // Консоли: допуск на консольные капы (ccConsoleOk), силы не дают. Фото Wikimedia Commons, CC BY-SA 4.0.
-  {id:'ps5',  cost:500, img:'console-ps5.png',  unlock:'ps'},
-  {id:'xbox', cost:500, img:'console-xbox.jpg', unlock:'xbox'},
+  // Консоли: допуск на консольные капы (ccConsoleOk), силы не дают. Фото Wikimedia Commons (авторы: CC_CONSOLE_CREDIT),
+  // квадратные кадры только с устройством: на 54 px витрина и коробка съедали его целиком.
+  {id:'ps5',  cost:500, img:'console-ps5-sq.jpg',  unlock:'ps'},
+  {id:'xbox', cost:500, img:'console-xbox-sq.jpg', unlock:'xbox'},
   /* Мобильные устройства (его «телефон в магазине или айпад»): любое открывает мобильные капы; mob — сила на мобиле сверх
      мобильного рейтинга (экран, частота; на планшетах играет большинство мобильных про). Цены магазинные, mob — решение.
      Фото Wikimedia Commons, CC BY-SA 4.0. */
-  {id:'phonebase', cost:449,  img:'phone-android.jpg', unlock:'mobile', mob:0},
-  {id:'phone',     cost:1199, img:'phone-mobile.jpg',  unlock:'mobile', mob:1},
-  {id:'ipad',      cost:1099, img:'tablet-ipad.jpg',   unlock:'mobile', mob:2},
+  {id:'phonebase', cost:449,  img:'phone-android-sq.jpg', unlock:'mobile', mob:0},
+  {id:'phone',     cost:1199, img:'phone-iphone-sq.jpg',  unlock:'mobile', mob:1},
+  {id:'ipad',      cost:1099, img:'tablet-ipad-sq.jpg',   unlock:'mobile', mob:2},
   // Chairs — stamina, from a $20 start to the one people buy with prize money.
   {id:'chair0',   cost:20,    cap:2,  img:'chair-old.jpg',    slot:'chair', rank:1},
   {id:'chair1',   cost:150,   cap:5,  img:'chair-ikea.jpg',   slot:'chair', rank:2},
@@ -152162,6 +152163,8 @@ function careerHireCoach(id, months){
   return true;
 }
 const CC_DEVICE_DIR='devices/';
+// Консоли и мобильные по порядку плитки: PS5, Xbox, Android, iPhone, iPad.
+const CC_CONSOLE_CREDIT='Photos: Osh33m, Soberian (CC BY-SA 4.0), Der. Bellemer (CC BY-SA 4.0), Captainmorlypogi1959 (CC BY-SA 4.0), Ayamano2021 (CC BY 4.0), Wiikiipediia (CC BY-SA 4.0) · Wikimedia Commons';
 // What a slot already holds, by rank: a rig replaces a rig.
 function ccShopSlotRank(slot){
   return CC_SHOP.reduce((r,it)=>(it.slot===slot && careerOwns(it.id) && it.rank>r) ? it.rank : r, 0);
@@ -155037,7 +155040,8 @@ function careerShopHTML(){
       '<div class="ch-tile cc-shop"><h4>'+T.ccSecGear+'</h4><div class="cc-lads">'+
       CC_SHOP_SLOTS.map(s=>ccShopLadderHTML(s, fresh)).join('')+'</div></div>'+
       '<div class="ch-tile cc-shop"><h4>'+T.ccShopRooms+'</h4><div class="cc-buys">'+rooms.map(it=>ccShopRowHTML(it, fresh)).join('')+'</div></div>'+
-      '<div class="ch-tile cc-shop"><h4>'+T.ccShopConsoles+'</h4><div class="ch-hint">'+esc(T.ccShopConsoleHint)+'</div><div class="cc-buys">'+consoles.map(it=>ccShopRowHTML(it, fresh)).join('')+'</div></div>'+
+      '<div class="ch-tile cc-shop"><h4>'+T.ccShopConsoles+'</h4><div class="ch-hint">'+esc(T.ccShopConsoleHint)+'</div><div class="cc-buys">'+consoles.map(it=>ccShopRowHTML(it, fresh)).join('')+'</div>'+
+        '<div class="cc-photo-credit">'+CC_CONSOLE_CREDIT+'</div></div>'+
       careerCheatHTML();
   } else if(CC_SHOP_SEC==='home') body=careerFlatHTML()+careerMoveHTML();
   else if(CC_SHOP_SEC==='fame') body=careerOwnCupHTML()+careerMerchHTML()+careerCharityHTML();
