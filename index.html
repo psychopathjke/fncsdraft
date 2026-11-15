@@ -113884,6 +113884,11 @@ function ccKeyBoost(t){ return t && t._keyLoot ? 1 + t._keyLoot * Math.min(CC_KE
 function resolveDuel(a, b, exponent){
   const wa = Math.pow(Math.max(a._pc * ccKeyBoost(a), 1), exponent);
   const wb = Math.pow(Math.max(b._pc * ccKeyBoost(b), 1), exponent);
+  /* Пинг людей и в дуэлях движка после высадки (его «пинг пусть зависит в мид гейме в файтах»): замер 15.11 показал, что
+     поправка только в окнах (ccFightApply, высота) тонет в шуме — основные файты середины решает движок здесь. */
+  const tA = typeof ccPingFightTilt==='function' ? ccPingFightTilt(ccPingFightMs(a)) : 0;
+  const tB = typeof ccPingFightTilt==='function' ? ccPingFightTilt(ccPingFightMs(b)) : 0;
+  if(tA || tB) return Math.random() < clamp(wa/(wa+wb)+tA-tB, 0.02, 0.98) ? a : b;
   return Math.random() * (wa + wb) < wa ? a : b;
 }
 
@@ -115190,9 +115195,12 @@ function ccLootUpgrade(you, foe){
    файт»). Пинг игрока против обычного пинга лобби на своём сервере (CC_PING_LOBBY): лучше — чуть чаще выигрывает файт и
    забирает высоту, хуже (далеко живёт, выезд на чужой сервер) — заметно чаще проигрывает. Вниз сильнее, чем вверх: хороший
    пинг у про норма, плохой — беда. Только людям (боты играют на своём сервере). Числа — решение, не замер. */
-const CC_PING_LOBBY=25, CC_PING_FIGHT_SPAN=250, CC_PING_FIGHT_UP=0.04, CC_PING_FIGHT_DOWN=0.12, CC_PING_HG=40;
+let CC_PING_LOBBY=25, CC_PING_FIGHT_SPAN=250, CC_PING_FIGHT_UP=0.04, CC_PING_FIGHT_DOWN=0.12, CC_PING_HG=40;
 function ccPingFightMs(you){
   if(!you || !(you.isYou || you.isMate)) return null;
+  /* В команде и гонке нельзя: каждый клиент знает только свой пинг и дал бы его обоим отрядам — игры разошлись бы
+     (локстеп). Пока пинг каждого не едет по проводу, в общих вечерах поправки нет. */
+  try{ if((typeof ccMpOn==='function' && ccMpOn()) || (typeof ccRaceOn==='function' && ccRaceOn())) return null; }catch(e){}
   try{ const ms=ccPingNow(); return ms==null || ms==='' ? null : Number(ms); }catch(e){ return null; }
 }
 function ccPingFightTilt(ms){
