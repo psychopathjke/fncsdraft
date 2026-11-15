@@ -6156,6 +6156,8 @@
   .cc-awayb:disabled{opacity:.45;cursor:default;}
   .cc-away-card{margin:10px 0 2px;}
   .cc-lad-plat{margin-top:6px;}
+  .cc-mob-now{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin:4px 0 10px;font-size:13px;}
+  .cc-mob-now b{color:var(--fn-yellow,#ffe600);font-size:15px;}
   .cc-platcal{display:inline-flex;align-items:center;gap:6px;padding:7px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.3);background:transparent;color:#cfe0ff;font:inherit;font-size:11.5px;font-weight:800;cursor:pointer;white-space:nowrap;}
   .cc-platcal i{width:16px;height:16px;border-radius:4px;border:1.5px solid rgba(255,255,255,.55);display:inline-flex;align-items:center;justify-content:center;font-style:normal;font-size:11px;line-height:1;}
   .cc-platcal.on{border-color:#ffdd00;color:#fff;}
@@ -12450,7 +12452,7 @@ ccSlot_mouse:'Мышь',
 ccSlot_keyboard:'Клавиатура',
 ccSlot_headset:'Наушники',
 ccSlot_monitor:'Монитор',
-ccSlot_pc:'Компьютер', ccSlot_ps:'PlayStation', ccSlot_xbox:'Xbox', ccSlot_mobile:'Телефон или планшет', ccShopConFx:n=>'+'+n+' силы на консоли',
+ccSlot_pc:'Компьютер', ccSlot_ps:'PlayStation', ccSlot_xbox:'Xbox', ccSlot_android:'Android', ccSlot_ios:'iPhone и iPad', ccMobOpen:'Таблица рейтинга', ccShopConFx:n=>'+'+n+' силы на консоли',
 ccSlot_chair:'Кресло',
 ccSlot_stream:'Стрим',
 ccSlot_car:'Машина',
@@ -14579,7 +14581,7 @@ ccSlot_mouse:'Mouse',
 ccSlot_keyboard:'Keyboard',
 ccSlot_headset:'Headset',
 ccSlot_monitor:'Monitor',
-ccSlot_pc:'PC', ccSlot_ps:'PlayStation', ccSlot_xbox:'Xbox', ccSlot_mobile:'Phone or tablet', ccShopConFx:n=>'+'+n+' power on console', ccShopps4:'PlayStation 4', ccShopps5pro:'PlayStation 5 Pro', ccShopxboxone:'Xbox One', ccShopxboxs:'Xbox Series S', ccShops26u:'Galaxy S26 Ultra',
+ccSlot_pc:'PC', ccSlot_ps:'PlayStation', ccSlot_xbox:'Xbox', ccSlot_android:'Android', ccSlot_ios:'iPhone and iPad', ccMobOpen:'Rating table', ccShopConFx:n=>'+'+n+' power on console', ccShopps4:'PlayStation 4', ccShopps5pro:'PlayStation 5 Pro', ccShopxboxone:'Xbox One', ccShopxboxs:'Xbox Series S', ccShops26u:'Galaxy S26 Ultra',
 ccSlot_chair:'Chair',
 ccSlot_stream:'Stream',
 ccSlot_car:'Car',
@@ -25038,7 +25040,7 @@ ccSecHint_fame:'Ta propre cup, le merch et le caritatif apportent des abonnés. 
 ccSecHint_lux:'La voiture garde ta confiance pendant les mauvaises semaines. Le reste n’ajoute aucun niveau — juste une étagère sur ton profil.',
 ccSecHint_club:'Ta propre organisation : roster, caisse et sponsors. Cher, mais le club est à toi.',
 ccShopRooms:'Pièces et déplacements', ccShopNow:'Actuel', ccShopMaxed:'Au max',
-ccSlot_mouse:'Souris', ccSlot_keyboard:'Clavier', ccSlot_headset:'Casque', ccSlot_monitor:'Écran', ccSlot_pc:'PC', ccSlot_ps:'PlayStation', ccSlot_xbox:'Xbox', ccSlot_mobile:'Téléphone ou tablette', ccShopConFx:n=>'+'+n+' puissance sur console', ccSlot_chair:'Chaise', ccSlot_stream:'Stream', ccSlot_car:'Voiture',
+ccSlot_mouse:'Souris', ccSlot_keyboard:'Clavier', ccSlot_headset:'Casque', ccSlot_monitor:'Écran', ccSlot_pc:'PC', ccSlot_ps:'PlayStation', ccSlot_xbox:'Xbox', ccSlot_android:'Android', ccSlot_ios:'iPhone et iPad', ccMobOpen:'Classement', ccShopConFx:n=>'+'+n+' puissance sur console', ccSlot_chair:'Chaise', ccSlot_stream:'Stream', ccSlot_car:'Voiture',
 ccShopBest:'Meilleur achat maintenant', ccShopShort:n=>'Il manque '+n, ccShopBought:n=>'Acheté : '+n,
 ccDealsTitle:'Offres du jour', ccDealsHint:'Trois articles en promo. Demain, trois autres.',
 hmContinue:'Continuer', hmContinueSub:'Tes sauvegardes, au jour où tu t’es arrêté.', hmPlayOn:'Jouer', hmSlotCareer:'Carrière', hmSlotMgr:'Manager',
@@ -25068,7 +25070,7 @@ ccSecHint_fame:'La tua cup, il merch e la beneficenza portano follower. Il merch
 ccSecHint_lux:'L’auto tiene alta la fiducia nelle settimane storte. Il resto non dà forza — solo uno scaffale sul profilo.',
 ccSecHint_club:'La tua organizzazione: roster, cassa e sponsor. Costa, ma il club è tuo.',
 ccShopRooms:'Stanze e trasferte', ccShopNow:'Ora', ccShopMaxed:'Al massimo',
-ccSlot_mouse:'Mouse', ccSlot_keyboard:'Tastiera', ccSlot_headset:'Cuffie', ccSlot_monitor:'Monitor', ccSlot_pc:'PC', ccSlot_ps:'PlayStation', ccSlot_xbox:'Xbox', ccSlot_mobile:'Telefono o tablet', ccShopConFx:n=>'+'+n+' potenza su console', ccSlot_chair:'Sedia', ccSlot_stream:'Stream', ccSlot_car:'Auto',
+ccSlot_mouse:'Mouse', ccSlot_keyboard:'Tastiera', ccSlot_headset:'Cuffie', ccSlot_monitor:'Monitor', ccSlot_pc:'PC', ccSlot_ps:'PlayStation', ccSlot_xbox:'Xbox', ccSlot_android:'Android', ccSlot_ios:'iPhone e iPad', ccMobOpen:'Classifica', ccShopConFx:n=>'+'+n+' potenza su console', ccSlot_chair:'Sedia', ccSlot_stream:'Stream', ccSlot_car:'Auto',
 ccShopBest:'Miglior acquisto adesso', ccShopShort:n=>'Mancano '+n, ccShopBought:n=>'Comprato: '+n,
 ccDealsTitle:'Offerte del giorno', ccDealsHint:'Tre articoli in sconto. Domani, altri tre.',
 hmContinue:'Continua', hmContinueSub:'I tuoi salvataggi, dal giorno in cui ti sei fermato.', hmPlayOn:'Gioca', hmSlotCareer:'Carriera', hmSlotMgr:'Manager',
@@ -25098,7 +25100,7 @@ ccSecHint_fame:'Sua própria cup, o merch e a caridade trazem seguidores. O merc
 ccSecHint_lux:'O carro segura sua confiança nas semanas ruins. O resto não dá força — só uma prateleira no perfil.',
 ccSecHint_club:'Sua própria organização: elenco, caixa e patrocinadores. Caro, mas o clube é seu.',
 ccShopRooms:'Cômodos e viagens', ccShopNow:'Agora', ccShopMaxed:'No máximo',
-ccSlot_mouse:'Mouse', ccSlot_keyboard:'Teclado', ccSlot_headset:'Headset', ccSlot_monitor:'Monitor', ccSlot_pc:'PC', ccSlot_ps:'PlayStation', ccSlot_xbox:'Xbox', ccSlot_mobile:'Celular ou tablet', ccShopConFx:n=>'+'+n+' de força no console', ccSlot_chair:'Cadeira', ccSlot_stream:'Stream', ccSlot_car:'Carro',
+ccSlot_mouse:'Mouse', ccSlot_keyboard:'Teclado', ccSlot_headset:'Headset', ccSlot_monitor:'Monitor', ccSlot_pc:'PC', ccSlot_ps:'PlayStation', ccSlot_xbox:'Xbox', ccSlot_android:'Android', ccSlot_ios:'iPhone e iPad', ccMobOpen:'Ranking', ccShopConFx:n=>'+'+n+' de força no console', ccSlot_chair:'Cadeira', ccSlot_stream:'Stream', ccSlot_car:'Carro',
 ccShopBest:'Melhor compra agora', ccShopShort:n=>'Faltam '+n, ccShopBought:n=>'Comprado: '+n,
 ccDealsTitle:'Ofertas do dia', ccDealsHint:'Três itens em promoção. Amanhã, outros três.',
 hmContinue:'Continuar', hmContinueSub:'Seus saves, do dia em que você parou.', hmPlayOn:'Jogar', hmSlotCareer:'Carreira', hmSlotMgr:'Manager',
@@ -151952,11 +151954,13 @@ const CC_SHOP=[
   {id:'xboxone', cost:300, img:'console-xboxone-sq.jpg', slot:'xbox', rank:1, unlock:'xbox', con:0},
   {id:'xboxs',   cost:380, img:'console-xboxs-sq.jpg',   slot:'xbox', rank:2, unlock:'xbox', con:1},
   {id:'xbox',    cost:500, img:'console-xbox-sq.jpg',    slot:'xbox', rank:3, unlock:'xbox', con:2},
-  // Мобильные до последних моделей ноября 2026 (цены США): S26 Ultra и iPhone 18 Pro Max по $1299, iPad Pro M5 13" $1499 после июньского подорожания.
-  {id:'phonebase', cost:449,  img:'phone-android-sq.jpg', slot:'mobile', rank:1, unlock:'mobile', mob:0},
-  {id:'s26u',      cost:1299, img:'phone-s26u-sq.jpg',    slot:'mobile', rank:2, unlock:'mobile', mob:1},
-  {id:'phone',     cost:1299, img:'phone-iphone18-sq.jpg', slot:'mobile', rank:3, unlock:'mobile', mob:2},
-  {id:'ipad',      cost:1499, img:'tablet-ipadm5-sq.jpg', slot:'mobile', rank:4, unlock:'mobile', mob:3},
+  /* Мобильные двумя ветками, как PlayStation и Xbox (его «разделение андроид или айфон»): любая открывает мобильные капы,
+     сила на мобиле — лучшая из купленных (ccMobileDevBonus). Последние модели ноября 2026, цены США: S26 Ultra и
+     iPhone 18 Pro Max по $1299, iPad Pro M5 13" $1499 после июньского подорожания. */
+  {id:'phonebase', cost:449,  img:'phone-android-sq.jpg',  slot:'android', rank:1, unlock:'mobile', mob:0},
+  {id:'s26u',      cost:1299, img:'phone-s26u-sq.jpg',     slot:'android', rank:2, unlock:'mobile', mob:2},
+  {id:'phone',     cost:1299, img:'phone-iphone18-sq.jpg', slot:'ios',     rank:1, unlock:'mobile', mob:2},
+  {id:'ipad',      cost:1499, img:'tablet-ipadm5-sq.jpg',  slot:'ios',     rank:2, unlock:'mobile', mob:3},
   // Chairs — stamina, from a $20 start to the one people buy with prize money.
   {id:'chair0',   cost:20,    cap:2,  img:'chair-old.jpg',    slot:'chair', rank:1},
   {id:'chair1',   cost:150,   cap:5,  img:'chair-ikea.jpg',   slot:'chair', rank:2},
@@ -155047,7 +155051,7 @@ function careerShopHTML(){
       '<div class="ch-tile cc-shop"><h4>'+T.ccSecGear+'</h4><div class="cc-lads">'+
       CC_SHOP_SLOTS.map(s=>ccShopLadderHTML(s, fresh)).join('')+'</div></div>'+
       '<div class="ch-tile cc-shop"><h4>'+T.ccShopRooms+'</h4><div class="cc-buys">'+rooms.map(it=>ccShopRowHTML(it, fresh)).join('')+'</div></div>'+
-      '<div class="ch-tile cc-shop"><h4>'+T.ccShopConsoles+'</h4><div class="ch-hint">'+esc(T.ccShopConsoleHint)+'</div><div class="cc-lads">'+['ps','xbox','mobile'].map(s=>ccShopLadderHTML(s, fresh)).join('')+'</div>'+
+      '<div class="ch-tile cc-shop"><h4>'+T.ccShopConsoles+'</h4><div class="ch-hint">'+esc(T.ccShopConsoleHint)+'</div>'+ccMobRateLineHTML()+'<div class="cc-lads">'+['ps','xbox','android','ios'].map(s=>ccShopLadderHTML(s, fresh)).join('')+'</div>'+
         '<div class="cc-photo-credit">'+CC_CONSOLE_CREDIT+'</div></div>'+
       careerCheatHTML();
   } else if(CC_SHOP_SEC==='home') body=careerFlatHTML()+careerMoveHTML();
@@ -178096,6 +178100,18 @@ function careerMobileRows(){
 }
 // Флаг по двухбуквенному коду (мобильная сцена хранит коды, не названия); нет файла — флаг просто пропадает.
 function ccIsoFlag(c){ return /^[a-z]{2}$/.test(String(c||'')) ? '<img src="flags/w40/'+c+'.png" alt="" width="20" height="15" style="vertical-align:-2px;border-radius:2px;margin-right:4px;" onerror="this.remove()">' : ''; }
+/* Мобильный рейтинг виден из магазина (его «а где рейтинг мобилы посмотреть?»): плитка жила внизу «Таблицы», под ПР.
+   Строка в плитке консолей и мобильных ведёт прямо к ней. */
+function ccMobRateLineHTML(){
+  const T=L(), cr=CAREER.career;
+  if(!(ccMobileOwn() || (cr.mobN||0)>0)) return '';
+  return '<div class="cc-mob-now"><span>'+esc(T.ccMobTitle)+': <b>'+(Math.round(ccMobileOvr()*10)/10)+'</b></span>'+
+    '<button type="button" class="cc-platcal" onclick="ccGoMobRating()">'+esc(T.ccMobOpen)+'</button></div>';
+}
+function ccGoMobRating(){
+  careerTab('table');
+  try{ const el=document.getElementById('ccMobTile'); if(el) el.scrollIntoView({block:'start', behavior:'smooth'}); }catch(e){}
+}
 function careerMobileHTML(){
   const T=L(), cr=CAREER.career;
   const has=ccMobileOwn() || (cr.mobN||0)>0;
@@ -178105,7 +178121,7 @@ function careerMobileHTML(){
     '<td class="cm-usd">'+(Math.round(r.r*10)/10)+'</td></tr>';
   const top=rows.slice(0, 30).map((r,i)=>line(r, i+1)).join('');
   const below=mine>30 ? line(rows[mine-1], mine) : '';
-  return '<div class="ch-tile"><h4>'+esc(T.ccMobTitle)+'</h4>'+
+  return '<div class="ch-tile" id="ccMobTile"><h4>'+esc(T.ccMobTitle)+'</h4>'+
     '<div class="ch-hint">'+esc(T.ccMobHint(regionName(ccCareerRegion())))+'</div>'+
     '<table class="ct cm"><thead><tr><th>#</th><th>'+esc(T.ccMobPlayer)+'</th><th class="cm-usd">'+esc(T.ccMobRating)+'</th></tr></thead>'+
     '<tbody>'+top+below+'</tbody></table>'+
