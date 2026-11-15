@@ -5579,7 +5579,7 @@
   .cc-lad.max{background:rgba(0,176,144,.05);}
   .cc-lad-img{flex:0 0 auto;width:64px;height:64px;object-fit:contain;border-radius:8px;background:#f2f4f8;padding:4px;}
   .cc-lad-img.wide{width:88px;object-fit:cover;padding:0;background:#0b0f12;}
-  .cc-lad-img[src*="-sq.jpg"]{padding:0;background:#fff;}
+  .cc-lad-img[src*="-shop.jpg"]{padding:0;background:#fff;}
   .cc-lad-in{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:2px;}
   .cc-lad-top{display:flex;align-items:center;justify-content:space-between;gap:8px;}
   .cc-lad-top b{font-family:'Oswald','Arial Narrow',Impact,sans-serif;font-weight:600;font-size:16px;color:#fff;letter-spacing:.02em;}
@@ -152037,22 +152037,22 @@ const CC_SHOP=[
   /* Консоли и мобильные — лесенкой, как ПК: одно устройство на платформу, следующая ступень заменяет прежнюю. Любая
      ступень открывает капы своей платформы (ccConsoleOk); con — сила на консольном вечере, mob — на мобильном (кадры
      и экран). Цены магазинные, con/mob решение, не замер. Фото с сайтов производителей. */
-  {id:'ps4',     cost:300, img:'console-ps4-sq.jpg',     slot:'ps',   rank:1, unlock:'ps',   con:0},
-  {id:'ps5',     cost:500, img:'console-ps5-sq.jpg',     slot:'ps',   rank:2, unlock:'ps',   con:1},
-  {id:'ps5pro',  cost:700, img:'console-ps5pro-sq.jpg',  slot:'ps',   rank:3, unlock:'ps',   con:2},
-  {id:'xboxone', cost:300, img:'console-xboxone-sq.jpg', slot:'xbox', rank:1, unlock:'xbox', con:0},
-  {id:'xboxs',   cost:380, img:'console-xboxs-sq.jpg',   slot:'xbox', rank:2, unlock:'xbox', con:1},
-  {id:'xbox',    cost:500, img:'console-xbox-sq.jpg',    slot:'xbox', rank:3, unlock:'xbox', con:2},
+  {id:'ps4',     cost:300, img:'console-ps4-shop.jpg',     slot:'ps',   rank:1, unlock:'ps',   con:0},
+  {id:'ps5',     cost:500, img:'console-ps5-shop.jpg',     slot:'ps',   rank:2, unlock:'ps',   con:1},
+  {id:'ps5pro',  cost:700, img:'console-ps5pro-shop.jpg',  slot:'ps',   rank:3, unlock:'ps',   con:2},
+  {id:'xboxone', cost:300, img:'console-xboxone-shop.jpg', slot:'xbox', rank:1, unlock:'xbox', con:0},
+  {id:'xboxs',   cost:380, img:'console-xboxs-shop.jpg',   slot:'xbox', rank:2, unlock:'xbox', con:1},
+  {id:'xbox',    cost:500, img:'console-xbox-shop.jpg',    slot:'xbox', rank:3, unlock:'xbox', con:2},
   /* Мобильные двумя ветками, как PlayStation и Xbox (его «разделение андроид или айфон»): любая открывает мобильные капы,
      сила на мобиле — лучшая из купленных (ccMobileDevBonus). Последние модели ноября 2026, цены США: S26 Ultra и
      iPhone 18 Pro Max по $1299, iPad Pro M5 13" $1499 после июньского подорожания. */
-  {id:'phonebase', cost:449,  img:'phone-android-sq.jpg',  slot:'android', rank:1, unlock:'mobile', mob:0},
-  {id:'s26u',      cost:1299, img:'phone-s26u-sq.jpg',     slot:'android', rank:2, unlock:'mobile', mob:2},
+  {id:'phonebase', cost:449,  img:'phone-android-shop.jpg',  slot:'android', rank:1, unlock:'mobile', mob:0},
+  {id:'s26u',      cost:1299, img:'phone-s26u-shop.jpg',     slot:'android', rank:2, unlock:'mobile', mob:2},
   // Планшет Android (его «а планшет андроид»): Galaxy Tab S12 Ultra, в продаже с 7.10.2026 за $1399. Фото S12 на Commons
   // ещё нет, на картинке S11 Ultra того же корпуса (без таблички с названием).
-  {id:'tabultra',  cost:1399, img:'tablet-tabultra-sq.jpg', slot:'android', rank:3, unlock:'mobile', mob:3},
-  {id:'phone',     cost:1299, img:'phone-iphone18-sq.jpg', slot:'ios',     rank:1, unlock:'mobile', mob:2},
-  {id:'ipad',      cost:1499, img:'tablet-ipadm5-sq.jpg',  slot:'ios',     rank:2, unlock:'mobile', mob:3},
+  {id:'tabultra',  cost:1399, img:'tablet-tabultra-shop.jpg', slot:'android', rank:3, unlock:'mobile', mob:3},
+  {id:'phone',     cost:1299, img:'phone-iphone18-shop.jpg', slot:'ios',     rank:1, unlock:'mobile', mob:2},
+  {id:'ipad',      cost:1499, img:'tablet-ipadm5-shop.jpg',  slot:'ios',     rank:2, unlock:'mobile', mob:3},
   // Chairs — stamina, from a $20 start to the one people buy with prize money.
   {id:'chair0',   cost:20,    cap:2,  img:'chair-old.jpg',    slot:'chair', rank:1},
   {id:'chair1',   cost:150,   cap:5,  img:'chair-ikea.jpg',   slot:'chair', rank:2},
