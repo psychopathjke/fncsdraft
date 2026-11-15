@@ -114575,8 +114575,8 @@ const CC_HEAL_KIT={
   "Shield Keg":{stack:1, heal:100, kind:'shield', secs:8},
   "Chug Cannon":{stack:1, heal:20, kind:'both', secs:1},
   "Bandage Bazooka":{stack:1, heal:15, kind:'hp', secs:2},
-  "Slapperoni Slice":{stack:4, heal:20, kind:'hp', secs:1},
-  "Spicy Slapperoni Slice":{stack:4, heal:20, kind:'hp', secs:1},
+  "Slapperoni Slice":{stack:3, heal:20, kind:'hp', secs:1},
+  "Spicy Slapperoni Slice":{stack:5, heal:20, kind:'hp', secs:1},
   "Pizza Party":{stack:1, heal:70, kind:'hp', secs:1},
   "Pizza Slice":{stack:4, heal:20, kind:'hp', secs:1},
   // В лут-пуле то же имя во множественном (itm-pizza-slices): без него падало в CC_HEAL_ANY «по одной в слоте».
@@ -114590,7 +114590,8 @@ const CC_HEAL_KIT={
   "Midas Flopper":{stack:2, heal:40, kind:'hp', secs:1},
   "Shield Fish":{stack:3, heal:40, kind:'shield', secs:1},
   "Shield Potion":{stack:3, heal:50, kind:'shield', secs:5},
-  "Slapperoni Pizza":{stack:3, heal:70, kind:'hp', secs:1},
+  // Коробка не стакается (в инфобоксе вики 3, в её же блоке Stats 1; в игре коробка одна), стакаются только кусочки.
+  "Slapperoni Pizza":{stack:1, heal:70, kind:'hp', secs:1},
   "Slurpfish":{stack:3, heal:40, kind:'both', secs:1},
   "Small Fry":{stack:6, heal:25, kind:'hp', secs:1},
   "Small Shield Potion":{stack:6, heal:25, kind:'shield', secs:2},
