@@ -14581,7 +14581,7 @@ ccSlot_mouse:'Mouse',
 ccSlot_keyboard:'Keyboard',
 ccSlot_headset:'Headset',
 ccSlot_monitor:'Monitor',
-ccSlot_pc:'PC', ccSlot_ps:'PlayStation', ccSlot_xbox:'Xbox', ccSlot_android:'Android', ccSlot_ios:'iPhone and iPad', ccMobOpen:'Rating table', ccShopConFx:n=>'+'+n+' power on console', ccShopps4:'PlayStation 4', ccShopps5pro:'PlayStation 5 Pro', ccShopxboxone:'Xbox One', ccShopxboxs:'Xbox Series S', ccShops26u:'Galaxy S26 Ultra',
+ccSlot_pc:'PC', ccSlot_ps:'PlayStation', ccSlot_xbox:'Xbox', ccSlot_android:'Android', ccSlot_ios:'iPhone and iPad', ccMobOpen:'Rating table', ccShopConFx:n=>'+'+n+' power on console', ccShopps4:'PlayStation 4', ccShopps5pro:'PlayStation 5 Pro', ccShopxboxone:'Xbox One', ccShopxboxs:'Xbox Series S', ccShops26u:'Galaxy S26 Ultra', ccShoptabultra:'Galaxy Tab S12 Ultra',
 ccSlot_chair:'Chair',
 ccSlot_stream:'Stream',
 ccSlot_car:'Car',
@@ -151959,6 +151959,9 @@ const CC_SHOP=[
      iPhone 18 Pro Max по $1299, iPad Pro M5 13" $1499 после июньского подорожания. */
   {id:'phonebase', cost:449,  img:'phone-android-sq.jpg',  slot:'android', rank:1, unlock:'mobile', mob:0},
   {id:'s26u',      cost:1299, img:'phone-s26u-sq.jpg',     slot:'android', rank:2, unlock:'mobile', mob:2},
+  // Планшет Android (его «а планшет андроид»): Galaxy Tab S12 Ultra, в продаже с 7.10.2026 за $1399. Фото S12 на Commons
+  // ещё нет, на картинке S11 Ultra того же корпуса (без таблички с названием).
+  {id:'tabultra',  cost:1399, img:'tablet-tabultra-sq.jpg', slot:'android', rank:3, unlock:'mobile', mob:3},
   {id:'phone',     cost:1299, img:'phone-iphone18-sq.jpg', slot:'ios',     rank:1, unlock:'mobile', mob:2},
   {id:'ipad',      cost:1499, img:'tablet-ipadm5-sq.jpg',  slot:'ios',     rank:2, unlock:'mobile', mob:3},
   // Chairs — stamina, from a $20 start to the one people buy with prize money.
@@ -152172,8 +152175,8 @@ function careerHireCoach(id, months){
   return true;
 }
 const CC_DEVICE_DIR='devices/';
-// Консоли и мобильные по порядку плитки: PS4 и Xbox One, PS5, PS5 Pro, Series S, Series X, Android, S26 Ultra, iPhone 18 Pro Max, iPad Pro M5.
-const CC_CONSOLE_CREDIT='Photos: Evan-Amos (public domain), Osh33m, Soberian (CC BY-SA 4.0), BeatEmUps (CC BY 3.0), AsmodeanUnderscore (CC BY-SA 4.0), Der. Bellemer (CC BY-SA 4.0), Captainmorlypogi1959 (CC BY-SA 4.0), Kyu3a (CC BY-SA 4.0), 茅野ふたば (CC BY-SA 4.0), P1898 (CC BY 4.0) · Wikimedia Commons';
+// Консоли и мобильные по порядку плитки: PS4 и Xbox One, PS5, PS5 Pro, Series S, Series X, Android, S26 Ultra, Tab S12 Ultra, iPhone 18 Pro Max, iPad Pro M5.
+const CC_CONSOLE_CREDIT='Photos: Evan-Amos (public domain), Osh33m, Soberian (CC BY-SA 4.0), BeatEmUps (CC BY 3.0), AsmodeanUnderscore (CC BY-SA 4.0), Der. Bellemer (CC BY-SA 4.0), Captainmorlypogi1959 (CC BY-SA 4.0), Kyu3a (CC BY-SA 4.0), P1898 (CC BY 4.0), 茅野ふたば (CC BY-SA 4.0) · Wikimedia Commons';
 // What a slot already holds, by rank: a rig replaces a rig.
 function ccShopSlotRank(slot){
   return CC_SHOP.reduce((r,it)=>(it.slot===slot && careerOwns(it.id) && it.rank>r) ? it.rank : r, 0);

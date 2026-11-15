@@ -185,18 +185,18 @@ const BOOT = `
       out.steps.push('Mobile Series: round open, heats/cup closed («'+L().ccMobSerNeedRound+'»); round top 5% -> heats; heat room 100, weakest '+roomMin+', #'+(lh && lh.place)+' -> '+(ms ? ms.next : 'out')+'; cup closes the series'); }
     // ---- мобильные устройства: Android, iPhone, iPad — любое открывает, iPhone/iPad дают силу на мобиле ----------
     seed('2026-06-27');
-    CAREER.career.balance=5000;
+    CAREER.career.balance=9000;
     CH_TAB='shop'; careerRenderHub('shop');
     const shopTx=((document.getElementById('chBody')||{}).textContent||'');
     // Лесенкой, как ПК: видна первая ступень каждой платформы, следующая заменяет прежнюю.
     ['ccShopphonebase','ccShopphone','ccShopps4','ccShopxboxone','ccSlot_android','ccSlot_ios','ccShopConsoles'].forEach(k=>{ if(shopTx.indexOf(L()[k])<0) fail('shop has no '+k+': '+L()[k]); });
     if(ccMobileOwn()) fail('mobile device owned before buying');
     const p0=ccMobileSelfPow(), steps=[];
-    ['phonebase','s26u','phone','ipad'].forEach(id=>{ careerBuy(id); steps.push(ccMobileSelfPow()-p0); });
+    ['phonebase','s26u','tabultra','phone','ipad'].forEach(id=>{ careerBuy(id); steps.push(ccMobileSelfPow()-p0); });
     if(!ccMobileOwn() || !ccConsoleOk({id:'S41_MobileVictoryCup_BR'})) fail('phone ladder does not open mobile cups');
-    // Две ветки, сила — лучшая из купленных: Android 0, S26 Ultra 2, iPhone 18 Pro Max (тоже 2), iPad Pro M5 3.
-    if(steps.join()!=='0,2,2,3') fail('mobile power should be 0,2,2,3: '+steps.join());
-    if(ccShopLadder('android').next || ccShopLadder('ios').next) fail('S26 Ultra / iPad Pro M5 are not the tops of their ladders');
+    // Две ветки, сила — лучшая из купленных: Android 0, S26 Ultra 2, Tab S12 Ultra 3; iPhone и iPad ниже не тянут.
+    if(steps.join()!=='0,2,3,3,3') fail('mobile power should be 0,2,3,3,3: '+steps.join());
+    if(ccShopLadder('android').next || ccShopLadder('ios').next) fail('Tab S12 Ultra / iPad Pro M5 are not the tops of their ladders');
     // Из магазина видно мобильный рейтинг, кнопка открывает его таблицу.
     careerRenderHub('shop');
     if(!document.querySelector('#chBody .cc-mob-now')) fail('shop does not show the mobile rating line');
@@ -209,7 +209,7 @@ const BOOT = `
     if(!ccConsoleOk({id:'S41_PlayStationCup_EU'}) || ccConsoleOk({id:'S41_XboxCup_EU'})) fail('PS4 should open PlayStation cups and not Xbox');
     careerBuy('ps5'); careerBuy('ps5pro');
     if(ccConsoleDevBonus('ps')!==2 || ccConsoleDevBonus('any')!==2 || ccConsoleDevBonus('xbox')!==0) fail('console power wrong: '+ccConsoleDevBonus('ps')+'/'+ccConsoleDevBonus('xbox'));
-    out.steps.push('shop ladders in «'+L().ccShopConsoles+'»: mobile power +'+steps.join('/+')+' (Android, S26 Ultra | iPhone 18 Pro Max, iPad Pro M5); PS4 opens PlayStation cups only, PS5 Pro +2 on console');
+    out.steps.push('shop ladders in «'+L().ccShopConsoles+'»: mobile power +'+steps.join('/+')+' (Android, S26 Ultra, Tab S12 Ultra | iPhone 18 Pro Max, iPad Pro M5); PS4 opens PlayStation cups only, PS5 Pro +2 on console');
     // ---- тренировка на телефоне и галочка «Турниры в календаре» ------------------------------------------
     { seed('2026-06-24');
       CAREER.career.energy=100; CAREER.career.balance=5000;
