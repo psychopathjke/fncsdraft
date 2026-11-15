@@ -161023,8 +161023,11 @@ function ccVictoryList(){
     && !hard.has(v.day) && !lanDays.has(v.day) && (!ownDays.has(v.day) || (v.zb && !ownIds.has(v.day+'|'+v.id))));
   // Скин-капы встают рядом с капами дня (выбор кнопкой); дни FNCS и ЛАНов держат день целиком.
   const skins=ccYearShift()>0 ? [] : CC_SKIN_CUPS.filter(v=>v.day>=from && v.day<=to && !hard.has(v.day) && !lanDays.has(v.day) && !ownIds.has(v.day+'|'+v.id));
-  // Этапы Mobile Series встают и в дни FNCS — выбором рядом (другая платформа, своя серия); дни ЛАНов — нет.
-  const cons=(y===2026 && !(ccYearShift()>0)) ? CC_CONSOLE_2026.filter(v=>v.day>=from && v.day<=to && (!hard.has(v.day) || !!v.series) && !lanDays.has(v.day) && !ownIds.has(v.day+'|'+v.id)) : [];
+  /* Консольные и мобильные капы встают и в дни FNCS — выбором рядом (другая платформа, у Epic они в те же выходные); дни
+     ЛАНов — нет. Раньше так было только у Mobile Series, и прогон за Малибуку 15.11 с PS5 Pro три консольных вечера из
+     шести не нашёл в списке дня: PlayStation Cup ZB 1.02, Console VCC ZB 7.02, PlayStation Cup Clix 2.05. Без консоли
+     такой день по-прежнему не показывается (фильтр pcDay ниже). */
+  const cons=(y===2026 && !(ccYearShift()>0)) ? CC_CONSOLE_2026.filter(v=>v.day>=from && v.day<=to && (!hard.has(v.day) || !!v.series || !!ccConsoleNeed(v)) && !lanDays.has(v.day) && !ownIds.has(v.day+'|'+v.id)) : [];
   CC_VICTORY_LIST=own.concat(lans, extra, skins, cons).sort((a,b)=>a.day<b.day?-1:a.day>b.day?1:0);
   /* Без консоли день, где только консольные капы, в календарь не идёт: был бы закрытым вечером. Рядом с обычным капом
      консольный остаётся серой кнопкой с причиной (ccVictoryAltsHTML). Купил консоль — ключ списка другой, дни вернулись. */
