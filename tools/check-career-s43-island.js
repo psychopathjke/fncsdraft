@@ -59,6 +59,22 @@ const rlEv={spec:CC_SOLOS_STAGES.rlr2};
 check('Solo Reload на Nitemare', ccSoloFncsSet(rlEv)==='r5', ccSoloFncsSet(rlEv));
 check('Nitemare: картинка и клетки', MAP_ART.r5==='art/map-r5.jpg' && ZONE_SETS.r5.length>=25 && ZONE_SETS.r5.length===ZONE_STATS.r5.length, ZONE_SETS.r5.length);
 { const was=ACTIVE_LANDING_SET, sq=squadSize; squadSize=1; useLandingSet('r5'); check('соло-клетки не дробятся', ALL_LANDING_ZONES.length===ZONE_SETS.r5.length, ALL_LANDING_ZONES.length); check('лут круга Reload', /^r[1-4]$/.test(ccLootSet()), ccLootSet()); squadSize=sq; useLandingSet(was); }
+// Мини-Venture (r6): Mobile Series и Reload (Mini Venture) Victory Cup, Reload по правилам и луту.
+check('мини-Venture: картинка и клетки', MAP_ART.r6==='art/map-r6.jpg' && MAP_ASPECT.r6==='1/1' && ZONE_SETS.r6.length>=20 && ZONE_SETS.r6.length===ZONE_STATS.r6.length, ZONE_SETS.r6.length);
+check('мини-Venture: клетки не пересекаются', ZONE_SETS.r6.every((a,i)=>ZONE_SETS.r6.every((b,j)=>i>=j || !(a.x<b.x+b.w-.01 && b.x<a.x+a.w-.01 && a.y<b.y+b.h-.01 && b.y<a.y+a.h-.01))));
+check('мини-Venture: сундуки для лута руками', CC_LR_CHESTS.r6 && CC_LR_CHESTS.r6.n.length/2>=150, CC_LR_CHESTS.r6 && CC_LR_CHESTS.r6.n.length/2);
+{ const was=ACTIVE_LANDING_SET, sq=squadSize; squadSize=1; useLandingSet('r6'); check('r6: соло-клетки не дробятся', ALL_LANDING_ZONES.length===ZONE_SETS.r6.length, ALL_LANDING_ZONES.length); check('r6: лут круга Reload', /^r[1-4]$/.test(ccLootSet()), ccLootSet()); check('r6: шторм Reload', ccStormPhases('r6',1)===ZoneSim.RELOAD_PHASES); squadSize=sq; useLandingSet(was); }
+{ const byId={}; CC_CONSOLE_2026.forEach(v=>{ byId[v.id]=byId[v.id]||v; });
+  const want=id=>/MobileSeries|ReloadminiV/.test(id) ? 'r6' : /Reload|_RES$/.test(id) ? 'r4' : 'br';
+  const bad=[]; notes.r6ids=[];
+  Object.keys(byId).filter(id=>/Mobile/.test(id)).forEach(id=>{ const ev=byId[id]; CAREER.career.day=ev.day; const got=ccEvLandingSet(ev), w=want(id);
+    if(got==='r6') notes.r6ids.push(id);
+    if(w==='br' ? got!==careerBrSet() : got!==w) bad.push(id+'='+got);
+    if(w!=='br' && ccVictoryLobby(ev, true)!==40) bad.push(id+' lobby '+ccVictoryLobby(ev, true)); });
+  check('мобильные капы: острова', !bad.length && notes.r6ids.length>=15, bad.join(' '));
+  check('Touch-Only Test Cup не Reload', !ccIsReloadEv(byId.S39_MobileTestCup));
+  CAREER.career.day='2026-01-05'; check('Mobile Series январь: лут r1', (useLandingSet(ccEvLandingSet(byId.S39_MobileSeriesJan)), ccLootSet())==='r1', ccLootSet());
+  useLandingSet(careerBrSet()); }
 // Настоящий вечер трио 22 ноября.
 save('2026-11-22');
 const nx=careerNext(); notes.next22=nx && (nx.type+' '+nx.day);

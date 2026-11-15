@@ -1,6 +1,7 @@
 // Сундуки на приближенной точке (лут руками, ccLootRoom) для островов, где у нас есть точки fortnite.gg:
 //   s42 — tools/fgg/spawns.js (патч 42.03) в кадр art/map-s42.jpg подгонкой из tools/fgg/chests-by-zone.json (build-fgg-chests.js);
 //   r5  — tools/fgg/r5-nitemare-points.json, вырез lng 29..233, lat -22..-226 (как build-reload-nitemare.js);
+//   r6  — tools/fgg/r6-venture-points.json (мини-Venture, blitz5), вырез lng 70..194, lat -68..-192 (как build-reload-venture.js);
 //   s43 — tools/fgg/s43-points.json, вырез lng 64..212, lat -68..-216 (как build-s43-chests.js).
 // n — сундуки, r — редкие сундуки, a — ящики с патронами. CC_LR_CHESTS между метками @@LR-CHESTS в index.html.
 //   node tools/build-loot-chests.js
@@ -21,6 +22,8 @@ const s42=c=>({X:fit.fx.a*c[1]+fit.fx.b, Y:fit.fy.a*(-c[0])+fit.fy.b});
 
 const R=JSON.parse(fs.readFileSync(path.join(G, 'r5-nitemare-points.json'), 'utf8'));
 const r5=c=>({X:(c[1]-29)/204*100, Y:(-22-c[0])/204*100});
+const V=JSON.parse(fs.readFileSync(path.join(G, 'r6-venture-points.json'), 'utf8'));
+const r6=c=>({X:(c[1]-70)/124*100, Y:(-68-c[0])/124*100});
 const S=JSON.parse(fs.readFileSync(path.join(G, 's43-points.json'), 'utf8'));
 const s43=c=>({X:(c[1]-64)/148*100, Y:(-68-c[0])/148*100});
 
@@ -28,6 +31,7 @@ const data={
   s42:{n:flat(pts(w.Spawns.chests).map(s42)), r:flat(pts(w.Spawns.rare_chests).map(s42)), a:flat(pts(w.Spawns.ammo_boxes).map(s42)),
         g:flat(gold.map(s42)), v:flat(vOf(1631).map(s42)), V:flat(vOf(1624).map(s42))},
   r5:{n:flat((R.chests||[]).map(r5)), r:flat((R.rare||[]).map(r5)), a:flat((R.ammo||[]).map(r5))},
+  r6:{n:flat((V.chests||[]).map(r6)), r:flat((V.rare||[]).map(r6)), a:flat((V.ammo||[]).map(r6))},
   s43:{n:flat((S.chests||[]).map(s43)), r:flat((S.rare||[]).map(s43)), a:flat((S.ammo||[]).map(s43))}
 };
 const line='/*@@LR-CHESTS-FROM@@*/const CC_LR_CHESTS='+JSON.stringify(data)+';/*@@LR-CHESTS-TILL@@*/';
