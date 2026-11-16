@@ -63,13 +63,14 @@ const BOOT = `
           out.notes.team.join(',') ===
           ['beefs','chemSince','coach','d1','day','dev','devL','diff','division','duoSplits','duoStreak',
            // exMates — брошенные игроком напарники (ccMateParted, 16.09): едут с днём, как duoSplits.
-           'events','ewc','exMates','gcSeed','gclc','gifts','globals','lft','log','major','majorSeed',
-           'mates','mp','mxDone','rc','region','rel','relSeed','reload','season','seasonOver',
+           'events','ewc','exMates','fmtPick','gcSeed','gclc','gifts','globals','lft','log','major','majorSeed',
+           // mobDev — рейтинги мобильной сцены (16.11), mxCan/orphanMate/size — с 22.10–7.11.
+           'mates','mobDev','mp','mxCan','mxDone','orphanMate','rc','region','rel','relSeed','reload','season','seasonOver',
            /* solos/solosBy — квалификация соло-серии: вечер играется в три
               сессии и его допуск общий на команду, как и у solo/soloBy. Поля
               стоят в списке командных (ccTeamState), а спека здесь про них
               не знала — контракт протух, а не поле лишнее. */
-           'seasonTurn','seed','sizes','solo','soloBy','solos','solosBy',
+           'seasonTurn','seed','size','sizes','solo','soloBy','solos','solosBy',
            // solosRl/solosRlBy — FNCS Solo Reload (ноябрь 2026), своё состояние того же рода, что solos (20.10).
            'solosRl','solosRlBy',
            'splits','spots','summit','summitSeed',

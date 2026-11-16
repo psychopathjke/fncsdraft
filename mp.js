@@ -195,6 +195,9 @@ var MP={
     out.camp = cr.camp||null;
     out.gear = (typeof CAREER!=='undefined' && CAREER && CAREER.gear && CAREER.gear.own)
                  ? CAREER.gear.own.slice() : [];
+    // Консоль и телефон: на консольном и мобильном капе своя строка берёт их из магазина, строка напарника - отсюда.
+    try{ if(typeof ccConsoleDevBonus==='function') out.conDev={ps:ccConsoleDevBonus('ps'), xbox:ccConsoleDevBonus('xbox'), any:ccConsoleDevBonus('any')}; }catch(e){}
+    try{ if(typeof ccMobileSelfPow==='function') out.mobPow=ccMobileSelfPow(); }catch(e){}
     /* Режим показа — «играть» или «смотреть».
 
        Он выглядит настройкой человека, а на деле решает, ЗАДАЮТ ЛИ ВОПРОСЫ:
