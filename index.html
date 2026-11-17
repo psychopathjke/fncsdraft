@@ -114875,11 +114875,17 @@ async function ccPathResolve(you, ui, plan, p){
   const out=ccFightApply(you, Math.random(), foe, null, tac);
   await say(T.rpMet(foeName)+' · '+ccFightLine(T, out, CC_FIGHT, foeName, gun, you, tac), out==='win' ? true : out==='poke' ? null : false);
 }
-function ccTacChipsHTML(you, T){
-  const ids=['push'].concat(!CC_ZB && ccMats(you)>=CC_TAC_BOX_MATS ? ['box'] : [], ['back']);
+/* pair — рядом дерутся двое (ccThirdPair): чип «третьить» влезает в их файт сразу (ccThirdPairApply). Меню середины,
+   где это было, стало автоматическим (три остановки), и выбрать третью сторону было негде (игроки, 16.11). */
+function ccTacChipsHTML(you, T, pair){
+  const ids=['push'].concat(!CC_ZB && ccMats(you)>=CC_TAC_BOX_MATS ? ['box'] : [], ['back'], pair ? ['third'] : []);
   const foe=you._game && you._game.nearest ? you._game.nearest(you) : null;
-  return '<div class="cc-chips" data-hold="1"><span class="cc-chips-h">'+esc(T.tcChips)+'</span>'+ids.map(id=>'<button type="button" class="cc-chip'+(id==='push' ? ' on' : '')+'" data-chip="'+id+'">'+esc(ccTacName(T, id))+'</button>').join('')+
-    (foe ? '<small>'+esc(T.tcFoe(ccFoeName(foe), ccTacName(T, ccFoeTactic(foe, you))))+'</small>' : '')+'</div>';
+  const label=id=>id==='third' ? T.tpTitle(ccFoeName(pair.a.team), ccFoeName(pair.b.team)) : ccTacName(T, id);
+  let thirdNote='';
+  if(pair){ try{ const o=ccThirdOdds(you, pair.a.team); thirdNote=T.tpNote(Math.round(CC_THIRD_SELF*100), Math.round(o.kill*100), Math.round(o.die*100), CC_THIRD.pow, Math.round(CC_THIRD_BOTH*100)); }catch(e){} }
+  return '<div class="cc-chips" data-hold="1"><span class="cc-chips-h">'+esc(T.tcChips)+'</span>'+ids.map(id=>'<button type="button" class="cc-chip'+(id==='push' ? ' on' : '')+'" data-chip="'+id+'">'+esc(label(id))+'</button>').join('')+
+    (foe ? '<small>'+esc(T.tcFoe(ccFoeName(foe), ccTacName(T, ccFoeTactic(foe, you))))+'</small>' : '')+
+    (thirdNote ? '<small class="cc-chip-third">'+esc(thirdNote)+'</small>' : '')+'</div>';
 }
 /* ОКНО РОТАЦИИ (4-я зона): когда выходим, точка в следующем круге тапом и как играем встречу — одно окно. Сила хода — его
    ценность в этой ситуации (ccSitValue) против «сразу», так что ход по умолчанию силы не меняет. Под ходом факты, без
@@ -114898,7 +114904,8 @@ async function ccAskRotWindow(you, ui){
     note:ccSitFacts(T, 'rot', id, sit)+(ccSitUseless('rot', id, sit) ? ' · '+T.sitUseless : '')+' · '+cost(id)}));
   const plan=full ? ccPathPlan(you) : null;
   let cur=plan ? plan.def : null, tac='push';
-  const hint=ccKitLine(you)+(plan ? ccPathMapHTML(plan)+'<span class="rp-note">'+esc(ccPathNote(T, cur))+'</span><span>'+esc(T.rpHint)+'</span>' : '')+(full ? ccTacChipsHTML(you, T) : '');
+  const pair=full ? ccThirdPair(you) : null;
+  const hint=ccKitLine(you)+(plan ? ccPathMapHTML(plan)+'<span class="rp-note">'+esc(ccPathNote(T, cur))+'</span><span>'+esc(T.rpHint)+'</span>' : '')+(full ? ccTacChipsHTML(you, T, pair) : '');
   const pickId=(await ccMpChoose('rot'+(you.mpTag||''), async function(){
     const pr=ccChoiceBox(T.ccRotTitle, hint, opts, ui && ui.map, null, 'rot');
     // Окно уже на странице (ccChoiceBox строит его сразу): тап по карте и чипы читаются до ответа.
@@ -114913,6 +114920,15 @@ async function ccAskRotWindow(you, ui){
   ccMpMark('a4:'+pickId);
   you._rot=pickId;
   you._rotMul=CC_ROT_MATS[pickId]||1;
+  // Третья сторона — ход, а не стиль встречи: файт пары решается сейчас, дальше играем как «пушить».
+  if(tac==='third' && pair){
+    const res=ccThirdPairApply(you, pair);
+    const tl=T.tpGot(res);
+    if(ui && ui.note) ui.note(tl);
+    await ccChoiceResult(ui && ui.map, tl, res && res.out==='win' ? true : res && res.out==='die' ? false : null);
+    tac='push';
+    if(res && res.out==='die'){ you._tac=tac; return; }
+  }
   you._tac=tac;
   const gain=Math.round(ccSitValue('rot', pickId, sit)-ccSitValue('rot', 'early', sit));
   if(gain) ccAddGamePow(you, gain);
@@ -136885,7 +136901,7 @@ function careerPools(){
     if(!c) return c;
     const k=hKey(c);
     if(lifted.has(k)) return lifted.get(k);
-    const out=(careerDevOf(c) || ccRealPull(c)) ? ccSceneLift({...c}) : c;
+    const out=(careerDevOf(c) || ccRealPull(c) || ccSceneDrift(c)) ? ccSceneLift({...c}) : c;
     lifted.set(k, out);
     return out;
   };
@@ -136995,7 +137011,7 @@ function careerPools(){
     pooled.add(k);
     // Копия со своим _k: ростерные объекты общие со всем приложением, а _k —
     // ключ, по которому пул считает людей и careerRealPlayers режет занятых.
-    const c=(careerDevOf(p) || ccRealPull(p)) ? ccSceneLift({...p}) : {...p};
+    const c=(careerDevOf(p) || ccRealPull(p) || ccSceneDrift(p)) ? ccSceneLift({...p}) : {...p};
     c._k=k;
     players.push(c);
   });
@@ -138730,9 +138746,54 @@ function ccRealPull(c){
    а ccSceneRoster их уже поднял — рост и подтяжка к году ложились дважды, и один человек был 87
    в сцене и 82 в пуле, пары «по силе» расходились после сборки (полный прогон 9.10,
    check-career-2025-continuity: 147 из 2252 карточек пула не совпадали со сценой). */
+/* СЦЕНА ПОСЛЕ 2026 ЖИВЁТ. Каждый сезон заново берёт рейтинги 2026-го, и без этого топ не менялся годами (жалоба игроков
+   16.11: «после 4–5 лет наверху те же»). Замер по базе 2021–2026 (EU и NAC): из топ-20 через год остаются 61%, через
+   три года 28%; в карьере было 88% и 88%. Порядок людей идёт скрытой величиной: тяга к среднему сцены (RHO), шум
+   (sd·√(1−RHO²)), возраст (AGE в год от пика PEAK). Числа рейтингов раздаются по местам из распределения 2026-го,
+   поэтому уровень сцены и потолок не уплывают, меняется только кто где. Подбор пробой (scratchpad calib): 57% и 30%.
+   Жребий от сида мира, ника и сезона: одинаковый у двоих онлайн, свой у каждой карьеры. */
+const CC_DRIFT_RHO=0.96, CC_DRIFT_AGE=0.25, CC_DRIFT_PEAK=21;
+let CC_DRIFT={tag:null, maps:{}};
+function ccSceneDriftMap(reg){
+  const S=ccYearShift(); if(!(S>0) || !reg) return null;
+  const tag=ccSlot()+'|'+S+'|'+ccWorldSeed();
+  if(CC_DRIFT.tag!==tag) CC_DRIFT={tag:tag, maps:{}};
+  if(CC_DRIFT.maps[reg]) return CC_DRIFT.maps[reg];
+  const season=ccSeasonOvr(), base=new Map();
+  PLAYERS.forEach(p=>{
+    if((p.region||'')!==reg || ccCardYear(p)!==ccNowYear()) return;
+    const k=hKey(p), day=ccCardDay(p)||0, cur=base.get(k);
+    if(cur && day<=cur.day) return;
+    const yr=season.get(ccSeasonKey(p));
+    base.set(k, {day:day, o:yr!=null ? yr : (attrsFor(p)||{}).ovr, h:p.handle});
+  });
+  const list=[...base.entries()].map(([k,v])=>({k:k, o:v.o, a:ccAgeOf(v.h, '2026-07-01')})).filter(x=>x.o>0);
+  if(list.length<20) return (CC_DRIFT.maps[reg]=new Map());
+  const m=list.reduce((s,x)=>s+x.o, 0)/list.length;
+  const sd=Math.sqrt(list.reduce((s,x)=>s+(x.o-m)*(x.o-m), 0)/list.length);
+  const sig=sd*Math.sqrt(1-CC_DRIFT_RHO*CC_DRIFT_RHO), W=ccWorldSeed();
+  list.forEach(x=>{
+    let L=x.o; const a0=x.a!=null ? x.a : 18;
+    for(let s=1; s<=S; s++){
+      const rnd=careerRng(ccHashStr('drift|'+W+'|'+x.k+'|'+s));
+      let u=0; for(let i=0;i<6;i++) u+=rnd();
+      L=m+CC_DRIFT_RHO*(L-m)+sig*(u-3)/Math.sqrt(0.5)+CC_DRIFT_AGE*(CC_DRIFT_PEAK-(a0+s-1));
+    }
+    x.L=L;
+  });
+  const sorted=list.map(x=>x.o).sort((a,b)=>b-a);
+  const out=new Map();
+  list.slice().sort((a,b)=>b.L-a.L).forEach((x,i)=>{ const d=sorted[i]-x.o; if(d) out.set(x.k, d); });
+  return (CC_DRIFT.maps[reg]=out);
+}
+function ccSceneDrift(c){
+  if(!c || c._regen) return 0;
+  const mp=ccSceneDriftMap(c.region||''); if(!mp) return 0;
+  return mp.get(hKey(c)) || 0;
+}
 function ccSceneLift(c){
   if(!c || c._lifted) return c;
-  const d=careerDevOf(c)+ccRealPull(c);
+  const d=careerDevOf(c)+ccRealPull(c)+ccSceneDrift(c);
   if(!d) return c;
   const base=(c._ovr!=null ? c._ovr : (attrsFor(c)||{}).ovr);
   if(!(base>0)) return c;

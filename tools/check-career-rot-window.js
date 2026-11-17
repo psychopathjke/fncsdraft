@@ -68,6 +68,26 @@ window.addEventListener("load", function(){ setTimeout(async function(){
     p=ccAskRotWindow(you, {map:host}); await tick();
     check('онлайн: без карты и чипов', !host.querySelector('.rp-svg') && !host.querySelector('[data-chip]'));
     await answer(p); ccMpLock=lk; ccMpChoose=mc;
+    // Рядом дерутся двое (ccThirdPair): чип «третьить», выбор — файт пары сейчас, дальше «пушить».
+    you=mk(false);
+    const A={team:{name:'PairA', pow:80, _pf:80, _loot:{weapons:[]}}, alive:true, x:24, y:22};
+    const B={team:{name:'PairB', pow:80, _pf:80, _loot:{weapons:[]}}, alive:true, x:25, y:24};
+    you._game.squads.push(A, B);
+    gone.length=0;
+    p=ccAskRotWindow(you, {map:host}); await tick();
+    const tc=[...host.querySelectorAll('[data-chip="third"]')].pop();
+    check('чип третьей стороны есть, когда рядом пара', !!tc);
+    if(tc){ tc.click(); await tick(); }
+    const q=[0.6, 0.1]; Math.random=()=>q.length ? q.shift() : 0.99;   // их файт не сам по себе (>=CC_THIRD_SELF), потом наш кил
+    const pf3=you._pf;
+    await answer(p); Math.random=r0;
+    check('третья сторона: кого-то выбили', gone.length>=1, JSON.stringify(gone));
+    check('после третьей стороны тактика «пушить»', you._tac==='push', String(you._tac));
+    out.notes.third=[pf3, you._pf, gone];
+    // Без пары чипа нет.
+    you=mk(false); p=ccAskRotWindow(you, {map:host}); await tick();
+    check('без пары чипа третьей стороны нет', ![...host.querySelectorAll('.cc-choice')].pop().querySelector('[data-chip="third"]'));
+    await answer(p);
     // Мувмент есть — ход есть.
     you=mk(true); check('с мувментом ход есть', ccSitAvail('rot','move', ccSitOf(you)));
     ['ru','en','fr','it','pt'].forEach(lg=>['rpTitle','rpHint','rpGo','rpNote','rpClear','rpMet','tcChips'].forEach(k=>check(lg+' '+k, I18N[lg][k]!=null)));

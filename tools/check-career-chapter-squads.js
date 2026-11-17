@@ -28,7 +28,9 @@ for(let i=0;i<8;i++){
   // сравнивать с ним, а не с рейтингом всего года. Годы после 2026-го — весь год, как было.
   const SO=ccRatingSnap() ? ccSeasonOvr() : null;
   const T=SO ? new Map([...P.players].map(c=>[c._k||hKey(c), SO.get(ccSeasonKey(c))]).filter(e=>e[1]!=null)) : ccRealTargets(ccCalYear());
-  const gaps=[]; P.players.forEach(c=>{ const t=T.get(c._k||hKey(c)); if(t!=null) gaps.push(c._ovr-t); });
+  // После 2026-го сцена дрейфует нарочно (ccSceneDriftMap): ожидаемое = настоящее + дрейф человека. Пул обязан его нести.
+  const DM=ccYearShift()>0 ? ccSceneDriftMap('EU') : null;
+  const gaps=[]; P.players.forEach(c=>{ const k=c._k||hKey(c), t=T.get(k); if(t!=null) gaps.push(c._ovr-t-(DM ? (DM.get(hKey(c))||0) : 0)); });
   const st=a=>a.length?{n:a.length, meanAbs:+(a.reduce((x,y)=>x+Math.abs(y),0)/a.length).toFixed(2), ge3:a.filter(x=>Math.abs(x)>=3).length, ge5:a.filter(x=>Math.abs(x)>=5).length}:null;
   out.push({season:cr.season, year:cr.year, cal:ccCalYear(), shift:ccYearShift(), size, cont:ccContinuity(), duos:P.duos.length, players:P.players.length,
     lonelyTop40:lonely.length, lonely:lonely.slice(0,12).map(c=>c.handle+' '+c._ovr), gap:st(gaps), frac:+ccRealPullFrac().toFixed(2)});
