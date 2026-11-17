@@ -348,6 +348,15 @@ var MP={
       SOCK=null;
       try{ if(typeof ccMpByeDiv==='function') ccMpByeDiv(m.got, m.have); }catch(e){}
     }
+    /* Команда полная (в ней двое). Раньше отказ не замечали: третий оставался на связи, считал вечер пары у себя,
+       и его готовность ломала ожидание у пары (окно «ждём напарника» без кнопки). Теперь связь закрывается насовсем. */
+    if(m.t==='bye' && m.reason==='full'){
+      CODE=null;
+      setState('off');
+      try{ if(SOCK) SOCK.close(); }catch(e){}
+      SOCK=null;
+      try{ if(typeof ccMpByeFull==='function') ccMpByeFull(); }catch(e){}
+    }
     if(m.t==='bye' && m.reason==='build'){
       CODE=null;
       MP.builds={have:m.have||null, got:m.got||CC_BUILD};

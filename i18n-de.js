@@ -4225,3 +4225,11 @@ Object.assign(I18N.de=I18N.de||{},
 Object.assign(I18N.de=I18N.de||{},
 ({ chTabBp: 'Battle Pass' }));
 Object.assign(I18N.de, {mapPickH:'Karte des Jahres', mapPickCycle:'Rotation'});
+/* Дозаливка «de» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
+Object.assign(I18N.de=I18N.de||{},
+({ ccMpFull:'Dieses Team hat schon zwei Spieler. Zu dritt oder mehr spielt ein Karriere-Rennen.',
+  ccNewsDqSeat:(t,w)=>({visa:t+' haben kein Visum bekommen',cheat:t+' wurden wegen Cheatens disqualifiziert',mate:'Ein Spieler von '+t+' kann nicht reisen'})[w]+': ihr LAN-Platz geht an euch',
+  ccNewsDqOther:(t,w)=>({visa:t+' haben kein Visum bekommen',cheat:t+' wurden wegen Cheatens disqualifiziert',mate:'Ein Spieler von '+t+' kann nicht reisen'})[w]+': ihr LAN-Platz geht an das nächste Team' }));
+/* Дозаливка «de» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
+Object.assign(I18N.de=I18N.de||{},
+({ ccDropMap:'Drop-Karte', ccDropMapClose:'Schließen', ccDropMapHot:'Umkämpfte Drops', ccDropMapNote:(n,h)=>'Teams auf der Karte: '+n+'. Umkämpfte Spots: '+h+'. Teams aus deinen Lobbys behalten ihren Spot die ganze Saison.', ccDropMapNone:'Noch leer: Teams wählen ihren Spot nach dem ersten Abend auf dieser Insel in der Saison.' }));

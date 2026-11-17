@@ -93,6 +93,8 @@ export class Lobby {
       if(s.to==='self'){ try{ socks.get(id)?.send(raw); }catch(e){} continue; }
       for(const [cid, sock] of socks){
         if(s.to==='peer' && cid===id) continue;
+        // Сообщения команды — только её членам: отказанный третий не видит вечер пары.
+        if(!(cid in this.lobby.state.cards)) continue;
         try{ sock.send(raw); }catch(e){}
       }
     }
@@ -135,6 +137,8 @@ export class Lobby {
     if(!a || !a.id || a.dead) return;
     const id=a.id;
     let m=null; try{ m=JSON.parse(data); }catch(e){ return; }
+    // Не член команды (третьему отказано: full) ничего не шлёт паре, кроме нового hello.
+    if(!m || (m.t!=='hello' && !(id in this.lobby.state.cards))) return;
     let sends=[];
     if(m.t==='hello')       sends=this.lobby.join(id, m);
     else if(m.t==='card')   sends=this.lobby.card(id, m.card);

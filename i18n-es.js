@@ -4225,3 +4225,11 @@ Object.assign(I18N.es=I18N.es||{},
 Object.assign(I18N.es=I18N.es||{},
 ({ chTabBp: 'Pase de batalla' }));
 Object.assign(I18N.es, {mapPickH:'Mapa del año', mapPickCycle:'Rotación'});
+/* Дозаливка «es» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
+Object.assign(I18N.es=I18N.es||{},
+({ ccMpFull:'Este equipo ya tiene dos jugadores. Con tres o más, jugad una Carrera de carreras.',
+  ccNewsDqSeat:(t,w)=>({visa:'A '+t+' les negaron el visado',cheat:t+' descalificados por trampas',mate:'Un jugador de '+t+' no puede viajar'})[w]+': su plaza en la LAN pasa a vosotros',
+  ccNewsDqOther:(t,w)=>({visa:'A '+t+' les negaron el visado',cheat:t+' descalificados por trampas',mate:'Un jugador de '+t+' no puede viajar'})[w]+': su plaza en la LAN pasa al siguiente equipo' }));
+/* Дозаливка «es» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
+Object.assign(I18N.es=I18N.es||{},
+({ ccDropMap:'Mapa de drops', ccDropMapClose:'Cerrar', ccDropMapHot:'Drops disputados', ccDropMapNote:(n,h)=>'Equipos en el mapa: '+n+'. Puntos disputados: '+h+'. Los equipos de tus lobbies mantienen su punto toda la temporada.', ccDropMapNone:'Vacío por ahora: los equipos eligen su punto tras la primera noche en esta isla en la temporada.' }));

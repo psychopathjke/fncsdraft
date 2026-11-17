@@ -7390,6 +7390,33 @@
      тебе места, а не принести его. */
   .ch-spot-beef{display:block;font-style:normal;font-size:10px;font-weight:800;
     letter-spacing:.06em;text-transform:uppercase;color:#ff8c9c;margin-top:1px;}
+  /* Карта высадок перед капом (ccDropMapOpen): кнопка на карточке вечера и окно с островом. */
+  .ch-spot-map{align-self:flex-start;margin-top:4px;min-height:32px;padding:4px 10px;border-radius:6px;
+    border:1px solid rgba(255,255,255,.3);background:rgba(0,0,0,.35);color:#fff;font-size:11px;font-weight:800;
+    letter-spacing:.06em;text-transform:uppercase;cursor:pointer;}
+  .ch-spot-map:hover{background:rgba(255,255,255,.12);}
+  .cc-dm-wrap{position:fixed;inset:0;z-index:9000;background:rgba(0,0,0,.72);display:flex;align-items:center;justify-content:center;
+    padding:12px;padding-top:max(12px, env(safe-area-inset-top));padding-bottom:max(12px, env(safe-area-inset-bottom));}
+  .cc-dm{width:min(760px,100%);max-height:100%;overflow-y:auto;background:#12161f;border:1px solid rgba(255,255,255,.14);
+    border-radius:12px;padding:12px;color:#fff;-webkit-overflow-scrolling:touch;}
+  .cc-dm-head{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+  .cc-dm-head b{font-size:15px;font-weight:900;text-transform:uppercase;letter-spacing:.04em;}
+  .cc-dm-head em{flex:1;min-width:0;font-style:normal;font-size:12px;color:rgba(255,255,255,.6);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .cc-dm-x{flex:0 0 44px;height:44px;border:0;border-radius:8px;background:rgba(255,255,255,.08);color:#fff;font-size:22px;cursor:pointer;}
+  .cc-dm-map{position:relative;width:100%;background-size:100% 100%;background-repeat:no-repeat;border-radius:8px;overflow:hidden;}
+  .cc-dm-box{position:absolute;border:1.5px solid rgba(255,255,255,.85);background:rgba(0,0,0,.38);border-radius:3px;
+    display:flex;align-items:center;justify-content:center;overflow:hidden;}
+  .cc-dm-box span{font-size:9px;line-height:1.15;font-weight:800;text-align:center;color:#fff;text-shadow:0 1px 2px #000;padding:1px;word-break:break-word;}
+  .cc-dm-box.hot{border-color:#ff3b3b;background:rgba(255,59,59,.32);}
+  .cc-dm-box.me{border-color:#ffd23f;box-shadow:0 0 0 2px rgba(255,210,63,.5);}
+  .cc-dm-note{margin:10px 2px 4px;font-size:12px;color:rgba(255,255,255,.72);}
+  .cc-dm h5{margin:10px 2px 6px;font-size:11px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:#ff8c8c;}
+  .cc-dm-list{list-style:none;margin:0;padding:0;display:grid;gap:4px;}
+  .cc-dm-list li{display:flex;gap:10px;padding:7px 9px;border-radius:6px;background:rgba(255,59,59,.1);font-size:12px;}
+  .cc-dm-list li.me{background:rgba(255,210,63,.14);}
+  .cc-dm-list b{flex:0 0 auto;font-weight:900;}
+  .cc-dm-list span{min-width:0;color:rgba(255,255,255,.85);}
+  @media (max-width:560px){ .cc-dm-box span{font-size:7.5px;} }
   .ch-simwrap{margin-top:10px;}
   .ch-sim{display:flex;gap:8px;}
   .ch-simbtn{flex:1 1 0; min-width:0; display:inline-flex; align-items:center;
@@ -24821,7 +24848,7 @@ Object.assign(I18N.it=I18N.it||{},
 /* Дозаливка «pt» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
 Object.assign(I18N.pt=I18N.pt||{},
 ({ ccRacePairHint:'A dupla joga como um time: vocês dois, o IGL decide o estilo, o drop, o loot e as rotações, o fragger decide as lutas e o fim de jogo, o dinheiro é dividido, cada carreira segue sendo sua' }));
-let CC_I18N_V={de:'d12f76b1', es:'58287d45'};   // ==== CC_I18N_V (tools/build-i18n.js) ====
+let CC_I18N_V={de:'25b5523c', es:'3f4b5317'};   // ==== CC_I18N_V (tools/build-i18n.js) ====
 // Версия fn-shop.js (магазин Fortnite по дням, tools/build-fn-shop.js) — для ?v= ленивой загрузки.
 let CC_FN_SHOP_V='dc62e7dc';
 const CC_LANG_WAIT={};
@@ -25184,6 +25211,27 @@ Object.assign(I18N.en, {ccPlanTitle:n=>n+'’s game plan for tonight', ccPlanOk:
 Object.assign(I18N.fr, {ccPlanTitle:n=>'Le plan de '+n+' pour ce soir', ccPlanOk:'Compris', ccPlanDrop:'Drop :', ccPlanDrop_home:'notre spot, sans contest', ccPlanDrop_contest:'contest — on prend le spot de force', ccPlanRot:'Rotation :', ccPlanRot_early:'tôt, avant la fermeture', ccPlanRot_with:'avec la zone', ccPlanFight:'Fights :', ccPlanFight_fight:'on les prend quand ils viennent', ccPlanFight_avoid:'on évite, on protège le placement', ccPlanLate:'Endgame :', ccPlanLate_mid:'centre de la zone', ccPlanLate_edge:'bord de la zone', evTitle:'Bilan de la soirée', evBest:'Meilleure game', evBestGame:(g,p,e)=>'game '+g+' : '+p+'e, '+e+' kills', evKills:'Kills', evPerGame:x=>x+' par game', evDeaths:'Morts', evDeathKill:n=>'face aux joueurs ×'+n, evDeathDrop:n=>'au drop ×'+n, evDeathStorm:n=>'tempête ×'+n, evDeathSurge:n=>'surge ×'+n, evNemesis:'T’a le plus tué', evPlan:'Plan du coach', evPlanDone:(a,b)=>a+' sur '+b+' suivis', evTip_kill:'Tu meurs surtout en fight — travaille la visée et le build cette semaine.', evTip_drop:'Tu meurs au drop — travaille l’ouverture et prends un spot plus calme.', evTip_storm:'La tempête te coûte des games — travaille les rotations et la survie.', evTip_surge:'Le surge te sort — il faut des dégâts : fights en milieu de game.', ccPostEvKilled:(h,n,m)=>['@'+m+', '+n+' fois face à nous ce soir. Rien de personnel','croisé @'+m+' '+n+' fois ce soir — à chaque fois pour nous','@'+m+' dans le lobby = kills offerts ('+n+' ce soir)'][n%3], ccPostEvVR:(g,e,n)=>['Top 1 en game '+g+' sur '+n+', '+e+' kills. On continue','game '+g+' : couronne et '+e+' kills 👑','game '+g+' pour nous. '+e+' kills, ça a fait du bruit'][g%3], ccPostEvKills:(k,n)=>[k+' kills en '+n+' games. Le lobby s’en souviendra',k+' kills ce soir, pas de top 1 mais du bruit'][k%2]});
 Object.assign(I18N.it, {ccPlanTitle:n=>'Il piano di '+n+' per stasera', ccPlanOk:'Ricevuto', ccPlanDrop:'Drop:', ccPlanDrop_home:'il nostro spot, niente contest', ccPlanDrop_contest:'contest — prendiamo lo spot con la forza', ccPlanRot:'Rotazione:', ccPlanRot_early:'presto, prima che chiuda', ccPlanRot_with:'con la tempesta', ccPlanFight:'Fight:', ccPlanFight_fight:'li prendiamo quando arrivano', ccPlanFight_avoid:'stiamo fuori, proteggiamo il piazzamento', ccPlanLate:'Endgame:', ccPlanLate_mid:'centro della zona', ccPlanLate_edge:'bordo della zona', evTitle:'Analisi della serata', evBest:'Partita migliore', evBestGame:(g,p,e)=>'partita '+g+': '+p+'°, '+e+' kill', evKills:'Kill', evPerGame:x=>x+' a partita', evDeaths:'Morti', evDeathKill:n=>'contro giocatori ×'+n, evDeathDrop:n=>'al drop ×'+n, evDeathStorm:n=>'tempesta ×'+n, evDeathSurge:n=>'surge ×'+n, evNemesis:'Ti ha ucciso più spesso', evPlan:'Piano del coach', evPlanDone:(a,b)=>a+' su '+b+' seguiti', evTip_kill:'Muori soprattutto nei fight — allena mira e build questa settimana.', evTip_drop:'Muori al drop — allena l’apertura e scegli uno spot più tranquillo.', evTip_storm:'La tempesta ti costa partite — allena rotazioni e sopravvivenza.', evTip_surge:'Il surge ti elimina — servono danni: fight a metà partita.', ccPostEvKilled:(h,n,m)=>['@'+m+', '+n+' volte contro di noi stasera. Niente di personale','incontrato @'+m+' '+n+' volte stasera — sempre a nostro favore','@'+m+' in lobby = kill gratis ('+n+' stasera)'][n%3], ccPostEvVR:(g,e,n)=>['Victory Royale nella partita '+g+' di '+n+', '+e+' kill. Avanti','partita '+g+': corona e '+e+' kill 👑','presa la partita '+g+'. '+e+' kill, rumorosa'][g%3], ccPostEvKills:(k,n)=>[k+' kill in '+n+' partite. La lobby se lo ricorderà',k+' kill stasera, niente corona ma rumore'][k%2]});
 Object.assign(I18N.pt, {ccPlanTitle:n=>'O plano de '+n+' para hoje', ccPlanOk:'Entendido', ccPlanDrop:'Drop:', ccPlanDrop_home:'nosso spot, sem contest', ccPlanDrop_contest:'contest — tomar o spot na força', ccPlanRot:'Rotação:', ccPlanRot_early:'cedo, antes de fechar', ccPlanRot_with:'junto com a tempestade', ccPlanFight:'Fights:', ccPlanFight_fight:'pegamos quando aparecem', ccPlanFight_avoid:'ficamos fora, protegemos a colocação', ccPlanLate:'Endgame:', ccPlanLate_mid:'centro da zona', ccPlanLate_edge:'borda da zona', evTitle:'Resumo da noite', evBest:'Melhor partida', evBestGame:(g,p,e)=>'partida '+g+': '+p+'º, '+e+' abates', evKills:'Abates', evPerGame:x=>x+' por partida', evDeaths:'Mortes', evDeathKill:n=>'para jogadores ×'+n, evDeathDrop:n=>'no drop ×'+n, evDeathStorm:n=>'tempestade ×'+n, evDeathSurge:n=>'surge ×'+n, evNemesis:'Quem mais te matou', evPlan:'Plano do coach', evPlanDone:(a,b)=>a+' de '+b+' seguidos', evTip_kill:'Você morre mais nos fights — treine mira e build esta semana.', evTip_drop:'Você morre no drop — treine a abertura e escolha um spot mais calmo.', evTip_storm:'A tempestade custa partidas — treine rotações e sobrevivência.', evTip_surge:'O surge te elimina — precisa de dano: fights no meio da partida.', ccPostEvKilled:(h,n,m)=>['@'+m+', '+n+' vezes contra nós hoje. Nada pessoal','encontramos @'+m+' '+n+' vezes hoje — sempre a nosso favor','@'+m+' no lobby = abates grátis ('+n+' hoje)'][n%3], ccPostEvVR:(g,e,n)=>['Victory Royale na partida '+g+' de '+n+', '+e+' abates. Seguimos','partida '+g+': coroa e '+e+' abates 👑','levamos a partida '+g+'. '+e+' abates, foi barulhento'][g%3], ccPostEvKills:(k,n)=>[k+' abates em '+n+' partidas. O lobby vai lembrar',k+' abates hoje, sem coroa mas barulhento'][k%2]});
+/* Снятие команды перед ЛАНом (ccLanDqRoll) и полная команда онлайн (ccMpByeFull). w — причина: visa | cheat | mate. */
+Object.assign(I18N.ru, {ccDropMap:'Карта высадок', ccDropMapClose:'Закрыть', ccDropMapHot:'Стычки на высадке', ccDropMapNote:(n,h)=>'Команд на карте: '+n+'. Спорных точек: '+h+'. Команды твоих лобби помнят свою точку весь сезон.', ccDropMapNone:'Пока пусто: команды запоминают точки после первого вечера на этом острове в сезоне.',
+  ccMpFull:'В этой команде уже двое. Втроём и больше играйте гонкой карьер: «Против друга».',
+  ccNewsDqSeat:(t,w)=>({visa:'У '+t+' не вышла виза',cheat:t+' дисквалифицированы за читы',mate:'Напарник из '+t+' не может лететь'})[w]+': их место на ЛАНе переходит к вам',
+  ccNewsDqOther:(t,w)=>({visa:'У '+t+' не вышла виза',cheat:t+' дисквалифицированы за читы',mate:'Напарник из '+t+' не может лететь'})[w]+': место на ЛАНе уходит следующей команде'});
+Object.assign(I18N.en, {ccDropMap:'Drop map', ccDropMapClose:'Close', ccDropMapHot:'Contested drops', ccDropMapNote:(n,h)=>'Teams on the map: '+n+'. Contested spots: '+h+'. Teams from your lobbies keep their spot all season.', ccDropMapNone:'Empty for now: teams claim their spots after the first night on this island this season.',
+  ccMpFull:'This team already has two players. For three or more, play a Career race: “Against a friend”.',
+  ccNewsDqSeat:(t,w)=>({visa:t+' were denied a visa',cheat:t+' were disqualified for cheating',mate:'A player from '+t+' cannot travel'})[w]+': their LAN seat passes to you',
+  ccNewsDqOther:(t,w)=>({visa:t+' were denied a visa',cheat:t+' were disqualified for cheating',mate:'A player from '+t+' cannot travel'})[w]+': their LAN seat goes to the next team'});
+Object.assign(I18N.fr, {ccDropMap:'Carte des drops', ccDropMapClose:'Fermer', ccDropMapHot:'Drops contestés', ccDropMapNote:(n,h)=>'Équipes sur la carte : '+n+'. Spots contestés : '+h+'. Les équipes de tes lobbies gardent leur spot toute la saison.', ccDropMapNone:'Vide pour l’instant : les équipes prennent leur spot après la première soirée sur cette île cette saison.',
+  ccMpFull:'Cette équipe a déjà deux joueurs. À trois ou plus, jouez une Course de carrières : « Contre un ami ».',
+  ccNewsDqSeat:(t,w)=>({visa:t+' n’ont pas obtenu de visa',cheat:t+' disqualifiés pour triche',mate:'Un joueur de '+t+' ne peut pas voyager'})[w]+' : leur place à la LAN vous revient',
+  ccNewsDqOther:(t,w)=>({visa:t+' n’ont pas obtenu de visa',cheat:t+' disqualifiés pour triche',mate:'Un joueur de '+t+' ne peut pas voyager'})[w]+' : leur place à la LAN passe à l’équipe suivante'});
+Object.assign(I18N.it, {ccDropMap:'Mappa dei drop', ccDropMapClose:'Chiudi', ccDropMapHot:'Drop contesi', ccDropMapNote:(n,h)=>'Squadre sulla mappa: '+n+'. Punti contesi: '+h+'. Le squadre delle tue lobby tengono il loro punto per tutta la stagione.', ccDropMapNone:'Vuota per ora: le squadre scelgono il punto dopo la prima serata su quest’isola in stagione.',
+  ccMpFull:'Questa squadra ha già due giocatori. In tre o più, avviate una Gara.',
+  ccNewsDqSeat:(t,w)=>({visa:'A '+t+' è stato negato il visto',cheat:t+' squalificati per cheating',mate:'Un giocatore di '+t+' non può viaggiare'})[w]+': il loro posto alla LAN passa a voi',
+  ccNewsDqOther:(t,w)=>({visa:'A '+t+' è stato negato il visto',cheat:t+' squalificati per cheating',mate:'Un giocatore di '+t+' non può viaggiare'})[w]+': il loro posto alla LAN va alla squadra successiva'});
+Object.assign(I18N.pt, {ccDropMap:'Mapa de drops', ccDropMapClose:'Fechar', ccDropMapHot:'Drops disputados', ccDropMapNote:(n,h)=>'Equipes no mapa: '+n+'. Pontos disputados: '+h+'. As equipes dos seus lobbies mantêm o ponto a temporada toda.', ccDropMapNone:'Vazio por enquanto: as equipes marcam o ponto depois da primeira noite nesta ilha na temporada.',
+  ccMpFull:'Esta equipe já tem dois jogadores. Com três ou mais, comecem uma Corrida.',
+  ccNewsDqSeat:(t,w)=>({visa:t+' tiveram o visto negado',cheat:t+' desclassificados por trapaça',mate:'Um jogador de '+t+' não pode viajar'})[w]+': a vaga deles na LAN passa para vocês',
+  ccNewsDqOther:(t,w)=>({visa:t+' tiveram o visto negado',cheat:t+' desclassificados por trapaça',mate:'Um jogador de '+t+' não pode viajar'})[w]+': a vaga deles na LAN vai para a próxima equipe'});
 /* Облачные сохранения (16.10). */
 Object.assign(I18N.ru, {clTitle:'Облако', clOn:'включено', clOffNow:'выключено — карьеры только в этом браузере', clWhy:'Включи облако — получишь код. По нему карьеры и менеджер откроются на любом устройстве, даже если браузер почистят.', clEnable:'Включить облако', clHave:'У меня есть код', clKeep:'Запиши этот код: по нему твои карьеры откроются на другом устройстве.', clSent:w=>'Последняя отправка: '+w, clBusy:'отправляем…', clPushNow:'Отправить сейчас', clOther:'Ввести другой код', clOff:'Выключить', clOpen:'Открыть', clFound:n=>'В облаке по этому коду: '+n, clCareer:'карьера', clMgr:'менеджер', clTake:'Забрать в этот браузер', clSure:'Заменит такие же слоты здесь — нажми ещё раз', clErr:m=>'Облако не ответило ('+m+'). Карьера сохранена в браузере, попробуем позже.', clBad:'Код — 16 знаков, например K7QM-2XPA-9RTD-WH4C'});
 Object.assign(I18N.en, {clTitle:'Cloud', clOn:'on', clOffNow:'off — careers live only in this browser', clWhy:'Turn on the cloud to get a code. With it your careers and manager open on any device, even if this browser is wiped.', clEnable:'Turn on cloud', clHave:'I have a code', clKeep:'Write this code down: it opens your careers on another device.', clSent:w=>'Last upload: '+w, clBusy:'uploading…', clPushNow:'Upload now', clOther:'Enter another code', clOff:'Turn off', clOpen:'Open', clFound:n=>'Saves on this code: '+n, clCareer:'career', clMgr:'manager', clTake:'Bring them to this browser', clSure:'Replaces the same slots here — tap again', clErr:m=>'The cloud did not answer ('+m+'). Your career is saved in the browser; we will retry.', clBad:'The code is 16 characters, like K7QM-2XPA-9RTD-WH4C'});
@@ -108473,6 +108521,13 @@ function ccDropBook(){
   if(!c.dropBook || c.dropBook.s!==s) c.dropBook={s, at:{}, mv:{}};
   return c.dropBook;
 }
+// Имена и остров к записи книги: по ним рисуется карта высадок (ccDropMapOpen). Ключи книги — хеш, имён в них нет.
+function ccDropBookName(book, key, t){
+  if(!book || !key || !t) return;
+  const nm=book.nm=book.nm||{};
+  const names=(t.squad||[]).map(p=>p && p.handle).filter(Boolean).join(' & ') || t.name || '';
+  if(names) nm[key]={n:names, s:ACTIVE_LANDING_SET};
+}
 function ccDropBookMoves(key){
   const b=CAREER && CAREER.career && CAREER.career.dropBook;
   if(!b || !key || !b.at[key]) return false;
@@ -108618,7 +108673,7 @@ function buildBotLandingAssignment(bots, opts){
         /* В постоянном составе (финал, не перемешанное лобби) точку не поделили — опоздавший хозяин переезжает на сезон,
            как на настоящей дроп-карте финала (9.10, «как в реальной жизни»). В перемешанных капах — нет: там в другом
            лобби он снова у себя, и дроп-карты у открытых капов не бывает. */
-        if(!CC_SEATS_REMIX) book.at[bookKey]=ccSeatKeyOf(free);
+        if(!CC_SEATS_REMIX){ book.at[bookKey]=ccSeatKeyOf(free); ccDropBookName(book, bookKey, t); }
         return;
       }
     }
@@ -108670,7 +108725,7 @@ function buildBotLandingAssignment(bots, opts){
     // В книгу — только свой выбор: страх и приказ менеджера на один вечер, переполненный дом не переписывается.
     // И уступивший точку хозяин в постоянном составе, которому не нашлось пустой коробки, — тоже переезд на сезон (9.10, см. bumped).
     if(bookKey && (!booked || moving || (bumped && !CC_SEATS_REMIX)) &&
-       !(t._mgrDrop==='quiet' || t._mgrDrop==='hot')) book.at[bookKey]=ccSeatKeyOf(zone);
+       !(t._mgrDrop==='quiet' || t._mgrDrop==='hot')){ book.at[bookKey]=ccSeatKeyOf(zone); ccDropBookName(book, bookKey, t); }
   });
 
   /* Досадка ниже (пустые, толпа, слабые/сильные) — про ГОТОВУЮ комнату. Раздача по очереди до игрока
@@ -123180,6 +123235,8 @@ function ccMpLeaveBad(why){
 /* Лобби отказало по дивизиону — тем же окном и тем же откатом, что и отказ,
    пойманный уже внутри. Разница только в том, что теперь отказ приходит с
    порога: см. lobby.join. */
+// Команда уже полная: третьему тем же откатом, что и отказу по дивизиону. Для троих и больше есть гонка.
+function ccMpByeFull(){ ccMpLeaveBad(L().ccMpFull || I18N.en.ccMpFull); }
 function ccMpByeDiv(mine, theirs){
   CC_MP_DIV_BAD={mine:mine||((CAREER&&CAREER.career&&CAREER.career.division)||'?'), team:theirs||'?'};
   ccMpLeaveBad(L().ccMpDivDiff(CC_MP_DIV_BAD.mine, CC_MP_DIV_BAD.team));
@@ -125693,6 +125750,8 @@ function ccApplyTeamState(t){
      общее ложится поверх ниже. */
   if(ccMpTeam() && !CC_MP_TURN_FOLLOW && CAREER.career.seasonOver && t.season===(CAREER.career.season||1)+1){
     CC_MP_TURN_FOLLOW=true;
+    // Окно церемонии у второго закрывается: сезон уже начат, его кнопка начинала бы ещё один.
+    try{ if(typeof ccGalaClose==='function') ccGalaClose(); }catch(e){}
     try{ careerNewSeason(); }catch(e){ console.error('careerNewSeason (напарник начал сезон)', e); }
     finally{ CC_MP_TURN_FOLLOW=false; }
     if(!CAREER || !CAREER.career) return;
@@ -126337,7 +126396,10 @@ function careerNext(){
       const chosen=vp ? on.find(e=>e.kind==='victory' && e.id===vp) : null;
       // Ноябрь 2026-го: этап Solo Reload, куда игрок прошёл, старше Trios Cash Cup того же дня. Не прошёл, значит кап.
       const soloNow=(!chosen && ccS43Trios(today)) ? on.find(e=>e.kind==='solo' && careerCanPlayKindOn(today, 'solo')) : null;
-      on=[chosen || soloNow || sorted[0]];
+      /* Без выбора играется главное событие дня, а не кап рядом с ним: 'solo' нет в CC_KIND_RANK (ранг 99), и консольные
+         капы и Mobile Series, которые с 14–15.11 стоят в дни Solo Series и Reload, забирали день, хотя горела кнопка главного,
+         а её нажатие ничего не меняло. ЛАН и ноябрьский Trios Cash Cup (ccS43Trios) по-прежнему решают сами. */
+      on=[chosen || soloNow || (lanToday || ccS43Trios(today) ? null : sorted.find(e=>e.kind!=='victory' && e.kind!=='gala')) || sorted[0]];
     }
     if(on.length && on[0].kind==='victory'){
       const v=careerVictoryOn(today), hit=v && (days.get(today)||[]).find(e=>e.kind==='victory' && e.id===v.id);
@@ -128138,7 +128200,7 @@ function careerCentreHTML(card, a){
   const galaBtn = cr.seasonOver
     ? `<button class="ch-play ch-gala" onclick="ccGalaOpen()">${L().ccGalaWatch}</button>` : '';
   const btn = cr.seasonOver
-    ? `<button class="ch-play" onclick="careerNewSeason()" title="${esc(L().ccSeasonOverSub)}">${L().ccNewSeason}</button>`+galaBtn+retireBtn
+    ? `<button class="ch-play" onclick="if(CAREER.career.seasonOver) careerNewSeason()" title="${esc(L().ccSeasonOverSub)}">${L().ccNewSeason}</button>`+galaBtn+retireBtn
     /* Командный вечер, который нельзя начать, не предлагает «Пропустить». По одиночному правилу непроходимый вечер
        (разные режимы) превращал «Играть» в «Пропустить», и следующее нажатие скипало турнир. Сам режим «только
        смотрю» матч показывает (tools/sim-shows-probe.js).
@@ -128914,7 +128976,7 @@ function careerMeHTML(){
        карточкой. Распустить состав можно и не подобрав замену: в трио это
        ровно то, что делают. Подтверждение на careerMateKickAsk. */
     cardTiles.push(`<div class="ch-tile ch-tile-card">
-      <h4>${L().ccResPartner}${m?`<button class="ch-kick" title="${
+      <h4>${L().ccResPartner}${m && !(i===0 && ccMpOn() && typeof MP!=='undefined' && MP.peer)?`<button class="ch-kick" title="${
         esc(L().ccMateKick)}" aria-label="${esc(L().ccMateKick)}"
         onclick="careerMateKickAsk(${i})">×</button>`:''}</h4>
       <div class="ch-cardwrap">${m?futCardHTML(m,{wide:true, noEvent:true, peek:true})
@@ -137894,13 +137956,18 @@ function careerMateLeftMark(handle){
    Подтверждение в careerMateKickAsk, а не здесь: действия карьеры гоняет симуляция, а нативная модалка в headless
    Chrome вешает страницу (так было с careerSkipWeek). */
 function careerMateKick(at){
-  const recs=careerMateRecords();
-  const rec=recs[at];
+  /* Онлайн состав — напарник-человек первым, потом боты из cr.mates; одиночный список (CAREER.partners) с ним
+     не совпадает: крестик у третьего не делал ничего, а у человека выгонял невидимого бота. */
+  const mp=ccMpOn() && typeof MP!=='undefined' && !!MP.peer;
+  if(mp && at===0) return false;
+  const recs=mp ? ccMpMateRecs() : careerMateRecords();
+  const rec=recs[mp ? at-1 : at];
   if(!rec) return false;
   const card=careerMates()[at];
   const who=(card && card.handle) || rec.handle || '';
   if(who) careerSlotGiveUp(who);
-  if(!careerMateDrop(rec.handle || who)) return false;
+  if(mp){ const cr=CAREER.career; cr.mates=(cr.mates||[]).filter(p=>p!==rec); }
+  else if(!careerMateDrop(rec.handle || who)) return false;
   careerNews('bad', 'ccNewsDropped', [who]);
   careerRepAdd(-1);
   careerEvent('tlDuoQuit', [who]);
@@ -138622,8 +138689,8 @@ function ccRegenBorn(handle){
   if(!ccRegenOn()) return null;
   const R=CAREER.career.regen; if(!R) return null;
   const g=R.list.find(x=>hKey(x.h)===hKey(handle)); if(!g) return null;
-  // ccAgeNow = возраст на дату календаря + ccSeasonsIn: в год y (ccYearShift) ему a+(сейчас−y).
-  const seasonsAtY=ccSeasonsIn()-(ccYearShift()-g.y);
+  // ccAgeNow = возраст на дату календаря + ccYearShift: в год y (ccYearShift) ему a+(сейчас−y).
+  const seasonsAtY=g.y;
   return (ccCalYear()-(g.a-seasonsAtY))+'-01-01';
 }
 /* Годы идут цепочкой: следующий начинается с того, на чём закончился прошлый.
@@ -141543,7 +141610,7 @@ function ccShopKey(x){ return String((x&&x.at)||(x&&x.id)||'').toLowerCase(); }
    ведёт, по его же описанию в X (сняты 8.10.2026) и картам этой базы; рейтинг = p − 6, от 60 до 95. У кого клиенты
    не названы или их нет в базе — по подписчикам: 60 + 6·lg(подписчики/1000), не выше 76. Условия (доля, охват,
    прибавка, цена) идут от рейтинга, а не от места в списке; порядок окна — по рейтингу. Формула — оценка режима. */
-const CC_STAFF_X={"roxogg":3007, "ZeyroxMNG1":380, "JoaovEU":2874, "ElyxxM":16729, "alhasarda":3166, "NaaxoMNG":853, "PixelzMNG":2439, "Kiinywz0":822, "Yeekzie7":3076, "F0C8S":4581, "ClapMNG":4144, "AlybiSaCE":3366, "IdziU97":3200, "Th0masNL":2363, "RemssMNG":2150, "DamlosMNG":1674, "ZedroxMNG":1364, "errieMNG":1304, "Raziaa_":953, "LC7_MNG":931, "ArtinMNG":866, "yaleblan":787, "DrazoxMNG":702, "Skyforcemng272":525, "Zerkomng":516, "Lou1sMNG":385, "askebott":294, "v1nteroFN":2137, "SweetyyFN":1991, "SandoraFN":1014, "baderwtw":885, "Pyp4ingS":613, "UgoComm":548, "Lair_Fn":594, "veltrixx10":481, "CmLumos":357, "MetiDark_":49, "murlotron":3007, "Goalkikermng":1104, "KaizenMNG":785, "PyraxMGMT":433, "loicmng_":565};
+const CC_STAFF_X={"roxogg":3007, "ZeyroxMNG1":380, "JoaovEU":2874, "ElyxxM":16729, "alhasarda":3166, "NaaxoMNG":853, "PixelzMNG":2439, "Kiinywz0":822, "Yeekzie7":3076, "F0C8S":4581, "ClapMNG":4144, "AlybiSaCE":3366, "IdziU97":3200, "Th0masNL":2363, "RemssMNG":2150, "DamlosMNG":1674, "ZedroxMNG":1364, "errieMNG":1304, "Raziaa_":953, "LC7_MNG":931, "ArtinMNG":866, "yaleblan":787, "DrazoxMNG":702, "Skyforcemng272":525, "Zerkomng":516, "Lou1sMNG":385, "askebott":294, "v1nteroFN":2137, "SweetyyFN":1991, "SandoraFN":1014, "baderwtw":885, "Pyp4ingS":613, "UgoComm":548, "Lair_Fn":594, "veltrixx10":481, "CmLumos":357, "MetiDark_":49, "murlotron":3007, "Goalkikermng":1104, "KaizenMNG":785, "PyraxMGMT":433, "loicmng_":565, "wyzefn6":1893};
 const CC_STAFF_RES={
   "roxogg":{p:91, who:["Phzin","Edson","916Gon","Night"]},   // 23.10: в X — phzin, edson, 916gon, blxckoutz, night, seeyun, pardal; четыре лучшие карты
   "PixelzMNG":{p:77, who:["Matice","Shadox","Seili","Th3ioF"]},   // 23.10: matice, Shadox, Seili, Th3io, Sobyy, Berre (двух последних в базе нет)
@@ -141556,6 +141623,7 @@ const CC_STAFF_RES={
   "Goalkikermng":{p:89.7, who:["Upl","F1n4ik","Predage"]},
   "PyraxMGMT":{p:92, who:["SkyJump"]},
   "JoaovEU":{p:96, who:["Vanyak3kk","Ajerss"]},   // 23.10: JV Agency — Vanyak3kk и Ajerss
+  "wyzefn6":{p:62.7, who:["Rz Verifvǃ","fa wiverǃ","Rz Pruzen 10"]},   // capri в базе нет
   "loicmng_":{p:52, who:["Galaxyache 32"]},   // 23.10: konect.gg/loicmng — 23 клиента; в базе только Galaxyache (Louis 92 и voz OCE — тёзки)
   /* 23.10 вечер (его слово: «пусть от игроков зависит рейтинг, а не от подписчиков»): составы агентств — сайты агентств,
      konect.gg, linktree, твиты игроков «contact @…». Тёзки из чужого региона отброшены (Magma NAC, Raz ME, Noa ASIA,
@@ -141922,6 +141990,8 @@ const CC_AGENTS=[
   {name:'Th0masNL',     at:'Th0masNL',      nat:'nl', photo:'Th0masNL.jpg',      x:2311},
   // Head of Fortnite for Lyost.
   {name:'Remss',        at:'RemssMNG',      nat:null, photo:'RemssMNG.jpg',      x:2085},
+  // Fortnite-менеджер K13esport, ведёт Verif, wiver, pruzen10 и capri. Страны в профиле нет.
+  {name:'K13 Wyze',     at:'wyzefn6',       nat:null, photo:'wyzefn6.jpg',       x:1893},
   // Founder of AL Management, Lille.
   {name:'Adam',         at:'DamlosMNG',     nat:'fr', photo:'DamlosMNG.jpg',     x:1654},
   // Head of Fortnite at MGA.
@@ -143388,6 +143458,8 @@ const CC_POST_BY={
   ccIvSaidduot1:'you', ccIvSaidduot2:'you', ccIvSaidduot3:'you', ccIvSaidduot4:'you',
   ccIvSaidblamet1:'you', ccIvSaidblamet2:'you', ccIvSaidblamet3:'you', ccIvSaidblamet4:'you',
   ccNewsAward:'press', ccNewsAwardYou:'press',
+  // Снятие команды перед ЛАНом (ccLanDqRoll) — новость сцены.
+  ccNewsDqSeat:'press', ccNewsDqOther:'press',
   ccNewsAwardSeason:'press', ccNewsAwardSeasonYou:'press', ccNewsAwardCat:'press', ccNewsAwardCatYou:'press',
   ccNewsPartnerNew:'you', ccNewsSquadNew:'you', ccNewsDropped:'you', ccNewsPairFreed:'you', ccNewsRoleMoved:'you', ccNewsRoleYes:'you', ccNewsRoleNo:'you', ccNewsTalkFix:'you', ccNewsTalkKeep:'you', ccNewsTalkFine:'you', ccNewsTalkAgain:'you',
   // Переезд вдвоём — это твой пост: платил за него ты. Автора ему не завели,
@@ -146288,7 +146360,8 @@ function ccPlayerAge(){
      сезоны. Отсюда же берётся и то, ради чего дата вводится, — день, в который
      сцена поздравляет. См. careerBirthdays. */
   const own = pl.born ? ccAgeOn(pl.born, careerToday()) : null;
-  if(own!=null) return own+ccSeasonsIn();
+  // Только сезоны после 2026: до него дата сама идёт вперёд, счётчик сезонов прибавлял тот же год второй раз.
+  if(own!=null) return own+ccYearShift();
   return pl.age||0;
 }
 // How old they are on the day the career is standing in, which is the only day
@@ -146320,7 +146393,8 @@ function ccSeasonsIn(){
 // The age of somebody on the roster, in the season the career is standing in.
 function ccAgeNow(handle, iso){
   const a=ccAgeOf(handle, iso);
-  return a!=null ? a+ccSeasonsIn() : null;
+  // Сезоны после 2026 (ccYearShift): в 2019–2025 календарь идёт вперёд сам, иначе +2 года за сезон.
+  return a!=null ? a+ccYearShift() : null;
 }
 /* Возраст для карточек и ухода со сцены. Слово 19.10: «без известной даты рождения пусть у них будет 18 сразу» —
    в первом сезоне 18, дальше стареет вместе со сценой. Рост рейтинга по-прежнему берёт ccAgeNow и средний возраст сцены. */
@@ -151497,7 +151571,7 @@ function careerBirthdays(fromISO, toISO){
          ccPlayerAge() здесь ответил бы «сколько было вчера» — и поздравление
          называло возраст на год меньше того, в который поздравляют. Роастер
          так и считался с самого начала (ccAgeOn(born, d)), своя строка — нет. */
-      const myAge=ccAgeOn(myBorn, d)+ccSeasonsIn();
+      const myAge=ccAgeOn(myBorn, d)+ccYearShift();
       careerNews('good', 'ccPostBdayMe', [myAge], {day:d});
       /* И сцена поздравляет в ответ.
 
@@ -151540,7 +151614,7 @@ function careerBirthdays(fromISO, toISO){
       if((ccCardOvr(p)||0)<bdayTop) continue;
       seen.add(k); n++;
       // The scene's birthdays age with the career, for the reason ccAgeNow gives.
-      careerNews('good', 'ccPostBdayMe', [ccAgeOn(born, d)+ccSeasonsIn()],
+      careerNews('good', 'ccPostBdayMe', [ccAgeOn(born, d)+ccYearShift()],
                  {day:d, by:{name:p.handle, ovr:ccCardOvr(p), card:p.region?{handle:p.handle, region:p.region}:null}});
     }
   }
@@ -152894,7 +152968,8 @@ function careerMoveRegion(code, country, withMates){
                                 : (CC_REGION_RENT[to]||0));
   // Свой месяц и, если решили ехать вместе, их билеты и месяцы — одной суммой:
   // уехать с командой, но без денег на неё, значит уехать одному.
-  const take=!!withMates && careerMates().length>0;
+  // Онлайн напарника-человека не оставишь: переезд всегда командой, иначе регион турниров оставался прежним.
+  const take=(!!withMates || ccMpTeam()) && careerMates().length>0;
   const forThem=take ? careerMoveMatesCost(rent) : 0;
   const bill=rent+forThem;
   if(bill && (cr.balance||0)<bill) return false;
@@ -153416,9 +153491,9 @@ function careerMovePanelHTML(){
     ${abroad ? `<div class="ch-hint">${L().ccMoveRegionHint}</div>` : ''}
     ${on ? `<div class="ch-empty">${L().ccMoveAlready}</div>`
          : abroad
-           ? `<button class="ch-sign"${can?'':' disabled'}
+           ? (ccMpTeam() ? '' : `<button class="ch-sign"${can?'':' disabled'}
                 onclick="careerMoveAsk('${reg}','${c}')">${
-                L().ccMoveGoCity(ccCountryName(c), regionName(reg))}</button>`+
+                L().ccMoveGoCity(ccCountryName(c), regionName(reg))}</button>`)+
              /* И вторая кнопка — уехать не одному.
 
                 Континент забирает у карьеры всё, что она построила рядом с
@@ -155601,8 +155676,61 @@ function careerNightSpotHTML(next){
     '<b>'+L().landingZoneSuffix(sp.i+1)+'</b>'+
     careerSpotAuraBarHTML(sp.aura||0)+
     (beef ? '<i class="ch-spot-beef">'+esc(L().ccBeefTag(ccHandle(beef.h)))+'</i>' : '')+
+    '<button class="ch-spot-map" onclick="event.stopPropagation(); ccDropMapOpen()">'+esc(L().ccDropMap)+'</button>'+
     '</div></div>';
 }
+/* КАРТА ВЫСАДОК перед капом: кто где садится на острове ближайшего вечера и где стычки. Из книги высадок сезона
+   (ccDropBook): команды твоих лобби помнят свою точку весь сезон, так что карта та же, по которой сядет комната.
+   Новая книга (новый сезон, новый остров) пустая: заполняется после первого вечера на этом острове. */
+function ccDropMapData(next){
+  const cr=CAREER && CAREER.career; if(!cr || !next) return null;
+  const set=careerNightSet(next), grid=careerSpotGrid(set), zones=ZONE_SETS[grid]||[];
+  const book=cr.dropBook, nm=(book && book.nm)||{}, at=(book && book.at)||{};
+  const zoneOf=xy=>{
+    if(!xy) return -1;
+    const exact=zones.findIndex(z=>z.x+','+z.y===xy); if(exact>=0) return exact;
+    const [x, y]=String(xy).split(',').map(Number);
+    return zones.findIndex(z=>x>=z.x && x<z.x+z.w && y>=z.y && y<z.y+z.h);
+  };
+  const by=new Map();
+  Object.keys(nm).forEach(k=>{
+    const e=nm[k]; if(!e || (e.s!==set && e.s!==grid)) return;
+    const i=zoneOf(at[k]); if(i<0) return;
+    if(!by.has(i)) by.set(i, []);
+    if(by.get(i).indexOf(e.n)<0) by.get(i).push(e.n);
+  });
+  const sp=careerSpotList(careerNightSpotKey(next))[0];
+  return {set, grid, zones, by, mine:sp ? sp.i : null};
+}
+function ccDropMapOpen(){
+  ccDropMapClose();
+  let next=null; try{ next=careerNext(); }catch(e){}
+  const d=ccDropMapData(next); if(!d) return;
+  const T=L(), art=MAP_ART[d.grid]||MAP_ART.m2, asp=MAP_ASPECT[d.grid]||'1100/970';
+  const contest=i=>((d.by.get(i)||[]).length+(d.mine===i ? 1 : 0))>=2;
+  const me=ccHandle(CAREER.player.nick||CAREER.player.handle||'');
+  const boxes=d.zones.map((z,i)=>{
+    const who=(d.by.get(i)||[]).slice(); if(d.mine===i) who.unshift(me);
+    if(!who.length) return '';
+    const cls='cc-dm-box'+(contest(i) ? ' hot' : '')+(d.mine===i ? ' me' : '');
+    return '<div class="'+cls+'" style="left:'+z.x+'%;top:'+z.y+'%;width:'+z.w+'%;height:'+z.h+'%"><span>'+
+      who.slice(0, 3).map(n=>esc(n)).join('<br>')+(who.length>3 ? '<br>+'+(who.length-3) : '')+'</span></div>';
+  }).join('');
+  const hot=[...d.zones.keys()].filter(contest);
+  const rows=hot.map(i=>{ const who=(d.by.get(i)||[]).slice(); if(d.mine===i) who.unshift(me);
+    return '<li'+(d.mine===i ? ' class="me"' : '')+'><b>'+esc(T.landingZoneSuffix(i+1))+'</b><span>'+who.map(n=>esc(n)).join(' · ')+'</span></li>'; }).join('');
+  const teams=[...d.by.values()].reduce((s,l)=>s+l.length, 0);
+  const el=document.createElement('div');
+  el.id='ccDropMapModal'; el.className='cc-dm-wrap';
+  el.onclick=e=>{ if(e.target===el) ccDropMapClose(); };
+  el.innerHTML='<div class="cc-dm" role="dialog" aria-modal="true"><div class="cc-dm-head"><b>'+esc(T.ccDropMap)+'</b><em>'+esc((next && (next.label||next.title))||'')+'</em>'+
+    '<button class="cc-dm-x" onclick="ccDropMapClose()" aria-label="'+esc(T.ccDropMapClose)+'">×</button></div>'+
+    '<div class="cc-dm-map" style="aspect-ratio:'+asp+';background-image:url(\''+art+'\')">'+boxes+'</div>'+
+    (teams ? '<p class="cc-dm-note">'+esc(T.ccDropMapNote(teams, hot.length))+'</p>'+(rows ? '<h5>'+esc(T.ccDropMapHot)+'</h5><ul class="cc-dm-list">'+rows+'</ul>' : '')
+           : '<p class="cc-dm-note">'+esc(T.ccDropMapNone)+'</p>')+'</div>';
+  document.body.appendChild(el);
+}
+function ccDropMapClose(){ const el=document.getElementById('ccDropMapModal'); if(el) el.remove(); }
 /* Кто отыгрывает вечер — игрок или симуляция.
 
    Правка: «надо дать выбор игроку: сыграть самому игру или
@@ -158170,7 +158298,8 @@ function ccGalaClose(){
   if(el) el.remove();
 }
 // Церемония кончается тем же, чем кончался экран конца сезона: новым годом.
-function ccGalaFinish(){ ccGalaClose(); careerNewSeason(); }
+// Только если сезон ещё не перевёрнут: вдвоём напарник мог уже начать новый, и кнопка церемонии перескакивала главу.
+function ccGalaFinish(){ ccGalaClose(); if(CAREER && CAREER.career && CAREER.career.seasonOver) careerNewSeason(); }
 function careerSeasonBoardHTML(){
   const cr=CAREER.career;
   const rows=careerBigRuns(cr.season);
@@ -161432,7 +161561,9 @@ function ccVictoryAltsHTML(){
     .sort((a,b)=>CC_KIND_RANK.indexOf(a.kind)-CC_KIND_RANK.indexOf(b.kind))[0] || null;
   if(alts.length<2 && !senior) return '';
   const cr=CAREER.career, vp=cr.vpick && cr.vpick[today];
-  const cur=senior ? (alts.find(v=>v.id===vp) || null) : careerVictoryOn(today);
+  // Горит то, что сыграется (careerNext): ЛАН, ноябрьский Trios Cash Cup и выбранный кап бьют старший турнир.
+  let nx=null; if(senior){ try{ nx=careerNext(); }catch(e){ nx=null; } }
+  const cur=senior ? ((nx && nx.type==='victory') ? (alts.find(v=>v.id===nx.id) || alts.find(v=>v.id===vp) || null) : null) : careerVictoryOn(today);
   // Капы на разных платформах в один день называются одинаково — платформа из id.
   const plat=id=>/Mobile/i.test(id) ? 'Mobile' : /Console|Xbox|Playstation/i.test(id) ? 'Console' : /_PC\b|_PC$/.test(id) ? 'PC' : '';
   // У капов 2026-го в списке нет имени — то же, что в заголовке вечера (Соло Victory Cup / Victory Cup формата года).
@@ -164142,17 +164273,26 @@ function ccGcSimOn(fn){ CC_GC_SIM_DEPTH++; try{ return fn(); } finally{ CC_GC_SI
    spot will be transferred to the closest placing duo that has not qualified»). По записанным финалам года
    (cr.gfKeep) идём Мейджор за Мейджором: квоту каждого добирают сверху те, кто ещё без места. Финала в записи
    нет — старое правило «место не ниже квоты». quotaOf(i) — квота Мейджора i. */
+/* ДИСКВАЛИФИКАЦИЯ ПЕРЕД ЛАНОМ. Иногда одну из прошедших команд финала снимают (виза, бан за читы, напарник не
+   может лететь), и её место уходит следующей по таблице: так места на Global Championship и передаются. Жребий
+   от сезона и финала, одинаковый у обоих в командной игре. CC_LAN_DQ_OFF — сравнить «без снятия» для новости. */
+let CC_LAN_DQ_ODDS=0.12;   // let — сторож check-career-lan-dq ставит 1 и 0
+const CC_LAN_DQ_TOP=12, CC_LAN_DQ_WHY=['visa','cheat','mate'];
+let CC_LAN_DQ_OFF=false;
+const ccGcRowKey=r=>r==='you' ? 'you' : (Array.isArray(r) ? r : [r]).map(c=>hKey((c && c.h) || c)).sort().join('+');
+const ccGcDqOf=kept=>(!CC_LAN_DQ_OFF && kept && kept.dq) ? kept.dq.key : null;
 function ccGcRolledSeat(year, n, place, quotaOf){
   const k=(CAREER && CAREER.career && CAREER.career.gfKeep)||{}, season=CAREER.career.season;
-  const rowKey=r=>r==='you' ? 'you' : (Array.isArray(r) ? r : [r]).map(c=>hKey((c && c.h) || c)).sort().join('+');
+  const rowKey=ccGcRowKey;
   const got=new Set();
   for(let i=1; i<=n; i++){
     const kept=k[year+'|'+i];
     if(!kept || kept.season!==season || !(kept.rows||[]).length){ if(i===n) return place<=quotaOf(n); continue; }
     let seats=quotaOf(i);
+    const dq=ccGcDqOf(kept);
     for(const r of kept.rows){
       if(seats<=0) break;
-      const key=rowKey(r); if(got.has(key)) continue;
+      const key=rowKey(r); if(got.has(key) || key===dq) continue;
       got.add(key); seats--;
     }
     if(i===n) return got.has('you');
@@ -164164,10 +164304,10 @@ function ccGcRolledSeat2026(place){
   const k=(CAREER.career.gfKeep)||{}, season=CAREER.career.season, sum=k['2026|summit'], m2=k['2026|2'];
   const quota=ccGcSlots(MAJOR2_GC_SLOTS);
   if(!m2 || m2.season!==season) return place<=quota;
-  const rowKey=r=>r==='you' ? 'you' : (Array.isArray(r) ? r : [r]).map(c=>hKey((c && c.h) || c)).sort().join('+');
+  const rowKey=ccGcRowKey, dq=ccGcDqOf(m2);
   const got=new Set((sum && sum.season===season) ? sum.rows.slice(0, ccTeams(SUMMIT_GC_SLOTS)).map(rowKey) : []);
   let seats=quota;
-  for(const r of m2.rows){ if(seats<=0) break; const key=rowKey(r); if(got.has(key)) continue; if(key==='you') return true; seats--; }
+  for(const r of m2.rows){ if(seats<=0) break; const key=rowKey(r); if(got.has(key) || key===dq) continue; if(key==='you') return true; seats--; }
   return false;
 }
 function ccGcKeepFinal(year, n, rows){
@@ -164175,6 +164315,38 @@ function ccGcKeepFinal(year, n, rows){
   const cr=CAREER.career, k=cr.gfKeep=cr.gfKeep||{};
   k[year+'|'+n]={season:cr.season, reg:ccCareerRegion(), rows:(rows||[]).slice()};
   if(cr.gcSim && cr.gcSim.season===cr.season) delete cr.gcSim[year];
+  try{ ccLanDqRoll(year, n); }catch(e){ console.error('ccLanDqRoll', e); }
+}
+// Квота «моего» финала для сравнения с дисквалификацией и без: тем же путём, что и ccGlobalsSeat.
+function ccLanDqSeatYou(year, n){
+  if(year===2026) return n===2 ? ccGcRolledSeat2026(Infinity) : null;
+  if(year===2025) return ccGcRolledSeat(2025, n, Infinity, i=>ccGcSlots(({1:GC2025_M1_SEATS, 2:GC2025_M2_SEATS, 3:GC2025_M3_SEATS})[i]||GC2025_M3_SEATS));
+  if(year===2024) return ccGcRolledSeat(2024, n, Infinity, ccGc24Seats);
+  if(year===2023 && n<=3) return ccGcRolledSeat(2023, n, Infinity, i=>ccGc23Seats('m'+i));
+  return null;
+}
+function ccLanDqRoll(year, n){
+  const cr=CAREER.career, kept=cr.gfKeep && cr.gfKeep[year+'|'+n];
+  if(!kept || kept.dq!==undefined || (year!==2026 && year!==2025 && year!==2024 && year!==2023) || (year===2026 && n!==2) || (year===2023 && !(n<=3))) return;
+  const rnd=careerRng(ccHashStr('lanDq|'+cr.season+'|'+year+'|'+n));
+  // Снимают только того, у кого место есть: ставим его на место «you» и спрашиваем ту же раздачу.
+  const holds=r=>{
+    const orig=kept.rows; let ok=false;
+    kept.rows=orig.map(x=>x===r ? 'you' : (x==='you' ? '__me' : x)); kept.dq=null; CC_LAN_DQ_OFF=true;
+    try{ ok=!!ccLanDqSeatYou(year, n); } finally{ kept.rows=orig; CC_LAN_DQ_OFF=false; delete kept.dq; }
+    return ok;
+  };
+  const pool=(kept.rows||[]).slice(0, CC_LAN_DQ_TOP).filter(r=>r!=='you' && holds(r));
+  if(!pool.length || rnd()>=CC_LAN_DQ_ODDS){ kept.dq=null; return; }
+  const row=pool[Math.floor(rnd()*pool.length)];
+  const why=CC_LAN_DQ_WHY[Math.floor(rnd()*CC_LAN_DQ_WHY.length)];
+  const names=(Array.isArray(row) ? row : [row]).map(c=>(c && c.h) || c).filter(Boolean).join(' & ');
+  kept.dq={key:ccGcRowKey(row), why:why, names:names};
+  const withDq=ccLanDqSeatYou(year, n);
+  CC_LAN_DQ_OFF=true; let without=null;
+  try{ without=ccLanDqSeatYou(year, n); } finally{ CC_LAN_DQ_OFF=false; }
+  if(withDq && !without){ kept.dq.you=true; careerNews('good', 'ccNewsDqSeat', [names, why]); }
+  else careerNews('flat', 'ccNewsDqOther', [names, why]);
 }
 const CC_GC_SIM={
   INV2022_DUOS:{year:2022, size:2, sets:['k1','k2','k3'], n:0, keepAll:[1,2,3], keepTop:()=>ccInv22Quota(), seats:()=>INV2022_SEATS, order:0},
@@ -164232,7 +164404,8 @@ function ccGcSimYear(year){
       if(!need) return;
       const free=r=>!r.some(h=>taken.has(hKey(h)));
       let pick=[];
-      const ownOf=kept=>(kept && kept.season===cr.season && kept.reg===reg) ? (kept.rows||[]).filter(r=>r!=='you').map(r=>r.map(x=>typeof x==='string' ? x : x.h)) : [];
+      // Снятая перед ЛАНом команда (ccLanDqRoll) в зал не едет.
+      const ownOf=kept=>(kept && kept.season===cr.season && kept.reg===reg) ? (kept.rows||[]).filter(r=>r!=='you' && !(kept.dq && ccGcRowKey(r)===kept.dq.key)).map(r=>r.map(x=>typeof x==='string' ? x : x.h)) : [];
       if(spec.keepAll){
         // Роли: приглашение давал любой из трёх финалов сезона 2022 (верх по квоте ccInv22Quota) — берём их по порядку.
         spec.keepAll.forEach(k=>ownOf(cr.gfKeep && cr.gfKeep[year+'|'+k]).slice(0, spec.keepTop()).forEach(r=>{
