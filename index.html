@@ -6984,8 +6984,8 @@
   .cc-run-drops{position:absolute;inset:0;pointer-events:none;transition:opacity .3s;}
   .cc-bus-layer{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:4;overflow:visible;}
   .cc-bus-tag{font-size:2.6px;font-weight:900;fill:var(--accent);paint-order:stroke;stroke:#000;stroke-width:.5px;}
-  .cc-bus-chev{fill:none;stroke:#3fd2ff;stroke-width:2px;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke;filter:drop-shadow(0 0 1.5px rgba(0,40,70,.9));}
-  .cc-bus-chev.past{opacity:.3;}
+  .cc-bus-chev{fill:#46d6ff;opacity:.85;stroke:none;}
+  .cc-bus-chev.past{opacity:0;}
   .cc-bus{position:absolute;font-size:22px;line-height:1;filter:drop-shadow(0 2px 3px rgba(0,0,0,.6));}
   .cc-bus-dot{position:absolute;width:7px;height:7px;margin:-3.5px 0 0 -3.5px;border-radius:50%;background:#fff;box-shadow:0 0 0 1.5px rgba(0,0,0,.55);}
   .cc-bus-dot.hot{background:#ff4d4d;}
@@ -106208,10 +106208,10 @@ function ccBusIntro(wrap, teams, g){
     svg.setAttribute('viewBox', '0 0 100 '+vbH.toFixed(3)); svg.setAttribute('preserveAspectRatio', 'none'); svg.setAttribute('class', 'cc-bus-layer');
     /* Маршрут как в игре: цепочка бирюзовых шевронов «V» носом по ходу полёта (скриншоты карты Fortnite с путём автобуса),
        а не пунктир. Пройденная автобусом часть бледнеет. */
-    const chev=document.createElementNS(NS, 'g'), chevs=[], len=Math.sqrt(L2), STEP=2.7, deg=Math.atan2(B.y-A.y, B.x-A.x)*180/Math.PI;
+    const chev=document.createElementNS(NS, 'g'), chevs=[], len=Math.sqrt(L2), STEP=2.5, deg=Math.atan2(B.y-A.y, B.x-A.x)*180/Math.PI;
     for(let d=STEP/2; d<len; d+=STEP){
       const t=d/len, p=at(t), c=document.createElementNS(NS, 'path');
-      c.setAttribute('d', 'M -0.85 -1.15 L 0.45 0 L -0.85 1.15');
+      c.setAttribute('d', 'M -0.9 -1.25 L 0.55 0 L -0.9 1.25 L -0.35 0 Z');
       c.setAttribute('transform', 'translate('+p.x.toFixed(3)+' '+p.y.toFixed(3)+') rotate('+deg.toFixed(1)+')');
       c.setAttribute('class', 'cc-bus-chev'); chev.appendChild(c); chevs.push({c, t});
     }
@@ -106220,7 +106220,17 @@ function ccBusIntro(wrap, teams, g){
     /* Автобус — значок Battle Bus с карты самой игры (вики Fortnite, «Battle Bus - Icon - Fortnite», 64 px,
        art/ui/battle-bus.webp): синий круг с белым автобусом под шаром. */
     const bus=document.createElementNS(NS, 'g');
-    bus.innerHTML='<image href="art/ui/battle-bus.webp" x="-3.6" y="-3.6" width="7.2" height="7.2"/>';
+    /* Как на карте самой игры (его скрин 19.11, Ranked Reload): Battle Bus сверху — длинный синий корпус с механизмом шара
+       в центре, развёрнут по курсу. Рисуется носом вправо и поворачивается на угол маршрута. */
+    bus.innerHTML='<g transform="rotate('+deg.toFixed(1)+')">'+
+      '<rect x="-6" y="-1.75" width="12" height="3.5" rx="1.6" fill="#3a74e0" stroke="#0d1730" stroke-width="1.1" vector-effect="non-scaling-stroke"/>'+
+      '<rect x="-5.6" y="-1.35" width="11.2" height="1.1" rx=".5" fill="#6fa3ff" opacity=".75"/>'+
+      '<rect x="-6" y="-1.75" width="2.1" height="3.5" rx="1" fill="#2a2f3d"/>'+
+      '<path d="M -4.6 0 H 4.8" stroke="#d9dde6" stroke-width=".35"/>'+
+      '<path d="M -3.2 -1.75 V 1.75 M 3.4 -1.75 V 1.75" stroke="#c9ced8" stroke-width=".3"/>'+
+      '<rect x="-1.15" y="-1.15" width="2.3" height="2.3" fill="#3b3f4a" stroke="#ff6a2b" stroke-width=".9" vector-effect="non-scaling-stroke"/>'+
+      '<circle cx="0" cy="0" r=".6" fill="#9aa1ad"/>'+
+      '<ellipse cx="1.9" cy="1.55" rx=".75" ry=".55" fill="#e8ebf0"/></g>';
     svg.appendChild(bus);
     const byZone=new Map(); list.forEach(t=>{ const z=t.landingZone; byZone.set(z, (byZone.get(z)||0)+1); });
     // Цвет стрелки — как в игре: своя акцентом, остальные по номеру в комнате (ZoneReplay.colourFor).
@@ -122736,7 +122746,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='ac050579';
+const CC_BUILD='1d129c5d';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
