@@ -9635,6 +9635,9 @@
     box-shadow:0 0 0 100vmax rgba(4,8,24,.55), 0 24px 60px rgba(0,0,0,.6);}
   .cc-choice-map.cc-choice-over .cc-choice-head b{margin:-16px -18px 10px;}
   .cc-choice-over .rp-map{max-width:min(100%,600px);}
+  .cc-choice-map.cc-choice-over.cc-choice-side{transform:none; box-shadow:0 16px 48px rgba(0,0,0,.55); padding:12px 14px;}
+  .cc-choice-map.cc-choice-over.cc-choice-side .cc-choice-head b{margin:-12px -14px 9px;}
+  .cc-choice-side .rp-map{max-width:min(100%,460px);}
   .rp-line{stroke:#ffdd00;}
   .rp-to{fill:#ffdd00;stroke:#151515;stroke-width:2px;vector-effect:non-scaling-stroke;}
   /* Стиль игры моделями из игры (ccStyleBox); у W-key клавиша W в углу. */
@@ -116706,7 +116709,19 @@ function ccChoiceBox(title, hint, options, onMap, side, kind){
        (.cc-dm-ask) уже поверх экрана — там как было. Телефон — как было. */
     const over=!!(onMap && !(onMap.classList && onMap.classList.contains('cc-dm-ask')) && (window.innerWidth||0)>=900);
     if(over) box.classList.add('cc-choice-over');
+    /* И не посреди экрана, а слева, на месте карты боя: таблица справа остаётся видна (его слово 19.11, как у лута:
+       «все выборы пусть там показываются»). Рамка — по карте в окне; карта мала или не видна — по центру экрана. */
+    if(over){
+      const r=onMap.getBoundingClientRect(), top=Math.max(8, r.top), h=Math.min(r.bottom, window.innerHeight-8)-top;
+      if(r.width>=560 && h>=380){
+        box.classList.add('cc-choice-side');
+        Object.assign(box.style, {left:Math.round(Math.max(0, r.left))+'px', top:Math.round(top)+'px', width:Math.round(r.width)+'px', maxHeight:Math.round(h)+'px'});
+      }
+    }
     (over ? document.body : host).appendChild(box);
+    // По высоте — посередине карты, как стояло окошко внутри неё.
+    if(box.classList.contains('cc-choice-side')){ const r=onMap.getBoundingClientRect(), top=Math.max(8, r.top), h=Math.min(r.bottom, window.innerHeight-8)-top;
+      box.style.top=Math.round(top+Math.max(0, (h-box.offsetHeight)/2))+'px'; }
     // Чат эфира видит вопрос и начинает советовать. См. ccTvOnChoice.
     if(typeof ccTvOnChoice==='function') ccTvOnChoice(options);
     if(!onMap) box.scrollIntoView({block:'center',
@@ -122774,7 +122789,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='a81e1ab5';
+const CC_BUILD='38692e8e';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
