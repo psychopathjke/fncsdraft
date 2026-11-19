@@ -104549,6 +104549,12 @@ function ccKeepMythic(kept){
 let ACTIVE_LANDING_SET='m2';
 // Чей счёт сундуков у острова (поле chests в ZONE_STATS): подпись в подсказке точки.
 const CC_CHESTS_SRC={s42:'fortnite.gg', s42solo:'fortnite.gg', s43:'fortnite.gg', r5:'fortnite.gg', r6:'fortnite.gg', t1:'wiki', t2:'wiki', t3:'wiki', f1:'wiki', f2:'wiki', f3:'wiki', f4:'wiki', e1:'wiki', e2:'wiki', e3:'wiki', e4:'wiki', k1:'wiki', k2:'wiki', k3:'wiki', k4:'wiki', j1:'wiki', j2:'wiki', j3:'wiki', j4:'wiki', h1:'wiki', h3:'wiki', h4:'wiki', i1:'wiki', i2:'wiki', i3:'wiki', m1:'Kinch', m2:'Kinch'};
+/* Сила точки = сундуки + ящики с патронами + 3 за редкий сундук, как у всех островов с переписью fortnite.gg. У S42 (дуо и
+   соло-сотня) r оставался от старой переписи вики, а сундуки потом пересчитаны по fortnite.gg: точка с 5 сундуками давала
+   +3, а с 68 — +1 (его вопрос 19.11: «у меня локация +3 повер, а там 5 сундуков»). Считаем r из тех же чисел, что видит
+   лут-комната. У s43/r5/r6 формула и так совпадает с r — ничего не меняется. */
+Object.keys(CC_CHESTS_SRC).forEach(set=>{ if(CC_CHESTS_SRC[set]!=='fortnite.gg') return;
+  (ZONE_STATS[set]||[]).forEach(z=>{ if(z && z.chests!=null){ z.r=z.loot=(z.chests||0)+(z.ammo||0)+3*(z.rare||0); } }); });
 /* МИФИЧЕСКИЕ POI Chapter 5–6 (острова 2024 f1–f4 и 2025 t1–t3): точка, где стоит босс с мификом.
    Босс и его место — вики (страница Bosses и страницы боссов), клетка — по маркеру локации на
    вики-карте патча финала (tools/build-2025-zone-loot.js, DUMP_POIS). Ключ — индекс клетки в
@@ -122801,7 +122807,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='d3af2c12';
+const CC_BUILD='a7d86980';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
