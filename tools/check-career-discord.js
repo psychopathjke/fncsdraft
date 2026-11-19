@@ -22,17 +22,34 @@ for(const lang of ['ru','en','fr','it','pt']){
 }
 setLang('en');
 check('свободный день открыт', ccCentreDayOpen());
-check('PC: без PR не зовут', !!ccDcWhy('pcJoin'));
-check('мобила: зовут с рейтинга', ccDcWhy('mobJoin')===null, ccDcWhy('mobJoin'));
-const m0=ccMobileOvr(), e0=careerEnergy(); ccDcGo('mobJoin');
-check('мобильная кастомка качает рейтинг', ccMobileOvr()>m0, ccMobileOvr()-m0);
+check('PC: сессии открыты всем', ccDcWhy('pcJoin')===null, ccDcWhy('pcJoin'));
+check('мобила: с телефоном открыта', ccDcWhy('mobJoin')===null, ccDcWhy('mobJoin'));
+// Как на настоящих: запись → чек-ин (код лобби) → живые игры → таблица.
+ccDcRegister('mob', 's1');
+check('запись', ccDcReg() && ccDcReg().kind==='mob' && !ccDcReg().checked);
+CH_DC='mob'; careerRenderHub('social');
+check('до чек-ина кода нет', (document.getElementById('chBody')||document.body).innerText.indexOf(ccDcReg().code)<0);
+ccDcCheckIn(); careerRenderHub('social');
+check('после чек-ина код виден', (document.getElementById('chBody')||document.body).innerText.indexOf(ccDcReg().code)>=0);
+skipAnimation=true; CC_SKIP_RUN=true;
+const sk=setInterval(()=>{ const p=document.querySelector('.landing-picker'); if(p){ const z=p.querySelectorAll('.land-zone'); if(z.length){ z[0].click(); const c=p.querySelector('#gameLandingConfirm'); if(c && !c.disabled) c.click(); } }
+  const c0=document.querySelector('.cc-choice-btn'); if(c0) c0.click(); const b=document.getElementById('majorSkipBtn'); if(b && !b.disabled) b.click(); }, 30);
+const m0=ccMobileOvr(), e0=careerEnergy();
+await Promise.race([ccScrimRun(), new Promise(r=>setTimeout(r, 300000))]);
+clearInterval(sk);
+const res=ccDcReg() && ccDcReg().res; notes.mob=res;
+check('мобильная сессия сыграна: 16 человек', res && res.of===16, JSON.stringify(res));
+check('мобильная сессия качает рейтинг', ccMobileOvr()>m0, ccMobileOvr()-m0);
 check('стоит энергии', careerEnergy()===e0-CC_DC_ENERGY, e0-careerEnergy());
 check('раз в день', ccDcWhy('mobJoin')===L().dcDone, ccDcWhy('mobJoin'));
+// Инвайт за топ-5 держит ступень: Practice Scrims → Division 3.
+save('2026-05-06', {division:5}); CAREER.player.ovr=70;
+const tierA=ccNobleTier(); CAREER.career.nobleInv=CC_NOBLE_PROMO[tierA];
+check('инвайт поднимает ступень', CC_NOBLE_LADDER[ccNobleTier()].name==='Noble Division 3', CC_NOBLE_LADDER[ccNobleTier()].name);
+save('2026-05-06');
 const b0=CAREER.career.balance; ccDcGo('mobHost');
 check('своя мобильная кастомка списывает фонд', CAREER.career.balance<b0 || (CAREER.career.dcLast && CAREER.career.dcLast.cash>0), CAREER.career.balance-b0);
 check('пост о своей кастомке', (CAREER.career.news||[]).some(n=>n.k==='ccPostHosted'));
-save('2026-05-06', {mobOvr:70});
-check('мобила: ниже порога закрыта', ccDcWhy('mobJoin')===L().dcNeedMob(CC_DC_MOB_RATE), ccDcWhy('mobJoin'));
 save('2026-05-06', {}, false);
 check('мобила: без телефона закрыта', ccDcWhy('mobJoin')===L().ccMobTrainNeed && ccDcWhy('mobHost')===L().ccMobTrainNeed);
 save('2026-05-06', {energy:20});
