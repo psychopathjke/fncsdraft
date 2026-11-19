@@ -17,7 +17,9 @@ check('с 22.05.2023 нет', sf('2023-05-22') === 'null' && sf('2024-09-23') ==
 check('пробы: 15.10.2024 — 75 за время без щита', ZoneSim.phasesFor('2024-10-16', 2).siphon.hot === 7);
 check('пробы: 29.10.2024 — 25+25', ZoneSim.phasesFor('2024-11-10', 2).siphon.split === 25);
 check('2026: 75 за 5 с без щита', sf('2026-02-02') === JSON.stringify({hp:75, sh:false, hot:5}), sf('2026-02-02'));
-check('Reload без сифона', !ZoneSim.RELOAD_PHASES.siphon);
+check('Reload до 26.08.2025 без сифона', !ZoneSim.reloadPhasesFor('2025-08-25').siphon && !ZoneSim.reloadPhasesFor('2024-10-16').siphon);
+check('Reload с 26.08.2025 с сифоном', JSON.stringify(ZoneSim.reloadPhasesFor('2026-09-06').siphon) === JSON.stringify({hp:75, sh:false, hot:5}));
+check('Reload: шторм тот же', ZoneSim.reloadPhasesFor('2026-09-06').length === ZoneSim.RELOAD_PHASES.length && ZoneSim.reloadPhasesFor('2026-09-06').drift === ZoneSim.RELOAD_PHASES.drift);
 
 const src = fs.readFileSync(path.join(__dirname, 'zone-sim-test.js'), 'utf8');
 const LAND = eval(src.match(/const LAND = (\[[\s\S]*?\n\];)/)[1].replace(/;$/, ''));

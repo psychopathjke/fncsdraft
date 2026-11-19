@@ -116879,7 +116879,7 @@ function ccStormPhases(set, squadSize){
   // Вид шторма на карте (zone-replay stormLook): Главы 1–2 до 5.12.2021, Главы 3–5 до 1.12.2024, дальше нынешний.
   const day=ccStormDay(set);
   try{ window.CC_STORM_LOOK=!day ? 'c6' : day<'2021-12-05' ? 'c1' : day<'2024-12-01' ? 'c3' : 'c6'; }catch(e){}
-  if(/^r\d$/.test(set)){ CC_GAME_PHASES=ZoneSim.RELOAD_PHASES; return ZoneSim.RELOAD_PHASES; }
+  if(/^r\d$/.test(set)){ CC_GAME_PHASES=ZoneSim.reloadPhasesFor ? ZoneSim.reloadPhasesFor(day) : ZoneSim.RELOAD_PHASES; return CC_GAME_PHASES; }
   CC_GAME_PHASES=ZoneSim.phasesFor ? ZoneSim.phasesFor(ccStormDay(set), squadSize) : null;
   return CC_GAME_PHASES || undefined;
 }

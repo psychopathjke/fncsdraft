@@ -123,6 +123,7 @@
        24.09 – 30.11.2024, Siphon Trials (fortnite.com, 24.09.2024), неделя — свой вариант: 40 эфф. здоровья, 50, 25, 75 здоровья
          за время без щита (хотфикс: 5 за тик 0.5 с, 7.1 с), 50 здоровья без щита, 25 здоровья + 25 щита (с 29.10 до конца главы).
        с 1.12.2024 (Chapter 6, FNCS Major 1 2025) и дальше: 75 здоровья за 5 секунд, щита нет (Epic, 02.12.2024; вики Ranked).
+     Reload — отдельно, reloadPhasesFor: до 26.08.2025 без сифона.
      «Эффективное здоровье» — здоровье, остаток в щит. 25+25 — до 25 в каждое. */
   var SIPHON_ERAS = [
     ['2018-11-14', {hp:50, sh:true,  hot:0}],
@@ -236,6 +237,17 @@
      едут целиком — то же правило, что у БР (DRIFT: сдвиг круга i = радиус круга i−1, замерено на трёх реплеях).
      Центры кругов в реплеях Reload не снимались, поэтому правило БР, а не своё число. */
   RELOAD_PHASES.drift = RELOAD_PHASES.map(function(ph, i){ return i >= 4 ? RELOAD_PHASES[i-1].radius : null; });
+  /* Сифон в Reload. В Siphon Trials 2024 Epic прямо исключил Reload («Reload tournaments will not have Siphon»). 26.08.2025
+     @FNCompetitive: «We've added Siphon in Ranked Reload» (вместе со штормом как на FNCS Pro-Am 2025). Про турниры Reload
+     отдельного слова не нашлось; с 2023 у Epic правило «что в Ranked — то и в турнирах», поэтому с 26.08.2025 и здесь. Сколько
+     давали в Reload — не сказано; берётся турнирный вариант того времени (75 здоровья за 5 с). Вывод, не факт. */
+  var RELOAD_SIPHON_FROM = '2025-08-26';
+  function reloadPhasesFor(day){
+    var out = RELOAD_PHASES.slice();
+    out.drift = RELOAD_PHASES.drift;
+    out.siphon = String(day || '9999') >= RELOAD_SIPHON_FROM ? siphonFor(String(day || '9999')) : null;
+    return out;
+  }
 
   function generateZonePlan(opts){
     var rng = opts.rng, land = opts.land, aspect = opts.aspect;
@@ -2360,6 +2372,7 @@
     createRng: createRng,
     PHASES: PHASES,
     RELOAD_PHASES: RELOAD_PHASES,
+    reloadPhasesFor: reloadPhasesFor,
     phasesFor: phasesFor,
     DRIFT: DRIFT,
     siphonFor: siphonFor,
