@@ -12559,7 +12559,7 @@ ccNewsLux:n=>'Новая покупка: '+n,
 ccCollTitle:'Коллекция',
 ccCollSpent:'Потрачено на дорогое',
 lbByEarn:'Призы турниров',
-lbByAll:'Все призы',
+lbByAll:'Все призы', lbByInc:'Весь доход', lbIncCol:'Доход', lbIncNote:'Всё, что заработала карьера: призы, свои турниры, бонусы, зарплата, кастомки и подработка.',
 lbAllCol:'Все призы',
 lbCupNote:'Только турниры: без своих турниров и бонусов за подпись.',
 lbAllNote:'Вместе с бонусами за подпись. Свои турниры не считаются.',
@@ -14688,7 +14688,7 @@ ccNewsLux:n=>'New purchase: '+n,
 ccCollTitle:'Collection',
 ccCollSpent:'Spent on the big stuff',
 lbByEarn:'Tournament prizes',
-lbByAll:'All prizes',
+lbByAll:'All prizes', lbByInc:'All income', lbIncCol:'Income', lbIncNote:'Everything the career earned: prizes, own tournaments, bonuses, wages, customs and side jobs.',
 lbAllCol:'All prizes',
 lbCupNote:'Tournaments only: no own tournaments, no signing bonuses.',
 lbAllNote:'Including signing bonuses. Own tournaments do not count.',
@@ -24921,13 +24921,13 @@ ccOrgGoalPickHint:'Meta da temporada: escolha uma antes do fim da temporada. Cum
 }));
 /* Дозаливка «fr» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
 Object.assign(I18N.fr=I18N.fr||{},
-({ lbByEarn:'Prix des tournois', lbByAll:'Tous les prix', lbAllCol:'Tous les prix', lbCupNote:'Tournois seulement : sans tes propres tournois ni primes de signature.', lbAllNote:'Avec les primes de signature. Tes propres tournois ne comptent pas.', lbPage:(a,b,n)=>'Places '+a+'-'+b+' sur '+n }));
+({ lbByEarn:'Prix des tournois', lbByAll:'Tous les prix', lbByInc:'Tous les revenus', lbIncCol:'Revenus', lbIncNote:'Tout ce que la carrière a gagné : prix, tournois perso, primes, salaire, customs et petits boulots.', lbAllCol:'Tous les prix', lbCupNote:'Tournois seulement : sans tes propres tournois ni primes de signature.', lbAllNote:'Avec les primes de signature. Tes propres tournois ne comptent pas.', lbPage:(a,b,n)=>'Places '+a+'-'+b+' sur '+n }));
 /* Дозаливка «it» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
 Object.assign(I18N.it=I18N.it||{},
-({ lbByEarn:'Premi dei tornei', lbByAll:'Tutti i premi', lbAllCol:'Tutti i premi', lbCupNote:'Solo tornei: senza i propri tornei e i bonus alla firma.', lbAllNote:'Con i bonus alla firma. I propri tornei non contano.', lbPage:(a,b,n)=>'Posti '+a+'-'+b+' di '+n }));
+({ lbByEarn:'Premi dei tornei', lbByAll:'Tutti i premi', lbByInc:'Tutte le entrate', lbIncCol:'Entrate', lbIncNote:'Tutto ciò che la carriera ha guadagnato: premi, tornei propri, bonus, stipendio, custom e lavoretti.', lbAllCol:'Tutti i premi', lbCupNote:'Solo tornei: senza i propri tornei e i bonus alla firma.', lbAllNote:'Con i bonus alla firma. I propri tornei non contano.', lbPage:(a,b,n)=>'Posti '+a+'-'+b+' di '+n }));
 /* Дозаливка «pt» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
 Object.assign(I18N.pt=I18N.pt||{},
-({ lbByEarn:'Prêmios de torneios', lbByAll:'Todos os prêmios', lbAllCol:'Todos os prêmios', lbCupNote:'Só torneios: sem torneios próprios nem bônus de assinatura.', lbAllNote:'Com bônus de assinatura. Torneios próprios não contam.', lbPage:(a,b,n)=>'Posições '+a+'-'+b+' de '+n }));
+({ lbByEarn:'Prêmios de torneios', lbByAll:'Todos os prêmios', lbByInc:'Toda a renda', lbIncCol:'Renda', lbIncNote:'Tudo o que a carreira ganhou: prêmios, torneios próprios, bônus, salário, customs e bicos.', lbAllCol:'Todos os prêmios', lbCupNote:'Só torneios: sem torneios próprios nem bônus de assinatura.', lbAllNote:'Com bônus de assinatura. Torneios próprios não contam.', lbPage:(a,b,n)=>'Posições '+a+'-'+b+' de '+n }));
 /* Дозаливка «fr» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
 Object.assign(I18N.fr=I18N.fr||{},
 ({ hmBoardList:'Liste complète' }));
@@ -122748,7 +122748,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='28be5e22';
+const CC_BUILD='fa64ab7b';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -127495,8 +127495,10 @@ function ccBoardRow(){
           div:Math.min(5, Math.max(1, cr.division||5)), titles:log.filter(r=>r && r.place===1).length,
           year:(typeof ccCalYear==='function' ? ccCalYear() : 2026),
           best: best ? best.place+'/'+best.of : '', bestEv: best ? String(best.kind||'cup') : '',
-          spent:ccSpentBig()};
+          spent:ccSpentBig(), income:ccIncomeAll(cr)};
 }
+// Весь доход карьеры: призы (со своими турнирами и бонусами за подпись), зарплата, подработка и кастомки — строки статистики.
+function ccIncomeAll(cr){ return Math.max(0, Math.round((cr.earnings||0)+Math.max(0, cr.wages||0)+(cr.side||0))); }
 // После сохранения — отложенно, чтобы десять сохранений вечера дали одну отправку.
 function ccBoardSoon(){
   if(!ccBoardOn()) return;
@@ -127515,7 +127517,7 @@ function ccBoardLater(ms){
 function ccBoardSend(force){
   if(!ccBoardOn()) return Promise.resolve(false);
   const cr=CAREER.career, row=ccBoardRow();
-  const key=[row.nick, row.region, row.earn, row.earnAll, row.div, row.titles, row.best, row.seasons, row.spent].join('|');
+  const key=[row.nick, row.region, row.earn, row.earnAll, row.div, row.titles, row.best, row.seasons, row.spent, row.income].join('|');
   const b=cr.board;
   if(!force && b.key===key) return Promise.resolve(false);
   if(!force && b.sent && Date.now()-b.sent < CC_BOARD_EVERY){ ccBoardLater(CC_BOARD_EVERY-(Date.now()-b.sent)); return Promise.resolve(false); }
@@ -127558,9 +127560,9 @@ function careerWorldHTML(){
   const head='<div class="lb-top"><div class="lb-regs">'+regs.map(([k,t])=>
       '<button class="ch-subtab'+(CC_BOARD_REGION===k?' on':'')+'" onclick="ccBoardRegion('+(k?'\''+k+'\'':'null')+')">'+esc(t)+'</button>').join('')+
     '</div><button class="ch-swap" onclick="ccBoardToggle()">'+esc(off ? T.lbShow : T.lbHide)+'</button></div>'+
-    '<div class="lb-regs">'+[[null, T.lbByEarn], ['all', T.lbByAll], ['spent', T.lbBySpent]].map(([k,t])=>
+    '<div class="lb-regs">'+[[null, T.lbByEarn], ['all', T.lbByAll], ['inc', T.lbByInc], ['spent', T.lbBySpent]].map(([k,t])=>
       '<button class="ch-subtab'+(CC_BOARD_SORT===k?' on':'')+'" onclick="ccBoardSort('+(k?'\''+k+'\'':'null')+')">'+esc(t)+'</button>').join('')+'</div>'+
-    '<div class="ch-hint">'+esc(T.lbNote)+' '+esc(CC_BOARD_SORT==='all' ? T.lbAllNote : CC_BOARD_SORT==='spent' ? '' : T.lbCupNote)+'</div>';
+    '<div class="ch-hint">'+esc(T.lbNote)+' '+esc(CC_BOARD_SORT==='all' ? T.lbAllNote : CC_BOARD_SORT==='inc' ? T.lbIncNote : CC_BOARD_SORT==='spent' ? '' : T.lbCupNote)+'</div>';
   /* Прочитанная таблица живёт минуту и только для своей карьеры: старше — перечитывается при открытии
      (старая видна, пока идёт новая), другая карьера в слоте — читает свою. */
   const bid=(cr.board && cr.board.id) || '';
@@ -127585,12 +127587,12 @@ function careerWorldHTML(){
   const me=d.you ? '<div class="lb-you">'+esc(T.lbYou(d.you.rank, d.total))+'</div>'
                  : (off ? '<div class="lb-you">'+esc(T.lbHidden)+' <button class="ch-swap" onclick="ccBoardToggle()">'+esc(T.lbShow)+'</button></div>' : '');
   if(!rows.length) return head+me+'<div class="ch-hint">'+esc(T.lbEmpty)+'</div>';
-  const c=T.lbCols.slice(); if(CC_BOARD_SORT==='spent') c[3]=T.lbSpentCol; else if(CC_BOARD_SORT==='all') c[3]=T.lbAllCol;
+  const c=T.lbCols.slice(); if(CC_BOARD_SORT==='spent') c[3]=T.lbSpentCol; else if(CC_BOARD_SORT==='all') c[3]=T.lbAllCol; else if(CC_BOARD_SORT==='inc') c[3]=T.lbIncCol;
   const base0=(d.page||0)*(d.per||100);
   const flag=cc=>cc ? '<img class="ch-bio-flag" src="flags/w20/'+esc(ccCountryOf(cc))+'.png" alt="" onerror="this.remove()"> ' : '';
   const evw=k=>{ try{ return ccFfKindWord(k)||''; }catch(e){ return ''; } };
   const tr=(r,i,abs)=>'<tr class="'+(r.you?'lb-me':'')+'"><td>'+(abs ? i+1 : base0+i+1)+'</td><td>'+flag(r.country)+esc(r.nick)+
-    '<small> · '+esc(T.lbSeasons(r.seasons))+'</small></td><td>'+esc(r.region)+'</td><td>$'+ccNum(CC_BOARD_SORT==='spent' ? (r.spent||0) : CC_BOARD_SORT==='all' ? (r.earnAll!=null ? r.earnAll : r.earn) : r.earn)+
+    '<small> · '+esc(T.lbSeasons(r.seasons))+'</small></td><td>'+esc(r.region)+'</td><td>$'+ccNum(CC_BOARD_SORT==='spent' ? (r.spent||0) : CC_BOARD_SORT==='inc' ? (r.income||0) : CC_BOARD_SORT==='all' ? (r.earnAll!=null ? r.earnAll : r.earn) : r.earn)+
     '</td><td>'+r.ovr+'</td><td>'+r.div+'</td><td>'+r.titles+'</td><td>'+(r.best ? esc(r.best)+(r.bestEv ? ' <small>'+esc(evw(r.bestEv))+'</small>' : '') : '-')+'</td></tr>';
   let body=rows.map((r,i)=>tr(r,i)).join('');
   if(d.you && !rows.some(r=>r.you)) body+='<tr class="lb-gap"><td colspan="8">…</td></tr>'+tr(Object.assign({you:true}, d.you.row), d.you.rank-1, true);
@@ -173075,8 +173077,8 @@ function homeBoardDraw(){
     });
   }
   /* Вкладки турниры / все призы (игрок 2.11: «призы только с турниров и вторая вкладка все призы»). */
-  const head='<h2 class="home-h">'+esc(T.lbTab)+'</h2><p class="home-sub">'+esc(HOME_BOARD_SORT==='all' ? T.lbAllNote : T.lbCupNote)+'</p>'+
-    '<div class="hb-tabs">'+[[null, T.lbByEarn], ['all', T.lbByAll]].map(([k,t])=>'<button type="button" class="'+(HOME_BOARD_SORT===k ? 'on' : '')+'" onclick="homeBoardSort('+(k ? '\''+k+'\'' : 'null')+')">'+esc(t)+'</button>').join('')+'</div>';
+  const head='<h2 class="home-h">'+esc(T.lbTab)+'</h2><p class="home-sub">'+esc(HOME_BOARD_SORT==='all' ? T.lbAllNote : HOME_BOARD_SORT==='inc' ? T.lbIncNote : T.lbCupNote)+'</p>'+
+    '<div class="hb-tabs">'+[[null, T.lbByEarn], ['all', T.lbByAll], ['inc', T.lbByInc]].map(([k,t])=>'<button type="button" class="'+(HOME_BOARD_SORT===k ? 'on' : '')+'" onclick="homeBoardSort('+(k ? '\''+k+'\'' : 'null')+')">'+esc(t)+'</button>').join('')+'</div>';
   if(!d || !d._at){ box.innerHTML=head+'<p class="home-sub">'+esc(T.lbLoad)+'</p>'; return; }
   if(d.err){ box.innerHTML=head+'<p class="home-sub">'+esc(T.lbErr)+'</p>'; return; }
   const seen=new Set(), rows=(d.rows||[]).filter(r=>{ const k=[r.nick, r.region, r.country, r.seasons, r.earn, r.titles].join('|');
@@ -173091,9 +173093,9 @@ function homeBoardDraw(){
 let HOME_BOARD_ROWS=[];
 function homeBoardRowsHTML(rows, from, sort){
   const T=L(), flag=c=>c ? '<img src="flags/w20/'+esc(ccCountryOf(c))+'.png" alt="" onerror="this.remove()">' : '';
-  const all=(sort===undefined ? HOME_BOARD_SORT : sort)==='all';
+  const srt=(sort===undefined ? HOME_BOARD_SORT : sort), all=srt==='all', inc=srt==='inc';
   return rows.map((r,i)=>'<div class="hb-row'+(r.you ? ' me' : '')+'"><i>'+((from||0)+i+1)+'</i><b>'+flag(r.country)+esc(r.nick)+
-    '<small>'+esc(r.region||'')+' · '+esc(T.lbSeasons(r.seasons))+'</small></b><span>$'+ccNum(all && r.earnAll!=null ? r.earnAll : r.earn)+'</span></div>').join('');
+    '<small>'+esc(r.region||'')+' · '+esc(T.lbSeasons(r.seasons))+'</small></b><span>$'+ccNum(inc ? (r.income||0) : all && r.earnAll!=null ? r.earnAll : r.earn)+'</span></div>').join('');
 }
 function homeBoardSort(k){ HOME_BOARD_SORT=k||null; HOME_BOARD=null; homeBoardDraw(); }
 /* Весь список поверх экрана, по 100 мест со стрелками (игрок 2.11: «ничего не листается» — было только «Показать 50»).

@@ -44,5 +44,10 @@ check('место своей карьеры', B.rankOf(rows, 'a'.repeat(16), nul
 check('место в регионе', B.rankOf(rows, 'a'.repeat(16), 'EU').rank===2);
 check('чужой регион — места нет', B.rankOf(rows, 'a'.repeat(16), 'NAC')===null);
 
+// Весь доход (19.11): у нового клиента — число, у старого его нет (null), кривой — отказ.
+check('доход принимается', normalize(Object.assign({}, OK, {income:900000}), 0).row.income===900000);
+check('старый клиент без дохода — null', normalize(OK, 0).row.income===null);
+check('отрицательный доход — отказ', normalize(Object.assign({}, OK, {income:-1}), 0).err==='income');
+
 if(fails.length){ fails.forEach(f=>console.error('FAIL '+f)); process.exit(1); }
 console.log('таблица карьер: санитария, частота и места — как задумано');

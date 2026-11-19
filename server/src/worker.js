@@ -175,7 +175,8 @@ export class Board {
     try{ this.sql.exec('ALTER TABLE rows ADD COLUMN spent INTEGER DEFAULT 0'); }catch(e){}   // 15.10: «Потрачено»
     // 2.11: все призы (свои турниры и бонусы за подпись); у старых строк — их earn.
     try{ this.sql.exec('ALTER TABLE rows ADD COLUMN earnall INTEGER'); this.sql.exec('UPDATE rows SET earnall=earn WHERE earnall IS NULL'); }catch(e){}
-    try{ this.sql.exec('ALTER TABLE rows ADD COLUMN v2 INTEGER DEFAULT 0'); }catch(e){}   // строка от клиента со счётом «только турниры»
+    try{ this.sql.exec('ALTER TABLE rows ADD COLUMN v2 INTEGER DEFAULT 0'); }catch(e){}
+    try{ this.sql.exec('ALTER TABLE rows ADD COLUMN income INTEGER'); }catch(e){}   // 19.11: весь доход карьеры   // строка от клиента со счётом «только турниры»
     // Последние отказы (Notion 15.10: строку с >500 титулами сервер молча выбрасывал неделю). Ник и
     // причина видны по GET /board?rejects=1, id не хранится.
     this.sql.exec('CREATE TABLE IF NOT EXISTS rejects(at INTEGER, nick TEXT, err TEXT, body TEXT)');
@@ -284,9 +285,9 @@ export class Board {
       }
       if(r.skip) return json({ok:true, skip:r.skip});
       const w=r.row;
-      this.sql.exec(`INSERT OR REPLACE INTO rows(id,nick,region,country,seasons,earn,ovr,div,titles,year,best,bestEv,at,spent,earnall,v2)
-        VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`, w.id, w.nick, w.region, w.country, w.seasons, w.earn,
-        w.ovr, w.div, w.titles, w.year, w.best, w.bestEv, w.at, w.spent||0, w.earnAll!=null ? w.earnAll : w.earn, w.v2||0);
+      this.sql.exec(`INSERT OR REPLACE INTO rows(id,nick,region,country,seasons,earn,ovr,div,titles,year,best,bestEv,at,spent,earnall,v2,income)
+        VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`, w.id, w.nick, w.region, w.country, w.seasons, w.earn,
+        w.ovr, w.div, w.titles, w.year, w.best, w.bestEv, w.at, w.spent||0, w.earnAll!=null ? w.earnAll : w.earn, w.v2||0, w.income!=null ? w.income : null);
       return json({ok:true});
     }
     if(url.searchParams.get('rejects'))
@@ -295,7 +296,7 @@ export class Board {
     const me=String(url.searchParams.get('me')||'');
     // Сортировка: по призовым (как было) или по тратам. Имя колонки — только из этого списка.
     const sortQ=url.searchParams.get('sort');
-    const col=sortQ==='spent' ? 'spent' : sortQ==='all' ? 'earnall' : 'earn';
+    const col=sortQ==='spent' ? 'spent' : sortQ==='all' ? 'earnall' : sortQ==='inc' ? 'income' : 'earn';
     // Страницы по TOP строк (2.11, «и они листаются»).
     const page=Math.max(0, Math.min(1000, Math.floor(Number(url.searchParams.get('page'))||0)));
     // Вкладка турниров: старые строки с невозможной суммой не показываются (OLD_CUP_PER_SEASON в board.js).
@@ -304,6 +305,8 @@ export class Board {
     if(col==='earn'){ conds.push('(v2=1 OR earn<=seasons*?)'); args.push(OLD_CUP_PER_SEASON); }
     // Вкладка всех призов: лежащие строки со своими турнирами не показываются, новая строка игры их заменит.
     if(col==='earnall'){ conds.push('earnall<=earn+seasons*?'); args.push(OLD_CUP_PER_SEASON); }
+    // Вкладка дохода: только строки новых клиентов, которые его прислали.
+    if(col==='income') conds.push('income IS NOT NULL');
     const where=conds.length ? ' WHERE '+conds.join(' AND ') : '';
     const rows=this.sql.exec('SELECT * FROM rows'+where+' ORDER BY '+col+' DESC, at ASC LIMIT '+TOP+' OFFSET '+(page*TOP), ...args).toArray();
     const total=this.sql.exec('SELECT COUNT(*) AS n FROM rows'+where, ...args).toArray()[0].n;
