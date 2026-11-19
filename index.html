@@ -106208,6 +106208,44 @@ function ccRunDropsDraw(wrap, teams){
    Своя команда жёлтая с ником, спорные точки красные. ~4 секунды, кнопка пропуска обрывает. Это содержимое игры, а не
    украшение страницы, поэтому reduced motion его не выключает (у него в Chrome он всегда включён). */
 const CC_BUS_MS=3000, CC_BUS_GLIDE_MS=900;
+/* МАРШРУТ АВТОБУСА РЕШАЕТ, КТО СЕЛ ПЕРВЫМ (19.11, его выбор из списка механик турниров). Одна прямая на игру: от дня и номера
+   игры (одинакова у двух игроков в локстепе), её рисует ccBusIntro и по ней же считается, когда отряд приземлился:
+   автобус идёт через остров CC_BUS_CROSS с, до своей точки отряд планирует CC_BUS_GLIDE с на каждый процент карты от маршрута.
+   Это оценки по игре, не замер: реплеи времени высадки не пишут. В стычке на высадке (resolveDropDuel) севший раньше на
+   CC_BUS_LEAD_SEC и больше получает CC_BUS_LEAD_P к шансу: успел взять оружие. Сколько стычек, не меняется, только кто выиграл. */
+const CC_BUS_CROSS=60, CC_BUS_GLIDE=0.5, CC_BUS_LEAD_SEC=8, CC_BUS_LEAD_P=0.10;
+let CC_BUS_G=null;
+function ccBusRoute(g){
+  const day=(typeof careerToday==='function') ? careerToday() : '';
+  const rnd=careerRng(ccHashStr('bus|'+day+'|'+(g||0)));
+  // Через остров, со сдвигом от центра до ±18%, под случайным углом. Координаты — проценты карты.
+  const ang=rnd()*Math.PI*2, off=(rnd()-0.5)*36, cx=50+Math.cos(ang+Math.PI/2)*off, cy=50+Math.sin(ang+Math.PI/2)*off;
+  const dx=Math.cos(ang), dy=Math.sin(ang);
+  return {cx, cy, dx, dy, ax:cx-dx*75, ay:cy-dy*75, bx:cx+dx*75, by:cy+dy*75};
+}
+function ccBusSetLand(teams, aspect){
+  const route=CC_BUS_G!=null ? ccBusRoute(CC_BUS_G) : null;
+  (teams||[]).forEach(t=>{ const z=t && t.landingZone; if(t) t._land=(route && z) ? ccBusLand(z.x+z.w/2, z.y+z.h/2, route, aspect) : null; });
+}
+// Секунда приземления на точку (x, y в процентах карты); k — высота карты к ширине, расстояние в настоящей форме острова.
+function ccBusLand(x, y, r, k){
+  if(!r) return null;
+  const ax=r.ax, ay=r.ay*k, bx=r.bx, by=r.by*k, px=x, py=y*k, vx=bx-ax, vy=by-ay, l2=vx*vx+vy*vy||1;
+  const t=Math.max(0.1, Math.min(0.9, ((px-ax)*vx+(py-ay)*vy)/l2));
+  const qx=ax+vx*t, qy=ay+vy*t, d=Math.hypot(px-qx, py-qy);
+  return CC_BUS_CROSS*t+CC_BUS_GLIDE*d;
+}
+// Насколько раньше (+) или позже (−) своих соседей села команда: медиана по отрядам в CC_BUS_MATES процентах карты.
+const CC_BUS_MATES=18;
+function ccBusLeadOf(you, list){
+  if(!you || you._land==null || !you.landingZone) return null;
+  const z=you.landingZone, c={x:z.x+z.w/2, y:z.y+z.h/2}, d=[];
+  (list||[]).forEach(t=>{ if(t===you || t._land==null || !t.landingZone) return;
+    const q=t.landingZone; if(Math.hypot(q.x+q.w/2-c.x, q.y+q.h/2-c.y)>CC_BUS_MATES) return; d.push(t._land-you._land); });
+  if(!d.length) return null;
+  d.sort((a,b)=>a-b);
+  return Math.round(d[Math.floor(d.length/2)]);
+}
 function ccBusIntro(wrap, teams, g){
   return new Promise(resolve=>{
     const stage=wrap && wrap.firstElementChild, NS='http://www.w3.org/2000/svg';
@@ -106216,10 +106254,8 @@ function ccBusIntro(wrap, teams, g){
     // Те же единицы, что у карты боя: viewBox 100 × (100 × высота/ширина), проценты клеток переводятся в них.
     const base=stage.querySelector('svg'), vbH=Number(base && base.dataset.vbh) || 100;
     const P=(x,y)=>({x:x, y:y/100*vbH});
-    const rnd=careerRng(ccHashStr('bus|'+careerToday()+'|'+(g||0)+'|'+list.length));
-    // Маршрут: через остров, со сдвигом от центра до ±18%, под случайным углом.
-    const ang=rnd()*Math.PI*2, off=(rnd()-0.5)*36, cx=50+Math.cos(ang+Math.PI/2)*off, cy=50+Math.sin(ang+Math.PI/2)*off;
-    const dx=Math.cos(ang), dy=Math.sin(ang), A=P(cx-dx*75, cy-dy*75), B=P(cx+dx*75, cy+dy*75);
+    // Маршрут — тот же, по которому игра считает, кто сел первым (ccBusRoute).
+    const R=ccBusRoute(g), A=P(R.ax, R.ay), B=P(R.bx, R.by);
     const L2=(B.x-A.x)*(B.x-A.x)+(B.y-A.y)*(B.y-A.y);
     const proj=p=>Math.max(0.1, Math.min(0.9, ((p.x-A.x)*(B.x-A.x)+(p.y-A.y)*(B.y-A.y))/L2));
     const at=t=>({x:A.x+(B.x-A.x)*t, y:A.y+(B.y-A.y)*t});
@@ -106264,7 +106300,11 @@ function ccBusIntro(wrap, teams, g){
     let tag=null;
     const me=jumpers.find(j=>j.you);
     if(me){ tag=document.createElementNS(NS, 'text'); tag.setAttribute('class', 'cc-bus-tag');
-      tag.textContent=(me.t.squad||[]).map(c=>c && c.handle).filter(Boolean).join(' + '); svg.appendChild(tag); }
+      const k=vbH/100; list.forEach(t=>{ const z=t.landingZone; t._land=ccBusLand(z.x+z.w/2, z.y+z.h/2, R, k); });
+      const lead=ccBusLeadOf(me.t, list), T=L();
+      tag.textContent=(me.t.squad||[]).map(c=>c && c.handle).filter(Boolean).join(' + ')+
+        (lead==null || Math.abs(lead)<2 ? '' : ' · '+(lead>0 ? T.busEarly(lead) : T.busLate(-lead)));
+      svg.appendChild(tag); }
     stage.appendChild(svg);
     let raf=0, t0=0, done=false;
     /* Страховка: кадры (requestAnimationFrame) стоят в фоновой вкладке и в headless с виртуальным временем — автобус
@@ -107290,7 +107330,8 @@ async function simulateGamesLive(teams, numGames, pointsFn, killMult, fieldPrefi
       gameLobbies.forEach(l=>{ if(g>0 || !l.some(t=>t.landingZone) || lockFresh) buildBotLandingAssignment(l, ccLobbyMine(l) ? undefined : {noBook:true}); });
     }
 
-    // Автобус: пролёт и прыжки на свои точки, перед игрой, на целом острове (ccBusIntro). Только картинка.
+    CC_BUS_G=g;   // маршрут этой игры (ccBusRoute): по нему считается, кто сел первым
+    // Автобус: пролёт и прыжки на свои точки, перед игрой, на целом острове (ccBusIntro).
     if(typeof CAREER_RUN!=='undefined' && CAREER_RUN && replay && replay.wrap && !skipAnimation && !careerSimOn()
        && !(typeof CC_FF!=='undefined' && CC_FF) && !(typeof ccMpLock==='function' && ccMpLock())){
       try{ if(ZoneReplay.whole) ZoneReplay.whole(replay); await ccBusIntro(replay.wrap, myLobby||teams, g); }catch(e){}
@@ -114212,7 +114253,8 @@ let CC_KEY_LOOT=0.01, CC_KEY_LOOT_CAP=12, CC_KEY_SEEK=1.6, CC_CHILL_SEEK=0.6;
 function resolveDropDuel(a, b){
   const wa = Math.pow(Math.max(a._pc, 1), LANDING_POW_EXPONENT);
   const wb = Math.pow(Math.max(b._pc, 1), LANDING_POW_EXPONENT);
-  const p = clamp(wa / (wa + wb), 1 - LANDING_ODDS_CAP, LANDING_ODDS_CAP);
+  let p = clamp(wa / (wa + wb), 1 - LANDING_ODDS_CAP, LANDING_ODDS_CAP);
+  if(a._land!=null && b._land!=null) p += CC_BUS_LEAD_P*clamp((b._land - a._land)/CC_BUS_LEAD_SEC, -1, 1);
   return Math.random() < p ? a : b;
 }
 
@@ -114296,6 +114338,7 @@ async function playGameWithChoices(teams, lobbyOpts, ui){
   const humans=teams.filter(t=>t.isYou||t.isMate||t.isRival)
     .sort((a,b)=>String(a.mpTag||a.name)<String(b.mpTag||b.name) ? -1 : 1);
   ccSetKillW(teams);
+  ccBusSetLand(teams, aspect);
   const game=ZoneSim.simulateZoneGame(teams, {
     rng: Math.random, land: ZONE_SETS[set], aspect: aspect,
     // Острова Reload (r1–r4) идут по своему шторму — см. RELOAD_PHASES в zone-sim,
@@ -117665,12 +117708,21 @@ function ccLootRoom(host, opt){
 const CC_BUS_NEAR=10, CC_BUS_FAR=55, CC_BUS_LATE=0.3;
 let CC_BUS_GAME=null, CC_BUS_KEY=null, CC_BUS=null;
 function ccBus(){
-  const g=CC_BUS_GAME, fr=g && g.frames ? g.frames() : null, f=fr && fr[0];
-  if(!f || !f.circle) return null;
-  const key=f.circle.cx.toFixed(3)+'|'+f.circle.cy.toFixed(3)+'|'+(typeof ACTIVE_LANDING_SET!=='undefined' ? ACTIVE_LANDING_SET : '');
-  if(CC_BUS && CC_BUS_KEY===key) return CC_BUS;
-  const r=careerRng(ccHashStr('bus|'+key));
-  const a=r()*Math.PI, px=50+(r()-0.5)*40, py=50+(r()-0.5)*40, dx=Math.cos(a), dy=Math.sin(a);
+  // 19.11: линия — маршрут игры (ccBusRoute), тот же, что летит в пролёте и решает, кто сел первым. Без номера игры — по первому кругу, как было.
+  const set=(typeof ACTIVE_LANDING_SET!=='undefined' ? ACTIVE_LANDING_SET : '');
+  let px, py, dx, dy, key;
+  if(CC_BUS_G!=null){
+    key='g'+CC_BUS_G+'|'+(typeof careerToday==='function' ? careerToday() : '')+'|'+set;
+    if(CC_BUS && CC_BUS_KEY===key) return CC_BUS;
+    const R=ccBusRoute(CC_BUS_G); px=R.cx; py=R.cy; dx=R.dx; dy=R.dy;
+  } else {
+    const g=CC_BUS_GAME, fr=g && g.frames ? g.frames() : null, f=fr && fr[0];
+    if(!f || !f.circle) return null;
+    key=f.circle.cx.toFixed(3)+'|'+f.circle.cy.toFixed(3)+'|'+set;
+    if(CC_BUS && CC_BUS_KEY===key) return CC_BUS;
+    const r=careerRng(ccHashStr('bus|'+key));
+    const a=r()*Math.PI; px=50+(r()-0.5)*40; py=50+(r()-0.5)*40; dx=Math.cos(a); dy=Math.sin(a);
+  }
   // Отрезок от края до края кадра 0..100 по обеим осям (в процентах картинки).
   let t0=-Infinity, t1=Infinity;
   [[px, dx], [py, dy]].forEach(([p, d])=>{ if(Math.abs(d)<1e-6) return; const a1=(0-p)/d, a2=(100-p)/d; t0=Math.max(t0, Math.min(a1, a2)); t1=Math.min(t1, Math.max(a1, a2)); });
@@ -118014,6 +118066,8 @@ function simulateGameOnMap(teams, lobbyOpts){
   const ratio  = MAP_ASPECT[set].split('/');
   const aspect = Number(ratio[1]) / Number(ratio[0]);
   const exponent = DUEL_POW_EXPONENT_BY_MODE[squadSize] || 5;
+  // Когда отряд сел (маршрут автобуса, ccBusRoute): решает стычки на высадке, resolveDropDuel.
+  ccBusSetLand(teams, aspect);
 
   ccSetKillW(teams);
   const result = ZoneSim.simulateZoneGame(teams, {
@@ -118161,6 +118215,7 @@ function ccThirdApply(you, r, foe){
    (CC_THIRD_SELF): проигравшего выбивает движок, третьим идём на выжившего. Шансы — CC_THIRD (замер концовки) с поправкой на
    силу: ×(0.5+p) на кил, ×(1.5−p) на смерть, p — дуэльная формула против цели. Если оба живы и цель выбита, второго
    добиваем с CC_THIRD_BOTH (он тоже битый) за половину прибавки. Поправки и CC_THIRD_SELF/BOTH — решение, не замер. */
+const CC_SIPHON_TP=0.7;
 const CC_THIRD_PAIR=6, CC_THIRD_NEAR=22, CC_THIRD_SELF=0.5, CC_THIRD_BOTH=0.5;
 function ccThirdPair(you){
   const game=you && you._game, me=you && you._sq;
@@ -118192,6 +118247,9 @@ function ccThirdPairApply(you, pair, rr){
   }
   res.t=ccFoeName(tgt); res.o=oth ? ccFoeName(oth) : '';
   const o=ccThirdOdds(you, tgt), r=rnd();
+  /* Сифон (zone-sim phasesFor .siphon, 2019 – 22.05.2023): победитель чужого файта уже взял +50 за кил, прийти на готовое
+     труднее. CC_SIPHON_TP — настройка, не замер. */
+  if(res.self && CC_GAME_PHASES && CC_GAME_PHASES.siphon){ o.kill*=CC_SIPHON_TP; o.die=Math.min(1-o.kill, o.die/CC_SIPHON_TP); res.siphon=true; }
   if(r<o.kill){
     game.eliminate(tgt, you);
     ccAddGamePow(you, CC_THIRD.pow);
@@ -173556,6 +173614,12 @@ Object.assign(I18N.pt, {esChips:'Até o fim:', tcChips:'Se encontrarmos alguém:
   tpNote:(s,k,d,p,b)=>'lutando perto · '+s+'%: a luta deles acaba antes de chegarmos · '+k+'% eliminamos um, +'+p+' de força · '+d+'% eliminados · '+b+'%: acabar com o segundo também',
   tpGot:r=>(r.self ? r.w+' eliminou '+r.l+' antes de nós · ' : '')+(r.out==='win' ? 'eliminamos '+r.t+(r.both ? ' e '+r.o : '')+', +'+r.pow+' de força' : r.out==='die' ? r.t+' viraram em nós, eliminados' : 'entramos como terceiro, trocamos tiros e saímos: +'+r.dmg+' de dano'),
   rpGo:'Ir ao ponto', rpHint:'Toque no círculo onde ficar. Pontos vermelhos são squads: quem está perto da linha, você pode encontrar'});
+/* Автобус и сифон (19.11): строка у своей стрелки в пролёте и приписка к третьей стороне. */
+Object.assign(I18N.ru, {busEarly:n=>'сели раньше соседей на '+n+' с', busLate:n=>'сели позже соседей на '+n+' с', tpSiphon:'сифон: они уже отхилились'});
+Object.assign(I18N.en, {busEarly:n=>'landed '+n+'s before the neighbours', busLate:n=>'landed '+n+'s after the neighbours', tpSiphon:'siphon: they already healed up'});
+Object.assign(I18N.fr, {busEarly:n=>'posés '+n+' s avant les voisins', busLate:n=>'posés '+n+' s après les voisins', tpSiphon:'siphon : ils se sont déjà soignés'});
+Object.assign(I18N.it, {busEarly:n=>'atterrati '+n+' s prima dei vicini', busLate:n=>'atterrati '+n+' s dopo i vicini', tpSiphon:'siphon: si sono già curati'});
+Object.assign(I18N.pt, {busEarly:n=>'pousamos '+n+' s antes dos vizinhos', busLate:n=>'pousamos '+n+' s depois dos vizinhos', tpSiphon:'sifão: eles já se curaram'});
 /* Live-ивенты Fortnite в карьере: новость в ленте в сам день. Даты и типы с вики Fortnite
    (tools/measured/wiki-live-events.txt). Только в настоящем году: карьера после 2026-го живёт по календарю 2026-го,
    и «Shattered» второй раз там не случается. Турниров не двигает. */

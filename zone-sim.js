@@ -143,6 +143,8 @@
       out.drift = DRIFT;
     }
     out.net = d >= '2025-10-23';
+    // Сифон: +50 здоровья или щита за элиминацию в турнирах с Pop-up Cup 2019 до 22.05.2023 (снят вместе с запуском Ranked).
+    out.siphon = d >= '2019-01-01' && d < '2023-05-22';
     // Ребут по годам (см. REBOOT_RATE): фургонов нет до 10.04.2019 и 19.04–04.05.2019; карточка 270 с в Главе 2 S8.
     out.rebootUntil = (d < '2019-04-10' || (d >= '2019-04-19' && d < '2019-05-04')) ? 0 : Infinity;
     out.rebootCard = (d >= '2021-09-13' && d < '2021-12-05') ? 270 : 90;
@@ -353,7 +355,7 @@
         lastK: -1,
         // Заводятся сразу, а не по ходу игры: поле, добавленное посреди игры в разном порядке у разных отрядов,
         // плодит формы объектов, и горячие циклы движка перестают оптимизироваться (замер 29.10: 12 → 38 мс на игру).
-        _hit: 0, killedBy: null, mBy: null, mCard: (function(){ var a = []; for(var i=0;i<size;i++) a.push(0); return a; })(), reboots: 0, busy: false, surgeNet: null, respawns: 0, droppedOut: false, leaveAt: null, held: null,
+        _hit: 0, killedBy: null, mBy: null, mCard: (function(){ var a = []; for(var i=0;i<size;i++) a.push(0); return a; })(), reboots: 0, knocks: 0, revives: 0, siphoned: 0, busy: false, surgeNet: null, respawns: 0, droppedOut: false, leaveAt: null, held: null,
         // Щит и здоровье каждого игрока — для худа (memberVitals). Смерть решает общее hp отряда, как было.
         // Щит и здоровье игрока на полоске (memberVitals) и секунды без урона (с них начинается лечение).
         mSh: (function(){ var a = []; for(var i=0;i<size;i++) a.push(100); return a; })(),
@@ -956,18 +958,61 @@
     finally { a.team._pc = sa[0]; a.team.pow = sa[1]; b.team._pc = sb[0]; b.team.pow = sb[1]; }
   }
   // Победитель файта мог потерять игрока. Кил — проигравшему; onMember пишет строку в ленту.
-  function memberLoss(winner, loser, rng, onMember){
+  /* НОК И ПОДНЯТИЕ. Игрок отряда, выигравшего файт, сначала нокнут. Реплеи трёх финалов FNCS 2026 EU (tools/real-matches.json,
+     поле dbno): 166 ноков, из них без смерти рядом (90 с, 4000 единиц) поднято 15, при окнах 60 с / 1500 и 300 с / 10000 — 23 и 12,
+     то есть 7–14% (RES_SHARE). Поднимают только на чистом месте: если рядом (THIRD_PARTY_RANGE) стоит третий отряд,
+     поднять не дают. Смерти по одному не меняются (их бросок тот же). RES_FREE — доля поднятых на чистом месте: при 0.75 движок
+     поднимает 7% всех ноков, ноков 57 за игру при 55 в реплеях (check-member-deaths.js). Поднятый встаёт с RES_HP здоровья без щита. */
+  var RES_SHARE = 0.10, RES_FREE = 0.75, RES_HP = 30;
+  var onReviveHook = null, SIPHON_ON = false, SIPHON_HP = 50;
+  function enemyNear(winner, loser, alive){
+    if(!alive) return false;
+    for(var i=0;i<alive.length;i++){
+      var q = alive[i];
+      if(q === winner || q === loser || !q.alive) continue;
+      var dx = q.x - winner.x, dy = q.y - winner.y;
+      if(dx*dx + dy*dy <= THIRD_PARTY_RANGE * THIRD_PARTY_RANGE) return true;
+    }
+    return false;
+  }
+  // Сифон: убийце +SIPHON_HP, сначала в здоровье, остаток в щит; общей полоске отряда — та же доля.
+  function siphon(sq, ks){
+    if(!SIPHON_ON || !sq || !ks || !ks.length) return;
+    var size = (sq.mSh && sq.mSh.length) || 1;
+    for(var i=0;i<ks.length;i++){
+      var k = ks[i];
+      if(sq.mHp && sq.mAlive[k]){
+        var add = SIPHON_HP, h = Math.min(100 - sq.mHp[k], add); sq.mHp[k] += h; add -= h;
+        sq.mSh[k] = Math.min(100, sq.mSh[k] + add); sq.mQuiet[k] = 99;
+      }
+      var a2 = SIPHON_HP / size, h2 = Math.min(100 - sq.hp, a2); sq.hp += h2; a2 -= h2;
+      sq.shield = Math.min(100, (sq.shield == null ? 100 : sq.shield) + a2);
+    }
+    sq.siphoned = (sq.siphoned || 0) + ks.length;
+  }
+  function memberLoss(winner, loser, rng, onMember, alive){
     if(!winner.mAlive || aliveOf(winner) < 2) return;
     var pw = winner.power || 1, pl = loser.power || 1;
     var even = 2 * Math.min(pw, pl) / (pw + pl);
     var zw = MEMBER_LOSS_ZONE[Math.min(MEMBER_LOSS_ZONE.length - 1, Math.max(0, currentZoneRef() || 0))];
-    if(rng() >= Math.min(0.95, MEMBER_LOSS * zw * even)) return;
+    var pDie = Math.min(0.95, MEMBER_LOSS * zw * even), pKnock = Math.min(0.97, pDie / (1 - RES_FREE));
+    var roll = rng();
+    if(roll >= pKnock) return;
     var left = []; for(var i=0;i<winner.mAlive.length;i++) if(winner.mAlive[i]) left.push(i);
     var k = left[Math.floor(rng() * left.length)];
+    winner.knocks = (winner.knocks || 0) + 1;
+    if(roll >= pDie){
+      if(enemyNear(winner, loser, alive)){ winner.knocks--; return; }   // рядом третий: на чистом нок не случился, смерти — как в реплеях
+      // Поднят: файт выигран, рядом никого, тиммейт успел. Кила нет: нок не элиминация.
+      if(winner.mSh){ winner.mSh[k] = 0; winner.mHp[k] = Math.min(winner.mHp[k], RES_HP); winner.mQuiet[k] = 0; }
+      winner.revives = (winner.revives || 0) + 1;
+      if(onReviveHook) onReviveHook(winner, k, loser);
+      return;
+    }
     winner.mAlive[k] = false;
     if(winner.mCard) winner.mCard[k] = REBOOT_CARD_NOW;
     if(winner.mSh){ winner.mSh[k] = 0; winner.mHp[k] = 0; }   // выбит — сдвиг не нужен
-    loser.elims += 1; giveKill(loser, 1); loser.team._gElims = loser.elims; loser.dealt += KILL_DAMAGE;
+    loser.elims += 1; siphon(loser, giveKill(loser, 1)); loser.team._gElims = loser.elims; loser.dealt += KILL_DAMAGE;
     winner.mBy = winner.mBy || []; winner.mBy[k] = loser.lastK;
     winner.taken += KILL_DAMAGE;
     if(onMember) onMember(winner, k, loser);
@@ -1007,13 +1052,15 @@
       for(var k=0;k<size;k++) if(rng() < THIRD_PARTY_SHARE) mine--;
       if(mine < size){
         near.elims += size - mine;
-        giveKill(near, size - mine).forEach(function(k){ byN.push({s: near, k: k}); });
+        var nk = giveKill(near, size - mine); siphon(near, nk);
+        nk.forEach(function(k){ byN.push({s: near, k: k}); });
         near.team._gElims = near.elims;
         near.dealt += KILL_DAMAGE * (size - mine);
       }
     }
     winner.elims += mine;
-    loser.killedBy = giveKill(winner, mine).map(function(k){ return {s: winner, k: k}; }).concat(byN);
+    var wk = giveKill(winner, mine); siphon(winner, wk);
+    loser.killedBy = wk.map(function(k){ return {s: winner, k: k}; }).concat(byN);
     winner.team._gElims = winner.elims;
     winner.dealt += KILL_DAMAGE * mine;
   }
@@ -1398,7 +1445,7 @@
         var winnerTeam = shortDuel(duel, s, o, dropping);
         var winner = (winnerTeam === s.team) ? s : o;
         var loser  = (winner === s) ? o : s;
-        memberLoss(winner, loser, rng, onMember);
+        memberLoss(winner, loser, rng, onMember, alive);
         var loserSize = elimsFor(loser);
 
         creditKills(winner, loser, loserSize, alive, rng);
@@ -1438,7 +1485,7 @@
           var cwTeam = shortDuel(duel, streaker, victim, dropping);
           var cw = (cwTeam === streaker.team) ? streaker : victim;
           var cl = (cw === streaker) ? victim : streaker;
-          memberLoss(cw, cl, rng, onMember);
+          memberLoss(cw, cl, rng, onMember, alive);
           var clSize = elimsFor(cl);
           creditKills(cw, cl, clSize, alive, rng);
           cl.taken += KILL_DAMAGE * clSize;
@@ -1603,6 +1650,12 @@
       var who = sq.team.squad && sq.team.squad[k] && sq.team.squad[k].handle;
       pendingEvents.push('reboot:' + sq.team.name + ' ##' + (who || ('#' + (k + 1))));
     };
+    // Поднятый нокнутый — строка ленты 'revive:отряд ##ник' (zone-replay рисует её как ребут, своим значком).
+    onReviveHook = function(sq, k){
+      var who = sq.team.squad && sq.team.squad[k] && sq.team.squad[k].handle;
+      pendingEvents.push('revive:' + sq.team.name + ' ##' + (who || ('#' + (k + 1))));
+    };
+    SIPHON_ON = !!(opts.phases && opts.phases.siphon);
     var squads = createSquads(teams, {aspect: aspect, startOf: opts.startOf});
     for(var st=0; st<squads.length; st++) squads[st].surgeTie = rng();
     // Средняя сила лобби по карточкам — для LOBBY_WEAK_K, см. resolveContacts.
@@ -2240,6 +2293,7 @@
     if(v.SURGE_HIT      != null) SURGE_HIT      = v.SURGE_HIT;
     if(v.SURGE_TICK     != null) SURGE_TICK     = v.SURGE_TICK;
     if(v.MEMBER_LOSS    != null) MEMBER_LOSS    = v.MEMBER_LOSS;
+    if(v.RES_FREE       != null) RES_FREE       = v.RES_FREE;
     if(v.REBOOT_RATE    != null) REBOOT_RATE    = v.REBOOT_RATE;
     if(v.MEMBER_DMG_MUL != null) MEMBER_DMG_MUL = v.MEMBER_DMG_MUL;
     if(v.REBOOT_UNTIL   != null) REBOOT_UNTIL   = v.REBOOT_UNTIL;
@@ -2261,7 +2315,7 @@
     if(v.SHIELD_RATE    != null) SHIELD_RATE    = v.SHIELD_RATE;
     return {READ_NOISE:READ_NOISE, CROWD_WEIGHT:CROWD_WEIGHT, CROWD_SEEK:CROWD_SEEK, ENGAGE_CHANCE:ENGAGE_CHANCE,
             ENGAGE_BIAS:ENGAGE_BIAS, CHAIN_CHANCE:CHAIN_CHANCE, EXPOSURE_FLOOR:EXPOSURE_FLOOR,
-            CHAIN_MAX:CHAIN_MAX, LINGER_MAX:LINGER_MAX, SURGE_DUTY:SURGE_DUTY, SURGE_HIT:SURGE_HIT, SURGE_TICK:SURGE_TICK, MEMBER_LOSS:MEMBER_LOSS, SHORT_EXP:SHORT_EXP, REBOOT_RATE:REBOOT_RATE, REBOOT_UNTIL:REBOOT_UNTIL,
+            CHAIN_MAX:CHAIN_MAX, LINGER_MAX:LINGER_MAX, SURGE_DUTY:SURGE_DUTY, SURGE_HIT:SURGE_HIT, SURGE_TICK:SURGE_TICK, MEMBER_LOSS:MEMBER_LOSS, RES_FREE:RES_FREE, SHORT_EXP:SHORT_EXP, REBOOT_RATE:REBOOT_RATE, REBOOT_UNTIL:REBOOT_UNTIL,
             ROOM:ROOM, PRESSURE_BASE:PRESSURE_BASE, PRESSURE_EXP:PRESSURE_EXP,
             PICK_EXP:PICK_EXP, CHIP_RATE:CHIP_RATE, HEAL_RATE:HEAL_RATE, CHIP_HP:CHIP_HP,
             CHIP_TO_HP:CHIP_TO_HP, CHIP_HP_FLOOR:CHIP_HP_FLOOR, SHIELD_RATE:SHIELD_RATE,

@@ -824,7 +824,7 @@
       // которого стоит команда из ростера (или шторм/сёрдж); не нашлось — первое, как было.
       for(var ci0 = raw.indexOf(':'); ci0 >= 0; ci0 = raw.indexOf(':', ci0 + 1)){
         var left = plain(raw.slice(0, ci0)).split(' ##')[0];
-        if(left === 'storm' || left === 'surge' || left === 'reboot' || indexOfName[left] != null){ cut = ci0; break; }
+        if(left === 'storm' || left === 'surge' || left === 'reboot' || left === 'revive' || indexOfName[left] != null){ cut = ci0; break; }
       }
       var cause = plain(raw.slice(0, cut)), victim = plain(raw.slice(cut + 1));
       // «отряд ##ник» у убийцы — кил одного игрока (zone-sim giveKill): ник цветом отряда.
@@ -838,6 +838,9 @@
       // Ребут (zone-sim applyReboots): «⟲ ник» цветом отряда.
       var row = cause === 'reboot'
         ? '<span style="font-weight:900;color:#7de3a8;">⟲</span>' + pillFor(victim, vNick)
+        // Поднял нокнутого (zone-sim memberLoss, нок на чистом месте): «✚ ник».
+        : cause === 'revive'
+        ? '<span style="font-weight:900;color:#ffd166;">✚</span>' + pillFor(victim, vNick)
         : (cause === 'storm' || cause === 'surge')
         ? badge(cause) + pillFor(victim, vNick)
         : pillFor(cause, kNick) + (axe ? '<img src="' + esc(axe) + '" alt="" style="width:22px;height:22px;flex:none;' +

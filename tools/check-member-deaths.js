@@ -46,7 +46,7 @@ function field(n){
 const GAMES = Number(process.argv[2]) || 200;
 function run(loss){
   if (loss != null) ZoneSim.tune({MEMBER_LOSS: loss});
-  let partial = 0, teams = 0, top5 = 0, storm = 0, elims = 0, reb = 0;
+  let partial = 0, teams = 0, top5 = 0, storm = 0, elims = 0, reb = 0, revN = 0, knk = 0;
   for (let g = 0; g < GAMES; g++) {
     const rng = ZoneSim.createRng(1 + g), T = field(50);
     const picks = T.map(() => LAND[Math.floor(rng() * LAND.length)]);
@@ -57,12 +57,18 @@ function run(loss){
     });
     // Отдельная смерть игрока — строка ' ##' в ленте; по одной на отряд.
     const hit = new Set();
-    res.timeline.forEach(f => (f.events || []).forEach(e => { if (e.indexOf('reboot:') === 0) { reb++; return; } const v = e.slice(e.indexOf(':') + 1); if (v.indexOf(' ##') >= 0 && v.indexOf(' ##!') < 0) hit.add(v.split(' ##')[0]); }));
+    res.timeline.forEach(f => (f.events || []).forEach(e => { if (e.indexOf('reboot:') === 0) { reb++; return; } if (e.indexOf('revive:') === 0) { revN++; return; } const v = e.slice(e.indexOf(':') + 1); if (v.indexOf(' ##') >= 0 && v.indexOf(' ##!') < 0) hit.add(v.split(' ##')[0]); }));
+    // Ноки движка: поднятые + павшие по одному + в выбитом файтом отряде все, кроме последнего (как dbno в реплее).
+    const wipe = {};
+    res.timeline.forEach(f => (f.events || []).forEach(e => { const c = e.indexOf(':'), cause = e.slice(0, c), v = e.slice(c + 1);
+      if (cause === 'reboot' || cause === 'revive' || cause === 'storm' || cause === 'surge') { if (cause === 'revive') knk++; return; }
+      if (v.indexOf(' ##!') >= 0) { const n = v.split(' ##')[0]; wipe[n] = (wipe[n] || 0) + 1; } else if (v.indexOf(' ##') >= 0) knk++; }));
+    Object.keys(wipe).forEach(n => { knk += wipe[n] - 1; });
     partial += hit.size; teams += T.length;
     res.order.forEach((t, i) => { if (+t.name.slice(1) < 5) top5 += i + 1; if (t._deathCause === 'storm') storm++; });
     elims += T.reduce((s, t) => s + (t._gElims || 0), 0);
   }
-  return {partial: partial / teams, top5: top5 / GAMES / 5, storm: storm / GAMES, elims: elims / GAMES, reb: reb / GAMES};
+  return {partial: partial / teams, top5: top5 / GAMES / 5, storm: storm / GAMES, elims: elims / GAMES, reb: reb / GAMES, res: knk ? revN / knk : 0, knocks: knk / GAMES};
 }
 
 const DEF = ZoneSim.tune({}).MEMBER_LOSS;
@@ -73,6 +79,7 @@ console.log('без потерь:  отдельных ' + base.partial.toFixed(2
   '  шторм ' + base.storm.toFixed(2) + '  элимов на лобби ' + base.elims.toFixed(1));
 console.log('с потерями:  отдельных ' + now.partial.toFixed(2) + '  место пяти сильнейших ' + now.top5.toFixed(1) +
   '  шторм ' + now.storm.toFixed(2) + '  элимов на лобби ' + now.elims.toFixed(1) + '  ребутов за игру ' + now.reb.toFixed(1) + ' (реплеи 6–9)');
-const ok = Math.abs(now.partial - real) <= 0.06;
+console.log('поднято из ноков ' + now.res.toFixed(3) + ' (реплеи 0.08–0.14), ноков за игру ' + now.knocks.toFixed(1) + ' (реплеи ' + (166 / 3).toFixed(1) + ')');
+const ok = Math.abs(now.partial - real) <= 0.06 && now.res >= 0.06 && now.res <= 0.16;
 console.log(ok ? 'доля в пределах ±0.06 от реплеев' : 'FAIL: доля отдельных смертей далеко от реплеев');
 process.exit(ok ? 0 : 1);
