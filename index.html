@@ -6964,6 +6964,17 @@
   .dc-btn:disabled{opacity:.45;cursor:default;}
   .dc-why{color:#f0b232;font-size:12px;font-weight:700;}
   .dc-res{margin-top:8px;color:#3ba55c;font-size:12.5px;font-weight:800;}
+  .cc-dm-pick .cc-dm{max-height:96vh;}
+  .cc-dm-pick .cc-dm-list, .cc-dm-pick h5, .cc-dm-pick .cc-dm-note{display:none;}
+  .cc-dm-pick .cc-dm{padding-top:10px;padding-bottom:10px;}
+  .cc-dm-pick .cc-dm-head{margin-bottom:6px;}
+  .cc-dm-pick .cc-dm-map{max-height:42vh;width:auto;max-width:100%;margin:0 auto;}
+  .cc-dm-pick .cc-choice-sub, .cc-dm-pick .cc-choice-mate, .cc-dm-pick .cc-game-how{font-size:12px;}
+  .cc-dm-pick .cc-choice-row{gap:6px;}
+  .cc-dm-ask .cc-choice-map{position:relative;left:auto;right:auto;top:auto;bottom:auto;transform:none;margin:10px 0 0;}
+  .cc-dm-card .cc-dm-map{max-width:640px;margin:6px auto 0;}
+  .cc-dm-open{margin-left:6px;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.08);color:inherit;border-radius:999px;padding:3px 10px;font-size:11.5px;font-weight:800;cursor:pointer;}
+  .ch-spot-nomark{min-height:0;padding:8px;}
   .dc-sess{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:7px 0;border-top:1px solid rgba(255,255,255,.06);}
   .dc-sess:first-of-type{border-top:0;}
   .dc-sess b{color:#fff;font-size:13px;}
@@ -122564,7 +122575,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='e16317d6';
+const CC_BUILD='0dc16fcb';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -130788,7 +130799,9 @@ async function ccScrimRun(){
     : careerCupField(crT, drafted, f.lobby, 'dc|'+careerToday()+'|'+r.sess, true, tier<=1 ? CC_FIELD_SHARP.lan : 0));
   const sc=kind==='mob' ? ccCupScore({id:'S41_MobileSeriesHeat1'}, 1) : null;
   await simulateGamesLive(field, f.games, sc ? sc.pts : victoryR1Points, sc ? sc.kill : CC_VICTORY_R1_KILL, 'stage', 0, null, null,
-    {lobbySize:Math.min(field.length, kind==='mob' ? 16 : (f.solo ? 100 : ccTeams(50))), stageName:title, mapReplay:true, choices:true, stopOnYourDeath:true});
+    {lobbySize:Math.min(field.length, kind==='mob' ? 16 : (f.solo ? 100 : ccTeams(50))), stageName:title, mapReplay:true, choices:true, stopOnYourDeath:true,
+     // Как на сессиях Noble: точки отмечены заранее, перед первой игрой — карта высадок комнаты.
+     dropEachGame:(g,room)=>careerLandingPick(room||field, you, title, ['victory'])});
   removeSkipButton();
   const ranked=field.slice().sort((a,b)=>b.stagePts-a.stagePts || (b.wins||0)-(a.wins||0) || b.stageElims-a.stageElims);
   const place=ranked.indexOf(you)+1, wins=you.wins||0, kills=you.stageElims||0;
@@ -156052,9 +156065,11 @@ function careerNightSpotHTML(next){
   const set=careerNightSet(next);
   // Соло-вечер в команде — личная соло-метка, а не дуо-дом сезона. См. careerNightSpotKey.
   const sp=careerSpotList(careerNightSpotKey(next))[0];
-  if(!sp) return '';
+  // Без своей метки на этом острове (финал на другом острове, новый сезон) карта высадок всё равно открывается.
+  const mapBtn='<button class="ch-spot-map" onclick="event.stopPropagation(); ccDropMapOpen()">'+esc(L().ccDropMap)+'</button>';
+  if(!sp) return '<div class="ch-spot ch-spot-nomark"><div class="ch-spot-in">'+mapBtn+'</div></div>';
   const shot=careerSpotShotHTML(sp.i, set, 'ch-spot-shot', 16/9);
-  if(!shot) return '';
+  if(!shot) return '<div class="ch-spot ch-spot-nomark"><div class="ch-spot-in">'+mapBtn+'</div></div>';
   // И с кем ты сейчас в ссоре: тот, кто придёт именно сюда. Это часть ответа
   // на вопрос «чего ждать от вечера», а значит место ей здесь.
   const beef=careerBeefHot()[0];
@@ -156093,9 +156108,45 @@ function ccDropMapOpen(){
   ccDropMapClose();
   let next=null; try{ next=careerNext(); }catch(e){}
   const d=ccDropMapData(next); if(!d) return;
+  ccDropMapModal(d, (next && (next.label||next.title))||'');
+}
+/* КАРТА ВЫСАДОК КОМНАТЫ перед игрой (его вопрос 19.11: «почему нет карты перед финалами, кто куда падает?»). Как превью
+   карты финала у Vital Scrims («Grand Finals Map Preview») и отметки точек на сессиях Noble: перед первой игрой этапа —
+   кто куда садится в ЭТОЙ комнате. Расклад — тот же pre, по которому пойдёт игра (careerLandingPick), не догадка. */
+let CC_DROP_ROOM=null;
+function onMapNow(){ return !!(typeof CC_RUN_MAP!=='undefined' && CC_RUN_MAP && CC_RUN_MAP.isConnected); }
+function ccDropRoomData(pre, you, home){
+  const zones=ALL_LANDING_ZONES||[], by=new Map();
+  const nameOf=t=>(t.squad||[]).map(c=>c && c.handle).filter(Boolean).join(' + ') || String(t.name||'').replace(/<[^>]*>/g,'');
+  if(pre && pre.forEach) pre.forEach((list, zone)=>{ const i=zones.indexOf(zone); if(i<0) return;
+    (list||[]).forEach(t=>{ if(!t || t===you || t.isYou) return; if(!by.has(i)) by.set(i, []); by.get(i).push(nameOf(t)); }); });
+  return {set:ACTIVE_LANDING_SET, grid:ACTIVE_LANDING_SET, zones:zones, by:by, mine:home ? zones.indexOf(home) : null,
+          meName:(you && you.squad ? you.squad.map(c=>c && c.handle).filter(Boolean).join(' + ') : '')};
+}
+function ccDropOverlay(d, label){
+  ccDropMapClose();
+  const T=L(), el=document.createElement('div');
+  el.id='ccDropMapModal'; el.className='cc-dm-wrap cc-dm-pick';
+  el.innerHTML='<div class="cc-dm" role="dialog" aria-modal="true"><div class="cc-dm-head"><b>'+esc(T.ccDropMap)+'</b><em>'+esc(String(label||'').replace(/<[^>]*>/g,''))+'</em></div>'+
+    ccDropMapBody(d)+'<div class="cc-dm-ask"></div></div>';
+  document.body.appendChild(el);
+  return {el:el, host:el.querySelector('.cc-dm-ask')};
+}
+function ccDropRoomOpen(){ if(CC_DROP_ROOM) ccDropMapModal(CC_DROP_ROOM.d, CC_DROP_ROOM.title); }
+function ccDropMapModal(d, label){
+  ccDropMapClose();
+  const T=L();
+  const el=document.createElement('div');
+  el.id='ccDropMapModal'; el.className='cc-dm-wrap';
+  el.onclick=e=>{ if(e.target===el) ccDropMapClose(); };
+  el.innerHTML='<div class="cc-dm" role="dialog" aria-modal="true"><div class="cc-dm-head"><b>'+esc(T.ccDropMap)+'</b><em>'+esc(label||'')+'</em>'+
+    '<button class="cc-dm-x" onclick="ccDropMapClose()" aria-label="'+esc(T.ccDropMapClose)+'">×</button></div>'+ccDropMapBody(d)+'</div>';
+  document.body.appendChild(el);
+}
+function ccDropMapBody(d){
   const T=L(), art=MAP_ART[d.grid]||MAP_ART.m2, asp=MAP_ASPECT[d.grid]||'1100/970';
   const contest=i=>((d.by.get(i)||[]).length+(d.mine===i ? 1 : 0))>=2;
-  const me=ccHandle(CAREER.player.nick||CAREER.player.handle||'');
+  const me=d.meName || ccHandle(CAREER.player.nick||CAREER.player.handle||'');
   const boxes=d.zones.map((z,i)=>{
     const who=(d.by.get(i)||[]).slice(); if(d.mine===i) who.unshift(me);
     if(!who.length) return '';
@@ -156107,15 +156158,9 @@ function ccDropMapOpen(){
   const rows=hot.map(i=>{ const who=(d.by.get(i)||[]).slice(); if(d.mine===i) who.unshift(me);
     return '<li'+(d.mine===i ? ' class="me"' : '')+'><b>'+esc(T.landingZoneSuffix(i+1))+'</b><span>'+who.map(n=>esc(n)).join(' · ')+'</span></li>'; }).join('');
   const teams=[...d.by.values()].reduce((s,l)=>s+l.length, 0);
-  const el=document.createElement('div');
-  el.id='ccDropMapModal'; el.className='cc-dm-wrap';
-  el.onclick=e=>{ if(e.target===el) ccDropMapClose(); };
-  el.innerHTML='<div class="cc-dm" role="dialog" aria-modal="true"><div class="cc-dm-head"><b>'+esc(T.ccDropMap)+'</b><em>'+esc((next && (next.label||next.title))||'')+'</em>'+
-    '<button class="cc-dm-x" onclick="ccDropMapClose()" aria-label="'+esc(T.ccDropMapClose)+'">×</button></div>'+
-    '<div class="cc-dm-map" style="aspect-ratio:'+asp+';background-image:url(\''+art+'\')">'+boxes+'</div>'+
+  return '<div class="cc-dm-map" style="aspect-ratio:'+asp+';background-image:url(\''+art+'\')">'+boxes+'</div>'+
     (teams ? '<p class="cc-dm-note">'+esc(T.ccDropMapNote(teams, hot.length))+'</p>'+(rows ? '<h5>'+esc(T.ccDropMapHot)+'</h5><ul class="cc-dm-list">'+rows+'</ul>' : '')
-           : '<p class="cc-dm-note">'+esc(T.ccDropMapNone)+'</p>')+'</div>';
-  document.body.appendChild(el);
+           : '<p class="cc-dm-note">'+esc(T.ccDropMapNone)+'</p>');
 }
 function ccDropMapClose(){ const el=document.getElementById('ccDropMapModal'); if(el) el.remove(); }
 /* Кто отыгрывает вечер — игрок или симуляция.
@@ -163291,6 +163336,11 @@ async function careerLandingPick(field, you, title, kinds, o){
   // Кто уже объявил свою точку — та же комната, тот же расклад, без лишних
   // бросков. См. ccDropCalls.
   const calls=ccDropCalls(pre, you, title);
+  // Карта высадок комнаты: перед первой игрой этапа — карточкой в ленте вечера, и кнопкой в окне выбора.
+  CC_DROP_ROOM={d:ccDropRoomData(pre, you, home), title:title||''};
+  // Перед первой игрой этапа вопрос высадки встаёт ПОВЕРХ экрана вместе с картой комнаты (его слово 19.11: «показать
+  // поверх экрана и подтвердить точку, чтоб не скролить ниже»). Дальше — маленькое окошко на карте, как было.
+  const dmFirst=!((you && you.stageLog)||[]).length && !onMapNow();
   const rivals=home ? (pre.get(home)||[]).length : 0;
   /* Где стоит вопрос — на карте, если карта уже идёт.
 
@@ -163320,9 +163370,10 @@ async function careerLandingPick(field, you, title, kinds, o){
   const vote=await ccMpChoose('drop'+(o.tag||''), async function(){
     // Перемотка в общей комнате: ответ без окна — домой, если дом есть, иначе тихо.
     if(CC_FF) return home ? {id:'home', at:ALL_LANDING_ZONES.indexOf(home)} : {id:'quiet', at:-1};
+    const dmOv=(dmFirst && !skipAnimation && !careerSimOn()) ? ccDropOverlay(CC_DROP_ROOM.d, title) : null;
     const p=await ccChoiceBox(L().ccDropTitle,
       // Чужие объявления — прямо в подсказке: решение принимается здесь.
-      L().ccDropHint+(calls ? ' · '+L().ccDropCalls+' '+calls : ''),
+      L().ccDropHint+(calls ? ' · '+L().ccDropCalls+' '+calls : '')+(dmOv ? '' : ' <button class="cc-dm-open" onclick="event.stopPropagation();ccDropRoomOpen()">'+esc(L().ccDropMap)+'</button>'),
       /* Картинки — ВНУТРИ кнопок, отзыв: «внутри квадратика
          типа картинки эти». У «своей локации» — квадратик своей точки, у
          «законтестить» — остров целиком с рамкой на ней. Маленькие, слева от
@@ -163331,7 +163382,8 @@ async function careerLandingPick(field, you, title, kinds, o){
                 icon:(pics ? pics.left : CC_CHOICE_ICON.home), icoCls:(pics ? 'pic' : '')}
              : {id:'quiet', title:L().ccDropQuiet, note:L().ccDropQuietNote, icon:CC_CHOICE_ICON.quiet},
         {id:'contest', title:L().ccDropContest, note:L().ccDropContestNote,
-         icon:(pics ? pics.right : CC_CHOICE_ICON.contest), icoCls:(pics ? 'pic pic-wide' : '')}], onMap, null, 'drop');
+         icon:(pics ? pics.right : CC_CHOICE_ICON.contest), icoCls:(pics ? 'pic pic-wide' : '')}], dmOv ? dmOv.host : onMap, null, 'drop');
+    if(dmOv) dmOv.el.remove();
     if(p.id!=='contest') return {id:p.id, at:(p.id==='home' && home) ? ALL_LANDING_ZONES.indexOf(home) : -1};
     /* Та же комната, что и на кнопке. pre посчитан выше — им и показывается
        остров, иначе «к тебе летят двое» и карта были бы двумя разными
@@ -169895,7 +169947,12 @@ async function runCareerVictoryNight(){
      stopWhen: mobCh ? (function(ts, g){
        if(g===ev.day1) mobLine=Math.round(CC_MOBSER_CHAMP_MP*Math.max.apply(null, ts.map(t=>t.stagePts||0)));
        return mobLine>0 && !!rcMatchPoint(ts, mobLine).champ; }) : null,
-     together: soloMate ? humans : null});
+     together: soloMate ? humans : null,
+     /* ЛАН и комнаты этапов по приглашению (lanN) — одна комната сильнейших, как финал: точку выбирают, и перед
+        первой игрой видна карта высадок комнаты (его вопрос 19.11: «почему нет карты перед финалами»).
+        Открытый первый раунд капа — по-прежнему раздача. */
+     dropEachGame: lanN ? ((g,room)=>soloMate ? ccSoloDrops(room||field, humans, ev.lan||ev.name, ['victory'])
+                                              : careerLandingPick(room||field, you, ev.lan||ev.name, ['victory'])) : undefined});
   let mobChamp=null, mobGames=0;
   if(mobCh && mobLine>0){
     const mp=rcMatchPoint(field, mobLine);

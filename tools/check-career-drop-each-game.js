@@ -124,18 +124,20 @@ const BOOT = `
           inMap && /cc-choice-map/.test(onMapCls), onMapCls);
     check('и без картинок во всю ширину', !withArt);
 
-    /* Контроль: без карты вопрос уезжает в ленту — но такой же компактный.
-       Плитки во всю ширину убраны его правкой 25 августа («этого не должно
-       быть» под снимком старого вида), поэтому картинок нет и здесь. */
+    /* Контроль: без карты (первая игра этапа) вопрос встаёт ПОВЕРХ экрана вместе с картой высадок комнаты —
+       его слово 19.11: «показать поверх экрана и подтвердить точку, чтоб не скролить ниже». Раньше здесь была
+       карточка в ленте. Плиток во всю ширину нет и здесь (правка 25 августа). Ответ закрывает окно. */
     CC_RUN_MAP=null;
     const e=mkField();
     const feedP=careerLandingPick(e.field, e.you, 'probe', ['cup']);
+    const ov=document.querySelector('.cc-dm-pick');
     const feedCls=(document.querySelector('.cc-choice')||{}).className||'';
     const feedArt=!!document.querySelector('.cc-choice .cc-choice-btn.has-art');
+    const ovMap=!!(ov && ov.querySelector('.cc-dm-map')), ovAsk=!!(ov && ov.querySelector('.cc-choice'));
     await feedP;
-    check('контроль: без карты — карточка в ленте',
-          /stage-card/.test(feedCls) && !/cc-choice-map/.test(feedCls), feedCls);
-    check('и в ленте тоже без плиток во всю ширину', !feedArt);
+    check('контроль: без карты — поверх экрана, с картой комнаты и вопросом', ovMap && ovAsk, feedCls);
+    check('и в окне тоже без плиток во всю ширину', !feedArt);
+    check('ответ закрывает окно', !document.querySelector('.cc-dm-pick'));
     fakeMap.remove(); CC_CHOICE_WAIT=waitWas;
 
     /* ---- 5. между играми карта возвращается к целому острову ------------
