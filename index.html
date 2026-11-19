@@ -106226,10 +106226,16 @@ function ccBusIntro(wrap, teams, g){
     svg.appendChild(bus);
     const byZone=new Map(); list.forEach(t=>{ const z=t.landingZone; byZone.set(z, (byZone.get(z)||0)+1); });
     // Цвет стрелки — как в игре: своя акцентом, остальные по номеру в комнате (ZoneReplay.colourFor).
-    const jumpers=list.map((t, i)=>{
-      const z=t.landingZone, to=P(z.x+z.w/2, z.y+z.h/2), tj=proj(to), from=at(tj);
-      return {t, i, tj, from, to, a:Math.atan2(to.y-from.y, to.x-from.x)*180/Math.PI,
-              fill:t.isYou ? 'var(--accent)' : ZoneReplay.colourFor(i), you:!!t.isYou};
+    /* Стрелка у каждого игрока, как в игре: напарники прыгают друг за другом и садятся рядом, цвет команды общий. */
+    const jumpers=[];
+    list.forEach((t, i)=>{
+      const z=t.landingZone, c=P(z.x+z.w/2, z.y+z.h/2), tj=proj(c), from=at(tj), n=Math.max(1, ((t.squad||[]).filter(Boolean)).length);
+      const fill=t.isYou ? 'var(--accent)' : ZoneReplay.colourFor(i);
+      for(let m=0; m<n; m++){
+        const sp=n>1 ? (m-(n-1)/2)*1.6 : 0, to={x:c.x+sp, y:c.y+(m%2 ? 0.8 : -0.4)*(n>1 ? 1 : 0)};
+        jumpers.push({t, i, tj, lag:m*110, from, to, a:Math.atan2(to.y-from.y, to.x-from.x)*180/Math.PI,
+                      fill, you:!!t.isYou && m===0});
+      }
     });
     let tag=null;
     const me=jumpers.find(j=>j.you);
@@ -106239,7 +106245,7 @@ function ccBusIntro(wrap, teams, g){
     let raf=0, t0=0, done=false;
     /* Страховка: кадры (requestAnimationFrame) стоят в фоновой вкладке и в headless с виртуальным временем — автобус
        тогда кончается по таймеру, а не держит вечер. */
-    const guard=setTimeout(()=>end(), CC_BUS_MS+CC_BUS_GLIDE_MS+900);
+    const guard=setTimeout(()=>end(), CC_BUS_MS+CC_BUS_GLIDE_MS+1300);
     const end=()=>{ if(done) return; done=true; clearTimeout(guard); cancelAnimationFrame(raf); svg.remove(); resolve(); };
     const step=ts=>{
       if(!t0) t0=ts;
@@ -106249,13 +106255,13 @@ function ccBusIntro(wrap, teams, g){
       chevs.forEach(o=>{ const past=o.t<tb-0.02; if(o.past!==past){ o.past=past; o.c.classList.toggle('past', past); } });
       arrows.innerHTML='';
       jumpers.forEach(j=>{
-        const jumpAt=j.tj*CC_BUS_MS; if(e<jumpAt) return;
+        const jumpAt=j.tj*CC_BUS_MS+j.lag; if(e<jumpAt) return;
         const k=Math.min(1, (e-jumpAt)/CC_BUS_GLIDE_MS), s=k*k*(3-2*k);
         const x=j.from.x+(j.to.x-j.from.x)*s, y=j.from.y+(j.to.y-j.from.y)*s;
         arrows.appendChild(ZoneReplay.marker(x, y, j.a, j.fill, j.you, 1));
         if(j.you && tag){ tag.setAttribute('x', (x+2.4).toFixed(3)); tag.setAttribute('y', (y+0.9).toFixed(3)); }
       });
-      if(e>=CC_BUS_MS+CC_BUS_GLIDE_MS+250){ end(); return; }
+      if(e>=CC_BUS_MS+CC_BUS_GLIDE_MS+600){ end(); return; }
       raf=requestAnimationFrame(step);
     };
     raf=requestAnimationFrame(step);
@@ -122738,7 +122744,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='25ec4e0f';
+const CC_BUILD='e8cc4e94';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
