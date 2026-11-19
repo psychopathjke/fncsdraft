@@ -106220,17 +106220,9 @@ function ccBusIntro(wrap, teams, g){
     /* Автобус — значок Battle Bus с карты самой игры (вики Fortnite, «Battle Bus - Icon - Fortnite», 64 px,
        art/ui/battle-bus.webp): синий круг с белым автобусом под шаром. */
     const bus=document.createElementNS(NS, 'g');
-    /* Как на карте самой игры (его скрин 19.11, Ranked Reload): Battle Bus сверху — длинный синий корпус с механизмом шара
-       в центре, развёрнут по курсу. Рисуется носом вправо и поворачивается на угол маршрута. */
-    bus.innerHTML='<g transform="rotate('+deg.toFixed(1)+')">'+
-      '<rect x="-6" y="-1.75" width="12" height="3.5" rx="1.6" fill="#3a74e0" stroke="#0d1730" stroke-width="1.1" vector-effect="non-scaling-stroke"/>'+
-      '<rect x="-5.6" y="-1.35" width="11.2" height="1.1" rx=".5" fill="#6fa3ff" opacity=".75"/>'+
-      '<rect x="-6" y="-1.75" width="2.1" height="3.5" rx="1" fill="#2a2f3d"/>'+
-      '<path d="M -4.6 0 H 4.8" stroke="#d9dde6" stroke-width=".35"/>'+
-      '<path d="M -3.2 -1.75 V 1.75 M 3.4 -1.75 V 1.75" stroke="#c9ced8" stroke-width=".3"/>'+
-      '<rect x="-1.15" y="-1.15" width="2.3" height="2.3" fill="#3b3f4a" stroke="#ff6a2b" stroke-width=".9" vector-effect="non-scaling-stroke"/>'+
-      '<circle cx="0" cy="0" r=".6" fill="#9aa1ad"/>'+
-      '<ellipse cx="1.9" cy="1.55" rx=".75" ry=".55" fill="#e8ebf0"/></g>';
+    /* Battle Bus сверху — прямо из игры: вырезан из его скриншота карты (Ranked Reload, 19.11), art/ui/battle-bus-top.png,
+       носом вправо; поворачивается на угол маршрута. */
+    bus.innerHTML='<g transform="rotate('+deg.toFixed(1)+')"><image href="art/ui/battle-bus-top.png" x="-6.2" y="-1.8" width="12.4" height="3.6" preserveAspectRatio="none"/></g>';
     svg.appendChild(bus);
     const byZone=new Map(); list.forEach(t=>{ const z=t.landingZone; byZone.set(z, (byZone.get(z)||0)+1); });
     // Цвет стрелки — как в игре: своя акцентом, остальные по номеру в комнате (ZoneReplay.colourFor).
@@ -122746,7 +122738,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='1d129c5d';
+const CC_BUILD='25ec4e0f';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
