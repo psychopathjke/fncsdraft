@@ -8,7 +8,7 @@
 // (tools/measured/event-windows-eu.json); когда они кончаются, таймер считает дни до турнира по HOME_SCHED_LQ.
 const fs = require('fs'), path = require('path');
 const ROOT = path.resolve(__dirname, '..'), F = path.join(ROOT, 'index.html');
-const UA = 'fncsdraft-tools/1.0 (keegorka@gmail.com)';
+const UA = 'fncsdraft-tools/1.0 (+https://fncsdraft.com)';
 const YEAR = new Date().getFullYear();
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
