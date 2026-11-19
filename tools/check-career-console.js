@@ -151,7 +151,8 @@ const BOOT = `
         const h0=CC_CONSOLE_2026.find(v=>v.series==='heats' && v.day>r.day && v.day<=ccAddDays(r.day, 21));
         if(h0 && ccConsoleOk(h0)) fail('heats open without qualifying');
         if(ccMobSeriesAfter(r, 50, 1000)!=='heats') continue;
-        const h=ccVictoryList().find(v=>v.series==='heats' && v.day>r.day && v.day<=CAREER.career.mobSer.until);
+        // Хит свой (змейкой по месту в раунде, правила Epic): 50-й место — хит 2.
+        const h=ccVictoryList().find(v=>v.series==='heats' && v.day>r.day && v.day<=CAREER.career.mobSer.until && v.heat===CAREER.career.mobSer.heat);
         if(h){ round=r; heat=h; cup=CC_CONSOLE_2026.find(v=>v.series==='cup' && v.day>h.day); break; }
       }
       if(!round || !heat || !cup){ CAREER.career.mobSer={next:'heats', until:'2026-12-31'}; CC_VICTORY_LIST=null;
@@ -160,7 +161,7 @@ const BOOT = `
       if(!ccConsoleOk(round)) fail('a round is closed with a phone');
       if(ccConsoleOk(cup)) fail('cup open after a round only');
       { const keep=CAREER.career.mobSer; delete CAREER.career.mobSer; if(ccConsoleWhy(heat)!==L().ccMobSerNeedRound) fail('heat reason: '+ccConsoleWhy(heat)); CAREER.career.mobSer=keep; }
-      // Полный вечер хита: комната 100 сильнейших мобильных игроков.
+      // Полный вечер хита: комната 16 из регионального топ-64 (Epic: четыре хита по 16).
       CAREER.career.day=heat.day; CAREER.career.energy=100; careerSave(); careerEntry();
       ccVictoryPick(heat.id);
       if(careerVictoryOn(heat.day).id!==heat.id) fail('heat not picked: '+careerVictoryOn(heat.day).id);
@@ -172,17 +173,17 @@ const BOOT = `
       try{ careerSpotEnsure(); }catch(e){}
       await careerPlay();
       clearInterval(iv); simulateGamesLive=sgl;
-      if(roomN!==100) fail('heat room is not 100: '+roomN);
+      if(roomN!==16) fail('heat room is not 16: '+roomN);
       if(roomMin<=68) fail('heat room has generated players, not the strongest mobile ones: weakest '+roomMin);
       const lh=(CAREER.career.log||[]).slice(-1)[0];
       const ms=CAREER.career.mobSer;
-      if(lh && lh.place/100<=CC_MOBSER_HEAT_CUT ? !(ms && ms.next==='cup') : !!ms) fail('heat result did not move the series right: #'+(lh && lh.place)+' '+JSON.stringify(ms));
+      if(lh && lh.place<=CC_MOBSER_HEAT_TOP ? !(ms && ms.next==='cup') : !!ms) fail('heat result did not move the series right: #'+(lh && lh.place)+' '+JSON.stringify(ms));
       // Кап после хита и закрытие серии.
       CAREER.career.mobSer={next:'cup', until:'2026-07-04'};
       if(!ccConsoleOk(cup)) fail('cup closed after clearing a heat');
-      ccMobSeriesAfter(cup, 3, 100);
+      ccMobSeriesAfter(cup, 3, 16);
       if(CAREER.career.mobSer) fail('series not closed after the cup');
-      out.steps.push('Mobile Series: round open, heats/cup closed («'+L().ccMobSerNeedRound+'»); round top 5% -> heats; heat room 100, weakest '+roomMin+', #'+(lh && lh.place)+' -> '+(ms ? ms.next : 'out')+'; cup closes the series'); }
+      out.steps.push('Mobile Series: round open, heats/cup closed («'+L().ccMobSerNeedRound+'»); round top 64 -> own heat; heat room 16, weakest '+roomMin+', #'+(lh && lh.place)+' -> '+(ms ? ms.next : 'out')+'; cup closes the series'); }
     // ---- мобильные устройства: Android, iPhone, iPad — любое открывает, iPhone/iPad дают силу на мобиле ----------
     seed('2026-06-27');
     CAREER.career.balance=9000;

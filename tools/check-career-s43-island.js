@@ -70,7 +70,9 @@ check('мини-Venture: сундуки для лута руками', CC_LR_CHE
   Object.keys(byId).filter(id=>/Mobile/.test(id)).forEach(id=>{ const ev=byId[id]; CAREER.career.day=ev.day; const got=ccEvLandingSet(ev), w=want(id);
     if(got==='r6') notes.r6ids.push(id);
     if(w==='br' ? got!==careerBrSet() : got!==w) bad.push(id+'='+got);
-    if(w!=='br' && ccVictoryLobby(ev, true)!==40) bad.push(id+' lobby '+ccVictoryLobby(ev, true)); });
+    // Лобби: Mobile Series — 16 (страница серии Epic), остальной мобильный Reload — 40.
+    const lob=/MobileSeries/.test(id) ? 16 : 40;
+    if(w!=='br' && ccVictoryLobby(ev, true)!==lob) bad.push(id+' lobby '+ccVictoryLobby(ev, true)); });
   check('мобильные капы: острова', !bad.length && notes.r6ids.length>=15, bad.join(' '));
   check('Touch-Only Test Cup не Reload', !ccIsReloadEv(byId.S39_MobileTestCup));
   CAREER.career.day='2026-01-05'; check('Mobile Series январь: лут r1', (useLandingSet(ccEvLandingSet(byId.S39_MobileSeriesJan)), ccLootSet())==='r1', ccLootSet());
