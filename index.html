@@ -6984,7 +6984,8 @@
   .cc-run-drops{position:absolute;inset:0;pointer-events:none;transition:opacity .3s;}
   .cc-bus-layer{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:4;overflow:visible;}
   .cc-bus-tag{font-size:2.6px;font-weight:900;fill:var(--accent);paint-order:stroke;stroke:#000;stroke-width:.5px;}
-  .cc-bus-path{stroke:#fff;stroke-width:.35;stroke-dasharray:1.4 1.1;opacity:.75;vector-effect:non-scaling-stroke;}
+  .cc-bus-chev{fill:none;stroke:#3fd2ff;stroke-width:2px;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke;filter:drop-shadow(0 0 1.5px rgba(0,40,70,.9));}
+  .cc-bus-chev.past{opacity:.3;}
   .cc-bus{position:absolute;font-size:22px;line-height:1;filter:drop-shadow(0 2px 3px rgba(0,0,0,.6));}
   .cc-bus-dot{position:absolute;width:7px;height:7px;margin:-3.5px 0 0 -3.5px;border-radius:50%;background:#fff;box-shadow:0 0 0 1.5px rgba(0,0,0,.55);}
   .cc-bus-dot.hot{background:#ff4d4d;}
@@ -106205,9 +106206,16 @@ function ccBusIntro(wrap, teams, g){
     const at=t=>({x:A.x+(B.x-A.x)*t, y:A.y+(B.y-A.y)*t});
     const svg=document.createElementNS(NS, 'svg');
     svg.setAttribute('viewBox', '0 0 100 '+vbH.toFixed(3)); svg.setAttribute('preserveAspectRatio', 'none'); svg.setAttribute('class', 'cc-bus-layer');
-    const line=document.createElementNS(NS, 'line');
-    line.setAttribute('x1', A.x); line.setAttribute('y1', A.y); line.setAttribute('x2', B.x); line.setAttribute('y2', B.y); line.setAttribute('class', 'cc-bus-path');
-    svg.appendChild(line);
+    /* Маршрут как в игре: цепочка бирюзовых шевронов «V» носом по ходу полёта (скриншоты карты Fortnite с путём автобуса),
+       а не пунктир. Пройденная автобусом часть бледнеет. */
+    const chev=document.createElementNS(NS, 'g'), chevs=[], len=Math.sqrt(L2), STEP=2.7, deg=Math.atan2(B.y-A.y, B.x-A.x)*180/Math.PI;
+    for(let d=STEP/2; d<len; d+=STEP){
+      const t=d/len, p=at(t), c=document.createElementNS(NS, 'path');
+      c.setAttribute('d', 'M -0.85 -1.15 L 0.45 0 L -0.85 1.15');
+      c.setAttribute('transform', 'translate('+p.x.toFixed(3)+' '+p.y.toFixed(3)+') rotate('+deg.toFixed(1)+')');
+      c.setAttribute('class', 'cc-bus-chev'); chev.appendChild(c); chevs.push({c, t});
+    }
+    svg.appendChild(chev);
     const arrows=document.createElementNS(NS, 'g'); svg.appendChild(arrows);
     /* Автобус — значок Battle Bus с карты самой игры (вики Fortnite, «Battle Bus - Icon - Fortnite», 64 px,
        art/ui/battle-bus.webp): синий круг с белым автобусом под шаром. */
@@ -106236,6 +106244,7 @@ function ccBusIntro(wrap, teams, g){
       if(skipAnimation || !svg.isConnected){ end(); return; }
       const e=ts-t0, tb=Math.min(1, e/CC_BUS_MS), p=at(tb);
       bus.setAttribute('transform', 'translate('+p.x.toFixed(3)+' '+p.y.toFixed(3)+')');
+      chevs.forEach(o=>{ const past=o.t<tb-0.02; if(o.past!==past){ o.past=past; o.c.classList.toggle('past', past); } });
       arrows.innerHTML='';
       jumpers.forEach(j=>{
         const jumpAt=j.tj*CC_BUS_MS; if(e<jumpAt) return;
@@ -122727,7 +122736,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='3e21b99d';
+const CC_BUILD='ac050579';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
