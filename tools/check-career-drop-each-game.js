@@ -115,6 +115,8 @@ const BOOT = `
     const fakeMap=document.createElement('div');
     fakeMap.className='zone-replay'; document.body.appendChild(fakeMap);
     CC_RUN_MAP=fakeMap;
+    // Не первая игра этапа: первая теперь всегда поверх экрана с картой высадок (19.11), маленькое окно — со второй.
+    d.you.stageLog=[{place:10}];
     const onMapP=careerLandingPick(d.field, d.you, 'probe', ['cup']);
     const onMapCls=(document.querySelector('.cc-choice')||{}).className||'';
     const inMap=!!fakeMap.querySelector('.cc-choice');

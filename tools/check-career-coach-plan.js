@@ -81,7 +81,8 @@ const BOOT = `
     out.notes.rows=((CC_EVENING&&CC_EVENING.rows)||[]).map(r=>r.g+':'+r.place+'/'+r.elims+'/'+(r.dc||'-')+(r.plan?'/plan'+r.plan.ok+'of'+r.plan.n:''));
     const rv=document.querySelector('#majorStages .ev-review'); out.notes.review=rv ? rv.innerText.slice(0,500) : null;
     out.notes.news=(CAREER.career.news||[]).slice(0,6).map(n=>n.k+' '+JSON.stringify(n.a||[]).slice(0,60));
-    check('план коуча показан', planSeen);
+    // Карточку плана перед первой игрой убрали (его слово 19.11: «я бы это убрал»); план живёт подсказками коуча.
+    check('карточки плана перед игрой нет', !planSeen);
     check('строки вечера записаны', !!(CC_EVENING && CC_EVENING.rows.length));
     check('разбор в карточке', !!rv);
   }catch(e){ out.err=String(e && e.stack || e); }

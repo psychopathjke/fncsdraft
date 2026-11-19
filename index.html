@@ -115803,7 +115803,9 @@ async function ccCoachPlanShow(){
   const li=(a,b)=>'<li><em>'+esc(a)+'</em> '+esc(b)+'</li>';
   const hint='<ul class="cc-plan">'+li(T.ccPlanDrop, T['ccPlanDrop_'+p.drop])+li(T.ccPlanRot, T['ccPlanRot_'+p.rot])+
     li(T.ccPlanFight, T['ccPlanFight_'+p.fight])+li(T.ccPlanLate, T['ccPlanLate_'+p.late])+'</ul>';
-  await ccChoiceBox(T.ccPlanTitle(p.coach), hint, [{id:'ok', title:T.ccPlanOk, def:true}], (typeof CC_RUN_MAP!=='undefined' && CC_RUN_MAP) || null, null, 'plan');
+  /* Карточку плана перед первой игрой убрали (его слово 19.11, скрин «game plan for tonight»: «я бы это убрал»). План
+     остаётся тихо: коуч подсказывает в каждом вопросе (ccCoachOpinion), разбор вечера считает, сколько пунктов совпало. */
+  void hint;
 }
 /* РАЗБОР ВЕЧЕРА — в карточке результата, под оценкой матча (ccNightRateLine). Только то, что было: смерти по причинам,
    кто чаще всех убивал, лучшая игра, ротации, план коуча; и что из этого следует для тренировки. */
@@ -122575,7 +122577,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='0dc16fcb';
+const CC_BUILD='db26ed2d';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -163340,7 +163342,9 @@ async function careerLandingPick(field, you, title, kinds, o){
   CC_DROP_ROOM={d:ccDropRoomData(pre, you, home), title:title||''};
   // Перед первой игрой этапа вопрос высадки встаёт ПОВЕРХ экрана вместе с картой комнаты (его слово 19.11: «показать
   // поверх экрана и подтвердить точку, чтоб не скролить ниже»). Дальше — маленькое окошко на карте, как было.
-  const dmFirst=!((you && you.stageLog)||[]).length && !onMapNow();
+  /* Перед первой игрой этапа — всегда поверх экрана, и когда карта боя уже открыта: на финале недели она стоит с
+     «Игра 1 из 6» (его скрин 19.11), и окно с картой высадок не появлялось — вопрос уходил маленьким окошком. */
+  const dmFirst=!((you && you.stageLog)||[]).length;
   const rivals=home ? (pre.get(home)||[]).length : 0;
   /* Где стоит вопрос — на карте, если карта уже идёт.
 
