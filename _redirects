@@ -1,2 +1,6 @@
 /manager / 302
 /manager/ / 302
+
+# Игрок попросил убрать свою страницу (приватность) — tools/player-optout.json
+/player/yuzon-returns /players 301
+/player/yuzon-returns.html /players 301
