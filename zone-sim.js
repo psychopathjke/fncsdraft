@@ -115,6 +115,31 @@
      Удар везде 25 за 5 секунд (в 2022 месяц было 10 секунд — не берём). Чистый урон (нанесённый минус
      полученный) — с 23.10.2025 во всех турнирах; до того сюрдж смотрел только на нанесённый.
      Источники и пробелы — tools/measured/storm-eras.md. */
+  /* СИФОН ПО ЭПОХАМ (за элиминацию, не за нок; Reload — никогда). {hp, sh, hot}: hp — сколько всего, sh — может ли остаток уйти
+     в щит, hot — даётся не сразу, а за столько секунд.
+       14.11.2018 (Pop-Up Cup, v6.30) – 22.05.2023: 50 здоровья, на полном — в щит (вики Competitive (Gamemode): «50 health and/or
+         shield»; Dexerto 04.12.2018); снят из турниров вместе с запуском Ranked (Fortnite Status 22.05.2023).
+       22.05.2023 – 24.09.2024: нет.
+       24.09 – 30.11.2024, Siphon Trials (fortnite.com, 24.09.2024), неделя — свой вариант: 40 эфф. здоровья, 50, 25, 75 здоровья
+         за время без щита (хотфикс: 5 за тик 0.5 с, 7.1 с), 50 здоровья без щита, 25 здоровья + 25 щита (с 29.10 до конца главы).
+       с 1.12.2024 (Chapter 6, FNCS Major 1 2025) и дальше: 75 здоровья за 5 секунд, щита нет (Epic, 02.12.2024; вики Ranked).
+     «Эффективное здоровье» — здоровье, остаток в щит. 25+25 — до 25 в каждое. */
+  var SIPHON_ERAS = [
+    ['2018-11-14', {hp:50, sh:true,  hot:0}],
+    ['2023-05-22', null],
+    ['2024-09-24', {hp:40, sh:true,  hot:0}],
+    ['2024-10-01', {hp:50, sh:true,  hot:0}],
+    ['2024-10-08', {hp:25, sh:true,  hot:0}],
+    ['2024-10-15', {hp:75, sh:false, hot:7}],
+    ['2024-10-22', {hp:50, sh:false, hot:0}],
+    ['2024-10-29', {hp:25, sh:true,  hot:0, split:25}],
+    ['2024-12-01', {hp:75, sh:false, hot:5}]
+  ];
+  function siphonFor(d){
+    var out = null;
+    for(var i=0;i<SIPHON_ERAS.length;i++) if(d >= SIPHON_ERAS[i][0]) out = SIPHON_ERAS[i][1];
+    return out;
+  }
   function withSurge(base, list){
     // list — пороги со второго круга; дальше последнего — последний.
     return base.map(function(ph, i){
@@ -143,8 +168,7 @@
       out.drift = DRIFT;
     }
     out.net = d >= '2025-10-23';
-    // Сифон: +50 здоровья или щита за элиминацию в турнирах с Pop-up Cup 2019 до 22.05.2023 (снят вместе с запуском Ranked).
-    out.siphon = d >= '2019-01-01' && d < '2023-05-22';
+    out.siphon = siphonFor(d);
     // Ребут по годам (см. REBOOT_RATE): фургонов нет до 10.04.2019 и 19.04–04.05.2019; карточка 270 с в Главе 2 S8.
     out.rebootUntil = (d < '2019-04-10' || (d >= '2019-04-19' && d < '2019-05-04')) ? 0 : Infinity;
     out.rebootCard = (d >= '2021-09-13' && d < '2021-12-05') ? 270 : 90;
@@ -964,7 +988,7 @@
      поднять не дают. Смерти по одному не меняются (их бросок тот же). RES_FREE — доля поднятых на чистом месте: при 0.75 движок
      поднимает 7% всех ноков, ноков 57 за игру при 55 в реплеях (check-member-deaths.js). Поднятый встаёт с RES_HP здоровья без щита. */
   var RES_SHARE = 0.10, RES_FREE = 0.75, RES_HP = 30;
-  var onReviveHook = null, SIPHON_ON = false, SIPHON_HP = 50;
+  var onReviveHook = null, SIPHON = null;
   function enemyNear(winner, loser, alive){
     if(!alive) return false;
     for(var i=0;i<alive.length;i++){
@@ -975,18 +999,21 @@
     }
     return false;
   }
-  // Сифон: убийце +SIPHON_HP, сначала в здоровье, остаток в щит; общей полоске отряда — та же доля.
+  /* Сифон убийце (SIPHON — правило эпохи, siphonFor): здоровье, остаток в щит, если эпоха даёт щит; 25+25 — до 25 в каждое.
+     «За время» (hot) движок даёт сразу: тик движка 1 с, а файт решается одним броском, растянуть некуда. */
   function siphon(sq, ks){
-    if(!SIPHON_ON || !sq || !ks || !ks.length) return;
+    if(!SIPHON || !sq || !ks || !ks.length) return;
+    var S = SIPHON;
     var size = (sq.mSh && sq.mSh.length) || 1;
     for(var i=0;i<ks.length;i++){
       var k = ks[i];
       if(sq.mHp && sq.mAlive[k]){
-        var add = SIPHON_HP, h = Math.min(100 - sq.mHp[k], add); sq.mHp[k] += h; add -= h;
-        sq.mSh[k] = Math.min(100, sq.mSh[k] + add); sq.mQuiet[k] = 99;
+        if(S.split){ sq.mHp[k] = Math.min(100, sq.mHp[k] + S.split); sq.mSh[k] = Math.min(100, sq.mSh[k] + S.split); }
+        else { var add = S.hp, h = Math.min(100 - sq.mHp[k], add); sq.mHp[k] += h; add -= h; if(S.sh) sq.mSh[k] = Math.min(100, sq.mSh[k] + add); }
+        sq.mQuiet[k] = 99;
       }
-      var a2 = SIPHON_HP / size, h2 = Math.min(100 - sq.hp, a2); sq.hp += h2; a2 -= h2;
-      sq.shield = Math.min(100, (sq.shield == null ? 100 : sq.shield) + a2);
+      var a2 = (S.split ? S.split : S.hp) / size, h2 = Math.min(100 - sq.hp, a2); sq.hp += h2; a2 = S.split ? S.split / size : a2 - h2;
+      if(S.sh) sq.shield = Math.min(100, (sq.shield == null ? 100 : sq.shield) + a2);
     }
     sq.siphoned = (sq.siphoned || 0) + ks.length;
   }
@@ -1655,7 +1682,7 @@
       var who = sq.team.squad && sq.team.squad[k] && sq.team.squad[k].handle;
       pendingEvents.push('revive:' + sq.team.name + ' ##' + (who || ('#' + (k + 1))));
     };
-    SIPHON_ON = !!(opts.phases && opts.phases.siphon);
+    SIPHON = (opts.phases && opts.phases.siphon) || null;
     var squads = createSquads(teams, {aspect: aspect, startOf: opts.startOf});
     for(var st=0; st<squads.length; st++) squads[st].surgeTie = rng();
     // Средняя сила лобби по карточкам — для LOBBY_WEAK_K, см. resolveContacts.
@@ -2335,6 +2362,7 @@
     RELOAD_PHASES: RELOAD_PHASES,
     phasesFor: phasesFor,
     DRIFT: DRIFT,
+    siphonFor: siphonFor,
     generateZonePlan: generateZonePlan,
     SPEED: SPEED,
     applyStorm: applyStorm,

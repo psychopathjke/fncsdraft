@@ -118215,7 +118215,10 @@ function ccThirdApply(you, r, foe){
    (CC_THIRD_SELF): проигравшего выбивает движок, третьим идём на выжившего. Шансы — CC_THIRD (замер концовки) с поправкой на
    силу: ×(0.5+p) на кил, ×(1.5−p) на смерть, p — дуэльная формула против цели. Если оба живы и цель выбита, второго
    добиваем с CC_THIRD_BOTH (он тоже битый) за половину прибавки. Поправки и CC_THIRD_SELF/BOTH — решение, не замер. */
-const CC_SIPHON_TP=0.7;
+/* Сколько сифон отнимает у третьей стороны: при 50 сразу шанс выбить ×0.7, меньше сифона — меньше; «за время» (hot) — как 60%
+   от суммы: победитель хилится, пока ты подходишь, но не мгновенно. Настройка, не замер. */
+const CC_SIPHON_TP=0.3;
+function ccSiphonTp(s){ if(!s) return 1; const eff=(s.split ? s.split*2 : s.hp)*(s.hot ? 0.6 : 1); return 1-CC_SIPHON_TP*Math.min(1.2, eff/50); }
 const CC_THIRD_PAIR=6, CC_THIRD_NEAR=22, CC_THIRD_SELF=0.5, CC_THIRD_BOTH=0.5;
 function ccThirdPair(you){
   const game=you && you._game, me=you && you._sq;
@@ -118247,9 +118250,9 @@ function ccThirdPairApply(you, pair, rr){
   }
   res.t=ccFoeName(tgt); res.o=oth ? ccFoeName(oth) : '';
   const o=ccThirdOdds(you, tgt), r=rnd();
-  /* Сифон (zone-sim phasesFor .siphon, 2019 – 22.05.2023): победитель чужого файта уже взял +50 за кил, прийти на готовое
-     труднее. CC_SIPHON_TP — настройка, не замер. */
-  if(res.self && CC_GAME_PHASES && CC_GAME_PHASES.siphon){ o.kill*=CC_SIPHON_TP; o.die=Math.min(1-o.kill, o.die/CC_SIPHON_TP); res.siphon=true; }
+  // Сифон эпохи (zone-sim siphonFor): победитель чужого файта уже хилится за кил, прийти на готовое труднее.
+  const sph=CC_GAME_PHASES && CC_GAME_PHASES.siphon;
+  if(res.self && sph){ const f=ccSiphonTp(sph); o.kill*=f; o.die=Math.min(1-o.kill, o.die/f); res.siphon=true; }
   if(r<o.kill){
     game.eliminate(tgt, you);
     ccAddGamePow(you, CC_THIRD.pow);

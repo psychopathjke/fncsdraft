@@ -10,10 +10,14 @@ const fails = [];
 const check = (n, ok, d) => { if (!ok) fails.push(n + (d ? ': ' + d : '')); };
 
 // --- движок ---------------------------------------------------------------
-check('сифон в 2019', ZoneSim.phasesFor('2019-06-01', 2).siphon === true);
-check('сифон в 2022', ZoneSim.phasesFor('2022-11-01', 3).siphon === true);
-check('сифона нет с 22.05.2023', ZoneSim.phasesFor('2023-05-22', 3).siphon === false);
-check('сифона нет в 2026', ZoneSim.phasesFor('2026-02-02', 2).siphon === false);
+const sf = d => JSON.stringify(ZoneSim.phasesFor(d, 2).siphon);
+check('2019: 50 сразу, в щит', sf('2019-06-01') === JSON.stringify({hp:50, sh:true, hot:0}), sf('2019-06-01'));
+check('2022: 50 сразу', sf('2022-11-01') === JSON.stringify({hp:50, sh:true, hot:0}));
+check('с 22.05.2023 нет', sf('2023-05-22') === 'null' && sf('2024-09-23') === 'null');
+check('пробы: 15.10.2024 — 75 за время без щита', ZoneSim.phasesFor('2024-10-16', 2).siphon.hot === 7);
+check('пробы: 29.10.2024 — 25+25', ZoneSim.phasesFor('2024-11-10', 2).siphon.split === 25);
+check('2026: 75 за 5 с без щита', sf('2026-02-02') === JSON.stringify({hp:75, sh:false, hot:5}), sf('2026-02-02'));
+check('Reload без сифона', !ZoneSim.RELOAD_PHASES.siphon);
 
 const src = fs.readFileSync(path.join(__dirname, 'zone-sim-test.js'), 'utf8');
 const LAND = eval(src.match(/const LAND = (\[[\s\S]*?\n\];)/)[1].replace(/;$/, ''));
@@ -37,14 +41,14 @@ function play(day, games){
     });
     res.timeline.forEach(f => {
       (f.events || []).forEach(e => { if (e.indexOf('revive:') === 0) rev++; });
-      (f.squads || f.dots || []).forEach(d => { if (d && d.h > 0) { hp += d.h; hpN++; } });
+      (f.squads || f.dots || []).forEach(d => { if (d && d.mh) d.mh.forEach(v => { if (v > 0) { hp += v; hpN++; } }); });
     });
   }
   return {rev: rev / games, hp: hpN ? hp / hpN : 0};
 }
-const now = play('2026-02-02', 60), old = play('2021-06-01', 60);
+const now = play('2026-02-02', 60), none = play('2023-08-01', 60);
 check('поднятые есть в ленте', now.rev > 1, now.rev.toFixed(2));
-check('сифон держит здоровье выше', !old.hp || !now.hp || old.hp > now.hp, old.hp.toFixed(1) + ' против ' + now.hp.toFixed(1));
+check('сифон держит здоровье выше', !none.hp || !now.hp || now.hp > none.hp, now.hp.toFixed(1) + ' против ' + none.hp.toFixed(1));
 
 // --- приложение -------------------------------------------------------------
 const CHROME = [process.env.CHROME,
@@ -83,14 +87,15 @@ const BOOT = `
     // Строки.
     ['ru','en','fr','it','pt'].forEach(l=>{ const T=I18N[l]; check('строки '+l, T && typeof T.busEarly==='function' && typeof T.busLate==='function' && T.tpSiphon); });
     // Третья сторона в эпоху сифона: прийти на готовое труднее.
-    CC_GAME_PHASES={siphon:true};
+    CC_GAME_PHASES={siphon:{hp:75, sh:false, hot:5}};
+    check('сила сифона по эпохе', ccSiphonTp({hp:50, sh:true, hot:0})<ccSiphonTp({hp:25, sh:true, hot:0}) && ccSiphonTp(null)===1);
     const team=n=>({name:n, pow:90, _pc:90, _pf:90, squad:[{handle:n}], attrs:{AIM:80,CLU:80,END:80,SUR:80}});
     const you=team('Y'), killed=[];
     you._game={eliminate:(l,w)=>killed.push(l.name)};
     const seq=[0, 0.99, 0.99, 0.99]; let si=0;
     const res=ccThirdPairApply(you, {a:{team:team('P')}, b:{team:team('Q')}}, ()=>seq[Math.min(si++, seq.length-1)]);
     check('сифон помечен на третьей стороне', res.siphon===true, JSON.stringify(res));
-    CC_GAME_PHASES={siphon:false}; si=0;
+    CC_GAME_PHASES={siphon:null}; si=0;
     const res2=ccThirdPairApply(you, {a:{team:team('P')}, b:{team:team('Q')}}, ()=>seq[Math.min(si++, seq.length-1)]);
     check('без сифона — без пометки', !res2.siphon);
   }catch(e){ out.err=String(e&&e.stack||e); }
@@ -108,7 +113,7 @@ if (!m) { console.error('проба не отработала; копия в ' +
 const out = JSON.parse(decodeURIComponent(m[1]));
 if (out.err) fails.push(out.err);
 out.fails.forEach(f => fails.push(f));
-console.log(JSON.stringify({engine: {now, old}, app: out.notes}));
+console.log(JSON.stringify({engine: {now, none}, app: out.notes}));
 fs.rmSync(dir, { recursive: true, force: true });
 if (fails.length) { fails.forEach(f => console.error('FAIL ' + f)); process.exit(1); }
 console.log('нок с поднятием, сифон по эпохе и автобус работают');
