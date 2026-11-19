@@ -9630,6 +9630,11 @@
   /* Окно над картой бывает выше карты (ротация: карта пути, чипы, ходы): не обрезается, а листается внутри. */
   .cc-choice-map{max-height:calc(100% - 16px); overflow-y:auto; overscroll-behavior:contain;}
   .cc-choice-map .rp-map{max-width:min(100%,420px); margin:4px auto 6px;}
+  .cc-choice-map.cc-choice-over{position:fixed; left:50%; right:auto; top:50%; bottom:auto; transform:translate(-50%,-50%);
+    width:min(880px, 92vw); max-height:88vh; z-index:9000; padding:16px 18px; animation:none;
+    box-shadow:0 0 0 100vmax rgba(4,8,24,.55), 0 24px 60px rgba(0,0,0,.6);}
+  .cc-choice-map.cc-choice-over .cc-choice-head b{margin:-16px -18px 10px;}
+  .cc-choice-over .rp-map{max-width:min(100%,600px);}
   .rp-line{stroke:#ffdd00;}
   .rp-to{fill:#ffdd00;stroke:#151515;stroke-width:2px;vector-effect:non-scaling-stroke;}
   /* Стиль игры моделями из игры (ccStyleBox); у W-key клавиша W в углу. */
@@ -116695,7 +116700,12 @@ function ccChoiceBox(title, hint, options, onMap, side, kind){
         `<button class="cc-choice-btn${o.art?' has-art':''}${o.icon?' has-ico':''}${o===dflt && options.length>1?' def':''}${mate && o===mate.pick?' mate':''}${coach && o===coach.pick?' coach':''}" data-at="${i}"${mate && o===mate.pick ? ' data-mate="'+esc(mate.name)+'"' : ''}${coach && o===coach.pick ? ' data-coach="'+esc(L().ccCoachTag)+'"' : ''}>
            ${o.art||''}<span class="cc-choice-tt">${o.icon?'<i class="cc-choice-ico'+(o.icoCls?' '+o.icoCls:'')+'">'+o.icon+'</i>':''}<b>${esc(o.title)}</b></span>${o.pack ? ccPackSlotsHTML(o.pack) : ''}${ccChoiceOdds(o.note)}<em>${o.note||''}</em></button>`).join('')}</div>`+
       `<div class="cc-choice-bar"><i></i></div>`;
-    host.appendChild(box);
+    /* Широкий экран: вопрос посреди игры — поверх экрана по центру, а не окошком внутри карты боя (его скрин 19.11:
+       ротация с картой пути и ходами зажата в карте и листается). В body: у карты бывает transform. Окно карты дропов
+       (.cc-dm-ask) уже поверх экрана — там как было. Телефон — как было. */
+    const over=!!(onMap && !(onMap.classList && onMap.classList.contains('cc-dm-ask')) && (window.innerWidth||0)>=900);
+    if(over) box.classList.add('cc-choice-over');
+    (over ? document.body : host).appendChild(box);
     // Чат эфира видит вопрос и начинает советовать. См. ccTvOnChoice.
     if(typeof ccTvOnChoice==='function') ccTvOnChoice(options);
     if(!onMap) box.scrollIntoView({block:'center',
@@ -117202,6 +117212,11 @@ function ccLrColor(o){ return (o && (RARITY_COLOR[o.rarity] || (typeof CONSUMABL
    условное, число сундуков то же). Порядок обхода: от левого к ближайшему следующему, так открывает «Открыть 5». */
 // Коробка во всю свободную часть кадра (его «больше локация должна быть», 13.11): 100 % и зум до 9.
 const CC_LR_RATIO=4/3, CC_LR_FILL=100;
+/* Ширина картинки острова в пикселях: приближение лут-комнаты не растягивает её больше чем в CC_LR_UPSCALE раз
+   (его скрин 19.11 с широкого экрана: «слишком приближено» — S42 в 921 px под 9× расплывалась). */
+const CC_ART_PX={'map-m1.jpg':1100, 'map-m2.jpg':1100, 'map-s42.jpg':921, 'map-s43.jpg':1000, 'map-s43-hd.jpg':2368, 'map-r5.jpg':1000, 'map-r5-hd.jpg':3264,
+  'map-r6.jpg':1000, 'map-r6-hd.jpg':1984, 'map-reload-a.jpg':1062, 'map-reload-b.jpg':1034}, CC_LR_UPSCALE=2.5;
+function ccArtPx(art){ const k=String(art||'').split('/').pop(); return CC_ART_PX[k] || (/map-[ghi][0-9]/.test(k) ? 2048 : 1600); }
 /* Патроны: сундук даёт пачку, редкий сундук и ящик по две. На отряд нужно CC_AMMO_NEED пачек на игрока, иначе −1 к силе
    (стрелять нечем, третий файт без патронов). Порог и пачки — решение, не замер: в реплеях Tracker патронов нет. Комната
    (ccRoomSite) открывает ccSiteOpen сундуков, а это от 12 пачек на игрока, поэтому ботам штраф не грозит и не считается. */
@@ -117229,7 +117244,8 @@ function ccLrView(z, n, cam, boss){
   const asp=MAP_ASPECT[key]||'1100/970', ar=String(asp).split('/');
   const hOverW=(Number(ar[1])||1)/(Number(ar[0])||1);
   const R=cam ? cam.W/cam.H : CC_LR_RATIO, ah=cam ? Math.max(0.3, 1-cam.top-cam.bot) : 1, fy=cam ? cam.top+ah/2 : 0.5;
-  const zoom=Math.max(1.2, Math.min(9, Math.min(CC_LR_FILL/Math.max(z.w, 2), CC_LR_FILL*ah/(Math.max(z.h, 2)*hOverW*R))));
+  const zMax=cam ? Math.max(1.2, Math.min(9, ccArtPx(art)*CC_LR_UPSCALE/Math.max(320, cam.W))) : 9;
+  const zoom=Math.max(1.2, Math.min(zMax, Math.min(CC_LR_FILL/Math.max(z.w, 2), CC_LR_FILL*ah/(Math.max(z.h, 2)*hOverW*R))));
   const visW=100/zoom, visH=100/(zoom*hOverW*R), halfW=Math.min(50, visW/2), halfH=Math.min(50, visH/2);
   const cx=clamp(z.x+z.w/2, halfW, 100-halfW), cy=clamp(z.y+z.h/2-(fy-0.5)*visH, halfH, 100-halfH);
   const rng=careerRng(ccHashStr('lr|'+key+'|'+z.x+'|'+z.y));
@@ -122748,7 +122764,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='fa64ab7b';
+const CC_BUILD='d7e96407';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
