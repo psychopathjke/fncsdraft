@@ -34,7 +34,9 @@ const money = n => '$' + Math.round(n).toLocaleString('en-US');
 
 const earnBy = new Map((D.earn || []).map(e => [String(e.n).toLowerCase(), e]));
 // Кто получает страницу: три карточки и больше, или фото, или призовые 2026.
-const P = D.players.filter(g => g.cards.length >= 3 || g.photo || earnBy.has(g.handle.toLowerCase()));
+// Кто попросил убрать свою страницу (приватность) — страницы нет, в /players и sitemap его тоже нет. tools/player-optout.json.
+const OPTOUT = new Set((JSON.parse(fs.readFileSync(path.join(__dirname, 'player-optout.json'), 'utf8')).handles || []).map(h => String(h).toLowerCase()));
+const P = D.players.filter(g => !OPTOUT.has(String(g.handle).toLowerCase()) && (g.cards.length >= 3 || g.photo || earnBy.has(g.handle.toLowerCase())));
 
 // Адрес: ник латиницей и цифрами; тёзкам — страна (или регион) хвостом.
 const slugBase = h => String(h).normalize('NFKD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');

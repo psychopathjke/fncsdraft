@@ -1367,9 +1367,17 @@
         // Команда клуба (Fortnite Manager, isClub) — своим голубым и крупно, как своя.
         // Своя команда — аватаркой (образ из шкафчика, карьера: window.CC_FN_SKIN), а не стрелкой; нет образа — стрелка.
         var av = (who.you && typeof window !== 'undefined' && typeof window.CC_FN_SKIN === 'function') ? window.CC_FN_SKIN(who.name, true) : null;
-        handle.svg.appendChild(av ? avatarMarker(handle, at[i].x, at[i].y, d.a || 0, av, scale)
-          : marker(at[i].x, at[i].y, d.a || 0,
-          who.you ? 'var(--accent)' : who.club ? CLUB_COL : colourFor(i), who.you || who.club, scale));
+        /* Стрелка у каждого живого игрока, как в игре (19.11, «точно ли все галочки на карте есть игроков?»): напарники
+           рядом, поперёк хода, цвет команды общий. Живые — из d.m (кто выбит), иначе весь состав (roster.size). */
+        var k = d.m ? d.m.reduce(function(s, v){ return s + (v ? 1 : 0); }, 0) : (who.size || 1);
+        if(k < 1) k = 1;
+        var rad = (d.a || 0) * Math.PI / 180, px = -Math.sin(rad), py = Math.cos(rad), sp = 1.9 / scale;
+        var fillI = who.you ? 'var(--accent)' : who.club ? CLUB_COL : colourFor(i);
+        for(var mm=0; mm<k; mm++){
+          var o = (mm - (k - 1) / 2) * sp, mx = at[i].x + px * o, my = at[i].y + py * o;
+          handle.svg.appendChild((av && mm === 0) ? avatarMarker(handle, mx, my, d.a || 0, av, scale)
+            : marker(mx, my, d.a || 0, fillI, who.you || who.club, scale));
+        }
       }
     }
 
