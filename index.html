@@ -114598,7 +114598,7 @@ function ccKitPanel(lobby, frame){
   /* Пока на карте стоит вопрос, ресы — ровно те, по которым он задан (модель
      уже списала круги до остановки), иначе подсказка говорит «ресы 0», а
      строка внизу — 110, и это читается как две правды. */
-  const asking=!!map.querySelector('.cc-choice-map');
+  const asking=!!(map.querySelector('.cc-choice-map') || (CC_CHOICE_OPEN && CC_CHOICE_OPEN.isConnected && CC_CHOICE_OPEN._host===map));
   const mats=asking ? ccMats(you)
     : Math.max(0, ccMats(you)+(function(){ let s=0; for(let z=(frame.zone||0)+1; z<=CC_KIT_ZONE; z++) s+=ccMatsZoneCost(z); return s; })());
   const low=mats<CC_MATS_LOW;
@@ -115141,8 +115141,7 @@ async function ccAskRotWindow(you, ui){
     const pr=ccChoiceBox(T.ccRotTitle, hint, opts, ui && ui.map, null, 'rot');
     // Окно уже на странице (ccChoiceBox строит его сразу): тап по карте и чипы читаются до ответа.
     const host=(ui && ui.map) || document.getElementById('majorStages');
-    const boxes=host ? host.querySelectorAll('.cc-choice') : [];
-    const box=boxes.length ? boxes[boxes.length-1] : null;
+    const box=ccChoiceIn(host);
     if(box && plan){ const off=ccPathAttach(box, plan, p=>{ cur=p; const n=box.querySelector('.rp-note'); if(n) n.textContent=ccPathNote(T, p); }); pr.then(off); }
     if(box) box.querySelectorAll('[data-chip]').forEach(b=>b.addEventListener('click', ()=>{
       tac=b.dataset.chip; box.querySelectorAll('[data-chip]').forEach(x=>x.classList.toggle('on', x===b)); }));
@@ -116658,6 +116657,14 @@ function ccGameHowHTML(){
   return '<details class="cc-how"><summary>'+esc(T.ccGameHowTitle||'')+'</summary><ul>'+
     lines.map(l=>'<li>'+esc(l)+'</li>').join('')+'</ul></details>';
 }
+/* Открытое окно выбора. На широком экране оно живёт в body (cc-choice-side/over), а не в карте, поэтому те, кто
+   дописывает в него чипы и тап по карте пути (ротация, концовка), берут его отсюда, а не поиском в карте. */
+let CC_CHOICE_OPEN=null;
+function ccChoiceIn(host){
+  if(CC_CHOICE_OPEN && CC_CHOICE_OPEN.isConnected && (!host || CC_CHOICE_OPEN._host===host)) return CC_CHOICE_OPEN;
+  const boxes=host ? host.querySelectorAll('.cc-choice') : [];
+  return boxes.length ? boxes[boxes.length-1] : null;
+}
 function ccChoiceBox(title, hint, options, onMap, side, kind){
   /* Порядок кнопок — тот, что передали: сторожа кликают по data-at и ждут
      именно его. Правило «ход по умолчанию — первым» живёт там, где список
@@ -116719,6 +116726,7 @@ function ccChoiceBox(title, hint, options, onMap, side, kind){
       }
     }
     (over ? document.body : host).appendChild(box);
+    box._host=host; CC_CHOICE_OPEN=box;
     // По высоте — посередине карты, как стояло окошко внутри неё.
     if(box.classList.contains('cc-choice-side')){ const r=onMap.getBoundingClientRect(), top=Math.max(8, r.top), h=Math.min(r.bottom, window.innerHeight-8)-top;
       box.style.top=Math.round(top+Math.max(0, (h-box.offsetHeight)/2))+'px'; }
@@ -117930,8 +117938,7 @@ async function ccAskEndWindow(you, ui){
   const v=(await ccMpChoose('late'+(you.mpTag||''), async function(){
     const pr=ccChoiceBox(T.ccLateTitle, ccKitLine(you)+(pro ? '<br>'+esc(pro) : '')+chips, opts, ui && ui.map, null, 'late');
     const host=(ui && ui.map) || document.getElementById('majorStages');
-    const boxes=host ? host.querySelectorAll('.cc-choice') : [];
-    const box=boxes.length ? boxes[boxes.length-1] : null;
+    const box=ccChoiceIn(host);
     if(box) box.querySelectorAll('[data-chip]').forEach(b=>b.addEventListener('click', ()=>{
       stance=b.dataset.chip; box.querySelectorAll('[data-chip]').forEach(x=>x.classList.toggle('on', x===b)); }));
     return (await pr).id+'|'+stance;
@@ -122789,7 +122796,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='38692e8e';
+const CC_BUILD='e85cf97f';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
