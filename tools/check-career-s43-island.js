@@ -23,7 +23,7 @@ check('клетки разного размера', Math.max(...zs.map(z=>z.w))-
 check('клетки не пересекаются', zs.every((a,i)=>zs.every((b,j)=>i>=j || !(a.x<b.x+b.w-.01 && b.x<a.x+a.w-.01 && a.y<b.y+b.h-.01 && b.y<a.y+a.h-.01))));
 check('Noble: большие клетки', Math.max(...zs.map(z=>z.w))>18, Math.max(...zs.map(z=>z.w)));
 check('клетки в кадре', zs.every(z=>z.x>=0 && z.y>=0 && z.x+z.w<=100 && z.y+z.h<=100));
-check('картинка и пропорция', MAP_ART.s43==='art/map-s43.jpg' && MAP_ASPECT.s43==='1/1');
+check('картинка и пропорция', MAP_ART.s43==='art/map-s43-hd.jpg' && MAP_ASPECT.s43==='1/1');
 check('лут сезона', ccLootSet('s43')==='s43' && CC_LOOT_BY_SET.s43.weapons===S43_WEAPON_POOL);
 const was=ACTIVE_LANDING_SET, wasSq=squadSize; squadSize=3; useLandingSet('s43');
 check('клетки встали', ACTIVE_LANDING_SET==='s43' && ALL_LANDING_ZONES.length>=20, ACTIVE_LANDING_SET+' '+ALL_LANDING_ZONES.length);
@@ -60,7 +60,7 @@ check('Solo Reload на Nitemare', ccSoloFncsSet(rlEv)==='r5', ccSoloFncsSet(rlE
 check('Nitemare: картинка и клетки', MAP_ART.r5==='art/map-r5.jpg' && ZONE_SETS.r5.length>=25 && ZONE_SETS.r5.length===ZONE_STATS.r5.length, ZONE_SETS.r5.length);
 { const was=ACTIVE_LANDING_SET, sq=squadSize; squadSize=1; useLandingSet('r5'); check('соло-клетки не дробятся', ALL_LANDING_ZONES.length===ZONE_SETS.r5.length, ALL_LANDING_ZONES.length); check('лут круга Reload', /^r[1-4]$/.test(ccLootSet()), ccLootSet()); squadSize=sq; useLandingSet(was); }
 // Мини-Venture (r6): Mobile Series и Reload (Mini Venture) Victory Cup, Reload по правилам и луту.
-check('мини-Venture: картинка и клетки', MAP_ART.r6==='art/map-r6.jpg' && MAP_ASPECT.r6==='1/1' && ZONE_SETS.r6.length>=20 && ZONE_SETS.r6.length===ZONE_STATS.r6.length, ZONE_SETS.r6.length);
+check('мини-Venture: картинка и клетки', MAP_ART.r6==='art/map-r6-hd.jpg' && MAP_ASPECT.r6==='1/1' && ZONE_SETS.r6.length>=20 && ZONE_SETS.r6.length===ZONE_STATS.r6.length, ZONE_SETS.r6.length);
 check('мини-Venture: клетки не пересекаются', ZONE_SETS.r6.every((a,i)=>ZONE_SETS.r6.every((b,j)=>i>=j || !(a.x<b.x+b.w-.01 && b.x<a.x+a.w-.01 && a.y<b.y+b.h-.01 && b.y<a.y+a.h-.01))));
 check('мини-Venture: сундуки для лута руками', CC_LR_CHESTS.r6 && CC_LR_CHESTS.r6.n.length/2>=150, CC_LR_CHESTS.r6 && CC_LR_CHESTS.r6.n.length/2);
 { const was=ACTIVE_LANDING_SET, sq=squadSize; squadSize=1; useLandingSet('r6'); check('r6: соло-клетки не дробятся', ALL_LANDING_ZONES.length===ZONE_SETS.r6.length, ALL_LANDING_ZONES.length); check('r6: лут круга Reload', /^r[1-4]$/.test(ccLootSet()), ccLootSet()); check('r6: шторм Reload', ccStormPhases('r6',1)===ZoneSim.RELOAD_PHASES); squadSize=sq; useLandingSet(was); }

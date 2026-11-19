@@ -4351,7 +4351,7 @@
   .cc-ch-s{min-height:42px;margin:8px auto 20px;max-width:440px;font-size:15px;font-weight:700;line-height:1.35;color:#dfe7ff;}
   .cc-chm-box{max-width:min(92vw,66vh,640px);}
   .cc-chm-box .cc-ch-t{font-size:26px;} .cc-chm-box .cc-ch-s{min-height:0;margin:4px auto 10px;font-size:13px;}
-  .cc-chm-map{position:relative;width:100%;aspect-ratio:1;border-radius:14px;overflow:hidden;background:#0d4f6b url('art/map-s43.jpg') center/cover;box-shadow:0 0 0 2px rgba(255,221,0,.5),0 14px 40px rgba(0,0,0,.5);}
+  .cc-chm-map{position:relative;width:100%;aspect-ratio:1;border-radius:14px;overflow:hidden;background:#0d4f6b url('art/map-s43-hd.jpg') center/cover;box-shadow:0 0 0 2px rgba(255,221,0,.5),0 14px 40px rgba(0,0,0,.5);}
   .cc-chm{position:absolute;width:34px;height:34px;margin:-17px 0 0 -17px;padding:0;border:0;background:none;cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation;animation:ccChmPulse 1.8s ease-in-out infinite;}
   .cc-chm img{display:block;width:100%;height:100%;filter:drop-shadow(0 0 5px rgba(255,220,80,.95)) drop-shadow(0 2px 2px rgba(0,0,0,.75));}
   .cc-chm.r{width:40px;height:40px;margin:-20px 0 0 -20px;}
@@ -6981,12 +6981,30 @@
   .dc-why{color:#f0b232;font-size:12px;font-weight:700;}
   .dc-res{margin-top:8px;color:#3ba55c;font-size:12.5px;font-weight:800;}
   .cc-dm-pick .cc-dm{max-height:96vh;}
+  .cc-run-drops{position:absolute;inset:0;pointer-events:none;transition:opacity .3s;}
+  .cc-run-drops.off{display:none;}
+  .zone-replay.zr-playing .cc-run-drops{opacity:.22;}
+  .cc-rd-box{position:absolute;border:1px solid rgba(255,255,255,.8);background:rgba(0,0,0,.35);border-radius:3px;display:flex;align-items:center;justify-content:center;overflow:hidden;}
+  .cc-rd-box span{font-size:8px;line-height:1.1;font-weight:800;text-align:center;color:#fff;text-shadow:0 1px 2px #000;padding:1px;word-break:break-word;}
+  .cc-rd-box.hot{border-color:#ff3b3b;background:rgba(255,59,59,.3);}
+  .cc-rd-box.me{border-color:#ffd23f;box-shadow:0 0 0 2px rgba(255,210,63,.55);}
+  .cc-rd-toggle{position:absolute;left:6px;bottom:6px;z-index:5;border:1px solid rgba(255,255,255,.4);background:rgba(0,0,0,.55);color:#fff;border-radius:999px;padding:4px 10px;font-size:10.5px;font-weight:800;cursor:pointer;}
+  .cc-rd-toggle.off{opacity:.55;}
   .cc-dm-pick .cc-dm-list, .cc-dm-pick h5, .cc-dm-pick .cc-dm-note{display:none;}
   .cc-dm-pick .cc-dm{padding-top:10px;padding-bottom:10px;}
   .cc-dm-pick .cc-dm-head{margin-bottom:6px;}
   .cc-dm-pick .cc-dm-map{max-height:42vh;width:auto;max-width:100%;margin:0 auto;}
   .cc-dm-pick .cc-choice-sub, .cc-dm-pick .cc-choice-mate, .cc-dm-pick .cc-game-how{font-size:12px;}
   .cc-dm-pick .cc-choice-row{gap:6px;}
+  /* Широкий экран (его скрин 19.11: карта мелкая, подписи налезают): карта слева на всю высоту, вопрос справа. */
+  @media(min-width:900px){
+    .cc-dm-pick .cc-dm{width:min(1280px,96vw);max-height:96vh;display:grid;grid-template-columns:minmax(0,1fr) 400px;grid-template-rows:auto 1fr;column-gap:16px;}
+    .cc-dm-pick .cc-dm-head{grid-column:1/-1;}
+    .cc-dm-pick .cc-dm-map{grid-column:1;grid-row:2;max-height:none;justify-self:center;align-self:start;}
+    .cc-dm-pick .cc-dm-ask{grid-column:2;grid-row:2;align-self:start;}
+    .cc-dm-pick .cc-dm-ask .cc-choice-row{flex-direction:column;}
+    .cc-dm-pick .cc-dm-box span{font-size:11px;}
+  }
   .cc-dm-ask .cc-choice-map{position:relative;left:auto;right:auto;top:auto;bottom:auto;transform:none;margin:10px 0 0;}
   .cc-dm-card .cc-dm-map{max-width:640px;margin:6px auto 0;}
   .cc-dm-open{margin-left:6px;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.08);color:inherit;border-radius:999px;padding:3px 10px;font-size:11.5px;font-weight:800;cursor:pointer;}
@@ -103164,11 +103182,11 @@ const MAP_ART={
   // Тот же остров, но сеткой на сотню — под соло, см. ZONE_SETS.s42solo.
   s42solo:"art/map-s42.jpg",
   // Остров мини-сезона S43 (Treasure Hunters): тайлы fortnite.gg, tools/build-s43-island.js.
-  s43:"art/map-s43.jpg",
+  s43:"art/map-s43-hd.jpg",   // 19.11: плитки fortnite.gg z4, 2368 px (tools/build-fgg-map-art.js), было 1000
   // Nitemare Island: FNCS Solo Reload ноября 2026, tools/build-reload-nitemare.js.
   r5:"art/map-r5.jpg",
   // Мини-Venture: мобильный Reload 2026, тайлы fortnite.gg (blitz5), tools/build-reload-venture.js.
-  r6:"art/map-r6.jpg",
+  r6:"art/map-r6-hd.jpg",     // 19.11: z4, 1984 px, было 1000
   // Chapter 5, 2024: карты eucompetitive.com (ch5s1map … ch5s4map), сжаты в JPEG.
   f1:"art/map-f1.jpg",
   f2:"art/map-f2.jpg",
@@ -106127,6 +106145,35 @@ function ccLobbiesTogether(lobbies, together){
   });
   return lobbies;
 }
+/* ТОЧКИ КОМАНД НА КАРТЕ БОЯ. Перед каждой игрой большая карта показывает, кто куда сел: ник(и) в коробке, стычки красным,
+   своя — жёлтой рамкой. Слой лежит внутри рамки острова (первый ребёнок .zone-replay), поэтому ездит вместе с камерой.
+   Пока идёт сама игра, подписи приглушены (класс zr-playing). Кнопка «Точки» в углу прячет и показывает. */
+let CC_RUN_DROPS_ON=true;
+function ccRunDropsDraw(wrap, teams){
+  const stage=wrap && wrap.firstElementChild; if(!stage) return;
+  const old=stage.querySelector('.cc-run-drops'); if(old) old.remove();
+  const by=new Map();
+  (teams||[]).forEach(t=>{ const z=t && t.landingZone; if(!z || z.x==null) return; if(!by.has(z)) by.set(z, []); by.get(z).push(t); });
+  if(!by.size) return;
+  const nm=t=>(t.squad||[]).map(c=>c && c.handle).filter(Boolean).join(' + ') || String(t.name||'').replace(/<[^>]*>/g,'');
+  const layer=document.createElement('div'); layer.className='cc-run-drops'+(CC_RUN_DROPS_ON ? '' : ' off');
+  by.forEach((list, z)=>{
+    const me=list.some(t=>t.isYou), hot=list.length>1;
+    const b=document.createElement('div');
+    b.className='cc-rd-box'+(hot ? ' hot' : '')+(me ? ' me' : '');
+    b.style.cssText='left:'+z.x+'%;top:'+z.y+'%;width:'+z.w+'%;height:'+z.h+'%';
+    b.innerHTML='<span>'+list.slice(0, 3).map(t=>esc(nm(t))).join('<br>')+(list.length>3 ? '<br>+'+(list.length-3) : '')+'</span>';
+    layer.appendChild(b);
+  });
+  stage.appendChild(layer);
+  if(!wrap.querySelector('.cc-rd-toggle')){
+    const btn=document.createElement('button'); btn.type='button'; btn.className='cc-rd-toggle';
+    btn.textContent=L().ccDropMap;
+    btn.onclick=e=>{ e.stopPropagation(); CC_RUN_DROPS_ON=!CC_RUN_DROPS_ON;
+      const l=wrap.querySelector('.cc-run-drops'); if(l) l.classList.toggle('off', !CC_RUN_DROPS_ON); btn.classList.toggle('off', !CC_RUN_DROPS_ON); };
+    wrap.appendChild(btn);
+  }
+}
 function playReplayGuarded(handle, timeline, opts){
   return ccMpIdle(new Promise(function(resolve){
     let done=false;
@@ -106142,9 +106189,10 @@ function playReplayGuarded(handle, timeline, opts){
       else skipAnimation=true;            // play() сам увидит и закроется
       finish(false);
     }, REPLAY_GUARD_MS);
+    const w=handle && handle.wrap; if(w) w.classList.add('zr-playing');
     Promise.resolve(ZoneReplay.play(handle, timeline, opts))
-      .then(v=>{ clearTimeout(timer); finish(!!v); })
-      .catch(()=>{ clearTimeout(timer); finish(false); });
+      .then(v=>{ clearTimeout(timer); if(w) w.classList.remove('zr-playing'); finish(!!v); })
+      .catch(()=>{ clearTimeout(timer); if(w) w.classList.remove('zr-playing'); finish(false); });
   }));
 }
 async function showVictoryRoyale(host, stageName, gameNum, gamesTotal, winner, myPlace, fieldSize){
@@ -107094,6 +107142,8 @@ async function simulateGamesLive(teams, numGames, pointsFn, killMult, fieldPrefi
         if(fresh) dropped.add(myLobby);
       }
       if(fresh) zoneGroups=fresh;
+      // Кто куда сел — подписями на большой карте боя, каждую игру (его слово 19.11: «большая карта, посмотреть, изучить, кто куда»).
+      if(CAREER_RUN && replay && replay.wrap) try{ ccRunDropsDraw(replay.wrap, myLobby||teams); }catch(e){}
       /* Чужие лобби — своими комнатами. Раньше им хватало общей раздачи, но
          своей у них теперь нет: вопрос разложил только твоё. Каждое лобби
          садится на остров отдельно, как садится твоё.
@@ -122593,7 +122643,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='f4d0836f';
+const CC_BUILD='4672fc72';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -156148,6 +156198,12 @@ function ccDropOverlay(d, label){
   el.innerHTML='<div class="cc-dm" role="dialog" aria-modal="true"><div class="cc-dm-head"><b>'+esc(T.ccDropMap)+'</b><em>'+esc(String(label||'').replace(/<[^>]*>/g,''))+'</em></div>'+
     ccDropMapBody(d)+'<div class="cc-dm-ask"></div></div>';
   document.body.appendChild(el);
+  // Широкий экран: карта во всю высоту окна по пропорциям острова (CSS тут без размеров — иначе пропорции схлопывают её).
+  try{ const mp=el.querySelector('.cc-dm-map');
+    if(mp && innerWidth>=900){ const a=String(MAP_ASPECT[d.grid]||'1100/970').split('/'), r=(+a[0])/(+a[1]);
+      const maxH=innerHeight*0.96-90, maxW=Math.min(1280, innerWidth*0.96)-400-16-40;
+      let h=maxH, w=h*r; if(w>maxW){ w=maxW; h=w/r; }
+      mp.style.width=Math.round(w)+'px'; mp.style.height=Math.round(h)+'px'; } }catch(e){}
   return {el:el, host:el.querySelector('.cc-dm-ask')};
 }
 function ccDropRoomOpen(){ if(CC_DROP_ROOM) ccDropMapModal(CC_DROP_ROOM.d, CC_DROP_ROOM.title); }
