@@ -6937,6 +6937,34 @@
   .x-counts b{font-size:14px;font-weight:800;color:#e6edfb;font-variant-numeric:tabular-nums;}
   .x-timeline{display:flex;flex-direction:column;}
   .x-wrap{display:grid;grid-template-columns:210px minmax(0,1fr) 300px;gap:16px;align-items:start;}
+  /* Discord в соцсети (ccDiscordHTML): сервера слева кружками, каналы с сообщениями справа. */
+  .dc-wrap{display:flex;gap:12px;padding:12px;background:#1e1f2b;}
+  .dc-srvs{display:flex;flex-direction:column;gap:8px;flex:0 0 auto;}
+  .dc-srv{width:46px;height:46px;border-radius:50%;border:0;cursor:pointer;background:#313445;color:#e6e8f2;font-weight:900;font-size:14px;
+    transition:border-radius .15s,background .15s;}
+  .dc-srv:hover,.dc-srv.on{border-radius:14px;background:#5865f2;color:#fff;}
+  .dc-body{flex:1;min-width:0;display:flex;flex-direction:column;gap:10px;}
+  .dc-name{margin:2px 0 0;color:#fff;font-size:15px;}
+  .dc-chan{background:#262836;border-radius:10px;padding:10px 12px;}
+  .dc-chan-h{color:#9aa0b8;font-weight:800;font-size:12px;margin-bottom:8px;}
+  .dc-msg{display:flex;gap:10px;align-items:flex-start;}
+  .dc-msg+.dc-msg{margin-top:10px;}
+  .dc-av{width:34px;height:34px;flex:0 0 34px;border-radius:50%;background:#3b3f55;color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;}
+  .dc-av.bot{background:#5865f2;}
+  .dc-msg-in{min-width:0;flex:1;}
+  .dc-msg-in b{color:#fff;font-size:13px;}
+  .dc-bot{font-style:normal;font-size:9.5px;font-weight:900;background:#5865f2;color:#fff;border-radius:3px;padding:1px 4px;margin-left:6px;vertical-align:1px;}
+  .dc-msg-in p{margin:3px 0 0;color:#dbdee8;font-size:13px;line-height:1.4;}
+  .dc-msg-in p.dc-sub{color:#9aa0b8;font-size:12px;}
+  .dc-act{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:8px;}
+  .dc-row{display:flex;flex-wrap:wrap;gap:8px;}
+  .dc-btn{border:0;border-radius:6px;padding:8px 14px;background:#5865f2;color:#fff;font-weight:800;font-size:13px;cursor:pointer;min-height:36px;}
+  .dc-btn.ghost{background:#3b3f55;}
+  .dc-btn em{font-style:normal;opacity:.75;font-size:11.5px;margin-left:4px;}
+  .dc-btn:disabled{opacity:.45;cursor:default;}
+  .dc-why{color:#f0b232;font-size:12px;font-weight:700;}
+  .dc-res{margin-top:8px;color:#3ba55c;font-size:12.5px;font-weight:800;}
+  @media(max-width:600px){.dc-wrap{flex-direction:column;}.dc-srvs{flex-direction:row;}}
   @media(max-width:1000px){.x-wrap{grid-template-columns:1fr;}}
   .x-rail{display:flex;flex-direction:column;gap:2px;position:sticky;top:8px;}
   .x-nav{display:flex;align-items:center;gap:12px;background:none;border:none;cursor:pointer;
@@ -12698,7 +12726,7 @@ ccShopmonitor2:'ZOWIE XL2566X+', ccShopSpecmonitor2:'540 Гц и DyAc 2 — в �
 ccShopkeyboard2:'Wooting 80HE', ccShopSpeckeyboard2:'Магнитные свитчи, rapid trigger — строишь быстрее, чем думаешь',
 ccShopheadset2:'Audeze Maxwell', ccShopSpecheadset2:'Графеновые драйверы — шаги за два бокса, выживаешь до того, как увидел',
 ccShopkeyboard:'SteelSeries Apex Pro TKL Gen 3', ccShopheadset:'Razer BlackShark V3 Pro',
-ccShoppcbudget:'Бюджетный ПК · 144 FPS',ccShopphone:'iPhone 18 Pro Max',ccShopphonebase:'Android-смартфон',ccShopipad:'iPad Pro M5',ccShopMobFx:n=>'мобильные капы'+(n ? ' · +'+n+' силы на мобиле' : ''),ccMobTitle:'Мобильный рейтинг',ccPlatCal:'Турниры в календаре',ccActmobile:'Тренировка на телефоне',ccMobPrep:'Тренировка и скримы на телефоне',ccActmobScrim:'Мобильные скримы',ccMobSerNeedRound:'сначала пройди раунд Mobile Series',ccMobSerNeedHeat:'сначала пройди хит Mobile Series',ccMobSerHeats:'хиты',ccMobSerCup:'кап',ccMobSerStage:k=>({heats:'хиты',cup:'квалификация',lcq2:'второй день LCQ',group:'групповой этап',semi:'полуфинал',champ:'чемпионат в Копенгагене'})[k]||k,ccMobSerNeedStage:k=>'Mobile Series: сначала пройди в '+(({cup:'квалификацию',lcq2:'второй день LCQ',group:'групповой этап',semi:'полуфинал',champ:'чемпионат'})[k]||k),ccMobSerPass:n=>'Mobile Series: топ-'+n+', проход дальше',ccMobSerOut:n=>'Mobile Series: дальше проходит топ-'+n,ccNewsMobSer:st=>'Mobile Series: прошёл дальше, впереди '+st,ccMobShort:'мобайл',ccMobPlayer:'Игрок',ccMobRating:'Рейтинг',ccMobNoPhone:'Мобильные капы — со смартфоном из магазина (Девайсы, Консоли). На мобиле своя сцена и свой рейтинг.',ccMobHint:r=>'Мобильная сцена '+r+': игроки мобильных капов Epic 2026, рейтинги меняются от мобильных капов. На мобиле твоя сила только от этого рейтинга, ПК не помогает.',ccMobYou:(p,n,r,k)=>'Ты #'+p+' из '+n+' · рейтинг '+r+' · мобильных капов '+k,ccNeedPhone:'нужен телефон или планшет',ccShopps5:'PlayStation 5',ccShopxbox:'Xbox Series X',ccShopConsoles:'Консоли и мобильные',ccShopConsoleHint:'Допуск на консольные и мобильные капы. Одно устройство на платформу, улучшается как ПК: консоль новее даёт немного силы на консольных капах, телефон или планшет лучше на мобильных. На мобиле своя сцена и свой рейтинг.',ccShopConsoleFx:'открывает консольные капы',ccNeedPs:'нужна PlayStation',ccNeedXbox:'нужен Xbox',ccNeedConsole:'нужна консоль', ccShoppcpro:'PRO-сборка · 240+ FPS',
+ccShoppcbudget:'Бюджетный ПК · 144 FPS',ccShopphone:'iPhone 18 Pro Max',ccShopphonebase:'Android-смартфон',ccShopipad:'iPad Pro M5',ccShopMobFx:n=>'мобильные капы'+(n ? ' · +'+n+' силы на мобиле' : ''),ccMobTitle:'Мобильный рейтинг',ccPlatCal:'Турниры в календаре',dcSrvPc:'PC Customs',dcSrvMob:'Mobile Customs',dcSrvOwn:'Мой сервер',dcAnnounce:'объявления',dcScrims:'скримы',dcHostChan:'кастомки',dcLobbyPc:(pr,w)=>'Кастомка сегодня: 5 игр, лобби про, $'+w+' за победу. Зовём с PR '+pr+'.',dcLobbyMob:(r,w)=>'Мобильная кастомка сегодня: 5 игр по 16, только тач, $'+w+' за победу. Зовём с мобильного рейтинга '+r+'.',dcYourPr:pr=>'Твой PR: '+pr,dcJoin:'Зайти',dcHostBtn:'Провести',dcHostPc:w=>'Провести кастомку на ПК: 5 игр, $'+w+' за победу из своего кармана.',dcHostMob:w=>'Провести мобильную кастомку: 5 игр по 16, $'+w+' за победу из своего кармана.',dcDayClosed:'сегодня день под турнир',dcDone:'сегодня уже было',dcNeedPr:pr=>'нужен PR '+pr,dcNeedMob:r=>'нужен мобильный рейтинг '+r,dcNeedReach:n=>'нужна аудитория от '+n+', свой клуб или PR для кастомок',dcNeedCash:n=>'не хватает $'+n,dcResult:(w,c)=>'Сыграно: побед '+w+' из 5, $'+c,dcWinners:w=>'Забрали игры: '+w,ccActmobile:'Тренировка на телефоне',ccMobPrep:'Тренировка и скримы на телефоне',ccActmobScrim:'Мобильные скримы',ccMobSerNeedRound:'сначала пройди раунд Mobile Series',ccMobSerNeedHeat:'сначала пройди хит Mobile Series',ccMobSerHeats:'хиты',ccMobSerCup:'кап',ccMobSerStage:k=>({heats:'хиты',cup:'квалификация',lcq2:'второй день LCQ',group:'групповой этап',semi:'полуфинал',champ:'чемпионат в Копенгагене'})[k]||k,ccMobSerNeedStage:k=>'Mobile Series: сначала пройди в '+(({cup:'квалификацию',lcq2:'второй день LCQ',group:'групповой этап',semi:'полуфинал',champ:'чемпионат'})[k]||k),ccMobSerPass:n=>'Mobile Series: топ-'+n+', проход дальше',ccMobSerOut:n=>'Mobile Series: дальше проходит топ-'+n,ccNewsMobSer:st=>'Mobile Series: прошёл дальше, впереди '+st,ccMobShort:'мобайл',ccMobPlayer:'Игрок',ccMobRating:'Рейтинг',ccMobNoPhone:'Мобильные капы — со смартфоном из магазина (Девайсы, Консоли). На мобиле своя сцена и свой рейтинг.',ccMobHint:r=>'Мобильная сцена '+r+': игроки мобильных капов Epic 2026, рейтинги меняются от мобильных капов. На мобиле твоя сила только от этого рейтинга, ПК не помогает.',ccMobYou:(p,n,r,k)=>'Ты #'+p+' из '+n+' · рейтинг '+r+' · мобильных капов '+k,ccNeedPhone:'нужен телефон или планшет',ccShopps5:'PlayStation 5',ccShopxbox:'Xbox Series X',ccShopConsoles:'Консоли и мобильные',ccShopConsoleHint:'Допуск на консольные и мобильные капы. Одно устройство на платформу, улучшается как ПК: консоль новее даёт немного силы на консольных капах, телефон или планшет лучше на мобильных. На мобиле своя сцена и свой рейтинг.',ccShopConsoleFx:'открывает консольные капы',ccNeedPs:'нужна PlayStation',ccNeedXbox:'нужен Xbox',ccNeedConsole:'нужна консоль', ccShoppcpro:'PRO-сборка · 240+ FPS',
 ccShoppcelite:'ELITE-сборка · 360 Гц',
 ccShoppc:'Новый ПК', ccShopcoach:'Коуч', ccShopcamp:'Буткемп',
 ccCoachTitle:'Коуч', ccCoachHint:'Ускоряет тренировки по своему профилю',
@@ -14824,7 +14852,7 @@ ccShopmonitor2:'ZOWIE XL2566X+', ccShopSpecmonitor2:'540Hz with DyAc 2 — a clu
 ccShopkeyboard2:'Wooting 80HE', ccShopSpeckeyboard2:'Magnetic switches, rapid trigger — you build faster than you think',
 ccShopheadset2:'Audeze Maxwell', ccShopSpecheadset2:'Graphene drivers — footsteps two boxes away, you survive what you never saw',
 ccShopkeyboard:'SteelSeries Apex Pro TKL Gen 3', ccShopheadset:'Razer BlackShark V3 Pro',
-ccShoppcbudget:'Budget PC · 144 FPS',ccShopphone:'iPhone 18 Pro Max',ccShopphonebase:'Android phone',ccShopipad:'iPad Pro M5',ccShopMobFx:n=>'mobile cups'+(n ? ' · +'+n+' power on mobile' : ''),ccMobTitle:'Mobile rating',ccPlatCal:'Cups in the calendar',ccActmobile:'Phone practice',ccMobPrep:'Practice and scrims on phone',ccActmobScrim:'Mobile scrims',ccMobSerNeedRound:'clear a Mobile Series round first',ccMobSerNeedHeat:'clear a Mobile Series heat first',ccMobSerHeats:'the heats',ccMobSerCup:'the cup',ccMobSerStage:k=>({heats:'the heats',cup:'the qualifier',lcq2:'LCQ day 2',group:'the group stage',semi:'the semi-final',champ:'the Championship in Copenhagen'})[k]||k,ccMobSerNeedStage:k=>'Mobile Series: reach '+(({cup:'the qualifier',lcq2:'LCQ day 2',group:'the group stage',semi:'the semi-final',champ:'the Championship'})[k]||k)+' first',ccMobSerPass:n=>'Mobile Series: top '+n+', through',ccMobSerOut:n=>'Mobile Series: only the top '+n+' go through',ccNewsMobSer:st=>'Mobile Series: through, '+st+' next',ccMobShort:'mobile',ccMobPlayer:'Player',ccMobRating:'Rating',ccMobNoPhone:'Mobile cups need a phone from the shop (Devices, Consoles). Mobile has its own scene and its own rating.',ccMobHint:r=>'Mobile scene, '+r+': players of Epic mobile cups in 2026, ratings move with mobile cups. On mobile your power comes only from this rating, PC does not help.',ccMobYou:(p,n,r,k)=>'You are #'+p+' of '+n+' · rating '+r+' · mobile cups '+k,ccNeedPhone:'needs a phone or tablet',ccShopps5:'PlayStation 5',ccShopxbox:'Xbox Series X',ccShopConsoles:'Consoles and mobile',ccShopConsoleHint:'Entry to console and mobile cups. One device per platform, upgraded like the PC: a newer console adds a little power in console cups, a better phone or tablet in mobile cups. Mobile has its own scene and rating.',ccShopConsoleFx:'unlocks console cups',ccNeedPs:'needs a PlayStation',ccNeedXbox:'needs an Xbox',ccNeedConsole:'needs a console', ccShoppcpro:'PRO build · 240+ FPS',
+ccShoppcbudget:'Budget PC · 144 FPS',ccShopphone:'iPhone 18 Pro Max',ccShopphonebase:'Android phone',ccShopipad:'iPad Pro M5',ccShopMobFx:n=>'mobile cups'+(n ? ' · +'+n+' power on mobile' : ''),ccMobTitle:'Mobile rating',ccPlatCal:'Cups in the calendar',dcSrvPc:'PC Customs',dcSrvMob:'Mobile Customs',dcSrvOwn:'My server',dcAnnounce:'announcements',dcScrims:'scrims',dcHostChan:'customs',dcLobbyPc:(pr,w)=>'Customs tonight: 5 games, pro lobby, $'+w+' a win. Invites from '+pr+' PR.',dcLobbyMob:(r,w)=>'Mobile customs tonight: 5 games of 16, touch only, $'+w+' a win. Invites from mobile rating '+r+'.',dcYourPr:pr=>'Your PR: '+pr,dcJoin:'Join',dcHostBtn:'Host',dcHostPc:w=>'Host PC customs: 5 games, $'+w+' a win out of your own pocket.',dcHostMob:w=>'Host mobile customs: 5 games of 16, $'+w+' a win out of your own pocket.',dcDayClosed:'today is a tournament day',dcDone:'already done today',dcNeedPr:pr=>'needs '+pr+' PR',dcNeedMob:r=>'needs mobile rating '+r,dcNeedReach:n=>'needs '+n+' audience, your own club or customs PR',dcNeedCash:n=>'$'+n+' short',dcResult:(w,c)=>'Played: '+w+' wins out of 5, $'+c,dcWinners:w=>'Games taken by: '+w,ccActmobile:'Phone practice',ccMobPrep:'Practice and scrims on phone',ccActmobScrim:'Mobile scrims',ccMobSerNeedRound:'clear a Mobile Series round first',ccMobSerNeedHeat:'clear a Mobile Series heat first',ccMobSerHeats:'the heats',ccMobSerCup:'the cup',ccMobSerStage:k=>({heats:'the heats',cup:'the qualifier',lcq2:'LCQ day 2',group:'the group stage',semi:'the semi-final',champ:'the Championship in Copenhagen'})[k]||k,ccMobSerNeedStage:k=>'Mobile Series: reach '+(({cup:'the qualifier',lcq2:'LCQ day 2',group:'the group stage',semi:'the semi-final',champ:'the Championship'})[k]||k)+' first',ccMobSerPass:n=>'Mobile Series: top '+n+', through',ccMobSerOut:n=>'Mobile Series: only the top '+n+' go through',ccNewsMobSer:st=>'Mobile Series: through, '+st+' next',ccMobShort:'mobile',ccMobPlayer:'Player',ccMobRating:'Rating',ccMobNoPhone:'Mobile cups need a phone from the shop (Devices, Consoles). Mobile has its own scene and its own rating.',ccMobHint:r=>'Mobile scene, '+r+': players of Epic mobile cups in 2026, ratings move with mobile cups. On mobile your power comes only from this rating, PC does not help.',ccMobYou:(p,n,r,k)=>'You are #'+p+' of '+n+' · rating '+r+' · mobile cups '+k,ccNeedPhone:'needs a phone or tablet',ccShopps5:'PlayStation 5',ccShopxbox:'Xbox Series X',ccShopConsoles:'Consoles and mobile',ccShopConsoleHint:'Entry to console and mobile cups. One device per platform, upgraded like the PC: a newer console adds a little power in console cups, a better phone or tablet in mobile cups. Mobile has its own scene and rating.',ccShopConsoleFx:'unlocks console cups',ccNeedPs:'needs a PlayStation',ccNeedXbox:'needs an Xbox',ccNeedConsole:'needs a console', ccShoppcpro:'PRO build · 240+ FPS',
 ccShoppcelite:'ELITE build · 360Hz',
 ccShoppc:'New PC', ccShopcoach:'Coach', ccShopcamp:'Bootcamp',
 ccCoachTitle:'Coach', ccCoachHint:'Speeds up the training he is for',
@@ -16333,7 +16361,7 @@ ccShopheadset2:'Audeze Maxwell',
 ccShopSpecheadset2:'Drivers graphène — les pas à deux box, tu survis à ce que tu n’as pas vu',
 ccShopkeyboard:'SteelSeries Apex Pro TKL Gen 3',
 ccShopheadset:'Razer BlackShark V3 Pro',
-ccShoppcbudget:'PC d’entrée de gamme · 144 FPS',ccShopphone:'iPhone 18 Pro Max',ccShopphonebase:'Smartphone Android',ccShopipad:'iPad Pro M5',ccShopMobFx:n=>'cups mobiles'+(n ? ' · +'+n+' puissance sur mobile' : ''),ccMobTitle:'Classement mobile',ccPlatCal:'Cups au calendrier',ccActmobile:'Entraînement mobile',ccMobPrep:'Entraînement et scrims sur mobile',ccActmobScrim:'Scrims mobile',ccMobSerNeedRound:'passe d’abord une manche de la Mobile Series',ccMobSerNeedHeat:'passe d’abord une heat de la Mobile Series',ccMobSerHeats:'les heats',ccMobSerCup:'la cup',ccMobSerStage:k=>({heats:'les heats',cup:'la qualification',lcq2:'le jour 2 du LCQ',group:'la phase de groupes',semi:'la demi-finale',champ:'le Championnat à Copenhague'})[k]||k,ccMobSerNeedStage:k=>'Mobile Series : qualifie-toi d’abord pour '+(({cup:'la qualification',lcq2:'le jour 2 du LCQ',group:'la phase de groupes',semi:'la demi-finale',champ:'le Championnat'})[k]||k),ccMobSerPass:n=>'Mobile Series : top '+n+', qualifié',ccMobSerOut:n=>'Mobile Series : seul le top '+n+' passe',ccNewsMobSer:st=>'Mobile Series : qualifié, ensuite '+st,ccMobShort:'mobile',ccMobPlayer:'Joueur',ccMobRating:'Note',ccMobNoPhone:'Les cups mobiles demandent un téléphone (boutique, Consoles). Le mobile a sa scène et son classement.',ccMobHint:r=>'Scène mobile, '+r+' : joueurs des cups mobiles Epic 2026. Ta note sur téléphone est à part et monte avec les cups mobiles.',ccMobYou:(p,n,r,k)=>'Tu es #'+p+' sur '+n+' · note '+r+' · cups mobiles '+k,ccNeedPhone:'il faut un téléphone',ccShopps5:'PlayStation 5',ccShopxbox:'Xbox Series X',ccShopConsoles:'Consoles et mobile',ccShopConsoleHint:'Accès aux cups console et mobiles. Un appareil par plateforme, amélioré comme le PC : une console plus récente ajoute un peu de puissance en cups console, un meilleur téléphone ou une tablette en cups mobiles. Le mobile a sa scène et son classement.',ccShopConsoleFx:'débloque les cups console',ccNeedPs:'il faut une PlayStation',ccNeedXbox:'il faut une Xbox',ccNeedConsole:'il faut une console',
+ccShoppcbudget:'PC d’entrée de gamme · 144 FPS',ccShopphone:'iPhone 18 Pro Max',ccShopphonebase:'Smartphone Android',ccShopipad:'iPad Pro M5',ccShopMobFx:n=>'cups mobiles'+(n ? ' · +'+n+' puissance sur mobile' : ''),ccMobTitle:'Classement mobile',ccPlatCal:'Cups au calendrier',dcSrvPc:'PC Customs',dcSrvMob:'Mobile Customs',dcSrvOwn:'Mon serveur',dcAnnounce:'annonces',dcScrims:'scrims',dcHostChan:'customs',dcLobbyPc:(pr,w)=>'Customs ce soir : 5 parties, lobby pro, $'+w+' la victoire. Invitation dès '+pr+' PR.',dcLobbyMob:(r,w)=>'Customs mobile ce soir : 5 parties à 16, tactile uniquement, $'+w+' la victoire. Invitation dès une note mobile de '+r+'.',dcYourPr:pr=>'Ton PR : '+pr,dcJoin:'Rejoindre',dcHostBtn:'Organiser',dcHostPc:w=>'Organiser des customs PC : 5 parties, $'+w+' la victoire de ta poche.',dcHostMob:w=>'Organiser des customs mobile : 5 parties à 16, $'+w+' la victoire de ta poche.',dcDayClosed:'aujourd’hui c’est jour de tournoi',dcDone:'déjà fait aujourd’hui',dcNeedPr:pr=>'il faut '+pr+' PR',dcNeedMob:r=>'il faut une note mobile de '+r,dcNeedReach:n=>'il faut '+n+' d’audience, ton club ou le PR des customs',dcNeedCash:n=>'il manque $'+n,dcResult:(w,c)=>'Joué : '+w+' victoires sur 5, $'+c,dcWinners:w=>'Parties gagnées par : '+w,ccActmobile:'Entraînement mobile',ccMobPrep:'Entraînement et scrims sur mobile',ccActmobScrim:'Scrims mobile',ccMobSerNeedRound:'passe d’abord une manche de la Mobile Series',ccMobSerNeedHeat:'passe d’abord une heat de la Mobile Series',ccMobSerHeats:'les heats',ccMobSerCup:'la cup',ccMobSerStage:k=>({heats:'les heats',cup:'la qualification',lcq2:'le jour 2 du LCQ',group:'la phase de groupes',semi:'la demi-finale',champ:'le Championnat à Copenhague'})[k]||k,ccMobSerNeedStage:k=>'Mobile Series : qualifie-toi d’abord pour '+(({cup:'la qualification',lcq2:'le jour 2 du LCQ',group:'la phase de groupes',semi:'la demi-finale',champ:'le Championnat'})[k]||k),ccMobSerPass:n=>'Mobile Series : top '+n+', qualifié',ccMobSerOut:n=>'Mobile Series : seul le top '+n+' passe',ccNewsMobSer:st=>'Mobile Series : qualifié, ensuite '+st,ccMobShort:'mobile',ccMobPlayer:'Joueur',ccMobRating:'Note',ccMobNoPhone:'Les cups mobiles demandent un téléphone (boutique, Consoles). Le mobile a sa scène et son classement.',ccMobHint:r=>'Scène mobile, '+r+' : joueurs des cups mobiles Epic 2026. Ta note sur téléphone est à part et monte avec les cups mobiles.',ccMobYou:(p,n,r,k)=>'Tu es #'+p+' sur '+n+' · note '+r+' · cups mobiles '+k,ccNeedPhone:'il faut un téléphone',ccShopps5:'PlayStation 5',ccShopxbox:'Xbox Series X',ccShopConsoles:'Consoles et mobile',ccShopConsoleHint:'Accès aux cups console et mobiles. Un appareil par plateforme, amélioré comme le PC : une console plus récente ajoute un peu de puissance en cups console, un meilleur téléphone ou une tablette en cups mobiles. Le mobile a sa scène et son classement.',ccShopConsoleFx:'débloque les cups console',ccNeedPs:'il faut une PlayStation',ccNeedXbox:'il faut une Xbox',ccNeedConsole:'il faut une console',
 ccShoppcpro:'Configuration PRO · 240+ FPS',
 ccShoppcelite:'Configuration ÉLITE · 360 Hz',
 ccSlotDelete:'Supprimer',
@@ -20320,7 +20348,7 @@ ccShopheadset2:"Audeze Maxwell",
 ccShopSpecheadset2:"Driver in grafene — passi a due case di distanza, sopravvivi a ciò che non hai visto",
 ccShopkeyboard:"SteelSeries Apex Pro TKL Gen 3",
 ccShopheadset:"Razer BlackShark V3 Pro",
-ccShoppcbudget:"PC economico · 144 FPS",ccShopphone:"iPhone 18 Pro Max",ccShopphonebase:"Smartphone Android",ccShopipad:"iPad Pro M5",ccShopMobFx:n=>"cup mobile"+(n ? " · +"+n+" forza su mobile" : ""),ccMobTitle:"Classifica mobile",ccPlatCal:"Cup nel calendario",ccActmobile:"Allenamento su mobile",ccMobPrep:"Allenamento e scrim su mobile",ccActmobScrim:"Scrim su mobile",ccMobSerNeedRound:"prima supera un round della Mobile Series",ccMobSerNeedHeat:"prima supera una heat della Mobile Series",ccMobSerHeats:"le heat",ccMobSerCup:"la cup",ccMobSerStage:k=>({heats:"le heat",cup:"le qualificazioni",lcq2:"il giorno 2 del LCQ",group:"la fase a gironi",semi:"la semifinale",champ:"il Campionato a Copenaghen"})[k]||k,ccMobSerNeedStage:k=>"Mobile Series: prima qualificati per "+(({cup:"le qualificazioni",lcq2:"il giorno 2 del LCQ",group:"la fase a gironi",semi:"la semifinale",champ:"il Campionato"})[k]||k),ccMobSerPass:n=>"Mobile Series: top "+n+", passato",ccMobSerOut:n=>"Mobile Series: passa solo il top "+n,ccNewsMobSer:st=>"Mobile Series: passato, ora "+st,ccMobShort:"mobile",ccMobPlayer:"Giocatore",ccMobRating:"Valutazione",ccMobNoPhone:"Le cup mobile richiedono un telefono (negozio, Console). Il mobile ha la sua scena e la sua classifica.",ccMobHint:r=>"Scena mobile, "+r+": giocatori delle cup mobile Epic 2026. La tua valutazione sul telefono è a parte e sale con le cup mobile.",ccMobYou:(p,n,r,k)=>"Sei #"+p+" su "+n+" · valutazione "+r+" · cup mobile "+k,ccNeedPhone:"serve un telefono",ccShopps5:"PlayStation 5",ccShopxbox:"Xbox Series X",ccShopConsoles:"Console e mobile",ccShopConsoleHint:"Accesso alle cup console e mobile. Un dispositivo per piattaforma, si migliora come il PC: una console più nuova dà un po’ di forza nelle cup console, un telefono o tablet migliore nelle cup mobile. Il mobile ha scena e classifica sue.",ccShopConsoleFx:"sblocca le cup console",ccNeedPs:"serve una PlayStation",ccNeedXbox:"serve una Xbox",ccNeedConsole:"serve una console",
+ccShoppcbudget:"PC economico · 144 FPS",ccShopphone:"iPhone 18 Pro Max",ccShopphonebase:"Smartphone Android",ccShopipad:"iPad Pro M5",ccShopMobFx:n=>"cup mobile"+(n ? " · +"+n+" forza su mobile" : ""),ccMobTitle:"Classifica mobile",ccPlatCal:"Cup nel calendario",dcSrvPc:"PC Customs",dcSrvMob:"Mobile Customs",dcSrvOwn:"Il mio server",dcAnnounce:"annunci",dcScrims:"scrim",dcHostChan:"custom",dcLobbyPc:(pr,w)=>"Custom stasera: 5 partite, lobby pro, $"+w+" a vittoria. Inviti da "+pr+" PR.",dcLobbyMob:(r,w)=>"Custom mobile stasera: 5 partite da 16, solo touch, $"+w+" a vittoria. Inviti da valutazione mobile "+r+".",dcYourPr:pr=>"Il tuo PR: "+pr,dcJoin:"Entra",dcHostBtn:"Organizza",dcHostPc:w=>"Organizza custom su PC: 5 partite, $"+w+" a vittoria di tasca tua.",dcHostMob:w=>"Organizza custom mobile: 5 partite da 16, $"+w+" a vittoria di tasca tua.",dcDayClosed:"oggi è giorno di torneo",dcDone:"già fatto oggi",dcNeedPr:pr=>"servono "+pr+" PR",dcNeedMob:r=>"serve valutazione mobile "+r,dcNeedReach:n=>"serve un pubblico di "+n+", un tuo club o il PR delle custom",dcNeedCash:n=>"mancano $"+n,dcResult:(w,c)=>"Giocato: "+w+" vittorie su 5, $"+c,dcWinners:w=>"Partite vinte da: "+w,ccActmobile:"Allenamento su mobile",ccMobPrep:"Allenamento e scrim su mobile",ccActmobScrim:"Scrim su mobile",ccMobSerNeedRound:"prima supera un round della Mobile Series",ccMobSerNeedHeat:"prima supera una heat della Mobile Series",ccMobSerHeats:"le heat",ccMobSerCup:"la cup",ccMobSerStage:k=>({heats:"le heat",cup:"le qualificazioni",lcq2:"il giorno 2 del LCQ",group:"la fase a gironi",semi:"la semifinale",champ:"il Campionato a Copenaghen"})[k]||k,ccMobSerNeedStage:k=>"Mobile Series: prima qualificati per "+(({cup:"le qualificazioni",lcq2:"il giorno 2 del LCQ",group:"la fase a gironi",semi:"la semifinale",champ:"il Campionato"})[k]||k),ccMobSerPass:n=>"Mobile Series: top "+n+", passato",ccMobSerOut:n=>"Mobile Series: passa solo il top "+n,ccNewsMobSer:st=>"Mobile Series: passato, ora "+st,ccMobShort:"mobile",ccMobPlayer:"Giocatore",ccMobRating:"Valutazione",ccMobNoPhone:"Le cup mobile richiedono un telefono (negozio, Console). Il mobile ha la sua scena e la sua classifica.",ccMobHint:r=>"Scena mobile, "+r+": giocatori delle cup mobile Epic 2026. La tua valutazione sul telefono è a parte e sale con le cup mobile.",ccMobYou:(p,n,r,k)=>"Sei #"+p+" su "+n+" · valutazione "+r+" · cup mobile "+k,ccNeedPhone:"serve un telefono",ccShopps5:"PlayStation 5",ccShopxbox:"Xbox Series X",ccShopConsoles:"Console e mobile",ccShopConsoleHint:"Accesso alle cup console e mobile. Un dispositivo per piattaforma, si migliora come il PC: una console più nuova dà un po’ di forza nelle cup console, un telefono o tablet migliore nelle cup mobile. Il mobile ha scena e classifica sue.",ccShopConsoleFx:"sblocca le cup console",ccNeedPs:"serve una PlayStation",ccNeedXbox:"serve una Xbox",ccNeedConsole:"serve una console",
 ccShoppcpro:"Build PRO · 240+ FPS",
 ccShoppcelite:"Build ELITE · 360Hz",
 ccShoppc:"PC nuovo",
@@ -22875,7 +22903,7 @@ ccShopheadset2:"Audeze Maxwell",
 ccShopSpecheadset2:"Drivers de grafeno — passos a duas casas de distância, você sobrevive ao que nem viu",
 ccShopkeyboard:"SteelSeries Apex Pro TKL Gen 3",
 ccShopheadset:"Razer BlackShark V3 Pro",
-ccShoppcbudget:"PC básico · 144 FPS",ccShopphone:"iPhone 18 Pro Max",ccShopphonebase:"Celular Android",ccShopipad:"iPad Pro M5",ccShopMobFx:n=>"cups mobile"+(n ? " · +"+n+" força no mobile" : ""),ccMobTitle:"Ranking mobile",ccPlatCal:"Cups no calendário",ccActmobile:"Treino no celular",ccMobPrep:"Treino e scrims no celular",ccActmobScrim:"Scrims no celular",ccMobSerNeedRound:"passe antes por uma rodada da Mobile Series",ccMobSerNeedHeat:"passe antes por uma heat da Mobile Series",ccMobSerHeats:"as heats",ccMobSerCup:"a cup",ccMobSerStage:k=>({heats:"as heats",cup:"a qualificatória",lcq2:"o dia 2 do LCQ",group:"a fase de grupos",semi:"a semifinal",champ:"o Campeonato em Copenhague"})[k]||k,ccMobSerNeedStage:k=>"Mobile Series: classifique-se antes para "+(({cup:"a qualificatória",lcq2:"o dia 2 do LCQ",group:"a fase de grupos",semi:"a semifinal",champ:"o Campeonato"})[k]||k),ccMobSerPass:n=>"Mobile Series: top "+n+", classificado",ccMobSerOut:n=>"Mobile Series: só o top "+n+" passa",ccNewsMobSer:st=>"Mobile Series: classificado, agora "+st,ccMobShort:"mobile",ccMobPlayer:"Jogador",ccMobRating:"Rating",ccMobNoPhone:"Cups mobile precisam de um celular da loja (Dispositivos, Consoles). O mobile tem cena e ranking próprios.",ccMobHint:r=>"Cena mobile, "+r+": jogadores das cups mobile da Epic em 2026. Seu rating no celular é separado e sobe com as cups mobile.",ccMobYou:(p,n,r,k)=>"Você é #"+p+" de "+n+" · rating "+r+" · cups mobile "+k,ccNeedPhone:"precisa de um celular",ccShopps5:"PlayStation 5",ccShopxbox:"Xbox Series X",ccShopConsoles:"Consoles e mobile",ccShopConsoleHint:"Acesso às cups de console e mobile. Um aparelho por plataforma, melhora como o PC: um console mais novo dá um pouco de força nas cups de console, um celular ou tablet melhor nas cups mobile. O mobile tem cena e ranking próprios.",ccShopConsoleFx:"libera as cups de console",ccNeedPs:"precisa de um PlayStation",ccNeedXbox:"precisa de um Xbox",ccNeedConsole:"precisa de um console",
+ccShoppcbudget:"PC básico · 144 FPS",ccShopphone:"iPhone 18 Pro Max",ccShopphonebase:"Celular Android",ccShopipad:"iPad Pro M5",ccShopMobFx:n=>"cups mobile"+(n ? " · +"+n+" força no mobile" : ""),ccMobTitle:"Ranking mobile",ccPlatCal:"Cups no calendário",dcSrvPc:"PC Customs",dcSrvMob:"Mobile Customs",dcSrvOwn:"Meu servidor",dcAnnounce:"anúncios",dcScrims:"scrims",dcHostChan:"customs",dcLobbyPc:(pr,w)=>"Customs hoje: 5 partidas, lobby pro, $"+w+" por vitória. Convite a partir de "+pr+" PR.",dcLobbyMob:(r,w)=>"Customs mobile hoje: 5 partidas de 16, só touch, $"+w+" por vitória. Convite a partir de rating mobile "+r+".",dcYourPr:pr=>"Seu PR: "+pr,dcJoin:"Entrar",dcHostBtn:"Organizar",dcHostPc:w=>"Organizar customs no PC: 5 partidas, $"+w+" por vitória do seu bolso.",dcHostMob:w=>"Organizar customs mobile: 5 partidas de 16, $"+w+" por vitória do seu bolso.",dcDayClosed:"hoje é dia de torneio",dcDone:"já feito hoje",dcNeedPr:pr=>"precisa de "+pr+" PR",dcNeedMob:r=>"precisa de rating mobile "+r,dcNeedReach:n=>"precisa de "+n+" de audiência, seu clube ou o PR das customs",dcNeedCash:n=>"faltam $"+n,dcResult:(w,c)=>"Jogado: "+w+" vitórias de 5, $"+c,dcWinners:w=>"Partidas vencidas por: "+w,ccActmobile:"Treino no celular",ccMobPrep:"Treino e scrims no celular",ccActmobScrim:"Scrims no celular",ccMobSerNeedRound:"passe antes por uma rodada da Mobile Series",ccMobSerNeedHeat:"passe antes por uma heat da Mobile Series",ccMobSerHeats:"as heats",ccMobSerCup:"a cup",ccMobSerStage:k=>({heats:"as heats",cup:"a qualificatória",lcq2:"o dia 2 do LCQ",group:"a fase de grupos",semi:"a semifinal",champ:"o Campeonato em Copenhague"})[k]||k,ccMobSerNeedStage:k=>"Mobile Series: classifique-se antes para "+(({cup:"a qualificatória",lcq2:"o dia 2 do LCQ",group:"a fase de grupos",semi:"a semifinal",champ:"o Campeonato"})[k]||k),ccMobSerPass:n=>"Mobile Series: top "+n+", classificado",ccMobSerOut:n=>"Mobile Series: só o top "+n+" passa",ccNewsMobSer:st=>"Mobile Series: classificado, agora "+st,ccMobShort:"mobile",ccMobPlayer:"Jogador",ccMobRating:"Rating",ccMobNoPhone:"Cups mobile precisam de um celular da loja (Dispositivos, Consoles). O mobile tem cena e ranking próprios.",ccMobHint:r=>"Cena mobile, "+r+": jogadores das cups mobile da Epic em 2026. Seu rating no celular é separado e sobe com as cups mobile.",ccMobYou:(p,n,r,k)=>"Você é #"+p+" de "+n+" · rating "+r+" · cups mobile "+k,ccNeedPhone:"precisa de um celular",ccShopps5:"PlayStation 5",ccShopxbox:"Xbox Series X",ccShopConsoles:"Consoles e mobile",ccShopConsoleHint:"Acesso às cups de console e mobile. Um aparelho por plataforma, melhora como o PC: um console mais novo dá um pouco de força nas cups de console, um celular ou tablet melhor nas cups mobile. O mobile tem cena e ranking próprios.",ccShopConsoleFx:"libera as cups de console",ccNeedPs:"precisa de um PlayStation",ccNeedXbox:"precisa de um Xbox",ccNeedConsole:"precisa de um console",
 ccShoppcpro:"Build PRO · 240+ FPS",
 ccShoppcelite:"Build ELITE · 360Hz",
 ccShoppc:"PC novo",
@@ -122524,7 +122552,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='4364f2f5';
+const CC_BUILD='894fa1bd';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -130588,6 +130616,129 @@ function ccHostRun(){
   careerNews('flat', 'ccPostHosted', [per, who, myWins]);
   cr.hostLast={day:careerToday(), a:[myWins, cash ? ccNum(cash) : 0, who]};
   return {wins:myWins, cash:cash, pot:pot, per:per, winners:winners};
+}
+/* DISCORD В СОЦСЕТИ (его слово 19.11: «добавить дискорд в social, чтоб сделать кастомки на пк и на мобил и прочее»).
+   Кастомки этой сцены живут в Discord: сервер организатора, канал объявлений, вход по порогу. Здесь три сервера:
+   PC Customs — та же кастомка, что приходила событием дня (ccCustomPlay, порог PR CC_CUSTOM_PR), теперь по желанию;
+   Mobile Customs — пять игр по 16, только тач (как Mobile Series), зовут с мобильного рейтинга CC_DC_MOB_RATE, качает
+   мобильный рейтинг как скрим (игрок мобильной сцены: «every cup I just get destroyed, no way to practice»);
+   Мой сервер — провести свою кастомку на ПК (ccHostRun) или на мобиле, фонд с баланса. И канал скримов со ссылками на
+   занятия дня. Каждое — раз в день, 40 энергии, в свободный день. Пороги и ставки мобилы — решение, не замер. */
+const CC_DC_ENERGY=40, CC_DC_MOB_RATE=75, CC_DC_MOB_PER_WIN=50;
+let CH_DC='pc';
+function ccDcDid(kind){ const d=CAREER.career.dcDid; return !!(d && d.day===careerToday() && d.kinds.indexOf(kind)>=0); }
+function ccMobHostPer(){ return Math.max(50, ccHostPerWin()/2); }
+function ccMobHostWhy(){
+  const cr=CAREER && CAREER.career; if(!cr) return 'reach';
+  if(!ccMobileOwn()) return 'phone';
+  const own=typeof careerClub==='function' && careerClub();
+  if(!(careerReach()>=CC_HOST_REACH || own || ccCustomPr()>=CC_CUSTOM_PR)) return 'reach';
+  if((cr.balance||0)<ccMobHostPer()*CC_CUSTOM_GAMES) return 'cash';
+  return null;
+}
+// Почему нельзя (строкой) или null.
+function ccDcWhy(kind){
+  const cr=CAREER.career, T=L();
+  if(!ccCentreDayOpen()) return T.dcDayClosed;
+  if(ccDcDid(kind)) return T.dcDone;
+  if(kind==='pcJoin' && !ccCustomInvited()) return T.dcNeedPr(ccNum(CC_CUSTOM_PR));
+  if(kind==='mobJoin'){ if(!ccMobileOwn()) return T.ccMobTrainNeed; if(ccMobileOvr()<CC_DC_MOB_RATE) return T.dcNeedMob(CC_DC_MOB_RATE); }
+  if(kind==='pcHost' || kind==='mobHost'){
+    const w=kind==='pcHost' ? ccHostWhy() : ccMobHostWhy();
+    if(w==='phone') return T.ccMobTrainNeed;
+    if(w==='reach') return T.dcNeedReach(ccNum(CC_HOST_REACH));
+    if(w==='cash') return T.dcNeedCash(ccNum((kind==='pcHost' ? ccHostPot() : ccMobHostPer()*CC_CUSTOM_GAMES)-(cr.balance||0)));
+  }
+  if(careerEnergy()<CC_DC_ENERGY) return T.ccNeedEnergy(CC_DC_ENERGY-careerEnergy());
+  return null;
+}
+// Мобильная кастомка: пять игр по 16, шанс победы от мобильного рейтинга против верха сцены (~85), одна шестнадцатая на равных.
+function ccMobCustomPlay(){
+  const cr=CAREER.career;
+  const rnd=careerRng(ccHashStr('mcustom|'+(cr.season||1)+'|'+careerToday()));
+  const p=clamp(1/16+(ccMobileOvr()-85)*0.015, 0.02, 0.5);
+  let wins=0; for(let g=0; g<CC_CUSTOM_GAMES; g++) if(rnd()<p) wins++;
+  const cash=wins*CC_DC_MOB_PER_WIN;
+  if(cash){ cr.balance=(cr.balance||0)+cash; cr.side=(cr.side||0)+cash; }
+  const grow=ccMobileTrain(true);
+  careerReachAdd(wins ? 2 : 1);
+  return {wins:wins, cash:cash, grow:grow};
+}
+// Своя мобильная кастомка: 15 мобильных игроков своего региона ближе всех по рейтингу, победители — их ники в посте.
+function ccMobHostRun(){
+  const cr=CAREER.career;
+  if(ccMobHostWhy()) return null;
+  const per=ccMobHostPer(), pot=per*CC_CUSTOM_GAMES, mine=ccMobileOvr();
+  cr.balance=(cr.balance||0)-pot; cr.hosted=(cr.hosted||0)+pot;
+  const R=(typeof CC_MOBILE_ROSTER!=='undefined') ? (CC_MOBILE_ROSTER[ccCareerRegion()] || CC_MOBILE_ROSTER.EU || []) : [];
+  const field=R.map(x=>({handle:x[0], ovr:ccMobileRate(x[0], x[2])})).sort((a,b)=>Math.abs(a.ovr-mine)-Math.abs(b.ovr-mine)).slice(0, 15);
+  const rnd=careerRng(ccHashStr('mhost|'+(cr.season||1)+'|'+careerToday()));
+  const pMe=clamp(1/16+(mine-85)*0.015, 0.02, 0.5);
+  const weight=c=>Math.exp((c.ovr-85)/4), total=field.reduce((s,c)=>s+weight(c), 0);
+  const wins=new Map(); let myWins=0;
+  for(let g=0; g<CC_CUSTOM_GAMES; g++){
+    if(rnd()<pMe || !field.length){ myWins++; continue; }
+    let r=rnd()*total, w=field[field.length-1];
+    for(let i=0;i<field.length;i++){ r-=weight(field[i]); if(r<=0){ w=field[i]; break; } }
+    wins.set(w.handle, (wins.get(w.handle)||0)+1);
+  }
+  const cash=myWins*per;
+  if(cash){ cr.balance=(cr.balance||0)+cash; cr.side=(cr.side||0)+cash; }
+  careerReachAdd(2*CC_REACH_DIV(cr.division));
+  const winners=[...wins.keys()];
+  const who=winners.length ? winners.map(h=>'@'+ccHandle(h)+(wins.get(h)>1 ? ' ×'+wins.get(h) : '')).join(', ') : '-';
+  careerNews('flat', 'ccPostHosted', [per, who, myWins]);
+  return {wins:myWins, cash:cash, pot:pot, per:per, winners:winners};
+}
+function ccDcGo(kind){
+  if(ccDcWhy(kind)) return;
+  const cr=CAREER.career;
+  careerSpend(CC_DC_ENERGY);
+  let r=null;
+  if(kind==='pcJoin'){ r=ccCustomPlay(); careerNews(r.wins ? 'good' : 'flat', 'ccDayEvcustomTake', [r.wins, ccNum(r.cash)]); }
+  else if(kind==='mobJoin'){ r=ccMobCustomPlay(); careerNews(r.wins ? 'good' : 'flat', 'ccDayEvcustomTake', [r.wins, ccNum(r.cash)]); }
+  else if(kind==='pcHost') r=ccHostRun();
+  else if(kind==='mobHost') r=ccMobHostRun();
+  const d=(cr.dcDid && cr.dcDid.day===careerToday()) ? cr.dcDid : {day:careerToday(), kinds:[]};
+  d.kinds.push(kind); cr.dcDid=d;
+  cr.dcLast={day:careerToday(), kind:kind, wins:r ? r.wins : 0, cash:r ? r.cash : 0, grow:r && r.grow ? r.grow : 0,
+             who:r && r.winners ? r.winners.slice(0, 5) : null};
+  careerSave();
+  careerRenderHub('social');
+}
+function ccDcServer(id){ CH_DC=id; careerRenderHub('social'); }
+function ccDiscordHTML(){
+  const T=L(), cr=CAREER.career, srv=CH_DC||'pc';
+  const servers=[['pc', 'PC', T.dcSrvPc], ['mob', '📱', T.dcSrvMob], ['own', '★', T.dcSrvOwn]];
+  const last=cr.dcLast && cr.dcLast.day===careerToday() ? cr.dcLast : null;
+  const btn=(kind, label)=>{ const why=ccDcWhy(kind);
+    return '<div class="dc-act"><button class="dc-btn"'+(why ? ' disabled' : '')+' onclick="ccDcGo(\''+kind+'\')">'+esc(label)+
+      ' <em>'+CC_DC_ENERGY+T.ccEnergyMark+'</em></button>'+(why ? '<span class="dc-why">'+esc(why)+'</span>' : '')+'</div>'; };
+  const res=kinds=>(last && kinds.indexOf(last.kind)>=0)
+    ? '<div class="dc-res">'+esc(T.dcResult(last.wins, ccNum(last.cash)))+(last.grow ? ' · '+esc(T.ccMobTitle)+' +'+last.grow.toFixed(2) : '')+'</div>' : '';
+  const msg=(author, bot, body)=>'<div class="dc-msg"><span class="dc-av'+(bot ? ' bot' : '')+'">'+esc(String(author).slice(0, 2).toUpperCase())+'</span>'+
+    '<div class="dc-msg-in"><b>'+esc(author)+(bot ? '<i class="dc-bot">BOT</i>' : '')+'</b>'+body+'</div></div>';
+  const chan=(name, body)=>'<div class="dc-chan"><div class="dc-chan-h"># '+esc(name)+'</div>'+body+'</div>';
+  const scrimBtn=id=>{ const a=ccActById(id); if(!a) return '';
+    const can=ccCentreDayOpen() && careerEnergy()>=a.energy && (!a.mobile || ccMobileOwn());
+    return '<button class="dc-btn ghost"'+(can ? '' : ' disabled')+' onclick="careerPickDay(\''+id+'\');careerRenderHub(\'social\')">'+esc(ccActName(id))+' <em>'+a.energy+T.ccEnergyMark+'</em></button>'; };
+  let body='';
+  if(srv==='pc'){
+    body=chan(T.dcAnnounce, msg(T.ccCustomsHost, true, '<p>'+esc(T.dcLobbyPc(ccNum(CC_CUSTOM_PR), CC_CUSTOM_PER_WIN))+'</p>'+
+           '<p class="dc-sub">'+esc(T.dcYourPr(ccNum(ccCustomPr())))+'</p>'+btn('pcJoin', T.dcJoin)+res(['pcJoin'])))+
+         chan(T.dcScrims, '<div class="dc-row">'+scrimBtn('scrim')+scrimBtn('noble')+'</div>');
+  } else if(srv==='mob'){
+    body=chan(T.dcAnnounce, msg(T.dcSrvMob, true, '<p>'+esc(T.dcLobbyMob(CC_DC_MOB_RATE, CC_DC_MOB_PER_WIN))+'</p>'+
+           '<p class="dc-sub">'+esc(T.ccMobTitle+' '+ccMobileOvr().toFixed(1))+'</p>'+btn('mobJoin', T.dcJoin)+res(['mobJoin'])))+
+         chan(T.dcScrims, '<div class="dc-row">'+scrimBtn('mobScrim')+scrimBtn('mobile')+'</div>');
+  } else {
+    body=chan(T.dcHostChan, msg(CAREER.player.nick, false, '<p>'+esc(T.dcHostPc(ccNum(ccHostPerWin())))+'</p>'+btn('pcHost', T.dcHostBtn))+
+           msg(CAREER.player.nick, false, '<p>'+esc(T.dcHostMob(ccNum(ccMobHostPer())))+'</p>'+btn('mobHost', T.dcHostBtn))+
+           res(['pcHost','mobHost'])+(last && last.who && last.who.length && /Host/.test(last.kind) ? '<div class="dc-res">'+esc(T.dcWinners(last.who.map(h=>'@'+ccHandle(h)).join(', ')))+'</div>' : ''));
+  }
+  return '<div class="ch-tile dc-wrap"><div class="dc-srvs">'+servers.map(([id, ic, name])=>
+      '<button class="dc-srv'+(srv===id ? ' on' : '')+'" title="'+esc(name)+'" aria-label="'+esc(name)+'" onclick="ccDcServer(\''+id+'\')">'+esc(ic)+'</button>').join('')+'</div>'+
+    '<div class="dc-body"><h4 class="dc-name">'+esc((servers.find(s=>s[0]===srv)||servers[0])[2])+'</h4>'+body+'</div></div>';
 }
 /* Бросок дня. Один на день, кидается когда день впервые спросили, и сразу
    в сейв: перезагрузка страницы читает уже брошенное, а не кидает заново —
@@ -143615,6 +143766,7 @@ const CC_X_REPOST='<svg viewBox="0 0 24 24" width="15" height="15" fill="none" s
 const CC_X_LIKE='<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M12 20.5S3.5 15 3.5 9.2A4.7 4.7 0 0 1 12 6.6a4.7 4.7 0 0 1 8.5 2.6c0 5.8-8.5 11.3-8.5 11.3z"/></svg>';
 const CC_X_HOME='<svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M3 10.5 12 3l9 7.5"/><path d="M5.5 9.5V20h13V9.5"/></svg>';
 const CC_X_CHAT='<svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 9 9 0 0 1-3.9-.8L3 21l1.9-4.6A8.3 8.3 0 0 1 3.6 11.5a8.4 8.4 0 0 1 9-8.4 8.4 8.4 0 0 1 8.4 8.4z"/></svg>';
+const CC_X_DISCORD='<svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M7 6.5c3.3-1.3 6.7-1.3 10 0 1.6 2.6 2.4 5.6 2.2 9-1.4 1.1-2.9 1.8-4.5 2.3l-1-1.7M7 6.5C5.4 9.1 4.6 12.1 4.8 15.5c1.4 1.1 2.9 1.8 4.5 2.3l1-1.7"/><circle cx="9.5" cy="12.5" r="1.2"/><circle cx="14.5" cy="12.5" r="1.2"/></svg>';
 const CC_X_USER='<svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.9"><circle cx="12" cy="8" r="3.6"/><path d="M4.5 20.5a7.5 7.5 0 0 1 15 0"/></svg>';
 const CC_X_VIEWS='<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M4 20V10M10 20V4M16 20v-7M22 20V8"/></svg>';
 /* Followers. Invented, nothing in the roster data measures it. Anchored so a career starts unknown and a streaming
@@ -149816,6 +149968,7 @@ function careerSocialHTML(){
       ${rail('feed', L().ccFeedTab, CC_X_HOME)}
       ${rail('notes', L().ccNotesTab, CC_X_LIKE, careerNotesNew()>0)}
       ${rail('dms', L().dmTabTitle, CC_X_CHAT, unread)}
+      ${rail('discord', 'Discord', CC_X_DISCORD)}
       ${rail('me', L().xProfile, CC_X_USER)}
       <div class="x-me">
         ${meAv('')}
@@ -149824,6 +149977,7 @@ function careerSocialHTML(){
     </nav>
     <main class="x-main">
       ${view==='dms' ? inbox
+        : view==='discord' ? ccDiscordHTML()
         : view==='notes' ? notesHTML
         : view==='me' ? profile
         : view==='who' ? careerWhoHTML(CH_WHO)
