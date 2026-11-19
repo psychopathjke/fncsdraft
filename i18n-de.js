@@ -4214,7 +4214,7 @@ Object.assign(I18N.de=I18N.de||{},
 ({ brk_solos: 'FNCS-Solos-Finale' }));
 /* Дозаливка «de» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
 Object.assign(I18N.de=I18N.de||{},
-({ lbByEarn:'Turnierpreise', lbByAll:'Alle Preise', lbByInc:'Gesamteinkommen', lbIncCol:'Einkommen', lbIncNote:'Alles, was die Karriere verdient hat: Preise, eigene Turniere, Boni, Gehalt, Customs und Nebenjobs.', lbAllCol:'Alle Preise', lbCupNote:'Nur Turniere: ohne eigene Turniere und Handgelder.', lbAllNote:'Mit Handgeldern. Eigene Turniere zählen nicht.', lbPage:(a,b,n)=>'Plätze '+a+'-'+b+' von '+n }));
+({ lbByEarn:'Turnierpreise', lbByAll:'Alle Preise', lbAllCol:'Alle Preise', lbCupNote:'Nur Turniere: ohne eigene Turniere und Handgelder.', lbAllNote:'Mit Handgeldern. Eigene Turniere zählen nicht.', lbPage:(a,b,n)=>'Plätze '+a+'-'+b+' von '+n }));
 /* Дозаливка «de» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
 Object.assign(I18N.de=I18N.de||{},
 ({ hmBoardList:'Ganze Liste' }));
