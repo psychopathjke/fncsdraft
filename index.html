@@ -122744,7 +122744,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='e8cc4e94';
+const CC_BUILD='64566464';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -148677,6 +148677,16 @@ function careerDmAccept(id){
      См. ccMpThirdAsk. */
   if(ccMpOn()){
     if(!CC_MP_THIRD_OK) return;
+    // Письмо на кресло взятого (замена): он уходит, новый садится на его место. Без кресла и при полном составе — как было.
+    if(ccMpMateRecs().length >= ccMpBotSeats() && typeof t.seat==='number' && t.seat>=1 && !(t.fmt && t.fmt!==careerSquadSize())){
+      const cr=CAREER.career, old=ccMpMateRecs()[t.seat-1];
+      if(old && !(t.who && ccMateKeyOf(old)===hKey(t.who.handle))){
+        const oc=ccMateCardOf(old), oh=(oc && oc.handle) || old.handle || '';
+        cr.mates=(cr.mates||[]).filter(p=>p!==old);
+        try{ ccMateParted(old); }catch(e){}
+        if(oh){ try{ careerSlotGiveUp(oh); }catch(e){} }
+      }
+    }
     if(ccMpMateRecs().length >= ccMpBotSeats()) return;
   }
   /* Somebody already in the squad has nothing to accept.
@@ -150550,7 +150560,10 @@ function ccDuoFindOpen(seat, fmt){
   /* Открыта ОБОИМ: третий садится только на два «да» (ccMpThirdAsk), так что
      предложить его может любой из двоих — раньше список молча не открывался
      у второго в лобби, и если роли перепутались, то и у владельца. */
-  if(ccMpOn() && !(fmt && fmt>2 && CC_MP_FMT_ON && fmt!==careerSquadSize()) && ccMpMateRecs().length >= ccMpBotSeats()){
+  /* Замена взятого в команде: кнопка под его карточкой называет кресло (seat 1+, кресло 0 занято напарником-человеком), и
+     поиск открывается, хотя свободных кресел нет. Раньше открывался только для пустого кресла, и «Найти нового» молчал. */
+  const mpSwap=ccMpOn() && typeof seat==='number' && seat>=1 && ccMpBotSeats()>0 && !!ccMpMateRecs()[seat-1];
+  if(ccMpOn() && !mpSwap && !(fmt && fmt>2 && CC_MP_FMT_ON && fmt!==careerSquadSize()) && ccMpMateRecs().length >= ccMpBotSeats()){
     // Не молча (Telegram 22.10): в команде состав другого формата добирается филлом на вечер — так и сказать.
     try{ if(fmt && fmt>2 && CC_MP_FMT_ON && L().roMpFill) ccTell(L().roMpFill(fmt-2)); }catch(e){}
     return;
