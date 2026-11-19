@@ -57,7 +57,7 @@ check('приз из таблицы', v && ccVictoryPayOf(v,1)>0, v && ccVictory
 save('2026-11-07');
 const rlEv={spec:CC_SOLOS_STAGES.rlr2};
 check('Solo Reload на Nitemare', ccSoloFncsSet(rlEv)==='r5', ccSoloFncsSet(rlEv));
-check('Nitemare: картинка и клетки', MAP_ART.r5==='art/map-r5.jpg' && ZONE_SETS.r5.length>=25 && ZONE_SETS.r5.length===ZONE_STATS.r5.length, ZONE_SETS.r5.length);
+check('Nitemare: картинка и клетки', MAP_ART.r5==='art/map-r5-hd.jpg' && ZONE_SETS.r5.length>=25 && ZONE_SETS.r5.length===ZONE_STATS.r5.length, ZONE_SETS.r5.length);
 { const was=ACTIVE_LANDING_SET, sq=squadSize; squadSize=1; useLandingSet('r5'); check('соло-клетки не дробятся', ALL_LANDING_ZONES.length===ZONE_SETS.r5.length, ALL_LANDING_ZONES.length); check('лут круга Reload', /^r[1-4]$/.test(ccLootSet()), ccLootSet()); squadSize=sq; useLandingSet(was); }
 // Мини-Venture (r6): Mobile Series и Reload (Mini Venture) Victory Cup, Reload по правилам и луту.
 check('мини-Venture: картинка и клетки', MAP_ART.r6==='art/map-r6-hd.jpg' && MAP_ASPECT.r6==='1/1' && ZONE_SETS.r6.length>=20 && ZONE_SETS.r6.length===ZONE_STATS.r6.length, ZONE_SETS.r6.length);

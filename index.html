@@ -6983,7 +6983,7 @@
   .cc-dm-pick .cc-dm{max-height:96vh;}
   .cc-run-drops{position:absolute;inset:0;pointer-events:none;transition:opacity .3s;}
   .cc-run-drops.off{display:none;}
-  .zone-replay.zr-playing .cc-run-drops{opacity:.22;}
+  .zone-replay.zr-playing .cc-run-drops{display:none;}   /* его слово 19.11: «во время симуляции не должно быть прямоугольников» */
   .cc-rd-box{position:absolute;border:1px solid rgba(255,255,255,.8);background:rgba(0,0,0,.35);border-radius:3px;display:flex;align-items:center;justify-content:center;overflow:hidden;}
   .cc-rd-box span{font-size:8px;line-height:1.1;font-weight:800;text-align:center;color:#fff;text-shadow:0 1px 2px #000;padding:1px;word-break:break-word;}
   .cc-rd-box.hot{border-color:#ff3b3b;background:rgba(255,59,59,.3);}
@@ -103184,7 +103184,7 @@ const MAP_ART={
   // Остров мини-сезона S43 (Treasure Hunters): тайлы fortnite.gg, tools/build-s43-island.js.
   s43:"art/map-s43-hd.jpg",   // 19.11: плитки fortnite.gg z4, 2368 px (tools/build-fgg-map-art.js), было 1000
   // Nitemare Island: FNCS Solo Reload ноября 2026, tools/build-reload-nitemare.js.
-  r5:"art/map-r5.jpg",
+  r5:"art/map-r5-hd.jpg",     // 19.11: плитки fortnite.gg z4, 3264 px, было 1000
   // Мини-Venture: мобильный Reload 2026, тайлы fortnite.gg (blitz5), tools/build-reload-venture.js.
   r6:"art/map-r6-hd.jpg",     // 19.11: z4, 1984 px, было 1000
   // Chapter 5, 2024: карты eucompetitive.com (ch5s1map … ch5s4map), сжаты в JPEG.
@@ -106190,6 +106190,9 @@ function playReplayGuarded(handle, timeline, opts){
       finish(false);
     }, REPLAY_GUARD_MS);
     const w=handle && handle.wrap; if(w) w.classList.add('zr-playing');
+    /* Игра пошла — точек высадки на карте больше нет до следующей высадки (его слово 19.11: «во время симуляции не должно
+       быть прямоугольников»; приглушение не спасало: на остановках с вопросами класс снимался). */
+    if(w){ const l=w.querySelector('.cc-run-drops'); if(l) l.remove(); const tg=w.querySelector('.cc-rd-toggle'); if(tg) tg.remove(); }
     Promise.resolve(ZoneReplay.play(handle, timeline, opts))
       .then(v=>{ clearTimeout(timer); if(w) w.classList.remove('zr-playing'); finish(!!v); })
       .catch(()=>{ clearTimeout(timer); if(w) w.classList.remove('zr-playing'); finish(false); });
@@ -122643,7 +122646,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='4672fc72';
+const CC_BUILD='3544f651';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
