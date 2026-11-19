@@ -457,7 +457,30 @@
   // far apart on the wheel, so fifty squads on one island stay distinguishable
   // and — the point of this — the same squad is the same colour all match, which
   // is what lets you follow one across the rotations.
-  function hueFor(i){ return (i * 137.508) % 360; }
+  /* Чужие — не оттенком своего (19.11: «на локи стрелочки одного цвета с врагами»): свой — акцент темы, и оттенки
+     в ±40° от него у чужих сдвигаются на 80°. */
+  var accHue = null;
+  function accentHue(){
+    if(accHue != null) return accHue;
+    accHue = -1;
+    try{
+      var m = String(resolve('var(--accent)')).match(/^#([0-9a-f]{6})$/i);
+      if(m){
+        var n = parseInt(m[1], 16), r = ((n>>16)&255)/255, g = ((n>>8)&255)/255, b = (n&255)/255;
+        var mx = Math.max(r, g, b), mn = Math.min(r, g, b), d = mx - mn, h = 0;
+        if(d > 0.08){
+          if(mx === r) h = ((g - b) / d) % 6; else if(mx === g) h = (b - r) / d + 2; else h = (r - g) / d + 4;
+          accHue = (h * 60 + 360) % 360;
+        }
+      }
+    }catch(e){}
+    return accHue;
+  }
+  function hueFor(i){
+    var h = (i * 137.508) % 360, a = accentHue();
+    if(a >= 0){ var dd = Math.abs(h - a); if(Math.min(dd, 360 - dd) < 40) h = (h + 80) % 360; }
+    return h;
+  }
   function colourFor(i){ return 'hsl(' + hueFor(i).toFixed(0) + ' 85% 62%)'; }
 
   // Ink that can actually be read on a given pill. The first version hard-coded

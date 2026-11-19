@@ -106241,8 +106241,13 @@ function ccBusIntro(wrap, teams, g){
     // Цвет стрелки — как в игре: своя акцентом, остальные по номеру в комнате (ZoneReplay.colourFor).
     /* Стрелка у каждого игрока, как в игре: напарники прыгают друг за другом и садятся рядом, цвет команды общий. */
     const jumpers=[];
+    /* Команды в одном квадрате садятся каждая в своё место квадрата, по кругу от центра. Раньше все — в центр, и стрелки
+       ложились одна на другую: 100 стрелок, 78 мест (его вопрос 19.11: «почему не 100 треугольников»). */
+    const zSeen=new Map();
     list.forEach((t, i)=>{
-      const z=t.landingZone, c=P(z.x+z.w/2, z.y+z.h/2), tj=proj(c), from=at(tj), n=Math.max(1, ((t.squad||[]).filter(Boolean)).length);
+      const z=t.landingZone, zk=zSeen.get(z)||0, zn=byZone.get(z)||1; zSeen.set(z, zk+1);
+      const ang0=zn>1 ? zk/zn*Math.PI*2 : 0, rr=zn>1 ? 0.28 : 0;
+      const c=P(z.x+z.w/2+Math.cos(ang0)*z.w*rr, z.y+z.h/2+Math.sin(ang0)*z.h*rr), tj=proj(c), from=at(tj), n=Math.max(1, ((t.squad||[]).filter(Boolean)).length);
       const fill=t.isYou ? 'var(--accent)' : ZoneReplay.colourFor(i);
       for(let m=0; m<n; m++){
         const sp=n>1 ? (m-(n-1)/2)*1.6 : 0, to={x:c.x+sp, y:c.y+(m%2 ? 0.8 : -0.4)*(n>1 ? 1 : 0)};
@@ -122796,7 +122801,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='e85cf97f';
+const CC_BUILD='d3af2c12';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
