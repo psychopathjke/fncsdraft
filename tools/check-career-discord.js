@@ -15,21 +15,25 @@ const save=(day, extra, own)=>{ localStorage.setItem('fncsdraft_career', JSON.st
 save('2026-05-06');
 show('screen-career-hub');
 for(const lang of ['ru','en','fr','it','pt']){
-  setLang(lang); CH_SOCIAL='discord';
-  for(const s of ['pc','mob','own']){ CH_DC=s; careerRenderHub('social');
+  setLang(lang);
+  for(const s of ['pc','mob','own']){ CH_DC=s; careerRenderHub('discord');
     const h=(document.getElementById('chBody')||document.body).innerHTML;
     check(lang+' '+s+': сервер нарисован', h.indexOf('dc-wrap')>=0 && h.indexOf('undefined')<0 && h.indexOf('NaN')<0); }
 }
 setLang('en');
+// Discord — своя вкладка рядом с соцсетями (его скрин 19.11), не пункт меню ленты.
+careerRenderHub('social');
+check('в меню ленты Discord нет', !/Discord/.test((document.querySelector('.x-rail')||{}).innerText||''));
+check('вкладка Discord в ряду медиа', !!document.querySelector('.ch-subtab-discord'));
 check('свободный день открыт', ccCentreDayOpen());
 check('PC: сессии открыты всем', ccDcWhy('pcJoin')===null, ccDcWhy('pcJoin'));
 check('мобила: с телефоном открыта', ccDcWhy('mobJoin')===null, ccDcWhy('mobJoin'));
 // Как на настоящих: запись → чек-ин (код лобби) → живые игры → таблица.
 ccDcRegister('mob', 's1');
 check('запись', ccDcReg() && ccDcReg().kind==='mob' && !ccDcReg().checked);
-CH_DC='mob'; careerRenderHub('social');
+CH_DC='mob'; careerRenderHub('discord');
 check('до чек-ина кода нет', (document.getElementById('chBody')||document.body).innerText.indexOf(ccDcReg().code)<0);
-ccDcCheckIn(); careerRenderHub('social');
+ccDcCheckIn(); careerRenderHub('discord');
 check('после чек-ина код виден', (document.getElementById('chBody')||document.body).innerText.indexOf(ccDcReg().code)>=0);
 skipAnimation=true; CC_SKIP_RUN=true;
 const sk=setInterval(()=>{ const p=document.querySelector('.landing-picker'); if(p){ const z=p.querySelectorAll('.land-zone'); if(z.length){ z[0].click(); const c=p.querySelector('#gameLandingConfirm'); if(c && !c.disabled) c.click(); } }
@@ -58,7 +62,7 @@ check('без энергии закрыто', /40|20/.test(String(ccDcWhy('mobJo
 const want={EU:'Noble Practice', NAC:'Vital Scrims', NAW:'Vital Scrims', OCE:'Vital Scrims', ME:'Vital Scrims Middle East', BR:'Major Scrims', ASIA:'LYNX Pro Scrim'};
 for(const reg of Object.keys(want)){
   save('2026-05-06'); CAREER.player.region=reg; CAREER.career.region=reg;
-  CH_SOCIAL='discord'; CH_DC='pc'; careerRenderHub('social');
+  CH_DC='pc'; careerRenderHub('discord');
   const h=(document.getElementById('chBody')||document.body).innerText;
   check(reg+': '+want[reg], ccPracSrv()===want[reg] && ccActName('noble')===want[reg] && h.indexOf(want[reg])>=0, ccPracSrv());
   check(reg+': лестница Noble только в EU', (h.indexOf('Noble X')>=0)===(reg==='EU'));

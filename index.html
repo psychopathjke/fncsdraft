@@ -2030,6 +2030,9 @@
   #screen-career-hub .ch-subtab.ch-subtab-social{background:#000;color:#e7e9ea;}
   #screen-career-hub .ch-subtab.ch-subtab-streams{background:#9146ff;color:#fff;}
   #screen-career-hub .ch-subtab.ch-subtab-youtube{background:#ff0033;color:#fff;}
+  #screen-career-hub .ch-subtab.ch-subtab-discord{background:#5865f2;color:#fff;}
+  #screen-career-hub .ch-subtab.ch-subtab-discord.on{box-shadow:0 0 0 2px #fff;}
+  #screen-career-hub .ch-subtab.ch-subtab-discord:not(.on){opacity:.75;}
   #screen-career-hub .ch-subtab.ch-subtab-social.on,#screen-career-hub .ch-subtab.ch-subtab-streams.on,#screen-career-hub .ch-subtab.ch-subtab-youtube.on{box-shadow:0 0 0 2px #fff;}
   #screen-career-hub .ch-subtab.ch-subtab-social:not(.on),#screen-career-hub .ch-subtab.ch-subtab-streams:not(.on),#screen-career-hub .ch-subtab.ch-subtab-youtube:not(.on){opacity:.75;}
   .cc-card-media{display:flex;gap:6px;flex-wrap:wrap;margin-top:2px;}
@@ -6183,6 +6186,19 @@
   .cc-aw-late .cc-aw-h b{color:#ffdd00;font-size:16px;}
   .cc-aw-late .cc-aw-go:not(:disabled){background:#ffdd00;color:#0b0f12;}
   .cc-aw-live{width:9px;height:9px;border-radius:50%;background:#ff3b3b;animation:ccAwayLive 1.6s ease-out infinite;}
+  /* Другие регионы плитками по три (его слово 19.11, скрин блока: «не нравится, как выглядит, и скролить не хочется»):
+     было шесть высоких строк столбиком, стало два ряда. Разметка та же (строка .cc-aw-r, кнопка .cc-aw-go) — меняется вид. */
+  .cc-aw{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;padding:10px;}
+  .cc-aw-h{grid-column:1/-1;margin-bottom:0;}
+  .cc-aw .cc-aw-r, .cc-aw .cc-aw-h+.cc-aw-r{flex-direction:column;align-items:stretch;gap:3px;padding:7px 8px;border:1px solid rgba(255,255,255,.1);border-radius:9px;background:rgba(255,255,255,.04);}
+  .cc-aw .cc-aw-r:not(.off){border-color:rgba(120,150,255,.45);background:rgba(51,71,154,.25);}
+  .cc-aw .cc-aw-n b{font-size:13px;}
+  .cc-aw .cc-aw-t{display:block;margin-left:0;font-size:12px;}
+  .cc-aw .cc-aw-n>span{font-size:10.5px;line-height:1.25;}
+  .cc-aw .cc-aw-go{min-width:0;width:100%;padding:6px 4px;font-size:11px;margin-top:2px;}
+  .cc-aw .cc-aw-go:disabled{padding:2px 0 0;font-size:10.5px;line-height:1.2;text-align:left;white-space:normal;}
+  .cc-aw .cc-aw-r.off{opacity:.75;}
+  @media(max-width:340px){.cc-aw{grid-template-columns:repeat(2,minmax(0,1fr));}}
   @keyframes ccAwayLive{0%{box-shadow:0 0 0 0 rgba(255,59,59,.6);}70%{box-shadow:0 0 0 7px rgba(255,59,59,0);}100%{box-shadow:0 0 0 0 rgba(255,59,59,0);}}
   @media(prefers-reduced-motion:reduce){ .cc-aw-live{animation:none;} }
   .cc-valt:focus-visible{outline:2px solid #00ffd0;outline-offset:2px;}
@@ -122577,7 +122593,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='db26ed2d';
+const CC_BUILD='f4d0836f';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -127432,7 +127448,8 @@ function careerWorldHTML(){
 }
 // Подвкладки объединённых вкладок: «Медиа» = соцсети + стримы, «Таблицы» = PR/призовые + моя статистика + игроки сайта.
 function ccSubTabsHTML(group){
-  const list=group==='media' ? [['social', L().chTabSocial], ['streams', L().chTabStreams], ['youtube', L().chTabYt]]
+  // Discord — своей вкладкой рядом с соцсетями (его скрин 19.11: стрелка из меню ленты на ряд вкладок).
+  const list=group==='media' ? [['social', L().chTabSocial], ['streams', L().chTabStreams], ['youtube', L().chTabYt], ['discord', 'Discord']]
                              : [['table', L().lfSubPrMoney], ['stats', L().chTabStats], ['world', L().lbTab]];
   return '<div class="ch-subtabs">'+list.map(([k,t])=>'<button class="ch-subtab ch-subtab-'+k+(CH_TAB===k?' on':'')+'" onclick="careerTab(\''+k+'\')">'+esc(t)+'</button>').join('')+'</div>';
 }
@@ -127561,7 +127578,7 @@ function careerRenderHubBody(tab){
 
   document.querySelectorAll('#screen-career-hub .ch-tab').forEach(b=>{
     // Стримы живут внутри «Медиа», статистика — внутри «Таблиц».
-    b.classList.toggle('on', b.dataset.tab===({streams:'social', youtube:'social', stats:'table', world:'table'}[CH_TAB]||CH_TAB));
+    b.classList.toggle('on', b.dataset.tab===({streams:'social', youtube:'social', discord:'social', stats:'table', world:'table'}[CH_TAB]||CH_TAB));
   });
   // The unread dot is the lobby's own notification mark — it is the only thing
   // on this screen that asks to be clicked.
@@ -127607,6 +127624,7 @@ function careerRenderHubBody(tab){
   // Медиа в цветах своих сетей (28.10, его «соцсети в цвете X, стримы в цвете твич, youtube в цветах ютуб»).
   if(CH_TAB==='social'){ body.innerHTML=ccSubTabsHTML('media')+'<div class="cc-media cc-media-x">'+careerSocialHTML()+'</div>'; return; }
   if(CH_TAB==='youtube'){ body.innerHTML=ccSubTabsHTML('media')+'<div class="cc-media cc-media-yt">'+careerYtHTML()+'</div>'; return; }
+  if(CH_TAB==='discord'){ body.innerHTML=ccSubTabsHTML('media')+'<div class="cc-media cc-media-dc">'+ccDiscordHTML()+'</div>'; return; }
   /* The career itself, on its own screen.
 
      The centre was doing two jobs — what to do today, and who you have deals
@@ -130729,7 +130747,7 @@ function ccDcGo(kind){
   cr.dcLast={day:careerToday(), kind:kind, wins:r ? r.wins : 0, cash:r ? r.cash : 0, grow:r && r.grow ? r.grow : 0,
              who:r && r.winners ? r.winners.slice(0, 5) : null};
   careerSave();
-  careerRenderHub('social');
+  careerRenderHub('discord');
 }
 /* СЕССИЯ КАСТОМОК КАК НА НАСТОЯЩИХ (его слово 19.11: «сделать симуляции игр, регистрацию кастомок, как на настоящих
    кастомках»). Как у Noble (nobleprac.com, сессии и таблицы 18.11.2026): в день несколько сессий (Session 1, 2, Late Night),
@@ -130759,11 +130777,11 @@ function ccDcRegister(kind, sid){
   const rnd=careerRng(ccHashStr('dccode|'+careerToday()+'|'+kind+'|'+sid));
   const code=(kind==='mob' ? 'TOUCH' : ccCareerRegion()==='EU' ? 'NOBLE' : String(ccPracSrv()).split(' ')[0].toUpperCase())+(1000+Math.floor(rnd()*9000));
   cr.dcReg={day:careerToday(), kind:kind, sess:sid, code:code, checked:false};
-  careerSave(); careerRenderHub('social');
+  careerSave(); careerRenderHub('discord');
 }
-function ccDcCheckIn(){ const r=ccDcReg(); if(!r) return; r.checked=true; careerSave(); careerRenderHub('social'); }
-function ccDcUnreg(){ const r=ccDcReg(); if(!r || r.done) return; delete CAREER.career.dcReg; careerSave(); careerRenderHub('social'); }
-function ccDcBack(){ careerBackToHub(); CH_SOCIAL='discord'; careerRenderHub('social'); }
+function ccDcCheckIn(){ const r=ccDcReg(); if(!r) return; r.checked=true; careerSave(); careerRenderHub('discord'); }
+function ccDcUnreg(){ const r=ccDcReg(); if(!r || r.done) return; delete CAREER.career.dcReg; careerSave(); careerRenderHub('discord'); }
+function ccDcBack(){ careerBackToHub(); careerTab('discord'); }
 async function ccScrimRun(){
   const r=ccDcReg(); if(!r || !r.checked || r.done) return;
   const kind=r.kind, why=ccDcWhy(kind==='mob' ? 'mobJoin' : 'pcJoin'); if(why) return;
@@ -130860,7 +130878,7 @@ function ccDcSessHTML(kind){
       '<p class="dc-sub">'+esc(T.dcFmt(f.games, kind==='mob' ? 16 : 100))+(kind!=='mob' && ccCareerRegion()==='EU' ? ' '+esc(T.dcRules) : '')+'</p>'+list+'</div>'+
     '<div class="dc-chan"><div class="dc-chan-h"># '+esc(T.dcCheckChan)+'</div>'+check+'</div>';
 }
-function ccDcServer(id){ CH_DC=id; careerRenderHub('social'); }
+function ccDcServer(id){ CH_DC=id; careerRenderHub('discord'); }
 function ccDiscordHTML(){
   const T=L(), cr=CAREER.career, srv=CH_DC||'pc';
   const servers=[['pc', 'PC', ccPracSrv()], ['mob', '📱', T.dcSrvMob], ['own', '★', T.dcSrvOwn]];
@@ -130875,7 +130893,7 @@ function ccDiscordHTML(){
   const chan=(name, body)=>'<div class="dc-chan"><div class="dc-chan-h"># '+esc(name)+'</div>'+body+'</div>';
   const scrimBtn=id=>{ const a=ccActById(id); if(!a) return '';
     const can=ccCentreDayOpen() && careerEnergy()>=a.energy && (!a.mobile || ccMobileOwn());
-    return '<button class="dc-btn ghost"'+(can ? '' : ' disabled')+' onclick="careerPickDay(\''+id+'\');careerRenderHub(\'social\')">'+esc(ccActName(id))+' <em>'+a.energy+T.ccEnergyMark+'</em></button>'; };
+    return '<button class="dc-btn ghost"'+(can ? '' : ' disabled')+' onclick="careerPickDay(\''+id+'\');careerRenderHub(\'discord\')">'+esc(ccActName(id))+' <em>'+a.energy+T.ccEnergyMark+'</em></button>'; };
   let body='';
   if(srv==='pc'){
     // Кастомки ПК — сессии сервера практики региона (занятие noble: одна игра на сотню, таблица недели, форма от места).
@@ -150149,7 +150167,6 @@ function careerSocialHTML(){
       ${rail('feed', L().ccFeedTab, CC_X_HOME)}
       ${rail('notes', L().ccNotesTab, CC_X_LIKE, careerNotesNew()>0)}
       ${rail('dms', L().dmTabTitle, CC_X_CHAT, unread)}
-      ${rail('discord', 'Discord', CC_X_DISCORD)}
       ${rail('me', L().xProfile, CC_X_USER)}
       <div class="x-me">
         ${meAv('')}
@@ -150158,7 +150175,6 @@ function careerSocialHTML(){
     </nav>
     <main class="x-main">
       ${view==='dms' ? inbox
-        : view==='discord' ? ccDiscordHTML()
         : view==='notes' ? notesHTML
         : view==='me' ? profile
         : view==='who' ? careerWhoHTML(CH_WHO)
