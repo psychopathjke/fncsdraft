@@ -6982,8 +6982,8 @@
   .dc-res{margin-top:8px;color:#3ba55c;font-size:12.5px;font-weight:800;}
   .cc-dm-pick .cc-dm{max-height:96vh;}
   .cc-run-drops{position:absolute;inset:0;pointer-events:none;transition:opacity .3s;}
-  .cc-bus-layer{position:absolute;inset:0;pointer-events:none;z-index:4;}
-  .cc-bus-layer svg{position:absolute;inset:0;width:100%;height:100%;}
+  .cc-bus-layer{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:4;overflow:visible;}
+  .cc-bus-tag{font-size:2.6px;font-weight:900;fill:var(--accent);paint-order:stroke;stroke:#000;stroke-width:.5px;}
   .cc-bus-path{stroke:#fff;stroke-width:.35;stroke-dasharray:1.4 1.1;opacity:.75;vector-effect:non-scaling-stroke;}
   .cc-bus{position:absolute;font-size:22px;line-height:1;filter:drop-shadow(0 2px 3px rgba(0,0,0,.6));}
   .cc-bus-dot{position:absolute;width:7px;height:7px;margin:-3.5px 0 0 -3.5px;border-radius:50%;background:#fff;box-shadow:0 0 0 1.5px rgba(0,0,0,.55);}
@@ -106190,46 +106190,64 @@ function ccRunDropsDraw(wrap, teams){
 const CC_BUS_MS=3000, CC_BUS_GLIDE_MS=900;
 function ccBusIntro(wrap, teams, g){
   return new Promise(resolve=>{
-    const stage=wrap && wrap.firstElementChild;
+    const stage=wrap && wrap.firstElementChild, NS='http://www.w3.org/2000/svg';
     const list=(teams||[]).filter(t=>t && t.landingZone && t.landingZone.x!=null);
-    if(!stage || !list.length){ resolve(); return; }
+    if(!stage || !list.length || typeof ZoneReplay==='undefined' || !ZoneReplay.marker){ resolve(); return; }
+    // Те же единицы, что у карты боя: viewBox 100 × (100 × высота/ширина), проценты клеток переводятся в них.
+    const base=stage.querySelector('svg'), vbH=Number(base && base.dataset.vbh) || 100;
+    const P=(x,y)=>({x:x, y:y/100*vbH});
     const rnd=careerRng(ccHashStr('bus|'+careerToday()+'|'+(g||0)+'|'+list.length));
     // Маршрут: через остров, со сдвигом от центра до ±18%, под случайным углом.
     const ang=rnd()*Math.PI*2, off=(rnd()-0.5)*36, cx=50+Math.cos(ang+Math.PI/2)*off, cy=50+Math.sin(ang+Math.PI/2)*off;
-    const dx=Math.cos(ang), dy=Math.sin(ang), A={x:cx-dx*75, y:cy-dy*75}, B={x:cx+dx*75, y:cy+dy*75};
-    const proj=p=>{ const t=((p.x-A.x)*(B.x-A.x)+(p.y-A.y)*(B.y-A.y))/(150*150); return Math.max(0.12, Math.min(0.88, t)); };
+    const dx=Math.cos(ang), dy=Math.sin(ang), A=P(cx-dx*75, cy-dy*75), B=P(cx+dx*75, cy+dy*75);
+    const L2=(B.x-A.x)*(B.x-A.x)+(B.y-A.y)*(B.y-A.y);
+    const proj=p=>Math.max(0.1, Math.min(0.9, ((p.x-A.x)*(B.x-A.x)+(p.y-A.y)*(B.y-A.y))/L2));
     const at=t=>({x:A.x+(B.x-A.x)*t, y:A.y+(B.y-A.y)*t});
+    const svg=document.createElementNS(NS, 'svg');
+    svg.setAttribute('viewBox', '0 0 100 '+vbH.toFixed(3)); svg.setAttribute('preserveAspectRatio', 'none'); svg.setAttribute('class', 'cc-bus-layer');
+    const line=document.createElementNS(NS, 'line');
+    line.setAttribute('x1', A.x); line.setAttribute('y1', A.y); line.setAttribute('x2', B.x); line.setAttribute('y2', B.y); line.setAttribute('class', 'cc-bus-path');
+    svg.appendChild(line);
+    const arrows=document.createElementNS(NS, 'g'); svg.appendChild(arrows);
+    // Автобус: синий кузов под воздушным шаром, носом по ходу полёта.
+    const bus=document.createElementNS(NS, 'g');
+    bus.innerHTML='<g transform="scale('+(dx<0 ? -1 : 1)+' 1)">'+
+      '<path d="M -1.6 -2.2 L -1.1 -0.9 M 1.6 -2.2 L 1.1 -0.9" stroke="#1a1f2b" stroke-width=".25" vector-effect="non-scaling-stroke"/>'+
+      '<ellipse cx="0" cy="-3.9" rx="2.5" ry="2.2" fill="#3d9bff" stroke="#0b1020" stroke-width="1.2" vector-effect="non-scaling-stroke"/>'+
+      '<path d="M -0.8 -6 Q 0 -3.9 -0.8 -1.8 M 0.8 -6 Q 0 -3.9 0.8 -1.8" fill="none" stroke="#ffffff" stroke-width=".9" vector-effect="non-scaling-stroke" opacity=".85"/>'+
+      '<rect x="-2.9" y="-1" width="5.8" height="2.4" rx=".6" fill="#2f6fe0" stroke="#0b1020" stroke-width="1.2" vector-effect="non-scaling-stroke"/>'+
+      '<rect x="-2.3" y="-.55" width="1.2" height=".9" fill="#cfe9ff"/><rect x="-.8" y="-.55" width="1.2" height=".9" fill="#cfe9ff"/><rect x=".7" y="-.55" width="1.5" height=".9" fill="#cfe9ff"/>'+
+      '<circle cx="-1.7" cy="1.45" r=".55" fill="#0b1020"/><circle cx="1.7" cy="1.45" r=".55" fill="#0b1020"/></g>';
+    svg.appendChild(bus);
     const byZone=new Map(); list.forEach(t=>{ const z=t.landingZone; byZone.set(z, (byZone.get(z)||0)+1); });
-    const layer=document.createElement('div'); layer.className='cc-bus-layer';
-    const svg='<svg viewBox="0 0 100 100" preserveAspectRatio="none"><line x1="'+A.x+'" y1="'+A.y+'" x2="'+B.x+'" y2="'+B.y+'" class="cc-bus-path"/></svg>';
-    layer.innerHTML=svg;
-    const bus=document.createElement('div'); bus.className='cc-bus'; bus.textContent='🚌';
-    // Значок 🚌 смотрит влево: летит вправо — отражаем.
-    bus.style.transform='translate(-50%,-50%)'+(Math.cos(ang)>0 ? ' scaleX(-1)' : '');
-    layer.appendChild(bus);
-    const jumpers=list.map(t=>{
-      const z=t.landingZone, to={x:z.x+z.w/2, y:z.y+z.h/2}, tj=proj(to), from=at(tj);
-      const el=document.createElement('div');
-      el.className='cc-bus-dot'+(t.isYou ? ' me' : (byZone.get(z)>1 ? ' hot' : ''));
-      if(t.isYou){ const nm=(t.squad||[]).map(c=>c && c.handle).filter(Boolean).join(' + '); el.innerHTML='<span>'+esc(nm)+'</span>'; }
-      el.style.left=from.x+'%'; el.style.top=from.y+'%'; el.style.opacity='0';
-      layer.appendChild(el);
-      return {el, tj, from, to};
+    // Цвет стрелки — как в игре: своя акцентом, остальные по номеру в комнате (ZoneReplay.colourFor).
+    const jumpers=list.map((t, i)=>{
+      const z=t.landingZone, to=P(z.x+z.w/2, z.y+z.h/2), tj=proj(to), from=at(tj);
+      return {t, i, tj, from, to, a:Math.atan2(to.y-from.y, to.x-from.x)*180/Math.PI,
+              fill:t.isYou ? 'var(--accent)' : ZoneReplay.colourFor(i), you:!!t.isYou};
     });
-    stage.appendChild(layer);
-    let raf=0, t0=0;
-    const end=()=>{ cancelAnimationFrame(raf); layer.remove(); resolve(); };
+    let tag=null;
+    const me=jumpers.find(j=>j.you);
+    if(me){ tag=document.createElementNS(NS, 'text'); tag.setAttribute('class', 'cc-bus-tag');
+      tag.textContent=(me.t.squad||[]).map(c=>c && c.handle).filter(Boolean).join(' + '); svg.appendChild(tag); }
+    stage.appendChild(svg);
+    let raf=0, t0=0, done=false;
+    /* Страховка: кадры (requestAnimationFrame) стоят в фоновой вкладке и в headless с виртуальным временем — автобус
+       тогда кончается по таймеру, а не держит вечер. */
+    const guard=setTimeout(()=>end(), CC_BUS_MS+CC_BUS_GLIDE_MS+900);
+    const end=()=>{ if(done) return; done=true; clearTimeout(guard); cancelAnimationFrame(raf); svg.remove(); resolve(); };
     const step=ts=>{
       if(!t0) t0=ts;
-      if(skipAnimation || !layer.isConnected){ end(); return; }
-      const e=ts-t0, tb=Math.min(1, e/CC_BUS_MS);
-      const p=at(tb); bus.style.left=p.x+'%'; bus.style.top=p.y+'%';
+      if(skipAnimation || !svg.isConnected){ end(); return; }
+      const e=ts-t0, tb=Math.min(1, e/CC_BUS_MS), p=at(tb);
+      bus.setAttribute('transform', 'translate('+p.x.toFixed(3)+' '+p.y.toFixed(3)+')');
+      arrows.innerHTML='';
       jumpers.forEach(j=>{
-        const jumpAt=j.tj*CC_BUS_MS;
-        if(e<jumpAt) return;
+        const jumpAt=j.tj*CC_BUS_MS; if(e<jumpAt) return;
         const k=Math.min(1, (e-jumpAt)/CC_BUS_GLIDE_MS), s=k*k*(3-2*k);
-        j.el.style.opacity='1';
-        j.el.style.left=(j.from.x+(j.to.x-j.from.x)*s)+'%'; j.el.style.top=(j.from.y+(j.to.y-j.from.y)*s)+'%';
+        const x=j.from.x+(j.to.x-j.from.x)*s, y=j.from.y+(j.to.y-j.from.y)*s;
+        arrows.appendChild(ZoneReplay.marker(x, y, j.a, j.fill, j.you, 1));
+        if(j.you && tag){ tag.setAttribute('x', (x+2.4).toFixed(3)); tag.setAttribute('y', (y+0.9).toFixed(3)); }
       });
       if(e>=CC_BUS_MS+CC_BUS_GLIDE_MS+250){ end(); return; }
       raf=requestAnimationFrame(step);
@@ -122714,7 +122732,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='f741ffa9';
+const CC_BUILD='21d4c856';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого

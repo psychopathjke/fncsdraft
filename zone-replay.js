@@ -2173,6 +2173,8 @@
   }
 
   root.ZoneReplay = {mount:mount, play:play, unmount:unmount,
+                     // Стрелка команды и её цвет — для автобуса перед игрой (ccBusIntro в index.html): те же, что в игре.
+                     marker:marker, colourFor:colourFor,
                      between:between, show:show, killShare:killShare, clearFeed:clearFeed, note:note,
                      whole:whole,
                      directTrack:directTrack,
