@@ -9674,6 +9674,7 @@
   /* На весь экран: окно лута поверх всего, кадр карты = экран, HUD по краям, отступы под вырезы iPhone. */
   .cc-choice.cc-loot.lr-full{position:fixed;inset:0;left:0;right:0;top:0;bottom:0;transform:none;margin:0;padding:0;border:0;border-radius:0;z-index:9000;background:#05091c;max-height:none;overflow:hidden;animation:none;box-shadow:none;}
   .lr-full .lr-map{border:0;border-radius:0;margin:0;width:100%!important;height:100%!important;}
+  .cc-choice.cc-loot.lr-full.lr-side{inset:auto;border-radius:12px;border:1px solid rgba(255,255,255,.12);box-shadow:0 16px 48px rgba(0,0,0,.55);}
   .lr-full .lr-hud-t{padding:calc(8px + env(safe-area-inset-top)) 12px 22px;display:flex;flex-direction:column;gap:3px;}
   .lr-hud-ttl{font-size:12px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;color:#ffdd00;text-shadow:0 1px 2px #000;}
   .lr-hud-t small{font-size:11px;color:#cfe0ff;text-shadow:0 1px 2px #000;}
@@ -117399,6 +117400,15 @@ function ccLootRoom(host, opt){
     const full=!!(opt.zone && MAP_ART[(typeof ACTIVE_LANDING_SET!=='undefined') ? ACTIVE_LANDING_SET : '']);
     // На весь экран — в body: у карты игры бывает transform, и fixed внутри неё прилипал бы к карте.
     if(full) box.classList.add('lr-full');
+    /* Широкий экран: лут слева, на месте карты боя, таблица справа остаётся видна (его слово 19.11: «от таблицы слева
+       лутаться»). Рамка — по карте боя в окне; карта слишком мала или не видна — на весь экран, как на телефоне. */
+    if(full && (window.innerWidth||0)>=900 && typeof CC_RUN_MAP!=='undefined' && CC_RUN_MAP && CC_RUN_MAP.isConnected){
+      const r=CC_RUN_MAP.getBoundingClientRect(), top=Math.max(0, r.top), h=Math.min(r.bottom, window.innerHeight)-top;
+      if(r.width>=560 && h>=420){
+        box.classList.add('lr-side');
+        Object.assign(box.style, {left:Math.round(Math.max(0, r.left))+'px', top:Math.round(top)+'px', width:Math.round(r.width)+'px', height:Math.round(h)+'px', right:'auto', bottom:'auto'});
+      }
+    }
     (full ? document.body : host).appendChild(box);
     const cam=(()=>{ const vv=window.visualViewport, W=Math.max(320, (full && box.clientWidth) || (vv && vv.width) || window.innerWidth || 800), H=Math.max(400, (full && box.clientHeight) || (vv && vv.height) || window.innerHeight || 700);
       const m=names.length, wide=W>=560, per=Math.max(1, Math.floor((W-24)/(5*(wide ? 46 : 42)+18))), rows=Math.ceil(m/per);
@@ -122764,7 +122774,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='d7e96407';
+const CC_BUILD='a81e1ab5';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
