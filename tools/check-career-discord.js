@@ -37,6 +37,16 @@ save('2026-05-06', {}, false);
 check('мобила: без телефона закрыта', ccDcWhy('mobJoin')===L().ccMobTrainNeed && ccDcWhy('mobHost')===L().ccMobTrainNeed);
 save('2026-05-06', {energy:20});
 check('без энергии закрыто', /40|20/.test(String(ccDcWhy('mobJoin'))), ccDcWhy('mobJoin'));
+// Сервер практики по региону: EU — Noble с лестницей, остальные — свои (проверено в X 19.11.2026).
+const want={EU:'Noble Practice', NAC:'Vital Scrims', NAW:'Vital Scrims', OCE:'Vital Scrims', ME:'Vital Scrims Middle East', BR:'Major Scrims', ASIA:'LYNX Pro Scrim'};
+for(const reg of Object.keys(want)){
+  save('2026-05-06'); CAREER.player.region=reg; CAREER.career.region=reg;
+  CH_SOCIAL='discord'; CH_DC='pc'; careerRenderHub('social');
+  const h=(document.getElementById('chBody')||document.body).innerText;
+  check(reg+': '+want[reg], ccPracSrv()===want[reg] && ccActName('noble')===want[reg] && h.indexOf(want[reg])>=0, ccPracSrv());
+  check(reg+': лестница Noble только в EU', (h.indexOf('Noble X')>=0)===(reg==='EU'));
+  check(reg+': Noble не в чужом регионе', reg==='EU' || !/Noble/.test(ccNobleServer().name), ccNobleServer().name);
+}
 check('без ошибок', !errs.length, errs.slice(0,3).join(' | '));
 return {fails, notes};
 `;
