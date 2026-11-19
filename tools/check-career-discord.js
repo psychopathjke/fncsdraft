@@ -35,6 +35,10 @@ CH_DC='mob'; careerRenderHub('discord');
 check('до чек-ина кода нет', (document.getElementById('chBody')||document.body).innerText.indexOf(ccDcReg().code)<0);
 ccDcCheckIn(); careerRenderHub('discord');
 check('после чек-ина код виден', (document.getElementById('chBody')||document.body).innerText.indexOf(ccDcReg().code)>=0);
+// Без метки на карте дропов играть нельзя; метка ставится нажатием на квадрат.
+check('без метки «Играть» погашена', !!document.querySelector('[onclick="ccScrimRun()"][disabled]'));
+ccDcDropOpen('cust'); { const bx=document.querySelectorAll('#ccDropMapModal .cc-dm-box'); check('на карте дропов есть квадраты', bx.length>0, bx.length); if(bx[0]) bx[0].click(); }
+check('метка встала', ccDcReg().spot!=null); ccDropMapClose(); careerRenderHub('discord');
 skipAnimation=true; CC_SKIP_RUN=true;
 const sk=setInterval(()=>{ const p=document.querySelector('.landing-picker'); if(p){ const z=p.querySelectorAll('.land-zone'); if(z.length){ z[0].click(); const c=p.querySelector('#gameLandingConfirm'); if(c && !c.disabled) c.click(); } }
   const c0=document.querySelector('.cc-choice-btn'); if(c0) c0.click(); const b=document.getElementById('majorSkipBtn'); if(b && !b.disabled) b.click(); }, 30);
