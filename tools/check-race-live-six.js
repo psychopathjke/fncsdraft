@@ -24,6 +24,8 @@ const DAY = process.env.CC_DAY || '2025-12-01';
 const FF = process.env.CC_FF || '2026-10-27';
 const CODE = ('Y' + crypto.randomBytes(3).toString('hex').toUpperCase()).slice(0, 6);
 const BUDGET_MS = Number(process.env.CC_BUDGET || 6 * 3600000);
+const DIV0 = Number(process.env.CC_DIV || 1);   // стартовый дивизион всех карьер
+const OVR0 = Number(process.env.CC_OVR || 0);   // свой рейтинг вместо таблицы ниже (0 = как в таблице)
 const SEASONS = Number(process.env.CC_SEASONS || 1);   // 2 — после дуо-года закрыть сезон и сыграть трио-год тем же составом комнаты
 // CC_YEAR=2024 (или 2025) — карьера того года: cr.year/year0 в сейве, календарь и карточки того года; без него — 2026.
 const YEAR = [2019, 2020, 2021, 2022, 2023, 2024, 2025].indexOf(Number(process.env.CC_YEAR)) >= 0 ? Number(process.env.CC_YEAR) : 0;   // 20.10: все годы карьеры
@@ -85,13 +87,13 @@ const boot = (who) => `
   try{
     localStorage.setItem('fncsdraft_career', JSON.stringify({
       v:1, player:{nick:${JSON.stringify(who.nick)}, age:${who.age}, source:'rookie', country:${JSON.stringify(who.country)}, countryPing:15,
-        closeRangeEdge:${who.close}, region:'EU', ovr:${who.ovr}, role:${JSON.stringify(who.role)}, attrs:null, ageEdge:${who.ageEdge},
+        closeRangeEdge:${who.close}, region:'EU', ovr:${OVR0||who.ovr}, role:${JSON.stringify(who.role)}, attrs:null, ageEdge:${who.ageEdge},
         photo:null, handle:null, cardRegion:null, nat:null},
-      career:{season:1, day:${JSON.stringify(DAY)}, division:1, earnings:${who.money}, balance:${who.money}, reach:${who.reach},
+      career:{season:1, day:${JSON.stringify(DAY)}, division:${DIV0}, earnings:${who.money}, balance:${who.money}, reach:${who.reach},
               tokens:[], log:[], news:[], form:${who.form}, grind:${who.grind}${YEAR ? ', year:' + YEAR + ', year0:' + YEAR : ''}},
       partners:[]}));
     const s=JSON.parse(localStorage.getItem('fncsdraft_career'));
-    s.player.attrs=ccRookieAttrs(${who.ovr}, ${JSON.stringify(who.role)});
+    s.player.attrs=ccRookieAttrs(${OVR0||who.ovr}, ${JSON.stringify(who.role)});
     localStorage.setItem('fncsdraft_career', JSON.stringify(s));
     careerEntry();
     // Свой бот-напарник из ростера сцены, у всех шестерых разные.
@@ -333,7 +335,10 @@ const boot = (who) => `
         return at;
       }; }
     // Метки хода: каждый посланный акт, кроме пульса.
-    const act0=MP.act; MP.act=function(k,p){ if(k==='fferr' && p && !out.notes.ffErr) out.notes.ffErr={day:p.day, kind:'', text:String(p.text||''), stack:out.notes.lastErr||null}; if(k!=='hb'){ if(out.notes.marks.length>=160) out.notes.marks.shift(); out.notes.marks.push(k+(p&&p.q!=null?'#'+p.q:'')+' d'+CAREER.career.day.slice(5)+' g'+CC_MP_GAME+' r'+CC_MP_ROLLS+' t'+Math.round((Date.now()-t0)/1000)); } return act0.apply(MP, arguments); };
+    const act0=MP.act; MP.act=function(k,p){ if(k==='fferr' && p && !out.notes.ffErr) out.notes.ffErr={day:p.day, kind:'', text:String(p.text||''), stack:out.notes.lastErr||null}; if(k!=='hb'){ if(out.notes.marks.length>=160) out.notes.marks.shift(); out.notes.marks.push(k+(p&&p.q!=null?'#'+p.q:'')+' d'+CAREER.career.day.slice(5)+' g'+CC_MP_GAME+' r'+CC_MP_ROLLS+' t'+Math.round((Date.now()-t0)/1000)); }
+      // CC_DROP_W=1: старший теряет каждую первую отправку книги мира (проверка повторного запроса)
+      if(${JSON.stringify(!!process.env.CC_DROP_W)} && k==='world' && !(window.__wDrop=window.__wDrop||{})[p && p.n]){ window.__wDrop[p && p.n]=1; out.notes.wDropped=(out.notes.wDropped||0)+1; return; }
+      return act0.apply(MP, arguments); };
     // След барьера и все служебные сообщения сервера (start/close/card/ready/state) — в метки; строка гонки посреди вечера — с откуда.
     window.CC_MP_TRACE=function(t){ mark('TR '+t); };
     window.__link=MP.state; setInterval(function(){ try{ if(MP.state!==window.__link){ mark('LINK '+window.__link+'>'+MP.state+' pend'+(MP.pending?MP.pending():'-')); window.__link=MP.state; } }catch(e){} }, 200);
@@ -469,7 +474,9 @@ async function runOne(tag, who, port, phone){
     '--remote-debugging-port='+port, '--remote-allow-origins=*', '--user-data-dir='+path.join(dir, 'profile')];
   /* Окно headless по умолчанию 764 px — это уже «малое устройство» по ccSmallDevice, то есть
      без этой строки компьютер в пробе был бы вторым телефоном и сверять было бы нечего. */
-  args.push(phone ? '--window-size=390,844' : '--window-size=1440,900');
+  // CC_WIDTHS=1280,1536 — свои ширины окон по порядку клиентов (у игроков в журнале у двоих разные)
+  const W=String(process.env.CC_WIDTHS||'').split(',').map(Number)[Number(String(tag).replace(/\D/g,''))-1];
+  args.push(phone ? '--window-size=390,844' : '--window-size='+(W||1440)+',900');
   if(phone) args.push('--user-agent='+PHONE_UA, '--force-prefers-reduced-motion');
   const chrome=spawn(CHROME, args.concat(['about:blank']), {stdio:'ignore'});
   const ws=await cdp(port);

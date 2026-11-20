@@ -124787,19 +124787,39 @@ function ccTeamWorldSync(n, who){
   const role=(CAREER.career.mp||{}).role;
   const lead=role ? role==='a' : (Array.isArray(who) && who.length ? who.slice().filter(Boolean).sort()[0]===ccMpId() : false);
   if(lead){
-    try{ MP.act('tworld', {by:ccMpId(), n:n, w:ccTeamWorldPack()}); }catch(e){}
+    let w=null;
+    try{ w=ccTeamWorldPack(); }catch(e){ w=null; }
+    if(w){
+      try{ CC_TW_LAST={n:n, s:JSON.stringify(w)}; }catch(e){ CC_TW_LAST=null; }   // снимок старта: дальше вечер меняет эти объекты
+      ccTeamWorldAskOn();
+      try{ MP.act('tworld', {by:ccMpId(), n:n, w:w}); }catch(e){}
+    }
     try{ ccWorldReset(); }catch(e){}   // и у хозяина мир собирается заново — одинаково со вторым
     ccMpMark('tw');
     return Promise.resolve(true);
   }
   return ccMpIdle(new Promise(function(res){
-    let done=false, off=null, t=null;
-    const finish=function(w){ if(done) return; done=true; if(off) off(); if(t) clearTimeout(t); if(w) ccTeamWorldApply(w); ccMpMark(w ? 'tw' : 'tw:none'); res(!!w); };
+    let done=false, off=null, t=null, ask=null;
+    const finish=function(w){ if(done) return; done=true; if(off) off(); if(t) clearTimeout(t); if(ask) clearInterval(ask); if(w) ccTeamWorldApply(w); ccMpMark(w ? 'tw' : 'tw:none'); res(!!w); };
     const fit=function(a){ return a && a.payload && a.payload.n===n && a.payload.w && a.payload.by!==ccMpId(); };
     let x; while((x=MP.take('tworld'))){ if(fit(x)){ finish(x.payload.w); return; } }
     off=MP.on('act', function(m){ if(m && m.kind==='tworld' && fit(m)){ if(MP.take) MP.take('tworld'); finish(m.payload.w); } });
+    // Книга не пришла (обрыв, медленный телефон): просим ведущего прислать её ещё раз, а не играем со своей.
+    ask=setInterval(function(){ try{ MP.act('tworld?', {by:ccMpId(), n:n}); }catch(e){} }, CC_TW_ASK_MS);
     t=setTimeout(function(){ finish(null); }, CC_RACE_WORLD_MS);
   }));
+}
+const CC_TW_ASK_MS=4000;
+let CC_TW_LAST=null, CC_TW_ASK_OFF=null;
+// Ведущий отвечает на повторный запрос книги тем же снимком, что ушёл на старте вечера.
+function ccTeamWorldAskOn(){
+  if(CC_TW_ASK_OFF || typeof MP==='undefined' || !MP.on) return;
+  CC_TW_ASK_OFF=MP.on('act', function(m){
+    if(!m || m.kind!=='tworld?' || !m.payload || m.payload.by===ccMpId()) return;
+    if(MP.take) MP.take('tworld?');
+    const last=CC_TW_LAST;
+    if(last && last.n===m.payload.n) try{ MP.act('tworld', {by:ccMpId(), n:last.n, w:JSON.parse(last.s)}); }catch(e){}
+  });
 }
 /* СТАРШЕГО НАЗЫВАЕТ СЕРВЕР. Он выбирался по СВОЕЙ таблице соседей (ccRaceNightRoom), а она у
    каждого своя и наполняется не одновременно: строка соседа могла ещё не доехать. Тогда один
@@ -124824,20 +124844,38 @@ function ccRaceWorldSync(n, who){
     lead=(keys[0]===hKey(me));
   }
   if(lead){
-    try{ MP.act('world', {by:ccMpId(), n:n, w:ccRaceWorldPack()}); }catch(e){}
+    let w=null;
+    try{ w=ccRaceWorldPack(); }catch(e){ w=null; }
+    if(w){
+      try{ CC_RW_LAST={n:n, s:JSON.stringify(w)}; }catch(e){ CC_RW_LAST=null; }
+      ccRaceWorldAskOn();
+      try{ MP.act('world', {by:ccMpId(), n:n, w:w}); }catch(e){}
+    }
     CC_RACE_WORLD_SEED=ccCareerSeed(); if(CAREER.career.race) CAREER.career.race.wseed=ccCareerSeed(); try{ ccWorldReset(); }catch(e){}   // и у старшего пул собирается заново — одинаково с ведомыми
     ccMpMark('world');   // метка одна у ведущего и ведомых: разная надпись читалась как место расхождения
     return Promise.resolve(true);
   }
   return ccMpIdle(new Promise(function(res){
-    let done=false, off=null, t=null;
-    const finish=function(w){ if(done) return; done=true; if(off) off(); if(t) clearTimeout(t); if(w) ccRaceWorldApply(w); ccMpMark(w ? 'world' : 'world:none'); res(!!w); };
+    let done=false, off=null, t=null, ask=null;
+    const finish=function(w){ if(done) return; done=true; if(off) off(); if(t) clearTimeout(t); if(ask) clearInterval(ask); if(w) ccRaceWorldApply(w); ccMpMark(w ? 'world' : 'world:none'); res(!!w); };
     const fit=function(a){ return a && a.payload && a.payload.n===n && a.payload.w; };
     // Уже в очереди: старший мог разослать раньше, чем мы дошли.
     let x; while((x=MP.take('world'))){ if(fit(x)){ finish(x.payload.w); return; } }
     off=MP.on('act', function(m){ if(m && m.kind==='world' && fit(m)){ if(MP.take) MP.take('world'); finish(m.payload.w); } });
+    // Не дошла: просим старшего повторить, а не собираем поле из своей книги.
+    ask=setInterval(function(){ try{ MP.act('world?', {by:ccMpId(), n:n}); }catch(e){} }, CC_TW_ASK_MS);
     t=setTimeout(function(){ finish(null); }, CC_RACE_WORLD_MS);
   }));
+}
+let CC_RW_LAST=null, CC_RW_ASK_OFF=null;
+function ccRaceWorldAskOn(){
+  if(CC_RW_ASK_OFF || typeof MP==='undefined' || !MP.on) return;
+  CC_RW_ASK_OFF=MP.on('act', function(m){
+    if(!m || m.kind!=='world?' || !m.payload || m.payload.by===ccMpId()) return;
+    if(MP.take) MP.take('world?');
+    const last=CC_RW_LAST;
+    if(last && last.n===m.payload.n) try{ MP.act('world', {by:ccMpId(), n:last.n, w:JSON.parse(last.s)}); }catch(e){}
+  });
 }
 /* ЛЮДЕЙ В ОТКРЫТЫХ ЭТАПАХ РАЗВОДИТ ЖРЕБИЙ. Вопрос: «почему они всегда в одной
    игре, в фортнайте же разные лобби играются». С 7.09 гонщики принудительно сажались в одно
@@ -138376,7 +138414,7 @@ function careerCupFieldRaw(cr, mine, size, salt, open, sharp){
       '.'+String(ccPoolRegion())+'.sh'+String(sharp||0)+'.o'+(open?1:0)+
       // Из чего сложен сид (careerSeed): разошёлся s — видно, что именно.
       '.c'+cr.season+'w'+((cr.seedWeek!=null) ? cr.seedWeek : careerWeek())+'d'+cr.division+'.e'+String(ccHashStr(String((typeof CC_MP_SEED!=='undefined' && CC_MP_SEED)||''))).slice(0,6)+
-      (ccRaceLock() ? '.L' : ''); }catch(e){ CC_MP_FIELD_FP='fp-err'; }
+      (ccRaceLock() ? '.L' : '')+'.z'+careerSquadSize()+(CC_MP_FMT_WHY ? ':'+CC_MP_FMT_WHY : ''); }catch(e){ CC_MP_FIELD_FP='fp-err'; }
   const cores=(per>2) ? allDuos.slice(0, need) : allDuos;
   const extras=[];
   /* Хвост очереди больше не разбираем на третьих. С тех пор как careerPools кладёт
@@ -169325,7 +169363,9 @@ function ccEventRosterBegin(fmt, picks){
   return sw;
 }
 function ccEventRosterBegin0(fmt, picks){
-  if(!fmt || fmt===1 || !CAREER || CC_EVENT_SIZE) return null;
+  CC_MP_FMT_WHY='';
+  if(!fmt || fmt===1 || !CAREER) return null;
+  if(CC_EVENT_SIZE){ CC_MP_FMT_WHY='held'+CC_EVENT_SIZE; return null; }
   if(typeof ccMpOn==='function' && ccMpOn()) return ccMpFmtBegin(fmt);
   if(typeof ccRacePairOn==='function' && ccRacePairOn()) return null;
   const base=careerSquadSize();
@@ -169370,12 +169410,15 @@ function ccEventRosterBegin0(fmt, picks){
 /* Выключено, пока поле не сходится у двоих: онлайн-прогон 2019 (22.10) — Trios Cash Cup 14.07 всё ещё 25 строк из 1593
    (свободные сводятся в пары по-разному). Разошедшийся вечер хуже, чем кап парами, как было. */
 const CC_MP_FMT_ON=true;
+let CC_MP_FMT_WHY='';   // почему добор другого формата не включился: едет в отпечатке поля
 function ccMpFmtBegin(fmt){
+  CC_MP_FMT_WHY='';
   if(!CC_MP_FMT_ON) return null;
   if(typeof ccRaceOn==='function' && ccRaceOn()) return null;
   /* Только кап КРУПНЕЕ состава года (трио/сквад в дуо-год) — о нём просили. Дуо-кап в трио-год онлайн по-прежнему
      играется составом года: своим форматом он разводил сгенерированные дуо лестницы (онлайн-прогон 2022, 22.10). */
-  if(fmt<=careerSquadSize() || typeof MP==='undefined' || !MP.peer) return null;
+  if(fmt<=careerSquadSize()) return null;
+  if(typeof MP==='undefined' || !MP.peer){ CC_MP_FMT_WHY='nopeer'; return null; }
   const cr=CAREER.career, need=fmt-CC_MP_HUMANS;
   if(need<0) return null;
   const shared=(Array.isArray(cr.mates) ? cr.mates : []).filter(Boolean).slice(0, need);

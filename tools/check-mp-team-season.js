@@ -138,7 +138,10 @@ const boot = (who) => `
         MP.on('start', function(m){ try{ CC_MP_TRACE('START n'+(m&&m.n)+' seed'+String(m&&m.seed).slice(-4)+' day '+CAREER.career.day); }catch(e){} });
         MP.on('digest', function(){ try{ CC_MP_TRACE('DIGEST from peer'); }catch(e){} }); }
       /* Кто сказал «врозь»: отправка 'apart'/'leave' и вход в ccMpSplitApart — со стеком и номером игры. */
-      { const ac0=MP.act; MP.act=function(kind, payload){ try{ if(kind==='apart'||kind==='leave'){ const k=CAREER.career.day+' SEND '+kind+' g'+CC_MP_GAME+' q'+CC_MP_CUR_Q+' '+String(new Error().stack).split(String.fromCharCode(10)).slice(2,7).map(s=>s.trim().replace(/^at /,'').split(' (')[0]).join('<'); if(out.notes.splits.length<20) out.notes.splits.push(k); } }catch(e){} return ac0.apply(MP, arguments); };
+      { const ac0=MP.act; MP.act=function(kind, payload){ try{ if(kind==='apart'||kind==='leave'){ const k=CAREER.career.day+' SEND '+kind+' g'+CC_MP_GAME+' q'+CC_MP_CUR_Q+' '+String(new Error().stack).split(String.fromCharCode(10)).slice(2,7).map(s=>s.trim().replace(/^at /,'').split(' (')[0]).join('<'); if(out.notes.splits.length<20) out.notes.splits.push(k); } }catch(e){}
+        // CC_DROP_TW=1: ведущий теряет каждую первую отправку книги мира (проверка повторного запроса)
+        if(${JSON.stringify(!!process.env.CC_DROP_TW)} && (kind==='tworld') && !(window.__twDrop=window.__twDrop||{})[payload && payload.n]){ window.__twDrop[payload && payload.n]=1; out.notes.twDropped=(out.notes.twDropped||0)+1; return; }
+        return ac0.apply(MP, arguments); };
         const sa0=ccMpSplitApart; ccMpSplitApart=function(fromPeer){ try{ CC_MP_TRACE('APART from'+(fromPeer?'peer':'me')+' g'+CC_MP_GAME+' leave'+(CC_MP_LEAVE?1:0)); }catch(e){} return sa0.apply(this, arguments); }; }
       { const ss0=ccMpSplitSeen; ccMpSplitSeen=function(n, detail){ try{ const k=CAREER.career.day+' split@'+n+' '+String(detail||'').slice(0,900)+' TR['+window.__tr.slice(-14).join(' | ')+'] LG['+(typeof CC_MP_LEDGER!=='undefined' ? CC_MP_LEDGER.slice(0,70).join(',') : '')+']'; if(out.notes.splits.indexOf(k)<0 && out.notes.splits.length<20) out.notes.splits.push(k); }catch(e){} return ss0.apply(this, arguments); }; }
       window.__ke={}; { const ep0=ccEventPR; ccEventPR=function(o, trueOf){ const r=ep0.apply(this, arguments);
@@ -277,12 +280,13 @@ function client(wsUrl){
 }
 const started=Date.now();
 const stamp=()=>Math.round((Date.now()-started)/60000)+'m';
+const WIDTHS=String(process.env.CC_WIDTHS||'').split(',').map(Number);   // CC_WIDTHS=1643,1920 — ширины окон A и B
 async function runOne(who, port){
   const dir=fs.mkdtempSync(path.join(os.tmpdir(), 'mpteam-'+who.nick+'-'));
   const page=path.join(dir, 'index.html');
   fs.writeFileSync(page, HEAD + src + boot(who));
   const chrome=spawn(CHROME, ['--headless=new', '--disable-gpu', '--no-sandbox', '--allow-file-access-from-files',
-    '--remote-debugging-port='+port, '--remote-allow-origins=*', '--user-data-dir='+path.join(dir, 'profile'), '--window-size=1440,900', 'about:blank'], {stdio:'ignore'});
+    '--remote-debugging-port='+port, '--remote-allow-origins=*', '--user-data-dir='+path.join(dir, 'profile'), '--window-size='+(WIDTHS[who.nick==='LiveB'?1:0]||1440)+',900', 'about:blank'], {stdio:'ignore'});
   const c=await client(await cdp(port));
   await c.send('Page.navigate', {url:'file:///' + page.split(SLASH).join('/')});
   const t0=Date.now(); let out=null, lastProg='', lastAt=0;
