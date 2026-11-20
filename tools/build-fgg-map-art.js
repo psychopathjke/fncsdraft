@@ -4,7 +4,7 @@
 //   пример: node tools/build-fgg-map-art.js 43 4 64 212 -68 -216 art/map-s43.jpg
 const fs=require('fs'), os=require('os'), path=require('path');
 const {execFileSync}=require('child_process');
-const CHROME='C:/Program Files/Google/Chrome/Application/chrome.exe';
+const CHROME = process.env.CHROME || 'C:/Program Files/Google/Chrome/Application/chrome.exe';
 const [map, zs, a, b, c, d, out, q, ref]=process.argv.slice(2);
 // ref — старая картинка того же выреза (без тумана): если задана, подложкой служит она, растянутая до нового размера.
 const z=+zs, per=256/Math.pow(2, z), pxu=256/per;              // пикселей на единицу

@@ -5,7 +5,7 @@
 const fs = require('fs'), os = require('os'), path = require('path');
 const { execFileSync } = require('child_process');
 const ROOT = path.resolve(__dirname, '..');
-const CHROME = 'C:/Program Files/Google/Chrome/Application/chrome.exe';
+const CHROME = process.env.CHROME || 'C:/Program Files/Google/Chrome/Application/chrome.exe';
 const YEAR = process.argv[2] || '2026', DIV = +(process.argv[3] || 1);
 const BOOT = `
 <pre id="__out" style="display:none"></pre>

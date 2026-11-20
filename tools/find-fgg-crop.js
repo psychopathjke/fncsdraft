@@ -4,7 +4,7 @@
 //   node tools/find-fgg-crop.js <map> <art.jpg>
 const fs=require('fs'), os=require('os'), path=require('path');
 const {execFileSync}=require('child_process');
-const CHROME='C:/Program Files/Google/Chrome/Application/chrome.exe';
+const CHROME = process.env.CHROME || 'C:/Program Files/Google/Chrome/Application/chrome.exe';
 const [map, art]=process.argv.slice(2);
 const dir=path.join(__dirname, 'fgg', 'tiles', map, '3'), tiles=[];
 for(let y=0;y<8;y++) for(let x=0;x<8;x++){ const f=path.join(dir, x+'_'+y+'.webp'); if(fs.existsSync(f)) tiles.push({x, y, src:'data:image/webp;base64,'+fs.readFileSync(f).toString('base64')}); }

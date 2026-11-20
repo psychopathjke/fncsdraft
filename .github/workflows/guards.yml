@@ -15,10 +15,11 @@ concurrency:
 jobs:
   guards:
     runs-on: ubuntu-latest
-    timeout-minutes: 75
+    timeout-minutes: 100
     env:
       CHROME: /usr/bin/google-chrome
       CC_HOST: ws://127.0.0.1:8787
+      GUARD_TIMEOUT: 2400
     steps:
       - uses: actions/checkout@v4
         with:

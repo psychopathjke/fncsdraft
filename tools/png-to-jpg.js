@@ -2,7 +2,7 @@
 //   node tools/png-to-jpg.js <in.png> <out.jpg> [quality=0.82]
 const fs = require('fs'), os = require('os'), path = require('path');
 const { execFileSync } = require('child_process');
-const CHROME = 'C:/Program Files/Google/Chrome/Application/chrome.exe';
+const CHROME = process.env.CHROME || 'C:/Program Files/Google/Chrome/Application/chrome.exe';
 const [inp, outp, q] = process.argv.slice(2);
 const b64 = fs.readFileSync(inp).toString('base64');
 const html = `<pre id="o"></pre><script>
