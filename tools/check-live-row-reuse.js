@@ -31,6 +31,7 @@ if (!CHROME) throw new Error('Chrome not found');
 const HEAD = `<script>
 window.__errs=[];
 window.addEventListener('error', e=>window.__errs.push(String(e.message)+' @'+e.lineno));
+window.addEventListener('unhandledrejection', e=>window.__errs.push('rej '+String(e.reason && (e.reason.stack||e.reason)).slice(0,400)));
 <\/script>`;
 
 const BOOT = `
@@ -84,6 +85,8 @@ const BOOT = `
       if(am && am.style.display==='flex'){
         const no=document.getElementById('ccAskNo');
         if(document.getElementById("ccAskYes") && document.getElementById("ccAskYes").textContent===L().ccSpotGateSet){ careerSpotEnsure(); document.getElementById("ccAskModal").style.display="none"; careerPlay(); return; } }
+      // Комната лута на своей точке ждёт руки: «в бой» с тем, что собрано.
+      const lr=document.querySelector('.cc-loot [data-a="go"]'); if(lr){ lr.click(); return; }
       const c0=document.querySelector('.cc-choice-btn'); if(c0){ c0.click(); return; }
       const p=document.querySelector('.landing-picker'); if(!p) return;
       const z=p.querySelectorAll('.land-zone'); if(!z.length) return;
@@ -107,6 +110,8 @@ const BOOT = `
     out.moves=batches;
     out.rows=document.querySelectorAll('#finalsLiveBody tr').length;
     out.games=games.size;
+    // Где встал вечер: открытые окна и заголовок — без этого «0 перестановок» ничего не говорит.
+    out.stuck=[...document.querySelectorAll("body *")].filter(e=>{ const cs=getComputedStyle(e); return cs.position==="fixed" && cs.display!=="none" && cs.visibility!=="hidden" && e.getBoundingClientRect().width>100; }).map(e=>(e.id||e.className)+":"+(e.textContent||"").replace(/s+/g," ").slice(0,90)).slice(0,5).join(" || ")+" · title "+String((document.getElementById("finalsLiveTitle")||{}).textContent||"-").slice(0,60)+" · games "+[...games].join(" | ").slice(0,200);
   }catch(e){ out.fail=String(e && e.stack || e); }
   out.errs=window.__errs;
   document.getElementById('__out').textContent='BEGIN'+encodeURIComponent(JSON.stringify(out))+'END';
@@ -129,6 +134,7 @@ if (out.fail) { console.error('FAILED: ' + out.fail); process.exit(1); }
 
 let bad = 0;
 const say = (ok, s) => { console.log((ok ? '  ok  ' : ' FAIL ') + s); if (!ok) bad++; };
+if(out.games<2) console.log('  встал: '+out.stuck+' · ошибки '+JSON.stringify(out.errs||[]).slice(0,600));
 console.log('  строк на экране ' + out.rows + ', игр под наблюдением ' + out.games +
             ', перестановок ' + out.moves + ', создано строк ' + out.created);
 say(out.moves >= 3, 'таблица переставлялась (' + out.moves + ' раз)');
