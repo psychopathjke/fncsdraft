@@ -101983,7 +101983,6 @@ function homeDraftInit(){
   panel.querySelectorAll('[data-art]').forEach(el=>{ if(!el.style.backgroundImage) el.style.backgroundImage='url('+el.dataset.art+')'; });
   if(document.getElementById('screen-drafts')) homeDraftScreen();
 }
-function homeDraftYear(){ /* полосы лет больше нет — все годы на экране драфта сразу */ }
 function homeOpenDraft(){
   homeDraftInit();
   if(!homeDraftScreen()) return;
@@ -104258,65 +104257,6 @@ function ccChestToggleHTML(){
   return '<button type="button" class="cc-chests-btn" onclick="ccChestsToggle()">'+(CC_CHESTS_ON ? L().landingChestsHide : L().landingChestsShow)+'</button>';
 }
 
-function zoneRatingColors(points){
-  if(points>=8) return {border:'#3ddc4a', bg:'rgba(61,220,74,.16)'};
-  if(points>=6) return {border:'#e8d84a', bg:'rgba(232,216,74,.16)'};
-  if(points>=4) return {border:'#ff9d33', bg:'rgba(255,157,51,.16)'};
-  return {border:'#ff4444', bg:'rgba(255,68,68,.16)'};
-}
-
-function showLandingPicker(){
-  const box=document.getElementById('locationPickerBox');
-  box.style.display='block';
-  const layer=document.getElementById('landingMarkersLayer');
-  layer.innerHTML='';
-  chosenLanding=null;
-  document.getElementById('goBtn').disabled=true;
-
-  // Randomly draw 3 zones this round — like other squads' bots have already
-  // scattered across the island. One of the 3 is already claimed (random),
-  // the other two are free to pick. No location names shown, only points.
-  const pool=[...ALL_LANDING_ZONES.keys()];
-  const picked=[];
-  while(picked.length<3 && pool.length){
-    const idx=Math.floor(Math.random()*pool.length);
-    picked.push(pool.splice(idx,1)[0]);
-  }
-  const takenSlot=Math.floor(Math.random()*picked.length);
-
-  picked.forEach((zoneIdx,slot)=>{
-    const z=ALL_LANDING_ZONES[zoneIdx];
-    const isTaken=slot===takenSlot;
-    const el=document.createElement('div');
-    el.className='land-zone'+(isTaken?' taken':'')+(z.mythic?' zp-myth-box':'');
-    el.style.borderColor='#00b090'; el.style.background='rgba(0,176,144,.10)'; el.style.boxShadow='0 0 10px 2px rgba(0,176,144,.5), inset 0 0 0 1px rgba(0,0,0,.5)';
-    el.style.left=z.x+'%'; el.style.top=z.y+'%';
-    el.style.width=z.w+'%'; el.style.height=z.h+'%';
-    el.style.zIndex=String(slot);
-    const label=document.createElement('div');
-    label.className='land-zone-label';
-    label.textContent=isTaken ? L().landingTaken.toUpperCase()+' · '+L().landingPoints(z.points) : L().landingPoints(z.points);
-    ccMythicMark(label, z);
-    el.appendChild(label);
-    ccChestBadge(el, z);
-    el.onclick=()=>{
-      layer.querySelectorAll('.land-zone').forEach(x=>x.classList.remove('chosen'));
-      el.classList.add('chosen');
-      el.style.zIndex='100';
-      chosenLanding={number:slot+1, points:z.points, contested:isTaken, zone:z};
-      document.getElementById('landingChosen').textContent = isTaken
-        ? L().landingChosenContested(slot+1, z.points)
-        : L().landingChosenPoints(slot+1, z.points);
-      renderSlots();
-      document.getElementById('goBtn').disabled=false;
-    };
-    layer.appendChild(el);
-  });
-
-  document.getElementById('landingChosen').textContent=L().landingHint;
-  ccChestsApply();
-}
-
 function rerollAll(){
   if(rerollsLeft<=0) return;
   if(roundPlayerPicked && roundWeaponPicked && roundHealPicked) return;
@@ -105680,36 +105620,6 @@ async function showVictoryRoyale(host, stageName, gameNum, gamesTotal, winner, m
   card.classList.remove('vr-in');
   await sleep(260);
   card.remove();
-}
-
-// Hold the finished stage on screen until the player says go on.
-//
-// The button that skipped the stage has nothing left to skip by the time this
-// is called, so it becomes the way out rather than a second control appearing
-// in the same corner. Its old handler is put back afterwards, because the next
-// stage will want it as a skip button again.
-//
-// A run the player has walked away from must never wait for a click that will
-// not come, so an abandoned run releases the wait the same way a click does —
-// what happens after is `sleep()`'s business, and it already rejects.
-function waitForContinue(){
-  const btn=document.getElementById('majorSkipBtn');
-  if(!btn) return Promise.resolve();
-  const gen=runGeneration, wasSkip=btn.onclick;
-  btn.disabled=false;
-  btn.innerHTML=L().continueBtn;
-  return new Promise(res=>{
-    let done=false;
-    const finish=()=>{
-      if(done) return;
-      done=true;
-      clearInterval(poll);
-      btn.onclick=wasSkip;
-      res();
-    };
-    btn.onclick=finish;
-    const poll=setInterval(()=>{ if(gen!==runGeneration) finish(); }, 200);
-  });
 }
 
 // A landing card gets appended below the standings and scrolled to once, but a
@@ -108749,13 +108659,6 @@ function landingWinChanceVs(you, rival){
   const b=Math.pow(Math.max(rival.pow,1), LANDING_POW_EXPONENT);
   return clamp(a/(a+b), 1-LANDING_ODDS_CAP, LANDING_ODDS_CAP);
 }
-function resolveLandingFight(you, rivals){
-  let survived=true;
-  for(const rival of rivals){
-    if(Math.random()>=landingWinChanceVs(you, rival)){ survived=false; break; }
-  }
-  return survived;
-}
 
 // Shown once at the start of the tournament — you pick your landing zone
 // on the map, same as everyone else. The actual scrap with whoever else
@@ -110928,36 +110831,6 @@ async function revealStandings(shell, ranked, you, cut, maxRows, qualifiedSet, p
   // in a career it is drawn where the caller says the tournament ended.
   if(winners===true || (winners===undefined && !CAREER_RUN))
     await renderWinnersPlate(shell, ranked[0], you);
-}
-
-function summitQualifiersHTML(main, scq, you){
-  const order=['EU','NAC','NAW','BR','ASIA','ME','OCE'];
-  const rowFor=(t, route)=>{
-    const mine = t===you;
-    const names=t.squad.map(p=>cardFlag(p,13)+p.handle).join(' & ');
-    const ovr=Math.round(t.squad.reduce((s,p)=>s+attrsFor(p).ovr,0)/t.squad.length);
-    return `<tr${mine?' style="background:rgba(0,176,144,.09);"':''}>
-      <td>${names}${mine?' <span style="color:var(--accent);font-size:10px;text-transform:uppercase;">· '+L().summitYouTag+'</span>':''}</td>
-      <td class="num" style="color:var(--ink-dim);">${ovr}</td>
-      <td style="color:var(--ink-dimmer);font-size:11px;white-space:nowrap;">${route}</td>
-    </tr>`;
-  };
-  let html='';
-  order.forEach(reg=>{
-    const m=main.filter(t=>t.summitRegion===reg || (t===you && ccHomeRegion()===reg));
-    const s=scq.filter(t=>t.summitRegion===reg);
-    if(!m.length && !s.length) return;
-    html+=`<div style="margin-top:14px;">
-      <div style="font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--accent);margin-bottom:4px;">
-        ${regionName(reg)} <span style="color:var(--ink-dimmer);font-weight:600;">${L().summitRegionCount(m.length, s.length)}</span>
-      </div>
-      <div class="lobby-wrap"><table class="lobby-table"><tbody>
-        ${m.map(t=>rowFor(t, L().summitRouteMain)).join('')}
-        ${s.map(t=>rowFor(t, L().summitRouteScq)).join('')}
-      </tbody></table></div>
-    </div>`;
-  });
-  return html;
 }
 
 async function runSecondChanceQualifier(you, regionRank){
@@ -113290,20 +113163,6 @@ function pickTeamChunk(remaining, size){
 // for one thing, one of them unreachable and the wrong one, is how somebody
 // ends up "fixing" the dead copy.
 
-function weightedOrder(teams){
-  let pool=teams.slice();
-  const order=[];
-  while(pool.length){
-    const total=pool.reduce((s,t)=>s+t.pow,0);
-    let r=Math.random()*total, idx=0;
-    for(;idx<pool.length;idx++){ r-=pool[idx].pow; if(r<=0) break; }
-    idx=Math.min(idx,pool.length-1);
-    order.push(pool[idx]);
-    pool.splice(idx,1);
-  }
-  return order;
-}
-
 // Weighted sampling without replacement — used to decide which teams get
 // drawn into this round's fights.
 function pickWeighted(pool, weightFn, count){
@@ -114178,8 +114037,6 @@ const CC_GAME_STOPS=[
   {zone:7, ask:(you, ui)=>ccAskMid(you, ui), room:(field, you)=>{ if(!CC_ZB) ccRoomMats(field, you); ccRoomHeal(field, you); }, quiet:ccMidQuiet},
   {zone:8, ask:(you, ui)=>ccAskLate(you, ui), room:ccRoomLate}
 ];
-// Молчаливая остановка: вопрос не задаётся, когда отвечать не на что.
-function ccMatsQuiet(t){ return !ccMatsLow(t); }
 /* РЫЧАГИ ИГРОКУ — отзыв: «хп не меняется, билды тоже не понятно
    от чего зависит, нужно дать контроль игроку».
 
@@ -122642,13 +122499,6 @@ function careerRaceNew(){
   CC_MP_NEW={role:'a', race:true};
   ccMpStartNew();
 }
-function careerRaceJoinNew(){
-  if(!CC_MP_OPEN) return;
-  ccCodeOpen(function(code){
-    CC_MP_NEW={role:'b', code:code, race:true};
-    ccMpStartNew();
-  });
-}
 function careerRaceLeave(){
   if(!CAREER || !CAREER.career) return;
   if(CAREER.career.race && CAREER.career.race.pair) try{ MP.act('unpair', {by:ccMpId(), to:CAREER.career.race.pair.id}); }catch(e){}
@@ -125149,11 +124999,6 @@ function openCareerHub(){
 }
 
 // Clicking the career tile picks up where you left off, or starts a new one.
-function ccSlotsFilled(){
-  let k=0;
-  for(let n=1; n<=CC_SLOTS; n++) if(ccSlotCard(n)) k++;
-  return k;
-}
 /* direct=true — слот уже выбран, спрашивать нечего: так входит «Продолжить»
    с плитки. Без этого выбор карьеры замыкался на себя: нажатие звало
    careerEntry, тот видел две карьеры и снова рисовал выбор. Отчёт: «подключился по коду, но зайти не могу, continue жму». */
@@ -126288,18 +126133,6 @@ function ccLobbyHTML(card, btn, next, when, strip, ex){
     '<div class="cc-lb-bottom">'+bottomBar+'</div></div>';
 }
 // Подпись сезона дня: Глава 1 — «SEASON 9 / SEASON X»; дальше — «CHAPTER N» и «SEASON M» (или имя: OG, Remix…).
-/* Расписание недели строками (Главы 1–4): день и турнир, как полоса дней прошлого «Центра». */
-function ccLobbySchedPanel(){
-  try{
-    const T=L(), ev=careerEvents(), mon=careerMonday(careerToday()), rows=[];
-    for(let d=0; d<7; d++){
-      const iso=ccAddDays(mon, d), on=ev.get(iso)||[];
-      rows.push('<div class="cc-lb-row'+(iso===careerToday() ? ' me' : '')+'"><span>'+esc(T.calDows[d])+' '+Number(iso.slice(8))+'</span>'+
-        '<b>'+esc(on.length ? (on[0].label||'')+(on.length>1 ? ' +'+(on.length-1) : '') : T.chDayFree)+'</b></div>');
-    }
-    return '<div class="cc-lb-panel cc-lb-schedp" onclick="careerTab(\'calendar\')"><h5>'+esc(T.chTabCalendar)+'</h5>'+rows.join('')+'</div>';
-  }catch(e){ return ''; }
-}
 /* Новости слева сверху, как карусель новостей в лобби Fortnite: пять свежих из ленты карьеры, листаются сами,
    точки снизу; нажатие открывает ленту. */
 let CC_LB_NEWS_T=null;
@@ -126468,13 +126301,6 @@ function ccLobbySeasonName(day){
 function ccLobbyWeek(){
   try{ return L().chWeek+' '+careerWeek()+'/'+ccYearWeeks(); }catch(e){ return ''; }
 }
-function ccLobbyWeekHTML(){
-  try{
-    const T=L(), ev=careerEvents(), mon=careerMonday(careerToday());
-    return '<div class="cc-lb-week">'+[0,1,2,3,4,5,6].map(d=>{ const iso=ccAddDays(mon, d), on=(ev.get(iso)||[]).length;
-      return '<span class="'+(iso===careerToday() ? 'today' : '')+(on ? ' ev' : '')+'"><em>'+esc(T.calDows[d])+'</em><b>'+Number(iso.slice(8))+'</b></span>'; }).join('')+'</div>';
-  }catch(e){ return ''; }
-}
 // Задания (цель клуба, месяца, своя) — как «Daily Challenges» / «Quests» той главы.
 function ccLobbyQuestsHTML(h){
   const T=L(), q=[];
@@ -126487,23 +126313,6 @@ function ccLobbyQuestsHTML(h){
   return '<div class="cc-lb-panel cc-lb-qs" onclick="careerTab(\'train\')">'+(h ? '<h5>'+esc(h)+'</h5>' : '<h5>'+esc(T.hgTitle)+'</h5>')+
     (q.length ? q.slice(0, 3).map(([t, ok])=>'<div class="cc-lb-q'+(ok ? ' ok' : '')+'"><i>'+(ok ? '✓' : '')+'</i>'+esc(t)+'</div>').join('')
       : '<div class="cc-lb-sub">'+esc(T.hgSet)+'</div>')+'</div>';
-}
-// Ресурсы сезона (Глава 2: Battle Stars, Bars…) — у карьеры: деньги, V-Bucks, подписчики, энергия.
-function ccLobbyResourcesHTML(s){
-  const T=L(), cr=CAREER.career;
-  const row=(k, v, go)=>'<div class="cc-lb-res"'+(go ? ' onclick="careerTab(\''+go+'\')"' : '')+'><em>'+esc(k)+'</em><b>'+v+'</b></div>';
-  let en=''; try{ en=row(T.ccRingEnergy, Math.round(careerEnergy())+' / '+careerEnergyMax(), 'train'); }catch(e){}
-  return '<div class="cc-lb-resh">'+esc(s)+' RESOURCES</div>'+row(T.ccBalance||'Balance', ccMoney(cr.balance||0), 'shop')+
-    en;   // V-Bucks и подписчики — лишние (Notion «19.10», скрин 29): V-Bucks и так в кошельке наверху.
-}
-// Что ждёт внимания из листа «Подробнее»: командная игра, гонка, интервью, сбор состава — строкой ALERT, как в лобби.
-function ccLobbyAlerts(){
-  const T=L(), out=[];
-  try{ if(typeof careerMpTileHTML==='function' && careerMpTileHTML()) out.push(T.lbAlertMp||'Team'); }catch(e){}
-  try{ if(typeof careerRaceTileHTML==='function' && careerRaceTileHTML()) out.push(T.lbAlertRace||'Race'); }catch(e){}
-  try{ if(typeof careerInterviewHTML==='function' && !CAREER.career.seasonOver && careerInterviewHTML()) out.push(T.lbAlertTalk||'Interview'); }catch(e){}
-  try{ if(typeof ccRosterSoonHTML==='function' && ccRosterSoonHTML()) out.push(T.lbAlertRoster||'Roster'); }catch(e){}
-  return out.join(' · ');
 }
 /* Фон лобби — настоящий фон главного меню того сезона (Fortnite Wiki, «Lobby Background», 1280 px, art/lobby/sNN.webp):
    Season 7 … Глава 7 Сезон 3, по номеру сезона дня (ccSeasonNumOn). Раньше 7-го — 7-й, позже 41-го — 41-й. */
@@ -126522,44 +126331,6 @@ function ccLobbyTopHTML(fam, note){
       '<button class="'+(k==='centre' ? 'on' : '')+'" onclick="careerTab(\''+k+'\')">'+html+'</button>').join('')+'</nav>'+(note ? '<div class="cc-lb-note">'+note+'</div>' : '')+
     '<div class="cc-lb-wallet"><span onclick="ccFnShopOpen()"><i class="cc-vb-ic"></i>'+ccNum(CAREER.vb||0)+'</span>'+
     '<span onclick="careerTab(\'shop\')">'+ccMoney(CAREER.career.balance||0)+'</span></div></div>';
-}
-function ccLobbyPanelsHTML(card, noQuests, noRoster){
-  const T=L(), pl=CAREER.player;
-  const panel=(h, body, go)=>'<div class="cc-lb-panel"'+(go ? ' onclick="careerTab(\''+go+'\')"' : '')+'><h5>'+esc(h)+'</h5>'+body+'</div>';
-  const bar=(lab, v, max)=>'<div class="cc-lb-bar"><em>'+esc(lab)+'</em><b>'+Math.round(v)+' / '+max+'</b>'+
-    '<u><s style="width:'+Math.max(0, Math.min(100, v/max*100))+'%"></s></u></div>';
-  // Ростер: ты и напарники с рейтингом; у основного напарника — сыгранность.
-  const me={handle:pl.nick||pl.handle||'', ovr:Math.round((card && (card._ovr||card.rating)) || pl.ovr || 0), me:true, pad:ccInputOf(pl)==='pad'};
-  const ros=[me].concat((careerMates()||[]).filter(Boolean).map(c=>({handle:c.handle, ovr:Math.round(c._ovr||c.rating||0), pad:ccProInput(c)==='pad'})));
-  let chem='';
-  try{ if(careerPartnerCard()) chem='<div class="cc-lb-sub">'+esc(T.ccChem)+' '+Math.min(100, Math.round(careerChemDays()/CC_CHEM_DAYS*100))+'%</div>'; }catch(e){}
-  const roster=panel(T.lfRosters, ros.map(r=>'<div class="cc-lb-row'+(r.me ? ' me' : '')+'"><b>'+ccInputIcon(r.pad ? 'pad' : 'kbm')+esc(r.handle)+'</b><i>'+r.ovr+'</i></div>').join('')+chem, 'me');
-  // Тренировка: энергия и настрой.
-  let train='';
-  try{
-    const mood=(careerMateRec() || (typeof ccMpTeam==='function' && ccMpTeam())) ? careerPatience() : null;
-    train=panel(T.chTabTrain, bar(T.ccRingEnergy, careerEnergy(), careerEnergyMax())+(mood!=null ? bar(T.ccRingMood, mood, 100) : ''), 'train');
-  }catch(e){}
-  return (noRoster ? '' : roster)+train;
-}
-/* Рейтинг с шестью характеристиками, неделя, клуб — то, что было на «Центре». */
-function ccLobbyRightHTML(card, noWeek, noClub){
-  const T=L(), cr=CAREER.career, out=[];
-  const panel=(h, body, go)=>'<div class="cc-lb-panel"'+(go ? ' onclick="careerTab(\''+go+'\')"' : '')+'><h5>'+esc(h)+'</h5>'+body+'</div>';
-  try{
-    const a=attrsFor(careerCard()) || {};
-    const ovr=Math.round((card && (card._ovr||card.rating)) || CAREER.player.ovr || 0);
-    out.push(panel(T.ccRoOvr ? T.ccRoOvr+' '+ovr : String(ovr), '<div class="cc-lb-attrs">'+['aim','end','sur','exp','clu','con'].map(k=>
-      '<span><em>'+esc(T[ATTR_LABEL[k]]||k.toUpperCase())+'</em><b>'+Math.round(a[k]||0)+'</b></span>').join('')+'</div>', 'train'));
-  }catch(e){}
-  if(!noWeek) out.push(panel(T.chTabCalendar, ccLobbyWeekHTML(), 'calendar'));
-  if(!noClub) try{
-    const org=CAREER.org;
-    out.push(panel(T.chTabClub, '<div class="cc-lb-row"><b>'+esc(org && org.name ? org.name : 'F/A')+'</b></div>'+
-      '<div class="cc-lb-row"><span>'+esc(T.chEarnings)+'</span><i>'+ccMoney(cr.earnings||0)+'</i></div>'+
-      '<div class="cc-lb-row"><span>'+esc(T.xFollowers)+'</span><i>'+esc(ccFollowers(careerReach()))+'</i></div>', 'club'));
-  }catch(e){}
-  return out.join('');
 }
 function careerCentreHTML(card, a){
   const cr=CAREER.career, pl=CAREER.player;
@@ -127060,42 +126831,6 @@ function ccCoachPickTake(id, months){
    worth more. It says the next tier's number when there is nothing on the
    table, because a follower count with no scale beside it is not information —
    the whole point of a stream day is knowing what it is buying. */
-/* Hired by the month to grow the audience, so he stands beside the coach
-   rather than inside the sponsor's panel. */
-function careerSmmTileHTML(){
-  const m=ccSmm();
-  if(m) return `<div class="ch-tile">
-    <h4>${L().ccSmm}</h4>
-    <div class="ch-orghead">${m.photo
-      ? `<img class="ch-coach-av" src="${PHOTO_DIR}${esc(m.photo)}" alt="" onerror="this.remove()">` : ''}
-      <b>${esc(m.name)}</b>${m.at ? `<em class="ch-agent-at">@${esc(m.at)}</em>`
-        : m.org ? `<em class="ch-agent-at">${esc(m.org)}</em>` : ''}</div>
-    <!-- What the month has actually brought, and the percentage beside it as
-         the term it is. A number a player can check is the whole point: the
-         tile used to print a rate and nothing that had happened. -->
-    <div class="ch-row"><em>${L().ccSmmGain}</em><b class="ch-goal-met">+${
-      ccNum(ccSmmGot())} · +${Math.round(ccSmmBoost()*100)}%</b></div>
-    <div class="ch-row"><em>${L().ccWage}</em><b>${
-      ccNum((m.cost||CC_SMM_FROM))}${L().ccPerSeason}</b></div>
-    <div class="ch-row"><em>${L().ccCoachUntil}</em><b>${ccDayLabel(m.until)}</b></div>
-    <button class="ch-swap" onclick="ccSmmPickOpen()">${L().ccSmmChange}</button>
-    <button class="ch-swap" onclick="careerEndSmm()">${L().ccAgentEnd}</button>
-  </div>`;
-  const can=(CAREER.career.balance||0)>=CC_SMM_FROM;
-  /* Кнопка, которая не работает и не говорит почему, читается как поломка —
-     Игрок так и написал: «кнопка нанять смм тоже не работает».
-     Она была просто выключена по деньгам, молча. Теперь под ней написано,
-     сколько нужно. */
-  return `<div class="ch-tile">
-    <h4>${L().ccSmm}</h4>
-    <div class="ch-hint">${L().ccSmmHint}</div>
-    <div class="ch-empty">${L().ccSmmNone}</div>
-    <!-- Голубая, как «посмотреть маркетологов» в соседней плитке: отзыв,
-         30 августа, «в social сделай так же как у других кнопка» — жёлтая
-         «нанять» выбивалась из ряда плиток. -->
-    <button class="ch-swap" onclick="ccSmmPickOpen()">${L().ccSmmHire}</button>
-  </div>`;
-}
 function careerMktTileHTML(){
   const on=ccMkt(), have=ccSponsor(), offer=ccSponsorOffer();
   const reach=careerReach();
@@ -127583,23 +127318,6 @@ function ccRostersTileHTML(){
     return `<div class="ch-row"><em>${names[s]}${s===now?' · '+L().lfRosterNow:''} · ${who.length+1}/${s}</em><b>${esc([me].concat(who).join(', '))}${btn}</b></div>`;
   });
   return `<div class="ch-tile"><h4>${L().lfRosters}</h4><div class="ch-hint">${L().lfRostersHint}</div>${rows.join('')}</div>`;
-}
-// Контракт и цель клуба на сезон.
-function ccContractTileHTML(){
-  const org=CAREER && CAREER.org, cr=CAREER.career;
-  if(!org) return `<div class="ch-tile"><h4>${L().lfContract}</h4><div class="ch-empty">${L().lfNoOrg}</div></div>`;
-  const rows=[];
-  rows.push(`<div class="ch-row"><em>${L().chOrg||'Club'}</em><b>${esc(org.name)}</b></div>`);
-  if(org.salary) rows.push(`<div class="ch-row"><em>${L().lfSalary}</em><b>${ccMoney(org.salary)}</b></div>`);
-  if(org.cut!=null) rows.push(`<div class="ch-row"><em>${L().lfCut}</em><b>${Math.round(org.cut*100)}%</b></div>`);
-  if(org.goal){
-    const met=careerOrgGoalMet();
-    rows.push(`<div class="ch-row"><em>${L().lfGoal}</em><b class="${met?'ch-goal-met':''}">${esc(careerOrgGoalText(org.goal))} · ${met?L().lfGoalMet:L().lfGoalOpen}</b></div>`);
-  }
-  if(!org.own && typeof careerBuyoutCost==='function' && careerBuyoutCost()) rows.push(`<div class="ch-row"><em>${L().lfBuyout}</em><b>${ccMoney(careerBuyoutCost())}</b></div>`);
-  if(org.since) rows.push(`<div class="ch-row"><em>${L().lfSince}</em><b>${org.since}</b></div>`);
-  if(org.paid) rows.push(`<div class="ch-row"><em>${L().lfPaid}</em><b>${ccMoney(org.paid)}</b></div>`);
-  return `<div class="ch-tile"><h4>${L().lfContract}</h4>${rows.join('')}</div>`;
 }
 // Доходы карьеры по статьям.
 function ccIncomeTileHTML(){
@@ -128268,7 +127986,6 @@ function careerSpotShown(){
   const sets=careerSpotSets();
   return (CC_SPOT_SET && sets.some(s=>s.key===CC_SPOT_SET)) ? CC_SPOT_SET : sets[0].key;
 }
-function careerSpotTab(key){ CC_SPOT_SET=key; CC_SPOT_PEEK=null; careerRenderHub(CH_TAB); }
 // Открыть карту нужного острова прямо с его прямоугольника — и вернуться в
 // плитку, как только лока выбрана (careerSpotChoose закрывает карту сам).
 function careerSpotOpenFor(key){
@@ -134752,33 +134469,6 @@ function ccEuCards(){
 // the room's average rating to 70, which is Division 3, and a Division 1 that
 // reads as Division 3 is not a division.
 const CC_D1_FLOOR=75;
-// The same two readers, told which cards count by a question rather than by a
-// pattern on the event's name: "everything this year" is not a regex, because
-// half these events do not carry a year in their title.
-function ccPeopleWhere(ok){
-  const m=new Map();
-  ccEuCards().forEach(c=>{
-    if(!ok(c)) return;
-    const cur=m.get(c._k);
-    if(!cur || c._ovr>cur._ovr) m.set(c._k, c);
-  });
-  return m;
-}
-function ccDuosWhere(ok, people){
-  const seen=new Map();
-  ccEuCards().forEach(c=>{
-    if(!ok(c)) return;
-    rosterEntriesOf(c).forEach(({entry})=>{
-      if(entry.duo.length!==2) return;
-      const keys=entry.duo.map(h=>hKey(h)).sort(), id=keys.join('|');
-      if(seen.has(id)) return;
-      const a=people.get(keys[0]), b=people.get(keys[1]);
-      if(!a || !b) return;
-      seen.set(id, {cards:[a, b], avg:(a._ovr+b._ovr)/2});
-    });
-  });
-  return [...seen.values()];
-}
 function ccPeopleOf(re){
   const m=new Map();
   ccEuCards().forEach(c=>{
@@ -138619,7 +138309,6 @@ function careerClubAsk(id){
   careerClubOffer(id, el ? el.value : 0, CC_CLUB_PERKS[id]);
   careerRenderHub('shop');
 }
-function careerClubIn(id){ if(careerClubSign(id)) careerRenderHub('shop'); }
 function careerClubOut(id){ if(careerClubDrop(id)) careerRenderHub('shop'); }
 function careerClubLet(id){ if(careerClubRelease(id)) careerRenderHub('shop'); }
 function careerClubNo(id){ if(careerClubRefuse(id)) careerRenderHub('shop'); }
@@ -139835,11 +139524,6 @@ function ccMktOf(id){ return CC_MARKETING.find(m=>m.id===id) || null; }
    what the smallest of them asks when nothing has been read yet. */
 const CC_MKT_BASE=600;
 const CC_MKT_X_FLOOR=250, CC_MKT_X_TOP=3500;
-function ccMktPull(x){
-  if(!(x>0)) return null;
-  const lo=Math.log(CC_MKT_X_FLOOR), hi=Math.log(CC_MKT_X_TOP);
-  return clamp((Math.log(x)-lo)/(hi-lo), 0, 1);
-}
 function ccMktTermsOf(m){
   const k=ccRankPull(CC_MARKETING, m);
   // Цена — та же кривая штаба, $250…3 000 (17.10, его «а другой стафф»); без места в списке — CC_MKT_BASE.
@@ -141873,7 +141557,6 @@ function ccHireCards(){
   CC_HIRE_MEMO={key, cards};
   return cards;
 }
-function ccHireCard(){ return ccHireCards()[0]||null; }
 // Ключи нанятых сегодня — их команды в мире не пересобираются (ccTrioRefill): наём на один кап, а не переход.
 function ccHireKeys(){ return new Set(ccHireActive() ? ccHireList().map(x=>hKey(x.handle)) : []); }
 function ccHireOvr(c){ return Math.round(c ? (c._ovr!=null ? c._ovr : ((attrsFor(c)||{}).ovr||c.rating||0)) : 0); }
@@ -143726,18 +143409,6 @@ function careerRoadmapTick(){
   const gone=new Set(news.filter(n=>n && (n.k==='ccNewsRoadmap' || n.k==='ccNewsStaffRenew')).map(n=>n.id));
   if(gone.size) cr.news=news.filter(n=>!(n && (gone.has(n.id) || (n.q && gone.has(n.q)))));
   return false;
-}
-function careerRoadmapTickOld(){
-  const cr=CAREER && CAREER.career; if(!cr) return false;
-  const key='roadmap|'+(cr.season||1);
-  cr.told=cr.told||{};
-  if(cr.told[key]) return false;
-  cr.told[key]=1;
-  const year=ccSeasonYear();
-  // Только год: строки расписания словарь строит при показе, на текущем языке.
-  careerNews('good', 'ccNewsRoadmap', [year], {art:'major'});
-  ccAnnounceReact((cr.news||[])[0]);
-  return true;
 }
 // Двое из комнаты отвечают анонсу цитатой — так это выглядит в ленте.
 function ccAnnounceReact(top){
@@ -148402,10 +148073,6 @@ function ccDuoFindRender(keepFocus){
     if(f){ f.focus(); f.setSelectionRange(f.value.length, f.value.length); }
   }
 }
-function careerFindDuo(){
-  CH_SOCIAL='dms';
-  careerTab('social');
-}
 /* «Открыть соцсети» под новостью ведёт в ЛЕНТУ. Отчёт: «когда
    жму open socials на dms меня возвращает, а не feed» — экран открывался там,
    где его оставили в прошлый раз, или на личке, если там непрочитанное
@@ -149009,17 +148676,6 @@ function ccTrainPlanHTML(){
     '<div class="tp-col"><h4>'+esc(L().lfGoalH)+'</h4><div class="ch-hint">'+esc(L().lfGoalHint)+'</div>'+goal+'</div></div></details>';
 }
 let CC_TP_OPEN=false;
-// Карточка-переход в Центре на месте тренировок: итог недели и кнопка.
-function ccTrainPromoHTML(six){
-  const lf=(typeof ccLife==='function') ? ccLife() : {};
-  const tw=(lf.tw && lf.tw.wk===ccWeekTag()) ? lf.tw.g : {};
-  const wk=Object.keys(tw).reduce((s,k)=>s+(tw[k]||0), 0);
-  const best=ATTR_KEYS.slice().sort((x,y)=>(six[x]||0)-(six[y]||0))[0];
-  return '<button class="cc-train-promo" onclick="careerTab(\'train\')">'+
-    '<i class="cc-tp-ico">🎯</i><span class="cc-tp-txt"><b>'+esc(L().lfTrainTitle)+'</b>'+
-    '<em>'+esc(L().lfTrainPromo(wk ? '+'+(Math.round(wk*10)/10).toFixed(1) : '0', ccAttrFull(best)))+'</em></span>'+
-    '<span class="cc-tp-go">'+esc(L().lfTrainOpen)+' →</span></button>';
-}
 // The day only moves once it has been spent. A day nobody decided may as well
 // not be in the calendar, so there is no button to leave one undecided.
 /* Division 1 Weekly Final played in weeks the player isn't in it, so the feed shows the scene.
@@ -151150,21 +150806,11 @@ let CH_FLAT_PLACE=null;
 // One answer now: the place the career lives. The browser that let this differ
 // is gone — правило, 20 August: где живёшь, там квартира.
 function ccFlatPlace(){ return ccPlaceNow(); }
-function careerFlatPlacePick(code){
-  CH_FLAT_PLACE=code||null;
-  careerRenderHub('shop');
-}
 // Everywhere a career can hold a lease: the countries of the map, then the
 // regions, each with the month it asks for. Cheapest first, because the list is
 // read to find somewhere affordable.
 function ccPlaceName(code){
   return CC_REGION_RENT.hasOwnProperty(code) ? regionName(code) : (ccCountryName(code)||code);
-}
-function ccFlatPlaces(){
-  const out=Object.keys(CC_RENT).map(c=>({code:c, name:ccCountryName(c), rent:CC_RENT[c], region:false}));
-  Object.keys(CC_REGION_RENT).forEach(r=>
-    out.push({code:r, name:regionName(r), rent:CC_REGION_RENT[r], region:true}));
-  return out.sort((a,b)=>a.rent-b.rent || a.name.localeCompare(b.name));
 }
 // Охват за объявленный фонд: фонд/20 подписчиков (через СММ, как любой охват). Трата, а не вклад.
 const CC_OWN_CUP_REACH=1/20;
@@ -153704,25 +153350,6 @@ function careerNightSpotKey(next){
 
    Показывается ровно один — дом того острова, на котором играется ЭТОТ вечер;
    если дома на нём нет, блока нет вовсе, и это тоже сообщение. */
-/* РАЗВЕДКА перед вечером: кто фавориты сцены региона (сильнейшие карточки года, без тебя и
-   твоего состава), кто в форме (верх Power Ranking карьеры) и где ты сам — топ скольких
-   процентов сцены по рейтингу. Всё из того, что карьера уже знает; сворачивается. */
-function ccScoutHTML(next){
-  if(!next || next.type==='free') return '';
-  let scene=[]; try{ scene=ccSceneRoster(ccCareerRegion()); }catch(e){ return ''; }
-  if(!scene.length) return '';
-  const mine=new Set([hKey(CAREER.player.handle||CAREER.player.nick||'')].concat(careerMates().map(c=>hKey(c))));
-  const others=scene.filter(c=>!mine.has(hKey(c))).slice().sort((a,b)=>ccCardOvr(b)-ccCardOvr(a));
-  const fav=others.slice(0,5).map(c=>'<li><span>'+esc(c.handle)+ccTraitTag(c.handle)+'</span><b>'+Math.round(ccCardOvr(c))+'</b></li>').join('');
-  const me=(typeof ccMyShownOvr==='function') ? ccMyShownOvr() : (CAREER.player.ovr||0);
-  const above=others.filter(c=>ccCardOvr(c)>me).length;
-  const top=Math.max(1, Math.round((above+1)/(others.length+1)*100));
-  let form='';
-  try{ form=careerPrRows().filter(r=>!r.you).slice(0,3).map(r=>esc(r.name)).join(', '); }catch(e){}
-  return '<details class="scout"><summary>'+L().lfScout+' · '+L().lfScoutYou(top)+'</summary>'+
-    '<div class="scout-cols"><div><em>'+L().lfScoutFav+'</em><ol>'+fav+'</ol></div>'+
-    (form ? '<div><em>'+L().lfScoutForm+'</em><p>'+form+'</p></div>' : '')+'</div></details>';
-}
 function careerNightSpotHTML(next){
   const set=careerNightSet(next);
   // Соло-вечер в команде — личная соло-метка, а не дуо-дом сезона. См. careerNightSpotKey.
@@ -168033,7 +167660,6 @@ function ccNatGeoZone(nat){
   });
   return best ? ccNatZone(best) : null;
 }
-function ccNatZoneName(z){ return z==='NA' ? L().ccNatZoneNA : regionName(z); }
 let CC_NAT_BOOK=null;
 /* Книга сборных — раз на сезон и мир: страна → её люди по силе, зона, четвёрка. */
 function ccNationsBook(){
@@ -170521,7 +170147,6 @@ function mgrGuestNight(row){
       text:ru ? who+' меняет напарника после трёх слабых вечеров: '+gone.join(', ')+' → '+now : ({fr:()=>(who+' change de coéquipier après trois mauvaises soirées : '+gone.join(', ')+' → '+now), it:()=>(who+' cambia compagno dopo tre serate deboli: '+gone.join(', ')+' → '+now), pt:()=>(who+' troca de parceiro após três noites fracas: '+gone.join(', ')+' → '+now), de:()=>(who+' wechselt den Mitspieler nach drei schwachen Abenden: '+gone.join(', ')+' → '+now), es:()=>(who+' cambia de compañero tras tres noches flojas: '+gone.join(', ')+' → '+now)}[LANG]||(()=>(who+' changes teammate after three weak nights: '+gone.join(', ')+' → '+now)))()});
   });
 }
-function mgrGuestRemove(teamId, h){ const t=MGR.teams.find(x=>x.id===teamId); if(t){ t.guests=(t.guests||[]).filter(x=>hKey(x)!==hKey(h)); mgrSave(); } }
 function mgrEvents(){
   const cr=CAREER.career, from=cr.day, to=ccYearTo();
   // Формат сезона — всегда: неполный состав не отменяет турниры (раньше убрал игрока — «сезон закончен»).
@@ -170997,27 +170622,7 @@ function mgrTeamStaffOpen(teamId, k){
   el.hidden=false;
 }
 function mgrTeamStaffPick(teamId, k, id){ mgrTeamStaffSet(teamId, k, id||null); mgrSheetClose(); mgrRenderHub(); }
-function mgrTeamCoachHTMLOld(t){
-  const T9=mgrT9(), cur=mgrTeamCoach(t.id), c=cur ? CC_COACHES.find(x=>x.id===cur) : null;
-  return '<div class="mgs-coach">'+(c ? '<img src="photos/'+esc(c.photo||'')+'" alt="" onerror="this.style.visibility=\'hidden\'"><b>'+esc(c.name)+'</b><small>'+esc([c.reg, mgrT4().tier(mgrPersonTier('coach', c)), mgrMoney(mgrPersonCost('coach', c))].filter(Boolean).join(' · '))+'</small>'
-      : '<b>'+esc(T9.teamCoach)+'</b><small>'+esc(T9.noCoach)+'</small>')+
-    '<button class="hg-go mgs-coach-btn" onclick="mgrTeamCoachOpen(\''+esc(t.id)+'\')">'+esc(c ? T9.coachChange : T9.coachPick)+'</button></div>';
-}
 function mgrTeamCoachOpen(teamId){ return mgrTeamStaffOpen(teamId, 'coach'); }
-function mgrTeamCoachOpenOld(teamId){
-  const T4=mgrT4(), T9=mgrT9(), cur=mgrTeamCoach(teamId);
-  const busy=new Set(Object.keys(MGR.teamCoach||{}).filter(k=>k!==teamId).map(k=>MGR.teamCoach[k]).concat([(MGR.staffWho||{}).coach]));
-  const cards=CC_COACHES.filter(x=>!busy.has(x.id)).map(p=>{ const on=p.id===cur;
-    return '<div class="mgf-person'+(on ? ' on' : '')+'"><img src="photos/'+esc(p.photo||'')+'" alt="" loading="lazy" onerror="this.style.visibility=\'hidden\'">'+
-      '<span><b>'+esc(p.name)+'</b><small>'+esc(['@'+(p.at||''), p.reg].filter(Boolean).join(' · '))+'</small>'+
-      '<small>'+esc(T4.tier(mgrPersonTier('coach', p)))+' · '+mgrMoney(mgrPersonCost('coach', p))+' '+esc(mgrT().month)+'</small></span>'+
-      (on ? '<button class="hg-go mgs-bad" onclick="mgrTeamCoachPick(\''+esc(teamId)+'\', \'\')">'+esc(T4.fire)+'</button>'
-          : '<button class="hg-go" onclick="mgrTeamCoachPick(\''+esc(teamId)+'\', \''+esc(p.id)+'\')">'+esc(T9.hire)+'</button>')+'</div>'; }).join('');
-  const el=document.getElementById('mgSheet');
-  el.innerHTML='<div class="ch-tile mgs-in mgs-wide"><h4>'+esc(T9.teamCoach)+'</h4><button class="mgs-x" onclick="mgrSheetClose()">✕</button><div class="mgf-people">'+cards+'</div></div>';
-  el.hidden=false;
-}
-function mgrTeamCoachPick(teamId, id){ mgrTeamCoachSet(teamId, id||null); mgrSheetClose(); mgrRenderHub(); }
 // Клуб гостя — по той же сцене, из которой его выбрали (у карточки года клуб может быть другим).
 function mgrGuestOrg(h, t){ if(t && t.gorg && hKey(h) in t.gorg) return t.gorg[hKey(h)]; let c=null; try{ c=(ccSceneRoster(MGR.region)||[]).find(x=>hKey(x)===hKey(h)); }catch(e){} return mgrOrgOf(c||mgrCard(h)); }
 function mgrGuestTileHTML(t, g){
@@ -173258,7 +172863,6 @@ function mgrChem(cards){
   const hot=cards.filter(h=>mgrTrait(h)==='hothead').length;
   return n ? Math.max(0, Math.round(s/n)-2*hot) : 0;
 }
-function mgrChemPow(cards){ return mgrChem(cards)/5; }   // 10 химии = +2 силы
 /* ЛИЧНЫЙ ТРЕНЕР СОСТАВА (его слово 7.10: «для каждого состава личный тренер»): у каждой команды клуба
    может быть свой коуч из настоящих (CC_COACHES); один человек ведёт один состав и не совмещает
    с главным тренером. Его уровень (mgrPersonTier) — рост игроков состава вместо главного; его химия
@@ -174198,18 +173802,6 @@ async function mgrWatchWorld(key){
   mgrSave();
 }
 function mgrAfterWatch(){ MGR_SUB.tables='events'; mgrOpenHub(); mgrRenderHub('tables'); try{ window.scrollTo(0, 0); }catch(e){} }
-// Плитка Центра: ближайшие капы мира — любой можно смотреть или просимулировать; свои — матчевым днём.
-function mgrWorldTileHTML(){
-  const W=mgrTW(), T9=mgrT9(), today=CAREER.career.day, evs=mgrEvents();
-  const club=new Set(evs.map(e=>e.id+'|'+e.day)), nx=evs[0];
-  const list=mgrWorldEvents(today, ccYearTo()).filter(e=>!mgrWorldDone(e)).slice(0, 8);
-  const rows=list.map(e=>{ const k=e.id+'|'+e.day, mine=club.has(k), kq=esc(k.replace(/'/g, ''));
-    return '<div class="mgw-row'+(mine ? ' mine' : '')+'"><span class="mgw-ri"><em>'+esc(ccDayLabel(e.day))+'</em><b>'+esc(e.name)+'</b><small>'+esc(W.fmt[e.mode]||e.mode)+(mine ? ' · '+esc(W.club) : '')+'</small></span>'+
-      (mine ? (nx && nx.id===e.id && nx.day===e.day ? '<button class="cc-back mgw-btn go" onclick="mgrPlay()">'+esc(W.play)+'</button>' : '')
-            : '<button class="cc-back mgw-btn" onclick="mgrWatchWorld(\''+kq+'\')">👁 '+esc(W.watch)+'</button><button class="cc-back mgw-btn" onclick="mgrSimWorld(\''+kq+'\')">⏩ '+esc(W.sim)+'</button>')+'</div>'; }).join('');
-  return '<div class="ch-tile mgc-cal mgw-tile"><h4>'+esc(W.h)+'</h4>'+(rows || '<div class="ch-empty">'+esc(W.none)+'</div>')+
-    '<button class="hg-go" onclick="MGR_MONTH=null;mgrRenderHub(\'calendar\')">'+esc(T9.toCal)+'</button></div>';
-}
 function mgrScreenReset(){
   skipAnimation=false; CC_SKIP_RUN=false; try{ CC_SKIP_ALL=false; }catch(e){}
   resetRunRecord();
@@ -175292,14 +174884,6 @@ function ccNightStamp(){
     return;
   }
 }
-// Средняя оценка сезона и число MVP — для профиля и для клубов.
-function ccSeasonRating(season){
-  const cr=CAREER && CAREER.career; if(!cr) return null;
-  const s=season==null ? cr.season : season;
-  const r=(cr.log||[]).filter(e=>e.season===s && e.rating!=null);
-  if(!r.length) return null;
-  return {avg:Math.round(10*r.reduce((a,e)=>a+e.rating,0)/r.length)/10, n:r.length, mvp:r.filter(e=>e.mvpYou).length};
-}
 // Строка оценки вечера для карточки итога (CC_NIGHT_RATE или уже приклеенная — CC_NIGHT_SHOWN).
 let CC_NIGHT_SHOWN=null;
 function ccNightRateLine(){
@@ -175646,7 +175230,6 @@ function ccPrTable(log){
   return {pr: Math.round(rows.reduce((s,r)=>s+r.pr,0)),
           counted:counted, by:by, of:rows.length};
 }
-function careerPR(){ return ccPrTable(CAREER.career.log||[]).pr; }
 
 /* Career timeline. The feed keeps only 40 posts, so milestones need a permanent home.
    It's the save's own history, not the card's (real tournaments of a taken card show on the creation screen).
@@ -176850,27 +176433,6 @@ function ccDropRec(t, place, total){
   const d=lf.drops||(lf.drops={}), k=set+'|'+z.x+','+z.y;
   const r=d[k]||(d[k]={n:0, pct:0, w:0});
   r.n++; r.pct+=total>1 ? 1-(place-1)/(total-1) : 1; if(place===1) r.w++;
-}
-function ccMyDropsHTML(){   // не ccDropMapHTML: то имя — у вырезки карты под постом, это перекрывало её (скрин 28.09)
-  const d=(CAREER.career.life||{}).drops; if(!d) return '';
-  const bySet={}; Object.keys(d).forEach(k=>{ const s=k.split('|')[0]; bySet[s]=(bySet[s]||0)+d[k].n; });
-  const set=Object.keys(bySet).sort((a,b)=>bySet[b]-bySet[a])[0];
-  if(!set || !MAP_ART[set] || !ZONE_SETS[set]) return '';
-  const zones=ZONE_SETS[set], rows=[];
-  Object.keys(d).forEach(k=>{ const [s, xy]=k.split('|'); if(s!==set) return;
-    const z=zones.find(q=>q.x+','+q.y===xy); if(z) rows.push({z, r:d[k], num:zones.indexOf(z)+1}); });
-  if(!rows.length) return '';
-  const max=Math.max(...rows.map(o=>o.r.n));
-  const dots=rows.map(o=>{ const avg=o.r.pct/o.r.n, size=14+Math.round(22*o.r.n/max);
-    const col=avg>=0.66 ? '#00d6a4' : avg>=0.4 ? '#ffdd00' : '#ff5f56';
-    return '<i class="dm-dot" style="left:'+(o.z.x+o.z.w/2)+'%;top:'+(o.z.y+o.z.h/2)+'%;width:'+size+'px;height:'+size+'px;background:'+col+'" title="'+
-      esc(L().lfDropTip(o.num, o.r.n, Math.round(avg*100), o.r.w))+'">'+o.r.n+'</i>'; }).join('');
-  const top=rows.slice().sort((a,b)=>b.r.n-a.r.n).slice(0,3).map(o=>'<li><b>#'+o.num+'</b><span>'+
-    esc(L().lfDropTip(o.num, o.r.n, Math.round(o.r.pct/o.r.n*100), o.r.w))+'</span></li>').join('');
-  const lbl=(MAP_CHOICES.find(m=>m.key===set)||{}).label||set;
-  return '<div class="ch-tile"><h4>'+esc(L().lfDropH)+'</h4><div class="ch-hint">'+esc(lbl)+' · '+esc(L().lfDropHint)+'</div>'+
-    '<div class="dm-map" style="aspect-ratio:'+MAP_ASPECT[set].replace('/', ' / ')+'"><img src="'+MAP_ART[set]+'" alt="">'+dots+'</div>'+
-    '<ol class="dm-top">'+top+'</ol></div>';
 }
 /* ПРОФИЛЬ (30.10, его «карьера/компетитив/профиль, в профиле подробная статистика карьер, драфт дейли, ачивки»).
    Третья вкладка шапки. Всё с этого устройства, без входа: слоты карьер (LS_SLOT 1..CC_SLOTS), драфт дня (fd_daily,
@@ -178123,7 +177685,6 @@ function ccStreamCupWhy(){
   if(careerEnergy()<CC_STREAM_CUP.energy) return T.ccStreamNeed(CC_STREAM_CUP.energy, careerEnergy());
   return null;
 }
-function ccStreamCupCan(){ return !ccStreamCupWhy(); }
 async function careerPlayLive(){
   if(CC_STREAM_LIVE || ccStreamCupWhy()) return false;
   const cr=CAREER.career, next=careerNext(), day=careerToday();
