@@ -84984,7 +84984,6 @@ var CC_HANDLE_FOLD=[];
     const set=String(p.cardSet||'');
     const reg=String(p.region||''), h=String(p.handle||'');
     if(set===ODD) return;
-    held.add(reg+'|'+h.toLowerCase()+'|'+p.event+'|'+p.placement);
     if(!set) return;
     elsewhere.add(reg+'|'+h.toLowerCase());
     const k=reg+'|'+norm(h);
@@ -85003,6 +85002,13 @@ var CC_HANDLE_FOLD=[];
     // Угадывать тут нельзя: пусть остаётся как записано.
     if(!cand || cand.size!==1) return;
     map.set(key, Array.from(cand)[0]);
+  });
+  // held is read only for fold targets, so it is filled for those handles alone (was a key per card at load).
+  const want=new Set(); map.forEach((to, from)=>want.add(from.slice(0, from.indexOf('|'))+'|'+String(to).toLowerCase()));
+  if(want.size) PLAYERS_BASE.forEach(p=>{
+    if(String(p.cardSet||'')===ODD) return;
+    const rh=String(p.region||'')+'|'+String(p.handle||'').toLowerCase();
+    if(want.has(rh)) held.add(rh+'|'+p.event+'|'+p.placement);
   });
   PLAYERS_BASE.forEach(p=>{
     if(String(p.cardSet||'')!==ODD) return;
@@ -85094,7 +85100,7 @@ var RATING_FLOOR={};
   PLAYERS_BASE.forEach(p=>{
     if(p.tier!=='cardmode') return;
     const nat=NAT_OVERRIDE[(p.region||'')+'|'+p.handle] ||
-              (ccOneRegion(p.handle) ? NAT_OVERRIDE[p.handle] : null);
+              (NAT_OVERRIDE[p.handle] && ccOneRegion(p.handle) ? NAT_OVERRIDE[p.handle] : null);
     if(nat && p.nat!==nat){ p.nat=nat; p.natSource='manual'; forced++; }
   });
   if(typeof console!=='undefined' && console.debug) console.debug('nationality — liquipedia:', natFromLiqui, 'cross-fill:', fixed, 'manual:', forced, 'ambiguous handles left alone:', natSkipped);
@@ -96074,8 +96080,9 @@ var RATING_FLOOR={};
     list.forEach(q=>{
       const k=keyOf(q), y=yearOfSet(q.cardSet);
       const p=P[k]=P[k] || {years:{}, sets:{}, finals:[], names:new Set()};
-      (p.years[y]=p.years[y] || []).push([q._eventOvr, stageW(q)]);
-      (p.sets[q.cardSet]=p.sets[q.cardSet] || []).push([q._eventOvr, stageW(q)]);
+      const w=stageW(q);
+      (p.years[y]=p.years[y] || []).push([q._eventOvr, w]);
+      (p.sets[q.cardSet]=p.sets[q.cardSet] || []).push([q._eventOvr, w]);
       if(gfOf(q)) p.finals.push(SET_T[q.cardSet]);
       p.names.add(low(q.handle)); if(q.liquiName) p.names.add(low(q.liquiName));
     });
@@ -96112,7 +96119,9 @@ var RATING_FLOOR={};
       const eo=gs.map(q=>q._eventOvr), lo=Math.min(...eo), hi=Math.max(...eo);
       if(!(hi>lo)) return;
       const pcts=STAT_GET.map(g=>{ const vals=gs.map(g), ok=vals.filter(v=>v!=null).sort((a,b)=>a-b);
-        return vals.map(v=>{ if(v==null || ok.length<2) return null; let a=0; while(a<ok.length && ok[a]<v) a++;
+        // Binary search for the first value not below v: same index as the linear walk, without n² at load.
+        const lb=v=>{ let lo=0, hi=ok.length; while(lo<hi){ const m=(lo+hi)>>1; if(ok[m]<v) lo=m+1; else hi=m; } return lo; };
+        return vals.map(v=>{ if(v==null || ok.length<2) return null; const a=lb(v);
           let b=a; while(b<ok.length && ok[b]===v) b++; return ((a+b)/2)/ok.length; }); });
       gs.forEach((q,i)=>{ const a=pcts.map(p=>p[i]).filter(v=>v!=null);
         if(a.length) statOf.set(q, lo+(hi-lo)*a.reduce((s,v)=>s+v, 0)/a.length); });
@@ -99153,7 +99162,9 @@ function attrsFor(p){
    разных человека во всём файле сразу — в парах, в ростере, в пуле карьеры.
    Отзыв: «только двое japko в 25 году». Замер до правки: 90 ников с пробелом
    по краям, у 71 есть близнец без пробела. */
-function hKey(p){ const k=String(p && p.handle || p || '').toLowerCase().trim(); return hKeySame(k) || k; }
+// Memo by raw string: hKey runs hundreds of thousands of times per render. Property, not const: called during load.
+function hKey(p){ const s=String(p && p.handle || p || ''), m=hKey.m || (hKey.m=new Map());
+  let v=m.get(s); if(v===undefined){ const k=s.toLowerCase().trim(); v=hKeySame(k) || k; m.set(s, v); } return v; }
 /* Тег клуба перед ником: «Evenezy Howly» и «Howly» в одной сцене одного года стояли двумя людьми,
    и трио-рынок сажал его в две тройки сразу. Склеены только пары с общим напарником в строках
    (в той же сцене тег+ник ещё у 179, там есть настоящие тёзки, Misty Aim и Aim). Функция, а не
@@ -109197,9 +109208,16 @@ async function offerSquadChoice(stageName, you, allTeams){
 // rated on, with _t1Stage saying which. Read by shape rather than by name, so a
 // new set needs no change here.
 function rosterEntriesOf(card){
+  /* Roster keys are attached while the page loads and never change after it, so once loaded the answer per card is
+     memoised (History and the pools walk every card of a region several times). Callers only read the result. */
+  const memo=(typeof document!=='undefined' && document.readyState==='complete' && card && typeof card==='object')
+    ? (rosterEntriesOf.m || (rosterEntriesOf.m=new WeakMap())) : null;
+  if(memo){ const hit=memo.get(card); if(hit) return hit; }
   const out=[];
   for(const k in card){
-    if(k.charAt(0)!=='_') continue;
+    if(k.charCodeAt(0)!==95) continue;
+    // Every roster key has a digit third (_m1Gf, _t1, _d1Final); skips _attrs, _eventOvr and the like before the regexes.
+    const c2=k.charCodeAt(2); if(c2<48 || c2>57) continue;
     // FNCS spells its stages Playin / Lcq / Gf; the Reload Elite Series has
     // four of its own. Matched by name here rather than by set, so a card is
     // read the same way whichever circuit built it.
@@ -109221,6 +109239,7 @@ function rosterEntriesOf(card){
     if(/^_t[123]$/.test(k) && card[k] && card[k].entry && card[k].entry.duo)
       out.push({stage:REAL_STAGE_OF[card[k+'Stage']] || 'Playin', entry:card[k].entry});
   }
+  if(memo) memo.set(card, out);
   return out;
 }
 
@@ -125372,10 +125391,12 @@ function careerTab(t){
   careerRenderHub(t);
   // Opening the shop is what clears its mark: the render above still drew the
   // new rows, and the next visit will not call them new again.
-  if(t==='shop') careerShopSeen();
+  // Only when the mark moves: a full save (~1 MB JSON) on every tap was a fifth of the tab's cost on a phone.
+  const cr=CAREER && CAREER.career;
+  if(t==='shop' && cr && (cr.shopSeen||0)<(cr.balance||0)) careerShopSeen();
   // And opening the socials is what clears the feed's. Messages keep their own
   // unread flag — a thread is read when it is opened, not when the tab is.
-  if(t==='social') careerNotesSeen();
+  if(t==='social' && cr && cr.newsSeen!==(cr.newsN||0)) careerNotesSeen();
 }
 
 /* Перерисовка той же вкладки сохраняет прокрутку. Хаб перерисовывается целиком через innerHTML,
@@ -133677,7 +133698,10 @@ function ccLadderRealPick(rnd, taken, div){
   const pool=CC_LADDER_REAL[ccCareerRegion()]; if(!pool || !pool.length) return null;
   const real=ccRealNames();
   const ok=e=>{ const low=e[0].toLowerCase(); return !taken.has(low) && !real.has(low) && !real.has(hKey({handle:e[0]})); };
-  const own=div>=2 ? pool.filter(e=>e[2]===div) : pool;
+  // The division's slice of the pool, cut once per pool: this runs for every seat of a ladder room.
+  const om=ccLadderRealPick.m || (ccLadderRealPick.m=new WeakMap());
+  let byDiv=om.get(pool); if(!byDiv){ byDiv={}; om.set(pool, byDiv); }
+  const own=div>=2 ? (byDiv[div] || (byDiv[div]=pool.filter(e=>e[2]===div))) : pool;
   for(const list of [own, pool]){
     if(!list.length) continue;
     for(let t=0; t<24; t++){ const e=list[Math.floor(rnd()*list.length)]; if(ok(e)) return e; }
@@ -133986,11 +134010,14 @@ let CC_NAT_FIT={};
 function ccNatFit(reg){
   const r=reg||ccCareerRegion();
   if(CC_NAT_FIT[r]) return CC_NAT_FIT[r];
-  const nat=new Map(), fit=new Map(), seen=new Set();
+  const nat=new Map(), fit=new Map(), seen=new Set(), seenRow=new Set();
   PLAYERS.forEach(p=>{ if((p.region||'')===r && p.nat) nat.set(hKey(p), p.nat); });
   PLAYERS.forEach(p=>{
     if((p.region||'')!==r) return;
     rosterEntriesOf(p).forEach(function(e){
+      // Teammates share one row object: a row already read has its id in seen.
+      if(seenRow.has(e.entry)) return;
+      seenRow.add(e.entry);
       // The same team is written on every card in it, so it is counted once.
       const hs=e.entry.duo.map(h=>hKey(h)).slice().sort();
       const id=hs.join('|');
@@ -175569,10 +175596,19 @@ function ccPrField(e){
   const k=(e && e.kind) || 'cup';
   const t=(k==='rc' || k==='gclc') ? 'gc' : k;
   const save=cr.day;
+  /* Profile asks this for every logged night; a past day rebuilds careerPools for that day and evicts today's.
+     Same day in the same career frame gives the same field, so it is memoised. Online keeps the direct path. */
+  const solo=!(typeof ccMpTeam==='function' && ccMpTeam()) && !(typeof ccRaceOn==='function' && ccRaceOn());
+  const mk=solo ? [t, (e && e.day) || save, cr.division, cr.season, cr.year, cr.year0, cr.size, CC_EVENT_SIZE||0,
+    ccPoolRegion(), CC_REGION_AS||'', CC_NOW_YEAR_FORCE||0, PLAYERS.length].join('|') : null;
+  const memo=ccPrField.m || (ccPrField.m=new Map());
+  if(mk && memo.has(mk)) return memo.get(mk);
   try{
     if(e && e.day) cr.day=e.day;
     const sh=ccNextShape({type:t, day:cr.day});
-    return (sh && sh.of>1) ? sh.of : 0;
+    const of=(sh && sh.of>1) ? sh.of : 0;
+    if(mk){ if(memo.size>4000) memo.clear(); memo.set(mk, of); }
+    return of;
   }catch(err){ return 0; }
   finally{ cr.day=save; }
 }
