@@ -51,3 +51,8 @@
   Cache-Control: public, max-age=604800
 /devices/*
   Cache-Control: public, max-age=604800
+
+# Защита по умолчанию для всех страниц: без угадывания типа, реферер только домен.
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin

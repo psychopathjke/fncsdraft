@@ -136,6 +136,8 @@ export class Lobby {
     let a=null; try{ a=ws.deserializeAttachment(); }catch(e){}
     if(!a || !a.id || a.dead) return;
     const id=a.id;
+    // Потолок одного сообщения: карточка, строка гонки и книга мира весят десятки килобайт, мегабайтный мусор не разбираем.
+    if((typeof data==='string' ? data.length : (data && data.byteLength)||0) > WS_MAX) return;
     let m=null; try{ m=JSON.parse(data); }catch(e){ return; }
     // Не член команды (третьему отказано: full) ничего не шлёт паре, кроме нового hello.
     if(!m || (m.t!=='hello' && !(id in this.lobby.state.cards))) return;
@@ -367,6 +369,7 @@ function json(o, status){
     headers:Object.assign({'Content-Type':'application/json', 'Cache-Control':'no-store'}, CORS)});
 }
 
+const WS_MAX=256*1024;
 export default {
   async fetch(req, env){
     const url=new URL(req.url);
@@ -374,6 +377,8 @@ export default {
       if(req.method==='OPTIONS') return new Response(null, {status:204, headers:CORS});
       if(req.method!=='GET' && req.method!=='POST') return new Response('no', {status:405, headers:CORS});
       // Тело не больше пары килобайт: строка карьеры столько и весит.
+      // Без Content-Length (chunked) тело читалось бы целиком внутри объекта: такой POST не принимаем.
+      if(req.method==='POST' && !(Number(req.headers.get('Content-Length'))>0)) return json({err:'size'}, 411);
       if(req.method==='POST' && Number(req.headers.get('Content-Length')||0) > 4096) return json({err:'size'}, 413);
       const stub=env.BOARD.get(env.BOARD.idFromName('global'));
       /* Страна по IP для таблицы дня (17.10, его «давай по ip»): Cloudflare знает страну запроса (req.cf.country), сам IP
@@ -389,7 +394,7 @@ export default {
     if(url.pathname==='/vault'){
       if(req.method==='OPTIONS') return new Response(null, {status:204, headers:CORS});
       if(req.method!=='POST') return new Response('no', {status:405, headers:CORS});
-      if(Number(req.headers.get('Content-Length')||0) > MAX_ONE+64*1024) return json({err:'size'}, 413);
+      if(!(Number(req.headers.get('Content-Length'))>0) || Number(req.headers.get('Content-Length')) > MAX_ONE+64*1024) return json({err:'size'}, 413);
       // Код читается из тела ещё раз внутри объекта; здесь — только чтобы выбрать объект. Тело читается один раз.
       const text=await req.text();
       let code=''; try{ code=String(JSON.parse(text).code||''); }catch(e){ return json({err:'json'}, 400); }

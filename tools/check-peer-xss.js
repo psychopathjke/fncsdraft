@@ -45,7 +45,22 @@ const BOOT = `
     });
     if(typeof ccPeerSafe==='function'){ const ps=ccPeerSafe({id:1, k:'ccNewsX', a:['<img src=x onerror=1>', 5, {n:'"q'+B}], text:'<b>'});
     check('ccPeerSafe строки', JSON.stringify(ps).indexOf('<')<0 && ps.a[2].n==='q' && ps.a[1]===5, JSON.stringify(ps)); }
+    // Обзор 20.11: профиль по ссылке, строка соседа по гонке, аватарка с чужим фото.
+    window.__x4=0; window.__x5=0; window.__x6=0;
+    const IMG=n=>'<img src=nope.png onerror="window.__x'+n+'=1">';
+    const d3=document.createElement('div'); document.body.appendChild(d3);
+    try{ d3.innerHTML=ccProfileHTML({v:1, n:'P', o:IMG(4), ev:IMG(4), w:IMG(4), t10:IMG(4), e:IMG(4), tr:{m:IMG(4), l:IMG(4), wk:IMG(4)},
+      best:[{p:IMG(4), n:'x', of:IMG(4)}], sk:'x" onerror="window.__x4=1'}); }catch(e){ check('ccProfileHTML', false, String(e)); }
+    if(typeof ccRacePeerClean==='function'){
+      const r=ccRacePeerClean({nick:'N', ovr:IMG(5), div:IMG(5), money:IMG(5), pr:IMG(5), card:{handle:'N', _photo:'x" onerror="window.__x6=1'}});
+      check('строка гонки: числа', typeof r.ovr==='number' && typeof r.div==='number', JSON.stringify(r).slice(0,120));
+      check('строка гонки: фото', !r.card._photo);
+    } else check('ccRacePeerClean есть', false);
+    const d4=document.createElement('div'); document.body.appendChild(d4);
+    d4.innerHTML=ccAvatar({name:'N', card:{handle:'N', _photo:'x" onerror="window.__x6=1'}});
     await new Promise(r=>setTimeout(r, 1500));
+    check('профиль по ссылке', window.__x4===0);
+    check('аватарка с чужим фото', window.__x6===0);
     check('ник разметкой на карточке', window.__x1===0);
     check('ник со слэшем в onclick', window.__x2===0);
     check('фото напарника в src', window.__x3===0);

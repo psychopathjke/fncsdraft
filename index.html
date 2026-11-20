@@ -102051,7 +102051,8 @@ function ccRecruitURL(p){
 function photoURLReal(p){
   // A career player uploads their own portrait, so it travels on the card
   // object rather than living in the photos folder.
-  if(p && p._photo) return p._photo;
+  // Карточка может прийти от другого игрока по проводу: в src идёт только картинка data: или свой путь.
+  if(p && p._photo) return /^(data:image\/(png|jpe?g|webp|gif);base64,[A-Za-z0-9+\/=]+|[a-z0-9_\/.%-]+)$/i.test(String(p._photo)) ? p._photo : null;
   /* Сгенерированный игрок лестницы (ccLadderEvent) — не человек сцены: ник у него из общего списка, и голый ключ
      отдавал ему лицо настоящего тёзки (Notion 29.10: бот «Cold 49» из Европы с фото американского Cold). */
   if(p && p.tier==='ladder' && /generat|сгенерир|généré|gerado/i.test(String(p.event||''))) return null;
@@ -124119,7 +124120,7 @@ function careerRaceWire(){
        и сочли бы, что играют одни. Ответ бывает только на первую его строку, так
        что двое не гоняют её по кругу. */
     const fresh=!CC_RACE_PEERS[m.by||'peer'];
-    CC_RACE_PEERS[m.by||'peer']=m.payload;
+    CC_RACE_PEERS[m.by||'peer']=ccRacePeerClean(m.payload);
     if(fresh) setTimeout(function(){ try{ careerRaceSend(); }catch(e){} }, 0);
     if(typeof careerRenderHub==='function' && document.getElementById('chBody'))
       careerRenderHub(CH_TAB);
@@ -124131,6 +124132,21 @@ function careerRaceWire(){
 function careerRaceScore(c){
   if(!c) return -1e9;
   return (6-(c.div||5))*1e9 + (c.pr||0)*1e3 + Math.min(1e3-1, (c.money||0)/1000) + (c.ovr||0)/1000;
+}
+/* Строка гонки соседа приходит по проводу как есть: числа приводятся к числам, фото карточки — только свой путь или
+   data:image. У честного клиента там и так числа, поэтому для локстепа ничего не меняется. */
+function ccRacePeerClean(p){
+  if(!p || typeof p!=='object') return {};
+  ['ovr','div','season','money','wins','events','titles','pr','prRank'].forEach(k=>{ if(k in p) p[k]=Number(p[k])||0; });
+  if(p.best!=null) p.best=Number(p.best)||null;
+  if(p.card && typeof p.card==='object') ccPeerCardClean(p.card);
+  (Array.isArray(p.mates) ? p.mates : []).forEach(c=>{ if(c && typeof c==='object') ccPeerCardClean(c); });
+  return p;
+}
+function ccPeerCardClean(c){
+  if(c._photo!=null && !/^(data:image\/(png|jpe?g|webp);base64,[A-Za-z0-9+\/=]+|[a-z0-9_\/.-]+)$/i.test(String(c._photo))) delete c._photo;
+  if(c.region!=null && !/^[A-Z]{2,4}$/.test(String(c.region))) c.region='EU';
+  return c;
 }
 function careerRaceRows(){
   const mine=careerRaceCard();
@@ -124213,6 +124229,8 @@ function careerRaceUnpair(tell){
 function ccRacePairSaw(m){
   const me=ccMpId(); const p=m.payload||{};
   if(!p.by || p.by===me || p.to!==me) return false;
+  // Отправителя ставит сервер (m.by); подпись в самом сообщении чужой клиент может написать любую.
+  if(m.by && m.by!==p.by) return false;
   if(m.kind==='pair'){ CC_RACE_PAIR_ASK={from:p.by, nick:p.nick||''}; }
   else if(m.kind==='pairok'){
     const asked=CAREER.career.race && CAREER.career.race.pairAsked;
@@ -124268,7 +124286,7 @@ function ccRacePairBelowHTML(rows){
     if(asked && asked.id===r.id) return `<span class="cc-pair-wait">${esc(T.ccRacePairSent)}</span>`;
     const why=ccRacePairWhy(CC_RACE_PEERS[r.id]);
     if(why) return `<span class="cc-pair-wait">${esc(r.nick||'')}: ${esc(T['ccRacePairWhy'+why]||'')}</span>`;
-    return `<button class="ch-sign" onclick="careerRacePairAsk('${esc(r.id)}')">${esc(T.ccRacePairWithBtn(r.nick||''))}</button>`;
+    return `<button class="ch-sign" onclick="careerRacePairAsk('${jsq(r.id)}')">${esc(T.ccRacePairWithBtn(r.nick||''))}</button>`;
   }).join('');
   return `<div class="cc-race-pane cc-race-pane-all"><span>${esc(T.ccRacePairHint)}</span>${btns}</div>`;
 }
@@ -124282,7 +124300,7 @@ function ccRacePairPaneHTML(r){
   const why=ccRacePairWhy(CC_RACE_PEERS[r.id]);
   return `<div class="cc-race-pane"><span>${esc(T.ccRacePairHint)}</span>${
     why ? `<em>${esc(T['ccRacePairWhy'+why]||'')}</em>`
-        : `<button class="ch-sign" onclick="event.stopPropagation();careerRacePairAsk('${esc(r.id)}')">${esc(T.ccRacePairBtn)}</button>`}</div>`;
+        : `<button class="ch-sign" onclick="event.stopPropagation();careerRacePairAsk('${jsq(r.id)}')">${esc(T.ccRacePairBtn)}</button>`}</div>`;
 }
 
 function careerRaceEnter(race){
@@ -124733,11 +124751,11 @@ function ccTeamWorldAskOn(){
 function ccRaceWorldSync(n, who){
   if(typeof ccRaceLock!=='function' || !ccRaceLock() || typeof MP==='undefined' || !MP.act) return Promise.resolve(false);
   const me=careerCard(); if(!me) return Promise.resolve(false);
-  let lead;
+  let lead, leadId=null;
   if(Array.isArray(who) && who.length){
     const ids=who.slice().filter(Boolean).sort();
     if(ids.indexOf(ccMpId())<0) return Promise.resolve(false);   // меня в этом вечере нет
-    lead=(ids[0]===ccMpId());
+    lead=(ids[0]===ccMpId()); leadId=ids[0];
   } else {
     const room=(typeof ccRaceNightRoom==='function') ? ccRaceNightRoom() : ccRaceRoom();
     if(!room.length) return Promise.resolve(false);
@@ -124759,7 +124777,8 @@ function ccRaceWorldSync(n, who){
   return ccMpIdle(new Promise(function(res){
     let done=false, off=null, t=null, ask=null;
     const finish=function(w){ if(done) return; done=true; if(off) off(); if(t) clearTimeout(t); if(ask) clearInterval(ask); if(w) ccRaceWorldApply(w); ccMpMark(w ? 'world' : 'world:none'); res(!!w); };
-    const fit=function(a){ return a && a.payload && a.payload.n===n && a.payload.w; };
+    // Книгу принимаем только от старшего, если сервер его назвал (m.by ставит сервер, не клиент).
+    const fit=function(a){ return a && a.payload && a.payload.n===n && a.payload.w && !(leadId && a.by && a.by!==leadId); };
     // Уже в очереди: старший мог разослать раньше, чем мы дошли.
     let x; while((x=MP.take('world'))){ if(fit(x)){ finish(x.payload.w); return; } }
     off=MP.on('act', function(m){ if(m && m.kind==='world' && fit(m)){ if(MP.take) MP.take('world'); finish(m.payload.w); } });
@@ -125076,7 +125095,7 @@ function careerRaceTileHTML(){
      таблице отмечен короной. */
   const line=(r,i)=>{
     const card=r.card ? {handle:r.card.handle, region:r.card.region} : null;
-    return `<div class="cc-race-row${r.you?' me':''}${i===0&&rows.length>1?' lead':''}${r.you||!r.id?'':' cc-race-tap'}"${r.you||!r.id?'':` onclick="ccRaceRowToggle('${esc(r.id)}')"`}>
+    return `<div class="cc-race-row${r.you?' me':''}${i===0&&rows.length>1?' lead':''}${r.you||!r.id?'':' cc-race-tap'}"${r.you||!r.id?'':` onclick="ccRaceRowToggle('${jsq(r.id)}')"`}>
       ${ccAvatar({name:r.nick||'?', card:card, you:!!r.you})}
       <span class="cc-race-in"><b>${esc(r.nick||'')}${r.org?`<i>${esc(r.org)}</i>`:''}</b>
         <em>${L().ccDivision} ${r.div} · ${ccMoney(r.money||0)}${r.pr?' · PR '+ccNum(r.pr):''}${
@@ -144990,7 +145009,7 @@ function ccAvatar(a){
           : a.logo ? LOGO_DIR+a.logo
           : (a.av ? PHOTO_DIR+a.av : null);
   return `<span class="x-av${a.you?' x-av-you':''}">`+
-    (url ? `<img src="${url}" alt="" onerror="this.remove()">` : '')+
+    (url ? `<img src="${esc(url)}" alt="" onerror="this.remove()">` : '')+
     `${esc((a.name||'?').slice(0,2).toUpperCase())}</span>`;
 }
 // The standings as an attachment. Five rows is what fits in a screenshot before
@@ -149548,18 +149567,20 @@ async function ccProfileShare(){
 }
 function ccProfileHTML(p){
   const T=ccProfT(), Lx=L();
+  // Профиль приходит из ссылки (#profile=), то есть от кого угодно: числа только числами, образ только своим id.
+  const N=x=>Math.round(Number(x)||0);
   const flag=p.c ? '<img src="flags/w40/'+esc(String(p.c).toLowerCase())+'.png" alt="" onerror="this.remove()">' : '';
   const role=p.role ? (Lx[p.role]||p.role) : '';
-  const sk=p.sk ? '<img class="cc-prof-skin" src="'+ccFnFull(p.sk)+'" alt="" onerror="this.remove()">' : '';
+  const sk=p.sk && /^[a-z0-9_-]+$/i.test(String(p.sk)) ? '<img class="cc-prof-skin" src="'+esc(ccFnFull(p.sk))+'" alt="" onerror="this.remove()">' : '';
   const stat=(k,v)=>'<div class="cc-prof-st"><b>'+v+'</b><span>'+esc(k)+'</span></div>';
-  const titles=[p.tr && p.tr.m ? stat(T.majors, p.tr.m) : '', p.tr && p.tr.l ? stat(T.lans, p.tr.l) : '', p.tr && p.tr.wk ? stat(T.weekly, p.tr.wk) : ''].filter(Boolean).join('');
-  const best=(p.best||[]).map(b=>'<li><b>#'+b.p+'</b> '+esc(b.n)+(b.of ? ' <i>/ '+b.of+'</i>' : '')+(b.d ? ' <em>'+esc(ccDayLabel(b.d))+'</em>' : '')+'</li>').join('');
+  const titles=[p.tr && p.tr.m ? stat(T.majors, N(p.tr.m)) : '', p.tr && p.tr.l ? stat(T.lans, N(p.tr.l)) : '', p.tr && p.tr.wk ? stat(T.weekly, N(p.tr.wk)) : ''].filter(Boolean).join('');
+  const best=(p.best||[]).map(b=>'<li><b>#'+N(b.p)+'</b> '+esc(b.n)+(b.of ? ' <i>/ '+N(b.of)+'</i>' : '')+(b.d ? ' <em>'+esc(ccDayLabel(b.d))+'</em>' : '')+'</li>').join('');
   return '<div class="cc-prof-box">'+
     '<div class="cc-prof-head">'+sk+'<div class="cc-prof-id"><em>'+esc(T.title)+'</em><h2>'+flag+esc(p.n||'?')+'</h2>'+
       '<div class="cc-prof-sub">'+[role, p.org, p.r, p.a ? T.age+' '+p.a : ''].filter(Boolean).map(esc).join(' · ')+'</div>'+
       '<div class="cc-prof-sub">'+[p.y ? String(p.y) : '', T.season+' '+(p.s||1), p.dv ? T.div+' '+p.dv : ''].filter(Boolean).map(esc).join(' · ')+'</div></div>'+
-      '<div class="cc-prof-ovr">'+(p.o||'')+'</div></div>'+
-    '<div class="cc-prof-grid">'+stat(T.earn, '$'+ccNum(p.e||0))+stat(T.events, p.ev||0)+stat(T.wins, p.w||0)+stat(T.top10, p.t10||0)+'</div>'+
+      '<div class="cc-prof-ovr">'+(p.o ? N(p.o) : '')+'</div></div>'+
+    '<div class="cc-prof-grid">'+stat(T.earn, '$'+ccNum(N(p.e)))+stat(T.events, N(p.ev))+stat(T.wins, N(p.w))+stat(T.top10, N(p.t10))+'</div>'+
     '<h4>'+esc(T.titles)+'</h4>'+(titles ? '<div class="cc-prof-grid">'+titles+'</div>' : '<p class="cc-prof-none">'+esc(T.none)+'</p>')+
     (best ? '<h4>'+esc(T.best)+'</h4><ol class="cc-prof-best">'+best+'</ol>' : '')+
     '<div class="cc-prof-btns"><button class="hero-btn hero-btn-go" onclick="ccProfileClose(true)"><span>'+esc(T.make)+'</span></button>'+

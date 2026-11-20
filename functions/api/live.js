@@ -19,7 +19,7 @@ export async function onRequestGet({ request }) {
       const j = await r.json();
       synced = j.syncedAt || null;
       // до старта дня отдают посев (mode solo_grands_seeding): строки чужих окон, это не таблица дня
-      rows = (j.entries || []).filter(x => x.eventWindowId === w).slice(0, 25).map(x => ({ rank: x.rank, pts: x.pointsEarned,
+      rows = (j.entries || []).filter(x => x.eventWindowId === w).slice(0, 25).map(x => ({ rank: Number(x.rank) || 0, pts: Number(x.pointsEarned) || 0,
         n: (x.customNames && x.customNames.some(Boolean) ? x.customNames : x.teamAccountDisplayNames) || [],
         c: (x.customCountries || []).map(c => { c = c ? String(c).toLowerCase() : ''; return /^[a-z]{2}$/.test(c) ? c : null; }),
         g: (x.sessionHistory || []).length }));
