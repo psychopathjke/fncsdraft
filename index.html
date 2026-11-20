@@ -172295,6 +172295,8 @@ async function runCareerCup(){
     await revealStandings(shell, ranked, you, 0);
     const growthA=careerApplyGrowth(place, field.length, you, field);
     const cashA=ccSoloDivCupPrize(place, divA); if(cashA) ccPayIn(cashA);
+    // Прошёл отсечку там — выезд энергии не стоит.
+    if(upA || wfA) careerRestore(CC_AWAY_ENERGY);
     const placesA=(you.stageLog||[]).map(g=>g.place);
     cr.log=cr.log||[];
     cr.log.push({season:cr.season, day:careerToday(), div:cr.division, place, of:field.length, pts:you.stagePts, passed:false,
@@ -172473,6 +172475,8 @@ async function runCareerCup(){
      предлагался снова. Сторож: check-mp-close, каждый шаг дня в раннере — после close. */
   await ccMpClose(ranked);
   ccAwayHomeDone(careerToday(), 'cup'); careerAdvanceTo(careerAfterSession());
+  // Прошёл отсечку (переход или путёвка в финал недели) — вечер энергии не стоит.
+  if(passed) careerRestore(CC_TOURNEY_ENERGY);
   // A free agent hears from clubs after a result, not out of nowhere: the offers
   // are rebuilt on the week you have just moved into.
   // Offers arrive whether or not there is already a club: a signed player is
