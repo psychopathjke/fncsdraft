@@ -170509,6 +170509,13 @@ function solosPrize(place){
   const row=t.find(r=>place<=r[0]);
   return row ? row[1] : 0;
 }
+/* Кап дивизиона в соло-год (размер 1): очки как в финале FNCS Solos 2026 (сетка мест victoryR1Points, 4 за элим),
+   призы по таблице того финала в регионе: Д1 целиком, каждый дивизион ниже вдвое меньше. Это решение, не данные Epic. */
+function ccSoloDivCupOn(){ return typeof careerSquadSize==='function' && careerSquadSize()===1; }
+function ccSoloDivCupPrize(place, div){
+  if(!ccSoloDivCupOn()) return 0;
+  return Math.round(solosPrize(place)/Math.pow(2, Math.max(0, (div||1)-1)));
+}
 /* Стадии турнира, числа Epic'овы: Round 3 тысяча → топ-100 (в карьерной сотне топ-10), Fast Track сотня → топ-8, хит сотня, LCQ Final 70, финал сотня.
    Своё только топ-11 во втором круге: у Epic проходят 108 из тысячи (10,8%).
    games: матчей в вечере (финал 6+6 за два дня играется одной посадкой, как Глобалы). kill: цена элима по Attachment A (2 квал, 3 хиты и LCQ, 4 Fast Track и финал).
@@ -172248,7 +172255,7 @@ async function runCareerCup(){
   const kindsForDrop=['cup'];
   const zones=null;
   // Очки — как у кубка дивизиона Epic этого сезона (ccDivCupScore), иначе прежняя таблица.
-  const dSc=ccDivCupScore(careerToday(), cr.division);
+  const dSc=ccSoloDivCupOn() ? {pts:victoryR1Points, kill:4} : ccDivCupScore(careerToday(), cr.division);
   await simulateGamesLive(field, CAREER_CUP_GAMES, dSc ? dSc.pts : pointsForPlace, dSc ? dSc.kill : 4, 'stage', 0, null, zones,
     {lobbySize:ccTeams(50), stageName:L().ccCupLive, mapReplay:true, choices:true, stopOnYourDeath:true,
      carry:carry, cutAt: (careerBanking() && !CC_AWAY) ? 0 : cut,
@@ -172287,19 +172294,20 @@ async function runCareerCup(){
       upA ? L().awDivUp(regionName(regA), divA-1) : wfA ? L().awWfSeat(regionName(regA)) : L().awCupLine(regionName(regA), divA));
     await revealStandings(shell, ranked, you, 0);
     const growthA=careerApplyGrowth(place, field.length, you, field);
+    const cashA=ccSoloDivCupPrize(place, divA); if(cashA) ccPayIn(cashA);
     const placesA=(you.stageLog||[]).map(g=>g.place);
     cr.log=cr.log||[];
     cr.log.push({season:cr.season, day:careerToday(), div:cr.division, place, of:field.length, pts:you.stagePts, passed:false,
                  ovr:CAREER.player.ovr, games:CAREER_CUP_GAMES, wins:you.wins||0, elims:you.stageElims||0,
                  avg: placesA.length ? Math.round(placesA.reduce((s,v)=>s+v,0)/placesA.length*10)/10 : null,
-                 mate: mate ? mate.handle : null, mates: ccLogMates(mates), prize:0});
+                 mate: mate ? mate.handle : null, mates: ccLogMates(mates), prize:cashA});
     if(Math.round(growthA.after)!==Math.round(growthA.before))
       careerNews(growthA.delta>0?'good':'bad', 'ccNewsRating', [Math.round(growthA.before), Math.round(growthA.after)]);
     careerSave();
     CARD_MODE=prevMode; squadSize=prevSize; drafted=prevDrafted; CC_KILL_CAP=0;
     careerRenderHub('centre');
     if(upA) careerNews('good', 'awNewsDivUp', [regionName(regA), divA-1]);
-    careerTwoRoundResultCard({title:L().ccCupLive+' · '+regionName(regA)+' · '+L().awDivD(divA), place, through:upA, wins:you.wins||0, cash:0, cut:0});
+    careerTwoRoundResultCard({title:L().ccCupLive+' · '+regionName(regA)+' · '+L().awDivD(divA), place, through:upA, wins:you.wins||0, cash:cashA, cut:0});
     return;
   }
   const banking=careerBanking();
@@ -172346,6 +172354,7 @@ async function runCareerCup(){
   const growth=careerApplyGrowth(place, field.length, you, field);
   const morale=careerApplyMorale(place, field.length, passed);
   const from=cr.division;
+  const cash=ccSoloDivCupPrize(place, from); if(cash) ccPayIn(cash);
   if(passed && cr.division>1){ cr.division--; careerReachPromote(cr.division); }
   /* In Division 1 the cut gives a seat at Saturday's Weekly Final instead of promotion, stamped with
      this week's Monday so it can't be spent next week.
@@ -172368,7 +172377,7 @@ async function runCareerCup(){
                // history row is the tournament, the way the standings are.
                games:CAREER_CUP_GAMES*(carry?2:1), wins:you.wins||0, elims:you.stageElims||0,
                avg: places.length ? Math.round(places.reduce((s,v)=>s+v,0)/places.length*10)/10 : null,
-               mate: mate ? mate.handle : null, mates: ccLogMates(mates), prize:0});
+               mate: mate ? mate.handle : null, mates: ccLogMates(mates), prize:cash});
 
   // The feed, built out of the run that just happened. The list is written in
   // reading order and filed backwards, because careerNews puts each line on top
@@ -172479,7 +172488,7 @@ async function runCareerCup(){
   if(passed && from>1) await celebrate(L().celKicker, L().ccCelebPass, L().ccCelebPassSub(from-1), 'gold', 80);
 
   CARD_MODE=prevMode; squadSize=prevSize; drafted=prevDrafted; CC_KILL_CAP=0;
-  careerCupResultCard({place, total:field.length, pts:you.stagePts, passed, from, growth, morale});
+  careerCupResultCard({place, total:field.length, pts:you.stagePts, passed, from, growth, morale, cash});
 }
 
 // What the week did, in the shape the rest of the app uses for a stage card:
@@ -172496,7 +172505,7 @@ function careerCupResultCard(r){
       <div>${r.passed ? (r.from>1 ? L().ccResPromoted(r.from-1) : L().ccResWfIn)
                        : L().ccResStay(r.from)}</div>
       <div>${L().ccResGrowth}: ${Math.round(r.growth.before)} ${arrow} ${CAREER.player.ovr} — ${word}</div>
-      <div>${L().ccResEarned}: ${cr.division===1 ? L().ccResD1NoFinal : L().ccResNoMoney}</div>
+      <div>${L().ccResEarned}: ${r.cash ? ccMoney(r.cash) : cr.division===1 ? L().ccResD1NoFinal : L().ccResNoMoney}</div>
       ${r.morale ? `<div>${L().ccResPartner}: ${r.morale.left ? ccSay('ccNewsPartnerLeft', r.morale.name)
           : L()[careerMoodKey(r.morale.after)]+' ('+r.morale.before+' '+(r.morale.move>=0?'▲':'▼')+' '+r.morale.after+')'}</div>` : ''}
       ${cr.seasonOver?`<div>${L().ccSeasonOver} — ${L().ccSeasonOverSub}</div>`:''}
