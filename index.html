@@ -85502,6 +85502,31 @@ pushCard({handle:'Artox_ツ', nat:null, natSource:'tracker', region:'ME',
           event:'Console Solo Victory Cup Zero Build (Middle East)', date:'9 авг 2026', placement:1186, note:'',
           tier:'cardmode', cardSet:'d4', org:'Kraven Esport', rarity:rarityForRating(52), rating:52});
 
+/* Готовый итог блока ниже из сборки (tools/build-card-precomp.js → cards-pre.js). Блок сводит ники, страны, клубы и
+   рейтинг года и на телефоне считается секундами; сборка прогоняет его один раз и проверяет, что итог байт в байт тот же.
+   Штамп: хеш данных, его вписывает сборка. Нет файла или штамп другой (index.html открыт напрямую): блок считается как раньше. */
+var CC_PRE_V='dev', CC_PRE_USED='none';
+function ccPreApply(){
+  const P=(typeof window!=='undefined' && window.CC_PRECOMP) || null;
+  if(!P) return false;
+  try{ window.CC_PRECOMP=null; }catch(e){}
+  if(CC_PRE_V==='dev' || P.v!==CC_PRE_V){ CC_PRE_USED='stamp'; return false; }
+  const B=PLAYERS_BASE;
+  if(B.length!==P.n){ CC_PRE_USED='count'; return false; }
+  // Карточки до блока должны быть теми же, на которых сборка его считала.
+  for(const c of P.chk){ const p=B[c[0]]; if(!p || p.handle!==c[1] || p.rating!==c[2] || String(p.cardSet)!==c[3]){ CC_PRE_USED='chk '+c[0]; return false; } }
+  const pats=P.pats, pi=P.pi, col=P.col, at={};
+  for(const k in col) at[k]=0;
+  // Поля пишутся в том порядке, в каком их оставил блок: порядок ключей карточки читают for-in (rosterEntriesOf).
+  for(let i=0; i<B.length; i++){ const ks=pats[pi[i]], p=B[i]; for(let j=0; j<ks.length; j++){ const k=ks[j]; p[k]=col[k][at[k]++]; } }
+  CC_HANDLE_FOLD=P.g.CC_HANDLE_FOLD; RATING_FLOOR=P.g.RATING_FLOOR; YEAR_RATING=P.g.YEAR_RATING; CC_LEDGER_2026=P.g.CC_LEDGER_2026;
+  // score у ledger приехал таблицей «место → число» на местах из map: только их карьера и спрашивает.
+  Object.keys(CC_LEDGER_2026).forEach(reg=>CC_LEDGER_2026[reg].forEach(src=>{ const t=src.score; src.score=r=>t[r]; }));
+  CC_PRE_USED='ok';
+  return true;
+}
+if(!ccPreApply()){ /*@@PRE-FROM@@*/
+
 /* Сводим написания ника из капа 4 Reload (набор r4) к написанию остального года.
    Источник r4 поднимает регистр и срезает хвосты («ozbozǃ» → «OZBOZ», «mancity 1111» → «MANCITY1111»,
    «ǃ» тут буква, а не знак): капса в r4 31% против 1-6% в других наборах. Без этого человек делился
@@ -96814,6 +96839,7 @@ var RATING_FLOOR={};
   if(typeof console!=='undefined' && console.debug)
     console.debug('flagship ratings — raised:', raised, 'lowered:', dropped, 'players:', Object.keys(flagship).length);
 })();
+} /*@@PRE-TILL@@*/
 
 
 

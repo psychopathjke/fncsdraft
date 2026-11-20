@@ -104,6 +104,18 @@ function minifyJs(appPath){
    в mgr.js и грузится только при входе в менеджер (mgrStart). app.js — карьере и драфту — легче на код режима. Снаружи
    блока менеджер зовут лишь mgrStart (кнопки) и mgrLeaveIfActive (входы в карьеру) — им заглушки; остальное — через typeof. */
 let appSrc = html.slice(best.from, best.end);
+/* ГОТОВЫЕ КАРТОЧКИ (cards-pre.js): итог загрузочного блока карточек считается здесь один раз, а не на телефоне при
+   каждом заходе, и сверяется с обычным прогоном по хешу (см. build-card-precomp.js). Не вышло — едем без файла,
+   страница посчитает сама: штамп в app.js остаётся 'dev'. */
+const PRE = require('./build-card-precomp.js').build(ROOT, OUT);
+let preTag = '';
+if (PRE) {
+  const DEV = "var CC_PRE_V='dev'";
+  if (appSrc.split(DEV).length !== 2) throw new Error('cards-pre: в app.js нет ровно одной метки ' + DEV);
+  appSrc = appSrc.replace(DEV, "var CC_PRE_V='" + PRE.v + "'");
+  const ph = crypto.createHash('sha1').update(fs.readFileSync(PRE.file)).digest('hex').slice(0, 8);
+  preTag = '<script src="cards-pre.js?v=' + ph + '"></script>';
+}
 {
   const MB = '/*@@MGR-FROM@@*/', ME = '/*@@MGR-TILL@@*/', i = appSrc.indexOf(MB), j = appSrc.indexOf(ME);
   if (i >= 0 && j > i) {
@@ -180,7 +192,7 @@ const BOOT = '<style>' +
   '})();' +
   '</script>';
 fs.writeFileSync(path.join(OUT, 'index.html'),
-  html.slice(0, best.open) + BOOT +
+  html.slice(0, best.open) + BOOT + preTag +
   '<script src="app.js?v=' + hash + '" onload="__fdBoot.ok()" onerror="__fdBoot.fail()"></script>' +
   html.slice(best.end + 9), 'utf8');
 
