@@ -166,7 +166,10 @@ const BOOT = `
     careerTab('social');
     await wait(200);
     const back = feedText();
-    const leftEnglish = back.filter(t => !CYR.test(t) && LAT.test(translatable(t)));
+    // Пост Kinch Analytics («🔥 Stats Leaders 🔥») — английский во всех локалях нарочно, как у настоящего аккаунта
+    // (решение 28.10, ccKinchBoardText). Это его язык, а не непереведённая строка.
+    const KINCH = /Stats Leaders/;
+    const leftEnglish = back.filter(t => !CYR.test(t) && LAT.test(translatable(t)) && !KINCH.test(t));
     if (leftEnglish.length)
       fail('switching back left English in the feed: ' + leftEnglish.slice(0,2).join(' | '));
     out.steps.push('and back to Russian');

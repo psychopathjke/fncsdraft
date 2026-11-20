@@ -2139,7 +2139,8 @@ function careerCentreHTML(card, a){
        текст". So today's cell carries the word, and the styling below makes it
        the loudest thing on the row. */
     const today=iso===careerToday();
-    const head=`<em>${L().calDows[d]}${today?' · '+L().chToday:''}</em><b>${when.getUTCDate()}</b>`;
+    const head=today ? `<em><span class="ch-dow">${L().calDows[d]} · </span>${L().chToday}</em><b>${when.getUTCDate()}</b>`
+                     : `<em>${L().calDows[d]}</em><b>${when.getUTCDate()}</b>`;
     const cls=(today?' ch-today':'');
     // A free day says it once. The line under it is where what you decided to
     // do with the day will go, and until there is something to decide it stays

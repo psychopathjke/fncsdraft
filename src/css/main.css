@@ -6920,6 +6920,13 @@
      on one line with the buttons. */
   .cal-bar .ch-ffwrap{margin:0 0 0 auto;display:flex;align-items:center;gap:8px;}
   .cal-bar .ch-ffcap{margin:0;}
+  /* Телефон: в календаре подпись и кнопки перемотки не влезали в строку, «Play it for me» и «A week» ломались надвое.
+     Подпись — строкой над кнопками, кнопки — каждая в одну строку. */
+  @media (max-width:600px){
+    .cal-bar .ch-ffwrap{margin:8px 0 0;flex-wrap:wrap;width:100%;}
+    .cal-bar .ch-ffcap{flex:0 0 100%;white-space:nowrap;}
+    .cal-bar .ch-ffbtn{white-space:nowrap;}
+  }
   .ch-ffwrap{margin-top:10px;}
   .ch-ffcap{display:block;font-size:10px;font-weight:800;letter-spacing:.12em;
     text-transform:uppercase;color:rgba(255,255,255,.62);margin-bottom:5px;
@@ -8409,6 +8416,14 @@
     background:#d7ff3a;color:#0b1a3a;border-radius:999px;padding:2px 8px;font-size:9px;font-weight:900;
     letter-spacing:.06em;text-transform:uppercase;}
   #screen-career-hub .ch-day.now.ch-today::after{display:none;}
+  /* Телефон: карточка дня около 96px, плашка в углу ложилась на название дня («MO» вместо «MON»), а «WED · TODAY»
+     переносилось на две строки поверх числа. Плашка уходит в поток под строку дня, «сегодня» — одной строкой. */
+  @media (max-width:600px){
+    #screen-career-hub .ch-day.now::after{position:static;display:inline-block;margin-top:4px;font-size:8px;padding:1px 6px;letter-spacing:.03em;}
+    #screen-career-hub .ch-day.ch-today em{white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis;font-size:8px;padding:1px 6px;letter-spacing:.02em;}
+    /* Сегодня на узкой карточке — одно слово «сегодня»: день недели читается по соседям. */
+    #screen-career-hub .ch-day.ch-today em .ch-dow{display:none;}
+  }
   .cc-act-grp{margin:12px 0 6px;font-family:var(--font-display);font-weight:700;font-size:13px;letter-spacing:.08em;
     text-transform:uppercase;color:#b7c3e6;}
   .cc-act-grp:first-child{margin-top:0;}
