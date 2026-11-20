@@ -8,6 +8,9 @@
 # «сайт не грузится».
 /app.js
   Cache-Control: public, max-age=31536000, immutable
+# Готовые карточки из сборки (build-card-precomp.js), тоже с ?v=<хеш>.
+/cards-pre.js
+  Cache-Control: public, max-age=31536000, immutable
 /zone-sim.js
   Cache-Control: public, max-age=31536000, immutable
 /zone-replay.js
