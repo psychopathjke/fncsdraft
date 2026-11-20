@@ -89,7 +89,7 @@ const boot = (who) => `
       v:1, player:{nick:${JSON.stringify(who.nick)}, age:${who.age}, source:'rookie', country:${JSON.stringify(who.country)}, countryPing:15,
         closeRangeEdge:${who.close}, region:'EU', ovr:${OVR0||who.ovr}, role:${JSON.stringify(who.role)}, attrs:null, ageEdge:${who.ageEdge},
         photo:null, handle:null, cardRegion:null, nat:null},
-      career:{season:1, day:${JSON.stringify(DAY)}, division:${DIV0}, earnings:${who.money}, balance:${who.money}, reach:${who.reach},
+      career:{season:1, day:${JSON.stringify((String(process.env.CC_DAYS||'').split(',')[Number(String(who.nick).replace(/[^0-9]/g,''))-1])||DAY)}, division:${DIV0}, earnings:${who.money}, balance:${who.money}, reach:${who.reach},
               tokens:[], log:[], news:[], form:${who.form}, grind:${who.grind}${YEAR ? ', year:' + YEAR + ', year0:' + YEAR : ''}},
       partners:[]}));
     const s=JSON.parse(localStorage.getItem('fncsdraft_career'));

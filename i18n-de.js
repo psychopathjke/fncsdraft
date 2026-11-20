@@ -1134,6 +1134,8 @@ Object.assign(I18N.de=I18N.de||{},
   "ccSeatEmpty": "Platz frei",
   "ccSeasonDuos": "Eine Duos-Saison",
   "ccSeasonTrios": "Eine Trios-Saison",
+  "ccSeasonSolo": "Eine Solo-Saison",
+  "ccSeasonSquads": "Eine Squads-Saison",
   "ccSeasonFormat": "Format",
   "ccWordDuos": "Duos",
   "ccWordTrios": "Trios",
@@ -4170,7 +4172,7 @@ Object.assign(I18N.de=I18N.de||{},
 ({ ccAgentNeed: v=>'Ab Rating '+v }));
 /* Дозаливка «de» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
 Object.assign(I18N.de=I18N.de||{},
-({ccFmtYearQ:(y,c)=>'Neues Jahr '+y+(c ? ', Kapitel '+c : '')+'. In welchem Format spielst du dieses Jahr?', ccFmtDuo:'Duos', ccFmtTrio:'Trios', ccFmtSquad:'Squads'}));
+({ccFmtYearQ:(y,c)=>'Neues Jahr '+y+(c ? ', Kapitel '+c : '')+'. In welchem Format spielst du dieses Jahr?', ccFmtSolo:'Solos', ccFmtDuo:'Duos', ccFmtTrio:'Trios', ccFmtSquad:'Squads'}));
 /* Дозаливка «de» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
 Object.assign(I18N.de=I18N.de||{},
 ({ navGrpCareer: 'Karriere', navGrpComp: 'Competitive', navComp: 'Turniere' }));
