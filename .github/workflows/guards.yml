@@ -1,0 +1,56 @@
+# Проверки на каждый пуш и пул-реквест: воркер без сети, затем 60 быстрых сторожей
+# (tools/run-guards.sh) в headless Chrome против локального wrangler dev.
+# Прод отсюда не выкладывается, секретов здесь нет.
+name: guards
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: guards-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  guards:
+    runs-on: ubuntu-latest
+    timeout-minutes: 75
+    env:
+      CHROME: /usr/bin/google-chrome
+      CC_HOST: ws://127.0.0.1:8787
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: false
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Worker checks without network
+        working-directory: server
+        run: |
+          node tools/check-lobby.js
+          node tools/check-vault.js
+          node tools/check-board.js
+          node tools/check-daily.js
+          node tools/check-errlog.js
+
+      - name: Start local worker
+        working-directory: server
+        run: |
+          npx --yes wrangler@4.165.0 dev --port 8787 --local > ../wrangler.log 2>&1 &
+          for i in $(seq 1 90); do
+            if curl -s -o /dev/null http://127.0.0.1:8787/daily; then echo "worker up after ${i}s"; exit 0; fi
+            sleep 1
+          done
+          echo "worker did not start"; cat ../wrangler.log; exit 1
+
+      - name: Guards
+        run: bash tools/run-guards.sh
+
+      - name: Worker log on failure
+        if: failure()
+        run: tail -n 200 wrangler.log || true
