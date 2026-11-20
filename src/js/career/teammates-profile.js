@@ -3012,8 +3012,15 @@ function ccDiscTileHTML(a, o){
 function ccDiscChipHTML(a, o, extra){
   return '<button class="cc-dl'+(o.can?'':' off')+(o.did?' did':'')+'" title="'+esc(ccActName(a.id)+(extra ? ' · '+extra.replace(/<\/i>/g, ' · ').replace(/<[^>]+>/g, '').replace(/[\s·]+$/, '') : ''))+'" '+
     (o.can ? 'onclick="careerPickDay(\''+a.id+'\')"' : 'disabled')+'>'+
-    '<i>'+(CC_TRAIN_ICON[a.id]||'•')+'</i><b>'+esc(ccActName(a.id))+'</b><em>'+a.energy+L().ccEnergyMark+'</em></button>';
+    '<i>'+(CC_DL_SVG[a.id] ? '<svg viewBox="0 0 24 24" aria-hidden="true">'+CC_DL_SVG[a.id]+'</svg>' : (CC_TRAIN_ICON[a.id]||'•'))+'</i><b>'+esc(ccActName(a.id))+'</b><em>'+a.energy+L().ccEnergyMark+'</em></button>';
 }
+// Значки строки дел линией в цвет текста, как X и телеграм в шапке: эмодзи 💬 📺 😴 на кнопке выглядели наклейкой.
+const CC_DL_SVG={
+  talk:'<path d="M4 5h16v11H10l-5 4v-4H4z"/>',
+  stream:'<rect x="3" y="4" width="18" height="12.5" rx="2"/><path d="M8.5 20.5h7M12 16.5v4"/><path d="M10.2 7.8v5.4l4.4-2.7z" fill="currentColor" stroke="none"/>',
+  host:'<path d="M6 21V4"/><path d="M6 4.5h11l-2.2 3.8L17 12H6"/>',
+  rest:'<path d="M19.5 14.6A7.8 7.8 0 1 1 9.4 4.5a6.2 6.2 0 0 0 10.1 10.1z"/>'
+};
 // Параметры одной строкой над плитками: сокращение, значение, прирост за неделю.
 function ccDiscStatsHTML(six){
   const lf=(typeof ccLife==='function') ? ccLife() : {};

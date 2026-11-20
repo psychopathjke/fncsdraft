@@ -5197,6 +5197,17 @@
     .cc-lb-full.cc-lb-famC .cc-lb-stack{flex:1 1 0;min-height:0;overflow:hidden;}
     #screen-career-hub .cc-lobby.cc-lb-full .cc-lb-stack .cc-peek-img,#screen-career-hub .cc-lobby.cc-lb-full .cc-lb-right .cc-peek-img{height:64px;width:auto;object-fit:contain;}
     #screen-career-hub .cc-lobby.cc-lb-full .cc-lb-sched .ch-day em{justify-self:start;}
+    /* Четыре строки на две клетки сетки: подпись сессии («Session 1», «Reload · cup 3 play-in») уходила в третью
+       неявную строку и резалась краем карточки, а её ширина раздувала первый столбец, и «Reload» справа обрезался в «Reloa».
+       Число слева на всю высоту, справа три строки в одну строку каждая. «WED · TODAY» переносилось на «Free day». */
+    #screen-career-hub .cc-lobby.cc-lb-full .cc-lb-sched .ch-day{grid-template-columns:auto minmax(0,1fr);grid-template-rows:none;row-gap:1px;}
+    #screen-career-hub .cc-lobby.cc-lb-full .cc-lb-sched .ch-day b{grid-column:1;grid-row:1 / span 3;}
+    #screen-career-hub .cc-lobby.cc-lb-full .cc-lb-sched .ch-day em,
+    #screen-career-hub .cc-lobby.cc-lb-full .cc-lb-sched .ch-day .ch-day-what,
+    #screen-career-hub .cc-lobby.cc-lb-full .cc-lb-sched .ch-day .ch-day-sub{grid-column:2;min-width:0;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    #screen-career-hub .cc-lobby.cc-lb-full .cc-lb-sched .ch-day .ch-day-sub{font-size:9.5px;line-height:1.15;}
+    #screen-career-hub .cc-lobby.cc-lb-full .cc-lb-sched .ch-day .ch-day-sub:empty{display:none;}
+    #screen-career-hub .cc-lobby.cc-lb-full .cc-lb-sched .ch-day.ch-today em .ch-dow{display:none;}
   }
   @media (max-width:700px){ .cc-lobby.cc-lb-full .cc-lb-bottom{order:0;} }
   /* Составы в меню целиком, без прокрутки (его слово 19.10: «чтоб все составы вмещались на главной»): панели рейтинга
@@ -5305,6 +5316,18 @@
     #screen-career-hub .ch-who *{min-width:0;}
     #screen-career-hub .ch-who small,#screen-career-hub .ch-who .ch-sub{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
     #screen-career-hub .ch-purse-now .ch-pend{white-space:nowrap;}
+    /* Подписи и числа плашек не рвутся: «V-/BUCKS», «WEEK / 23/52», «0 / of / ±3» в столбик выглядели поломкой.
+       Диапазон («of ±3», «of ±25») уходит из шапки, он есть в подсказке. Переносится только слово репутации. */
+    #screen-career-hub .ch-top .ch-purse em,#screen-career-hub .ch-top .ch-purse b{white-space:nowrap;}
+    #screen-career-hub .ch-top .ch-purse .ch-tipw:last-child b{white-space:normal;}
+    #screen-career-hub .ch-top .ch-purse b small{display:none;}
+  }
+  /* Где строка не влезает (уже на 1100 она вылезала за край), правые плашки уходят второй строкой вправо. */
+  @media (min-width:701px) and (max-width:1320px){
+    #screen-career-hub .ch-top{flex-wrap:wrap;}
+    #screen-career-hub .ch-top .ch-who{flex:0 1 auto;}
+    #screen-career-hub .ch-top .ch-spacer{display:none;}
+    #screen-career-hub .ch-top #chPurse{margin-left:auto;padding-top:0;}
   }
   /* Всё остальное синее — тем же оттенком (Notion «20.10», последний скрин: «цвета не те» — панели в цвет сезона,
      а шапка SEASON, уровень, заголовок заданий и правая панель дня оставались синими). */
@@ -5683,6 +5706,14 @@
     width:34px;height:30px;border-radius:8px;border:1px solid #24314e;background:#131c30;
     color:#5d6f96;cursor:pointer;font-family:inherit;padding:0;}
   .cc-nb:hover{border-color:#3a4c78;color:#c6d5f0;}
+  /* Подпись папки рядом со значком: конверт, облачко, звезда и треугольник без слов не объясняли, что за ними. */
+  .cc-nb-l{display:none;}
+  @media (min-width:1100px){
+    #screen-career-hub .ch-tabs-side .cc-nb{width:auto;padding:0 10px;gap:6px;}
+    #screen-career-hub .ch-tabs-side .cc-nb-l{display:inline;font-size:11px;font-weight:800;letter-spacing:.03em;text-transform:uppercase;white-space:nowrap;}
+  }
+  .ch-bell-pop .cc-nb{width:auto;padding:0 10px;gap:6px;}
+  .ch-bell-pop .cc-nb-l{display:inline;font-size:11px;font-weight:800;white-space:nowrap;}
   .cc-nb.on{color:#e6edfb;border-color:#31456f;background:#18233c;}
   .cc-nb i{position:absolute;top:-5px;right:-5px;min-width:15px;height:15px;padding:0 3px;
     border-radius:999px;background:#f7194a;color:#fff;font-style:normal;font-size:9.5px;
@@ -6294,7 +6325,8 @@
   .cc-dl:hover:not(.off){background:rgba(255,255,255,.16);}
   .cc-dl.did{box-shadow:inset 0 0 0 2px #00d6a4;}
   .cc-dl.off{opacity:.45;cursor:default;}
-  .cc-dl i{font-style:normal;font-size:15px;} .cc-dl b{font-size:13px;font-weight:900;} .cc-dl em{font-style:normal;font-size:11px;font-weight:900;color:#ffdd00;}
+  .cc-dl i{font-style:normal;font-size:15px;display:inline-flex;}
+  .cc-dl i svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linejoin:round;stroke-linecap:round;opacity:.9;} .cc-dl b{font-size:13px;font-weight:900;} .cc-dl em{font-style:normal;font-size:11px;font-weight:900;color:#ffdd00;}
   @media (max-width:700px){
     .cc-day-train .ch-art-in{padding:12px !important;}
     .cc-day-train .cc-ta-grid{grid-template-columns:minmax(0,1fr);gap:8px;}
@@ -8916,7 +8948,7 @@
   @media(max-width:1500px){ .x-top-name{display:none;} .nav-pill{padding:8px 12px;} }
   /* У кнопки поддержки прячется подпись, а не значок: остаются сердце и
      валюта — по ним она и узнаётся. */
-  @media(max-width:1180px){ .top #topBadge{display:none;} .support-top span + span{display:none;}
+  @media(max-width:1180px){ .top #topBadge{display:none;} .support-top svg + span{display:none;}
     .logo{font-size:26px;} .nav-pill{font-size:14px;padding:7px 10px;} }
   @media(max-width:760px){ .site-nav{order:3;width:100%;justify-content:center;} .nav-pill{padding:7px 12px;font-size:14px;} }
 
@@ -10423,7 +10455,7 @@
      в index.html только точки врезки. ?v= — тот же кэш-предохранитель, что и
      у соседей: поменял mp.js — переставь хеш, иначе браузер возьмёт старый
      файл и разойдётся с напарником. -->
-<script src="mp.js?v=312a25f1"></script>
+<script src="mp.js?v=46d27f80"></script>
 <!-- Дополнительные реплики лички и реплаев (tools/build-lines-more.js), грузятся после страницы. -->
 <script src="lines-more.js?v=5aebca09" defer></script>
 <!-- lz-string 1.5.0 (MIT, (c) 2013 pieroxy) — сжатие сейва карьеры, когда браузеру не хватает места (Safari: 5 МБ на сайт). -->
@@ -10449,10 +10481,10 @@
              без объяснений рядом. Отзыв: «одна lava для рублей
              в основном, а кофи для других валют». -->
         <a class="support-top" href="https://app.lava.top/psychopath?tabId=donate" target="_blank" rel="noopener" aria-label="Support fncsdraft (RUB)">
-          <span aria-hidden="true">&#128155;</span><span data-i18n="supportBtn"></span><i class="pay-cur">&#8381;</i>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 21s-8-4.9-8-11.2A4.6 4.6 0 0 1 12 7a4.6 4.6 0 0 1 8 2.8C20 16.1 12 21 12 21z"/></svg><span data-i18n="supportBtn"></span><i class="pay-cur">&#8381;</i>
         </a>
         <a class="support-top kofi-top" href="https://ko-fi.com/psychopathjke" target="_blank" rel="noopener" aria-label="Support fncsdraft on Ko-fi">
-          <span aria-hidden="true">&#9749;</span><span>Ko-fi</span><i class="pay-cur">$ &euro;</i>
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8h13v5.5A5.5 5.5 0 0 1 11 19H9a5.5 5.5 0 0 1-5.5-5.5z"/><path d="M16.5 10h1.8a2.6 2.6 0 0 1 0 5.2h-2.1"/></svg><span>Ko-fi</span><i class="pay-cur">$ &euro;</i>
         </a>
       </div>
     </div>
@@ -123134,7 +123166,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='e3444105';
+const CC_BUILD='76cb0721';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -147169,12 +147201,12 @@ function careerNoteBarHTML(){
   const posts=careerNewsNew().length;
   const btn=k=>`<button class="cc-nb cc-nb-${k}${n[k]?' on':''}" onclick="careerOpenPile(\'${k}\')"
       title="${esc(L()['dmSec'+k])}" aria-label="${esc(L()['dmSec'+k])}">
-      ${CC_NOTE_ICONS[k]}${n[k]?`<i>${n[k]>99?'99+':n[k]}</i>`:''}</button>`;
+      ${CC_NOTE_ICONS[k]}<span class="cc-nb-l">${esc(L()['dmSec'+k])}</span>${n[k]?`<i>${n[k]>99?'99+':n[k]}</i>`:''}</button>`;
   return `<div class="cc-notebar">
     ${['clubs','duos','fans','haters'].map(btn).join('')}
     <button class="cc-nb cc-nb-feed${posts?' on':''}" onclick="careerOpenFeed()"
       title="${esc(L().ccNews)}" aria-label="${esc(L().ccNews)}">
-      <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path fill="currentColor" d="M4 4h13a1 1 0 0 1 1 1v13a2 2 0 0 0 2 2H6a2 2 0 0 1-2-2V4Zm2 3v3h9V7H6Zm0 5v2h9v-2H6Zm0 4v2h6v-2H6Z"/></svg>
+      <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path fill="currentColor" d="M4 4h13a1 1 0 0 1 1 1v13a2 2 0 0 0 2 2H6a2 2 0 0 1-2-2V4Zm2 3v3h9V7H6Zm0 5v2h9v-2H6Zm0 4v2h6v-2H6Z"/></svg><span class="cc-nb-l">${esc(L().ccNews)}</span>
       ${posts?`<i>${posts>99?'99+':posts}</i>`:''}</button>
     ${(dms.length || posts) ? `<button class="cc-nb cc-nb-clear" onclick="ccBellClearAll(event)" title="${esc(L().ccBellClear)}" aria-label="${esc(L().ccBellClear)}">✓</button>` : ''}
   </div>`;
@@ -151596,8 +151628,15 @@ function ccDiscTileHTML(a, o){
 function ccDiscChipHTML(a, o, extra){
   return '<button class="cc-dl'+(o.can?'':' off')+(o.did?' did':'')+'" title="'+esc(ccActName(a.id)+(extra ? ' · '+extra.replace(/<\/i>/g, ' · ').replace(/<[^>]+>/g, '').replace(/[\s·]+$/, '') : ''))+'" '+
     (o.can ? 'onclick="careerPickDay(\''+a.id+'\')"' : 'disabled')+'>'+
-    '<i>'+(CC_TRAIN_ICON[a.id]||'•')+'</i><b>'+esc(ccActName(a.id))+'</b><em>'+a.energy+L().ccEnergyMark+'</em></button>';
+    '<i>'+(CC_DL_SVG[a.id] ? '<svg viewBox="0 0 24 24" aria-hidden="true">'+CC_DL_SVG[a.id]+'</svg>' : (CC_TRAIN_ICON[a.id]||'•'))+'</i><b>'+esc(ccActName(a.id))+'</b><em>'+a.energy+L().ccEnergyMark+'</em></button>';
 }
+// Значки строки дел линией в цвет текста, как X и телеграм в шапке: эмодзи 💬 📺 😴 на кнопке выглядели наклейкой.
+const CC_DL_SVG={
+  talk:'<path d="M4 5h16v11H10l-5 4v-4H4z"/>',
+  stream:'<rect x="3" y="4" width="18" height="12.5" rx="2"/><path d="M8.5 20.5h7M12 16.5v4"/><path d="M10.2 7.8v5.4l4.4-2.7z" fill="currentColor" stroke="none"/>',
+  host:'<path d="M6 21V4"/><path d="M6 4.5h11l-2.2 3.8L17 12H6"/>',
+  rest:'<path d="M19.5 14.6A7.8 7.8 0 1 1 9.4 4.5a6.2 6.2 0 0 0 10.1 10.1z"/>'
+};
 // Параметры одной строкой над плитками: сокращение, значение, прирост за неделю.
 function ccDiscStatsHTML(six){
   const lf=(typeof ccLife==='function') ? ccLife() : {};

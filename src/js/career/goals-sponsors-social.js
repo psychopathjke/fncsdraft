@@ -4809,12 +4809,12 @@ function careerNoteBarHTML(){
   const posts=careerNewsNew().length;
   const btn=k=>`<button class="cc-nb cc-nb-${k}${n[k]?' on':''}" onclick="careerOpenPile(\'${k}\')"
       title="${esc(L()['dmSec'+k])}" aria-label="${esc(L()['dmSec'+k])}">
-      ${CC_NOTE_ICONS[k]}${n[k]?`<i>${n[k]>99?'99+':n[k]}</i>`:''}</button>`;
+      ${CC_NOTE_ICONS[k]}<span class="cc-nb-l">${esc(L()['dmSec'+k])}</span>${n[k]?`<i>${n[k]>99?'99+':n[k]}</i>`:''}</button>`;
   return `<div class="cc-notebar">
     ${['clubs','duos','fans','haters'].map(btn).join('')}
     <button class="cc-nb cc-nb-feed${posts?' on':''}" onclick="careerOpenFeed()"
       title="${esc(L().ccNews)}" aria-label="${esc(L().ccNews)}">
-      <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path fill="currentColor" d="M4 4h13a1 1 0 0 1 1 1v13a2 2 0 0 0 2 2H6a2 2 0 0 1-2-2V4Zm2 3v3h9V7H6Zm0 5v2h9v-2H6Zm0 4v2h6v-2H6Z"/></svg>
+      <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path fill="currentColor" d="M4 4h13a1 1 0 0 1 1 1v13a2 2 0 0 0 2 2H6a2 2 0 0 1-2-2V4Zm2 3v3h9V7H6Zm0 5v2h9v-2H6Zm0 4v2h6v-2H6Z"/></svg><span class="cc-nb-l">${esc(L().ccNews)}</span>
       ${posts?`<i>${posts>99?'99+':posts}</i>`:''}</button>
     ${(dms.length || posts) ? `<button class="cc-nb cc-nb-clear" onclick="ccBellClearAll(event)" title="${esc(L().ccBellClear)}" aria-label="${esc(L().ccBellClear)}">✓</button>` : ''}
   </div>`;

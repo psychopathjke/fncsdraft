@@ -38,6 +38,13 @@ const WORDS = [[/ConsoleVCC/g, 'Console Victory Cash Cup'], [/MobileVictoryCup/g
 function pretty(name) {
   let s = String(name || '');
   WORDS.forEach(([re, to]) => { s = s.replace(re, to); });
+  // Остальные окна Epic тоже слитные («ReloadZBDuosCashCup», «OnePieceZoroCup», «FNCSDivisionalCup Division3»):
+  // в календаре они стояли сырыми id. Разбиваем по заглавным и цифрам.
+  s = s.replace(/ZB(?=[A-Z])|(?<=[a-z])ZB\b/g, ' Zero Build ').replace(/LCQ/g, ' Last Chance ')
+    .replace(/([A-Z]+)([A-Z][a-z])/g, '$1 $2').replace(/([a-z])([A-Z])/g, '$1 $2').replace(/([A-Za-z])(\d)/g, '$1 $2')
+    .replace(/\b(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)\b/g, m => m[0].toUpperCase() + m.slice(1))
+    .replace(/\bMobile All\b/g, 'Mobile · All').replace(/(\d)([A-Z])/g, '$1 · $2').replace(/·(?=\S)/g, '· ')
+    .replace(/Qualifier Qualifier/g, 'Qualifier').replace(/Heats Heat/g, 'Heat');
   return s.replace(/\s+/g, ' ').replace(/· ·/g, '·').replace(/\s·\s*$/, '').trim();
 }
 const kind = w => /FNCS|^Bratwurst_|^MannekenPis_/.test(w) ? 'fncs' : /VCC|VictoryCup|CashCup|PerformanceEvaluation|NickEh30/.test(w) ? 'cash' : /Ranked/.test(w) ? 'ranked' : 'other';
@@ -457,7 +464,7 @@ h1,h2,h3,h4{font-family:var(--font-display);font-weight:700;margin:0;line-height
 .ev.k-cash{border-left-color:var(--lime)}.ev.k-cash em{background:var(--lime)}
 .ev.k-ranked{border-left-color:var(--cyan)}.ev.k-ranked em{background:var(--cyan)}
 .ev.live{box-shadow:inset 0 0 0 2px var(--hot)}
-.ev.live em{background:var(--hot);color:#fff}.ev.live em::before{content:'@LIVE@ · '}
+.ev.live em{background:var(--hot);color:#fff}.ev.live em::before{content:'@LIVE@ · '}.ev.live:has(.lvb) em::before{content:none}
 .tbl{width:100%;border-collapse:separate;border-spacing:0 4px;font-size:14px}
 .tbl th{text-align:left;font:700 12px var(--font-display);text-transform:uppercase;letter-spacing:.08em;color:var(--dimmer);padding:2px 10px}
 .tbl td{padding:8px 10px;background:var(--row)}
