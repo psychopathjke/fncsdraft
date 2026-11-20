@@ -1,4 +1,4 @@
-/*@@PART js/career-6.js@@*/
+/*@@PART js/career/hub-stats-mobile.js@@*/
 function careerBackToHub(){
   if(typeof MGR_ACTIVE!=='undefined' && MGR_ACTIVE && CAREER && CAREER._mgr){ mgrAfterNight(); return; }   // вечер менеджера — назад в клуб
   document.documentElement.classList.remove('ev-pal', 'ev-classic', 'ev-light');
@@ -1148,3 +1148,571 @@ function ccArcNatRows(){
 }
 /* Зал соло — сотня одиночек, по силе. Берётся та же сцена, из которой архив
    собирает всё остальное; регион по тому же весу, что у ЛАНов. */
+function ccArcSoloSeats(n, champ){
+  const out=[], seen=new Set();
+  const champKey=(champ && champ[0]) ? hKey(champ[0]) : null;
+  if(champ && champ[0]){ seen.add(champKey); out.push({cards:[champ[0]], reg:champ[0].region||'EU', champ:true}); }
+  const total=CC_ARC_LAN_W.reduce((s,w)=>s+w[1], 0);
+  CC_ARC_LAN_W.forEach(w=>{
+    const want=Math.max(1, Math.round(n*w[1]/total));
+    let ro=[]; try{ ro=ccArcRoster(w[0]); }catch(e){ ro=[]; }
+    let got=0;
+    ro.forEach(p=>{
+      if(got>=want || out.length>=n || !p) return;
+      const k=hKey(p); if(!k || seen.has(k)) return;
+      seen.add(k); out.push({cards:[p], reg:w[0], champ:false}); got++;
+    });
+  });
+  return out.slice(0, n);
+}
+function ccArcEvent(kind){
+  // Кубок наций — сборные по четыре, двенадцать игр; соло — сотня одиночек.
+  if(kind==='nations') return {field:CC_NATIONS_FIELD, games:CC_NATIONS.final.games,
+                               kill:CC_NATIONS.final.kill, pts:pointsForPlace, cap:0};
+  if(kind==='solo')    return {field:CC_SOLOS_STAGES.final.field, games:CC_SOLOS_STAGES.final.games,
+                               kill:CC_SOLOS_STAGES.final.kill, pts:pointsForPlace, cap:0};
+  if(kind==='rc')     return {field:CC_RC_FINAL.teams, games:CC_RC_FINAL.games,
+                              kill:CC_RC_KILL, pts:rcPoints, cap:CC_RELOAD_KILL_CAP};
+  if(kind==='summit') return {field:CC_SUMMIT_STAGE.final.field, games:CC_SUMMIT_STAGE.final.games,
+                              kill:CC_SUMMIT_STAGE.final.kill, pts:majorPoints, cap:0};
+  if(kind==='gc')     return {field:CC_GLOB_FIELD, games:CC_GLOB_GAMES,
+                              kill:CC_GLOB_KILL, pts:majorPoints, cap:0};
+  return {field:CC_MAJOR_STAGE.final.field, games:CC_MAJOR_STAGE.final.games,
+          kill:CC_MAJOR_STAGE.final.kill, pts:majorPoints, cap:0};
+}
+/* The purse, place by place.
+
+   Every one of these is the table the event itself pays out of, so a row in
+   the archive is the cheque that was really written — except that a regional
+   Major reads the region of the row rather than the region of the player.
+   majorPrize cannot: it answers for the career's own cheque and takes its
+   region off the save. Asia's Major pays Asia's table here. */
+function ccArcPrize(kind, reg){
+  if(kind==='rc') return rcPrize;
+  if(kind==='summit'){ const t=(typeof PRIZE_TABLES!=='undefined' && PRIZE_TABLES.SUMMIT)||{};
+                       return p=>t[String(p)]||0; }
+  if(kind==='gc') return gcPrize;
+  const tb=(typeof PRIZE_TABLES!=='undefined' && PRIZE_TABLES) || {};
+  const t=tb[reg] || tb.EU || {};
+  return p=>t[String(p)]||0;
+}
+// A count written in duos, read in the squad the season was actually played in.
+// ccTeams cannot be used: it answers for the season standing now, and this is
+// a season that has already finished. See careerSeasonSize.
+function ccArcCount(size, duos){ return size===3 ? Math.round(duos*2/3) : duos; }
+
+/* The room, off the region's own roster.
+
+   The champion is seated first so nobody else can be built out of their cards,
+   then the seats go down the ratings: the strongest card left leads, their
+   recorded partner sits beside them when the roster holds one and is free, and
+   a trio's third seat is chosen for the pair it is joining rather than dealt
+   off the front of the queue. Which is careerCupField's own rule — see
+   ccPickThird — because a Grand Finals field and a cup field are the same
+   question asked twice. */
+function ccArcField(reg, size, n, rng, champ, skip, sn){
+  const roster=ccArcRoster(reg), src=ccArcPairs(reg, sn!=null ? ccArcCalYear(sn) : null);
+  const taken=new Set(), teams=[];
+  // The player's own seat, where they were in this one. It is spoken for: the
+  // room had a partner of yours in it playing beside somebody else otherwise,
+  // three rows under the row the two of you finished on.
+  if(skip) skip.forEach(k=>taken.add(k));
+  /* Чемпион не садится второй раз, если это и есть команда игрока.
+
+     Его снимок, 26 августа: в таблице «Malibuca & vic0» стоит первой строкой с
+     подписью «это ты» и ВТОРОЙ строкой — та же пара ещё раз. Игрок назвался
+     ником, который есть в ростере, напарник у него настоящий, и вычисленный
+     чемпион сезона сошёлся с его же составом. Список skip держит его ник и его
+     напарника — но действовал он только на выдуманные пары, а чемпион садился
+     мимо него. Своя строка потом вставляется отдельно, и пара двоилась.
+
+     Теперь чемпион проверяется тем же списком: совпал — место остаётся за
+     собственной строкой игрока, она и есть та победа. */
+  if(champ && champ.length===size && !(skip && champ.some(c=>skip.has(hKey(c))))){
+    champ.forEach(c=>taken.add(hKey(c)));
+    teams.push({reg:reg, cards:champ.slice(), champ:true});
+  }
+  // Записанные пары, сильнейшие первыми — та же очередь, какой садится лобби.
+  const free=src.pairs.filter(d=>!d.cards.some(c=>taken.has(hKey(c))));
+  const cores=free.slice(0, Math.max(0, n-teams.length));
+  /* Третьи — свободные имена сцены, и только когда те кончатся, половинки пар
+     за отсечкой. Порядок обратный тому, что в careerCupField, и намеренно:
+     свободные — список, один и тот же для региона, а хвост пар зависит от
+     размера комнаты и от того, кто в ней уже сидит. Через хвост третий у одной
+     и той же пары получался разный в разных таблицах одного сезона (замер: 70%
+     совпадений), через свободных — один и тот же. Разбивать пару ради третьего
+     всё равно нельзя: в Европе свободных имён 575 на 168 пар. */
+  const spare=[];
+  if(size>2){
+    src.singles.forEach(c=>{ if(!taken.has(hKey(c))) spare.push(c); });
+    free.slice(cores.length).forEach(d=>d.cards.forEach(c=>spare.push(c)));
+  }
+  /* Кого эта карьера уже видела третьим у этой пары — тот и садится, и место
+     ему держат ДО того, как комната разберёт свободных. Тот же порядок, что в
+     careerCupField, и по той же причине: запомненный третий может стоять в
+     паре за отсечкой, и пара, севшая раньше, уводила его молча. Замер до
+     резерва: третий у одной пары совпадал в двух таблицах сезона в 70%
+     случаев, потому что граница «пара играет / пара разбита» гуляла от
+     чемпиона к чемпиону. */
+  const memo=(CAREER && CAREER.career && CAREER.career.trios) || null;
+  const reserved=new Map();
+  if(size>2 && memo){
+    cores.forEach(d=>{
+      const key=ccArcCoreKey(d.cards), want=memo[key];
+      if(!want || d.cards.some(c=>taken.has(hKey(c)))) return;
+      const c=spare.find(x=>!taken.has(hKey(x)) && (x._k||hKey(x))===want)
+            || roster.find(x=>(x._k||hKey(x))===want && !taken.has(hKey(x)));
+      if(!c) return;
+      reserved.set(key, c); taken.add(hKey(c));
+    });
+  }
+  /* Пары идут подряд, пока комната не заполнится, а не ровно первые n: пара,
+     у которой резерв увёл половинку в третьи, места не занимает, и его берёт
+     СЛЕДУЮЩАЯ пара, а не двое случайных из остатка. Отсюда же и устойчивость
+     на границе комнаты: чемпион сезона сдвигает очередь на одну строку, и
+     раньше на этом месте собиралась выдуманная тройка. */
+  free.forEach(d=>{
+    if(teams.length>=n) return;
+    if(d.cards.some(c=>taken.has(hKey(c)))) return;
+    const team=d.cards.slice();
+    team.forEach(c=>taken.add(hKey(c)));
+    while(team.length<size){
+      const key=ccArcCoreKey(team);
+      const held=reserved.get(key);
+      if(held){ reserved.delete(key); team.push(held); continue; }
+      const open=spare.filter(c=>!taken.has(hKey(c)));
+      if(!open.length) break;
+      const k=ccPickThird(team, open, ccArcCoreRnd(sn, team), reg);
+      const pick=spare.splice(spare.indexOf(open[k<0 ? 0 : k]), 1)[0];
+      if(!pick) break;
+      taken.add(hKey(pick)); team.push(pick);
+    }
+    if(team.length<size) return;
+    teams.push({reg:reg, cards:team, champ:false});
+  });
+  /* Пары кончились раньше комнаты — дальше идут те, кто остался, по силе.
+     Так добирается регион, где записанных пар меньше, чем мест в лобби. */
+  let i=0;
+  while(teams.length<n){
+    const team=[];
+    while(team.length<size && i<roster.length){
+      const c=roster[i++];
+      if(taken.has(hKey(c))) continue;
+      taken.add(hKey(c)); team.push(c);
+    }
+    if(team.length<size) break;
+    teams.push({reg:reg, cards:team, champ:false});
+  }
+  return teams;
+}
+/* A LAN's room, which is every region's.
+
+   Antwerp and the Summit are not drawn from one roster and cannot be: the
+   seats are allocated by region and the allocation is the scene's own weight,
+   the same one that decides which region a LAN's winner comes out of. What the
+   rounding leaves over is Europe's, which is also true of the real allocation.
+   See CC_ARC_LAN_W. */
+function ccArcLanField(size, n, rng, champ, champReg, skip, sn){
+  const total=CC_ARC_LAN_W.reduce((s,w)=>s+w[1], 0);
+  const per={}; let sum=0;
+  CC_ARC_LAN_W.forEach(w=>{ per[w[0]]=Math.max(1, Math.round(n*w[1]/total)); sum+=per[w[0]]; });
+  per.EU=Math.max(1, per.EU+(n-sum));
+  const out=[];
+  CC_ARC_LAN_W.forEach(w=>{
+    const reg=w[0];
+    ccArcField(reg, size, per[reg], rng, reg===champReg ? champ : null, skip, sn).forEach(t=>out.push(t));
+  });
+  return out.slice(0, n);
+}
+/* Twelve games of a real lobby, played the way the career plays them.
+
+   The four globals are the same four every career runner sets before a stage
+   and puts back after it — CARD_MODE for the power model, squadSize for the
+   lobby, the kill cap for the circuit that has one — plus the random source
+   itself, which is what makes the same click give the same table. Restored in
+   a finally, because a throw inside the engine leaving the page on a seeded
+   Math.random would quietly freeze every draw in the app. */
+function ccArcPlay(teams, cfg, size, rng){
+  const rand=Math.random, mode=CARD_MODE, ss=squadSize, cap=CC_KILL_CAP;
+  Math.random=rng; CARD_MODE=true; squadSize=size; CC_KILL_CAP=cfg.cap||0;
+  try{ simulateGames(teams, cfg.games, cfg.pts, cfg.kill); }
+  finally{ Math.random=rand; CARD_MODE=mode; squadSize=ss; CC_KILL_CAP=cap; }
+}
+/* Moving a stretch of generated rows clear of one real number.
+
+   The rows are in order already; what they are not is on the right side of the
+   line the player's own score draws through the table. The row nearest that
+   line is pinned a point clear of it and every row behind it moves by the same
+   ratio, so the column keeps its shape — which is the engine's — while being
+   anchored to a result, which is the save's. Scaled rather than shifted
+   because a shift walks the tail of a fifty-team table past zero. A stretch
+   already clear of the line is left exactly as it was played. */
+function ccArcFit(rows, pts, dir){
+  if(!rows.length) return;
+  const near=rows[dir>0 ? rows.length-1 : 0].pts;
+  if(!(near>0)) return;
+  if(dir>0 ? near>pts : near<pts) return;
+  const k=(pts+dir)/near;
+  rows.forEach(r=>{ r.pts=Math.max(0, Math.round(r.pts*k)); });
+}
+/* Built once per row and kept for as long as the page is open — a hub render
+   asks for the open table again on every tab, every chip and every day that
+   passes, and twelve games of fifty teams is not a thing to do on a redraw.
+   The log's own length is in the key: the player's row is read out of it, so a
+   result written after the table was built has to rebuild it. */
+let CH_ARC_TBL={};
+function careerArchiveFinal(sn, key){
+  const cr=CAREER.career;
+  const ck=sn+'|'+key+'|'+(CAREER.player.nick||'')+'|'+((cr.log||[]).length);
+  if(CH_ARC_TBL[ck]) return CH_ARC_TBL[ck];
+  const a=careerArchiveSeason(sn), size=a.size, p=String(key).split('|');
+  let kind, reg, champ, mine=null, label;
+  if(p[0]==='m'){
+    const ev=a.regional.find(r=>r.n===+p[1]);
+    if(!ev) return null;
+    kind='major'; reg=p[2];
+    const w=ev.perReg[reg];
+    if(!w) return null;
+    champ=w.team; label=ev.label+' · '+regionName(reg);
+    if(reg===a.home) mine=ev.mine;
+  } else {
+    const ev=a.global.find(g=>g.slot===p[1]);
+    if(!ev) return null;
+    kind=ev.slot; reg=ev.win.reg; champ=ev.win.team; mine=ev.mine; label=ev.label;
+  }
+  let cfg=ccArcEvent(kind);
+  /* Финалы прошлых лет — в своём формате, а не в составе сезона: World Cup Solo — сотня
+     одиночек, Duos — пятьдесят дуо, FNCS Season X — трио, C2S1 — сквады (CC_MX_SPEC); у
+     2021–2023 — лобби и таблица призов своего года (CC_MAJOR_PAY_<год>, по региону строки). */
+  const arcY=ccArcCalYear(sn);
+  let evSize=size, evPrize=null;
+  if(kind==='major'){
+    const mn=+p[1], sp=(typeof ccMXSpec==='function') ? ccMXSpec(arcY, mn) : null;
+    const tier=tb=>{ const t=tb && (tb[reg] || (reg==='NAW' && tb.NAC) || tb.EU); return t ? (pl=>{ const r=t.find(x=>pl<=x[0]); return r ? r[1] : 0; }) : null; };
+    if(sp){
+      evSize=sp.size;
+      cfg=Object.assign({}, cfg, {field:ccMXLobby(sp.size), games:sp.finalGames||cfg.games});
+      evPrize=pl=>ccMXPrize(arcY, mn, pl);
+    } else if(arcY>=2021 && arcY<=2023){
+      evSize=arcY===2021 ? 3 : 2;
+      const tb=({2021:CC_MAJOR_PAY_2021, 2022:CC_MAJOR_PAY_2022, 2023:CC_MAJOR_PAY_2023})[arcY];
+      const t=tb && tb[mn];
+      cfg=Object.assign({}, cfg, {field:arcY===2021 ? 33 : 50});
+      evPrize=tier(t);
+    }
+  }
+  // Настоящий Гранд-финал (см. ccArcRealGf) — доска Epic как есть, без переигровки.
+  const realW=kind==='major' && a.regional.find(r=>r.n===+p[1]).perReg[reg].real;
+  if(realW){
+    const prz=evPrize || ccArcPrize(kind, reg);
+    // Ник — как его пишет сцена (тот же, что в строке чемпиона), а не как его набрала доска.
+    const rows=realW.rows.map((e,i)=>({p:i+1, name:e.duo.map(h=>ccStageCardFrom({h:h, r:reg}).handle).join(' & '), reg:reg, pts:e.pts||0, wins:e.wins||0,
+      elims:Math.round((e.avgElims||0)*(e.matches||0)), prize:prz(i+1)}));
+    const ws=realW.rows[0].duo.length;
+    const word=ws===1 ? L().lfWordSolo : ws===4 ? L().lfWordSquads : ws===3 ? L().ccWordTrios : L().ccWordDuos;
+    const games=Math.max.apply(null, realW.rows.map(e=>e.matches||0)) || cfg.games;
+    const out={cap:label, sub:L().arcTable(ccNum(rows.length), word, games), lan:false, rows};
+    CH_ARC_TBL[ck]=out;
+    return out;
+  }
+  /* РАЗМЕР СОСТАВА У ЭТИХ ДВУХ — СВОЙ, А НЕ СЕЗОНА.
+
+     Кубок наций играется сборными по четыре, соло — одиночками, и ни то ни
+     другое не переводится в дуо/трио года: ccArcCount тут промолчит, иначе
+     зал из двадцати пяти стран превратился бы в семнадцать. */
+  const seatSize = kind==='nations' ? CC_NATIONS_SQUAD : (kind==='solo' || evSize===1) ? 1 : evSize;
+  const n = (kind==='nations' || kind==='solo' || evSize!==size)
+    ? Math.max(2, cfg.field)
+    : Math.max(2, ccArcCount(size, cfg.field));
+  const rng=careerRng(ccHashStr('arcT|'+(CAREER.player.nick||'')+'|'+sn+'|'+key));
+  const skip = mine ? new Set([CAREER.player.nick].concat(
+      (mine.mates && mine.mates.length) ? mine.mates : (mine.mate?[mine.mate]:[]))
+      .filter(Boolean).map(h=>String(h).toLowerCase())) : null;
+  /* Зал Кубка наций — книга сборных целиком, и чемпион в ней уже стоит:
+     строка назвала страну (см. careerArchiveSeason), таблица сажает её же
+     четвёрку. Соло — сотня одиночек по силе. */
+  const seats = kind==='nations'
+      /* Регион — у самой сборной, а не у чемпиона: он тут один на всю
+         таблицу, и датская четвёрка получала флаг Океании. Берётся с её же
+         сильнейшей карточки, как берётся и всё остальное в строке. */
+      ? ccArcNatRows().map(r=>({cards:r.top,
+                                reg:(r.top[0] && r.top[0].region) || reg,
+                                champ: !!(champ && champ[0] && r.top[0] && hKey(r.top[0])===hKey(champ[0]))}))
+    : (kind==='solo' || evSize===1) ? ccArcSoloSeats(n, champ && champ.slice(0,1))
+    : kind==='major' ? ccArcField(reg, evSize, n, rng, champ && champ.slice(0, evSize), skip, sn)
+                     : ccArcLanField(size, n, rng, champ, reg, skip, sn);
+  if(seats.length<2) return null;
+  const bare=s=>String(s==null?'':s).replace(/<[^>]*>/g, '').trim();
+  const teams=seats.map(s=>{
+    const t=careerTeam(s.cards);
+    t.name=teamLabel(s.cards); t._reg=s.reg; t._champ=!!s.champ;
+    return t;
+  });
+  ccArcPlay(teams, cfg, seatSize, rng);
+  const ranked=teams.slice().sort((x,y)=>
+    y.stagePts-x.stagePts || (y.wins||0)-(x.wins||0) || y.stageElims-x.stageElims);
+  // The champion of the season and the winner of the twelve games trade rows.
+  const ci=ranked.findIndex(t=>t._champ);
+  if(ci>0){
+    const A=ranked[0], B=ranked[ci];
+    ['name','_reg','_champ'].forEach(k=>{ const v=A[k]; A[k]=B[k]; B[k]=v; });
+  }
+  const prize=evPrize || ccArcPrize(kind, reg);
+  const rows=ranked.map((t,i)=>({p:i+1, name:bare(t.name), reg:t._reg,
+    pts:t.stagePts||0, wins:t.wins||0, elims:t.stageElims||0}));
+  /* And the row that really happened goes in at the place it really finished.
+
+     Which is the one row in this table that is not a reconstruction, so the
+     reconstruction is fitted to it rather than the other way round. Without
+     that, a career that finished fourth on 377 read as fourth above two teams
+     on 432 and 402 — and a standings table that does not descend is one nobody
+     believes the rest of. */
+  /* Верхушка таблицы — записанная, а не переигранная.
+
+     Его снимки, 26 августа: пост в ленте про финал Мейджора 1 называет топ-5 с
+     очками 667 / 566 / 539 / 531 / 517, а таблица того же турнира в Истории
+     открывалась на 529 / 524 / 478 / 476 / 472 и с другими командами на местах
+     со второго по пятое. Разошлись они потому, что здесь турнир ИГРАЛСЯ заново
+     своим броском: от настоящего вечера в сейве лежала одна строка — своя.
+
+     Теперь вечер оставляет пять верхних строк (ccStageTop, пишется рядом с
+     результатом), и они садятся как есть — с именами, очками, победами и
+     элимами того вечера. Всё, что ниже, остаётся реконструкцией и прижимается
+     под пятую строку, чтобы таблица читалась сверху вниз.
+
+     Сейв без записи — старая карьера — рисуется как прежде. */
+  const top=(mine && Array.isArray(mine.top) && mine.top.length)
+    ? mine.top : ccArcTopFromNews(mine, rows);
+  if(top){
+    const key=s=>String(s==null?'':s).toLowerCase().replace(/\s+/g,'');
+    const seen=new Set(top.map(r=>key(r.n)));
+    const rest=rows.filter(r=>!seen.has(key(r.name)));
+    const head=top.map(r=>({p:0, name:String(r.n||''), reg:r.r||a.home,
+                            pts:r.p||0, wins:r.w||0, elims:r.e||0,
+                            you:r.you?true:undefined}));
+    ccArcFit(rest, head[head.length-1].pts, -1);
+    rows.length=0;
+    rows.push.apply(rows, head.concat(rest));
+    if(rows.length>n) rows.length=n;
+  }
+  // Своя строка вставляется отдельно только если её нет среди записанных.
+  if(mine && mine.place>0 && !(top && top.some(r=>r.you))){
+    const at=Math.min(Math.max(1, mine.place), rows.length+1)-1;
+    ccArcFit(rows.slice(0, at), mine.pts||0, 1);
+    ccArcFit(rows.slice(at), mine.pts||0, -1);
+    rows.splice(at, 0, {p:0, name:[CAREER.player.nick].concat(
+        (mine.mates && mine.mates.length) ? mine.mates : (mine.mate?[mine.mate]:[])).join(' & '),
+      reg:a.home, pts:mine.pts||0, wins:mine.wins||0, elims:mine.elims||0, you:true});
+    if(rows.length>n) rows.length=n;
+  }
+  rows.forEach((r,i)=>{ r.p=i+1; r.prize=prize(i+1); });
+  const ws=kind==='major' ? evSize : size;
+  const word=ws===1 ? L().lfWordSolo : ws===4 ? L().lfWordSquads : ws===3 ? L().ccWordTrios : L().ccWordDuos;
+  const out={cap:label, sub:L().arcTable(ccNum(rows.length), word, cfg.games),
+             lan:kind!=='major', rows};
+  CH_ARC_TBL[ck]=out;
+  return out;
+}
+// Which row is open, if any. One at a time: two fifty-line tables inside one
+// tile is a screen nobody can find their way back up.
+let CH_ARC_OPEN=null;
+function careerArcOpen(key){
+  CH_ARC_OPEN = CH_ARC_OPEN===key ? null : key;
+  // Архив живёт во вкладке Истории, а не Профиля: перерисовка возвращает
+  // туда же, откуда нажали, иначе клик по сезону уносил на другую вкладку.
+  careerRenderHub('hist');
+}
+function careerArcTableHTML(sn, key){
+  const t=careerArchiveFinal(sn, key);
+  if(!t) return `<div class="arc-wrap"><div class="arc-cap">${L().arcNoTable}</div></div>`;
+  // A LAN carries where each team came from, and it carries it under the name
+  // rather than in a column of its own: six columns and a region is wider than
+  // a phone, and the first thing to fall off the right of it is the prize.
+  const head=`<th class="arc-h">#</th><th>${L().teamHeader}</th>`+
+    `<th class="ev-num">${L().ptsHeader}</th><th class="ev-num">${L().winsWord}</th>`+
+    `<th class="ev-num">${L().killsHeader}</th>`;
+  const body=t.rows.map(r=>`<tr class="${r.you?'arc-me':''}">
+      <td><span class="ev-place${r.p<=3?' top':(r.you?' cut':'')}">${r.p}</span></td>
+      <td class="arc-n">${esc(r.name)}${r.prize?`<span class="st-prize">${ccMoney(r.prize)}</span>`:''}${r.you?` <i>${L().arcYou}</i>`:''}${
+        t.lan?`<small>${esc(regionName(r.reg))}</small>`:''}</td>
+      <td class="ev-num arc-pts">${ccNum(r.pts)}</td>
+      <td class="ev-num">${r.wins||'-'}</td>
+      <td class="ev-num">${ccNum(r.elims)}</td>
+    </tr>`).join('');
+  return `<div class="arc-wrap">
+    <div class="arc-cap">${esc(t.cap)}<span>${esc(t.sub)}</span></div>
+    <div class="arc-scroll"><table class="arc-t">
+      <thead><tr>${head}</tr></thead><tbody>${body}</tbody></table></div>
+  </div>`;
+}
+// A line of the tile, and the table it opens.
+/* Обложка турнира к строке архива — правка: «мб понятные
+   турниры сделай с логотипами, чтоб люди понимали, что можно кликать там на
+   глобал, мейджор и т. д.». Строка и раньше открывалась по клику, но выглядела
+   как строка таблицы, а подсказка про это стояла одна на весь блок. Картинка
+   отвечает на оба вопроса разом: и что это за турнир, и что на него смотрят,
+   а не читают. Ключ строки уже несёт слот ('g|gc', 'm|1|EU'), другого источника
+   не нужно. */
+/* Обложка строки — турнира СВОЕГО года: у 2019–2024 постер сезона FNCS (ccFncsPoster), у 2025 —
+   постеры Мейджоров, у Глобалов — свой город года; где своего нет — ключевой арт года. */
+function ccArcArt(key, sn){
+  const k=String(key||'');
+  const y=sn!=null && typeof ccArcCalYear==='function' ? ccArcCalYear(sn) : ccCalYear();
+  if(y<2026){
+    const m=/^m\|(\d)/.exec(k);
+    if(m){ const id='Major'+m[1]+'_'+y; return ccFncsPoster(id) || CAREER_EV_ART_ID[id+'_Final'] || (y<=2024 ? 'art/fncs-'+y+'.jpg' : CAREER_EV_ART.cup); }
+    if(k.indexOf('g|gc')===0) return y===2022 ? ccFncsPoster('Invitational2022') : (CAREER_EV_ART_ID['GlobalChampionship'+y] || CAREER_EV_ART.gc);
+    if(k.indexOf('g|nations')===0) return CAREER_EV_ART_ID.nations || CAREER_EV_ART.gc;
+  }
+  if(k.indexOf('g|summit')===0) return 'art/fncs-2026-major1.jpg';
+  if(k.indexOf('g|rc')===0)     return CAREER_EV_ART.reload;
+  if(k.indexOf('g|gc')===0)     return CAREER_EV_ART.gc;
+  // Кубок наций — ЛАН, обложка та же, что у Глобалов; у соло своя.
+  if(k.indexOf('g|nations')===0) return CAREER_EV_ART.gc;
+  if(k.indexOf('g|solo')===0)    return CAREER_EV_ART.solo;
+  if(k.indexOf('m|1')===0)      return 'art/fncs-2026-major1.jpg';
+  if(k.charAt(0)==='m')         return CAREER_EV_ART.cup;
+  return '';
+}
+function ccArcRow(sn, key, label, valueHTML, you){
+  const open=CH_ARC_OPEN===key;
+  const art=ccArcArt(key, sn);
+  return `<div class="ch-row arc-row${open?' arc-on':''}" onclick="careerArcOpen(\'${key}\')">
+      <em>${art?`<img class="arc-logo" src="${art}" alt="" loading="lazy" onerror="this.remove()">`:''}${esc(label)}</em>
+      <b class="${you?'ch-goal-met':''}">${valueHTML}<i class="arc-caret">${open?'▾':'▸'}</i></b>
+    </div>`+(open ? careerArcTableHTML(sn, key) : '');
+}
+let CH_ARC_S=null, CH_ARC_R=null;
+function careerArcPick(sn){ CH_ARC_S=sn; CH_ARC_OPEN=null; careerRenderHub('hist'); }
+function careerArcReg(r){ CH_ARC_R=r; CH_ARC_OPEN=null; careerRenderHub('hist'); }
+/* Разыгран ли финал этого слота к сегодняшнему дню сезона. По id в календаре,
+   а не по дате из головы: у каждого слота день свой, и после сыгранного вечера
+   часы уже стоят за ним. Слот, которого в календаре нет (третий Мейджор
+   трио-архива), не разыгран, пока сезон не кончится. */
+function ccArcDoneBy(id){
+  let day=null;
+  // Финал Мейджора в календарях 2025/2024 зовётся Major<n>_2025_Final / Major<n>_2024_Final.
+  /* Тестер, 22 сентября: «в истории не то» — в карьере 2024-го КАЖДАЯ строка
+     Сезонов стояла «ещё впереди», даже отыгранная. Регулярка ловила букву «d»
+     вместо цифры, alt всегда был null, и id календаря 2024/2025
+     (Major1_2024_Final) не искался вовсе — а под именем 2026-го
+     (Major1_Final) в этих годах нет ни одного дня. */
+  const alt=/^Major(\d)_Final$/.exec(String(id||''));
+  const ids=alt ? [id].concat([2025,2024,2023,2022,2021,2020,2019].map(y=>'Major'+alt[1]+'_'+y+'_Final')) : [id];
+  if(id==='GlobalChampionship') ids.push('GlobalChampionship2025', 'GlobalChampionship2024', 'GlobalChampionship2023', 'Invitational2022');
+  careerYearDays().forEach((list, iso)=>{
+    if(list.some(e=>ids.indexOf(e.id)>=0) && (!day || iso>day)) day=iso;
+  });
+  return !!day && careerToday()>day;
+}
+// Неразыгранный слот — та же строка с той же обложкой, только без победителя:
+// турнир этого сезона существует и до него ещё дойдут, а строка без картинки
+// рядом со строками с картинками читалась бы как другая порода.
+function ccArcSoonRow(label, key, sn){
+  const art=ccArcArt(key, sn!=null ? sn : CH_ARC_S);
+  return `<div class="ch-row arc-row"><em>${
+      art?`<img class="arc-logo" src="${art}" alt="" loading="lazy" onerror="this.remove()">`:''
+    }${esc(label)}</em>
+    <b style="color:var(--ink-dimmer);">${L().arcSoon}</b></div>`;
+}
+// Формат сезона: у 2019–2023 — как шёл год (дуо → трио → сквады), у остальных — состав сезона.
+function ccArcFormat(sn, size){
+  const y=ccArcCalYear(sn), t=y<=2023 && L()['ccYear'+y];
+  return t ? t.charAt(0).toUpperCase()+t.slice(1) : ccSeasonWord(size);
+}
+// Подпись сезона по размеру состава: соло, дуо, трио, сквад.
+function ccSeasonWord(n){ const T=L(); return n===1 ? (T.ccSeasonSolo||T.ccSeasonDuos) : n===3 ? T.ccSeasonTrios : n===4 ? (T.ccSeasonSquads||T.ccSeasonDuos) : T.ccSeasonDuos; }
+function careerArchiveHTML(){
+  const cr=CAREER.career;
+  const doneSeasons=[];
+  for(let n=1;n<=cr.season;n++) if(n<cr.season || cr.seasonOver) doneSeasons.push(n);
+  /* И идущий сезон тоже — игрок, 22 августа: «чтобы можно было в середине
+     сезона смотреть, кто выиграл квалы евс и фнкс, не только после завершения
+     сезона». Мир сезона посеян от его номера, так что чемпион, показанный в
+     июле, в декабре останется тем же; несыгранные слоты стоят «ещё впереди». */
+  const live=!cr.seasonOver;
+  if(live) doneSeasons.push(cr.season);
+  if(!doneSeasons.length)
+    return `<div class="ch-tile"><h4>${L().arcTitle}</h4>
+      <div class="ch-empty">${L().arcNone}</div></div>`;
+  const sn=doneSeasons.indexOf(CH_ARC_S)>=0 ? CH_ARC_S : doneSeasons[doneSeasons.length-1];
+  const partial=live && sn===cr.season;
+  const reg=CH_ARC_R || ccCareerRegion();
+  const a=careerArchiveSeason(sn);
+  const chipsS=doneSeasons.map(n=>`<button class="cc-back${n===sn?' cc-on':''}"
+    onclick="careerArcPick(${n})">${esc(L().ccMoneySeason(n))}</button>`).join('');
+  const chipsR=REGIONS.map(r=>`<button class="cc-back${r.code===reg?' cc-on':''}"
+    onclick="careerArcReg(\'${r.code}\')">${esc(regionName(r.code))}</button>`).join('');
+  const rowsR=a.regional.map(ev=>{const w=ev.perReg[reg];
+    if(partial && !ccArcDoneBy('Major'+ev.n+'_Final')) return ccArcSoonRow(ev.label, 'm|'+ev.n+'|'+reg, sn);
+    return ccArcRow(sn, 'm|'+ev.n+'|'+reg, ev.label,
+      esc(w.name)+(w.you?' · '+L().arcYou:''), w.you);}).join('');
+  const CC_ARC_GID={summit:'Summit_Final', rc:'ReloadChampionshipParis', gc:'GlobalChampionship',
+                    nations:'NationsFinal', solo:'SoloSeries_Final'};
+  const rowsG=a.global.map(ev=>{
+    if(partial && !ccArcDoneBy(CC_ARC_GID[ev.slot]||'')) return ccArcSoonRow(ev.label, 'g|'+ev.slot, sn);
+    return ccArcRow(sn, 'g|'+ev.slot, ev.label,
+      esc(ev.win.name)+' · '+esc(regionName(ev.win.reg))+(ev.win.you?' · '+L().arcYou:''),
+      ev.win.you);}).join('');
+  return `<div class="ch-tile"><h4>${L().arcTitle}</h4>
+    <div class="ch-hint">${L().arcHint}. ${L().arcTapHint}</div>
+    ${partial ? `<div class="ch-hint">${L().arcLive}</div>` : ''}
+    <div class="cc-chips cc-chips-seasons">${chipsS}</div>
+    <!-- The label is what the row is, not what the hub tab is called: chSquad is
+         the word "Duo" on the tab strip, and a trios season read "Duo · a trios
+         season". His report, 20 August. -->
+    <div class="ch-row"><em>${L().ccSeasonFormat}</em><b>${ccArcFormat(sn, a.size)}</b></div>
+    ${(cr.log||[]).some(e=>e.season===sn) ? `<div class="cc-chips"><button class="cc-back" onclick="ccGalaShare(${sn})">${esc(L().ccShareSeason||'Share season')}</button></div>` : ''}
+    ${rowsG}
+    <div class="cc-chips cc-chips-reg">${chipsR}</div>
+    ${rowsR}
+  </div>`;
+}
+/* Колонка «Событие» звала каждую строку кубком дивизиона, чем бы вечер ни был —
+   Скриншот: финал релоада читался как «Кубок Див 1». Имя не
+   хранится в строке — его знает календарь, и он же держит его на языке экрана,
+   поэтому строка спрашивает свой день у календаря. День вне календаря (сейв
+   другого года) получает хотя бы слово за тип турнира. */
+/* Обложка события в строке профиля — как у Fortnite Tracker в списке турниров игрока (его
+   просьба 29.09: «добавь картинки к эвентам, как на фортнайттрекере»). Та же картинка, что
+   в календаре и на карточке дня: событие этого дня того же вида → ccEventArt. */
+function ccLogArt(e){
+  if(!e) return '';
+  const ID={rc:'ReloadChampionshipParis', gclc:'GlobalChampionshipLastChance'};
+  const kind=e.kind||'cup';
+  let ev=null;
+  try{ ev=(careerYearDays().get(e.day)||[]).find(x=>ID[kind] ? x.id===ID[kind] : x.kind===(kind==='scq' ? 'summit' : kind)); }catch(x){}
+  return (ev && ccEventArt(ev)) || CAREER_EV_ART[kind] || CAREER_EV_ART.cup || '';
+}
+function ccLogArtHTML(e){
+  const a=ccLogArt(e);
+  return a ? '<img class="ev-thumb" src="'+esc(a)+'" alt="" loading="lazy" onerror="this.style.visibility=\'hidden\'">'
+           : '<span class="ev-thumb"></span>';
+}
+function ccLogName(e, noLabel){
+  if(e.kind && e.kind!=='cup'){
+    // Париж и Last Chance делят на календаре один kind 'gc' — различает id.
+    const ID={rc:'ReloadChampionshipParis', gclc:'GlobalChampionshipLastChance'};
+    const onDay=(careerYearDays().get(e.day)||[])
+      .find(x=>ID[e.kind] ? x.id===ID[e.kind] : x.kind===(e.kind==='scq' ? 'summit' : e.kind));
+    if(onDay && onDay.label && !noLabel) return esc(onDay.label);
+    const W={final:L().calWeeklyFinal, eval:L().calPerfEval, victory:ccWkVictoryWord(),
+             major:ccWkMajorWord(), gclc:L().chWkGC, globals:L().chWkGC,
+             reload:L().chWkReload, summit:L().brk_lan, rc:L().brk_rc,
+             solo:'Solo Series'};
+    if(W[e.kind]) return W[e.kind];
+  }
+  return L().chCupWeek(e.div);
+}
+/* Две разные вкладки, а не одна длинная.
+
+   Правка шла в два приёма: сначала «вот эту таблицу нужно как
+   отдельный столбик в лобби, после центра profile мб» — это лист результатов,
+   — а следом «вот это добавь в историю» со скрином сезонов и ленты карьеры.
+   То есть Профиль отвечает на «какой я игрок», История — на «что было»: кто
+   что выиграл по сезонам и чем кончился каждый вечер. Раньше обе половины
+   стояли одной простынёй под одной вкладкой, и вторая начиналась там, где у
+   первой кончались строки. */
+function careerHistoryHTML(){
+  return careerArchiveHTML()+careerTimelineHTML()+ccRetiredHTML();
+}

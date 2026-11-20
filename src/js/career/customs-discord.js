@@ -1,0 +1,1072 @@
+/*@@PART js/career/customs-discord.js@@*/
+/* СВОЯ КАСТОМКА — организатор ты.
+
+   Игрок: «было бы интересно сделать организацию собственных
+   турниров/кастомок». Кастомки в этой сцене держат те, у кого есть аудитория
+   (Poyo, Rax): фонд из своего кармана, лобби из знакомых имён, вечер идёт в
+   эфир и растит канал. Так и здесь: кнопка дня рядом со стримом, фонд с
+   баланса, лобби — люди своего региона ближайшие по рейтингу, победители игр
+   получают деньги на общую доску (careerMoneyAdd), а ты — охват и пост в ленте.
+
+   Кто может: аудитория от CC_HOST_REACH, либо свой клуб, либо тот PR, с
+   которого зовут на чужие кастомки. Ставка за победу растёт с каналом, а не
+   выбирается — так вечер стоит ровно столько, сколько ты уже собрал зрителей.
+   Своя игра считается тем же броском, что и на чужой кастомке (ccCustomPlay):
+   это не турнир карьеры — журнал, квалификации и PR не трогаются. */
+const CC_HOST_REACH=3000;
+function ccHostPerWin(){
+  const r=careerReach();
+  return r>=100000 ? 500 : r>=20000 ? 250 : 100;
+}
+function ccHostPot(){ return ccHostPerWin()*CC_CUSTOM_GAMES; }
+// Почему нельзя — словом для кнопки; null — можно.
+function ccHostWhy(){
+  const cr=CAREER && CAREER.career; if(!cr) return 'reach';
+  const own=typeof careerClub==='function' && careerClub();
+  if(!(careerReach()>=CC_HOST_REACH || own || ccCustomPr()>=CC_CUSTOM_PR)) return 'reach';
+  if((cr.balance||0)<ccHostPot()) return 'cash';
+  return null;
+}
+// Лобби: 49 человек своего региона, ближайшие по рейтингу; свои люди не зовутся.
+function ccHostField(){
+  const pl=CAREER.player, mine=pl.ovrExact!=null ? pl.ovrExact : pl.ovr;
+  const taken=ccMyPeople();
+  const ovrOf=c=>(c._ovr!=null ? c._ovr : (attrsFor(c)||{}).ovr||0);
+  return careerRosterNowEU().filter(p=>!taken.has(hKey(p)))
+    .map(p=>({handle:p.handle, ovr:ovrOf(p)}))
+    .sort((a,b)=>Math.abs(a.ovr-mine)-Math.abs(b.ovr-mine))
+    .slice(0, 49);
+}
+function ccHostRun(){
+  const cr=CAREER.career, pl=CAREER.player;
+  if(ccHostWhy()) return null;
+  const per=ccHostPerWin(), pot=per*CC_CUSTOM_GAMES;
+  cr.balance=(cr.balance||0)-pot;
+  cr.hosted=(cr.hosted||0)+pot;
+  const rnd=careerRng(ccHashStr('host|'+(cr.season||1)+'|'+careerToday()));
+  const mine=pl.ovrExact!=null ? pl.ovrExact : pl.ovr;
+  const pMe=clamp(0.05+(mine-ccBand(1))*0.012, 0.02, 0.45);
+  const field=ccHostField();
+  const weight=c=>Math.exp((c.ovr-90)/4);
+  const total=field.reduce((s,c)=>s+weight(c), 0);
+  const wins=new Map(); let myWins=0;
+  for(let g=0; g<CC_CUSTOM_GAMES; g++){
+    if(rnd()<pMe){ myWins++; continue; }
+    let r=rnd()*total, w=field[field.length-1];
+    for(let i=0;i<field.length;i++){ r-=weight(field[i]); if(r<=0){ w=field[i]; break; } }
+    wins.set(w.handle, (wins.get(w.handle)||0)+1);
+  }
+  const cash=myWins*per;
+  if(cash){ cr.balance=(cr.balance||0)+cash; cr.side=(cr.side||0)+cash; }
+  // Победители игр — на общую доску денег, своими именами.
+  const winners=[...wins.keys()];
+  if(winners.length) careerMoneyAdd(winners.map(h=>({name:h})), (i,t)=>wins.get(t.name)*per);
+  // Организатор в эфире: вечер растит охват сильнее обычного стрима и даёт репутацию.
+  careerReachAdd(3*CC_REACH_DIV(cr.division));
+  careerRepAdd(1);
+  const who=winners.length
+    ? winners.map(h=>'@'+ccHandle(h)+(wins.get(h)>1 ? ' ×'+wins.get(h) : '')).join(', ')
+    : '-';
+  careerNews('flat', 'ccPostHosted', [per, who, myWins]);
+  cr.hostLast={day:careerToday(), a:[myWins, cash ? ccNum(cash) : 0, who]};
+  return {wins:myWins, cash:cash, pot:pot, per:per, winners:winners};
+}
+/* DISCORD В СОЦСЕТИ (его слово 19.11: «добавить дискорд в social, чтоб сделать кастомки на пк и на мобил и прочее»).
+   Кастомки этой сцены живут в Discord: сервер организатора, канал объявлений, вход по порогу. Здесь три сервера:
+   PC Customs — та же кастомка, что приходила событием дня (ccCustomPlay, порог PR CC_CUSTOM_PR), теперь по желанию;
+   Mobile Customs — пять игр по 16, только тач (как Mobile Series), зовут с мобильного рейтинга CC_DC_MOB_RATE, качает
+   мобильный рейтинг как скрим (игрок мобильной сцены: «every cup I just get destroyed, no way to practice»);
+   Мой сервер — провести свою кастомку на ПК (ccHostRun) или на мобиле, фонд с баланса. И канал скримов со ссылками на
+   занятия дня. Каждое — раз в день, 40 энергии, в свободный день. Пороги и ставки мобилы — решение, не замер. */
+const CC_DC_ENERGY=40, CC_DC_MOB_RATE=75, CC_DC_MOB_PER_WIN=50;
+let CH_DC='pc';
+function ccDcDid(kind){ const d=CAREER.career.dcDid; return !!(d && d.day===careerToday() && d.kinds.indexOf(kind)>=0); }
+function ccMobHostPer(){ return Math.max(50, ccHostPerWin()/2); }
+function ccMobHostWhy(){
+  const cr=CAREER && CAREER.career; if(!cr) return 'reach';
+  if(!ccMobileOwn()) return 'phone';
+  const own=typeof careerClub==='function' && careerClub();
+  if(!(careerReach()>=CC_HOST_REACH || own || ccCustomPr()>=CC_CUSTOM_PR)) return 'reach';
+  if((cr.balance||0)<ccMobHostPer()*CC_CUSTOM_GAMES) return 'cash';
+  return null;
+}
+// Почему нельзя (строкой) или null.
+function ccDcWhy(kind){
+  const cr=CAREER.career, T=L();
+  if(!ccCentreDayOpen()) return T.dcDayClosed;
+  if(ccDcDid(kind)) return T.dcDone;
+  if(typeof ccMpOn==='function' && ccMpOn()) return T.dcMpOff;
+  if(kind==='mobJoin' && !ccMobileOwn()) return T.ccMobTrainNeed;
+  if(kind==='pcHost' || kind==='mobHost'){
+    const w=kind==='pcHost' ? ccHostWhy() : ccMobHostWhy();
+    if(w==='phone') return T.ccMobTrainNeed;
+    if(w==='reach') return T.dcNeedReach(ccNum(CC_HOST_REACH));
+    if(w==='cash') return T.dcNeedCash(ccNum((kind==='pcHost' ? ccHostPot() : ccMobHostPer()*CC_CUSTOM_GAMES)-(cr.balance||0)));
+  }
+  if(careerEnergy()<CC_DC_ENERGY) return T.ccNeedEnergy(CC_DC_ENERGY-careerEnergy());
+  return null;
+}
+// Мобильная кастомка: пять игр по 16, шанс победы от мобильного рейтинга против верха сцены (~85), одна шестнадцатая на равных.
+function ccMobCustomPlay(){
+  const cr=CAREER.career;
+  const rnd=careerRng(ccHashStr('mcustom|'+(cr.season||1)+'|'+careerToday()));
+  const p=clamp(1/16+(ccMobileOvr()-85)*0.015, 0.02, 0.5);
+  let wins=0; for(let g=0; g<CC_CUSTOM_GAMES; g++) if(rnd()<p) wins++;
+  const cash=wins*CC_DC_MOB_PER_WIN;
+  if(cash){ cr.balance=(cr.balance||0)+cash; cr.side=(cr.side||0)+cash; }
+  const grow=ccMobileTrain(true);
+  careerReachAdd(wins ? 2 : 1);
+  return {wins:wins, cash:cash, grow:grow};
+}
+// Своя мобильная кастомка: 15 мобильных игроков своего региона ближе всех по рейтингу, победители — их ники в посте.
+function ccMobHostRun(){
+  const cr=CAREER.career;
+  if(ccMobHostWhy()) return null;
+  const per=ccMobHostPer(), pot=per*CC_CUSTOM_GAMES, mine=ccMobileOvr();
+  cr.balance=(cr.balance||0)-pot; cr.hosted=(cr.hosted||0)+pot;
+  const R=(typeof CC_MOBILE_ROSTER!=='undefined') ? (CC_MOBILE_ROSTER[ccCareerRegion()] || CC_MOBILE_ROSTER.EU || []) : [];
+  const field=R.map(x=>({handle:x[0], ovr:ccMobileRate(x[0], x[2])})).sort((a,b)=>Math.abs(a.ovr-mine)-Math.abs(b.ovr-mine)).slice(0, 15);
+  const rnd=careerRng(ccHashStr('mhost|'+(cr.season||1)+'|'+careerToday()));
+  const pMe=clamp(1/16+(mine-85)*0.015, 0.02, 0.5);
+  const weight=c=>Math.exp((c.ovr-85)/4), total=field.reduce((s,c)=>s+weight(c), 0);
+  const wins=new Map(); let myWins=0;
+  for(let g=0; g<CC_CUSTOM_GAMES; g++){
+    if(rnd()<pMe || !field.length){ myWins++; continue; }
+    let r=rnd()*total, w=field[field.length-1];
+    for(let i=0;i<field.length;i++){ r-=weight(field[i]); if(r<=0){ w=field[i]; break; } }
+    wins.set(w.handle, (wins.get(w.handle)||0)+1);
+  }
+  const cash=myWins*per;
+  if(cash){ cr.balance=(cr.balance||0)+cash; cr.side=(cr.side||0)+cash; }
+  careerReachAdd(2*CC_REACH_DIV(cr.division));
+  const winners=[...wins.keys()];
+  const who=winners.length ? winners.map(h=>'@'+ccHandle(h)+(wins.get(h)>1 ? ' ×'+wins.get(h) : '')).join(', ') : '-';
+  careerNews('flat', 'ccPostHosted', [per, who, myWins]);
+  return {wins:myWins, cash:cash, pot:pot, per:per, winners:winners};
+}
+function ccDcGo(kind){
+  if(ccDcWhy(kind)) return;
+  const cr=CAREER.career;
+  careerSpend(CC_DC_ENERGY);
+  let r=null;
+  if(kind==='pcJoin'){ r=ccCustomPlay(); careerNews(r.wins ? 'good' : 'flat', 'ccDayEvcustomTake', [r.wins, ccNum(r.cash)]); }
+  else if(kind==='mobJoin'){ r=ccMobCustomPlay(); careerNews(r.wins ? 'good' : 'flat', 'ccDayEvcustomTake', [r.wins, ccNum(r.cash)]); }
+  else if(kind==='pcHost') r=ccHostRun();
+  else if(kind==='mobHost') r=ccMobHostRun();
+  const d=(cr.dcDid && cr.dcDid.day===careerToday()) ? cr.dcDid : {day:careerToday(), kinds:[]};
+  d.kinds.push(kind); cr.dcDid=d;
+  cr.dcLast={day:careerToday(), kind:kind, wins:r ? r.wins : 0, cash:r ? r.cash : 0, grow:r && r.grow ? r.grow : 0,
+             who:r && r.winners ? r.winners.slice(0, 5) : null};
+  careerSave();
+  careerRenderHub('discord');
+}
+/* СЕССИЯ КАСТОМОК КАК НА НАСТОЯЩИХ (его слово 19.11: «сделать симуляции игр, регистрацию кастомок, как на настоящих
+   кастомках»). Как у Noble (nobleprac.com, сессии и таблицы 18.11.2026): в день несколько сессий (Session 1, 2, Late Night),
+   запись, чек-ин, код лобби, игры, таблица «убийства / игры / победы / очки». Noble Solos — 2 игры за сессию, топ-5 зовут
+   в Solos Closed; Practice Scrims — Solo/Duo/Trio Customs, топ-5 зовут в Division 3 (правила там же: файт до 60 живых, после
+   4-й зоны снова можно, играть на эндгейм). Здесь: регистрация бесплатная, чек-ин даёт код, «Играть» — живые игры на карте
+   с игроками своего региона уровня твоего сервера; 40 энергии, вечер дня. Командные кастомки — 3 игры, мобильные — 5 по 16
+   (решение, не замер). Очки — как в первом раунде капа, 2 за элим. */
+const CC_DC_SESS=[{id:'s1', n:'Session 1', t:'18:00'}, {id:'s2', n:'Session 2', t:'20:00'}, {id:'ln', n:'Late Night', t:'23:00'}];
+// Куда зовёт топ-5 сессии (nobleprac.com): Practice Scrims → Division 3, Solos Closed и Division 3 → Division 2, Division 2 → Division 1.
+// Выше Division 1 приглашением не попасть: Pro Scrims — по PR, Noble X — только tier 1.
+const CC_NOBLE_PROMO={6:4, 5:3, 4:3, 3:2};
+function ccDcReg(){ const r=CAREER.career.dcReg; return (r && r.day===careerToday()) ? r : null; }
+function ccDcSessFmt(kind){
+  if(kind==='mob') return {solo:true, games:5, lobby:16};
+  const solo=careerSquadSize()<=1 || /Solos/.test(ccNobleServer().name) || !(careerMates()||[]).length || careerMates().some(m=>!m);
+  return {solo:solo, games:solo ? 2 : 3, lobby:solo ? 100 : ccTeams(50)};
+}
+function ccDcSessTitle(kind, s){
+  const d=careerToday(), dd=d.slice(8,10)+'/'+d.slice(5,7)+'/'+d.slice(2,4);
+  const f=ccDcSessFmt(kind), fmt=f.solo ? 'Solos' : (['','Solos','Duo','Trio','Squad'][careerSquadSize()]||'Duo')+' Customs';
+  return (kind==='mob' ? L().dcSrvMob : ccNobleServer().name)+' · '+(kind==='mob' ? 'Touch' : fmt)+' '+s.n+' ['+dd+']';
+}
+function ccDcRegister(kind, sid){
+  const cr=CAREER.career;
+  if(ccDcReg()) return;
+  const rnd=careerRng(ccHashStr('dccode|'+careerToday()+'|'+kind+'|'+sid));
+  const code=(kind==='mob' ? 'TOUCH' : ccCareerRegion()==='EU' ? 'NOBLE' : String(ccPracSrv()).split(' ')[0].toUpperCase())+(1000+Math.floor(rnd()*9000));
+  cr.dcReg={day:careerToday(), kind:kind, sess:sid, code:code, checked:false};
+  careerSave(); careerRenderHub('discord');
+}
+function ccDcCheckIn(){ const r=ccDcReg(); if(!r) return; r.checked=true; careerSave(); careerRenderHub('discord'); }
+function ccDcUnreg(){ const r=ccDcReg(); if(!r || r.done) return; delete CAREER.career.dcReg; careerSave(); careerRenderHub('discord'); }
+function ccDcBack(){ careerBackToHub(); careerTab('discord'); }
+async function ccScrimRun(){
+  const r=ccDcReg(); if(!r || !r.checked || r.done || r.spot==null) return;
+  const kind=r.kind, why=ccDcWhy(kind==='mob' ? 'mobJoin' : 'pcJoin'); if(why) return;
+  const cr=CAREER.career, me=careerCard(); if(!me) return;
+  const f=ccDcSessFmt(kind), s=CC_DC_SESS.find(x=>x.id===r.sess)||CC_DC_SESS[0], title=ccDcSessTitle(kind, s);
+  careerSpend(CC_DC_ENERGY);
+  r.done=true;
+  const d=(cr.dcDid && cr.dcDid.day===careerToday()) ? cr.dcDid : {day:careerToday(), kinds:[]};
+  d.kinds.push(kind==='mob' ? 'mobJoin' : 'pcJoin'); cr.dcDid=d;
+  careerSave();
+  const S=ccDcScrSetup(r, true); if(!S) return;
+  ccDcScrMarks(r, S);
+  const field=S.field, you=S.you, tier=ccNobleTier();
+  skipAnimation=false; CC_SKIP_RUN=false;
+  resetRunRecord();
+  document.getElementById('majorStages').innerHTML='';
+  const rsPrev=document.getElementById('runSummary'); if(rsPrev) rsPrev.innerHTML='';
+  document.getElementById('lobbyTitle').textContent='';
+  document.getElementById('lobbyBody').innerHTML='';
+  clearEventPanel();
+  document.getElementById('finalBanner').style.display='none';
+  clearLandingResultsMap();
+  CAREER_RUN=true;
+  show('screen-results');
+  ensureSkipButton();
+  const sc=kind==='mob' ? ccCupScore({id:'S41_MobileSeriesHeat1'}, 1) : null;
+  await simulateGamesLive(field, f.games, sc ? sc.pts : victoryR1Points, sc ? sc.kill : CC_VICTORY_R1_KILL, 'stage', 0, null, null,
+    {lobbySize:Math.min(field.length, kind==='mob' ? 16 : (f.solo ? 100 : ccTeams(50))), stageName:title, mapReplay:true, choices:true, stopOnYourDeath:true,
+     // Как на сессиях Noble: точки отмечены заранее в канале карты дропов, первая игра — по этим меткам.
+     dropEachGame:(g,room)=>(g===1 && r.spot!=null) ? ccDcDropGroups(room||field, you, r) : careerLandingPick(room||field, you, title, ['victory'])});
+  removeSkipButton();
+  const ranked=field.slice().sort((a,b)=>b.stagePts-a.stagePts || (b.wins||0)-(a.wins||0) || b.stageElims-a.stageElims);
+  const place=ranked.indexOf(you)+1, wins=you.wins||0, kills=you.stageElims||0;
+  // Итог: форма (как у сессии Noble), мобилка — рейтинг и деньги за победы, EU — инвайт выше по лестнице за топ-5.
+  let note='', promo=null;
+  cr.form=clamp((cr.form||0)+ccNobleForm(place, field.length), -CC_FORM_MAX, CC_FORM_MAX);
+  if(kind==='mob'){
+    const cash=wins*CC_DC_MOB_PER_WIN; if(cash){ cr.balance=(cr.balance||0)+cash; cr.side=(cr.side||0)+cash; }
+    const g=ccMobileTrain(true); note=L().ccMobTitle+' +'+g.toFixed(2)+(cash ? ' · '+ccMoney(cash) : '');
+  } else if(ccCareerRegion()==='EU' && place<=5 && CC_NOBLE_PROMO[tier]!=null){
+    promo=CC_NOBLE_LADDER[CC_NOBLE_PROMO[tier]].name; cr.nobleInv=Math.min(cr.nobleInv!=null ? cr.nobleInv : 9, CC_NOBLE_PROMO[tier]);
+    note=L().dcPromoGot(promo);
+  } else if(ccCareerRegion()==='EU' && CC_NOBLE_PROMO[tier]!=null) note=L().dcPromo(CC_NOBLE_LADDER[CC_NOBLE_PROMO[tier]].name);
+  // Неделя сервера: очки сессии в таблицу недели (та же, что у занятия в «Тренировке»).
+  if(kind!=='mob'){ const lf=ccLife(), wk=ccMonthKey(careerToday())+'|'+Math.floor(((+careerToday().slice(8,10))-1)/7), sv=ccNobleServer();
+    if(!lf.noble || lf.noble.wk!==wk) lf.noble={wk, server:sv.name, me:0, n:0, rows:ccNobleRivals(sv, wk)};
+    lf.noble.me+=you.stagePts||0; lf.noble.n++; lf.noble.server=sv.name; }
+  careerReachAdd(1);
+  careerNews(place<=10 ? 'good' : 'flat', 'lfNewsNoble', [title, place, field.length, kills, you.stagePts||0, ccNobleForm(place, field.length)]);
+  r.res={place:place, of:field.length, pts:you.stagePts||0, kills:kills, wins:wins, note:note};
+  cr.dcLast={day:careerToday(), kind:kind==='mob' ? 'mobJoin' : 'pcJoin', wins:wins, cash:kind==='mob' ? wins*CC_DC_MOB_PER_WIN : 0, grow:0, who:null};
+  careerSave();
+  const shell=createStageCardShell(title+' · '+field.length);
+  await revealStageLog(you, shell, true);
+  finalizeStageCard(shell, place, field.length, you.stagePts, place<=5, false, L().dcSessRes(place, field.length, you.stagePts||0, kills, wins)+(note ? ' · '+note : ''));
+  await revealStandings(shell, ranked, you, 5, null, null, null, null, false);
+  S.restore();
+  const box=document.createElement('div'); box.className='stage-card '+(place<=5 ? 'pass' : 'fail');
+  box.innerHTML='<h4>'+esc(title)+' <span class="stage-badge '+(place<=5 ? 'pass' : 'fail')+'">#'+place+'</span></h4>'+
+    '<div class="stage-detail"><div>'+esc(L().dcSessRes(place, field.length, you.stagePts||0, kills, wins))+'</div>'+(note ? '<div>'+esc(note)+'</div>' : '')+'</div>'+
+    '<div class="stage-actions"><button class="btn-primary" onclick="ccDcBack()">'+esc(L().dcBackDc)+'</button></div>';
+  document.getElementById('majorStages').appendChild(box);
+  box.scrollIntoView({block:'end', behavior:'smooth'});
+}
+/* СКРИМЫ ХОСТЯТ АДМИНЫ СЕРВЕРА, игрок их не создаёт (его слово 19.11: «scrims не создавать, а что хостили админы и ты
+   регаешься, так же работает; и метку на карту ставишь с другими игроками»). Блоки дня от админа сервера практики
+   региона, запись на блок, чек-ин с кодом, потом канал карты дропов: метки других команд уже стоят (раздача комнаты
+   тем же buildBotLandingAssignment), свою ставишь нажатием на квадрат. Первая игра блока идёт ровно по этим меткам,
+   дальше точка спрашивается как обычно. Цена и прибавка — занятие дня «скрим» / «мобильные скримы» (careerDoAct). */
+const CC_DC_SCR_SESS=[{id:'b1', n:'Scrims Block 1', t:'19:00'}, {id:'b2', n:'Scrims Block 2', t:'21:30'}];
+function ccDcScrReg(){ const r=CAREER.career.dcScr; return (r && r.day===careerToday()) ? r : null; }
+function ccDcScrAct(kind){ return kind==='mob' ? 'mobScrim' : 'scrim'; }
+function ccDcScrOrg(kind){ return kind==='mob' ? L().dcSrvMob : ccPracSrv(); }
+function ccDcScrWhy(kind){
+  const T=L(), a=ccActById(ccDcScrAct(kind));
+  if(!a) return '-';
+  if(typeof ccMpOn==='function' && ccMpOn()) return T.dcScrBusy;
+  if(!ccCentreDayOpen() || careerDayClosed()) return T.dcScrBusy;
+  if(a.mobile && !ccMobileOwn()) return T.ccMobTrainNeed;
+  if(careerEnergy()<a.energy) return T.ccNeedEnergy(a.energy-careerEnergy());
+  return null;
+}
+function ccDcScrTitle(kind, s){
+  const d=careerToday(), dd=d.slice(8,10)+'/'+d.slice(5,7)+'/'+d.slice(2,4);
+  const fmt=kind==='mob' ? 'Touch' : (['','Solo','Duo','Trio','Squad'][careerSquadSize()]||'Duo');
+  return ccDcScrOrg(kind)+' · '+fmt+' Scrims '+s.n.replace('Scrims ','')+' ['+dd+']';
+}
+function ccDcScrRegister(kind, sid){
+  const cr=CAREER.career;
+  if(ccDcScrReg() || ccDcScrWhy(kind)) return;
+  const rnd=careerRng(ccHashStr('dcscr|'+careerToday()+'|'+kind+'|'+sid));
+  cr.dcScr={day:careerToday(), kind:kind, sess:sid, code:'SCRIM'+(1000+Math.floor(rnd()*9000)), checked:false, spot:null, marks:null};
+  careerSave(); careerRenderHub('discord');
+}
+function ccDcScrCheckIn(){ const r=ccDcScrReg(); if(!r) return; r.checked=true; careerSave(); careerRenderHub('discord'); }
+function ccDcScrUnreg(){ const r=ccDcScrReg(); if(!r || r.done) return; delete CAREER.career.dcScr; careerSave(); careerRenderHub('discord'); }
+// Ключ команды для меток: ники состава, как их видит раскладка (одинаков при сборке комнаты заново).
+function ccDcTk(t){ return (t && t.squad || []).map(c=>c ? hKey(c) : '').filter(Boolean).sort().join('+') || String(t && t.name || ''); }
+// Комната блока: тот же состав, остров и поле, что и в игре; restore() возвращает драфт как было.
+function ccDcScrSetup(r, cust){
+  const me=careerCard(); if(!me) return null;
+  const kind=r.kind, mates=(careerMates()||[]).filter(Boolean), sf=cust ? ccDcSessFmt(kind) : null;
+  const solo=sf ? sf.solo : (kind==='mob' || careerSquadSize()<=1 || !mates.length);
+  const games=sf ? sf.games : (kind==='mob' ? 5 : 3), lobby=sf ? sf.lobby : (kind==='mob' ? 16 : (solo ? 100 : ccTeams(50)));
+  const prev={mode:CARD_MODE, size:squadSize, drafted:drafted, set:ACTIVE_LANDING_SET};
+  CARD_MODE=true; squadSize=solo ? 1 : careerSquadSize(); drafted=solo ? [me] : [me].concat(mates);
+  useLandingSet(kind==='mob' && ZONE_SETS.r6 ? 'r6' : careerBrSet());
+  const you=careerYouTeam(drafted);
+  you.name=L().yourTeamPrefix+teamLabel(drafted); you.isYou=true;
+  if(kind==='mob') you.pow=ccMobileSelfPow();
+  const tier=ccNobleTier(), crT=Object.assign({}, CAREER.career, {division:[1,1,1,2,3,4,5][tier]||5});
+  const field=[you].concat(kind==='mob' ? ccMobileField(lobby-1, 'reg')
+    : solo ? careerSoloField(crT, [me], lobby, true)
+    : careerCupField(crT, drafted, lobby, (cust ? 'dc|' : 'dcs|')+r.day+'|'+r.sess, true, tier<=1 ? CC_FIELD_SHARP.lan : 0));
+  return {field:field, you:you, games:games, lobby:lobby, solo:solo, prev:prev,
+          restore:function(){ CARD_MODE=prev.mode; squadSize=prev.size; drafted=prev.drafted; useLandingSet(prev.set); }};
+}
+// Метки остальных команд — один раз на блок, дальше лежат в записи (r.marks: [ключ, квадрат, ники]).
+function ccDcScrMarks(r, S){
+  if(r.marks) return r.marks;
+  const zones=ALL_LANDING_ZONES||[], m=[];
+  const nameOf=t=>(t.squad||[]).map(c=>c && c.handle).filter(Boolean).join(' + ') || String(t.name||'').replace(/<[^>]*>/g,'');
+  const pre=buildBotLandingAssignment(S.field.filter(t=>t!==S.you)).zoneGroups;
+  pre.forEach((list, z)=>{ const i=zones.indexOf(z); if(i<0) return;
+    (list||[]).forEach(t=>{ if(t && !t.isYou) m.push([ccDcTk(t), i, nameOf(t)]); }); });
+  r.marks=m; r.grid=ACTIVE_LANDING_SET;
+  careerSave();
+  return m;
+}
+function ccDcDropReg(which){ return which==='cust' ? ccDcReg() : ccDcScrReg(); }
+function ccDcDropOpen(which){
+  which=which==='cust' ? 'cust' : 'scr';
+  const r=ccDcDropReg(which); if(!r || !r.checked || r.done) return;
+  const S=ccDcScrSetup(r, which==='cust'); if(!S) return;
+  let html='';
+  try{
+    const T=L(), zones=ALL_LANDING_ZONES||[], marks=ccDcScrMarks(r, S), grid=ACTIVE_LANDING_SET;
+    const art=MAP_ART[grid]||MAP_ART.m2, asp=MAP_ASPECT[grid]||'1100/970';
+    const by=new Map(); marks.forEach(m=>{ if(!by.has(m[1])) by.set(m[1], []); by.get(m[1]).push(m[2]); });
+    const meName=(S.you.squad||[]).map(c=>c && c.handle).filter(Boolean).join(' + ') || ccHandle(CAREER.player.nick||'');
+    const boxes=zones.map((z,i)=>{
+      const who=(by.get(i)||[]).slice(), me=r.spot===i; if(me) who.unshift(meName);
+      const cls='cc-dm-box pick'+(who.length>=2 ? ' hot' : '')+(me ? ' me' : '')+(who.length ? '' : ' free');
+      return '<button type="button" class="'+cls+'" style="left:'+z.x+'%;top:'+z.y+'%;width:'+z.w+'%;height:'+z.h+'%" onclick="ccDcDropPick('+i+',\''+which+'\')" aria-label="'+
+        esc(T.landingZoneSuffix(i+1))+'"><span>'+who.slice(0, 3).map(n=>esc(n)).join('<br>')+(who.length>3 ? '<br>+'+(who.length-3) : '')+'</span></button>';
+    }).join('');
+    const mineN=r.spot!=null ? (by.get(r.spot)||[]).length : 0;
+    html='<div class="cc-dm" role="dialog" aria-modal="true"><div class="cc-dm-head"><b>#'+esc(T.dcDropChan)+'</b><em>'+
+      esc(which==='cust' ? ccDcSessTitle(r.kind, CC_DC_SESS.find(s=>s.id===r.sess)||CC_DC_SESS[0]) : ccDcScrTitle(r.kind, CC_DC_SCR_SESS.find(s=>s.id===r.sess)||CC_DC_SCR_SESS[0]))+'</em>'+
+      '<button class="cc-dm-x" onclick="ccDropMapClose()" aria-label="'+esc(T.ccDropMapClose)+'">×</button></div>'+
+      '<div class="cc-dm-map" style="aspect-ratio:'+asp+';background-image:url(\''+art+'\')">'+boxes+'</div>'+
+      '<p class="cc-dm-note">'+esc(r.spot!=null ? T.dcDropMine(T.landingZoneSuffix(r.spot+1), mineN) : T.dcDropHint)+'</p>'+
+      (r.spot!=null ? '<div class="dc-act"><button class="dc-btn" onclick="ccDropMapClose();careerRenderHub(\'discord\')">'+esc(T.dcDropDone)+'</button></div>' : '')+'</div>';
+  } finally{ S.restore(); }
+  ccDropMapClose();
+  const el=document.createElement('div');
+  el.id='ccDropMapModal'; el.className='cc-dm-wrap cc-dc-drop';
+  el.onclick=e=>{ if(e.target===el){ ccDropMapClose(); careerRenderHub('discord'); } };
+  el.innerHTML=html;
+  document.body.appendChild(el);
+}
+function ccDcDropPick(i, which){
+  const r=ccDcDropReg(which); if(!r || !r.checked || r.done) return;
+  r.spot=i; careerSave(); ccDcDropOpen(which);
+}
+// Первая игра блока — по меткам канала: своя команда на свой квадрат, остальные на свои; кого не нашли — раздачей.
+function ccDcDropGroups(field, you, r){
+  const zones=ALL_LANDING_ZONES||[], groups=new Map(), byKey=new Map((r.marks||[]).map(m=>[m[0], m[1]]));
+  CC_STYLE_TEAM=you; ccApplyPlayStyle(you);
+  const put=(t, z)=>{ t.landingZone=z; t.landingResult=null; t.landingRival=null; applyLandingPow(t, z.points);
+    if(!groups.has(z)) groups.set(z, []); groups.get(z).push(t); };
+  const rest=[];
+  (field||[]).forEach(t=>{
+    const i=t===you ? r.spot : byKey.get(ccDcTk(t)), z=i!=null ? zones[i] : null;
+    if(z) put(t, z); else rest.push(t);
+  });
+  if(rest.length) buildBotLandingAssignment(rest, {into:groups});
+  r.matched=(field||[]).length-rest.length;
+  return groups;
+}
+async function ccDcScrRun(){
+  const r=ccDcScrReg(); if(!r || !r.checked || r.done || r.spot==null) return;
+  const kind=r.kind; if(ccDcScrWhy(kind)) return;
+  if(!careerDoAct(ccDcScrAct(kind))) return;
+  const cr=CAREER.career;
+  r.done=true; careerSave();
+  const s=CC_DC_SCR_SESS.find(x=>x.id===r.sess)||CC_DC_SCR_SESS[0], title=ccDcScrTitle(kind, s);
+  const S=ccDcScrSetup(r); if(!S){ return; }
+  ccDcScrMarks(r, S);
+  const field=S.field, you=S.you;
+  skipAnimation=false; CC_SKIP_RUN=false;
+  resetRunRecord();
+  document.getElementById('majorStages').innerHTML='';
+  const rsPrev=document.getElementById('runSummary'); if(rsPrev) rsPrev.innerHTML='';
+  document.getElementById('lobbyTitle').textContent='';
+  document.getElementById('lobbyBody').innerHTML='';
+  clearEventPanel();
+  document.getElementById('finalBanner').style.display='none';
+  clearLandingResultsMap();
+  CAREER_RUN=true;
+  show('screen-results');
+  ensureSkipButton();
+  const sc=kind==='mob' ? ccCupScore({id:'S41_MobileSeriesHeat1'}, 1) : null;
+  await simulateGamesLive(field, S.games, sc ? sc.pts : victoryR1Points, sc ? sc.kill : CC_VICTORY_R1_KILL, 'stage', 0, null, null,
+    {lobbySize:Math.min(field.length, S.lobby), stageName:title, mapReplay:true, choices:true, stopOnYourDeath:true,
+     dropEachGame:(g, room)=>(g===1 && r.spot!=null) ? ccDcDropGroups(room||field, you, r) : careerLandingPick(room||field, you, title, ['victory'])});
+  removeSkipButton();
+  const ranked=field.slice().sort((a,b)=>b.stagePts-a.stagePts || (b.wins||0)-(a.wins||0) || b.stageElims-a.stageElims);
+  const place=ranked.indexOf(you)+1, wins=you.wins||0, kills=you.stageElims||0;
+  cr.form=clamp((cr.form||0)+ccNobleForm(place, field.length), -CC_FORM_MAX, CC_FORM_MAX);
+  careerReachAdd(1);
+  careerNews(place<=10 ? 'good' : 'flat', 'lfNewsNoble', [title, place, field.length, kills, you.stagePts||0, ccNobleForm(place, field.length)]);
+  r.res={place:place, of:field.length, pts:you.stagePts||0, kills:kills, wins:wins};
+  careerSave();
+  const shell=createStageCardShell(title+' · '+field.length);
+  await revealStageLog(you, shell, true);
+  finalizeStageCard(shell, place, field.length, you.stagePts, place<=5, false, L().dcSessRes(place, field.length, you.stagePts||0, kills, wins));
+  await revealStandings(shell, ranked, you, 5, null, null, null, null, false);
+  S.restore();
+  const box=document.createElement('div'); box.className='stage-card '+(place<=5 ? 'pass' : 'fail');
+  box.innerHTML='<h4>'+esc(title)+' <span class="stage-badge '+(place<=5 ? 'pass' : 'fail')+'">#'+place+'</span></h4>'+
+    '<div class="stage-detail"><div>'+esc(L().dcSessRes(place, field.length, you.stagePts||0, kills, wins))+'</div></div>'+
+    '<div class="stage-actions"><button class="btn-primary" onclick="ccDcBack()">'+esc(L().dcBackDc)+'</button></div>';
+  document.getElementById('majorStages').appendChild(box);
+  box.scrollIntoView({block:'end', behavior:'smooth'});
+}
+// Каналы скримов: объявление админа, запись на блок, чек-ин с кодом, карта дропов, игра.
+function ccDcScrHTML(kind, chan, msg){
+  const T=L(), r=ccDcScrReg(), mine=r && r.kind===kind ? r : null, other=r && r.kind!==kind;
+  const why=ccDcScrWhy(kind), org=ccDcScrOrg(kind), a=ccActById(ccDcScrAct(kind));
+  const ann=chan(T.dcScrims, msg(org+' Admin', true, '<p>'+esc(T.dcScrAnn(CC_DC_SCR_SESS.map(s=>s.n+' '+s.t).join(', ')))+'</p>'));
+  const list=CC_DC_SCR_SESS.map(s=>{ const on=mine && mine.sess===s.id;
+    const b=on ? '<span class="dc-ok">✓ '+esc(T.dcRegDone)+'</span>'+(mine.done ? '' : ' <button class="dc-btn ghost sm" onclick="ccDcScrUnreg()">'+esc(T.dcUnreg)+'</button>')
+      : (r || why) ? '' : '<button class="dc-btn sm" onclick="ccDcScrRegister(\''+kind+'\',\''+s.id+'\')">'+esc(T.dcReg)+'</button>';
+    return '<div class="dc-sess'+(on ? ' on' : '')+'"><span><b>'+esc(s.n)+'</b> <i>'+s.t+'</i></span>'+b+'</div>'; }).join('');
+  let step='';
+  if(mine && mine.done && mine.res){
+    const x=mine.res; step='<div class="dc-res">'+esc(T.dcSessRes(x.place, x.of, x.pts, x.kills, x.wins))+'</div>';
+  } else if(mine && !mine.checked){
+    step='<div class="dc-act"><button class="dc-btn" onclick="ccDcScrCheckIn()">'+esc(T.dcCheckIn)+'</button></div>';
+  } else if(mine){
+    const has=mine.spot!=null;
+    step='<p class="dc-code">'+esc(T.dcCode(mine.code))+'</p>'+
+      '<div class="dc-act"><button class="dc-btn'+(has ? ' ghost' : '')+'" onclick="ccDcDropOpen(\'scr\')">📍 '+esc(has ? T.dcDropEdit : T.dcDropBtn)+'</button>'+
+      (has ? '<span class="dc-sub">'+esc(T.landingZoneSuffix(mine.spot+1))+'</span>' : '')+'</div>'+
+      '<div class="dc-act"><button class="dc-btn"'+(why || !has ? ' disabled' : '')+' onclick="ccDcScrRun()">'+esc(T.dcPlay)+' <em>'+(a ? a.energy : 40)+T.ccEnergyMark+'</em></button>'+
+      (why ? '<span class="dc-why">'+esc(why)+'</span>' : !has ? '<span class="dc-why">'+esc(T.dcDropNeed)+'</span>' : '')+'</div>';
+  } else step='<p class="dc-sub">'+esc(other ? T.dcRegOther : why || T.dcSteps)+'</p>';
+  return ann+
+    '<div class="dc-chan"><div class="dc-chan-h"># '+esc(T.dcScrims)+'-'+esc(T.dcRegChan)+'</div>'+list+'</div>'+
+    '<div class="dc-chan"><div class="dc-chan-h"># '+esc(T.dcDropChan)+'</div>'+step+'</div>';
+}
+// Каналы регистрации и чек-ина сервера (kind: 'pc' | 'mob').
+function ccDcSessHTML(kind){
+  const T=L(), r=ccDcReg(), mine=r && r.kind===kind ? r : null, other=r && r.kind!==kind;
+  const why=ccDcWhy(kind==='mob' ? 'mobJoin' : 'pcJoin');
+  const list=CC_DC_SESS.map(s=>{ const on=mine && mine.sess===s.id;
+    const b=on ? '<span class="dc-ok">✓ '+esc(T.dcRegDone)+'</span>'+(mine.done ? '' : ' <button class="dc-btn ghost sm" onclick="ccDcUnreg()">'+esc(T.dcUnreg)+'</button>')
+      : (r || why) ? '' : '<button class="dc-btn sm" onclick="ccDcRegister(\''+kind+'\',\''+s.id+'\')">'+esc(T.dcReg)+'</button>';
+    return '<div class="dc-sess'+(on ? ' on' : '')+'"><span><b>'+esc(s.n)+'</b> <i>'+s.t+'</i></span>'+b+'</div>'; }).join('');
+  let check='';
+  if(mine && mine.done && mine.res){
+    const x=mine.res; check='<div class="dc-res">'+esc(T.dcSessRes(x.place, x.of, x.pts, x.kills, x.wins))+(x.note ? ' · '+esc(x.note) : '')+'</div>';
+  } else if(mine && !mine.checked){
+    check='<div class="dc-act"><button class="dc-btn" onclick="ccDcCheckIn()">'+esc(T.dcCheckIn)+'</button></div>';
+  } else if(mine){
+    const has=mine.spot!=null;
+    check='<p class="dc-code">'+esc(T.dcCode(mine.code))+'</p>'+
+      '<div class="dc-act"><button class="dc-btn'+(has ? ' ghost' : '')+'" onclick="ccDcDropOpen(\'cust\')">📍 '+esc(has ? T.dcDropEdit : T.dcDropBtn)+'</button>'+
+      (has ? '<span class="dc-sub">'+esc(T.landingZoneSuffix(mine.spot+1))+'</span>' : '')+'</div>'+
+      '<div class="dc-act"><button class="dc-btn"'+(why || !has ? ' disabled' : '')+' onclick="ccScrimRun()">'+
+      esc(T.dcPlay)+' <em>'+CC_DC_ENERGY+T.ccEnergyMark+'</em></button>'+(why ? '<span class="dc-why">'+esc(why)+'</span>' : !has ? '<span class="dc-why">'+esc(T.dcDropNeed)+'</span>' : '')+'</div>';
+  } else check='<p class="dc-sub">'+esc(other ? T.dcRegOther : why || T.dcSteps)+'</p>';
+  const f=ccDcSessFmt(kind);
+  return '<div class="dc-chan"><div class="dc-chan-h"># '+esc(T.dcRegChan)+'</div>'+
+      '<p class="dc-sub">'+esc(T.dcFmt(f.games, kind==='mob' ? 16 : 100))+(kind!=='mob' && ccCareerRegion()==='EU' ? ' '+esc(T.dcRules) : '')+'</p>'+list+'</div>'+
+    '<div class="dc-chan"><div class="dc-chan-h"># '+esc(T.dcCheckChan)+'</div>'+check+'</div>';
+}
+function ccDcServer(id){ CH_DC=id; careerRenderHub('discord'); }
+function ccDiscordHTML(){
+  const T=L(), cr=CAREER.career, srv=CH_DC||'pc';
+  const servers=[['pc', 'PC', ccPracSrv()], ['mob', '📱', T.dcSrvMob], ['own', '★', T.dcSrvOwn]];
+  const last=cr.dcLast && cr.dcLast.day===careerToday() ? cr.dcLast : null;
+  const btn=(kind, label)=>{ const why=ccDcWhy(kind);
+    return '<div class="dc-act"><button class="dc-btn"'+(why ? ' disabled' : '')+' onclick="ccDcGo(\''+kind+'\')">'+esc(label)+
+      ' <em>'+CC_DC_ENERGY+T.ccEnergyMark+'</em></button>'+(why ? '<span class="dc-why">'+esc(why)+'</span>' : '')+'</div>'; };
+  const res=kinds=>(last && kinds.indexOf(last.kind)>=0)
+    ? '<div class="dc-res">'+esc(T.dcResult(last.wins, ccNum(last.cash)))+(last.grow ? ' · '+esc(T.ccMobTitle)+' +'+last.grow.toFixed(2) : '')+'</div>' : '';
+  const msg=(author, bot, body)=>'<div class="dc-msg"><span class="dc-av'+(bot ? ' bot' : '')+'">'+esc(String(author).slice(0, 2).toUpperCase())+'</span>'+
+    '<div class="dc-msg-in"><b>'+esc(author)+(bot ? '<i class="dc-bot">BOT</i>' : '')+'</b>'+body+'</div></div>';
+  const chan=(name, body)=>'<div class="dc-chan"><div class="dc-chan-h"># '+esc(name)+'</div>'+body+'</div>';
+  let body='';
+  if(srv==='pc'){
+    // Кастомки ПК — сессии сервера практики региона (занятие noble: одна игра на сотню, таблица недели, форма от места).
+    const sv=ccNobleServer(), tier=ccNobleTier();
+    const ladder=ccCareerRegion()==='EU' ? chan(T.dcLadder, '<div class="dc-ladder">'+CC_NOBLE_LADDER.map((t,i)=>
+        '<span class="dc-tier'+(i===tier ? ' on' : i<tier ? ' lock' : '')+'">'+(i<tier ? '🔒 ' : i===tier ? '✓ ' : '')+esc(t.name)+(i===tier ? ' · '+esc(T.dcYouHere) : '')+'</span>').join('')+'</div>') : '';
+    body=chan(T.dcSession, msg(ccPracSrv(), true, '<p>'+esc(T.dcSessionTxt(sv.name))+'</p>'))+ccDcSessHTML('pc')+ladder+
+         ccDcScrHTML('pc', chan, msg);
+  } else if(srv==='mob'){
+    body=chan(T.dcAnnounce, msg(T.dcSrvMob, true, '<p>'+esc(T.dcLobbyMob(CC_DC_MOB_RATE, CC_DC_MOB_PER_WIN))+'</p>'+
+           '<p class="dc-sub">'+esc(T.ccMobTitle+' '+ccMobileOvr().toFixed(1))+'</p>'))+ccDcSessHTML('mob')+
+         ccDcScrHTML('mob', chan, msg);
+  } else {
+    body=chan(T.dcHostChan, msg(CAREER.player.nick, false, '<p>'+esc(T.dcHostPc(ccNum(ccHostPerWin())))+'</p>'+btn('pcHost', T.dcHostBtn))+
+           msg(CAREER.player.nick, false, '<p>'+esc(T.dcHostMob(ccNum(ccMobHostPer())))+'</p>'+btn('mobHost', T.dcHostBtn))+
+           res(['pcHost','mobHost'])+(last && last.who && last.who.length && /Host/.test(last.kind) ? '<div class="dc-res">'+esc(T.dcWinners(last.who.map(h=>'@'+ccHandle(h)).join(', ')))+'</div>' : ''));
+  }
+  return '<div class="ch-tile dc-wrap"><div class="dc-srvs">'+servers.map(([id, ic, name])=>
+      '<button class="dc-srv'+(srv===id ? ' on' : '')+'" title="'+esc(name)+'" aria-label="'+esc(name)+'" onclick="ccDcServer(\''+id+'\')">'+esc(ic)+'</button>').join('')+'</div>'+
+    '<div class="dc-body"><h4 class="dc-name">'+esc((servers.find(s=>s[0]===srv)||servers[0])[2])+'</h4>'+body+'</div></div>';
+}
+/* Бросок дня. Один на день, кидается когда день впервые спросили, и сразу
+   в сейв: перезагрузка страницы читает уже брошенное, а не кидает заново —
+   релоадом лучший день не выторговать. Прошлые дни никто не спрашивает
+   (careerDayClosed и панель смотрят только на сегодня), поэтому хранится
+   ровно один день, и сейв не растёт. */
+function ccDayRoll(iso){
+  const cr=CAREER && CAREER.career;
+  if(!cr) return null;
+  if(!cr.luck || cr.luck.day!==iso){
+    cr.luck={day:iso,
+      woe: Math.random()<CC_MISFORTUNE_CHANCE
+             ? (Math.random()<0.7 ? 'power' : 'sick') : null,
+      ev:  Math.random()<CC_DAY_EVENT_CHANCE
+             // Жребий — среди того, что сегодня возможно: развилка с условием
+             // (when) не занимает место в броске, пока условия нет, иначе
+             // доля дней с событием проседала бы вдвое. Принудительные не в жребии.
+             ? (function(){ const pool=CC_DAY_EVENTS.filter(e=>!e.forced && (typeof e.when!=='function' || e.when()));
+                            return pool.length ? pool[Math.floor(Math.random()*pool.length)].id : null; })() : null};
+    careerSave();
+  }
+  return cr.luck;
+}
+function ccDayEventOn(iso){
+  const cr=CAREER && CAREER.career;
+  if(!cr) return null;
+  if((careerYearDays().get(iso)||[]).length) return null;
+  if((cr.did||{})[iso]) return null;
+  // Школа и уход клуба приходят по делу, раньше жребия. См. careerForcedEvent.
+  const forced=careerForcedEvent(iso);
+  if(forced) return forced;
+  const luck=ccDayRoll(iso);
+  const ev=luck && luck.ev && CC_DAY_EVENTS.find(e=>e.id===luck.ev);
+  if(!ev) return null;
+  if(typeof ev.when==='function' && !ev.when()) return null;
+  // A stand-in offer needs somebody to stand in beside, and a sponsor cannot
+  // ask for a video when there is no sponsor.
+  if(ev.id==='scrimup' && !careerMateRec()) return null;
+  if(ev.id==='promo' && !ccSponsor()) return null;
+  // На кастомку зовут по числу, а не по знакомству: не дорос PR — приглашения
+  // нет вовсе, и день проходит как обычный. См. CC_CUSTOM_PR.
+  if(ev.id==='custom' && !ccCustomInvited()) return null;
+  return ev;
+}
+function careerDayEvent(id, take){
+  const ev=CC_DAY_EVENTS.find(e=>e.id===id); if(!ev) return false;
+  if(careerDayDone()) return false;
+  // Развилка: take — это id ответа; у старых событий — да/нет.
+  let eff, optId=null;
+  if(ev.opts){
+    const o=ev.opts.find(x=>x.id===take) || ev.opts[0];
+    eff=o.eff||{}; optId=o.id;
+  } else eff=take ? ev.take : ev.pass;
+  const cr=CAREER.career;
+  if((eff.energy||0)>careerEnergy()) return false;
+  if(eff.rep) careerRepAdd(eff.rep);
+  if(eff.spotClear) careerSpotClear();
+  if(eff.stat) careerStatBump(ccWeakestAttr(), eff.stat);
+  if(eff.orgLeave && CAREER.org && !CAREER.org.own){
+    const org=CAREER.org;
+    careerNews('flat', 'ccNewsLeftOrg', [org.name], {by:ccOrgBy(org.name)});
+    careerNews('flat', 'ccPostBye', [ccHandle(org.name)]);
+    CAREER.org=null;
+  }
+  if(eff.orgGone && CAREER.org && !CAREER.org.own){
+    // Клуб закрывает состав: месяц зарплаты на прощание, и ты свободен.
+    const org=CAREER.org, sev=org.salary||0;
+    if(sev){ cr.balance=(cr.balance||0)+sev; cr.wages=(cr.wages||0)+sev; }
+    careerNews('bad', 'ccNewsOrgGone', [org.name, ccMoney(sev)], {by:ccOrgBy(org.name)});
+    careerNews('flat', 'ccPostBye', [ccHandle(org.name)]);
+    CAREER.org=null; CAREER.offers=null; cr.orgQuit=null;
+  }
+  if(eff.lft){ careerNews('flat', 'ccPostLft', []); careerReachAdd(2*CC_REACH_DIV(cr.division)); }
+  if(eff.energy) careerSpend(eff.energy);
+  if(eff.restore) careerRestore(eff.restore);
+  if(eff.form) cr.form=clamp((cr.form||0)+eff.form, -CC_FORM_MAX, CC_FORM_MAX);
+  if(eff.cash){ cr.balance=(cr.balance||0)+eff.cash; cr.side=(cr.side||0)+eff.cash; }
+  if(eff.reach) careerReachAdd(eff.reach*CC_REACH_DIV(cr.division));
+  // Every seat feels the week, not only the first one.
+  if(eff.morale) careerMateRecords().forEach(pr=>{
+    pr.patience=clamp((pr.patience||0)+eff.morale, 0, 100); });
+  cr.did=cr.did||{};
+  cr.did[careerToday()]=(cr.did[careerToday()]||[]).concat('ev:'+id);
+  /* У кастомки выплата не в таблице событий, а в самом вечере: сыграл — и
+     столько, сколько выиграл. Отказ пишется общей строкой, как у всех. */
+  if(id==='custom' && take){
+    const r=ccCustomPlay();
+    careerNews(r.wins?'good':'flat', 'ccDayEvcustomTake', [r.wins, ccNum(r.cash)]);
+    careerSave();
+    careerRenderHub('centre');
+    return true;
+  }
+  if(optId!=null) careerNews(eff.rep<0 || eff.form<0 || eff.orgGone ? 'flat' : 'good', 'ccDayEv'+id+'R'+optId, []);
+  else careerNews(take?'good':'flat', 'ccDayEv'+id+(take?'Take':'Pass'), []);
+  careerSave();
+  careerRenderHub('centre');
+  return true;
+}
+
+/* Energy, one bar. There used to be energy plus a hidden fatigue that cut a day's value by up to half; now energy
+   is a store. Training spends it, a night gives a little back, a rest day a lot. A day is always worth half a point,
+   what runs out is the ability to do another one: roughly three work days per day off.
+   Nothing is dated, so a save that skips a month comes back rested by the nights slept, not by a reset. */
+/* How big the store is. A hundred by default, and the desk can make it bigger:
+   the chair and the treadmill are the two things in the shop that buy days
+   rather than percentages — every ten points of store is another third of a
+   training day a week, which is the one upgrade a player feels in the calendar
+   rather than in a number. */
+function careerEnergyMax(){
+  // Best of each slot, plus everything that stands alone: two chairs are one
+  // chair, and the better one is the one you are sitting in.
+  const slots={};
+  // The rooms you are not working in are part of what a day is worth too.
+  let extra=(typeof ccFlatCap==='function') ? ccFlatCap() : 0;
+  CC_SHOP.forEach(it=>{
+    if(!it.cap || !careerOwns(it.id)) return;
+    if(!it.slot){ extra+=it.cap; return; }
+    slots[it.slot]=Math.max(slots[it.slot]||0, it.cap);
+  });
+  Object.keys(slots).forEach(k=>{ extra+=slots[k]; });
+  /* Больная неделя (см. ev:sick) режет запас на треть, пока не пройдёт. */
+  let cap=CC_ENERGY_DAY+extra;
+  const cr=CAREER && CAREER.career;
+  if(cr && cr.sickUntil && careerToday()<cr.sickUntil) cap=Math.round(cap*2/3);
+  return Math.max(30, cap);
+}
+function careerEnergy(){
+  const cr=CAREER.career;
+  return clamp(cr.energy!=null ? cr.energy : careerEnergyMax(), 0, careerEnergyMax());
+}
+function careerSpend(n){
+  const cr=CAREER.career;
+  cr.energy=clamp(careerEnergy()-n, 0, careerEnergyMax());
+}
+function careerRestore(n){
+  const cr=CAREER.career;
+  cr.energy=clamp(careerEnergy()+n, 0, careerEnergyMax());
+}
+// One thing a day, whatever it costs: the day is the unit, energy is the week.
+function careerDayDone(){
+  const cr=CAREER.career;
+  return ((cr.did||{})[careerToday()]||[]).length>0;
+}
+/* Energy is the limit for a day, not the calendar. The six sessions are an hour each and you take as many as
+   you can pay for. Career pacing comes from income (12 a night, 45 for a rest day), so it does not change.
+   Scrim, stream and rest still take the whole day; rest has to, or resting three times a day would print energy.
+   A day that already has something on it is the same. */
+/* Стрим и спонсорские вечера больше не съедают день — его пункт 16 со
+   страницы «ы», 22 августа: «стримы и спонсор тратят весь день иногда, пусть
+   30 энергии тратят». День закрывают отдых и события, которые и есть весь
+   вечер (чужой скрим, оффлайн); эфир — это тридцать энергии из магазина дня,
+   как любое занятие. */
+const CC_DAY_WHOLE={rest:1, host:1};
+const CC_DAY_OPEN_EV={'ev:show':1, 'ev:promo':1};
+function ccDayShuts(id){
+  return CC_DAY_WHOLE[id] ||
+         (String(id).indexOf('ev:')===0 && !CC_DAY_OPEN_EV[id]);
+}
+function careerDayClosed(){
+  const list=((CAREER.career.did||{})[careerToday()]||[]);
+  // Вечер без света — вечер без кнопок. См. ccMisfortune.
+  if(typeof ccMisfortune==='function' && ccMisfortune(careerToday())==='power') return true;
+  return list.some(ccDayShuts);
+}
+
+/* Doing one.
+
+   The numbers move the player's own six rather than the rating, so where a
+   career spent its year shows in the shape of the card and not only in its
+   headline. The rating follows from the six through ATTR_W, the way it does for
+   every other card on the roster, and it still cannot pass the ceiling the
+   career drew.
+
+   A coach and a desk multiply this, and they read as one number from one place
+   so a new thing in the shop never has to be wired into seven activities. */
+function careerDayGear(){ return 1 + ((CAREER.gear && CAREER.gear.train) || 0) + ccStayTrain(); }
+// What the stream rig adds to a night's followers. Nothing owned, nothing added.
+function ccGearReach(){ return (CAREER.gear && CAREER.gear.reach) || 0; }
+function careerDoAct(id){
+  const act=ccActById(id); if(!act) return null;
+  const cr=CAREER.career, pl=CAREER.player;
+  // The store is what says how much of a day there is, and the three things
+  // that take all of it say when there is none left. See careerDayClosed.
+  if(careerDayClosed()) return null;
+  // С травмой — только отдых, разговор и эфир.
+  if(typeof ccLifeHurt==='function' && ccLifeHurt() && !(act.rest || act.id==='talk' || act.id==='stream')) return null;
+  /* Цена вечера — у ВИДА эфира, а не у кнопки дня. Виды стоят по-разному
+     (марафон 55, эфир с турнира 20), и раньше careerDoAct брал плоские
+     тридцать, а разницу доплачивал вызывающий. Пока виды были только дороже,
+     это работало; турнирный эфир дешевле — и порог «хватит ли энергии» стоял
+     на тридцати, то есть с двадцатью пятью кнопка молча ничего не делала.
+     Считает цену тот, кто её списывает. См. CC_STREAM_KINDS. */
+  const cost = (act.id==='stream' && typeof ccStreamKind==='function')
+    ? (ccStreamKind(CC_STREAM_KIND).energy || act.energy) : act.energy;
+  if(careerEnergy()<cost) return null;
+  // A rest on a full store restores nothing and takes the whole day with it.
+  // The button already says so; this is the same rule where the day is spent,
+  // so no other caller can hand a player an evening for nothing.
+  if(act.rest && careerEnergy()>=careerEnergyMax()) return null;
+  // Своя кастомка без аудитории или без фонда не проводится — и день не тратит.
+  if(act.host && ccHostWhy()) return null;
+  if(act.mobile && !ccMobileOwn()) return null;   // без телефона или планшета не тренируется
+  careerSpend(cost);
+  if(act.mobile){
+    const g=ccMobileTrain(!!act.mobScrim);
+    cr.did=cr.did||{}; cr.did[careerToday()]=(cr.did[careerToday()]||[]).concat(id);
+    careerSave();
+    return {id, moved:{}, energy:careerEnergy(), mobile:g};
+  }
+  if(act.host) ccHostRun();
+  if(act.rest) careerRestore(act.rest);
+  // The same taper the cup's own growth uses. Without it training ran at full
+  // speed right up to the ceiling and every career hit its own in the first
+  // season, then stood still for seven more — a mode that is over after a year.
+  // The last ten points before the ceiling are where a career slows down, and
+  // that has to be true whether the points come from a tournament or a day at
+  // the aim trainer.
+  const now = pl.ovrExact!=null ? pl.ovrExact : pl.ovr;
+  // Training lifts you to the level of the room you are in, and no further:
+  // past your division's own band you are no longer learning from the people
+  // around you, and the only thing left that makes you better is beating them.
+  // Everything above the cap comes from results — careerApplyGrowth, which
+  // still reads the top of the scale.
+  const taper = clamp((careerTrainCap()-now)/CAREER_TAPER, 0, 1);
+  // What a day is worth never changes: the store is what runs out, not the
+  // value of the work. That is the whole point of folding fatigue into it.
+  const mult=careerDayGear()*taper;
+  // Who a scrim is against and how the set went, both decided before the day is
+  // spent — see ccScrimFoe and ccScrimSet. A day that is not a scrim gets null
+  // for both and reads exactly as it did.
+  /* Who a scrim is against, decided before the day is worth anything, because
+     who it is against is most of what it is worth.
+
+     The strongest person in this week's own inbox list - that is who you could
+     actually get hold of, and the list is already the week's rather than a new
+     draw. Playing somebody better teaches more: half again against somebody five
+     points over you, two thirds against somebody five under. */
+  const foe=act.versus ? ccScrimFoe() : null;
+  const scrim=foe ? ccScrimSet(foe, now) : null;
+  // The coach pays into his own half of the game, so which one is hired shows
+  // in the shape of the card and not only in how fast it grows.
+  const coach=ccCoach();
+  const moved={};
+  // A career with no six numbers of its own spent every training day on nothing:
+  // the block below was skipped, the energy was gone and neither an attribute nor
+  // the rating moved, silently, for as long as the save lasted. That is an old
+  // save, and it is every career played as a real card — their shape lives on the
+  // roster. Both get their own copy the first time they train, taken from the
+  // card they are actually playing, so the day is always worth something.
+  if(!pl.attrs) pl.attrs=ccOwnAttrs();
+  {
+    /* And the difficulty sits on the training too.
+
+       It sat only on careerDevelopNow — the age curve — which the composition
+       measurement of 19 August showed is a sliver of actual growth: a career is
+       built in the training room, so a Legend career was 7% longer, not five
+       times. A player then finished the whole game in three or four hours and
+       said the improving is too fast; his answer was to make the harder modes
+       cut what a session pays. Same factor the develop term already uses, so
+       one setting means one thing everywhere: Easy 1.00, Pro 0.50, Elite 0.25,
+       Legend 0.10. Easy is untouched. */
+    // Оценка занятия D…A+ (ccDrillGrade) — только у тренировок с приростом.
+    const grade=(String(act.id).indexOf('tr')===0 && Object.keys(act.gain||{}).length) ? ccDrillGrade(act.id) : null;
+    // Эфир с тренировкой берёт прирост тренировки trPit в доле вида (CC_STREAM_KINDS train).
+    const sk=(act.id==='stream' && typeof ccStreamKind==='function') ? ccStreamKind(CC_STREAM_KIND) : null;
+    const gain=(sk && sk.train) ? (g=>{ const o={}; Object.keys(g).forEach(k=>{ o[k]=g[k]*sk.train; }); return o; })((ccActById('trPit')||{}).gain||{}) : (act.gain||{});
+    Object.keys(gain).forEach(k=>{
+      const by=gain[k]*mult*(coach && coach.keys.indexOf(k)>=0 ? 1+coach.train : 1)
+               *careerDiff().age*(scrim ? scrim.mult : 1)*ccFocusMult(k)*(grade ? grade.mult : 1);
+      pl.attrs[k]=clamp((pl.attrs[k]||50)+by, ccAttrFloor(k), 99);
+      moved[k]=by;
+    });
+    if(Object.keys(moved).length){
+      const raw=ATTR_KEYS.reduce((sum,k)=>sum+(pl.attrs[k]||50)*ATTR_W[k],0);
+      // Never past the cap by training, and never downwards: a career already
+      // above its room's band keeps what it won, it just stops learning there.
+      pl.ovrExact=clamp(Math.max(now, Math.min(raw, careerTrainCap())), 40, 99);
+      pl.ovr=Math.round(pl.ovrExact);
+      // And the six carry their own rating, because the card reads it: attrsFor
+      // lifts a card onto _targetOvr starting from the ovr stored beside the
+      // attributes, and a stale one there is a first shift of thirty points that
+      // clamps every high attribute at 99 and flattens the shape for good.
+      pl.attrs.ovr=Math.round(raw);
+      ccGoalCheck();
+    }
+  }
+  // Everything tires except the thing that is for not tiring.
+  // Reach grows faster the higher you are: the same stream in Division 1 is seen
+  // by more people than in Division 5, which is what a division is from outside.
+  // A stream that nobody is told about is not a stream. The day both grows the
+  // audience and posts, which is the only reason the growth is visible at all.
+  // Разбор меты: день в новом сезоне, который снимает штраф. См. careerMetaDay.
+  if(act.meta) careerMetaDay();
+  if(act.noble) ccNobleRun();
+  if(act.id==='trSur') ccRkSession();
+  if(act.versus) ccChemBump(2);   // скрим вместе — сыгранность
+  // Прирост недели — для панели Тренировочного центра (ccTrainPanelHTML).
+  try{ const lf=ccLife(), wk=ccWeekTag(); if(!lf.tw || lf.tw.wk!==wk) lf.tw={wk, g:{}};
+       Object.keys(moved).forEach(k=>{ lf.tw.g[k]=(lf.tw.g[k]||0)+moved[k]; }); }catch(e){}
+  if(act.map) ccMapWork();
+  if(act.reach){
+    // A night on stream, priced per rung. See CC_STREAM_REACH.
+    /* Вид эфира. Кнопка дня — это 'grind' с множителями в единицу, поэтому
+       день, нажатый как раньше, и считается как раньше; остальные виды
+       приходят из вкладки стримов (careerStreamGo). Коллаб добавляет часть
+       аудитории напарника — та же арифметика, что у Про-Ама. */
+    const sk = act.id==='stream' ? ccStreamKind(CC_STREAM_KIND) : {reach:1, cash:1, subs:1};
+    const per = act.id==='stream'
+      ? CC_STREAM_REACH(cr.division) * (1 + ccGearReach())
+      : CC_REACH_DIV(cr.division);
+    careerReachAdd(act.reach*per*(sk.reach||1));
+    if(sk.mate){
+      const cm=ccStreamMate();
+      // Повторы с тем же креатором дают меньше; ему уходит своя доля (см. CC_COLAB_*).
+      const from=(cm && typeof ccColabFrom==='function') ? ccColabFrom(cm.name) : 0;
+      if(from){
+        const give=ccColabGive();
+        careerReachAdd(from, true);
+        cr.colabN=cr.colabN||{}; cr.colabN[hKey(cm.name)]=(cr.colabN[hKey(cm.name)]||0)+1;
+        cr.colabGave=cr.colabGave||{}; cr.colabGave[hKey(cm.name)]=(cr.colabGave[hKey(cm.name)]||0)+give;
+        if(cm.deal) cr.colabWith=null;   // договор — на один эфир
+        careerNews('good', 'ccNewsStreamColab',
+                   [ccHandle(cm.name), ccNum((cm.tw && cm.tw[1])||0), ccNum(from), give ? ccNum(give) : '']);
+      }
+    }
+    /* And a stream pays, which is the other half of what an audience is for.
+
+       Followers already priced a sponsor and a club offer, so the number was
+       worth something twice over and never in the player's hand. A stream day
+       is somebody sitting there for an evening being watched, and that is paid
+       work in this scene - subs, bits, ads - so the day that grows the audience
+       also earns off the one already there.
+
+       Deliberately small against a Weekly Final: at fifty thousand readers it is
+       twenty-five dollars, and a month of streaming every day is under a
+       thousand. It is not a career, it is what makes the desk reachable in
+       Division 4 where the ladder pays nothing at all. Read off the audience
+       standing before the stream, so the first payday is not the same day the
+       first follower arrives. */
+    // Деньги эфира — с множителем вида: общение платит лучше, марафон длиннее.
+    const own=Math.round(careerReach()/CC_STREAM_PER*(sk.cash||1));
+    // And the brand's slot, on the nights there is a stream to put it in.
+    const sps=ccSponsorsAll();
+    const ad=sps.reduce((sum,x)=>sum+(x.pay||0), 0);
+    const paid=own+ad;
+    if(ad){
+      sps.forEach(x=>{ x.paid=(x.paid||0)+(x.pay||0); });
+      cr.sponsored=(cr.sponsored||0)+ad;
+    }
+    /* Твич — своя аудитория, а не твиттер. Его пункт 8 со страницы «ы»,
+       22 августа: подписчики врозь, трансляция максимум два часа, и после неё
+       приходит статистика. Зрители читаются с обеих аудиторий, твич растёт от
+       самого эфира; пик посеян от даты, чтобы отчёт вечера не менялся от
+       перерисовки.
+
+       И пункт 9 там же: без спонсора, но с менеджером, вечер несёт разовый
+       рекламный баннер — бренд из своего списка, деньги сразу на баланс. */
+    const tw=cr.twitch||0;
+    const rndS=careerRng(ccHashStr('stream|'+(cr.season||1)+'|'+careerToday()));
+    // Доли с насыщением по размеру канала — см. CC_TW_SAT (его «слишком много стримы онлайн», 13.09).
+    const viewers=ccTwViewersOf(tw, careerReach());
+    const peak=Math.round(viewers*(1.6+rndS()*0.9));
+    const newTw=Math.max(1, Math.round(viewers*0.18*ccTwFolRate(tw)*(0.7+rndS()*0.6)*(sk.subs||1)));
+    cr.twitch=tw+newTw;
+    const dono=Math.round(viewers*0.04*(sk.cash||1));
+    let banner=0, brand=null;
+    if(!sps.length && CAREER.agent){
+      brand=CC_STREAM_BRANDS[Math.floor(rndS()*CC_STREAM_BRANDS.length)];
+      banner=20+Math.round(viewers*0.1);
+    }
+    const takeAll=paid+dono+banner;
+    if(takeAll>0){
+      cr.balance=(cr.balance||0)+dono+banner+(paid>0?paid:0);
+      cr.streamed=(cr.streamed||0)+own+dono+banner;
+    }
+    /* Весь стрим — лично, не в ленту. Первый скриншот, снял
+       твит со статистикой; второй («не нужно это в сошиал», лента Sky из трёх
+       «Отстримил вечер. $71» подряд) — снял и денежные твиты: ccNewsStreamAd/
+       Banner/Paid больше не постятся, ключи живы ради старых сейвов. Деньги
+       на балансе, отчёт вечера — строкой в панели дня, теперь с заработком. */
+    // Шестым — длина эфира: до партнёрки часы считались, а отчёт всё равно
+    // писал «2 ч» текстом. Старые сейвы шестого не имеют, у них и остаётся 2.
+    /* m — тот же заработок вечера числом. Строка a[3] уже отформатирована, а
+       эфиру с турнира её потом досчитывать (ccStreamCupAfter): разбирать число
+       обратно из «1 200» нельзя, поэтому оно едет рядом. */
+    cr.streamLast={day:careerToday(), m:dono+banner+(paid>0?paid:0),
+                   a:[viewers, peak, newTw,
+                   ccNum(dono+banner+(paid>0?paid:0)), ccNum(cr.twitch), sk.hours||4]};
+    /* Журнал эфиров за месяц — на нём стоит партнёрская программа (ccTwStatus):
+       Twitch считает разные дни, часы и средний онлайн за последние 30 дней,
+       поэтому вечер должен оставить после себя день, длину и зрителей. */
+    cr.streamLog=(cr.streamLog||[]).concat([{d:careerToday(), v:viewers, h:sk.hours||4}]);
+    ccStreamLogTrim(cr);
+    careerTwTick();
+  }
+  /* The week that does not let go.
+
+     Everything in the day loop costs energy and a night gives it back, so a
+     career could train three hundred and sixty days a year and the only thing
+     that ever said otherwise was the bar. Nobody plays a year like that: the
+     scene's own word for what happens is burnout, and it is the reason the
+     shop sells a chair, a standing desk and a gym in the first place.
+
+     Counted in days rather than energy, because that is what it is - a run of
+     days with no day off in them. Rest is the only thing that clears it, and it
+     clears it whole: a day off is a day off. What it costs is form, which is
+     the number every result already reads, so a burnt-out career finishes worse
+     without anything new having to be invented to punish it. */
+  if(act.rest) cr.grind=0;
+  else cr.grind=(cr.grind||0)+1;
+  /* A scrim is against a named duo and shows the score. Opponent is the strongest
+     in this week's inbox list. Gain scales with the gap: up to x1.5 against someone
+     5 points above, x2/3 against 5 below. A win gives +0.25 form. The score is twelve
+     rounds, each decided by the rating gap the same way a lobby is. */
+  /* And the score, which is the part a player can argue with.
+
+     A scrim used to be the most expensive day in the store and the only one with
+     no evidence attached: thirty-eight energy, four attributes up a fraction,
+     and nothing on the screen afterwards. A scrim in this scene is a set against
+     a named duo and everybody remembers the score. Twelve rounds, each decided
+     by the gap the same way a lobby is, and taking the set is worth a quarter
+     point of form - a result you can point at. */
+  if(act.focus) cr.focus=act.focus;
+  /* Разговор считается на месте, у каждого свой: настрой у соседей разный, и
+     одному вечер нужен, а другому нечего сказать. Скрим по-прежнему плоские
+     шесть — он общий на всех и не про слова. */
+  if(act.talk){
+    const said=[];
+    careerMateRecords().forEach((pr,i)=>{
+      const was=pr.patience==null?CAREER_PATIENCE_START:pr.patience;
+      const move=careerTalkMove(pr);
+      pr.patience=clamp(was+move, 0, 100);
+      pr.talked=careerToday();
+      const card=careerMates()[i];
+      if(card) said.push({who:card.handle, was:was, move:move});
+    });
+    /* И разговор говорит, о чём он был. Строка выбирается по тому же порогу,
+       по которому careerMoodKey рисует настрой: с недовольным разбирают, что
+       не идёт, с ровным договариваются держать. Без этого «поговорить» была бы
+       кнопкой «+3», а он просил диалог. */
+    said.forEach(s=>{
+      const key = s.move<=0 ? 'ccNewsTalkAgain'
+                : s.was<45  ? 'ccNewsTalkFix'
+                : s.was<70  ? 'ccNewsTalkKeep'
+                :             'ccNewsTalkFine';
+      /* «С @X всё и так нормально, просто поболтали» твитом в ленту — шум:
+         Скриншот («не нужно это в сошиал»). Разговор, в котором
+         ничего не случилось, ленты не заслуживает; остальные три исхода —
+         починили, договорились, не вышло — остаются. */
+      if(key==='ccNewsTalkFine') return;
+      careerNews(s.move>=3 ? 'good' : 'flat', key, [s.who]);
+    });
+  }else if(act.morale) careerMateRecords().forEach(pr=>{
+    pr.patience=clamp((pr.patience==null?CAREER_PATIENCE_START:pr.patience)+act.morale, 0, 100); });
+  // And the set, said out loud with the score in it: taking one is a quarter
+  // point of form, which is a result a player can point at.
+  if(scrim){
+    if(scrim.won) cr.form=clamp((cr.form||0)+CC_SCRIM_FORM, -CC_FORM_MAX, CC_FORM_MAX);
+    careerNews(scrim.won ? 'good' : 'flat', 'ccNewsScrim',
+               [ccHandle(scrim.who), scrim.mine, scrim.theirs]);
+  }
+  cr.did=cr.did||{};
+  cr.did[careerToday()]=(cr.did[careerToday()]||[]).concat(id);
+  careerSave();
+  return {id, moved, energy:careerEnergy(), scrim:scrim};
+}
+const CC_PLAYABLE=['cup','victory','eval','reload','final','major','gc','summit','globals','solo','proam','nations'];
+// The Major's Play-In and Heats belong to Division 1, but its Last Chance is
+// open to all five divisions in Epic's own words, so 'major' cannot be listed
+// here wholesale — careerMajorCan decides it stage by stage, and careerEvents
+// hides the days that are not this player's.
+const CC_D1_ONLY=['final','eval'];
+// Where a new career starts: the first week of the measured year holding
+// something this player can enter.
+//
+// Derived rather than written down, because the answer moves. The year opens on
+// 1 December and the divisional cups do not start until 2 February, so a career
+// pinned to the first of December sits through nine weeks with nothing to press.
+// Pinning it to February instead would be wrong the day Reload's Opens become
+// enterable — they run on 8 January — so the rule is stated once and the date
+// follows from it.
+function careerStartDay(){
+  const days=careerYearDays();
+  /* Карьера, начатая с сезона внутри года (cr.startFrom, экран создания): первый год — с этой даты, не раньше,
+     иначе первые дни стояли бы в прошлом сезоне со старыми составами. Следующие годы — с начала. */
+  const cr=(typeof CAREER!=='undefined' && CAREER && CAREER.career) || null;
+  const at=(cr && cr.startFrom && (cr.season||1)===1) ? cr.startFrom : null;
+  for(let w=1; w<=ccYearWeeks(); w++){
+    const from=careerWeekStart(w);
+    for(let d=0; d<7; d++){
+      if(at && ccAddDays(from,d)<at) continue;
+      // A Reload day counts only when it is the Opens: everything after them
+      // needs a qualification a new career does not have.
+      if((days.get(ccAddDays(from,d))||[]).some(e=>
+           CC_PLAYABLE.indexOf(e.kind)>=0 && CC_D1_ONLY.indexOf(e.kind)<0 &&
+           (e.kind!=='reload' || /Opens$/.test(String(e.id||'')))))
+        return (at && from<at) ? at : from;
+    }
+  }
+  return at || ccYearFrom();
+}
+// Moving the clock. Past the last day of the measured year the career year is
+// over — there is no thirty-ninth week to walk into.
+/* Where the clock goes after a cup session.
+   Below Division 1, Monday and Tuesday are separate sessions (11 games, own table, own token). Promoting on Monday makes Tuesday the next division's session, so you can climb twice a week.
+   So the clock goes to the next cup day of the week, else next Monday. Division 1 adds both sessions into one table (careerBanking, cr.d1), but the clock walks the same way. */
+/* Which of the week's cup sessions today is.
+   Division 1 adds both into one table, below that it's just a label.
+   The field is the same both evenings because careerSeed keys on the week, not the day. Exception: Div 2-5 play 13-14 and 18-19 July in one calendar week, split by ccCupWeekSalt.
+   Session comes from the cup week, not from counting cup days since Monday, otherwise 18 July would be session three. */
+function careerCupSession(){
+  const today=careerToday();
+  const w=ccCupWeeks().find(r=>r[1]===today || r[2]===today);
+  // Неделя из одной сессии (Division 1 Practice, S42): этот вечер и решает —
+  // банковать нечего, второго не приедет.
+  if(w && !w[2]) return 2;
+  return w && w[2]===today ? 2 : 1;
+}
+// True while Division 1's first evening is being played: the points are banked
+// and nothing is settled, because the table this belongs to does not exist yet.
+function careerBanking(){
+  return CAREER.career.division===1 && careerCupSession()===1;
+}
+function careerAfterSession(){
+  // An evening of eleven games comes out of the same store a training day
+  // does, which is what makes a heavy tournament week cost something: play
+  // Monday and Tuesday and the days around them are shorter.
+  careerSpend(CC_TOURNEY_ENERGY);
+  // The next day, like every other move. Tuesday's session arrives because
+  // Tuesday arrives, not because the cup hunted for it — and the days between
+  // tournaments are days the player still gets to spend.
+  return ccAddDays(careerToday(), 1);
+}
+function careerAdvanceTo(iso){
+  /* В командной карьере день двигает close от сервера, а не нажатие.
+
+     Иначе один клиент ушёл бы в завтра, а второй остался бы во вчера — и это
+     расхождение уже никакой хеш не поймает, потому что вечера у них будут
+     разные. Дверь открывает ccApplyTeamState на время своей работы: день,
+     пришедший от сервера, — единственный, который здесь принимается. */
+  if(ccMpOn() && !CC_MP_ADVANCE){
+    if(!CC_MP_DAY_DUE) return;
+    CC_MP_DAY_DUE=false;
+  }
+  /* А в ГОНКЕ день общий, но карьеры разные: шаг здесь превращается в голос,
+     и шагают оба, когда день закрыли оба. Отстающий проходит насквозь — см.
+     ccRaceHold. Стоит после командного гейта: одно и то же место, где день
+     перестаёт быть личным делом. */
+  if(typeof ccRaceHold==='function' && ccRaceHold(iso)){
+    ccRaceVote();
+    if(typeof careerRenderHub==='function' && document.getElementById('chBody'))
+      careerRenderHub('centre');
+    return;
+  }
+  CC_MP_HOLD=true;
+  try{ careerAdvanceBody(iso); }
+  finally{ CC_MP_HOLD=false; }
+  try{ ccRealTeamCall(); }catch(e){}
+  // 2023-й: после Мейджора 1 дивизионов нет — ступень сходит в «вся сцена» (ccNoDivisions).
+  if(typeof ccIs2023==='function' && ccIs2023()){ ccDiv23Place(); careerMigrateNoDiv(); }
+  // 2022-й: дивизионы только осенью — ступень по рейтингу в день Placement Cup, после — «вся сцена».
+  if(typeof ccIs2022==='function' && ccIs2022()){ ccDiv22Place(); careerMigrateNoDiv(); }
+  // 2019–2020: состав по этапу года (дуо → трио → сквад). См. ccPhaseRoster.
+  if(typeof ccSyncPhaseRoster==='function') ccSyncPhaseRoster();
+  careerSave();
+}

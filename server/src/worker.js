@@ -33,6 +33,8 @@ export class Lobby {
   }
   async boot(){
     if(this.lobby) return;
+    // Секреты мест (id -> k): отдельным ключом, клиентам не уходят никогда.
+    this.keys=(await this.state.storage.get('keys'))||{};
     const saved=await this.state.storage.get('lobby');
     this.lobby=createLobby(saved||{});
     if(saved && saved.st) Object.assign(this.lobby.state, saved.st);
@@ -105,6 +107,12 @@ export class Lobby {
     const url=new URL(req.url);
     const id=url.searchParams.get('id')||'';
     const build=url.searchParams.get('build')||'';
+    /* СЕКРЕТ МЕСТА. id приходит из адреса и раньше ничем не проверялся: сосед по гонке входил с чужим id, старый сокет
+       владельца глох, и дальше чужой говорил его голосом. Клиент с секретом (k, хранится в его браузере) занимает место;
+       дальше это место открывается только тем же секретом. Клиент без секрета (старая вкладка) работает как раньше. */
+    const k=url.searchParams.get('k')||'';
+    if(this.keys[id]){ if(k!==this.keys[id]) return new Response('taken', {status:403}); }
+    else if(id && /^[A-Za-z0-9]{16,64}$/.test(k)){ this.keys[id]=k; await this.state.storage.put('keys', this.keys); }
     /* Версия лобби переставляется, когда в лобби НИКОГО НЕТ.
 
        Проверка версий нужна ровно для одного: два клиента в одном вечере

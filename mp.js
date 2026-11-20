@@ -377,7 +377,9 @@ var MP={
          «с рф проблемы с заходом»). Старый адрес жив — старые вкладки
          доиграют; воркер тот же, домен добавлен в wrangler.toml. */
       var url=(MP.host||'wss://mp.fncsdraft.com')+
-              '/lobby/'+code+'?id='+encodeURIComponent(id)+'&build='+CC_BUILD;
+              '/lobby/'+code+'?id='+encodeURIComponent(id)+'&build='+CC_BUILD+
+              // Секрет места (ccMpKey): с ним чужой не войдёт под нашим id.
+              ((typeof ccMpKey==='function' && ccMpKey()) ? '&k='+encodeURIComponent(ccMpKey()) : '');
       var sock;
       try{ sock=new WebSocket(url); }
       catch(e){ setState('lost'); rej(e); return; }

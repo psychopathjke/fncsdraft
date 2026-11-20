@@ -41,8 +41,9 @@ node tools/parts.js check      # CI: fails if the two disagree
 ```
 
 Checks and builders still read and write `index.html`; either side can be edited. To re-cut, move or add
-a marker line in `index.html` and run `split`. Career is cut by size for now (`js/career-1..6.js`);
-cutting it by feature is the next step.
+a marker line in `index.html` and run `split`. Career sits in `src/js/career/`, one file per stretch of related
+features (match choices, loot and endgame, online, cloud and hub, clubs, shop, majors and LANs ...). Code is
+never reordered by a cut, so a feature that was written in two places still lives in two files: search by name.
 
 ## Map of index.html
 

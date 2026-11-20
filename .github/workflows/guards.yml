@@ -51,6 +51,9 @@ jobs:
           done
           echo "worker did not start"; cat ../wrangler.log; exit 1
 
+      - name: Seat key on the live worker
+        run: node server/tools/check-seat-key.js
+
       - name: Guards
         run: bash tools/run-guards.sh
 
