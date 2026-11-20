@@ -519,6 +519,7 @@
 <meta name="twitter:image" content="https://fncsdraft.com/og-image.png?v=1710">
 
 <style>
+/*@@PART css/main.css@@*/
   /* Атрибут hidden обязан прятать — всегда, а не когда повезёт.
      Браузерное правило [hidden]{display:none} живёт в UA-таблице и проигрывает
      ЛЮБОМУ авторскому классу, который ставит display. У нас таких два:
@@ -10385,6 +10386,7 @@
   #screen-career-create .cc-start:hover:not(:disabled){background:#fff04d;outline:3px solid rgba(255,255,255,.92);}
   #screen-career-create .cc-start:disabled{background:rgba(255,255,255,.14);color:#7d8db4;}
   #screen-career-create .cc-photo{border-radius:14px;}
+/*@@PART shell.html@@*/
 </style>
 <!-- ?v= — это НЕ украшение, это починка того, что он поймал 24 августа.
 
@@ -11541,6 +11543,7 @@
 </div>
 
 <script>
+/*@@PART js/strings.js@@*/
 /* Russian counts agree with the number they follow, and the interface was
    writing "+1 очков" — which is the shape you get from bolting a plural onto a
    number and hoping. One form for 1, another for 2-4, a third for 5 and up, and
@@ -24956,6 +24959,7 @@ Object.assign(I18N.it=I18N.it||{},
 Object.assign(I18N.pt=I18N.pt||{},
 ({ ccRacePairHint:'A dupla joga como um time: vocês dois, o IGL decide o estilo, o drop, o loot e as rotações, o fragger decide as lutas e o fim de jogo, o dinheiro é dividido, cada carreira segue sendo sua' }));
 let CC_I18N_V={de:'25b5523c', es:'3f4b5317'};   // ==== CC_I18N_V (tools/build-i18n.js) ====
+/*@@PART js/lang-and-cards.js@@*/
 // Версия fn-shop.js (магазин Fortnite по дням, tools/build-fn-shop.js) — для ?v= ленивой загрузки.
 let CC_FN_SHOP_V='dc62e7dc';
 const CC_LANG_WAIT={};
@@ -29961,6 +29965,7 @@ const CARD_H3EU_Q_RAW=[
 [59,78,9,0,4.67,10.11,84,"Boyer","MOTOR","Verox"],
 [60,78,8,1,2.63,8.5,42,"dDaaaANNnDDAANN","illusion el niño","FeRinS"]
 ];
+/*@@PART js/cards-data.js@@*/
 const CARD_H3EU_S_RAW=[
 [1,77,6,1,6.33,8.83,114,"Pez1x","Endretta","я Pate1k"],
 [2,76,6,1,5.67,7.5,102,"fwe","Letw1k3","Domentos"],
@@ -98718,6 +98723,7 @@ const WEAPON_ART={
   "striker":"items/wpn-striker.png",
   "surgical":"items/wpn-surgical.png"
 };
+/*@@PART js/draft.js@@*/
 const WEAPON_ART_BY_NAME={
   "Chaos Exploder Rifle": "chaos",
   "Surgical Burst Rifle": "surgical",
@@ -107984,6 +107990,7 @@ function ccStageWhen(){
   const dow=L().calDows[(d.getUTCDay()+6)%7];
   return dow+' · '+ccDayLabel(iso);
 }
+/*@@PART js/squads-runs.js@@*/
 function createStageCardShell(title){
   ccDropLiveCard();
   const container=document.getElementById('majorStages');
@@ -113948,6 +113955,7 @@ function weightedPick(fromList){
 const REGION_CLUSTER={ EU:'en', NAC:'en', NAW:'en', ASIA:'asia', BR:'br', ME:'me', OCE:'oce', UNK:'en' };
 function clusterOf(p){ return REGION_CLUSTER[p.region] || 'en'; }
 
+/*@@PART js/career-1.js@@*/
 function pickTeamChunk(remaining, size){
   const chunk=[];
   let pool=remaining.slice();
@@ -122828,7 +122836,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='d4b08615';
+const CC_BUILD='e3444105';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -125005,6 +125013,7 @@ function ccRaceUnseeded(fn){
   const seeded=Math.random; Math.random=CC_MP_RAND;
   try{ return fn(); } finally{ Math.random=seeded; }
 }
+/*@@PART js/career-2.js@@*/
 let CC_RACE_DBG=null;   // для проб: сколько людей и ботов вышло в комнате
 /* КОМНАТА НЕ ПЕРЕСЫЛАЕТСЯ, А СОВПАДАЕТ. Первая версия возила ботов хозяина по проводу;
    замер (tools/race-field-size-probe.js) показал 162 КиБ на кубке Д1 при лимите Durable
@@ -135995,6 +136004,7 @@ function ccDiv1Size(){
 }
 const CC_CUP_ENTRANTS={2:250, 3:400, 4:630, 5:1000,
   get 1(){ return ccDiv1Size(); }};
+/*@@PART js/career-3.js@@*/
 /* The same room, counted in this season's teams.
 
    Every field and every cut in a career is written as a number of duos, because
@@ -147020,6 +147030,7 @@ const CC_BORN={
   'EU|fnajen':'2004-10-11', 'EU|moneymaker':'2009-01-03',
   'EU|zenox':'2009-06-30'
 };
+/*@@PART js/career-4.js@@*/
 /* День рождения по нику — и по региону, если он известен.
 
    Ключ «РЕГИОН|ник» проверяется первым, голый ник остаётся значением по
@@ -157999,6 +158010,7 @@ function careerTrioRaids(cr){
 
    Два случая: забрал третьего — ядро то же; забрал одного из ядра — ядром становятся
    оставшийся и бывший третий (они и сядут вместе, см. ccOrphanPairs). */
+/*@@PART js/career-5.js@@*/
 function ccTrioRefill(mine){
   const cr=CAREER && CAREER.career;
   if(!cr || careerSquadSize()!==3 || !cr.trios) return 0;
@@ -168054,6 +168066,7 @@ function ccGc23DayOf(iso){
   if(!row) return 3;
   return Math.min(3, Math.max(1, ccDaysBetween(row[0], iso)+1));
 }
+/*@@PART js/home-hl.js@@*/
 /* Можно ли играть сегодняшний день Копенгагена: день 1 — место с Мейджора; день 2 —
    упавший из верхней или место с Last Chance Major; день 3 — прошедший в финал. */
 function ccGc23Can(){
@@ -173488,6 +173501,7 @@ Object.assign(I18N.it, {lfNewsLivemajor:n=>'Evento live di Fortnite: '+n+'. Tutt
 Object.assign(I18N.pt, {lfNewsLivemajor:n=>'Evento ao vivo no Fortnite: '+n+'. A cena toda assistiu em vez dos scrims',
   lfNewsLivefinale:n=>'Final de capítulo: '+n+'. Depois do evento os servidores entraram em manutenção, vem um novo capítulo',
   lfNewsLiveconcert:n=>n+' rolou no Fortnite. Os pros brincam que os lobbies da noite estavam mais calmos'});
+/*@@PART js/manager.js@@*/
 /*@@MGR-FROM@@*/
 /* ============================================================================
    FORTNITE MANAGER (его идея 1.10: «режим fortnite manager», «как football manager»). Спека —
@@ -178849,6 +178863,7 @@ function mgrAfterNight(){
 }
 
 /*@@MGR-TILL@@*/
+/*@@PART js/career-6.js@@*/
 function careerBackToHub(){
   if(typeof MGR_ACTIVE!=='undefined' && MGR_ACTIVE && CAREER && CAREER._mgr){ mgrAfterNight(); return; }   // вечер менеджера — назад в клуб
   document.documentElement.classList.remove('ev-pal', 'ev-classic', 'ev-light');
@@ -179998,6 +180013,7 @@ function ccArcNatRows(){
 }
 /* Зал соло — сотня одиночек, по силе. Берётся та же сцена, из которой архив
    собирает всё остальное; регион по тому же весу, что у ЛАНов. */
+/*@@PART js/profile-regen.js@@*/
 function ccArcSoloSeats(n, champ){
   const out=[], seen=new Set();
   const champKey=(champ && champ[0]) ? hKey(champ[0]) : null;
@@ -183883,6 +183899,7 @@ function careerHallHTML(){
     records ? `<div class="cc-hall-rec">${records}</div>` : ''}${list}</div>`;
 }
 
+/*@@PART tail.html@@*/
 </script>
 <script>
 /* Mode-tile art, fetched a screen ahead of the scroll rather than all at once.

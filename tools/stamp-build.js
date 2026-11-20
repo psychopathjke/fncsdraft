@@ -13,6 +13,9 @@ if(!RE.test(src)){ console.error('строки CC_BUILD в index.html нет'); 
 const bare=src.replace(RE, "const CC_BUILD='';");
 const hash=crypto.createHash('sha1').update(bare).digest('hex').slice(0,8);
 const out=src.replace(RE, "const CC_BUILD='"+hash+"';");
-if(out===src){ console.log('CC_BUILD уже '+hash); process.exit(0); }
+// src/ раскладывается заново из index.html (tools/parts.js): штамп идёт перед каждым деплоем, так части не отстают.
+const split=()=>{ try{ require('child_process').execFileSync(process.execPath, [require('path').join(__dirname, 'parts.js'), 'split'], {stdio:'ignore'}); }catch(e){ console.error('parts split: '+e.message); } };
+if(out===src){ console.log('CC_BUILD уже '+hash); split(); process.exit(0); }
 fs.writeFileSync(FILE, out);
+split();
 console.log('CC_BUILD -> '+hash);

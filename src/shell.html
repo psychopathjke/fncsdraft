@@ -1,0 +1,1157 @@
+/*@@PART shell.html@@*/
+</style>
+<!-- ?v= — это НЕ украшение, это починка того, что он поймал 24 августа.
+
+     Его сообщения: «не работает таблица», «не делается симуляция просто», и
+     плашка ошибки назвала виновника: `TypeError: game.roster is not a
+     function` в playGameWithChoices. Файлы поехали разными версиями: index.html
+     браузер перепроверяет (это документ), а zone-sim.js берёт из кэша по тому
+     же адресу — и новая страница звала функцию, которой в старом кэшированном
+     движке ещё нет. На чистом headless это не воспроизводилось никогда: там
+     нечему было закэшироваться.
+
+     Версия — короткий хеш содержимого файла. Меняется файл — меняется адрес —
+     кэш промахивается сам. Проверку «хеш в теге совпадает с файлом» держит
+     tools/check-deploy-folder.js: забыть обновить руками теперь нельзя, папка
+     деплоя просто не соберётся зелёной. -->
+<script src="zone-sim.js?v=af8928a8"></script>
+<script src="zone-replay.js?v=656737af"></script>
+<!-- Командная карьера: транспорт и склейка. Весь код мультиплеера живёт здесь,
+     в index.html только точки врезки. ?v= — тот же кэш-предохранитель, что и
+     у соседей: поменял mp.js — переставь хеш, иначе браузер возьмёт старый
+     файл и разойдётся с напарником. -->
+<script src="mp.js?v=312a25f1"></script>
+<!-- Дополнительные реплики лички и реплаев (tools/build-lines-more.js), грузятся после страницы. -->
+<script src="lines-more.js?v=5aebca09" defer></script>
+<!-- lz-string 1.5.0 (MIT, (c) 2013 pieroxy) — сжатие сейва карьеры, когда браузеру не хватает места (Safari: 5 МБ на сайт). -->
+<script>var LZString=function(){var r=String.fromCharCode,o="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",n="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+-$",e={};function t(r,o){if(!e[r]){e[r]={};for(var n=0;n<r.length;n++)e[r][r.charAt(n)]=n}return e[r][o]}var i={compressToBase64:function(r){if(null==r)return"";var n=i._compress(r,6,function(r){return o.charAt(r)});switch(n.length%4){default:case 0:return n;case 1:return n+"===";case 2:return n+"==";case 3:return n+"="}},decompressFromBase64:function(r){return null==r?"":""==r?null:i._decompress(r.length,32,function(n){return t(o,r.charAt(n))})},compressToUTF16:function(o){return null==o?"":i._compress(o,15,function(o){return r(o+32)})+" "},decompressFromUTF16:function(r){return null==r?"":""==r?null:i._decompress(r.length,16384,function(o){return r.charCodeAt(o)-32})},compressToUint8Array:function(r){for(var o=i.compress(r),n=new Uint8Array(2*o.length),e=0,t=o.length;e<t;e++){var s=o.charCodeAt(e);n[2*e]=s>>>8,n[2*e+1]=s%256}return n},decompressFromUint8Array:function(o){if(null==o)return i.decompress(o);for(var n=new Array(o.length/2),e=0,t=n.length;e<t;e++)n[e]=256*o[2*e]+o[2*e+1];var s=[];return n.forEach(function(o){s.push(r(o))}),i.decompress(s.join(""))},compressToEncodedURIComponent:function(r){return null==r?"":i._compress(r,6,function(r){return n.charAt(r)})},decompressFromEncodedURIComponent:function(r){return null==r?"":""==r?null:(r=r.replace(/ /g,"+"),i._decompress(r.length,32,function(o){return t(n,r.charAt(o))}))},compress:function(o){return i._compress(o,16,function(o){return r(o)})},_compress:function(r,o,n){if(null==r)return"";var e,t,i,s={},u={},a="",p="",c="",l=2,f=3,h=2,d=[],m=0,v=0;for(i=0;i<r.length;i+=1)if(a=r.charAt(i),Object.prototype.hasOwnProperty.call(s,a)||(s[a]=f++,u[a]=!0),p=c+a,Object.prototype.hasOwnProperty.call(s,p))c=p;else{if(Object.prototype.hasOwnProperty.call(u,c)){if(c.charCodeAt(0)<256){for(e=0;e<h;e++)m<<=1,v==o-1?(v=0,d.push(n(m)),m=0):v++;for(t=c.charCodeAt(0),e=0;e<8;e++)m=m<<1|1&t,v==o-1?(v=0,d.push(n(m)),m=0):v++,t>>=1}else{for(t=1,e=0;e<h;e++)m=m<<1|t,v==o-1?(v=0,d.push(n(m)),m=0):v++,t=0;for(t=c.charCodeAt(0),e=0;e<16;e++)m=m<<1|1&t,v==o-1?(v=0,d.push(n(m)),m=0):v++,t>>=1}0==--l&&(l=Math.pow(2,h),h++),delete u[c]}else for(t=s[c],e=0;e<h;e++)m=m<<1|1&t,v==o-1?(v=0,d.push(n(m)),m=0):v++,t>>=1;0==--l&&(l=Math.pow(2,h),h++),s[p]=f++,c=String(a)}if(""!==c){if(Object.prototype.hasOwnProperty.call(u,c)){if(c.charCodeAt(0)<256){for(e=0;e<h;e++)m<<=1,v==o-1?(v=0,d.push(n(m)),m=0):v++;for(t=c.charCodeAt(0),e=0;e<8;e++)m=m<<1|1&t,v==o-1?(v=0,d.push(n(m)),m=0):v++,t>>=1}else{for(t=1,e=0;e<h;e++)m=m<<1|t,v==o-1?(v=0,d.push(n(m)),m=0):v++,t=0;for(t=c.charCodeAt(0),e=0;e<16;e++)m=m<<1|1&t,v==o-1?(v=0,d.push(n(m)),m=0):v++,t>>=1}0==--l&&(l=Math.pow(2,h),h++),delete u[c]}else for(t=s[c],e=0;e<h;e++)m=m<<1|1&t,v==o-1?(v=0,d.push(n(m)),m=0):v++,t>>=1;0==--l&&(l=Math.pow(2,h),h++)}for(t=2,e=0;e<h;e++)m=m<<1|1&t,v==o-1?(v=0,d.push(n(m)),m=0):v++,t>>=1;for(;;){if(m<<=1,v==o-1){d.push(n(m));break}v++}return d.join("")},decompress:function(r){return null==r?"":""==r?null:i._decompress(r.length,32768,function(o){return r.charCodeAt(o)})},_decompress:function(o,n,e){var t,i,s,u,a,p,c,l=[],f=4,h=4,d=3,m="",v=[],g={val:e(0),position:n,index:1};for(t=0;t<3;t+=1)l[t]=t;for(s=0,a=Math.pow(2,2),p=1;p!=a;)u=g.val&g.position,g.position>>=1,0==g.position&&(g.position=n,g.val=e(g.index++)),s|=(u>0?1:0)*p,p<<=1;switch(s){case 0:for(s=0,a=Math.pow(2,8),p=1;p!=a;)u=g.val&g.position,g.position>>=1,0==g.position&&(g.position=n,g.val=e(g.index++)),s|=(u>0?1:0)*p,p<<=1;c=r(s);break;case 1:for(s=0,a=Math.pow(2,16),p=1;p!=a;)u=g.val&g.position,g.position>>=1,0==g.position&&(g.position=n,g.val=e(g.index++)),s|=(u>0?1:0)*p,p<<=1;c=r(s);break;case 2:return""}for(l[3]=c,i=c,v.push(c);;){if(g.index>o)return"";for(s=0,a=Math.pow(2,d),p=1;p!=a;)u=g.val&g.position,g.position>>=1,0==g.position&&(g.position=n,g.val=e(g.index++)),s|=(u>0?1:0)*p,p<<=1;switch(c=s){case 0:for(s=0,a=Math.pow(2,8),p=1;p!=a;)u=g.val&g.position,g.position>>=1,0==g.position&&(g.position=n,g.val=e(g.index++)),s|=(u>0?1:0)*p,p<<=1;l[h++]=r(s),c=h-1,f--;break;case 1:for(s=0,a=Math.pow(2,16),p=1;p!=a;)u=g.val&g.position,g.position>>=1,0==g.position&&(g.position=n,g.val=e(g.index++)),s|=(u>0?1:0)*p,p<<=1;l[h++]=r(s),c=h-1,f--;break;case 2:return v.join("")}if(0==f&&(f=Math.pow(2,d),d++),l[c])m=l[c];else{if(c!==h)return null;m=i+i.charAt(0)}v.push(m),l[h++]=i+m.charAt(0),i=m,0==--f&&(f=Math.pow(2,d),d++)}}};return i}();"function"==typeof define&&define.amd?define(function(){return LZString}):"undefined"!=typeof module&&null!=module?module.exports=LZString:"undefined"!=typeof angular&&null!=angular&&angular.module("LZString",[]).factory("LZString",function(){return LZString});</script>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="top">
+    <div>
+      <div class="logo-row">
+        <div class="logo" role="button" tabindex="0" onclick="requestReset()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();requestReset();}" style="cursor:pointer;"><img src="logo.png" alt="" style="width:38px;height:38px;vertical-align:-9px;margin-right:8px;"><span class="logo-fncs">FNCS</span> <span>DRAFT</span></div>
+        <a class="x-top" href="https://x.com/keegorkaa" target="_blank" rel="noopener" aria-label="psychopath on X">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+          <span class="x-top-name">psychopath</span>
+        </a>
+        <a class="x-top tg-top" href="https://t.me/fndraft" target="_blank" rel="noopener" aria-label="@fndraft on Telegram">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+          <span class="x-top-name">@fndraft</span>
+        </a>
+        <!-- Две двери поддержки, одна пара. Lava принимает рубли, Ko-fi —
+             всё остальное; какая кому нужна, говорит валюта на самой кнопке,
+             без объяснений рядом. Отзыв: «одна lava для рублей
+             в основном, а кофи для других валют». -->
+        <a class="support-top" href="https://app.lava.top/psychopath?tabId=donate" target="_blank" rel="noopener" aria-label="Support fncsdraft (RUB)">
+          <span aria-hidden="true">&#128155;</span><span data-i18n="supportBtn"></span><i class="pay-cur">&#8381;</i>
+        </a>
+        <a class="support-top kofi-top" href="https://ko-fi.com/psychopathjke" target="_blank" rel="noopener" aria-label="Support fncsdraft on Ko-fi">
+          <span aria-hidden="true">&#9749;</span><span>Ko-fi</span><i class="pay-cur">$ &euro;</i>
+        </a>
+      </div>
+    </div>
+    <!-- Навбар, как в лобби игры (PLAY · SHOP · COMPETE…): три двери сайта
+         пилюлями, активная светлая — ставит show(). Отзыв:
+         «давай» на «шапка сайта как навбар игры». -->
+    <!-- ДВЕ ВКЛАДКИ САЙТА, без подменю (26.10, его «сделай только два выбора, не надо подвыборы: карьера на мейн сайта
+         кидает, компетитив на компетитив»): «Карьера» — главная (как логотип), всегда светлая на основном сайте;
+         «Компетитив» — /competitive (tools/build-competitive.js). Игрок, менеджер, драфт и история — двери на главной. -->
+    <nav class="site-nav" aria-label="site">
+      <button class="nav-pill nav-main on" type="button" onclick="requestReset()" data-i18n="navGrpCareer"></button>
+      <a class="nav-pill" id="navComp" href="competitive" data-i18n="navGrpComp"></a>
+      <button class="nav-pill nav-me" type="button" onclick="openProfileScreen()" data-i18n="navGrpProfile"></button>
+      <button class="nav-pill nav-guide" type="button" onclick="homeGuideOpen()" data-i18n="hmGuideBtn"></button>
+    </nav>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <div class="badge" id="topBadge" data-i18n="badgeMode"></div>
+      <div style="display:flex;border:1px solid var(--line);border-radius:4px;overflow:hidden;">
+        <button id="langEn" class="lang-on" onclick="setLang('en')" style="border:none;background:var(--accent);color:var(--accent-ink);font-weight:800;font-size:11px;padding:6px 10px;cursor:pointer;">EN</button>
+        <button id="langRu" onclick="setLang('ru')" style="border:none;background:var(--panel2);color:var(--ink-dim);font-weight:800;font-size:11px;padding:6px 10px;cursor:pointer;">RU</button>
+        <button id="langFr" onclick="setLang('fr')" style="border:none;background:var(--panel2);color:var(--ink-dim);font-weight:800;font-size:11px;padding:6px 10px;cursor:pointer;">FR</button>
+        <button id="langIt" onclick="setLang('it')" style="border:none;background:var(--panel2);color:var(--ink-dim);font-weight:800;font-size:11px;padding:6px 10px;cursor:pointer;">IT</button>
+        <button id="langPt" onclick="setLang('pt')" style="border:none;background:var(--panel2);color:var(--ink-dim);font-weight:800;font-size:11px;padding:6px 10px;cursor:pointer;">PT</button>
+        <button id="langDe" onclick="setLang('de')" style="border:none;background:var(--panel2);color:var(--ink-dim);font-weight:800;font-size:11px;padding:6px 10px;cursor:pointer;">DE</button>
+        <button id="langEs" onclick="setLang('es')" style="border:none;background:var(--panel2);color:var(--ink-dim);font-weight:800;font-size:11px;padding:6px 10px;cursor:pointer;">ES</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- FNCS Cards (27.10): режим карточек, рисуется целиком из sqRender. -->
+<div class="screen" id="screen-sq"><div id="sqRoot" class="sq-root"></div></div>
+<div class="screen active" id="screen-mode">
+    <!-- Герой-полоса: ключевой арт сезона, одна строка капсом, описание сайта
+         (бывший tagline из шапки) и две двери — жёлтая в карьеру, контурная
+         к карточкам ниже. См. .hero в стилях. -->
+    <!-- Герой — одна панель вместо двух. Отзыв: «дизайн можно
+         объединить первые два прямоугольника красиво». До этого под героем
+         лежала отдельная полоса карьеры (.cstrip, с 4 сентября): метка NEW,
+         заголовок «FNCS Career», абзац, четыре плашки и три командные двери
+         — и на первом экране стояли два одинаковых по крою прямоугольника с
+         двумя артами одного сезона. Теперь в герое: заголовок, описание,
+         метка NEW с плашками «из чего состоит карьера», две главные двери
+         (карьера и драфт) и строкой ниже — командные двери «с другом»
+         (вдвоём, гонка, по коду; ходят за флагом CC_MP_OPEN в setLang).
+         Id кнопок cstripDuo/cstripRace/cstripCode сохранены: на них смотрят
+         check-mp-doors и setLang. Арт — ключевой арт Major 1, один. -->
+    <!-- Карьера игрока и карьера менеджера — ОДНОЙ строкой, две половины (его скрин 7.10: красные рамки слева и справа). -->
+    <div class="hero-pair">
+    <section class="hero hero-career" aria-labelledby="heroTitle">
+      <!-- Самые хайповые игроки всех лет позади текста, на менеджере — гербы клубов (его слово 8.10). -->
+      <div class="hero-collage hc-players" aria-hidden="true"><img src="photos/BUGHA.jpg" alt="" loading="lazy" onerror="this.remove()"><img src="photos/aqua.png" alt="" loading="lazy" onerror="this.remove()"><img src="photos/Mongraal.jpg" alt="" loading="lazy" onerror="this.remove()"><img src="photos/Benjyfishy.jpg" alt="" loading="lazy" onerror="this.remove()"><img src="photos/Clix.jpg" alt="" loading="lazy" onerror="this.remove()"><img src="photos/MrSavage.jpg" alt="" loading="lazy" onerror="this.remove()"><img src="photos/nyhrox.png" alt="" loading="lazy" onerror="this.remove()"><img src="photos/Bizzle.png" alt="" loading="lazy" onerror="this.remove()"><img src="photos/TaySon.jpg" alt="" loading="lazy" onerror="this.remove()"><img src="photos/Mero.png" alt="" loading="lazy" onerror="this.remove()"><img src="photos/Th0masHD.jpg" alt="" loading="lazy" onerror="this.remove()"><img src="photos/Setty.jpg" alt="" loading="lazy" onerror="this.remove()"><img src="photos/Reet.jpg" alt="" loading="lazy" onerror="this.remove()"><img src="photos/Kami.jpg" alt="" loading="lazy" onerror="this.remove()"><img src="photos/Edgey.jpg" alt="" loading="lazy" onerror="this.remove()"><img src="photos/Khanada.jpg" alt="" loading="lazy" onerror="this.remove()"><img src="photos/Queasy.jpg" alt="" loading="lazy" onerror="this.remove()"><img src="photos/Malibuca.jpg" alt="" loading="lazy" onerror="this.remove()"><img src="photos/Peterbot.jpg" alt="" loading="lazy" onerror="this.remove()"><img src="photos/Pollo.jpg" alt="" loading="lazy" onerror="this.remove()"><img src="photos/Veno.jpg" alt="" loading="lazy" onerror="this.remove()"><img src="photos/Cooper.jpg" alt="" loading="lazy" onerror="this.remove()"><img src="photos/vic0.jpg" alt="" loading="lazy" onerror="this.remove()"><img src="photos/SwizzY.jpg" alt="" loading="lazy" onerror="this.remove()"></div>
+      <div class="hero-body">
+        <span class="dp-tag hero-mode-tag" data-i18n="hmCareerTag"></span>
+        <p class="hero-what" data-i18n="hmWhatIs"></p>
+        <h1 class="hero-title" id="heroTitle" data-i18n="hcHeroTitle"></h1>
+        <p class="hero-sub" id="tagline" data-i18n="hmCareerSub"></p>
+        <div class="cstrip-chips hero-chips">
+          <span class="cstrip-tag" data-i18n="modeNewBadge"></span>
+          <span class="cstrip-chip" data-i18n="cstripChipDivs"></span>
+          <span class="cstrip-chip" data-i18n="cstripChipMajors"></span>
+          <span class="cstrip-chip" data-i18n="cstripChipReload"></span>
+          <span class="cstrip-chip" data-i18n="cstripChipLife"></span>
+        </div>
+        <!-- 16.10 (Notion 15.10, скрин 12: «задизайнить получше и 3 режима»): «С другом» — одна сегментированная
+             плашка, «что это за игра · игроки FNCS» — тихие текстовые ссылки, и всё это НАД главной кнопкой, чтобы
+             кнопки трёх колонок стояли на одной линии внизу. Id кнопок «с другом» прежние (check-mp-doors, setLang).
+             Видно сразу, а не после app.js (правка 29.09); CC_MP_OPEN=false по-прежнему прячет ряд из setLang. -->
+        <div class="hero-team" id="heroTeam">
+          <span class="hero-seg">
+            <button class="cstrip-btn cstrip-btn-duo" id="cstripDuo" type="button" onclick="careerMpNew()" data-i18n="heroDuo"></button>
+            <button class="cstrip-btn cstrip-btn-duo" id="cstripRace" type="button" onclick="careerRaceNew()" data-i18n="ccRaceMake"></button>
+            <button class="cstrip-btn cstrip-btn-code" id="cstripCode" type="button" onclick="careerMpJoinNew()" data-i18n="ccMpEnter"></button>
+          </span>
+        </div>
+        <div class="hero-about"><a href="about.html"><span data-i18n="aboutLink"></span></a><a href="/players"><span data-i18n="playersLink"></span></a><a href="#hl" onclick="event.preventDefault();hlOpen()"><span data-i18n="hlLink"></span></a></div>
+        <div class="hero-cta">
+          <button class="hero-btn hero-btn-go" type="button" onclick="careerStart()"><span data-i18n="heroCareer"></span></button>
+          <button class="hero-btn hero-btn-alt hero-mgr-btn" type="button" onclick="mgrStart()"><span id="mgCareerBtn" data-i18n="hmMgrCareer"></span></button>
+          <button class="hero-btn hero-btn-alt" type="button" onclick="homeOpenDraft()"><span data-i18n="heroDraft"></span></button>
+        </div>
+      </div>
+      <div class="hero-art" style="background-image:url(art/fncs-2026-major1.jpg);cursor:pointer" role="img" aria-label="FNCS 2026 Major 1" onclick="careerStart()"></div>
+    </section>
+    <!-- Карьера менеджера — сразу за карьерой игрока (его слово 7.10: «чтоб рядом с карьерой игрока была карьера менеджера»). -->
+    <section class="hero hero-draft hero-mgr" aria-labelledby="heroMgrTitle">
+      <div class="hero-collage hc-orgs" aria-hidden="true"><span><img src="logos/FaZe_Clan.png" alt="" loading="lazy" onerror="this.remove()"></span><span><img src="logos/Team_Liquid.png" alt="" loading="lazy" onerror="this.remove()"></span><span><img src="logos/TSM.png" alt="" loading="lazy" onerror="this.remove()"></span><span><img src="logos/G2_Esports.png" alt="" loading="lazy" onerror="this.remove()"></span><span><img src="logos/Fnatic.png" alt="" loading="lazy" onerror="this.remove()"></span><span><img src="logos/Cloud9.png" alt="" loading="lazy" onerror="this.remove()"></span><span><img src="logos/Team_Falcons.png" alt="" loading="lazy" onerror="this.remove()"></span><span><img src="logos/Gentle_Mates.png" alt="" loading="lazy" onerror="this.remove()"></span><span><img src="logos/BIG.png" alt="" loading="lazy" onerror="this.remove()"></span><span><img src="logos/XSET.png" alt="" loading="lazy" onerror="this.remove()"></span><span><img src="logos/Team_Vitality.png" alt="" loading="lazy" onerror="this.remove()"></span><span><img src="logos/Natus_Vincere.png" alt="" loading="lazy" onerror="this.remove()"></span><span><img src="logos/Dignitas.png" alt="" loading="lazy" onerror="this.remove()"></span><span><img src="logos/Solary.png" alt="" loading="lazy" onerror="this.remove()"></span><span><img src="logos/T1.png" alt="" loading="lazy" onerror="this.remove()"></span><span><img src="logos/Team_Spirit.png" alt="" loading="lazy" onerror="this.remove()"></span><span><img src="logos/MOUZ.png" alt="" loading="lazy" onerror="this.remove()"></span><span><img src="logos/Virtus.pro.png" alt="" loading="lazy" onerror="this.remove()"></span><span><img src="logos/Gambit_Esports.png" alt="" loading="lazy" onerror="this.remove()"></span><span><img src="logos/XP42.png" alt="" loading="lazy" onerror="this.remove()"></span><span><img src="logos/Aurora_Gaming.png" alt="" loading="lazy" onerror="this.remove()"></span><span><img src="logos/Wave_Esports.png" alt="" loading="lazy" onerror="this.remove()"></span><span><img src="logos/Gen.G_Esports.png" alt="" loading="lazy" onerror="this.remove()"></span><span><img src="logos/Twisted_Minds.png" alt="" loading="lazy" onerror="this.remove()"></span></div>
+      <div class="hero-body">
+        <span class="dp-tag hero-mode-tag" id="mgHeroTag" data-i18n="hmMgrTag"></span>
+        <h2 class="hero-title" id="heroMgrTitle" data-i18n="hmMgrTitle"></h2>
+        <p class="hero-sub" id="mgHeroSub" data-i18n="hmMgrSub"></p>
+        <div class="cstrip-chips hero-chips"><span class="cstrip-chip">2019 – 2026</span><span class="cstrip-chip" data-i18n="hmChipClubs">Real clubs</span><span class="cstrip-chip" data-i18n="hmChipMatch">Match day</span></div>
+        <div class="hero-cta"><button class="hero-btn hero-btn-go" type="button" onclick="mgrStart()"><span id="mgHeroBtn" data-i18n="hmMgrBtn"></span></button></div>
+      </div>
+      <div class="hero-art" style="background:url(art/mode-major1.jpg) center/cover;cursor:pointer" role="img" aria-label="Fortnite Manager" onclick="mgrStart()"></div>
+    </section>
+    <!-- Драфт — третьей колонкой того же ряда (15.10: «всё-таки 3 колонки»). -->
+    <section class="hero hero-draft hero-draft-main" aria-labelledby="heroDraftTitle">
+      <div class="hero-body">
+        <span class="dp-tag hero-mode-tag" data-i18n="hmDraftTag"></span>
+        <h2 class="hero-title" id="heroDraftTitle" data-i18n="hdHeroTitle"></h2>
+        <p class="hero-sub" data-i18n="hmDraftSub"></p>
+        <div class="cstrip-chips hero-chips">
+          <span class="cstrip-chip">2019 – 2026</span>
+          <span class="cstrip-chip">All FNCS</span>
+          <span class="cstrip-chip" data-i18n="hdChipFormats"></span>
+          <span class="cstrip-chip" data-i18n="dpRealCards"></span>
+        </div>
+        <div class="hero-cta">
+          <button class="hero-btn hero-btn-go" type="button" onclick="homeOpenDraft()"><span data-i18n="hdPlay"></span></button>
+          <button class="hero-btn hero-btn-alt" type="button" onclick="chooseMode(2, true)"><span>All FNCS</span></button>
+          <!-- Кнопка FNCS Cards скрыта; код режима (sqStart) остаётся. -->
+        </div>
+      </div>
+      <!-- Превью драфта — стена логотипов FNCS и World Cup 2019–2026 (его просьба 29.09: «на превью добавить все
+           логотипы фнксов, ворлд капа за эти года красиво»). Постеры сезонов — те же, что в карьере. -->
+      <div class="hero-art hd-logos" style="cursor:pointer" role="img" aria-label="FNCS · World Cup 2019–2026" onclick="homeOpenDraft()">
+        <div class="hd-wall"><figure class="hd-logo hd-wide"><img src="art/fncs-2019.jpg" alt="" loading="lazy"><figcaption>WC 2019</figcaption></figure><figure class="hd-logo"><img src="art/cups/f10.jpg" alt="" loading="lazy"><figcaption>2019</figcaption></figure><figure class="hd-logo"><img src="art/cups/f11.jpg" alt="" loading="lazy"><figcaption>2019</figcaption></figure><figure class="hd-logo"><img src="art/cups/f12.jpg" alt="" loading="lazy"><figcaption>2020</figcaption></figure><figure class="hd-logo"><img src="art/cups/f14.jpg" alt="" loading="lazy"><figcaption>2020</figcaption></figure><figure class="hd-logo"><img src="art/cups/f15.jpg" alt="" loading="lazy"><figcaption>2021</figcaption></figure><figure class="hd-logo"><img src="art/cups/f17.jpg" alt="" loading="lazy"><figcaption>2021</figcaption></figure><figure class="hd-logo"><img src="art/cups/f18gr.jpg" alt="" loading="lazy"><figcaption>2021</figcaption></figure><figure class="hd-logo"><img src="art/cups/f19.jpg" alt="" loading="lazy"><figcaption>2022</figcaption></figure><figure class="hd-logo"><img src="art/cups/f22inv.jpg" alt="" loading="lazy"><figcaption>2022</figcaption></figure><figure class="hd-logo"><img src="art/cups/f23.jpg" alt="" loading="lazy"><figcaption>2023</figcaption></figure><figure class="hd-logo"><img src="art/cups/f25.jpg" alt="" loading="lazy"><figcaption>2023</figcaption></figure><figure class="hd-logo"><img src="art/cups/f28.jpg" alt="" loading="lazy"><figcaption>2024</figcaption></figure><figure class="hd-logo hd-wide"><img src="art/mode-major1-2025.jpg" alt="" loading="lazy"><figcaption>2025</figcaption></figure><figure class="hd-logo hd-wide"><img src="art/fncs-2026.jpg" alt="" loading="lazy"><figcaption>2026</figcaption></figure></div>
+      </div>
+    </section>
+    </div>
+    <!-- Две колонки сразу (его скрин 8.10: «когда захожу на сайт вот так показывает, потом 2 колонки»): блок менеджера
+         открывался из app.js после загрузки 9 МБ, и до этого главная стояла в одну колонку. Тот же список хостов,
+         что в mgrAllowed. -->
+    <script>(function(){var h=(location.hostname||"").toLowerCase();if(!h||h==="localhost"||h==="127.0.0.1"||h==="debug.fncsdraft.pages.dev")document.querySelectorAll('.hero-mgr, .hero-mgr-btn, .nav-pill[data-nav="manager"]').forEach(function(el){el.hidden=false;});})();</script>
+    <!-- Все плитки режимов — в ОДНОЙ панели того же кроя, что герой. Скриншот (красная рамка вокруг всех рядов): «с этими
+         прямоугольниками чет придумать, чтоб они как 1 был по дизайну, а то
+         первый выделяется». -->
+    <!-- ДВА РЕЖИМА (его слово 29.09): два одинаковых больших блока — КАРЬЕРА и ДРАФТ («такого же размера»).
+         Кнопка драфта раскрывает под ним выбор года 2019–2026 и форматов. -->
+    <section class="modes-panel dp-shut" id="draftPanel">
+    <div class="dp-years" id="dpYears"></div>
+    <div class="year-row" id="modeYears">
+      <div class="year-label">2026</div>
+      <!-- Две карточки, а не три: карьера уехала в свою полосу под героем. -->
+      <div class="mode-grid mode-grid-2">
+      <div class="mode-card">
+        <div class="ec-art" id="major2Art" style="background-image:url(art/mode-major1.jpg)">
+          <span class="ec-pill ec-pill-l" data-i18n="ecScope7"></span>
+          <div class="ec-foot">
+            <div class="ec-when" data-i18n="ecDate2026"></div>
+            <h3 class="ec-title" data-i18n="modeFncs2026Title"></h3>
+            <div class="ec-mode"><span class="ec-chip">Battle Royale</span><span class="ec-sub" data-i18n="ecSubDuos"></span></div>
+          </div>
+        </div>
+        <div class="ec-cups">
+          <button class="ec-cup ec-cup-arted" style="--cup-art:url(art/mode-major1.jpg)" onclick="event.stopPropagation();chooseMode(2,'cards1')"><span data-i18n="majorPick1"></span><small data-i18n="ecDateM1"></small></button>
+          <button class="ec-cup ec-cup-arted" style="--cup-art:url(art/fncs-2026.jpg)" onclick="event.stopPropagation();chooseMode(2,'cards')"><span data-i18n="majorPick2"></span><small data-i18n="ecDateM2"></small></button>
+          <!-- Весь год — там же, где кубки, последней кнопкой. Просьба игрока в
+               его твиттере (скрин 31 августа): «will there be possibility to
+               start from major 1 the play summit and also play major 2 +
+               globals all in the same draft». Отзыв: «чтоб на уже
+               существующих прямоугольниках была кнопка» — отдельная плитка
+               ниже ему не подошла. -->
+          <button class="ec-cup ec-cup-year" onclick="event.stopPropagation();chooseMode(2,'year')"><span data-i18n="yearCupBtn"></span><small data-i18n="yearPick2026When"></small></button>
+        </div>
+        <p data-i18n="modeFncs2026Desc"></p>
+        <span class="mode-count" data-i18n="modeFncs2026Count"></span>
+      </div>
+      <div class="mode-card">
+        <div class="ec-art" style="background-image:url(art/mode-ewc.jpg)">
+          <span class="ec-pill ec-pill-l" data-i18n="ecScope7"></span>
+          <div class="ec-foot">
+            <div class="ec-when" data-i18n="ecDateEwc"></div>
+            <h3 class="ec-title" data-i18n="modeEwcTitle"></h3>
+            <div class="ec-mode"><span class="ec-chip">Reload</span><span class="ec-sub" data-i18n="ecSubEwc"></span></div>
+          </div>
+        </div>
+        <div class="ec-cups">
+          <button class="ec-cup" onclick="event.stopPropagation();chooseMode(2,'ewc1')"><span data-i18n="ewcCup1"></span><small data-i18n="ewcCup1When"></small></button>
+          <button class="ec-cup" onclick="event.stopPropagation();chooseMode(2,'ewc2')"><span data-i18n="ewcCup2"></span><small data-i18n="ewcCup2When"></small></button>
+          <button class="ec-cup" onclick="event.stopPropagation();chooseMode(2,'ewc3')"><span data-i18n="ewcCup3"></span><small data-i18n="ewcCup3When"></small></button>
+          <button class="ec-cup" onclick="event.stopPropagation();chooseMode(2,'ewc4')"><span data-i18n="ewcCup4"></span><small data-i18n="ewcCup4When"></small></button>
+          <button class="ec-cup ec-cup-year" onclick="event.stopPropagation();chooseMode(2,'yearReload')"><span data-i18n="yearCupBtn"></span><small data-i18n="yearPickReloadWhen"></small></button>
+        </div>
+        <p data-i18n="modeEwcDesc"></p>
+        <span class="mode-count" data-i18n="modeEwcCount"></span>
+      </div>
+      <!-- КАРТОЧКИ КАРЬЕРЫ ЗДЕСЬ БОЛЬШЕ НЕТ — отзыв: «убрать
+           вообще панельку fncs career… внизу типо». Карьера переехала в свою
+           полосу под героем (.cstrip): там её название, строка и все четыре
+           двери. Ряд 2026 остался тем, чем был до 17 августа, — турнирами
+           этого года, и стоит теперь в две колонки. -->
+      </div>
+    </div>
+
+    <div class="year-row">
+      <div class="year-label">2025</div>
+      <div class="mode-grid mode-grid-3">
+      <div class="mode-card mode-card-span">
+        <!-- Три мейджора — три арта на одной обложке, срезами по диагонали:
+             Major 1 подложкой, Major 2 (красный) и Major 3 клиньями поверх.
+             Раньше все три сидели под одним артом Major 1. -->
+        <div class="ec-art" style="background-image:url(art/mode-major1-2025.jpg)">
+          <i class="ec-slice" style="background-image:url(art/mode-major2-2025.jpg)"></i>
+          <i class="ec-slice ec-slice-3" style="background-image:url(art/mode-major3-2025.jpg)"></i>
+          <span class="ec-pill ec-pill-l" data-i18n="ecScope7"></span>
+          <div class="ec-foot">
+            <div class="ec-when" data-i18n="ecDate2025"></div>
+            <h3 class="ec-title" data-i18n="modeFncs2025Title"></h3>
+            <div class="ec-mode"><span class="ec-chip">Battle Royale</span><span class="ec-sub" data-i18n="ecSubTrios"></span></div>
+          </div>
+        </div>
+        <div class="ec-cups">
+          <button class="ec-cup ec-cup-arted" style="--cup-art:url(art/mode-major1-2025.jpg)" onclick="event.stopPropagation();chooseMode(3,'cards2025')"><span data-i18n="majorPick1"></span><small data-i18n="ecDateT1"></small></button>
+          <button class="ec-cup ec-cup-arted" style="--cup-art:url(art/mode-major2-2025.jpg)" onclick="event.stopPropagation();chooseMode(3,'cards2025major2')"><span data-i18n="majorPick2"></span><small data-i18n="ecDateT2"></small></button>
+          <button class="ec-cup ec-cup-arted" style="--cup-art:url(art/mode-major3-2025.jpg)" onclick="event.stopPropagation();chooseMode(3,'cards2025major3')"><span data-i18n="majorPick3"></span><small data-i18n="ecDateT3"></small></button>
+          <button class="ec-cup ec-cup-year" onclick="event.stopPropagation();chooseMode(3,'year2025')"><span data-i18n="yearCupBtn"></span><small data-i18n="yearPick2025When"></small></button>
+        </div>
+        <p data-i18n="modeFncs2025Desc"></p>
+        <span class="mode-count" data-i18n="modeFncs2025Count"></span>
+      </div>
+      </div>
+    </div>
+
+    <div class="year-row">
+      <div class="year-label">2024</div>
+      <div class="mode-grid mode-grid-3">
+      <div class="mode-card mode-card-span">
+        <!-- 2024: своих постеров у Мейджоров нет — острова пятой главы, как в карьере. -->
+        <div class="ec-art" style="background-image:url(art/fncs-2024.jpg);background-position:center">
+          <span class="ec-pill ec-pill-l" data-i18n="ecScope6"></span>
+          <div class="ec-foot">
+            <div class="ec-when" data-i18n="ecDate2024"></div>
+            <h3 class="ec-title" data-i18n="modeFncs2024Title"></h3>
+            <div class="ec-mode"><span class="ec-chip">Battle Royale</span><span class="ec-sub" data-i18n="ecSubDuos"></span></div>
+          </div>
+        </div>
+        <div class="ec-cups">
+          <button class="ec-cup ec-cup-arted" style="--cup-art:url(art/map-f1.jpg)" onclick="event.stopPropagation();chooseMode(2,'cards2024')"><span data-i18n="majorPick1"></span><small data-i18n="ecDateF1"></small></button>
+          <button class="ec-cup ec-cup-arted" style="--cup-art:url(art/map-f2.jpg)" onclick="event.stopPropagation();chooseMode(2,'cards2024major2')"><span data-i18n="majorPick2"></span><small data-i18n="ecDateF2"></small></button>
+          <button class="ec-cup ec-cup-arted" style="--cup-art:url(art/map-f3.jpg)" onclick="event.stopPropagation();chooseMode(2,'cards2024major3')"><span data-i18n="majorPick3"></span><small data-i18n="ecDateF3"></small></button>
+          <button class="ec-cup ec-cup-year" onclick="event.stopPropagation();chooseMode(2,'year2024')"><span data-i18n="yearCupBtn"></span><small data-i18n="yearPick2024When"></small></button>
+        </div>
+        <p data-i18n="modeFncs2024Desc"></p>
+        <span class="mode-count" data-i18n="modeFncs2024Count"></span>
+      </div>
+      </div>
+    </div>
+
+    <div class="mode-grid mode-grid-4" id="dpFormats" style="margin-top:16px;">
+      <div class="mode-card" onclick="chooseMode(2, true)">
+        <div class="ec-art" id="allFncsArt" data-art="art/mode-all-fncs.jpg"><span class="ec-pill ec-pill-l" data-i18n="ecScopeAll"></span><div class="ec-foot"><div class="ec-when" data-i18n="ecDateAll"></div><h3 class="ec-title" data-i18n="modeMajorTitle"></h3><div class="ec-mode"><span class="ec-chip">Battle Royale</span><span class="ec-sub" data-i18n="ecSubDuos"></span></div></div></div>
+        <p data-i18n="modeMajorDesc"></p>
+        <span class="mode-count" data-i18n="modeMajorCount"></span>
+      </div>
+      <div class="mode-card" onclick="chooseMode(2)">
+        <div class="ec-art" data-art="art/mode-duo.jpg"><span class="ec-pill ec-pill-l" data-i18n="ecScopeAll"></span><div class="ec-foot"><h3 class="ec-title" data-i18n="modeDuoTitle"></h3><div class="ec-mode"><span class="ec-chip">Battle Royale</span><span class="ec-sub" data-i18n="ecSubDuos"></span></div></div></div>
+        <p data-i18n="modeDuoDesc"></p>
+        <span class="mode-count" data-i18n="modeDuoCount"></span>
+      </div>
+      <div class="mode-card" onclick="chooseMode(3)">
+        <div class="ec-art" data-art="art/mode-trio.jpg"><span class="ec-pill ec-pill-l" data-i18n="ecScopeAll"></span><div class="ec-foot"><h3 class="ec-title" data-i18n="modeTrioTitle"></h3><div class="ec-mode"><span class="ec-chip">Battle Royale</span><span class="ec-sub" data-i18n="ecSubTrios"></span></div></div></div>
+        <p data-i18n="modeTrioDesc"></p>
+        <span class="mode-count" data-i18n="modeTrioCount"></span>
+      </div>
+      <div class="mode-card" onclick="chooseMode(4)">
+        <div class="ec-art" data-art="art/mode-squad.jpg"><span class="ec-pill ec-pill-l" data-i18n="ecScopeAll"></span><div class="ec-foot"><h3 class="ec-title" data-i18n="modeSquadTitle"></h3><div class="ec-mode"><span class="ec-chip">Battle Royale</span><span class="ec-sub" data-i18n="ecSubSquads"></span></div></div></div>
+        <p data-i18n="modeSquadDesc"></p>
+        <span class="mode-count" data-i18n="modeSquadCount"></span>
+      </div>
+    </div>
+    </section>
+
+    <!-- Настоящий календарь FNCS и «Игроки сайта» — рисуют homeSceneDraw и homeBoardDraw. -->
+
+    <!-- Драфт дня (16.10): одни паки на всех, одна попытка, таблица дня — рисует homeDailyDraw. -->
+    <section class="home-block home-daily" id="homeDaily">
+      <div class="dy-main">
+        <span class="dp-tag hero-mode-tag" data-i18n="dyTag"></span>
+        <h2 class="home-h"><span data-i18n="dyTitleW"></span> <span id="dyNum"></span></h2>
+        <p class="home-sub" data-i18n="dySub"></p>
+        <div class="cstrip-chips"><span class="cstrip-chip" id="dyMap"></span><span class="cstrip-chip" data-i18n="dyRules"></span></div>
+        <div id="dyMine"></div>
+        <div class="dy-acts" id="dyActs"><button class="hero-btn hero-btn-go" type="button" onclick="dailyStart()"><span data-i18n="dyPlay"></span></button><button class="home-more" type="button" onclick="dailyOpen()"><span data-i18n="dyBoard"></span></button></div>
+        <p class="home-sub dy-next" id="dyNext">&nbsp;</p>
+      </div>
+      <div class="dy-top"><h3 class="dy-top-h"><span data-i18n="dyBoard"></span><span id="dyTotal"></span></h3><div id="homeDailyRows"></div></div>
+    </section>
+
+    <!-- Больше или меньше: рядом с драфтом дня, справа настоящая пара из игры — рисует homeHlDraw. -->
+    <section class="home-block home-hl" id="homeHl">
+      <div class="hh-main">
+        <span class="dp-tag hero-mode-tag" data-i18n="hhTag"></span>
+        <h2 class="home-h" data-i18n="hlTitle"></h2>
+        <p class="home-sub" data-i18n="hhSub"></p>
+        <div class="cstrip-chips"><span class="cstrip-chip" id="hhCntP"></span><span class="cstrip-chip" id="hhCntT"></span><span class="cstrip-chip" id="hhBest"></span></div>
+        <div class="dy-acts"><button class="hero-btn hero-btn-go" type="button" onclick="hlOpen('pl')"><span data-i18n="hhPlayP"></span></button><button class="home-more" type="button" onclick="hlOpen('org')"><span data-i18n="hhPlayT"></span></button></div>
+      </div>
+      <button type="button" class="hh-pair" id="hhPair" onclick="hlOpen('pl')" aria-label=""></button>
+    </section>
+    <script>(function(){try{var M=["Chapter 7 Season 2","Chapter 7 Season 3","Chapter 6 Season 1","Chapter 6 Season 2","Chapter 6 Season 3","Chapter 6 Season 4","Chapter 5 Season 1","Chapter 5 Season 2","Chapter 5 Season 3","Chapter 5 Season 4","Chapter 4 Season 1","Chapter 4 Season 2","Chapter 4 Season 3","Chapter 4 Season 4","Chapter 3 Season 1","Chapter 3 Season 2","Chapter 3 Season 3","Chapter 3 Season 4","Chapter 2 Season 5","Chapter 2 Season 6","Chapter 2 Season 7","Chapter 2 Season 8","Chapter 1 Season 9","Chapter 1 Season X","Chapter 2 Season 1","Chapter 2 Season 2","Chapter 2 Season 3","Chapter 2 Season 4"];var d=new Date().toISOString().slice(0,10),h=2166136261,s="daily-map|"+d;
+      for(var i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619);}
+      document.getElementById("dyNum").textContent="#"+(Math.round((Date.parse(d+"T00:00:00Z")-Date.parse("2026-10-17T00:00:00Z"))/864e5)+1);
+      document.getElementById("dyMap").textContent=M[Math.abs(h)%M.length];
+      var r=((JSON.parse(localStorage.getItem("fd_daily")||"{}")||{}).days||{})[d];
+      if(r&&r.score!=null)document.getElementById("dyMine").innerHTML=r.power?'<div class="dy-mine"><b>💪 '+(+r.power).toFixed(2)+'</b><span>#'+(+r.place)+'/'+(+r.field)+' · '+(+r.score)+'</span></div>':'<div class="dy-mine"><b>#'+(+r.place)+' / '+(+r.field)+'</b><span>'+(+r.score)+'</span></div>';
+      /* Таблица дня — сразу из прошлого ответа (его «с делеем таблица появляется», 16.10): homeDailyDraw кладёт
+         строки в fd_daily_home, здесь они встают до app.js, свежие приходят следом. Только за сегодня. */
+      var t=JSON.parse(localStorage.getItem("fd_daily_home")||"null");
+      var sl=localStorage.getItem("fncsdraft_lang");if(t&&t.day===d&&t.html&&(!sl||!t.lang||t.lang===sl)){document.getElementById("homeDailyRows").innerHTML=t.html;if(t.total)document.getElementById("dyTotal").textContent=" · "+t.total;}
+    }catch(e){}})();</script>
+
+    <!-- Результаты 2026, календарь и игроки сайта — одним блоком с вкладками (homeLiveTabs), под драфтом. -->
+    <section class="home-block home-tabs" id="homeLive" data-tab="real" hidden>
+      <div class="hl-tabs" role="tablist" id="homeLiveTabs"></div>
+      <section class="hl-pane" id="homeReal" hidden></section>
+      <section class="hl-pane" id="homeScene" hidden></section>
+      <section class="hl-pane" id="homeBoard" hidden></section>
+    </section>
+    <script>(function(){try{var c=JSON.parse(localStorage.getItem("fd_home_live")||"null"),b=document.getElementById("homeLive");var l=localStorage.getItem("fncsdraft_lang");if(!c||!b||!c.html||(l&&l!==c.lang))return;b.innerHTML=c.html;b.setAttribute("data-tab",c.tab||"real");b.hidden=false;}catch(e){}})();</script>
+
+    <button class="restart-btn" onclick="openHistoryScreen()" style="margin-top:12px;width:100%;display:flex;align-items:center;justify-content:center;gap:8px;">
+      <span data-i18n="historyBtn"></span> <span id="achievementBadge" style="color:var(--accent);font-weight:800;"></span>
+    </button>
+
+    <details style="margin-top:14px;">
+      <summary style="cursor:pointer;font-size:13px;font-weight:700;color:var(--ink-dim);padding:8px 0;" data-i18n="detailsSummary"></summary>
+
+      <!-- What to do comes first: the block used to open on scoring formulas,
+           which explains the maths to someone who has not worked out what the
+           screen is asking of them yet. -->
+      <div class="rating-explainer" style="border-color:var(--accent);margin-top:12px;">
+        <h4 data-i18n="howToTitle"></h4>
+        <div class="re-row"><span data-i18n="howToRow1"></span><b data-i18n="howToRow1b"></b></div>
+        <div class="re-row"><span data-i18n="howToRow2"></span><b data-i18n="howToRow2b"></b></div>
+        <div class="re-row"><span data-i18n="howToRow3"></span><b data-i18n="howToRow3b"></b></div>
+        <div class="re-row"><span data-i18n="howToRow4"></span><b data-i18n="howToRow4b"></b></div>
+        <div class="region-note" data-i18n="howToNote"></div>
+      </div>
+
+      <div class="rating-explainer">
+        <h4 data-i18n="attrTitle"></h4>
+        <div class="re-row"><span data-i18n="attrRowAim"></span><b data-i18n="attrRowAimB"></b></div>
+        <div class="re-row"><span data-i18n="attrRowEnd"></span><b data-i18n="attrRowEndB"></b></div>
+        <div class="re-row"><span data-i18n="attrRowSur"></span><b data-i18n="attrRowSurB"></b></div>
+        <div class="re-row"><span data-i18n="attrRowCon"></span><b data-i18n="attrRowConB"></b></div>
+        <div class="re-row"><span data-i18n="attrRowClu"></span><b data-i18n="attrRowCluB"></b></div>
+        <div class="re-row"><span data-i18n="attrRowExp"></span><b data-i18n="attrRowExpB"></b></div>
+        <div class="region-note" data-i18n="attrNote"></div>
+      </div>
+
+      <div class="rating-explainer" style="margin-top:12px;">
+        <h4 data-i18n="majorExplainerTitle"></h4>
+        <div class="re-row"><span data-i18n="majorRow1"></span><b data-i18n="majorRow1b"></b></div>
+        <div class="re-row"><span data-i18n="majorRow2"></span><b data-i18n="majorRow2b"></b></div>
+        <div class="re-row"><span data-i18n="majorRow3"></span><b data-i18n="majorRow3b"></b></div>
+        <div class="re-row"><span data-i18n="majorRow4"></span><b data-i18n="majorRow4b"></b></div>
+        <div class="region-note" data-i18n="majorExplainerNote"></div>
+      </div>
+
+      <div class="rating-explainer">
+        <h4 data-i18n="scoringTitle"></h4>
+        <div class="re-row"><span data-i18n="scoreVR"></span><b>+9</b></div>
+        <div class="re-row"><span data-i18n="scoreTop25"></span><b>+4</b></div>
+        <div class="re-row"><span data-i18n="scoreTop625"></span><b>+2</b></div>
+        <div class="re-row"><span data-i18n="scoreTop26"></span><b>+0</b></div>
+        <div class="re-row"><span data-i18n="scoreElim"></span><b>+4</b></div>
+        <div class="region-note" data-i18n="scoringNote"></div>
+      </div>
+
+      <div class="rating-explainer">
+        <h4 data-i18n="ratingTitle"></h4>
+        <div class="re-row"><span data-i18n="ratingRow1"></span><b data-i18n="ratingRow1b"></b></div>
+        <div class="re-row"><span data-i18n="ratingRow2"></span><b data-i18n="ratingRow2b"></b></div>
+        <div class="re-row"><span data-i18n="ratingRow3"></span><b data-i18n="ratingRow3b"></b></div>
+        <div class="re-row"><span data-i18n="ratingRow4"></span><b data-i18n="ratingRow4b"></b></div>
+        <div class="region-note" data-i18n="ratingNote"></div>
+      </div>
+
+      <div class="rating-explainer">
+        <h4 data-i18n="synergyTitle"></h4>
+        <div class="re-row"><span data-i18n="synergyRow1"></span><b data-i18n="synergyRow1b"></b></div>
+        <div class="re-row"><span data-i18n="synergyRow2"></span><b data-i18n="synergyRow2b"></b></div>
+        <div class="region-note" data-i18n="synergyNote"></div>
+      </div>
+
+      <div class="roster-note" data-i18n="sourcesNote"></div>
+      <div class="roster-note" style="margin-top:14px;" data-i18n="confirmedNote"></div>
+    </details>
+  </div>
+
+  <div class="screen" id="screen-career-create">
+    <div class="cc-stage">
+      <div class="cc-facets"><i class="cc-f1"></i><i class="cc-f2"></i><i class="cc-f3"></i><i class="cc-f4"></i></div>
+
+      <div class="cc-head">
+        <div class="cc-brand">Fortnite <b>Championship Series</b></div>
+        <h2 class="cc-title" data-i18n="ccTitle"></h2>
+        <div class="cc-slab" data-i18n="ccSlab"></div>
+      </div>
+
+      <!-- Год — первым: от него зависят и карточки, и рейтинги ниже (отзыв:
+           «сначала выбираешь год карьеры, потом игроков»). -->
+      <div class="cc-panel cc-year-panel">
+        <div class="cc-field" id="ccYearField" style="margin-top:0;">
+          <label data-i18n="ccYear"></label>
+          <div class="cc-chips" id="ccYearChips"></div>
+          <!-- Сезон старта (18.10) — кнопками на самих плитках годов (его набросок в Notion «18.10»). -->
+          <div class="cc-note" id="ccYearNote"></div>
+        </div>
+      </div>
+
+      <div class="cc-tabs">
+        <button class="cc-tab on" id="ccTabRookie" onclick="ccSetMode('rookie')" data-i18n="ccTabRookie"></button>
+        <button class="cc-tab" id="ccTabCard" onclick="ccSetMode('card')" data-i18n="ccTabCard"></button>
+        <!-- Третьим — контент-мейкеры, правка: «добавь рядом
+             ещё контент-мейкеры, чтоб могли выбрать за них играть». -->
+        <button class="cc-tab" id="ccTabCreator" onclick="ccSetMode('creator')" data-i18n="ccTabCreator"></button>
+        <!-- Четвёртой — свой игрок с любыми статами до 99 (правка 29.09: «отдельной, после стримеров»). -->
+        <button class="cc-tab" id="ccTabFree" onclick="ccSetMode('free')" data-i18n="ccTabFree"></button>
+      </div>
+
+      <div class="cc-body">
+        <div class="cc-col">
+        <div class="cc-panel">
+          <div class="cc-photo" id="ccPhoto" role="button" tabindex="0"
+               onclick="ccPickPhoto()" onkeydown="if(event.key==='Enter'){ccPickPhoto()}">
+            <span data-i18n="ccPhotoHint"></span>
+          </div>
+          <input type="file" id="ccPhotoInput" accept="image/*" hidden onchange="ccPhotoChosen(this)">
+          <div class="cc-field">
+            <label data-i18n="ccNick"></label>
+            <input id="ccNick" maxlength="16" autocomplete="off" spellcheck="false" oninput="ccSync()">
+          </div>
+          <div class="cc-field">
+            <label data-i18n="ccSex"></label>
+            <div class="cc-chips">
+              <button type="button" id="ccSexM" class="cc-chip on" onclick="ccSexPick('m')" data-i18n="ccSexM"></button>
+              <button type="button" id="ccSexF" class="cc-chip" onclick="ccSexPick('f')" data-i18n="ccSexF"></button>
+            </div>
+          </div>
+          <!-- The age is a choice again, and a real one now that the birthday
+               is worth points: a sixteen-year-old carries +4 and a
+               twenty-five-year-old +3, and everybody retires at thirty either
+               way, so starting young buys both the edge and the seasons. It was
+               hidden while age was worth nothing and there was nothing to
+               decide. ccStart has always read it, in both modes. -->
+          <div class="cc-field">
+            <label data-i18n="ccAge"></label>
+            <div class="cc-warn" id="ccAgeWarn"></div>
+            <input id="ccAge" type="text" inputmode="numeric" maxlength="2" value="16"
+                   oninput="ccAgeInput()" onblur="ccAgeClamp()">
+            <div class="cc-gain" id="ccAgeGain"></div>
+            <!-- И день, если игрок хочет, чтобы он был.
+
+                 Возраст — это число, а дата рождения — это ещё и день в году,
+                 на который сцена умеет отвечать: careerBirthdays уже поздравляет
+                 всех, у кого дата есть, и не поздравляла созданного игрока
+                 ровно потому, что даты у него не было. Поле необязательное:
+                 пусто — карьера считает возраст счётчиком, как считала. -->
+            <input id="ccBorn" class="cc-born" type="date" oninput="ccBornInput()">
+            <div class="cc-note cc-born-note" data-i18n="ccBornHint"></div>
+          </div>
+        </div>
+        <div class="cc-panel cc-cardbox" id="ccCardBox"></div>
+        </div>
+
+        <div class="cc-col">
+        <!-- Своему игроку карта стран — окном поверх (ccMapOpen, 29.10): на странице кнопка страны, карта не растягивает экран. -->
+        <div class="cc-panel cc-mappanel" id="ccMapPanel">
+          <div class="cc-field" style="margin-top:0;">
+            <label data-i18n="ccRegion"></label>
+            <div class="cc-chips cc-chips-reg" id="ccRegionChips"></div>
+            <div class="cc-note" data-i18n="ccRegionNote"></div>
+          </div>
+          <button type="button" class="cc-mapbtn" id="ccMapBtn" onclick="ccMapOpen()"></button>
+          <div class="cc-maphead">
+            <div class="cc-mapttl" id="ccPingPlate">
+              <b data-i18n="ccPingTitle"></b>
+              <i id="ccPingServer"></i>
+            </div>
+            <input class="cc-search" id="ccSearch" autocomplete="off" oninput="ccRenderList()">
+            <button type="button" class="cc-mapclose" onclick="ccMapClose()" aria-label="Close">×</button>
+          </div>
+          <div class="cc-grid" id="ccGrid"></div>
+          <div class="cc-cards" id="ccCards" style="display:none;"></div>
+          <div class="cc-gain" id="ccPingGain"></div>
+          <div class="cc-note" data-i18n="ccPingNote"></div>
+        </div>
+        <!-- Под картой (29.10, «листать вниз нужно»): настройки игрока двумя столбцами, чтобы колонки были одной высоты
+             и кнопка старта не уезжала на два экрана вниз. На узком экране — одним столбцом. -->
+        <div class="cc-panel cc-setup">
+          <div class="cc-setup-col">
+            <!-- Бинды построек (29.10, его «пусть игрок сам напишет в начале карьеры»): их показывает HUD симуляции
+                 над хотбаром. Пусто — стоит подсказка. У всех остальных на HUD бинды Peterbot (CC_PRO_BINDS). -->
+            <div class="cc-field">
+              <label data-i18n="ccBinds"></label>
+              <div class="cc-binds">
+                <span><i id="ccBindIcoWall"></i><input id="ccBindWall" maxlength="3" autocomplete="off" spellcheck="false" autocapitalize="characters" onkeydown="ccBindKey(event,this)" oninput="ccBindInput(this)" onmousedown="ccBindMouse(event,this)" onauxclick="event.preventDefault()" oncontextmenu="event.preventDefault()" placeholder="Q"></span>
+                <span><i id="ccBindIcoFloor"></i><input id="ccBindFloor" maxlength="3" autocomplete="off" spellcheck="false" autocapitalize="characters" onkeydown="ccBindKey(event,this)" oninput="ccBindInput(this)" onmousedown="ccBindMouse(event,this)" onauxclick="event.preventDefault()" oncontextmenu="event.preventDefault()" placeholder="F"></span>
+                <span><i id="ccBindIcoStairs"></i><input id="ccBindStairs" maxlength="3" autocomplete="off" spellcheck="false" autocapitalize="characters" onkeydown="ccBindKey(event,this)" oninput="ccBindInput(this)" onmousedown="ccBindMouse(event,this)" onauxclick="event.preventDefault()" oncontextmenu="event.preventDefault()" placeholder="V"></span>
+                <span><i id="ccBindIcoCone"></i><input id="ccBindCone" maxlength="3" autocomplete="off" spellcheck="false" autocapitalize="characters" onkeydown="ccBindKey(event,this)" oninput="ccBindInput(this)" onmousedown="ccBindMouse(event,this)" onauxclick="event.preventDefault()" oncontextmenu="event.preventDefault()" placeholder="T"></span>
+              </div>
+              <div class="cc-gain" data-i18n="ccBindsHint"></div>
+            </div>
+            <div class="cc-field" id="ccRoleField">
+              <label data-i18n="ccRole"></label>
+              <div class="cc-chips" id="ccRoleChips"></div>
+            </div>
+            <!-- Устройство (Notion «19.10», игрок: «добавьте выбор, на чём играть: контроллер или клавиатура и мышь»).
+                 У взятой карточки настоящего про — его устройство по данным (CC_PRO_PAD), выбирать нечего. -->
+            <div class="cc-field" id="ccInputField">
+              <label data-i18n="ccInput"></label>
+              <div class="cc-chips" id="ccInputChips"></div>
+            </div>
+            <!-- Прибавка за пинг и возраст — выключаемая (Notion «18.10», тестер: «хочу, чтобы было столько рейтинга,
+                 сколько я сам сделал, а не +10 ещё»). Только своему игроку: у взятой карточки и креатора её нет. -->
+            <div class="cc-field" id="ccEdgeField">
+              <label data-i18n="ccEdgeTitle"></label>
+              <div class="cc-chips" id="ccEdgeChips"></div>
+              <div class="cc-note" data-i18n="ccEdgeNote"></div>
+            </div>
+            <!-- Очки прокачки раздаются здесь и только здесь — правка,
+                 23 августа: «очки только в начале карьеры, в создании карточки,
+                 один раз». Взятой карточке поле не показывается: реальному
+                 человеку статы не дарят. -->
+          </div>
+          <div class="cc-setup-col">
+            <div class="cc-field" id="ccSpField">
+              <label data-i18n="ccSpaTitle"></label>
+              <div class="cc-spa-note"><span data-i18n="ccSpCreateHint"></span></div>
+              <div class="ch-sp" id="ccSpRows"></div>
+            </div>
+            <div class="cc-field" id="ccDivField">
+              <label data-i18n="ccDivision"></label>
+              <div class="cc-chips cc-chips-5" id="ccDivChips"></div>
+              <div class="cc-note" data-i18n="ccDivNote"></div>
+            </div>
+            <div class="cc-field" id="ccDiffField">
+              <label data-i18n="ccDiff"></label>
+              <div class="cc-chips" id="ccDiffChips"></div>
+              <div class="cc-note" data-i18n="ccDiffNote"></div>
+            </div>
+          </div>
+        </div>
+        </div>
+      </div>
+
+      <div class="cc-foot">
+        <button class="cc-back" onclick="ccMpNewCancel();show('screen-mode')" data-i18n="ccBack"></button>
+        <div class="cc-readout" id="ccReadout"></div>
+        <!-- Что здесь заводится: обычная карьера или половина команды. Двери в
+             командную стоят в полосе карьеры на главной (см. .cstrip), а сюда
+             доезжает только намерение — строкой, чтобы игрок видел, что он
+             создаёт. См. CC_MP_NEW. -->
+        <div class="cc-readout" id="ccMpNote" hidden></div>
+        <button class="cc-start" id="ccStart" onclick="ccStart()" disabled data-i18n="ccStart"></button>
+      </div>
+    </div>
+  </div>
+
+  <div class="screen" id="screen-career-hub">
+    <div class="ch-stage">
+      <div class="ch-facets"><i class="cc-f1"></i><i class="cc-f2"></i><i class="cc-f3"></i><i class="cc-f4"></i></div>
+      <div class="ch-top">
+        <!-- Придуманный знак карьеры отсюда убран вместе с тем, что стоял на
+             полосе главной, — см. комментарий у .cstrip-head. -->
+        <div class="ch-who" id="chWho"></div>
+        <div class="ch-ovr" id="chOvr"></div>
+        <!-- Today's two numbers sit next to the player rather than out at the
+             end of the bar: what the day has left in it and what the career has
+             made. The run of the season stays on the right. -->
+        <div class="ch-purse ch-purse-now" id="chPurseNow"></div>
+        <div class="ch-spacer"></div>
+        <div class="ch-purse" id="chPurse"></div>
+      </div>
+      <div class="ch-tabs">
+        <button class="ch-tab on" data-tab="centre" onclick="careerTab('centre')" data-i18n="chTabCentre"></button>
+        <!-- Профиль стоит вторым, сразу за Центром, — правка:
+             «вот эту таблицу нужно как отдельный столбик в лобби, после центра
+             profile мб». Это лист результатов года: рейтинг, PR, матчи, победы,
+             килы, среднее место и призовые, а под ними каждое событие строкой.
+             Ключ вкладки остался 'log' — на него ссылаются сохранения и
+             переходы, и переименовывать его ради подписи значит ломать их. -->
+        <button class="ch-tab" data-tab="log" onclick="careerTab('log')" data-i18n="chTabLog"></button>
+        <button class="ch-tab" data-tab="me" onclick="careerTab('me')" data-i18n="chTabMe"></button>
+        <button class="ch-tab" data-tab="train" onclick="careerTab('train')" data-i18n="chTabTrain"></button>
+        <button class="ch-tab" data-tab="club" onclick="careerTab('club')" data-i18n="chTabClub"></button>
+        <button class="ch-tab" data-tab="calendar" onclick="careerTab('calendar')" data-i18n="chTabCalendar"></button>
+        <button class="ch-tab" data-tab="social" onclick="careerTab('social')"><span data-i18n="chTabMedia"></span><i class="ch-dot" id="chDmDot"></i></button>
+        <!-- Стримы стоят сразу за соцсетями — правка: это одна и та же
+             половина жизни игрока, лента и эфир. -->
+        <button class="ch-tab" data-tab="table" onclick="careerTab('table')" data-i18n="chTabBoards"></button>
+        <button class="ch-tab" data-tab="shop" onclick="careerTab('shop')"><span data-i18n="chTabShop"></span><i class="ch-dot" id="chShopDot"></i></button>
+        <!-- Шкафчик своей вкладкой (18.10, его «как выбрать скин, где шкафчик, мб отдельную вкладку»). -->
+        <button class="ch-tab" data-tab="items" onclick="careerTab('items')" data-i18n="chTabItems"></button>
+        <button class="ch-tab" data-tab="locker" onclick="careerTab('locker')" data-i18n="chTabLocker"></button>
+        <button class="ch-tab" data-tab="bp" onclick="careerTab('bp')" data-i18n="chTabBp"></button>
+        <button class="ch-tab" data-tab="hist" onclick="careerTab('hist')" data-i18n="chTabHist"></button>
+      </div>
+      <div class="ch-body" id="chBody"></div>
+      <div class="ch-foot">
+        <button class="cc-back" onclick="show('screen-mode')" data-i18n="ccBack"></button>
+        <button class="cc-back" onclick="openCareerSlots()" data-i18n="ccSlots"></button>
+        <button class="cc-back cc-tour-btn" onclick="careerTab('centre');ccTourStart()" data-i18n="ccTourBtn"></button>
+        <button class="cc-back" id="uiClassicBtn" onclick="uiClassicToggle()" data-i18n="uiClassic"></button>
+        <button class="ch-end" onclick="careerEndAsk()" data-i18n="chEnd"></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Three careers, side by side. The mode used to hold exactly one save, so
+       trying a different player meant deleting the one you had. -->
+  <!-- Fortnite Manager: та же разметка, что хаб карьеры (его слово 7.10 «чтоб привычный интерфейс был»),
+       свои id — careerRenderHub их не трогает. -->
+  <div class="screen" id="screen-manager"><div class="ch-stage">
+    <div class="ch-facets"><i class="cc-f1"></i><i class="cc-f2"></i><i class="cc-f3"></i><i class="cc-f4"></i></div>
+    <div class="ch-top" id="mgTop" hidden><div class="ch-who" id="mgWho"></div><div class="ch-ovr" id="mgOvr"></div>
+      <div class="ch-purse ch-purse-now" id="mgPurseNow"></div><div class="ch-spacer"></div><div class="ch-purse" id="mgPurse"></div></div>
+    <div class="ch-tabs" id="mgTabs" hidden></div>
+    <div class="ch-body" id="mgBody"></div>
+    <div class="ch-foot" id="mgFoot"></div>
+    <div class="mgs-sheet" id="mgSheet" hidden></div>
+  </div></div>
+  <div class="screen" id="screen-career-slots">
+    <div class="ch-stage">
+      <div class="ch-facets"><i class="cc-f1"></i><i class="cc-f2"></i><i class="cc-f3"></i><i class="cc-f4"></i></div>
+      <div class="ch-body">
+      <!-- Шапка экрана — того же кроя, что полоса карьеры на главной: жёлтая
+           метка сезона и капсовый курсив. «FNCS 2026» — имя сезона, оно
+           одинаково во всех языках и поэтому стоит прямо в разметке, а не в
+           словаре. Придуманного знака карьеры здесь нет по той же причине,
+           что и на полосе, — см. комментарий у .cstrip-head. -->
+      <div class="cc-slot-head">
+        <div>
+          <div class="cc-slot-tag">FNCS 2026</div>
+          <h2 class="cc-slot-h" data-i18n="ccSlotsTitle"></h2>
+        </div>
+      </div>
+      <div class="cc-slot-sub" data-i18n="ccSlotsSub"></div>
+      <div class="cl-box" id="ccCloud" hidden></div>
+      <div class="cc-slot-grid" id="ccSlotGrid"></div>
+      <div id="ccHall"></div>
+      </div>
+      <div class="ch-foot">
+        <button class="cc-back" onclick="ccMpNewCancel();show('screen-mode')" data-i18n="ccBack"></button>
+      </div>
+    </div>
+  </div>
+
+  <div class="screen" id="screen-profile"><div class="me-wrap" id="meBody"></div></div>
+  <div class="screen" id="screen-history">
+    <button class="restart-btn" onclick="show('screen-mode')" style="margin-bottom:16px;" data-i18n="backBtn"></button>
+
+    <div class="box-title" data-i18n="achievementsTitle"></div>
+    <div class="achv-grid" id="achvGrid"></div>
+
+    <div class="box-title" style="margin-top:24px;" data-i18n="collectionTitle"></div>
+    <div class="region-note" style="margin-bottom:10px;" id="collectionProgress"></div>
+    <div class="achv-grid" id="collectionGrid"></div>
+
+    <div class="box-title" style="margin-top:24px;" data-i18n="historyTitle"></div>
+    <div class="lobby-wrap">
+      <table class="lobby-table">
+        <thead><tr><th data-i18n="historyDateHeader"></th><th data-i18n="historyModeHeader"></th><th data-i18n="teamHeader"></th><th class="num" data-i18n="ptsHeader"></th><th class="num" data-i18n="matchesWord"></th><th class="num" data-i18n="winsWord"></th><th class="num" data-i18n="killsHeader"></th><th data-i18n="historyResultHeader"></th><th data-i18n="historyGradeHeader"></th></tr></thead>
+        <tbody id="historyTableBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="screen" id="screen-preregion">
+    <!-- The mode comes first because it changes what every question under it
+         means: in a realistic run the region decides which real teams you can
+         be, in a draft run it decides which cards you can draft. It also has to
+         sit above the region heading rather than between that heading and its
+         own chips, which is where it landed first and read as a broken page. -->
+    <div class="rating-explainer" id="simModeHead">
+      <h4 data-i18n="simModeTitle"></h4>
+    </div>
+    <div class="sim-modes" id="simModes">
+      <button class="sim-btn" id="simRealisticBtn" onclick="setSimMode(true)">
+        <h5 data-i18n="simRealisticTitle"></h5>
+        <p data-i18n="simRealisticNote"></p>
+      </button>
+      <button class="sim-btn active" id="simDraftBtn" onclick="setSimMode(false)">
+        <h5 data-i18n="simDraftTitle"></h5>
+        <p data-i18n="simDraftNote"></p>
+      </button>
+    </div>
+    <div class="rating-explainer" style="margin-top:18px;">
+      <h4 id="preregionTitle" data-i18n="preregionTitle"></h4>
+      <div class="region-note" id="preregionNote" data-i18n="preregionNote"></div>
+    </div>
+    <div class="region-filter" id="preRegionChecks" style="margin-top:14px;"></div>
+    <div id="regionWarning" style="display:none;color:var(--danger);font-size:13px;font-weight:700;margin-top:10px;" data-i18n="regionWarningText"></div>
+
+    <!-- A Major is one region's event even when the squad is drafted out of
+         several, so the second question is which one you turn up to. Hidden
+         unless it has something to ask: one region selected answers itself. -->
+    <div id="homeRegionBlock" style="display:none;">
+      <div class="rating-explainer" style="margin-top:14px;">
+        <h4 data-i18n="homeRegionTitle"></h4>
+        <div class="region-note" data-i18n="homeRegionNote"></div>
+      </div>
+      <div class="region-filter" id="homeRegionChecks" style="margin-top:10px;"></div>
+    </div>
+
+    <div id="eraBlock">
+      <div class="rating-explainer" style="margin-top:14px;">
+        <h4 data-i18n="eraTitle"></h4>
+        <div class="region-note" data-i18n="eraNote"></div>
+      </div>
+      <div class="region-filter" id="eraChecks" style="margin-top:10px;"></div>
+      <div id="eraWarning" style="display:none;color:var(--danger);font-size:13px;font-weight:700;margin-top:10px;" data-i18n="eraWarningText"></div>
+    </div>
+
+    <div id="mapBlock">
+      <div class="rating-explainer" style="margin-top:14px;">
+        <h4 data-i18n="mapTitle"></h4>
+        <div class="region-note" data-i18n="mapNote"></div>
+      </div>
+      <div class="region-filter" id="mapChecks" style="margin-top:10px;"></div>
+    </div>
+
+    <!-- Играть самому или смотреть. Отзыв: «можно ещё на выбор
+         перед симуляцией, как в карьере, играть сам или смотреть», и следом
+         правка: «крч то же самое, только без выборов во время игры».
+         Поэтому «Смотреть» отличается ровно одним — вопросами посреди матча.
+         Карта, реплей, таблица, состав на Ласт Ченс и метка высадки остаются:
+         метка это ход ДО игры.
+         Стоит последним, прямо над кнопкой старта: это ответ на вопрос «как
+         играем», а не на вопрос «где играем». -->
+    <div class="rating-explainer" style="margin-top:18px;">
+      <h4 data-i18n="playModeTitle"></h4>
+      <div class="region-note" data-i18n="playModeNote"></div>
+    </div>
+    <!-- Симуляция слева и выбрана сама, «играть» справа. Отзыв:
+         «пусть слева автоматически будет кнопка симулейт, а справа играть».
+         Порядок здесь — это и есть значение по умолчанию: setPlayMode(false)
+         в chooseMode ставит ту, что стоит первой. -->
+    <div class="sim-modes" id="playModes" style="margin-top:10px;">
+      <button class="sim-btn active" id="playWatchBtn" onclick="setPlayMode(false)">
+        <h5 data-i18n="playWatchTitle"></h5>
+        <p data-i18n="playWatchNote"></p>
+      </button>
+      <button class="sim-btn" id="playSelfBtn" onclick="setPlayMode(true)">
+        <h5 data-i18n="playSelfTitle"></h5>
+        <p data-i18n="playSelfNote"></p>
+      </button>
+    </div>
+
+    <button class="go-btn" style="max-width:280px;" onclick="confirmRegionsAndStart()" data-i18n="preregionBtn"></button>
+  </div>
+
+  <div class="screen" id="screen-draft">
+    <div class="region-filter" id="regionFilter"></div>
+    <div class="draft-layout">
+      <div>
+        <div class="round-label"><span data-i18n="packLabel"></span> <b id="roundNum">1</b> <span data-i18n="ofLabel"></span> <span id="roundTotal">4</span></div>
+        <div class="pack-panel">
+          <div class="pack-head">
+            <div class="pack-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10zm0 2c-4.4 0-8 2.6-8 5.8V22h16v-2.2c0-3.2-3.6-5.8-8-5.8z"/></svg></div>
+            <div>
+              <h2 id="packHeadTitle" data-i18n="packOpenTitle"></h2>
+              <p id="packHeadDesc" data-i18n="packOpenDesc"></p>
+            </div>
+            <button class="restart-btn" id="rerollBtn" style="margin-left:auto;white-space:nowrap;" onclick="rerollAll()"><span data-i18n="rerollLabel"></span> (<span id="rerollCount">2</span>)</button>
+          </div>
+          <div id="teamPickBar" style="display:none;margin-bottom:10px;">
+            <input id="teamPickSearch" type="search" style="width:100%;background:var(--panel2);
+              border:1px solid var(--line);color:var(--ink);border-radius:8px;padding:9px 12px;font-size:13px;">
+            <div id="teamPickMeta" style="margin-top:6px;font-size:11.5px;color:var(--ink-dim);"></div>
+          </div>
+          <div class="candidates" id="candidates"></div>
+
+          <div class="pack-head" style="margin-top:18px;">
+            <div class="pack-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M1 10h13l1-2h3l1 2h4v2h-4l-1 1h-2v3h-2l-1-3H9l-1 4H6l1-4H4v2H2v-2H1z"/></svg></div>
+            <div>
+              <h2 data-i18n="weaponPackTitle"></h2>
+              <p data-i18n="weaponPackDesc"></p>
+              <p id="lootPoolNote" style="color:var(--accent);font-size:11px;letter-spacing:.03em;margin-top:2px;"></p>
+            </div>
+          </div>
+          <div class="candidates" id="weaponCandidates"></div>
+
+          <div class="pack-head" style="margin-top:18px;">
+            <div class="pack-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M10 3h4v6h6v4h-6v6h-4v-6H4V9h6z"/></svg></div>
+            <div>
+              <h2 data-i18n="healPackTitle"></h2>
+              <p data-i18n="healPackDesc"></p>
+            </div>
+          </div>
+          <div class="candidates" id="healCandidates"></div>
+        </div>
+      </div>
+      <div class="squad-panel">
+        <h3 data-i18n="yourSquadTitle"></h3>
+        <div class="count"><span id="squadFilled">0</span>/<span id="squadTotal">4</span> <span data-i18n="draftedLabel"></span></div>
+        <div class="squad-avg"><span data-i18n="avgRatingLabel"></span> <b id="squadAvg">-</b> · <span data-i18n="synergyLabel"></span> <b id="synergyVal">+0</b></div>
+        <div class="squad-avg"><span data-i18n="loadoutLabel"></span> <b id="loadoutVal">+0</b></div>
+        <div class="squad-avg" id="roleRow"><span data-i18n="rolesLabel"></span> <b id="roleVal">+0</b> <span id="roleNames" style="color:var(--ink-dim);font-size:11px;"></span></div>
+        <div class="squad-avg" style="font-size:16px;padding-top:2px;"><span data-i18n="totalPowerLabel"></span> <b id="totalPowerVal" style="color:var(--accent);">-</b></div>
+        <div class="synergy-svg-wrap"><svg id="synergySvg" viewBox="0 0 260 220" width="100%"></svg></div>
+        <div id="slots"></div>
+        <div id="synergyDetails" style="font-size:11px;color:var(--ink-dim);line-height:1.6;margin-top:6px;"></div>
+
+        <div id="locationPickerBox" style="display:none;margin-top:14px;">
+          <div style="font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-dim);margin-bottom:8px;" data-i18n="landingTitle"></div>
+          <div id="landingMapWrap" class="map-frame" style="position:relative;width:100%;aspect-ratio:1100/970;border-radius:8px;background:#000;border:1px solid var(--line);overflow:hidden;">
+            <img src="art/map-m2.jpg" alt="Island map" loading="lazy" decoding="async" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;">
+            <div id="landingMarkersLayer" style="position:absolute;inset:0;"></div>
+            <button type="button" class="cc-chests-btn" onclick="ccChestsToggle()"></button>
+          </div>
+          <div id="landingChosen" style="font-size:12px;color:var(--ink-dim);margin-top:8px;"></div>
+        </div>
+
+        <button class="go-btn" id="goBtn" disabled onclick="startRun()" data-i18n="goToTournamentBtn"></button>
+      </div>
+    </div>
+  </div>
+
+  <div class="screen" id="screen-results">
+    <div id="majorStages"></div>
+
+    <div id="landingResultsSection" style="display:none;">
+      <div class="box-title" data-i18n="landingResultsTitle"></div>
+      <div style="display:flex;gap:14px;flex-wrap:wrap;margin-bottom:14px;align-items:flex-start;">
+        <div id="landingResultsMapWrap" class="map-frame" style="position:relative;flex:1 1 320px;max-width:440px;aspect-ratio:1100/970;border-radius:8px;background:#000;border:1px solid var(--line);overflow:hidden;">
+          <img id="landingResultsMapImg" alt="Island map" loading="lazy" decoding="async" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;">
+          <div id="landingResultsMarkersLayer" style="position:absolute;inset:0;"></div>
+        </div>
+        <div id="landingResultsList" style="flex:1 1 260px;font-size:12px;color:var(--ink-dim);max-height:440px;overflow-y:auto;padding-right:4px;"></div>
+      </div>
+    </div>
+
+    <div id="eventPanel"></div>
+
+    <div class="box-title" id="lobbyTitle"></div>
+    <div class="lobby-wrap">
+      <table class="lobby-table">
+        <thead><tr>
+          <th data-i18n="rankHeader"></th><th data-i18n="teamHeader"></th>
+          <th class="num" data-i18n="ptsHeader"></th><th class="num" data-i18n="matchesWord"></th>
+          <th class="num" data-i18n="winsWord"></th><th class="num" data-i18n="killsHeader"></th>
+          <th class="num" data-i18n="avgHeader"></th>
+        </tr></thead>
+        <tbody id="lobbyBody"></tbody>
+      </table>
+    </div>
+
+    <div class="final-banner" id="finalBanner" style="display:none;">
+      <div class="place" id="finalPlace">#1</div>
+      <div class="sub" id="finalSub">Victory Royale</div>
+      <div style="display:flex;align-items:center;justify-content:center;gap:10px;margin-top:14px;">
+        <div class="grade-badge" id="gradeBadge">S</div>
+        <div style="text-align:left;font-size:11px;color:var(--ink-dim);">
+          <div data-i18n="draftGradeLabel"></div>
+          <div id="gradeScoreLine"></div>
+        </div>
+      </div>
+      <button id="shareResultBtn" onclick="shareResultImage()" style="display:none;margin-top:16px;
+        background:var(--accent);color:var(--accent-ink);border:none;border-radius:20px;
+        padding:9px 18px;font-weight:800;font-size:12px;letter-spacing:.03em;cursor:pointer;">
+        📤 <span data-i18n="shareResultBtn"></span>
+      </button>
+      <div id="unlockToasts"></div>
+    </div>
+
+    <!-- The run's own record, under the result rather than above it: the whole
+         season on one card is the last thing you read, not something you scroll
+         back past on the way to the final placement. -->
+    <div id="runSummary"></div>
+
+    <!-- Мост между кругами режима «весь год» и его итоговая карточка: ниже
+         сводки круга, потому что читается после неё — «этап закрыт, едем
+         дальше». Пусто во всех остальных режимах. -->
+    <div id="yearBridge"></div>
+
+    <div class="box-title" id="cardGalleryTitle" style="display:none;" data-i18n="cardGalleryTitle"></div>
+    <div id="cardGallery" style="display:none;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px;margin-bottom:8px;"></div>
+
+    <!-- The per-player source table used to sit here and said nothing the
+         cards above it do not already say: region, tournament, date, placement
+         and rating are all printed on the card itself. Two readings of the same
+         four rows is one too many. renderStats below returns early when the
+         table is absent, so nothing else had to change. -->
+
+    <button class="restart-btn new-draft-btn" onclick="requestReset()" data-i18n="newDraftBtn"></button>
+
+    <div class="api-note" data-i18n="apiNote"></div>
+  </div>
+
+</div>
+
+<!-- Футер — одна строка: источники · автор · нотис Epic, разделённые точками
+     (.site-foot span+span::before). Раньше три абзаца в столбик. На узком
+     экране строка переносится по кускам, а не рвётся посреди фразы. -->
+<div class="site-foot">
+  <span>
+    <span data-i18n="dataCreditText"></span>
+    <a href="https://liquipedia.net/fortnite/Main_Page" target="_blank" rel="noopener">Liquipedia</a>,
+    <a href="https://fortnitetracker.com/events" target="_blank" rel="noopener">Fortnite Tracker</a>
+    <span data-i18n="dataCreditAnd"></span>
+    <a href="https://osirion.gg" target="_blank" rel="noopener">Osirion</a>
+  </span>
+  <span>made by psychopath</span>
+  <!-- Required verbatim by Epic's Fan Content Policy on every page that shows
+       Epic IP. English wording is fixed by the policy, so it is not translated. -->
+  <span class="site-foot-epic">Portions of the materials used are trademarks and/or copyrighted works of Epic Games, Inc.
+    All rights reserved by Epic. This material is not official and is not endorsed by Epic.</span>
+
+</div>
+
+<div id="matchHistoryModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:200;align-items:center;justify-content:center;padding:20px;" onclick="if(event.target===this) closeMatchHistory();">
+  <div style="width:100%;max-width:420px;max-height:85vh;overflow-y:auto;border-radius:16px;
+    background:linear-gradient(160deg,#0f3d3d 0%,#0c2f38 55%,#0a2530 100%);
+    border:1px solid rgba(120,200,190,.25);padding:24px;box-shadow:0 20px 60px rgba(0,0,0,.5);">
+    <div style="font-weight:900;font-size:22px;letter-spacing:.02em;color:#fff;margin-bottom:10px;">FNCS</div>
+    <div id="matchHistoryTeamName" style="font-size:16px;color:#eaf5f3;margin-bottom:14px;"></div>
+    <div style="font-size:12px;font-weight:800;letter-spacing:.06em;color:rgba(200,225,220,.6);text-transform:uppercase;margin-bottom:8px;" data-i18n="matchHistoryLabel"></div>
+    <div style="display:grid;grid-template-columns:40px 1fr 1fr;padding:0 14px 6px;font-size:18px;color:rgba(200,225,220,.55);">
+      <div></div><div style="text-align:center;">🏆</div><div style="text-align:center;">🎯</div>
+    </div>
+    <div id="matchHistoryRows"></div>
+    <button onclick="closeMatchHistory()" style="width:100%;margin-top:10px;padding:12px;border:none;border-radius:10px;
+      background:rgba(200,225,220,.18);color:#eaf5f3;font-weight:800;font-size:14px;cursor:pointer;letter-spacing:.02em;"
+      data-i18n="closeBtn"></button>
+  </div>
+</div>
+
+<!-- Any card can be opened for a closer look — in the pack you are choosing
+     from, in the squad you have already drafted, and on the results screen.
+     It shows the same stat sheet the card gallery flips to. -->
+<!-- Choosing a coach: the twelve of them, on top of whatever screen asked. -->
+<div id="duoFindModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:230;align-items:center;justify-content:center;padding:16px;" onclick="if(event.target===this) ccDuoFindClose();">
+  <div style="width:100%;max-width:560px;max-height:88vh;overflow-y:auto;border-radius:14px;
+    background:var(--panel);border:1px solid var(--line);padding:16px;box-shadow:0 20px 60px rgba(0,0,0,.6);">
+    <div id="duoFindBody"></div>
+    <button onclick="ccDuoFindClose()" style="width:100%;margin-top:12px;padding:11px;border:none;border-radius:10px;
+      background:rgba(200,225,220,.18);color:#eaf5f3;font-weight:800;font-size:14px;cursor:pointer;letter-spacing:.02em;"
+      data-i18n="closeBtn"></button>
+  </div>
+</div>
+<div id="homeGuide" role="dialog" aria-modal="true" aria-labelledby="homeGuideH" onclick="if(event.target===this) homeGuideClose();">
+  <div class="home-guide-box">
+    <button class="home-guide-x" type="button" aria-label="Close" onclick="homeGuideClose()">×</button>
+    <h2 id="homeGuideH" data-i18n="hmGuideH"></h2>
+    <ol>
+      <li data-i18n="hmGuide1"></li>
+      <li data-i18n="hmGuide2"></li>
+      <li data-i18n="hmGuide3"></li>
+    </ol>
+    <h3 data-i18n="hmGmH"></h3>
+    <ul>
+      <li data-i18n="hmGm1"></li>
+      <li data-i18n="hmGm2"></li>
+      <li data-i18n="hmGm3"></li>
+      <li data-i18n="hmGm4"></li>
+      <li data-i18n="hmGm5"></li>
+      <li data-i18n="hmGm6"></li>
+      <li data-i18n="hmGm7"></li>
+    </ul>
+    <div class="home-guide-btns">
+      <button class="hero-btn hero-btn-go" type="button" onclick="homeGuideClose();careerStart()"><span data-i18n="hmGuideGo"></span></button>
+      <a id="homeGuideMore" href="about.html" data-i18n="hmGuideMore"></a>
+    </div>
+  </div>
+</div>
+<div id="ccAskModal" onclick="if(event.target===this) ccAskGo(false);">
+  <div class="cc-ask-box">
+    <p id="ccAskText"></p>
+    <div class="cc-ask-btns">
+      <button id="ccAskNo" onclick="ccAskGo(false)"></button>
+      <button id="ccAskYes" onclick="ccAskGo(true)"></button>
+    </div>
+  </div>
+</div>
+<div id="ccNatModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:240;align-items:center;justify-content:center;padding:16px;overflow:auto;" onclick="if(event.target===this) ccNatModalClose();">
+  <div class="cc-nat-modal-in"></div>
+</div>
+<div id="ccCodeModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:240;align-items:center;justify-content:center;padding:16px;" onclick="if(event.target===this) ccCodeClose();">
+  <div class="cc-ask-box">
+    <p id="ccCodeTitle" style="margin:0 0 6px;font-weight:800;"></p>
+    <div id="ccCodeHint" class="ch-hint" style="margin:0 0 12px;"></div>
+    <input id="ccCodeInput" maxlength="6" autocomplete="off" spellcheck="false" placeholder="A1B2C3"
+      style="width:100%;box-sizing:border-box;padding:12px 14px;border-radius:10px;border:1px solid var(--line);background:rgba(0,0,0,.35);color:#eaf5f3;font-size:22px;font-weight:800;letter-spacing:.28em;text-align:center;text-transform:uppercase;outline:none;"
+      oninput="ccCodeTyped()" onkeydown="if(event.key==='Enter') ccCodeGo();">
+    <div class="cc-ask-btns" style="margin-top:12px;">
+      <button id="ccCodeNo" onclick="ccCodeClose()"></button>
+      <button id="ccCodeYes" onclick="ccCodeGo()" disabled></button>
+    </div>
+  </div>
+</div>
+<div id="mktPickModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:230;align-items:center;justify-content:center;padding:16px;" onclick="if(event.target===this) ccMktPickClose();">
+  <div style="width:100%;max-width:560px;max-height:88vh;overflow-y:auto;border-radius:14px;
+    background:var(--panel);border:1px solid var(--line);padding:16px;box-shadow:0 20px 60px rgba(0,0,0,.6);">
+    <div id="mktPickBody"></div>
+    <button onclick="ccMktPickClose()" style="width:100%;margin-top:12px;padding:11px;border:none;border-radius:10px;
+      background:rgba(200,225,220,.18);color:#eaf5f3;font-weight:800;font-size:14px;cursor:pointer;letter-spacing:.02em;"
+      data-i18n="closeBtn"></button>
+  </div>
+</div>
+<div id="agentPickModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:230;align-items:center;justify-content:center;padding:16px;" onclick="if(event.target===this) ccAgentPickClose();">
+  <div style="width:100%;max-width:560px;max-height:88vh;overflow-y:auto;border-radius:14px;
+    background:var(--panel);border:1px solid var(--line);padding:16px;box-shadow:0 20px 60px rgba(0,0,0,.6);">
+    <div id="agentPickBody"></div>
+    <button onclick="ccAgentPickClose()" style="width:100%;margin-top:12px;padding:11px;border:none;border-radius:10px;
+      background:rgba(200,225,220,.18);color:#eaf5f3;font-weight:800;font-size:14px;cursor:pointer;letter-spacing:.02em;"
+      data-i18n="closeBtn"></button>
+  </div>
+</div>
+<!-- Кому написать менеджеру. Правка: «а менеджера как
+     попросить, чтоб оргу нашёл — добавь в менюшке, типа какую игрок хочет».
+     Раньше клубы стояли шестью узкими фишками в подвале переписки: на телефоне
+     это ряд обрезанных названий, и что это вообще выбор — не читалось. -->
+<div id="clubPickModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:230;align-items:center;justify-content:center;padding:16px;" onclick="if(event.target===this) ccClubPickClose();">
+  <div style="width:100%;max-width:560px;max-height:88vh;overflow-y:auto;border-radius:14px;
+    background:var(--panel);border:1px solid var(--line);padding:16px;box-shadow:0 20px 60px rgba(0,0,0,.6);">
+    <div id="clubPickBody"></div>
+    <button onclick="ccClubPickClose()" style="width:100%;margin-top:12px;padding:11px;border:none;border-radius:10px;
+      background:rgba(200,225,220,.18);color:#eaf5f3;font-weight:800;font-size:14px;cursor:pointer;letter-spacing:.02em;"
+      data-i18n="closeBtn"></button>
+  </div>
+</div>
+<div id="spPickModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:230;align-items:center;justify-content:center;padding:16px;" onclick="if(event.target===this) ccSpPickClose();">
+  <div style="width:100%;max-width:980px;max-height:88vh;overflow-y:auto;border-radius:14px;
+    background:var(--panel);border:1px solid var(--line);padding:16px;box-shadow:0 20px 60px rgba(0,0,0,.6);">
+    <div id="spPickBody"></div>
+    <button onclick="ccSpPickClose()" style="width:100%;margin-top:12px;padding:11px;border:none;border-radius:10px;
+      background:rgba(200,225,220,.18);color:#eaf5f3;font-weight:800;font-size:14px;cursor:pointer;letter-spacing:.02em;"
+      data-i18n="closeBtn"></button>
+  </div>
+</div>
+<div id="staff2PickModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:230;align-items:center;justify-content:center;padding:16px;" onclick="if(event.target===this) ccStaff2PickClose();">
+  <div style="width:100%;max-width:560px;max-height:88vh;overflow-y:auto;border-radius:14px;
+    background:var(--panel);border:1px solid var(--line);padding:16px;box-shadow:0 20px 60px rgba(0,0,0,.6);">
+    <div id="staff2PickBody"></div>
+    <button onclick="ccStaff2PickClose()" style="width:100%;margin-top:12px;padding:11px;border:none;border-radius:10px;
+      background:rgba(200,225,220,.18);color:#eaf5f3;font-weight:800;font-size:14px;cursor:pointer;letter-spacing:.02em;"
+      data-i18n="closeBtn"></button>
+  </div>
+</div>
+<div id="hirePickModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:230;align-items:center;justify-content:center;padding:16px;" onclick="if(event.target===this) ccHireClose();">
+  <div style="width:100%;max-width:860px;max-height:88vh;overflow-y:auto;border-radius:14px;
+    background:var(--panel);border:1px solid var(--line);padding:16px;box-shadow:0 20px 60px rgba(0,0,0,.6);">
+    <div id="hirePickBody"></div>
+    <button onclick="ccHireClose()" style="width:100%;margin-top:12px;padding:11px;border:none;border-radius:10px;
+      background:rgba(200,225,220,.18);color:#eaf5f3;font-weight:800;font-size:14px;cursor:pointer;letter-spacing:.02em;"
+      data-i18n="closeBtn"></button>
+  </div>
+</div>
+<div id="smmPickModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:230;align-items:center;justify-content:center;padding:16px;" onclick="if(event.target===this) ccSmmPickClose();">
+  <div style="width:100%;max-width:560px;max-height:88vh;overflow-y:auto;border-radius:14px;
+    background:var(--panel);border:1px solid var(--line);padding:16px;box-shadow:0 20px 60px rgba(0,0,0,.6);">
+    <div id="smmPickBody"></div>
+    <button onclick="ccSmmPickClose()" style="width:100%;margin-top:12px;padding:11px;border:none;border-radius:10px;
+      background:rgba(200,225,220,.18);color:#eaf5f3;font-weight:800;font-size:14px;cursor:pointer;letter-spacing:.02em;"
+      data-i18n="closeBtn"></button>
+  </div>
+</div>
+<div id="coachPickModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:230;align-items:center;justify-content:center;padding:16px;" onclick="if(event.target===this) ccCoachPickClose();">
+  <div style="width:100%;max-width:560px;max-height:88vh;overflow-y:auto;border-radius:14px;
+    background:var(--panel);border:1px solid var(--line);padding:16px;box-shadow:0 20px 60px rgba(0,0,0,.6);">
+    <div id="coachPickBody"></div>
+    <button onclick="ccCoachPickClose()" style="width:100%;margin-top:12px;padding:11px;border:none;border-radius:10px;
+      background:rgba(200,225,220,.18);color:#eaf5f3;font-weight:800;font-size:14px;cursor:pointer;letter-spacing:.02em;"
+      data-i18n="closeBtn"></button>
+  </div>
+</div>
+
+<div id="cardPeekModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:220;align-items:center;justify-content:center;padding:16px;" onclick="if(event.target===this) closeCardPeek();">
+  <div style="width:100%;max-width:420px;max-height:88vh;overflow-y:auto;border-radius:14px;
+    background:var(--panel);border:1px solid var(--line);padding:16px;box-shadow:0 20px 60px rgba(0,0,0,.6);">
+    <div id="cardPeekBody"></div>
+    <button onclick="closeCardPeek()" style="width:100%;margin-top:12px;padding:11px;border:none;border-radius:10px;
+      background:rgba(200,225,220,.18);color:#eaf5f3;font-weight:800;font-size:14px;cursor:pointer;letter-spacing:.02em;"
+      data-i18n="closeBtn"></button>
+  </div>
+</div>
+
+
+<!-- The logo doubles as "back to menu", which is easy to hit by accident while
+     a run is live. Nothing about a run is persisted, so leaving throws it away
+     for good — hence the interstitial. -->
+<div id="careerEndModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:300;align-items:center;justify-content:center;padding:20px;" onclick="if(event.target===this) careerEndClose();">
+  <div role="alertdialog" aria-modal="true" aria-labelledby="careerEndTitle" style="width:100%;max-width:360px;border-radius:16px;
+    background:linear-gradient(160deg,#1d2430 0%,#161c26 60%,#11161e 100%);
+    border:1px solid var(--line);padding:24px;box-shadow:0 20px 60px rgba(0,0,0,.55);">
+    <div id="careerEndTitle" style="font-weight:900;font-size:17px;margin-bottom:8px;" data-i18n="chEndTitle"></div>
+    <div style="color:var(--ink-dim);font-size:13px;line-height:1.5;margin-bottom:20px;" data-i18n="chEndBody"></div>
+    <div style="display:flex;gap:10px;justify-content:flex-end;">
+      <button id="careerEndNo" onclick="careerEndClose()" style="background:var(--panel2);border:1px solid var(--line);color:var(--ink);
+        border-radius:8px;padding:9px 16px;font-weight:800;font-size:13px;cursor:pointer;" data-i18n="resetConfirmNo"></button>
+      <button onclick="careerEnd()" style="background:var(--danger);border:none;color:#fff;
+        border-radius:8px;padding:9px 16px;font-weight:800;font-size:13px;cursor:pointer;" data-i18n="chEndYes"></button>
+    </div>
+  </div>
+</div>
+
+<div id="resetConfirmModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:300;align-items:center;justify-content:center;padding:20px;" onclick="if(event.target===this) closeResetConfirm();">
+  <div role="alertdialog" aria-modal="true" aria-labelledby="resetConfirmTitle" style="width:100%;max-width:360px;border-radius:16px;
+    background:linear-gradient(160deg,#1d2430 0%,#161c26 60%,#11161e 100%);
+    border:1px solid var(--line);padding:24px;box-shadow:0 20px 60px rgba(0,0,0,.55);">
+    <div id="resetConfirmTitle" style="font-weight:900;font-size:17px;margin-bottom:8px;" data-i18n="resetConfirmTitle"></div>
+    <div id="resetConfirmBodyEl" style="color:var(--ink-dim);font-size:13px;line-height:1.5;margin-bottom:20px;" data-i18n="resetConfirmBody"></div>
+    <div style="display:flex;gap:10px;justify-content:flex-end;">
+      <button id="resetConfirmNo" onclick="closeResetConfirm()" style="background:var(--panel2);border:1px solid var(--line);color:var(--ink);
+        border-radius:8px;padding:9px 16px;font-weight:800;font-size:13px;cursor:pointer;" data-i18n="resetConfirmNo"></button>
+      <button onclick="closeResetConfirm(); resetAll();" style="background:var(--accent);border:none;color:var(--accent-ink);
+        border-radius:8px;padding:9px 16px;font-weight:800;font-size:13px;cursor:pointer;" data-i18n="resetConfirmYes"></button>
+    </div>
+  </div>
+</div>
+
+<script>

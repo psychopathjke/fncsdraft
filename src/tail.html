@@ -1,0 +1,62 @@
+/*@@PART tail.html@@*/
+</script>
+<script>
+/* Mode-tile art, fetched a screen ahead of the scroll rather than all at once.
+   See the note on data-art: seven tiles were 368KB before the first screen had
+   drawn, and a phone can see two of them. */
+(function(){
+  function paint(el){
+    var u = el.getAttribute('data-art');
+    if (!u) return;
+    el.style.backgroundImage = 'url(' + u + ')';
+    el.removeAttribute('data-art');
+  }
+  function start(){
+    var pending = document.querySelectorAll('[data-art]');
+    if (!pending.length) return;
+    if (!('IntersectionObserver' in window)) {
+      // No observer, no cleverness: load them the way the page always did.
+      Array.prototype.forEach.call(pending, paint);
+      return;
+    }
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){ if (e.isIntersecting){ paint(e.target); io.unobserve(e.target); } });
+    }, {rootMargin: '600px'});
+    Array.prototype.forEach.call(pending, function(el){ io.observe(el); });
+    // A tile inside a screen that is display:none never intersects anything, so
+    // showing a screen hands its tiles to the observer again with the layout
+    // they finally have.
+    window.addEventListener('cc-screen-shown', function(){
+      Array.prototype.forEach.call(document.querySelectorAll('[data-art]'), function(el){
+        var r = el.getBoundingClientRect();
+        if (r.width && r.top < window.innerHeight + 600) paint(el);
+      });
+    });
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start);
+  else start();
+})();
+</script>
+<!-- ВТОРОЙ ЗАХОД ОТКРЫВАЕТСЯ ДАЖЕ БЕЗ СЕТИ. Почему это понадобилось и по каким
+     правилам кэшируется — в самом sw.js. Регистрация стоит здесь, в оболочке,
+     а не в приложении: она должна случиться, даже если app.js в этот раз так и
+     не доедет. Только https: с file:// воркеры не ставятся вовсе, поэтому все
+     триста харнессов, которые открывают копию страницы файлом, этого кода
+     просто не замечают. -->
+<script>
+(function(){
+  if(!('serviceWorker' in navigator) || location.protocol!=='https:') return;
+  /* Не только по load. Событие load ждёт КАЖДУЮ картинку страницы, а у части
+     провайдеров запросы к чужим CDN не отбиваются, а висят — и load не
+     наступает никогда. Так воркер не ставился ровно у тех, ради кого он
+     заведён (зеркало, 5 сентября 2026: «бесконечная загрузка» с ПК). Поэтому
+     регистрируем по load ИЛИ через четыре секунды после разбора документа,
+     что раньше; второй вызов register безвреден. */
+  var done=false;
+  function go(){ if(done) return; done=true; navigator.serviceWorker.register('sw.js').catch(function(){}); }
+  addEventListener('load', go);
+  setTimeout(go, 4000);
+})();
+</script>
+</body>
+</html>

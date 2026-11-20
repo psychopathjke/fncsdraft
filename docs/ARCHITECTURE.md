@@ -29,6 +29,21 @@ Tests are ~500 headless-Chrome harnesses in `tools/check-*.js`.
 | `art/`, `photos/`, `flags/`, `logos/`, `items/`, `devices/`, `fonts/` | Static assets |
 | `docs/` | Specs and plans. `docs/superpowers/plans` holds the step-by-step plans of past features |
 
+## index.html and src/
+
+The page is also kept cut into readable files under `src/` (`src/PARTS.txt` is the order). Each part
+starts at a marker line `@@PART <path>@@` inside a comment, so the page is the plain concatenation of the parts.
+
+```
+node tools/parts.js split      # after editing index.html (stamp-build.js does this on every deploy)
+node tools/parts.js assemble   # after editing a file in src/
+node tools/parts.js check      # CI: fails if the two disagree
+```
+
+Checks and builders still read and write `index.html`; either side can be edited. To re-cut, move or add
+a marker line in `index.html` and run `split`. Career is cut by size for now (`js/career-1..6.js`);
+cutting it by feature is the next step.
+
 ## Map of index.html
 
 Line numbers drift; search for the names, not the numbers.

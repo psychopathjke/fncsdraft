@@ -28,6 +28,9 @@ jobs:
         with:
           node-version: 22
 
+      - name: index.html and src/ agree
+        run: node tools/parts.js check
+
       - name: Worker checks without network
         working-directory: server
         run: |
