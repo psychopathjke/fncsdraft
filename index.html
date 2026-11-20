@@ -159349,7 +159349,8 @@ function ccRcField(cr, worldCr, drafted, stage, teams){
       drafted.concat(skip||[]), n, salt, false, CC_FIELD_SHARP.globals));
   };
   const cards=t=>(t && (t.squad||t._cards||t.cards)) || [];
-  const A=draw(CC_RC_GROUP.teams, null, null);
+  // Соло-год: в группе 40 одиночек вместо 20 пар (ccTeams), иначе к двадцати ботам добавлялся ты, и выходил 21.
+  const A=draw(Math.max(CC_RC_GROUP.teams, ccTeams(CC_RC_GROUP.teams)), null, null);
   /* Групповой этап играем в комнате этого сезона, обрезанной до размера этапа.
      В трио ccTeams(20) = 13, а сюда приходило 20 команд, движок резал их на два
      лобби, и каждая игра давала две победы (20 Виктори за 10 игр). Противоречило
@@ -159357,7 +159358,7 @@ function ccRcField(cr, worldCr, drafted, stage, teams){
      Остальные этапы уже считали по teams, см. need ниже. */
   if(stage==='group') return A.slice(0, Math.max(0, (teams||CC_RC_GROUP.teams)-1));
   const seenA=[].concat(...A.map(cards));
-  const B=draw(CC_RC_SURV.teams, 'rcSurv', seenA);
+  const B=draw(Math.max(CC_RC_SURV.teams, ccTeams(CC_RC_SURV.teams)), 'rcSurv', seenA);
   const want=(cr.rc && cr.rc.seats && cr.rc.seats[stage]) || null;
   const room = stage==='survival' ? A : A.concat(B);
   /* B — вторая группа (полный прогон 9.10, check-career-rc-stages: в 2026-м из сорока настоящих пар мимо обеих групп
