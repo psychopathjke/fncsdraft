@@ -2062,7 +2062,9 @@
     background-color:#0e2f38;background-image:var(--yr-art);background-size:cover;
     background-position:center 38%;background-repeat:no-repeat;}
   #screen-career-create .cc-year-panel .cc-year-tile.on::after{
-    background:linear-gradient(to top, rgba(8,44,46,.82) 34%, rgba(8,44,46,.34) 70%, rgba(8,44,46,0));}
+    background:linear-gradient(to top, rgba(8,44,46,.92) 50%, rgba(8,44,46,.66) 78%, rgba(8,44,46,.3));}
+  /* Общее правило выбранной кнопки (.cc-chip.on) красит текст тёмно-синим, на арте года он сливался. */
+  #screen-career-create .cc-year-panel .cc-year-tile.on{color:#fff;}
   #screen-career-create .cc-year-panel .cc-year-tile:disabled{opacity:.4;cursor:not-allowed;}
   #screen-career-create .cc-year-panel .cc-year-tile:disabled:hover{background-size:cover;}
   @media (prefers-reduced-motion:reduce){ #screen-career-create .cc-year-panel .cc-year-tile{transition:none;} }
@@ -2081,7 +2083,10 @@
     border-radius:3px;background:rgba(0,0,0,.55);color:#fff;font-family:var(--font-display);font-size:10px;font-weight:700;
     letter-spacing:.04em;line-height:1;cursor:pointer;}
   @media (min-width:700px){ #screen-career-create .cc-year-panel .cc-yt-s{padding:6px 10px;font-size:12px;}
-    #screen-career-create .cc-year-panel .cc-yt-wrap .cc-year-tile small{padding-right:calc(var(--sn,0) * 52px);} }
+    /* Кнопки сезонов — своей полосой под подписью, а не поверх неё: отступ «по 52px на кнопку» не учитывал широкие
+       «Star Wars» и «One Piece», и «TRIOS · LYON» у 2025-го, «DUOS → TRIOS · ANTWERP» у 2026-го прятались под кнопками. */
+    #screen-career-create .cc-year-panel .cc-yt-wrap .cc-year-tile{padding-bottom:calc(10px + 34px * min(var(--sn,0), 1));}
+    #screen-career-create .cc-year-panel .cc-yt-seasons{left:12px;right:auto;bottom:8px;flex-wrap:nowrap;} }
   #screen-career-create .cc-year-panel .cc-yt-s:hover{border-color:#3fe0c0;}
   #screen-career-create .cc-year-panel .cc-yt-s.on{background:#00b090;border-color:#00b090;}
   .cc-tab{border:none;cursor:pointer;font-weight:900;font-style:italic;font-size:12px;
@@ -2484,6 +2489,8 @@
     font-weight:800;letter-spacing:.1em;text-transform:uppercase;}
   .ch-purse b{font-size:16px;font-weight:900;}
   .ch-purse b small{font-size:11px;font-weight:800;color:#8b98a5;}
+  /* Репутация: сначала число, как у соседних плашек, слово сцены — приписью («nobody knows yet 0» читалось как фраза). */
+  .ch-purse b .ch-rep-w{font-size:11px;font-weight:700;color:rgba(255,255,255,.72);letter-spacing:.02em;}
   /* A day with nothing left in it. The number stays rather than emptying, so the
      row does not change shape between a fresh day and a spent one. */
   .ch-purse b.ch-spent{color:#6b7883;}
@@ -2665,12 +2672,12 @@
   .ch-sp-btns button.cc-spa-minus:hover{background:rgba(255,130,150,.16);}
   .ch-sp-btns button:disabled{opacity:.4;cursor:default;}
   /* Свои статы на создании (ccSpaRender): строка «иконка имя · − число + · цена». */
-  .cc-spa-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px 10px;margin-top:6px;}
+  .cc-spa-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:4px 10px;margin-top:6px;}
   @media (max-width:520px){.cc-spa-grid{grid-template-columns:1fr;}}
-  .cc-spa-row{display:grid;grid-template-columns:1fr 26px 44px 26px 22px;align-items:center;gap:4px;
+  .cc-spa-row{display:grid;grid-template-columns:minmax(0,1fr) 26px 34px 26px 18px;align-items:center;gap:3px;
     padding:3px 6px;border-radius:6px;background:rgba(255,255,255,.04);}
   .cc-spa-row.up{background:rgba(0,255,208,.09);} .cc-spa-row.down{background:rgba(255,130,150,.08);}
-  .cc-spa-name{font-size:11px;font-weight:800;color:#cfe0ff;text-transform:uppercase;letter-spacing:.03em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .cc-spa-name{font-size:11px;font-weight:800;color:#cfe0ff;text-transform:uppercase;letter-spacing:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   .cc-spa-val{text-align:center;font-size:15px;color:#fff;font-variant-numeric:tabular-nums;}
   .cc-spa-row.up .cc-spa-val{color:#7ef0dd;} .cc-spa-row.down .cc-spa-val{color:#ffc3cd;}
   .cc-spa-btn{height:26px;border-radius:6px;border:1px solid rgba(0,255,208,.4);background:rgba(0,255,208,.08);
@@ -4796,9 +4803,8 @@
     #screen-career-hub .ch-who small,#screen-career-hub .ch-who .ch-sub{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
     #screen-career-hub .ch-purse-now .ch-pend{white-space:nowrap;}
     /* Подписи и числа плашек не рвутся: «V-/BUCKS», «WEEK / 23/52», «0 / of / ±3» в столбик выглядели поломкой.
-       Диапазон («of ±3», «of ±25») уходит из шапки, он есть в подсказке. Переносится только слово репутации. */
+       Диапазон («of ±3», «of ±25») уходит из шапки, он есть в подсказке. */
     #screen-career-hub .ch-top .ch-purse em,#screen-career-hub .ch-top .ch-purse b{white-space:nowrap;}
-    #screen-career-hub .ch-top .ch-purse .ch-tipw:last-child b{white-space:normal;}
     #screen-career-hub .ch-top .ch-purse b small{display:none;}
   }
   /* Где строка не влезает (уже на 1100 она вылезала за край), правые плашки уходят второй строкой вправо. */
@@ -5338,6 +5344,8 @@
   .cc-ring span{font-size:9.5px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;
     color:#8094c4;}
   .cc-ring-energy{color:#00d6a4;}
+  /* Энергия уже в шапке хаба крупной полосой; в панели дня второй раз её не рисуем, остаётся настрой. */
+  #screen-career-hub .cc-ring.cc-ring-energy,#screen-career-hub .cc-meter.m-energy{display:none !important;}
   .cc-ring-fatigue{color:#ff8a3d;}
   .cc-ring-mood{color:#7aa2ff;}
   /* One row an option, and every one of them says what it moves. A row that
@@ -6079,7 +6087,7 @@
   .cc-act-g .cc-give-mood{color:#c9a7ff;}
   .cc-act-g .cc-give-rest{color:#ff8a3d;}
   .cc-act-g .cc-give-cost{color:#ff7d70;}
-  .cc-day-hint{margin-top:11px;font-size:11px;font-weight:800;color:#8094c4;text-align:center;}
+  .cc-day-hint{margin-top:11px;font-size:11px;font-weight:800;color:#c3cde4;text-align:center;text-shadow:0 1px 3px rgba(0,0,0,.6);}
   /* A post, on X's anatomy: avatar, then a header of name, tick, handle and
      when, then the line, then the actions. Everything after the avatar is one
      column, which is what stops a long line wrapping under the picture. */

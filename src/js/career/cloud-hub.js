@@ -1623,7 +1623,7 @@ function careerRenderHubBody(tab){
         L().ccConfFloor(Math.round((CC_FORM_MAX-c)*10)/10)}</b></div>`; })()+
     (()=>{ const r=careerRep(), T=L();
       return `<div class="ch-tipw" tabindex="0" onclick="ccTipToggle(this, event)"><em>${T.ccRep} ⓘ</em><b class="${r>0?'ch-goal-met':r<0?'cc-pen bad':''}">${
-        T[careerRepKey()]} ${r>0?'+':''}${r} <small>${esc(T.ccOfRange(CC_REP_MAX))}</small></b>${
+        r>0?'+':''}${r} <span class="ch-rep-w">${esc(T[careerRepKey()])}</span> <small>${esc(T.ccOfRange(CC_REP_MAX))}</small></b>${
         '<div class="ch-tip">'+esc(T.ccRepTip(CC_REP_MAX, CC_REP_PER_OVR, T))+'</div>'}</div>`; })()+
     (()=>{ const b=careerBurnout(); if(!b) return '';
       return `<div><em>${L().ccBurnout}</em><b class="cc-pen bad">${

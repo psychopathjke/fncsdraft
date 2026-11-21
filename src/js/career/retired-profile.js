@@ -141,7 +141,7 @@ Object.assign(CC_ME_TX.ru, {edit:'Изменить', save:'Сохранить', 
   achDraft:'Достижения драфта', achMgr:'Достижения менеджера', achCareerS:'Ачивки карьеры', achDraftS:'Ачивки драфта', achMgrS:'Ачивки менеджера'});
 Object.assign(CC_ME_TX.en, {edit:'Edit', save:'Save', cancel:'Cancel', nickPh:'Nickname', upload:'Upload photo', skinPh:'Find a Fortnite skin',
   cloudOn:'Saved to the cloud', cloudOff:'Turn on the cloud on the career screen to have your profile on every device', achCareer:'Career achievements', achDaily:'Daily draft achievements', more:'more',
-  achDraft:'Draft achievements', achMgr:'Manager achievements', achCareerS:'Career', achDraftS:'Draft', achMgrS:'Manager'});
+  achDraft:'Draft achievements', achMgr:'Manager achievements', achCareerS:'Career achievements', achDraftS:'Draft achievements', achMgrS:'Manager achievements'});
 /* Свой профиль (30.10, его «пусть никнейм можно будет выбрать и аватарку и сохранить это все в облако»): ключ
    fncsdraft_profile {nick, ava:{t:'skin', id} | {t:'img', d:dataURL 128px}} — в облаке рядом с карьерами (CC_CLOUD_KEY). */
 const CC_ME_LS='fncsdraft_profile';

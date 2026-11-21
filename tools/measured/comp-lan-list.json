@@ -205,5 +205,14 @@
   "place": "France  Belgium  Luxembourg  Monaco  Switzerland",
   "usd": 50000,
   "tier": "A"
+ },
+ {
+  "name": "Treasure Hunt Invitational",
+  "page": "TheSVCup/Treasure Hunt Invitational",
+  "day": "2026-11-11",
+  "end": "2026-11-11",
+  "place": "Brazil",
+  "usd": 20000,
+  "tier": "B"
  }
 ]

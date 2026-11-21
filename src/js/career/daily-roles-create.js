@@ -3443,7 +3443,7 @@ function ccSpaRender(){
         ? `<input class="cc-spa-in" type="number" inputmode="numeric" min="35" max="99" value="${v}" onchange="ccSpaSet('${k}',this.value)" aria-label="${name}">`
         : `<b class="cc-spa-val">${v}</b>`;
       return `<div class="cc-spa-row${n>0?' up':n<0?' down':''}">
-        <span class="cc-spa-name">${CC_ATTR_ICON[k]||''} ${name}</span>
+        <span class="cc-spa-name">${name}</span>
         <button type="button" class="cc-spa-btn" onclick="ccSpaAdd('${k}',-1)"${canDown?'':' disabled'} aria-label="−1 ${name}">−</button>
         ${val}
         <button type="button" class="cc-spa-btn" onclick="ccSpaAdd('${k}',1)"${canUp?'':' disabled'} aria-label="+1 ${name}">+</button>

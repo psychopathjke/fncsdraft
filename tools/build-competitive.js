@@ -674,8 +674,10 @@ var EARN=${JSON.stringify(EARN)}, earnAll=false;
 function money(v){return '$'+Math.round(v).toLocaleString('en-US');}
 function renderEarn(){
  var mk=cur.y+'-'+String(cur.m+1).padStart(2,'0'), M=EARN[mk], name=mName(new Date(cur.y,cur.m,1));
- document.getElementById('earnH').textContent=tx('prizeM',{m:name});
  var rows=M?M.rows.filter(inReg):[];
+ // Пустой текущий месяц (выплаты Epic приходят с задержкой): показываем последний месяц, где они уже есть.
+ if(!rows.length&&new Date(cur.y,cur.m+1,1)>today){ var ks=Object.keys(EARN).filter(function(k){return k<mk&&EARN[k].rows.filter(inReg).length;}).sort(); if(ks.length){ mk=ks[ks.length-1]; M=EARN[mk]; rows=M.rows.filter(inReg); var pp=mk.split('-'); name=mName(new Date(+pp[0],+pp[1]-1,1)); } }
+ document.getElementById('earnH').textContent=tx('prizeM',{m:name});
  var paid=M?(reg==='ALL'?M.paid:(M.reg[reg]||0)):0;
  document.getElementById('earnP').textContent=(paid?tx(reg==='ALL'?'paidAll':'paidReg',{usd:money(paid),r:reg})+(mk===today.getFullYear()+'-'+String(today.getMonth()+1).padStart(2,'0')?tx('soFar'):'')+'. ':'')+tx('duoNote');
  var show=earnAll?rows.slice(0,100):rows.slice(0,15);
