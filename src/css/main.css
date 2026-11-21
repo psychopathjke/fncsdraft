@@ -6686,6 +6686,28 @@
   .dc-memb .cr-btns .dc-btn{padding:5px 8px;font-size:11px;white-space:nowrap;}
   @media(min-width:1001px){ .dc-cat-m,.dc-ch.k-members,.dc-memb-h{display:none;} }
   .dc-memb-h{margin:-14px -8px 10px;}
+  /* Чат своего сервера (ccFanChatHTML): лента и строка ввода внизу, как поле сообщения в Discord. */
+  .dc-chatlog{max-height:52vh;overflow-y:auto;}
+  .dc-compose{display:flex;gap:8px;align-items:center;margin-top:12px;padding:6px 6px 6px 14px;border-radius:8px;background:#383a40;}
+  .dc-compose input{flex:1;min-width:0;padding:8px 0;border:0;background:none;color:#dbdee1;font:inherit;font-size:16px;}
+  .dc-compose input::placeholder{color:#6d6f78;}
+  .dc-compose input:focus{outline:none;}
+  .dc-compose:focus-within{box-shadow:0 0 0 2px #5865f2;}
+  /* Свой сервер: поиск для инвайтов, настройки (имя, аватарка). */
+  .dc-find{margin:8px 0 10px;}
+  .fn-find{max-height:52vh;overflow-y:auto;}
+  .fn-fans{margin-top:8px !important;}
+  .fn-set{display:flex;align-items:center;gap:12px;}
+  .fn-set .dc-compose{flex:1;min-width:0;margin-top:0;}
+  @media(max-width:520px){ .fn-set-ic{flex-basis:44px;width:44px !important;height:44px !important;} }
+  .fn-set-ic{flex:0 0 56px;width:56px !important;height:56px !important;border-radius:16px !important;cursor:default;}
+  .fn-icons{display:grid;grid-template-columns:repeat(auto-fill,minmax(52px,1fr));gap:8px;}
+  .fn-ic{position:relative;display:flex;align-items:center;justify-content:center;width:52px;height:52px;padding:0;border:2px solid transparent;
+    border-radius:50%;overflow:hidden;background:#1e1f22;color:#b5bac1;font-size:22px;cursor:pointer;}
+  .fn-ic img{width:100%;height:100%;object-fit:cover;}
+  .fn-ic:hover{border-color:#4e5058;} .fn-ic.on{border-color:#5865f2;}
+  .fn-ic-up{border-style:dashed;border-color:#4e5058;}
+  .fn-ic:focus-within,.fn-ic:focus-visible{outline:2px solid #5865f2;outline-offset:2px;}
   @media(max-width:1000px){
     .dc-wrap.dc-x,.dc-wrap.dc-x:not(:has(.dc-memb)){grid-template-columns:64px minmax(0,1fr);min-height:480px;}
     .dc-x[data-view="list"] .dc-main,.dc-x[data-view="list"] .dc-memb{display:none;}

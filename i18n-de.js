@@ -4722,3 +4722,9 @@ Object.assign(I18N.de=I18N.de||{},
 /* Дозаливка «de» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
 Object.assign(I18N.de=I18N.de||{},
 ({dcCatText:"Textkanäle", dcCatVoice:"Sprachkanäle"}));
+/* Дозаливка «de» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
+Object.assign(I18N.de=I18N.de||{},
+({fnChatChan:"chat", fnChatPh:c=>"Nachricht an #"+c, fnSend:"Senden", fnChatEmpty:"Schreib deinen Fans etwas.", fnRCode1:c=>"immer mit Code "+c+"", fnRStream1:"bis gleich im Stream", fnRStream2:"Glocke ist an", fnRQ1:"ja 100%", fnRQ2:"nö", fnRQ3:"kommt drauf an", fnRQ4:"gute Frage", fnRHype1:"LOS GEHTS", fnRHype2:"der Goat", fnRHype3:"W", fnRGen1:"W", fnRGen2:"real", fnRGen3:"lol", fnRGen4:"fr", fnRGen5:"wir sind bei dir"}));
+/* Дозаливка «de» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
+Object.assign(I18N.de=I18N.de||{},
+({dcCatServer:"Server", fnInviteChan:"einladen", fnSettingsChan:"server-einstellungen", fnInviteTxt:(o,m)=>"Such Spieler nach Namen. Einladen kannst du jeden mit niedrigerem Rating als deinem ("+o+"), sie treten sofort bei, bis zu "+m+" Leute.", fnFindPh:"Nach Namen suchen", fnFindNone:"Niemand unter deinem Rating gefunden", fnInviteBtn:"Einladen", fnJoined:h=>h+" ist dem Server beigetreten", fnFull:m=>"Server voll: "+m+" eingeladen", fnGuest:"eingeladen", fnKick:"Entfernen", fnFansN:n=>n+" Fans", fnSave:"Speichern", fnIconT:"Serverbild", fnIconFace:"Foto deiner Karte", fnIconUp:"Bild hochladen"}));

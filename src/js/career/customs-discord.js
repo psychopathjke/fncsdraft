@@ -487,6 +487,7 @@ function ccDcImg(src, fb){ return '<img src="'+esc(src)+'" alt="" loading="lazy"
 function ccDcSrvIcon(id){
   if(id==='pc') return ccCareerRegion()==='EU' ? ccDcImg('items/creative/noble-crown.png', 'NP') : esc(ccDcInitials(ccPracSrv()));
   if(id==='mob') return CC_DC_PHONE_SVG;
+  if(ccFans()) return ccFanIcon();   // своя аватарка сервера из настроек
   const f=ccDcFace(); return f ? ccDcImg(f, '★') : '★';
 }
 function ccDiscordHTML(){
@@ -533,7 +534,7 @@ function ccDiscordHTML(){
   return '<div class="ch-tile dc-wrap"><div class="dc-srvs">'+servers.map(([id, ic, name])=>
       '<button class="dc-srv'+(srv===id ? ' on' : '')+'" title="'+esc(name)+'" aria-label="'+esc(name)+'" onclick="ccDcServer(\''+id+'\')">'+ic+'</button>').join('')+'</div>'+
     '<div class="dc-body"><h4 class="dc-name">'+esc((servers.find(s=>s[0]===srv)||servers[0])[2])+
-      (srv==='own' && cr.fans ? '<small>'+esc(T.fnMembers(ccNum(careerReach())))+'</small>' : '')+'</h4>'+body+'</div></div>';
+      (srv==='own' && cr.fans ? '<small>'+esc(T.fnMembers(ccNum(ccFanMembers()+ccFanGuests().length)))+'</small>' : '')+'</h4>'+body+'</div></div>';
 }
 /* Бросок дня. Один на день, кидается когда день впервые спросили, и сразу
    в сейв: перезагрузка страницы читает уже брошенное, а не кидает заново —
@@ -1316,7 +1317,8 @@ function ccCrewHTML(chan, msg){
   const stName={voice:T.crStVoice, game:T.crStGame, on:T.crStOn, off:T.crStOff};
   const row=m=>{
     const st=ccCrewStatus(m), why=ccCrewWhy(m), rel=ccCrewRel(m), invited=ccCrewInvited(m);
-    const duoOk=m.kind!=='mate' && !(typeof ccMpOn==='function' && ccMpOn());
+    // В соло-сезоне звать некуда (его «ask to duo пишется в соло сезоне»); в трио и скваде - подпись того формата.
+    const duoOk=m.kind!=='mate' && careerMateSeats()>0 && !(typeof ccMpOn==='function' && ccMpOn());
     return '<div class="cr-mem st-'+st+(invited ? ' inv' : '')+'">'+
       '<span class="dc-av">'+ccCrewAv(m)+'<i class="cr-dot" aria-hidden="true"></i></span>'+
       '<div class="cr-who"><b>'+esc(ccHandle(m.handle))+' <em>'+m.ovr+'</em></b>'+
@@ -1326,7 +1328,7 @@ function ccCrewHTML(chan, msg){
       '<div class="cr-btns">'+
         '<button class="dc-btn sm"'+(why ? ' disabled' : '')+' onclick="ccCrewPlay(\''+jsq(m.k)+'\')">'+
           esc(invited ? T.crAccept : T.crPlay)+' <em>'+ccActById('crew').energy+T.ccEnergyMark+'</em></button>'+
-        (duoOk ? '<button class="dc-btn ghost sm" onclick="ccCrewDuo(\''+jsq(m.k)+'\')">'+esc(T.crDuo)+'</button>' : '')+
+        (duoOk ? '<button class="dc-btn ghost sm" onclick="ccCrewDuo(\''+jsq(m.k)+'\')">'+esc(T[ccSquadKey('dmAskBtn')]||T.crDuo)+'</button>' : '')+
       '</div></div>';
   };
   const chat=ccCrewChat(members);
@@ -1370,6 +1372,15 @@ const CC_FAN_MIN=200, CC_FAN_ANSWER_DIV=10, CC_FAN_BUYERS_DAY=0.004/30;
 const CC_FAN_A=['tilted','zone','box','cracked','storm','loot','sweaty','chill','turbo','piece','edit','bus','moist','crank','fresh'];
 const CC_FAN_B=['fan','king','enjoyer','main','goat','lad','queen','gamer','bot','andy','ace','kid','fox','wolf','vibes'];
 function ccFans(){ return CAREER.career.fans || null; }
+/* Сколько людей на сервере (его «слишком много участников», 21.11): было число всех подписчиков. В Discord стримера
+   сидит малая часть аудитории - CC_FAN_SHARE подписчиков, и набирается она за первый месяц после создания.
+   Доля - оценка, не замер. */
+const CC_FAN_SHARE=0.03, CC_FAN_RAMP=30;
+function ccFanMembers(){
+  const f=ccFans(); if(!f) return 0;
+  const days=f.since ? Math.max(0, ccDaysBetween(f.since, careerToday())) : CC_FAN_RAMP;
+  return Math.max(1, Math.round(careerReach()*CC_FAN_SHARE*Math.min(1, (days+1)/CC_FAN_RAMP)));
+}
 function ccFanWhy(){
   const T=L();
   if(ccFans()) return '';
@@ -1469,7 +1480,8 @@ function ccFanHTML(chan, msg){
     : buys.length ? buys.map(x=>msg(x.nick, false, '<p>'+esc(T.fnBought(x.it.name, code))+'</p>'+
         '<div class="fn-buy"><img src="'+esc(ccFnImg(x.it.id, true))+'" alt="" loading="lazy" onerror="this.remove()"><span>'+esc(x.it.name)+' · '+ccNum(x.price)+' V</span></div>', ccFanAv(x.nick))).join('')
     : '<p class="dc-sub">'+esc(T.fnBuyNone(code))+'</p>';
-  return chan(T.fnAfterChan, afterHTML)+chan(T.fnQChan, qHTML)+chan(T.fnCodeChan, buyHTML);
+  return ccFanChatHTML(chan, msg)+chan(T.fnAfterChan, afterHTML)+chan(T.fnQChan, qHTML)+chan(T.fnCodeChan, buyHTML)+
+    ccFanMembersHTML(chan)+ccFanInviteHTML(chan)+ccFanSettingsHTML(chan);
 }
 
 /* ---- Вид как в Discord (его слово 21.11: «сделай как в дискорде оформление каналов голосовых текстовых») ----------
@@ -1485,6 +1497,8 @@ const CC_DC_MEMB_SVG='<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" st
 function ccDcPick(i){ const srv=CH_DC||'crew'; const it=(CC_DC_ITEMS||[])[i]; if(!it) return; CH_DCC[srv]=it.raw; CH_DCV='chan'; careerRenderHub('discord'); }
 function ccDcChBack(){ CH_DCV='list'; careerRenderHub('discord'); }
 let CC_DC_ITEMS=null;
+const CC_DC_INV_SVG='<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="10" cy="8.5" r="3.5"/><path d="M3.5 20c.7-3.6 3.3-5.6 6.5-5.6 1.4 0 2.7.4 3.8 1.1M18 13v7M14.5 16.5h7"/></svg>';
+const CC_DC_GEAR_SVG='<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>';
 function ccDcLayout(root){
   const wrap=root && root.querySelector('.dc-wrap'); if(!wrap) return;
   const body=wrap.querySelector('.dc-body'); if(!body) return;
@@ -1497,14 +1511,17 @@ function ccDcLayout(root){
   });
   CC_DC_ITEMS=items;
   const cur=items.find(x=>x.raw===CH_DCC[srv]) || items.find(x=>x.kind==='text') || items[0];
-  const icon=k=>k==='voice' ? CC_DC_SPK_SVG : k==='members' ? CC_DC_MEMB_SVG : CC_DC_HASH_SVG;
-  const label=x=>esc(x.raw.replace(/\s*·\s*\d+$/, ''));
+  // Раздел «Сервер» (data-kind="tool"): пригласить - человечек с плюсом, настройки - шестерёнка.
+  const iconOf=x=>x.kind==='voice' ? CC_DC_SPK_SVG : x.kind==='members' ? CC_DC_MEMB_SVG
+    : x.kind==='tool' ? (x.raw===T.fnInviteChan ? CC_DC_INV_SVG : CC_DC_GEAR_SVG) : CC_DC_HASH_SVG;
+  const icon=k=>iconOf(typeof k==='string' ? {kind:k, raw:''} : k);
+  const label=x=>esc(x.raw.replace(/\s*·\s*[\d,.\s]+$/, ''));
   const btn=x=>'<button type="button" class="dc-ch k-'+x.kind+(x===cur ? ' on' : '')+'" onclick="ccDcPick('+x.i+')"'+(x===cur ? ' aria-current="true"' : '')+'>'+
-    '<i>'+icon(x.kind)+'</i><span>'+label(x)+'</span></button>'+
+    '<i>'+iconOf(x)+'</i><span>'+label(x)+'</span></button>'+
     // Под голосовым - кто внутри, аватарками и ником, как в Discord.
     (x.kind==='voice' ? '<div class="dc-vlist">'+[...x.c.querySelectorAll('.cr-vm')].map(v=>
       '<span>'+(v.querySelector('.dc-av') ? v.querySelector('.dc-av').outerHTML : '')+'<i>'+esc((v.querySelector('i')||{}).textContent||'')+'</i></span>').join('')+'</div>' : '');
-  const text=items.filter(x=>x.kind==='text'), voice=items.filter(x=>x.kind==='voice'), memb=items.filter(x=>x.kind==='members');
+  const text=items.filter(x=>x.kind==='text'), voice=items.filter(x=>x.kind==='voice'), memb=items.filter(x=>x.kind==='members'), tools=items.filter(x=>x.kind==='tool');
   const nameEl=wrap.querySelector('.dc-name');
   const side='<nav class="dc-side" aria-label="'+esc(T.dcCatText)+'">'+
     '<div class="dc-side-h">'+(nameEl ? nameEl.innerHTML : '')+'</div>'+
@@ -1512,11 +1529,12 @@ function ccDcLayout(root){
     (voice.length ? '<div class="dc-cat">'+esc(T.dcCatVoice)+'</div>'+voice.map(btn).join('') : '')+
     // Участники: на широком экране своей колонкой, на узком - пунктом списка.
     (memb.length ? '<div class="dc-cat dc-cat-m">'+esc(T.crMembers)+'</div>'+memb.map(btn).join('') : '')+
+    (tools.length ? '<div class="dc-cat">'+esc(T.dcCatServer)+'</div>'+tools.map(btn).join('') : '')+
     '</nav>';
   items.forEach(x=>{ x.c.hidden = x!==cur && !(x.kind==='members'); });
   const head='<div class="dc-main-h"><button type="button" class="dc-back" onclick="ccDcChBack()" aria-label="'+esc(T.ccBack)+'">'+
     '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M15 5l-7 7 7 7"/></svg></button>'+
-    '<i>'+icon(cur.kind)+'</i><b>'+label(cur)+'</b></div>';
+    '<i>'+iconOf(cur)+'</i><b>'+label(cur)+'</b></div>';
   const main=document.createElement('div'); main.className='dc-main'; main.innerHTML=head;
   const aside=document.createElement('aside'); aside.className='dc-memb';
   // На узком экране участники открываются как канал - со своей шапкой и стрелкой назад.
@@ -1529,4 +1547,169 @@ function ccDcLayout(root){
   wrap.classList.add('dc-x');
   wrap.dataset.view=CH_DCV;
   wrap.dataset.cur=cur.kind;
+  // Чат открывается на последних сообщениях, как в Discord.
+  wrap.querySelectorAll('.dc-chatlog').forEach(el=>{ el.scrollTop=el.scrollHeight; });
+}
+
+/* ---- Чат на своём сервере (его слово 21.11: «просто чат на сервере личном») -------------------------------------
+   Канал #chat первым на фан-сервере: пишешь своё сообщение, фанаты сразу отвечают. Что отвечают - по словам в
+   сообщении: вопрос, свой код автора, стрим, победа, иначе обычные реакции. Сколько отвечает - как в канале после
+   турнира (ccFanVoices), но не больше трёх. На игру не влияет, хранится последних CC_FAN_CHAT_KEEP сообщений.
+   Текст игрока выводится только через esc(). */
+const CC_FAN_CHAT_KEEP=40, CC_FAN_CHAT_MAX=300;
+function ccFanChat(){ const f=ccFans(); if(!f) return []; f.chat=f.chat||[]; return f.chat; }
+function ccFanReplyKind(text){
+  const t=String(text||'').toLowerCase(), code=(typeof ccSacOwnCode==='function' && ccSacOwnCode()) || '';
+  if(code && t.toUpperCase().indexOf(code)>=0) return 'Code';
+  if(/stream|twitch|live|стрим|эфир|трансл|direct|diretta|transmis/.test(t)) return 'Stream';
+  if(/\?/.test(t)) return 'Q';
+  if(/\bgg\b|win|won|выигр|побед|топ|top|#1|gagn|vinto|ganh|gewonn|gan[eé]/.test(t)) return 'Hype';
+  return 'Gen';
+}
+function ccFanChatSend(){
+  const inp=document.getElementById('ccFanChatIn'); if(!inp || !ccFans()) return;
+  const text=String(inp.value||'').replace(/\s+/g, ' ').trim().slice(0, CC_FAN_CHAT_MAX);
+  if(!text) return;
+  const chat=ccFanChat(), T=L(), day=careerToday(), n=chat.length;
+  chat.push({me:1, t:text, d:day});
+  const kind=ccFanReplyKind(text), r=careerRng(ccHashStr('fanchat|'+day+'|'+n+'|'+text));
+  const per={Code:1, Stream:2, Q:4, Hype:3, Gen:5}[kind];
+  const k=Math.min(3, ccFanVoices(), per);   // не больше, чем разных фраз: одна и та же дважды читалась как сбой
+  const used=[];
+  for(let i=0;i<k;i++){
+    let j=1+Math.floor(r()*per); if(used.indexOf(j)>=0 && used.length<per){ j=1; while(used.indexOf(j)>=0) j++; }
+    used.push(j);
+    const key='fnR'+kind+j, s=T[key];
+    chat.push({nick:ccFanNick('c|'+day+'|'+n+'|'+i), t:typeof s==='function' ? s((typeof ccSacOwnCode==='function' && ccSacOwnCode())||'') : (s||''), d:day});
+  }
+  // Позванный на сервер (не фанат) тоже иногда отвечает - своим ником и фото карточки.
+  const gs=ccFanGuests();
+  if(gs.length && r()<CC_FAN_GUEST_REPLY){
+    const g=gs[Math.floor(r()*gs.length)], s=T['fnR'+kind+(1+Math.floor(r()*per))];
+    chat.push({nick:g.handle, g:1, t:typeof s==='function' ? s((typeof ccSacOwnCode==='function' && ccSacOwnCode())||'') : (s||''), d:day});
+  }
+  while(chat.length>CC_FAN_CHAT_KEEP) chat.shift();
+  CH_DCC.own=T.fnChatChan; CH_DCV='chan';
+  careerSave(); careerRenderHub('discord');
+  const again=document.getElementById('ccFanChatIn'); if(again){ try{ again.focus({preventScroll:true}); }catch(e){} }
+}
+function ccFanChatKey(e){ if(e.key==='Enter' && !e.shiftKey){ e.preventDefault(); ccFanChatSend(); } }
+function ccFanChatHTML(chan, msg){
+  const T=L(), chat=ccFanChat();
+  const list=chat.length ? chat.map(m=>m.me
+      ? msg(CAREER.player.nick, false, '<p>'+esc(m.t)+'</p>')
+      : m.g ? msg(ccHandle(m.nick), false, '<p>'+esc(m.t)+'</p>', ccFanGuestAv({handle:m.nick}))
+      : msg(m.nick, false, '<p>'+esc(m.t)+'</p>', ccFanAv(m.nick))).join('')
+    : '<p class="dc-sub">'+esc(T.fnChatEmpty)+'</p>';
+  const box='<div class="dc-compose"><input id="ccFanChatIn" type="text" maxlength="'+CC_FAN_CHAT_MAX+'" autocomplete="off" '+
+    'placeholder="'+esc(T.fnChatPh(T.fnChatChan))+'" aria-label="'+esc(T.fnChatPh(T.fnChatChan))+'" onkeydown="ccFanChatKey(event)">'+
+    '<button type="button" class="dc-btn sm" onclick="ccFanChatSend()">'+esc(T.fnSend)+'</button></div>';
+  return chan(T.fnChatChan, '<div class="dc-chatlog">'+list+'</div>'+box);
+}
+
+/* ---- Свой сервер: инвайты, поиск, настройки (его слово 21.11: «инвайтнуть можно будет, в самом дискорде поиск, и
+   инвайтнуть можно людей ниже тебя рейтингом, сервер можно переименовать и аватарку другую поставить») ------------
+   Каналы раздела «Сервер» на своём сервере (data-kind="tool"): «пригласить» - поиск по нику среди игроков региона
+   (careerDuoSearchPool, тот же список, что поиск дуо), звать можно только тех, у кого рейтинг ниже твоего, и они
+   заходят сразу; «настройки» - имя сервера и аватарка (скин Fortnite, фото карточки или своя картинка, ужатая как
+   фото карьеры ccPhotoShrink). Позванные - в колонке участников и иногда отвечают в #chat своим ником и фото. */
+const CC_FAN_GUESTS_MAX=20, CC_FAN_FIND_MAX=20, CC_FAN_GUEST_REPLY=0.5;
+function ccFanGuests(){ const f=ccFans(); if(!f) return []; f.guests=f.guests||[]; return f.guests; }
+function ccFanMyOvr(){ const pl=CAREER.player; return Math.round(pl.ovrExact!=null ? pl.ovrExact : pl.ovr); }
+function ccFanFindPool(){
+  let pool=[]; try{ pool=careerDuoSearchPool(true)||[]; }catch(e){}
+  const me=ccFanMyOvr(), inSrv=new Set(ccFanGuests().map(g=>hKey(g.handle)));
+  return pool.filter(w=>w && w.handle && Math.round(w.ovr)<me && !inSrv.has(hKey(w.handle)));
+}
+function ccFanFindRows(q){
+  const T=L(); q=String(q||'').trim().toLowerCase();
+  const list=ccFanFindPool().filter(w=>!q || String(w.handle).toLowerCase().indexOf(q)>=0)
+    .sort((a,b)=>b.ovr-a.ovr).slice(0, CC_FAN_FIND_MAX);
+  if(!list.length) return '<p class="dc-sub">'+esc(T.fnFindNone)+'</p>';
+  const full=ccFanGuests().length>=CC_FAN_GUESTS_MAX;
+  return list.map(w=>{
+    let f=''; try{ f=w.card ? (photoURL(w.card)||'') : ''; }catch(e){}
+    const fb=String(w.handle).slice(0, 2).toUpperCase();
+    return '<div class="cr-mem st-on"><span class="dc-av">'+(f ? ccDcImg(f, fb) : esc(fb))+'</span>'+
+      '<div class="cr-who"><b>'+esc(ccHandle(w.handle))+' <em>'+Math.round(w.ovr)+'</em></b></div>'+
+      '<div class="cr-btns"><button class="dc-btn sm"'+(full ? ' disabled' : '')+' onclick="ccFanInvite(\''+jsq(w.handle)+'\')">'+esc(T.fnInviteBtn)+'</button></div></div>';
+  }).join('');
+}
+// Поиск перерисовывает только список: поле ввода остаётся в фокусе.
+function ccFanFind(q){ CC_FAN_FIND_Q=String(q||''); const el=document.getElementById('ccFanFindList'); if(el) el.innerHTML=ccFanFindRows(q); }
+let CC_FAN_FIND_Q='';
+function ccFanInvite(handle){
+  const f=ccFans(); if(!f) return;
+  const g=ccFanGuests(); if(g.length>=CC_FAN_GUESTS_MAX) return;
+  const w=ccFanFindPool().find(x=>hKey(x.handle)===hKey(handle)); if(!w) return;
+  g.push({handle:w.handle, ovr:Math.round(w.ovr), since:careerToday()});
+  f.last={day:careerToday(), text:L().fnJoined(ccHandle(w.handle))};
+  careerSave(); careerRenderHub('discord');
+  const inp=document.getElementById('ccFanFindIn'); if(inp){ inp.value=CC_FAN_FIND_Q; ccFanFind(CC_FAN_FIND_Q); }
+}
+function ccFanKick(handle){
+  const f=ccFans(); if(!f) return;
+  f.guests=ccFanGuests().filter(g=>hKey(g.handle)!==hKey(handle));
+  careerSave(); careerRenderHub('discord');
+}
+function ccFanGuestFace(g){ try{ const c=ccFriendCard(g.handle); return c ? (photoURL(c)||'') : ''; }catch(e){ return ''; } }
+function ccFanGuestAv(g){ const f=ccFanGuestFace(g), fb=String(g.handle).slice(0, 2).toUpperCase(); return f ? ccDcImg(f, fb) : esc(fb); }
+function ccFanInviteHTML(chan){
+  const T=L(), full=ccFanGuests().length>=CC_FAN_GUESTS_MAX;
+  return chan(T.fnInviteChan, '<p class="dc-sub">'+esc(T.fnInviteTxt(ccFanMyOvr(), CC_FAN_GUESTS_MAX))+'</p>'+
+    '<div class="dc-compose dc-find"><input id="ccFanFindIn" type="search" autocomplete="off" value="'+esc(CC_FAN_FIND_Q)+'" '+
+      'placeholder="'+esc(T.fnFindPh)+'" aria-label="'+esc(T.fnFindPh)+'" oninput="ccFanFind(this.value)"></div>'+
+    (full ? '<div class="dc-why">'+esc(T.fnFull(CC_FAN_GUESTS_MAX))+'</div>' : '')+
+    '<div id="ccFanFindList" class="fn-find">'+ccFanFindRows(CC_FAN_FIND_Q)+'</div>', 'tool');
+}
+function ccFanMembersHTML(chan){
+  const T=L(), g=ccFanGuests(), f=ccFans();
+  const last=f.last && f.last.day===careerToday() ? '<div class="dc-res">'+esc(f.last.text)+'</div>' : '';
+  const rows=g.map(x=>'<div class="cr-mem st-on"><span class="dc-av">'+ccFanGuestAv(x)+'<i class="cr-dot" aria-hidden="true"></i></span>'+
+    '<div class="cr-who"><b>'+esc(ccHandle(x.handle))+' <em>'+x.ovr+'</em></b><span>'+esc(T.fnGuest)+'</span></div>'+
+    '<div class="cr-btns"><button class="dc-btn ghost sm" onclick="ccFanKick(\''+jsq(x.handle)+'\')">'+esc(T.fnKick)+'</button></div></div>').join('');
+  return chan(T.crMembers+' · '+(g.length+ccFanMembers()), last+rows+
+    '<p class="dc-sub fn-fans">'+esc(T.fnFansN(ccNum(ccFanMembers())))+'</p>', 'members');
+}
+// ---- Настройки: имя и аватарка.
+function ccFanIcon(){
+  const f=ccFans(), i=f && f.icon;
+  if(i && i.t==='img' && i.d) return ccDcImg(i.d, '★');
+  if(i && i.t==='skin' && i.id) return ccDcImg(ccFnImg(i.id, true), '★');
+  const face=ccDcFace(); return face ? ccDcImg(face, '★') : '★';
+}
+function ccFanRename(){
+  const f=ccFans(); const inp=document.getElementById('ccFanRenameIn'); if(!f || !inp) return;
+  const name=String(inp.value||'').replace(/[<>]/g, '').trim().slice(0, 32); if(!name) return;
+  f.name=name; careerSave(); careerRenderHub('discord');
+}
+function ccFanIconSet(kind, id){
+  const f=ccFans(); if(!f) return;
+  f.icon=kind==='skin' ? {t:'skin', id:String(id)} : null;
+  careerSave(); careerRenderHub('discord');
+}
+function ccFanIconUpload(input){
+  const file=input && input.files && input.files[0]; if(!file || !ccFans()) return;
+  const r=new FileReader();
+  r.onload=()=>{ ccPhotoShrink(String(r.result||''), function(url){ const f=ccFans(); if(!f) return; f.icon={t:'img', d:url}; careerSave(); careerRenderHub('discord'); }); };
+  r.readAsDataURL(file);
+  input.value='';
+}
+function ccFanSettingsHTML(chan){
+  const T=L(), f=ccFans();
+  let skins=null; try{ skins=ccFnSkinPool(); }catch(e){}
+  if(!skins){ try{ ccFnShopLoad(()=>{ if(CH_TAB==='discord' && CH_DC==='own') careerRenderHub('discord'); }); }catch(e){} }
+  const pick=(skins||[]).slice(-24).reverse();
+  const cur=f.icon && f.icon.t==='skin' ? f.icon.id : null;
+  return chan(T.fnSettingsChan,
+    '<div class="fn-set"><span class="fn-set-ic dc-srv">'+ccFanIcon()+'</span>'+
+      '<div class="dc-compose"><input id="ccFanRenameIn" maxlength="32" value="'+esc(f.name)+'" aria-label="'+esc(T.fnNameLabel)+'">'+
+      '<button type="button" class="dc-btn sm" onclick="ccFanRename()">'+esc(T.fnSave)+'</button></div></div>'+
+    '<div class="dc-cat">'+esc(T.fnIconT)+'</div>'+
+    '<div class="fn-icons">'+
+      '<button type="button" class="fn-ic'+(!f.icon ? ' on' : '')+'" onclick="ccFanIconSet(\'face\')" title="'+esc(T.fnIconFace)+'">'+(ccDcFace() ? ccDcImg(ccDcFace(), '★') : '★')+'</button>'+
+      '<label class="fn-ic fn-ic-up'+(f.icon && f.icon.t==='img' ? ' on' : '')+'" title="'+esc(T.fnIconUp)+'">'+(f.icon && f.icon.t==='img' ? ccDcImg(f.icon.d, '+') : '+')+
+        '<input type="file" accept="image/*" hidden onchange="ccFanIconUpload(this)"></label>'+
+      pick.map(id=>'<button type="button" class="fn-ic'+(cur===id ? ' on' : '')+'" onclick="ccFanIconSet(\'skin\',\''+jsq(id)+'\')">'+ccDcImg(ccFnImg(id, true), '·')+'</button>').join('')+
+    '</div>', 'tool');
 }
