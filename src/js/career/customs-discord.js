@@ -1164,7 +1164,45 @@ function careerAdvanceTo(iso){
    Все числа здесь - решение, не замер: данных о том, как про зовут друг друга играть, нет. */
 let CC_CREW_WITH=null;
 const CC_CREW_SIZE=10, CC_CREW_INV_CHANCE=0.35;
-const CC_CREW_REL0={mate:50, friend:35, other:10};
+const CC_CREW_REL0={mate:50, friend:35, guest:20, other:10};
+/* Пригласить на тусовку (его слово 21.11: «и инвайтить на сервер EU scene»): тот же поиск и то же правило, что на
+   своём сервере (ccFanFindPool: регион, рейтинг ниже твоего), до CC_FAN_GUESTS_MAX человек; приглашённый - участник
+   тусовки с отношением «знает тебя» (20): его можно звать поиграть и в дуо, он бывает в войсе и пишет в чат. */
+function ccCrewGuests(){ const c=ccCrew(); c.guests=c.guests||[]; return c.guests; }
+let CC_CREW_FIND_Q='';
+function ccCrewFindPool(){
+  const have=new Set(ccCrewMembers().map(m=>m.k));
+  return ccFanFindPool(true).filter(w=>!have.has(hKey(w.handle)));
+}
+function ccCrewFindRows(q){
+  const T=L(); q=String(q||'').trim().toLowerCase();
+  const list=ccCrewFindPool().filter(w=>!q || String(w.handle).toLowerCase().indexOf(q)>=0).sort((a,b)=>b.ovr-a.ovr).slice(0, CC_FAN_FIND_MAX);
+  if(!list.length) return '<p class="dc-sub">'+esc(T.fnFindNone)+'</p>';
+  const full=ccCrewGuests().length>=CC_FAN_GUESTS_MAX;
+  return list.map(w=>{
+    let f=''; try{ f=w.card ? (photoURL(w.card)||'') : ''; }catch(e){}
+    const fb=String(w.handle).slice(0, 2).toUpperCase();
+    return '<div class="cr-mem st-on"><span class="dc-av">'+(f ? ccDcImg(f, fb) : esc(fb))+'</span>'+
+      '<div class="cr-who"><b>'+esc(ccHandle(w.handle))+' <em>'+Math.round(w.ovr)+'</em></b></div>'+
+      '<div class="cr-btns"><button class="dc-btn sm"'+(full ? ' disabled' : '')+' onclick="ccCrewInvite(\''+jsq(w.handle)+'\')">'+esc(T.fnInviteBtn)+'</button></div></div>';
+  }).join('');
+}
+function ccCrewFind(q){ CC_CREW_FIND_Q=String(q||''); const el=document.getElementById('ccCrewFindList'); if(el) el.innerHTML=ccCrewFindRows(q); }
+function ccCrewInvite(handle){
+  const g=ccCrewGuests(); if(g.length>=CC_FAN_GUESTS_MAX) return;
+  const w=ccCrewFindPool().find(x=>hKey(x.handle)===hKey(handle)); if(!w) return;
+  g.push({handle:w.handle, ovr:Math.round(w.ovr), since:careerToday()});
+  ccCrew().last={day:careerToday(), text:L().fnJoined(ccHandle(w.handle))};
+  careerSave(); careerRenderHub('discord');
+}
+function ccCrewInviteHTML(chan){
+  const T=L(), full=ccCrewGuests().length>=CC_FAN_GUESTS_MAX;
+  return chan(T.fnInviteChan, '<p class="dc-sub">'+esc(T.fnInviteTxt(ccFanMyOvr(), CC_FAN_GUESTS_MAX))+'</p>'+
+    '<div class="dc-compose dc-find"><input id="ccCrewFindIn" type="search" autocomplete="off" value="'+esc(CC_CREW_FIND_Q)+'" '+
+      'placeholder="'+esc(T.fnFindPh)+'" aria-label="'+esc(T.fnFindPh)+'" oninput="ccCrewFind(this.value)"></div>'+
+    (full ? '<div class="dc-why">'+esc(T.fnFull(CC_FAN_GUESTS_MAX))+'</div>' : '')+
+    '<div id="ccCrewFindList" class="fn-find">'+ccCrewFindRows(CC_CREW_FIND_Q)+'</div>', 'tool');
+}
 const CC_CREW_STATUS_W=[['voice',0.25],['game',0.25],['on',0.3],['off',0.2]];
 const CC_CREW_REPLY={r1:6, r2:3, r3:0};
 const CC_CREW_GROUP_SVG='<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="9" cy="8.5" r="3.2"/><path d="M3 19.5c.6-3.3 3-5.2 6-5.2s5.4 1.9 6 5.2"/><circle cx="17" cy="9.5" r="2.5"/><path d="M16.2 14.4c2.6.1 4.3 1.8 4.8 4.6"/></svg>';
@@ -1176,12 +1214,15 @@ function ccCrewMembers(){
   if(me) seen.add(hKey(me));
   const add=(card, handle, ovr, kind)=>{
     const h=handle || (card && card.handle); if(!h) return;
-    const k=hKey(h); if(seen.has(k) || out.length>=CC_CREW_SIZE) return;
+    const k=hKey(h); if(seen.has(k) || out.length>=CC_CREW_SIZE+gs.length) return;
     seen.add(k);
     out.push({handle:h, k:k, card:card||null, ovr:ovr!=null ? ovr : (card ? ccCrewOvr(card) : 70), kind:kind});
   };
+  // Приглашённые на сервер (канал «пригласить», ccCrewInvite) - сверх обычных десяти.
+  const gs=ccCrewGuests();
   try{ careerMates().forEach(m=>{ if(m) add(m, m.handle, null, 'mate'); }); }catch(e){}
   try{ (CAREER.career.friends||[]).forEach(h=>add(ccFriendCard(h), h, null, 'friend')); }catch(e){}
+  gs.forEach(g=>{ let c=null; try{ c=ccFriendCard(g.handle); }catch(e){} add(c, g.handle, g.ovr, 'guest'); });
   try{ careerDmPool().forEach(w=>add(w.card || ccFriendCard(w.handle), w.handle, w.ovr, 'other')); }catch(e){}
   return out;
 }
@@ -1354,7 +1395,8 @@ function ccCrewHTML(chan, msg){
   const last=c.last && c.last.day===today ? '<div class="dc-res">'+esc(c.last.text)+'</div>' : '';
   return chan(T.crGeneral, '<p class="dc-sub">'+esc(T.crIntro)+'</p>'+chatHTML)+
     chan(T.crVoice, voice, 'voice')+
-    chan(T.crMembers+' · '+members.length, last+(members.length ? members.map(row).join('') : '<p class="dc-sub">'+esc(T.crNobody)+'</p>'), 'members');
+    chan(T.crMembers+' · '+members.length, last+(members.length ? members.map(row).join('') : '<p class="dc-sub">'+esc(T.crNobody)+'</p>'), 'members')+
+    ccCrewInviteHTML(chan);
 }
 
 /* ---- Свой фан-сервер (его слово 21.11: «пусть свой сервер можно будет создать, где будут фанаты писать после
@@ -1594,7 +1636,42 @@ function ccFanChatSend(){
   const again=document.getElementById('ccFanChatIn'); if(again){ try{ again.focus({preventScroll:true}); }catch(e){} }
 }
 function ccFanChatKey(e){ if(e.key==='Enter' && !e.shiftKey){ e.preventDefault(); ccFanChatSend(); } }
+/* Люди пишут в #chat сами (его слово 21.11: «чат, чтоб люди туда чего-то писали»): раз в день, когда сервер открыт,
+   в чат приходит пачка сообщений фанатов и приглашённых - про сегодняшний турнир, твой последний результат, предмет
+   из магазина дня, стрим, просто разговоры. Сколько - от фанатов (ccFanVoices) и гостей, 2-7. Пропущенные дни не
+   догоняются: пачка одна, за день, когда открыл. Шаблоны fnAmb* (фанаты) и fnAmbG* (гости). */
+const CC_FAN_AMB_N=12, CC_FAN_AMB_G=4;
+function ccFanChatTick(){
+  const f=ccFans(); if(!f) return;
+  const day=careerToday(); if(f.chatDay===day) return;
+  f.chatDay=day;
+  const T=L(), chat=ccFanChat(), r=careerRng(ccHashStr('fanamb|'+day));
+  let next=null; try{ next=careerNext(); }catch(e){}
+  const ev=next && next.type!=='free' && next.day===day ? (next.type==='cup' ? T.ccCupLive : (next.title||next.label||'')) : '';
+  let shop=null; try{ shop=ccFnShopDay(day); }catch(e){}
+  const it=shop && shop.length ? shop[Math.floor(r()*shop.length)].name : '';
+  const last=(CAREER.career.log||[]).filter(x=>x && x.place).slice(-1)[0];
+  const p=last && last.day && ccDaysBetween(last.day, day)<=7 ? last.place : 0;
+  // Шаблоны, которым нужны турнир/предмет/место, берутся только когда есть что подставить.
+  const need={2:!!ev, 3:!!it, 11:!!p};
+  const pool=[]; for(let i=1;i<=CC_FAN_AMB_N;i++) if(need[i]!==false) pool.push(i);
+  const gs=ccFanGuests();
+  const n=clamp(ccFanVoices()+1+Math.min(2, gs.length), 2, 7);
+  for(let i=0;i<n && pool.length;i++){
+    const guest=gs.length && r()<0.3;
+    if(guest){
+      const g=gs[Math.floor(r()*gs.length)], s=T['fnAmbG'+(1+Math.floor(r()*CC_FAN_AMB_G))];
+      chat.push({nick:g.handle, g:1, t:s(ev, it, CAREER.player.nick||'', p), d:day});
+    } else {
+      const k=pool.splice(Math.floor(r()*pool.length), 1)[0];
+      chat.push({nick:ccFanNick('amb|'+day+'|'+i), t:T['fnAmb'+k](ev, it, CAREER.player.nick||'', p), d:day});
+    }
+  }
+  while(chat.length>CC_FAN_CHAT_KEEP) chat.shift();
+  careerSave();
+}
 function ccFanChatHTML(chan, msg){
+  try{ ccFanChatTick(); }catch(e){}
   const T=L(), chat=ccFanChat();
   const list=chat.length ? chat.map(m=>m.me
       ? msg(CAREER.player.nick, false, '<p>'+esc(m.t)+'</p>')
@@ -1616,9 +1693,10 @@ function ccFanChatHTML(chan, msg){
 const CC_FAN_GUESTS_MAX=20, CC_FAN_FIND_MAX=20, CC_FAN_GUEST_REPLY=0.5;
 function ccFanGuests(){ const f=ccFans(); if(!f) return []; f.guests=f.guests||[]; return f.guests; }
 function ccFanMyOvr(){ const pl=CAREER.player; return Math.round(pl.ovrExact!=null ? pl.ovrExact : pl.ovr); }
-function ccFanFindPool(){
+// anyServer - для тусовки: гости своего фан-сервера там не вычитаются.
+function ccFanFindPool(anyServer){
   let pool=[]; try{ pool=careerDuoSearchPool(true)||[]; }catch(e){}
-  const me=ccFanMyOvr(), inSrv=new Set(ccFanGuests().map(g=>hKey(g.handle)));
+  const me=ccFanMyOvr(), inSrv=new Set(anyServer ? [] : ccFanGuests().map(g=>hKey(g.handle)));
   return pool.filter(w=>w && w.handle && Math.round(w.ovr)<me && !inSrv.has(hKey(w.handle)));
 }
 function ccFanFindRows(q){
