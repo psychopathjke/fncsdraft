@@ -1185,20 +1185,9 @@ function ccCrewFindPool(){
   const have=new Set(ccCrewMembers().map(m=>m.k));
   return ccFanFindPool(true).filter(w=>!have.has(hKey(w.handle)));
 }
-function ccCrewFindRows(q){
-  const T=L(); q=String(q||'').trim().toLowerCase();
-  const list=ccCrewFindPool().filter(w=>!q || String(w.handle).toLowerCase().indexOf(q)>=0).sort((a,b)=>b.ovr-a.ovr).slice(0, CC_FAN_FIND_MAX);
-  if(!list.length) return '<p class="dc-sub">'+esc(T.fnFindNone)+'</p>';
-  const full=ccCrewGuests().length>=CC_FAN_GUESTS_MAX;
-  return list.map(w=>{
-    let f=''; try{ f=w.card ? (photoURL(w.card)||'') : ''; }catch(e){}
-    const fb=String(w.handle).slice(0, 2).toUpperCase();
-    return '<div class="cr-mem st-on"><span class="dc-av">'+(f ? ccDcImg(f, fb) : esc(fb))+'</span>'+
-      '<div class="cr-who"><b>'+esc(ccHandle(w.handle))+' <em>'+Math.round(w.ovr)+'</em></b></div>'+
-      '<div class="cr-btns"><button class="dc-btn sm"'+(full ? ' disabled' : '')+' onclick="ccCrewInvite(\''+jsq(w.handle)+'\')">'+esc(T.fnInviteBtn)+'</button></div></div>';
-  }).join('');
-}
-function ccCrewFind(q){ CC_CREW_FIND_Q=String(q||''); const el=document.getElementById('ccCrewFindList'); if(el) el.innerHTML=ccCrewFindRows(q); }
+function ccCrewFindRows(q){ return ccInvRowsHTML(ccCrewFindPool(), q, 'ccCrewInvite', ccCrewGuests().length>=CC_FAN_GUESTS_MAX); }
+// Имя не ccCrewFind: так зовётся поиск участника по ключу ниже, и второе объявление глушило первое (поиск не фильтровал).
+function ccCrewFindQ(q){ CC_CREW_FIND_Q=String(q||''); const el=document.getElementById('ccCrewFindList'); if(el) el.innerHTML=ccCrewFindRows(q); }
 function ccCrewInvite(handle){
   const g=ccCrewGuests(); if(g.length>=CC_FAN_GUESTS_MAX) return;
   const w=ccCrewFindPool().find(x=>hKey(x.handle)===hKey(handle)); if(!w) return;
@@ -1221,7 +1210,8 @@ function ccCrewInviteHTML(chan){
   const T=L(), full=ccCrewGuests().length>=CC_FAN_GUESTS_MAX;
   return chan(T.fnInviteChan, '<p class="dc-sub">'+esc(T.fnInviteTxt(ccFanMyOvr(), CC_FAN_GUESTS_MAX))+'</p>'+
     '<div class="dc-compose dc-find"><input id="ccCrewFindIn" type="search" autocomplete="off" value="'+esc(CC_CREW_FIND_Q)+'" '+
-      'placeholder="'+esc(T.fnFindPh)+'" aria-label="'+esc(T.fnFindPh)+'" oninput="ccCrewFind(this.value)"></div>'+
+      'placeholder="'+esc(T.fnFindPh)+'" aria-label="'+esc(T.fnFindPh)+'" oninput="ccCrewFindQ(this.value)"></div>'+
+    ccInvCtrlHTML()+
     (full ? '<div class="dc-why">'+esc(T.fnFull(CC_FAN_GUESTS_MAX))+'</div>' : '')+
     '<div id="ccCrewFindList" class="fn-find">'+ccCrewFindRows(CC_CREW_FIND_Q)+'</div>', 'tool');
 }
@@ -1769,29 +1759,51 @@ function ccFanChatHTML(chan, msg){
    заходят сразу; «настройки» - имя сервера и аватарка (скин Fortnite, фото карточки или своя картинка, ужатая как
    фото карьеры ccPhotoShrink). Позванные - в колонке участников и иногда отвечают в #chat своим ником и фото. */
 // Лимиты подняты по его «инвайтить слишком мало людей я могу»: до 100 на сервер, поиск показывает 60.
-const CC_FAN_GUESTS_MAX=100, CC_FAN_FIND_MAX=60, CC_FAN_GUEST_REPLY=0.5;
+// 21.11 позже, его «больше список для инвайта, как для поиска тиммейтов»: до 200 строк, регион и сортировка (ccInvCtrlHTML).
+const CC_FAN_GUESTS_MAX=100, CC_FAN_FIND_MAX=200, CC_FAN_GUEST_REPLY=0.5;
+/* Список приглашений как поиск тиммейтов: регион (все регионы года, как ccDuoFindReg), сортировка «ближе к моему
+   рейтингу» / «по рейтингу», флаг страны и клуб в строке. Правило то же: только рейтинг ниже твоего. */
+let CC_INV_REG='', CC_INV_SORT='near';
+function ccInvPool(){
+  const keep=CC_DUO_REG; let pool=[];
+  CC_DUO_REG=CC_INV_REG||'';
+  try{ pool=careerDuoSearchPool(true)||[]; }catch(e){} finally{ CC_DUO_REG=keep; }
+  return pool;
+}
+function ccInvSet(reg, sort){ if(reg!=null) CC_INV_REG=String(reg); if(sort) CC_INV_SORT=sort; careerRenderHub('discord'); }
+function ccInvCtrlHTML(){
+  const T=L(), own=ccCareerRegion(), cur=CC_INV_REG||own;
+  const regs=(typeof ccYearRegions==='function' ? ccYearRegions() : CC_REGIONS)||CC_REGIONS;
+  return '<div class="inv-ctrl"><div class="inv-regs">'+regs.map(r=>'<button type="button" class="dc-btn ghost sm'+(r===cur ? ' on' : '')+'" onclick="ccInvSet(\''+r+'\')">'+esc(regionName(r))+'</button>').join('')+'</div>'+
+    '<div class="inv-sort">'+[['near', T.ccDuoSortNear], ['ovr', T.ccDuoSortOvr]].map(([k, t])=>'<button type="button" class="dc-btn ghost sm'+(CC_INV_SORT===k ? ' on' : '')+'" onclick="ccInvSet(null,\''+k+'\')">'+esc(t||k)+'</button>').join('')+'</div></div>';
+}
+function ccInvRowsHTML(pool, q, fn, full){
+  const T=L(); q=String(q||'').trim().toLowerCase();
+  const me=ccFanMyOvr();
+  let list=pool.filter(w=>!q || String(w.handle).toLowerCase().indexOf(q)>=0);
+  list.sort(CC_INV_SORT==='ovr' ? (a,b)=>b.ovr-a.ovr : (a,b)=>Math.abs(a.ovr-me)-Math.abs(b.ovr-me) || b.ovr-a.ovr);
+  const total=list.length; list=list.slice(0, CC_FAN_FIND_MAX);
+  if(!list.length) return '<p class="dc-sub">'+esc(T.fnFindNone)+'</p>';
+  return '<p class="dc-sub">'+esc(T.invShown(list.length, total))+'</p>'+list.map(w=>{
+    let f=''; try{ f=w.card ? (photoURL(w.card)||'') : ''; }catch(e){}
+    const fb=String(w.handle).slice(0, 2).toUpperCase();
+    let nat=''; try{ nat=ccDuoNatCode(w)||''; }catch(e){}
+    const sub=[w.role ? (T[w.role]||'') : '', w.club ? esc(w.club) : ''].filter(Boolean).join(' · ');
+    return '<div class="cr-mem st-on"><span class="dc-av">'+(f ? ccDcImg(f, fb) : esc(fb))+'</span>'+
+      '<div class="cr-who"><b>'+(nat ? '<img class="inv-flag" src="flags/w20/'+esc(nat)+'.png" alt="" onerror="this.remove()">' : '')+esc(ccHandle(w.handle))+' <em>'+Math.round(w.ovr)+'</em></b>'+
+        (sub ? '<span>'+sub+'</span>' : '')+'</div>'+
+      '<div class="cr-btns"><button class="dc-btn sm"'+(full ? ' disabled' : '')+' onclick="'+fn+'(\''+jsq(w.handle)+'\')">'+esc(T.fnInviteBtn)+'</button></div></div>';
+  }).join('');
+}
 function ccFanGuests(){ const f=ccFans(); if(!f) return []; f.guests=f.guests||[]; return f.guests; }
 function ccFanMyOvr(){ const pl=CAREER.player; return Math.round(pl.ovrExact!=null ? pl.ovrExact : pl.ovr); }
 // anyServer - для тусовки: гости своего фан-сервера там не вычитаются.
 function ccFanFindPool(anyServer){
-  let pool=[]; try{ pool=careerDuoSearchPool(true)||[]; }catch(e){}
+  const pool=ccInvPool();
   const me=ccFanMyOvr(), inSrv=new Set(anyServer ? [] : ccFanGuests().map(g=>hKey(g.handle)));
   return pool.filter(w=>w && w.handle && Math.round(w.ovr)<me && !inSrv.has(hKey(w.handle)));
 }
-function ccFanFindRows(q){
-  const T=L(); q=String(q||'').trim().toLowerCase();
-  const list=ccFanFindPool().filter(w=>!q || String(w.handle).toLowerCase().indexOf(q)>=0)
-    .sort((a,b)=>b.ovr-a.ovr).slice(0, CC_FAN_FIND_MAX);
-  if(!list.length) return '<p class="dc-sub">'+esc(T.fnFindNone)+'</p>';
-  const full=ccFanGuests().length>=CC_FAN_GUESTS_MAX;
-  return list.map(w=>{
-    let f=''; try{ f=w.card ? (photoURL(w.card)||'') : ''; }catch(e){}
-    const fb=String(w.handle).slice(0, 2).toUpperCase();
-    return '<div class="cr-mem st-on"><span class="dc-av">'+(f ? ccDcImg(f, fb) : esc(fb))+'</span>'+
-      '<div class="cr-who"><b>'+esc(ccHandle(w.handle))+' <em>'+Math.round(w.ovr)+'</em></b></div>'+
-      '<div class="cr-btns"><button class="dc-btn sm"'+(full ? ' disabled' : '')+' onclick="ccFanInvite(\''+jsq(w.handle)+'\')">'+esc(T.fnInviteBtn)+'</button></div></div>';
-  }).join('');
-}
+function ccFanFindRows(q){ return ccInvRowsHTML(ccFanFindPool(), q, 'ccFanInvite', ccFanGuests().length>=CC_FAN_GUESTS_MAX); }
 // Поиск перерисовывает только список: поле ввода остаётся в фокусе.
 function ccFanFind(q){ CC_FAN_FIND_Q=String(q||''); const el=document.getElementById('ccFanFindList'); if(el) el.innerHTML=ccFanFindRows(q); }
 let CC_FAN_FIND_Q='';
@@ -1817,6 +1829,7 @@ function ccFanInviteHTML(chan){
   return chan(T.fnInviteChan, '<p class="dc-sub">'+esc(T.fnInviteTxt(ccFanMyOvr(), CC_FAN_GUESTS_MAX))+'</p>'+
     '<div class="dc-compose dc-find"><input id="ccFanFindIn" type="search" autocomplete="off" value="'+esc(CC_FAN_FIND_Q)+'" '+
       'placeholder="'+esc(T.fnFindPh)+'" aria-label="'+esc(T.fnFindPh)+'" oninput="ccFanFind(this.value)"></div>'+
+    ccInvCtrlHTML()+
     (full ? '<div class="dc-why">'+esc(T.fnFull(CC_FAN_GUESTS_MAX))+'</div>' : '')+
     '<div id="ccFanFindList" class="fn-find">'+ccFanFindRows(CC_FAN_FIND_Q)+'</div>', 'tool');
 }

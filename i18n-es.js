@@ -4749,3 +4749,6 @@ Object.assign(I18N.es=I18N.es||{},
 /* Дозаливка «es» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
 Object.assign(I18N.es=I18N.es||{},
 ({crDlg1:(ev,w,wev,min)=>["¿scrims a las 20?","me apunto","vale, paso el código"], crDlg2:(ev,w,wev,min)=>[w+" ganó "+wev+" otra vez","ahora mismo es mejor","increíble"], crDlg3:(ev,w,wev,min)=>["esta meta está rota","skill issue","jaja, justo"], crDlg4:(ev,w,wev,min)=>["busco dúo para "+ev+", "+min+"+","¿y yo?","mira los md"], crDlg5:(ev,w,wev,min)=>["¿alguien ranked?","grind de unreal hoy","manda la party"], crDlg6:(ev,w,wev,min)=>["¿box fight 1v1?","al 5","vamos"], crRS1:"me apunto", crRS2:"después de mi cup", crRS3:"pasa el código", crRQ1:"sí", crRQ2:"nah", crRQ3:"depende", crRQ4:"buena pregunta", crRH1:"VAMOS", crRH2:"W", crRH3:"enorme", crRG1:"real", crRG2:"jaja", crRG3:"literal", crRG4:"verdad", crRG5:"igual", crRM1:"¿qué?", crRM2:"buenas", crRM3:"aquí", crS1:"gg a todos", crS2:"¿alguien para scrims?", crS3:"¿quién quiere jugar ranked?", crS4:ev=>"¿quién juega "+ev+" hoy?", crS5:"esta temporada es muy divertida"}));
+/* Дозаливка «es» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
+Object.assign(I18N.es=I18N.es||{},
+({invShown:(n,t)=>"Mostrando "+n+" de "+t+" por debajo de tu rating"}));

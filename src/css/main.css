@@ -6722,6 +6722,11 @@
   .dc-compose:focus-within{box-shadow:0 0 0 2px #5865f2;}
   /* Свой сервер: поиск для инвайтов, настройки (имя, аватарка). */
   .dc-find{margin:8px 0 10px;}
+  /* Приглашения как поиск тиммейтов (ccInvCtrlHTML): регионы и сортировка кнопками, флаг у ника. */
+  .inv-ctrl{display:flex;flex-wrap:wrap;gap:8px 14px;margin:0 0 8px;}
+  .inv-regs,.inv-sort{display:flex;flex-wrap:wrap;gap:4px;}
+  .inv-ctrl .dc-btn.on{background:#5865f2;color:#fff;}
+  .inv-flag{width:16px;height:11px;margin-right:6px;vertical-align:-1px;border-radius:2px;}
   /* Участники компактно (ccMemToggle/ccMemGroups): строка-кнопка, действия раскрываются по нажатию, группы
      «в сети» / «не в сети» (вторая свёрнута). */
   /* Окно Discord по высоте экрана: каналы, сообщения и участники листаются внутри своих колонок, страница стоит
