@@ -6257,19 +6257,36 @@
     text-transform:uppercase;line-height:1.25;}
   .cc-aw .cc-aw-r.off .cc-aw-ev{background:rgba(255,255,255,.08);color:#cfd8ee;}
   /* Внутри карточки вечера, сразу под плашкой «формат · дивизион»: одна полоса плиток, лишние регионы листаются
-     вбок, чтобы кнопка «Играть» не уезжала вниз (его «не хочу скролить вниз, чтоб сразу всё видел»). */
-  .ch-art-in .cc-aw{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 10px;width:100%;align-self:stretch;box-sizing:border-box;
-    padding:8px;text-align:left;background:rgba(8,14,40,.78);}
-  .ch-art-in .cc-aw .cc-aw-h{flex:0 0 100%;}
-  .ch-art-in .cc-aw .cc-aw-strip{display:flex;gap:6px;width:100%;overflow-x:auto;scroll-snap-type:x proximity;
-    -webkit-overflow-scrolling:touch;scrollbar-width:thin;}
-  .ch-art-in .cc-aw .cc-aw-r, .ch-art-in .cc-aw .cc-aw-h+.cc-aw-r{flex:0 0 148px;flex-direction:column;align-items:stretch;
-    gap:2px;margin:0;padding:6px 8px;scroll-snap-align:start;}
-  .ch-art-in .cc-aw .cc-aw-t{display:inline;margin-left:5px;}
-  .ch-art-in .cc-aw .cc-aw-n b{font-size:12.5px;}
-  .ch-art-in .cc-aw .cc-aw-ev{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:9.5px;}
-  .ch-art-in .cc-aw .cc-aw-go{width:100%;min-width:0;margin-top:3px;padding:6px 4px;}
-  .ch-art-in .cc-aw .cc-aw-go:disabled{padding:2px 0 0;text-align:left;}
+     вбок, чтобы кнопка «Играть» не уезжала вниз (его «не хочу скролить вниз, чтоб сразу всё видел»).
+     Вид — как у самой карточки турнира (его «дизайн не в стиле турнира»): без тёмной коробки, подпись как
+     «Who plays tonight», плитки — светлое стекло плашки «Solo · Division 1», кнопка — контуром, как «Не играть». */
+  #screen-career-hub .ch-art-in .cc-aw{display:block;margin:0 0 12px;width:100%;align-self:stretch;box-sizing:border-box;
+    padding:0;border:0;background:none;text-align:left;}
+  #screen-career-hub .ch-art-in .cc-aw-h{display:flex;justify-content:center;align-items:baseline;gap:8px;margin:0 0 6px;}
+  #screen-career-hub .ch-art-in .cc-aw-h b{font-family:inherit;font-size:10px;font-weight:800;letter-spacing:.12em;
+    text-transform:uppercase;color:rgba(234,241,255,.75);}
+  #screen-career-hub .ch-art-in .cc-aw-h small{margin:0;font-size:10px;font-weight:800;letter-spacing:.06em;
+    text-transform:uppercase;color:#ffdd00;}
+  #screen-career-hub .ch-art-in .cc-aw-strip{display:flex;gap:6px;width:100%;overflow-x:auto;scroll-snap-type:x proximity;
+    -webkit-overflow-scrolling:touch;scrollbar-width:none;}
+  #screen-career-hub .ch-art-in .cc-aw-strip::-webkit-scrollbar{display:none;}
+  #screen-career-hub .ch-art-in .cc-aw .cc-aw-r{flex:0 0 150px;display:flex;flex-direction:column;align-items:stretch;gap:3px;
+    margin:0;padding:8px 10px;border:0;border-radius:5px;background:rgba(255,255,255,.16);scroll-snap-align:start;opacity:1;}
+  #screen-career-hub .ch-art-in .cc-aw .cc-aw-r:only-child{flex:1 1 auto;}
+  #screen-career-hub .ch-art-in .cc-aw .cc-aw-r.off{background:rgba(255,255,255,.09);}
+  #screen-career-hub .ch-art-in .cc-aw .cc-aw-n b{font-family:var(--font-display);font-style:italic;font-weight:900;
+    font-size:14px;letter-spacing:.02em;text-transform:uppercase;color:#fff;}
+  #screen-career-hub .ch-art-in .cc-aw .cc-aw-r.off .cc-aw-n b{color:#dfe7ff;}
+  #screen-career-hub .ch-art-in .cc-aw .cc-aw-t{display:inline;margin-left:6px;font-style:normal;color:#ffdd00;}
+  #screen-career-hub .ch-art-in .cc-aw .cc-aw-ev{margin:0;padding:0;background:none;color:#eaf1ff;font-size:10px;
+    font-weight:900;letter-spacing:.05em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  #screen-career-hub .ch-art-in .cc-aw .cc-aw-n>span{font-size:10.5px;color:rgba(234,241,255,.7);}
+  #screen-career-hub .ch-art-in .cc-aw .cc-aw-go{width:100%;min-width:0;margin-top:4px;padding:7px 4px;border:0;border-radius:5px;
+    background:rgba(255,255,255,.08);box-shadow:inset 0 0 0 2px rgba(180,200,255,.4);color:#fff;font-size:11px;font-weight:900;
+    letter-spacing:.06em;text-transform:uppercase;}
+  #screen-career-hub .ch-art-in .cc-aw .cc-aw-go:not(:disabled):hover{background:rgba(255,255,255,.2);}
+  #screen-career-hub .ch-art-in .cc-aw .cc-aw-go:disabled{box-shadow:none;background:none;padding:2px 0 0;color:rgba(234,241,255,.85);
+    font-size:10px;letter-spacing:0;text-transform:none;text-align:left;}
   @keyframes ccAwayLive{0%{box-shadow:0 0 0 0 rgba(255,59,59,.6);}70%{box-shadow:0 0 0 7px rgba(255,59,59,0);}100%{box-shadow:0 0 0 0 rgba(255,59,59,0);}}
   @media(prefers-reduced-motion:reduce){ .cc-aw-live{animation:none;} }
   .cc-valt:focus-visible{outline:2px solid #00ffd0;outline-offset:2px;}
@@ -123236,7 +123253,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='e2e19fe1';
+const CC_BUILD='f642d6b4';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
