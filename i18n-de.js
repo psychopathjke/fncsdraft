@@ -4731,3 +4731,6 @@ Object.assign(I18N.de=I18N.de||{},
 /* Дозаливка «de» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
 Object.assign(I18N.de=I18N.de||{},
 ({fnAmb1:(ev,it,n,p)=>'moin chat', fnAmb2:(ev,it,n,p)=>'wer schaut heute '+ev+'?', fnAmb3:(ev,it,n,p)=>'hab '+it+' im Shop gesehen, lohnt sich das?', fnAmb4:(ev,it,n,p)=>'@'+n+' wann ist der nächste Stream?', fnAmb5:(ev,it,n,p)=>'diese Season macht so Spaß', fnAmb6:(ev,it,n,p)=>'wer hat Bock auf 1v1 Buildfights?', fnAmb7:(ev,it,n,p)=>'heute mein erster Sieg!!', fnAmb8:(ev,it,n,p)=>'welche Binds nutzt ihr', fnAmb9:(ev,it,n,p)=>'ehrlich '+n+' hat die besten Endgames', fnAmb10:(ev,it,n,p)=>'Zone Wars jemand?', fnAmb11:(ev,it,n,p)=>'#'+p+' letztes Mal, weiter gehts', fnAmb12:(ev,it,n,p)=>'bin kurz essen', fnAmbG1:(ev,it,n,p)=>'später Scrims, wer ist dabei?', fnAmbG2:(ev,it,n,p)=>'gg an alle für gestern', fnAmbG3:(ev,it,n,p)=>'wer grindet heute', fnAmbG4:(ev,it,n,p)=>'die letzte Zone war hart'}));
+/* Дозаливка «de» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
+Object.assign(I18N.de=I18N.de||{},
+({dcKick:"Kicken", dcKicked:h=>h+" wurde vom Server gekickt"}));

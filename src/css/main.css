@@ -6682,7 +6682,7 @@
   .dc-memb .dc-chan-h{margin:0 8px 6px;font-size:12px;font-weight:700;letter-spacing:.02em;text-transform:uppercase;color:#949ba4;}
   .dc-memb .cr-mem{flex-wrap:wrap;padding:6px 8px;border-radius:4px;border-top:0;}
   .dc-memb .cr-mem:hover{background:#35373c;}
-  .dc-memb .cr-btns{flex:1 0 100%;flex-wrap:nowrap;justify-content:flex-start;gap:4px;padding-left:44px;}
+  .dc-memb .cr-btns{flex:1 0 100%;flex-wrap:wrap;justify-content:flex-start;gap:4px;padding-left:44px;}
   .dc-memb .cr-btns .dc-btn{padding:5px 8px;font-size:11px;white-space:nowrap;}
   @media(min-width:1001px){ .dc-cat-m,.dc-ch.k-members,.dc-memb-h{display:none;} }
   .dc-memb-h{margin:-14px -8px 10px;}
@@ -6695,6 +6695,7 @@
   .dc-compose:focus-within{box-shadow:0 0 0 2px #5865f2;}
   /* Свой сервер: поиск для инвайтов, настройки (имя, аватарка). */
   .dc-find{margin:8px 0 10px;}
+  .dc-btn.dc-kick{color:#f38688;} .dc-btn.dc-kick:hover{background:#da373c;color:#fff;}
   .fn-find{max-height:52vh;overflow-y:auto;}
   .fn-fans{margin-top:8px !important;}
   .fn-set{display:flex;align-items:center;gap:12px;}

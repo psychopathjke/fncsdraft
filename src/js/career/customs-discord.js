@@ -1192,7 +1192,18 @@ function ccCrewInvite(handle){
   const g=ccCrewGuests(); if(g.length>=CC_FAN_GUESTS_MAX) return;
   const w=ccCrewFindPool().find(x=>hKey(x.handle)===hKey(handle)); if(!w) return;
   g.push({handle:w.handle, ovr:Math.round(w.ovr), since:careerToday()});
-  ccCrew().last={day:careerToday(), text:L().fnJoined(ccHandle(w.handle))};
+  const c=ccCrew(); c.kicked=(c.kicked||[]).filter(k=>k!==hKey(w.handle));
+  c.last={day:careerToday(), text:L().fnJoined(ccHandle(w.handle))};
+  careerSave(); careerRenderHub('discord');
+}
+// Кикнуть с тусовки (его слово 21.11: «и дать возможность кикать»): любого, кроме своего состава.
+function ccCrewKick(k){
+  const m=ccCrewFind(k); if(!m || m.kind==='mate') return;
+  const c=ccCrew();
+  c.guests=ccCrewGuests().filter(g=>hKey(g.handle)!==m.k);
+  if(m.kind!=='guest'){ c.kicked=c.kicked||[]; if(c.kicked.indexOf(m.k)<0) c.kicked.push(m.k); }
+  if(c.voice && c.voice.inviter===m.k) c.voice.inviter=null;
+  c.last={day:careerToday(), text:L().dcKicked(ccHandle(m.handle))};
   careerSave(); careerRenderHub('discord');
 }
 function ccCrewInviteHTML(chan){
@@ -1214,13 +1225,15 @@ function ccCrewMembers(){
   if(me) seen.add(hKey(me));
   const add=(card, handle, ovr, kind)=>{
     const h=handle || (card && card.handle); if(!h) return;
-    const k=hKey(h); if(seen.has(k) || out.length>=CC_CREW_SIZE+gs.length) return;
+    const k=hKey(h); if(seen.has(k) || kicked.has(k) || out.length>=CC_CREW_SIZE+gs.length) return;
     seen.add(k);
     out.push({handle:h, k:k, card:card||null, ovr:ovr!=null ? ovr : (card ? ccCrewOvr(card) : 70), kind:kind});
   };
   // Приглашённые на сервер (канал «пригласить», ccCrewInvite) - сверх обычных десяти.
   const gs=ccCrewGuests();
-  try{ careerMates().forEach(m=>{ if(m) add(m, m.handle, null, 'mate'); }); }catch(e){}
+  // Кикнутые (ccCrewKick) на сервер не возвращаются, пока их не позовут снова через поиск. Состав кикнуть нельзя.
+  const kicked=new Set(ccCrew().kicked||[]);
+  try{ careerMates().forEach(m=>{ if(m){ kicked.delete(hKey(m)); add(m, m.handle, null, 'mate'); } }); }catch(e){}
   try{ (CAREER.career.friends||[]).forEach(h=>add(ccFriendCard(h), h, null, 'friend')); }catch(e){}
   gs.forEach(g=>{ let c=null; try{ c=ccFriendCard(g.handle); }catch(e){} add(c, g.handle, g.ovr, 'guest'); });
   try{ careerDmPool().forEach(w=>add(w.card || ccFriendCard(w.handle), w.handle, w.ovr, 'other')); }catch(e){}
@@ -1370,6 +1383,7 @@ function ccCrewHTML(chan, msg){
         '<button class="dc-btn sm"'+(why ? ' disabled' : '')+' onclick="ccCrewPlay(\''+jsq(m.k)+'\')">'+
           esc(invited ? T.crAccept : T.crPlay)+' <em>'+ccActById('crew').energy+T.ccEnergyMark+'</em></button>'+
         (duoOk ? '<button class="dc-btn ghost sm" onclick="ccCrewDuo(\''+jsq(m.k)+'\')">'+esc(T[ccSquadKey('dmAskBtn')]||T.crDuo)+'</button>' : '')+
+        (m.kind!=='mate' ? '<button class="dc-btn ghost sm dc-kick" onclick="ccCrewKick(\''+jsq(m.k)+'\')" aria-label="'+esc(T.dcKick+' '+ccHandle(m.handle))+'">'+esc(T.dcKick)+'</button>' : '')+
       '</div></div>';
   };
   const chat=ccCrewChat(members);
@@ -1728,6 +1742,7 @@ function ccFanInvite(handle){
 function ccFanKick(handle){
   const f=ccFans(); if(!f) return;
   f.guests=ccFanGuests().filter(g=>hKey(g.handle)!==hKey(handle));
+  f.last={day:careerToday(), text:L().dcKicked(ccHandle(handle))};
   careerSave(); careerRenderHub('discord');
 }
 function ccFanGuestFace(g){ try{ const c=ccFriendCard(g.handle); return c ? (photoURL(c)||'') : ''; }catch(e){ return ''; } }
@@ -1745,7 +1760,7 @@ function ccFanMembersHTML(chan){
   const last=f.last && f.last.day===careerToday() ? '<div class="dc-res">'+esc(f.last.text)+'</div>' : '';
   const rows=g.map(x=>'<div class="cr-mem st-on"><span class="dc-av">'+ccFanGuestAv(x)+'<i class="cr-dot" aria-hidden="true"></i></span>'+
     '<div class="cr-who"><b>'+esc(ccHandle(x.handle))+' <em>'+x.ovr+'</em></b><span>'+esc(T.fnGuest)+'</span></div>'+
-    '<div class="cr-btns"><button class="dc-btn ghost sm" onclick="ccFanKick(\''+jsq(x.handle)+'\')">'+esc(T.fnKick)+'</button></div></div>').join('');
+    '<div class="cr-btns"><button class="dc-btn ghost sm" onclick="ccFanKick(\''+jsq(x.handle)+'\')">'+esc(T.dcKick)+'</button></div></div>').join('');
   return chan(T.crMembers+' · '+(g.length+ccFanMembers()), last+rows+
     '<p class="dc-sub fn-fans">'+esc(T.fnFansN(ccNum(ccFanMembers())))+'</p>', 'members');
 }
