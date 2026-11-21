@@ -1201,7 +1201,8 @@ function ccTabsSide(){
   if(!t || typeof CAREER==='undefined' || !CAREER || !CAREER.career) return;
   let s=t.querySelector('.ch-tabs-side');
   if(!s){ s=document.createElement('div'); s.className='ch-tabs-side'; t.appendChild(s); }
-  let note=''; try{ note=careerNoteBarHTML(); }catch(e){}
+  // Справа - кнопки медиа (Notion «20.11»: «вместо красного твич ютуб дискорд»); папки входящих - во вкладке соцсети.
+  let note=''; try{ note=ccMediaQuickHTML(); }catch(e){}
   // Кошелёк здесь снят (Notion «20.10»: «одна и та же информация» — баланс и V-Bucks уже в верхней панели, там же выплаты).
   s.innerHTML=(note ? '<div class="cc-lb-note">'+note+'</div>' : '');
 }
@@ -1696,7 +1697,9 @@ function careerRenderHubBody(tab){
   }
   if(CH_TAB==='shop'){ body.innerHTML=careerShopHTML(); ccPaintMoveMap(); return; }
   // Медиа в цветах своих сетей (28.10, его «соцсети в цвете X, стримы в цвете твич, youtube в цветах ютуб»).
-  if(CH_TAB==='social'){ body.innerHTML=ccSubTabsHTML('media')+'<div class="cc-media cc-media-x">'+careerSocialHTML()+'</div>'; return; }
+  // Папки входящих (клубы, игроки, зрители, хейтеры, лента) - наверху соцсети: из полосы вкладок их сменили кнопки медиа.
+  if(CH_TAB==='social'){ let nb=''; try{ nb=careerNoteBarHTML(); }catch(e){}
+    body.innerHTML=ccSubTabsHTML('media')+(nb ? '<div class="cc-lb-note cc-social-note">'+nb+'</div>' : '')+'<div class="cc-media cc-media-x">'+careerSocialHTML()+'</div>'; return; }
   if(CH_TAB==='youtube'){ body.innerHTML=ccSubTabsHTML('media')+'<div class="cc-media cc-media-yt">'+careerYtHTML()+'</div>'; return; }
   if(CH_TAB==='discord'){ body.innerHTML=ccSubTabsHTML('media')+'<div class="cc-media cc-media-dc">'+ccDiscordHTML()+'</div>'; try{ ccDcLayout(body); }catch(e){ console.error(e); } return; }
   /* The career itself, on its own screen.
@@ -2497,11 +2500,15 @@ function careerCentreHTML(card, a){
       <!-- The profile leads the centre and the tournament card sits with the
            career, his call, 18 August: the two swapped places. -->
       <!-- Как на проде: профиль, под ним новости. Цели и развитие — во вкладке «Тренировка». -->
+      ${/* Выезды на широком экране - справа, над составами (Notion «20.11», его «нет кнопок, надо скроллить, игрок может
+           не понять»): слева они сдвигали карточку вечера, и «Играть» уходила за край. На узком экране этот блок скрыт,
+           а выезд стоит в карточке вечера, как он просил раньше («не хочу скролить вниз»). */
+        '<div class="cc-aw-sidebox">'+ccAwayLateHTML()+(cr.seasonOver ? '' : ccAwayHTML())+'</div>'}
       ${(typeof ccPressHTML==='function') ? ccPressHTML() : ''}
       ${/* Справа — только составы (27.10, «лобби как в Fortnite»): витрина магазина снята, магазин — своей вкладкой;
            сборная — за три недели до своего этапа (ccRostersStripHTML(true)). Пресс-конференция остаётся: это вопрос. */
         careerProfileTileHTML(true)}`;
-  return ccLobbyHTML(card, btn, next, nextWhen, strip, {bar:lbBar, play:lbPlay, side:lbSide, note:careerNoteBarHTML()});
+  return ccLobbyHTML(card, btn, next, nextWhen, strip, {bar:lbBar, play:lbPlay, side:lbSide, note:ccMediaQuickHTML()});
 }
 
 /* The coach is the player's own, not the duo's — he works with you, and your

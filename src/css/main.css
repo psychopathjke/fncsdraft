@@ -4600,6 +4600,14 @@
   #screen-career-hub .cc-lb-playbox .ch-art-in{padding:12px 14px 14px;}
   #screen-career-hub .cc-lb-playbox .ch-art-in h3{font-size:22px;}
   .cc-lb-playcol > *{margin-bottom:8px;}
+  /* Выезды: на широком экране - правая колонка (.cc-aw-sidebox), в левой и в карточке вечера скрыты; на узком -
+     наоборот (Notion «20.11»: «нет кнопок, надо скроллить»). */
+  @media (min-width:701px){
+    #screen-career-hub .cc-lb-playcol > .cc-aw,#screen-career-hub .cc-lb-playcol .ch-art-in .cc-aw{display:none !important;}
+    .cc-aw-sidebox .cc-aw{grid-template-columns:repeat(2,minmax(0,1fr));margin:0 0 6px;}
+    .cc-aw-sidebox:empty{display:none;}
+  }
+  @media (max-width:700px){ .cc-aw-sidebox{display:none !important;} }
   .cc-lb-playcol > :empty{display:none;}
   .cc-lb-stack > *{flex:none;}
   #screen-career-hub .cc-lb-stack .ch-tile,#screen-career-hub .cc-lb-stack .ch-news,#screen-career-hub .cc-lb-left .ch-tile{margin:0;border-radius:12px;}
@@ -5209,6 +5217,25 @@
     #screen-career-hub .ch-tabs-side .cc-nb{width:auto;padding:0 10px;gap:6px;}
     #screen-career-hub .ch-tabs-side .cc-nb-l{display:inline;font-size:11px;font-weight:800;letter-spacing:.03em;text-transform:uppercase;white-space:nowrap;}
   }
+  /* Папки входящих наверху соцсети - с подписями, рядом (Notion «20.11»). */
+  .cc-social-note{margin:0 0 10px;}
+  .cc-social-note .cc-notebar{display:flex;flex-wrap:wrap;gap:6px;}
+  .cc-social-note .cc-nb{width:auto;padding:0 10px;gap:6px;}
+  .cc-social-note .cc-nb-l{display:inline;font-size:11px;font-weight:800;letter-spacing:.03em;text-transform:uppercase;white-space:nowrap;}
+  /* Кнопки медиа в полосе вкладок (ccMediaQuickHTML): значок в цвете площадки, подпись с 1100px, число непрочитанного. */
+  .cc-mq-row{display:flex;gap:6px;align-items:center;}
+  .cc-mq{position:relative;display:inline-flex;align-items:center;gap:6px;height:30px;padding:0 9px;border-radius:8px;
+    border:1px solid #24314e;background:#131c30;color:#c6d5f0;font-family:inherit;font-size:11px;font-weight:800;
+    letter-spacing:.03em;text-transform:uppercase;cursor:pointer;white-space:nowrap;}
+  .cc-mq svg{width:16px;height:16px;flex:0 0 16px;}
+  .cc-mq span{display:none;}
+  @media (min-width:1100px){ .cc-mq span{display:inline;} }
+  .cc-mq:hover{border-color:#3a4c78;color:#fff;}
+  .cc-mq.on{border-color:#5a6ea8;background:#1d2a48;color:#fff;}
+  .cc-mq-social svg{color:#fff;} .cc-mq-streams svg{color:#a970ff;} .cc-mq-youtube svg{color:#ff3d3d;} .cc-mq-discord svg{color:#8b95ff;}
+  .cc-mq:focus-visible{outline:2px solid #ffdd00;outline-offset:2px;}
+  .cc-mq i{position:absolute;top:-5px;right:-5px;min-width:15px;height:15px;padding:0 3px;border-radius:999px;background:#f7194a;color:#fff;
+    font-style:normal;font-size:9.5px;font-weight:900;line-height:15px;text-align:center;box-shadow:0 0 0 2px #0e1626;}
   .ch-bell-pop .cc-nb{width:auto;padding:0 10px;gap:6px;}
   .ch-bell-pop .cc-nb-l{display:inline;font-size:11px;font-weight:800;white-space:nowrap;}
   .cc-nb.on{color:#e6edfb;border-color:#31456f;background:#18233c;}

@@ -6222,3 +6222,21 @@ function careerFmtSeatDms(fromISO, toISO){
     });
   }
 }
+
+/* Кнопки медиа справа в полосе вкладок хаба (Notion «20.11», его «сюда медиа добавить, а эти вкладки в другое место,
+   вместо красного твич ютуб дискорд»): соцсеть с числом непрочитанного, Twitch, YouTube, Discord - переход сразу в
+   свою вкладку. Папки входящих (клубы, игроки, зрители, хейтеры, лента) переехали наверх вкладки соцсети. */
+const CC_MQ_ICONS={
+  social:'<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M17.8 3h3.1l-6.8 7.8 8 10.2h-6.3l-4.9-6.4L5.3 21H2.2l7.3-8.3L1.9 3h6.4l4.4 5.9L17.8 3Zm-1.1 16.2h1.7L7.4 4.7H5.6l11.1 14.5Z"/></svg>',
+  streams:'<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M4.3 2 3 5.4v13.5h4.6V21h2.6l2.4-2.1h3.7l5-4.9V2H4.3Zm15.2 11.2-2.9 2.8H12l-2.4 2.1V16H5.8V3.8h13.7v9.4ZM16 7.1h-1.8v5.1H16V7.1Zm-4.9 0H9.3v5.1h1.8V7.1Z"/></svg>',
+  youtube:'<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M23 7.2a3 3 0 0 0-2.1-2.1C19 4.6 12 4.6 12 4.6s-7 0-8.9.5A3 3 0 0 0 1 7.2 31 31 0 0 0 .5 12a31 31 0 0 0 .5 4.8 3 3 0 0 0 2.1 2.1c1.9.5 8.9.5 8.9.5s7 0 8.9-.5a3 3 0 0 0 2.1-2.1 31 31 0 0 0 .5-4.8 31 31 0 0 0-.5-4.8ZM9.8 15.1V8.9l5.8 3.1-5.8 3.1Z"/></svg>',
+  discord:'<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M19.6 5.3A17 17 0 0 0 15.4 4l-.5 1a15.7 15.7 0 0 0-5.8 0L8.6 4a17 17 0 0 0-4.2 1.3C1.7 9.3 1 13.2 1.3 17a17 17 0 0 0 5.2 2.6l1.1-1.8a11 11 0 0 1-1.7-.8l.4-.3a12.2 12.2 0 0 0 11.4 0l.4.3c-.6.3-1.1.6-1.7.8l1.1 1.8a17 17 0 0 0 5.2-2.6c.4-4.4-.7-8.3-3.1-11.7ZM8.7 14.7c-1 0-1.9-1-1.9-2.1s.8-2.1 1.9-2.1 1.9 1 1.9 2.1-.8 2.1-1.9 2.1Zm6.6 0c-1 0-1.9-1-1.9-2.1s.8-2.1 1.9-2.1 1.9 1 1.9 2.1-.8 2.1-1.9 2.1Z"/></svg>'
+};
+function ccMediaQuickHTML(){
+  const T=L();
+  let n=0; try{ n=careerDms().filter(t=>t.unread).length+careerNewsNew().length; }catch(e){}
+  const tab=typeof CH_TAB!=='undefined' ? CH_TAB : '';
+  const item=(k, label, badge)=>'<button type="button" class="cc-mq cc-mq-'+k+(tab===k ? ' on' : '')+'" onclick="careerTab(\''+k+'\')" title="'+esc(label)+'" aria-label="'+esc(label)+(badge ? ' ('+badge+')' : '')+'">'+
+    CC_MQ_ICONS[k]+'<span>'+esc(label)+'</span>'+(badge ? '<i>'+(badge>99 ? '99+' : badge)+'</i>' : '')+'</button>';
+  return '<div class="cc-mq-row">'+item('social', T.chTabSocial, n)+item('streams', 'Twitch', 0)+item('youtube', 'YouTube', 0)+item('discord', 'Discord', 0)+'</div>';
+}

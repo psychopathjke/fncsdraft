@@ -1470,7 +1470,7 @@ function ccCrewHTML(chan, msg){
   };
   const last=c.last && c.last.day===today ? '<div class="dc-res">'+esc(c.last.text)+'</div>' : '';
   let voices=''; for(let i=0;i<CC_CREW_VC;i++) voices+=chan(T['crVc'+(i+1)], voiceOf(i), 'voice');
-  return chan(T.crGeneral, '<p class="dc-sub">'+esc(T.crIntro)+'</p>'+chatHTML)+
+  return chan(T.crGeneral, '<p class="dc-sub">'+esc(T.crIntro)+'</p>'+chatHTML+ccCrewChatBoxHTML(msg, members))+
     ccCrewResultsHTML(chan, msg, members)+ccCrewLfgHTML(chan, msg, members)+
     voices+
     chan(T.crMembers+' · '+members.length, last+(members.length ? ccMemGroups(members, row, m=>ccCrewStatus(m)!=='off') : '<p class="dc-sub">'+esc(T.crNobody)+'</p>'), 'members')+
@@ -2048,4 +2048,91 @@ function ccCrewEventBtns(m, why){
   return '<span class="cr-modes-l">'+esc(T.crCallTo)+':</span>'+
     cups.map((cu, i)=>'<button class="dc-btn ghost sm"'+(off ? ' disabled' : '')+' onclick="ccCrewCup(\''+jsq(m.k)+'\','+i+')">'+esc((cu.ev.name||'')+' · '+ccDayLabel(cu.day))+'</button>').join('')+
     regs.map(r=>'<button class="dc-btn ghost sm"'+(off ? ' disabled' : '')+' onclick="ccCrewAway(\''+jsq(m.k)+'\',\''+r+'\')">'+esc(T.ccCupLive+' · '+regionName(r))+'</button>').join('');
+}
+
+/* ---- Чат тусовки: диалоги и свои сообщения (его слово 21.11: «диалоги в чат добавить бы и выбор для отправки
+   сообщения») ------------------------------------------------------------------------------------------------
+   Лента #general хранится (cr.crew.chat, последние CC_CREW_CHAT_KEEP). Раз в день, когда открыт сервер, в неё
+   приходят 1-2 коротких разговора участников по три реплики (ccCrewChatTick): договориться о скримах, спор о мете,
+   ищу дуо, кто выиграл турнир (лента ccNewsWorldWon). Свои сообщения - полем ввода или быстрыми фразами (выбор);
+   отвечают 1-2 человека по смыслу: скримы и ранкед, вопрос, хайп, остальное; упомянул @ника - отвечает он.
+   На игру не влияет, кроме +1 к отношению у ответивших (раз в день). Текст игрока выводится только через esc(). */
+const CC_CREW_CHAT_KEEP=40, CC_CREW_DLG=6;
+function ccCrewChatLog(){ const c=ccCrew(); c.chat=c.chat||[]; return c.chat; }
+function ccCrewChatTick(members){
+  const c=ccCrew(), day=careerToday(); if(c.chatDay===day) return;
+  c.chatDay=day;
+  const T=L(), on=members.filter(m=>ccCrewStatus(m)!=='off'); if(on.length<2) return;
+  const r=careerRng(ccHashStr('crewdlg|'+day)), log=ccCrewChatLog();
+  let next=null; try{ next=careerNext(); }catch(e){}
+  const ev=next && next.type!=='free' ? (next.type==='cup' ? T.ccCupLive : (next.title||next.label||'')) : '';
+  const won=(CAREER.career.news||[]).find(x=>x && x.k==='ccNewsWorldWon' && x.day && ccDaysBetween(x.day, day)<=3);
+  const w=won ? String((won.a||[])[1]||'').replace(/<[^>]+>/g, '') : '', wev=won ? String((won.a||[])[0]||'') : '';
+  const pool=[]; for(let i=1;i<=CC_CREW_DLG;i++){ if(i===2 && !w) continue; if(i===4 && !ev) continue; pool.push(i); }
+  const n=Math.min(pool.length, 1+(r()<0.6 ? 1 : 0));
+  for(let d=0; d<n; d++){
+    const id=pool.splice(Math.floor(r()*pool.length), 1)[0];
+    const a=on[Math.floor(r()*on.length)]; let b=on[Math.floor(r()*on.length)]; if(b===a) b=on[(on.indexOf(a)+1)%on.length];
+    const lines=T['crDlg'+id](ev, w, wev, Math.max(40, Math.round(a.ovr-5)));
+    lines.forEach((t, i)=>log.push({h:(i%2 ? b : a).handle, t:t, d:day}));
+  }
+  while(log.length>CC_CREW_CHAT_KEEP) log.shift();
+  careerSave();
+}
+function ccCrewSayKind(text){
+  const t=String(text||'').toLowerCase();
+  if(/scrim|скрим|ranked|ранкед|ranq|box|zone ?wars|зон|1v1|duo|дуо|play|поигр|jouer|giocare|jogar|spielen|jugar/.test(t)) return 'S';
+  if(/\?/.test(t)) return 'Q';
+  if(/\bgg\b|win|won|выигр|побед|#1|go+|погнали|lets/.test(t)) return 'H';
+  return 'G';
+}
+function ccCrewSay(text){
+  text=String(text||'').replace(/\s+/g, ' ').trim().slice(0, 300); if(!text) return;
+  const T=L(), c=ccCrew(), day=careerToday(), log=ccCrewChatLog(), members=ccCrewMembers();
+  const on=members.filter(m=>ccCrewStatus(m)!=='off');
+  log.push({me:1, t:text, d:day});
+  const r=careerRng(ccHashStr('crewsay|'+day+'|'+log.length+'|'+text));
+  // Упомянул @ника - отвечает он; иначе 1-2 человека в сети.
+  const low=text.toLowerCase();
+  const tagged=members.find(m=>low.indexOf('@'+String(ccHandle(m.handle)).toLowerCase())>=0);
+  const who=[]; if(tagged && ccCrewStatus(tagged)!=='off') who.push(tagged);
+  while(who.length<(tagged ? 1 : Math.min(2, on.length)) && on.length){ const m=on[Math.floor(r()*on.length)]; if(who.indexOf(m)<0) who.push(m); else break; }
+  // «Отметили меня» - только если отвечает сам отмеченный; он не в сети - другие отвечают на смысл сообщения.
+  const kind=(tagged && who[0]===tagged) ? 'M' : ccCrewSayKind(text), per={S:3, Q:4, H:3, G:5, M:3}[kind], used=[];
+  who.forEach(m=>{
+    let j=1+Math.floor(r()*per); while(used.indexOf(j)>=0 && used.length<per) j=j%per+1; used.push(j);
+    log.push({h:m.handle, t:T['crR'+kind+j], d:day});
+    if(!c.sayRel || c.sayRel.day!==day){ c.sayRel={day:day, who:[]}; }
+    if(c.sayRel.who.indexOf(m.k)<0){ c.sayRel.who.push(m.k); ccCrewRelAdd(m, 1); }
+  });
+  while(log.length>CC_CREW_CHAT_KEEP) log.shift();
+  CH_DCC.crew=T.crGeneral; CH_DCV='chan';
+  careerSave(); careerRenderHub('discord');
+  const inp=document.getElementById('ccCrewChatIn'); if(inp){ try{ inp.focus({preventScroll:true}); }catch(e){} }
+}
+function ccCrewSayInput(){ const inp=document.getElementById('ccCrewChatIn'); if(!inp) return; const v=inp.value; inp.value=''; ccCrewSay(v); }
+function ccCrewSayKey(e){ if(e.key==='Enter' && !e.shiftKey){ e.preventDefault(); ccCrewSayInput(); } }
+function ccCrewSayPick(i){
+  const T=L(); let next=null; try{ next=careerNext(); }catch(e){}
+  const ev=next && next.type!=='free' ? (next.type==='cup' ? T.ccCupLive : (next.title||next.label||'')) : '';
+  const s=T['crS'+i]; if(!s) return;
+  ccCrewSay(typeof s==='function' ? s(ev) : s);
+}
+// Лента и поле ввода для #general.
+function ccCrewChatBoxHTML(msg, members){
+  try{ ccCrewChatTick(members); }catch(e){}
+  const T=L(), log=ccCrewChatLog();
+  let next=null; try{ next=careerNext(); }catch(e){}
+  const ev=next && next.type!=='free' ? 1 : 0;
+  const byH=new Map(members.map(m=>[hKey(m.handle), m]));
+  const list=log.map(x=>x.me ? msg(CAREER.player.nick, false, '<p>'+esc(x.t)+'</p>')
+    : (()=>{ const m=byH.get(hKey(x.h)); return msg(ccHandle(x.h), false, '<p>'+esc(x.t)+'</p>', m ? ccCrewAv(m) : esc(String(x.h).slice(0, 2).toUpperCase())); })()).join('');
+  const chips=[1, 2, 3, ev ? 4 : 0, 5].filter(Boolean).map(i=>{
+    const s=T['crS'+i]; const txt=typeof s==='function' ? s(next ? (next.type==='cup' ? T.ccCupLive : (next.title||next.label||'')) : '') : s;
+    return '<button type="button" class="dc-btn ghost sm" onclick="ccCrewSayPick('+i+')">'+esc(txt)+'</button>'; }).join('');
+  return '<div class="dc-chatlog">'+list+'</div>'+
+    '<div class="cr-replies cr-chips">'+chips+'</div>'+
+    '<div class="dc-compose"><input id="ccCrewChatIn" type="text" maxlength="300" autocomplete="off" placeholder="'+esc(T.fnChatPh(T.crGeneral))+'" '+
+      'aria-label="'+esc(T.fnChatPh(T.crGeneral))+'" onkeydown="ccCrewSayKey(event)">'+
+    '<button type="button" class="dc-btn sm" onclick="ccCrewSayInput()">'+esc(T.fnSend)+'</button></div>';
 }
