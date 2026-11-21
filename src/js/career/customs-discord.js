@@ -1315,16 +1315,21 @@ function ccCrewVoiceWhy(){
   if(pre && careerEnergy()-act.energy<pre.reserve) return T.ccKeepEnergy(pre.reserve);
   return '';
 }
-function ccCrewVoice(){
+/* Голосовых каналов три (его «больше голосовых каналов»): общий, скримы, чилл. Кто в войсе - сидит в одном из них
+   (от дня и ника); ты заходишь в выбранный, и звать поиграть может только тот, кто в этом же канале. */
+const CC_CREW_VC=3;
+function ccCrewVc(m){ return Math.floor(careerRng(ccHashStr('crewvc|'+careerToday()+'|'+m.k))()*CC_CREW_VC); }
+function ccCrewVoice(ch){
+  ch=Math.max(0, Math.min(CC_CREW_VC-1, ch|0));
   if(ccCrewVoiceWhy()) return;
   if(!careerDoAct('voice')) return;
-  const c=ccCrew(), today=careerToday(), inVoice=ccCrewMembers().filter(m=>ccCrewStatus(m)==='voice');
+  const c=ccCrew(), today=careerToday(), inVoice=ccCrewMembers().filter(m=>ccCrewStatus(m)==='voice' && ccCrewVc(m)===ch);
   inVoice.forEach(m=>ccCrewRelAdd(m, 2));
   // Шанс, что кто-то из войса сам позовёт поиграть: тот, с кем отношение лучше.
   const rnd=careerRng(ccHashStr('crewvoice|'+today));
   let inviter=null;
   if(inVoice.length && rnd()<CC_CREW_INV_CHANCE) inviter=inVoice.slice().sort((a,b)=>ccCrewRel(b)-ccCrewRel(a))[0].k;
-  c.voice={day:today, inviter:inviter};
+  c.voice={day:today, ch:ch, inviter:inviter};
   careerSave(); careerRenderHub('discord');
 }
 // Чат дня: несколько сообщений участников и одно тебе, с ответом.
@@ -1350,9 +1355,12 @@ function ccCrewChat(members){
   const last=(cr.log||[]).slice(-1)[0];
   const recent=last && last.day && ccDaysBetween(last.day, today)<=3 && last.place;
   const who=pick(), nick=CAREER.player.nick||'';
-  const text=recent
-    ? (last.place<=Math.max(3, Math.ceil((last.of||100)*0.1)) ? T.crMeGood(nick, last.place) : T.crMeBad(nick, last.place))
-    : T.crMeHi(nick);
+  // Тон - от того, кто пишет (его «пусть диалоги не нпс, троллинг над результатами или похвала»): малознакомый
+  // подкалывает за плохое место и даже хорошее зовёт везением, друг хвалит и поддерживает.
+  const good=recent && last.place<=Math.max(3, Math.ceil((last.of||100)*0.1)), rel=ccCrewRel(who);
+  const text=!recent ? T.crMeHi(nick)
+    : good ? (rel<20 ? T.crMeTease(nick, last.place) : T.crMeGood(nick, last.place))
+    : (rel<25 ? T.crMeTroll(nick, last.place) : T.crMeBad(nick, last.place));
   return {lines:lines, toYou:{m:who, text:text}};
 }
 function ccCrewReply(opt){
@@ -1396,19 +1404,23 @@ function ccCrewHTML(chan, msg){
       ccCrewAv(chat.toYou.m));
     if(done && done!=='r3') chatHTML+=msg(CAREER.player.nick, false, '<p>'+esc(T['crR'+done.slice(1)])+'</p>');
   }
-  const inVoice=members.filter(m=>ccCrewStatus(m)==='voice');
-  const vWhy=ccCrewVoiceWhy(), vIn=!!(c.voice && c.voice.day===today);
-  // Зашёл в войс - ты тоже в списке, своей карточкой (как в Discord: себя видно в канале).
-  const meV=vIn ? '<span class="cr-vm cr-vm-me" title="'+esc(CAREER.player.nick||'')+'"><span class="dc-av">'+(ccDcFace() ? ccDcImg(ccDcFace(), 'ME') : 'ME')+'</span><i>'+esc(CAREER.player.nick||'')+'</i></span>' : '';
-  const voice='<div class="cr-voice">'+((inVoice.length || vIn)
-      ? meV+inVoice.map(m=>'<span class="cr-vm" title="'+esc(ccHandle(m.handle))+'"><span class="dc-av">'+ccCrewAv(m)+'</span><i>'+esc(ccHandle(m.handle))+'</i></span>').join('')
-      : '<p class="dc-sub">'+esc(T.crVoiceEmpty)+'</p>')+'</div>'+
-    '<div class="dc-act"><button class="dc-btn'+(vIn ? ' ghost' : '')+'"'+(vWhy ? ' disabled' : '')+' onclick="ccCrewVoice()">'+
-      esc(vIn ? T.crVoiceIn : T.crVoiceJoin)+(vIn ? '' : ' <em>'+ccActById('voice').energy+T.ccEnergyMark+'</em>')+'</button>'+
-      (vWhy && !vIn ? '<span class="dc-why">'+esc(vWhy)+'</span>' : '')+'</div>';
+  const vWhy=ccCrewVoiceWhy(), vIn=!!(c.voice && c.voice.day===today), vCh=vIn ? (c.voice.ch|0) : -1;
+  // Зашёл в войс - ты тоже в списке своего канала, своей карточкой (как в Discord: себя видно в канале).
+  const meV='<span class="cr-vm cr-vm-me" title="'+esc(CAREER.player.nick||'')+'"><span class="dc-av">'+(ccDcFace() ? ccDcImg(ccDcFace(), 'ME') : 'ME')+'</span><i>'+esc(CAREER.player.nick||'')+'</i></span>';
+  const voiceOf=ch=>{
+    const inV=members.filter(m=>ccCrewStatus(m)==='voice' && ccCrewVc(m)===ch), here=vCh===ch;
+    return '<div class="cr-voice">'+((inV.length || here)
+        ? (here ? meV : '')+inV.map(m=>'<span class="cr-vm" title="'+esc(ccHandle(m.handle))+'"><span class="dc-av">'+ccCrewAv(m)+'</span><i>'+esc(ccHandle(m.handle))+'</i></span>').join('')
+        : '<p class="dc-sub">'+esc(T.crVoiceEmpty)+'</p>')+'</div>'+
+      '<div class="dc-act"><button class="dc-btn'+(here ? ' ghost' : '')+'"'+(vWhy ? ' disabled' : '')+' onclick="ccCrewVoice('+ch+')">'+
+        esc(here ? T.crVoiceIn : T.crVoiceJoin)+(vIn ? '' : ' <em>'+ccActById('voice').energy+T.ccEnergyMark+'</em>')+'</button>'+
+        (vWhy && !vIn ? '<span class="dc-why">'+esc(vWhy)+'</span>' : vIn && !here ? '<span class="dc-why">'+esc(T.crVoiceElsewhere(T['crVc'+(vCh+1)]))+'</span>' : '')+'</div>';
+  };
   const last=c.last && c.last.day===today ? '<div class="dc-res">'+esc(c.last.text)+'</div>' : '';
+  let voices=''; for(let i=0;i<CC_CREW_VC;i++) voices+=chan(T['crVc'+(i+1)], voiceOf(i), 'voice');
   return chan(T.crGeneral, '<p class="dc-sub">'+esc(T.crIntro)+'</p>'+chatHTML)+
-    chan(T.crVoice, voice, 'voice')+
+    ccCrewResultsHTML(chan, msg, members)+ccCrewLfgHTML(chan, msg, members)+
+    voices+
     chan(T.crMembers+' · '+members.length, last+(members.length ? members.map(row).join('') : '<p class="dc-sub">'+esc(T.crNobody)+'</p>'), 'members')+
     ccCrewInviteHTML(chan);
 }
@@ -1537,7 +1549,7 @@ function ccFanHTML(chan, msg){
         '<div class="fn-buy"><img src="'+esc(ccFnImg(x.it.id, true))+'" alt="" loading="lazy" onerror="this.remove()"><span>'+esc(x.it.name)+' · '+ccNum(x.price)+' V</span></div>', ccFanAv(x.nick))).join('')
     : '<p class="dc-sub">'+esc(T.fnBuyNone(code))+'</p>';
   return ccFanChatHTML(chan, msg)+chan(T.fnAfterChan, afterHTML)+chan(T.fnQChan, qHTML)+chan(T.fnCodeChan, buyHTML)+
-    ccFanMembersHTML(chan)+ccFanInviteHTML(chan)+ccFanSettingsHTML(chan);
+    ccFanVoiceHTML(chan)+ccFanMembersHTML(chan)+ccFanInviteHTML(chan)+ccFanSettingsHTML(chan);
 }
 
 /* ---- Вид как в Discord (его слово 21.11: «сделай как в дискорде оформление каналов голосовых текстовых») ----------
@@ -1704,7 +1716,8 @@ function ccFanChatHTML(chan, msg){
    (careerDuoSearchPool, тот же список, что поиск дуо), звать можно только тех, у кого рейтинг ниже твоего, и они
    заходят сразу; «настройки» - имя сервера и аватарка (скин Fortnite, фото карточки или своя картинка, ужатая как
    фото карьеры ccPhotoShrink). Позванные - в колонке участников и иногда отвечают в #chat своим ником и фото. */
-const CC_FAN_GUESTS_MAX=20, CC_FAN_FIND_MAX=20, CC_FAN_GUEST_REPLY=0.5;
+// Лимиты подняты по его «инвайтить слишком мало людей я могу»: до 100 на сервер, поиск показывает 60.
+const CC_FAN_GUESTS_MAX=100, CC_FAN_FIND_MAX=60, CC_FAN_GUEST_REPLY=0.5;
 function ccFanGuests(){ const f=ccFans(); if(!f) return []; f.guests=f.guests||[]; return f.guests; }
 function ccFanMyOvr(){ const pl=CAREER.player; return Math.round(pl.ovrExact!=null ? pl.ovrExact : pl.ovr); }
 // anyServer - для тусовки: гости своего фан-сервера там не вычитаются.
@@ -1805,4 +1818,94 @@ function ccFanSettingsHTML(chan){
         '<input type="file" accept="image/*" hidden onchange="ccFanIconUpload(this)"></label>'+
       pick.map(id=>'<button type="button" class="fn-ic'+(cur===id ? ' on' : '')+'" onclick="ccFanIconSet(\'skin\',\''+jsq(id)+'\')">'+ccDcImg(ccFnImg(id, true), '·')+'</button>').join('')+
     '</div>', 'tool');
+}
+
+/* ---- Тусовка: #результаты и #ищу-напарника (его «больше чатов, и пусть диалоги не нпс будут: троллинг над
+   результатами или наоборот похвала») ---------------------------------------------------------------------------
+   #результаты: про твой последний турнир за три дня пишут двое-трое, тон от отношения и места (друг хвалит или
+   поддерживает, малознакомый подкалывает); про победителей турниров мира за три дня (лента ccNewsWorldWon) -
+   поздравляют или ворчат «опять он». На самую злую подколку можно ответить один раз в день: огрызнуться (с тем,
+   кто подколол, отношение падает), посмеяться вместе (растёт) или промолчать.
+   #ищу-напарника: двое-трое из тусовки ищут состав на ближайший турнир с порогом рейтинга; кнопка «написать» -
+   то же предложение в личку (careerDmWrite), только если в сезоне есть места. */
+const CC_CREW_BACK={b1:-2, b2:3, b3:0};
+function ccCrewResults(members){
+  const T=L(), today=careerToday(), cr=CAREER.career, rnd=careerRng(ccHashStr('crewres|'+today));
+  const on=members.filter(m=>ccCrewStatus(m)!=='off'); if(!on.length) return {lines:[], troll:null};
+  const pick=()=>on[Math.floor(rnd()*on.length)];
+  const lines=[]; let troll=null;
+  const nick=CAREER.player.nick||'';
+  const last=(cr.log||[]).filter(x=>x && x.place && x.day).slice(-1)[0];
+  if(last && ccDaysBetween(last.day, today)<=3){
+    const of=last.of||100, p=last.place, good=p<=Math.max(3, Math.ceil(of*0.1)), bad=p>Math.ceil(of*0.5);
+    const ev=last.kind==='cup' ? T.ccCupLive : ((careerYearDays().get(last.day)||[]).find(x=>x.kind===last.kind)||{}).label || T.fnTheCup;
+    const who=[]; while(who.length<Math.min(3, on.length)){ const m=pick(); if(who.indexOf(m)<0) who.push(m); }
+    who.forEach((m, i)=>{
+      const rel=ccCrewRel(m), mean=rel<25;
+      const set=good ? (mean ? 'crResGt' : 'crResG') : bad ? (mean ? 'crResB' : 'crResBk') : (mean ? 'crResMt' : 'crResM');
+      const n={crResG:4, crResGt:2, crResB:4, crResBk:2, crResM:2, crResMt:2}[set];
+      const line={m:m, text:T[set+(1+Math.floor(rnd()*n))](nick, p, ev)};
+      lines.push(line);
+      if(mean && !troll && (set==='crResB' || set==='crResMt' || set==='crResGt')) troll=line;
+    });
+  }
+  // Победители мира за три дня.
+  (cr.news||[]).filter(x=>x && x.k==='ccNewsWorldWon' && x.day && ccDaysBetween(x.day, today)<=3).slice(0, 2).forEach(x=>{
+    const ev=String((x.a||[])[0]||''), w=String((x.a||[])[1]||'').replace(/<[^>]+>/g, '');
+    if(!w) return;
+    lines.push({m:pick(), text:rnd()<0.6 ? T.crResW1(w, ev) : T.crResW2(w, ev)});
+  });
+  return {lines:lines, troll:troll};
+}
+function ccCrewBack(opt){
+  const c=ccCrew(), today=careerToday();
+  if(c.back && c.back.day===today) return;
+  if(!(opt in CC_CREW_BACK)) return;
+  const r=ccCrewResults(ccCrewMembers()); if(!r.troll) return;
+  ccCrewRelAdd(r.troll.m, CC_CREW_BACK[opt]);
+  c.back={day:today, opt:opt};
+  careerSave(); careerRenderHub('discord');
+}
+function ccCrewResultsHTML(chan, msg, members){
+  const T=L(), c=ccCrew(), today=careerToday(), r=ccCrewResults(members);
+  let html=r.lines.map(l=>msg(ccHandle(l.m.handle), false, '<p>'+esc(l.text)+'</p>', ccCrewAv(l.m))).join('');
+  if(r.troll){
+    const done=c.back && c.back.day===today ? c.back.opt : null;
+    html+=done ? (done!=='b3' ? msg(CAREER.player.nick, false, '<p>'+esc('@'+ccHandle(r.troll.m.handle)+' '+T['crRb'+done.slice(1)])+'</p>') : '')
+      : '<div class="cr-replies">'+['b1','b2','b3'].map(o=>'<button class="dc-btn ghost sm" onclick="ccCrewBack(\''+o+'\')">'+esc(T['crRb'+o.slice(1)])+'</button>').join('')+'</div>';
+  }
+  if(!html) html='<p class="dc-sub">'+esc(T.crResNone)+'</p>';
+  return chan(T.crResChan, html);
+}
+function ccCrewLfgHTML(chan, msg, members){
+  const T=L(), today=careerToday(), rnd=careerRng(ccHashStr('crewlfg|'+today));
+  let next=null; try{ next=careerNext(); }catch(e){}
+  const ev=next && next.type!=='free' ? (next.type==='cup' ? T.ccCupLive : (next.title||next.label||'')) : '';
+  const on=members.filter(m=>m.kind!=='mate' && ccCrewStatus(m)!=='off');
+  const seats=careerMateSeats();
+  if(seats<=0) return '';   // соло-сезон: искать некого
+  const fmt=seats>=3 ? T.crFmtQ : seats===2 ? T.crFmtT : T.crFmtD;
+  const n=Math.min(3, on.length), used=new Set(), lines=[];
+  for(let i=0;i<n;i++){ const m=on[Math.floor(rnd()*on.length)]; if(used.has(m.k)) continue; used.add(m.k);
+    const min=Math.max(40, Math.round(m.ovr-4-rnd()*6));
+    lines.push(msg(ccHandle(m.handle), false, '<p>'+esc(ev ? T.crLfg1(fmt, ev, min) : T.crLfg2(fmt, min))+'</p>'+
+      (seats>0 && !(typeof ccMpOn==='function' && ccMpOn()) ? '<div class="dc-act"><button class="dc-btn ghost sm" onclick="ccCrewDuo(\''+jsq(m.k)+'\')">'+esc(T[ccSquadKey('dmAskBtn')]||T.crDuo)+'</button></div>' : ''),
+      ccCrewAv(m)));
+  }
+  return chan(T.crLfgChan, lines.join('') || '<p class="dc-sub">'+esc(T.crResNone)+'</p>');
+}
+
+/* Голосовой канал своего сервера (его «больше голосовых каналов»): hangout, где сидят часть приглашённых и несколько
+   фанатов (от дня); зайти можно бесплатно, раз в день - ты в списке. На игру не влияет. */
+function ccFanVcJoin(){ const f=ccFans(); if(!f) return; f.vc=careerToday(); careerSave(); careerRenderHub('discord'); }
+function ccFanVoiceHTML(chan){
+  const T=L(), f=ccFans(), today=careerToday(), rnd=careerRng(ccHashStr('fanvc|'+today));
+  const gs=ccFanGuests().filter(g=>careerRng(ccHashStr('fanvcg|'+today+'|'+hKey(g.handle)))()<0.4);
+  const fans=[]; const nf=1+Math.floor(rnd()*Math.min(4, ccFanVoices()+1)); for(let i=0;i<nf;i++) fans.push(ccFanNick('vc|'+today+'|'+i));
+  const here=f.vc===today;
+  const vm=(av, name)=>'<span class="cr-vm" title="'+esc(name)+'"><span class="dc-av">'+av+'</span><i>'+esc(name)+'</i></span>';
+  const list=(here ? vm(ccDcFace() ? ccDcImg(ccDcFace(), 'ME') : 'ME', CAREER.player.nick||'') : '')+
+    gs.map(g=>vm(ccFanGuestAv(g), ccHandle(g.handle))).join('')+fans.map(n=>vm(ccFanAv(n), n)).join('');
+  return chan(T.fnVcChan, '<div class="cr-voice">'+list+'</div>'+
+    '<div class="dc-act"><button class="dc-btn'+(here ? ' ghost' : '')+'"'+(here ? ' disabled' : '')+' onclick="ccFanVcJoin()">'+esc(here ? T.crVoiceIn : T.crVoiceJoin)+'</button></div>', 'voice');
 }
