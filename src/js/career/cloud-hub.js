@@ -1698,7 +1698,7 @@ function careerRenderHubBody(tab){
   // Медиа в цветах своих сетей (28.10, его «соцсети в цвете X, стримы в цвете твич, youtube в цветах ютуб»).
   if(CH_TAB==='social'){ body.innerHTML=ccSubTabsHTML('media')+'<div class="cc-media cc-media-x">'+careerSocialHTML()+'</div>'; return; }
   if(CH_TAB==='youtube'){ body.innerHTML=ccSubTabsHTML('media')+'<div class="cc-media cc-media-yt">'+careerYtHTML()+'</div>'; return; }
-  if(CH_TAB==='discord'){ body.innerHTML=ccSubTabsHTML('media')+'<div class="cc-media cc-media-dc">'+ccDiscordHTML()+'</div>'; return; }
+  if(CH_TAB==='discord'){ body.innerHTML=ccSubTabsHTML('media')+'<div class="cc-media cc-media-dc">'+ccDiscordHTML()+'</div>'; try{ ccDcLayout(body); }catch(e){ console.error(e); } return; }
   /* The career itself, on its own screen.
 
      The centre was doing two jobs — what to do today, and who you have deals

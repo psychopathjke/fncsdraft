@@ -6569,6 +6569,14 @@
   .cr-vm .dc-av{box-shadow:0 0 0 2px #23a55a;}
   .cr-vm i{font-style:normal;font-size:10px;color:#dbdee1;max-width:56px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   .cr-replies{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px;}
+  /* Фан-сервер (ccFanHTML): создание, шапка с числом участников, покупка по коду с картинкой предмета. */
+  .fn-create{flex-wrap:wrap;}
+  .fn-name{flex:1 1 180px;min-width:0;padding:8px 10px;border-radius:6px;border:1px solid rgba(255,255,255,.14);background:#1e1f22;color:#fff;font:inherit;font-size:13px;}
+  .fn-head{display:flex;align-items:baseline;gap:10px;margin:0 0 8px;}
+  .fn-head b{font-size:15px;color:#fff;} .fn-head span{font-size:12px;color:#b5bac1;}
+  .fn-buy{display:inline-flex;align-items:center;gap:8px;margin-top:6px;padding:4px 10px 4px 4px;border-radius:8px;background:#1e1f22;}
+  .fn-buy img{width:36px;height:36px;border-radius:6px;object-fit:cover;background:#2b2d31;}
+  .fn-buy span{font-size:12px;color:#dbdee1;}
   @media(max-width:520px){ .cr-mem{flex-wrap:wrap;} .cr-btns{flex:1 0 100%;justify-content:flex-start;padding-left:44px;} }
   .dc-msg-in{min-width:0;flex:1;}
   .dc-msg-in b{color:#fff;font-size:13px;}
@@ -6634,6 +6642,60 @@
   .dc-tier.on{color:#fff;font-weight:900;}
   .dc-tier.lock{opacity:.6;}
   @media(max-width:600px){.dc-wrap{flex-direction:column;}.dc-srvs{flex-direction:row;}}
+  /* Вид как в Discord (ccDcLayout): полоса серверов, список каналов по категориям, открытый канал, участники справа.
+     Цвета - палитра Discord (рельс #1e1f22, список #2b2d31, канал #313338). До 1000px - как мобильный Discord:
+     список каналов или открытый канал со стрелкой назад (data-view). */
+  .dc-wrap.dc-x{display:grid;grid-template-columns:64px 220px minmax(0,1fr) 300px;gap:0;padding:0;min-height:560px;
+    background:#313338;border-radius:12px;overflow:hidden;}
+  .dc-wrap.dc-x:not(:has(.dc-memb)){grid-template-columns:64px 220px minmax(0,1fr);}
+  .dc-x .dc-srvs{flex-direction:column !important;align-items:center;gap:8px;padding:12px 0;background:#1e1f22;}
+  .dc-side{background:#2b2d31;padding:0 8px 14px;overflow-y:auto;min-width:0;}
+  .dc-side-h{display:flex;align-items:baseline;gap:8px;min-height:48px;margin:0 -8px 4px;padding:14px 16px 10px;
+    border-bottom:1px solid #1f2023;color:#f2f3f5;font-size:15px;font-weight:800;line-height:1.2;}
+  .dc-side-h small{font-size:11px;font-weight:600;color:#949ba4;white-space:nowrap;}
+  .dc-cat{margin:16px 8px 4px;font-size:12px;font-weight:700;letter-spacing:.02em;text-transform:uppercase;color:#949ba4;}
+  .dc-ch{display:flex;align-items:center;gap:6px;width:100%;margin:1px 0;padding:6px 8px;border:0;border-radius:4px;
+    background:none;color:#949ba4;font:inherit;font-size:15px;font-weight:500;text-align:left;cursor:pointer;}
+  .dc-ch i{display:flex;flex:0 0 20px;color:#80848e;} .dc-ch i svg{width:20px;height:20px;}
+  .dc-ch span{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .dc-ch:hover{background:#35373c;color:#dbdee1;}
+  .dc-ch.on{background:#404249;color:#fff;} .dc-ch.on i{color:#dbdee1;}
+  .dc-ch:focus-visible{outline:2px solid #5865f2;outline-offset:-2px;}
+  .dc-vlist > span{display:flex;align-items:center;gap:8px;padding:3px 8px 3px 34px;font-size:13px;color:#949ba4;}
+  .dc-vlist .dc-av{width:24px !important;height:24px !important;flex:0 0 24px !important;border-radius:50%;overflow:hidden;font-size:9px;box-shadow:none;}
+  .dc-vlist .dc-av img{width:100%;height:100%;object-fit:cover;}
+  .dc-vlist .dc-av img{border-radius:50%;}
+  .dc-vlist i{font-style:normal;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .dc-main{display:flex;flex-direction:column;min-width:0;background:#313338;}
+  .dc-main-h{display:flex;align-items:center;gap:8px;min-height:48px;padding:0 16px;border-bottom:1px solid #26272b;
+    color:#f2f3f5;font-size:16px;font-weight:700;}
+  .dc-main-h i{display:flex;color:#80848e;} .dc-main-h i svg{width:22px;height:22px;}
+  .dc-main-h b{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .dc-back{display:none;align-items:center;justify-content:center;width:32px;height:32px;margin-left:-8px;padding:0;border:0;
+    border-radius:4px;background:none;color:#b5bac1;cursor:pointer;}
+  .dc-back svg{width:22px;height:22px;}
+  .dc-x .dc-chan{margin:0;padding:14px 16px;border-radius:0;background:none;}
+  .dc-x .dc-chan[hidden]{display:none !important;}
+  .dc-x .dc-main .dc-chan-h{display:none;}
+  .dc-memb{background:#2b2d31;padding:14px 8px;overflow-y:auto;min-width:0;}
+  .dc-memb .dc-chan{padding:0;}
+  .dc-memb .dc-chan-h{margin:0 8px 6px;font-size:12px;font-weight:700;letter-spacing:.02em;text-transform:uppercase;color:#949ba4;}
+  .dc-memb .cr-mem{flex-wrap:wrap;padding:6px 8px;border-radius:4px;border-top:0;}
+  .dc-memb .cr-mem:hover{background:#35373c;}
+  .dc-memb .cr-btns{flex:1 0 100%;flex-wrap:nowrap;justify-content:flex-start;gap:4px;padding-left:44px;}
+  .dc-memb .cr-btns .dc-btn{padding:5px 8px;font-size:11px;white-space:nowrap;}
+  @media(min-width:1001px){ .dc-cat-m,.dc-ch.k-members,.dc-memb-h{display:none;} }
+  .dc-memb-h{margin:-14px -8px 10px;}
+  @media(max-width:1000px){
+    .dc-wrap.dc-x,.dc-wrap.dc-x:not(:has(.dc-memb)){grid-template-columns:64px minmax(0,1fr);min-height:480px;}
+    .dc-x[data-view="list"] .dc-main,.dc-x[data-view="list"] .dc-memb{display:none;}
+    .dc-x[data-view="chan"] .dc-side,.dc-x[data-view="chan"] .dc-srvs{display:none;}
+    .dc-x[data-view="chan"] .dc-main,.dc-x[data-view="chan"] .dc-memb{grid-column:1/-1;}
+    .dc-x[data-view="chan"][data-cur="members"] .dc-main{display:none;}
+    .dc-x[data-view="chan"]:not([data-cur="members"]) .dc-memb{display:none;}
+    .dc-back{display:inline-flex;}
+    .dc-memb .cr-btns{padding-left:44px;}
+  }
   @media(max-width:1000px){.x-wrap{grid-template-columns:1fr;}}
   .x-rail{display:flex;flex-direction:column;gap:2px;position:sticky;top:8px;}
   .x-nav{display:flex;align-items:center;gap:12px;background:none;border:none;cursor:pointer;

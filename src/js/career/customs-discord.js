@@ -79,7 +79,7 @@ function ccHostRun(){
    Мой сервер — провести свою кастомку на ПК (ccHostRun) или на мобиле, фонд с баланса. И канал скримов со ссылками на
    занятия дня. Каждое — раз в день, 40 энергии, в свободный день. Пороги и ставки мобилы — решение, не замер. */
 const CC_DC_ENERGY=40, CC_DC_MOB_RATE=75, CC_DC_MOB_PER_WIN=50;
-let CH_DC='pc';
+let CH_DC='crew';   // первым - тусовка региона (ccCrewHTML)
 function ccDcDid(kind){ const d=CAREER.career.dcDid; return !!(d && d.day===careerToday() && d.kinds.indexOf(kind)>=0); }
 function ccMobHostPer(){ return Math.max(50, ccHostPerWin()/2); }
 function ccMobHostWhy(){
@@ -190,7 +190,8 @@ function ccDcRegister(kind, sid){
   cr.dcReg={day:careerToday(), kind:kind, sess:sid, code:code, checked:false};
   careerSave(); careerRenderHub('discord');
 }
-function ccDcCheckIn(){ const r=ccDcReg(); if(!r) return; r.checked=true; careerSave(); careerRenderHub('discord'); }
+// После чек-ина открывается канал, где теперь код лобби и метка (раскладка как в Discord показывает один канал).
+function ccDcCheckIn(){ const r=ccDcReg(); if(!r) return; r.checked=true; CH_DCC[CH_DC||'crew']=L().dcCheckChan; CH_DCV='chan'; careerSave(); careerRenderHub('discord'); }
 function ccDcUnreg(){ const r=ccDcReg(); if(!r || r.done) return; delete CAREER.career.dcReg; careerSave(); careerRenderHub('discord'); }
 function ccDcBack(){ careerBackToHub(); careerTab('discord'); }
 async function ccScrimRun(){
@@ -287,7 +288,7 @@ function ccDcScrRegister(kind, sid){
   cr.dcScr={day:careerToday(), kind:kind, sess:sid, code:'SCRIM'+(1000+Math.floor(rnd()*9000)), checked:false, spot:null, marks:null};
   careerSave(); careerRenderHub('discord');
 }
-function ccDcScrCheckIn(){ const r=ccDcScrReg(); if(!r) return; r.checked=true; careerSave(); careerRenderHub('discord'); }
+function ccDcScrCheckIn(){ const r=ccDcScrReg(); if(!r) return; r.checked=true; CH_DCC[CH_DC||'crew']=L().dcDropChan; CH_DCV='chan'; careerSave(); careerRenderHub('discord'); }
 function ccDcScrUnreg(){ const r=ccDcScrReg(); if(!r || r.done) return; delete CAREER.career.dcScr; careerSave(); careerRenderHub('discord'); }
 // Ключ команды для меток: ники состава, как их видит раскладка (одинаков при сборке комнаты заново).
 function ccDcTk(t){ return (t && t.squad || []).map(c=>c ? hKey(c) : '').filter(Boolean).sort().join('+') || String(t && t.name || ''); }
@@ -471,7 +472,7 @@ function ccDcSessHTML(kind){
       '<p class="dc-sub">'+esc(T.dcFmt(f.games, kind==='mob' ? 16 : 100))+(kind!=='mob' && ccCareerRegion()==='EU' ? ' '+esc(T.dcRules) : '')+'</p>'+list+'</div>'+
     '<div class="dc-chan"><div class="dc-chan-h"># '+esc(T.dcCheckChan)+'</div>'+check+'</div>';
 }
-function ccDcServer(id){ CH_DC=id; careerRenderHub('discord'); }
+function ccDcServer(id){ CH_DC=id; CH_DCV='list'; careerRenderHub('discord'); }
 /* Аватарки Discord (его «добавь дискордам аватарки», 21.11): у игрока - фото его карточки, как в шапке хаба; у бота -
    значок его сервера; у серверов - корона Noble (EU), инициалы сервера практики региона, телефон у мобильного,
    своё фото у своего сервера. Без фото - буквы, как было. */
@@ -491,7 +492,7 @@ function ccDcSrvIcon(id){
 function ccDiscordHTML(){
   const T=L(), cr=CAREER.career, srv=CH_DC||'pc';
   // Первым - тусовка региона (ccCrewHTML): про и стримеры, с которыми ты пересекался.
-  const servers=[['crew', CC_CREW_GROUP_SVG, T.dcSrvCrew(ccCareerRegion())], ['pc', ccDcSrvIcon('pc'), ccPracSrv()], ['mob', ccDcSrvIcon('mob'), T.dcSrvMob], ['own', ccDcSrvIcon('own'), T.dcSrvOwn]];
+  const servers=[['crew', CC_CREW_GROUP_SVG, T.dcSrvCrew(ccCareerRegion())], ['pc', ccDcSrvIcon('pc'), ccPracSrv()], ['mob', ccDcSrvIcon('mob'), T.dcSrvMob], ['own', ccDcSrvIcon('own'), (CAREER.career.fans && CAREER.career.fans.name) || T.dcSrvOwn]];
   const last=cr.dcLast && cr.dcLast.day===careerToday() ? cr.dcLast : null;
   const btn=(kind, label)=>{ const why=ccDcWhy(kind);
     return '<div class="dc-act"><button class="dc-btn"'+(why ? ' disabled' : '')+' onclick="ccDcGo(\''+kind+'\')">'+esc(label)+
@@ -507,7 +508,8 @@ function ccDiscordHTML(){
   };
   const msg=(author, bot, body, av)=>'<div class="dc-msg"><span class="dc-av'+(bot ? ' bot' : '')+'">'+(av!=null ? av : avOf(author, bot))+'</span>'+
     '<div class="dc-msg-in"><b>'+esc(author)+(bot ? '<i class="dc-bot">BOT</i>' : '')+'</b>'+body+'</div></div>';
-  const chan=(name, body)=>'<div class="dc-chan"><div class="dc-chan-h"># '+esc(name)+'</div>'+body+'</div>';
+  // kind: 'voice' / 'members' - вид канала для раскладки как в Discord (ccDcLayout), без него текстовый.
+  const chan=(name, body, kind)=>'<div class="dc-chan"'+(kind ? ' data-kind="'+kind+'"' : '')+'><div class="dc-chan-h"># '+esc(name)+'</div>'+body+'</div>';
   let body='';
   if(srv==='crew'){
     body=ccCrewHTML(chan, msg);
@@ -523,13 +525,15 @@ function ccDiscordHTML(){
            '<p class="dc-sub">'+esc(T.ccMobTitle+' '+ccMobileOvr().toFixed(1))+'</p>'))+ccDcSessHTML('mob')+
          ccDcScrHTML('mob', chan, msg);
   } else {
-    body=chan(T.dcHostChan, msg(CAREER.player.nick, false, '<p>'+esc(T.dcHostPc(ccNum(ccHostPerWin())))+'</p>'+btn('pcHost', T.dcHostBtn))+
+    // Фан-сервер (ccFanHTML) - над кастомками: создать, потом фанаты после турниров, вопросы, покупки по коду.
+    body=ccFanHTML(chan, msg)+chan(T.dcHostChan, msg(CAREER.player.nick, false, '<p>'+esc(T.dcHostPc(ccNum(ccHostPerWin())))+'</p>'+btn('pcHost', T.dcHostBtn))+
            msg(CAREER.player.nick, false, '<p>'+esc(T.dcHostMob(ccNum(ccMobHostPer())))+'</p>'+btn('mobHost', T.dcHostBtn))+
            res(['pcHost','mobHost'])+(last && last.who && last.who.length && /Host/.test(last.kind) ? '<div class="dc-res">'+esc(T.dcWinners(last.who.map(h=>'@'+ccHandle(h)).join(', ')))+'</div>' : ''));
   }
   return '<div class="ch-tile dc-wrap"><div class="dc-srvs">'+servers.map(([id, ic, name])=>
       '<button class="dc-srv'+(srv===id ? ' on' : '')+'" title="'+esc(name)+'" aria-label="'+esc(name)+'" onclick="ccDcServer(\''+id+'\')">'+ic+'</button>').join('')+'</div>'+
-    '<div class="dc-body"><h4 class="dc-name">'+esc((servers.find(s=>s[0]===srv)||servers[0])[2])+'</h4>'+body+'</div></div>';
+    '<div class="dc-body"><h4 class="dc-name">'+esc((servers.find(s=>s[0]===srv)||servers[0])[2])+
+      (srv==='own' && cr.fans ? '<small>'+esc(T.fnMembers(ccNum(careerReach())))+'</small>' : '')+'</h4>'+body+'</div></div>';
 }
 /* Бросок дня. Один на день, кидается когда день впервые спросили, и сразу
    в сейв: перезагрузка страницы читает уже брошенное, а не кидает заново —
@@ -1337,14 +1341,192 @@ function ccCrewHTML(chan, msg){
   }
   const inVoice=members.filter(m=>ccCrewStatus(m)==='voice');
   const vWhy=ccCrewVoiceWhy(), vIn=!!(c.voice && c.voice.day===today);
-  const voice='<div class="cr-voice">'+(inVoice.length
-      ? inVoice.map(m=>'<span class="cr-vm" title="'+esc(ccHandle(m.handle))+'"><span class="dc-av">'+ccCrewAv(m)+'</span><i>'+esc(ccHandle(m.handle))+'</i></span>').join('')
+  // Зашёл в войс - ты тоже в списке, своей карточкой (как в Discord: себя видно в канале).
+  const meV=vIn ? '<span class="cr-vm cr-vm-me" title="'+esc(CAREER.player.nick||'')+'"><span class="dc-av">'+(ccDcFace() ? ccDcImg(ccDcFace(), 'ME') : 'ME')+'</span><i>'+esc(CAREER.player.nick||'')+'</i></span>' : '';
+  const voice='<div class="cr-voice">'+((inVoice.length || vIn)
+      ? meV+inVoice.map(m=>'<span class="cr-vm" title="'+esc(ccHandle(m.handle))+'"><span class="dc-av">'+ccCrewAv(m)+'</span><i>'+esc(ccHandle(m.handle))+'</i></span>').join('')
       : '<p class="dc-sub">'+esc(T.crVoiceEmpty)+'</p>')+'</div>'+
     '<div class="dc-act"><button class="dc-btn'+(vIn ? ' ghost' : '')+'"'+(vWhy ? ' disabled' : '')+' onclick="ccCrewVoice()">'+
       esc(vIn ? T.crVoiceIn : T.crVoiceJoin)+(vIn ? '' : ' <em>'+ccActById('voice').energy+T.ccEnergyMark+'</em>')+'</button>'+
       (vWhy && !vIn ? '<span class="dc-why">'+esc(vWhy)+'</span>' : '')+'</div>';
   const last=c.last && c.last.day===today ? '<div class="dc-res">'+esc(c.last.text)+'</div>' : '';
   return chan(T.crGeneral, '<p class="dc-sub">'+esc(T.crIntro)+'</p>'+chatHTML)+
-    chan(T.crVoice, voice)+
-    chan(T.crMembers+' · '+members.length, last+(members.length ? members.map(row).join('') : '<p class="dc-sub">'+esc(T.crNobody)+'</p>'));
+    chan(T.crVoice, voice, 'voice')+
+    chan(T.crMembers+' · '+members.length, last+(members.length ? members.map(row).join('') : '<p class="dc-sub">'+esc(T.crNobody)+'</p>'), 'members');
+}
+
+/* ---- Свой фан-сервер (его слово 21.11: «пусть свой сервер можно будет создать, где будут фанаты писать после
+   турниров, спрашивать, кидать в отдельный канал, что они купили по коду автора») -------------------------------
+   Создаётся на «Моём сервере» с CC_FAN_MIN подписчиков (решение, не замер). Каналы:
+   - после турнира: фанаты пишут про последний свой результат за два дня; сколько пишет - от подписчиков (лог);
+   - вопросы: один вопрос в день, ответ (один из двух) даёт немного подписчиков, раз в день;
+   - покупки по коду: только со своим кодом автора (CAREER.sacOwn, магазин); предметы - настоящий магазин дня
+     (ccFnShopDay), сколько покупок - от подписчиков той же долей покупающих, что и выплата кода (CC_SAC_RATE).
+   Фанаты - выдуманные ники, аватарки - скины Fortnite (CC_FN_SKIN). Никаких денег сервер сам не платит: деньги
+   по коду и так приходят раз в месяц (ccSacTick), канал только показывает, откуда они. */
+// Ответ фанату: +корень из подписчиков/10 (200 → 1, 1000 → 3, 60 000 → 24). Доля от подписчиков (0.4% в день)
+// за год умножала аудиторию в разы, корень даёт ~15% в год даже при ответе каждый день.
+const CC_FAN_MIN=200, CC_FAN_ANSWER_DIV=10, CC_FAN_BUYERS_DAY=0.004/30;
+const CC_FAN_A=['tilted','zone','box','cracked','storm','loot','sweaty','chill','turbo','piece','edit','bus','moist','crank','fresh'];
+const CC_FAN_B=['fan','king','enjoyer','main','goat','lad','queen','gamer','bot','andy','ace','kid','fox','wolf','vibes'];
+function ccFans(){ return CAREER.career.fans || null; }
+function ccFanWhy(){
+  const T=L();
+  if(ccFans()) return '';
+  if(careerReach()<CC_FAN_MIN) return T.fnNeedFol(ccNum(CC_FAN_MIN));
+  return '';
+}
+function ccFanCreate(){
+  if(ccFans() || ccFanWhy()) return;
+  const inp=document.getElementById('ccFanName');
+  let name=String((inp && inp.value) || '').replace(/[<>]/g, '').trim().slice(0, 32);
+  if(!name) name=L().fnDefName(CAREER.player.nick||'');
+  CAREER.career.fans={name:name, since:careerToday()};
+  careerSave(); careerRenderHub('discord');
+}
+// Ник фаната: из двух слов и числа, от дня и номера, одинаковый при перерисовке.
+function ccFanNick(seed){
+  const r=careerRng(ccHashStr('fan|'+seed));
+  const a=CC_FAN_A[Math.floor(r()*CC_FAN_A.length)], b=CC_FAN_B[Math.floor(r()*CC_FAN_B.length)];
+  return a+'_'+b+(r()<0.6 ? Math.floor(r()*99) : '');
+}
+function ccFanAv(nick){
+  let src=null; try{ src=window.CC_FN_SKIN ? window.CC_FN_SKIN(nick) : null; }catch(e){}
+  return src ? ccDcImg(src, nick.slice(0, 2).toUpperCase()) : esc(nick.slice(0, 2).toUpperCase());
+}
+// Сколько фанатов пишет: 1 при двухстах подписчиках, 6 к миллиону.
+function ccFanVoices(){ return clamp(Math.round(Math.log10(Math.max(10, careerReach()))*1.5-2.4), 1, 6); }
+function ccFanAfter(){
+  const T=L(), cr=CAREER.career, today=careerToday();
+  const last=(cr.log||[]).filter(r=>r && r.place && r.day && ccDaysBetween(r.day, today)<=2 && !r.away).slice(-1)[0];
+  if(!last) return [];
+  const of=last.of||100, p=last.place;
+  const tier=p===1 ? 'W' : p<=Math.max(3, Math.ceil(of*0.1)) ? 'G' : p<=Math.ceil(of*0.5) ? 'M' : 'B';
+  const ev=ccFanEvName(last);
+  const n=ccFanVoices(), r=careerRng(ccHashStr('fanafter|'+last.day+'|'+p));
+  const pool=[1,2,3,4];
+  const out=[];
+  for(let i=0;i<n && pool.length;i++){
+    const k=pool.splice(Math.floor(r()*pool.length), 1)[0];
+    out.push({nick:ccFanNick('a|'+last.day+'|'+i), text:T['fnAfter'+tier+k](p, ev)});
+  }
+  return out;
+}
+function ccFanEvName(r){
+  // Кап дивизиона в календаре подписан сессией («Session 2»), фанаты зовут его капом.
+  if(r.kind==='cup') return L().ccCupLive;
+  try{ const e=(careerYearDays().get(r.day)||[]).find(x=>x.kind===r.kind); if(e) return e.title||e.lan||e.name||e.label||L().fnTheCup; }catch(e){}
+  return L().fnTheCup;
+}
+// Вопрос дня и ответ на него.
+const CC_FAN_QS=8;
+function ccFanQ(){ const r=careerRng(ccHashStr('fanq|'+careerToday())); return 1+Math.floor(r()*CC_FAN_QS); }
+function ccFanAnswer(opt){
+  const f=ccFans(), today=careerToday(); if(!f) return;
+  if(f.ans && f.ans.day===today) return;
+  if(opt!=='a1' && opt!=='a2') return;
+  const got=careerReachAdd(Math.max(1, Math.round(Math.sqrt(careerReach())/CC_FAN_ANSWER_DIV)));
+  f.ans={day:today, opt:opt, got:got};
+  careerSave(); careerRenderHub('discord');
+}
+// Покупки по коду сегодня: настоящий магазин дня, число - доля покупающих от подписчиков.
+function ccFanBuys(){
+  const code=typeof ccSacOwnCode==='function' ? ccSacOwnCode() : null;
+  if(!code || !ccSacOwnOn()) return null;
+  const shop=typeof ccFnShopDay==='function' ? ccFnShopDay(careerToday()) : null;
+  if(!shop){ try{ ccFnShopLoad(()=>{ if(CH_TAB==='discord' && CH_DC==='own') careerRenderHub('discord'); }); }catch(e){} return []; }
+  if(!shop.length) return [];
+  const r=careerRng(ccHashStr('fanbuy|'+careerToday()));
+  const want=careerReach()*CC_FAN_BUYERS_DAY;
+  let n=Math.floor(want); if(r()<want-n) n++;
+  n=Math.min(6, n);
+  const out=[];
+  for(let i=0;i<n;i++){ const it=shop[Math.floor(r()*shop.length)]; out.push({nick:ccFanNick('b|'+careerToday()+'|'+i), it:it, price:ccFnPrice(it)}); }
+  return out;
+}
+function ccFanHTML(chan, msg){
+  const T=L(), f=ccFans(), today=careerToday();
+  if(!f){
+    const why=ccFanWhy();
+    return chan(T.fnCreateChan, '<p class="dc-sub">'+esc(T.fnCreateTxt)+'</p>'+
+      '<div class="dc-act fn-create"><input id="ccFanName" class="fn-name" maxlength="32" placeholder="'+esc(T.fnDefName(CAREER.player.nick||''))+'" aria-label="'+esc(T.fnNameLabel)+'"'+(why ? ' disabled' : '')+'>'+
+      '<button class="dc-btn"'+(why ? ' disabled' : '')+' onclick="ccFanCreate()">'+esc(T.fnCreateBtn)+'</button>'+
+      (why ? '<span class="dc-why">'+esc(why)+'</span>' : '')+'</div>');
+  }
+  const after=ccFanAfter();
+  const afterHTML=after.length ? after.map(x=>msg(x.nick, false, '<p>'+esc(x.text)+'</p>', ccFanAv(x.nick))).join('')
+    : '<p class="dc-sub">'+esc(T.fnAfterNone)+'</p>';
+  const q=ccFanQ(), qNick=ccFanNick('q|'+today), done=f.ans && f.ans.day===today ? f.ans : null;
+  const qHTML=msg(qNick, false, '<p>'+esc(T['fnQ'+q])+'</p>'+
+      (done ? '' : '<div class="cr-replies">'+['a1','a2'].map(o=>'<button class="dc-btn ghost sm" onclick="ccFanAnswer(\''+o+'\')">'+esc(T['fnA'+q+o.slice(1)])+'</button>').join('')+'</div>'),
+      ccFanAv(qNick))+
+    (done ? msg(CAREER.player.nick, false, '<p>'+esc(T['fnA'+q+done.opt.slice(1)])+'</p>')+
+      (done.got>0 ? '<div class="dc-res">'+esc(T.fnAnswered(ccNum(done.got)))+'</div>' : '') : '');
+  const buys=ccFanBuys();
+  const code=typeof ccSacOwnCode==='function' ? ccSacOwnCode() : null;
+  const buyHTML=buys===null
+    ? msg(f.name, true, '<p>'+esc(code ? T.fnCodeNeedFol(ccNum(CC_SAC_MIN)) : T.fnCodeNone(ccNum(CC_SAC_MIN)))+'</p>', CC_CREW_GROUP_SVG)
+    : buys.length ? buys.map(x=>msg(x.nick, false, '<p>'+esc(T.fnBought(x.it.name, code))+'</p>'+
+        '<div class="fn-buy"><img src="'+esc(ccFnImg(x.it.id, true))+'" alt="" loading="lazy" onerror="this.remove()"><span>'+esc(x.it.name)+' · '+ccNum(x.price)+' V</span></div>', ccFanAv(x.nick))).join('')
+    : '<p class="dc-sub">'+esc(T.fnBuyNone(code))+'</p>';
+  return chan(T.fnAfterChan, afterHTML)+chan(T.fnQChan, qHTML)+chan(T.fnCodeChan, buyHTML);
+}
+
+/* ---- Вид как в Discord (его слово 21.11: «сделай как в дискорде оформление каналов голосовых текстовых») ----------
+   Слева серверы, рядом список каналов по категориям (текстовые с #, голосовые с динамиком и аватарками тех, кто внутри),
+   справа открытый канал; участники тусовки на широком экране отдельной колонкой справа. На телефоне - как в мобильном
+   Discord: список каналов, нажал - открылся канал со стрелкой назад (CH_DCV).
+   Каналы рисуют разные функции (.dc-chan с заголовком .dc-chan-h), поэтому раскладка собирается после отрисовки
+   из готовых блоков, а не переписывает каждую из них. Вид канала - data-kind: voice / members, иначе текстовый. */
+let CH_DCC={}, CH_DCV='list';
+const CC_DC_HASH_SVG='<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M10.9 3.3a1 1 0 0 0-1.97-.33L8.4 6H5a1 1 0 0 0 0 2h3.07l-.67 4H4a1 1 0 0 0 0 2h3.07l-.56 3.34a1 1 0 0 0 1.97.33L9.1 14h4l-.56 3.34a1 1 0 0 0 1.97.33L15.1 14H19a1 1 0 0 0 0-2h-3.57l.67-4H20a1 1 0 0 0 0-2h-3.57l.48-2.7a1 1 0 0 0-1.97-.33L14.4 6h-4zM10.1 8h4l-.67 4h-4z"/></svg>';
+const CC_DC_SPK_SVG='<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M11.4 3.2A1 1 0 0 1 13 4v16a1 1 0 0 1-1.6.8L6.7 17H4a1 1 0 0 1-1-1V8a1 1 0 0 1 1-1h2.7zM15.6 8.2a1 1 0 0 1 1.4.1 5.6 5.6 0 0 1 0 7.4 1 1 0 1 1-1.5-1.3 3.6 3.6 0 0 0 0-4.8 1 1 0 0 1 .1-1.4z"/></svg>';
+const CC_DC_MEMB_SVG='<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="9" cy="8.5" r="3.2"/><path d="M3 19.5c.6-3.3 3-5.2 6-5.2s5.4 1.9 6 5.2"/><circle cx="17" cy="9.5" r="2.5"/><path d="M16.2 14.4c2.6.1 4.3 1.8 4.8 4.6"/></svg>';
+function ccDcPick(i){ const srv=CH_DC||'crew'; const it=(CC_DC_ITEMS||[])[i]; if(!it) return; CH_DCC[srv]=it.raw; CH_DCV='chan'; careerRenderHub('discord'); }
+function ccDcChBack(){ CH_DCV='list'; careerRenderHub('discord'); }
+let CC_DC_ITEMS=null;
+function ccDcLayout(root){
+  const wrap=root && root.querySelector('.dc-wrap'); if(!wrap) return;
+  const body=wrap.querySelector('.dc-body'); if(!body) return;
+  const chans=[...body.querySelectorAll(':scope > .dc-chan')]; if(!chans.length) return;
+  const T=L(), srv=CH_DC||'crew';
+  const items=chans.map((c, i)=>{
+    const h=c.querySelector(':scope > .dc-chan-h');
+    const raw=(h ? h.textContent : '').replace(/^#\s*/, '').trim();
+    return {c:c, raw:raw, kind:c.dataset.kind||'text', i:i};
+  });
+  CC_DC_ITEMS=items;
+  const cur=items.find(x=>x.raw===CH_DCC[srv]) || items.find(x=>x.kind==='text') || items[0];
+  const icon=k=>k==='voice' ? CC_DC_SPK_SVG : k==='members' ? CC_DC_MEMB_SVG : CC_DC_HASH_SVG;
+  const label=x=>esc(x.raw.replace(/\s*·\s*\d+$/, ''));
+  const btn=x=>'<button type="button" class="dc-ch k-'+x.kind+(x===cur ? ' on' : '')+'" onclick="ccDcPick('+x.i+')"'+(x===cur ? ' aria-current="true"' : '')+'>'+
+    '<i>'+icon(x.kind)+'</i><span>'+label(x)+'</span></button>'+
+    // Под голосовым - кто внутри, аватарками и ником, как в Discord.
+    (x.kind==='voice' ? '<div class="dc-vlist">'+[...x.c.querySelectorAll('.cr-vm')].map(v=>
+      '<span>'+(v.querySelector('.dc-av') ? v.querySelector('.dc-av').outerHTML : '')+'<i>'+esc((v.querySelector('i')||{}).textContent||'')+'</i></span>').join('')+'</div>' : '');
+  const text=items.filter(x=>x.kind==='text'), voice=items.filter(x=>x.kind==='voice'), memb=items.filter(x=>x.kind==='members');
+  const nameEl=wrap.querySelector('.dc-name');
+  const side='<nav class="dc-side" aria-label="'+esc(T.dcCatText)+'">'+
+    '<div class="dc-side-h">'+(nameEl ? nameEl.innerHTML : '')+'</div>'+
+    (text.length ? '<div class="dc-cat">'+esc(T.dcCatText)+'</div>'+text.map(btn).join('') : '')+
+    (voice.length ? '<div class="dc-cat">'+esc(T.dcCatVoice)+'</div>'+voice.map(btn).join('') : '')+
+    // Участники: на широком экране своей колонкой, на узком - пунктом списка.
+    (memb.length ? '<div class="dc-cat dc-cat-m">'+esc(T.crMembers)+'</div>'+memb.map(btn).join('') : '')+
+    '</nav>';
+  items.forEach(x=>{ x.c.hidden = x!==cur && !(x.kind==='members'); });
+  const head='<div class="dc-main-h"><button type="button" class="dc-back" onclick="ccDcChBack()" aria-label="'+esc(T.ccBack)+'">'+
+    '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M15 5l-7 7 7 7"/></svg></button>'+
+    '<i>'+icon(cur.kind)+'</i><b>'+label(cur)+'</b></div>';
+  const main=document.createElement('div'); main.className='dc-main'; main.innerHTML=head;
+  const aside=document.createElement('aside'); aside.className='dc-memb';
+  // На узком экране участники открываются как канал - со своей шапкой и стрелкой назад.
+  if(memb.length) aside.innerHTML=head.replace('class="dc-main-h"', 'class="dc-main-h dc-memb-h"').replace(/<i>[\s\S]*?<\/i><b>[\s\S]*?<\/b>/, '<i>'+CC_DC_MEMB_SVG+'</i><b>'+esc(T.crMembers)+'</b>');
+  items.forEach(x=>{ if(x.kind==='members') aside.appendChild(x.c); else main.appendChild(x.c); });
+  body.replaceWith(main);
+  if(nameEl) nameEl.remove();
+  main.insertAdjacentHTML('beforebegin', side);
+  if(memb.length) main.insertAdjacentElement('afterend', aside);
+  wrap.classList.add('dc-x');
+  wrap.dataset.view=CH_DCV;
+  wrap.dataset.cur=cur.kind;
 }
