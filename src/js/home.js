@@ -518,10 +518,18 @@ function hlAllNext(m, a){
   for(let t=0; t<40; t++){
     const pool=known.length>=2 && Math.random()<0.8 ? known : all;
     const b=pool[Math.floor(Math.random()*pool.length)];
-    if(b && (!a || (b.name!==a.name && b.val!==a.val))) return b;
+    if(b && !hlSeen(b) && (!a || (b.name!==a.name && b.val!==a.val))) return b;
   }
+  // Случайно не попали: берём любого ещё не бывшего; все были - сессия начинает круг заново.
+  const left=all.filter(b=>!hlSeen(b) && (!a || (b.name!==a.name && b.val!==a.val)));
+  if(left.length) return left[Math.floor(Math.random()*left.length)];
+  if(HL && HL.seen && HL.seen.size){ HL.seen=new Set(a ? [hKey({handle:a.name})] : []); return hlAllNext(m, a); }
   return null;
 }
+/* Кто уже был за сессию (его слово 21.11: «повторные игроки могут быть во время одной сессии»). Пара выбиралась
+   случайно из всего пула каждый раунд, и тот же ник возвращался через пару ходов. */
+function hlSeen(r){ return !!(HL && HL.seen && r && HL.seen.has(hKey({handle:r.name}))); }
+function hlSeenAdd(r){ if(HL && r){ HL.seen=HL.seen||new Set(); HL.seen.add(hKey({handle:r.name})); } }
 function hlBest(m){ try{ return +(localStorage.getItem(hlBestKey(m||'mix'))||0)||0; }catch(e){ return 0; } }
 function hlBestSet(n){ try{ localStorage.setItem(hlBestKey((HL && HL.mode)||'mix'), String(n)); }catch(e){} }
 function hlPhoto(p){ try{ return (typeof photoURLReal==='function' && photoURLReal(p)) || null; }catch(e){ return null; } }
@@ -549,6 +557,11 @@ function hlPickTwo(rows, val){
   const pool=known.length>=2 && Math.random()<0.8 ? known : rows;
   for(let t=0; t<30; t++){
     const a=pool[Math.floor(Math.random()*pool.length)], b=pool[Math.floor(Math.random()*pool.length)];
+    if(a!==b && !hlSeen(a) && !hlSeen(b) && val(a)!==val(b) && hKey({handle:a.name})!==hKey({handle:b.name})) return [a, b];
+  }
+  const fresh=rows.filter(r=>!hlSeen(r));
+  for(let t=0; t<30 && fresh.length>=2; t++){
+    const a=fresh[Math.floor(Math.random()*fresh.length)], b=fresh[Math.floor(Math.random()*fresh.length)];
     if(a!==b && val(a)!==val(b) && hKey({handle:a.name})!==hKey({handle:b.name})) return [a, b];
   }
   return null;
@@ -578,14 +591,19 @@ function hlNext(){
   if(hlChain()){
     const a=(HL.round && HL.round.b) || hlAllNext(HL.mode, null), b=a && hlAllNext(HL.mode, a);
     r=b ? {kind:HL.mode==='pl' ? 'allp' : 'allt', a, b} : null;
-  } else r=(Math.random()<HL_EARN_SHARE && hlRoundEarn()) || hlRoundPlace() || hlRoundEarn();
+  } else {
+    const pick=()=>(Math.random()<HL_EARN_SHARE && hlRoundEarn()) || hlRoundPlace() || hlRoundEarn();
+    r=pick();
+    if(!r && HL.seen && HL.seen.size){ HL.seen=new Set(); r=pick(); }
+  }
+  if(r){ hlSeenAdd(r.a); hlSeenAdd(r.b); }
   HL.round=r; HL.picked=null;
   hlDraw();
 }
 function hlOpen(mode){
   if(HL_MODES.includes(mode)){ try{ localStorage.setItem(HL_MODE_KEY, mode); }catch(e){} }
   const m=HL_MODES.includes(mode) ? mode : hlMode();
-  HL={mode:m, streak:0, best:hlBest(m), round:null, picked:null, over:false};
+  HL={mode:m, streak:0, best:hlBest(m), round:null, picked:null, over:false, seen:new Set()};
   let s=document.getElementById('screen-hl');
   if(!s){ s=document.createElement('div'); s.className='screen'; s.id='screen-hl'; s.innerHTML='<div class="hl-wrap" id="hlBody"></div>';
     const ref=document.getElementById('screen-profile'); (ref ? ref.parentNode : document.body).insertBefore(s, ref ? ref.nextSibling : null); }

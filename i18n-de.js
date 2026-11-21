@@ -4752,3 +4752,6 @@ Object.assign(I18N.de=I18N.de||{},
 /* Дозаливка «de» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
 Object.assign(I18N.de=I18N.de||{},
 ({invShown:(n,t)=>"Angezeigt: "+n+" von "+t+" unter deinem Rating"}));
+/* Дозаливка «de» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
+Object.assign(I18N.de=I18N.de||{},
+({ccActtrWaim:"Pro schauen", ccActtrWsur:"Pro schauen", ccActtrWcon:"Pro schauen", ccActtrWclu:"Pro schauen", ccActtrWend:"Pro schauen", wpTitle:"Pros schauen", wpSub:"Lerne von Stärkeren: der Wert mit dem größten Abstand steigt, nie über ihr Niveau. Eine halbe Einheit für 15 Energie.", wpBest:(k,his,mine)=>k+" "+his+" bei ihm, "+mine+" bei dir", wpBtn:"Schauen", wpBtnTip:"Seinen Stream oder sein Video schauen", wpNothing:"Nichts zu lernen", wpNone:"Heute ist niemand Stärkeres live", wpDayShut:"Heute keine Zeit zum Schauen: der Tag ist belegt", wpHurt:"Verletzt: nur Ruhe", wpDid:(h,p,k,by)=>"Heute geschaut: "+h+" auf "+p+": "+k+" +"+by}));

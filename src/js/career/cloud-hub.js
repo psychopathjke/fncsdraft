@@ -4388,8 +4388,14 @@ const CC_DAY_ACTS=[
   /* Мобильные скримы (идея игрока с мобильной сцены, 19.11: «add scrims, people do host like takeovers»): катки против
      мобильных игроков на 16, как в серии. Дороже тренировки, качают меньше, зато и выше её потолка: до 90. Решение, не замер. */
   {id:'mobScrim', energy:40, gain:{}, mobile:true, mobScrim:true},
+  // «Смотреть про» (ccWatchTileHTML): занятие одного стата, выбранного по про, которого смотришь. Кнопок дня у них нет.
+  {id:'trWaim', energy:15, watch:true, gain:{aim:ccStep('aim')/2}},
+  {id:'trWsur', energy:15, watch:true, gain:{sur:ccStep('sur')/2}},
+  {id:'trWcon', energy:15, watch:true, gain:{con:ccStep('con')/2}},
+  {id:'trWclu', energy:15, watch:true, gain:{clu:ccStep('clu')/2}},
+  {id:'trWend', energy:15, watch:true, gain:{end:ccStep('end')/2}},
   // Разминка перед турниром: только в день турнира, форма на вечер (ccPreEvent, CC_WARM_FORM).
-  {id:'warm',    energy:15, gain:{}, warm:true},
+  {id:'warm',   energy:15, gain:{}, warm:true},
   /* Discord-тусовка (его «да» на план 21.11, ccCrewHTML): не кнопки дня, а действия из Discord, поэтому в панели дня
      и в перемотке их нет (crew/voice). «Поиграть вместе» - скрим против позванного (CC_CREW_WITH, ccScrimSet): тот же
      шаг, что у скрима, на два стата; войс - дешёвый вечер, настрой напарнику. Числа - решение, не замер. */

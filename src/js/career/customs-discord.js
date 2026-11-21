@@ -762,6 +762,80 @@ function ccPreEvent(){
   return {next:next, reserve: next.type==='cup' ? CC_TOURNEY_ENERGY : 0};
 }
 function ccWarmDone(){ return (((CAREER.career.did||{})[careerToday()])||[]).indexOf('warm')>=0; }
+/* Смотреть про (идея из Notion 20.11: «функцию тренировки, как смотреть за про игроками на ютубе или твиче, тренируясь
+   у них»). Сегодня в эфире шесть игроков сильнее тебя из твоего региона; выбираешь, кого смотреть. Качается тот стат,
+   где разрыв с ним самый большой: половина шага занятия за половину энергии (15), полностью от CC_WATCH_GAP очков
+   разрыва, меньше при маленьком, и не выше уровня самого про. Это занятие стата, поэтому убывающая отдача недели
+   (CC_TRAIN_REPEAT) общая с обычными. Оценки D…A+ нет: смотришь, а не играешь. Числа - решение, не замер. */
+const CC_WATCH_KEYS=['aim', 'sur', 'con', 'clu', 'end'], CC_WATCH_GAP=8, CC_WATCH_N=6;
+let CC_WATCH_NOW=null;
+function ccWatchPlat(h){ let s=0; String(h).split('').forEach(c=>{ s=(s*31+c.charCodeAt(0))%9973; }); return s%3===0 ? 'youtube' : 'streams'; }
+function ccWatchPros(){
+  const me=CAREER.player.attrs || ccOwnAttrs(), my=ccFanMyOvr();
+  let pool=[]; try{ pool=careerDuoSearchPool(true)||[]; }catch(e){}
+  pool=pool.filter(w=>w && w.handle && w.card && Math.round(w.ovr)>my).sort((a, b)=>b.ovr-a.ovr).slice(0, 24);
+  // Кто в эфире, решает день: список меняется каждый день, но не от перерисовки.
+  const rng=ccLifeRng('watch');
+  pool=pool.map(w=>({w, r:rng()})).sort((a, b)=>a.r-b.r).map(x=>x.w).slice(0, CC_WATCH_N);
+  return pool.map(w=>{
+    let at=null; try{ at=attrsFor(w.card); }catch(e){}
+    if(!at) return null;
+    let k=null, gap=0;
+    CC_WATCH_KEYS.forEach(x=>{ const d=(at[x]||0)-(me[x]!=null ? me[x] : 50); if(d>gap){ gap=d; k=x; } });
+    return {handle:w.handle, ovr:w.ovr, card:w.card, k, gap, cap:k ? at[k] : 0, mult:clamp(gap/CC_WATCH_GAP, 0.25, 1), plat:ccWatchPlat(w.handle)};
+  }).filter(Boolean).sort((a, b)=>b.ovr-a.ovr);
+}
+// Сколько даст просмотр сегодня: та же арифметика, что в careerDoAct, без случайной оценки.
+function ccWatchBy(p){
+  if(!p.k) return 0;
+  const pl=CAREER.player, me=pl.attrs || ccOwnAttrs(), a=ccActById('trW'+p.k); if(!a) return 0;
+  const now=pl.ovrExact!=null ? pl.ovrExact : pl.ovr, coach=ccCoach();
+  const by=a.gain[p.k]*careerDayGear()*clamp((careerTrainCap()-now)/CAREER_TAPER, 0, 1)*(coach && coach.keys.indexOf(p.k)>=0 ? 1+coach.train : 1)
+    *ccRepeatMult(p.k)*careerDiff().age*ccFocusMult(p.k)*p.mult;
+  return Math.max(0, Math.min(by, p.cap-(me[p.k]!=null ? me[p.k] : 50)));
+}
+// Почему сейчас смотреть нельзя (пустая строка - можно).
+function ccWatchWhy(){
+  const T=L(), pre=ccPreEvent();
+  if(!(ccCentreDayOpen() || pre) || careerDayClosed()) return T.wpDayShut;
+  if(typeof ccLifeHurt==='function' && ccLifeHurt()) return T.wpHurt;
+  if(careerEnergy()<15) return T.ccNeedEnergy(15-careerEnergy());
+  if(pre && careerEnergy()-15<pre.reserve) return T.ccKeepEnergy(pre.reserve);
+  return '';
+}
+function ccWatchPro(handle){
+  if(ccWatchWhy()) return;
+  const p=ccWatchPros().find(x=>hKey(x.handle)===hKey(handle));
+  if(!p || !p.k || ccWatchBy(p)<0.05) return;
+  CC_WATCH_NOW={mult:p.mult, cap:p.cap};
+  let r=null;
+  try{ r=careerDoAct('trW'+p.k); } finally{ CC_WATCH_NOW=null; }
+  if(!r) return;
+  CAREER.career.watchLast={day:careerToday(), h:p.handle, k:p.k, by:(r.moved||{})[p.k]||0, plat:p.plat};
+  careerSave();
+  careerRenderHub('train');
+}
+function ccWatchTileHTML(){
+  if(!CAREER || !CAREER.career || CAREER.career.seasonOver) return '';
+  const T=L(), why=ccWatchWhy(), me=CAREER.player.attrs || ccOwnAttrs(), mark=T.ccEnergyMark, lst=CAREER.career.watchLast;
+  const pros=ccWatchPros();
+  const name=k=>T['ccAttr'+k.toUpperCase()]||k.toUpperCase();
+  const rows=pros.map(p=>{
+    let f=''; try{ f=photoURL(p.card)||''; }catch(e){}
+    const fb=String(p.handle).slice(0, 2).toUpperCase(), by=ccWatchBy(p), can=!why && by>=0.05;
+    const plat=p.plat==='youtube' ? 'YouTube' : 'Twitch';
+    const what=!p.k ? T.wpNothing : by<0.05 ? T.ccNoGain : '+'+(Math.round(by*10)/10).toFixed(1)+' '+name(p.k);
+    return '<div class="wp-row"><span class="dc-av">'+(f ? ccDcImg(f, fb) : esc(fb))+'</span>'+
+      '<div class="wp-who"><b>'+esc(ccHandle(p.handle))+' <em>'+Math.round(p.ovr)+'</em></b>'+
+        '<span><i class="wp-pl wp-'+p.plat+'">'+CC_MQ_ICONS[p.plat]+esc(plat)+'</i>'+(p.k ? esc(T.wpBest(name(p.k), Math.round(p.cap), Math.round(me[p.k]!=null ? me[p.k] : 50))) : '')+'</span></div>'+
+      '<button class="wp-go"'+(can ? ' onclick="ccWatchPro(\''+jsq(p.handle)+'\')"' : ' disabled')+' title="'+esc(why || T.wpBtnTip)+'">'+
+        '<b>'+esc(T.wpBtn)+'</b><em>'+esc(what)+' · 15'+mark+'</em></button></div>';
+  }).join('');
+  const last=(lst && lst.day===careerToday()) ? '<p class="wp-last">'+esc(T.wpDid(ccHandle(lst.h), lst.plat==='youtube' ? 'YouTube' : 'Twitch', name(lst.k), (Math.round(lst.by*10)/10).toFixed(1)))+'</p>' : '';
+  return '<div class="ch-tile tw-tile wp-tile"><h4><span class="wp-ics">'+CC_MQ_ICONS.streams+CC_MQ_ICONS.youtube+'</span>'+esc(T.wpTitle)+'</h4>'+
+    '<p class="wp-sub">'+esc(T.wpSub)+'</p>'+last+(why ? '<p class="wp-why">'+esc(why)+'</p>' : '')+
+    (rows ? '<div class="wp-list">'+rows+'</div>' : '<p class="wp-sub">'+esc(T.wpNone)+'</p>')+'</div>';
+}
 function careerDoAct(id){
   const act=ccActById(id); if(!act) return null;
   const cr=CAREER.career, pl=CAREER.player;
@@ -858,13 +932,17 @@ function careerDoAct(id){
        one setting means one thing everywhere: Easy 1.00, Pro 0.50, Elite 0.25,
        Legend 0.10. Easy is untouched. */
     // Оценка занятия D…A+ (ccDrillGrade) — только у тренировок с приростом.
-    const grade=(String(act.id).indexOf('tr')===0 && Object.keys(act.gain||{}).length) ? ccDrillGrade(act.id) : null;
+    const grade=(String(act.id).indexOf('tr')===0 && !act.watch && Object.keys(act.gain||{}).length) ? ccDrillGrade(act.id) : null;
+    const watch=act.watch ? CC_WATCH_NOW : null;
     // Эфир с тренировкой берёт прирост тренировки trPit в доле вида (CC_STREAM_KINDS train).
     const sk=(act.id==='stream' && typeof ccStreamKind==='function') ? ccStreamKind(CC_STREAM_KIND) : null;
     const gain=(sk && sk.train) ? (g=>{ const o={}; Object.keys(g).forEach(k=>{ o[k]=g[k]*sk.train; }); return o; })((ccActById('trPit')||{}).gain||{}) : (act.gain||{});
     Object.keys(gain).forEach(k=>{
-      const by=gain[k]*mult*(coach && coach.keys.indexOf(k)>=0 ? 1+coach.train : 1)*(ccTrainAct(act) ? ccRepeatMult(k) : 1)
-               *careerDiff().age*(scrim ? scrim.mult : 1)*ccFocusMult(k)*(grade ? grade.mult : 1);
+      let by=gain[k]*mult*(coach && coach.keys.indexOf(k)>=0 ? 1+coach.train : 1)*(ccTrainAct(act) ? ccRepeatMult(k) : 1)
+               *careerDiff().age*(scrim ? scrim.mult : 1)*ccFocusMult(k)*(grade ? grade.mult : 1)
+               *(watch ? watch.mult : 1);
+      // Смотря про, выше его самого не поднимешься.
+      if(watch) by=Math.min(by, Math.max(0, watch.cap-(pl.attrs[k]||50)));
       pl.attrs[k]=clamp((pl.attrs[k]||50)+by, ccAttrFloor(k), 99);
       moved[k]=by;
     });

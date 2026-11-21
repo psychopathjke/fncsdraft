@@ -405,7 +405,7 @@ function careerFfButtonsHTML(){
 function careerFfSpendDay(){
   if(careerDayDone()) return null;
   const afford=CC_DAY_ACTS
-    .filter(a=>a.energy<=careerEnergy() && Object.keys(a.gain||{}).length && !a.crew)
+    .filter(a=>a.energy<=careerEnergy() && Object.keys(a.gain||{}).length && !a.crew && !a.watch)
     .map(a=>({a:a, per:ATTR_KEYS.reduce((t,k)=>t+(a.gain[k]||0)*ATTR_W[k],0)/a.energy}))
     .sort((x,y)=>y.per-x.per);
   // Nothing affordable is a day the store cannot pay for, and resting is what a

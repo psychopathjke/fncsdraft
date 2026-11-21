@@ -5821,6 +5821,23 @@
   .g-D{color:#ff5f56 !important;} .g-C{color:#ffb13d !important;} .g-B{color:#cfd8ff !important;} .g-A{color:#00d6a4 !important;} .g-Ap{color:#ffdd00 !important;}
   .tw-tile{max-width:1100px;margin:0 auto 10px;}
   .tw-noble-ic{height:20px;width:auto;vertical-align:-3px;margin-right:7px;}
+  /* Смотреть про (ccWatchTileHTML). */
+  .wp-ics{display:inline-flex;gap:4px;margin-right:8px;vertical-align:-3px;}
+  .wp-ics svg{width:18px;height:18px;} .wp-ics svg:first-child{color:#a970ff;} .wp-ics svg:last-child{color:#ff3b3b;}
+  .wp-sub{margin:0 0 8px;font-size:12px;color:#aab6dc;line-height:1.35;}
+  .wp-why{margin:0 0 8px;font-size:12px;font-weight:800;color:#ffb13d;}
+  .wp-last{margin:0 0 8px;font-size:12px;font-weight:800;color:#00d6a4;}
+  .wp-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:6px;}
+  .wp-row{display:flex;align-items:center;gap:10px;padding:7px 9px;border-radius:10px;background:rgba(255,255,255,.05);min-width:0;}
+  .wp-who{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;}
+  .wp-who b{font-size:13px;font-weight:900;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .wp-who b em{font-style:normal;color:#ffdd00;margin-left:3px;}
+  .wp-who span{font-size:11px;color:#aab6dc;display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+  .wp-pl{font-style:normal;display:inline-flex;align-items:center;gap:3px;font-weight:800;}
+  .wp-pl svg{width:13px;height:13px;} .wp-streams{color:#bf94ff;} .wp-youtube{color:#ff6b6b;}
+  .wp-go{flex:none;display:flex;flex-direction:column;align-items:center;gap:1px;padding:6px 10px;border:0;border-radius:8px;background:#ffdd00;color:#111;cursor:pointer;font:inherit;}
+  .wp-go b{font-size:12px;font-weight:900;text-transform:uppercase;} .wp-go em{font-style:normal;font-size:10px;font-weight:800;}
+  .wp-go:disabled{background:rgba(255,255,255,.1);color:#8fa1cc;cursor:default;}
   /* Два атрибута у карт Creative — прирост переносится на вторую строку, а не режется. */
   .cc-tc-gain{white-space:normal;line-height:1.15;}
   .cc-day-train .cc-tc-gain{font-size:15px;}

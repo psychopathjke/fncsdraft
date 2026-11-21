@@ -45,7 +45,8 @@ const BOOT = `
       for (let i = 0; i < days; i++) {
         CAREER.career.day = ccAddDays(CAREER.career.day, 1);
         CAREER.career.energy = careerEnergyMax();
-        if (CAREER.career.did) delete CAREER.career.did[CAREER.career.day];
+        // Без истории недели: убывающая отдача повтора (CC_TRAIN_REPEAT) проверяется отдельно ниже, тут - сама арифметика дня.
+        CAREER.career.did = {};
         careerDoAct(id);
       }
     };
@@ -110,6 +111,22 @@ const BOOT = `
     check('a save with no attributes builds them rather than ignoring the day',
           !!CAREER.player.attrs);
     check('and that day is worth something', CAREER.player.ovrExact > c0);
+
+    // ---- убывающая отдача: тот же стат за неделю (CC_TRAIN_REPEAT) --------
+    seed(54, 'roleIGL');
+    const steps = [];
+    for (let i = 0; i < 5; i++) {
+      CAREER.career.day = ccAddDays(CAREER.career.day, 1);
+      CAREER.career.energy = careerEnergyMax();
+      const before = CAREER.player.attrs.aim, g = realGrade; let mult = 1;
+      ccDrillGrade = function(id){ const r = g(id); mult = r.mult; return r; };
+      careerDoAct('trAim');
+      steps.push((CAREER.player.attrs.aim - before) / (CC_TRAIN_DAY * mult));
+    }
+    ccDrillGrade = realGrade;
+    out.notes.repeat = steps.map(x => Math.round(x*100)/100);
+    check('a stat trained again in the week pays 1, 0.7, 0.5, 0.35, 0.35',
+          [1, 0.7, 0.5, 0.35, 0.35].every((w, i) => Math.abs(steps[i] - w) < 0.02), out.notes.repeat.join(', '));
   } catch(e) { out.err = String(e && e.stack || e); }
   document.getElementById('__out').textContent =
     'PB' + 'EGIN' + encodeURIComponent(JSON.stringify(out)) + 'PE' + 'ND';

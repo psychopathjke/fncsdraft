@@ -4752,3 +4752,6 @@ Object.assign(I18N.es=I18N.es||{},
 /* Дозаливка «es» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
 Object.assign(I18N.es=I18N.es||{},
 ({invShown:(n,t)=>"Mostrando "+n+" de "+t+" por debajo de tu rating"}));
+/* Дозаливка «es» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
+Object.assign(I18N.es=I18N.es||{},
+({ccActtrWaim:"Ver a un pro", ccActtrWsur:"Ver a un pro", ccActtrWcon:"Ver a un pro", ccActtrWclu:"Ver a un pro", ccActtrWend:"Ver a un pro", wpTitle:"Ver a los pros", wpSub:"Aprende de quien es más fuerte: sube la estadística con mayor diferencia, nunca por encima de su nivel. Media sesión por 15 de energía.", wpBest:(k,his,mine)=>k+" "+his+" de él, "+mine+" tuyo", wpBtn:"Ver", wpBtnTip:"Ver su directo o su vídeo", wpNothing:"Nada que aprender", wpNone:"Hoy no hay nadie más fuerte que tú en directo", wpDayShut:"Hoy no hay tiempo para ver: el día está ocupado", wpHurt:"Lesionado: solo descanso", wpDid:(h,p,k,by)=>"Hoy viste a "+h+" en "+p+": "+k+" +"+by}));

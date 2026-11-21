@@ -33,7 +33,12 @@ const BOOT = `
     // Half a point of the stat, whichever stat the session is for. The scrim is
     // the one that splits it, a quarter into each of the four it plays.
     const moved = {};
-    CC_DAY_ACTS.filter(a => Object.keys(a.gain||{}).length).forEach(a => {
+    // «Смотреть про» - половина занятия за половину энергии (15), см. ccWatchTileHTML.
+    CC_DAY_ACTS.filter(a => a.watch).forEach(a => {
+      const total = Object.keys(a.gain).reduce((s,k) => s + a.gain[k], 0);
+      check('watching a pro (' + a.id + ') is a quarter point for 15 energy', Math.abs(total - DAY/2) < 0.005 && a.energy === 15, total + ' / ' + a.energy);
+    });
+    CC_DAY_ACTS.filter(a => Object.keys(a.gain||{}).length && !a.watch).forEach(a => {
       const total = Object.keys(a.gain).reduce((s,k) => s + a.gain[k], 0);
       const rating = Object.keys(a.gain).reduce((s,k) => s + a.gain[k]*ATTR_W[k], 0);
       moved[a.id] = {stat: Math.round(total*1000)/1000, rating: Math.round(rating*1000)/1000};
