@@ -6270,6 +6270,12 @@
   #screen-career-hub .ch-art-in .cc-aw-strip{display:flex;gap:6px;width:100%;overflow-x:auto;scroll-snap-type:x proximity;
     -webkit-overflow-scrolling:touch;scrollbar-width:none;}
   #screen-career-hub .ch-art-in .cc-aw-strip::-webkit-scrollbar{display:none;}
+  /* «Потренироваться до турнира» под кнопками вечера: ссылка, не третья большая кнопка (ccPreEvent). */
+  #screen-career-hub .ch-art-in .cc-pretrain{display:block;margin:8px auto 0;padding:6px 10px;border:0;background:none;
+    color:#eaf1ff;font:inherit;font-size:11px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;
+    text-decoration:underline;text-underline-offset:3px;cursor:pointer;}
+  #screen-career-hub .ch-art-in .cc-pretrain:hover{color:#fff;}
+  #screen-career-hub .cc-day-pre{border-color:rgba(255,221,0,.55);color:#fff3a8;}
   #screen-career-hub .ch-art-in .cc-aw .cc-aw-r{flex:0 0 150px;display:flex;flex-direction:column;align-items:stretch;gap:3px;
     margin:0;padding:8px 10px;border:0;border-radius:5px;background:rgba(255,255,255,.16);scroll-snap-align:start;opacity:1;}
   #screen-career-hub .ch-art-in .cc-aw .cc-aw-r:only-child{flex:1 1 auto;}
@@ -7056,6 +7062,11 @@
   .dc-msg+.dc-msg{margin-top:10px;}
   .dc-av{width:34px;height:34px;flex:0 0 34px;border-radius:50%;background:#3b3f55;color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;}
   .dc-av.bot{background:#5865f2;}
+  /* Аватарки картинкой (ccDcImg): фото карточки игрока, корона Noble; значок телефона - линией. */
+  .dc-av,.dc-srv{overflow:hidden;}
+  .dc-av img,.dc-srv img{width:100%;height:100%;object-fit:cover;display:block;}
+  .dc-av.bot img,.dc-srv img[src*="noble-crown"]{object-fit:contain;padding:5px;box-sizing:border-box;}
+  .dc-av svg,.dc-srv svg{width:58%;height:58%;}
   .dc-msg-in{min-width:0;flex:1;}
   .dc-msg-in b{color:#fff;font-size:13px;}
   .dc-bot{font-style:normal;font-size:9.5px;font-weight:900;background:#5865f2;color:#fff;border-radius:3px;padding:1px 4px;margin-left:6px;vertical-align:1px;}
@@ -12332,7 +12343,7 @@ chSquad:'Дуо', ccDuoFindTitle:'Кому написать',
 ccDuoFindHint:'Любому игроку своего региона можно написать первым. Ответит он сам — и не всякий согласится.',
 ccDuoSearchPh:'Поиск по нику',
 ccDuoSortBy:'Сортировать', ccDuoSortNear:'мой уровень', ccDuoSortOvr:'рейтинг', ccDuoSortPr:'PR', ccDuoPrOf:(pr,rank)=>'PR '+pr+' · #'+rank,
-ccDuoNat:'Флаг', ccVAltH:'Капы дня',awH:n=>'Другие регионы · '+n+' энергии',awLate:n=>'Ночью ещё идут · '+n+' энергии',awCupLine:(r,d)=>'Выезд в '+r+', Дивизион '+d+': переход по отсечке там',awDivUp:(r,d)=>'Переход в '+r+': Дивизион '+d,awDivD:d=>'Д'+d,awWfSeat:r=>'Путёвка в финал недели '+r,awNewsDivUp:(r,d)=>'Выезд: в '+r+' теперь Дивизион '+d,awAfterHome:l=>'После твоего капа: '+l,awHT:'Другие регионы',awLateT:'Ночью ещё идут',awAfterOwn:'после твоего капа',awCost:n=>n+' энергии за выезд',awMs:ms=>ms+' мс',awPenT:p=>'-'+p+' силы',awGo:'Играть',aw_past:'уже прошёл',aw_dev:'нужно устройство',awBusy:'В это время ты играешь на выезде',awBtn:(r,ms,p)=>r+' · '+ms+' мс · -'+p+' силы',aw_done:'сыграно',aw_tired:'нет сил',aw_mate:'нет состава', roFirst:d=>'первый турнир — '+d, roGather:'Собрать состав', roFind:'Найти напарника', roWeek:'Собрать можно за неделю до турнира', roMpFill:n=>(n>1?'Ещё двоих':'Третьего')+' на вечер возьмёте филлом: игра подберёт по вашему рейтингу', roSpot:'Спот', roSpotNone:'не выбран — поставить', roNat:'Сборная', roCaptain:'ты капитан', roNatTrial:'Место в сборной — через отбор страны', ccDuoNatAll:'все', ccDuoReg:'Регион',
+ccActwarm:'Разминка', ccGiveWarm:n=>'+'+n+' к форме на вечер', ccWarmDone:'уже сегодня', ccKeepEnergy:r=>'оставь '+r+' энергии на турнир', ccPreNote:(t,r)=>r ? 'До вечера «'+t+'»: тренируйся, но '+r+' энергии оставь на турнир.' : 'До вечера «'+t+'»: можно потренироваться и размяться.', ccPreGo:'К турниру', ccPreBtn:'Потренироваться до турнира', ccRepeatNote:n=>'уже '+n+' за неделю, даёт меньше', ccDuoNat:'Флаг', ccVAltH:'Капы дня',awH:n=>'Другие регионы · '+n+' энергии',awLate:n=>'Ночью ещё идут · '+n+' энергии',awCupLine:(r,d)=>'Выезд в '+r+', Дивизион '+d+': переход по отсечке там',awDivUp:(r,d)=>'Переход в '+r+': Дивизион '+d,awDivD:d=>'Д'+d,awWfSeat:r=>'Путёвка в финал недели '+r,awNewsDivUp:(r,d)=>'Выезд: в '+r+' теперь Дивизион '+d,awAfterHome:l=>'После твоего капа: '+l,awHT:'Другие регионы',awLateT:'Ночью ещё идут',awAfterOwn:'после твоего капа',awCost:n=>n+' энергии за выезд',awMs:ms=>ms+' мс',awPenT:p=>'-'+p+' силы',awGo:'Играть',aw_past:'уже прошёл',aw_dev:'нужно устройство',awBusy:'В это время ты играешь на выезде',awBtn:(r,ms,p)=>r+' · '+ms+' мс · -'+p+' силы',aw_done:'сыграно',aw_tired:'нет сил',aw_mate:'нет состава', roFirst:d=>'первый турнир — '+d, roGather:'Собрать состав', roFind:'Найти напарника', roWeek:'Собрать можно за неделю до турнира', roMpFill:n=>(n>1?'Ещё двоих':'Третьего')+' на вечер возьмёте филлом: игра подберёт по вашему рейтингу', roSpot:'Спот', roSpotNone:'не выбран — поставить', roNat:'Сборная', roCaptain:'ты капитан', roNatTrial:'Место в сборной — через отбор страны', ccDuoNatAll:'все', ccDuoReg:'Регион',
 ccDuoWrite:'Написать',
 ccDuoFree:'без дуо',
 ccDuoWith:n=>'дуо с '+n,
@@ -14461,7 +14472,7 @@ chSquad:'Duo', ccDuoFindTitle:'Who to write to',
 ccDuoFindHint:'You can write first to anybody in your region. They answer for themselves, and not everybody says yes.',
 ccDuoSearchPh:'Search by name',
 ccDuoSortBy:'Sort by', ccDuoSortNear:'my level', ccDuoSortOvr:'rating', ccDuoSortPr:'PR', ccDuoPrOf:(pr,rank)=>'PR '+pr+' · #'+rank,
-ccDuoNat:'Flag', ccVAltH:'Cups today',awH:n=>'Other regions · '+n+' energy',awLate:n=>'Still on tonight · '+n+' energy',awCupLine:(r,d)=>'Away in '+r+', Division '+d+': promotion by its cut there',awDivUp:(r,d)=>'Promoted in '+r+': Division '+d,awDivD:d=>'D'+d,awNewsDivUp:(r,d)=>'Away: now Division '+d+' in '+r,awWfSeat:r=>'Weekly Final seat in '+r,awAfterHome:l=>'After your own cup: '+l,awHT:'Other regions',awLateT:'Still on tonight',awAfterOwn:'after your own cup',awCost:n=>n+' energy a trip',awMs:ms=>ms+' ms',awPenT:p=>'-'+p+' power',awGo:'Play',aw_past:'already over',aw_dev:'needs a device',awBusy:'You are playing away at that time',awBtn:(r,ms,p)=>r+' · '+ms+' ms · -'+p+' power',aw_done:'played',aw_tired:'too tired',aw_mate:'no roster', roFirst:d=>'first event — '+d, roGather:'Build roster', roFind:'Find a partner', roWeek:'You can build it a week before', roMpFill:n=>(n>1?'Two more':'The third')+' will be a fill for the night, picked near your rating', roSpot:'Spot', roSpotNone:'not set — pick one', roNat:'National team', roCaptain:'you are captain', roNatTrial:'Your seat comes through the country trial', ccDuoNatAll:'all', ccDuoReg:'Region',
+ccActwarm:'Warm-up', ccGiveWarm:n=>'+'+n+' form tonight', ccWarmDone:'done today', ccKeepEnergy:r=>'keep '+r+' energy for the tournament', ccPreNote:(t,r)=>r ? 'Before '+t+' tonight: train, but keep '+r+' energy for the tournament.' : 'Before '+t+' tonight: you can train and warm up.', ccPreGo:'To the tournament', ccPreBtn:'Train before the tournament', ccRepeatNote:n=>n+' this week already, gives less', ccDuoNat:'Flag', ccVAltH:'Cups today',awH:n=>'Other regions · '+n+' energy',awLate:n=>'Still on tonight · '+n+' energy',awCupLine:(r,d)=>'Away in '+r+', Division '+d+': promotion by its cut there',awDivUp:(r,d)=>'Promoted in '+r+': Division '+d,awDivD:d=>'D'+d,awNewsDivUp:(r,d)=>'Away: now Division '+d+' in '+r,awWfSeat:r=>'Weekly Final seat in '+r,awAfterHome:l=>'After your own cup: '+l,awHT:'Other regions',awLateT:'Still on tonight',awAfterOwn:'after your own cup',awCost:n=>n+' energy a trip',awMs:ms=>ms+' ms',awPenT:p=>'-'+p+' power',awGo:'Play',aw_past:'already over',aw_dev:'needs a device',awBusy:'You are playing away at that time',awBtn:(r,ms,p)=>r+' · '+ms+' ms · -'+p+' power',aw_done:'played',aw_tired:'too tired',aw_mate:'no roster', roFirst:d=>'first event — '+d, roGather:'Build roster', roFind:'Find a partner', roWeek:'You can build it a week before', roMpFill:n=>(n>1?'Two more':'The third')+' will be a fill for the night, picked near your rating', roSpot:'Spot', roSpotNone:'not set — pick one', roNat:'National team', roCaptain:'you are captain', roNatTrial:'Your seat comes through the country trial', ccDuoNatAll:'all', ccDuoReg:'Region',
 ccDuoWrite:'Write',
 ccDuoFree:'no duo',
 ccDuoWith:n=>'duo with '+n,
@@ -25347,7 +25358,16 @@ Object.assign(I18N.pt=I18N.pt||{},
     '\n⏱️ Tempo vivo: ≈'+r[4]+'\n📍 Colocação média: '+r[5]+'\n🔟 Top 10: '+r[6]+'\n👑 Vitórias: '+r[7]+'\n⭐ Pontos: '+r[8],
   ccMobTile: "MOB"
 }));
-let CC_I18N_V={de:'16738e28', es:'3658ef56'};   // ==== CC_I18N_V (tools/build-i18n.js) ====
+/* Дозаливка «fr» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
+Object.assign(I18N.fr=I18N.fr||{},
+({ccActwarm:'Échauffement', ccGiveWarm:n=>'+'+n+' de forme ce soir', ccWarmDone:'déjà fait', ccKeepEnergy:r=>'garde '+r+' d’énergie pour le tournoi', ccPreNote:(t,r)=>r ? 'Avant '+t+' ce soir : entraîne-toi, mais garde '+r+' d’énergie pour le tournoi.' : 'Avant '+t+' ce soir : tu peux t’entraîner et t’échauffer.', ccPreGo:'Au tournoi', ccPreBtn:'S’entraîner avant le tournoi', ccRepeatNote:n=>'déjà '+n+' cette semaine, rapporte moins'}));
+/* Дозаливка «it» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
+Object.assign(I18N.it=I18N.it||{},
+({ccActwarm:'Riscaldamento', ccGiveWarm:n=>'+'+n+' di forma stasera', ccWarmDone:'già fatto', ccKeepEnergy:r=>'tieni '+r+' di energia per il torneo', ccPreNote:(t,r)=>r ? 'Prima di '+t+' stasera: allenati, ma tieni '+r+' di energia per il torneo.' : 'Prima di '+t+' stasera: puoi allenarti e scaldarti.', ccPreGo:'Al torneo', ccPreBtn:'Allenati prima del torneo', ccRepeatNote:n=>'già '+n+' questa settimana, rende meno'}));
+/* Дозаливка «pt» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
+Object.assign(I18N.pt=I18N.pt||{},
+({ccActwarm:'Aquecimento', ccGiveWarm:n=>'+'+n+' de forma hoje à noite', ccWarmDone:'já feito', ccKeepEnergy:r=>'guarde '+r+' de energia para o torneio', ccPreNote:(t,r)=>r ? 'Antes de '+t+' hoje: treine, mas guarde '+r+' de energia para o torneio.' : 'Antes de '+t+' hoje: dá para treinar e aquecer.', ccPreGo:'Para o torneio', ccPreBtn:'Treinar antes do torneio', ccRepeatNote:n=>'já '+n+' nesta semana, rende menos'}));
+let CC_I18N_V={de:'37f565b3', es:'db408eab'};   // ==== CC_I18N_V (tools/build-i18n.js) ====
 /*@@PART js/lang-and-cards.js@@*/
 // Версия fn-shop.js (магазин Fortnite по дням, tools/build-fn-shop.js) — для ?v= ленивой загрузки.
 let CC_FN_SHOP_V='dc62e7dc';
@@ -123253,7 +123273,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='f642d6b4';
+const CC_BUILD='0165376e';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -129120,6 +129140,8 @@ function careerCentreHTML(card, a){
                  кнопкой значило бы запереть игрока без выхода. */
               (playable || ccMpOn() || ccRaceModeWhy()) ? careerSimRowHTML() : ''}
             ${btn}
+            ${/* День турнира до вечера: занятия и разминка во вкладке «Тренировка» (ccPreEvent). */
+              playable && ccPreEvent() ? '<button type="button" class="cc-pretrain" onclick="careerTab(\'train\')">'+esc(L().ccPreBtn)+'</button>' : ''}
           </div>
         </div>`}
       ${/* Интервью — ПОД днём, не над ним (Notion 27.10, игрок: «на тренировке спрашивает, тащил ли я команду, и мышку
@@ -131035,6 +131057,8 @@ const CC_DAY_ACTS=[
   /* Мобильные скримы (идея игрока с мобильной сцены, 19.11: «add scrims, people do host like takeovers»): катки против
      мобильных игроков на 16, как в серии. Дороже тренировки, качают меньше, зато и выше её потолка: до 90. Решение, не замер. */
   {id:'mobScrim', energy:40, gain:{}, mobile:true, mobScrim:true},
+  // Разминка перед турниром: только в день турнира, форма на вечер (ccPreEvent, CC_WARM_FORM).
+  {id:'warm',    energy:15, gain:{}, warm:true},
   {id:'rest',    energy:0,  gain:{}, rest:CC_ENERGY_REST}
 ];
 /* Цена разговора. Довольному почти ничего не даёт (иначе его можно держать на ста), недовольному больше всего.
@@ -131669,16 +131693,39 @@ function ccDcSessHTML(kind){
     '<div class="dc-chan"><div class="dc-chan-h"># '+esc(T.dcCheckChan)+'</div>'+check+'</div>';
 }
 function ccDcServer(id){ CH_DC=id; careerRenderHub('discord'); }
+/* Аватарки Discord (его «добавь дискордам аватарки», 21.11): у игрока - фото его карточки, как в шапке хаба; у бота -
+   значок его сервера; у серверов - корона Noble (EU), инициалы сервера практики региона, телефон у мобильного,
+   своё фото у своего сервера. Без фото - буквы, как было. */
+const CC_DC_PHONE_SVG='<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="7" y="2.5" width="10" height="19" rx="2.2"/><path d="M11 18.5h2"/></svg>';
+function ccDcFace(){ try{ const c=careerCard(); return c ? (photoURL(c)||'') : ''; }catch(e){ return ''; } }
+function ccDcInitials(name){
+  const w=String(name||'').split(/[^A-Za-z0-9]+/).filter(Boolean);
+  return ((w[0]||'?').charAt(0)+(w[1]||'').charAt(0)).toUpperCase();
+}
+// Картинка аватарки; не загрузилась - вместо неё буквы.
+function ccDcImg(src, fb){ return '<img src="'+esc(src)+'" alt="" loading="lazy" data-fb="'+esc(fb)+'" onerror="this.replaceWith(this.dataset.fb)">'; }
+function ccDcSrvIcon(id){
+  if(id==='pc') return ccCareerRegion()==='EU' ? ccDcImg('items/creative/noble-crown.png', 'NP') : esc(ccDcInitials(ccPracSrv()));
+  if(id==='mob') return CC_DC_PHONE_SVG;
+  const f=ccDcFace(); return f ? ccDcImg(f, '★') : '★';
+}
 function ccDiscordHTML(){
   const T=L(), cr=CAREER.career, srv=CH_DC||'pc';
-  const servers=[['pc', 'PC', ccPracSrv()], ['mob', '📱', T.dcSrvMob], ['own', '★', T.dcSrvOwn]];
+  const servers=[['pc', ccDcSrvIcon('pc'), ccPracSrv()], ['mob', ccDcSrvIcon('mob'), T.dcSrvMob], ['own', ccDcSrvIcon('own'), T.dcSrvOwn]];
   const last=cr.dcLast && cr.dcLast.day===careerToday() ? cr.dcLast : null;
   const btn=(kind, label)=>{ const why=ccDcWhy(kind);
     return '<div class="dc-act"><button class="dc-btn"'+(why ? ' disabled' : '')+' onclick="ccDcGo(\''+kind+'\')">'+esc(label)+
       ' <em>'+CC_DC_ENERGY+T.ccEnergyMark+'</em></button>'+(why ? '<span class="dc-why">'+esc(why)+'</span>' : '')+'</div>'; };
   const res=kinds=>(last && kinds.indexOf(last.kind)>=0)
     ? '<div class="dc-res">'+esc(T.dcResult(last.wins, ccNum(last.cash)))+(last.grow ? ' · '+esc(T.ccMobTitle)+' +'+last.grow.toFixed(2) : '')+'</div>' : '';
-  const msg=(author, bot, body)=>'<div class="dc-msg"><span class="dc-av'+(bot ? ' bot' : '')+'">'+esc(String(author).slice(0, 2).toUpperCase())+'</span>'+
+  // Аватарка автора: бот - значок сервера, игрок - фото своей карточки, остальные - буквы.
+  const avOf=(author, bot)=>{
+    const fb=String(author).slice(0, 2).toUpperCase();
+    if(bot) return srv==='own' ? esc(fb) : ccDcSrvIcon(srv);
+    const f=author===CAREER.player.nick ? ccDcFace() : '';
+    return f ? ccDcImg(f, fb) : esc(fb);
+  };
+  const msg=(author, bot, body)=>'<div class="dc-msg"><span class="dc-av'+(bot ? ' bot' : '')+'">'+avOf(author, bot)+'</span>'+
     '<div class="dc-msg-in"><b>'+esc(author)+(bot ? '<i class="dc-bot">BOT</i>' : '')+'</b>'+body+'</div></div>';
   const chan=(name, body)=>'<div class="dc-chan"><div class="dc-chan-h"># '+esc(name)+'</div>'+body+'</div>';
   let body='';
@@ -131699,7 +131746,7 @@ function ccDiscordHTML(){
            res(['pcHost','mobHost'])+(last && last.who && last.who.length && /Host/.test(last.kind) ? '<div class="dc-res">'+esc(T.dcWinners(last.who.map(h=>'@'+ccHandle(h)).join(', ')))+'</div>' : ''));
   }
   return '<div class="ch-tile dc-wrap"><div class="dc-srvs">'+servers.map(([id, ic, name])=>
-      '<button class="dc-srv'+(srv===id ? ' on' : '')+'" title="'+esc(name)+'" aria-label="'+esc(name)+'" onclick="ccDcServer(\''+id+'\')">'+esc(ic)+'</button>').join('')+'</div>'+
+      '<button class="dc-srv'+(srv===id ? ' on' : '')+'" title="'+esc(name)+'" aria-label="'+esc(name)+'" onclick="ccDcServer(\''+id+'\')">'+ic+'</button>').join('')+'</div>'+
     '<div class="dc-body"><h4 class="dc-name">'+esc((servers.find(s=>s[0]===srv)||servers[0])[2])+'</h4>'+body+'</div></div>';
 }
 /* Бросок дня. Один на день, кидается когда день впервые спросили, и сразу
@@ -131879,9 +131926,52 @@ function careerDayClosed(){
 function careerDayGear(){ return 1 + ((CAREER.gear && CAREER.gear.train) || 0) + ccStayTrain(); }
 // What the stream rig adds to a night's followers. Nothing owned, nothing added.
 function ccGearReach(){ return (CAREER.gear && CAREER.gear.reach) || 0; }
+/* Тренировка в день турнира (его выбор 21.11, пункты 1-3 из «как переработать тренировки»).
+   1. До вечера день турнира открыт для занятий во вкладке «Тренировка»: только занятия с приростом и разминка, без
+      отдыха, скримов и стрима (они закрывают день целиком). Кап дивизиона берёт CC_TOURNEY_ENERGY после сессии, поэтому
+      занятие, после которого на кап не останется 35, не нажимается. Онлайн (команда, гонка) не трогаем: там вечер
+      идёт локстепом, и лишний шаг дня у одного разведёт сейвы.
+   2. Разминка (warm в CC_DAY_ACTS): раз в день турнира, 15 энергии, +CC_WARM_FORM к форме, а форма за ночь тает на
+      CC_FORM_DECAY, то есть это прибавка на сегодняшний вечер. Статы не качает. Число - решение, не замер: меньше
+      сессии Noble (0.1-0.4 за 40 энергии), потому что без игры против сотни.
+   3. Убывающая отдача: n-е занятие одного стата за последние семь дней даёт CC_TRAIN_REPEAT[n] от шага. Энергии в году
+      хватает примерно на 145-200 занятий, и без этого её всю можно лить в один стат. Тоже решение, не замер. */
+const CC_WARM_FORM=0.3;
+const CC_TRAIN_REPEAT=[1, 0.7, 0.5, 0.35];
+function ccRepeatCount(k){
+  const did=(CAREER && CAREER.career && CAREER.career.did) || {};
+  let n=0;
+  for(let i=0;i<7;i++){
+    (did[ccAddDays(careerToday(), -i)]||[]).forEach(id=>{
+      const a=ccActById(id);
+      if(a && String(a.id).indexOf('tr')===0 && a.gain && a.gain[k]) n++;
+    });
+  }
+  return n;
+}
+function ccRepeatMult(k){ return CC_TRAIN_REPEAT[Math.min(ccRepeatCount(k), CC_TRAIN_REPEAT.length-1)]; }
+function ccTrainAct(a){ return !!a && String(a.id).indexOf('tr')===0 && Object.keys(a.gain||{}).length>0 && !a.mobile; }
+// {next, reserve} в день турнира до вечера, иначе null.
+function ccPreEvent(){
+  const cr=CAREER && CAREER.career;
+  if(!cr || cr.seasonOver) return null;
+  if((typeof ccMpOn==='function' && ccMpOn()) || (typeof ccRaceOn==='function' && ccRaceOn())) return null;
+  let next=null;
+  try{ next=careerNext(); }catch(e){ return null; }
+  if(!next || next.day!==careerToday() || next.type==='free' || next.type==='gala') return null;
+  if(typeof ccCentreDayOpen==='function' && ccCentreDayOpen()) return null;
+  if(!careerCanPlay(next)) return null;
+  return {next:next, reserve: next.type==='cup' ? CC_TOURNEY_ENERGY : 0};
+}
+function ccWarmDone(){ return (((CAREER.career.did||{})[careerToday()])||[]).indexOf('warm')>=0; }
 function careerDoAct(id){
   const act=ccActById(id); if(!act) return null;
   const cr=CAREER.career, pl=CAREER.player;
+  // День турнира: только занятия и разминка, и энергия на кап остаётся (см. ccPreEvent).
+  const pre=ccPreEvent();
+  if(pre && !(ccTrainAct(act) || act.warm)) return null;
+  if(act.warm && (!pre || ccWarmDone())) return null;
+  if(pre && careerEnergy()-act.energy<pre.reserve) return null;
   // The store is what says how much of a day there is, and the three things
   // that take all of it say when there is none left. See careerDayClosed.
   if(careerDayClosed()) return null;
@@ -131904,6 +131994,12 @@ function careerDoAct(id){
   if(act.host && ccHostWhy()) return null;
   if(act.mobile && !ccMobileOwn()) return null;   // без телефона или планшета не тренируется
   careerSpend(cost);
+  if(act.warm){
+    cr.form=clamp((cr.form||0)+CC_WARM_FORM, -CC_FORM_MAX, CC_FORM_MAX);
+    cr.did=cr.did||{}; cr.did[careerToday()]=(cr.did[careerToday()]||[]).concat(id);
+    careerSave();
+    return {id, moved:{}, energy:careerEnergy(), warm:CC_WARM_FORM};
+  }
   if(act.mobile){
     const g=ccMobileTrain(!!act.mobScrim);
     cr.did=cr.did||{}; cr.did[careerToday()]=(cr.did[careerToday()]||[]).concat(id);
@@ -131968,7 +132064,7 @@ function careerDoAct(id){
     const sk=(act.id==='stream' && typeof ccStreamKind==='function') ? ccStreamKind(CC_STREAM_KIND) : null;
     const gain=(sk && sk.train) ? (g=>{ const o={}; Object.keys(g).forEach(k=>{ o[k]=g[k]*sk.train; }); return o; })((ccActById('trPit')||{}).gain||{}) : (act.gain||{});
     Object.keys(gain).forEach(k=>{
-      const by=gain[k]*mult*(coach && coach.keys.indexOf(k)>=0 ? 1+coach.train : 1)
+      const by=gain[k]*mult*(coach && coach.keys.indexOf(k)>=0 ? 1+coach.train : 1)*(ccTrainAct(act) ? ccRepeatMult(k) : 1)
                *careerDiff().age*(scrim ? scrim.mult : 1)*ccFocusMult(k)*(grade ? grade.mult : 1);
       pl.attrs[k]=clamp((pl.attrs[k]||50)+by, ccAttrFloor(k), 99);
       moved[k]=by;
@@ -132694,6 +132790,8 @@ function ccArenaPlayWhy(){
      вечером турнир, как в игре. Закрывает только закрытый день (ccDayShuts), не сам вечер. */
   if(careerDayClosed()) return L().rkDayBusy;
   if(act && careerEnergy()<act.energy) return L().ccNeedEnergy(act.energy-careerEnergy());
+  // В день капа энергия на сам кап остаётся (ccPreEvent): ранкед идёт через careerDoAct('trSur') и упёрся бы молча.
+  { const pre=ccPreEvent(); if(act && pre && careerEnergy()-act.energy<pre.reserve) return L().ccKeepEnergy(pre.reserve); }
   return '';
 }
 
@@ -151690,7 +151788,7 @@ function ccDiscTile(id){ return id!=='talk' && (String(id).indexOf('tr')===0 || 
 function ccDiscGains(a, o){
   return Object.keys(a.gain||{}).map(k=>{
     const f=o.six[k]!=null ? o.six[k] : 50, c=!!(o.dayCoach && o.dayCoach.keys.indexOf(k)>=0);
-    const t=Math.max(35, Math.min(99, f+a.gain[k]*o.dayMult*(c ? 1+o.dayCoach.train : 1)*ccFocusMult(k)));
+    const t=Math.max(35, Math.min(99, f+a.gain[k]*o.dayMult*(c ? 1+o.dayCoach.train : 1)*ccFocusMult(k)*(ccTrainAct(a) ? ccRepeatMult(k) : 1)));
     return {k:k, by:Math.round((t-f)*10)/10};
   }).filter(g=>g.by>0).sort((x,y)=>y.by-x.by);
 }
@@ -151725,7 +151823,8 @@ const CC_DL_SVG={
   talk:'<path d="M4 5h16v11H10l-5 4v-4H4z"/>',
   stream:'<rect x="3" y="4" width="18" height="12.5" rx="2"/><path d="M8.5 20.5h7M12 16.5v4"/><path d="M10.2 7.8v5.4l4.4-2.7z" fill="currentColor" stroke="none"/>',
   host:'<path d="M6 21V4"/><path d="M6 4.5h11l-2.2 3.8L17 12H6"/>',
-  rest:'<path d="M19.5 14.6A7.8 7.8 0 1 1 9.4 4.5a6.2 6.2 0 0 0 10.1 10.1z"/>'
+  rest:'<path d="M19.5 14.6A7.8 7.8 0 1 1 9.4 4.5a6.2 6.2 0 0 0 10.1 10.1z"/>',
+  warm:'<circle cx="12" cy="13.5" r="7.5"/><path d="M12 9.5v4l2.6 2M9.5 3h5"/>'
 };
 // Параметры одной строкой над плитками: сокращение, значение, прирост за неделю.
 function ccDiscStatsHTML(six){
@@ -151753,6 +151852,8 @@ function careerDayPanelHTML(locked){
   // Whether there is any of the day left to spend, which is not the same as
   // whether anything has been spent: sessions run until the store runs out.
   const closed=careerDayClosed();
+  // День турнира до вечера (вкладка «Тренировка»): только занятия и разминка, энергия на кап остаётся. См. ccPreEvent.
+  const pre=CC_DAY_VIEW==='train' ? ccPreEvent() : null;
   /* And what closed it, said out loud.
 
      Nine buttons at a third of their opacity over a full energy ring is a screen
@@ -151797,7 +151898,7 @@ function careerDayPanelHTML(locked){
   const dayMult = careerDayGear()*clamp((careerTrainCap()-nowOvr)/CAREER_TAPER, 0, 1);
   const dayCoach = ccCoach();
   const six = CAREER.player.attrs || ccOwnAttrs();
-  const actsShown=CC_DAY_ACTS.filter(function(a){ return (!a.meta || ccMetaOpen()); });
+  const actsShown=CC_DAY_ACTS.filter(function(a){ return pre ? (ccTrainAct(a) || a.warm) : (!a.warm && (!a.meta || ccMetaOpen())); });
   if(CC_DAY_VIEW==='train') actsShown.sort((x, y)=>(ccDiscTile(x.id) ? 0 : 1)-(ccDiscTile(y.id) ? 0 : 1));
   const rows=actsShown.map(function(a, ai, allActs){
     const noDev=!!a.mobile && !ccMobileOwn();
@@ -151815,7 +151916,7 @@ function careerDayPanelHTML(locked){
     // it is an evening for nothing. See the note beside ccNoGain.
     const gainsMove=keys.some(function(k){
       const from=six[k]!=null ? six[k] : 50;
-      const by=a.gain[k]*dayMult*(dayCoach && dayCoach.keys.indexOf(k)>=0 ? 1+dayCoach.train : 1);
+      const by=a.gain[k]*dayMult*(dayCoach && dayCoach.keys.indexOf(k)>=0 ? 1+dayCoach.train : 1)*(ccTrainAct(a) ? ccRepeatMult(k) : 1);
       return Math.round(clamp(from+by,35,99)*10)/10 > Math.round(from*10)/10;
     });
     // Affordable, and the day still open. As many sessions as the store can pay
@@ -151823,12 +151924,14 @@ function careerDayPanelHTML(locked){
     // says it is over.
     const hostWhy=a.host ? ccHostWhy() : null;
     // Noble даёт форму, креатив — настрой: их не закрывает потолок параметров.
-    const extraUse=!!(a.noble || a.morale);
+    const extraUse=!!(a.noble || a.morale || a.warm);
+    // В день турнира занятие не должно съесть энергию капа; разминка - одна за день.
+    const keepOk=!pre || left-a.energy>=pre.reserve, warmOk=!a.warm || !ccWarmDone();
     const can=!closed && left>=a.energy && (!maxed || extraUse) && !restFull
-              && (!keys.length || gainsMove || extraUse) && !hostWhy && !noDev;
+              && (!keys.length || gainsMove || extraUse) && !hostWhy && !noDev && keepOk && warmOk;
     const gains=keys.map(function(k){
       const from=six[k]!=null ? six[k] : 50;
-      const by=a.gain[k]*dayMult*(dayCoach && dayCoach.keys.indexOf(k)>=0 ? 1+dayCoach.train : 1);
+      const by=a.gain[k]*dayMult*(dayCoach && dayCoach.keys.indexOf(k)>=0 ? 1+dayCoach.train : 1)*(ccTrainAct(a) ? ccRepeatMult(k) : 1);
       const to=clamp(from+by, 35, 99);
       // To one decimal, because half a point is what a session is: rounded to
       // the card's own whole numbers this line would read "75 → 75" on every
@@ -151846,7 +151949,8 @@ function careerDayPanelHTML(locked){
          is told only by their opacity. It is the same complaint the closed day
          drew — a control that refuses without a reason. */
       (!closed && !maxed && !restFull && left<a.energy
-        ? '<i class="cc-give-cost">'+L().ccNeedEnergy(a.energy-left)+'</i>' : '')+
+        ? '<i class="cc-give-cost">'+L().ccNeedEnergy(a.energy-left)+'</i>'
+        : (!closed && !keepOk ? '<i class="cc-give-cost">'+esc(L().ccKeepEnergy(pre.reserve))+'</i>' : ''))+
       /* And when the session is worth nothing, which is not the same as maxed.
 
          Near the top of the scale the taper cuts a session's gain to under a
@@ -151862,6 +151966,9 @@ function careerDayPanelHTML(locked){
     // store is already full.
     if(a.rest && !restFull) extra.push('<i class="cc-give-rest">'+L().ccGiveRest+'</i>');
     if(a.focus)   extra.push('<i class="cc-give-cost">'+L().ccGiveNoImprove+'</i>');
+    if(a.warm)    extra.push('<i class="cc-give-mood">'+esc(L().ccGiveWarm(CC_WARM_FORM))+'</i>'+(ccWarmDone() ? '<i class="cc-give-cost">'+esc(L().ccWarmDone)+'</i>' : ''));
+    // Повтор стата за неделю: прирост ниже, и сказано почему (CC_TRAIN_REPEAT).
+    if(ccTrainAct(a)){ const rk=keys.find(k=>ccRepeatCount(k)>0); if(rk) extra.push('<i class="cc-give-cost">'+esc(L().ccRepeatNote(ccRepeatCount(rk)))+'</i>'); }
     // Тренировка на телефоне: мобильный рейтинг было → станет, как у AIM и остальных; без устройства — где его взять.
     if(a.mobile){ const now=ccMobileOvr(), g=ccMobileTrainGain(!!a.mobScrim), num=v=>(Math.round(v*10)/10).toFixed(1);
       extra.push(noDev ? '<i class="cc-give-cost">'+esc(L().ccMobTrainNeed)+'</i>'
@@ -151891,7 +151998,7 @@ function careerDayPanelHTML(locked){
         if(at<0) return a.meta ? '<button class="cc-act g-train'+(can?'':' off')+'" '+(can?'onclick="careerPickDay(\''+a.id+'\')"':'disabled')+'>'+
           '<span class="cc-act-h"><b>'+ccActName(a.id)+'</b><em>'+a.energy+L().ccEnergyMark+'</em></span></button>' : '';
         const k=keys[0], from=six[k]!=null ? six[k] : 50;
-        const by=a.gain[k]*dayMult*(dayCoach && dayCoach.keys.indexOf(k)>=0 ? 1+dayCoach.train : 1);
+        const by=a.gain[k]*dayMult*(dayCoach && dayCoach.keys.indexOf(k)>=0 ? 1+dayCoach.train : 1)*(ccTrainAct(a) ? ccRepeatMult(k) : 1);
         const up=Math.round((clamp(from+by, 35, 99)-from)*10)/10;
         const tip=ccActName(a.id)+' · '+(L()['ccAttr'+k.toUpperCase()]||k)+' '+from.toFixed(1)+(up>0 ? ' → '+(from+up).toFixed(1) : '')+' · '+a.energy+L().ccEnergyMark;
         return (at===0 ? head+'<div class="cc-six">' : '')+
@@ -151919,7 +152026,7 @@ function careerDayPanelHTML(locked){
   return '<div class="ch-art cc-day'+(CC_DAY_VIEW==='train' ? ' cc-day-train' : '')+'" style="background-image:url('+ccDayArt()+');">'+
     // Which day it is, beside what is on it: his ask, 17 August.
     '<div class="ch-livebar"><b class="ch-live-soon">'+L().ccDayTag+'</b><span>'+
-      esc(ccDayFull(careerToday()))+' · '+(locked ? esc(locked.label) : L().chDayFree)+
+      esc(ccDayFull(careerToday()))+' · '+(pre ? esc(pre.next.title||pre.next.label||'') : locked ? esc(locked.label) : L().chDayFree)+
       // What it takes to go up, which the ladder tile used to say. It belongs on
       // the day rather than in a standings list: it is the number the week is
       // being played against.
@@ -151958,6 +152065,7 @@ function careerDayPanelHTML(locked){
       (((CAREER.player.ovrExact!=null?CAREER.player.ovrExact:CAREER.player.ovr) >= careerTrainCap()-0.01)
         ? '<div class="cc-day-locked">'+esc(L().ccTrainCapped(careerTrainCap()))+'</div>' : '')+
       evBox+
+      (pre ? '<div class="cc-day-locked cc-day-pre">'+esc(L().ccPreNote(pre.next.title||pre.next.label||'', pre.reserve))+'</div>' : '')+
       (typeof ccMpFfOfferHTML==='function' ? ccMpFfOfferHTML() : '')+
       (typeof ccMpCatchUpHTML==='function' ? ccMpCatchUpHTML() : '')+
       // Энергия и настрой: в Центре — двумя кругами, как было; во вкладке «Тренировка» — полосками.
@@ -151974,7 +152082,7 @@ function careerDayPanelHTML(locked){
          «лобби как в Fortnite»): шесть колонок, команда, стрим, отдых и подработка на четыре тарифа уехали во вкладку
          «Тренировка». Здесь — что уже сделано сегодня и кнопка туда с остатком энергии. */
       (CC_DAY_VIEW==='train'
-        ? '<div class="cc-acts">'+rows+'</div>'+careerJobHTML(closed, left)
+        ? '<div class="cc-acts">'+rows+'</div>'+(pre ? '' : careerJobHTML(closed, left))
         : ccDayGoHTML(done, closed, left))+
       // The day ends when the player says so, and it can be said as soon as
       // anything has been done: a day nobody decided may as well not be in the
@@ -151985,11 +152093,13 @@ function careerDayPanelHTML(locked){
          кнопках занятий — идти дальше было нечем. Скриншот:
          «когда свет вырубают нету кнопки следующий день». Закрытый день
          отдаёт кнопку сразу. */
-      (!spent && !closed
+      // День турнира кончается турниром: вместо «Следующий день» - кнопка к нему.
+      (pre ? '<button class="ch-play" onclick="careerTab(\'centre\')">'+esc(L().ccPreGo)+'</button>'
+      : !spent && !closed
               ? '<div class="cc-day-hint">'+L().ccDayMust+'</div>'
               : '<button class="ch-play ch-nextday" onclick="careerNextDayTap(this)">'+L().ccDayDone+(typeof ccMpNextTag==='function' ? ccMpNextTag() : '')+'</button>')+
       // И «до турнира» — в любой день, решённый или нет: см. careerSkipToBtnHTML.
-      (typeof careerSkipToBtnHTML==='function' ? careerSkipToBtnHTML() : '')+
+      (pre ? '' : typeof careerSkipToBtnHTML==='function' ? careerSkipToBtnHTML() : '')+
       /* Упавший день говорит, что именно сломалось.
 
          Отчёт игрока: «everything froze when I pressed the
@@ -152031,7 +152141,7 @@ function careerTrainTabHTML(){
   // Сначала карты, под ними план недели и таблица Noble (если на неделе были сессии).
   const noble=ccNobleBoardHTML();
   const below=ccRkTileHTML()+ccTrainPlanHTML()+(noble ? '<div class="ch-tile tw-tile"><h4>'+(ccCareerRegion()==='EU' ? '<img class="tw-noble-ic" src="items/creative/noble-crown.png" alt="">Noble Practice' : esc(ccPracSrv()))+'</h4>'+noble+'</div>' : '');
-  if(ccCentreDayOpen()){
+  if(ccCentreDayOpen() || ccPreEvent()){
     CC_DAY_VIEW='train';
     try{ return '<div class="cc-train-tab">'+careerDayPanelHTML(null)+below+'</div>'; } finally{ CC_DAY_VIEW=''; }
   }

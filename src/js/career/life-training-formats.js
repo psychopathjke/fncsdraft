@@ -425,6 +425,8 @@ function ccArenaPlayWhy(){
      вечером турнир, как в игре. Закрывает только закрытый день (ccDayShuts), не сам вечер. */
   if(careerDayClosed()) return L().rkDayBusy;
   if(act && careerEnergy()<act.energy) return L().ccNeedEnergy(act.energy-careerEnergy());
+  // В день капа энергия на сам кап остаётся (ccPreEvent): ранкед идёт через careerDoAct('trSur') и упёрся бы молча.
+  { const pre=ccPreEvent(); if(act && pre && careerEnergy()-act.energy<pre.reserve) return L().ccKeepEnergy(pre.reserve); }
   return '';
 }
 

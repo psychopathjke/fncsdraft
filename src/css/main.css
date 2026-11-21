@@ -5749,6 +5749,12 @@
   #screen-career-hub .ch-art-in .cc-aw-strip{display:flex;gap:6px;width:100%;overflow-x:auto;scroll-snap-type:x proximity;
     -webkit-overflow-scrolling:touch;scrollbar-width:none;}
   #screen-career-hub .ch-art-in .cc-aw-strip::-webkit-scrollbar{display:none;}
+  /* «Потренироваться до турнира» под кнопками вечера: ссылка, не третья большая кнопка (ccPreEvent). */
+  #screen-career-hub .ch-art-in .cc-pretrain{display:block;margin:8px auto 0;padding:6px 10px;border:0;background:none;
+    color:#eaf1ff;font:inherit;font-size:11px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;
+    text-decoration:underline;text-underline-offset:3px;cursor:pointer;}
+  #screen-career-hub .ch-art-in .cc-pretrain:hover{color:#fff;}
+  #screen-career-hub .cc-day-pre{border-color:rgba(255,221,0,.55);color:#fff3a8;}
   #screen-career-hub .ch-art-in .cc-aw .cc-aw-r{flex:0 0 150px;display:flex;flex-direction:column;align-items:stretch;gap:3px;
     margin:0;padding:8px 10px;border:0;border-radius:5px;background:rgba(255,255,255,.16);scroll-snap-align:start;opacity:1;}
   #screen-career-hub .ch-art-in .cc-aw .cc-aw-r:only-child{flex:1 1 auto;}
@@ -6535,6 +6541,11 @@
   .dc-msg+.dc-msg{margin-top:10px;}
   .dc-av{width:34px;height:34px;flex:0 0 34px;border-radius:50%;background:#3b3f55;color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;}
   .dc-av.bot{background:#5865f2;}
+  /* Аватарки картинкой (ccDcImg): фото карточки игрока, корона Noble; значок телефона - линией. */
+  .dc-av,.dc-srv{overflow:hidden;}
+  .dc-av img,.dc-srv img{width:100%;height:100%;object-fit:cover;display:block;}
+  .dc-av.bot img,.dc-srv img[src*="noble-crown"]{object-fit:contain;padding:5px;box-sizing:border-box;}
+  .dc-av svg,.dc-srv svg{width:58%;height:58%;}
   .dc-msg-in{min-width:0;flex:1;}
   .dc-msg-in b{color:#fff;font-size:13px;}
   .dc-bot{font-style:normal;font-size:9.5px;font-weight:900;background:#5865f2;color:#fff;border-radius:3px;padding:1px 4px;margin-left:6px;vertical-align:1px;}

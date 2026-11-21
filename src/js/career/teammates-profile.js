@@ -2984,7 +2984,7 @@ function ccDiscTile(id){ return id!=='talk' && (String(id).indexOf('tr')===0 || 
 function ccDiscGains(a, o){
   return Object.keys(a.gain||{}).map(k=>{
     const f=o.six[k]!=null ? o.six[k] : 50, c=!!(o.dayCoach && o.dayCoach.keys.indexOf(k)>=0);
-    const t=Math.max(35, Math.min(99, f+a.gain[k]*o.dayMult*(c ? 1+o.dayCoach.train : 1)*ccFocusMult(k)));
+    const t=Math.max(35, Math.min(99, f+a.gain[k]*o.dayMult*(c ? 1+o.dayCoach.train : 1)*ccFocusMult(k)*(ccTrainAct(a) ? ccRepeatMult(k) : 1)));
     return {k:k, by:Math.round((t-f)*10)/10};
   }).filter(g=>g.by>0).sort((x,y)=>y.by-x.by);
 }
@@ -3019,7 +3019,8 @@ const CC_DL_SVG={
   talk:'<path d="M4 5h16v11H10l-5 4v-4H4z"/>',
   stream:'<rect x="3" y="4" width="18" height="12.5" rx="2"/><path d="M8.5 20.5h7M12 16.5v4"/><path d="M10.2 7.8v5.4l4.4-2.7z" fill="currentColor" stroke="none"/>',
   host:'<path d="M6 21V4"/><path d="M6 4.5h11l-2.2 3.8L17 12H6"/>',
-  rest:'<path d="M19.5 14.6A7.8 7.8 0 1 1 9.4 4.5a6.2 6.2 0 0 0 10.1 10.1z"/>'
+  rest:'<path d="M19.5 14.6A7.8 7.8 0 1 1 9.4 4.5a6.2 6.2 0 0 0 10.1 10.1z"/>',
+  warm:'<circle cx="12" cy="13.5" r="7.5"/><path d="M12 9.5v4l2.6 2M9.5 3h5"/>'
 };
 // Параметры одной строкой над плитками: сокращение, значение, прирост за неделю.
 function ccDiscStatsHTML(six){
@@ -3047,6 +3048,8 @@ function careerDayPanelHTML(locked){
   // Whether there is any of the day left to spend, which is not the same as
   // whether anything has been spent: sessions run until the store runs out.
   const closed=careerDayClosed();
+  // День турнира до вечера (вкладка «Тренировка»): только занятия и разминка, энергия на кап остаётся. См. ccPreEvent.
+  const pre=CC_DAY_VIEW==='train' ? ccPreEvent() : null;
   /* And what closed it, said out loud.
 
      Nine buttons at a third of their opacity over a full energy ring is a screen
@@ -3091,7 +3094,7 @@ function careerDayPanelHTML(locked){
   const dayMult = careerDayGear()*clamp((careerTrainCap()-nowOvr)/CAREER_TAPER, 0, 1);
   const dayCoach = ccCoach();
   const six = CAREER.player.attrs || ccOwnAttrs();
-  const actsShown=CC_DAY_ACTS.filter(function(a){ return (!a.meta || ccMetaOpen()); });
+  const actsShown=CC_DAY_ACTS.filter(function(a){ return pre ? (ccTrainAct(a) || a.warm) : (!a.warm && (!a.meta || ccMetaOpen())); });
   if(CC_DAY_VIEW==='train') actsShown.sort((x, y)=>(ccDiscTile(x.id) ? 0 : 1)-(ccDiscTile(y.id) ? 0 : 1));
   const rows=actsShown.map(function(a, ai, allActs){
     const noDev=!!a.mobile && !ccMobileOwn();
@@ -3109,7 +3112,7 @@ function careerDayPanelHTML(locked){
     // it is an evening for nothing. See the note beside ccNoGain.
     const gainsMove=keys.some(function(k){
       const from=six[k]!=null ? six[k] : 50;
-      const by=a.gain[k]*dayMult*(dayCoach && dayCoach.keys.indexOf(k)>=0 ? 1+dayCoach.train : 1);
+      const by=a.gain[k]*dayMult*(dayCoach && dayCoach.keys.indexOf(k)>=0 ? 1+dayCoach.train : 1)*(ccTrainAct(a) ? ccRepeatMult(k) : 1);
       return Math.round(clamp(from+by,35,99)*10)/10 > Math.round(from*10)/10;
     });
     // Affordable, and the day still open. As many sessions as the store can pay
@@ -3117,12 +3120,14 @@ function careerDayPanelHTML(locked){
     // says it is over.
     const hostWhy=a.host ? ccHostWhy() : null;
     // Noble даёт форму, креатив — настрой: их не закрывает потолок параметров.
-    const extraUse=!!(a.noble || a.morale);
+    const extraUse=!!(a.noble || a.morale || a.warm);
+    // В день турнира занятие не должно съесть энергию капа; разминка - одна за день.
+    const keepOk=!pre || left-a.energy>=pre.reserve, warmOk=!a.warm || !ccWarmDone();
     const can=!closed && left>=a.energy && (!maxed || extraUse) && !restFull
-              && (!keys.length || gainsMove || extraUse) && !hostWhy && !noDev;
+              && (!keys.length || gainsMove || extraUse) && !hostWhy && !noDev && keepOk && warmOk;
     const gains=keys.map(function(k){
       const from=six[k]!=null ? six[k] : 50;
-      const by=a.gain[k]*dayMult*(dayCoach && dayCoach.keys.indexOf(k)>=0 ? 1+dayCoach.train : 1);
+      const by=a.gain[k]*dayMult*(dayCoach && dayCoach.keys.indexOf(k)>=0 ? 1+dayCoach.train : 1)*(ccTrainAct(a) ? ccRepeatMult(k) : 1);
       const to=clamp(from+by, 35, 99);
       // To one decimal, because half a point is what a session is: rounded to
       // the card's own whole numbers this line would read "75 → 75" on every
@@ -3140,7 +3145,8 @@ function careerDayPanelHTML(locked){
          is told only by their opacity. It is the same complaint the closed day
          drew — a control that refuses without a reason. */
       (!closed && !maxed && !restFull && left<a.energy
-        ? '<i class="cc-give-cost">'+L().ccNeedEnergy(a.energy-left)+'</i>' : '')+
+        ? '<i class="cc-give-cost">'+L().ccNeedEnergy(a.energy-left)+'</i>'
+        : (!closed && !keepOk ? '<i class="cc-give-cost">'+esc(L().ccKeepEnergy(pre.reserve))+'</i>' : ''))+
       /* And when the session is worth nothing, which is not the same as maxed.
 
          Near the top of the scale the taper cuts a session's gain to under a
@@ -3156,6 +3162,9 @@ function careerDayPanelHTML(locked){
     // store is already full.
     if(a.rest && !restFull) extra.push('<i class="cc-give-rest">'+L().ccGiveRest+'</i>');
     if(a.focus)   extra.push('<i class="cc-give-cost">'+L().ccGiveNoImprove+'</i>');
+    if(a.warm)    extra.push('<i class="cc-give-mood">'+esc(L().ccGiveWarm(CC_WARM_FORM))+'</i>'+(ccWarmDone() ? '<i class="cc-give-cost">'+esc(L().ccWarmDone)+'</i>' : ''));
+    // Повтор стата за неделю: прирост ниже, и сказано почему (CC_TRAIN_REPEAT).
+    if(ccTrainAct(a)){ const rk=keys.find(k=>ccRepeatCount(k)>0); if(rk) extra.push('<i class="cc-give-cost">'+esc(L().ccRepeatNote(ccRepeatCount(rk)))+'</i>'); }
     // Тренировка на телефоне: мобильный рейтинг было → станет, как у AIM и остальных; без устройства — где его взять.
     if(a.mobile){ const now=ccMobileOvr(), g=ccMobileTrainGain(!!a.mobScrim), num=v=>(Math.round(v*10)/10).toFixed(1);
       extra.push(noDev ? '<i class="cc-give-cost">'+esc(L().ccMobTrainNeed)+'</i>'
@@ -3185,7 +3194,7 @@ function careerDayPanelHTML(locked){
         if(at<0) return a.meta ? '<button class="cc-act g-train'+(can?'':' off')+'" '+(can?'onclick="careerPickDay(\''+a.id+'\')"':'disabled')+'>'+
           '<span class="cc-act-h"><b>'+ccActName(a.id)+'</b><em>'+a.energy+L().ccEnergyMark+'</em></span></button>' : '';
         const k=keys[0], from=six[k]!=null ? six[k] : 50;
-        const by=a.gain[k]*dayMult*(dayCoach && dayCoach.keys.indexOf(k)>=0 ? 1+dayCoach.train : 1);
+        const by=a.gain[k]*dayMult*(dayCoach && dayCoach.keys.indexOf(k)>=0 ? 1+dayCoach.train : 1)*(ccTrainAct(a) ? ccRepeatMult(k) : 1);
         const up=Math.round((clamp(from+by, 35, 99)-from)*10)/10;
         const tip=ccActName(a.id)+' · '+(L()['ccAttr'+k.toUpperCase()]||k)+' '+from.toFixed(1)+(up>0 ? ' → '+(from+up).toFixed(1) : '')+' · '+a.energy+L().ccEnergyMark;
         return (at===0 ? head+'<div class="cc-six">' : '')+
@@ -3213,7 +3222,7 @@ function careerDayPanelHTML(locked){
   return '<div class="ch-art cc-day'+(CC_DAY_VIEW==='train' ? ' cc-day-train' : '')+'" style="background-image:url('+ccDayArt()+');">'+
     // Which day it is, beside what is on it: his ask, 17 August.
     '<div class="ch-livebar"><b class="ch-live-soon">'+L().ccDayTag+'</b><span>'+
-      esc(ccDayFull(careerToday()))+' · '+(locked ? esc(locked.label) : L().chDayFree)+
+      esc(ccDayFull(careerToday()))+' · '+(pre ? esc(pre.next.title||pre.next.label||'') : locked ? esc(locked.label) : L().chDayFree)+
       // What it takes to go up, which the ladder tile used to say. It belongs on
       // the day rather than in a standings list: it is the number the week is
       // being played against.
@@ -3252,6 +3261,7 @@ function careerDayPanelHTML(locked){
       (((CAREER.player.ovrExact!=null?CAREER.player.ovrExact:CAREER.player.ovr) >= careerTrainCap()-0.01)
         ? '<div class="cc-day-locked">'+esc(L().ccTrainCapped(careerTrainCap()))+'</div>' : '')+
       evBox+
+      (pre ? '<div class="cc-day-locked cc-day-pre">'+esc(L().ccPreNote(pre.next.title||pre.next.label||'', pre.reserve))+'</div>' : '')+
       (typeof ccMpFfOfferHTML==='function' ? ccMpFfOfferHTML() : '')+
       (typeof ccMpCatchUpHTML==='function' ? ccMpCatchUpHTML() : '')+
       // Энергия и настрой: в Центре — двумя кругами, как было; во вкладке «Тренировка» — полосками.
@@ -3268,7 +3278,7 @@ function careerDayPanelHTML(locked){
          «лобби как в Fortnite»): шесть колонок, команда, стрим, отдых и подработка на четыре тарифа уехали во вкладку
          «Тренировка». Здесь — что уже сделано сегодня и кнопка туда с остатком энергии. */
       (CC_DAY_VIEW==='train'
-        ? '<div class="cc-acts">'+rows+'</div>'+careerJobHTML(closed, left)
+        ? '<div class="cc-acts">'+rows+'</div>'+(pre ? '' : careerJobHTML(closed, left))
         : ccDayGoHTML(done, closed, left))+
       // The day ends when the player says so, and it can be said as soon as
       // anything has been done: a day nobody decided may as well not be in the
@@ -3279,11 +3289,13 @@ function careerDayPanelHTML(locked){
          кнопках занятий — идти дальше было нечем. Скриншот:
          «когда свет вырубают нету кнопки следующий день». Закрытый день
          отдаёт кнопку сразу. */
-      (!spent && !closed
+      // День турнира кончается турниром: вместо «Следующий день» - кнопка к нему.
+      (pre ? '<button class="ch-play" onclick="careerTab(\'centre\')">'+esc(L().ccPreGo)+'</button>'
+      : !spent && !closed
               ? '<div class="cc-day-hint">'+L().ccDayMust+'</div>'
               : '<button class="ch-play ch-nextday" onclick="careerNextDayTap(this)">'+L().ccDayDone+(typeof ccMpNextTag==='function' ? ccMpNextTag() : '')+'</button>')+
       // И «до турнира» — в любой день, решённый или нет: см. careerSkipToBtnHTML.
-      (typeof careerSkipToBtnHTML==='function' ? careerSkipToBtnHTML() : '')+
+      (pre ? '' : typeof careerSkipToBtnHTML==='function' ? careerSkipToBtnHTML() : '')+
       /* Упавший день говорит, что именно сломалось.
 
          Отчёт игрока: «everything froze when I pressed the
@@ -3325,7 +3337,7 @@ function careerTrainTabHTML(){
   // Сначала карты, под ними план недели и таблица Noble (если на неделе были сессии).
   const noble=ccNobleBoardHTML();
   const below=ccRkTileHTML()+ccTrainPlanHTML()+(noble ? '<div class="ch-tile tw-tile"><h4>'+(ccCareerRegion()==='EU' ? '<img class="tw-noble-ic" src="items/creative/noble-crown.png" alt="">Noble Practice' : esc(ccPracSrv()))+'</h4>'+noble+'</div>' : '');
-  if(ccCentreDayOpen()){
+  if(ccCentreDayOpen() || ccPreEvent()){
     CC_DAY_VIEW='train';
     try{ return '<div class="cc-train-tab">'+careerDayPanelHTML(null)+below+'</div>'; } finally{ CC_DAY_VIEW=''; }
   }

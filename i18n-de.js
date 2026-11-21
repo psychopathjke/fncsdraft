@@ -4710,3 +4710,6 @@ Object.assign(I18N.de=I18N.de||{},
   lfNewsLiveconcert: n=>n+' hat in Fortnite gespielt. Die Pros witzeln, dass die Abendlobbys ruhiger waren als sonst',
   navGrpProfile: "Konto"
 }));
+/* Дозаливка «de» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
+Object.assign(I18N.de=I18N.de||{},
+({ccActwarm:'Aufwärmen', ccGiveWarm:n=>'+'+n+' Form heute Abend', ccWarmDone:'heute erledigt', ccKeepEnergy:r=>'behalte '+r+' Energie für das Turnier', ccPreNote:(t,r)=>r ? 'Vor '+t+' heute Abend: trainiere, aber behalte '+r+' Energie für das Turnier.' : 'Vor '+t+' heute Abend: du kannst trainieren und dich aufwärmen.', ccPreGo:'Zum Turnier', ccPreBtn:'Vor dem Turnier trainieren', ccRepeatNote:n=>'schon '+n+' diese Woche, bringt weniger'}));

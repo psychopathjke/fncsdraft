@@ -4710,3 +4710,6 @@ Object.assign(I18N.es=I18N.es||{},
   lfNewsLiveconcert: n=>n+' tocó en Fortnite. Los pros bromean con que los lobbies de la noche estaban más tranquilos de lo normal',
   navGrpProfile: "Cuenta"
 }));
+/* Дозаливка «es» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
+Object.assign(I18N.es=I18N.es||{},
+({ccActwarm:'Calentamiento', ccGiveWarm:n=>'+'+n+' de forma esta noche', ccWarmDone:'ya hecho', ccKeepEnergy:r=>'guarda '+r+' de energía para el torneo', ccPreNote:(t,r)=>r ? 'Antes de '+t+' esta noche: entrena, pero guarda '+r+' de energía para el torneo.' : 'Antes de '+t+' esta noche: puedes entrenar y calentar.', ccPreGo:'Al torneo', ccPreBtn:'Entrenar antes del torneo', ccRepeatNote:n=>'ya '+n+' esta semana, da menos'}));

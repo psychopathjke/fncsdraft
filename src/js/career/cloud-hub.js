@@ -2464,6 +2464,8 @@ function careerCentreHTML(card, a){
                  кнопкой значило бы запереть игрока без выхода. */
               (playable || ccMpOn() || ccRaceModeWhy()) ? careerSimRowHTML() : ''}
             ${btn}
+            ${/* День турнира до вечера: занятия и разминка во вкладке «Тренировка» (ccPreEvent). */
+              playable && ccPreEvent() ? '<button type="button" class="cc-pretrain" onclick="careerTab(\'train\')">'+esc(L().ccPreBtn)+'</button>' : ''}
           </div>
         </div>`}
       ${/* Интервью — ПОД днём, не над ним (Notion 27.10, игрок: «на тренировке спрашивает, тащил ли я команду, и мышку
@@ -4379,6 +4381,8 @@ const CC_DAY_ACTS=[
   /* Мобильные скримы (идея игрока с мобильной сцены, 19.11: «add scrims, people do host like takeovers»): катки против
      мобильных игроков на 16, как в серии. Дороже тренировки, качают меньше, зато и выше её потолка: до 90. Решение, не замер. */
   {id:'mobScrim', energy:40, gain:{}, mobile:true, mobScrim:true},
+  // Разминка перед турниром: только в день турнира, форма на вечер (ccPreEvent, CC_WARM_FORM).
+  {id:'warm',    energy:15, gain:{}, warm:true},
   {id:'rest',    energy:0,  gain:{}, rest:CC_ENERGY_REST}
 ];
 /* Цена разговора. Довольному почти ничего не даёт (иначе его можно держать на ста), недовольному больше всего.

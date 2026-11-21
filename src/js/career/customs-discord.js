@@ -472,16 +472,39 @@ function ccDcSessHTML(kind){
     '<div class="dc-chan"><div class="dc-chan-h"># '+esc(T.dcCheckChan)+'</div>'+check+'</div>';
 }
 function ccDcServer(id){ CH_DC=id; careerRenderHub('discord'); }
+/* Аватарки Discord (его «добавь дискордам аватарки», 21.11): у игрока - фото его карточки, как в шапке хаба; у бота -
+   значок его сервера; у серверов - корона Noble (EU), инициалы сервера практики региона, телефон у мобильного,
+   своё фото у своего сервера. Без фото - буквы, как было. */
+const CC_DC_PHONE_SVG='<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="7" y="2.5" width="10" height="19" rx="2.2"/><path d="M11 18.5h2"/></svg>';
+function ccDcFace(){ try{ const c=careerCard(); return c ? (photoURL(c)||'') : ''; }catch(e){ return ''; } }
+function ccDcInitials(name){
+  const w=String(name||'').split(/[^A-Za-z0-9]+/).filter(Boolean);
+  return ((w[0]||'?').charAt(0)+(w[1]||'').charAt(0)).toUpperCase();
+}
+// Картинка аватарки; не загрузилась - вместо неё буквы.
+function ccDcImg(src, fb){ return '<img src="'+esc(src)+'" alt="" loading="lazy" data-fb="'+esc(fb)+'" onerror="this.replaceWith(this.dataset.fb)">'; }
+function ccDcSrvIcon(id){
+  if(id==='pc') return ccCareerRegion()==='EU' ? ccDcImg('items/creative/noble-crown.png', 'NP') : esc(ccDcInitials(ccPracSrv()));
+  if(id==='mob') return CC_DC_PHONE_SVG;
+  const f=ccDcFace(); return f ? ccDcImg(f, '★') : '★';
+}
 function ccDiscordHTML(){
   const T=L(), cr=CAREER.career, srv=CH_DC||'pc';
-  const servers=[['pc', 'PC', ccPracSrv()], ['mob', '📱', T.dcSrvMob], ['own', '★', T.dcSrvOwn]];
+  const servers=[['pc', ccDcSrvIcon('pc'), ccPracSrv()], ['mob', ccDcSrvIcon('mob'), T.dcSrvMob], ['own', ccDcSrvIcon('own'), T.dcSrvOwn]];
   const last=cr.dcLast && cr.dcLast.day===careerToday() ? cr.dcLast : null;
   const btn=(kind, label)=>{ const why=ccDcWhy(kind);
     return '<div class="dc-act"><button class="dc-btn"'+(why ? ' disabled' : '')+' onclick="ccDcGo(\''+kind+'\')">'+esc(label)+
       ' <em>'+CC_DC_ENERGY+T.ccEnergyMark+'</em></button>'+(why ? '<span class="dc-why">'+esc(why)+'</span>' : '')+'</div>'; };
   const res=kinds=>(last && kinds.indexOf(last.kind)>=0)
     ? '<div class="dc-res">'+esc(T.dcResult(last.wins, ccNum(last.cash)))+(last.grow ? ' · '+esc(T.ccMobTitle)+' +'+last.grow.toFixed(2) : '')+'</div>' : '';
-  const msg=(author, bot, body)=>'<div class="dc-msg"><span class="dc-av'+(bot ? ' bot' : '')+'">'+esc(String(author).slice(0, 2).toUpperCase())+'</span>'+
+  // Аватарка автора: бот - значок сервера, игрок - фото своей карточки, остальные - буквы.
+  const avOf=(author, bot)=>{
+    const fb=String(author).slice(0, 2).toUpperCase();
+    if(bot) return srv==='own' ? esc(fb) : ccDcSrvIcon(srv);
+    const f=author===CAREER.player.nick ? ccDcFace() : '';
+    return f ? ccDcImg(f, fb) : esc(fb);
+  };
+  const msg=(author, bot, body)=>'<div class="dc-msg"><span class="dc-av'+(bot ? ' bot' : '')+'">'+avOf(author, bot)+'</span>'+
     '<div class="dc-msg-in"><b>'+esc(author)+(bot ? '<i class="dc-bot">BOT</i>' : '')+'</b>'+body+'</div></div>';
   const chan=(name, body)=>'<div class="dc-chan"><div class="dc-chan-h"># '+esc(name)+'</div>'+body+'</div>';
   let body='';
@@ -502,7 +525,7 @@ function ccDiscordHTML(){
            res(['pcHost','mobHost'])+(last && last.who && last.who.length && /Host/.test(last.kind) ? '<div class="dc-res">'+esc(T.dcWinners(last.who.map(h=>'@'+ccHandle(h)).join(', ')))+'</div>' : ''));
   }
   return '<div class="ch-tile dc-wrap"><div class="dc-srvs">'+servers.map(([id, ic, name])=>
-      '<button class="dc-srv'+(srv===id ? ' on' : '')+'" title="'+esc(name)+'" aria-label="'+esc(name)+'" onclick="ccDcServer(\''+id+'\')">'+esc(ic)+'</button>').join('')+'</div>'+
+      '<button class="dc-srv'+(srv===id ? ' on' : '')+'" title="'+esc(name)+'" aria-label="'+esc(name)+'" onclick="ccDcServer(\''+id+'\')">'+ic+'</button>').join('')+'</div>'+
     '<div class="dc-body"><h4 class="dc-name">'+esc((servers.find(s=>s[0]===srv)||servers[0])[2])+'</h4>'+body+'</div></div>';
 }
 /* Бросок дня. Один на день, кидается когда день впервые спросили, и сразу
@@ -682,9 +705,52 @@ function careerDayClosed(){
 function careerDayGear(){ return 1 + ((CAREER.gear && CAREER.gear.train) || 0) + ccStayTrain(); }
 // What the stream rig adds to a night's followers. Nothing owned, nothing added.
 function ccGearReach(){ return (CAREER.gear && CAREER.gear.reach) || 0; }
+/* Тренировка в день турнира (его выбор 21.11, пункты 1-3 из «как переработать тренировки»).
+   1. До вечера день турнира открыт для занятий во вкладке «Тренировка»: только занятия с приростом и разминка, без
+      отдыха, скримов и стрима (они закрывают день целиком). Кап дивизиона берёт CC_TOURNEY_ENERGY после сессии, поэтому
+      занятие, после которого на кап не останется 35, не нажимается. Онлайн (команда, гонка) не трогаем: там вечер
+      идёт локстепом, и лишний шаг дня у одного разведёт сейвы.
+   2. Разминка (warm в CC_DAY_ACTS): раз в день турнира, 15 энергии, +CC_WARM_FORM к форме, а форма за ночь тает на
+      CC_FORM_DECAY, то есть это прибавка на сегодняшний вечер. Статы не качает. Число - решение, не замер: меньше
+      сессии Noble (0.1-0.4 за 40 энергии), потому что без игры против сотни.
+   3. Убывающая отдача: n-е занятие одного стата за последние семь дней даёт CC_TRAIN_REPEAT[n] от шага. Энергии в году
+      хватает примерно на 145-200 занятий, и без этого её всю можно лить в один стат. Тоже решение, не замер. */
+const CC_WARM_FORM=0.3;
+const CC_TRAIN_REPEAT=[1, 0.7, 0.5, 0.35];
+function ccRepeatCount(k){
+  const did=(CAREER && CAREER.career && CAREER.career.did) || {};
+  let n=0;
+  for(let i=0;i<7;i++){
+    (did[ccAddDays(careerToday(), -i)]||[]).forEach(id=>{
+      const a=ccActById(id);
+      if(a && String(a.id).indexOf('tr')===0 && a.gain && a.gain[k]) n++;
+    });
+  }
+  return n;
+}
+function ccRepeatMult(k){ return CC_TRAIN_REPEAT[Math.min(ccRepeatCount(k), CC_TRAIN_REPEAT.length-1)]; }
+function ccTrainAct(a){ return !!a && String(a.id).indexOf('tr')===0 && Object.keys(a.gain||{}).length>0 && !a.mobile; }
+// {next, reserve} в день турнира до вечера, иначе null.
+function ccPreEvent(){
+  const cr=CAREER && CAREER.career;
+  if(!cr || cr.seasonOver) return null;
+  if((typeof ccMpOn==='function' && ccMpOn()) || (typeof ccRaceOn==='function' && ccRaceOn())) return null;
+  let next=null;
+  try{ next=careerNext(); }catch(e){ return null; }
+  if(!next || next.day!==careerToday() || next.type==='free' || next.type==='gala') return null;
+  if(typeof ccCentreDayOpen==='function' && ccCentreDayOpen()) return null;
+  if(!careerCanPlay(next)) return null;
+  return {next:next, reserve: next.type==='cup' ? CC_TOURNEY_ENERGY : 0};
+}
+function ccWarmDone(){ return (((CAREER.career.did||{})[careerToday()])||[]).indexOf('warm')>=0; }
 function careerDoAct(id){
   const act=ccActById(id); if(!act) return null;
   const cr=CAREER.career, pl=CAREER.player;
+  // День турнира: только занятия и разминка, и энергия на кап остаётся (см. ccPreEvent).
+  const pre=ccPreEvent();
+  if(pre && !(ccTrainAct(act) || act.warm)) return null;
+  if(act.warm && (!pre || ccWarmDone())) return null;
+  if(pre && careerEnergy()-act.energy<pre.reserve) return null;
   // The store is what says how much of a day there is, and the three things
   // that take all of it say when there is none left. See careerDayClosed.
   if(careerDayClosed()) return null;
@@ -707,6 +773,12 @@ function careerDoAct(id){
   if(act.host && ccHostWhy()) return null;
   if(act.mobile && !ccMobileOwn()) return null;   // без телефона или планшета не тренируется
   careerSpend(cost);
+  if(act.warm){
+    cr.form=clamp((cr.form||0)+CC_WARM_FORM, -CC_FORM_MAX, CC_FORM_MAX);
+    cr.did=cr.did||{}; cr.did[careerToday()]=(cr.did[careerToday()]||[]).concat(id);
+    careerSave();
+    return {id, moved:{}, energy:careerEnergy(), warm:CC_WARM_FORM};
+  }
   if(act.mobile){
     const g=ccMobileTrain(!!act.mobScrim);
     cr.did=cr.did||{}; cr.did[careerToday()]=(cr.did[careerToday()]||[]).concat(id);
@@ -771,7 +843,7 @@ function careerDoAct(id){
     const sk=(act.id==='stream' && typeof ccStreamKind==='function') ? ccStreamKind(CC_STREAM_KIND) : null;
     const gain=(sk && sk.train) ? (g=>{ const o={}; Object.keys(g).forEach(k=>{ o[k]=g[k]*sk.train; }); return o; })((ccActById('trPit')||{}).gain||{}) : (act.gain||{});
     Object.keys(gain).forEach(k=>{
-      const by=gain[k]*mult*(coach && coach.keys.indexOf(k)>=0 ? 1+coach.train : 1)
+      const by=gain[k]*mult*(coach && coach.keys.indexOf(k)>=0 ? 1+coach.train : 1)*(ccTrainAct(act) ? ccRepeatMult(k) : 1)
                *careerDiff().age*(scrim ? scrim.mult : 1)*ccFocusMult(k)*(grade ? grade.mult : 1);
       pl.attrs[k]=clamp((pl.attrs[k]||50)+by, ccAttrFloor(k), 99);
       moved[k]=by;
