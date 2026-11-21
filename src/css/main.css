@@ -6720,6 +6720,11 @@
   .dc-compose input::placeholder{color:#6d6f78;}
   .dc-compose input:focus{outline:none;}
   .dc-compose:focus-within{box-shadow:0 0 0 2px #5865f2;}
+  /* Поле ввода и быстрые фразы прилипают к низу канала, как в Discord: их видно при любой длине ленты. */
+  .dc-compose-dock{position:sticky;bottom:-14px;z-index:2;margin:10px -16px -14px;padding:8px 16px 14px;background:#313338;
+    box-shadow:0 -8px 12px -8px rgba(0,0,0,.45);}
+  .dc-compose-dock .dc-compose{margin-top:6px;}
+  .dc-compose-dock .cr-chips{margin-top:0;}
   /* Свой сервер: поиск для инвайтов, настройки (имя, аватарка). */
   .dc-find{margin:8px 0 10px;}
   /* Приглашения как поиск тиммейтов (ccInvCtrlHTML): регионы и сортировка кнопками, флаг у ника. */

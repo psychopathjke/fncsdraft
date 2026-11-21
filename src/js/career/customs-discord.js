@@ -1658,7 +1658,10 @@ function ccDcLayout(root){
   wrap.dataset.view=CH_DCV;
   wrap.dataset.cur=cur.kind;
   // Чат открывается на последних сообщениях, как в Discord.
+  /* Канал с чатом - на последних сообщениях (его «жму кнопки, сообщение не отправляется»: отправлялось, но канал
+     перерисовывался с верха, и новое сообщение уходило под край). Листается сам канал, а не лента внутри. */
   wrap.querySelectorAll('.dc-chatlog').forEach(el=>{ el.scrollTop=el.scrollHeight; });
+  if(cur.c.querySelector('.dc-chatlog')) cur.c.scrollTop=cur.c.scrollHeight;
 }
 
 /* ---- Чат на своём сервере (его слово 21.11: «просто чат на сервере личном») -------------------------------------
@@ -1749,7 +1752,7 @@ function ccFanChatHTML(chan, msg){
   const box='<div class="dc-compose"><input id="ccFanChatIn" type="text" maxlength="'+CC_FAN_CHAT_MAX+'" autocomplete="off" '+
     'placeholder="'+esc(T.fnChatPh(T.fnChatChan))+'" aria-label="'+esc(T.fnChatPh(T.fnChatChan))+'" onkeydown="ccFanChatKey(event)">'+
     '<button type="button" class="dc-btn sm" onclick="ccFanChatSend()">'+esc(T.fnSend)+'</button></div>';
-  return chan(T.fnChatChan, '<div class="dc-chatlog">'+list+'</div>'+box);
+  return chan(T.fnChatChan, '<div class="dc-chatlog">'+list+'</div><div class="dc-compose-dock">'+box+'</div>');
 }
 
 /* ---- Свой сервер: инвайты, поиск, настройки (его слово 21.11: «инвайтнуть можно будет, в самом дискорде поиск, и
@@ -2144,8 +2147,8 @@ function ccCrewChatBoxHTML(msg, members){
     const s=T['crS'+i]; const txt=typeof s==='function' ? s(next ? (next.type==='cup' ? T.ccCupLive : (next.title||next.label||'')) : '') : s;
     return '<button type="button" class="dc-btn ghost sm" onclick="ccCrewSayPick('+i+')">'+esc(txt)+'</button>'; }).join('');
   return '<div class="dc-chatlog">'+list+'</div>'+
-    '<div class="cr-replies cr-chips">'+chips+'</div>'+
+    '<div class="dc-compose-dock"><div class="cr-replies cr-chips">'+chips+'</div>'+
     '<div class="dc-compose"><input id="ccCrewChatIn" type="text" maxlength="300" autocomplete="off" placeholder="'+esc(T.fnChatPh(T.crGeneral))+'" '+
       'aria-label="'+esc(T.fnChatPh(T.crGeneral))+'" onkeydown="ccCrewSayKey(event)">'+
-    '<button type="button" class="dc-btn sm" onclick="ccCrewSayInput()">'+esc(T.fnSend)+'</button></div>';
+    '<button type="button" class="dc-btn sm" onclick="ccCrewSayInput()">'+esc(T.fnSend)+'</button></div></div>';
 }
