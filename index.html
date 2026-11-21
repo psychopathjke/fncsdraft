@@ -11297,7 +11297,8 @@
         <button class="ch-tab" data-tab="train" onclick="careerTab('train')" data-i18n="chTabTrain"></button>
         <button class="ch-tab" data-tab="club" onclick="careerTab('club')" data-i18n="chTabClub"></button>
         <button class="ch-tab" data-tab="calendar" onclick="careerTab('calendar')" data-i18n="chTabCalendar"></button>
-        <button class="ch-tab" data-tab="social" onclick="careerTab('social')"><span data-i18n="chTabMedia"></span><i class="ch-dot" id="chDmDot"></i></button>
+        <!-- Вкладки «Медиа» больше нет (21.11, его «убери тогда медиа»): соцсеть, Twitch, YouTube и Discord открываются
+             кнопками справа в полосе вкладок (ccMediaQuickHTML), непрочитанное - числом на кнопке соцсети. -->
         <!-- Стримы стоят сразу за соцсетями — правка: это одна и та же
              половина жизни игрока, лента и эфир. -->
         <button class="ch-tab" data-tab="table" onclick="careerTab('table')" data-i18n="chTabBoards"></button>
@@ -123540,7 +123541,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='9b41c5a6';
+const CC_BUILD='2251092a';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
