@@ -3186,6 +3186,18 @@
   /* Очки прокачки под своей карточкой — пункт 3 страницы «ы». */
   /* Раздача стартовых очков на экране создания. */
   .cc-spa-note{font-size:11px;color:#8fa3c8;margin:6px 0 2px;}
+  /* Пояснение поля за значком ⓘ у подписи (ccNoteTips): закрыто, пока не нажали. */
+  #screen-career-create .cc-ntip-f{position:relative;}
+  #screen-career-create .cc-ntip-f>label{padding-right:34px;}
+  #screen-career-create .cc-ntip{position:absolute;top:-6px;right:0;width:26px;height:26px;padding:0;border-radius:50%;
+    border:1px solid rgba(180,200,255,.28);background:rgba(255,255,255,.06);color:#b7c3e6;font-size:14px;line-height:1;cursor:pointer;}
+  #screen-career-create .cc-ntip:hover,#screen-career-create .cc-ntip[aria-expanded="true"]{background:rgba(255,255,255,.16);color:#fff;}
+  #screen-career-create .cc-ntip:focus-visible{outline:2px solid #ffdd00;outline-offset:2px;}
+  #screen-career-create .cc-ntip-f:not(.cc-ntip-on) .cc-ntip-body{display:none !important;}
+  /* Сложность: четыре плашки в колонке ~430px, «GROWTH ×1.00» обрезалось до «×1.0(». */
+  #screen-career-create #ccDiffChips .cc-chip{padding-left:4px;padding-right:4px;min-width:0;}
+  #screen-career-create #ccDiffChips .cc-chip small{letter-spacing:0;white-space:nowrap;}
+  @media(max-width:600px){ #screen-career-create #ccDiffChips{display:grid;grid-template-columns:1fr 1fr;gap:6px;} }
   /* Раздача на создании носит одежду карьерной плитки (.ch-sp) — правка:
      «сделай как в карьере было красиво». Минус — та же пилюля в красном. */
   .ch-sp-btns button.cc-spa-minus{border-color:rgba(255,130,150,.45);
@@ -6239,6 +6251,20 @@
   .cc-aw .cc-aw-go:disabled{padding:2px 0 0;font-size:10.5px;line-height:1.2;text-align:left;white-space:normal;}
   .cc-aw .cc-aw-r.off{opacity:.75;}
   @media(max-width:340px){.cc-aw{grid-template-columns:repeat(2,minmax(0,1fr));}}
+  /* Что играется в том регионе и в каком дивизионе: плашкой как «Solo · Division 1» на карточке вечера. */
+  .cc-aw .cc-aw-ev{display:block;align-self:flex-start;max-width:100%;margin:2px 0 1px;padding:3px 7px;border-radius:5px;
+    background:rgba(255,255,255,.14);color:#fff;font-style:normal;font-size:10px;font-weight:900;letter-spacing:.05em;
+    text-transform:uppercase;line-height:1.25;}
+  .cc-aw .cc-aw-r.off .cc-aw-ev{background:rgba(255,255,255,.08);color:#cfd8ee;}
+  /* Внутри карточки вечера: отделён чертой от кнопок, текст слева, как у остальных строк блока. */
+  .ch-art-in .cc-aw{margin:14px 0 0;width:100%;align-self:stretch;box-sizing:border-box;text-align:left;background:rgba(8,14,40,.78);
+display:block;}
+  /* В карточке узко (306px на телефоне): регион строкой, слева кто/когда/что, справа кнопка или причина. */
+  .ch-art-in .cc-aw .cc-aw-r, .ch-art-in .cc-aw .cc-aw-h+.cc-aw-r{flex-direction:row;align-items:center;gap:10px;margin-top:6px;padding:8px 10px;}
+  .ch-art-in .cc-aw .cc-aw-t{display:inline;margin-left:6px;}
+  .ch-art-in .cc-aw .cc-aw-ev{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .ch-art-in .cc-aw .cc-aw-go{flex:0 0 auto;width:auto;min-width:72px;margin-top:0;padding:8px 12px;}
+  .ch-art-in .cc-aw .cc-aw-go:disabled{flex:0 1 84px;min-width:0;padding:0;text-align:right;}
   @keyframes ccAwayLive{0%{box-shadow:0 0 0 0 rgba(255,59,59,.6);}70%{box-shadow:0 0 0 7px rgba(255,59,59,0);}100%{box-shadow:0 0 0 0 rgba(255,59,59,0);}}
   @media(prefers-reduced-motion:reduce){ .cc-aw-live{animation:none;} }
   .cc-valt:focus-visible{outline:2px solid #00ffd0;outline-offset:2px;}
@@ -7935,6 +7961,10 @@
   #screen-career-hub .cc-back:hover{background:rgba(255,255,255,.18);color:#fff;}
   #screen-career-hub .ch-end{margin-left:auto;color:#ff8c9c;border-color:rgba(255,110,130,.35);}
   #screen-career-hub .ch-end:hover{background:#e8283f;border-color:#e8283f;color:#fff;}
+  /* На телефоне ряд кнопок ломается, и «End career» вставала рядом с «Classic look» той же плиткой: легко нажать
+     случайно. Здесь она отдельной строкой ниже, с отступом и красной рамкой; удаление и так спрашивает подтверждение. */
+  @media(max-width:760px){ #screen-career-hub .ch-foot .ch-end{flex-basis:100%;margin:14px 0 0;background:transparent;
+    border-color:rgba(255,110,130,.55);} }
   /* «Играть в эфире» — та же кнопка вечера, но в цветах твича: рядом с жёлтым
      «Играть» фиолетовое читается как другой вход в тот же вечер, а не как
      вторая главная кнопка. См. careerPlayLive. */
@@ -8959,6 +8989,9 @@
   @media(max-width:1180px){ .top #topBadge{display:none;} .support-top svg + span{display:none;}
     .logo{font-size:26px;} .nav-pill{font-size:14px;padding:7px 10px;} }
   @media(max-width:760px){ .site-nav{order:3;width:100%;justify-content:center;} .nav-pill{padding:7px 12px;font-size:14px;} }
+  /* 761–889: хаб и создание карьеры шире остальных экранов на 12px, и меню влезало в строку логотипа только там,
+     а на драфте, в Account и на главной падало вниз. В этой полосе меню своей строкой на всех экранах, как на телефоне. */
+  @media(min-width:761px) and (max-width:889px){ .site-nav{order:3;width:100%;justify-content:center;} }
 
   /* ---- Третий заход, «что ещё осталось» → «давай» ----------------------
      Шапка хаба — мини-герой: арт сезона за ником под синей вуалью слева
@@ -121726,6 +121759,30 @@ function openCareerCreate(){
   ccRenderRegions();
   ccRenderChips();
   ccRenderCard();
+  ccNoteTips();
+}
+/* Пояснения под полями создания — за значком ⓘ у подписи поля, как в шапке хаба (было много серого текста под
+   каждым полем). Прячутся только постоянные тексты (data-i18n и подсказка статов); то, что меняется от выбора
+   (строка года, «Age 16 → +4», пинг страны), остаётся на виду. Кнопка — соседом подписи, не внутри: подпись
+   переписывает перевод (data-i18n), и кнопка внутри пропала бы при смене языка. */
+function ccNoteTips(){
+  const root=document.getElementById('screen-career-create'); if(!root) return;
+  root.querySelectorAll('.cc-field').forEach((f, i)=>{
+    const notes=[...f.querySelectorAll(':scope > .cc-note[data-i18n]:not(.cc-born-note), :scope > .cc-gain[data-i18n="ccBindsHint"], :scope > .cc-spa-note')];
+    const lab=f.querySelector(':scope > label');
+    if(!notes.length || !lab) return;
+    let b=f.querySelector(':scope > .cc-ntip');
+    if(!b){
+      b=document.createElement('button'); b.type='button'; b.className='cc-ntip'; b.textContent='ⓘ';
+      notes.forEach((n, k)=>{ n.classList.add('cc-ntip-body'); if(!n.id) n.id='ccNtip'+i+'_'+k; });
+      b.setAttribute('aria-controls', notes.map(n=>n.id).join(' '));
+      b.onclick=()=>{ const on=!f.classList.contains('cc-ntip-on'); f.classList.toggle('cc-ntip-on', on); b.setAttribute('aria-expanded', on ? 'true' : 'false'); };
+      lab.insertAdjacentElement('afterend', b);
+      f.classList.add('cc-ntip-f');
+    }
+    b.setAttribute('aria-expanded', f.classList.contains('cc-ntip-on') ? 'true' : 'false');
+    b.setAttribute('aria-label', 'ⓘ '+lab.textContent.trim());
+  });
 }
 
 function ccSetMode(m){
@@ -123174,7 +123231,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='4725e60d';
+const CC_BUILD='a92c5b80';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -128955,6 +129012,7 @@ function careerCentreHTML(card, a){
     ${/* Перемотка «неделя / месяц» — здесь, у полосы сезона, а не в карточке капа (его «сделать аккуратно где-то скип недели/месяца»). */
       careerFfButtonsHTML()}
   </div>`;
+  let awayIn=false;   // выезд уже нарисован внутри карточки вечера
   const lbPlay=`<div class="ch-col-play cc-lb-playcol">
       ${typeof ccRosterSoonHTML==='function' ? ccRosterSoonHTML() : ''}
       ${typeof ccMapPickHTML==='function' ? ccMapPickHTML() : ''}
@@ -129038,13 +129096,15 @@ function careerCentreHTML(card, a){
                  кнопкой значило бы запереть игрока без выхода. */
               (playable || ccMpOn() || ccRaceModeWhy()) ? careerSimRowHTML() : ''}
             ${btn}
+            ${/* Выезд — внутри карточки вечера, под кнопками: тот же вечер в других регионах (Notion 20.11). */
+              (()=>{ awayIn=true; return cr.seasonOver ? '' : ccAwayHTML(); })()}
           </div>
         </div>`}
       ${/* Интервью — ПОД днём, не над ним (Notion 27.10, игрок: «на тренировке спрашивает, тащил ли я команду, и мышку
            уносит вниз, и запускаются скримы»). Плитка над панелью дня появлялась после вечера и пропадала по ответу, и
            занятия прыгали на её высоту: следующий клик садился в занятие под курсором. Снизу она ничего не двигает. */
         cr.seasonOver ? '' : careerInterviewHTML()}
-      ${/* Выезд в другие регионы — своим блоком под карточкой вечера (ccAwayRowHTML). */ cr.seasonOver ? '' : ccAwayHTML()}
+      ${/* Без карточки вечера (панель дня) выезд остаётся отдельным блоком под ней. */ awayIn || cr.seasonOver ? '' : ccAwayHTML()}
       ${(typeof ccNatSquadHTML==='function') ? ccNatSquadHTML() : ''}
       <!-- At the boundary the shop is shut and the year is the thing worth
            reading: where this career finished at its Grand Finals and its LANs.
@@ -162943,13 +163003,19 @@ function ccAwayRowHTML(day, late){
   const head='<div class="cc-aw-h">'+(late ? '<i class="cc-aw-live"></i>' : '')+'<b>'+esc(late ? T.awLateT : T.awHT)+'</b>'+
     '<small>'+esc(T.awCost(CC_AWAY_ENERGY))+'</small></div>';
   const rows=regs.map(r=>{
-    const why=ccAwayWhy(r, day), ms=ccXregMs(home, r), cup=ccAwayKind(r, day)==='cup';
-    const sub=esc(T.awMs(ms))+(cup ? ' · '+esc(T.awDivD(ccAwayDiv(r))) : '')+' · <em class="cc-aw-pen">'+esc(T.awPenT(ccAwayPen(ms)))+'</em>';
+    const why=ccAwayWhy(r, day), ms=ccXregMs(home, r), kind=ccAwayKind(r, day);
+    // Что именно играется там и в каком дивизионе, той же плашкой, что «Solo · Division 1» на карточке вечера.
+    // Perf Eval и финал недели идут в Д1 региона, кап дивизиона — в своём дивизионе там (ccAwayDiv).
+    const evName=kind==='cup' ? T.ccCupLive : kind==='eval' ? T.calPerfEval : kind==='final' ? T.calWeeklyFinal
+      : (()=>{ const v=ccAwayEv(r, day); return v ? (v.lan||v.name) : ''; })();
+    const evDiv=kind==='cup' ? ccAwayDiv(r) : (kind==='eval' || kind==='final') ? 1 : 0;
+    const evLine=evName ? '<i class="cc-aw-ev">'+esc(evName)+(evDiv ? ' · '+esc(T.ccDivision+' '+evDiv) : '')+'</i>' : '';
+    const sub=esc(T.awMs(ms))+' · <em class="cc-aw-pen">'+esc(T.awPenT(ccAwayPen(ms)))+'</em>';
     // Время региона не настало (его слово 15.11: «просто не давать играть, если время не настало») — серая кнопка, без вопросов.
     const later=why==='later', closed=!!why;
     const st=later ? T.awAfterOwn : closed ? T['aw_'+why]+(why==='tired' ? ' '+Math.floor(careerEnergy())+'/'+CC_AWAY_ENERGY : '') : T.awGo;
     return '<div class="cc-aw-r'+(closed ? ' off' : '')+'"><div class="cc-aw-n"><b>'+esc(regionName(r))+(slot[r] ? ' <span class="cc-aw-t">'+esc(hm(slot[r]))+'</span>' : '')+'</b>'+
-      '<span>'+sub+'</span></div>'+
+      evLine+'<span>'+sub+'</span></div>'+
       '<button class="cc-awayb cc-aw-go" type="button"'+(closed ? ' disabled' : '')+' onclick="ccAwayPlay(\''+r+'\',\''+day+'\')">'+esc(st)+'</button></div>';
   }).join('');
   return '<div class="cc-away cc-aw'+(late ? ' cc-away-late cc-aw-late' : '')+'">'+head+rows+afterHTML+'</div>';

@@ -2378,6 +2378,7 @@ function careerCentreHTML(card, a){
     ${/* Перемотка «неделя / месяц» — здесь, у полосы сезона, а не в карточке капа (его «сделать аккуратно где-то скип недели/месяца»). */
       careerFfButtonsHTML()}
   </div>`;
+  let awayIn=false;   // выезд уже нарисован внутри карточки вечера
   const lbPlay=`<div class="ch-col-play cc-lb-playcol">
       ${typeof ccRosterSoonHTML==='function' ? ccRosterSoonHTML() : ''}
       ${typeof ccMapPickHTML==='function' ? ccMapPickHTML() : ''}
@@ -2461,13 +2462,15 @@ function careerCentreHTML(card, a){
                  кнопкой значило бы запереть игрока без выхода. */
               (playable || ccMpOn() || ccRaceModeWhy()) ? careerSimRowHTML() : ''}
             ${btn}
+            ${/* Выезд — внутри карточки вечера, под кнопками: тот же вечер в других регионах (Notion 20.11). */
+              (()=>{ awayIn=true; return cr.seasonOver ? '' : ccAwayHTML(); })()}
           </div>
         </div>`}
       ${/* Интервью — ПОД днём, не над ним (Notion 27.10, игрок: «на тренировке спрашивает, тащил ли я команду, и мышку
            уносит вниз, и запускаются скримы»). Плитка над панелью дня появлялась после вечера и пропадала по ответу, и
            занятия прыгали на её высоту: следующий клик садился в занятие под курсором. Снизу она ничего не двигает. */
         cr.seasonOver ? '' : careerInterviewHTML()}
-      ${/* Выезд в другие регионы — своим блоком под карточкой вечера (ccAwayRowHTML). */ cr.seasonOver ? '' : ccAwayHTML()}
+      ${/* Без карточки вечера (панель дня) выезд остаётся отдельным блоком под ней. */ awayIn || cr.seasonOver ? '' : ccAwayHTML()}
       ${(typeof ccNatSquadHTML==='function') ? ccNatSquadHTML() : ''}
       <!-- At the boundary the shop is shut and the year is the thing worth
            reading: where this career finished at its Grand Finals and its LANs.

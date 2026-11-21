@@ -2783,6 +2783,30 @@ function openCareerCreate(){
   ccRenderRegions();
   ccRenderChips();
   ccRenderCard();
+  ccNoteTips();
+}
+/* Пояснения под полями создания — за значком ⓘ у подписи поля, как в шапке хаба (было много серого текста под
+   каждым полем). Прячутся только постоянные тексты (data-i18n и подсказка статов); то, что меняется от выбора
+   (строка года, «Age 16 → +4», пинг страны), остаётся на виду. Кнопка — соседом подписи, не внутри: подпись
+   переписывает перевод (data-i18n), и кнопка внутри пропала бы при смене языка. */
+function ccNoteTips(){
+  const root=document.getElementById('screen-career-create'); if(!root) return;
+  root.querySelectorAll('.cc-field').forEach((f, i)=>{
+    const notes=[...f.querySelectorAll(':scope > .cc-note[data-i18n]:not(.cc-born-note), :scope > .cc-gain[data-i18n="ccBindsHint"], :scope > .cc-spa-note')];
+    const lab=f.querySelector(':scope > label');
+    if(!notes.length || !lab) return;
+    let b=f.querySelector(':scope > .cc-ntip');
+    if(!b){
+      b=document.createElement('button'); b.type='button'; b.className='cc-ntip'; b.textContent='ⓘ';
+      notes.forEach((n, k)=>{ n.classList.add('cc-ntip-body'); if(!n.id) n.id='ccNtip'+i+'_'+k; });
+      b.setAttribute('aria-controls', notes.map(n=>n.id).join(' '));
+      b.onclick=()=>{ const on=!f.classList.contains('cc-ntip-on'); f.classList.toggle('cc-ntip-on', on); b.setAttribute('aria-expanded', on ? 'true' : 'false'); };
+      lab.insertAdjacentElement('afterend', b);
+      f.classList.add('cc-ntip-f');
+    }
+    b.setAttribute('aria-expanded', f.classList.contains('cc-ntip-on') ? 'true' : 'false');
+    b.setAttribute('aria-label', 'ⓘ '+lab.textContent.trim());
+  });
 }
 
 function ccSetMode(m){

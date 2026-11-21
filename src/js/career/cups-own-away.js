@@ -604,13 +604,19 @@ function ccAwayRowHTML(day, late){
   const head='<div class="cc-aw-h">'+(late ? '<i class="cc-aw-live"></i>' : '')+'<b>'+esc(late ? T.awLateT : T.awHT)+'</b>'+
     '<small>'+esc(T.awCost(CC_AWAY_ENERGY))+'</small></div>';
   const rows=regs.map(r=>{
-    const why=ccAwayWhy(r, day), ms=ccXregMs(home, r), cup=ccAwayKind(r, day)==='cup';
-    const sub=esc(T.awMs(ms))+(cup ? ' · '+esc(T.awDivD(ccAwayDiv(r))) : '')+' · <em class="cc-aw-pen">'+esc(T.awPenT(ccAwayPen(ms)))+'</em>';
+    const why=ccAwayWhy(r, day), ms=ccXregMs(home, r), kind=ccAwayKind(r, day);
+    // Что именно играется там и в каком дивизионе, той же плашкой, что «Solo · Division 1» на карточке вечера.
+    // Perf Eval и финал недели идут в Д1 региона, кап дивизиона — в своём дивизионе там (ccAwayDiv).
+    const evName=kind==='cup' ? T.ccCupLive : kind==='eval' ? T.calPerfEval : kind==='final' ? T.calWeeklyFinal
+      : (()=>{ const v=ccAwayEv(r, day); return v ? (v.lan||v.name) : ''; })();
+    const evDiv=kind==='cup' ? ccAwayDiv(r) : (kind==='eval' || kind==='final') ? 1 : 0;
+    const evLine=evName ? '<i class="cc-aw-ev">'+esc(evName)+(evDiv ? ' · '+esc(T.ccDivision+' '+evDiv) : '')+'</i>' : '';
+    const sub=esc(T.awMs(ms))+' · <em class="cc-aw-pen">'+esc(T.awPenT(ccAwayPen(ms)))+'</em>';
     // Время региона не настало (его слово 15.11: «просто не давать играть, если время не настало») — серая кнопка, без вопросов.
     const later=why==='later', closed=!!why;
     const st=later ? T.awAfterOwn : closed ? T['aw_'+why]+(why==='tired' ? ' '+Math.floor(careerEnergy())+'/'+CC_AWAY_ENERGY : '') : T.awGo;
     return '<div class="cc-aw-r'+(closed ? ' off' : '')+'"><div class="cc-aw-n"><b>'+esc(regionName(r))+(slot[r] ? ' <span class="cc-aw-t">'+esc(hm(slot[r]))+'</span>' : '')+'</b>'+
-      '<span>'+sub+'</span></div>'+
+      evLine+'<span>'+sub+'</span></div>'+
       '<button class="cc-awayb cc-aw-go" type="button"'+(closed ? ' disabled' : '')+' onclick="ccAwayPlay(\''+r+'\',\''+day+'\')">'+esc(st)+'</button></div>';
   }).join('');
   return '<div class="cc-away cc-aw'+(late ? ' cc-away-late cc-aw-late' : '')+'">'+head+rows+afterHTML+'</div>';
