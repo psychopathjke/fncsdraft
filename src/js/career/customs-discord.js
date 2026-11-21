@@ -1441,6 +1441,7 @@ function ccCrewHTML(chan, msg){
           return '<button class="dc-btn sm"'+(w ? ' disabled title="'+esc(w)+'"' : '')+' onclick="ccCrewPlay(\''+jsq(m.k)+'\',\''+md+'\')">'+
             esc(md==='nb' ? ccPracSrv() : ccCrewModeName(md))+' <em>'+en+T.ccEnergyMark+'</em></button>';
         }).join('')+
+        ccCrewEventBtns(m, why)+
         (duoOk ? '<button class="dc-btn ghost sm" onclick="ccCrewDuo(\''+jsq(m.k)+'\')">'+esc(T[ccSquadKey('dmAskBtn')]||T.crDuo)+'</button>' : '')+
         (m.kind!=='mate' ? '<button class="dc-btn ghost sm dc-kick" onclick="ccCrewKick(\''+jsq(m.k)+'\')" aria-label="'+esc(T.dcKick+' '+ccHandle(m.handle))+'">'+esc(T.dcKick)+'</button>' : '')+
       '</div></div>';
@@ -1977,4 +1978,74 @@ function ccMemGroups(list, row, isOn){
   const T=L(), on=list.filter(isOn), off=list.filter(m=>!isOn(m));
   return (on.length ? '<div class="cr-grp">'+esc(T.crGrpOn(on.length))+'</div>'+on.map(row).join('') : '')+
     (off.length ? '<details class="cr-off"><summary class="cr-grp">'+esc(T.crGrpOff(off.length))+'</summary>'+off.map(row).join('')+'</details>' : '');
+}
+
+/* Позвать на турнир (его слово 21.11: «когда скин кап, позвать кого-то, или на другой регион див кап сыграть»).
+   Скин-кап - кап другого формата, чем сезон, в ближайшую неделю (как ccRosterSoon): согласился - встаёт в состав
+   этого формата (CAREER.rosters[fmt], как выбор в ccEventRosterPick), и окно «с кем идёшь» его уже не спрашивает.
+   Выезд - кап дивизиона сегодня в другом регионе: согласился - сидит в первом кресле на этот вечер (cr.awayMate,
+   ccAwayPlay), свой состав возвращается после вечера; если выезд уже открыт - сразу играется. Согласие - то же, что
+   «поиграть вместе» (ccCrewYes); позвать человека можно раз в день. Нужна карточка человека (у выдуманных без неё нет). */
+function ccCrewCups(){
+  if(!CAREER || (typeof ccMpOn==='function' && ccMpOn()) || (typeof ccRacePairOn==='function' && ccRacePairOn())) return [];
+  const base=careerSquadSize(), today=careerToday(), out=[];
+  for(let k=0; k<=7 && out.length<2; k++){
+    const day=ccAddDays(today, k); let ev=null;
+    try{ ev=careerVictoryOn(day); }catch(e){}
+    if(!ev || ((ev.invite || ev.ewc24) && !ccVictoryInvited(ev))) continue;
+    const fmt=ccPickFormat(ev);
+    if(!fmt || fmt===1 || fmt===base) continue;
+    out.push({ev:ev, day:day, fmt:fmt});
+  }
+  return out;
+}
+function ccCrewAwayRegs(){
+  if(!CAREER || careerMateSeats()<=0 || (typeof ccMpOn==='function' && ccMpOn())) return [];
+  const home=ccCareerRegion(), day=careerToday();
+  return CC_REGIONS.filter(r=>r!==home && ccAwayKind(r, day)==='cup' && ['', 'mate', 'later'].indexOf(ccAwayWhy(r, day))>=0);
+}
+function ccCrewRec(m){ return m.card ? {card:{...m.card}, patience:CAREER_PATIENCE_START, since:careerToday()} : null; }
+// Общий шаг приглашения на турнир: согласие и отметка «звал сегодня». true - согласился.
+function ccCrewAsk(m){
+  const c=ccCrew(), T=L(), today=careerToday(), invited=ccCrewInvited(m);
+  if(!c.inv || c.inv.day!==today) c.inv={day:today, who:[]};
+  c.inv.who.push(m.k);
+  if(!invited && !ccCrewYes(m)){ ccCrewRelAdd(m, -1); c.last={day:today, text:T.crNo(ccHandle(m.handle))}; return false; }
+  ccCrewRelAdd(m, 4);
+  return true;
+}
+function ccCrewCup(k, i){
+  const m=ccCrewFind(k), cup=ccCrewCups()[i|0]; if(!m || !cup || !m.card) return;
+  const st=ccCrewStatus(m); if(!ccCrewInvited(m) && (st==='off' || ccCrewAskedToday(m))) return;
+  const T=L(), c=ccCrew(), cr=CAREER.career;
+  if(ccCrewAsk(m)){
+    const hOf=r=>(ccMateCardOf(r)||{}).handle||'';
+    const own=ccFmtRoster(cup.fmt).filter(r=>hKey(hOf(r))!==m.k);
+    CAREER.rosters=CAREER.rosters||{};
+    CAREER.rosters[cup.fmt]=[ccCrewRec(m)].concat(own).slice(0, cup.fmt-1);
+    if(CAREER.rosters[cup.fmt].length>=cup.fmt-1){ cr.evPicked=cr.evPicked||{}; cr.evPicked[String(cup.ev.id||cup.ev.name||'')+'|'+(cr.season||0)]=1; }
+    c.last={day:careerToday(), text:T.crCupYes(ccHandle(m.handle), cup.ev.name||'', ccDayLabel(cup.day))};
+  }
+  careerSave(); careerRenderHub('discord');
+}
+function ccCrewAway(k, reg){
+  const m=ccCrewFind(k); if(!m || !m.card || ccCrewAwayRegs().indexOf(reg)<0) return;
+  const st=ccCrewStatus(m); if(!ccCrewInvited(m) && (st==='off' || ccCrewAskedToday(m))) return;
+  const T=L(), c=ccCrew(), cr=CAREER.career;
+  if(!ccCrewAsk(m)){ careerSave(); careerRenderHub('discord'); return; }
+  cr.awayMate={reg:reg, day:careerToday(), rec:ccCrewRec(m)};
+  const why=ccAwayWhy(reg);
+  c.last={day:careerToday(), text:why ? T.crAwayLater(ccHandle(m.handle), regionName(reg)) : T.crAwayGo(ccHandle(m.handle), regionName(reg))};
+  careerSave(); careerRenderHub('discord');
+  if(!why) ccAwayPlay(reg);
+}
+// Кнопки «позвать на турнир» в раскрытой строке участника.
+function ccCrewEventBtns(m, why){
+  if(!m.card || m.kind==='mate') return '';
+  const T=L(), cups=ccCrewCups(), regs=ccCrewAwayRegs();
+  if(!cups.length && !regs.length) return '';
+  const off=why || ccCrewStatus(m)==='game';
+  return '<span class="cr-modes-l">'+esc(T.crCallTo)+':</span>'+
+    cups.map((cu, i)=>'<button class="dc-btn ghost sm"'+(off ? ' disabled' : '')+' onclick="ccCrewCup(\''+jsq(m.k)+'\','+i+')">'+esc((cu.ev.name||'')+' · '+ccDayLabel(cu.day))+'</button>').join('')+
+    regs.map(r=>'<button class="dc-btn ghost sm"'+(off ? ' disabled' : '')+' onclick="ccCrewAway(\''+jsq(m.k)+'\',\''+r+'\')">'+esc(T.ccCupLive+' · '+regionName(r))+'</button>').join('');
 }

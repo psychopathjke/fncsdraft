@@ -4743,3 +4743,6 @@ Object.assign(I18N.es=I18N.es||{},
 /* Дозаливка «es» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
 Object.assign(I18N.es=I18N.es||{},
 ({crModeScr:"Scrims", crPlayedMode:(h,md,a,b)=>"Jugaste "+md+" con "+h+""+': '+a+'-'+b, crPlayedRk:(h,md)=>"Jugaste "+md+" con "+h+""}));
+/* Дозаливка «es» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
+Object.assign(I18N.es=I18N.es||{},
+({crCallTo:"Llamar a un torneo", crCupYes:(h,ev,d)=>""+h+" juega "+ev+" contigo ("+d+")", crAwayLater:(h,r)=>""+h+" jugará contigo la cup de división "+r+" cuando abra", crAwayGo:(h,r)=>""+h+" va contigo a "+r+""}));

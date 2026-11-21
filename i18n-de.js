@@ -4743,3 +4743,6 @@ Object.assign(I18N.de=I18N.de||{},
 /* Дозаливка «de» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
 Object.assign(I18N.de=I18N.de||{},
 ({crModeScr:"Scrims", crPlayedMode:(h,md,a,b)=>""+md+" mit "+h+" gespielt"+': '+a+'-'+b, crPlayedRk:(h,md)=>""+md+" mit "+h+" gespielt"}));
+/* Дозаливка «de» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
+Object.assign(I18N.de=I18N.de||{},
+({crCallTo:"Zum Turnier einladen", crCupYes:(h,ev,d)=>""+h+" spielt "+ev+" mit dir ("+d+")", crAwayLater:(h,r)=>""+h+" spielt den Divisions-Cup "+r+" mit dir, sobald er öffnet", crAwayGo:(h,r)=>""+h+" fährt mit dir nach "+r+""}));

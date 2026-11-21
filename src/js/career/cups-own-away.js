@@ -581,7 +581,8 @@ function ccAwayWhy(reg, day){
   // Идёт позже своего капа или пересекается с ним — ждёт, пока сыгран свой (потом строкой «Ночью ещё идут»).
   { const hs=ccAwayHomeStart(day); if(hs!=null && s instanceof Date && s.end>hs) return 'later'; }
   if(careerEnergy()<CC_AWAY_ENERGY) return 'tired';
-  if(careerNoMate(kind)) return 'mate';
+  // Позванный из Discord на этот выезд (ccCrewAway) закрывает пустое кресло на вечер.
+  if(careerNoMate(kind) && !ccAwayMateFor(reg, day)) return 'mate';
   // Кап с платформой (консоль, телефон) — и на выезде только с устройством.
   if(kind==='victory'){ const v=ccAwayEv(reg, day); if(v && !ccConsoleOk(v)) return 'dev'; }
   return '';
@@ -641,13 +642,18 @@ function ccAwayAfterAppend(box){
 function ccAwayLateHTML(){
   try{ if(ccVictoryLocked()) return ''; const d=ccAwayCarryDay(); return d ? ccAwayRowHTML(d, true) : ''; }catch(e){ return ''; }
 }
+// Позванный на выезд из Discord: {reg, day, rec} в cr.awayMate, только на этот регион и день.
+function ccAwayMateFor(reg, day){
+  const cr=CAREER && CAREER.career, a=cr && cr.awayMate;
+  return (a && a.reg===reg && a.day===(day||careerToday()) && a.rec) ? a : null;
+}
 async function ccAwayPlay(reg, day){
   day=day||careerToday();
   if(CAREER_RUN || ccAwayWhy(reg, day)) return;
   const cr=CAREER.career, today=careerToday(), home=ccCareerRegion(), ms=ccXregMs(home, reg);
   const kind=ccAwayKind(reg, day), ev=kind==='victory' ? ccAwayEv(reg, day) : null, slot=ccAwaySlot(reg, day);
   const n0=(cr.log||[]).length, was=CC_REGION_AS;
-  let paid=false;
+  let paid=false, awayKeepPartners=undefined;
   CC_AWAY={reg, ms, pen:ccAwayPen(ms)}; CC_REGION_AS=reg;
   // Ночной выезд (вчерашний кап) играется в свой день: вечер читает дату карьеры, потом она возвращается.
   if(day!==today) cr.day=day;
@@ -672,9 +678,14 @@ async function ccAwayPlay(reg, day){
     careerSave();
     useLandingSet((function(){ try{ const s=careerNightSet(next); return (s && ZONE_SETS[s]) ? s : careerBrSet(); }catch(e){ return careerBrSet(); } })());
     CC_MP_NIGHT=(ev ? 'victory:'+ev.id : kind)+':'+reg;
+    // Позванный из Discord на этот выезд (его «на другой регион див кап сыграть» с кем-то) садится в первое кресло на
+    // вечер; свой состав возвращается в finally ниже.
+    const am=ccAwayMateFor(reg, day);
+    if(am){ awayKeepPartners=CAREER.partners; CAREER.partners=[am.rec].concat((awayKeepPartners||[]).filter(Boolean).slice(1)).slice(0, Math.max(1, careerMateSeats())); }
     await careerPlayRun(next);
   } finally {
     CC_REGION_AS=was; CC_AWAY=null;
+    if(awayKeepPartners!==undefined){ CAREER.partners=awayKeepPartners; awayKeepPartners=undefined; if(cr.awayMate) delete cr.awayMate; careerSave(); }
     if(day!==today) cr.day=today;
     cr.division=homeDiv;
     if(kind==='final'){ if(paid && !cr.wf && cr.regWf) delete cr.regWf[reg]; cr.wf=homeWf; if(homeWf===undefined) delete cr.wf; }
