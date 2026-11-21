@@ -1381,12 +1381,14 @@ function ccCrewHTML(chan, msg){
     const st=ccCrewStatus(m), why=ccCrewWhy(m), rel=ccCrewRel(m), invited=ccCrewInvited(m);
     // В соло-сезоне звать некуда (его «ask to duo пишется в соло сезоне»); в трио и скваде - подпись того формата.
     const duoOk=m.kind!=='mate' && careerMateSeats()>0 && !(typeof ccMpOn==='function' && ccMpOn());
-    return '<div class="cr-mem st-'+st+(invited ? ' inv' : '')+'">'+
+    // Строка как в Discord: аватарка, ник, статус; действия раскрываются по нажатию (ccMemToggle), иначе при
+    // сотне участников список уходил на несколько экранов (его «слишком много скролить»). Позвавший - раскрыт сразу.
+    return '<div class="cr-mem cr-fold st-'+st+(invited ? ' inv open' : '')+'">'+
       '<span class="dc-av">'+ccCrewAv(m)+'<i class="cr-dot" aria-hidden="true"></i></span>'+
-      '<div class="cr-who"><b>'+esc(ccHandle(m.handle))+' <em>'+m.ovr+'</em></b>'+
+      '<button type="button" class="cr-who" onclick="ccMemToggle(this)" aria-expanded="'+(invited ? 'true' : 'false')+'"><b>'+esc(ccHandle(m.handle))+' <em>'+m.ovr+'</em></b>'+
         '<span>'+esc(stName[st])+' · '+esc(T[ccCrewRelKey(rel)])+'</span>'+
         (invited ? '<span class="cr-inv">'+esc(T.crInvitedYou)+'</span>' : '')+
-        (why && why!==stName[st] ? '<span class="dc-why">'+esc(why)+'</span>' : '')+'</div>'+
+        (why && why!==stName[st] ? '<span class="dc-why">'+esc(why)+'</span>' : '')+'</button>'+
       '<div class="cr-btns">'+
         '<button class="dc-btn sm"'+(why ? ' disabled' : '')+' onclick="ccCrewPlay(\''+jsq(m.k)+'\')">'+
           esc(invited ? T.crAccept : T.crPlay)+' <em>'+ccActById('crew').energy+T.ccEnergyMark+'</em></button>'+
@@ -1421,7 +1423,7 @@ function ccCrewHTML(chan, msg){
   return chan(T.crGeneral, '<p class="dc-sub">'+esc(T.crIntro)+'</p>'+chatHTML)+
     ccCrewResultsHTML(chan, msg, members)+ccCrewLfgHTML(chan, msg, members)+
     voices+
-    chan(T.crMembers+' · '+members.length, last+(members.length ? members.map(row).join('') : '<p class="dc-sub">'+esc(T.crNobody)+'</p>'), 'members')+
+    chan(T.crMembers+' · '+members.length, last+(members.length ? ccMemGroups(members, row, m=>ccCrewStatus(m)!=='off') : '<p class="dc-sub">'+esc(T.crNobody)+'</p>'), 'members')+
     ccCrewInviteHTML(chan);
 }
 
@@ -1771,9 +1773,12 @@ function ccFanInviteHTML(chan){
 function ccFanMembersHTML(chan){
   const T=L(), g=ccFanGuests(), f=ccFans();
   const last=f.last && f.last.day===careerToday() ? '<div class="dc-res">'+esc(f.last.text)+'</div>' : '';
-  const rows=g.map(x=>'<div class="cr-mem st-on"><span class="dc-av">'+ccFanGuestAv(x)+'<i class="cr-dot" aria-hidden="true"></i></span>'+
-    '<div class="cr-who"><b>'+esc(ccHandle(x.handle))+' <em>'+x.ovr+'</em></b><span>'+esc(T.fnGuest)+'</span></div>'+
-    '<div class="cr-btns"><button class="dc-btn ghost sm" onclick="ccFanKick(\''+jsq(x.handle)+'\')">'+esc(T.dcKick)+'</button></div></div>').join('');
+  // Гости «в сети» - от дня и ника (как в тусовке), строка раскрывает «Kick» по нажатию (ccMemToggle).
+  const isOn=x=>careerRng(ccHashStr('fanon|'+careerToday()+'|'+hKey(x.handle)))()<0.6;
+  const row=x=>'<div class="cr-mem cr-fold '+(isOn(x) ? 'st-on' : 'st-off')+'"><span class="dc-av">'+ccFanGuestAv(x)+'<i class="cr-dot" aria-hidden="true"></i></span>'+
+    '<button type="button" class="cr-who" onclick="ccMemToggle(this)" aria-expanded="false"><b>'+esc(ccHandle(x.handle))+' <em>'+x.ovr+'</em></b><span>'+esc(T.fnGuest)+'</span></button>'+
+    '<div class="cr-btns"><button class="dc-btn ghost sm dc-kick" onclick="ccFanKick(\''+jsq(x.handle)+'\')">'+esc(T.dcKick)+'</button></div></div>';
+  const rows=g.length ? ccMemGroups(g, row, isOn) : '';
   return chan(T.crMembers+' · '+(g.length+ccFanMembers()), last+rows+
     '<p class="dc-sub fn-fans">'+esc(T.fnFansN(ccNum(ccFanMembers())))+'</p>', 'members');
 }
@@ -1908,4 +1913,19 @@ function ccFanVoiceHTML(chan){
     gs.map(g=>vm(ccFanGuestAv(g), ccHandle(g.handle))).join('')+fans.map(n=>vm(ccFanAv(n), n)).join('');
   return chan(T.fnVcChan, '<div class="cr-voice">'+list+'</div>'+
     '<div class="dc-act"><button class="dc-btn'+(here ? ' ghost' : '')+'"'+(here ? ' disabled' : '')+' onclick="ccFanVcJoin()">'+esc(here ? T.crVoiceIn : T.crVoiceJoin)+'</button></div>', 'voice');
+}
+
+/* Список участников как в Discord: «в сети» и «не в сети» группами, вторая свёрнута (details); строка раскрывает
+   свои кнопки по нажатию, открыта одна строка за раз. */
+function ccMemToggle(btn){
+  const row=btn && btn.closest('.cr-mem'); if(!row) return;
+  const open=!row.classList.contains('open');
+  const box=row.closest('.dc-chan');
+  if(box) box.querySelectorAll('.cr-mem.open').forEach(r=>{ if(r!==row){ r.classList.remove('open'); const b=r.querySelector('.cr-who'); if(b) b.setAttribute('aria-expanded', 'false'); } });
+  row.classList.toggle('open', open); btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+}
+function ccMemGroups(list, row, isOn){
+  const T=L(), on=list.filter(isOn), off=list.filter(m=>!isOn(m));
+  return (on.length ? '<div class="cr-grp">'+esc(T.crGrpOn(on.length))+'</div>'+on.map(row).join('') : '')+
+    (off.length ? '<details class="cr-off"><summary class="cr-grp">'+esc(T.crGrpOff(off.length))+'</summary>'+off.map(row).join('')+'</details>' : '');
 }
