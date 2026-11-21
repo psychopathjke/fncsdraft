@@ -2443,6 +2443,8 @@ function careerCentreHTML(card, a){
               : `<p>${next.sub}</p>`}
             <div class="ch-mode"><span>${[careerNightSolo(next) ? L().ccSpotSoloTab : ccSquadWordCap(),
                 (ccNoDivisions() || next.type==='nations') ? '' : L().ccDivision+' '+cr.division].filter(Boolean).join(' · ')}</span></div>
+            ${/* Выезд — сразу под плашкой «формат · дивизион», полосой вбок: виден без прокрутки (Notion 20.11, его «не хочу скролить вниз»). */
+              (()=>{ awayIn=true; return cr.seasonOver ? '' : ccAwayHTML(true); })()}
             <!-- Про-Ам играется НЕ с напарником, а с контент-мейкером, и это
                  надо знать до нажатия: с кем сидишь и сколько его смотрят.
                  См. ccProAmMate и CC_PROAM_TWITCH. -->
@@ -2462,8 +2464,6 @@ function careerCentreHTML(card, a){
                  кнопкой значило бы запереть игрока без выхода. */
               (playable || ccMpOn() || ccRaceModeWhy()) ? careerSimRowHTML() : ''}
             ${btn}
-            ${/* Выезд — внутри карточки вечера, под кнопками: тот же вечер в других регионах (Notion 20.11). */
-              (()=>{ awayIn=true; return cr.seasonOver ? '' : ccAwayHTML(); })()}
           </div>
         </div>`}
       ${/* Интервью — ПОД днём, не над ним (Notion 27.10, игрок: «на тренировке спрашивает, тащил ли я команду, и мышку

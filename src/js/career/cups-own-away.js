@@ -589,7 +589,7 @@ function ccAwayWhy(reg, day){
 // Список регионов одного дня капа. late — поздние регионы вчерашнего вечера (жёлтый блок «Ночью ещё идут»).
 /* ВИД (его «с дизайном докрутить надо»): не таблетки в карточке вечера, а свой блок под ней. Строка региона: слева регион
    и время старта, под ним пинг, дивизион там и штраф; справа «Играть» или статус. Ниже — кто идёт после своего капа. */
-function ccAwayRowHTML(day, late){
+function ccAwayRowHTML(day, late, strip){
   const home=ccCareerRegion(), T=L();
   const slot={}; CC_REGIONS.forEach(r=>{ slot[r]=ccAwaySlot(r, day); });
   const byTime=(a,b)=>(slot[a] ? slot[a].getTime() : 0)-(slot[b] ? slot[b].getTime() : 0);
@@ -619,10 +619,11 @@ function ccAwayRowHTML(day, late){
       evLine+'<span>'+sub+'</span></div>'+
       '<button class="cc-awayb cc-aw-go" type="button"'+(closed ? ' disabled' : '')+' onclick="ccAwayPlay(\''+r+'\',\''+day+'\')">'+esc(st)+'</button></div>';
   }).join('');
-  return '<div class="cc-away cc-aw'+(late ? ' cc-away-late cc-aw-late' : '')+'">'+head+rows+afterHTML+'</div>';
+  // strip — в карточке вечера: регионы одной полосой вбок (.cc-aw-strip), см. CSS .ch-art-in .cc-aw.
+  return '<div class="cc-away cc-aw'+(late ? ' cc-away-late cc-aw-late' : '')+'">'+head+(strip ? '<div class="cc-aw-strip">'+rows+'</div>' : rows)+afterHTML+'</div>';
 }
-function ccAwayHTML(){
-  try{ if(ccVictoryLocked()) return ''; return ccAwayRowHTML(careerToday(), false); }catch(e){ return ''; }
+function ccAwayHTML(strip){
+  try{ if(ccVictoryLocked()) return ''; return ccAwayRowHTML(careerToday(), false, strip); }catch(e){ return ''; }
 }
 /* Сразу после своего вечера (его «после EU хочу, чтоб игралось»): на карточке итога — те же кнопки «Ночью ещё идут», нажатие
    уходит с экрана итога (show сбрасывает CAREER_RUN) и запускает выезд. */

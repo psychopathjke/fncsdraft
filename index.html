@@ -6256,15 +6256,20 @@
     background:rgba(255,255,255,.14);color:#fff;font-style:normal;font-size:10px;font-weight:900;letter-spacing:.05em;
     text-transform:uppercase;line-height:1.25;}
   .cc-aw .cc-aw-r.off .cc-aw-ev{background:rgba(255,255,255,.08);color:#cfd8ee;}
-  /* Внутри карточки вечера: отделён чертой от кнопок, текст слева, как у остальных строк блока. */
-  .ch-art-in .cc-aw{margin:14px 0 0;width:100%;align-self:stretch;box-sizing:border-box;text-align:left;background:rgba(8,14,40,.78);
-display:block;}
-  /* В карточке узко (306px на телефоне): регион строкой, слева кто/когда/что, справа кнопка или причина. */
-  .ch-art-in .cc-aw .cc-aw-r, .ch-art-in .cc-aw .cc-aw-h+.cc-aw-r{flex-direction:row;align-items:center;gap:10px;margin-top:6px;padding:8px 10px;}
-  .ch-art-in .cc-aw .cc-aw-t{display:inline;margin-left:6px;}
-  .ch-art-in .cc-aw .cc-aw-ev{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-  .ch-art-in .cc-aw .cc-aw-go{flex:0 0 auto;width:auto;min-width:72px;margin-top:0;padding:8px 12px;}
-  .ch-art-in .cc-aw .cc-aw-go:disabled{flex:0 1 84px;min-width:0;padding:0;text-align:right;}
+  /* Внутри карточки вечера, сразу под плашкой «формат · дивизион»: одна полоса плиток, лишние регионы листаются
+     вбок, чтобы кнопка «Играть» не уезжала вниз (его «не хочу скролить вниз, чтоб сразу всё видел»). */
+  .ch-art-in .cc-aw{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 10px;width:100%;align-self:stretch;box-sizing:border-box;
+    padding:8px;text-align:left;background:rgba(8,14,40,.78);}
+  .ch-art-in .cc-aw .cc-aw-h{flex:0 0 100%;}
+  .ch-art-in .cc-aw .cc-aw-strip{display:flex;gap:6px;width:100%;overflow-x:auto;scroll-snap-type:x proximity;
+    -webkit-overflow-scrolling:touch;scrollbar-width:thin;}
+  .ch-art-in .cc-aw .cc-aw-r, .ch-art-in .cc-aw .cc-aw-h+.cc-aw-r{flex:0 0 148px;flex-direction:column;align-items:stretch;
+    gap:2px;margin:0;padding:6px 8px;scroll-snap-align:start;}
+  .ch-art-in .cc-aw .cc-aw-t{display:inline;margin-left:5px;}
+  .ch-art-in .cc-aw .cc-aw-n b{font-size:12.5px;}
+  .ch-art-in .cc-aw .cc-aw-ev{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:9.5px;}
+  .ch-art-in .cc-aw .cc-aw-go{width:100%;min-width:0;margin-top:3px;padding:6px 4px;}
+  .ch-art-in .cc-aw .cc-aw-go:disabled{padding:2px 0 0;text-align:left;}
   @keyframes ccAwayLive{0%{box-shadow:0 0 0 0 rgba(255,59,59,.6);}70%{box-shadow:0 0 0 7px rgba(255,59,59,0);}100%{box-shadow:0 0 0 0 rgba(255,59,59,0);}}
   @media(prefers-reduced-motion:reduce){ .cc-aw-live{animation:none;} }
   .cc-valt:focus-visible{outline:2px solid #00ffd0;outline-offset:2px;}
@@ -123231,7 +123236,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='a92c5b80';
+const CC_BUILD='e2e19fe1';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -129077,6 +129082,8 @@ function careerCentreHTML(card, a){
               : `<p>${next.sub}</p>`}
             <div class="ch-mode"><span>${[careerNightSolo(next) ? L().ccSpotSoloTab : ccSquadWordCap(),
                 (ccNoDivisions() || next.type==='nations') ? '' : L().ccDivision+' '+cr.division].filter(Boolean).join(' · ')}</span></div>
+            ${/* Выезд — сразу под плашкой «формат · дивизион», полосой вбок: виден без прокрутки (Notion 20.11, его «не хочу скролить вниз»). */
+              (()=>{ awayIn=true; return cr.seasonOver ? '' : ccAwayHTML(true); })()}
             <!-- Про-Ам играется НЕ с напарником, а с контент-мейкером, и это
                  надо знать до нажатия: с кем сидишь и сколько его смотрят.
                  См. ccProAmMate и CC_PROAM_TWITCH. -->
@@ -129096,8 +129103,6 @@ function careerCentreHTML(card, a){
                  кнопкой значило бы запереть игрока без выхода. */
               (playable || ccMpOn() || ccRaceModeWhy()) ? careerSimRowHTML() : ''}
             ${btn}
-            ${/* Выезд — внутри карточки вечера, под кнопками: тот же вечер в других регионах (Notion 20.11). */
-              (()=>{ awayIn=true; return cr.seasonOver ? '' : ccAwayHTML(); })()}
           </div>
         </div>`}
       ${/* Интервью — ПОД днём, не над ним (Notion 27.10, игрок: «на тренировке спрашивает, тащил ли я команду, и мышку
@@ -162988,7 +162993,7 @@ function ccAwayWhy(reg, day){
 // Список регионов одного дня капа. late — поздние регионы вчерашнего вечера (жёлтый блок «Ночью ещё идут»).
 /* ВИД (его «с дизайном докрутить надо»): не таблетки в карточке вечера, а свой блок под ней. Строка региона: слева регион
    и время старта, под ним пинг, дивизион там и штраф; справа «Играть» или статус. Ниже — кто идёт после своего капа. */
-function ccAwayRowHTML(day, late){
+function ccAwayRowHTML(day, late, strip){
   const home=ccCareerRegion(), T=L();
   const slot={}; CC_REGIONS.forEach(r=>{ slot[r]=ccAwaySlot(r, day); });
   const byTime=(a,b)=>(slot[a] ? slot[a].getTime() : 0)-(slot[b] ? slot[b].getTime() : 0);
@@ -163018,10 +163023,11 @@ function ccAwayRowHTML(day, late){
       evLine+'<span>'+sub+'</span></div>'+
       '<button class="cc-awayb cc-aw-go" type="button"'+(closed ? ' disabled' : '')+' onclick="ccAwayPlay(\''+r+'\',\''+day+'\')">'+esc(st)+'</button></div>';
   }).join('');
-  return '<div class="cc-away cc-aw'+(late ? ' cc-away-late cc-aw-late' : '')+'">'+head+rows+afterHTML+'</div>';
+  // strip — в карточке вечера: регионы одной полосой вбок (.cc-aw-strip), см. CSS .ch-art-in .cc-aw.
+  return '<div class="cc-away cc-aw'+(late ? ' cc-away-late cc-aw-late' : '')+'">'+head+(strip ? '<div class="cc-aw-strip">'+rows+'</div>' : rows)+afterHTML+'</div>';
 }
-function ccAwayHTML(){
-  try{ if(ccVictoryLocked()) return ''; return ccAwayRowHTML(careerToday(), false); }catch(e){ return ''; }
+function ccAwayHTML(strip){
+  try{ if(ccVictoryLocked()) return ''; return ccAwayRowHTML(careerToday(), false, strip); }catch(e){ return ''; }
 }
 /* Сразу после своего вечера (его «после EU хочу, чтоб игралось»): на карточке итога — те же кнопки «Ночью ещё идут», нажатие
    уходит с экрана итога (show сбрасывает CAREER_RUN) и запускает выезд. */
