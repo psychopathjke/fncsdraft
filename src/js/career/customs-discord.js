@@ -490,7 +490,8 @@ function ccDcSrvIcon(id){
 }
 function ccDiscordHTML(){
   const T=L(), cr=CAREER.career, srv=CH_DC||'pc';
-  const servers=[['pc', ccDcSrvIcon('pc'), ccPracSrv()], ['mob', ccDcSrvIcon('mob'), T.dcSrvMob], ['own', ccDcSrvIcon('own'), T.dcSrvOwn]];
+  // Первым - тусовка региона (ccCrewHTML): про и стримеры, с которыми ты пересекался.
+  const servers=[['crew', CC_CREW_GROUP_SVG, T.dcSrvCrew(ccCareerRegion())], ['pc', ccDcSrvIcon('pc'), ccPracSrv()], ['mob', ccDcSrvIcon('mob'), T.dcSrvMob], ['own', ccDcSrvIcon('own'), T.dcSrvOwn]];
   const last=cr.dcLast && cr.dcLast.day===careerToday() ? cr.dcLast : null;
   const btn=(kind, label)=>{ const why=ccDcWhy(kind);
     return '<div class="dc-act"><button class="dc-btn"'+(why ? ' disabled' : '')+' onclick="ccDcGo(\''+kind+'\')">'+esc(label)+
@@ -504,11 +505,13 @@ function ccDiscordHTML(){
     const f=author===CAREER.player.nick ? ccDcFace() : '';
     return f ? ccDcImg(f, fb) : esc(fb);
   };
-  const msg=(author, bot, body)=>'<div class="dc-msg"><span class="dc-av'+(bot ? ' bot' : '')+'">'+avOf(author, bot)+'</span>'+
+  const msg=(author, bot, body, av)=>'<div class="dc-msg"><span class="dc-av'+(bot ? ' bot' : '')+'">'+(av!=null ? av : avOf(author, bot))+'</span>'+
     '<div class="dc-msg-in"><b>'+esc(author)+(bot ? '<i class="dc-bot">BOT</i>' : '')+'</b>'+body+'</div></div>';
   const chan=(name, body)=>'<div class="dc-chan"><div class="dc-chan-h"># '+esc(name)+'</div>'+body+'</div>';
   let body='';
-  if(srv==='pc'){
+  if(srv==='crew'){
+    body=ccCrewHTML(chan, msg);
+  } else if(srv==='pc'){
     // Кастомки ПК — сессии сервера практики региона (занятие noble: одна игра на сотню, таблица недели, форма от места).
     const sv=ccNobleServer(), tier=ccNobleTier();
     const ladder=ccCareerRegion()==='EU' ? chan(T.dcLadder, '<div class="dc-ladder">'+CC_NOBLE_LADDER.map((t,i)=>
@@ -748,7 +751,7 @@ function careerDoAct(id){
   const cr=CAREER.career, pl=CAREER.player;
   // День турнира: только занятия и разминка, и энергия на кап остаётся (см. ccPreEvent).
   const pre=ccPreEvent();
-  if(pre && !(ccTrainAct(act) || act.warm)) return null;
+  if(pre && !(ccTrainAct(act) || act.warm || act.voice)) return null;
   if(act.warm && (!pre || ccWarmDone())) return null;
   if(pre && careerEnergy()-act.energy<pre.reserve) return null;
   // The store is what says how much of a day there is, and the three things
@@ -813,7 +816,8 @@ function careerDoAct(id){
      actually get hold of, and the list is already the week's rather than a new
      draw. Playing somebody better teaches more: half again against somebody five
      points over you, two thirds against somebody five under. */
-  const foe=act.versus ? ccScrimFoe() : null;
+  // «Поиграть вместе» из Discord-тусовки - против того, кого позвал (CC_CREW_WITH), а не против сильнейшего из лички.
+  const foe=act.crew ? CC_CREW_WITH : act.versus ? ccScrimFoe() : null;
   const scrim=foe ? ccScrimSet(foe, now) : null;
   // The coach pays into his own half of the game, so which one is hired shows
   // in the shape of the card and not only in how fast it grows.
@@ -1141,4 +1145,206 @@ function careerAdvanceTo(iso){
   // 2019–2020: состав по этапу года (дуо → трио → сквад). См. ccPhaseRoster.
   if(typeof ccSyncPhaseRoster==='function') ccSyncPhaseRoster();
   careerSave();
+}
+
+/* ---- Discord-тусовка региона (идея игрока из Notion 20.11, его «да» на план 21.11) -------------------------------
+   Сервер, где сидят про и стримеры, с которыми ты пересекался: состав, друзья (cr.friends) и те, кто сейчас в личке
+   (careerDmPool). У каждого статус на сегодня (войс / в игре / онлайн / офлайн, от дня и ника) и отношение к тебе
+   (cr.crew.rel, 0-100). Можно:
+   - позвать поиграть: согласие той же арифметикой, что в личке (рейтинг, репутация), плюс отношение и статус; да -
+     вечер-скрим против него (занятие crew в CC_DAY_ACTS, ccScrimSet), отношение растёт; раз в день на человека;
+   - позвать в дуо: обычное письмо в личку (careerDmWrite, лимит три в день);
+   - зайти в войс: занятие voice, отношение с теми, кто там, и шанс, что кто-то сам позовёт поиграть;
+   - ответить в чате на сообщение тебе: один ответ в день, двигает отношение.
+   Все числа здесь - решение, не замер: данных о том, как про зовут друг друга играть, нет. */
+let CC_CREW_WITH=null;
+const CC_CREW_SIZE=10, CC_CREW_INV_CHANCE=0.35;
+const CC_CREW_REL0={mate:50, friend:35, other:10};
+const CC_CREW_STATUS_W=[['voice',0.25],['game',0.25],['on',0.3],['off',0.2]];
+const CC_CREW_REPLY={r1:6, r2:3, r3:0};
+const CC_CREW_GROUP_SVG='<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="9" cy="8.5" r="3.2"/><path d="M3 19.5c.6-3.3 3-5.2 6-5.2s5.4 1.9 6 5.2"/><circle cx="17" cy="9.5" r="2.5"/><path d="M16.2 14.4c2.6.1 4.3 1.8 4.8 4.6"/></svg>';
+function ccCrew(){ const cr=CAREER.career; cr.crew=cr.crew||{rel:{}}; cr.crew.rel=cr.crew.rel||{}; return cr.crew; }
+function ccCrewOvr(c){ try{ return Math.round(c._ovr!=null ? c._ovr : (attrsFor(c)||{}).ovr||70); }catch(e){ return 70; } }
+// Кто на сервере: состав, друзья, личка. Без дублей и без себя.
+function ccCrewMembers(){
+  const out=[], seen=new Set(), me=careerCard();
+  if(me) seen.add(hKey(me));
+  const add=(card, handle, ovr, kind)=>{
+    const h=handle || (card && card.handle); if(!h) return;
+    const k=hKey(h); if(seen.has(k) || out.length>=CC_CREW_SIZE) return;
+    seen.add(k);
+    out.push({handle:h, k:k, card:card||null, ovr:ovr!=null ? ovr : (card ? ccCrewOvr(card) : 70), kind:kind});
+  };
+  try{ careerMates().forEach(m=>{ if(m) add(m, m.handle, null, 'mate'); }); }catch(e){}
+  try{ (CAREER.career.friends||[]).forEach(h=>add(ccFriendCard(h), h, null, 'friend')); }catch(e){}
+  try{ careerDmPool().forEach(w=>add(w.card || ccFriendCard(w.handle), w.handle, w.ovr, 'other')); }catch(e){}
+  return out;
+}
+function ccCrewRel(m){
+  const rel=ccCrew().rel;
+  if(rel[m.k]==null) return CC_CREW_REL0[m.kind]!=null ? CC_CREW_REL0[m.kind] : CC_CREW_REL0.other;
+  return rel[m.k];
+}
+function ccCrewRelAdd(m, n){ const c=ccCrew(); c.rel[m.k]=clamp(ccCrewRel(m)+n, 0, 100); }
+// Статус на сегодня: от дня и ника, одинаковый при каждой перерисовке.
+function ccCrewStatus(m){
+  const rnd=careerRng(ccHashStr('crew|'+careerToday()+'|'+m.k));
+  const x=rnd(); let acc=0;
+  for(const [s, w] of CC_CREW_STATUS_W){ acc+=w; if(x<acc) return s; }
+  return 'off';
+}
+function ccCrewFace(m){ try{ return m.card ? (photoURL(m.card)||'') : ''; }catch(e){ return ''; } }
+function ccCrewAv(m){ const fb=String(m.handle).slice(0, 2).toUpperCase(), f=ccCrewFace(m); return f ? ccDcImg(f, fb) : esc(fb); }
+function ccCrewRelKey(r){ return r>=70 ? 'crRelClose' : r>=40 ? 'crRelFriend' : r>=20 ? 'crRelKnown' : 'crRelNew'; }
+function ccCrewAskedToday(m){ const a=ccCrew().inv; return !!(a && a.day===careerToday() && a.who.indexOf(m.k)>=0); }
+function ccCrewInvited(m){ const v=ccCrew().voice; return !!(v && v.day===careerToday() && v.inviter===m.k); }
+// Почему нельзя позвать поиграть; '' - можно.
+function ccCrewWhy(m){
+  const T=L(), st=ccCrewStatus(m), cr=CAREER.career;
+  if(cr.seasonOver) return T.ccSeasonOver;
+  if(careerDayClosed()) return T.crDayGone;
+  if(!ccCrewInvited(m)){
+    if(st==='off') return T.crStOff;
+    if(st==='game') return T.crStGame;
+    if(ccCrewAskedToday(m)) return T.crAskedToday;
+  }
+  if(ccPreEvent()) return T.crNotTourDay;
+  const act=ccActById('crew');
+  if(careerEnergy()<act.energy) return T.ccNeedEnergy(act.energy-careerEnergy());
+  return '';
+}
+// Согласится ли: та же тяга, что в личке (рейтинг, репутация), плюс отношение и статус; место в составе не важно.
+function ccCrewYes(m){
+  const st=ccCrewStatus(m);
+  const pull=CAREER.player.ovr+careerRep()/CC_REP_PER_OVR+ccCrewRel(m)/5+(st==='voice' ? 4 : 0);
+  return pull-(m.ovr-CAREER_DM_REACH)>=0;
+}
+function ccCrewFind(k){ return ccCrewMembers().find(m=>m.k===k) || null; }
+function ccCrewPlay(k){
+  const m=ccCrewFind(k); if(!m || ccCrewWhy(m)) return;
+  const c=ccCrew(), T=L(), today=careerToday();
+  const invited=ccCrewInvited(m);
+  if(!c.inv || c.inv.day!==today) c.inv={day:today, who:[]};
+  c.inv.who.push(m.k);
+  if(!invited && !ccCrewYes(m)){
+    ccCrewRelAdd(m, -1);
+    c.last={day:today, text:T.crNo(ccHandle(m.handle))};
+    careerSave(); careerRenderHub('discord'); return;
+  }
+  CC_CREW_WITH={handle:m.handle, ovr:m.ovr};
+  let r=null;
+  try{ r=careerDoAct('crew'); } finally{ CC_CREW_WITH=null; }
+  if(r){
+    ccCrewRelAdd(m, 5);
+    if(invited) c.voice.inviter=null;
+    const s=r.scrim;
+    c.last={day:today, text:T.crPlayed(ccHandle(m.handle), s ? s.mine : 0, s ? s.theirs : 0)};
+  }
+  careerSave(); careerRenderHub('discord');
+}
+function ccCrewDuo(k){
+  const m=ccCrewFind(k); if(!m) return;
+  careerDmWrite(m.handle);
+}
+function ccCrewVoiceWhy(){
+  const T=L(), v=ccCrew().voice;
+  if(v && v.day===careerToday()) return T.crVoiceIn;
+  if(CAREER.career.seasonOver) return T.ccSeasonOver;
+  if(careerDayClosed()) return T.crDayGone;
+  const act=ccActById('voice'), pre=ccPreEvent();
+  if(careerEnergy()<act.energy) return T.ccNeedEnergy(act.energy-careerEnergy());
+  if(pre && careerEnergy()-act.energy<pre.reserve) return T.ccKeepEnergy(pre.reserve);
+  return '';
+}
+function ccCrewVoice(){
+  if(ccCrewVoiceWhy()) return;
+  if(!careerDoAct('voice')) return;
+  const c=ccCrew(), today=careerToday(), inVoice=ccCrewMembers().filter(m=>ccCrewStatus(m)==='voice');
+  inVoice.forEach(m=>ccCrewRelAdd(m, 2));
+  // Шанс, что кто-то из войса сам позовёт поиграть: тот, с кем отношение лучше.
+  const rnd=careerRng(ccHashStr('crewvoice|'+today));
+  let inviter=null;
+  if(inVoice.length && rnd()<CC_CREW_INV_CHANCE) inviter=inVoice.slice().sort((a,b)=>ccCrewRel(b)-ccCrewRel(a))[0].k;
+  c.voice={day:today, inviter:inviter};
+  careerSave(); careerRenderHub('discord');
+}
+// Чат дня: несколько сообщений участников и одно тебе, с ответом.
+function ccCrewChat(members){
+  const T=L(), today=careerToday(), rnd=careerRng(ccHashStr('crewchat|'+today)), cr=CAREER.career;
+  const on=members.filter(m=>ccCrewStatus(m)!=='off');
+  if(!on.length) return {lines:[], toYou:null};
+  const pick=()=>on[Math.floor(rnd()*on.length)];
+  let next=null; try{ next=careerNext(); }catch(e){}
+  const evName=next && next.type!=='free' && next.day===today ? (next.title||next.label||'') : '';
+  const pool=[
+    ()=>evName ? T.crM1(evName) : T.crM2(),
+    ()=>T.crM2(),
+    ()=>{ const o=pick(); return T.crM3(ccHandle(o.handle)); },
+    ()=>T.crM4(),
+    ()=>T.crM5()
+  ];
+  // Фразы без повторов: одна и та же строка дважды подряд читалась как сбой.
+  const lines=[], left=pool.slice();
+  const n=Math.min(3, on.length);
+  for(let i=0;i<n;i++) lines.push({m:pick(), text:left.splice(Math.floor(rnd()*left.length), 1)[0]()});
+  // Тебе: на свой последний результат за три дня, иначе просто привет.
+  const last=(cr.log||[]).slice(-1)[0];
+  const recent=last && last.day && ccDaysBetween(last.day, today)<=3 && last.place;
+  const who=pick(), nick=CAREER.player.nick||'';
+  const text=recent
+    ? (last.place<=Math.max(3, Math.ceil((last.of||100)*0.1)) ? T.crMeGood(nick, last.place) : T.crMeBad(nick, last.place))
+    : T.crMeHi(nick);
+  return {lines:lines, toYou:{m:who, text:text}};
+}
+function ccCrewReply(opt){
+  const c=ccCrew(), today=careerToday();
+  if(c.reply && c.reply.day===today) return;
+  if(!(opt in CC_CREW_REPLY)) return;
+  const chat=ccCrewChat(ccCrewMembers());
+  if(!chat.toYou) return;
+  ccCrewRelAdd(chat.toYou.m, CC_CREW_REPLY[opt]);
+  c.reply={day:today, opt:opt};
+  careerSave(); careerRenderHub('discord');
+}
+function ccCrewHTML(chan, msg){
+  const T=L(), c=ccCrew(), today=careerToday();
+  const members=ccCrewMembers();
+  const stName={voice:T.crStVoice, game:T.crStGame, on:T.crStOn, off:T.crStOff};
+  const row=m=>{
+    const st=ccCrewStatus(m), why=ccCrewWhy(m), rel=ccCrewRel(m), invited=ccCrewInvited(m);
+    const duoOk=m.kind!=='mate' && !(typeof ccMpOn==='function' && ccMpOn());
+    return '<div class="cr-mem st-'+st+(invited ? ' inv' : '')+'">'+
+      '<span class="dc-av">'+ccCrewAv(m)+'<i class="cr-dot" aria-hidden="true"></i></span>'+
+      '<div class="cr-who"><b>'+esc(ccHandle(m.handle))+' <em>'+m.ovr+'</em></b>'+
+        '<span>'+esc(stName[st])+' · '+esc(T[ccCrewRelKey(rel)])+'</span>'+
+        (invited ? '<span class="cr-inv">'+esc(T.crInvitedYou)+'</span>' : '')+
+        (why && why!==stName[st] ? '<span class="dc-why">'+esc(why)+'</span>' : '')+'</div>'+
+      '<div class="cr-btns">'+
+        '<button class="dc-btn sm"'+(why ? ' disabled' : '')+' onclick="ccCrewPlay(\''+jsq(m.k)+'\')">'+
+          esc(invited ? T.crAccept : T.crPlay)+' <em>'+ccActById('crew').energy+T.ccEnergyMark+'</em></button>'+
+        (duoOk ? '<button class="dc-btn ghost sm" onclick="ccCrewDuo(\''+jsq(m.k)+'\')">'+esc(T.crDuo)+'</button>' : '')+
+      '</div></div>';
+  };
+  const chat=ccCrewChat(members);
+  let chatHTML=chat.lines.map(l=>msg(ccHandle(l.m.handle), false, '<p>'+esc(l.text)+'</p>', ccCrewAv(l.m))).join('');
+  if(chat.toYou){
+    const done=c.reply && c.reply.day===today ? c.reply.opt : null;
+    chatHTML+=msg(ccHandle(chat.toYou.m.handle), false, '<p>'+esc(chat.toYou.text)+'</p>'+
+      (done ? '' : '<div class="cr-replies">'+['r1','r2','r3'].map(o=>
+        '<button class="dc-btn ghost sm" onclick="ccCrewReply(\''+o+'\')">'+esc(T['crR'+o.slice(1)])+'</button>').join('')+'</div>'),
+      ccCrewAv(chat.toYou.m));
+    if(done && done!=='r3') chatHTML+=msg(CAREER.player.nick, false, '<p>'+esc(T['crR'+done.slice(1)])+'</p>');
+  }
+  const inVoice=members.filter(m=>ccCrewStatus(m)==='voice');
+  const vWhy=ccCrewVoiceWhy(), vIn=!!(c.voice && c.voice.day===today);
+  const voice='<div class="cr-voice">'+(inVoice.length
+      ? inVoice.map(m=>'<span class="cr-vm" title="'+esc(ccHandle(m.handle))+'"><span class="dc-av">'+ccCrewAv(m)+'</span><i>'+esc(ccHandle(m.handle))+'</i></span>').join('')
+      : '<p class="dc-sub">'+esc(T.crVoiceEmpty)+'</p>')+'</div>'+
+    '<div class="dc-act"><button class="dc-btn'+(vIn ? ' ghost' : '')+'"'+(vWhy ? ' disabled' : '')+' onclick="ccCrewVoice()">'+
+      esc(vIn ? T.crVoiceIn : T.crVoiceJoin)+(vIn ? '' : ' <em>'+ccActById('voice').energy+T.ccEnergyMark+'</em>')+'</button>'+
+      (vWhy && !vIn ? '<span class="dc-why">'+esc(vWhy)+'</span>' : '')+'</div>';
+  const last=c.last && c.last.day===today ? '<div class="dc-res">'+esc(c.last.text)+'</div>' : '';
+  return chan(T.crGeneral, '<p class="dc-sub">'+esc(T.crIntro)+'</p>'+chatHTML)+
+    chan(T.crVoice, voice)+
+    chan(T.crMembers+' · '+members.length, last+(members.length ? members.map(row).join('') : '<p class="dc-sub">'+esc(T.crNobody)+'</p>'));
 }

@@ -4383,6 +4383,11 @@ const CC_DAY_ACTS=[
   {id:'mobScrim', energy:40, gain:{}, mobile:true, mobScrim:true},
   // Разминка перед турниром: только в день турнира, форма на вечер (ccPreEvent, CC_WARM_FORM).
   {id:'warm',    energy:15, gain:{}, warm:true},
+  /* Discord-тусовка (его «да» на план 21.11, ccCrewHTML): не кнопки дня, а действия из Discord, поэтому в панели дня
+     и в перемотке их нет (crew/voice). «Поиграть вместе» - скрим против позванного (CC_CREW_WITH, ccScrimSet): тот же
+     шаг, что у скрима, на два стата; войс - дешёвый вечер, настрой напарнику. Числа - решение, не замер. */
+  {id:'crew',    energy:30, crew:true, versus:true, gain:{aim:ccStep('aim')/2, clu:ccStep('clu')/2}},
+  {id:'voice',   energy:10, gain:{}, voice:true, morale:2},
   {id:'rest',    energy:0,  gain:{}, rest:CC_ENERGY_REST}
 ];
 /* Цена разговора. Довольному почти ничего не даёт (иначе его можно держать на ста), недовольному больше всего.

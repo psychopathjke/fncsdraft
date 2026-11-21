@@ -3094,7 +3094,7 @@ function careerDayPanelHTML(locked){
   const dayMult = careerDayGear()*clamp((careerTrainCap()-nowOvr)/CAREER_TAPER, 0, 1);
   const dayCoach = ccCoach();
   const six = CAREER.player.attrs || ccOwnAttrs();
-  const actsShown=CC_DAY_ACTS.filter(function(a){ return pre ? (ccTrainAct(a) || a.warm) : (!a.warm && (!a.meta || ccMetaOpen())); });
+  const actsShown=CC_DAY_ACTS.filter(function(a){ return pre ? (ccTrainAct(a) || a.warm) : (!a.warm && !a.crew && !a.voice && (!a.meta || ccMetaOpen())); });
   if(CC_DAY_VIEW==='train') actsShown.sort((x, y)=>(ccDiscTile(x.id) ? 0 : 1)-(ccDiscTile(y.id) ? 0 : 1));
   const rows=actsShown.map(function(a, ai, allActs){
     const noDev=!!a.mobile && !ccMobileOwn();
