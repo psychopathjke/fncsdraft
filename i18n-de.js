@@ -4740,3 +4740,6 @@ Object.assign(I18N.de=I18N.de||{},
 /* Дозаливка «de» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
 Object.assign(I18N.de=I18N.de||{},
 ({crGrpOn:n=>"Online · "+n, crGrpOff:n=>"Offline · "+n}));
+/* Дозаливка «de» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
+Object.assign(I18N.de=I18N.de||{},
+({crModeScr:"Scrims", crPlayedMode:(h,md,a,b)=>""+md+" mit "+h+" gespielt"+': '+a+'-'+b, crPlayedRk:(h,md)=>""+md+" mit "+h+" gespielt"}));

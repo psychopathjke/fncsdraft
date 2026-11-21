@@ -4386,7 +4386,11 @@ const CC_DAY_ACTS=[
   /* Discord-тусовка (его «да» на план 21.11, ccCrewHTML): не кнопки дня, а действия из Discord, поэтому в панели дня
      и в перемотке их нет (crew/voice). «Поиграть вместе» - скрим против позванного (CC_CREW_WITH, ccScrimSet): тот же
      шаг, что у скрима, на два стата; войс - дешёвый вечер, настрой напарнику. Числа - решение, не замер. */
-  {id:'crew',    energy:30, crew:true, versus:true, gain:{aim:ccStep('aim')/2, clu:ccStep('clu')/2}},
+  // Что именно играть вместе - на выбор (его «пусть на выбор будет ранкед и тд»): скримы - понемногу во все четыре,
+  // бокс-файты - прицел и клатч, зон-варс - эндгейм и выживание; ранкед вдвоём идёт обычной сессией trSur.
+  {id:'crew',    energy:30, crew:true, versus:true, gain:{aim:ccStep('aim')/4, clu:ccStep('clu')/4, sur:ccStep('sur')/4, end:ccStep('end')/4}},
+  {id:'crewBox', energy:30, crew:true, versus:true, gain:{clu:ccStep('clu')/2, aim:ccStep('aim')/2}},
+  {id:'crewZw',  energy:30, crew:true, versus:true, gain:{end:ccStep('end')/2, sur:ccStep('sur')/2}},
   {id:'voice',   energy:10, gain:{}, voice:true, morale:2},
   {id:'rest',    energy:0,  gain:{}, rest:CC_ENERGY_REST}
 ];

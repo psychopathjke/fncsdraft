@@ -324,6 +324,17 @@ function ccDcScrMarks(r, S){
   return m;
 }
 function ccDcDropReg(which){ return which==='cust' ? ccDcReg() : ccDcScrReg(); }
+// Метка сама (для «Noble вместе» из тусовки): точка, где меньше всего чужих меток, при равенстве - богаче лутом.
+function ccDcAutoSpot(r){
+  const S=ccDcScrSetup(r, true); if(!S) return;
+  try{
+    const zones=ALL_LANDING_ZONES||[], marks=ccDcScrMarks(r, S), cnt=new Map();
+    marks.forEach(m=>cnt.set(m[1], (cnt.get(m[1])||0)+1));
+    let best=0, bs=-1e9;
+    zones.forEach((z, i)=>{ const s=-(cnt.get(i)||0)*100+(z.points||0); if(s>bs){ bs=s; best=i; } });
+    r.spot=best;
+  } finally{ S.restore(); }
+}
 function ccDcDropOpen(which){
   which=which==='cust' ? 'cust' : 'scr';
   const r=ccDcDropReg(which); if(!r || !r.checked || r.done) return;
@@ -1258,7 +1269,12 @@ function ccCrewRelKey(r){ return r>=70 ? 'crRelClose' : r>=40 ? 'crRelFriend' : 
 function ccCrewAskedToday(m){ const a=ccCrew().inv; return !!(a && a.day===careerToday() && a.who.indexOf(m.k)>=0); }
 function ccCrewInvited(m){ const v=ccCrew().voice; return !!(v && v.day===careerToday() && v.inviter===m.k); }
 // Почему нельзя позвать поиграть; '' - можно.
-function ccCrewWhy(m){
+// Режимы «поиграть вместе»: занятие и подпись. Ранкед вдвоём - обычная сессия ранкеда (trSur, ccRk).
+const CC_CREW_MODES=[['rk','trSur'], ['box','crewBox'], ['zw','crewZw'], ['scr','crew']];
+function ccCrewModeAct(mode){ const x=CC_CREW_MODES.find(e=>e[0]===mode); return x ? x[1] : 'crew'; }
+function ccCrewModeName(mode){ return mode==='rk' ? ccActName('trSur') : mode==='box' ? ccActName('trBox') : mode==='zw' ? ccActName('trZw') : L().crModeScr; }
+// Почему нельзя позвать поиграть; '' - можно. С mode - ещё и почему нельзя именно этот режим.
+function ccCrewWhy(m, mode){
   const T=L(), st=ccCrewStatus(m), cr=CAREER.career;
   if(cr.seasonOver) return T.ccSeasonOver;
   if(careerDayClosed()) return T.crDayGone;
@@ -1267,8 +1283,14 @@ function ccCrewWhy(m){
     if(st==='game') return T.crStGame;
     if(ccCrewAskedToday(m)) return T.crAskedToday;
   }
+  if(!mode) return '';
+  // Noble (его «нобл позвать и сразу рега, если игрок соглашается, и симуляция»): правила обычной кастомки сервера
+  // практики - свободный день, 40 энергии, раз в день (ccDcWhy); уже сыгранная сегодня запись - нельзя.
+  if(mode==='nb'){ const r=ccDcReg(); if(r && (r.done || r.kind!=='pc')) return T.dcDone; return ccDcWhy('pcJoin')||''; }
+  // Ранкед - тренировка, его можно и в день турнира (с резервом на кап, ccArenaPlayWhy); остальное - нет.
+  if(mode==='rk') return (typeof ccArenaPlayWhy==='function' ? ccArenaPlayWhy() : '') || '';
   if(ccPreEvent()) return T.crNotTourDay;
-  const act=ccActById('crew');
+  const act=ccActById(ccCrewModeAct(mode));
   if(careerEnergy()<act.energy) return T.ccNeedEnergy(act.energy-careerEnergy());
   return '';
 }
@@ -1279,8 +1301,9 @@ function ccCrewYes(m){
   return pull-(m.ovr-CAREER_DM_REACH)>=0;
 }
 function ccCrewFind(k){ return ccCrewMembers().find(m=>m.k===k) || null; }
-function ccCrewPlay(k){
-  const m=ccCrewFind(k); if(!m || ccCrewWhy(m)) return;
+function ccCrewPlay(k, mode){
+  mode=mode||'scr';
+  const m=ccCrewFind(k); if(!m || ccCrewWhy(m, mode)) return;
   const c=ccCrew(), T=L(), today=careerToday();
   const invited=ccCrewInvited(m);
   if(!c.inv || c.inv.day!==today) c.inv={day:today, who:[]};
@@ -1290,14 +1313,35 @@ function ccCrewPlay(k){
     c.last={day:today, text:T.crNo(ccHandle(m.handle))};
     careerSave(); careerRenderHub('discord'); return;
   }
+  if(mode==='nb'){
+    // Согласился - запись на ближайшую сессию, чек-ин, метка на самую свободную точку и сразу игра (ccScrimRun).
+    ccCrewRelAdd(m, 5); if(invited) c.voice.inviter=null;
+    c.last={day:today, text:T.crPlayedRk(ccHandle(m.handle), ccPracSrv())};
+    let r=ccDcReg();
+    if(!r){ ccDcRegister('pc', CC_DC_SESS[0].id); r=ccDcReg(); }
+    if(!r) return;
+    r.checked=true; r.with=m.handle;
+    if(r.spot==null) ccDcAutoSpot(r);
+    careerSave();
+    ccScrimRun();
+    return;
+  }
+  if(mode==='rk'){
+    // Ранкед вдвоём: та же сессия, что из вкладки тренировок (ccRkPlay), но без ухода с Discord.
+    const n0=ccRk().n||0, r=careerDoAct('trSur'), rk=ccRk();
+    if(r){ ccCrewRelAdd(m, 5); if(invited) c.voice.inviter=null; c.last={day:today, text:T.crPlayedRk(ccHandle(m.handle), ccCrewModeName('rk'))}; }
+    careerSave(); careerRenderHub('discord');
+    if((rk.n||0)!==n0 && rk.last && rk.last.games && rk.last.games.length) ccRkSimOpen(rk.last);
+    return;
+  }
   CC_CREW_WITH={handle:m.handle, ovr:m.ovr};
   let r=null;
-  try{ r=careerDoAct('crew'); } finally{ CC_CREW_WITH=null; }
+  try{ r=careerDoAct(ccCrewModeAct(mode)); } finally{ CC_CREW_WITH=null; }
   if(r){
     ccCrewRelAdd(m, 5);
     if(invited) c.voice.inviter=null;
     const s=r.scrim;
-    c.last={day:today, text:T.crPlayed(ccHandle(m.handle), s ? s.mine : 0, s ? s.theirs : 0)};
+    c.last={day:today, text:T.crPlayedMode(ccHandle(m.handle), ccCrewModeName(mode), s ? s.mine : 0, s ? s.theirs : 0)};
   }
   careerSave(); careerRenderHub('discord');
 }
@@ -1390,8 +1434,13 @@ function ccCrewHTML(chan, msg){
         (invited ? '<span class="cr-inv">'+esc(T.crInvitedYou)+'</span>' : '')+
         (why && why!==stName[st] ? '<span class="dc-why">'+esc(why)+'</span>' : '')+'</button>'+
       '<div class="cr-btns">'+
-        '<button class="dc-btn sm"'+(why ? ' disabled' : '')+' onclick="ccCrewPlay(\''+jsq(m.k)+'\')">'+
-          esc(invited ? T.crAccept : T.crPlay)+' <em>'+ccActById('crew').energy+T.ccEnergyMark+'</em></button>'+
+        // Во что играть - на выбор: ранкед, бокс-файты, зон-варс, скримы, Noble (сразу запись и игра).
+        '<span class="cr-modes-l">'+esc(invited ? T.crAccept : T.crPlay)+':</span>'+
+        [['rk', 'trSur'], ['box', 'crewBox'], ['zw', 'crewZw'], ['scr', 'crew'], ['nb', null]].map(([md, act])=>{
+          const w=why || ccCrewWhy(m, md), en=act ? ccActById(act).energy : CC_DC_ENERGY;
+          return '<button class="dc-btn sm"'+(w ? ' disabled title="'+esc(w)+'"' : '')+' onclick="ccCrewPlay(\''+jsq(m.k)+'\',\''+md+'\')">'+
+            esc(md==='nb' ? ccPracSrv() : ccCrewModeName(md))+' <em>'+en+T.ccEnergyMark+'</em></button>';
+        }).join('')+
         (duoOk ? '<button class="dc-btn ghost sm" onclick="ccCrewDuo(\''+jsq(m.k)+'\')">'+esc(T[ccSquadKey('dmAskBtn')]||T.crDuo)+'</button>' : '')+
         (m.kind!=='mate' ? '<button class="dc-btn ghost sm dc-kick" onclick="ccCrewKick(\''+jsq(m.k)+'\')" aria-label="'+esc(T.dcKick+' '+ccHandle(m.handle))+'">'+esc(T.dcKick)+'</button>' : '')+
       '</div></div>';

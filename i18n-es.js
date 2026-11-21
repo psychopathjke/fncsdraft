@@ -4740,3 +4740,6 @@ Object.assign(I18N.es=I18N.es||{},
 /* Дозаливка «es» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
 Object.assign(I18N.es=I18N.es||{},
 ({crGrpOn:n=>"En línea · "+n, crGrpOff:n=>"Desconectado · "+n}));
+/* Дозаливка «es» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
+Object.assign(I18N.es=I18N.es||{},
+({crModeScr:"Scrims", crPlayedMode:(h,md,a,b)=>"Jugaste "+md+" con "+h+""+': '+a+'-'+b, crPlayedRk:(h,md)=>"Jugaste "+md+" con "+h+""}));
