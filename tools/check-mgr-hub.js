@@ -232,7 +232,8 @@ const SECTIONS=[
     const B=document.getElementById('mgBody');
     // Спонсоры — отдельная вкладка с 8.10 (его слово: «это самое основное — заработок организации»).
     mgrRenderHub('sponsors'); { const body=document.getElementById('mgBody').innerHTML;
-      check('спонсоры: своя вкладка с деньгами в месяц и контрактом', MGR_TAB==='sponsors' && body.indexOf('mg-sp-tab')>=0 && body.indexOf('mg-sp-slot')>=0 && !bad(body), body.slice(0,120)); }
+      // С 22.11 спонсоры - подвкладка «Клуба» (вкладки как в карьере); старый ключ 'sponsors' ведёт туда.
+      check('спонсоры: подвкладка клуба с деньгами в месяц и контрактом', MGR_TAB==='club' && MGR_SUB.club==='sponsors' &&body.indexOf('mg-sp-tab')>=0 && body.indexOf('mg-sp-slot')>=0 && !bad(body), body.slice(0,120)); }
     for(const [tab, group, keys] of [['club','club',['train','base','press']],['tables','tables',['stats','trophies','managers']]]){
       for(const k of keys){ MGR_SUB[group]=k; mgrRenderHub(tab);
         const err=B.querySelector('.cc-ffo-err');

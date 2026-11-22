@@ -8737,7 +8737,7 @@ async function simulateGamesLive(teams, numGames, pointsFn, killMult, fieldPrefi
           /* Перемотка календаря (22.11, его «не ждать по несколько минут»): лобби без людей - быстрой моделью чужих
              регионов (CC_WORLD_FAST, сверена 16.10 с полным движком: связь силы и места 0.624 против 0.625). Своё лобби,
              лобби с людьми, командная карьера и гонка - полным движком, как было. CC_FF_FAST_OFF - выключатель для сверки. */
-          const ffFast=typeof CC_FF!=='undefined' && !!CC_FF && !CC_FF_FAST_OFF && !lockRng && !recMine &&
+          const ffFast=((typeof CC_FF!=='undefined' && !!CC_FF) || (typeof MGR_FF_BUSY!=='undefined' && MGR_FF_BUSY)) && !CC_FF_FAST_OFF && !lockRng && !recMine &&
                        lobby!==myLobby && humanLobbies.indexOf(lobby)<0 && ccFfFastSize(lobby) &&
                        !(typeof ccMpOn==='function' && ccMpOn()) && !(typeof ccRaceFfOn==='function' && ccRaceFfOn());
           const wf0=CC_WORLD_FAST, wn0=CC_WORLD_FAST_NOISE, we0=CC_WORLD_FAST_EXP;

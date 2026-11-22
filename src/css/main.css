@@ -10284,3 +10284,23 @@
   @media (min-width:701px){
     #screen-career-hub.ch-lobby-on .ch-stage{border-radius:var(--r,10px);overflow:hidden;}
   }
+  /* Менеджер 22.11: вкладки справа, соперник и буткемп на Центре, Discord клуба. */
+  #screen-manager .mg22-gap{flex:1 1 auto;min-width:8px;}
+  #screen-manager .mg22-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px;margin-top:10px;}
+  #screen-manager .mg22-row:empty{display:none;}
+  #screen-manager .mg22-rv{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+  #screen-manager .mg22-rv-logo{width:34px;height:34px;display:inline-flex;align-items:center;justify-content:center;}
+  #screen-manager .mg22-rv-logo img,#screen-manager .mg22-rv-logo svg{max-width:34px;max-height:34px;}
+  #screen-manager .mg22-rv em{font-style:normal;opacity:.8;font-size:12.5px;width:100%;}
+  #screen-manager .mg22-chans{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 8px;}
+  #screen-manager .mg22-chan{border:0;background:rgba(255,255,255,.06);color:#b5bac1;border-radius:6px;padding:5px 10px;font:inherit;font-size:13px;cursor:pointer;}
+  #screen-manager .mg22-chan.on{background:rgba(255,255,255,.14);color:#fff;}
+  #screen-manager .mg22-grid{display:grid;grid-template-columns:minmax(0,1fr) 240px;gap:10px;}
+  @media (max-width:760px){ #screen-manager .mg22-grid{grid-template-columns:1fr;} }
+  #screen-manager .mg22-dc .dc-chatlog{max-height:520px;overflow:auto;}
+  #screen-manager .mg22-dc .dc-srv img,#screen-manager .mg22-dc .dc-srv svg{width:70%;height:70%;object-fit:contain;}
+  #screen-manager .mg22-dc .dc-av.bot img,#screen-manager .mg22-dc .dc-av.bot svg{width:80%;height:80%;object-fit:contain;}
+  #screen-manager .mg22-mobl{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:6px;margin:0 0 10px;}
+  #screen-manager .mg22-mobr{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.05);border-radius:8px;padding:6px 10px;}
+  #screen-manager .mg22-mobr b{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  #screen-manager .mg22-mobr em{font-style:normal;color:#ffdd00;font-weight:800;}

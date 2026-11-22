@@ -162,6 +162,7 @@ function simulateGames(teams, numGames, pointsFn, killMult){
     t.landingWins=0; t.landingLosses=0; t.landingContests=0; t.multiKillLandingWins=0; });
   for(let g=0; g<numGames; g++){
     const order=simulateGame(teams);
+    if(CC_FF_FIX_ELIMS) ccFfFastElims(order);   // быстрая модель на перемотке менеджера - см. mgrEngineRank
     order.forEach((t,i)=>{
       const place=i+1;
       const elims=t._elims;

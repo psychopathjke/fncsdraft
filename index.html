@@ -10805,6 +10805,26 @@
   @media (min-width:701px){
     #screen-career-hub.ch-lobby-on .ch-stage{border-radius:var(--r,10px);overflow:hidden;}
   }
+  /* Менеджер 22.11: вкладки справа, соперник и буткемп на Центре, Discord клуба. */
+  #screen-manager .mg22-gap{flex:1 1 auto;min-width:8px;}
+  #screen-manager .mg22-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px;margin-top:10px;}
+  #screen-manager .mg22-row:empty{display:none;}
+  #screen-manager .mg22-rv{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+  #screen-manager .mg22-rv-logo{width:34px;height:34px;display:inline-flex;align-items:center;justify-content:center;}
+  #screen-manager .mg22-rv-logo img,#screen-manager .mg22-rv-logo svg{max-width:34px;max-height:34px;}
+  #screen-manager .mg22-rv em{font-style:normal;opacity:.8;font-size:12.5px;width:100%;}
+  #screen-manager .mg22-chans{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 8px;}
+  #screen-manager .mg22-chan{border:0;background:rgba(255,255,255,.06);color:#b5bac1;border-radius:6px;padding:5px 10px;font:inherit;font-size:13px;cursor:pointer;}
+  #screen-manager .mg22-chan.on{background:rgba(255,255,255,.14);color:#fff;}
+  #screen-manager .mg22-grid{display:grid;grid-template-columns:minmax(0,1fr) 240px;gap:10px;}
+  @media (max-width:760px){ #screen-manager .mg22-grid{grid-template-columns:1fr;} }
+  #screen-manager .mg22-dc .dc-chatlog{max-height:520px;overflow:auto;}
+  #screen-manager .mg22-dc .dc-srv img,#screen-manager .mg22-dc .dc-srv svg{width:70%;height:70%;object-fit:contain;}
+  #screen-manager .mg22-dc .dc-av.bot img,#screen-manager .mg22-dc .dc-av.bot svg{width:80%;height:80%;object-fit:contain;}
+  #screen-manager .mg22-mobl{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:6px;margin:0 0 10px;}
+  #screen-manager .mg22-mobr{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.05);border-radius:8px;padding:6px 10px;}
+  #screen-manager .mg22-mobr b{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  #screen-manager .mg22-mobr em{font-style:normal;color:#ffdd00;font-weight:800;}
 /*@@PART shell.html@@*/
 </style>
 <!-- ?v= — это НЕ украшение, это починка того, что он поймал 24 августа.
@@ -108360,7 +108380,7 @@ async function simulateGamesLive(teams, numGames, pointsFn, killMult, fieldPrefi
           /* Перемотка календаря (22.11, его «не ждать по несколько минут»): лобби без людей - быстрой моделью чужих
              регионов (CC_WORLD_FAST, сверена 16.10 с полным движком: связь силы и места 0.624 против 0.625). Своё лобби,
              лобби с людьми, командная карьера и гонка - полным движком, как было. CC_FF_FAST_OFF - выключатель для сверки. */
-          const ffFast=typeof CC_FF!=='undefined' && !!CC_FF && !CC_FF_FAST_OFF && !lockRng && !recMine &&
+          const ffFast=((typeof CC_FF!=='undefined' && !!CC_FF) || (typeof MGR_FF_BUSY!=='undefined' && MGR_FF_BUSY)) && !CC_FF_FAST_OFF && !lockRng && !recMine &&
                        lobby!==myLobby && humanLobbies.indexOf(lobby)<0 && ccFfFastSize(lobby) &&
                        !(typeof ccMpOn==='function' && ccMpOn()) && !(typeof ccRaceFfOn==='function' && ccRaceFfOn());
           const wf0=CC_WORLD_FAST, wn0=CC_WORLD_FAST_NOISE, we0=CC_WORLD_FAST_EXP;
@@ -109061,6 +109081,7 @@ function simulateGames(teams, numGames, pointsFn, killMult){
     t.landingWins=0; t.landingLosses=0; t.landingContests=0; t.multiKillLandingWins=0; });
   for(let g=0; g<numGames; g++){
     const order=simulateGame(teams);
+    if(CC_FF_FIX_ELIMS) ccFfFastElims(order);   // быстрая модель на перемотке менеджера - см. mgrEngineRank
     order.forEach((t,i)=>{
       const place=i+1;
       const elims=t._elims;
@@ -115151,9 +115172,12 @@ let CC_WORLD_FAST=false, CC_WORLD_FAST_EXP=1, CC_WORLD_FAST_NOISE=0.24;
    Киллы быстрая модель даёт целыми отрядами и копит у победителя (8.2 против 5.7), поэтому они умножаются на поправку
    группы мест (CC_FF_FAST_EL, со сглаживанием +1), чтобы средние по местам совпали с полным движком. Замерены только дуо - трио, сквады и
    соло при перемотке остаются на полном движке (ccFfFastSize), пока не замерены. */
-let CC_FF_FAST_OFF=false, CC_FF_FAST_NOISE=0, CC_FF_FAST_EXP=1.5;
+let CC_FF_FAST_OFF=false, CC_FF_FAST_NOISE=0, CC_FF_FAST_EXP=1.5, CC_FF_FIX_ELIMS=false;
 // [до места, среднее киллов полного движка, среднее быстрой модели] - замер 22.11 только по лобби дуо (3776 и 3427 игр).
-const CC_FF_FAST_EL={2:[[1, 6.17, 8.87], [3, 4.59, 5.38], [10, 3.05, 2.50], [25, 2.06, 0.84], [9999, 1.29, 0.57]]};
+// Соло - тот же замер 22.11 по лобби одиночек (60 дней, 2472 и 2473 игры): места близко (победитель в верхних 8.1 % по силе
+// против 6.1 %, сильнейший на 19.3 % поля против 20.1 %), киллы так же копились у победителя (6.11 против 3.88).
+const CC_FF_FAST_EL={2:[[1, 6.17, 8.87], [3, 4.59, 5.38], [10, 3.05, 2.50], [25, 2.06, 0.84], [9999, 1.29, 0.57]],
+                     1:[[1, 3.88, 6.11], [3, 2.80, 4.40], [10, 2.21, 2.84], [25, 1.54, 1.70], [9999, 0.59, 0.51]]};
 function ccFfFastSize(lobby){ const t=lobby && lobby[0]; const n=(t && t.squad && t.squad.length) || 0; return !!CC_FF_FAST_EL[n]; }
 function ccFfFastElims(order){
   if(!Array.isArray(order) || !order.length) return;
@@ -123791,7 +123815,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='0f7c1118';
+const CC_BUILD='459f54b2';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -177228,7 +177252,8 @@ function mgrPayMonths(toDay){
     // Бюджет организации на дивизион Fortnite (8.10): зарплаты в оргах платит организация, а не призовые. Совет переводит
     // 1/12 годового оборота клуба (MGR.club.turnover — его же бюджетная модель, mgrClubBudget) каждый месяц.
     const budget=Math.round((c.turnover||0)/12);
-    c.cash+=budget+mgrSponsor()-wage-mgrStaffWage()-mgrFacUpkeep(); paid+=wage+mgrStaffWage()+mgrFacUpkeep(); c.budgetGot=(c.budgetGot||0)+budget;
+    try{ mgrMobTick(); }catch(e){}
+    c.cash+=budget+mgrSponsor()-wage-mgrStaffWage()-mgrFacUpkeep()+mgrContentMonth()-mgrMobWageNow(); paid+=wage+mgrStaffWage()+mgrFacUpkeep(); c.budgetGot=(c.budgetGot||0)+budget;
     if(MGR.deal && MGR.deal.year===MGR.year) MGR.deal.paid=(MGR.deal.paid||0)+mgrSponsor();
     try{ mgrDevelop(m); }catch(e){}
     try{ mgrYouthMonth(m); }catch(e){ console.error('mgrYouthMonth', e); }
@@ -177237,6 +177262,7 @@ function mgrPayMonths(toDay){
     try{ mgrCreatorsMonth(m); }catch(e){ console.error('mgrCreatorsMonth', e); }
     try{ mgrAcadCupMonth(m); }catch(e){ console.error('mgrAcadCupMonth', e); }
     try{ mgrRivalMonth(m); mgrJobMonth(m); }catch(e){}
+    try{ mgrStreamAskMonth(m); }catch(e){ console.error('mgrStreamAskMonth', e); }
     /* Долг (его слово 8.10: «если в карьере −500к, то завершается карьера — это слишком большой минус»): было −8 доверия
        за любой месяц в минусе — к −500 тыс. совет увольнял. Теперь −1…−4 по размеру долга против оборота клуба, первый
        месяц в минусе — только письмо, в плюсе доверие возвращается +2 до 60. Оценка режима. */
@@ -177290,8 +177316,10 @@ function mgrCloneHubCss(){
   const st=document.createElement('style'); st.id='mgrHubCss'; st.textContent=out.join('\n');
   document.head.appendChild(st);
 }
-const MGR_TABS=['centre','squad','transfers','inbox','sponsors','club','calendar','tables'];
-let MGR_SUB={transfers:'market', club:'train', tables:'stats', inbox:'mail'};
+/* 22.11 вкладки как в карьере: шесть основных; входящие и Discord клуба - справа, спонсоры - подвкладкой «Клуба». */
+const MGR_TABS_MAIN=['centre','squad','transfers','club','calendar','tables'], MGR_TABS_SIDE=['inbox','discord'];
+const MGR_TABS=MGR_TABS_MAIN.concat(MGR_TABS_SIDE);
+let MGR_SUB={transfers:'market', club:'train', tables:'stats', inbox:'mail', discord:'general'};
 let MGR_DREW=null;
 function mgrGrade(c){ return c>=85 ? 'A' : c>=70 ? 'B' : c>=55 ? 'C' : c>=40 ? 'D' : c>=25 ? 'E' : 'F'; }
 function mgrTeamAvg(){
@@ -177305,7 +177333,7 @@ function mgrBar(label, mark, v, low){
 }
 function mgrBudgetMonth(){ return Math.round(((MGR && MGR.club && MGR.club.turnover)||0)/12); }
 const MGR_BUDGET_T={ru:'Бюджет организации', en:'Organisation budget', fr:'Budget de l’organisation', it:'Budget dell’organizzazione', pt:'Orçamento da organização', de:'Budget der Organisation', es:'Presupuesto de la organización'};
-function mgrNetMonth(){ return mgrBudgetMonth()+mgrSponsor()-mgrWageBill()-(mgrStaffWage()||0)-(mgrFacUpkeep()||0)+(typeof mgrCreatorNet==='function' ? mgrCreatorNet() : 0); }
+function mgrNetMonth(){ return mgrBudgetMonth()+mgrSponsor()-mgrWageBill()-(mgrStaffWage()||0)-(mgrFacUpkeep()||0)+(typeof mgrCreatorNet==='function' ? mgrCreatorNet() : 0)+(typeof mgrContentMonth==='function' ? mgrContentMonth() : 0)-(typeof mgrMobWageNow==='function' ? mgrMobWageNow() : 0); }
 function mgrHdrHTML(){
   const T=mgrT(), T9=mgrT9(), c=MGR.club, cr=CAREER.career;
   const all=mgrAll();
@@ -177322,14 +177350,15 @@ function mgrHdrHTML(){
 // Тело вкладки. Задачи плана меняют ветки по одной; до них — прежние блоки менеджера.
 function mgrTabBody(tab){
   if(tab==='sponsors') return mgrSponsorsTabHTML();
+  if(tab==='discord') return mgrDiscordHTML();
   if(tab==='calendar') return mgrCalendarHTML();
   if(tab==='squad') return mgrSquadHTML();
   if(tab==='transfers') return mgrTransfersHTML();
   const T9=mgrT9();
   if(tab==='inbox') return mgrSubTabsHTML('inbox', [['mail', T9.mail], ['feed', T9.feed], ['world', T9.wMedia]])+(MGR_SUB.inbox==='world' ? mgrWorldFeedHTML() : MGR_SUB.inbox==='feed' ? mgrFeedHTML() : '<div class="ch-tile mgi"><h4>'+esc(T9.tabs.inbox)+'</h4>'+mgrInboxHTML()+'</div>');
   if(tab==='club'){ const s=MGR_SUB.club;
-    return mgrSubTabsHTML('club', [['train', T9.train], ['youth', T9.youth], ['creators', T9.creators], ['base', T9.base], ['press', T9.press]])+
-      '<div class="mgk-body">'+(s==='creators' ? mgrCreatorsHTML() : s==='youth' ? mgrYouthHTML() : s==='base' ? mgrFacHTML() : s==='sponsor' ? mgrDealHTML() : s==='press' ? mgrEvFreqHTML() : mgrTrainHTML())+'</div>'; }
+    return mgrSubTabsHTML('club', [['train', T9.train], ['sponsors', T9.tabs.sponsors], ['mobile', mgrT22M().tab], ['youth', T9.youth], ['creators', T9.creators], ['base', T9.base], ['press', T9.press]])+
+      '<div class="mgk-body">'+(s==='sponsors' ? mgrSponsorsTabHTML() : s==='mobile' ? mgrMobileHTML() : s==='creators' ? mgrCreatorsHTML() : s==='youth' ? mgrYouthHTML() : s==='base' ? mgrFacHTML() : s==='sponsor' ? mgrDealHTML() : s==='press' ? mgrEvFreqHTML() : mgrTrainHTML()+mgrScrimPickHTML()+mgrContentHTML())+'</div>'; }
   if(tab==='tables'){ const s=MGR_SUB.tables;
     return mgrSubTabsHTML('tables', [['stats', T9.stats], ['events', T9.wEvents], ['clubs', T9.wClubs], ['trophies', T9.trophies], ['managers', T9.managers]])+
       '<div class="mgk-body">'+(s==='events' ? mgrWorldEventsHTML() : s==='clubs' ? mgrWorldClubsHTML() : s==='trophies' ? mgrTrophiesHTML() : s==='managers' ? mgrRivalsHTML() : mgrStatsHTML())+'</div>'; }
@@ -177343,14 +177372,16 @@ function mgrRenderHub(tab){
   try{ mgrBudgetMigrate(); }catch(e){ console.error('mgrBudgetMigrate', e); }
   MGR.inbox=MGR.inbox||[]; MGR.morale=MGR.morale||{};
   try{ mgrBenchDissolve(); }catch(e){ console.error('mgrBenchDissolve', e); }
+  if(tab==='sponsors'){ MGR_SUB.club='sponsors'; tab='club'; }
   MGR_TAB=MGR_TABS.indexOf(tab)>=0 ? tab : (MGR_TABS.indexOf(MGR_TAB)>=0 ? MGR_TAB : 'centre');
   const body=document.getElementById('mgBody');
   const keep=(MGR_DREW===MGR_TAB) ? [body.scrollTop, window.scrollY] : null;
   document.getElementById('mgTop').hidden=false;
   const tabs=document.getElementById('mgTabs'); tabs.hidden=false;
   const T9=mgrT9(), unread=MGR.inbox.filter(m=>!m.done).length;
-  tabs.innerHTML=MGR_TABS.map(k=>'<button class="ch-tab'+(MGR_TAB===k ? ' on' : '')+'" data-tab="'+k+'" onclick="mgrRenderHub(\''+k+'\')">'+
-    esc(T9.tabs[k])+(k==='inbox' && unread ? '<i class="ch-dot on"></i>' : '')+'</button>').join('');
+  const tabBtn=k=>'<button class="ch-tab'+(MGR_TAB===k ? ' on' : '')+'" data-tab="'+k+'" onclick="mgrRenderHub(\''+k+'\')">'+
+    esc(k==='discord' ? mgrT22().discord : T9.tabs[k])+(k==='inbox' && unread ? '<i class="ch-dot on"></i>' : '')+'</button>';
+  tabs.innerHTML=MGR_TABS_MAIN.map(tabBtn).join('')+'<span class="mg22-gap"></span>'+MGR_TABS_SIDE.map(tabBtn).join('');
   try{ mgrHdrHTML(); body.innerHTML=mgrTabBody(MGR_TAB); }
   catch(e){
     console.error('mgrRenderHub сломался на вкладке '+MGR_TAB+':', e);
@@ -177482,7 +177513,7 @@ function mgrCentreHTML(){
   const dls=mgrDeadlineSoon();
   const dl=dls ? '<div class="ch-tile mgc-dl" onclick="MGR_SUB.transfers=\'market\';mgrRenderHub(\'transfers\')"><b>⏰ '+esc(T9.dlSoon(dls.left))+'</b></div>' : '';
   setTimeout(mgrNewsTick, 0);
-  return dl+'<div class="mfc-grid">'+play+news+notes+table+sched+dev+'</div>';
+  return dl+'<div class="mfc-grid">'+play+news+notes+table+sched+dev+'</div>'+'<div class="mg22-row">'+mgrRivalTileHTML()+mgrBootTileHTML()+'</div>';
 }
 // Картинка турнира: арт этого дня из календаря сцены (как в карьере), иначе — арт сезона FNCS.
 function mgrEvArt(ev){
@@ -177766,7 +177797,15 @@ function mgrEngineRank(field, games, ptsFn, kill, lobbyN, seed, keep){
   rest.forEach(t=>{ t.stagePts=0; t.stageElims=0; t.wins=0; t.stageLog=[]; });
   const mixed=top.map(t=>({t, k:rnd()})).sort((a,b)=>a.k-b.k).map(x=>x.t);
   const want=Math.max(2, lobbyN||50), parts=Math.max(1, Math.ceil(mixed.length/want)), size=Math.ceil(mixed.length/parts);
-  for(let i=0; i<mixed.length; i+=size){ const lob=mixed.slice(i, i+size); if(lob.length>1) simulateGames(lob, games, ptsFn, kill); }
+  /* Перемотка менеджера (22.11): лобби дуо без команд клуба - быстрой моделью с теми же настройками и пересчётом киллов,
+     что у перемотки карьеры (CC_FF_FAST_*, сверка в match-choices.js). Лобби с клубом - полным движком. */
+  for(let i=0; i<mixed.length; i+=size){ const lob=mixed.slice(i, i+size); if(lob.length<2) continue;
+    const fast=MGR_FF_BUSY && !CC_FF_FAST_OFF && ccFfFastSize(lob) && !lob.some(t=>keep.indexOf(t)>=0);
+    if(!fast){ simulateGames(lob, games, ptsFn, kill); continue; }
+    const wf0=CC_WORLD_FAST, wn0=CC_WORLD_FAST_NOISE, we0=CC_WORLD_FAST_EXP;
+    CC_WORLD_FAST=true; CC_WORLD_FAST_NOISE=CC_FF_FAST_NOISE; CC_WORLD_FAST_EXP=CC_FF_FAST_EXP; CC_FF_FIX_ELIMS=true;
+    try{ simulateGames(lob, games, ptsFn, kill); }
+    finally{ CC_WORLD_FAST=wf0; CC_WORLD_FAST_NOISE=wn0; CC_WORLD_FAST_EXP=we0; CC_FF_FIX_ELIMS=false; } }
   return mixed.sort(mgrRankCmp).concat(rest);
 }
 function mgrCupFieldOf(ev, n, salt){
@@ -178232,7 +178271,7 @@ function mgrInboxHTML(){
   const list=(MGR.inbox||[]);
   if(!list.length) return '<p class="mg-hint">'+T2.inboxEmpty+'</p>';
   return '<div class="mg-clubs">'+list.map(m=>'<div class="mg-club'+(m.done?' done':'')+(m.kind==='event'?' ev':'')+'">'+mgrInboxIcon(m)+'<span class="mg-cname"><b>'+esc(m.text)+'</b><small>'+esc(ccDayLabel(m.day))+(m.done && m.done!=='info' ? ' · '+esc(m.kind==='event' ? (m.done==='a' ? m.a : m.b) : (m.done==='yes' ? T2.accept : T2.decline)) : '')+'</small></span>'+
-    (!m.done ? '<button class="hero-btn hero-btn-go mg-take" onclick="mgrInboxDo(\''+m.id+'\', true)">'+esc(m.kind==='event' ? m.a : m.kind==='job' ? mgrT7().jobBtn : m.kind==='natjob' ? mgrT10().natBtn : m.kind==='offer' ? T2.sell : m.kind==='wantplay' ? mgrT5().promiseBtn : m.kind==='leave' ? mgrT5().sellBtn : T2.accept)+'</button><button class="hero-btn hero-btn-alt mg-take" onclick="mgrInboxDo(\''+m.id+'\', false)">'+esc(m.kind==='event' ? m.b : m.kind==='job' ? mgrT7().stayBtn : m.kind==='wantplay' ? mgrT5().waitBtn : m.kind==='leave' ? mgrT5().keepBtn : T2.decline)+'</button>' : '')+
+    (!m.done ? '<button class="hero-btn hero-btn-go mg-take" onclick="mgrInboxDo(\''+m.id+'\', true)">'+esc(m.kind==='event' ? m.a : m.kind==='job' ? mgrT7().jobBtn : m.kind==='natjob' ? mgrT10().natBtn : m.kind==='stream' ? mgrT22().reqYes : m.kind==='offer' ? T2.sell : m.kind==='wantplay' ? mgrT5().promiseBtn : m.kind==='leave' ? mgrT5().sellBtn : T2.accept)+'</button><button class="hero-btn hero-btn-alt mg-take" onclick="mgrInboxDo(\''+m.id+'\', false)">'+esc(m.kind==='event' ? m.b : m.kind==='job' ? mgrT7().stayBtn : m.kind==='wantplay' ? mgrT5().waitBtn : m.kind==='stream' ? mgrT22().reqNo : m.kind==='leave' ? mgrT5().keepBtn : T2.decline)+'</button>' : '')+
     // Согласился собрать сборную — до кубка состав можно поправить отсюда же.
     (m.kind==='natjob' && m.done==='yes' && mgrNatJob() && !mgrNatJob().res ? '<button class="hero-btn hero-btn-go mg-take" onclick="mgrNatPickOpen()">'+esc(mgrT10().natSquadBtn)+' · '+mgrNatJob().squad.length+'/'+MGR_NAT_SIZE+'</button>' : '')+
     '</div>').join('')+'</div>';
@@ -178819,6 +178858,7 @@ function mgrWeekly(fromDay, toDay){
     MGR.wkDay=d;
     const rnd=careerRng(ccHashStr('mgrwk|'+MGR.club.name+'|'+d));
     mgrTrainWeek();
+    try{ mgrScrimWeek(d); if(mgrContent()==='lots') MGR.fatigue=Math.min(100, (MGR.fatigue||0)+3); }catch(e){ console.error('mgrScrimWeek', e); }
     mgrPeopleWeek(d);
     mgrEventWeek(d);
     try{ mgrScoutWeek(d); }catch(e){ console.error('mgrScoutWeek', e); }
@@ -178869,6 +178909,7 @@ function mgrInboxDo(id, ok){
   const m=(MGR.inbox||[]).find(x=>x.id===id); if(!m || m.done) return;
   if(m.kind==='event'){ if(!mgrEventDo(m, ok)) return; m.done=ok ? 'a' : 'b'; mgrSave(); mgrOpenHub(); return; }
   if(m.kind==='job'){ m.done=ok ? 'yes' : 'no'; if(ok) mgrSwitchClub(m.club); mgrSave(); mgrOpenHub(); return; }
+  if(m.kind==='stream'){ m.done=ok ? 'yes' : 'no'; mgrStreamAnswer(m, ok); mgrSave(); mgrOpenHub(); return; }
   if(m.kind==='natjob'){ const j=mgrNatJob(); m.done=ok ? 'yes' : 'no'; if(j) j.state=ok ? 'yes' : 'no'; mgrSave(); mgrOpenHub(); if(ok) mgrNatPickOpen(); return; }
   m.done=ok ? 'yes' : 'no';
   if(m.kind==='offer'){
@@ -178911,7 +178952,8 @@ function mgrSeasonReview(){
   mgrAwardsSeason(okEarn && okPlace);
   const aw=(MGR.awards||[]).filter(x=>x.year===MGR.year && x.kind!=='pom');
   const awHTML=aw.length ? '<div class="mg-mrow"><b>'+esc(mgrT9().awards)+'</b>'+aw.map(x=>'<small>🏆 '+esc(mgrT9()[x.kind](x.h||MGR.year))+'</small>').join('')+'</div>' : '';
-  const html='<h3>'+T.endSeason+' · '+MGR.year+'</h3>'+awHTML+
+  const rvNote=mgrRivalSeasonEnd();
+  const html='<h3>'+T.endSeason+' · '+MGR.year+'</h3>'+mgrWrapBtnHTML()+(rvNote ? '<div class="mg-mrow"><small>'+esc(rvNote)+'</small></div>' : '')+awHTML+
     '<div class="mg-mrow"><b>'+esc(T.board)+'</b><small>'+esc(T.goalEarn(mgrMoney(b.earn||0)))+' — '+mgrMoney(earned)+' · '+(okEarn ? T.met : T.notMet)+'</small>'+
     '<small>'+esc(T.goalPlace(b.place||50))+' — '+(b.best!=null ? '#'+b.best : T.bestNone)+' · '+(okPlace ? T.met : T.notMet)+'</small></div>'+
     (!fired && !last ? mgrRenewHTML() : '')+
@@ -179579,7 +179621,7 @@ function mgrTrainWeek(){   // раз в неделю (из mgrWeekly)
 }
 function mgrNightPow(){   // прибавка/штраф силы на вечер: скримы, усталость, аналитик
   const f=mgrFatigue();
-  return (mgrTrain()==='scrims' ? 1 : 0)-(f>80 ? 2 : f>60 ? 1 : 0)+mgrStaff('analyst')*0.4+0.3*mgrFac('lab');
+  return (mgrTrain()==='scrims' ? 1 : 0)-(f>80 ? 2 : f>60 ? 1 : 0)+mgrStaff('analyst')*0.4+0.3*mgrFac('lab')+mgrBootPow()+mgrContentPow();
 }
 /* НАСТОЯЩИЕ КОУЧИ И SMM в штаб (его слово 7.10: «смм коучи же есть у нас, можно их на выбор добавить»).
    Те же люди, что в карьере (CC_COACHES, CC_SMM): фото, ник, условия. Уровень для эффектов штаба
@@ -181566,6 +181608,419 @@ function mgrAfterNight(){
   MGR_DREW=null;   // после матча — наверх, а не туда, где кончился экран результатов (его слово 8.10)
   mgrSave(); mgrOpenHub(); mgrSackCheck();
   try{ window.scrollTo(0, 0); const b=document.getElementById('mgBody'); if(b) b.scrollTop=0; }catch(e){}
+}
+
+/* ===== МЕНЕДЖЕР 22.11 (его «делай» на список «что в карьере менеджера изменить или добавить») =====
+   Discord клуба, клуб-соперник сезона, скримы против выбранного клуба, буткемп перед турниром, стримы игроков (доход клуба),
+   просьба игрока стримить больше, итоги сезона карточками. Числа - решение, не замер. */
+const MGR_T22={
+  ru:{discord:'Discord', general:'general', results:'results', scrims:'scrims', members:'участники',
+    welcome:n=>'добро пожаловать, @'+n, welcome2:'погнали', winTop:(e,p)=>'#'+p+' на '+e+'!! ПОГНАЛИ', winTop2:'горжусь этим составом',
+    bad:(e,p)=>'#'+p+' на '+e+'. идём дальше', bad2:'разбор завтра в 12:00', moan:'@менеджер можем поговорить? мне не нравится, как всё идёт',
+    talkBtn:'Поговорить', contract:'@менеджер что с моим контрактом? он кончается в этом сезоне', contractBtn:'К составу',
+    rivalLine:c=>'опять '+c+' в этом сезоне. в этот раз мы их обгоним', scrimLine:(c,w,l)=>'скримы с '+c+': '+w+'-'+l,
+    noResults:'Результатов пока нет.', noScrims:'На этой неделе скримов не было. Соперника выбирают в «Клуб» → «Тренировки».',
+    rivalTitle:'Клуб-соперник', rivalScore:(a,b)=>'В этом сезоне '+a+':'+b+' по очным турнирам', rivalNone:'В этом сезоне пока не пересекались',
+    rivalEndW:c=>'Сезон выше, чем '+c+': доверие совета +3', rivalEndL:c=>'Сезон ниже, чем '+c+': доверие совета −1',
+    scrimH:'Соперник по скримам', scrimN:'Неделя скримов - шесть игр против этого клуба: сыгранность первого состава +1, счёт - в Discord.', scrimAny:'Любой',
+    bootTitle:'Буткемп', bootN:(e,c)=>'Неделя в буткемп-доме перед '+e+': +1.5 к силе на вечер, сыгранность +2. Стоит '+c, bootBtn:'Забронировать',
+    bootOn:e=>'Буткемп перед '+e+' забронирован', bootNoCash:'Не хватает денег',
+    contH:'Стримы игроков', contN:'Сколько игроки стримят. Клубу - 30% того, что они зарабатывают в эфире.',
+    cOff:'Только игра', cSome:'Иногда стримят', cLots:'Стримят много', cOffN:'Без дохода и без усталости', cSomeN:'~10 эфиров в месяц',
+    cLotsN:'~20 эфиров, усталость +3 в неделю, −0.5 к силе', contMonth:m=>'Стримы: '+m+' в месяц клубу',
+    reqStream:h=>h+' хочет больше стримить: это фанаты и деньги, но меньше тренировок.', reqYes:'Разрешить', reqNo:'Отказать',
+    wrapBtn:'Сезон в карточках', wTitle:y=>'Твой клуб '+y, wEv:'Сыграно вечеров', wEvS:(n,w)=>n+' вечеров · '+w+' побед', wBest:'Лучшее место',
+    wMoney:'Призовые', wMoneyS:'Заработано на турнирах за сезон', wTop:'Лучший фраггер', wTopS:n=>n+' убийств', wBoard:'Оценка совета',
+    wRival:c=>'Ты против '+c, wTroph:'Трофеи', wEnd:'До следующего сезона'},
+  en:{discord:'Discord', general:'general', results:'results', scrims:'scrims', members:'members',
+    welcome:n=>'welcome @'+n, welcome2:'lets get it', winTop:(e,p)=>'#'+p+' at '+e+'!! LETS GO', winTop2:'proud of this team',
+    bad:(e,p)=>'#'+p+' at '+e+'. we go again', bad2:'review tomorrow 12:00', moan:'@manager can we talk? not happy with how things are going',
+    talkBtn:'Talk', contract:'@manager what about my contract? it ends this season', contractBtn:'Open squad',
+    rivalLine:c=>c+' again this season. we beat them this time', scrimLine:(c,w,l)=>'scrims vs '+c+': '+w+'-'+l,
+    noResults:'No results yet.', noScrims:'No scrims this week. Pick an opponent in Club, Training.',
+    rivalTitle:'Rival club', rivalScore:(a,b)=>'This season '+a+':'+b+' head to head', rivalNone:'Not met yet this season',
+    rivalEndW:c=>'Finished ahead of '+c+': board confidence +3', rivalEndL:c=>'Finished behind '+c+': board confidence −1',
+    scrimH:'Scrims opponent', scrimN:'A week of scrims is six games against this club: first squad chemistry +1, the score goes to Discord.', scrimAny:'Any',
+    bootTitle:'Bootcamp', bootN:(e,c)=>'A week in a bootcamp house before '+e+': +1.5 power that evening, chemistry +2. Costs '+c, bootBtn:'Book',
+    bootOn:e=>'Bootcamp booked before '+e, bootNoCash:'Not enough cash',
+    contH:'Player streams', contN:'How much the players stream. The club takes 30% of what they earn on stream.',
+    cOff:'Game only', cSome:'Some streams', cLots:'Stream a lot', cOffN:'No income, no fatigue', cSomeN:'~10 streams a month',
+    cLotsN:'~20 streams, fatigue +3 a week, −0.5 power', contMonth:m=>'Streams: '+m+' a month to the club',
+    reqStream:h=>h+' wants to stream more: fans and money, but less practice.', reqYes:'Allow', reqNo:'Refuse',
+    wrapBtn:'Season in cards', wTitle:y=>'Your club '+y, wEv:'Evenings played', wEvS:(n,w)=>n+' evenings · '+w+' wins', wBest:'Best finish',
+    wMoney:'Prize money', wMoneyS:'Won in events this season', wTop:'Top fragger', wTopS:n=>n+' eliminations', wBoard:'Board grade',
+    wRival:c=>'You vs '+c, wTroph:'Trophies', wEnd:'See you next season'},
+  fr:{discord:'Discord', general:'general', results:'results', scrims:'scrims', members:'membres',
+    welcome:n=>'bienvenue @'+n, welcome2:'on y va', winTop:(e,p)=>'#'+p+' à '+e+' !! ALLEZ', winTop2:'fier de cette équipe',
+    bad:(e,p)=>'#'+p+' à '+e+'. on repart', bad2:'débrief demain 12h', moan:'@manager on peut parler ? je ne suis pas content de la situation',
+    talkBtn:'Parler', contract:'@manager et mon contrat ? il finit cette saison', contractBtn:'Voir l’effectif',
+    rivalLine:c=>'encore '+c+' cette saison. cette fois on passe devant', scrimLine:(c,w,l)=>'scrims contre '+c+' : '+w+'-'+l,
+    noResults:'Pas encore de résultats.', noScrims:'Pas de scrims cette semaine. Choisis un adversaire dans Club, Entraînement.',
+    rivalTitle:'Club rival', rivalScore:(a,b)=>'Cette saison '+a+':'+b+' en face à face', rivalNone:'Pas encore croisés cette saison',
+    rivalEndW:c=>'Saison devant '+c+' : confiance du conseil +3', rivalEndL:c=>'Saison derrière '+c+' : confiance du conseil −1',
+    scrimH:'Adversaire de scrims', scrimN:'Une semaine de scrims, c’est six parties contre ce club : cohésion de la première équipe +1, le score va sur Discord.', scrimAny:'N’importe',
+    bootTitle:'Bootcamp', bootN:(e,c)=>'Une semaine en bootcamp avant '+e+' : +1,5 de puissance ce soir-là, cohésion +2. Coût '+c, bootBtn:'Réserver',
+    bootOn:e=>'Bootcamp réservé avant '+e, bootNoCash:'Pas assez d’argent',
+    contH:'Streams des joueurs', contN:'Combien les joueurs streament. Le club prend 30 % de ce qu’ils gagnent en live.',
+    cOff:'Que le jeu', cSome:'Quelques streams', cLots:'Beaucoup de streams', cOffN:'Pas de revenu, pas de fatigue', cSomeN:'~10 lives par mois',
+    cLotsN:'~20 lives, fatigue +3 par semaine, −0,5 de puissance', contMonth:m=>'Streams : '+m+' par mois au club',
+    reqStream:h=>h+' veut streamer plus : des fans et de l’argent, mais moins d’entraînement.', reqYes:'Autoriser', reqNo:'Refuser',
+    wrapBtn:'La saison en cartes', wTitle:y=>'Ton club '+y, wEv:'Soirées jouées', wEvS:(n,w)=>n+' soirées · '+w+' victoires', wBest:'Meilleure place',
+    wMoney:'Gains', wMoneyS:'Gagné en tournois cette saison', wTop:'Meilleur fragger', wTopS:n=>n+' éliminations', wBoard:'Note du conseil',
+    wRival:c=>'Toi contre '+c, wTroph:'Trophées', wEnd:'À la saison prochaine'},
+  it:{discord:'Discord', general:'general', results:'results', scrims:'scrims', members:'membri',
+    welcome:n=>'benvenuto @'+n, welcome2:'andiamo', winTop:(e,p)=>'#'+p+' a '+e+'!! ANDIAMO', winTop2:'orgoglioso di questa squadra',
+    bad:(e,p)=>'#'+p+' a '+e+'. si riparte', bad2:'analisi domani alle 12', moan:'@manager possiamo parlare? non sono contento di come vanno le cose',
+    talkBtn:'Parla', contract:'@manager e il mio contratto? scade questa stagione', contractBtn:'Apri la rosa',
+    rivalLine:c=>'ancora '+c+' quest’anno. questa volta li superiamo', scrimLine:(c,w,l)=>'scrim contro '+c+': '+w+'-'+l,
+    noResults:'Ancora nessun risultato.', noScrims:'Niente scrim questa settimana. Scegli un avversario in Club, Allenamento.',
+    rivalTitle:'Club rivale', rivalScore:(a,b)=>'Quest’anno '+a+':'+b+' negli scontri diretti', rivalNone:'Non ancora incontrati quest’anno',
+    rivalEndW:c=>'Stagione davanti a '+c+': fiducia del consiglio +3', rivalEndL:c=>'Stagione dietro a '+c+': fiducia del consiglio −1',
+    scrimH:'Avversario scrim', scrimN:'Una settimana di scrim sono sei partite contro questo club: intesa della prima squadra +1, il punteggio va su Discord.', scrimAny:'Qualsiasi',
+    bootTitle:'Bootcamp', bootN:(e,c)=>'Una settimana in bootcamp prima di '+e+': +1,5 di forza quella sera, intesa +2. Costa '+c, bootBtn:'Prenota',
+    bootOn:e=>'Bootcamp prenotato prima di '+e, bootNoCash:'Soldi insufficienti',
+    contH:'Stream dei giocatori', contN:'Quanto streammano i giocatori. Al club va il 30% di ciò che guadagnano in live.',
+    cOff:'Solo gioco', cSome:'Qualche stream', cLots:'Tanti stream', cOffN:'Niente entrate, niente fatica', cSomeN:'~10 live al mese',
+    cLotsN:'~20 live, fatica +3 a settimana, −0,5 di forza', contMonth:m=>'Stream: '+m+' al mese al club',
+    reqStream:h=>h+' vuole streammare di più: fan e soldi, ma meno allenamento.', reqYes:'Permetti', reqNo:'Rifiuta',
+    wrapBtn:'La stagione in carte', wTitle:y=>'Il tuo club '+y, wEv:'Serate giocate', wEvS:(n,w)=>n+' serate · '+w+' vittorie', wBest:'Miglior piazzamento',
+    wMoney:'Montepremi', wMoneyS:'Vinto nei tornei in stagione', wTop:'Miglior fragger', wTopS:n=>n+' eliminazioni', wBoard:'Voto del consiglio',
+    wRival:c=>'Tu contro '+c, wTroph:'Trofei', wEnd:'Alla prossima stagione'},
+  pt:{discord:'Discord', general:'general', results:'results', scrims:'scrims', members:'membros',
+    welcome:n=>'bem-vindo @'+n, welcome2:'bora', winTop:(e,p)=>'#'+p+' no '+e+'!! BORA', winTop2:'orgulho desse time',
+    bad:(e,p)=>'#'+p+' no '+e+'. vamos de novo', bad2:'revisão amanhã 12h', moan:'@manager podemos conversar? não estou feliz com como as coisas vão',
+    talkBtn:'Conversar', contract:'@manager e meu contrato? acaba nesta temporada', contractBtn:'Abrir elenco',
+    rivalLine:c=>c+' de novo nesta temporada. dessa vez passamos eles', scrimLine:(c,w,l)=>'scrims contra '+c+': '+w+'-'+l,
+    noResults:'Ainda sem resultados.', noScrims:'Sem scrims nesta semana. Escolha um adversário em Clube, Treino.',
+    rivalTitle:'Clube rival', rivalScore:(a,b)=>'Nesta temporada '+a+':'+b+' no confronto direto', rivalNone:'Ainda não se cruzaram nesta temporada',
+    rivalEndW:c=>'Temporada à frente de '+c+': confiança da diretoria +3', rivalEndL:c=>'Temporada atrás de '+c+': confiança da diretoria −1',
+    scrimH:'Adversário de scrims', scrimN:'Uma semana de scrims são seis partidas contra esse clube: entrosamento do primeiro time +1, o placar vai pro Discord.', scrimAny:'Qualquer',
+    bootTitle:'Bootcamp', bootN:(e,c)=>'Uma semana numa casa de bootcamp antes do '+e+': +1,5 de força naquela noite, entrosamento +2. Custa '+c, bootBtn:'Reservar',
+    bootOn:e=>'Bootcamp reservado antes do '+e, bootNoCash:'Dinheiro insuficiente',
+    contH:'Lives dos jogadores', contN:'Quanto os jogadores fazem live. O clube fica com 30% do que eles ganham ao vivo.',
+    cOff:'Só jogo', cSome:'Algumas lives', cLots:'Muitas lives', cOffN:'Sem renda, sem cansaço', cSomeN:'~10 lives por mês',
+    cLotsN:'~20 lives, cansaço +3 por semana, −0,5 de força', contMonth:m=>'Lives: '+m+' por mês ao clube',
+    reqStream:h=>h+' quer fazer mais live: fãs e dinheiro, mas menos treino.', reqYes:'Permitir', reqNo:'Recusar',
+    wrapBtn:'Temporada em cartas', wTitle:y=>'Seu clube '+y, wEv:'Noites jogadas', wEvS:(n,w)=>n+' noites · '+w+' vitórias', wBest:'Melhor colocação',
+    wMoney:'Premiação', wMoneyS:'Ganho em torneios na temporada', wTop:'Maior fragger', wTopS:n=>n+' eliminações', wBoard:'Nota da diretoria',
+    wRival:c=>'Você contra '+c, wTroph:'Troféus', wEnd:'Até a próxima temporada'},
+  de:{discord:'Discord', general:'general', results:'results', scrims:'scrims', members:'Mitglieder',
+    welcome:n=>'willkommen @'+n, welcome2:'los geht’s', winTop:(e,p)=>'#'+p+' bei '+e+'!! LOS GEHT’S', winTop2:'stolz auf dieses Team',
+    bad:(e,p)=>'#'+p+' bei '+e+'. weiter geht’s', bad2:'Review morgen 12 Uhr', moan:'@manager können wir reden? ich bin unzufrieden, wie es läuft',
+    talkBtn:'Reden', contract:'@manager was ist mit meinem Vertrag? er läuft diese Saison aus', contractBtn:'Zum Kader',
+    rivalLine:c=>'wieder '+c+' diese Saison. diesmal sind wir vorne', scrimLine:(c,w,l)=>'Scrims gegen '+c+': '+w+'-'+l,
+    noResults:'Noch keine Ergebnisse.', noScrims:'Diese Woche keine Scrims. Gegner wählst du unter Club, Training.',
+    rivalTitle:'Rivale', rivalScore:(a,b)=>'Diese Saison '+a+':'+b+' im direkten Vergleich', rivalNone:'Diese Saison noch nicht begegnet',
+    rivalEndW:c=>'Saison vor '+c+': Vertrauen des Vorstands +3', rivalEndL:c=>'Saison hinter '+c+': Vertrauen des Vorstands −1',
+    scrimH:'Scrim-Gegner', scrimN:'Eine Scrim-Woche sind sechs Spiele gegen diesen Club: Chemie des ersten Teams +1, das Ergebnis geht in den Discord.', scrimAny:'Egal',
+    bootTitle:'Bootcamp', bootN:(e,c)=>'Eine Woche im Bootcamp-Haus vor '+e+': +1,5 Stärke an dem Abend, Chemie +2. Kostet '+c, bootBtn:'Buchen',
+    bootOn:e=>'Bootcamp vor '+e+' gebucht', bootNoCash:'Nicht genug Geld',
+    contH:'Streams der Spieler', contN:'Wie viel die Spieler streamen. Der Club bekommt 30 % ihrer Stream-Einnahmen.',
+    cOff:'Nur Spielen', cSome:'Ab und zu streamen', cLots:'Viel streamen', cOffN:'Keine Einnahmen, keine Müdigkeit', cSomeN:'~10 Streams im Monat',
+    cLotsN:'~20 Streams, Müdigkeit +3 pro Woche, −0,5 Stärke', contMonth:m=>'Streams: '+m+' pro Monat an den Club',
+    reqStream:h=>h+' will mehr streamen: Fans und Geld, aber weniger Training.', reqYes:'Erlauben', reqNo:'Ablehnen',
+    wrapBtn:'Saison in Karten', wTitle:y=>'Dein Club '+y, wEv:'Gespielte Abende', wEvS:(n,w)=>n+' Abende · '+w+' Siege', wBest:'Beste Platzierung',
+    wMoney:'Preisgeld', wMoneyS:'In Turnieren diese Saison gewonnen', wTop:'Bester Fragger', wTopS:n=>n+' Eliminierungen', wBoard:'Note des Vorstands',
+    wRival:c=>'Du gegen '+c, wTroph:'Trophäen', wEnd:'Bis zur nächsten Saison'},
+  es:{discord:'Discord', general:'general', results:'results', scrims:'scrims', members:'miembros',
+    welcome:n=>'bienvenido @'+n, welcome2:'vamos', winTop:(e,p)=>'#'+p+' en '+e+'!! VAMOS', winTop2:'orgulloso de este equipo',
+    bad:(e,p)=>'#'+p+' en '+e+'. otra vez será', bad2:'análisis mañana a las 12', moan:'@manager ¿podemos hablar? no estoy contento con cómo va todo',
+    talkBtn:'Hablar', contract:'@manager ¿y mi contrato? acaba esta temporada', contractBtn:'Abrir plantilla',
+    rivalLine:c=>'otra vez '+c+' esta temporada. esta vez les pasamos', scrimLine:(c,w,l)=>'scrims contra '+c+': '+w+'-'+l,
+    noResults:'Aún no hay resultados.', noScrims:'Sin scrims esta semana. Elige rival en Club, Entrenamiento.',
+    rivalTitle:'Club rival', rivalScore:(a,b)=>'Esta temporada '+a+':'+b+' en duelos directos', rivalNone:'Aún no os habéis cruzado esta temporada',
+    rivalEndW:c=>'Temporada por delante de '+c+': confianza de la directiva +3', rivalEndL:c=>'Temporada por detrás de '+c+': confianza de la directiva −1',
+    scrimH:'Rival de scrims', scrimN:'Una semana de scrims son seis partidas contra este club: química del primer equipo +1, el marcador va a Discord.', scrimAny:'Cualquiera',
+    bootTitle:'Bootcamp', bootN:(e,c)=>'Una semana en una casa de bootcamp antes de '+e+': +1,5 de fuerza esa noche, química +2. Cuesta '+c, bootBtn:'Reservar',
+    bootOn:e=>'Bootcamp reservado antes de '+e, bootNoCash:'No hay dinero suficiente',
+    contH:'Streams de los jugadores', contN:'Cuánto streamean los jugadores. El club se queda el 30 % de lo que ganan en directo.',
+    cOff:'Solo jugar', cSome:'Algunos streams', cLots:'Muchos streams', cOffN:'Sin ingresos, sin cansancio', cSomeN:'~10 directos al mes',
+    cLotsN:'~20 directos, cansancio +3 por semana, −0,5 de fuerza', contMonth:m=>'Streams: '+m+' al mes para el club',
+    reqStream:h=>h+' quiere streamear más: fans y dinero, pero menos entrenamiento.', reqYes:'Permitir', reqNo:'Rechazar',
+    wrapBtn:'La temporada en cartas', wTitle:y=>'Tu club '+y, wEv:'Noches jugadas', wEvS:(n,w)=>n+' noches · '+w+' victorias', wBest:'Mejor puesto',
+    wMoney:'Premios', wMoneyS:'Ganado en torneos esta temporada', wTop:'Mejor fragger', wTopS:n=>n+' eliminaciones', wBoard:'Nota de la directiva',
+    wRival:c=>'Tú contra '+c, wTroph:'Trofeos', wEnd:'Hasta la próxima temporada'}
+};
+function mgrT22(){ return MGR_T22[(typeof LANG!=='undefined' && MGR_T22[LANG]) ? LANG : 'en']; }
+
+/* --- Клуб-соперник: ближайший к тебе клуб своего региона по средней силе двух лучших игроков, один на сезон. Счёт - по
+   турнирам сезона, где были оба (MGR.results): чьё лучшее место выше. На итогах сезона: выше - доверие совета +3, ниже - −1. */
+function mgrRivalClub(){
+  if(MGR.rivalC && MGR.rivalC.year===MGR.year) return MGR.rivalC.org;
+  let org=null;
+  try{
+    const by={};
+    (ccSceneRoster(MGR.region)||[]).forEach(c=>{ const o=mgrOrgOf(c); if(!o || o===MGR.club.name) return; (by[o]=by[o]||[]).push(ccCardOvr(c)||0); });
+    const me=MGR.club.avg||mgrTeamAvg()||70;
+    const list=Object.keys(by).map(o=>{ const v=by[o].sort((a,b)=>b-a).slice(0, 2); return {o, avg:v.reduce((s,x)=>s+x, 0)/v.length}; });
+    list.sort((a,b)=>Math.abs(a.avg-me)-Math.abs(b.avg-me) || a.o.localeCompare(b.o));
+    org=list.length ? list[0].o : null;
+  }catch(e){}
+  MGR.rivalC={year:MGR.year, org:org};
+  return org;
+}
+function mgrRivalScore(){
+  const rv=mgrRivalClub(); if(!rv) return null;
+  let me=0, them=0;
+  (MGR.results||[]).filter(r=>r.year===MGR.year).forEach(r=>{
+    const best=f=>{ let p=null; r.rows.forEach(x=>{ if(f(x) && (p==null || x.place<p)) p=x.place; }); return p; };
+    const a=best(x=>x.mine || (x.orgs||[]).indexOf(MGR.club.name)>=0), b=best(x=>(x.orgs||[]).indexOf(rv)>=0);
+    if(a==null || b==null) return;
+    if(a<b) me++; else if(b<a) them++;
+  });
+  return {org:rv, me, them};
+}
+function mgrRivalTileHTML(){
+  const s=mgrRivalScore(); if(!s) return '';
+  const X=mgrT22();
+  return '<div class="ch-tile mg22-rival"><h4>'+esc(X.rivalTitle)+'</h4><div class="mg22-rv"><span class="mg22-rv-logo">'+mgrLogo(s.org, true)+'</span><b>'+esc(s.org)+'</b>'+
+    '<em>'+esc(s.me+s.them ? X.rivalScore(s.me, s.them) : X.rivalNone)+'</em></div></div>';
+}
+// На итогах сезона, один раз за год.
+function mgrRivalSeasonEnd(){
+  if((MGR.rivalEnd||{})[MGR.year]) return '';
+  const s=mgrRivalScore(); if(!s || !(s.me+s.them)) return '';
+  MGR.rivalEnd=Object.assign({}, MGR.rivalEnd, {[MGR.year]:true});
+  const X=mgrT22(), won=s.me>s.them;
+  if(won) mgrConfAdd(3); else if(s.them>s.me) mgrConfAdd(-1);
+  return s.me===s.them ? '' : (won ? X.rivalEndW(s.org) : X.rivalEndL(s.org));
+}
+
+/* --- Скримы против клуба: при тренировке «скримы» выбранный соперник. Раз в неделю (mgrWeekly) шесть игр: доля побед -
+   от разницы средней силы первого состава и двух лучших игроков соперника, с разбросом; сыгранность первого состава +1. */
+function mgrScrimClubs(){
+  const out=[], seen=new Set();
+  const rv=mgrRivalClub(); if(rv){ out.push(rv); seen.add(rv); }
+  try{
+    const by={};
+    (ccSceneRoster(MGR.region)||[]).forEach(c=>{ const o=mgrOrgOf(c); if(!o || o===MGR.club.name) return; (by[o]=by[o]||[]).push(ccCardOvr(c)||0); });
+    Object.keys(by).map(o=>({o, v:Math.max(...by[o])})).sort((a,b)=>b.v-a.v).forEach(x=>{ if(out.length<8 && !seen.has(x.o)){ out.push(x.o); seen.add(x.o); } });
+  }catch(e){}
+  return out;
+}
+function mgrScrimOrgAvg(org){
+  try{ const v=(ccSceneRoster(MGR.region)||[]).filter(c=>mgrOrgOf(c)===org).map(c=>ccCardOvr(c)||0).sort((a,b)=>b-a).slice(0, 2);
+    return v.length ? v.reduce((s,x)=>s+x, 0)/v.length : 75; }catch(e){ return 75; }
+}
+function mgrScrimWeek(d){
+  if(mgrTrain()!=='scrims') return;
+  const t=MGR.teams[0]; if(!t || t.cards.length<2) return;
+  const list=mgrScrimClubs(); const vs=MGR.scrimVs && list.indexOf(MGR.scrimVs)>=0 ? MGR.scrimVs : list[Math.floor(careerRng(ccHashStr('scrvs|'+d))()*list.length)];
+  if(!vs) return;
+  const rnd=careerRng(ccHashStr('scr|'+MGR.club.name+'|'+vs+'|'+d));
+  const p=Math.max(0.1, Math.min(0.9, 0.5+(mgrTeamAvg()-mgrScrimOrgAvg(vs))*0.04));
+  let w=0; for(let i=0;i<6;i++) if(rnd()<p) w++;
+  MGR.chem=MGR.chem||{};
+  for(let i=0;i<t.cards.length;i++) for(let j=i+1;j<t.cards.length;j++){ const k=mgrPairKey(t.cards[i], t.cards[j]); MGR.chem[k]=Math.min(10, (MGR.chem[k]||0)+1); }
+  MGR.scrims=[{d, vs, w, l:6-w}].concat(MGR.scrims||[]).slice(0, 12);
+}
+function mgrScrimPickHTML(){
+  if(mgrTrain()!=='scrims') return '';
+  const X=mgrT22(), list=mgrScrimClubs(); if(!list.length) return '';
+  return '<h3 class="mg-sub">'+esc(X.scrimH)+'</h3><p class="mg-note">'+esc(X.scrimN)+'</p><div class="mg-seg mg22-scr">'+
+    [''].concat(list).map(o=>'<button class="'+((MGR.scrimVs||'')===o ? 'on' : '')+'" onclick="MGR.scrimVs='+(o ? '\''+jsq(o)+'\'' : 'null')+';mgrSave();mgrOpenHub()">'+esc(o || X.scrimAny)+'</button>').join('')+'</div>';
+}
+
+/* --- Буткемп: ближайший турнир клуба в течение 10 дней; цена $1500 на игрока первого состава. Сила вечера +1.5
+   (mgrNightPow), сыгранность первого состава +2 сразу. */
+const MGR_BOOT_PER=1500, MGR_BOOT_POW=1.5;
+function mgrBootNext(){ const d=CAREER.career.day; return mgrEvents().find(e=>e.day>=d && e.day<=ccAddDays(d, 10)) || null; }
+function mgrBootCost(){ return MGR_BOOT_PER*Math.max(1, ((MGR.teams[0]||{cards:[]}).cards).length); }
+function mgrBootPow(){ const b=MGR.boot; return (b && b.day===CAREER.career.day) ? MGR_BOOT_POW : 0; }
+function mgrBootBook(){
+  const ev=mgrBootNext(); if(!ev || (MGR.boot && MGR.boot.day===ev.day)) return;
+  const cost=mgrBootCost(); if((MGR.club.cash||0)<cost){ mgrToast(mgrT22().bootNoCash); return; }
+  MGR.club.cash-=cost; MGR.boot={day:ev.day, name:ev.name};
+  const t=MGR.teams[0]; MGR.chem=MGR.chem||{};
+  if(t) for(let i=0;i<t.cards.length;i++) for(let j=i+1;j<t.cards.length;j++){ const k=mgrPairKey(t.cards[i], t.cards[j]); MGR.chem[k]=Math.min(10, (MGR.chem[k]||0)+2); }
+  mgrSave(); mgrOpenHub();
+}
+function mgrBootTileHTML(){
+  const ev=mgrBootNext(); if(!ev) return '';
+  const X=mgrT22(), on=MGR.boot && MGR.boot.day===ev.day;
+  return '<div class="ch-tile mg22-boot"><h4>'+esc(X.bootTitle)+'</h4>'+(on ? '<p class="mg-note">'+esc(X.bootOn(ev.name))+'</p>'
+    : '<p class="mg-note">'+esc(X.bootN(ev.name, mgrMoney(mgrBootCost())))+'</p><button class="hero-btn hero-btn-go" onclick="mgrBootBook()">'+esc(X.bootBtn)+'</button>')+'</div>';
+}
+
+/* --- Стримы игроков: политика клуба MGR.content off/some/lots. Онлайн игрока - по его настоящим фолловерам Twitch и той же
+   кривой, что у карьеры (ccTwAvgOf), донаты/сабы ~$0.1 со зрителя за эфир, клубу 30%. «Много» - усталость +3 в неделю и
+   −0.5 к силе. Игрок, которому разрешили стримить больше (MGR.streamOk), стримит вдвое чаще при любой политике, кроме «только игра». */
+const MGR_CONTENT={off:0, some:10, lots:20}, MGR_CONTENT_SHARE=0.3;
+function mgrContent(){ return MGR.content||'off'; }
+function mgrContentMonth(){
+  const n=MGR_CONTENT[mgrContent()]||0; if(!n) return 0;
+  let sum=0;
+  mgrAll().forEach(h=>{
+    let f=0; try{ f=(ccProSocial(h)||[])[0]||0; }catch(e){}
+    if(!f) return;
+    const v=(typeof ccTwAvgOf==='function' ? ccTwAvgOf(f) : f*0.002), times=n*((MGR.streamOk||{})[hKey(h)] ? 2 : 1);
+    sum+=v*0.1*times;
+  });
+  return Math.round(sum*MGR_CONTENT_SHARE);
+}
+function mgrContentPow(){ return mgrContent()==='lots' ? -0.5 : 0; }
+function mgrContentHTML(){
+  const X=mgrT22(), c=mgrContent();
+  return '<h3 class="mg-sub">'+esc(X.contH)+'</h3><p class="mg-note">'+esc(X.contN)+'</p><div class="mg-train">'+
+    [['off', X.cOff, X.cOffN], ['some', X.cSome, X.cSomeN], ['lots', X.cLots, X.cLotsN]].map(([k,l,n])=>
+      '<button class="mg-trb'+(c===k ? ' on' : '')+'" onclick="MGR.content=\''+k+'\';mgrSave();mgrOpenHub()"><b>'+esc(l)+'</b><small>'+esc(n)+'</small></button>').join('')+'</div>'+
+    (c!=='off' ? '<p class="mg-note">'+esc(X.contMonth(mgrMoney(mgrContentMonth())))+'</p>' : '');
+}
+// Раз в месяц: игрок с аудиторией (от 50 тыс. на Twitch) и амбициями просит стримить больше - письмо kind 'stream'.
+function mgrStreamAskMonth(m){
+  if(mgrContent()==='off') return;
+  const rnd=careerRng(ccHashStr('mgrstr|'+MGR.club.name+'|'+m));
+  if(rnd()>0.35) return;
+  const cand=mgrAll().filter(h=>{ let f=0; try{ f=(ccProSocial(h)||[])[0]||0; }catch(e){} return f>=50000 && !(MGR.streamOk||{})[hKey(h)] && ['ambitious','star'].indexOf(mgrTrait(h))>=0; });
+  if(!cand.length) return;
+  const h=cand[Math.floor(rnd()*cand.length)];
+  MGR.inbox=MGR.inbox||[];
+  if(MGR.inbox.some(x=>x.kind==='stream' && !x.done && hKey(x.h)===hKey(h))) return;
+  MGR.inbox.unshift({id:'st'+m+hKey(h), day:CAREER.career.day, kind:'stream', h, text:mgrT22().reqStream(h)});
+}
+function mgrStreamAnswer(m, ok){
+  if(ok){ MGR.streamOk=Object.assign({}, MGR.streamOk, {[hKey(m.h)]:true}); mgrMoraleAdd(m.h, 1); }
+  else mgrMoraleAdd(m.h, -1);
+}
+
+/* --- Discord клуба: #general - разговоры дня (новенькие, итог последнего вечера, недовольные с кнопкой разговора, кончается
+   контракт, перепалки из реплик тусовки карьеры, соперник), #results - вечера клуба, #scrims - недели скримов. Всё сеется днём. */
+function mgrDcLines(){
+  const d=CAREER.career.day;
+  if(MGR.dc && MGR.dc.day===d) return MGR.dc.lines;
+  const X=mgrT22(), L0=L(), rnd=careerRng(ccHashStr('mgrdc|'+MGR.club.name+'|'+d)), all=mgrAll();
+  const lines=(MGR.dc && MGR.dc.lines ? MGR.dc.lines : []).slice(-30);
+  if(all.length){
+    const pick=()=>all[Math.floor(rnd()*all.length)];
+    const from=ccAddDays(d, -3);
+    (MGR.log||[]).filter(r=>r.kind==='sign' && r.day>=from).slice(0, 2).forEach(r=>{ const a=pick(); if(hKey(a)!==hKey(r.name)) lines.push({h:a, t:X.welcome(r.name), d}); lines.push({h:r.name, t:X.welcome2, d}); });
+    const night=(MGR.log||[]).find(r=>r.kind==='night' && r.day>=ccAddDays(d, -2));
+    if(night && night.teams && night.teams.length){
+      const best=night.teams.slice().sort((a,b)=>(a.place||99)-(b.place||99))[0], a=pick(), b=pick();
+      const good=best.place && best.place<=Math.max(3, Math.round((best.of||100)*0.1));
+      lines.push({h:a, t:good ? X.winTop(night.name, best.place) : X.bad(night.name, best.place||'?'), d});
+      if(b!==a) lines.push({h:b, t:good ? X.winTop2 : X.bad2, d});
+    }
+    const sad=all.filter(h=>mgrMorale(h)<0);
+    if(sad.length && rnd()<0.7){ const h=sad[Math.floor(rnd()*sad.length)]; lines.push({h, t:X.moan, d, act:'talk'}); }
+    const ending=all.filter(h=>mgrUntil(h)<=MGR.year && d.slice(5, 7)>='09');
+    if(ending.length && rnd()<0.4){ const h=ending[Math.floor(rnd()*ending.length)]; lines.push({h, t:X.contract, d, act:'squad'}); }
+    if(all.length>=2){
+      const np=[['1a',0],['1b',1],['1c',0]], np2=[['4a',0],['4b',1],['4c',1]], np3=[['5a',0],['5b',1]], np4=[['6a',0],['6b',1]];
+      const dl=[np, np2, np3, np4][Math.floor(rnd()*4)], A=pick(); let B=pick(); if(B===A) B=all[(all.indexOf(A)+1)%all.length];
+      const win=rnd()<0.5, lose=Math.floor(rnd()*5);
+      dl.forEach(([id, sp])=>{ const f=L0['crNp'+id]; if(typeof f==='function') lines.push({h:sp ? B : A, t:f(ccHandle(A), ccHandle(B), '', win ? 5 : lose, win ? lose : 5), d}); });
+    }
+    const rv=mgrRivalClub(); if(rv && rnd()<0.25) lines.push({h:pick(), t:X.rivalLine(rv), d});
+    (MGR.scrims||[]).filter(s=>s.d>=ccAddDays(d, -1)).slice(0, 1).forEach(s=>lines.push({h:pick(), t:X.scrimLine(s.vs, s.w, s.l), d}));
+  }
+  MGR.dc={day:d, lines:lines.slice(-40)};
+  return MGR.dc.lines;
+}
+function mgrDcAv(h){ const c=mgrCard(h); let f=''; try{ f=c ? (photoURL(c)||'') : ''; }catch(e){} const fb=String(ccHandle(h)||'?').slice(0, 2).toUpperCase();
+  return f ? '<img src="'+esc(f)+'" alt="" loading="lazy" data-fb="'+esc(fb)+'" onerror="this.replaceWith(this.dataset.fb)">' : esc(fb); }
+function mgrDiscordHTML(){
+  const X=mgrT22(), d=CAREER.career.day, sub=MGR_SUB.discord||'general';
+  const at=s=>(typeof ccDcAt==='function' ? ccDcAt(s) : s);
+  const msg=(who, body, av, bot)=>'<div class="dc-msg"><span class="dc-av'+(bot ? ' bot' : '')+'">'+av+'</span><div class="dc-msg-in"><b>'+esc(who)+(bot ? '<i class="dc-bot">BOT</i>' : '')+'</b>'+body+'</div></div>';
+  let body='';
+  if(sub==='results'){
+    const rows=(MGR.log||[]).filter(r=>r.kind==='night' && r.teams && r.teams.length).slice(0, 8);
+    body=rows.length ? rows.map(r=>msg(MGR.club.name, '<p>'+esc(r.name)+' · '+esc(ccDayLabel(r.day))+'</p>'+r.teams.map(t=>'<p class="dc-sub">'+esc(t.name||'')+': #'+(t.place||'?')+(t.of ? ' / '+t.of : '')+'</p>').join(''), mgrLogo(MGR.club.name, true), true)).join('')
+      : '<p class="dc-sub">'+esc(X.noResults)+'</p>';
+  } else if(sub==='scrims'){
+    const s=MGR.scrims||[];
+    body=s.length ? s.map(x=>msg(MGR.club.name, '<p>'+esc(X.scrimLine(x.vs, x.w, x.l))+' · '+esc(ccDayLabel(x.d))+'</p>', mgrLogo(MGR.club.name, true), true)).join('') : '<p class="dc-sub">'+esc(X.noScrims)+'</p>';
+  } else {
+    body=mgrDcLines().map((x, i)=>{
+      const act=x.d===d && x.act==='talk' ? '<div class="cr-replies"><button type="button" class="dc-btn sm" onclick="mgrTalk(\''+jsq(x.h)+'\')">'+esc(X.talkBtn)+'</button></div>'
+        : x.d===d && x.act==='squad' ? '<div class="cr-replies"><button type="button" class="dc-btn ghost sm" onclick="mgrRenderHub(\'squad\')">'+esc(X.contractBtn)+'</button></div>' : '';
+      return msg(ccHandle(x.h), '<p'+(x.act ? ' class="dc-ment"' : '')+'>'+at(esc(x.t))+'</p>'+act, mgrDcAv(x.h));
+    }).join('');
+  }
+  const chans=[['general', X.general], ['results', X.results], ['scrims', X.scrims]];
+  const mem=mgrAll().map(h=>{ const m=mgrMorale(h); return '<div class="cr-mem st-'+(m<0 ? 'off' : m>0 ? 'voice' : 'on')+'"><span class="dc-av">'+mgrDcAv(h)+'<i class="cr-dot" aria-hidden="true"></i></span><div class="cr-who"><b>'+esc(ccHandle(h))+' <em>'+(ccCardOvr(mgrCard(h))||'')+'</em></b><span>'+esc(mgrT5().mood(m))+'</span></div></div>'; }).join('');
+  return '<div class="ch-tile dc-wrap mg22-dc"><div class="dc-srvs"><button class="dc-srv on" title="'+esc(MGR.club.name)+'">'+mgrLogo(MGR.club.name, true)+'</button></div>'+
+    '<div class="dc-body"><h4 class="dc-name">'+esc(MGR.club.name)+'</h4>'+
+    '<div class="mg22-chans">'+chans.map(([k, n])=>'<button type="button" class="mg22-chan'+(sub===k ? ' on' : '')+'" onclick="MGR_SUB.discord=\''+k+'\';mgrRenderHub(\'discord\')"># '+esc(n)+'</button>').join('')+'</div>'+
+    '<div class="mg22-grid"><div class="dc-chan"><div class="dc-chan-h"># '+esc((chans.find(c=>c[0]===sub)||chans[0])[1])+'</div><div class="dc-chatlog">'+body+'</div></div>'+
+    '<div class="dc-chan mg22-mem"><div class="dc-chan-h">'+esc(X.members)+' · '+mgrAll().length+'</div>'+mem+'</div></div></div></div>';
+}
+
+/* --- Итоги сезона карточками: тот же показ, что у карьеры (оверлей ccWrap), свои карточки. */
+function mgrWrapOpen(){
+  const X=mgrT22(), y=MGR.year;
+  const nights=(MGR.log||[]).filter(r=>r.kind==='night' && String(r.day).slice(0, 4)<=String(y) && r.teams);
+  let wins=0, best=null, bestName='';
+  nights.forEach(r=>r.teams.forEach(t=>{ if(t.place===1) wins++; if(t.place && (best==null || t.place<best)){ best=t.place; bestName=r.name; } }));
+  const earned=Math.max(0, (MGR.club.earned||0)-((MGR.board||{}).earned0||0));
+  const cards=[{k:'year', big:String(y), t:X.wTitle(y), s:MGR.club.name}, {k:'events', big:String(nights.length), t:X.wEv, s:X.wEvS(nights.length, wins)}];
+  if(best!=null) cards.push({k:'best', big:'#'+best, t:X.wBest, s:bestName});
+  cards.push({k:'money', big:mgrMoney(earned), t:X.wMoney, s:X.wMoneyS});
+  try{ const by=mgrKillsBy(nights), tk=mgrTopKiller(by); if(tk) cards.push({k:'mate', big:ccHandle(tk), t:X.wTop, s:X.wTopS(by[tk]||0)}); }catch(e){}
+  const rs=mgrRivalScore(); if(rs && rs.me+rs.them) cards.push({k:'rival', big:rs.me+':'+rs.them, t:X.wRival(rs.org), s:''});
+  cards.push({k:'train', big:mgrGrade(mgrConf()), t:X.wBoard, s:''});
+  const tr=(MGR.trophies||[]).filter(x=>!x.year || x.year===y).length; if(tr) cards.push({k:'fans', big:String(tr), t:X.wTroph, s:''});
+  cards.push({k:'end', big:'GG', t:X.wEnd, s:'fncsdraft.com'});
+  CC_WRAP={d:{year:y}, cards, i:0};
+  let el=document.getElementById('ccWrap');
+  if(!el){ el=document.createElement('div'); el.id='ccWrap'; el.className='cc-wrap'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-modal', 'true');
+    el.onclick=e=>{ if(e.target===el) ccWrapClose(); }; document.body.appendChild(el); }
+  el.hidden=false; ccWrapDraw();
+}
+function mgrWrapBtnHTML(){ return '<button type="button" class="cc-wrap-btn" onclick="mgrWrapOpen()">'+esc(mgrT22().wrapBtn)+'</button>'; }
+
+
+/* --- Мобильный состав (22.11, пункт 9): один игрок с настоящей мобильной сцены региона (CC_MOBILE_ROSTER - игроки мобильных
+   таблиц Epic 2026, рейтинг 62-92). Итог каждой Mobile Series (CC_CONSOLE_2026, plat mobile) - после её последнего дня:
+   место по рейтингу среди мобильной сцены региона с разбросом ±6, призовые клубу по сетке MGR_MOB_PRIZE (решение, не замер:
+   payT у Epic пустой). Зарплата - раз в месяц вместе с остальными. */
+const MGR_T22M={
+  ru:{tab:'Мобильный', note:'Мобильный состав играет Mobile Series: один игрок с мобильной сцены твоего региона. Призовые - клубу.', sign:w=>'Подписать · '+w+' в месяц', drop:'Отпустить', res:(n,p,o,z)=>n+': #'+p+' из '+o+(z ? ' · '+z : ''), none:'Серий ещё не было.', who:'В составе'},
+  en:{tab:'Mobile', note:'The mobile roster plays Mobile Series: one player from your region’s mobile scene. Prize money goes to the club.', sign:w=>'Sign · '+w+' a month', drop:'Release', res:(n,p,o,z)=>n+': #'+p+' of '+o+(z ? ' · '+z : ''), none:'No series played yet.', who:'On the roster'},
+  fr:{tab:'Mobile', note:'L’équipe mobile joue les Mobile Series : un joueur de la scène mobile de ta région. Les gains vont au club.', sign:w=>'Signer · '+w+' par mois', drop:'Libérer', res:(n,p,o,z)=>n+' : #'+p+' sur '+o+(z ? ' · '+z : ''), none:'Aucune série jouée.', who:'Dans l’effectif'},
+  it:{tab:'Mobile', note:'La squadra mobile gioca le Mobile Series: un giocatore della scena mobile della tua regione. I premi vanno al club.', sign:w=>'Firma · '+w+' al mese', drop:'Svincola', res:(n,p,o,z)=>n+': #'+p+' su '+o+(z ? ' · '+z : ''), none:'Nessuna serie giocata.', who:'In rosa'},
+  pt:{tab:'Mobile', note:'O time mobile joga a Mobile Series: um jogador da cena mobile da sua região. A premiação vai pro clube.', sign:w=>'Contratar · '+w+' por mês', drop:'Liberar', res:(n,p,o,z)=>n+': #'+p+' de '+o+(z ? ' · '+z : ''), none:'Nenhuma série ainda.', who:'No elenco'},
+  de:{tab:'Mobile', note:'Das Mobile-Team spielt die Mobile Series: ein Spieler aus der Mobile-Szene deiner Region. Preisgeld geht an den Club.', sign:w=>'Verpflichten · '+w+' im Monat', drop:'Freigeben', res:(n,p,o,z)=>n+': #'+p+' von '+o+(z ? ' · '+z : ''), none:'Noch keine Serie gespielt.', who:'Im Kader'},
+  es:{tab:'Móvil', note:'El equipo móvil juega las Mobile Series: un jugador de la escena móvil de tu región. Los premios van al club.', sign:w=>'Fichar · '+w+' al mes', drop:'Liberar', res:(n,p,o,z)=>n+': #'+p+' de '+o+(z ? ' · '+z : ''), none:'Aún no se ha jugado ninguna serie.', who:'En plantilla'}
+};
+function mgrT22M(){ return MGR_T22M[(typeof LANG!=='undefined' && MGR_T22M[LANG]) ? LANG : 'en']; }
+const MGR_MOB_PRIZE=[[1, 3000], [3, 1500], [10, 500], [25, 150]];
+function mgrMobPool(){ const R=(typeof CC_MOBILE_ROSTER!=='undefined' && CC_MOBILE_ROSTER[MGR.region]) || []; return R.map(x=>({name:x[0], nat:x[1], r:x[2]})); }
+function mgrMobWage(r){ return Math.round((500+Math.max(0, r-60)*60)/50)*50; }
+function mgrMobWageNow(){ return MGR.mobile ? mgrMobWage(MGR.mobile.r) : 0; }
+function mgrMobSign(i){ const p=mgrMobPool()[i]; if(!p) return; MGR.mobile={name:p.name, nat:p.nat, r:p.r}; mgrSave(); mgrOpenHub(); }
+function mgrMobDrop(){ MGR.mobile=null; mgrSave(); mgrOpenHub(); }
+// Серии, у которых последний день уже прошёл: id → {name, last}.
+function mgrMobSeries(){
+  const list=(typeof CC_CONSOLE_2026!=='undefined' ? CC_CONSOLE_2026 : []).filter(v=>v.plat==='mobile'), by={};
+  list.forEach(v=>{ const b=by[v.id]=by[v.id]||{id:v.id, name:v.name, last:v.day}; if(v.day>b.last) b.last=v.day; });
+  return Object.values(by).sort((a,b)=>a.last<b.last ? -1 : 1);
+}
+function mgrMobTick(){
+  if(!MGR || !MGR.mobile || !CAREER || !CAREER.career) return;
+  const today=CAREER.career.day, done=MGR.mobDone=MGR.mobDone||{};
+  const pool=mgrMobPool(); if(!pool.length) return;
+  mgrMobSeries().filter(s=>s.last<today && !done[MGR.year+'|'+s.id]).forEach(s=>{
+    done[MGR.year+'|'+s.id]=1;
+    const rnd=careerRng(ccHashStr('mgrmob|'+MGR.club.name+'|'+MGR.year+'|'+s.id));
+    const me=MGR.mobile.r+(rnd()*12-6);
+    let place=1; pool.forEach(p=>{ if(p.name!==MGR.mobile.name && p.r+(rnd()*12-6)>me) place++; });
+    const prize=(MGR_MOB_PRIZE.find(x=>place<=x[0])||[0, 0])[1];
+    if(prize){ MGR.club.cash+=prize; MGR.club.earned=(MGR.club.earned||0)+prize; }
+    MGR.mobLog=[{y:MGR.year, d:s.last, name:/MobileSeries/.test(s.id) ? s.name+' · '+s.id.replace(/^.*MobileSeries/, '') : s.name, place, of:pool.length, prize}].concat(MGR.mobLog||[]).slice(0, 24);
+  });
+}
+function mgrMobileHTML(){
+  try{ mgrMobTick(); }catch(e){ console.error('mgrMobTick', e); }
+  const X=mgrT22M(), pool=mgrMobPool(), m=MGR.mobile;
+  const log=(MGR.mobLog||[]).filter(x=>x.y===MGR.year);
+  let h='<h3 class="mg-sub">'+esc(X.tab)+'</h3><p class="mg-note">'+esc(X.note)+'</p>';
+  if(m) h+='<div class="ch-tile mg22-mob"><h4>'+esc(X.who)+'</h4><div class="mg22-rv"><b>'+esc(m.name)+'</b> <em>'+Math.round(m.r)+' · '+mgrMoney(mgrMobWage(m.r))+'</em>'+
+    '<button class="cc-back" onclick="mgrMobDrop()">'+esc(X.drop)+'</button></div></div>';
+  else h+='<div class="mg22-mobl">'+pool.slice(0, 12).map((p, i)=>'<div class="mg22-mobr"><b>'+esc(p.name)+'</b><em>'+Math.round(p.r)+'</em><button class="dc-btn sm" onclick="mgrMobSign('+i+')">'+esc(X.sign(mgrMoney(mgrMobWage(p.r))))+'</button></div>').join('')+'</div>';
+  h+='<div class="ch-tile"><h4>Mobile Series</h4>'+(log.length ? log.map(x=>'<p class="mg-note">'+esc(X.res(x.name, x.place, x.of, x.prize ? mgrMoney(x.prize) : ''))+'</p>').join('') : '<p class="mg-note">'+esc(X.none)+'</p>')+'</div>';
+  return h;
 }
 
 /*@@MGR-TILL@@*/
