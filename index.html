@@ -10947,6 +10947,15 @@
   .aw-plq.aw-plq-t{aspect-ratio:3/4;display:block;}
   .aw-plq-t img{position:absolute;left:0;right:0;top:0;bottom:30%;width:100%;height:70%;aspect-ratio:auto;object-fit:contain;padding:8px;}
   .aw-plq-t .aw-plq-plate{position:absolute;left:6%;right:6%;bottom:6%;margin:0;}
+  /* Notion 22.11 «странно выглядит, скроллится вверх; внизу пусть видео показывает и всё»: в рамке эфира на вкладке Twitch
+     только плеер - шапка сайта, плашка карьеры и вкладки убраны (выйти - свернуть рамку), плеер по высоте окна, без прокрутки. */
+  @media(min-width:1101px){
+    body.cc-onair:not(.cc-onair-fold):has(#screen-career-hub.active .tv-wrap) .wrap.wrap-wide > .top,
+    body.cc-onair:not(.cc-onair-fold) #screen-career-hub.active .ch-stage:has(.tv-wrap) > :not(.ch-body),
+    body.cc-onair:not(.cc-onair-fold) #screen-career-hub.active .ch-body:has(.tv-wrap) > :not(.cc-media){display:none;}
+    body.cc-onair:not(.cc-onair-fold) #screen-career-hub.active .tv-player{width:min(100%, calc((100vh - 96px)*16/9));margin:0 auto;}
+    body.cc-onair:not(.cc-onair-fold) #screen-career-hub.active .tv-player ~ *{display:none;}
+  }
 /*@@PART shell.html@@*/
 </style>
 <!-- ?v= — это НЕ украшение, это починка того, что он поймал 24 августа.
@@ -123982,7 +123991,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='264e0439';
+const CC_BUILD='b2cd917b';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -133722,8 +133731,10 @@ function ccCrewHTML(chan, msg){
   const vWhy=ccCrewVoiceWhy(), vIn=!!(c.voice && c.voice.day===today), vCh=vIn ? (c.voice.ch|0) : -1;
   // Зашёл в войс - ты тоже в списке своего канала, своей карточкой (как в Discord: себя видно в канале).
   const meV='<span class="cr-vm cr-vm-me" title="'+esc(CAREER.player.nick||'')+'"><span class="dc-av">'+(ccDcFace() ? ccDcImg(ccDcFace(), 'ME') : 'ME')+'</span><i>'+esc(CAREER.player.nick||'')+'</i></span>';
+  // В день капа напарники сидят в войсе команды - в общих каналах их нет (Notion 22.11, shxrk был в двух сразу).
+  const cupDay=ccCrewCupDay(), mateK=new Set((careerMates()||[]).filter(Boolean).map(x=>hKey(x)));
   const voiceOf=ch=>{
-    const inV=members.filter(m=>ccCrewStatus(m)==='voice' && ccCrewVc(m)===ch && !(CC_CREW_TEAMS && CC_CREW_TEAMS.set.has(m.k))), here=vCh===ch;
+    const inV=members.filter(m=>ccCrewStatus(m)==='voice' && ccCrewVc(m)===ch && !(CC_CREW_TEAMS && CC_CREW_TEAMS.set.has(m.k)) && !(cupDay && mateK.has(m.k))), here=vCh===ch;
     return '<div class="cr-voice">'+((inV.length || here)
         ? (here ? meV : '')+inV.map(m=>'<span class="cr-vm" title="'+esc(ccHandle(m.handle))+'"><span class="dc-av">'+ccCrewAv(m)+'</span><i>'+esc(ccHandle(m.handle))+'</i></span>').join('')
         : '<p class="dc-sub">'+esc(T.crVoiceEmpty)+'</p>')+'</div>'+

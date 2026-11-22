@@ -1665,8 +1665,10 @@ function ccCrewHTML(chan, msg){
   const vWhy=ccCrewVoiceWhy(), vIn=!!(c.voice && c.voice.day===today), vCh=vIn ? (c.voice.ch|0) : -1;
   // Зашёл в войс - ты тоже в списке своего канала, своей карточкой (как в Discord: себя видно в канале).
   const meV='<span class="cr-vm cr-vm-me" title="'+esc(CAREER.player.nick||'')+'"><span class="dc-av">'+(ccDcFace() ? ccDcImg(ccDcFace(), 'ME') : 'ME')+'</span><i>'+esc(CAREER.player.nick||'')+'</i></span>';
+  // В день капа напарники сидят в войсе команды - в общих каналах их нет (Notion 22.11, shxrk был в двух сразу).
+  const cupDay=ccCrewCupDay(), mateK=new Set((careerMates()||[]).filter(Boolean).map(x=>hKey(x)));
   const voiceOf=ch=>{
-    const inV=members.filter(m=>ccCrewStatus(m)==='voice' && ccCrewVc(m)===ch && !(CC_CREW_TEAMS && CC_CREW_TEAMS.set.has(m.k))), here=vCh===ch;
+    const inV=members.filter(m=>ccCrewStatus(m)==='voice' && ccCrewVc(m)===ch && !(CC_CREW_TEAMS && CC_CREW_TEAMS.set.has(m.k)) && !(cupDay && mateK.has(m.k))), here=vCh===ch;
     return '<div class="cr-voice">'+((inV.length || here)
         ? (here ? meV : '')+inV.map(m=>'<span class="cr-vm" title="'+esc(ccHandle(m.handle))+'"><span class="dc-av">'+ccCrewAv(m)+'</span><i>'+esc(ccHandle(m.handle))+'</i></span>').join('')
         : '<p class="dc-sub">'+esc(T.crVoiceEmpty)+'</p>')+'</div>'+
