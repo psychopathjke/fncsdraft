@@ -2631,7 +2631,8 @@ function careerEndSmm(){
 function careerReachAdd(n, raw){
   const cr=CAREER.career;
   const was=cr.reach||0;
-  const add=raw ? n : n*(1+ccSmmBoost());
+  // Репутация двигает рост аудитории: +25 репутации = на 25% больше новых, -25 = на 25% меньше (22.11, ccRepReachMult).
+  const add=raw ? n : n*(1+ccSmmBoost())*(n>0 ? ccRepReachMult() : 1);
   cr.reach=Math.max(0, Math.round(was+add));
   // Часть новых читателей X идёт и на Twitch, см. CC_TW_FROM_X.
   const got=cr.reach-was;
@@ -4871,6 +4872,31 @@ const CAREER_DM_REACH=3, CAREER_DM_KEEP=14;
    Read in one place only, careerDmWouldAccept: 3 rep = 1 rating point, so +10 asks like +1.5 and -20 needs to be
    seven points better. Clubs ignore it and sign on results. */
 const CC_REP_MAX=25, CC_REP_PER_OVR=3;
+/* 22.11: репутация не только для лички. Рост подписчиков ×(1+rep/100), и сцена уважает результат: победа +2, подиум +1
+   (поле от 20). Числа - решение, не замер. */
+const CC_REP_WIN=2, CC_REP_POD=1;
+function ccRepReachMult(){ return 1+careerRep()/100; }
+function ccRepFromResult(place, total){
+  if(!CAREER || !(total>=20) || !(place>0)) return;
+  if(typeof ccMpOn==='function' && ccMpOn()) return;
+  if(place===1) careerRepAdd(CC_REP_WIN); else if(place<=3) careerRepAdd(CC_REP_POD);
+}
+// Снимок формы и репутации на начало дня: стрелка в шапке говорит, сколько сдвинулось сегодня.
+function ccFrDay(){
+  const cr=CAREER.career, t=careerToday();
+  if(!cr.fr0 || cr.fr0.day!==t) cr.fr0={day:t, f:careerForm(), r:careerRep()};
+  return cr.fr0;
+}
+function ccFrDelta(d, dp){
+  const v=dp ? Math.round(d*10)/10 : Math.round(d);
+  if(!v) return '';
+  return ' <i class="ch-fr-d '+(v>0 ? 'up' : 'down')+'">'+(v>0 ? '▲' : '▼')+Math.abs(v)+'</i>';
+}
+// Шкала от -max до +max с нулём посередине.
+function ccFrMeterHTML(v, max){
+  const p=Math.min(50, Math.abs(v)/max*50);
+  return '<span class="ch-meter" aria-hidden="true"><i class="'+(v<0 ? 'neg' : 'pos')+'" style="'+(v<0 ? 'right:50%' : 'left:50%')+';width:'+p.toFixed(1)+'%"></i><s></s></span>';
+}
 // Что стоит титул, когда ты зовёшь человека к себе. См. careerDmMargin.
 const CC_DM_CROWN_WIN=6, CC_DM_CROWN_POD=3, CC_DM_CROWN_TOP=1;
 function careerRep(){ return clamp((CAREER.career.rep||0), -CC_REP_MAX, CC_REP_MAX); }

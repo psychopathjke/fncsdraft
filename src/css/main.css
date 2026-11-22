@@ -4828,7 +4828,7 @@
     #screen-career-hub .ch-top .ch-purse b small{display:none;}
   }
   /* Где строка не влезает (уже на 1100 она вылезала за край), правые плашки уходят второй строкой вправо. */
-  @media (min-width:701px) and (max-width:1400px){
+  @media (min-width:701px) and (max-width:1500px){
     #screen-career-hub .ch-top{flex-wrap:wrap;}
     #screen-career-hub .ch-top .ch-who{flex:0 1 auto;}
     #screen-career-hub .ch-top .ch-spacer{display:none;}
@@ -10236,3 +10236,12 @@
   .cc-wrap-nav{display:flex;justify-content:space-between;gap:10px;}
   .cc-wrap-b{flex:1;max-width:60%;margin-left:auto;padding:12px 14px;border:0;border-radius:12px;background:#fff;color:#111;font:inherit;font-weight:900;text-transform:uppercase;cursor:pointer;}
   .cc-wrap-b.ghost{margin-left:0;background:rgba(255,255,255,.16);color:#fff;}
+  /* Форма и репутация шкалой (ccMeterHTML) и стрелкой за сегодня (ccFrDelta). */
+  #screen-career-hub .ch-meter-w b{white-space:nowrap;}
+  .ch-meter{position:relative;display:block;width:110px;height:5px;margin-top:5px;border-radius:3px;background:rgba(255,255,255,.14);overflow:hidden;}
+  .ch-meter i{position:absolute;top:0;bottom:0;border-radius:3px;}
+  .ch-meter i.pos{background:#00d6a4;} .ch-meter i.neg{background:#ff6b5f;}
+  .ch-meter s{position:absolute;left:50%;top:-2px;bottom:-2px;width:2px;margin-left:-1px;background:rgba(255,255,255,.7);}
+  .ch-fr-d{font-style:normal;font-size:11px;font-weight:900;margin-left:4px;}
+  .ch-fr-d.up{color:#00d6a4;} .ch-fr-d.down{color:#ff8a80;}
+  @media(max-width:700px){ .ch-meter{width:100%;max-width:160px;} }

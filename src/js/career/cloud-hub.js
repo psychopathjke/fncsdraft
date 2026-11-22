@@ -1631,9 +1631,11 @@ function careerRenderHubBody(tab){
        with nothing wrong with it does not carry three empty labels. */
     /* Форма и репутация — всегда, с пределом и подсказкой (его слово 21.10: «не понятно, как работает, мб когда
        наводишься — говорит», «не понятно, сколько максимум, минимум»). Наведение на ПК, нажатие на телефоне. */
-    (()=>{ const f=careerForm(), T=L(), v=Math.round(f*10)/10;
-      return `<div class="ch-tipw" tabindex="0" onclick="ccTipToggle(this, event)"><em>${T.ccForm} ⓘ</em><b class="${f>0?'ch-goal-met':f<0?'cc-pen bad':''}">${
-        f ? T[f>0?'ccFormHot':'ccFormCold']+' ' : ''}${(v>0?'+':'')+v} <small>${esc(T.ccOfRange(CC_FORM_MAX))}</small></b>${
+    /* Форма и репутация шкалой от минуса до плюса и стрелкой «за сегодня» (22.11, его «reputation и form мб измениться
+       как-то»): слова «off it -0.6» и «0 nobody knows yet of ±25» не читались. Снимок начала дня - cr.fr0 (ccFrDay). */
+    (()=>{ const f=careerForm(), T=L(), v=Math.round(f*10)/10, d0=ccFrDay();
+      return `<div class="ch-tipw ch-meter-w" tabindex="0" onclick="ccTipToggle(this, event)"><em>${T.ccForm} ⓘ</em><b class="${f>0?'ch-goal-met':f<0?'cc-pen bad':''}">${(v>0?'+':'')+v}${
+        f ? ' <span class="ch-rep-w">'+esc(T[f>0?'ccFormHot':'ccFormCold'])+'</span>' : ''}${ccFrDelta(f-d0.f, 1)}</b>${ccFrMeterHTML(f, CC_FORM_MAX)}${
         '<div class="ch-tip">'+esc(T.ccFormTip(CC_FORM_MAX))+'</div>'}</div>`; })()+
     // The garage, said where the form is said — confidence is the floor under
     // it, and a number nobody can see is a number that does not exist. His
@@ -1641,10 +1643,10 @@ function careerRenderHubBody(tab){
     (()=>{ const c=(CAREER.gear && CAREER.gear.conf)||0; if(!c) return '';
       return `<div><em>${L().ccShopConf}</em><b class="ch-goal-met">+${c} · ${
         L().ccConfFloor(Math.round((CC_FORM_MAX-c)*10)/10)}</b></div>`; })()+
-    (()=>{ const r=careerRep(), T=L();
-      return `<div class="ch-tipw" tabindex="0" onclick="ccTipToggle(this, event)"><em>${T.ccRep} ⓘ</em><b class="${r>0?'ch-goal-met':r<0?'cc-pen bad':''}">${
-        r>0?'+':''}${r} <span class="ch-rep-w">${esc(T[careerRepKey()])}</span> <small>${esc(T.ccOfRange(CC_REP_MAX))}</small></b>${
-        '<div class="ch-tip">'+esc(T.ccRepTip(CC_REP_MAX, CC_REP_PER_OVR, T))+'</div>'}</div>`; })()+
+    (()=>{ const r=careerRep(), T=L(), d0=ccFrDay();
+      return `<div class="ch-tipw ch-meter-w" tabindex="0" onclick="ccTipToggle(this, event)"><em>${T.ccRep} ⓘ</em><b class="${r>0?'ch-goal-met':r<0?'cc-pen bad':''}">${
+        r>0?'+':''}${r} <span class="ch-rep-w">${esc(T[careerRepKey()])}</span>${ccFrDelta(r-d0.r, 0)}</b>${ccFrMeterHTML(r, CC_REP_MAX)}${
+        '<div class="ch-tip">'+esc(T.ccRepTip(CC_REP_MAX, CC_REP_PER_OVR, T)+' '+T.ccRepMore(CC_REP_MAX, CC_REP_WIN, CC_REP_POD))+'</div>'}</div>`; })()+
     (()=>{ const b=careerBurnout(); if(!b) return '';
       return `<div><em>${L().ccBurnout}</em><b class="cc-pen bad">${
         L().ccBurnoutDays(cr.grind||0)} · -${b}</b></div>`; })();
