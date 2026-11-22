@@ -10245,3 +10245,15 @@
   .ch-fr-d{font-style:normal;font-size:11px;font-weight:900;margin-left:4px;}
   .ch-fr-d.up{color:#00d6a4;} .ch-fr-d.down{color:#ff8a80;}
   @media(max-width:700px){ .ch-meter{width:100%;max-width:160px;} }
+  /* Швы над лобби (22.11, Notion «20.11» скрин 7: «чет странно выглядит весь дизайн», обведены шапка сайта и две полосы).
+     Шапка игрока была тёмной, вкладки стояли на ярком фоне панели (цвет витрины магазина, data-fs), и между ними и под ними
+     этот фон выглядывал полосами. Теперь шапка и вкладки - один тёмный блок с одной тонкой линией снизу; шапка сайта над
+     карьерой без своей линии и с меньшим отступом. */
+  #screen-career-hub .ch-top{box-shadow:none !important;}
+  #screen-career-hub .ch-tabs{background:var(--fn-deep,rgba(8,18,50,.72));box-shadow:0 1px 0 rgba(180,200,255,.16);}
+  #screen-career-hub.ch-themed .ch-tabs{background:linear-gradient(96deg,var(--th-top) 0%,var(--th-b) 55%,var(--th-c) 100%);}
+  @media (min-width:701px){
+    #screen-career-hub .ch-tabs{padding-top:10px !important;padding-bottom:10px !important;}
+    #screen-career-hub.ch-lobby-on .cc-lobby.cc-lb-full .cc-lb-bottom{top:10px;}
+  }
+  .wrap:has(> #screen-career-hub.active) > .top,.wrap:has(#screen-career-hub.active) .top{border-bottom-color:transparent;margin-bottom:8px;padding-bottom:8px;}
