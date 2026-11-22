@@ -552,6 +552,9 @@ function ccGoalsTileHTML(inTrain){
   }
   // Срочное сверху: закрытый вечер, травма, бан (ccLifeAlertRows).
   const alerts=ccLifeAlertRows();
+  // Во вкладке «Клуб» (inTrain) - только то, где есть дело (Notion 22.11 «лишнее будто» на плитку с двумя «✓ done»): выполненное не
+  // показывается, и без дел плитки нет. Выбор задачи месяца и срочное остаются.
+  if(inTrain){ for(let i=rows.length-1; i>=0; i--) if(rows[i].indexOf('hg-row ok')>=0) rows.splice(i, 1); }
   if(inTrain && !rows.length && !alerts.length) return '';
   const empty=!rows.length ? `<div class="ch-empty">${esc(org ? L().hgNone : L().hgNoClub)}</div>` : '';
   const ask=(!inTrain && (!g || g.done || !f)) ? `<button class="hg-go" onclick="careerTab('train')">${esc(L().hgSet)}</button>` : '';
