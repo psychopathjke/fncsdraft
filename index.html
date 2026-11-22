@@ -10990,6 +10990,7 @@
   #screen-career-create #ccDiffChips{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;}
   #screen-career-create #ccDiffChips .cc-chip{overflow:hidden;}
   #screen-career-create #ccDiffChips .cc-rar-mythic{grid-column:span 2;}
+  #ccSlotGrid .cc-tile-e{font-family:var(--font-display);font-size:15px;font-weight:700;color:#3ee9b8;margin-top:2px;}
 /*@@PART shell.html@@*/
 </style>
 <!-- ?v= — это НЕ украшение, это починка того, что он поймал 24 августа.
@@ -124034,7 +124035,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='3f89da42';
+const CC_BUILD='19b1d285';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -128329,6 +128330,8 @@ function careerRenderSlots(){
         esc(c.nick)+(c.team ? ' <span class="cc-car-duo">'+L().ccSlotDuoLive+'</span>' : '')+'</b>'+
       '<span class="cc-tile-r"><em>'+c.ovr+'</em>'+esc(lvl)+'</span>'+
       '<span class="cc-tile-w">'+esc(when)+(c.retired || c.over ? ' · '+esc(state) : '')+'</span>'+
+      // Заработок карьеры (его слово 22.11 «пусть ещё ирнинг пишется в выборе карьеры»).
+      '<span class="cc-tile-e">'+ccMoney(c.earnings||0)+'</span>'+
       '<button class="cc-car-del'+(CC_SLOT_ARMED===n?' armed':'')+'" title="'+esc(L().ccSlotDelete)+'" onclick="event.stopPropagation();careerSlotDrop('+n+')">'+
         (CC_SLOT_ARMED===n ? esc(L().ccSlotDropSure) : '&times;')+'</button></div>');
   }

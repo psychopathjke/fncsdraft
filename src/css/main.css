@@ -10469,3 +10469,4 @@
   #screen-career-create #ccDiffChips{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;}
   #screen-career-create #ccDiffChips .cc-chip{overflow:hidden;}
   #screen-career-create #ccDiffChips .cc-rar-mythic{grid-column:span 2;}
+  #ccSlotGrid .cc-tile-e{font-family:var(--font-display);font-size:15px;font-weight:700;color:#3ee9b8;margin-top:2px;}

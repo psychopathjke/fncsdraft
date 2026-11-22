@@ -890,6 +890,8 @@ function careerRenderSlots(){
         esc(c.nick)+(c.team ? ' <span class="cc-car-duo">'+L().ccSlotDuoLive+'</span>' : '')+'</b>'+
       '<span class="cc-tile-r"><em>'+c.ovr+'</em>'+esc(lvl)+'</span>'+
       '<span class="cc-tile-w">'+esc(when)+(c.retired || c.over ? ' · '+esc(state) : '')+'</span>'+
+      // Заработок карьеры (его слово 22.11 «пусть ещё ирнинг пишется в выборе карьеры»).
+      '<span class="cc-tile-e">'+ccMoney(c.earnings||0)+'</span>'+
       '<button class="cc-car-del'+(CC_SLOT_ARMED===n?' armed':'')+'" title="'+esc(L().ccSlotDelete)+'" onclick="event.stopPropagation();careerSlotDrop('+n+')">'+
         (CC_SLOT_ARMED===n ? esc(L().ccSlotDropSure) : '&times;')+'</button></div>');
   }
