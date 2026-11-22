@@ -790,7 +790,7 @@ function ccWatchBy(p){
   if(!p.k) return 0;
   const pl=CAREER.player, me=pl.attrs || ccOwnAttrs(), a=ccActById('trW'+p.k); if(!a) return 0;
   const now=pl.ovrExact!=null ? pl.ovrExact : pl.ovr, coach=ccCoach();
-  const by=a.gain[p.k]*careerDayGear()*clamp((careerTrainCap()-now)/CAREER_TAPER, 0, 1)*(coach && coach.keys.indexOf(p.k)>=0 ? 1+coach.train : 1)
+  const by=a.gain[p.k]*ccTrainDayMult()*clamp((careerTrainCap()-now)/CAREER_TAPER, 0, 1)*(coach && coach.keys.indexOf(p.k)>=0 ? 1+coach.train : 1)
     *ccRepeatMult(p.k)*careerDiff().age*ccFocusMult(p.k)*p.mult;
   return Math.max(0, Math.min(by, p.cap-(me[p.k]!=null ? me[p.k] : 50)));
 }
@@ -880,6 +880,8 @@ function careerDoAct(id){
   }
   if(act.host) ccHostRun();
   if(act.rest) careerRestore(act.rest);
+  // Тильт снимают отдых, разговор, войс и игра с друзьями (ccTiltAfterNight).
+  if(act.rest || act.talk || act.voice || act.crew) ccTiltClear();
   // The same taper the cup's own growth uses. Without it training ran at full
   // speed right up to the ceiling and every career hit its own in the first
   // season, then stood still for seven more — a mode that is over after a year.
@@ -895,7 +897,8 @@ function careerDoAct(id){
   const taper = clamp((careerTrainCap()-now)/CAREER_TAPER, 0, 1);
   // What a day is worth never changes: the store is what runs out, not the
   // value of the work. That is the whole point of folding fatigue into it.
-  const mult=careerDayGear()*taper;
+  // Тильт режет занятие (ccTiltMult); магазин показывает только снаряжение, поэтому не в careerDayGear.
+  const mult=ccTrainDayMult()*taper;
   // Who a scrim is against and how the set went, both decided before the day is
   // spent — see ccScrimFoe and ccScrimSet. A day that is not a scrim gets null
   // for both and reads exactly as it did.

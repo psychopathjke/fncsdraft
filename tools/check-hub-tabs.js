@@ -85,11 +85,15 @@ const BOOT = `
         });
       }
 
-      // The shop has to actually open when pressed.
-      const shop = tabs.filter(function(t){ return /SHOP|МАГАЗ/i.test(t.innerText || ''); })[0];
+      // The shop has to actually open when pressed. С 22.11 снаряжение - подвкладка группы «Магазин» (CC_TAB_GROUPS):
+      // жмём главную вкладку, потом подвкладку снаряжения, обе настоящими кликами.
+      const shop = tabs.filter(function(t){ return /SHOP|STORE|МАГАЗ/i.test(t.innerText || ''); })[0];
       if (!shop) out.fails.push('no shop tab');
       else {
         shop.click();
+        const gear = [].slice.call(document.querySelectorAll('.ch-grp-tab')).filter(function(b){ return (b.getAttribute('onclick') || '').indexOf('shop') >= 0; })[0];
+        if (!gear) out.fails.push(vw + 'px: no gear sub-tab under the store');
+        else gear.click();
         const items = document.querySelectorAll('[onclick*="careerBuy"]').length;
         out.notes.shopItems = items;
         if (!items) out.fails.push(vw + 'px: the shop tab opened nothing');

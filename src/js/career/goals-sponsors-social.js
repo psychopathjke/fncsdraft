@@ -6240,3 +6240,154 @@ function ccMediaQuickHTML(){
     CC_MQ_ICONS[k]+'<span>'+esc(label)+'</span>'+(badge ? '<i>'+(badge>99 ? '99+' : badge)+'</i>' : '')+'</button>';
   return '<div class="cc-mq-row">'+item('social', T.chTabSocial, n)+item('streams', 'Twitch', 0)+item('youtube', 'YouTube', 0)+item('discord', 'Discord', 0)+'</div>';
 }
+
+/* ===== ТИЛЬТ, СОПЕРНИК СЕЗОНА, ИТОГИ ГОДА (22.11, его «делай» на список «что ещё в карьере») ===== */
+
+/* Тильт: вечер намного хуже ожидания (доля обойдённых ниже ожидаемой на CC_TILT_GAP) ставит тильт, второй такой подряд -
+   второй уровень. Сразу минус форма, и пока держится, тренировки дают меньше (ccTrainDayMult). Снимают отдых, разговор,
+   войс и игра с друзьями из Discord (careerDoAct), хороший вечер, или он сам проходит через CC_TILT_DAYS. Числа - решение,
+   не замер. В команде и гонке не ставится: вечер общий, а тильт свой. */
+const CC_TILT_GAP=0.3, CC_TILT_DAYS=3, CC_TILT_FORM=0.3, CC_TILT_TRAIN=0.15;
+function ccTilt(){
+  const t=CAREER && CAREER.career && CAREER.career.tilt;
+  if(!t || !t.lvl) return 0;
+  if(ccDaysBetween(t.day, careerToday())>CC_TILT_DAYS) return 0;
+  return t.lvl;
+}
+function ccTiltMult(){ return 1-CC_TILT_TRAIN*ccTilt(); }
+function ccTrainDayMult(){ return careerDayGear()*ccTiltMult(); }
+function ccTiltAfterNight(place, total, expected){
+  if(!CAREER || !CAREER.career || !(total>=10)) return;
+  if((typeof ccMpOn==='function' && ccMpOn()) || (typeof ccRaceOn==='function' && ccRaceOn())) return;
+  const cr=CAREER.career, beat=1-(place-1)/(total-1);
+  if(beat>=expected){ if(cr.tilt) delete cr.tilt; return; }
+  if(beat>=expected-CC_TILT_GAP) return;
+  const lvl=Math.min(2, ccTilt()+1);
+  cr.tilt={lvl, day:careerToday()};
+  cr.form=clamp((cr.form||0)-CC_TILT_FORM, -CC_FORM_MAX, CC_FORM_MAX);
+}
+function ccTiltClear(){ const cr=CAREER && CAREER.career; if(cr && cr.tilt) delete cr.tilt; }
+function ccTiltNoteHTML(){
+  const lvl=ccTilt(); if(!lvl) return '';
+  return '<div class="cc-tilt"><b>'+esc(L().tiltTitle(lvl))+'</b><span>'+esc(L().tiltNote(Math.round(CC_TILT_TRAIN*lvl*100)))+'</span></div>';
+}
+
+/* Соперник сезона: один игрок твоего региона и уровня (ближайший по рейтингу в ±4, не напарник), выбирается при первом
+   взгляде на сезон и держится до конца года. Каждый вечер, где вы оба в таблице, идёт в счёт (первая таблица дня), а
+   заметный - постом в ленту. Строка счёта - в составах на Центре. */
+const CC_RIVAL_BAND=4;
+function ccRival(){
+  const cr=CAREER && CAREER.career; if(!cr) return null;
+  if(cr.rival && cr.rival.s===cr.season) return cr.rival.h ? cr.rival : null;
+  let pool=[]; try{ pool=(careerRosterNowEU()||[]).slice(); }catch(e){}
+  const me=(CAREER.player.ovrExact!=null ? CAREER.player.ovrExact : CAREER.player.ovr)||0;
+  const mates=new Set((careerMates()||[]).filter(Boolean).map(c=>hKey(c)));
+  const myKey=hKey((CAREER.player.handle||CAREER.player.nick)||'');
+  const ovrOf=p=>(p._ovr!=null ? p._ovr : p.rating)||0;
+  pool=pool.filter(p=>p && p.handle && !mates.has(hKey(p)) && hKey(p)!==myKey && Math.abs(ovrOf(p)-me)<=CC_RIVAL_BAND);
+  if(!pool.length){ cr.rival={s:cr.season, h:null}; return null; }
+  pool.sort((a, b)=>Math.abs(ovrOf(a)-me)-Math.abs(ovrOf(b)-me));
+  const near=pool.slice(0, 5), r=careerRng(ccHashStr('rival|'+cr.season+'|'+myKey))();
+  const p=near[Math.floor(r*near.length)];
+  cr.rival={s:cr.season, h:p.handle, w:0, l:0, last:null};
+  return cr.rival;
+}
+function ccRivalAfterTable(ranked){
+  if(!CAREER || !CAREER.career || !ranked || ranked.length<10) return;
+  if(typeof ccMpOn==='function' && ccMpOn()) return;
+  const rv=ccRival(); if(!rv) return;
+  const day=careerToday(); if(rv.last && rv.last.day===day) return;
+  const k=hKey(rv.h);
+  let me=-1, him=-1;
+  ranked.forEach((t, i)=>{
+    if(t.isYou && me<0) me=i;
+    if(him<0 && (t.squad||[]).some(c=>c && hKey(c)===k)) him=i;
+  });
+  if(me<0 || him<0 || me===him) return;
+  if(me<him) rv.w=(rv.w||0)+1; else rv.l=(rv.l||0)+1;
+  rv.last={day, me:me+1, him:him+1, of:ranked.length};
+  // В ленту - когда разница заметная (десять мест и больше) или это первая встреча.
+  if(Math.abs(me-him)>=10 || (rv.w+rv.l)===1){
+    try{ careerNews(me<him ? 'good' : 'bad', me<him ? 'ccNewsRivalW' : 'ccNewsRivalL', [ccHandle(rv.h), me+1, him+1, rv.w, rv.l]); }catch(e){}
+  }
+}
+function ccRivalHTML(){
+  let rv=null; try{ rv=ccRival(); }catch(e){}
+  if(!rv) return '';
+  const T=L(), last=rv.last;
+  return '<div class="ch-ro ch-ro-rival"><em>'+esc(T.rvTitle)+'</em>'+
+    '<span class="rv-row"><b>'+esc(ccHandle(rv.h))+'</b><i class="rv-score'+((rv.w||0)>(rv.l||0) ? ' up' : (rv.w||0)<(rv.l||0) ? ' down' : '')+'">'+(rv.w||0)+' : '+(rv.l||0)+'</i></span>'+
+    '<small>'+esc(last ? T.rvLast(last.me, last.him) : T.rvNone)+'</small></div>';
+}
+
+/* Итоги года: карточки по одной, как Wrapped (кнопка «Итоги года» на «Карьере» и в конце сезона). Всё из журнала сезона
+   (cr.log), лички напарников и cr.did: ни одного придуманного числа. */
+let CC_WRAP=null;
+function ccWrapData(season){
+  const cr=CAREER.career, pl=CAREER.player, s=season||cr.season;
+  const rows=(cr.log||[]).filter(r=>r && r.season===s);
+  const sum=k=>rows.reduce((n, r)=>n+(+r[k]||0), 0);
+  let best=null;
+  rows.forEach(r=>{ if(!(r.place>0)) return; const sc=r.place/Math.max(1, r.of||100);
+    if(!best || r.place<best.place || (r.place===best.place && sc<best.place/Math.max(1, best.of||100))) best=r; });
+  const mates={};
+  rows.forEach(r=>{ (r.mates && r.mates.length ? r.mates : (r.mate ? [r.mate] : [])).forEach(m=>{ const h=typeof m==='string' ? m : (m && m.handle); if(h) mates[h]=(mates[h]||0)+1; }); });
+  const mate=Object.keys(mates).sort((a, b)=>mates[b]-mates[a])[0]||null;
+  const days=rows.map(r=>r.day).filter(Boolean).sort();
+  let train=0; const by={};
+  Object.keys(cr.did||{}).forEach(d=>{ if(days.length && (d<days[0] || d>careerToday())) return;
+    (cr.did[d]||[]).forEach(id=>{ const a=ccActById(id); if(a && String(a.id).indexOf('tr')===0 && a.gain){ train++; Object.keys(a.gain).forEach(k=>{ by[k]=(by[k]||0)+1; }); } }); });
+  const topStat=Object.keys(by).sort((a, b)=>by[b]-by[a])[0]||null;
+  const ovr0=rows.length ? (rows[0].ovr||null) : null, ovr1=Math.round(pl.ovrExact!=null ? pl.ovrExact : pl.ovr);
+  const yr=String(days[0]||careerToday()).slice(0, 4);
+  return {season:s, year:yr, events:rows.length, games:sum('games'), wins:sum('wins'), elims:sum('elims'), money:sum('prize'),
+          best, mate, mateN:mate ? mates[mate] : 0, train, topStat, ovr0, ovr1, reach:cr.reach||0, rival:ccRival()};
+}
+function ccWrapCards(d){
+  const T=L(), out=[];
+  out.push({k:'year', big:String(d.year), t:T.wrTitle(d.year), s:d.ovr0!=null ? T.wrRating(Math.round(d.ovr0), d.ovr1) : T.wrRatingNow(d.ovr1)});
+  out.push({k:'events', big:String(d.events), t:T.wrEvents, s:T.wrGames(d.games, d.wins, d.elims)});
+  if(d.best) out.push({k:'best', big:'#'+d.best.place, t:T.wrBest, s:(typeof ccLogName==='function' ? ccLogName(d.best) : '')+(d.best.of ? ' · '+T.wrOf(d.best.of) : '')});
+  out.push({k:'money', big:ccMoney(d.money), t:T.wrMoney, s:d.money>0 ? T.wrMoneySub : T.wrMoneyNone});
+  if(d.mate) out.push({k:'mate', big:ccHandle(d.mate), t:T.wrMate, s:T.wrMateSub(d.mateN)});
+  out.push({k:'train', big:String(d.train), t:T.wrTrain, s:d.topStat ? T.wrTopStat(T['ccAttr'+d.topStat.toUpperCase()]||d.topStat.toUpperCase()) : ''});
+  if(d.rival && d.rival.h) out.push({k:'rival', big:(d.rival.w||0)+' : '+(d.rival.l||0), t:T.wrRival(ccHandle(d.rival.h)), s:(d.rival.w||0)>=(d.rival.l||0) ? T.wrRivalUp : T.wrRivalDown});
+  out.push({k:'fans', big:ccNum(d.reach), t:T.wrFans, s:T.wrEnd});
+  return out;
+}
+function ccWrapOpen(season){
+  const d=ccWrapData(season);
+  CC_WRAP={d, cards:ccWrapCards(d), i:0};
+  let el=document.getElementById('ccWrap');
+  if(!el){ el=document.createElement('div'); el.id='ccWrap'; el.className='cc-wrap'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-modal', 'true');
+    el.onclick=e=>{ if(e.target===el) ccWrapClose(); }; document.body.appendChild(el); }
+  el.hidden=false; ccWrapDraw();
+}
+function ccWrapClose(){ const el=document.getElementById('ccWrap'); if(el) el.hidden=true; CC_WRAP=null; }
+function ccWrapGo(n){ if(!CC_WRAP) return; CC_WRAP.i=clamp(CC_WRAP.i+n, 0, CC_WRAP.cards.length-1); ccWrapDraw(); }
+function ccWrapText(){
+  const T=L(); if(!CC_WRAP) return '';
+  return T.wrTitle(CC_WRAP.d.year)+'\n'+CC_WRAP.cards.slice(1).map(c=>c.t+': '+c.big).join('\n')+'\nfncsdraft.com';
+}
+function ccWrapCopy(){
+  const txt=ccWrapText(); const b=document.getElementById('ccWrapCopy');
+  const ok=()=>{ if(b) b.textContent=L().wrCopied; };
+  try{ if(navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(txt).then(ok, ()=>{}); }catch(e){}
+}
+function ccWrapDraw(){
+  const el=document.getElementById('ccWrap'); if(!el || !CC_WRAP) return;
+  const T=L(), c=CC_WRAP.cards[CC_WRAP.i], n=CC_WRAP.cards.length, last=CC_WRAP.i===n-1;
+  el.innerHTML='<div class="cc-wrap-card k-'+c.k+'">'+
+    '<button type="button" class="cc-wrap-x" onclick="ccWrapClose()" aria-label="'+esc(T.wrClose)+'">×</button>'+
+    '<div class="cc-wrap-dots">'+CC_WRAP.cards.map((x, i)=>'<i'+(i<=CC_WRAP.i ? ' class="on"' : '')+'></i>').join('')+'</div>'+
+    '<div class="cc-wrap-in"><span class="cc-wrap-t">'+esc(c.t)+'</span><b class="cc-wrap-big">'+esc(c.big)+'</b><span class="cc-wrap-s">'+esc(c.s||'')+'</span></div>'+
+    '<div class="cc-wrap-nav">'+(CC_WRAP.i>0 ? '<button type="button" class="cc-wrap-b ghost" onclick="ccWrapGo(-1)">'+esc(T.wrPrev)+'</button>' : '<span></span>')+
+      (last ? '<button type="button" class="cc-wrap-b" id="ccWrapCopy" onclick="ccWrapCopy()">'+esc(T.wrCopy)+'</button>'
+            : '<button type="button" class="cc-wrap-b" onclick="ccWrapGo(1)">'+esc(T.wrNext)+'</button>')+'</div></div>';
+}
+function ccWrapBtnHTML(){
+  if(!CAREER || !CAREER.career) return '';
+  const cr=CAREER.career, rows=(cr.log||[]).filter(r=>r && r.season===cr.season);
+  if(!rows.length) return '';
+  return '<button type="button" class="cc-wrap-open" onclick="ccWrapOpen()"><b>'+esc(L().wrBtn)+'</b><span>'+esc(cr.seasonOver ? L().wrBtnDone : L().wrBtnSoFar)+'</span></button>';
+}

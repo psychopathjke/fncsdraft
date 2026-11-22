@@ -5349,7 +5349,7 @@
     #screen-career-hub .ch-top .ch-purse b small{display:none;}
   }
   /* Где строка не влезает (уже на 1100 она вылезала за край), правые плашки уходят второй строкой вправо. */
-  @media (min-width:701px) and (max-width:1320px){
+  @media (min-width:701px) and (max-width:1400px){
     #screen-career-hub .ch-top{flex-wrap:wrap;}
     #screen-career-hub .ch-top .ch-who{flex:0 1 auto;}
     #screen-career-hub .ch-top .ch-spacer{display:none;}
@@ -6523,6 +6523,18 @@
   #screen-career-hub .ch-tab[data-tab="stats"]{--ic:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'><path d='M3 3v18h18'/><path d='M7 15l4-4 3 3 6-6'/></svg>");}
   #screen-career-hub .ch-tab[data-tab="train"]{--ic:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'><path d='M6 7v10M18 7v10M3 10v4M21 10v4M6 12h12'/></svg>");}
   @media(min-width:701px){ #screen-career-hub .ch-tab::before{margin-right:7px;} }
+  /* Шесть главных вкладок и подвкладки группы (CC_TAB_GROUPS, 22.11). Скрытые кнопки подвкладок не рисуются нигде. */
+  #screen-career-hub .ch-tab[hidden]{display:none !important;}
+  #screen-career-hub .ch-tab[data-tab="items"]{--ic:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'><path d='M5 8h14l-1 13H6z'/><path d='M9 8V6a3 3 0 0 1 6 0v2'/></svg>");}
+  .ch-grp-tabs{position:relative;z-index:6;display:flex;gap:4px;margin:0 auto 12px;padding:4px;max-width:max-content;border-radius:12px;
+    background:rgba(8,18,50,.55);box-shadow:inset 0 0 0 1px rgba(180,200,255,.16);overflow-x:auto;scrollbar-width:none;}
+  .ch-grp-tabs::-webkit-scrollbar{display:none;}
+  .ch-grp-tab{flex:none;border:0;cursor:pointer;font:inherit;font-size:12px;font-weight:900;letter-spacing:.05em;text-transform:uppercase;
+    padding:8px 14px;border-radius:9px;background:none;color:#cfd8ff;white-space:nowrap;display:inline-flex;align-items:center;gap:6px;}
+  .ch-grp-tab:hover{color:#fff;background:rgba(255,255,255,.06);}
+  .ch-grp-tab.on{background:#ffdd00;color:#0b1a3a;}
+  .ch-grp-tab .ch-dot{position:static;width:7px;height:7px;}
+  @media(max-width:700px){ .ch-grp-tabs{max-width:100%;margin:0 0 10px;} .ch-grp-tab{padding:8px 11px;font-size:11px;} }
   .ev-rate{font-weight:900;} .ev-rate.hi{color:#00d6a4;} .ev-rate.lo{color:#ff7d70;}
   .ev-rspark span{display:flex;align-items:flex-end;gap:2px;height:28px;}
   .ev-rbar{display:block;width:6px;border-radius:2px;background:#7aa2ff;}
@@ -10693,6 +10705,58 @@
   #screen-career-create .cc-start:hover:not(:disabled){background:#fff04d;outline:3px solid rgba(255,255,255,.92);}
   #screen-career-create .cc-start:disabled{background:rgba(255,255,255,.14);color:#7d8db4;}
   #screen-career-create .cc-photo{border-radius:14px;}
+  /* «В эфир» и «Не играть» одной строкой под «Играть», мельче (22.11). */
+  #screen-career-hub .ch-play-row{display:flex;gap:6px;margin-top:6px;}
+  #screen-career-hub .ch-play-row:empty{display:none;}
+  #screen-career-hub .ch-play-row .ch-play{flex:1 1 0;min-width:0;margin:0 !important;width:auto !important;
+    font-size:12.5px !important;padding:8px 6px !important;min-height:0 !important;height:auto !important;line-height:1.15;letter-spacing:.03em;}
+  .ch-ro.ch-ro-later{display:flex;flex-direction:column;gap:3px;}
+  .ch-ro.ch-ro-later span{font-size:12px;color:#cfd8ff;display:flex;flex-wrap:wrap;gap:4px 8px;align-items:baseline;}
+  .ch-ro.ch-ro-later span b{color:#fff;font-weight:900;} .ch-ro.ch-ro-later span i{font-style:normal;opacity:.5;}
+  /* Подпись под ником в шапке на 1366 резалась до «19 · DIVIS…» (22.11): переносится на вторую строку, ширина не меньше 190. */
+  @media (min-width:701px){
+    #screen-career-hub .ch-top .ch-who{min-width:205px;}
+    #screen-career-hub .ch-top .ch-who .ch-sub{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;line-height:1.25;}
+  }
+  /* Тильт (ccTiltNoteHTML). */
+  .cc-tilt{display:flex;flex-direction:column;gap:2px;margin:0 0 10px;padding:8px 12px;border-radius:10px;
+    background:rgba(255,95,86,.14);box-shadow:inset 0 0 0 1px rgba(255,95,86,.4);text-align:left;}
+  .cc-tilt b{font-size:12px;font-weight:900;letter-spacing:.05em;text-transform:uppercase;color:#ff8a80;}
+  .cc-tilt span{font-size:12px;color:#ffd6d2;line-height:1.35;}
+  /* Соперник сезона (ccRivalHTML). */
+  .ch-ro.ch-ro-rival{display:flex;flex-direction:column;gap:3px;box-shadow:inset 3px 0 0 #ff5f56;}
+  .ch-ro-rival .rv-row{display:flex;align-items:baseline;justify-content:space-between;gap:8px;}
+  .ch-ro-rival .rv-row b{font-size:14px;font-weight:900;color:#fff;}
+  .rv-score{font-style:normal;font-weight:900;font-size:15px;color:#cfd8ff;font-variant-numeric:tabular-nums;}
+  .rv-score.up{color:#00d6a4;} .rv-score.down{color:#ff8a80;}
+  .ch-ro-rival small{font-size:11px;color:#aab6dc;}
+  /* Итоги года (ccWrapOpen). */
+  .cc-wrap-open{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;max-width:1100px;margin:0 auto 12px;
+    padding:14px 18px;border:0;border-radius:14px;cursor:pointer;font:inherit;text-align:left;
+    background:linear-gradient(120deg,#ffdd00,#ff9f1c);color:#111;box-sizing:border-box;}
+  .cc-wrap-open b{font-size:16px;font-weight:900;text-transform:uppercase;letter-spacing:.04em;}
+  .cc-wrap-open span{font-size:12px;font-weight:800;opacity:.75;}
+  .cc-wrap{position:fixed;inset:0;z-index:200;display:flex;align-items:center;justify-content:center;padding:16px;
+    background:rgba(4,8,24,.82);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);}
+  .cc-wrap[hidden]{display:none !important;}
+  .cc-wrap-card{position:relative;width:min(380px,100%);aspect-ratio:9/14;max-height:calc(100vh - 32px);border-radius:22px;overflow:hidden;
+    display:flex;flex-direction:column;padding:18px 20px 20px;box-sizing:border-box;color:#fff;
+    background:radial-gradient(120% 80% at 80% 0%,#3d5afe 0%,#1a237e 45%,#0b0f3a 100%);box-shadow:0 20px 60px rgba(0,0,0,.5);}
+  .cc-wrap-card.k-best,.cc-wrap-card.k-year{background:radial-gradient(120% 80% at 20% 0%,#ffdd00 0%,#ff6d00 40%,#3a0b3a 100%);}
+  .cc-wrap-card.k-money{background:radial-gradient(120% 80% at 80% 0%,#00e5a0 0%,#00796b 45%,#03241f 100%);}
+  .cc-wrap-card.k-rival{background:radial-gradient(120% 80% at 50% 0%,#ff5f56 0%,#8e1b2e 45%,#1c0710 100%);}
+  .cc-wrap-card.k-mate,.cc-wrap-card.k-fans{background:radial-gradient(120% 80% at 20% 0%,#bf94ff 0%,#5b2bbf 45%,#140a33 100%);}
+  .cc-wrap-x{position:absolute;top:12px;right:12px;width:34px;height:34px;border:0;border-radius:50%;background:rgba(0,0,0,.3);color:#fff;font-size:20px;cursor:pointer;}
+  .cc-wrap-dots{display:flex;gap:4px;margin:4px 44px 0 0;}
+  .cc-wrap-dots i{flex:1;height:3px;border-radius:2px;background:rgba(255,255,255,.3);}
+  .cc-wrap-dots i.on{background:#fff;}
+  .cc-wrap-in{flex:1;display:flex;flex-direction:column;justify-content:center;gap:10px;min-height:0;}
+  .cc-wrap-t{font-size:15px;font-weight:900;text-transform:uppercase;letter-spacing:.06em;opacity:.9;}
+  .cc-wrap-big{font-family:'Oswald',sans-serif;font-style:italic;font-weight:700;font-size:clamp(44px,15vw,76px);line-height:1;overflow-wrap:anywhere;}
+  .cc-wrap-s{font-size:14px;line-height:1.4;opacity:.9;}
+  .cc-wrap-nav{display:flex;justify-content:space-between;gap:10px;}
+  .cc-wrap-b{flex:1;max-width:60%;margin-left:auto;padding:12px 14px;border:0;border-radius:12px;background:#fff;color:#111;font:inherit;font-weight:900;text-transform:uppercase;cursor:pointer;}
+  .cc-wrap-b.ghost{margin-left:0;background:rgba(255,255,255,.16);color:#fff;}
 /*@@PART shell.html@@*/
 </style>
 <!-- ?v= — это НЕ украшение, это починка того, что он поймал 24 августа.
@@ -11313,28 +11377,20 @@
       </div>
       <div class="ch-tabs">
         <button class="ch-tab on" data-tab="centre" onclick="careerTab('centre')" data-i18n="chTabCentre"></button>
-        <!-- Профиль стоит вторым, сразу за Центром, — правка:
-             «вот эту таблицу нужно как отдельный столбик в лобби, после центра
-             profile мб». Это лист результатов года: рейтинг, PR, матчи, победы,
-             килы, среднее место и призовые, а под ними каждое событие строкой.
-             Ключ вкладки остался 'log' — на него ссылаются сохранения и
-             переходы, и переименовывать его ради подписи значит ломать их. -->
-        <button class="ch-tab" data-tab="log" onclick="careerTab('log')" data-i18n="chTabLog"></button>
-        <button class="ch-tab" data-tab="me" onclick="careerTab('me')" data-i18n="chTabMe"></button>
+        <!-- Шесть главных вкладок (22.11, его «делай» на «12 вкладок -> 6, как лобби Fortnite»). Остальные вкладки живут
+             подвкладками внутри групп (CC_TAB_GROUPS, ccSubTabsHTML): ключи вкладок те же, переходы careerTab('…') не менялись.
+             Кнопки подвкладок остаются в полосе скрытыми, чтобы старые селекторы и сторожа их находили. -->
         <button class="ch-tab" data-tab="train" onclick="careerTab('train')" data-i18n="chTabTrain"></button>
-        <button class="ch-tab" data-tab="club" onclick="careerTab('club')" data-i18n="chTabClub"></button>
         <button class="ch-tab" data-tab="calendar" onclick="careerTab('calendar')" data-i18n="chTabCalendar"></button>
-        <!-- Вкладки «Медиа» больше нет (21.11, его «убери тогда медиа»): соцсеть, Twitch, YouTube и Discord открываются
-             кнопками справа в полосе вкладок (ccMediaQuickHTML), непрочитанное - числом на кнопке соцсети. -->
-        <!-- Стримы стоят сразу за соцсетями — правка: это одна и та же
-             половина жизни игрока, лента и эфир. -->
-        <button class="ch-tab" data-tab="table" onclick="careerTab('table')" data-i18n="chTabBoards"></button>
-        <button class="ch-tab" data-tab="shop" onclick="careerTab('shop')"><span data-i18n="chTabShop"></span><i class="ch-dot" id="chShopDot"></i></button>
-        <!-- Шкафчик своей вкладкой (18.10, его «как выбрать скин, где шкафчик, мб отдельную вкладку»). -->
-        <button class="ch-tab" data-tab="items" onclick="careerTab('items')" data-i18n="chTabItems"></button>
-        <button class="ch-tab" data-tab="locker" onclick="careerTab('locker')" data-i18n="chTabLocker"></button>
-        <button class="ch-tab" data-tab="bp" onclick="careerTab('bp')" data-i18n="chTabBp"></button>
-        <button class="ch-tab" data-tab="hist" onclick="careerTab('hist')" data-i18n="chTabHist"></button>
+        <button class="ch-tab" data-tab="club" onclick="careerTab('club')" data-i18n="chTabClub"></button>
+        <button class="ch-tab" data-tab="items" onclick="careerTab('items')"><span data-i18n="chTabStore"></span><i class="ch-dot" id="chStoreDot"></i></button>
+        <button class="ch-tab" data-tab="me" onclick="careerTab('me')" data-i18n="chTabMe"></button>
+        <button class="ch-tab ch-tab-sub" hidden data-tab="log" onclick="careerTab('log')" data-i18n="chTabLog"></button>
+        <button class="ch-tab ch-tab-sub" hidden data-tab="hist" onclick="careerTab('hist')" data-i18n="chTabHist"></button>
+        <button class="ch-tab ch-tab-sub" hidden data-tab="table" onclick="careerTab('table')" data-i18n="chTabBoards"></button>
+        <button class="ch-tab ch-tab-sub" hidden data-tab="shop" onclick="careerTab('shop')"><span data-i18n="chTabShop"></span><i class="ch-dot" id="chShopDot"></i></button>
+        <button class="ch-tab ch-tab-sub" hidden data-tab="locker" onclick="careerTab('locker')" data-i18n="chTabLocker"></button>
+        <button class="ch-tab ch-tab-sub" hidden data-tab="bp" onclick="careerTab('bp')" data-i18n="chTabBp"></button>
       </div>
       <div class="ch-body" id="chBody"></div>
       <div class="ch-foot">
@@ -12530,7 +12586,7 @@ chSquad:'Дуо', ccDuoFindTitle:'Кому написать',
 ccDuoFindHint:'Любому игроку своего региона можно написать первым. Ответит он сам — и не всякий согласится.',
 ccDuoSearchPh:'Поиск по нику',
 ccDuoSortBy:'Сортировать', ccDuoSortNear:'мой уровень', ccDuoSortOvr:'рейтинг', ccDuoSortPr:'PR', ccDuoPrOf:(pr,rank)=>'PR '+pr+' · #'+rank,
-ccActwarm:'Разминка', ccGiveWarm:n=>'+'+n+' к форме на вечер', ccWarmDone:'уже сегодня', ccKeepEnergy:r=>'оставь '+r+' энергии на турнир', ccPreNote:(t,r)=>r ? 'До вечера «'+t+'»: тренируйся, но '+r+' энергии оставь на турнир.' : 'До вечера «'+t+'»: можно потренироваться и размяться.', ccPreGo:'К турниру', ccPreBtn:'Потренироваться до турнира', ccRepeatNote:n=>'уже '+n+' за неделю, даёт меньше', dcSrvCrew:r=>'Тусовка '+r, crGeneral:'общий', crVoice:'войс', crMembers:'участники', crIntro:'Те, с кем ты играл, против кого играл и кому писал. Зови поиграть, предлагай дуо, сиди в войсе.', crNobody:'Пока никого: сыграй кап, напиши кому-нибудь или добавь друга.', crStVoice:'в войсе', crStGame:'в игре', crStOn:'онлайн', crStOff:'не в сети', crRelNew:'новый', crRelKnown:'знает тебя', crRelFriend:'друг', crRelClose:'близкий друг', crDayGone:'день уже закончился', crAskedToday:'уже звал сегодня', crNotTourDay:'не в день турнира', crNo:h=>h+': сегодня не могу', crPlayed:(h,a,b)=>'Поиграли с '+h+': '+a+'-'+b, crPlay:'Поиграть вместе', crAccept:'Зайти', crDuo:'Позвать в дуо', crInvitedYou:'зовёт тебя поиграть', crVoiceJoin:'Зайти в войс', crVoiceIn:'Ты в войсе', crVoiceEmpty:'В войсе сейчас никого', crM1:ev=>'кто сегодня на '+ev+'?', crM2:()=>'скримы позже? пишите в лс', crM3:h=>'gg '+h+', чисто сыграл', crM4:()=>'лут в этом сезоне что-то с чем-то', crM5:()=>'кто в войс', crMeGood:(n,p)=>'@'+n+' gg, #'+p+' это мощно', crMeBad:(n,p)=>'@'+n+' не повезло, #'+p+'. в следующий раз', crMeHi:n=>'@'+n+' будешь вечером?', crR1:'gg, спасибо!', crR2:'лол, у меня лагало', crR3:'(промолчать)', ccActcrew:'Поиграть вместе', ccActvoice:'Войс', fnNeedFol:n=>"нужно "+n+" подписчиков", fnDefName:n=>'Фан-сервер '+n, fnCreateChan:"фан-сервер", fnCreateTxt:"Сервер для твоих фанатов: пишут после турниров, задают вопросы и показывают, что купили по твоему коду автора.", fnCreateBtn:"Создать сервер", fnNameLabel:"Название сервера", fnAfterNone:"Пока тихо: фанаты напишут после следующего турнира.", fnTheCup:"кап", fnAfterChan:"после-турнира", fnQChan:"вопросы", fnCodeChan:"купили-по-коду", fnAnswered:n=>"+"+n+" подписчиков", fnCodeNeedFol:n=>"Код платит от "+n+" подписчиков.", fnCodeNone:n=>"Создай код автора в магазине (от "+n+" подписчиков), и фанаты будут писать сюда свои покупки.", fnBought:(i,c)=>"взял "+i+" по коду "+c+". поддерживаю", fnBuyNone:c=>"сегодня код "+c+" никто не вводил", fnMembers:n=>n+" участников", fnAfterW1:(p,ev)=>'МЫ ВЫИГРАЛИ '+ev+'!!!', fnAfterW2:(p,ev)=>'#1 на '+ev+', я знал', fnAfterW3:(p,ev)=>'концовка на '+ev+' это что-то', fnAfterW4:(p,ev)=>'чемпион. gg', fnAfterG1:(p,ev)=>'#'+p+' на '+ev+', очень круто', fnAfterG2:(p,ev)=>'топ '+p+', погнали', fnAfterG3:(p,ev)=>'чистый '+ev+', #'+p, fnAfterG4:(p,ev)=>'горжусь, #'+p, fnAfterM1:(p,ev)=>'#'+p+' на '+ev+', нормально', fnAfterM2:(p,ev)=>'неплохой '+ev+', следующий наш', fnAfterM3:(p,ev)=>'#'+p+', совсем неплохо', fnAfterM4:(p,ev)=>'средне, но берём', fnAfterB1:(p,ev)=>'#'+p+' на '+ev+'... не повезло', fnAfterB2:(p,ev)=>'тяжёлый '+ev+', мы с тобой', fnAfterB3:(p,ev)=>'лут был проклятый', fnAfterB4:(p,ev)=>'отыграемся на неделе', fnQ1:"какая у тебя чувствительность?", fnA11:"8% и не меняю", fnA12:"какая в этот день удобна", fnQ2:"как тренируешь концовки?", fnA21:"Noble каждый день", fnA22:"просто больше капов лол", fnQ3:"с кем мечтаешь в дуо?", fnA31:"с тем, кто выиграет со мной", fnA32:"пока не скажу", fnQ4:"советы на первый кап?", fnA41:"играй на место, не на киллы", fnA42:"кайфуй и не тильтуй", fnQ5:"какие у тебя бинды?", fnA51:"смотри бинды в настройках", fnA52:"те же с первой главы", fnQ6:"будешь стримить вечером?", fnA61:"после капа", fnA62:"может, следи за соцсетями", fnQ7:"геймпад или клава?", fnA71:"на чём играю, то и лучшее", fnA72:"без разницы, важна практика", fnQ8:"сколько часов в день играешь?", fnA81:"6-8 в обычный день", fnA82:"слишком много", dcCatText:'Текстовые каналы', dcCatVoice:'Голосовые каналы', fnChatChan:"чат", fnChatPh:c=>"Написать в #"+c, fnSend:"Отправить", fnChatEmpty:"Напиши что-нибудь фанатам.", fnRCode1:c=>"всегда беру по коду "+c+"", fnRStream1:"буду на стриме", fnRStream2:"включаю уведомления", fnRQ1:"да 100%", fnRQ2:"неа", fnRQ3:"смотря как", fnRQ4:"хороший вопрос", fnRHype1:"ПОГНАЛИ", fnRHype2:"гоат", fnRHype3:"W", fnRGen1:"W", fnRGen2:"реально", fnRGen3:"лол", fnRGen4:"факт", fnRGen5:"мы с тобой", dcCatServer:"Сервер", fnInviteChan:"пригласить", fnSettingsChan:"настройки-сервера", fnInviteTxt:(o,m)=>"Ищи игроков по нику. Позвать можно любого с рейтингом ниже твоего ("+o+"), заходят сразу, до "+m+" человек.", fnFindPh:"Поиск по нику", fnFindNone:"Никого ниже твоего рейтинга не нашлось", fnInviteBtn:"Пригласить", fnJoined:h=>h+" зашёл на сервер", fnFull:m=>"Сервер полон: "+m+" приглашённых", fnGuest:"приглашён", fnKick:"Убрать", fnFansN:n=>n+" фанатов", fnSave:"Сохранить", fnIconT:"Аватарка сервера", fnIconFace:"Фото твоей карточки", fnIconUp:"Загрузить картинку", fnAmb1:(ev,it,n,p)=>'всем привет', fnAmb2:(ev,it,n,p)=>'кто смотрит '+ev+' сегодня?', fnAmb3:(ev,it,n,p)=>'видел '+it+' в магазине, брать?', fnAmb4:(ev,it,n,p)=>'@'+n+' когда следующий стрим?', fnAmb5:(ev,it,n,p)=>'сезон очень кайфовый', fnAmb6:(ev,it,n,p)=>'кто на 1v1 билд-файты?', fnAmb7:(ev,it,n,p)=>'сегодня первая победа!!', fnAmb8:(ev,it,n,p)=>'какие у вас бинды', fnAmb9:(ev,it,n,p)=>''+n+' лучший в концовках, без шуток', fnAmb10:(ev,it,n,p)=>'зон варс кто?', fnAmb11:(ev,it,n,p)=>'#'+p+' в прошлый раз, идём дальше', fnAmb12:(ev,it,n,p)=>'отошёл поесть', fnAmbG1:(ev,it,n,p)=>'скримы позже, кто со мной?', fnAmbG2:(ev,it,n,p)=>'всем gg за вчера', fnAmbG3:(ev,it,n,p)=>'кто сегодня гриндит', fnAmbG4:(ev,it,n,p)=>'последняя зона была жёсткая', dcKick:'Кикнуть', dcKicked:h=>h+' кикнут с сервера', crVc1:"Общий", crVc2:"Скримы", crVc3:"Чилл", crVoiceElsewhere:c=>'ты в канале '+c, crMeTease:(n,p)=>'@'+n+' #'+p+'? зоны повезли, не более', crMeTroll:(n,p)=>'@'+n+' #'+p+' ахах, кто тебя в лобби пустил', crResChan:"результаты", crLfgChan:"ищу-напарника", crResNone:"Сегодня пока ничего.", crResW1:(w,ev)=>'gg '+w+', выиграть '+ev+' это мощно', crResW2:(w,ev)=>''+w+' опять выиграл '+ev+'? скучно', crRb1:"посмотрим на таблицу через неделю", crRb2:"лол, справедливо", crRb3:"(промолчать)", crLfg1:(f,ev,min)=>'ищу '+f+' на '+ev+', только '+min+'+', crLfg2:(f,min)=>'ищу '+f+' на неделю, '+min+'+', crFmtD:"дуо", crFmtT:"трио", crFmtQ:"сквад", fnVcChan:"тусовка", crResG1:(n,p,ev)=>'@'+n+' #'+p+' на '+ev+', машина', crResG2:(n,p,ev)=>''+n+' разносит, #'+p, crResG3:(n,p,ev)=>'gg '+n+', #'+p+' очень чисто', crResG4:(n,p,ev)=>'#'+p+' на '+ev+', уважение', crResGt1:(n,p,ev)=>'#'+p+'? зоны затащили', crResGt2:(n,p,ev)=>''+n+' просто повезло на '+ev, crResB1:(n,p,ev)=>'#'+p+' лол', crResB2:(n,p,ev)=>'кто пустил '+n+' на '+ev, crResB3:(n,p,ev)=>'#'+p+' на '+ev+', пора удалять игру', crResB4:(n,p,ev)=>''+n+' снова прыгнул в тилтед и умер первым', crResBk1:(n,p,ev)=>'не повезло '+n+', отыграешься', crResBk2:(n,p,ev)=>'#'+p+' бывает, следующий наш', crResM1:(n,p,ev)=>'#'+p+' на '+ev+', нормально', crResM2:(n,p,ev)=>'неплохой '+ev+', '+n, crResMt1:(n,p,ev)=>'#'+p+', как всегда средне', crResMt2:(n,p,ev)=>''+n+' мид дифф', crGrpOn:n=>'В сети · '+n, crGrpOff:n=>'Не в сети · '+n, crModeScr:"Скримы", crPlayedMode:(h,md,a,b)=>"Сыграли "+md+" с "+h+""+': '+a+'-'+b, crPlayedRk:(h,md)=>"Сыграли "+md+" с "+h+"", crCallTo:"Позвать на турнир", crCupYes:(h,ev,d)=>""+h+" сыграет с тобой "+ev+" ("+d+")", crAwayLater:(h,r)=>""+h+" сыграет с тобой кап дивизиона в регионе "+r+", когда он откроется", crAwayGo:(h,r)=>""+h+" едет с тобой в регион "+r+"", crDlg1:(ev,w,wev,min)=>["скримы в 8?","я в деле","договорились, скину код"], crDlg2:(ev,w,wev,min)=>[w+" опять выиграл "+wev+"","он сейчас просто сильнее","нереально"], crDlg3:(ev,w,wev,min)=>["эта мета сломана","скилл ишью","лол, справедливо"], crDlg4:(ev,w,wev,min)=>["ищу дуо на "+ev+", "+min+"+","а я?","глянь лс"], crDlg5:(ev,w,wev,min)=>["кто в ранкед?","гриндим анрил сегодня","кидай пати"], crDlg6:(ev,w,wev,min)=>["бокс-файты 1v1?","до 5","погнали"], crRS1:"я в деле", crRS2:"после капа", crRS3:"кидай код", crRQ1:"да", crRQ2:"неа", crRQ3:"смотря как", crRQ4:"хороший вопрос", crRH1:"ПОГНАЛИ", crRH2:"W", crRH3:"мощно", crRG1:"реально", crRG2:"лол", crRG3:"факт", crRG4:"правда", crRG5:"так же", crRM1:"что?", crRM2:"здарова", crRM3:"тут", crS1:"всем gg", crS2:"кто на скримы?", crS3:"кто в ранкед?", crS4:ev=>"кто сегодня играет "+ev+"?", crS5:"сезон очень кайфовый", invShown:(n,t)=>"Показано "+n+" из "+t+" ниже твоего рейтинга", ccActtrWaim:"Просмотр про", ccActtrWsur:"Просмотр про", ccActtrWcon:"Просмотр про", ccActtrWclu:"Просмотр про", ccActtrWend:"Просмотр про", wpTitle:"Смотреть про", wpSub:"Учишься у тех, кто сильнее: качается стат, где разрыв больше всего, но не выше его уровня. Половина занятия за 15 энергии.", wpBest:(k,his,mine)=>k+" "+his+" у него, "+mine+" у тебя", wpBtn:"Смотреть", wpBtnTip:"Посмотреть его эфир или ролик", wpNothing:"Нечему учиться", wpNone:"Сегодня в эфире нет никого сильнее тебя", wpDayShut:"Сегодня смотреть некогда: день занят", wpHurt:"С травмой только отдых", wpDid:(h,p,k,by)=>"Сегодня смотрел "+h+" на "+p+": "+k+" +"+by, ccDuoNat:'Флаг', ccVAltH:'Капы дня',awH:n=>'Другие регионы · '+n+' энергии',awLate:n=>'Ночью ещё идут · '+n+' энергии',awCupLine:(r,d)=>'Выезд в '+r+', Дивизион '+d+': переход по отсечке там',awDivUp:(r,d)=>'Переход в '+r+': Дивизион '+d,awDivD:d=>'Д'+d,awWfSeat:r=>'Путёвка в финал недели '+r,awNewsDivUp:(r,d)=>'Выезд: в '+r+' теперь Дивизион '+d,awAfterHome:l=>'После твоего капа: '+l,awHT:'Другие регионы',awLateT:'Ночью ещё идут',awAfterOwn:'после твоего капа',awCost:n=>n+' энергии за выезд',awMs:ms=>ms+' мс',awPenT:p=>'-'+p+' силы',awGo:'Играть',aw_past:'уже прошёл',aw_dev:'нужно устройство',awBusy:'В это время ты играешь на выезде',awBtn:(r,ms,p)=>r+' · '+ms+' мс · -'+p+' силы',aw_done:'сыграно',aw_tired:'нет сил',aw_mate:'нет состава', roFirst:d=>'первый турнир — '+d, roGather:'Собрать состав', roFind:'Найти напарника', roWeek:'Собрать можно за неделю до турнира', roMpFill:n=>(n>1?'Ещё двоих':'Третьего')+' на вечер возьмёте филлом: игра подберёт по вашему рейтингу', roSpot:'Спот', roSpotNone:'не выбран — поставить', roNat:'Сборная', roCaptain:'ты капитан', roNatTrial:'Место в сборной — через отбор страны', ccDuoNatAll:'все', ccDuoReg:'Регион',
+ccActwarm:'Разминка', ccGiveWarm:n=>'+'+n+' к форме на вечер', ccWarmDone:'уже сегодня', ccKeepEnergy:r=>'оставь '+r+' энергии на турнир', ccPreNote:(t,r)=>r ? 'До вечера «'+t+'»: тренируйся, но '+r+' энергии оставь на турнир.' : 'До вечера «'+t+'»: можно потренироваться и размяться.', ccPreGo:'К турниру', ccPreBtn:'Потренироваться до турнира', ccRepeatNote:n=>'уже '+n+' за неделю, даёт меньше', dcSrvCrew:r=>'Тусовка '+r, crGeneral:'общий', crVoice:'войс', crMembers:'участники', crIntro:'Те, с кем ты играл, против кого играл и кому писал. Зови поиграть, предлагай дуо, сиди в войсе.', crNobody:'Пока никого: сыграй кап, напиши кому-нибудь или добавь друга.', crStVoice:'в войсе', crStGame:'в игре', crStOn:'онлайн', crStOff:'не в сети', crRelNew:'новый', crRelKnown:'знает тебя', crRelFriend:'друг', crRelClose:'близкий друг', crDayGone:'день уже закончился', crAskedToday:'уже звал сегодня', crNotTourDay:'не в день турнира', crNo:h=>h+': сегодня не могу', crPlayed:(h,a,b)=>'Поиграли с '+h+': '+a+'-'+b, crPlay:'Поиграть вместе', crAccept:'Зайти', crDuo:'Позвать в дуо', crInvitedYou:'зовёт тебя поиграть', crVoiceJoin:'Зайти в войс', crVoiceIn:'Ты в войсе', crVoiceEmpty:'В войсе сейчас никого', crM1:ev=>'кто сегодня на '+ev+'?', crM2:()=>'скримы позже? пишите в лс', crM3:h=>'gg '+h+', чисто сыграл', crM4:()=>'лут в этом сезоне что-то с чем-то', crM5:()=>'кто в войс', crMeGood:(n,p)=>'@'+n+' gg, #'+p+' это мощно', crMeBad:(n,p)=>'@'+n+' не повезло, #'+p+'. в следующий раз', crMeHi:n=>'@'+n+' будешь вечером?', crR1:'gg, спасибо!', crR2:'лол, у меня лагало', crR3:'(промолчать)', ccActcrew:'Поиграть вместе', ccActvoice:'Войс', fnNeedFol:n=>"нужно "+n+" подписчиков", fnDefName:n=>'Фан-сервер '+n, fnCreateChan:"фан-сервер", fnCreateTxt:"Сервер для твоих фанатов: пишут после турниров, задают вопросы и показывают, что купили по твоему коду автора.", fnCreateBtn:"Создать сервер", fnNameLabel:"Название сервера", fnAfterNone:"Пока тихо: фанаты напишут после следующего турнира.", fnTheCup:"кап", fnAfterChan:"после-турнира", fnQChan:"вопросы", fnCodeChan:"купили-по-коду", fnAnswered:n=>"+"+n+" подписчиков", fnCodeNeedFol:n=>"Код платит от "+n+" подписчиков.", fnCodeNone:n=>"Создай код автора в магазине (от "+n+" подписчиков), и фанаты будут писать сюда свои покупки.", fnBought:(i,c)=>"взял "+i+" по коду "+c+". поддерживаю", fnBuyNone:c=>"сегодня код "+c+" никто не вводил", fnMembers:n=>n+" участников", fnAfterW1:(p,ev)=>'МЫ ВЫИГРАЛИ '+ev+'!!!', fnAfterW2:(p,ev)=>'#1 на '+ev+', я знал', fnAfterW3:(p,ev)=>'концовка на '+ev+' это что-то', fnAfterW4:(p,ev)=>'чемпион. gg', fnAfterG1:(p,ev)=>'#'+p+' на '+ev+', очень круто', fnAfterG2:(p,ev)=>'топ '+p+', погнали', fnAfterG3:(p,ev)=>'чистый '+ev+', #'+p, fnAfterG4:(p,ev)=>'горжусь, #'+p, fnAfterM1:(p,ev)=>'#'+p+' на '+ev+', нормально', fnAfterM2:(p,ev)=>'неплохой '+ev+', следующий наш', fnAfterM3:(p,ev)=>'#'+p+', совсем неплохо', fnAfterM4:(p,ev)=>'средне, но берём', fnAfterB1:(p,ev)=>'#'+p+' на '+ev+'... не повезло', fnAfterB2:(p,ev)=>'тяжёлый '+ev+', мы с тобой', fnAfterB3:(p,ev)=>'лут был проклятый', fnAfterB4:(p,ev)=>'отыграемся на неделе', fnQ1:"какая у тебя чувствительность?", fnA11:"8% и не меняю", fnA12:"какая в этот день удобна", fnQ2:"как тренируешь концовки?", fnA21:"Noble каждый день", fnA22:"просто больше капов лол", fnQ3:"с кем мечтаешь в дуо?", fnA31:"с тем, кто выиграет со мной", fnA32:"пока не скажу", fnQ4:"советы на первый кап?", fnA41:"играй на место, не на киллы", fnA42:"кайфуй и не тильтуй", fnQ5:"какие у тебя бинды?", fnA51:"смотри бинды в настройках", fnA52:"те же с первой главы", fnQ6:"будешь стримить вечером?", fnA61:"после капа", fnA62:"может, следи за соцсетями", fnQ7:"геймпад или клава?", fnA71:"на чём играю, то и лучшее", fnA72:"без разницы, важна практика", fnQ8:"сколько часов в день играешь?", fnA81:"6-8 в обычный день", fnA82:"слишком много", dcCatText:'Текстовые каналы', dcCatVoice:'Голосовые каналы', fnChatChan:"чат", fnChatPh:c=>"Написать в #"+c, fnSend:"Отправить", fnChatEmpty:"Напиши что-нибудь фанатам.", fnRCode1:c=>"всегда беру по коду "+c+"", fnRStream1:"буду на стриме", fnRStream2:"включаю уведомления", fnRQ1:"да 100%", fnRQ2:"неа", fnRQ3:"смотря как", fnRQ4:"хороший вопрос", fnRHype1:"ПОГНАЛИ", fnRHype2:"гоат", fnRHype3:"W", fnRGen1:"W", fnRGen2:"реально", fnRGen3:"лол", fnRGen4:"факт", fnRGen5:"мы с тобой", dcCatServer:"Сервер", fnInviteChan:"пригласить", fnSettingsChan:"настройки-сервера", fnInviteTxt:(o,m)=>"Ищи игроков по нику. Позвать можно любого с рейтингом ниже твоего ("+o+"), заходят сразу, до "+m+" человек.", fnFindPh:"Поиск по нику", fnFindNone:"Никого ниже твоего рейтинга не нашлось", fnInviteBtn:"Пригласить", fnJoined:h=>h+" зашёл на сервер", fnFull:m=>"Сервер полон: "+m+" приглашённых", fnGuest:"приглашён", fnKick:"Убрать", fnFansN:n=>n+" фанатов", fnSave:"Сохранить", fnIconT:"Аватарка сервера", fnIconFace:"Фото твоей карточки", fnIconUp:"Загрузить картинку", fnAmb1:(ev,it,n,p)=>'всем привет', fnAmb2:(ev,it,n,p)=>'кто смотрит '+ev+' сегодня?', fnAmb3:(ev,it,n,p)=>'видел '+it+' в магазине, брать?', fnAmb4:(ev,it,n,p)=>'@'+n+' когда следующий стрим?', fnAmb5:(ev,it,n,p)=>'сезон очень кайфовый', fnAmb6:(ev,it,n,p)=>'кто на 1v1 билд-файты?', fnAmb7:(ev,it,n,p)=>'сегодня первая победа!!', fnAmb8:(ev,it,n,p)=>'какие у вас бинды', fnAmb9:(ev,it,n,p)=>''+n+' лучший в концовках, без шуток', fnAmb10:(ev,it,n,p)=>'зон варс кто?', fnAmb11:(ev,it,n,p)=>'#'+p+' в прошлый раз, идём дальше', fnAmb12:(ev,it,n,p)=>'отошёл поесть', fnAmbG1:(ev,it,n,p)=>'скримы позже, кто со мной?', fnAmbG2:(ev,it,n,p)=>'всем gg за вчера', fnAmbG3:(ev,it,n,p)=>'кто сегодня гриндит', fnAmbG4:(ev,it,n,p)=>'последняя зона была жёсткая', dcKick:'Кикнуть', dcKicked:h=>h+' кикнут с сервера', crVc1:"Общий", crVc2:"Скримы", crVc3:"Чилл", crVoiceElsewhere:c=>'ты в канале '+c, crMeTease:(n,p)=>'@'+n+' #'+p+'? зоны повезли, не более', crMeTroll:(n,p)=>'@'+n+' #'+p+' ахах, кто тебя в лобби пустил', crResChan:"результаты", crLfgChan:"ищу-напарника", crResNone:"Сегодня пока ничего.", crResW1:(w,ev)=>'gg '+w+', выиграть '+ev+' это мощно', crResW2:(w,ev)=>''+w+' опять выиграл '+ev+'? скучно', crRb1:"посмотрим на таблицу через неделю", crRb2:"лол, справедливо", crRb3:"(промолчать)", crLfg1:(f,ev,min)=>'ищу '+f+' на '+ev+', только '+min+'+', crLfg2:(f,min)=>'ищу '+f+' на неделю, '+min+'+', crFmtD:"дуо", crFmtT:"трио", crFmtQ:"сквад", fnVcChan:"тусовка", crResG1:(n,p,ev)=>'@'+n+' #'+p+' на '+ev+', машина', crResG2:(n,p,ev)=>''+n+' разносит, #'+p, crResG3:(n,p,ev)=>'gg '+n+', #'+p+' очень чисто', crResG4:(n,p,ev)=>'#'+p+' на '+ev+', уважение', crResGt1:(n,p,ev)=>'#'+p+'? зоны затащили', crResGt2:(n,p,ev)=>''+n+' просто повезло на '+ev, crResB1:(n,p,ev)=>'#'+p+' лол', crResB2:(n,p,ev)=>'кто пустил '+n+' на '+ev, crResB3:(n,p,ev)=>'#'+p+' на '+ev+', пора удалять игру', crResB4:(n,p,ev)=>''+n+' снова прыгнул в тилтед и умер первым', crResBk1:(n,p,ev)=>'не повезло '+n+', отыграешься', crResBk2:(n,p,ev)=>'#'+p+' бывает, следующий наш', crResM1:(n,p,ev)=>'#'+p+' на '+ev+', нормально', crResM2:(n,p,ev)=>'неплохой '+ev+', '+n, crResMt1:(n,p,ev)=>'#'+p+', как всегда средне', crResMt2:(n,p,ev)=>''+n+' мид дифф', crGrpOn:n=>'В сети · '+n, crGrpOff:n=>'Не в сети · '+n, crModeScr:"Скримы", crPlayedMode:(h,md,a,b)=>"Сыграли "+md+" с "+h+""+': '+a+'-'+b, crPlayedRk:(h,md)=>"Сыграли "+md+" с "+h+"", crCallTo:"Позвать на турнир", crCupYes:(h,ev,d)=>""+h+" сыграет с тобой "+ev+" ("+d+")", crAwayLater:(h,r)=>""+h+" сыграет с тобой кап дивизиона в регионе "+r+", когда он откроется", crAwayGo:(h,r)=>""+h+" едет с тобой в регион "+r+"", crDlg1:(ev,w,wev,min)=>["скримы в 8?","я в деле","договорились, скину код"], crDlg2:(ev,w,wev,min)=>[w+" опять выиграл "+wev+"","он сейчас просто сильнее","нереально"], crDlg3:(ev,w,wev,min)=>["эта мета сломана","скилл ишью","лол, справедливо"], crDlg4:(ev,w,wev,min)=>["ищу дуо на "+ev+", "+min+"+","а я?","глянь лс"], crDlg5:(ev,w,wev,min)=>["кто в ранкед?","гриндим анрил сегодня","кидай пати"], crDlg6:(ev,w,wev,min)=>["бокс-файты 1v1?","до 5","погнали"], crRS1:"я в деле", crRS2:"после капа", crRS3:"кидай код", crRQ1:"да", crRQ2:"неа", crRQ3:"смотря как", crRQ4:"хороший вопрос", crRH1:"ПОГНАЛИ", crRH2:"W", crRH3:"мощно", crRG1:"реально", crRG2:"лол", crRG3:"факт", crRG4:"правда", crRG5:"так же", crRM1:"что?", crRM2:"здарова", crRM3:"тут", crS1:"всем gg", crS2:"кто на скримы?", crS3:"кто в ранкед?", crS4:ev=>"кто сегодня играет "+ev+"?", crS5:"сезон очень кайфовый", invShown:(n,t)=>"Показано "+n+" из "+t+" ниже твоего рейтинга", ccActtrWaim:"Просмотр про", ccActtrWsur:"Просмотр про", ccActtrWcon:"Просмотр про", ccActtrWclu:"Просмотр про", ccActtrWend:"Просмотр про", wpTitle:"Смотреть про", wpSub:"Учишься у тех, кто сильнее: качается стат, где разрыв больше всего, но не выше его уровня. Половина занятия за 15 энергии.", wpBest:(k,his,mine)=>k+" "+his+" у него, "+mine+" у тебя", wpBtn:"Смотреть", wpBtnTip:"Посмотреть его эфир или ролик", wpNothing:"Нечему учиться", wpNone:"Сегодня в эфире нет никого сильнее тебя", wpDayShut:"Сегодня смотреть некогда: день занят", wpHurt:"С травмой только отдых", wpDid:(h,p,k,by)=>"Сегодня смотрел "+h+" на "+p+": "+k+" +"+by, chTabStore:"Магазин", chSubGear:"Снаряжение", roLater:"Дальше в году", tiltTitle:(a)=>"Тильт · уровень "+a, tiltNote:(a)=>"После плохого вечера: тренировки дают на "+a+"% меньше, форма ниже. Снимают отдых, разговор, войс или игра с друзьями.", rvTitle:"Соперник сезона", rvLast:(a,b)=>"Последний турнир: ты #"+a+", соперник #"+b, rvNone:"В этом сезоне ещё не пересекались", ccNewsRivalW:(a,b,c,d,e)=>"снова выше "+a+": #"+b+" против #"+c+". счёт сезона "+d+":"+e, ccNewsRivalL:(a,b,c,d,e)=>a+" опять выше меня: #"+c+" против #"+b+". счёт сезона "+d+":"+e, wrTitle:(a)=>"Твой "+a, wrRating:(a,b)=>"Рейтинг с "+a+" до "+b, wrRatingNow:(a)=>"Рейтинг "+a, wrEvents:"Сыграно турниров", wrGames:(a,b,c)=>a+" игр · "+b+" побед · "+c+" киллов", wrBest:"Лучшее место", wrOf:(a)=>"из "+a, wrMoney:"Призовые", wrMoneySub:"Заработано на турнирах за год", wrMoneyNone:"Пока без призовых. В следующем году.", wrMate:"Больше всего играл с", wrMateSub:(a)=>a+" турниров вместе", wrTrain:"Тренировок", wrTopStat:(a)=>"Больше всего качал "+a, wrRival:(a)=>"Ты против "+a, wrRivalUp:"В этом году ты впереди", wrRivalDown:"В этом году соперник впереди", wrFans:"Подписчики", wrEnd:"До следующего сезона", wrBtn:"Итоги года", wrBtnDone:"Твой сезон карточками", wrBtnSoFar:"Сезон на сегодня", wrPrev:"Назад", wrNext:"Дальше", wrCopy:"Скопировать итоги", wrCopied:"Скопировано", wrClose:"Закрыть", ccDuoNat:'Флаг', ccVAltH:'Капы дня',awH:n=>'Другие регионы · '+n+' энергии',awLate:n=>'Ночью ещё идут · '+n+' энергии',awCupLine:(r,d)=>'Выезд в '+r+', Дивизион '+d+': переход по отсечке там',awDivUp:(r,d)=>'Переход в '+r+': Дивизион '+d,awDivD:d=>'Д'+d,awWfSeat:r=>'Путёвка в финал недели '+r,awNewsDivUp:(r,d)=>'Выезд: в '+r+' теперь Дивизион '+d,awAfterHome:l=>'После твоего капа: '+l,awHT:'Другие регионы',awLateT:'Ночью ещё идут',awAfterOwn:'после твоего капа',awCost:n=>n+' энергии за выезд',awMs:ms=>ms+' мс',awPenT:p=>'-'+p+' силы',awGo:'Играть',aw_past:'уже прошёл',aw_dev:'нужно устройство',awBusy:'В это время ты играешь на выезде',awBtn:(r,ms,p)=>r+' · '+ms+' мс · -'+p+' силы',aw_done:'сыграно',aw_tired:'нет сил',aw_mate:'нет состава', roFirst:d=>'первый турнир — '+d, roGather:'Собрать состав', roFind:'Найти напарника', roWeek:'Собрать можно за неделю до турнира', roMpFill:n=>(n>1?'Ещё двоих':'Третьего')+' на вечер возьмёте филлом: игра подберёт по вашему рейтингу', roSpot:'Спот', roSpotNone:'не выбран — поставить', roNat:'Сборная', roCaptain:'ты капитан', roNatTrial:'Место в сборной — через отбор страны', ccDuoNatAll:'все', ccDuoReg:'Регион',
 ccDuoWrite:'Написать',
 ccDuoFree:'без дуо',
 ccDuoWith:n=>'дуо с '+n,
@@ -14659,7 +14715,7 @@ chSquad:'Duo', ccDuoFindTitle:'Who to write to',
 ccDuoFindHint:'You can write first to anybody in your region. They answer for themselves, and not everybody says yes.',
 ccDuoSearchPh:'Search by name',
 ccDuoSortBy:'Sort by', ccDuoSortNear:'my level', ccDuoSortOvr:'rating', ccDuoSortPr:'PR', ccDuoPrOf:(pr,rank)=>'PR '+pr+' · #'+rank,
-ccActwarm:'Warm-up', ccGiveWarm:n=>'+'+n+' form tonight', ccWarmDone:'done today', ccKeepEnergy:r=>'keep '+r+' energy for the tournament', ccPreNote:(t,r)=>r ? 'Before '+t+' tonight: train, but keep '+r+' energy for the tournament.' : 'Before '+t+' tonight: you can train and warm up.', ccPreGo:'To the tournament', ccPreBtn:'Train before the tournament', ccRepeatNote:n=>n+' this week already, gives less', dcSrvCrew:r=>r+' scene', crGeneral:'general', crVoice:'voice', crMembers:'members', crIntro:'The people you played with, against or wrote to. Invite them to play, ask them to duo, hang out in voice.', crNobody:'Nobody here yet: play a cup, write to somebody or add a friend.', crStVoice:'in voice', crStGame:'in a game', crStOn:'online', crStOff:'offline', crRelNew:'new', crRelKnown:'knows you', crRelFriend:'friend', crRelClose:'close friend', crDayGone:'the day is over', crAskedToday:'asked today', crNotTourDay:'not on a tournament day', crNo:h=>h+' said not today', crPlayed:(h,a,b)=>'Played with '+h+': '+a+'-'+b, crPlay:'Play together', crAccept:'Join', crDuo:'Ask to duo', crInvitedYou:'invited you to play', crVoiceJoin:'Join voice', crVoiceIn:'You are in voice', crVoiceEmpty:'Nobody in voice right now', crM1:ev=>'anyone playing '+ev+' tonight?', crM2:()=>'scrims later? dm me', crM3:h=>'gg '+h+', that was clean', crM4:()=>'this loot pool is something else', crM5:()=>'who is hopping in voice', crMeGood:(n,p)=>'@'+n+' gg, #'+p+' is huge', crMeBad:(n,p)=>'@'+n+' unlucky, #'+p+'. next one', crMeHi:n=>'@'+n+' you around later?', crR1:'gg, thanks!', crR2:'lol I was lagging', crR3:'(say nothing)', ccActcrew:'Play together', ccActvoice:'Voice', fnNeedFol:n=>"needs "+n+" followers", fnDefName:n=>n+' fan server', fnCreateChan:"fan-server", fnCreateTxt:"Make a server for your fans: they post after your tournaments, ask questions and show what they bought with your creator code.", fnCreateBtn:"Create server", fnNameLabel:"Server name", fnAfterNone:"Quiet here: fans post after your next tournament.", fnTheCup:"the cup", fnAfterChan:"after-the-tournament", fnQChan:"questions", fnCodeChan:"bought-with-code", fnAnswered:n=>"+"+n+" followers", fnCodeNeedFol:n=>"Your code pays from "+n+" followers.", fnCodeNone:n=>"Make your creator code in the Item Shop (from "+n+" followers) and fans will post their buys here.", fnBought:(i,c)=>"just got "+i+" with code "+c+". support the goat", fnBuyNone:c=>"nobody used code "+c+" today", fnMembers:n=>n+" members", fnAfterW1:(p,ev)=>'WE WON '+ev+'!!!', fnAfterW2:(p,ev)=>'#1 in '+ev+', called it', fnAfterW3:(p,ev)=>'that endgame in '+ev+' was insane', fnAfterW4:(p,ev)=>'champion behaviour. gg', fnAfterG1:(p,ev)=>'#'+p+' in '+ev+', so good', fnAfterG2:(p,ev)=>'top '+p+' lets gooo', fnAfterG3:(p,ev)=>''+ev+' was clean, #'+p, fnAfterG4:(p,ev)=>'proud of this one, #'+p, fnAfterM1:(p,ev)=>'#'+p+' in '+ev+', solid', fnAfterM2:(p,ev)=>'decent '+ev+', next one is ours', fnAfterM3:(p,ev)=>'#'+p+', not bad at all', fnAfterM4:(p,ev)=>'mid game but we take it', fnAfterB1:(p,ev)=>'#'+p+' in '+ev+'... unlucky', fnAfterB2:(p,ev)=>'rough '+ev+', still with you', fnAfterB3:(p,ev)=>'that loot was cursed', fnAfterB4:(p,ev)=>'bounce back next week', fnQ1:"what sens do you play on?", fnA11:"8% and never changing it", fnA12:"whatever feels right that day", fnQ2:"how do you practice endgames?", fnA21:"Noble every day", fnA22:"just play more cups lol", fnQ3:"who is your dream duo?", fnA31:"whoever wins with me", fnA32:"not telling yet", fnQ4:"tips for my first cup?", fnA41:"play for placement, not kills", fnA42:"have fun and dont tilt", fnQ5:"what keybinds do you use?", fnA51:"check the build binds in my settings", fnA52:"the same since chapter 1", fnQ6:"will you stream tonight?", fnA61:"after the cup", fnA62:"maybe, watch the socials", fnQ7:"controller or keyboard?", fnA71:"what I play on is the best", fnA72:"both are fine, practice is what matters", fnQ8:"how many hours a day do you play?", fnA81:"6-8 on a normal day", fnA82:"too many", dcCatText:'Text channels', dcCatVoice:'Voice channels', fnChatChan:"chat", fnChatPh:c=>"Message #"+c, fnSend:"Send", fnChatEmpty:"Say something to your fans.", fnRCode1:c=>"using code "+c+" every time", fnRStream1:"see you on stream", fnRStream2:"turning notifications on", fnRQ1:"yes 100%", fnRQ2:"nah", fnRQ3:"depends tbh", fnRQ4:"real question", fnRHype1:"LETS GOOO", fnRHype2:"goat behaviour", fnRHype3:"W", fnRGen1:"W", fnRGen2:"real", fnRGen3:"lol", fnRGen4:"fr", fnRGen5:"we are with you", dcCatServer:"Server", fnInviteChan:"invite-people", fnSettingsChan:"server-settings", fnInviteTxt:(o,m)=>"Find players by nickname. You can invite anyone rated below you ("+o+") and they join right away, up to "+m+" people.", fnFindPh:"Search by nickname", fnFindNone:"Nobody found below your rating", fnInviteBtn:"Invite", fnJoined:h=>h+" joined the server", fnFull:m=>"The server is full: "+m+" invited", fnGuest:"invited", fnKick:"Remove", fnFansN:n=>n+" fans", fnSave:"Save", fnIconT:"Server picture", fnIconFace:"Your card photo", fnIconUp:"Upload a picture", fnAmb1:(ev,it,n,p)=>'gm chat', fnAmb2:(ev,it,n,p)=>'who is watching '+ev+' tonight?', fnAmb3:(ev,it,n,p)=>'just saw '+it+' in the shop, worth it?', fnAmb4:(ev,it,n,p)=>'@'+n+' when is the next stream?', fnAmb5:(ev,it,n,p)=>'this season is so fun', fnAmb6:(ev,it,n,p)=>'anyone want to 1v1 build fight?', fnAmb7:(ev,it,n,p)=>'got my first win today!!', fnAmb8:(ev,it,n,p)=>'what binds do you all use', fnAmb9:(ev,it,n,p)=>'lowkey '+n+' has the best endgames', fnAmb10:(ev,it,n,p)=>'zone wars anyone?', fnAmb11:(ev,it,n,p)=>'#'+p+' last time, we go again', fnAmb12:(ev,it,n,p)=>'brb dinner', fnAmbG1:(ev,it,n,p)=>'scrims later, who is in?', fnAmbG2:(ev,it,n,p)=>'gg everyone yesterday', fnAmbG3:(ev,it,n,p)=>'who is grinding tonight', fnAmbG4:(ev,it,n,p)=>'that last zone was rough', dcKick:'Kick', dcKicked:h=>h+' was kicked from the server', crVc1:"General", crVc2:"Scrims", crVc3:"Chill", crVoiceElsewhere:c=>'you are in '+c, crMeTease:(n,p)=>'@'+n+' #'+p+'? lucky zones ngl', crMeTroll:(n,p)=>'@'+n+' #'+p+' lmao, who let you in the lobby', crResChan:"results", crLfgChan:"looking-for-team", crResNone:"Nothing yet today.", crResW1:(w,ev)=>'gg '+w+', winning '+ev+' is huge', crResW2:(w,ev)=>''+w+' won '+ev+' again? boring', crRb1:"check the board next week", crRb2:"lol fair", crRb3:"(ignore)", crLfg1:(f,ev,min)=>'LF '+f+' for '+ev+', '+min+'+ only', crLfg2:(f,min)=>'LF '+f+' for the week, '+min+'+', crFmtD:"duo", crFmtT:"trio", crFmtQ:"squad", fnVcChan:"hangout", crResG1:(n,p,ev)=>'@'+n+' #'+p+' in '+ev+', cracked', crResG2:(n,p,ev)=>''+n+' going crazy, #'+p, crResG3:(n,p,ev)=>'gg '+n+', #'+p+' is so clean', crResG4:(n,p,ev)=>'#'+p+' in '+ev+', respect', crResGt1:(n,p,ev)=>'#'+p+'? the zones carried', crResGt2:(n,p,ev)=>''+n+' got lucky in '+ev+' fr', crResB1:(n,p,ev)=>'#'+p+' lol', crResB2:(n,p,ev)=>'who let '+n+' play '+ev, crResB3:(n,p,ev)=>'#'+p+' in '+ev+', time to uninstall', crResB4:(n,p,ev)=>''+n+' dropped tilted and died first again', crResBk1:(n,p,ev)=>'unlucky '+n+', you will bounce back', crResBk2:(n,p,ev)=>'#'+p+' happens, next one', crResM1:(n,p,ev)=>'#'+p+' in '+ev+', solid', crResM2:(n,p,ev)=>'decent '+ev+' '+n, crResMt1:(n,p,ev)=>'#'+p+', mid as always', crResMt2:(n,p,ev)=>''+n+' mid diff', crGrpOn:n=>'Online · '+n, crGrpOff:n=>'Offline · '+n, crModeScr:"Scrims", crPlayedMode:(h,md,a,b)=>"Played "+md+" with "+h+""+': '+a+'-'+b, crPlayedRk:(h,md)=>"Played "+md+" with "+h+"", crCallTo:"Call to a tournament", crCupYes:(h,ev,d)=>""+h+" plays "+ev+" with you ("+d+")", crAwayLater:(h,r)=>""+h+" will play the "+r+" division cup with you once it opens", crAwayGo:(h,r)=>""+h+" goes with you to "+r+"", crDlg1:(ev,w,wev,min)=>["scrims at 8?","im in","bet, I will send the code"], crDlg2:(ev,w,wev,min)=>[w+" won "+wev+" again","he is just better rn","unreal"], crDlg3:(ev,w,wev,min)=>["this meta is broken","skill issue","lol fair"], crDlg4:(ev,w,wev,min)=>["LF duo for "+ev+", "+min+"+","what about me","check dms"], crDlg5:(ev,w,wev,min)=>["anyone ranked?","unreal grind tonight","send party"], crDlg6:(ev,w,wev,min)=>["box fights 1v1?","first to 5","you are on"], crRS1:"im in", crRS2:"after my cup", crRS3:"send the code", crRQ1:"yes", crRQ2:"nah", crRQ3:"depends", crRQ4:"good question", crRH1:"LETS GO", crRH2:"W", crRH3:"huge", crRG1:"real", crRG2:"lol", crRG3:"fr", crRG4:"true", crRG5:"same", crRM1:"what?", crRM2:"sup", crRM3:"here", crS1:"gg everyone", crS2:"anyone up for scrims?", crS3:"who wants to play ranked?", crS4:ev=>"who is playing "+ev+" today?", crS5:"this season is so fun", invShown:(n,t)=>"Showing "+n+" of "+t+" below your rating", ccActtrWaim:"Watching a pro", ccActtrWsur:"Watching a pro", ccActtrWcon:"Watching a pro", ccActtrWclu:"Watching a pro", ccActtrWend:"Watching a pro", wpTitle:"Watch the pros", wpSub:"Learn from players stronger than you: the stat where the gap is biggest goes up, never past their level. Half a session for 15 energy.", wpBest:(k,his,mine)=>k+" "+his+" for them, "+mine+" for you", wpBtn:"Watch", wpBtnTip:"Watch their stream or video", wpNothing:"Nothing to learn", wpNone:"Nobody stronger than you is live today", wpDayShut:"No time to watch today: the day is taken", wpHurt:"Injured: rest only", wpDid:(h,p,k,by)=>"Today you watched "+h+" on "+p+": "+k+" +"+by, ccDuoNat:'Flag', ccVAltH:'Cups today',awH:n=>'Other regions · '+n+' energy',awLate:n=>'Still on tonight · '+n+' energy',awCupLine:(r,d)=>'Away in '+r+', Division '+d+': promotion by its cut there',awDivUp:(r,d)=>'Promoted in '+r+': Division '+d,awDivD:d=>'D'+d,awNewsDivUp:(r,d)=>'Away: now Division '+d+' in '+r,awWfSeat:r=>'Weekly Final seat in '+r,awAfterHome:l=>'After your own cup: '+l,awHT:'Other regions',awLateT:'Still on tonight',awAfterOwn:'after your own cup',awCost:n=>n+' energy a trip',awMs:ms=>ms+' ms',awPenT:p=>'-'+p+' power',awGo:'Play',aw_past:'already over',aw_dev:'needs a device',awBusy:'You are playing away at that time',awBtn:(r,ms,p)=>r+' · '+ms+' ms · -'+p+' power',aw_done:'played',aw_tired:'too tired',aw_mate:'no roster', roFirst:d=>'first event — '+d, roGather:'Build roster', roFind:'Find a partner', roWeek:'You can build it a week before', roMpFill:n=>(n>1?'Two more':'The third')+' will be a fill for the night, picked near your rating', roSpot:'Spot', roSpotNone:'not set — pick one', roNat:'National team', roCaptain:'you are captain', roNatTrial:'Your seat comes through the country trial', ccDuoNatAll:'all', ccDuoReg:'Region',
+ccActwarm:'Warm-up', ccGiveWarm:n=>'+'+n+' form tonight', ccWarmDone:'done today', ccKeepEnergy:r=>'keep '+r+' energy for the tournament', ccPreNote:(t,r)=>r ? 'Before '+t+' tonight: train, but keep '+r+' energy for the tournament.' : 'Before '+t+' tonight: you can train and warm up.', ccPreGo:'To the tournament', ccPreBtn:'Train before the tournament', ccRepeatNote:n=>n+' this week already, gives less', dcSrvCrew:r=>r+' scene', crGeneral:'general', crVoice:'voice', crMembers:'members', crIntro:'The people you played with, against or wrote to. Invite them to play, ask them to duo, hang out in voice.', crNobody:'Nobody here yet: play a cup, write to somebody or add a friend.', crStVoice:'in voice', crStGame:'in a game', crStOn:'online', crStOff:'offline', crRelNew:'new', crRelKnown:'knows you', crRelFriend:'friend', crRelClose:'close friend', crDayGone:'the day is over', crAskedToday:'asked today', crNotTourDay:'not on a tournament day', crNo:h=>h+' said not today', crPlayed:(h,a,b)=>'Played with '+h+': '+a+'-'+b, crPlay:'Play together', crAccept:'Join', crDuo:'Ask to duo', crInvitedYou:'invited you to play', crVoiceJoin:'Join voice', crVoiceIn:'You are in voice', crVoiceEmpty:'Nobody in voice right now', crM1:ev=>'anyone playing '+ev+' tonight?', crM2:()=>'scrims later? dm me', crM3:h=>'gg '+h+', that was clean', crM4:()=>'this loot pool is something else', crM5:()=>'who is hopping in voice', crMeGood:(n,p)=>'@'+n+' gg, #'+p+' is huge', crMeBad:(n,p)=>'@'+n+' unlucky, #'+p+'. next one', crMeHi:n=>'@'+n+' you around later?', crR1:'gg, thanks!', crR2:'lol I was lagging', crR3:'(say nothing)', ccActcrew:'Play together', ccActvoice:'Voice', fnNeedFol:n=>"needs "+n+" followers", fnDefName:n=>n+' fan server', fnCreateChan:"fan-server", fnCreateTxt:"Make a server for your fans: they post after your tournaments, ask questions and show what they bought with your creator code.", fnCreateBtn:"Create server", fnNameLabel:"Server name", fnAfterNone:"Quiet here: fans post after your next tournament.", fnTheCup:"the cup", fnAfterChan:"after-the-tournament", fnQChan:"questions", fnCodeChan:"bought-with-code", fnAnswered:n=>"+"+n+" followers", fnCodeNeedFol:n=>"Your code pays from "+n+" followers.", fnCodeNone:n=>"Make your creator code in the Item Shop (from "+n+" followers) and fans will post their buys here.", fnBought:(i,c)=>"just got "+i+" with code "+c+". support the goat", fnBuyNone:c=>"nobody used code "+c+" today", fnMembers:n=>n+" members", fnAfterW1:(p,ev)=>'WE WON '+ev+'!!!', fnAfterW2:(p,ev)=>'#1 in '+ev+', called it', fnAfterW3:(p,ev)=>'that endgame in '+ev+' was insane', fnAfterW4:(p,ev)=>'champion behaviour. gg', fnAfterG1:(p,ev)=>'#'+p+' in '+ev+', so good', fnAfterG2:(p,ev)=>'top '+p+' lets gooo', fnAfterG3:(p,ev)=>''+ev+' was clean, #'+p, fnAfterG4:(p,ev)=>'proud of this one, #'+p, fnAfterM1:(p,ev)=>'#'+p+' in '+ev+', solid', fnAfterM2:(p,ev)=>'decent '+ev+', next one is ours', fnAfterM3:(p,ev)=>'#'+p+', not bad at all', fnAfterM4:(p,ev)=>'mid game but we take it', fnAfterB1:(p,ev)=>'#'+p+' in '+ev+'... unlucky', fnAfterB2:(p,ev)=>'rough '+ev+', still with you', fnAfterB3:(p,ev)=>'that loot was cursed', fnAfterB4:(p,ev)=>'bounce back next week', fnQ1:"what sens do you play on?", fnA11:"8% and never changing it", fnA12:"whatever feels right that day", fnQ2:"how do you practice endgames?", fnA21:"Noble every day", fnA22:"just play more cups lol", fnQ3:"who is your dream duo?", fnA31:"whoever wins with me", fnA32:"not telling yet", fnQ4:"tips for my first cup?", fnA41:"play for placement, not kills", fnA42:"have fun and dont tilt", fnQ5:"what keybinds do you use?", fnA51:"check the build binds in my settings", fnA52:"the same since chapter 1", fnQ6:"will you stream tonight?", fnA61:"after the cup", fnA62:"maybe, watch the socials", fnQ7:"controller or keyboard?", fnA71:"what I play on is the best", fnA72:"both are fine, practice is what matters", fnQ8:"how many hours a day do you play?", fnA81:"6-8 on a normal day", fnA82:"too many", dcCatText:'Text channels', dcCatVoice:'Voice channels', fnChatChan:"chat", fnChatPh:c=>"Message #"+c, fnSend:"Send", fnChatEmpty:"Say something to your fans.", fnRCode1:c=>"using code "+c+" every time", fnRStream1:"see you on stream", fnRStream2:"turning notifications on", fnRQ1:"yes 100%", fnRQ2:"nah", fnRQ3:"depends tbh", fnRQ4:"real question", fnRHype1:"LETS GOOO", fnRHype2:"goat behaviour", fnRHype3:"W", fnRGen1:"W", fnRGen2:"real", fnRGen3:"lol", fnRGen4:"fr", fnRGen5:"we are with you", dcCatServer:"Server", fnInviteChan:"invite-people", fnSettingsChan:"server-settings", fnInviteTxt:(o,m)=>"Find players by nickname. You can invite anyone rated below you ("+o+") and they join right away, up to "+m+" people.", fnFindPh:"Search by nickname", fnFindNone:"Nobody found below your rating", fnInviteBtn:"Invite", fnJoined:h=>h+" joined the server", fnFull:m=>"The server is full: "+m+" invited", fnGuest:"invited", fnKick:"Remove", fnFansN:n=>n+" fans", fnSave:"Save", fnIconT:"Server picture", fnIconFace:"Your card photo", fnIconUp:"Upload a picture", fnAmb1:(ev,it,n,p)=>'gm chat', fnAmb2:(ev,it,n,p)=>'who is watching '+ev+' tonight?', fnAmb3:(ev,it,n,p)=>'just saw '+it+' in the shop, worth it?', fnAmb4:(ev,it,n,p)=>'@'+n+' when is the next stream?', fnAmb5:(ev,it,n,p)=>'this season is so fun', fnAmb6:(ev,it,n,p)=>'anyone want to 1v1 build fight?', fnAmb7:(ev,it,n,p)=>'got my first win today!!', fnAmb8:(ev,it,n,p)=>'what binds do you all use', fnAmb9:(ev,it,n,p)=>'lowkey '+n+' has the best endgames', fnAmb10:(ev,it,n,p)=>'zone wars anyone?', fnAmb11:(ev,it,n,p)=>'#'+p+' last time, we go again', fnAmb12:(ev,it,n,p)=>'brb dinner', fnAmbG1:(ev,it,n,p)=>'scrims later, who is in?', fnAmbG2:(ev,it,n,p)=>'gg everyone yesterday', fnAmbG3:(ev,it,n,p)=>'who is grinding tonight', fnAmbG4:(ev,it,n,p)=>'that last zone was rough', dcKick:'Kick', dcKicked:h=>h+' was kicked from the server', crVc1:"General", crVc2:"Scrims", crVc3:"Chill", crVoiceElsewhere:c=>'you are in '+c, crMeTease:(n,p)=>'@'+n+' #'+p+'? lucky zones ngl', crMeTroll:(n,p)=>'@'+n+' #'+p+' lmao, who let you in the lobby', crResChan:"results", crLfgChan:"looking-for-team", crResNone:"Nothing yet today.", crResW1:(w,ev)=>'gg '+w+', winning '+ev+' is huge', crResW2:(w,ev)=>''+w+' won '+ev+' again? boring', crRb1:"check the board next week", crRb2:"lol fair", crRb3:"(ignore)", crLfg1:(f,ev,min)=>'LF '+f+' for '+ev+', '+min+'+ only', crLfg2:(f,min)=>'LF '+f+' for the week, '+min+'+', crFmtD:"duo", crFmtT:"trio", crFmtQ:"squad", fnVcChan:"hangout", crResG1:(n,p,ev)=>'@'+n+' #'+p+' in '+ev+', cracked', crResG2:(n,p,ev)=>''+n+' going crazy, #'+p, crResG3:(n,p,ev)=>'gg '+n+', #'+p+' is so clean', crResG4:(n,p,ev)=>'#'+p+' in '+ev+', respect', crResGt1:(n,p,ev)=>'#'+p+'? the zones carried', crResGt2:(n,p,ev)=>''+n+' got lucky in '+ev+' fr', crResB1:(n,p,ev)=>'#'+p+' lol', crResB2:(n,p,ev)=>'who let '+n+' play '+ev, crResB3:(n,p,ev)=>'#'+p+' in '+ev+', time to uninstall', crResB4:(n,p,ev)=>''+n+' dropped tilted and died first again', crResBk1:(n,p,ev)=>'unlucky '+n+', you will bounce back', crResBk2:(n,p,ev)=>'#'+p+' happens, next one', crResM1:(n,p,ev)=>'#'+p+' in '+ev+', solid', crResM2:(n,p,ev)=>'decent '+ev+' '+n, crResMt1:(n,p,ev)=>'#'+p+', mid as always', crResMt2:(n,p,ev)=>''+n+' mid diff', crGrpOn:n=>'Online · '+n, crGrpOff:n=>'Offline · '+n, crModeScr:"Scrims", crPlayedMode:(h,md,a,b)=>"Played "+md+" with "+h+""+': '+a+'-'+b, crPlayedRk:(h,md)=>"Played "+md+" with "+h+"", crCallTo:"Call to a tournament", crCupYes:(h,ev,d)=>""+h+" plays "+ev+" with you ("+d+")", crAwayLater:(h,r)=>""+h+" will play the "+r+" division cup with you once it opens", crAwayGo:(h,r)=>""+h+" goes with you to "+r+"", crDlg1:(ev,w,wev,min)=>["scrims at 8?","im in","bet, I will send the code"], crDlg2:(ev,w,wev,min)=>[w+" won "+wev+" again","he is just better rn","unreal"], crDlg3:(ev,w,wev,min)=>["this meta is broken","skill issue","lol fair"], crDlg4:(ev,w,wev,min)=>["LF duo for "+ev+", "+min+"+","what about me","check dms"], crDlg5:(ev,w,wev,min)=>["anyone ranked?","unreal grind tonight","send party"], crDlg6:(ev,w,wev,min)=>["box fights 1v1?","first to 5","you are on"], crRS1:"im in", crRS2:"after my cup", crRS3:"send the code", crRQ1:"yes", crRQ2:"nah", crRQ3:"depends", crRQ4:"good question", crRH1:"LETS GO", crRH2:"W", crRH3:"huge", crRG1:"real", crRG2:"lol", crRG3:"fr", crRG4:"true", crRG5:"same", crRM1:"what?", crRM2:"sup", crRM3:"here", crS1:"gg everyone", crS2:"anyone up for scrims?", crS3:"who wants to play ranked?", crS4:ev=>"who is playing "+ev+" today?", crS5:"this season is so fun", invShown:(n,t)=>"Showing "+n+" of "+t+" below your rating", ccActtrWaim:"Watching a pro", ccActtrWsur:"Watching a pro", ccActtrWcon:"Watching a pro", ccActtrWclu:"Watching a pro", ccActtrWend:"Watching a pro", wpTitle:"Watch the pros", wpSub:"Learn from players stronger than you: the stat where the gap is biggest goes up, never past their level. Half a session for 15 energy.", wpBest:(k,his,mine)=>k+" "+his+" for them, "+mine+" for you", wpBtn:"Watch", wpBtnTip:"Watch their stream or video", wpNothing:"Nothing to learn", wpNone:"Nobody stronger than you is live today", wpDayShut:"No time to watch today: the day is taken", wpHurt:"Injured: rest only", wpDid:(h,p,k,by)=>"Today you watched "+h+" on "+p+": "+k+" +"+by, chTabStore:"Store", chSubGear:"Gear", roLater:"Later this year", tiltTitle:(a)=>"Tilted · level "+a, tiltNote:(a)=>"After a bad night: training gives "+a+"% less, form is down. Rest, a talk, voice chat or playing with friends clears it.", rvTitle:"Season rival", rvLast:(a,b)=>"Last event: you #"+a+", rival #"+b, rvNone:"Not met yet this season", ccNewsRivalW:(a,b,c,d,e)=>"finished above "+a+" again: #"+b+" vs #"+c+". season score "+d+":"+e, ccNewsRivalL:(a,b,c,d,e)=>a+" finished above me: #"+c+" vs #"+b+". season score "+d+":"+e, wrTitle:(a)=>"Your "+a, wrRating:(a,b)=>"Rating "+a+" to "+b, wrRatingNow:(a)=>"Rating "+a, wrEvents:"Tournaments played", wrGames:(a,b,c)=>a+" games · "+b+" Victory Royales · "+c+" eliminations", wrBest:"Best finish", wrOf:(a)=>"of "+a, wrMoney:"Prize money", wrMoneySub:"Earned in tournaments this year", wrMoneyNone:"No prize money yet. Next year.", wrMate:"Most games together", wrMateSub:(a)=>a+" tournaments side by side", wrTrain:"Training sessions", wrTopStat:(a)=>"Most trained: "+a, wrRival:(a)=>"You vs "+a, wrRivalUp:"You came out ahead this year", wrRivalDown:"They had the edge this year", wrFans:"Followers", wrEnd:"See you next season", wrBtn:"Year in review", wrBtnDone:"Your season in cards", wrBtnSoFar:"The season so far", wrPrev:"Back", wrNext:"Next", wrCopy:"Copy summary", wrCopied:"Copied", wrClose:"Close", ccDuoNat:'Flag', ccVAltH:'Cups today',awH:n=>'Other regions · '+n+' energy',awLate:n=>'Still on tonight · '+n+' energy',awCupLine:(r,d)=>'Away in '+r+', Division '+d+': promotion by its cut there',awDivUp:(r,d)=>'Promoted in '+r+': Division '+d,awDivD:d=>'D'+d,awNewsDivUp:(r,d)=>'Away: now Division '+d+' in '+r,awWfSeat:r=>'Weekly Final seat in '+r,awAfterHome:l=>'After your own cup: '+l,awHT:'Other regions',awLateT:'Still on tonight',awAfterOwn:'after your own cup',awCost:n=>n+' energy a trip',awMs:ms=>ms+' ms',awPenT:p=>'-'+p+' power',awGo:'Play',aw_past:'already over',aw_dev:'needs a device',awBusy:'You are playing away at that time',awBtn:(r,ms,p)=>r+' · '+ms+' ms · -'+p+' power',aw_done:'played',aw_tired:'too tired',aw_mate:'no roster', roFirst:d=>'first event — '+d, roGather:'Build roster', roFind:'Find a partner', roWeek:'You can build it a week before', roMpFill:n=>(n>1?'Two more':'The third')+' will be a fill for the night, picked near your rating', roSpot:'Spot', roSpotNone:'not set — pick one', roNat:'National team', roCaptain:'you are captain', roNatTrial:'Your seat comes through the country trial', ccDuoNatAll:'all', ccDuoReg:'Region',
 ccDuoWrite:'Write',
 ccDuoFree:'no duo',
 ccDuoWith:n=>'duo with '+n,
@@ -25680,7 +25736,25 @@ Object.assign(I18N.it=I18N.it||{},
 /* Дозаливка «pt» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
 Object.assign(I18N.pt=I18N.pt||{},
 ({ccActtrWaim:"Assistir um pro", ccActtrWsur:"Assistir um pro", ccActtrWcon:"Assistir um pro", ccActtrWclu:"Assistir um pro", ccActtrWend:"Assistir um pro", wpTitle:"Assistir os pros", wpSub:"Aprenda com quem é mais forte: sobe o atributo com a maior diferença, nunca acima do nível dele. Meia sessão por 15 de energia.", wpBest:(k,his,mine)=>k+" "+his+" dele, "+mine+" seu", wpBtn:"Assistir", wpBtnTip:"Assistir a live ou o vídeo dele", wpNothing:"Nada a aprender", wpNone:"Hoje ninguém mais forte que você está ao vivo", wpDayShut:"Sem tempo para assistir hoje: o dia está ocupado", wpHurt:"Lesionado: só descanso", wpDid:(h,p,k,by)=>"Hoje você assistiu "+h+" no "+p+": "+k+" +"+by}));
-let CC_I18N_V={de:'42b1c38d', es:'31f1cac6'};   // ==== CC_I18N_V (tools/build-i18n.js) ====
+/* Дозаливка «fr» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
+Object.assign(I18N.fr=I18N.fr||{},
+({chTabStore:"Boutique", chSubGear:"Matériel", roLater:"Plus tard cette année"}));
+/* Дозаливка «it» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
+Object.assign(I18N.it=I18N.it||{},
+({chTabStore:"Negozio", chSubGear:"Attrezzatura", roLater:"Più avanti quest’anno"}));
+/* Дозаливка «pt» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
+Object.assign(I18N.pt=I18N.pt||{},
+({chTabStore:"Loja", chSubGear:"Equipamento", roLater:"Mais tarde no ano"}));
+/* Дозаливка «fr» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
+Object.assign(I18N.fr=I18N.fr||{},
+({tiltTitle:(a)=>"Tilt · niveau "+a, tiltNote:(a)=>"Après une mauvaise soirée : l’entraînement rapporte "+a+"% de moins, la forme baisse. Le repos, une discussion, le vocal ou jouer avec des amis l’effacent.", rvTitle:"Rival de la saison", rvLast:(a,b)=>"Dernier tournoi : toi #"+a+", rival #"+b, rvNone:"Pas encore croisés cette saison", ccNewsRivalW:(a,b,c,d,e)=>"encore devant "+a+" : #"+b+" contre #"+c+". score de la saison "+d+":"+e, ccNewsRivalL:(a,b,c,d,e)=>a+" encore devant moi : #"+c+" contre #"+b+". score de la saison "+d+":"+e, wrTitle:(a)=>"Ton "+a, wrRating:(a,b)=>"Note de "+a+" à "+b, wrRatingNow:(a)=>"Note "+a, wrEvents:"Tournois joués", wrGames:(a,b,c)=>a+" parties · "+b+" Top 1 · "+c+" éliminations", wrBest:"Meilleur classement", wrOf:(a)=>"sur "+a, wrMoney:"Gains", wrMoneySub:"Gagné en tournoi cette année", wrMoneyNone:"Pas encore de gains. L’an prochain.", wrMate:"Le plus de parties avec", wrMateSub:(a)=>a+" tournois ensemble", wrTrain:"Séances d’entraînement", wrTopStat:(a)=>"Le plus travaillé : "+a, wrRival:(a)=>"Toi contre "+a, wrRivalUp:"Tu es devant cette année", wrRivalDown:"Ton rival est devant cette année", wrFans:"Abonnés", wrEnd:"À la saison prochaine", wrBtn:"Bilan de l’année", wrBtnDone:"Ta saison en cartes", wrBtnSoFar:"La saison jusqu’ici", wrPrev:"Retour", wrNext:"Suivant", wrCopy:"Copier le bilan", wrCopied:"Copié", wrClose:"Fermer"}));
+/* Дозаливка «it» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
+Object.assign(I18N.it=I18N.it||{},
+({tiltTitle:(a)=>"Tilt · livello "+a, tiltNote:(a)=>"Dopo una brutta serata: l’allenamento rende il "+a+"% in meno, la forma cala. Riposo, una chiacchierata, la vocale o giocare con gli amici lo tolgono.", rvTitle:"Rivale della stagione", rvLast:(a,b)=>"Ultimo torneo: tu #"+a+", rivale #"+b, rvNone:"Non vi siete ancora incrociati", ccNewsRivalW:(a,b,c,d,e)=>"di nuovo sopra "+a+": #"+b+" contro #"+c+". punteggio stagione "+d+":"+e, ccNewsRivalL:(a,b,c,d,e)=>a+" di nuovo sopra di me: #"+c+" contro #"+b+". punteggio stagione "+d+":"+e, wrTitle:(a)=>"Il tuo "+a, wrRating:(a,b)=>"Valutazione da "+a+" a "+b, wrRatingNow:(a)=>"Valutazione "+a, wrEvents:"Tornei giocati", wrGames:(a,b,c)=>a+" partite · "+b+" vittorie · "+c+" eliminazioni", wrBest:"Miglior piazzamento", wrOf:(a)=>"su "+a, wrMoney:"Montepremi", wrMoneySub:"Vinto nei tornei quest’anno", wrMoneyNone:"Ancora nessun premio. L’anno prossimo.", wrMate:"Più partite con", wrMateSub:(a)=>a+" tornei insieme", wrTrain:"Allenamenti", wrTopStat:(a)=>"Più allenato: "+a, wrRival:(a)=>"Tu contro "+a, wrRivalUp:"Quest’anno sei avanti tu", wrRivalDown:"Quest’anno è avanti il rivale", wrFans:"Follower", wrEnd:"Alla prossima stagione", wrBtn:"Il tuo anno", wrBtnDone:"La stagione in carte", wrBtnSoFar:"La stagione finora", wrPrev:"Indietro", wrNext:"Avanti", wrCopy:"Copia il riepilogo", wrCopied:"Copiato", wrClose:"Chiudi"}));
+/* Дозаливка «pt» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
+Object.assign(I18N.pt=I18N.pt||{},
+({tiltTitle:(a)=>"Tilt · nível "+a, tiltNote:(a)=>"Depois de uma noite ruim: o treino rende "+a+"% menos e a forma cai. Descanso, uma conversa, call de voz ou jogar com amigos tiram isso.", rvTitle:"Rival da temporada", rvLast:(a,b)=>"Último torneio: você #"+a+", rival #"+b, rvNone:"Ainda não se cruzaram nesta temporada", ccNewsRivalW:(a,b,c,d,e)=>"de novo acima de "+a+": #"+b+" contra #"+c+". placar da temporada "+d+":"+e, ccNewsRivalL:(a,b,c,d,e)=>a+" de novo acima de mim: #"+c+" contra #"+b+". placar da temporada "+d+":"+e, wrTitle:(a)=>"Seu "+a, wrRating:(a,b)=>"Nota de "+a+" para "+b, wrRatingNow:(a)=>"Nota "+a, wrEvents:"Torneios jogados", wrGames:(a,b,c)=>a+" partidas · "+b+" vitórias · "+c+" eliminações", wrBest:"Melhor colocação", wrOf:(a)=>"de "+a, wrMoney:"Premiação", wrMoneySub:"Ganho em torneios neste ano", wrMoneyNone:"Sem premiação ainda. Ano que vem.", wrMate:"Mais partidas com", wrMateSub:(a)=>a+" torneios juntos", wrTrain:"Treinos", wrTopStat:(a)=>"Mais treinado: "+a, wrRival:(a)=>"Você contra "+a, wrRivalUp:"Você ficou na frente neste ano", wrRivalDown:"O rival ficou na frente neste ano", wrFans:"Seguidores", wrEnd:"Até a próxima temporada", wrBtn:"Resumo do ano", wrBtnDone:"Sua temporada em cartas", wrBtnSoFar:"A temporada até agora", wrPrev:"Voltar", wrNext:"Próximo", wrCopy:"Copiar resumo", wrCopied:"Copiado", wrClose:"Fechar"}));
+let CC_I18N_V={de:'ac88b7c6', es:'f4a4ca5d'};   // ==== CC_I18N_V (tools/build-i18n.js) ====
 /*@@PART js/lang-and-cards.js@@*/
 // Версия fn-shop.js (магазин Fortnite по дням, tools/build-fn-shop.js) — для ?v= ленивой загрузки.
 let CC_FN_SHOP_V='dc62e7dc';
@@ -123586,7 +123660,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='56e20615';
+const CC_BUILD='34ab8ed6';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -127967,6 +128041,24 @@ function careerSlotDrop(n){
 }
 
 let CH_TAB='centre';
+/* Группы вкладок (22.11): шесть главных в полосе, остальные подвкладками сверху тела (ccSubTabsHTML). Первая в списке -
+   главная, её кнопка стоит в полосе. Ключи вкладок не менялись: сейвы и переходы careerTab('shop') и т.д. работают. */
+const CC_TAB_GROUPS={calendar:['calendar', 'table'], items:['items', 'shop', 'bp', 'locker'], me:['me', 'log', 'hist']};
+const CC_SUB_KEY={calendar:'chTabCalendar', table:'chTabBoards', items:'chTabItems', shop:'chTabShop', bp:'chTabBp', locker:'chTabLocker', me:'chTabMe', log:'chTabLog', hist:'chTabHist'};
+function ccTabGroupOf(t){ for(const g in CC_TAB_GROUPS) if(CC_TAB_GROUPS[g].indexOf(t)>=0) return g; return t; }
+// Не ccSubTabsHTML: так зовутся подвкладки «Таблиц» (PR/статистика/игроки) ниже.
+function ccGrpTabsHTML(t){
+  const g=CC_TAB_GROUPS[ccTabGroupOf(t)]; if(!g) return '';
+  const T=L(), cur=({stats:'table', world:'table'}[t]||t);
+  return '<div class="ch-grp-tabs" role="tablist">'+g.map(k=>'<button type="button" role="tab" class="ch-grp-tab'+(k===cur ? ' on' : '')+'" aria-selected="'+(k===cur)+'" onclick="careerTab(\''+k+'\')">'+
+    esc(k==='shop' ? T.chSubGear : T[CC_SUB_KEY[k]]||k)+(k==='shop' && careerShopNew().length ? '<i class="ch-dot" style="display:inline-block"></i>' : '')+'</button>').join('')+'</div>';
+}
+// Полоса подвкладок группы - первой строкой тела, после каждой отрисовки (в ccTabsSide).
+function ccGrpTabsPut(){
+  const b=document.getElementById('chBody'); if(!b) return;
+  const old=b.querySelector(':scope > .ch-grp-tabs'); if(old) old.remove();
+  const h=ccGrpTabsHTML(CH_TAB); if(h) b.insertAdjacentHTML('afterbegin', h);
+}
 function careerTab(t){
   /* Ушёл с календаря — он забывает, куда ты его листал. Отзыв:
      «когда закрываешь календарь, пусть всегда перемещает на то место, где ты
@@ -128194,6 +128286,7 @@ function ccTabsSide(){
   let note=''; try{ note=ccMediaQuickHTML(); }catch(e){}
   // Кошелёк здесь снят (Notion «20.10»: «одна и та же информация» — баланс и V-Bucks уже в верхней панели, там же выплаты).
   s.innerHTML=(note ? '<div class="cc-lb-note">'+note+'</div>' : '');
+  try{ ccGrpTabsPut(); }catch(e){}
 }
 /* ЦВЕТ ХАБА — ПО СЕЗОНУ (19.10, его «мб дизайн хаба под каждый сезон под их цвета»). Оттенок берётся из картинки
    лобби сезона (ccLobbyBg): средний цвет по насыщенным пикселям, вектором по кругу оттенков. Из него — фон панели,
@@ -128640,10 +128733,11 @@ function careerRenderHubBody(tab){
       `<span>${esc(nxt.n ? L().lfHdrIn(nxt.n)+' · '+ccHdrDate(nxt.day) : L().lfHdrPlay)}</span>`;
   }
 
-  document.querySelectorAll('#screen-career-hub .ch-tab').forEach(b=>{
-    // Стримы живут внутри «Медиа», статистика — внутри «Таблиц».
-    b.classList.toggle('on', b.dataset.tab===({streams:'social', youtube:'social', discord:'social', stats:'table', world:'table'}[CH_TAB]||CH_TAB));
-  });
+  // Подсвечена главная вкладка группы открытой вкладки (CC_TAB_GROUPS).
+  const onTab=ccTabGroupOf(({stats:'table', world:'table'}[CH_TAB]||CH_TAB));
+  document.querySelectorAll('#screen-career-hub .ch-tab').forEach(b=>{ b.classList.toggle('on', b.dataset.tab===onTab); });
+  const stdot=document.getElementById('chStoreDot');
+  if(stdot) stdot.style.display = careerShopNew().length ? 'inline-block' : 'none';
   // The unread dot is the lobby's own notification mark — it is the only thing
   // on this screen that asks to be clicked.
   // The dot counts both halves of that screen now: a message waiting, and a feed
@@ -128817,6 +128911,9 @@ function ccLobbyHTML(card, btn, next, when, strip, ex){
   const slot=(i)=>{
     const p=party[i], s=' cc-lb-s'+i;
     const ped='<span class="cc-lb-ped'+(i===0 ? ' me' : '')+s+'"></span>';
+    // Пустых мест - сколько мест у состава этого формата: в соло-сезоне «+» не нужен вовсе (22.11).
+    let seats=3; try{ seats=careerMateSeats(); }catch(e){}
+    if(!p && i>seats) return ped;
     if(!p) return ped+'<button class="cc-lb-plus'+s+'" onclick="careerTab(\'me\')" title="'+esc(T.lfRosters)+'">+</button>';
     return ped+'<div class="cc-lb-fig'+(p.me ? ' me' : '')+s+'"'+(p.me ? ' onclick="ccFnLockerOpen(\'o\')"' : '')+'>'+
       '<img class="full" src="'+ccFnFull(p.id)+'" data-id="'+esc(p.id)+'" alt="" loading="lazy" crossorigin="anonymous" onload="ccLbFigCut(this)" onerror="ccFnHeroErr(this)">'+
@@ -128976,7 +129073,7 @@ function ccLobbyPads(lb){
   const stage=lb.querySelector('.cc-lb-stage'); if(!stage) return;
   const els=[...stage.children];
   lb.classList.toggle('cc-lb-painted', !!pad);
-  if(!pad || innerWidth<=700){ els.forEach(e=>{ e.style.left=''; e.style.bottom=''; e.style.height=''; e.style.top=''; }); return; }
+  if(!pad || innerWidth<=700){ els.forEach(e=>{ e.style.left=''; e.style.bottom=''; e.style.height=''; e.style.top=''; }); ccLobbyPlusClip(lb); return; }
   const W=lb.clientWidth, H=lb.clientHeight, k=Math.max(W/1280, H/pad.h), offX=(W-1280*k)/2, offY=H-pad.h*k;
   const sr=stage.getBoundingClientRect(), lr=lb.getBoundingClientRect(), sTop=sr.top-lr.top, sH=sr.height;
   // Низ полосы недель в координатах сцены: на широком окне фон крупнее, фигура по диску растёт и вместе с ником
@@ -128993,6 +129090,14 @@ function ccLobbyPads(lb){
       else if(e.classList.contains('cc-lb-plus')){ e.style.bottom=(sH-cy+dw*0.55)+'px'; }
     });
   });
+  ccLobbyPlusClip(lb);
+}
+// «+» дальнего места на узком ПК заезжал на колонку других регионов справа (22.11): такой прячем.
+function ccLobbyPlusClip(lb){
+  const right=lb.querySelector('.cc-lb-right'), rr=right && right.getBoundingClientRect();
+  lb.querySelectorAll('.cc-lb-stage .cc-lb-plus').forEach(e=>{ e.style.visibility='';
+    if(!rr || !rr.width) return; const r=e.getBoundingClientRect();
+    if(r.right>rr.left && r.left<rr.right && r.bottom>rr.top && r.top<rr.bottom) e.style.visibility='hidden'; });
 }
 /* Notion 21.10 («когда кликаешь что-либо и потом возвращаешься вот такое»): фигуры стояли мимо дисков. Диски
    считались по высоте меню ДО того, как меню вытягивалось под колонку, а фон растягивается по новой высоте — диски
@@ -129280,7 +129385,8 @@ function careerCentreHTML(card, a){
   const galaBtn = cr.seasonOver
     ? `<button class="ch-play ch-gala" onclick="ccGalaOpen()">${L().ccGalaWatch}</button>` : '';
   const btn = cr.seasonOver
-    ? `<button class="ch-play" onclick="if(CAREER.career.seasonOver) careerNewSeason()" title="${esc(L().ccSeasonOverSub)}">${L().ccNewSeason}</button>`+galaBtn+retireBtn
+    ? `<button class="ch-play" onclick="if(CAREER.career.seasonOver) careerNewSeason()" title="${esc(L().ccSeasonOverSub)}">${L().ccNewSeason}</button>`+galaBtn+retireBtn+
+      `<button class="ch-play ch-skipev" onclick="ccWrapOpen()">${esc(L().wrBtn)}</button>`
     /* Командный вечер, который нельзя начать, не предлагает «Пропустить». По одиночному правилу непроходимый вечер
        (разные режимы) превращал «Играть» в «Пропустить», и следующее нажатие скипало турнир. Сам режим «только
        смотрю» матч показывает (tools/sim-shows-probe.js).
@@ -129302,13 +129408,15 @@ function careerCentreHTML(card, a){
        день, нет энергии. См. careerPlayLive. */
     : playable
       ? `<button class="ch-play" onclick="careerPlay()">${L().chPlay}${ccMpReadyTag()}</button>`+
+        /* Вторые кнопки (в эфир, не играть) - одной строкой под «Играть», мельче (22.11: колонка была из пяти кнопок подряд). */
+        '<div class="ch-play-row">'+
         (onToday && !ccMpOn() ? (()=>{ const why=ccStreamCupWhy();
            return `<button class="ch-play ch-live-go"${why?' disabled':''} onclick="careerPlayLive()"
              title="${esc(why||L().ccStreamCupHint(CC_STREAM_CUP.energy, CC_STREAM_POW))}">${
              L().ccStreamCupGo}</button>`+
              /* Цена эфира — строкой под кнопкой, а не только во всплывающей
                 подсказке: отзыв «и это должно быть написано». */
-             `<div class="ch-hint ch-live-hint">${esc(why||L().ccStreamCupHint(CC_STREAM_CUP.energy, CC_STREAM_POW))}</div>`; })() : '')+
+             ''; })() : '')+
         /* Стиль игры у «Играть» снят (его скрин в Notion 8.10: «убрать стиль игры перед капом, он же есть в самом капе»):
            внутри вечера он спрашивается перед каждой игрой на любом турнире (ccStyleAskGame), второй переключатель дублировал. */
         /* «Не играть» — в день турнира (Notion 12.10: «добавите возможность не участвовать в этом турнире? Играть во
@@ -129316,6 +129424,8 @@ function careerCentreHTML(card, a){
            команде и в гонке день двигают вместе — там кнопки нет. */
         (onToday && !ccMpOn() && !(typeof ccRaceLock==='function' && ccRaceLock())
           ? `<button class="ch-play ch-skipev" onclick="careerSkipEventAsk()">${L().chSkipEv}</button>` : '')+
+        '</div>'+
+        (onToday && !ccMpOn() ? `<div class="ch-hint ch-live-hint">${esc(ccStreamCupWhy()||L().ccStreamCupHint(CC_STREAM_CUP.energy, CC_STREAM_POW))}</div>` : '')+
         /* Наём на турнир (ccHireOpen): нанятый — строкой с отменой, иначе кнопка. */
         /* Соло-вечер (Solo Series, FNCS Solos, соло-кап) напарника не берёт — и нанимать некого (его Notion 29.10 «на соло можно нанять»). */
         (onToday && typeof ccHireAllowed==='function' && ccHireAllowed() && careerNeedsMate(next.type)
@@ -129955,6 +130065,9 @@ function careerDuoTileHTML(){
    who is hired by the month. The rival closes it, because he is the only one
    here who does not want anything from you except to finish above you. */
 function careerMeHTML(){
+  return ccWrapBtnHTML()+careerMeHTML0();
+}
+function careerMeHTML0(){
   const card=careerCard(), mates=careerMates(), seats=careerMateSeats();
   /* One card per chair, and an empty chair drawn as an empty chair.
 
@@ -130405,12 +130518,16 @@ function ccRostersStripHTML(lobby){
     }
     return '<span class="ch-ro-spot" onclick="'+go+'"><em>'+esc(T.roSpot)+'</em>'+txt+'</span>';
   };
+  /* Далёкие пустые составы - одной строкой (22.11: в соло-сезоне три блока «пусто» подряд). Блоком остаётся текущий
+     формат, формат с напарником и тот, сбор которого уже открыт (CC_ROSTER_WEEK). */
+  const later=[];
   const blocks=[2,3,4].map(f=>{
     const next=ccFormatNext(f);
     if(f!==cur && !next) return '';
     const mates=cardsOf(f), need=f-1, full=mates.length>=need;
     const days=next ? ccDaysBetween(today, next) : 0;
     const soon=f!==cur && next && days<=CC_ROSTER_WEEK;
+    if(f!==cur && !mates.length && !soon){ later.push(esc(NAME[f])+' <b>'+esc(ccDayLabel(next))+'</b>'); return ''; }
     const who=mates.length ? '<span class="ch-ro-ms">'+mates.map(c=>mateHTML(c, f)).join('')+'</span>' : '<b><i>'+esc(T.lfRosterEmpty)+'</i></b>';
     const when=f===cur ? esc(T.lfRosterNow) : esc(T.roFirst(ccDayLabel(next)));
     const act=(f===cur && !full) ? '<button onclick="ccDuoFindOpen(null)">'+esc(T.roFind)+'</button>'
@@ -130440,6 +130557,9 @@ function ccRostersStripHTML(lobby){
       ? '<div class="ch-ro has-spot'+(f===cur ? ' on' : '')+(soon ? ' soon' : '')+'"><div class="ch-ro-main"><em>'+esc(NAME[f])+' · '+when+'</em>'+who+stats+act+'</div>'+spot+'</div>'
       : '<div class="ch-ro'+(f===cur ? ' on' : '')+(soon ? ' soon' : '')+'"><em>'+esc(NAME[f])+' · '+when+'</em>'+who+spot+act+'</div>';
   }).filter(Boolean);
+  // Соперник сезона - первой строкой составов (ccRivalHTML).
+  { const rvh=ccRivalHTML(); if(rvh) blocks.unshift(rvh); }
+  if(later.length) blocks.push('<div class="ch-ro ch-ro-later"><em>'+esc(T.roLater)+'</em><span>'+later.join('<i>·</i>')+'</span></div>');
   /* И сборная — Кубок наций (его слово 30.09: «и nation кап тоже там пусть будет, сборка состава»).
      Страна, ближайший этап, состав (пустые места капитана — «пусто»), у капитана за неделю до
      квалификации — «Собрать состав» (то же окно выбора, ccNatModalOpen). */
@@ -132346,7 +132466,7 @@ function ccWatchBy(p){
   if(!p.k) return 0;
   const pl=CAREER.player, me=pl.attrs || ccOwnAttrs(), a=ccActById('trW'+p.k); if(!a) return 0;
   const now=pl.ovrExact!=null ? pl.ovrExact : pl.ovr, coach=ccCoach();
-  const by=a.gain[p.k]*careerDayGear()*clamp((careerTrainCap()-now)/CAREER_TAPER, 0, 1)*(coach && coach.keys.indexOf(p.k)>=0 ? 1+coach.train : 1)
+  const by=a.gain[p.k]*ccTrainDayMult()*clamp((careerTrainCap()-now)/CAREER_TAPER, 0, 1)*(coach && coach.keys.indexOf(p.k)>=0 ? 1+coach.train : 1)
     *ccRepeatMult(p.k)*careerDiff().age*ccFocusMult(p.k)*p.mult;
   return Math.max(0, Math.min(by, p.cap-(me[p.k]!=null ? me[p.k] : 50)));
 }
@@ -132436,6 +132556,8 @@ function careerDoAct(id){
   }
   if(act.host) ccHostRun();
   if(act.rest) careerRestore(act.rest);
+  // Тильт снимают отдых, разговор, войс и игра с друзьями (ccTiltAfterNight).
+  if(act.rest || act.talk || act.voice || act.crew) ccTiltClear();
   // The same taper the cup's own growth uses. Without it training ran at full
   // speed right up to the ceiling and every career hit its own in the first
   // season, then stood still for seven more — a mode that is over after a year.
@@ -132451,7 +132573,8 @@ function careerDoAct(id){
   const taper = clamp((careerTrainCap()-now)/CAREER_TAPER, 0, 1);
   // What a day is worth never changes: the store is what runs out, not the
   // value of the work. That is the whole point of folding fatigue into it.
-  const mult=careerDayGear()*taper;
+  // Тильт режет занятие (ccTiltMult); магазин показывает только снаряжение, поэтому не в careerDayGear.
+  const mult=ccTrainDayMult()*taper;
   // Who a scrim is against and how the set went, both decided before the day is
   // spent — see ccScrimFoe and ccScrimSet. A day that is not a scrim gets null
   // for both and reads exactly as it did.
@@ -142249,6 +142372,7 @@ function careerApplyGrowth(place, total, you, field){
   const expected = field.length>1 ? stronger/(field.length-1) : 0.5;
   // Пресс-конференция после заметного вечера и исход обещания (ccPressAfterNight). Не ломает вечер ни при какой ошибке.
   try{ ccPressAfterNight(place, total, expected); }catch(e){ console.error('press', e); }
+  try{ ccTiltAfterNight(place, total, expected); }catch(e){ console.error('tilt', e); }
   try{ ccStaffAfterNight(place, total); }catch(e){ console.error('staff dm', e); }
   try{ ccTechSceneAfterNight(total); }catch(e){}
   const before = pl.ovrExact!=null ? pl.ovrExact : pl.ovr;
@@ -150243,6 +150367,157 @@ function ccMediaQuickHTML(){
     CC_MQ_ICONS[k]+'<span>'+esc(label)+'</span>'+(badge ? '<i>'+(badge>99 ? '99+' : badge)+'</i>' : '')+'</button>';
   return '<div class="cc-mq-row">'+item('social', T.chTabSocial, n)+item('streams', 'Twitch', 0)+item('youtube', 'YouTube', 0)+item('discord', 'Discord', 0)+'</div>';
 }
+
+/* ===== ТИЛЬТ, СОПЕРНИК СЕЗОНА, ИТОГИ ГОДА (22.11, его «делай» на список «что ещё в карьере») ===== */
+
+/* Тильт: вечер намного хуже ожидания (доля обойдённых ниже ожидаемой на CC_TILT_GAP) ставит тильт, второй такой подряд -
+   второй уровень. Сразу минус форма, и пока держится, тренировки дают меньше (ccTrainDayMult). Снимают отдых, разговор,
+   войс и игра с друзьями из Discord (careerDoAct), хороший вечер, или он сам проходит через CC_TILT_DAYS. Числа - решение,
+   не замер. В команде и гонке не ставится: вечер общий, а тильт свой. */
+const CC_TILT_GAP=0.3, CC_TILT_DAYS=3, CC_TILT_FORM=0.3, CC_TILT_TRAIN=0.15;
+function ccTilt(){
+  const t=CAREER && CAREER.career && CAREER.career.tilt;
+  if(!t || !t.lvl) return 0;
+  if(ccDaysBetween(t.day, careerToday())>CC_TILT_DAYS) return 0;
+  return t.lvl;
+}
+function ccTiltMult(){ return 1-CC_TILT_TRAIN*ccTilt(); }
+function ccTrainDayMult(){ return careerDayGear()*ccTiltMult(); }
+function ccTiltAfterNight(place, total, expected){
+  if(!CAREER || !CAREER.career || !(total>=10)) return;
+  if((typeof ccMpOn==='function' && ccMpOn()) || (typeof ccRaceOn==='function' && ccRaceOn())) return;
+  const cr=CAREER.career, beat=1-(place-1)/(total-1);
+  if(beat>=expected){ if(cr.tilt) delete cr.tilt; return; }
+  if(beat>=expected-CC_TILT_GAP) return;
+  const lvl=Math.min(2, ccTilt()+1);
+  cr.tilt={lvl, day:careerToday()};
+  cr.form=clamp((cr.form||0)-CC_TILT_FORM, -CC_FORM_MAX, CC_FORM_MAX);
+}
+function ccTiltClear(){ const cr=CAREER && CAREER.career; if(cr && cr.tilt) delete cr.tilt; }
+function ccTiltNoteHTML(){
+  const lvl=ccTilt(); if(!lvl) return '';
+  return '<div class="cc-tilt"><b>'+esc(L().tiltTitle(lvl))+'</b><span>'+esc(L().tiltNote(Math.round(CC_TILT_TRAIN*lvl*100)))+'</span></div>';
+}
+
+/* Соперник сезона: один игрок твоего региона и уровня (ближайший по рейтингу в ±4, не напарник), выбирается при первом
+   взгляде на сезон и держится до конца года. Каждый вечер, где вы оба в таблице, идёт в счёт (первая таблица дня), а
+   заметный - постом в ленту. Строка счёта - в составах на Центре. */
+const CC_RIVAL_BAND=4;
+function ccRival(){
+  const cr=CAREER && CAREER.career; if(!cr) return null;
+  if(cr.rival && cr.rival.s===cr.season) return cr.rival.h ? cr.rival : null;
+  let pool=[]; try{ pool=(careerRosterNowEU()||[]).slice(); }catch(e){}
+  const me=(CAREER.player.ovrExact!=null ? CAREER.player.ovrExact : CAREER.player.ovr)||0;
+  const mates=new Set((careerMates()||[]).filter(Boolean).map(c=>hKey(c)));
+  const myKey=hKey((CAREER.player.handle||CAREER.player.nick)||'');
+  const ovrOf=p=>(p._ovr!=null ? p._ovr : p.rating)||0;
+  pool=pool.filter(p=>p && p.handle && !mates.has(hKey(p)) && hKey(p)!==myKey && Math.abs(ovrOf(p)-me)<=CC_RIVAL_BAND);
+  if(!pool.length){ cr.rival={s:cr.season, h:null}; return null; }
+  pool.sort((a, b)=>Math.abs(ovrOf(a)-me)-Math.abs(ovrOf(b)-me));
+  const near=pool.slice(0, 5), r=careerRng(ccHashStr('rival|'+cr.season+'|'+myKey))();
+  const p=near[Math.floor(r*near.length)];
+  cr.rival={s:cr.season, h:p.handle, w:0, l:0, last:null};
+  return cr.rival;
+}
+function ccRivalAfterTable(ranked){
+  if(!CAREER || !CAREER.career || !ranked || ranked.length<10) return;
+  if(typeof ccMpOn==='function' && ccMpOn()) return;
+  const rv=ccRival(); if(!rv) return;
+  const day=careerToday(); if(rv.last && rv.last.day===day) return;
+  const k=hKey(rv.h);
+  let me=-1, him=-1;
+  ranked.forEach((t, i)=>{
+    if(t.isYou && me<0) me=i;
+    if(him<0 && (t.squad||[]).some(c=>c && hKey(c)===k)) him=i;
+  });
+  if(me<0 || him<0 || me===him) return;
+  if(me<him) rv.w=(rv.w||0)+1; else rv.l=(rv.l||0)+1;
+  rv.last={day, me:me+1, him:him+1, of:ranked.length};
+  // В ленту - когда разница заметная (десять мест и больше) или это первая встреча.
+  if(Math.abs(me-him)>=10 || (rv.w+rv.l)===1){
+    try{ careerNews(me<him ? 'good' : 'bad', me<him ? 'ccNewsRivalW' : 'ccNewsRivalL', [ccHandle(rv.h), me+1, him+1, rv.w, rv.l]); }catch(e){}
+  }
+}
+function ccRivalHTML(){
+  let rv=null; try{ rv=ccRival(); }catch(e){}
+  if(!rv) return '';
+  const T=L(), last=rv.last;
+  return '<div class="ch-ro ch-ro-rival"><em>'+esc(T.rvTitle)+'</em>'+
+    '<span class="rv-row"><b>'+esc(ccHandle(rv.h))+'</b><i class="rv-score'+((rv.w||0)>(rv.l||0) ? ' up' : (rv.w||0)<(rv.l||0) ? ' down' : '')+'">'+(rv.w||0)+' : '+(rv.l||0)+'</i></span>'+
+    '<small>'+esc(last ? T.rvLast(last.me, last.him) : T.rvNone)+'</small></div>';
+}
+
+/* Итоги года: карточки по одной, как Wrapped (кнопка «Итоги года» на «Карьере» и в конце сезона). Всё из журнала сезона
+   (cr.log), лички напарников и cr.did: ни одного придуманного числа. */
+let CC_WRAP=null;
+function ccWrapData(season){
+  const cr=CAREER.career, pl=CAREER.player, s=season||cr.season;
+  const rows=(cr.log||[]).filter(r=>r && r.season===s);
+  const sum=k=>rows.reduce((n, r)=>n+(+r[k]||0), 0);
+  let best=null;
+  rows.forEach(r=>{ if(!(r.place>0)) return; const sc=r.place/Math.max(1, r.of||100);
+    if(!best || r.place<best.place || (r.place===best.place && sc<best.place/Math.max(1, best.of||100))) best=r; });
+  const mates={};
+  rows.forEach(r=>{ (r.mates && r.mates.length ? r.mates : (r.mate ? [r.mate] : [])).forEach(m=>{ const h=typeof m==='string' ? m : (m && m.handle); if(h) mates[h]=(mates[h]||0)+1; }); });
+  const mate=Object.keys(mates).sort((a, b)=>mates[b]-mates[a])[0]||null;
+  const days=rows.map(r=>r.day).filter(Boolean).sort();
+  let train=0; const by={};
+  Object.keys(cr.did||{}).forEach(d=>{ if(days.length && (d<days[0] || d>careerToday())) return;
+    (cr.did[d]||[]).forEach(id=>{ const a=ccActById(id); if(a && String(a.id).indexOf('tr')===0 && a.gain){ train++; Object.keys(a.gain).forEach(k=>{ by[k]=(by[k]||0)+1; }); } }); });
+  const topStat=Object.keys(by).sort((a, b)=>by[b]-by[a])[0]||null;
+  const ovr0=rows.length ? (rows[0].ovr||null) : null, ovr1=Math.round(pl.ovrExact!=null ? pl.ovrExact : pl.ovr);
+  const yr=String(days[0]||careerToday()).slice(0, 4);
+  return {season:s, year:yr, events:rows.length, games:sum('games'), wins:sum('wins'), elims:sum('elims'), money:sum('prize'),
+          best, mate, mateN:mate ? mates[mate] : 0, train, topStat, ovr0, ovr1, reach:cr.reach||0, rival:ccRival()};
+}
+function ccWrapCards(d){
+  const T=L(), out=[];
+  out.push({k:'year', big:String(d.year), t:T.wrTitle(d.year), s:d.ovr0!=null ? T.wrRating(Math.round(d.ovr0), d.ovr1) : T.wrRatingNow(d.ovr1)});
+  out.push({k:'events', big:String(d.events), t:T.wrEvents, s:T.wrGames(d.games, d.wins, d.elims)});
+  if(d.best) out.push({k:'best', big:'#'+d.best.place, t:T.wrBest, s:(typeof ccLogName==='function' ? ccLogName(d.best) : '')+(d.best.of ? ' · '+T.wrOf(d.best.of) : '')});
+  out.push({k:'money', big:ccMoney(d.money), t:T.wrMoney, s:d.money>0 ? T.wrMoneySub : T.wrMoneyNone});
+  if(d.mate) out.push({k:'mate', big:ccHandle(d.mate), t:T.wrMate, s:T.wrMateSub(d.mateN)});
+  out.push({k:'train', big:String(d.train), t:T.wrTrain, s:d.topStat ? T.wrTopStat(T['ccAttr'+d.topStat.toUpperCase()]||d.topStat.toUpperCase()) : ''});
+  if(d.rival && d.rival.h) out.push({k:'rival', big:(d.rival.w||0)+' : '+(d.rival.l||0), t:T.wrRival(ccHandle(d.rival.h)), s:(d.rival.w||0)>=(d.rival.l||0) ? T.wrRivalUp : T.wrRivalDown});
+  out.push({k:'fans', big:ccNum(d.reach), t:T.wrFans, s:T.wrEnd});
+  return out;
+}
+function ccWrapOpen(season){
+  const d=ccWrapData(season);
+  CC_WRAP={d, cards:ccWrapCards(d), i:0};
+  let el=document.getElementById('ccWrap');
+  if(!el){ el=document.createElement('div'); el.id='ccWrap'; el.className='cc-wrap'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-modal', 'true');
+    el.onclick=e=>{ if(e.target===el) ccWrapClose(); }; document.body.appendChild(el); }
+  el.hidden=false; ccWrapDraw();
+}
+function ccWrapClose(){ const el=document.getElementById('ccWrap'); if(el) el.hidden=true; CC_WRAP=null; }
+function ccWrapGo(n){ if(!CC_WRAP) return; CC_WRAP.i=clamp(CC_WRAP.i+n, 0, CC_WRAP.cards.length-1); ccWrapDraw(); }
+function ccWrapText(){
+  const T=L(); if(!CC_WRAP) return '';
+  return T.wrTitle(CC_WRAP.d.year)+'\n'+CC_WRAP.cards.slice(1).map(c=>c.t+': '+c.big).join('\n')+'\nfncsdraft.com';
+}
+function ccWrapCopy(){
+  const txt=ccWrapText(); const b=document.getElementById('ccWrapCopy');
+  const ok=()=>{ if(b) b.textContent=L().wrCopied; };
+  try{ if(navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(txt).then(ok, ()=>{}); }catch(e){}
+}
+function ccWrapDraw(){
+  const el=document.getElementById('ccWrap'); if(!el || !CC_WRAP) return;
+  const T=L(), c=CC_WRAP.cards[CC_WRAP.i], n=CC_WRAP.cards.length, last=CC_WRAP.i===n-1;
+  el.innerHTML='<div class="cc-wrap-card k-'+c.k+'">'+
+    '<button type="button" class="cc-wrap-x" onclick="ccWrapClose()" aria-label="'+esc(T.wrClose)+'">×</button>'+
+    '<div class="cc-wrap-dots">'+CC_WRAP.cards.map((x, i)=>'<i'+(i<=CC_WRAP.i ? ' class="on"' : '')+'></i>').join('')+'</div>'+
+    '<div class="cc-wrap-in"><span class="cc-wrap-t">'+esc(c.t)+'</span><b class="cc-wrap-big">'+esc(c.big)+'</b><span class="cc-wrap-s">'+esc(c.s||'')+'</span></div>'+
+    '<div class="cc-wrap-nav">'+(CC_WRAP.i>0 ? '<button type="button" class="cc-wrap-b ghost" onclick="ccWrapGo(-1)">'+esc(T.wrPrev)+'</button>' : '<span></span>')+
+      (last ? '<button type="button" class="cc-wrap-b" id="ccWrapCopy" onclick="ccWrapCopy()">'+esc(T.wrCopy)+'</button>'
+            : '<button type="button" class="cc-wrap-b" onclick="ccWrapGo(1)">'+esc(T.wrNext)+'</button>')+'</div></div>';
+}
+function ccWrapBtnHTML(){
+  if(!CAREER || !CAREER.career) return '';
+  const cr=CAREER.career, rows=(cr.log||[]).filter(r=>r && r.season===cr.season);
+  if(!rows.length) return '';
+  return '<button type="button" class="cc-wrap-open" onclick="ccWrapOpen()"><b>'+esc(L().wrBtn)+'</b><span>'+esc(cr.seasonOver ? L().wrBtnDone : L().wrBtnSoFar)+'</span></button>';
+}
 /*@@PART js/career/teammates-profile.js@@*/
 /* ПОЗВАТЬ НАПАРНИКА В СВОЙ КЛУБ (идея игрока 30.09: «чтобы дуо/трио были в одной организации, особенно на
    EWC»). Клуб, подписавший дуо, подписывает и напарника (careerOrgSignMates), но напарник, пришедший позже,
@@ -153336,7 +153611,7 @@ function careerDayPanelHTML(locked){
      the button reads the attribute now and where the session leaves it, which is
      the same arithmetic the day actually does. */
   const nowOvr = CAREER.player.ovrExact!=null ? CAREER.player.ovrExact : CAREER.player.ovr;
-  const dayMult = careerDayGear()*clamp((careerTrainCap()-nowOvr)/CAREER_TAPER, 0, 1);
+  const dayMult = ccTrainDayMult()*clamp((careerTrainCap()-nowOvr)/CAREER_TAPER, 0, 1);
   const dayCoach = ccCoach();
   const six = CAREER.player.attrs || ccOwnAttrs();
   const actsShown=CC_DAY_ACTS.filter(function(a){ return a.watch ? false : pre ? (ccTrainAct(a) || a.warm) : (!a.warm &&!a.crew && !a.voice && (!a.meta || ccMetaOpen())); });
@@ -153476,7 +153751,7 @@ function careerDayPanelHTML(locked){
           '/'+careerCupSize(CAREER.career.division)
         : '')+
       '</span></div>'+
-    '<div class="ch-art-in cc-day-in">'+
+    '<div class="ch-art-in cc-day-in">'+ccTiltNoteHTML()+
       (locked ? '<div class="cc-day-locked">'+esc(locked.why)+'</div>'+
         /* And a way to do something about it, where there is one.
 
@@ -181195,6 +181470,8 @@ function ccVodAnswer(k){
 }
 function careerPrAdd(ranked, meta){
   if(!ranked || ranked.length<2) return;
+  // Счёт с соперником сезона - по первой таблице дня (ccRivalAfterTable).
+  try{ ccRivalAfterTable(ranked); }catch(e){}
   try{
     const nr=ccNightRate(ranked);
     if(nr){

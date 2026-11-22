@@ -3091,7 +3091,7 @@ function careerDayPanelHTML(locked){
      the button reads the attribute now and where the session leaves it, which is
      the same arithmetic the day actually does. */
   const nowOvr = CAREER.player.ovrExact!=null ? CAREER.player.ovrExact : CAREER.player.ovr;
-  const dayMult = careerDayGear()*clamp((careerTrainCap()-nowOvr)/CAREER_TAPER, 0, 1);
+  const dayMult = ccTrainDayMult()*clamp((careerTrainCap()-nowOvr)/CAREER_TAPER, 0, 1);
   const dayCoach = ccCoach();
   const six = CAREER.player.attrs || ccOwnAttrs();
   const actsShown=CC_DAY_ACTS.filter(function(a){ return a.watch ? false : pre ? (ccTrainAct(a) || a.warm) : (!a.warm &&!a.crew && !a.voice && (!a.meta || ccMetaOpen())); });
@@ -3231,7 +3231,7 @@ function careerDayPanelHTML(locked){
           '/'+careerCupSize(CAREER.career.division)
         : '')+
       '</span></div>'+
-    '<div class="ch-art-in cc-day-in">'+
+    '<div class="ch-art-in cc-day-in">'+ccTiltNoteHTML()+
       (locked ? '<div class="cc-day-locked">'+esc(locked.why)+'</div>'+
         /* And a way to do something about it, where there is one.
 

@@ -62,9 +62,9 @@ CC_FN_PICK=null; careerTab('locker');
 const lb=document.getElementById('chBody').innerHTML;
 check('вкладка «Шкафчик»: образ и выбор скина сразу', /cc-fn-load/.test(lb) && /cc-(fn|lk5)-pick/.test(lb) && lb.indexOf(sk.id.toLowerCase())>0);
 check('кнопка вкладки есть', !!document.querySelector('.ch-tab[data-tab="locker"]'));
-// Item Shop — своя вкладка рядом со шкафчиком, в обычном магазине его раздела больше нет.
-const tabs=[...document.querySelectorAll('#screen-career-hub .ch-tab')].map(b=>b.dataset.tab);
-check('вкладка Item Shop перед шкафчиком', tabs.indexOf('items')>=0 && tabs.indexOf('items')+1===tabs.indexOf('locker'), tabs.join(','));
+// Item Shop - главная вкладка группы «Магазин» (22.11, CC_TAB_GROUPS), шкафчик - её подвкладка; в обычном магазине раздела предметов нет.
+const grp=(typeof CC_TAB_GROUPS!=='undefined' && CC_TAB_GROUPS.items)||[];
+check('Item Shop открывает группу магазина, шкафчик в ней', grp[0]==='items' && grp.indexOf('locker')>0, grp.join(','));
 careerTab('items'); check('во вкладке Item Shop витрина дня', /cc-fn-it/.test(document.getElementById('chBody').innerHTML));
 careerTab('shop'); check('в магазине нет раздела предметов', !/cc-fn-it/.test(document.getElementById('chBody').innerHTML) && !/ccShopSec\('items'\)/.test(document.getElementById('chBody').innerHTML));
 // После покупки в магазине — кнопка «Надеть в шкафчике».

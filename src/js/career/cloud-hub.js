@@ -978,6 +978,24 @@ function careerSlotDrop(n){
 }
 
 let CH_TAB='centre';
+/* Группы вкладок (22.11): шесть главных в полосе, остальные подвкладками сверху тела (ccSubTabsHTML). Первая в списке -
+   главная, её кнопка стоит в полосе. Ключи вкладок не менялись: сейвы и переходы careerTab('shop') и т.д. работают. */
+const CC_TAB_GROUPS={calendar:['calendar', 'table'], items:['items', 'shop', 'bp', 'locker'], me:['me', 'log', 'hist']};
+const CC_SUB_KEY={calendar:'chTabCalendar', table:'chTabBoards', items:'chTabItems', shop:'chTabShop', bp:'chTabBp', locker:'chTabLocker', me:'chTabMe', log:'chTabLog', hist:'chTabHist'};
+function ccTabGroupOf(t){ for(const g in CC_TAB_GROUPS) if(CC_TAB_GROUPS[g].indexOf(t)>=0) return g; return t; }
+// Не ccSubTabsHTML: так зовутся подвкладки «Таблиц» (PR/статистика/игроки) ниже.
+function ccGrpTabsHTML(t){
+  const g=CC_TAB_GROUPS[ccTabGroupOf(t)]; if(!g) return '';
+  const T=L(), cur=({stats:'table', world:'table'}[t]||t);
+  return '<div class="ch-grp-tabs" role="tablist">'+g.map(k=>'<button type="button" role="tab" class="ch-grp-tab'+(k===cur ? ' on' : '')+'" aria-selected="'+(k===cur)+'" onclick="careerTab(\''+k+'\')">'+
+    esc(k==='shop' ? T.chSubGear : T[CC_SUB_KEY[k]]||k)+(k==='shop' && careerShopNew().length ? '<i class="ch-dot" style="display:inline-block"></i>' : '')+'</button>').join('')+'</div>';
+}
+// Полоса подвкладок группы - первой строкой тела, после каждой отрисовки (в ccTabsSide).
+function ccGrpTabsPut(){
+  const b=document.getElementById('chBody'); if(!b) return;
+  const old=b.querySelector(':scope > .ch-grp-tabs'); if(old) old.remove();
+  const h=ccGrpTabsHTML(CH_TAB); if(h) b.insertAdjacentHTML('afterbegin', h);
+}
 function careerTab(t){
   /* Ушёл с календаря — он забывает, куда ты его листал. Отзыв:
      «когда закрываешь календарь, пусть всегда перемещает на то место, где ты
@@ -1205,6 +1223,7 @@ function ccTabsSide(){
   let note=''; try{ note=ccMediaQuickHTML(); }catch(e){}
   // Кошелёк здесь снят (Notion «20.10»: «одна и та же информация» — баланс и V-Bucks уже в верхней панели, там же выплаты).
   s.innerHTML=(note ? '<div class="cc-lb-note">'+note+'</div>' : '');
+  try{ ccGrpTabsPut(); }catch(e){}
 }
 /* ЦВЕТ ХАБА — ПО СЕЗОНУ (19.10, его «мб дизайн хаба под каждый сезон под их цвета»). Оттенок берётся из картинки
    лобби сезона (ccLobbyBg): средний цвет по насыщенным пикселям, вектором по кругу оттенков. Из него — фон панели,
@@ -1651,10 +1670,11 @@ function careerRenderHubBody(tab){
       `<span>${esc(nxt.n ? L().lfHdrIn(nxt.n)+' · '+ccHdrDate(nxt.day) : L().lfHdrPlay)}</span>`;
   }
 
-  document.querySelectorAll('#screen-career-hub .ch-tab').forEach(b=>{
-    // Стримы живут внутри «Медиа», статистика — внутри «Таблиц».
-    b.classList.toggle('on', b.dataset.tab===({streams:'social', youtube:'social', discord:'social', stats:'table', world:'table'}[CH_TAB]||CH_TAB));
-  });
+  // Подсвечена главная вкладка группы открытой вкладки (CC_TAB_GROUPS).
+  const onTab=ccTabGroupOf(({stats:'table', world:'table'}[CH_TAB]||CH_TAB));
+  document.querySelectorAll('#screen-career-hub .ch-tab').forEach(b=>{ b.classList.toggle('on', b.dataset.tab===onTab); });
+  const stdot=document.getElementById('chStoreDot');
+  if(stdot) stdot.style.display = careerShopNew().length ? 'inline-block' : 'none';
   // The unread dot is the lobby's own notification mark — it is the only thing
   // on this screen that asks to be clicked.
   // The dot counts both halves of that screen now: a message waiting, and a feed
@@ -1828,6 +1848,9 @@ function ccLobbyHTML(card, btn, next, when, strip, ex){
   const slot=(i)=>{
     const p=party[i], s=' cc-lb-s'+i;
     const ped='<span class="cc-lb-ped'+(i===0 ? ' me' : '')+s+'"></span>';
+    // Пустых мест - сколько мест у состава этого формата: в соло-сезоне «+» не нужен вовсе (22.11).
+    let seats=3; try{ seats=careerMateSeats(); }catch(e){}
+    if(!p && i>seats) return ped;
     if(!p) return ped+'<button class="cc-lb-plus'+s+'" onclick="careerTab(\'me\')" title="'+esc(T.lfRosters)+'">+</button>';
     return ped+'<div class="cc-lb-fig'+(p.me ? ' me' : '')+s+'"'+(p.me ? ' onclick="ccFnLockerOpen(\'o\')"' : '')+'>'+
       '<img class="full" src="'+ccFnFull(p.id)+'" data-id="'+esc(p.id)+'" alt="" loading="lazy" crossorigin="anonymous" onload="ccLbFigCut(this)" onerror="ccFnHeroErr(this)">'+
@@ -1987,7 +2010,7 @@ function ccLobbyPads(lb){
   const stage=lb.querySelector('.cc-lb-stage'); if(!stage) return;
   const els=[...stage.children];
   lb.classList.toggle('cc-lb-painted', !!pad);
-  if(!pad || innerWidth<=700){ els.forEach(e=>{ e.style.left=''; e.style.bottom=''; e.style.height=''; e.style.top=''; }); return; }
+  if(!pad || innerWidth<=700){ els.forEach(e=>{ e.style.left=''; e.style.bottom=''; e.style.height=''; e.style.top=''; }); ccLobbyPlusClip(lb); return; }
   const W=lb.clientWidth, H=lb.clientHeight, k=Math.max(W/1280, H/pad.h), offX=(W-1280*k)/2, offY=H-pad.h*k;
   const sr=stage.getBoundingClientRect(), lr=lb.getBoundingClientRect(), sTop=sr.top-lr.top, sH=sr.height;
   // Низ полосы недель в координатах сцены: на широком окне фон крупнее, фигура по диску растёт и вместе с ником
@@ -2004,6 +2027,14 @@ function ccLobbyPads(lb){
       else if(e.classList.contains('cc-lb-plus')){ e.style.bottom=(sH-cy+dw*0.55)+'px'; }
     });
   });
+  ccLobbyPlusClip(lb);
+}
+// «+» дальнего места на узком ПК заезжал на колонку других регионов справа (22.11): такой прячем.
+function ccLobbyPlusClip(lb){
+  const right=lb.querySelector('.cc-lb-right'), rr=right && right.getBoundingClientRect();
+  lb.querySelectorAll('.cc-lb-stage .cc-lb-plus').forEach(e=>{ e.style.visibility='';
+    if(!rr || !rr.width) return; const r=e.getBoundingClientRect();
+    if(r.right>rr.left && r.left<rr.right && r.bottom>rr.top && r.top<rr.bottom) e.style.visibility='hidden'; });
 }
 /* Notion 21.10 («когда кликаешь что-либо и потом возвращаешься вот такое»): фигуры стояли мимо дисков. Диски
    считались по высоте меню ДО того, как меню вытягивалось под колонку, а фон растягивается по новой высоте — диски
@@ -2291,7 +2322,8 @@ function careerCentreHTML(card, a){
   const galaBtn = cr.seasonOver
     ? `<button class="ch-play ch-gala" onclick="ccGalaOpen()">${L().ccGalaWatch}</button>` : '';
   const btn = cr.seasonOver
-    ? `<button class="ch-play" onclick="if(CAREER.career.seasonOver) careerNewSeason()" title="${esc(L().ccSeasonOverSub)}">${L().ccNewSeason}</button>`+galaBtn+retireBtn
+    ? `<button class="ch-play" onclick="if(CAREER.career.seasonOver) careerNewSeason()" title="${esc(L().ccSeasonOverSub)}">${L().ccNewSeason}</button>`+galaBtn+retireBtn+
+      `<button class="ch-play ch-skipev" onclick="ccWrapOpen()">${esc(L().wrBtn)}</button>`
     /* Командный вечер, который нельзя начать, не предлагает «Пропустить». По одиночному правилу непроходимый вечер
        (разные режимы) превращал «Играть» в «Пропустить», и следующее нажатие скипало турнир. Сам режим «только
        смотрю» матч показывает (tools/sim-shows-probe.js).
@@ -2313,13 +2345,15 @@ function careerCentreHTML(card, a){
        день, нет энергии. См. careerPlayLive. */
     : playable
       ? `<button class="ch-play" onclick="careerPlay()">${L().chPlay}${ccMpReadyTag()}</button>`+
+        /* Вторые кнопки (в эфир, не играть) - одной строкой под «Играть», мельче (22.11: колонка была из пяти кнопок подряд). */
+        '<div class="ch-play-row">'+
         (onToday && !ccMpOn() ? (()=>{ const why=ccStreamCupWhy();
            return `<button class="ch-play ch-live-go"${why?' disabled':''} onclick="careerPlayLive()"
              title="${esc(why||L().ccStreamCupHint(CC_STREAM_CUP.energy, CC_STREAM_POW))}">${
              L().ccStreamCupGo}</button>`+
              /* Цена эфира — строкой под кнопкой, а не только во всплывающей
                 подсказке: отзыв «и это должно быть написано». */
-             `<div class="ch-hint ch-live-hint">${esc(why||L().ccStreamCupHint(CC_STREAM_CUP.energy, CC_STREAM_POW))}</div>`; })() : '')+
+             ''; })() : '')+
         /* Стиль игры у «Играть» снят (его скрин в Notion 8.10: «убрать стиль игры перед капом, он же есть в самом капе»):
            внутри вечера он спрашивается перед каждой игрой на любом турнире (ccStyleAskGame), второй переключатель дублировал. */
         /* «Не играть» — в день турнира (Notion 12.10: «добавите возможность не участвовать в этом турнире? Играть во
@@ -2327,6 +2361,8 @@ function careerCentreHTML(card, a){
            команде и в гонке день двигают вместе — там кнопки нет. */
         (onToday && !ccMpOn() && !(typeof ccRaceLock==='function' && ccRaceLock())
           ? `<button class="ch-play ch-skipev" onclick="careerSkipEventAsk()">${L().chSkipEv}</button>` : '')+
+        '</div>'+
+        (onToday && !ccMpOn() ? `<div class="ch-hint ch-live-hint">${esc(ccStreamCupWhy()||L().ccStreamCupHint(CC_STREAM_CUP.energy, CC_STREAM_POW))}</div>` : '')+
         /* Наём на турнир (ccHireOpen): нанятый — строкой с отменой, иначе кнопка. */
         /* Соло-вечер (Solo Series, FNCS Solos, соло-кап) напарника не берёт — и нанимать некого (его Notion 29.10 «на соло можно нанять»). */
         (onToday && typeof ccHireAllowed==='function' && ccHireAllowed() && careerNeedsMate(next.type)
@@ -2966,6 +3002,9 @@ function careerDuoTileHTML(){
    who is hired by the month. The rival closes it, because he is the only one
    here who does not want anything from you except to finish above you. */
 function careerMeHTML(){
+  return ccWrapBtnHTML()+careerMeHTML0();
+}
+function careerMeHTML0(){
   const card=careerCard(), mates=careerMates(), seats=careerMateSeats();
   /* One card per chair, and an empty chair drawn as an empty chair.
 
@@ -3416,12 +3455,16 @@ function ccRostersStripHTML(lobby){
     }
     return '<span class="ch-ro-spot" onclick="'+go+'"><em>'+esc(T.roSpot)+'</em>'+txt+'</span>';
   };
+  /* Далёкие пустые составы - одной строкой (22.11: в соло-сезоне три блока «пусто» подряд). Блоком остаётся текущий
+     формат, формат с напарником и тот, сбор которого уже открыт (CC_ROSTER_WEEK). */
+  const later=[];
   const blocks=[2,3,4].map(f=>{
     const next=ccFormatNext(f);
     if(f!==cur && !next) return '';
     const mates=cardsOf(f), need=f-1, full=mates.length>=need;
     const days=next ? ccDaysBetween(today, next) : 0;
     const soon=f!==cur && next && days<=CC_ROSTER_WEEK;
+    if(f!==cur && !mates.length && !soon){ later.push(esc(NAME[f])+' <b>'+esc(ccDayLabel(next))+'</b>'); return ''; }
     const who=mates.length ? '<span class="ch-ro-ms">'+mates.map(c=>mateHTML(c, f)).join('')+'</span>' : '<b><i>'+esc(T.lfRosterEmpty)+'</i></b>';
     const when=f===cur ? esc(T.lfRosterNow) : esc(T.roFirst(ccDayLabel(next)));
     const act=(f===cur && !full) ? '<button onclick="ccDuoFindOpen(null)">'+esc(T.roFind)+'</button>'
@@ -3451,6 +3494,9 @@ function ccRostersStripHTML(lobby){
       ? '<div class="ch-ro has-spot'+(f===cur ? ' on' : '')+(soon ? ' soon' : '')+'"><div class="ch-ro-main"><em>'+esc(NAME[f])+' · '+when+'</em>'+who+stats+act+'</div>'+spot+'</div>'
       : '<div class="ch-ro'+(f===cur ? ' on' : '')+(soon ? ' soon' : '')+'"><em>'+esc(NAME[f])+' · '+when+'</em>'+who+spot+act+'</div>';
   }).filter(Boolean);
+  // Соперник сезона - первой строкой составов (ccRivalHTML).
+  { const rvh=ccRivalHTML(); if(rvh) blocks.unshift(rvh); }
+  if(later.length) blocks.push('<div class="ch-ro ch-ro-later"><em>'+esc(T.roLater)+'</em><span>'+later.join('<i>·</i>')+'</span></div>');
   /* И сборная — Кубок наций (его слово 30.09: «и nation кап тоже там пусть будет, сборка состава»).
      Страна, ближайший этап, состав (пустые места капитана — «пусто»), у капитана за неделю до
      квалификации — «Собрать состав» (то же окно выбора, ccNatModalOpen). */

@@ -283,6 +283,8 @@ function ccVodAnswer(k){
 }
 function careerPrAdd(ranked, meta){
   if(!ranked || ranked.length<2) return;
+  // Счёт с соперником сезона - по первой таблице дня (ccRivalAfterTable).
+  try{ ccRivalAfterTable(ranked); }catch(e){}
   try{
     const nr=ccNightRate(ranked);
     if(nr){

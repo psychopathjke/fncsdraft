@@ -618,28 +618,20 @@
       </div>
       <div class="ch-tabs">
         <button class="ch-tab on" data-tab="centre" onclick="careerTab('centre')" data-i18n="chTabCentre"></button>
-        <!-- Профиль стоит вторым, сразу за Центром, — правка:
-             «вот эту таблицу нужно как отдельный столбик в лобби, после центра
-             profile мб». Это лист результатов года: рейтинг, PR, матчи, победы,
-             килы, среднее место и призовые, а под ними каждое событие строкой.
-             Ключ вкладки остался 'log' — на него ссылаются сохранения и
-             переходы, и переименовывать его ради подписи значит ломать их. -->
-        <button class="ch-tab" data-tab="log" onclick="careerTab('log')" data-i18n="chTabLog"></button>
-        <button class="ch-tab" data-tab="me" onclick="careerTab('me')" data-i18n="chTabMe"></button>
+        <!-- Шесть главных вкладок (22.11, его «делай» на «12 вкладок -> 6, как лобби Fortnite»). Остальные вкладки живут
+             подвкладками внутри групп (CC_TAB_GROUPS, ccSubTabsHTML): ключи вкладок те же, переходы careerTab('…') не менялись.
+             Кнопки подвкладок остаются в полосе скрытыми, чтобы старые селекторы и сторожа их находили. -->
         <button class="ch-tab" data-tab="train" onclick="careerTab('train')" data-i18n="chTabTrain"></button>
-        <button class="ch-tab" data-tab="club" onclick="careerTab('club')" data-i18n="chTabClub"></button>
         <button class="ch-tab" data-tab="calendar" onclick="careerTab('calendar')" data-i18n="chTabCalendar"></button>
-        <!-- Вкладки «Медиа» больше нет (21.11, его «убери тогда медиа»): соцсеть, Twitch, YouTube и Discord открываются
-             кнопками справа в полосе вкладок (ccMediaQuickHTML), непрочитанное - числом на кнопке соцсети. -->
-        <!-- Стримы стоят сразу за соцсетями — правка: это одна и та же
-             половина жизни игрока, лента и эфир. -->
-        <button class="ch-tab" data-tab="table" onclick="careerTab('table')" data-i18n="chTabBoards"></button>
-        <button class="ch-tab" data-tab="shop" onclick="careerTab('shop')"><span data-i18n="chTabShop"></span><i class="ch-dot" id="chShopDot"></i></button>
-        <!-- Шкафчик своей вкладкой (18.10, его «как выбрать скин, где шкафчик, мб отдельную вкладку»). -->
-        <button class="ch-tab" data-tab="items" onclick="careerTab('items')" data-i18n="chTabItems"></button>
-        <button class="ch-tab" data-tab="locker" onclick="careerTab('locker')" data-i18n="chTabLocker"></button>
-        <button class="ch-tab" data-tab="bp" onclick="careerTab('bp')" data-i18n="chTabBp"></button>
-        <button class="ch-tab" data-tab="hist" onclick="careerTab('hist')" data-i18n="chTabHist"></button>
+        <button class="ch-tab" data-tab="club" onclick="careerTab('club')" data-i18n="chTabClub"></button>
+        <button class="ch-tab" data-tab="items" onclick="careerTab('items')"><span data-i18n="chTabStore"></span><i class="ch-dot" id="chStoreDot"></i></button>
+        <button class="ch-tab" data-tab="me" onclick="careerTab('me')" data-i18n="chTabMe"></button>
+        <button class="ch-tab ch-tab-sub" hidden data-tab="log" onclick="careerTab('log')" data-i18n="chTabLog"></button>
+        <button class="ch-tab ch-tab-sub" hidden data-tab="hist" onclick="careerTab('hist')" data-i18n="chTabHist"></button>
+        <button class="ch-tab ch-tab-sub" hidden data-tab="table" onclick="careerTab('table')" data-i18n="chTabBoards"></button>
+        <button class="ch-tab ch-tab-sub" hidden data-tab="shop" onclick="careerTab('shop')"><span data-i18n="chTabShop"></span><i class="ch-dot" id="chShopDot"></i></button>
+        <button class="ch-tab ch-tab-sub" hidden data-tab="locker" onclick="careerTab('locker')" data-i18n="chTabLocker"></button>
+        <button class="ch-tab ch-tab-sub" hidden data-tab="bp" onclick="careerTab('bp')" data-i18n="chTabBp"></button>
       </div>
       <div class="ch-body" id="chBody"></div>
       <div class="ch-foot">

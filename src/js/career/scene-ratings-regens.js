@@ -4155,6 +4155,7 @@ function careerApplyGrowth(place, total, you, field){
   const expected = field.length>1 ? stronger/(field.length-1) : 0.5;
   // Пресс-конференция после заметного вечера и исход обещания (ccPressAfterNight). Не ломает вечер ни при какой ошибке.
   try{ ccPressAfterNight(place, total, expected); }catch(e){ console.error('press', e); }
+  try{ ccTiltAfterNight(place, total, expected); }catch(e){ console.error('tilt', e); }
   try{ ccStaffAfterNight(place, total); }catch(e){ console.error('staff dm', e); }
   try{ ccTechSceneAfterNight(total); }catch(e){}
   const before = pl.ovrExact!=null ? pl.ovrExact : pl.ovr;
