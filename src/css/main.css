@@ -10417,3 +10417,8 @@
     #screen-career-hub .csq-row .csq-o{grid-column:3;grid-row:1;justify-self:end;}
     #screen-career-hub .csq-row .csq-a{grid-column:1 / -1;justify-content:flex-start;}
     #screen-career-hub .csq-chem{margin-left:0;width:100%;} }
+  /* Состав слева, своя точка справа. */
+  #screen-career-hub .csq-split{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:10px;align-items:start;margin-bottom:10px;}
+  #screen-career-hub .csq-split > .ch-squad-hero{margin:0;}
+  #screen-career-hub .csq-spot > .ch-tile{margin:0;}
+  @media (max-width:900px){ #screen-career-hub .csq-split{grid-template-columns:1fr;} }

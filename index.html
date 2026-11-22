@@ -10938,6 +10938,11 @@
     #screen-career-hub .csq-row .csq-o{grid-column:3;grid-row:1;justify-self:end;}
     #screen-career-hub .csq-row .csq-a{grid-column:1 / -1;justify-content:flex-start;}
     #screen-career-hub .csq-chem{margin-left:0;width:100%;} }
+  /* Состав слева, своя точка справа. */
+  #screen-career-hub .csq-split{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:10px;align-items:start;margin-bottom:10px;}
+  #screen-career-hub .csq-split > .ch-squad-hero{margin:0;}
+  #screen-career-hub .csq-spot > .ch-tile{margin:0;}
+  @media (max-width:900px){ #screen-career-hub .csq-split{grid-template-columns:1fr;} }
 /*@@PART shell.html@@*/
 </style>
 <!-- ?v= — это НЕ украшение, это починка того, что он поймал 24 августа.
@@ -123964,7 +123969,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='54dcc22b';
+const CC_BUILD='34fb66a9';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -130518,17 +130523,16 @@ function careerMeHTML0(){
      химия и «как поменять». Плитки «Дуо» (то же, что на карточках) и «Следующий турнир» (он на Центре) здесь больше не
      рисуются. Ниже одной строкой своя точка и сравнение с тиммейтом. */
   const sl=ccSquadListHTML();
-  return `<div class="ch-squad-hero">
+  // Слева состав, справа своя точка на картах (его «может состав слева, а справа локация»); сравнение с тиммейтом - под ними.
+  return `<div class="csq-split"><div class="ch-squad-hero">
       <div class="ch-squad-h"><h3>${esc(T.sqTitle(fmtName))}</h3>${sl.chem}</div>
       <div class="csq-list">${sl.rows}</div>
       <div class="csq-edit">${ccMeEditHTML()}</div>
       ${ccRostersTileHTML()}
       <details class="ch-squad-how"${(CAREER.career.log||[]).length<3 ? ' open' : ''}><summary>${esc(T.sqHow)}</summary>${how}</details>
     </div>
-    <div class="ch-grid ch-grid-me">
-      <div class="ch-col">${careerSpotTileHTML()}</div>
-      <div class="ch-col">${ccMateCompareHTML()}</div>
-    </div>`;
+    <div class="csq-spot">${careerSpotTileHTML()}</div></div>
+    ${ccMateCompareHTML()}`;
 }
 // Составы по размерам — дуо, трио, сквад: кто в каком, какой играет сейчас.
 function ccRostersTileHTML(){

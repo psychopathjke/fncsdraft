@@ -3149,17 +3149,16 @@ function careerMeHTML0(){
      химия и «как поменять». Плитки «Дуо» (то же, что на карточках) и «Следующий турнир» (он на Центре) здесь больше не
      рисуются. Ниже одной строкой своя точка и сравнение с тиммейтом. */
   const sl=ccSquadListHTML();
-  return `<div class="ch-squad-hero">
+  // Слева состав, справа своя точка на картах (его «может состав слева, а справа локация»); сравнение с тиммейтом - под ними.
+  return `<div class="csq-split"><div class="ch-squad-hero">
       <div class="ch-squad-h"><h3>${esc(T.sqTitle(fmtName))}</h3>${sl.chem}</div>
       <div class="csq-list">${sl.rows}</div>
       <div class="csq-edit">${ccMeEditHTML()}</div>
       ${ccRostersTileHTML()}
       <details class="ch-squad-how"${(CAREER.career.log||[]).length<3 ? ' open' : ''}><summary>${esc(T.sqHow)}</summary>${how}</details>
     </div>
-    <div class="ch-grid ch-grid-me">
-      <div class="ch-col">${careerSpotTileHTML()}</div>
-      <div class="ch-col">${ccMateCompareHTML()}</div>
-    </div>`;
+    <div class="csq-spot">${careerSpotTileHTML()}</div></div>
+    ${ccMateCompareHTML()}`;
 }
 // Составы по размерам — дуо, трио, сквад: кто в каком, какой играет сейчас.
 function ccRostersTileHTML(){
