@@ -123732,7 +123732,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='613981d4';
+const CC_BUILD='145ba4b7';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -127428,6 +127428,7 @@ try{
   window.addEventListener('beforeunload', out);
   document.addEventListener('visibilitychange', ()=>{ if(document.visibilityState==='hidden') out(); });
 }catch(e){}
+const CC_FF_SAVE_DAYS=7;
 function careerSave(){
   if(!CAREER) return;
   if(CAREER._mgr){ if(typeof mgrSave==='function') mgrSave(); return; }   // теневая карьера Fortnite Manager
@@ -127458,6 +127459,15 @@ function careerSave(){
   if(ccMpOn() && !CC_MP_ADVANCE && !CC_MP_RAND && !CC_MP_HOLD && typeof MP!=='undefined' && MP.push)
     MP.push(ccTeamState());
   try{ ccBoardSoon(); }catch(e){}
+  /* Перемотка календаря (22.11, его «не ждать по несколько минут»): за 90 дней было ~600 записей сейва под мегабайт,
+     на iPhone это заметно. Проверки выше идут каждый раз (оценка вечера в журнал, шкафчик, пасс), а сама запись -
+     раз в CC_FF_SAVE_DAYS игровых дней и в конце перемотки (её finally зовёт careerSave при CC_FF=null).
+     В команде и гонке - как было: там сейв часть синхронизации. */
+  if(typeof CC_FF!=='undefined' && CC_FF && !ccMpOn() && !(typeof ccRaceFfOn==='function' && ccRaceFfOn())){
+    const d=careerToday();
+    if(CC_FF.savedOn && ccDaysBetween(CC_FF.savedOn, d)<CC_FF_SAVE_DAYS) return;
+    CC_FF.savedOn=d;
+  }
   const key=LS_SLOT(ccSlotMine());   // в свой слот, а не в тот, куда указывает другая вкладка
   /* НЕ ВЛЕЗЛО — СЖАТЬ, А НЕ РЕЗАТЬ (его скрин 1.10, iPhone: «This career is not being saved
      (QuotaExceededError)»). Safari даёт сайту около 5 МБ, строки там по два байта, а полгода карьеры —
