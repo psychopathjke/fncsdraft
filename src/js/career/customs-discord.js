@@ -1352,7 +1352,8 @@ function careerAdvanceTo(iso){
    - ответить в чате на сообщение тебе: один ответ в день, двигает отношение.
    Все числа здесь - решение, не замер: данных о том, как про зовут друг друга играть, нет. */
 let CC_CREW_WITH=null;
-const CC_CREW_SIZE=10, CC_CREW_INV_CHANCE=0.35;
+// 22.11 его «мемберс мб больше сделать»: было 10, сервер выглядел пустым.
+const CC_CREW_SIZE=30, CC_CREW_INV_CHANCE=0.35;
 const CC_CREW_REL0={mate:50, friend:35, guest:20, other:10};
 /* Пригласить на тусовку (его слово 21.11: «и инвайтить на сервер EU scene»): тот же поиск и то же правило, что на
    своём сервере (ccFanFindPool: регион, рейтинг ниже твоего), до CC_FAN_GUESTS_MAX человек; приглашённый - участник
@@ -1416,6 +1417,12 @@ function ccCrewMembers(){
   try{ (CAREER.career.friends||[]).forEach(h=>add(ccFriendCard(h), h, null, 'friend')); }catch(e){}
   gs.forEach(g=>{ let c=null; try{ c=ccFriendCard(g.handle); }catch(e){} add(c, g.handle, g.ovr, 'guest'); });
   try{ careerDmPool().forEach(w=>add(w.card || ccFriendCard(w.handle), w.handle, w.ovr, 'other')); }catch(e){}
+  /* Остальные места - сцена региона около твоего уровня (22.11 «мемберс мб больше»: из одной лички выходило 6-7 человек).
+     Ближние по рейтингу первыми, порядок от ника - список не прыгает между перерисовками. */
+  try{ const my=ccFanMyOvr();
+    (careerDuoSearchPool(true)||[]).filter(w=>w && w.handle && w.card)
+      .sort((x, y)=>Math.abs(x.ovr-my)-Math.abs(y.ovr-my) || (ccHashStr(x.handle)%97)-(ccHashStr(y.handle)%97))
+      .forEach(w=>add(w.card, w.handle, Math.round(w.ovr), 'other')); }catch(e){}
   return out;
 }
 function ccCrewRel(m){
