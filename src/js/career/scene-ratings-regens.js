@@ -3635,11 +3635,10 @@ const CAREER_GROWTH_MAX=0.55;
      elite   x0.25   5 seasons
      legend  x0.10   ~12 seasons (16-28 at the tails), marathon setting
    Old saves migrated legend→elite stay on elite. Result ceiling 0.55, field, prizes and shop prices are the same on all, harder just means longer. */
-/* Мифическая (его слово 22.11 «может ещё мифическую сложность добавить»): рост как у Легенды, но и поле сильнее -
-   у команд-ботов +room к силе в каждом лобби (ccBotEdge). Единственная сложность, где комната не та же: просто
-   «дольше» дальше Легенды (×0.10, ~12 сезонов) уже не игра. +2 - решение, не замер. */
+/* Мифическая (22.11): рост ×0.05, вдвое медленнее Легенды (~24 сезона до 90). Сначала была ×0.10 и +2 силы ботам,
+   его «мб просто 0.05 сделать»: поле то же, что на остальных. room (сила ботов в ccBotEdge) оставлен в коде, у таблицы его нет. */
 const CC_DIFFS=[{id:'easy', age:1.00}, {id:'pro', age:0.50},
-                {id:'elite', age:0.25}, {id:'legend', age:0.10}, {id:'mythic', age:0.10, room:2}];
+                {id:'elite', age:0.25}, {id:'legend', age:0.10}, {id:'mythic', age:0.05}];
 function ccDiffOf(id){ return CC_DIFFS.find(d=>d.id===id) || CC_DIFFS[0]; }
 function careerDiff(){
   return ccDiffOf(CAREER && CAREER.career && CAREER.career.diff);
