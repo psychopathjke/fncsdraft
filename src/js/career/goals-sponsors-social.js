@@ -6446,7 +6446,8 @@ function ccTtPublish(e){
   const rnd=careerRng(ccHashStr('tt|'+id+'|'+(CAREER.player.nick||'')));
   const viral=rnd()<CC_TT_VIRAL, spread=Math.exp((rnd()-0.5)*1.4);
   const total=Math.max(50, Math.round(((t.fol||0)*0.08+200)*CC_TT_KIND[kind]*spread*(viral ? CC_TT_VIRAL_X : 1)));
-  const clip={ev:id, day:careerToday(), on:e.day, kind, place:e.place, name:ccTtEvName(e), total, v:0, viral};
+  const clip={ev:id, day:careerToday(), on:e.day, kind, place:e.place, name:ccTtEvName(e), total, v:0, viral,
+    ekind:e.kind||'cup', div:e.div, prize:e.prize||0, mate:e.mate||'', elims:e.elims||0, skin:((typeof ccYtSkin==='function' && ccYtSkin()) || ccTtSkinFallback()), cap:Math.floor(rnd()*6)};
   t.clips.unshift(clip); if(t.clips.length>40) t.clips.length=40;
   return clip;
 }
@@ -6479,6 +6480,33 @@ function ccTtTick(){
   if(fund){ const usd=got/1000*CC_TT_FUND.rpm; t.usd=Math.round(((t.usd||0)+usd)*100)/100; t.owe=(t.owe||0)+usd;
     const whole=Math.floor(t.owe); if(whole>0){ cr.balance=(cr.balance||0)+whole; t.owe-=whole; } }
 }
+/* Превью клипа как в TikTok про (его «превью другие мб со скинами и байт названия, посмотри как в тиктоке называют»):
+   вертикальный кадр, размытый фон события (ccLogArt), скин из шкафчика на день клипа (как у превью YouTube, ccYtSkin),
+   сверху крупная подпись-крючок белым по чёрной плашке, строчными, по-английски - так пишут про в TikTok; без эмодзи.
+   Подпись выбирается из корзины вида клипа (c.cap - бросок при публикации), числа - из самого вечера. */
+const CC_TT_HOOKS={
+  win:   [(c,m)=>c.prize>0 ? 'this play won us $'+ccNum(Math.round(c.prize)) : 'how we won '+m.ev, ()=>'they really thought they had me', ()=>'1 hp and still won',
+          (c,m)=>'the endgame that won '+m.ev, ()=>'biggest clutch of my career', (c,m)=>c.mate ? 'me and '+c.mate+' cooked the whole lobby' : 'i cooked the whole lobby'],
+  podium:[(c,m)=>'#'+c.place+' at '+m.ev+' and this was the moment', (c,m)=>'so close to winning '+m.ev, ()=>'my duo was dead so i did this',
+          ()=>'they really thought they had me', ()=>'never piece control a pro', (c,m)=>c.prize>0 ? 'this fight was worth $'+ccNum(Math.round(c.prize)) : 'the fight that got us top 3'],
+  top:   [(c,m)=>'pov: you play '+m.ev, ()=>'the cleanest 1v3 you will ever see', ()=>'got third partied and still lived', ()=>'why is nobody talking about this',
+          (c,m)=>c.elims ? c.elims+' kills in '+m.ev : 'top '+c.place+' in '+m.ev, ()=>'he did not expect that']
+};
+// Образ не надет - на превью скин из «потных» скинов сцены (база магазина CC_FN_SHOP), постоянный для игрока.
+const CC_TT_SKINS=['CID_397_Athena_Commando_F_TreasureHunterFashion','CID_493_Athena_Commando_F_JurassicArchaeology','CID_452_Athena_Commando_F_CyberFu','CID_102_Athena_Commando_M_Raven','CID_108_Athena_Commando_M_Fishhead','CID_315_Athena_Commando_M_TeriyakiFish','CID_044_Athena_Commando_F_SciPop','CID_257_Athena_Commando_M_SamuraiUltra','CID_297_Athena_Commando_F_Math','CID_028_Athena_Commando_F'];
+function ccTtSkinFallback(){ return CC_TT_SKINS[Math.abs(ccHashStr('ttskin|'+((CAREER.player||{}).nick||'')))%CC_TT_SKINS.length]; }
+function ccTtHook(c){
+  const bank=CC_TT_HOOKS[c.kind]||CC_TT_HOOKS.top, i=(c.cap!=null ? c.cap : Math.abs(ccHashStr(String(c.ev)))) % bank.length;
+  const ev=String(c.name||'').replace(/^(Div(ision)?s*d+s*)/i, m=>m).toLowerCase();
+  return String(bank[i](c, {ev:ev})).toLowerCase();
+}
+function ccTtThumbHTML(c, T){
+  const art=(typeof ccLogArt==='function') ? ccLogArt({day:c.on, kind:c.ekind||'cup', div:c.div}) : '';
+  const sk=c.skin || (typeof ccYtSkin==='function' && ccYtSkin()) || ccTtSkinFallback();
+  const fig=sk ? '<img class="tt-fig" src="'+esc(ccFnFull(sk))+'" data-alt="'+esc(ccFnImg(sk))+'" alt="" loading="lazy" onerror="ccYtSkinErr(this)">' : '';
+  return (art ? '<img class="tt-bg" src="'+esc(art)+'" alt="" loading="lazy" onerror="this.remove()">' : '')+'<i class="tt-shade"></i>'+fig+
+    '<span class="tt-hook">'+esc(ccTtHook(c))+'</span>'+(c.viral ? '<i class="tt-viral">'+esc(T.ttViral)+'</i>' : '');
+}
 function ccTtClipTitle(c){ const T=L(); return c.kind==='win' ? T.ttClipWin(c.name) : c.kind==='podium' ? T.ttClipPod(c.name, c.place) : T.ttClipTop(c.name, c.place); }
 function careerTtHTML(){
   const T=L(), t=ccTt(), me=CAREER.player||{}, today=careerToday();
@@ -6492,8 +6520,8 @@ function careerTtHTML(){
   let face=''; try{ const cd=careerCard(); face=cd ? (photoURL(cd)||'') : ''; }catch(e){}
   const grid=t.clips.length ? '<div class="tt-grid">'+t.clips.map(c=>{
       const age=Math.max(0, ccDaysBetween(c.day, today));
-      return '<div class="tt-clip k-'+c.kind+(c.viral ? ' viral' : '')+'">'+(face ? '<img class="tt-bg" src="'+esc(face)+'" alt="" loading="lazy" onerror="this.remove()">' : '')+(c.viral ? '<i class="tt-viral">'+esc(T.ttViral)+'</i>' : '')+'<div class="tt-clip-in">'+
-        '<b>'+esc(ccTtClipTitle(c))+'</b><small>▶ '+ccNum(c.v||0)+' · '+esc(T.ttAgo(age))+'</small></div></div>'; }).join('')+'</div>'
+      return '<div class="tt-clip k-'+c.kind+(c.viral ? ' viral' : '')+'">'+ccTtThumbHTML(c, T)+'<div class="tt-clip-in">'+
+        '<b>'+esc(ccTtClipTitle(c))+'</b><small class="tt-tags">#fortnite #fncs #fortnitecompetitive</small><small>▶ '+ccNum(c.v||0)+' · '+esc(T.ttAgo(age))+'</small></div></div>'; }).join('')+'</div>'
     : '<p class="ch-empty">'+esc(T.ttNone)+'</p>';
   return '<div class="tt-wrap">'+head+how+grid+'</div>';
 }
