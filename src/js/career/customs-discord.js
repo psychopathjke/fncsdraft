@@ -1564,7 +1564,7 @@ function ccCrewDuo(k){
 }
 function ccCrewVoiceWhy(){
   const T=L(), v=ccCrew().voice;
-  if(v && v.day===careerToday()) return T.crVoiceIn;
+  if(v && v.day===careerToday()) return '';   // энергия за войс уже потрачена сегодня: переход и выход бесплатно
   if(CAREER.career.seasonOver) return T.ccSeasonOver;
   if(careerDayClosed()) return T.crDayGone;
   const act=ccActById('voice'), pre=ccPreEvent();
@@ -1579,6 +1579,8 @@ function ccCrewVc(m){ return Math.floor(careerRng(ccHashStr('crewvc|'+careerToda
 function ccCrewVoice(ch){
   ch=Math.max(0, Math.min(CC_CREW_VC-1, ch|0));
   if(ccCrewVoiceWhy()) return;
+  const was=ccCrew().voice;
+  if(was && was.day===careerToday()){ was.ch=ch; was.left=false; was.inviter=null; careerSave(); careerRenderHub('discord'); return; }
   if(!careerDoAct('voice')) return;
   const c=ccCrew(), today=careerToday(), inVoice=ccCrewMembers().filter(m=>ccCrewStatus(m)==='voice' && ccCrewVc(m)===ch);
   inVoice.forEach(m=>ccCrewRelAdd(m, 2));
@@ -1589,6 +1591,7 @@ function ccCrewVoice(ch){
   c.voice={day:today, ch:ch, inviter:inviter};
   careerSave(); careerRenderHub('discord');
 }
+function ccCrewVoiceLeave(){ const v=ccCrew().voice; if(!v || v.day!==careerToday()) return; v.left=true; v.inviter=null; careerSave(); careerRenderHub('discord'); }
 // Чат дня: несколько сообщений участников и одно тебе, с ответом.
 function ccCrewChat(members){
   const T=L(), today=careerToday(), rnd=careerRng(ccHashStr('crewchat|'+today)), cr=CAREER.career;
@@ -1670,7 +1673,7 @@ function ccCrewHTML(chan, msg){
       ccCrewAv(chat.toYou.m));
     if(done && done!=='r3') chatHTML+=msg(CAREER.player.nick, false, '<p>'+esc(T['crR'+done.slice(1)])+'</p>');
   }
-  const vWhy=ccCrewVoiceWhy(), vIn=!!(c.voice && c.voice.day===today), vCh=vIn ? (c.voice.ch|0) : -1;
+  const vWhy=ccCrewVoiceWhy(), vPaid=!!(c.voice && c.voice.day===today), vIn=vPaid && !c.voice.left, vCh=vIn ? (c.voice.ch|0) : -1;
   // Зашёл в войс - ты тоже в списке своего канала, своей карточкой (как в Discord: себя видно в канале).
   const meV='<span class="cr-vm cr-vm-me" title="'+esc(CAREER.player.nick||'')+'"><span class="dc-av">'+(ccDcFace() ? ccDcImg(ccDcFace(), 'ME') : 'ME')+'</span><i>'+esc(CAREER.player.nick||'')+'</i></span>';
   // В день капа напарники сидят в войсе команды - в общих каналах их нет (Notion 22.11, shxrk был в двух сразу).
@@ -1680,8 +1683,9 @@ function ccCrewHTML(chan, msg){
     return '<div class="cr-voice">'+((inV.length || here)
         ? (here ? meV : '')+inV.map(m=>'<span class="cr-vm" title="'+esc(ccHandle(m.handle))+'"><span class="dc-av">'+ccCrewAv(m)+'</span><i>'+esc(ccHandle(m.handle))+'</i></span>').join('')
         : '<p class="dc-sub">'+esc(T.crVoiceEmpty)+'</p>')+'</div>'+
-      '<div class="dc-act"><button class="dc-btn'+(here ? ' ghost' : '')+'"'+(vWhy ? ' disabled' : '')+' onclick="ccCrewVoice('+ch+')">'+
-        esc(here ? T.crVoiceIn : T.crVoiceJoin)+(vIn ? '' : ' <em>'+ccActById('voice').energy+T.ccEnergyMark+'</em>')+'</button>'+
+      '<div class="dc-act">'+(here
+        ? '<button class="dc-btn ghost" onclick="ccCrewVoiceLeave()">'+esc(T.crVoiceLeave)+'</button>'
+        : '<button class="dc-btn"'+(vWhy ? ' disabled' : '')+' onclick="ccCrewVoice('+ch+')">'+esc(T.crVoiceJoin)+(vPaid ? '' : ' <em>'+ccActById('voice').energy+T.ccEnergyMark+'</em>')+'</button>')+
         (vWhy && !vIn ? '<span class="dc-why">'+esc(vWhy)+'</span>' : vIn && !here ? '<span class="dc-why">'+esc(T.crVoiceElsewhere(T['crVc'+(vCh+1)]))+'</span>' : '')+'</div>';
   };
   const last=c.last && c.last.day===today ? '<div class="dc-res">'+esc(c.last.text)+'</div>' : '';
