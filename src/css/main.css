@@ -10484,3 +10484,33 @@
   @media(max-width:600px){ #screen-career-create #ccDiffChips{grid-template-columns:1fr 1fr;} #screen-career-create #ccDiffChips .cc-rar-mythic{grid-column:span 2;} }
   /* Ноги скина на диске: картинка опущена на свой прозрачный запас снизу (ccLbFigCut, --lb-gap). */
   .cc-lb-fig img.full:not(.cut){transform:translateY(calc(var(--lb-gap, 0) * 100%));}
+  /* ЦЕНТР НА ТЕЛЕФОНЕ КОМПАКТНО, КАК FORTNITE (22.11, его «с телефона очень убого выглядит, именно центр», выбор «Компактно,
+     как Fortnite»): шапка в две короткие строки, без рамки в рамке, без второго кошелька в лобби, сцена крупнее, колонки ровно. */
+  @media(max-width:700px){
+    /* Шапка: ник и рейтинг в строку, под ними энергия, деньги, форма, репутация числами; строка сезона/недели/подписчиков убрана (неделя - в полосе дней). */
+    #screen-career-hub .ch-top{display:grid;grid-template-columns:1fr auto;align-items:center;}
+    #screen-career-hub .ch-who{padding:10px 8px 6px 14px;}
+    #screen-career-hub .ch-ovr{margin:0 12px 0 0;padding:0 12px;height:38px;}
+    #screen-career-hub #chPurseNow{grid-column:1 / -1;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;padding:4px 14px 10px;}
+    #screen-career-hub #chPurseNow > *{min-width:0;}
+    #screen-career-hub #chPurseNow > .ch-go:has(.ch-vb){display:none;}
+    #screen-career-hub #chPurseNow .ch-meter, #screen-career-hub #chPurseNow .ch-rep-w, #screen-career-hub #chPurseNow .ch-tip{display:none;}
+    #screen-career-hub #chPurseNow em{font-size:9.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    #screen-career-hub #chPurseNow b{font-size:15px;white-space:nowrap;}
+    #screen-career-hub #chPurse{display:none;}
+    /* Без рамки в рамке: лобби во всю ширину карточки хаба. */
+    #chBody:has(> .cc-lobby.cc-lb-full){padding:0;}
+    #chBody > .cc-lobby.cc-lb-full{border-radius:0;width:auto;margin:0;}
+    .cc-lobby.cc-lb-full .cc-lb-wallet{display:none;}
+    .cc-lobby.cc-lb-full .cc-lb-top{padding:8px 10px;}
+    /* Сцена крупнее, фигуры на весь экран. */
+    .cc-lobby.cc-lb-full .cc-lb-stage{height:430px;}
+    /* Колонки ровно по ширине, без сдвига вбок. */
+    .cc-lobby.cc-lb-full .cc-lb-left, .cc-lobby.cc-lb-full .cc-lb-right{left:0 !important;right:0 !important;width:auto !important;padding:0 10px 8px !important;}
+    /* Кнопка турнира - сразу под персонажами, как Play в лобби; карточка новости - после дня. */
+    .cc-lobby.cc-lb-full .cc-lb-news{order:2;}
+    .cc-lobby.cc-lb-full .cc-day-in{flex-direction:column;}
+    .cc-lobby.cc-lb-full .cc-day-in > .ch-play{order:-1;margin:0 0 8px;}
+    /* День капа: выезды в другие регионы - под кнопками игры, а не между названием капа и Play. */
+    .cc-lobby.cc-lb-full .ch-art-in > .cc-away{order:3;margin-top:8px;}
+  }
