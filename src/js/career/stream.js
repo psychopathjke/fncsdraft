@@ -161,7 +161,8 @@ function ccColabTimes(name){ const cr=CAREER && CAREER.career; return (cr && cr.
 function ccColabOdds(name){
   const fol=(typeof ccProAmFollowers==='function') ? ccProAmFollowers(name) : 0;
   const ratio=fol>0 ? careerReach()/fol : 1;
-  return Math.max(CC_COLAB_ASK.lo, Math.min(CC_COLAB_ASK.hi, CC_COLAB_ASK.base+CC_COLAB_ASK.per*ratio));
+  // Гифт-сабы креатору (ccGiftSubs) - до +25 % к согласию; потолок общий.
+  return Math.max(CC_COLAB_ASK.lo, Math.min(CC_COLAB_ASK.hi, CC_COLAB_ASK.base+CC_COLAB_ASK.per*ratio+(typeof ccGiftBonus==='function' ? ccGiftBonus(name) : 0)));
 }
 // Сколько приходит от коллаба с ним сейчас: его доля аудитории, урезанная повторами.
 function ccColabFrom(name){
@@ -201,7 +202,7 @@ function ccColabPanelHTML(){
         : `<button class="tv-colab-go" onclick="careerColabAsk('${jsq(n)}')">${esc(T.ccColabAsk)}</button>`;
       return `<div class="tv-colab-row"><span class="tv-av">${ava?`<img src="${ava}" alt="" loading="lazy" onerror="this.remove()">`:esc(n.slice(0,2).toUpperCase())}</span>
         <div class="tv-colab-in"><b>@${esc(ccHandle(n))}</b><em>${ccFollowers(ccProAmFollowers(n))} Twitch · ${esc(T.ccColabOdds(Math.round(ccColabOdds(n)*100)))}${times?' · '+esc(T.ccColabTimes(times)):''}</em></div>
-        ${act}</div>`; }).join('')}${all.length>CC_COLAB_SHOW ? `<button type="button" class="tv-colab-more" onclick="CC_COLAB_ALL=!CC_COLAB_ALL;careerRenderHub('streams')">${esc(CC_COLAB_ALL ? T.tvColabLess : T.tvColabMore(rest))}</button>` : ''}</div>`;
+        ${act}<button class="tv-colab-gift" title="${esc(T.gsRel('+'+Math.round(ccGiftBonus(n)*100)+'%'))}" onclick="ccGiftSubs('${jsq(n)}')">${esc(T.gsBtn(ccMoney(CC_GIFT_COST)))}</button></div>`; }).join('')}${all.length>CC_COLAB_SHOW ? `<button type="button" class="tv-colab-more" onclick="CC_COLAB_ALL=!CC_COLAB_ALL;careerRenderHub('streams')">${esc(CC_COLAB_ALL ? T.tvColabLess : T.tvColabMore(rest))}</button>` : ''}</div>`;
 }
 function ccStreamMate(){
   const cr=CAREER && CAREER.career; if(!cr) return null;
@@ -2002,6 +2003,7 @@ function careerStreamsHTML(){
           cr.streamLast.label?' · '+esc(cr.streamLast.label):''}${cr.streamLast.day?' · '+esc(ccStamp({day:cr.streamLast.day})):''}</div>${
           ccTvSumTilesHTML(cr.streamLast.sum)}${ccTvSumChartHTML(cr.streamLast.sum)}</div>` : ''}
       ${live ? '' : ccColabPanelHTML()}
+      ${live ? '' : ccPredTileHTML()}
       ${careerTwBarHTML()}
     </main>
     <aside class="tv-chat">

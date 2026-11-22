@@ -1733,7 +1733,7 @@ function careerRenderHubBody(tab){
   // Медиа в цветах своих сетей (28.10, его «соцсети в цвете X, стримы в цвете твич, youtube в цветах ютуб»).
   // Папки входящих (клубы, игроки, зрители, хейтеры, лента) - наверху соцсети: из полосы вкладок их сменили кнопки медиа.
   if(CH_TAB==='social'){ let nb=''; try{ nb=careerNoteBarHTML(); }catch(e){}
-    body.innerHTML=ccMediaPhHTML()+(nb ? '<div class="cc-lb-note cc-social-note">'+nb+'</div>' : '')+'<div class="cc-media cc-media-x">'+careerSocialHTML()+'</div>'; return; }
+    body.innerHTML=ccMediaPhHTML()+(nb ? '<div class="cc-lb-note cc-social-note">'+nb+'</div>' : '')+ccRumorTileHTML()+'<div class="cc-media cc-media-x">'+careerSocialHTML()+'</div>'; return; }
   if(CH_TAB==='tiktok'){ body.innerHTML=ccMediaPhHTML()+'<div class="cc-media cc-media-tt">'+careerTtHTML()+'</div>'; return; }
   if(CH_TAB==='youtube'){ body.innerHTML=ccMediaPhHTML()+'<div class="cc-media cc-media-yt">'+careerYtHTML()+'</div>'; return; }
   if(CH_TAB==='discord'){ body.innerHTML=ccMediaPhHTML()+'<div class="cc-media cc-media-dc">'+ccDiscordHTML()+'</div>'; try{ ccDcLayout(body); }catch(e){ console.error(e); } return; }
@@ -3019,7 +3019,7 @@ function careerDuoTileHTML(){
    who is hired by the month. The rival closes it, because he is the only one
    here who does not want anything from you except to finish above you. */
 function careerMeHTML(){
-  return ccWrapBtnHTML()+careerMeHTML0();
+  return ccWrapBtnHTML()+ccVacTileHTML()+ccInvTileHTML()+careerMeHTML0();
 }
 function careerMeHTML0(){
   const card=careerCard(), mates=careerMates(), seats=careerMateSeats();
@@ -3218,7 +3218,7 @@ function ccStaffBadge(r){
   return `<span class="cc-staff-rt ${cls}">${r}</span>`;
 }
 function ccStaffCards(){
-  const T=L(), S=T.ccStaffRole, out=[];
+  const T=L(), S=Object.assign({physio:T.ccPhysio}, T.ccStaffRole), out=[];
   // Коуч
   { const w=ccCoach(), row=w ? (CC_COACHES.find(c=>c.id===w.id)||w) : null;
     out.push(w ? {role:S.coach, name:w.name, at:w.at, photo:w.photo, r:row.rating||ccCoachRatingOf(row),
@@ -3241,7 +3241,7 @@ function ccStaffCards(){
                   fx:T.ccStaffMktFx((m.rate!=null ? m.rate : ccMktTermsOf(row).rate).toFixed(2)), until:m.until, year:(m.months||1)>=12, open:'ccMktPickOpen()', end:'careerEndMkt()'}
                : {role:S.mkt, open:'ccMktPickOpen()'}); }
   // Аналитик и психолог
-  for(const kind of ['analyst','psych']){
+  for(const kind of ['analyst','psych','physio']){
     const m=ccStaff2(kind);
     out.push(m ? {role:S[kind], name:m.name, at:m.at, photo:m.photo, r:m.rating, fx:ccStaff2Effect(kind, m.rating),
                   until:m.until, year:(m.months||1)>=12, open:"ccStaff2PickOpen('"+kind+"')", end:"careerEndStaff2('"+kind+"')"}
@@ -4460,6 +4460,7 @@ const CC_DAY_ACTS=[
   // Коучинг за деньги и занятие с учеником (22.11): свои плитки во вкладке «Тренировка», кнопок дня нет (side).
   {id:'lesson', energy:20, gain:{}, side:true, lesson:true},
   {id:'mentor', energy:20, gain:{}, side:true, mentor:true},
+  {id:'patch', energy:20, gain:{}, side:true, patch:true},
   // Разминка перед турниром: только в день турнира, форма на вечер (ccPreEvent, CC_WARM_FORM).
   {id:'warm',   energy:15, gain:{}, warm:true},
   /* Discord-тусовка (его «да» на план 21.11, ccCrewHTML): не кнопки дня, а действия из Discord, поэтому в панели дня

@@ -731,7 +731,7 @@ function careerEnergyMax(){
   // chair, and the better one is the one you are sitting in.
   const slots={};
   // The rooms you are not working in are part of what a day is worth too.
-  let extra=(typeof ccFlatCap==='function') ? ccFlatCap() : 0;
+  let extra=((typeof ccFlatCap==='function') ? ccFlatCap() : 0)+((typeof ccPhysioCap==='function') ? ccPhysioCap() : 0);   // физио штаба (22.11)
   CC_SHOP.forEach(it=>{
     if(!it.cap || !careerOwns(it.id)) return;
     if(!it.slot){ extra+=it.cap; return; }
@@ -958,6 +958,7 @@ function careerDoAct(id){
   if(act.rest || act.talk || act.voice || act.crew) ccTiltClear();
   if(act.lesson) ccLessonRun();
   if(act.mentor) ccMentorRun();
+  if(act.patch) ccPatchAdapt();
   // The same taper the cup's own growth uses. Without it training ran at full
   // speed right up to the ceiling and every career hit its own in the first
   // season, then stood still for seven more — a mode that is over after a year.

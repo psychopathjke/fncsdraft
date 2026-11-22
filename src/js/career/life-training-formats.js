@@ -745,6 +745,7 @@ function careerAdvanceBody(iso){
   try{ ccLifeTick(); }catch(e){ if(typeof console!=='undefined') console.warn('life tick', e); }
   if(typeof careerSacTick==='function') careerSacTick();       // код поддержки — за месяц
   if(typeof careerTwSubsTick==='function') careerTwSubsTick(); // подписки на каналы — продление
+  try{ ccLife22Tick(); }catch(e){ if(typeof console!=='undefined') console.warn('life22 tick', e); }
   try{ ccTtTick(); }catch(e){ if(typeof console!=='undefined') console.warn('tt tick', e); }
   try{ ccYtTick(); }catch(e){ if(typeof console!=='undefined') console.warn('yt tick', e); }   // YouTube: просмотры роликов за день
   if(cr.seasonOver) careerAwardSeason();

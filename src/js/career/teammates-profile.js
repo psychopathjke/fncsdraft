@@ -3336,7 +3336,7 @@ function careerTrainTabHTML(){
   const six=CAREER.player.attrs || ccOwnAttrs();
   // Сначала карты, под ними план недели и таблица Noble (если на неделе были сессии).
   const noble=ccNobleBoardHTML();
-  const below=ccWatchTileHTML()+ccLessonTileHTML()+ccMentorTileHTML()+ccRkTileHTML()+ccTrainPlanHTML()+(noble ? '<div class="ch-tile tw-tile"><h4>'+(ccCareerRegion()==='EU' ? '<img class="tw-noble-ic" src="items/creative/noble-crown.png" alt="">Noble Practice' : esc(ccPracSrv()))+'</h4>'+noble+'</div>' : '');
+  const below=ccPatchTileHTML()+ccWatchTileHTML()+ccLessonTileHTML()+ccMentorTileHTML()+ccRkTileHTML()+ccTrainPlanHTML()+(noble ? '<div class="ch-tile tw-tile"><h4>'+(ccCareerRegion()==='EU' ? '<img class="tw-noble-ic" src="items/creative/noble-crown.png" alt="">Noble Practice' : esc(ccPracSrv()))+'</h4>'+noble+'</div>' : '');
   if(ccCentreDayOpen() || ccPreEvent()){
     CC_DAY_VIEW='train';
     try{ return '<div class="cc-train-tab">'+careerDayPanelHTML(null)+below+'</div>'; } finally{ CC_DAY_VIEW=''; }

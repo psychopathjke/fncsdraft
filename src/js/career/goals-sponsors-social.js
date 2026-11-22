@@ -2579,10 +2579,11 @@ function careerHireStaff2(kind, id, months){
 function careerEndStaff2(kind){ if(!CAREER[kind]) return false; CAREER[kind]=null; careerSave(); careerRenderHub(); return true; }
 function ccStaff2Effect(kind, rating){
   const k=Math.max(0, Math.min(1, ((rating||60)-60)/35));
+  if(kind==='physio') return L().ccPhysioCap(Math.round(5+10*k));
   return kind==='analyst' ? L().ccAnalystPow(Math.round(1+2*k)) : L().ccPsychSoft(Math.round((0.25+0.25*k)*100));
 }
 function careerStaff2TileHTML(kind){
-  const m=ccStaff2(kind), T=L(), K=kind==='analyst' ? 'ccAnalyst' : 'ccPsych';
+  const m=ccStaff2(kind), T=L(), K=kind==='analyst' ? 'ccAnalyst' : kind==='physio' ? 'ccPhysio' : 'ccPsych';
   if(m) return `<div class="ch-tile">
     <h4>${T[K]}</h4>
     <div class="ch-orghead">${m.photo ? `<img class="ch-coach-av" src="${PHOTO_DIR}${esc(m.photo)}" alt="" onerror="this.remove()">` : ''}
@@ -2602,7 +2603,7 @@ function careerStaff2TileHTML(kind){
   </div>`;
 }
 function ccStaff2PickOpen(kind){
-  const cr=CAREER.career, T=L(), K=kind==='analyst' ? 'ccAnalyst' : 'ccPsych', on=ccStaff2(kind);
+  const cr=CAREER.career, T=L(), K=kind==='analyst' ? 'ccAnalyst' : kind==='physio' ? 'ccPhysio' : 'ccPsych', on=ccStaff2(kind);
   const rows=ccStaff2List(kind).map(p=>{
     const r=ccStaff2Rating(kind, p), paid=ccOrgPays(kind), cost=ccStaff2Cost(kind, p), mine=!!on && on.id===p.id, can=!mine && (paid || (cr.balance||0)>=cost);
     return `<div class="cc-buy${mine?' own':''}">
@@ -6592,4 +6593,191 @@ function ccMentorTileHTML(){
           '<button class="dc-btn sm" onclick="ccMentorPick(\''+jsq(p.handle)+'\')">'+esc(T.mtPick)+'</button></div>').join('')+'</div>' : '<p class="yt-sub">'+esc(T.mtNone)+'</p>'; } }
   return '<div class="ch-tile cc-mentor"><h4>'+esc(T.mtTitle)+'</h4><p class="yt-sub">'+esc(T.mtNote)+'</p>'+body+'</div>';
 }
+
+/* ===== СЛУХИ, РЕЙТИНГ МЕДИА, МЕЖСЕЗОНЬЕ, ПРОГНОЗ С ЧАТОМ, ПАТЧИ, ФИЗИО, ИНВЕСТИЦИИ, ГИФТ-САБЫ (22.11, его «12456 12») =====
+   Один дневной тик ccLife22Tick (рядом с ccTtTick). Все числа - решение, не замер. */
+const CC_INSIDER={name:'FNCS Insider'};
+function ccL22(){ const cr=CAREER.career; cr.l22=cr.l22||{}; return cr.l22; }
+function ccLife22Tick(){
+  const cr=CAREER && CAREER.career; if(!cr || cr.seasonOver) return;
+  const x=ccL22(), today=careerToday();
+  try{ ccRumorTick(x, today); }catch(e){ console.warn('rumor', e); }
+  try{ ccMediaRankTick(x, today); }catch(e){ console.warn('media rank', e); }
+  try{ ccVacApply(x); }catch(e){ console.warn('vac', e); }
+  try{ ccPredResolve(x, today); }catch(e){ console.warn('pred', e); }
+  try{ ccPatchTick(x, today); }catch(e){ console.warn('patch', e); }
+  try{ ccInvMonth(x, today); }catch(e){ console.warn('inv', e); }
+}
+function ccL22Rng(tag){ return careerRng(ccHashStr('l22|'+tag+'|'+(CAREER.player.nick||'')+'|'+careerToday())); }
+function ccL22Orgs(){
+  const seen=new Set(), out=[];
+  try{ careerRosterNowEU().forEach(p=>{ const o=p && p.org; if(o && !seen.has(o)){ seen.add(o); out.push(o); } }); }catch(e){}
+  return out;
+}
+
+/* 1. Слухи. Раз в неделю инсайдер пишет о переходе кого-то со сцены; про тебя - когда есть предложение от орги в личке или ты
+   без клуба и силён (рейтинг от 85), шанс 35 % в неделю. Ответ: опровергнуть (репутация +1), промолчать, подогреть (охват +0.3 %). */
+function ccRumorTick(x, today){
+  if(x.rumDay && ccDaysBetween(x.rumDay, today)<7) return;
+  x.rumDay=today;
+  const rnd=ccL22Rng('rum'), orgs=ccL22Orgs(); if(!orgs.length) return;
+  try{ const pool=careerRosterNowEU().filter(p=>p && p.handle).slice(0, 40); const p=pool[Math.floor(rnd()*pool.length)];
+    const to=orgs.filter(o=>o!==p.org)[Math.floor(rnd()*Math.max(1, orgs.length-1))];
+    if(p && to) careerNews('flat', 'rmOther', [ccHandle(p.handle), to], {by:CC_INSIDER}); }catch(e){}
+  let offer=null; try{ offer=(careerDms()||[]).find(t=>t && t.state==='offer' && t.who && t.who.org); }catch(e){}
+  const strong=!CAREER.org && (CAREER.player.ovr||0)>=85;
+  if(!(offer || strong) || rnd()>0.35) return;
+  const org=offer ? (offer.who.org.name||offer.who.org) : orgs[Math.floor(rnd()*orgs.length)];
+  if(!org || (CAREER.org && CAREER.org.name===org)) return;
+  careerNews('flat', 'rmAbout', [CAREER.player.nick||'', String(org)], {by:CC_INSIDER});
+  x.rumor={day:today, org:String(org), done:false};
+}
+function ccRumorAnswer(k){
+  const x=ccL22(), r=x.rumor; if(!r || r.done) return;
+  r.done=k;
+  if(k==='deny'){ try{ careerRepAdd(1); }catch(e){} careerNews('flat', 'rmDenyPost', []); }
+  else if(k==='tease'){ try{ careerReachAdd(Math.round((careerReach()||0)*0.003)); }catch(e){} careerNews('flat', 'rmTeasePost', []); }
+  careerSave(); careerRenderHub('social');
+}
+function ccRumorTileHTML(){
+  const r=ccL22().rumor, T=L(); if(!r || ccDaysBetween(r.day, careerToday())>7) return '';
+  if(r.done) return '';
+  return '<div class="ch-tile cc-rumor"><h4>'+esc(T.rmTitle)+'</h4><p class="yt-sub">'+esc(T.rmNote(r.org))+'</p><div class="cr-replies">'+
+    [['deny', T.rmDeny], ['quiet', T.rmQuiet], ['tease', T.rmTease]].map(([k, t])=>'<button type="button" class="dc-btn sm'+(k==='quiet' ? ' ghost' : '')+'" onclick="ccRumorAnswer(\''+k+'\')">'+esc(t)+'</button>').join('')+'</div></div>';
+}
+
+/* 2. Рейтинг медиа: первого числа - топ-10 региона прошлого месяца по таблице PR (careerPrRows). Ты в нём - свой пост с местом;
+   был близко (до 30-го) - пост «работаем». */
+function ccMediaRankTick(x, today){
+  const m=today.slice(0, 7); if(x.mrMonth===m) return;
+  const first=!x.mrMonth; x.mrMonth=m; if(first) return;   // первый день карьеры - без поста
+  const rows=careerPrRows(); if(rows.length<10) return;
+  const prev=new Date(today+'T00:00:00Z'); prev.setUTCMonth(prev.getUTCMonth()-1);
+  let mon=''; try{ mon=prev.toLocaleString(typeof LANG!=='undefined' ? LANG : 'en', {month:'long', timeZone:'UTC'}); }catch(e){ mon=String(prev.getUTCMonth()+1); }
+  const reg=ccCareerRegion(), top=rows.slice(0, 10);
+  careerNews('flat', 'mrPost', [reg, mon, top.map((r, i)=>(i+1)+'. '+(r.you ? (CAREER.player.nick||'') : ccHandle(r.name))).join(', ')], {by:CC_INSIDER});
+  const me=rows.findIndex(r=>r.you);
+  if(me>=0 && me<10) careerNews('good', 'mrYou', [reg, mon, me+1]);
+  else if(me>=10 && me<30) careerNews('flat', 'mrOut', [mon]);
+}
+
+/* 4. Межсезонье: выбор отпуска на итогах сезона; бонус - в первый день нового сезона (ccVacApply). */
+const CC_VAC={home:{cost:0, form:0}, trip:{cost:3000, form:0.4, places:['Barcelona', 'Tokyo', 'Dubai', 'Bali', 'Miami']},
+              lux:{cost:15000, form:0.8, places:['the Maldives', 'Monaco', 'Bora Bora']}};
+function ccVacPick(k){
+  const cr=CAREER.career, v=CC_VAC[k], x=ccL22(); if(!v || !cr.seasonOver) return;
+  if(x.vac && x.vac.season===cr.season) return;
+  if((cr.balance||0)<v.cost) return;
+  cr.balance-=v.cost;
+  const rnd=ccL22Rng('vac'), place=v.places ? v.places[Math.floor(rnd()*v.places.length)] : '';
+  x.vac={season:cr.season, k:k, place:place, applied:false};
+  careerSave(); careerRenderHub('me');
+}
+function ccVacApply(x){
+  const cr=CAREER.career, v=x.vac; if(!v || v.applied || v.season>=cr.season) return;
+  v.applied=true;
+  const t=CC_VAC[v.k]; if(!t) return;
+  if(t.form){ cr.form=(cr.form||0)+t.form; try{ cr.energy=careerEnergyMax(); }catch(e){} }
+  if(v.place) careerNews('good', 'vcPost', [v.place]);
+}
+function ccVacTileHTML(){
+  const cr=CAREER.career, T=L(), x=ccL22(); if(!cr.seasonOver) return '';
+  const chosen=x.vac && x.vac.season===cr.season ? x.vac : null;
+  const lbl={home:[T.vcHome, T.vcHomeN], trip:[T.vcTrip, T.vcTripN], lux:[T.vcLux, T.vcLuxN]};
+  return '<div class="ch-tile cc-vac"><h4>'+esc(T.vcTitle)+'</h4><p class="yt-sub">'+esc(T.vcNote)+'</p>'+
+    (chosen ? '<p class="yt-sub"><b>'+esc(T.vcDone(lbl[chosen.k][0]+(chosen.place ? ', '+chosen.place : '')))+'</b></p>'
+      : '<div class="cc-vac-row">'+Object.keys(CC_VAC).map(k=>{ const v=CC_VAC[k], can=(cr.balance||0)>=v.cost;
+          return '<button type="button" class="cc-vac-b"'+(can ? '' : ' disabled')+' onclick="ccVacPick(\''+k+'\')"><b>'+esc(T.vcBtn(lbl[k][0], v.cost ? ccMoney(v.cost) : '$0'))+'</b><small>'+esc(lbl[k][1])+'</small></button>'; }).join('')+'</div>')+'</div>';
+}
+
+/* 5. Прогноз с чатом: в день чужого финала (ccStreamWatchEvent) - выбор победителя из шести сильнейших региона.
+   Итог - по новости ccNewsWorldWon за три дня: угадал - Twitch +1 % (не меньше 50) и пост. */
+function ccPredCands(){ try{ return careerRosterNowEU().filter(p=>p && p.handle).slice().sort((a,b)=>((b._ovr||0)-(a._ovr||0))).slice(0, 6); }catch(e){ return []; } }
+function ccPredPick(h){ const ev=(typeof ccStreamWatchEvent==='function') ? ccStreamWatchEvent() : null; if(!ev) return;
+  ccL22().pred={day:careerToday(), ev:String(ev.label||ev.title||''), h:h}; careerSave(); careerRenderHub('streams'); }
+function ccPredResolve(x, today){
+  const p=x.pred; if(!p || p.done) return;
+  const won=(CAREER.career.news||[]).find(n=>n && n.k==='ccNewsWorldWon' && n.day && n.day>=p.day && ccDaysBetween(p.day, n.day)<=3);
+  if(!won){ if(ccDaysBetween(p.day, today)>3) p.done='gone'; return; }
+  const w=String((won.a||[])[1]||'').replace(/<[^>]+>/g, ''), ev=String((won.a||[])[0]||p.ev).replace(/<[^>]+>/g, '');
+  const hit=w.toLowerCase().indexOf(String(ccHandle(p.h)).toLowerCase())>=0;
+  p.done=hit ? 'win' : 'lose';
+  if(hit){ const cr=CAREER.career, add=Math.max(50, Math.round((cr.twitch||0)*0.01)); cr.twitch=(cr.twitch||0)+add; careerNews('good', 'pdWin', [ccHandle(p.h), ev, ccNum(add)]); }
+  else careerNews('flat', 'pdLose', [ccHandle(p.h), w, ev]);
+}
+function ccPredTileHTML(){
+  const ev=(typeof ccStreamWatchEvent==='function') ? ccStreamWatchEvent() : null; if(!ev) return '';
+  const T=L(), p=ccL22().pred, mine=p && p.day===careerToday() ? p : null, name=String(ev.label||ev.title||'');
+  return '<div class="ch-tile cc-pred"><h4>'+esc(T.pdTitle)+'</h4><p class="yt-sub">'+esc(T.pdNote(name))+'</p>'+
+    (mine ? '<p class="yt-sub"><b>'+esc(T.pdYour(ccHandle(mine.h)))+'</b></p>'
+      : '<div class="cc-mentor-list">'+ccPredCands().map(c=>'<div class="cc-mentor-row"><b>'+esc(ccHandle(c.handle))+'</b><em>'+(c._ovr||'')+'</em><button class="dc-btn sm" onclick="ccPredPick(\''+jsq(c.handle)+'\')">'+esc(T.pdPick)+'</button></div>').join('')+'</div>')+'</div>';
+}
+
+/* 6. Патчи: каждые 21 день сезона. Ослабляют агрессию (дробовики, мобильность) или игру на место (шторм, хил). Твой стиль -
+   по киллам за игру в последних десяти турнирах (от 1.0 - агрессия). Задел - форма −0.5, пока не разберёшь патч (занятие
+   «Разбор патча», 20 энергии, возвращает форму). */
+const CC_PATCH_EVERY=21, CC_PATCH_FORM=0.5;
+function ccMyStyle(){ const L10=(CAREER.career.log||[]).slice(-10); let el=0, g=0; L10.forEach(e=>{ el+=e.elims||0; g+=e.games||0; }); return g && el/g>=1 ? 'wkey' : 'place'; }
+function ccPatchTick(x, today){
+  if(!x.patchNext){ x.patchNext=ccAddDays(today, CC_PATCH_EVERY); return; }
+  if(today<x.patchNext) return;
+  x.patchNext=ccAddDays(today, CC_PATCH_EVERY);
+  const rnd=ccL22Rng('patch'), type=rnd()<0.5 ? 'wkey' : 'place', n=(x.patchN||0)+1; x.patchN=n;
+  const v='v'+(30+(CAREER.career.season||1))+'.'+(n*10);
+  const hit=(CAREER.career.log||[]).length>=3 && ccMyStyle()===type;
+  x.patch={day:today, v:v, type:type, hit:hit, adapted:false};
+  careerNews('flat', 'ptNews', [v, type==='wkey' ? L().ptWkey : L().ptPlace]);
+  if(hit) CAREER.career.form=(CAREER.career.form||0)-CC_PATCH_FORM;
+}
+function ccPatchAdapt(){ const p=ccL22().patch; if(!p || !p.hit || p.adapted) return; p.adapted=true; CAREER.career.form=(CAREER.career.form||0)+CC_PATCH_FORM; }
+function ccPatchGo(){ careerDoAct('patch'); careerSave(); careerRenderHub('train'); }
+function ccPatchTileHTML(){
+  const p=ccL22().patch, T=L(); if(!p || ccDaysBetween(p.day, careerToday())>CC_PATCH_EVERY) return '';
+  const act=CC_DAY_ACTS.find(a=>a.id==='patch'), can=act && careerEnergy()>=act.energy && !careerDayClosed() && !ccPreEvent();
+  return '<div class="ch-tile cc-patch"><h4>'+esc(T.ptTitle)+' · '+esc(p.v)+'</h4><p class="yt-sub">'+esc(p.type==='wkey' ? T.ptWkey : T.ptPlace)+'</p>'+
+    (!p.hit ? '<p class="yt-sub">'+esc(T.ptSafe)+'</p>' : p.adapted ? '<p class="yt-sub"><b>'+esc(T.ptAdapted)+'</b></p>'
+      : '<p class="yt-sub">'+esc(T.ptHit)+'</p><button class="ch-play"'+(can ? '' : ' disabled')+' onclick="ccPatchGo()">'+esc(ccPreEvent() ? T.crNotTourDay : T.ptAdaptBtn(act ? act.energy : 20))+'</button>')+'</div>';
+}
+
+/* 12а. Физио: третий в штабе рядом с аналитиком и психологом (CC_STAFF2). +5…+15 к запасу энергии (careerEnergyMax). */
+const CC_PHYSIOS=[
+  {id:'motion', name:'Motion Lab',     at:null, photo:null, x:0, rating:70, why:'sports physiotherapy'},
+  {id:'probody',name:'ProBody Clinic', at:null, photo:null, x:0, rating:80, why:'esports health programme'},
+  {id:'peak',   name:'Peak Physio',    at:null, photo:null, x:0, rating:90, why:'team physio for pro rosters'}
+];
+function ccPhysioCap(){ const m=(typeof ccStaff2==='function') ? ccStaff2('physio') : null; return !m ? 0 : Math.round(5+10*Math.max(0, Math.min(1, (m.rating-60)/35))); }
+
+/* 12б. Инвестиции: три проекта. Раз в месяц доход (rate) или крах (bust) - вложение пропадает. Забрать можно в любой день. */
+const CC_INV={drink:{rate:0.01, bust:0.005}, org:{rate:0.025, bust:0.02}, start:{rate:0.06, bust:0.08}};
+function ccInv(){ const x=ccL22(); x.inv=x.inv||{}; return x.inv; }
+function ccInvStep(){ const b=CAREER.career.balance||0; return Math.max(1000, Math.floor(b*0.1/1000)*1000); }
+function ccInvBuy(k){ const cr=CAREER.career, s=ccInvStep(); if(!CC_INV[k] || (cr.balance||0)<s) return; cr.balance-=s; const i=ccInv(); i[k]=i[k]||{amt:0, ret:0}; i[k].amt+=s; careerSave(); careerRenderHub('me'); }
+function ccInvSell(k){ const i=ccInv(); if(!i[k] || !i[k].amt) return; CAREER.career.balance=(CAREER.career.balance||0)+i[k].amt; i[k].amt=0; careerSave(); careerRenderHub('me'); }
+function ccInvMonth(x, today){
+  const m=today.slice(0, 7); if(x.invMonth===m) return; const first=!x.invMonth; x.invMonth=m; if(first) return;
+  const T=L(), i=ccInv(), rnd=ccL22Rng('inv');
+  Object.keys(i).forEach(k=>{ const v=i[k], c=CC_INV[k]; if(!v || !v.amt || !c) return;
+    if(rnd()<c.bust){ v.amt=0; careerNews('bad', 'ivBust', [T['iv'+(k==='drink' ? 'Drink' : k==='org' ? 'Org' : 'Start')]]); return; }
+    const pay=Math.round(v.amt*c.rate); CAREER.career.balance=(CAREER.career.balance||0)+pay; v.ret=(v.ret||0)+pay; });
+}
+function ccInvTileHTML(){
+  const T=L(), i=ccInv(), cr=CAREER.career, s=ccInvStep();
+  const rows=[['drink', T.ivDrink, T.ivDrinkN], ['org', T.ivOrg, T.ivOrgN], ['start', T.ivStart, T.ivStartN]].map(([k, n, d])=>{ const v=i[k]||{amt:0, ret:0};
+    return '<div class="cc-inv-row"><div class="cc-inv-in"><b>'+esc(n)+'</b><small>'+esc(d)+'</small>'+(v.amt || v.ret ? '<small>'+esc(T.ivHave(ccMoney(v.amt||0), ccMoney(v.ret||0)))+'</small>' : '')+'</div>'+
+      '<button class="dc-btn sm"'+((cr.balance||0)>=s ? '' : ' disabled')+' onclick="ccInvBuy(\''+k+'\')">'+esc(T.ivBuy(ccMoney(s)))+'</button>'+
+      (v.amt ? '<button class="dc-btn ghost sm" onclick="ccInvSell(\''+k+'\')">'+esc(T.ivSell(ccMoney(v.amt)))+'</button>' : '')+'</div>'; }).join('');
+  return '<div class="ch-tile cc-inv"><h4>'+esc(T.ivTitle)+'</h4><p class="yt-sub">'+esc(T.ivNote)+'</p>'+rows+'</div>';
+}
+
+/* 12в. Гифт-сабы креатору: $50 (десять сабов по $5). Каждый подарок +5 % к шансу, что он согласится на коллаб (до +25 %). */
+const CC_GIFT_COST=50;
+function ccGiftOf(name){ const g=ccL22().gift||{}; return g[hKey(name)]||0; }
+function ccGiftSubs(name){
+  const cr=CAREER.career; if((cr.balance||0)<CC_GIFT_COST) return;
+  cr.balance-=CC_GIFT_COST; const x=ccL22(); x.gift=x.gift||{}; x.gift[hKey(name)]=(x.gift[hKey(name)]||0)+1;
+  careerSave(); careerRenderHub('streams');
+}
+function ccGiftBonus(name){ return Math.min(0.25, 0.05*ccGiftOf(name)); }
+
+CC_STAFF2.physio={list:CC_PHYSIOS, cost:[400,3000]};
 

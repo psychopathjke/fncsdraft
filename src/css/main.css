@@ -10338,3 +10338,13 @@
   #screen-career-hub .tt-clip.k-win .tt-hook{background:#fff;color:#111;}
   #screen-career-hub .tt-tags{color:#8fd7ff;opacity:.9;}
   #screen-career-hub .tt-clip-in{z-index:1;}
+  /* 22.11: слухи, межсезонье, инвестиции, гифт-сабы. */
+  #screen-career-hub .cc-vac-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px;}
+  #screen-career-hub .cc-vac-b{display:flex;flex-direction:column;gap:3px;text-align:left;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.05);color:inherit;border-radius:10px;padding:10px 12px;font:inherit;cursor:pointer;}
+  #screen-career-hub .cc-vac-b:disabled{opacity:.45;cursor:default;}
+  #screen-career-hub .cc-vac-b small{opacity:.75;font-size:12px;}
+  #screen-career-hub .cc-inv-row{display:flex;align-items:center;gap:8px;padding:6px 0;border-top:1px solid rgba(255,255,255,.07);flex-wrap:wrap;}
+  #screen-career-hub .cc-inv-in{flex:1;min-width:180px;display:flex;flex-direction:column;}
+  #screen-career-hub .cc-inv-in small{opacity:.75;font-size:12px;}
+  #screen-career-hub .tv-colab-gift{border:0;border-radius:999px;background:#3a3a3d;color:#efeff1;font-weight:700;font-size:11px;padding:6px 10px;cursor:pointer;white-space:nowrap;margin-left:4px;}
+  #screen-career-hub .tv-colab-gift:hover{background:#53535f;}
