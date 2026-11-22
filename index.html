@@ -10956,6 +10956,24 @@
     body.cc-onair:not(.cc-onair-fold) #screen-career-hub.active .tv-player{width:min(100%, calc((100vh - 96px)*16/9));margin:0 auto;}
     body.cc-onair:not(.cc-onair-fold) #screen-career-hub.active .tv-player ~ *{display:none;}
   }
+  /* Список карьер плитками (Notion 22.11). Только #ccSlotGrid: слоты менеджера на тех же .cc-car остаются строками. */
+  #ccSlotGrid.cc-slot-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:12px;}
+  #ccSlotGrid .cc-tile{display:flex;flex-direction:column;align-items:center;text-align:center;gap:4px;padding:16px 10px 14px;cursor:pointer;
+    transition:border-color .15s,background .15s;}
+  #ccSlotGrid .cc-tile:hover{border-color:rgba(255,221,0,.55);}
+  #ccSlotGrid .cc-tile.on{border-color:#ffdd00;background:rgba(255,221,0,.07);}
+  #ccSlotGrid .cc-tile .cc-car-face{width:84px;height:84px;border-radius:10px;margin-bottom:6px;}
+  #ccSlotGrid .cc-tile-n{font-family:var(--font-display);font-size:19px;font-weight:600;color:#fff;max-width:100%;
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  #ccSlotGrid .cc-tile-r{font-size:12px;font-weight:700;color:#8ea6d6;}
+  #ccSlotGrid .cc-tile-r em{font-style:normal;font-family:var(--font-display);font-size:22px;color:#ffdd00;margin-right:2px;vertical-align:-2px;}
+  #ccSlotGrid .cc-tile-w{font-size:11px;font-weight:600;color:#6d82ad;}
+  #ccSlotGrid .cc-tile .cc-car-del{position:absolute;top:8px;right:8px;width:26px;height:26px;font-size:13px;}
+  #ccSlotGrid .cc-tile .cc-car-del.armed{width:auto;}
+  #ccSlotGrid .cc-car-new{display:flex;flex-direction:column-reverse;align-items:center;justify-content:center;gap:8px;min-height:190px;text-align:center;}
+  #ccSlotGrid .cc-car-new .cc-car-free{font-size:40px;line-height:1;color:#ffdd00;}
+  @media(max-width:560px){#ccSlotGrid.cc-slot-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;}
+    #ccSlotGrid .cc-tile .cc-car-face{width:64px;height:64px;}}
 /*@@PART shell.html@@*/
 </style>
 <!-- ?v= — это НЕ украшение, это починка того, что он поймал 24 августа.
@@ -123991,7 +124009,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='b2cd917b';
+const CC_BUILD='1abfbe40';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -128267,13 +128285,6 @@ function careerRenderSlots(){
   const grid=document.getElementById('ccSlotGrid');
   if(!grid) return;
   const here=ccSlot();
-  /* Где в сезоне карьера остановилась — долей года, а не датой. Год у карьеры
-     один и тот же (CC_YEAR_FROM…CC_YEAR_TO), поэтому позиция настоящая. */
-  const railOf=(day)=>{
-    const a=new Date(ccYearFrom()+'T00:00:00Z'), b=new Date(ccYearTo()+'T00:00:00Z');
-    const d=new Date((day||CC_YEAR_FROM)+'T00:00:00Z');
-    return Math.max(2, Math.min(100, Math.round((d-a)/(b-a)*100)));
-  };
   const cells=[]; let free=0, firstFree=0;
   for(let n=1; n<=CC_SLOTS; n++){
     const c=ccSlotCard(n);
@@ -128281,36 +128292,20 @@ function careerRenderSlots(){
     const state = c.retired ? L().ccSlotRetired
                 : c.over    ? L().ccSlotSeasonOver
                             : ccDayLabel(c.day);
-    /* Одна строка под ником вместо пяти строк таблицы: возраст, страна, сезон,
-       где встал, напарник — всё, что отвечает «что это за карьера». */
-    const meta=[
-      c.age ? String(c.age) : '',
-      c.country ? '<img class="cc-car-flag" src="flags/w20/'+
-        esc(ccCountryOf(String(c.country).toLowerCase()))+'.png" alt="">' : '',
-      (function(){ const t=ccSeasonTag(c.day); return String(c.day||'').slice(0,4)+(t.full ? ' · '+esc(t.full) : ''); })(),
-      esc(state),
-      c.mate ? esc(c.mate)+(c.mates>1 ? ' +'+(c.mates-1) : '') : '',
-      c.org ? esc(c.org) : '',
-      c.earnings ? '$'+ccNum(c.earnings) : ''
-    ].filter(Boolean).join('<span style="opacity:.4">·</span>');
-    cells.push('<div class="cc-car'+(n===here?' on':'')+'">'+
+    /* Плитка (Notion 22.11 «чтоб проще смотрелось», выбор «Плитки-карточки»): фото, ник, рейтинг с дивизионом, год и сезон.
+       Вся плитка открывает карьеру, × в углу удаляет. Возраст, напарник, клуб и деньги видны внутри карьеры. */
+    const tag=ccSeasonTag(c.day), when=String(c.day||'').slice(0,4)+(tag.short ? ' · '+tag.short : '');
+    const lvl=c.noDiv ? '' : ' · '+L().ccDivision+' '+c.div;
+    cells.push('<div class="cc-car cc-tile'+(n===here?' on':'')+'" role="button" tabindex="0" title="'+esc(state)+'"'+
+      ' onclick="careerSlotOpen('+n+')" onkeydown="if(event.key===\'Enter\')careerSlotOpen('+n+')">'+
       (c.face ? '<img class="cc-car-face" src="'+esc(c.face)+'" alt="" loading="lazy" onerror="this.remove()">'
               : '<span class="cc-car-face"></span>')+
-      '<div class="cc-car-id"><b>'+esc(c.nick)+
-        (c.team ? ' <span class="cc-car-duo">'+L().ccSlotDuoLive+'</span>' : '')+'</b>'+
-        '<em>'+meta+'</em></div>'+
-      '<div class="cc-car-ovr"><small>'+L().ccRoOvr+'</small>'+c.ovr+'</div>'+
-      (c.noDiv
-        ? '<div class="cc-car-div cc-car-se"><small>'+L().ccSlotSeason+'</small>'+esc(ccSeasonTag(c.day).short||'-')+'</div>'
-        : '<div class="cc-car-div"><small>'+L().ccDivision+'</small>'+c.div+'</div>')+
-      '<div class="cc-car-go">'+
-        '<button class="'+(n===here?'ch-play':'cc-car-open')+'" onclick="careerSlotOpen('+n+')">'+
-          L().ccSlotOpen+'</button>'+
-        '<button class="cc-car-del'+(CC_SLOT_ARMED===n?' armed':'')+
-          '" title="'+esc(L().ccSlotDelete)+'" onclick="careerSlotDrop('+n+')">'+
-          (CC_SLOT_ARMED===n ? esc(L().ccSlotDropSure) : '&times;')+'</button>'+
-      '</div>'+
-      '<span class="cc-car-rail"><i style="width:'+railOf(c.day)+'%"></i></span></div>');
+      '<b class="cc-tile-n">'+(c.country ? '<img class="cc-car-flag" src="flags/w20/'+esc(ccCountryOf(String(c.country).toLowerCase()))+'.png" alt=""> ' : '')+
+        esc(c.nick)+(c.team ? ' <span class="cc-car-duo">'+L().ccSlotDuoLive+'</span>' : '')+'</b>'+
+      '<span class="cc-tile-r"><em>'+c.ovr+'</em>'+esc(lvl)+'</span>'+
+      '<span class="cc-tile-w">'+esc(when)+(c.retired || c.over ? ' · '+esc(state) : '')+'</span>'+
+      '<button class="cc-car-del'+(CC_SLOT_ARMED===n?' armed':'')+'" title="'+esc(L().ccSlotDelete)+'" onclick="event.stopPropagation();careerSlotDrop('+n+')">'+
+        (CC_SLOT_ARMED===n ? esc(L().ccSlotDropSure) : '&times;')+'</button></div>');
   }
   /* Свободные слоты — одной строкой, а не половиной экрана пустых коробок.
      Их число тут и есть вся нужная информация. */

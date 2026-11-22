@@ -871,13 +871,6 @@ function careerRenderSlots(){
   const grid=document.getElementById('ccSlotGrid');
   if(!grid) return;
   const here=ccSlot();
-  /* Где в сезоне карьера остановилась — долей года, а не датой. Год у карьеры
-     один и тот же (CC_YEAR_FROM…CC_YEAR_TO), поэтому позиция настоящая. */
-  const railOf=(day)=>{
-    const a=new Date(ccYearFrom()+'T00:00:00Z'), b=new Date(ccYearTo()+'T00:00:00Z');
-    const d=new Date((day||CC_YEAR_FROM)+'T00:00:00Z');
-    return Math.max(2, Math.min(100, Math.round((d-a)/(b-a)*100)));
-  };
   const cells=[]; let free=0, firstFree=0;
   for(let n=1; n<=CC_SLOTS; n++){
     const c=ccSlotCard(n);
@@ -885,36 +878,20 @@ function careerRenderSlots(){
     const state = c.retired ? L().ccSlotRetired
                 : c.over    ? L().ccSlotSeasonOver
                             : ccDayLabel(c.day);
-    /* Одна строка под ником вместо пяти строк таблицы: возраст, страна, сезон,
-       где встал, напарник — всё, что отвечает «что это за карьера». */
-    const meta=[
-      c.age ? String(c.age) : '',
-      c.country ? '<img class="cc-car-flag" src="flags/w20/'+
-        esc(ccCountryOf(String(c.country).toLowerCase()))+'.png" alt="">' : '',
-      (function(){ const t=ccSeasonTag(c.day); return String(c.day||'').slice(0,4)+(t.full ? ' · '+esc(t.full) : ''); })(),
-      esc(state),
-      c.mate ? esc(c.mate)+(c.mates>1 ? ' +'+(c.mates-1) : '') : '',
-      c.org ? esc(c.org) : '',
-      c.earnings ? '$'+ccNum(c.earnings) : ''
-    ].filter(Boolean).join('<span style="opacity:.4">·</span>');
-    cells.push('<div class="cc-car'+(n===here?' on':'')+'">'+
+    /* Плитка (Notion 22.11 «чтоб проще смотрелось», выбор «Плитки-карточки»): фото, ник, рейтинг с дивизионом, год и сезон.
+       Вся плитка открывает карьеру, × в углу удаляет. Возраст, напарник, клуб и деньги видны внутри карьеры. */
+    const tag=ccSeasonTag(c.day), when=String(c.day||'').slice(0,4)+(tag.short ? ' · '+tag.short : '');
+    const lvl=c.noDiv ? '' : ' · '+L().ccDivision+' '+c.div;
+    cells.push('<div class="cc-car cc-tile'+(n===here?' on':'')+'" role="button" tabindex="0" title="'+esc(state)+'"'+
+      ' onclick="careerSlotOpen('+n+')" onkeydown="if(event.key===\'Enter\')careerSlotOpen('+n+')">'+
       (c.face ? '<img class="cc-car-face" src="'+esc(c.face)+'" alt="" loading="lazy" onerror="this.remove()">'
               : '<span class="cc-car-face"></span>')+
-      '<div class="cc-car-id"><b>'+esc(c.nick)+
-        (c.team ? ' <span class="cc-car-duo">'+L().ccSlotDuoLive+'</span>' : '')+'</b>'+
-        '<em>'+meta+'</em></div>'+
-      '<div class="cc-car-ovr"><small>'+L().ccRoOvr+'</small>'+c.ovr+'</div>'+
-      (c.noDiv
-        ? '<div class="cc-car-div cc-car-se"><small>'+L().ccSlotSeason+'</small>'+esc(ccSeasonTag(c.day).short||'-')+'</div>'
-        : '<div class="cc-car-div"><small>'+L().ccDivision+'</small>'+c.div+'</div>')+
-      '<div class="cc-car-go">'+
-        '<button class="'+(n===here?'ch-play':'cc-car-open')+'" onclick="careerSlotOpen('+n+')">'+
-          L().ccSlotOpen+'</button>'+
-        '<button class="cc-car-del'+(CC_SLOT_ARMED===n?' armed':'')+
-          '" title="'+esc(L().ccSlotDelete)+'" onclick="careerSlotDrop('+n+')">'+
-          (CC_SLOT_ARMED===n ? esc(L().ccSlotDropSure) : '&times;')+'</button>'+
-      '</div>'+
-      '<span class="cc-car-rail"><i style="width:'+railOf(c.day)+'%"></i></span></div>');
+      '<b class="cc-tile-n">'+(c.country ? '<img class="cc-car-flag" src="flags/w20/'+esc(ccCountryOf(String(c.country).toLowerCase()))+'.png" alt=""> ' : '')+
+        esc(c.nick)+(c.team ? ' <span class="cc-car-duo">'+L().ccSlotDuoLive+'</span>' : '')+'</b>'+
+      '<span class="cc-tile-r"><em>'+c.ovr+'</em>'+esc(lvl)+'</span>'+
+      '<span class="cc-tile-w">'+esc(when)+(c.retired || c.over ? ' · '+esc(state) : '')+'</span>'+
+      '<button class="cc-car-del'+(CC_SLOT_ARMED===n?' armed':'')+'" title="'+esc(L().ccSlotDelete)+'" onclick="event.stopPropagation();careerSlotDrop('+n+')">'+
+        (CC_SLOT_ARMED===n ? esc(L().ccSlotDropSure) : '&times;')+'</button></div>');
   }
   /* Свободные слоты — одной строкой, а не половиной экрана пустых коробок.
      Их число тут и есть вся нужная информация. */

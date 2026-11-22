@@ -10435,3 +10435,21 @@
     body.cc-onair:not(.cc-onair-fold) #screen-career-hub.active .tv-player{width:min(100%, calc((100vh - 96px)*16/9));margin:0 auto;}
     body.cc-onair:not(.cc-onair-fold) #screen-career-hub.active .tv-player ~ *{display:none;}
   }
+  /* Список карьер плитками (Notion 22.11). Только #ccSlotGrid: слоты менеджера на тех же .cc-car остаются строками. */
+  #ccSlotGrid.cc-slot-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:12px;}
+  #ccSlotGrid .cc-tile{display:flex;flex-direction:column;align-items:center;text-align:center;gap:4px;padding:16px 10px 14px;cursor:pointer;
+    transition:border-color .15s,background .15s;}
+  #ccSlotGrid .cc-tile:hover{border-color:rgba(255,221,0,.55);}
+  #ccSlotGrid .cc-tile.on{border-color:#ffdd00;background:rgba(255,221,0,.07);}
+  #ccSlotGrid .cc-tile .cc-car-face{width:84px;height:84px;border-radius:10px;margin-bottom:6px;}
+  #ccSlotGrid .cc-tile-n{font-family:var(--font-display);font-size:19px;font-weight:600;color:#fff;max-width:100%;
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  #ccSlotGrid .cc-tile-r{font-size:12px;font-weight:700;color:#8ea6d6;}
+  #ccSlotGrid .cc-tile-r em{font-style:normal;font-family:var(--font-display);font-size:22px;color:#ffdd00;margin-right:2px;vertical-align:-2px;}
+  #ccSlotGrid .cc-tile-w{font-size:11px;font-weight:600;color:#6d82ad;}
+  #ccSlotGrid .cc-tile .cc-car-del{position:absolute;top:8px;right:8px;width:26px;height:26px;font-size:13px;}
+  #ccSlotGrid .cc-tile .cc-car-del.armed{width:auto;}
+  #ccSlotGrid .cc-car-new{display:flex;flex-direction:column-reverse;align-items:center;justify-content:center;gap:8px;min-height:190px;text-align:center;}
+  #ccSlotGrid .cc-car-new .cc-car-free{font-size:40px;line-height:1;color:#ffdd00;}
+  @media(max-width:560px){#ccSlotGrid.cc-slot-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;}
+    #ccSlotGrid .cc-tile .cc-car-face{width:64px;height:64px;}}
