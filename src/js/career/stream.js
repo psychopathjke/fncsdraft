@@ -2409,14 +2409,13 @@ function careerHallHTML(){
   const early=top(r=>r.d1 ? r.d1.season*10000+ccDaysBetween(ccYearFrom(), r.d1.day) : null, (a,b)=>a-b);
   const most=top(r=>r.wins||null, (a,b)=>b-a);
   const major=top(r=>r.major, (a,b)=>a-b);
-  const rec=(label, r, v)=>r ? `<div class="ch-row"><em>${label}</em><b>${esc(r.nick)} · ${v}</b></div>` : '';
+  // Notion 22.11 «слишком много текста»: четыре рекорда карточками (подпись, число, чей), без построчного списка карьер - он повторял плитки выше.
+  const rec=(label, r, v)=>r ? `<div class="cc-hall-c"><small>${label}</small><b>${v}</b><em>${esc(r.nick)}</em></div>` : '';
   const records=rec(T.ccHallRich, rich, rich ? ccMoney(rich.earnings) : '')+
     rec(T.ccHallEarlyD1, early, early ? T.ccSlotSeason+' '+early.d1.season+' · '+ccDayLabel(early.d1.day) : '')+
     rec(T.ccHallMostWins, most, most ? most.wins+' VR' : '')+
     rec(T.ccHallBestMajor, major, major ? '#'+major.major : '');
-  const list=rows.map(r=>`<div class="ch-row cc-hall-row"><em>${esc(r.nick)}${r.retired ? ' · '+T.ccSlotRetired : ''}</em>
-    <b>${T.ccHallSeasons} ${r.seasons} · ${T.ccHallPeak} ${r.peak} · ${T.ccDivision} ${r.topDiv} · ${r.wins} VR · ${ccMoney(r.earnings)}</b></div>`).join('');
   return `<div class="ch-tile cc-hall"><h4>${T.ccHallTitle}</h4>${
-    records ? `<div class="cc-hall-rec">${records}</div>` : ''}${list}</div>`;
+    records ? `<div class="cc-hall-rec">${records}</div>` : ''}</div>`;
 }
 

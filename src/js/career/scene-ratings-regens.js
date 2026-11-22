@@ -755,8 +755,10 @@ function ccBotEdge(t, cards, hist){
      у каждого гонщика свои (своя карьера), и аналитик ботов разводил одну комнату. */
   if(org && !ccMpOn() && !ccRaceOn()){ const usd=ccOrgEarn(org);
            an=usd==null ? 1 : Math.round(1+2*Math.max(0, Math.min(1, (ccOrgEarnLevel(usd)-60)/35))); }
-  t.botEdge={form, chem, an};
-  t.pow=Math.round(t.pow+form+chem+an);
+  // Мифическая: поле сильнее (CC_DIFFS.room). В гонке и командной - сложность мира общая (ccWorldDiff), там лёгкая.
+  const room=(ccWorldDiff().room||0);
+  t.botEdge={form, chem, an, room};
+  t.pow=Math.round(t.pow+form+chem+an+room);
 }
 
 /* Ladder is a snapshot of one Major's Play-In, not the roster's whole history (old way kept split duos alive
@@ -3633,8 +3635,11 @@ const CAREER_GROWTH_MAX=0.55;
      elite   x0.25   5 seasons
      legend  x0.10   ~12 seasons (16-28 at the tails), marathon setting
    Old saves migrated legend→elite stay on elite. Result ceiling 0.55, field, prizes and shop prices are the same on all, harder just means longer. */
+/* Мифическая (его слово 22.11 «может ещё мифическую сложность добавить»): рост как у Легенды, но и поле сильнее -
+   у команд-ботов +room к силе в каждом лобби (ccBotEdge). Единственная сложность, где комната не та же: просто
+   «дольше» дальше Легенды (×0.10, ~12 сезонов) уже не игра. +2 - решение, не замер. */
 const CC_DIFFS=[{id:'easy', age:1.00}, {id:'pro', age:0.50},
-                {id:'elite', age:0.25}, {id:'legend', age:0.10}];
+                {id:'elite', age:0.25}, {id:'legend', age:0.10}, {id:'mythic', age:0.10, room:2}];
 function ccDiffOf(id){ return CC_DIFFS.find(d=>d.id===id) || CC_DIFFS[0]; }
 function careerDiff(){
   return ccDiffOf(CAREER && CAREER.career && CAREER.career.diff);

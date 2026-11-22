@@ -10453,3 +10453,19 @@
   #ccSlotGrid .cc-car-new .cc-car-free{font-size:40px;line-height:1;color:#ffdd00;}
   @media(max-width:560px){#ccSlotGrid.cc-slot-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;}
     #ccSlotGrid .cc-tile .cc-car-face{width:64px;height:64px;}}
+  /* Зал славы карточками (Notion 22.11). */
+  #screen-career-slots .cc-hall-rec{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin:0;padding:0;border:0;}
+  #screen-career-slots .cc-hall-c{background:rgba(255,255,255,.05);border:1px solid rgba(180,200,255,.14);border-radius:8px;padding:12px 14px;min-width:0;}
+  #screen-career-slots .cc-hall-c small{display:block;font-size:9.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--fn-dim,#8ea6d6);}
+  #screen-career-slots .cc-hall-c b{display:block;font-family:var(--font-display);font-size:24px;font-weight:700;color:#ffdd00;margin:4px 0 2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  #screen-career-slots .cc-hall-c em{display:block;font-style:normal;font-size:12px;font-weight:700;color:#fff;}
+  @media(max-width:560px){#screen-career-slots .cc-hall-rec{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;} #screen-career-slots .cc-hall-c b{font-size:18px;}}
+  /* Мифическая сложность (22.11): красно-золотая с бликом, сильнее Легенды. */
+  #screen-career-create .cc-chip.cc-rar-mythic{--r1:#ff6a3d;--r2:#7d0f3c;color:#fff;}
+  #screen-career-create .cc-chip.cc-rar-mythic::after{content:'';position:absolute;inset:0;pointer-events:none;
+    background:linear-gradient(110deg,transparent 30%,rgba(255,220,150,.6) 45%,transparent 60%);background-size:250% 100%;animation:ccRarShine 2s linear infinite;}
+  @media (prefers-reduced-motion:reduce){ #screen-career-create .cc-chip.cc-rar-mythic::after{animation:none;background-position:50% 0;} }
+  /* Пять сложностей (Мифическая 22.11): три в ряд, подписи целиком. */
+  #screen-career-create #ccDiffChips{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;}
+  #screen-career-create #ccDiffChips .cc-chip{overflow:hidden;}
+  #screen-career-create #ccDiffChips .cc-rar-mythic{grid-column:span 2;}
