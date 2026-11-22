@@ -4797,3 +4797,6 @@ Object.assign(I18N.es=I18N.es||{},
 /* Дозаливка «es» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
 Object.assign(I18N.es=I18N.es||{},
 ({ccDiffMythic:"Mítica", ccDiffRoomUp:v=>"rivales +"+v}));
+/* Дозаливка «es» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
+Object.assign(I18N.es=I18N.es||{},
+({ccRusty:"oxidado", ccRustTip:v=>"Tras el parón, tu forma baja "+v+": se va en tres semanas, antes si entrenas."}));

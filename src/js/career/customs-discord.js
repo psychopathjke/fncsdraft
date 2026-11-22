@@ -958,6 +958,7 @@ function careerDoAct(id){
   if(act.host && ccHostWhy()) return null;
   if(act.mobile && !ccMobileOwn()) return null;   // без телефона или планшета не тренируется
   careerSpend(cost);
+  if(cr.rust && ccTrainAct(act)) cr.rust.tr=(cr.rust.tr||0)+1;   // тренировка счищает ржавчину (ccRustPen)
   if(act.warm){
     cr.form=clamp((cr.form||0)+CC_WARM_FORM, -CC_FORM_MAX, CC_FORM_MAX);
     cr.did=cr.did||{}; cr.did[careerToday()]=(cr.did[careerToday()]||[]).concat(id);

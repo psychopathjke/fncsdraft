@@ -3753,10 +3753,21 @@ function careerBurnout(){
   const over=(CAREER.career.grind||0)-CC_GRIND_FREE;
   return over>0 ? Math.min(CC_GRIND_MAX, Math.round(over*CC_GRIND_STEP*10)/10) : 0;
 }
+/* РЖАВЧИНА МЕЖСЕЗОНЬЯ (его слово 22.11 «может после каждого сезона рейтинг понижается, когда отдых, и опять прокачивать»,
+   потом «делай ржавчину»). Не сам рейтинг: если резать карточку только своей карьере, а сцене нет, каждый год копится
+   отставание (та же ловушка, что с односторонним тейпером). Поэтому минус к ФОРМЕ в начале сезона: CC_RUST_PTS в день
+   старта, тает за CC_RUST_DAYS дней, а каждая тренировка снимает ещё CC_RUST_TRAIN дней. Числа - решение, не замер. */
+const CC_RUST_PTS=2, CC_RUST_DAYS=21, CC_RUST_TRAIN=3;
+function ccRustPen(){
+  const r=CAREER && CAREER.career && CAREER.career.rust; if(!r || !r.from) return 0;
+  let d=0; try{ d=ccDaysBetween(r.from, careerToday()); }catch(e){ return 0; }
+  const left=1-(Math.max(0, d)+(r.tr||0)*CC_RUST_TRAIN)/CC_RUST_DAYS;
+  return left>0 ? Math.round(CC_RUST_PTS*left*10)/10 : 0;
+}
 function careerForm(){
   // Confidence holds the floor and never the ceiling. See the cars in CC_SHOP.
   const conf=(CAREER.gear && CAREER.gear.conf) || 0;
-  return clamp((CAREER.career.form||0)-careerBurnout()-ccMetaPen()-ccTechPen(),
+  return clamp((CAREER.career.form||0)-careerBurnout()-ccMetaPen()-ccTechPen()-ccRustPen(),
                Math.min(0, -CC_FORM_MAX+conf), CC_FORM_MAX);
 }
 function careerFormAdd(place, of){

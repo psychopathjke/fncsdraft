@@ -10468,5 +10468,17 @@
   /* Пять сложностей (Мифическая 22.11): три в ряд, подписи целиком. */
   #screen-career-create #ccDiffChips{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;}
   #screen-career-create #ccDiffChips .cc-chip{overflow:hidden;}
-  #screen-career-create #ccDiffChips .cc-rar-mythic{grid-column:span 2;}
+
   #ccSlotGrid .cc-tile-e{font-family:var(--font-display);font-size:15px;font-weight:700;color:#3ee9b8;margin-top:2px;}
+  /* 22.11 его слово: «easy начинается с зелёной, и по мифическому цвету, который у нас уже есть». Редкости Fortnite по порядку:
+     Uncommon зелёная, Rare синяя, Epic фиолетовая, Legendary оранжево-золотая, Mythic жёлто-золотая с бликом. Все пять в ряд. */
+  #screen-career-create #ccDiffChips{grid-template-columns:repeat(auto-fit,minmax(96px,1fr));}
+  #screen-career-create #ccDiffChips .cc-chip small{white-space:normal;line-height:1.15;}
+  #screen-career-create .cc-chip.cc-rar-easy{--r1:#6fdc4a;--r2:#1f7a22;color:#fff;}
+  #screen-career-create .cc-chip.cc-rar-pro{--r1:#4fa8ff;--r2:#1b4f9c;color:#fff;}
+  #screen-career-create .cc-chip.cc-rar-elite{--r1:#c46bff;--r2:#5b1f9a;color:#fff;}
+  #screen-career-create .cc-chip.cc-rar-legend{--r1:#ffb347;--r2:#a2540f;color:#fff;}
+  #screen-career-create .cc-chip.cc-rar-legend::after{display:none;}
+  #screen-career-create .cc-chip.cc-rar-mythic{--r1:#ffe45c;--r2:#b9870a;color:#241a00;}
+  #screen-career-create .cc-chip.cc-rar-mythic::after{background:linear-gradient(110deg,transparent 30%,rgba(255,255,255,.55) 45%,transparent 60%);background-size:250% 100%;animation:ccRarShine 2.6s linear infinite;}
+  @media(max-width:600px){ #screen-career-create #ccDiffChips{grid-template-columns:1fr 1fr;} #screen-career-create #ccDiffChips .cc-rar-mythic{grid-column:span 2;} }

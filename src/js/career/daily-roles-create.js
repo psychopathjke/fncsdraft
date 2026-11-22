@@ -3146,9 +3146,10 @@ function ccRenderChips(){
   if(dchips) dchips.innerHTML=CC_DIFFS.map(d=>{
     const on=(CC.diff||'easy')===d.id;
     // Сложность в цветах редкостей Fortnite: синяя, фиолетовая, золотая, мифическая; названия прежние (его слово 29.09).
-    return `<button class="cc-chip cc-rar cc-rar-${d.id}${on?' on':''}" `+
+    return `<button class="cc-chip cc-rar cc-rar-${d.id}${on?' on':''}" title="${esc(L().ccDiffSpeed(d.age.toFixed(2))+(d.room ? ' · '+L().ccDiffRoomUp(d.room) : ''))}" `+
       `onclick="ccPickDiff(\'${d.id}\')">${L()['ccDiff'+d.id.charAt(0).toUpperCase()+d.id.slice(1)]}`+
-      `<small>${L().ccDiffSpeed(d.age.toFixed(2))}${d.room ? ' · '+L().ccDiffRoomUp(d.room) : ''}</small></button>`;
+      // Подпись короткая (рост ×N, у Мифической ещё +сила соперников), полная - в подсказке.
+      `<small>×${d.age.toFixed(2)}${d.room ? ' · +'+d.room : ''}</small></button>`;
   }).join('');
 }
 

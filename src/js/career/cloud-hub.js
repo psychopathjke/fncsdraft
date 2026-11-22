@@ -1626,8 +1626,8 @@ function careerRenderHubBody(tab){
        как-то»): слова «off it -0.6» и «0 nobody knows yet of ±25» не читались. Снимок начала дня - cr.fr0 (ccFrDay). */
     (()=>{ const f=careerForm(), T=L(), v=Math.round(f*10)/10, d0=ccFrDay();
       return `<div class="ch-tipw ch-meter-w" tabindex="0" onclick="ccTipToggle(this, event)"><em>${T.ccForm} ⓘ</em><b class="${f>0?'ch-goal-met':f<0?'cc-pen bad':''}">${(v>0?'+':'')+v}${
-        f ? ' <span class="ch-rep-w">'+esc(T[f>0?'ccFormHot':'ccFormCold'])+'</span>' : ''}${ccFrDelta(f-d0.f, 1)}</b>${ccFrMeterHTML(f, CC_FORM_MAX)}${
-        '<div class="ch-tip">'+esc(T.ccFormTip(CC_FORM_MAX))+'</div>'}</div>`; })()+
+        f ? ' <span class="ch-rep-w">'+esc(ccRustPen()>0 ? T.ccRusty : T[f>0?'ccFormHot':'ccFormCold'])+'</span>' : ''}${ccFrDelta(f-d0.f, 1)}</b>${ccFrMeterHTML(f, CC_FORM_MAX)}${
+        '<div class="ch-tip">'+esc(T.ccFormTip(CC_FORM_MAX)+(ccRustPen()>0 ? ' '+T.ccRustTip(ccRustPen()) : ''))+'</div>'}</div>`; })()+
     // The garage, said where the form is said — confidence is the floor under
     // it, and a number nobody can see is a number that does not exist. His
     // report, 20 August: confidence нигде не пишется.
