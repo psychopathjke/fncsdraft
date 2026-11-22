@@ -2410,6 +2410,8 @@ function careerCentreHTML(card, a){
       // say which one it is on the screen a player opens first, or the extra
       // chair in the squad tile is the only clue that anything changed.
       ccSeasonWord(careerSquadSize())} · ${stripWhen}</span>${
+      /* Перемотка - в строке заголовка, своим местом (Notion 20.11: стояла абсолютом по центру поверх подписи сезона). */
+      careerFfButtonsHTML()}${
       // The Paris seat, which the ladder tile used to carry: a thing won in
       // February that is not played until August belongs beside the calendar
       // rather than in a list of standings.
@@ -2420,8 +2422,6 @@ function careerCentreHTML(card, a){
     ${/* Полосы из 35 недель в лобби нет (27.10, «лобби как в Fortnite»): неделя — плитками дней ниже, год — во вкладке
          «Календарь». */ ''}
     ${weekPeek}
-    ${/* Перемотка «неделя / месяц» — здесь, у полосы сезона, а не в карточке капа (его «сделать аккуратно где-то скип недели/месяца»). */
-      careerFfButtonsHTML()}
   </div>`;
   let awayIn=false;   // выезд уже нарисован внутри карточки вечера
   const lbPlay=`<div class="ch-col-play cc-lb-playcol">
