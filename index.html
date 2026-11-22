@@ -10778,6 +10778,12 @@
     #screen-career-hub.ch-lobby-on .cc-lobby.cc-lb-full .cc-lb-bottom{top:10px;}
   }
   .wrap:has(> #screen-career-hub.active) > .top,.wrap:has(#screen-career-hub.active) .top{border-bottom-color:transparent;margin-bottom:8px;padding-bottom:8px;}
+  /* Углы панели одинаковые на всех вкладках (22.11, Notion «20.11»: «Разные углы» - на Центре левый верх прямой, на
+     Тренировке скруглённый). Прямые углы Центра (19.10) были из-за картинки лобби вплотную к краю; теперь сверху шапка
+     и вкладки, и Центр скругляется так же, как остальные. Лобби внутри обрезается скруглением панели. */
+  @media (min-width:701px){
+    #screen-career-hub.ch-lobby-on .ch-stage{border-radius:var(--r,10px);overflow:hidden;}
+  }
 /*@@PART shell.html@@*/
 </style>
 <!-- ?v= — это НЕ украшение, это починка того, что он поймал 24 августа.
@@ -123690,7 +123696,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='67214548';
+const CC_BUILD='dc15ba62';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -128835,14 +128841,16 @@ function careerRenderHubBody(tab){
   // Батл пасс сезона — рядом со шкафчиком.
   if(CH_TAB==='bp'){ body.innerHTML='<div class="ch-grid cc-bp" style="grid-template-columns:minmax(0,1fr);">'+ccBpHTML()+'</div>'; return; }
   if(CH_TAB==='locker'){ if(!CC_FN_PICK) CC_FN_PICK='o'; body.innerHTML='<div class="ch-grid" style="grid-template-columns:minmax(0,1fr);">'+ccLockerHTML()+'</div>'; return; }
-  if(CH_TAB==='club'){ body.innerHTML=careerClubTabHTML(); return; }
+  /* Задачи клуба и месяца (ccGoalsTileHTML) - во вкладке «Клуб», а не в «Тренировке» (22.11, Notion «20.11»: «это лишнее
+     в тренинг»). Выбор задачи месяца живёт там же. */
+  if(CH_TAB==='club'){ const goals=ccGoalsTileHTML(true);
+    body.innerHTML=(goals ? '<div class="ch-grid ch-grid-me ch-train-goals">'+goals+'</div>' : '')+careerClubTabHTML(); return; }
   // Цели и развитие — сверху «Тренировки»: с «Центра» они ушли, когда он вернулся к виду прода (29.09).
   /* Тренировка без повторов (27.10, его «тренировки чет облегчить, слишком много информации»): шесть параметров стояли
      трижды (Развитие, Фокус/Цель, панель дня), усталость дважды, пустая плитка задач без клуба. Здесь — задачи, только
      если они есть (без своей цели и фокуса: они в плане недели); параметры — один раз, в панели дня. Плитки «Развитие»
      нет: рейтинг и его ход за сезон уже стоят в шапке (#chOvr). */
-  if(CH_TAB==='train'){ const goals=ccGoalsTileHTML(true);
-    body.innerHTML=(goals ? '<div class="ch-grid ch-grid-me ch-train-goals">'+goals+'</div>' : '')+careerTrainTabHTML(); return; }
+  if(CH_TAB==='train'){ body.innerHTML=careerTrainTabHTML(); return; }
   // The card tab is gone — the centre already wears the card, and a whole tab
   // that repeated it sat between the calendar and the socials for no reason.
   body.innerHTML=careerCentreHTML(card, a);

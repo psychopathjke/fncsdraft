@@ -10257,3 +10257,9 @@
     #screen-career-hub.ch-lobby-on .cc-lobby.cc-lb-full .cc-lb-bottom{top:10px;}
   }
   .wrap:has(> #screen-career-hub.active) > .top,.wrap:has(#screen-career-hub.active) .top{border-bottom-color:transparent;margin-bottom:8px;padding-bottom:8px;}
+  /* Углы панели одинаковые на всех вкладках (22.11, Notion «20.11»: «Разные углы» - на Центре левый верх прямой, на
+     Тренировке скруглённый). Прямые углы Центра (19.10) были из-за картинки лобби вплотную к краю; теперь сверху шапка
+     и вкладки, и Центр скругляется так же, как остальные. Лобби внутри обрезается скруглением панели. */
+  @media (min-width:701px){
+    #screen-career-hub.ch-lobby-on .ch-stage{border-radius:var(--r,10px);overflow:hidden;}
+  }

@@ -1742,14 +1742,16 @@ function careerRenderHubBody(tab){
   // Батл пасс сезона — рядом со шкафчиком.
   if(CH_TAB==='bp'){ body.innerHTML='<div class="ch-grid cc-bp" style="grid-template-columns:minmax(0,1fr);">'+ccBpHTML()+'</div>'; return; }
   if(CH_TAB==='locker'){ if(!CC_FN_PICK) CC_FN_PICK='o'; body.innerHTML='<div class="ch-grid" style="grid-template-columns:minmax(0,1fr);">'+ccLockerHTML()+'</div>'; return; }
-  if(CH_TAB==='club'){ body.innerHTML=careerClubTabHTML(); return; }
+  /* Задачи клуба и месяца (ccGoalsTileHTML) - во вкладке «Клуб», а не в «Тренировке» (22.11, Notion «20.11»: «это лишнее
+     в тренинг»). Выбор задачи месяца живёт там же. */
+  if(CH_TAB==='club'){ const goals=ccGoalsTileHTML(true);
+    body.innerHTML=(goals ? '<div class="ch-grid ch-grid-me ch-train-goals">'+goals+'</div>' : '')+careerClubTabHTML(); return; }
   // Цели и развитие — сверху «Тренировки»: с «Центра» они ушли, когда он вернулся к виду прода (29.09).
   /* Тренировка без повторов (27.10, его «тренировки чет облегчить, слишком много информации»): шесть параметров стояли
      трижды (Развитие, Фокус/Цель, панель дня), усталость дважды, пустая плитка задач без клуба. Здесь — задачи, только
      если они есть (без своей цели и фокуса: они в плане недели); параметры — один раз, в панели дня. Плитки «Развитие»
      нет: рейтинг и его ход за сезон уже стоят в шапке (#chOvr). */
-  if(CH_TAB==='train'){ const goals=ccGoalsTileHTML(true);
-    body.innerHTML=(goals ? '<div class="ch-grid ch-grid-me ch-train-goals">'+goals+'</div>' : '')+careerTrainTabHTML(); return; }
+  if(CH_TAB==='train'){ body.innerHTML=careerTrainTabHTML(); return; }
   // The card tab is gone — the centre already wears the card, and a whole tab
   // that repeated it sat between the calendar and the socials for no reason.
   body.innerHTML=careerCentreHTML(card, a);
