@@ -7138,6 +7138,9 @@
   .dc-av img,.dc-srv img{width:100%;height:100%;object-fit:cover;display:block;}
   .dc-av.bot img,.dc-srv img[src*="noble-crown"]{object-fit:contain;padding:5px;box-sizing:border-box;}
   .dc-av svg,.dc-srv svg{width:58%;height:58%;}
+  .dc-av svg.dc-eu,.dc-srv svg.dc-eu{width:100%;height:100%;}
+  .dc-av img.dc-fn-av,.dc-srv img.dc-fn-av{transform:scale(1.45);}
+  .dc-reg{font-size:11px;letter-spacing:.02em;}
   /* Тусовка региона (ccCrewHTML): участник строкой - аватарка с точкой статуса, ник и рейтинг, статус и отношение,
      справа «Поиграть вместе» и «Позвать в дуо». Войс - аватарками в ряд. */
   .cr-mem{display:flex;align-items:center;gap:10px;padding:8px 0;border-top:1px solid rgba(255,255,255,.06);}
@@ -123729,7 +123732,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='2b29201c';
+const CC_BUILD='aebb6a6e';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -132239,7 +132242,8 @@ function ccDcSessHTML(kind){
 /* Ещё два сервера (22.11, его «12» на список): сервер клуба (только в орге) и официальный Fortnite Competitive.
    Оба читают то, что в карьере уже есть: календарь (careerEvents), журнал (cr.log), состав (careerMates), тренера (ccCoach),
    менеджера (CAREER.agent). Своих механик у них нет, это лента и состав. */
-const CC_DC_FN_SVG='<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0V4Z"/><path d="M17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/></svg>';
+const CC_DC_FN_IMG='art/comp/fnce-39-00-comp-fncs2026update-in-game-tab-800x800-800x800-0061b675ce4a.jpg';
+const CC_DC_EU_SVG='<svg class="dc-eu" viewBox="0 0 24 24" aria-hidden="true"><rect width="24" height="24" fill="#003399"/><g fill="#ffcc00"><circle cx="12.00" cy="6.00" r="1"/><circle cx="15.00" cy="6.80" r="1"/><circle cx="17.20" cy="9.00" r="1"/><circle cx="18.00" cy="12.00" r="1"/><circle cx="17.20" cy="15.00" r="1"/><circle cx="15.00" cy="17.20" r="1"/><circle cx="12.00" cy="18.00" r="1"/><circle cx="9.00" cy="17.20" r="1"/><circle cx="6.80" cy="15.00" r="1"/><circle cx="6.00" cy="12.00" r="1"/><circle cx="6.80" cy="9.00" r="1"/><circle cx="9.00" cy="6.80" r="1"/></g></svg>';
 // Ближайшие n событий календаря с сегодняшнего дня: [{day, label}].
 function ccDcUpcoming(n, keep){
   const out=[], today=careerToday();
@@ -132301,8 +132305,10 @@ function ccDcInitials(name){
 // Картинка аватарки; не загрузилась - вместо неё буквы.
 function ccDcImg(src, fb){ return '<img src="'+esc(src)+'" alt="" loading="lazy" data-fb="'+esc(fb)+'" onerror="this.replaceWith(this.dataset.fb)">'; }
 function ccDcSrvIcon(id){
+  // Тусовка региона: у EU - флаг Евросоюза, у остальных - код региона. Fortnite Competitive - плитка FNCS 2026 из файлов Epic (герб в центре).
+  if(id==='crew'){ const r=ccCareerRegion(); return r==='EU' ? CC_DC_EU_SVG : '<b class="dc-reg">'+esc(r)+'</b>'; }
+  if(id==='fn') return ccDcImg(CC_DC_FN_IMG, 'FN').replace('<img ', '<img class="dc-fn-av" ');
   if(id==='club') return (CAREER.org && typeof careerCrestImg==='function') ? careerCrestImg(CAREER.org.name, 30) : esc(ccDcInitials(CAREER.org && CAREER.org.name));
-  if(id==='fn') return CC_DC_FN_SVG;
   if(id==='pc') return ccCareerRegion()==='EU' ? ccDcImg('items/creative/noble-crown.png', 'NP') : esc(ccDcInitials(ccPracSrv()));
   if(id==='mob') return CC_DC_PHONE_SVG;
   if(ccFans()) return ccFanIcon();   // своя аватарка сервера из настроек
@@ -132312,7 +132318,7 @@ function ccDiscordHTML(){
   // Ушёл из клуба, а открыт был его сервер - показываем сервер практики.
   const T=L(), cr=CAREER.career, srv=(CH_DC==='club' && !CAREER.org) ? 'pc' : (CH_DC||'pc');
   // Первым - тусовка региона (ccCrewHTML): про и стримеры, с которыми ты пересекался.
-  const servers=[['crew', CC_CREW_GROUP_SVG, T.dcSrvCrew(ccCareerRegion())]].concat(CAREER.org ? [['club', ccDcSrvIcon('club'), CAREER.org.name]] : [],
+  const servers=[['crew', ccDcSrvIcon('crew'), T.dcSrvCrew(ccCareerRegion())]].concat(CAREER.org ? [['club', ccDcSrvIcon('club'), CAREER.org.name]] : [],
     [['fn', ccDcSrvIcon('fn'), 'Fortnite Competitive'], ['pc', ccDcSrvIcon('pc'), ccPracSrv()], ['mob', ccDcSrvIcon('mob'), T.dcSrvMob], ['own', ccDcSrvIcon('own'), (CAREER.career.fans && CAREER.career.fans.name) || T.dcSrvOwn]]);
   const last=cr.dcLast && cr.dcLast.day===careerToday() ? cr.dcLast : null;
   const btn=(kind, label)=>{ const why=ccDcWhy(kind);
@@ -185366,7 +185372,7 @@ const CC_YT_FRESH=7, CC_YT_DECAY=0.6, CC_YT_DAYS=30, CC_YT_RPM=2.5, CC_YT_YPP={s
 const CC_YT_BIG=['major','summit','globals','gclc','rc','solo','eval'];   // недельный финал Д1 — не большое (у Malibuca его победы 20–40 % подписчиков)
 /* Канал YouTube стартует не с нуля: у игрока с сотнями тысяч в X и на Twitch часть людей подписана и там (CC_YT_SEED, решение, не замер).
    Один раз на сохранение, флаг seed. */
-const CC_YT_SEED=0.1;
+const CC_YT_SEED=0.1, CC_YT_SUB_RATE=0.01;
 function ccYt(){
   const cr=CAREER.career; cr.yt=cr.yt||{subs:0, views:0, hours:0, usd:0, vids:[]};
   const y=cr.yt;
@@ -185399,7 +185405,10 @@ function ccYtTotal(e, kind, rnd){
   /* Известность приводит людей и на НОВЫЙ канал (28.10, его «ютуб медленно растёт»: доля была reach·0.001, у игрока с
      28 тыс. фолловеров в X первый ролик набирал 30–80 просмотров и одного подписчика). Теперь от фолловеров в X — до 20 %
      (потолок 3000 + подписчики канала) и от Twitch 5 %: про с аудиторией начинает с тысяч, а не с десятков. */
-  const cr=CAREER.career, fame=Math.min(careerReach()*0.2, 3000+s) + (cr.twitch||0)*0.05;
+  /* 22.11 «подписчики и просмотры слишком быстро растут»: канал теперь стартует с доли аудитории (CC_YT_SEED), и полная
+     известность поверх неё считала тех же людей второй раз (победный ролик при 74 тыс. подписчиков набирал ~270 тыс.).
+     От известности остаётся небольшой довесок с потолком, основное - подписчики, медиана ~0.2-0.5 от них, как у про. */
+  const fame=Math.min(careerReach()*0.02, 3000);
   return Math.max(5, Math.round((25 + s*0.4*k.views*big + fame*k.views*big)*spread));
 }
 // Имя события на английском — названия у про всегда английские.
@@ -185602,8 +185611,8 @@ function ccYtTick(){
   if(!gotV) return;
   const wasMon=ccYtMonet(y);
   y.views=(y.views||0)+gotV; y.hours=(y.hours||0)+gotH;
-  // Подписываются 5 % досмотревших у нового канала, у большого меньше (sat).
-  y.subs=(y.subs||0)+Math.max(0, Math.round(gotV*0.05*ccYtSat(y.subs, 300000)));
+  // Подписывается около процента посмотревших (было 5 %: канал рос на тысячи за ролик), у большого меньше (sat).
+  y.subs=(y.subs||0)+Math.max(0, Math.round(gotV*CC_YT_SUB_RATE*ccYtSat(y.subs, 300000)));
   if(wasMon){
     const usd=gotV/1000*CC_YT_RPM;
     y.usd=Math.round(((y.usd||0)+usd)*100)/100;

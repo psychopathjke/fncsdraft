@@ -1317,7 +1317,7 @@ const CC_YT_FRESH=7, CC_YT_DECAY=0.6, CC_YT_DAYS=30, CC_YT_RPM=2.5, CC_YT_YPP={s
 const CC_YT_BIG=['major','summit','globals','gclc','rc','solo','eval'];   // недельный финал Д1 — не большое (у Malibuca его победы 20–40 % подписчиков)
 /* Канал YouTube стартует не с нуля: у игрока с сотнями тысяч в X и на Twitch часть людей подписана и там (CC_YT_SEED, решение, не замер).
    Один раз на сохранение, флаг seed. */
-const CC_YT_SEED=0.1;
+const CC_YT_SEED=0.1, CC_YT_SUB_RATE=0.01;
 function ccYt(){
   const cr=CAREER.career; cr.yt=cr.yt||{subs:0, views:0, hours:0, usd:0, vids:[]};
   const y=cr.yt;
@@ -1350,7 +1350,10 @@ function ccYtTotal(e, kind, rnd){
   /* Известность приводит людей и на НОВЫЙ канал (28.10, его «ютуб медленно растёт»: доля была reach·0.001, у игрока с
      28 тыс. фолловеров в X первый ролик набирал 30–80 просмотров и одного подписчика). Теперь от фолловеров в X — до 20 %
      (потолок 3000 + подписчики канала) и от Twitch 5 %: про с аудиторией начинает с тысяч, а не с десятков. */
-  const cr=CAREER.career, fame=Math.min(careerReach()*0.2, 3000+s) + (cr.twitch||0)*0.05;
+  /* 22.11 «подписчики и просмотры слишком быстро растут»: канал теперь стартует с доли аудитории (CC_YT_SEED), и полная
+     известность поверх неё считала тех же людей второй раз (победный ролик при 74 тыс. подписчиков набирал ~270 тыс.).
+     От известности остаётся небольшой довесок с потолком, основное - подписчики, медиана ~0.2-0.5 от них, как у про. */
+  const fame=Math.min(careerReach()*0.02, 3000);
   return Math.max(5, Math.round((25 + s*0.4*k.views*big + fame*k.views*big)*spread));
 }
 // Имя события на английском — названия у про всегда английские.
@@ -1553,8 +1556,8 @@ function ccYtTick(){
   if(!gotV) return;
   const wasMon=ccYtMonet(y);
   y.views=(y.views||0)+gotV; y.hours=(y.hours||0)+gotH;
-  // Подписываются 5 % досмотревших у нового канала, у большого меньше (sat).
-  y.subs=(y.subs||0)+Math.max(0, Math.round(gotV*0.05*ccYtSat(y.subs, 300000)));
+  // Подписывается около процента посмотревших (было 5 %: канал рос на тысячи за ролик), у большого меньше (sat).
+  y.subs=(y.subs||0)+Math.max(0, Math.round(gotV*CC_YT_SUB_RATE*ccYtSat(y.subs, 300000)));
   if(wasMon){
     const usd=gotV/1000*CC_YT_RPM;
     y.usd=Math.round(((y.usd||0)+usd)*100)/100;

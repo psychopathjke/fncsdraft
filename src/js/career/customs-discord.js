@@ -486,7 +486,8 @@ function ccDcSessHTML(kind){
 /* Ещё два сервера (22.11, его «12» на список): сервер клуба (только в орге) и официальный Fortnite Competitive.
    Оба читают то, что в карьере уже есть: календарь (careerEvents), журнал (cr.log), состав (careerMates), тренера (ccCoach),
    менеджера (CAREER.agent). Своих механик у них нет, это лента и состав. */
-const CC_DC_FN_SVG='<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0V4Z"/><path d="M17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/></svg>';
+const CC_DC_FN_IMG='art/comp/fnce-39-00-comp-fncs2026update-in-game-tab-800x800-800x800-0061b675ce4a.jpg';
+const CC_DC_EU_SVG='<svg class="dc-eu" viewBox="0 0 24 24" aria-hidden="true"><rect width="24" height="24" fill="#003399"/><g fill="#ffcc00"><circle cx="12.00" cy="6.00" r="1"/><circle cx="15.00" cy="6.80" r="1"/><circle cx="17.20" cy="9.00" r="1"/><circle cx="18.00" cy="12.00" r="1"/><circle cx="17.20" cy="15.00" r="1"/><circle cx="15.00" cy="17.20" r="1"/><circle cx="12.00" cy="18.00" r="1"/><circle cx="9.00" cy="17.20" r="1"/><circle cx="6.80" cy="15.00" r="1"/><circle cx="6.00" cy="12.00" r="1"/><circle cx="6.80" cy="9.00" r="1"/><circle cx="9.00" cy="6.80" r="1"/></g></svg>';
 // Ближайшие n событий календаря с сегодняшнего дня: [{day, label}].
 function ccDcUpcoming(n, keep){
   const out=[], today=careerToday();
@@ -548,8 +549,10 @@ function ccDcInitials(name){
 // Картинка аватарки; не загрузилась - вместо неё буквы.
 function ccDcImg(src, fb){ return '<img src="'+esc(src)+'" alt="" loading="lazy" data-fb="'+esc(fb)+'" onerror="this.replaceWith(this.dataset.fb)">'; }
 function ccDcSrvIcon(id){
+  // Тусовка региона: у EU - флаг Евросоюза, у остальных - код региона. Fortnite Competitive - плитка FNCS 2026 из файлов Epic (герб в центре).
+  if(id==='crew'){ const r=ccCareerRegion(); return r==='EU' ? CC_DC_EU_SVG : '<b class="dc-reg">'+esc(r)+'</b>'; }
+  if(id==='fn') return ccDcImg(CC_DC_FN_IMG, 'FN').replace('<img ', '<img class="dc-fn-av" ');
   if(id==='club') return (CAREER.org && typeof careerCrestImg==='function') ? careerCrestImg(CAREER.org.name, 30) : esc(ccDcInitials(CAREER.org && CAREER.org.name));
-  if(id==='fn') return CC_DC_FN_SVG;
   if(id==='pc') return ccCareerRegion()==='EU' ? ccDcImg('items/creative/noble-crown.png', 'NP') : esc(ccDcInitials(ccPracSrv()));
   if(id==='mob') return CC_DC_PHONE_SVG;
   if(ccFans()) return ccFanIcon();   // своя аватарка сервера из настроек
@@ -559,7 +562,7 @@ function ccDiscordHTML(){
   // Ушёл из клуба, а открыт был его сервер - показываем сервер практики.
   const T=L(), cr=CAREER.career, srv=(CH_DC==='club' && !CAREER.org) ? 'pc' : (CH_DC||'pc');
   // Первым - тусовка региона (ccCrewHTML): про и стримеры, с которыми ты пересекался.
-  const servers=[['crew', CC_CREW_GROUP_SVG, T.dcSrvCrew(ccCareerRegion())]].concat(CAREER.org ? [['club', ccDcSrvIcon('club'), CAREER.org.name]] : [],
+  const servers=[['crew', ccDcSrvIcon('crew'), T.dcSrvCrew(ccCareerRegion())]].concat(CAREER.org ? [['club', ccDcSrvIcon('club'), CAREER.org.name]] : [],
     [['fn', ccDcSrvIcon('fn'), 'Fortnite Competitive'], ['pc', ccDcSrvIcon('pc'), ccPracSrv()], ['mob', ccDcSrvIcon('mob'), T.dcSrvMob], ['own', ccDcSrvIcon('own'), (CAREER.career.fans && CAREER.career.fans.name) || T.dcSrvOwn]]);
   const last=cr.dcLast && cr.dcLast.day===careerToday() ? cr.dcLast : null;
   const btn=(kind, label)=>{ const why=ccDcWhy(kind);
