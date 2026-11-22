@@ -123969,7 +123969,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='36c5eda4';
+const CC_BUILD='16a293e7';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -132581,6 +132581,21 @@ function ccDcFnHTML(chan, msg){
     .map(e=>msg(bot, true, '<p>'+esc(T.fnRes(ccDcEvName(e), e.place, e.of||'?'))+'</p>')).join('');
   return chan(T.dcAnnounce, ann)+(res ? chan('results', res) : '');
 }
+/* Войсы мобильного сервера (22.11, его «в мобил дискорде пусть сидят люди, топы и обычные, там несколько каналов»): настоящие
+   игроки мобильной сцены региона (CC_MOBILE_ROSTER, рейтинг 62-92). Канал топов - от 88, остальные - в «General», «Scrims»,
+   «Chill». Кто где сидит - бросок дня, при перерисовке не прыгает. */
+function ccMobVoicesHTML(chan){
+  const T=L(), pool=(typeof CC_MOBILE_ROSTER!=='undefined' && CC_MOBILE_ROSTER[ccCareerRegion()]) || [];
+  if(!pool.length) return '';
+  const rnd=careerRng(ccHashStr('mobvc|'+careerToday()+'|'+ccCareerRegion()));
+  const top=pool.filter(p=>p[2]>=88), rest=pool.filter(p=>p[2]<88);
+  const pick=(arr, n)=>{ const a=arr.slice(), o=[]; while(o.length<n && a.length) o.push(a.splice(Math.floor(rnd()*a.length), 1)[0]); return o; };
+  const vm=p=>{ const fb=String(p[0]).replace(/[^A-Za-z0-9]/g, '').slice(0, 2).toUpperCase() || '?';
+    return '<span class="cr-vm" title="'+esc(p[0])+'"><span class="dc-av">'+esc(fb)+'</span><i>'+esc(p[0])+'</i></span>'; };
+  const chans=[['Top · 88+', pick(top, 2+Math.floor(rnd()*3))], [T.crVc1, pick(rest, 3+Math.floor(rnd()*3))],
+               [T.crVc2, pick(rest, 4+Math.floor(rnd()*4))], [T.crVc3, pick(rest, 1+Math.floor(rnd()*3))]];
+  return chans.map(([n, ps])=>chan(n, '<div class="cr-voice">'+(ps.length ? ps.map(vm).join('') : '<p class="dc-sub">'+esc(T.crVoiceEmpty)+'</p>')+'</div>', 'voice')).join('');
+}
 function ccDcServer(id){ CH_DC=id; CH_DCV='list'; careerRenderHub('discord'); }
 /* Аватарки Discord (его «добавь дискордам аватарки», 21.11): у игрока - фото его карточки, как в шапке хаба; у бота -
    значок его сервера; у серверов - корона Noble (EU), инициалы сервера практики региона, телефон у мобильного,
@@ -132651,7 +132666,7 @@ function ccDiscordHTML(){
            '<p class="dc-sub">'+esc(T.ccMobTitle+' '+ccMobileOvr().toFixed(1))+'</p>')+
            mUp.map(x=>msg(T.dcSrvMob, true, '<p>'+esc(T.fnUp(x.label, ccDayLabel(x.day)))+'</p>')).join(''))+
          (mRes.length || (last && last.kind==='mobJoin') ? chan('results', mRes.map(e=>msg(T.dcSrvMob, true, '<p>'+esc(T.fnRes(ccDcEvName(e), e.place, e.of||'?'))+'</p>')).join('')+res(['mobJoin'])) : '')+
-         ccDcSessHTML('mob')+
+         ccDcSessHTML('mob')+ccMobVoicesHTML(chan)+
          ccDcScrHTML('mob', chan, msg);
   } else {
     // Фан-сервер (ccFanHTML) - над кастомками: создать, потом фанаты после турниров, вопросы, покупки по коду.
@@ -133451,7 +133466,31 @@ function ccCrewRel(m){
 }
 function ccCrewRelAdd(m, n){ const c=ccCrew(); c.rel[m.k]=clamp(ccCrewRel(m)+n, 0, 100); }
 // Статус на сегодня: от дня и ника, одинаковый при каждой перерисовке.
+/* ДЕНЬ КАПА - ВОЙС КОМАНДАМИ (22.11, его «в день капа войс, где сидишь со своими тиммейтами» и «так же другие игроки,
+   которые на сервере и играют вместе»). Свой канал - ты и напарники, без платы энергией. Пары сцены (ccPairKeyNow), у
+   которых на сервере оба, сидят своим каналом и в списке участников «в войсе». Не в день турнира - как было. */
+function ccCrewCupDay(){
+  try{ const n=careerNext(); return !!n && n.day===careerToday() && n.type!=='free' && careerCanPlay(n); }catch(e){ return false; }
+}
+let CC_CREW_TEAMS=null;
+function ccCrewCupTeams(members){
+  const day=careerToday();
+  if(CC_CREW_TEAMS && CC_CREW_TEAMS.day===day && CC_CREW_TEAMS.n===members.length) return CC_CREW_TEAMS;
+  const out={day, n:members.length, teams:[], set:new Set()};
+  if(ccCrewCupDay()){
+    const byK=new Map(members.map(m=>[m.k, m])), pairs=ccPairKeyNow(), mine=new Set((careerMates()||[]).filter(Boolean).map(c=>hKey(c)));
+    members.forEach(m=>{
+      if(out.set.has(m.k) || mine.has(m.k) || !pairs[m.k]) return;
+      // Напарник не на сервере - всё равно садится к своему: в войс зовут и тех, кого на сервере нет (карточка со сцены).
+      const mates=String(pairs[m.k]).split('+').filter(k=>k && !mine.has(k)).map(k=>byK.get(k) || (()=>{ const c=ccWhoCard(k); return c ? {handle:c.handle, k:k, card:c} : null; })()).filter(Boolean);
+      if(!mates.length || out.teams.length>=4) return;
+      const team=[m].concat(mates); team.forEach(x=>out.set.add(x.k)); out.teams.push(team);
+    });
+  }
+  CC_CREW_TEAMS=out; return out;
+}
 function ccCrewStatus(m){
+  if(CC_CREW_TEAMS && CC_CREW_TEAMS.day===careerToday() && CC_CREW_TEAMS.set.has(m.k)) return 'voice';
   const rnd=careerRng(ccHashStr('crew|'+careerToday()+'|'+m.k));
   const x=rnd(); let acc=0;
   for(const [s, w] of CC_CREW_STATUS_W){ acc+=w; if(x<acc) return s; }
@@ -133617,6 +133656,7 @@ function ccCrewReply(opt){
 function ccCrewHTML(chan, msg){
   const T=L(), c=ccCrew(), today=careerToday();
   const members=ccCrewMembers();
+  try{ ccCrewCupTeams(members); }catch(e){}   // до статусов: в день капа пары сцены сидят командами (ccCrewStatus)
   const stName={voice:T.crStVoice, game:T.crStGame, on:T.crStOn, off:T.crStOff};
   const row=m=>{
     const st=ccCrewStatus(m), why=ccCrewWhy(m), rel=ccCrewRel(m), invited=ccCrewInvited(m);
@@ -133657,7 +133697,7 @@ function ccCrewHTML(chan, msg){
   // Зашёл в войс - ты тоже в списке своего канала, своей карточкой (как в Discord: себя видно в канале).
   const meV='<span class="cr-vm cr-vm-me" title="'+esc(CAREER.player.nick||'')+'"><span class="dc-av">'+(ccDcFace() ? ccDcImg(ccDcFace(), 'ME') : 'ME')+'</span><i>'+esc(CAREER.player.nick||'')+'</i></span>';
   const voiceOf=ch=>{
-    const inV=members.filter(m=>ccCrewStatus(m)==='voice' && ccCrewVc(m)===ch), here=vCh===ch;
+    const inV=members.filter(m=>ccCrewStatus(m)==='voice' && ccCrewVc(m)===ch && !(CC_CREW_TEAMS && CC_CREW_TEAMS.set.has(m.k))), here=vCh===ch;
     return '<div class="cr-voice">'+((inV.length || here)
         ? (here ? meV : '')+inV.map(m=>'<span class="cr-vm" title="'+esc(ccHandle(m.handle))+'"><span class="dc-av">'+ccCrewAv(m)+'</span><i>'+esc(ccHandle(m.handle))+'</i></span>').join('')
         : '<p class="dc-sub">'+esc(T.crVoiceEmpty)+'</p>')+'</div>'+
@@ -133666,7 +133706,16 @@ function ccCrewHTML(chan, msg){
         (vWhy && !vIn ? '<span class="dc-why">'+esc(vWhy)+'</span>' : vIn && !here ? '<span class="dc-why">'+esc(T.crVoiceElsewhere(T['crVc'+(vCh+1)]))+'</span>' : '')+'</div>';
   };
   const last=c.last && c.last.day===today ? '<div class="dc-res">'+esc(c.last.text)+'</div>' : '';
-  let voices=''; for(let i=0;i<CC_CREW_VC;i++) voices+=chan(T['crVc'+(i+1)], voiceOf(i), 'voice');
+  let voices='';
+  const cup=ccCrewCupTeams(members);
+  if(ccCrewCupDay()){
+    const vm=(name, av)=>'<span class="cr-vm"><span class="dc-av">'+av+'</span><i>'+esc(name)+'</i></span>';
+    const mates=(careerMates()||[]).filter(Boolean);
+    const mine=meV+mates.map(c=>{ let f=''; try{ f=photoURL(c)||''; }catch(e){} const fb=String(c.handle||'?').slice(0, 2).toUpperCase(); return vm(ccHandle(c.handle), f ? ccDcImg(f, fb) : esc(fb)); }).join('');
+    voices+=chan([CAREER.player.nick||''].concat(mates.map(c=>ccHandle(c.handle))).join(' & '), '<div class="cr-voice">'+mine+'</div>', 'voice');
+    cup.teams.forEach(t=>{ voices+=chan(t.map(x=>ccHandle(x.handle)).join(' & '), '<div class="cr-voice">'+t.map(x=>vm(ccHandle(x.handle), ccCrewAv(x))).join('')+'</div>', 'voice'); });
+  }
+  for(let i=0;i<CC_CREW_VC;i++) voices+=chan(T['crVc'+(i+1)], voiceOf(i), 'voice');
   return chan(T.crGeneral, '<p class="dc-sub">'+esc(T.crIntro)+'</p>'+chatHTML+ccCrewChatBoxHTML(msg, members))+
     ccCrewResultsHTML(chan, msg, members)+ccCrewLfgHTML(chan, msg, members)+
     voices+
