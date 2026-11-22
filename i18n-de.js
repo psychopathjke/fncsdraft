@@ -4803,3 +4803,6 @@ Object.assign(I18N.de=I18N.de||{},
 /* Дозаливка «de» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
 Object.assign(I18N.de=I18N.de||{},
 ({crResMeG:(p,e)=>"#"+p+" in "+e+", endlich", crResMeB:(p,e)=>"#"+p+" in "+e+", nicht mein Abend"}));
+/* Дозаливка «de» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
+Object.assign(I18N.de=I18N.de||{},
+({crVoiceLeave:"Verlassen"}));
