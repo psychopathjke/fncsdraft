@@ -860,7 +860,10 @@ function ccWatchPlat(h){ let s=0; String(h).split('').forEach(c=>{ s=(s*31+c.cha
 function ccWatchPros(){
   const me=CAREER.player.attrs || ccOwnAttrs(), my=ccFanMyOvr();
   let pool=[]; try{ pool=careerDuoSearchPool(true)||[]; }catch(e){}
-  pool=pool.filter(w=>w && w.handle && w.card && Math.round(w.ovr)>my).sort((a, b)=>b.ovr-a.ovr).slice(0, 24);
+  /* Сильнее хотя бы в одном стате, а не по общему рейтингу (Notion 22.11, «никогда нет никого»: при 99 сильнее по рейтингу
+     никого, а прицел или клатч у кого-то из топа выше). Ниже тебя на 6+ по рейтингу - не про, у них не учатся. */
+  const statUp=w=>{ let at=null; try{ at=attrsFor(w.card); }catch(e){} return !!at && CC_WATCH_KEYS.some(x=>(at[x]||0)>(me[x]!=null ? me[x] : 50)); };
+  pool=pool.filter(w=>w && w.handle && w.card && Math.round(w.ovr)>=my-5 && statUp(w)).sort((a, b)=>b.ovr-a.ovr).slice(0, 24);
   // Кто в эфире, решает день: список меняется каждый день, но не от перерисовки.
   const rng=ccLifeRng('watch');
   pool=pool.map(w=>({w, r:rng()})).sort((a, b)=>a.r-b.r).map(x=>x.w).slice(0, CC_WATCH_N);
@@ -1433,7 +1436,18 @@ function ccCrewCupTeams(members){
   if(CC_CREW_TEAMS && CC_CREW_TEAMS.day===day && CC_CREW_TEAMS.n===members.length) return CC_CREW_TEAMS;
   const out={day, n:members.length, teams:[], set:new Set()};
   if(ccCrewCupDay()){
-    const byK=new Map(members.map(m=>[m.k, m])), pairs=ccPairKeyNow(), mine=new Set((careerMates()||[]).filter(Boolean).map(c=>hKey(c)));
+    // Составы сцены формата года: пара и, в трио/сквад-год, третий (d.third) - иначе в трио-год все сидели парами (Notion 22.11).
+    const byK=new Map(members.map(m=>[m.k, m])), mine=new Set((careerMates()||[]).filter(Boolean).map(c=>hKey(c)));
+    const pairs={}, size=careerSquadSize();
+    try{ ((careerPools()||{}).duos||[]).forEach(d=>{
+      const cs=(d.cards||[]).filter(Boolean).slice();
+      if(size>2 && d.third){ const t=typeof d.third==='string' ? ccWhoCard(d.third) : d.third; if(t) cs.push(t); }
+      // Третий с рынка трио (calendar-mobile, careerTrioRaids): cr.trios[пара] - ключ третьего.
+      if(size>2 && cs.length===2){ const tk=((CAREER.career||{}).trios||{})[cs.map(c=>hKey(c)).sort().join('+')]; const t=tk ? ccWhoCard(tk) : null; if(t) cs.push(t); }
+      if(cs.length<2) return;
+      const ks=cs.map(c=>hKey(c));
+      ks.forEach((k,i)=>{ pairs[k]=ks.filter((_,j)=>j!==i).join('+'); });
+    }); }catch(e){}
     members.forEach(m=>{
       if(out.set.has(m.k) || mine.has(m.k) || !pairs[m.k]) return;
       // Напарник не на сервере - всё равно садится к своему: в войс зовут и тех, кого на сервере нет (карточка со сцены).
@@ -1666,7 +1680,8 @@ function ccCrewHTML(chan, msg){
   if(ccCrewCupDay()){
     const vm=(name, av)=>'<span class="cr-vm"><span class="dc-av">'+av+'</span><i>'+esc(name)+'</i></span>';
     const mates=(careerMates()||[]).filter(Boolean);
-    const mine=meV+mates.map(c=>{ let f=''; try{ f=photoURL(c)||''; }catch(e){} const fb=String(c.handle||'?').slice(0, 2).toUpperCase(); return vm(ccHandle(c.handle), f ? ccDcImg(f, fb) : esc(fb)); }).join('');
+    // Зашёл в другой войс - сидишь там, а не в двух каналах сразу (Notion 22.11 «когда меняю войс, становится два»).
+    const mine=(vIn ? '' : meV)+mates.map(c=>{ let f=''; try{ f=photoURL(c)||''; }catch(e){} const fb=String(c.handle||'?').slice(0, 2).toUpperCase(); return vm(ccHandle(c.handle), f ? ccDcImg(f, fb) : esc(fb)); }).join('');
     voices+=chan([CAREER.player.nick||''].concat(mates.map(c=>ccHandle(c.handle))).join(' & '), '<div class="cr-voice">'+mine+'</div>', 'voice');
     cup.teams.forEach(t=>{ voices+=chan(t.map(x=>ccHandle(x.handle)).join(' & '), '<div class="cr-voice">'+t.map(x=>vm(ccHandle(x.handle), ccCrewAv(x))).join('')+'</div>', 'voice'); });
   }

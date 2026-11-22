@@ -1578,15 +1578,26 @@ function careerSkipTarget(){
 /* Сама кнопка — одна на оба места: под закрытым вечером (рядом с «Пропустить
    день») и в панели дня (рядом со «Следующий день» или подсказкой «выбери, на
    что уходит день»: пропуск — это и есть ответ «ни на что, до турнира»). */
-function careerSkipToBtnHTML(){
+/* День церемонии - последний день года: сезон кончается, когда день уходит за него (life-training-formats, seasonOver).
+   Кнопка закрывает этот день сразу, без «Next day» (Notion 22.11). В командной карьере день двигает сервер - кнопки нет. */
+function ccSeasonEndBtnHTML(){
+  const cr=CAREER && CAREER.career; if(!cr || cr.seasonOver || ccMpOn()) return '';
+  return '<button class="ch-play ch-skipto" onclick="ccSeasonEndNow()"><i>'+CC_BTN_ICON.skip+'</i> '+esc(L().ccSeasonEndGo)+'</button>';
+}
+function ccSeasonEndNow(){
+  const cr=CAREER && CAREER.career; if(!cr || cr.seasonOver || ccMpOn()) return;
+  careerAdvanceTo(ccAddDays(careerToday(), 1)); careerSave(); careerRenderHub('centre');
+}
+// label - своя подпись (Notion 22.11: «кнопку закончить сезон ниже» под церемонией: пустые дни до неё одним нажатием).
+function careerSkipToBtnHTML(label){
   const cr=CAREER && CAREER.career;
   if(!cr || cr.seasonOver) return '';
   if(ccMpOn())
-    return '<button class="ch-play ch-skipto" disabled title="'+esc(L().ccMpNoFf)+'"><i>'+CC_BTN_ICON.skip+'</i> '+L().chSkipTo+'</button>';
+    return '<button class="ch-play ch-skipto" disabled title="'+esc(L().ccMpNoFf)+'"><i>'+CC_BTN_ICON.skip+'</i> '+(label||L().chSkipTo)+'</button>';
   const t=careerSkipTarget(), n=ccFfDays(t.day);
   if(!(n>0)) return '';
   return '<button class="ch-play ch-skipto" onclick="careerSkipToAsk()" title="'+
-    esc(L().chSkipToHint(ccDayLabel(t.day), n))+'"><i>'+CC_BTN_ICON.skip+'</i> '+L().chSkipTo+'</button>';
+    esc(L().chSkipToHint(ccDayLabel(t.day), n))+'"><i>'+CC_BTN_ICON.skip+'</i> '+(label||L().chSkipTo)+'</button>';
 }
 function careerSkipToAsk(){
   if(ccMpOn()){ ccTell(L().ccMpNoFf); return; }

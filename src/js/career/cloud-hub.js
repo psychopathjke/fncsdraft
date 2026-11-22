@@ -2478,7 +2478,7 @@ function careerCentreHTML(card, a){
           : next.type==='solo'   ? ccSoloWhyLocked()
           : next.type==='proam'  ? ccProAmWhyLocked()
           : next.type==='nations'? ccNatWhyLocked()
-                                 : L().chSoonHint})+(next.type==='gala' ? '<button class="ch-play ch-gala" onclick="ccGalaOpen()">'+L().ccGalaWatch+'</button>' : '')
+                                 : L().chSoonHint})+(next.type==='gala' ? '<button class="ch-play ch-gala" onclick="ccGalaOpen()">'+L().ccGalaWatch+'</button>'+(next.day===careerToday() ? ccSeasonEndBtnHTML() : careerSkipToBtnHTML(L().ccSeasonEndGo)) : '')
         : `<div class="ch-art" style="background-image:url(${art});">
           <div class="ch-livebar">
             ${onToday ? `<b>${L().chLiveTag}</b><span>${L().chLiveNow}</span>`
@@ -3157,8 +3157,7 @@ function careerMeHTML0(){
       ${ccRostersTileHTML()}
       <details class="ch-squad-how"${(CAREER.career.log||[]).length<3 ? ' open' : ''}><summary>${esc(T.sqHow)}</summary>${how}</details>
     </div>
-    <div class="csq-spot">${careerSpotTileHTML()}</div></div>
-    ${ccMateCompareHTML()}`;
+    <div class="csq-spot">${careerSpotTileHTML()}</div></div>`;
 }
 // Составы по размерам — дуо, трио, сквад: кто в каком, какой играет сейчас.
 function ccRostersTileHTML(){
