@@ -3114,23 +3114,24 @@ function careerMeHTML0(){
   const mp=(typeof ccMpOn==='function' && ccMpOn());
   const how=mp ? '<p class="ch-sq-howp">'+esc(T.sqHowMp)+'</p>'
     : '<ol class="ch-sq-steps"><li>'+esc(T.sqStepFind)+'</li><li>'+esc(T.sqStepDm)+'</li><li>'+esc(T.sqStepKick)+'</li><li>'+esc(T.sqStepFmt)+'</li></ol>';
+  /* 22.11 «слишком большие карточки, и надо вниз скролить»: один блок - слева карточки, справа составы по форматам,
+     химия и «как поменять». Плитки «Дуо» (то же, что на карточках) и «Следующий турнир» (он на Центре) здесь больше не
+     рисуются. Ниже одной строкой своя точка и сравнение с тиммейтом. */
   return `<div class="ch-squad-hero">
       <div class="ch-squad-h"><h3>${esc(T.sqTitle(fmtName))}</h3></div>
-      <div class="ch-pair ch-pair-cards ch-squad-cards${seats>1?' ch-pair-trio':''}">${cardTiles.join('')}</div>
-      <details class="ch-squad-how"${(CAREER.career.log||[]).length<3 ? ' open' : ''}><summary>${esc(T.sqHow)}</summary>${how}</details>
+      <div class="ch-squad-body">
+        <div class="ch-pair ch-pair-cards ch-squad-cards${seats>1?' ch-pair-trio':''}">${cardTiles.join('')}</div>
+        <div class="ch-squad-side">
+          ${ccRostersTileHTML()}
+          ${ccChemTileHTML()}
+          <details class="ch-squad-how"${(CAREER.career.log||[]).length<3 ? ' open' : ''}><summary>${esc(T.sqHow)}</summary>${how}</details>
+        </div>
+      </div>
     </div>
-    ${ccRostersTileHTML()}
     <div class="ch-grid ch-grid-me">
-    <div class="ch-col">
-      ${careerDuoTileHTML()}
-      ${careerNextCardHTML(careerNext(), careerCanPlay(careerNext()) && !CAREER.career.seasonOver)}
-    </div>
-    <div class="ch-col">
-      ${careerSpotTileHTML()}
-      ${ccMateCompareHTML()}
-      ${ccChemTileHTML()}
-    </div>
-  </div>`;
+      <div class="ch-col">${careerSpotTileHTML()}</div>
+      <div class="ch-col">${ccMateCompareHTML()}</div>
+    </div>`;
 }
 // Составы по размерам — дуо, трио, сквад: кто в каком, какой играет сейчас.
 function ccRostersTileHTML(){

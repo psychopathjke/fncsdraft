@@ -10368,3 +10368,23 @@
   .cc-aw .cc-aw-r > .cc-aw-go{grid-column:1 / -1;}
   .cc-aw .cc-aw-r > .cc-aw-n:first-child{grid-column:1 / -1;}
   .cc-aw .cc-aw-ic{margin-right:0;}
+  /* 22.11 «слишком большие карточки»: в блоке состава карточка в 0.6 размера, плитка плотнее. zoom есть в Chrome, Safari и Firefox 126+. */
+  #screen-career-hub .ch-squad-cards{grid-template-columns:repeat(auto-fill,minmax(200px,240px));justify-content:start;}
+  #screen-career-hub .ch-squad-cards .ch-cardwrap{zoom:.6;}
+  #screen-career-hub .ch-squad-cards .ch-tile-card{padding-bottom:8px;}
+  #screen-career-hub .ch-squad-cards .ch-tile-card h4{font-size:14px;}
+  #screen-career-hub .ch-squad-cards .ch-swap,#screen-career-hub .ch-squad-cards .ch-sign{font-size:12px;padding:6px 10px;}
+  /* Вкладка «Карьера»: состав и всё про него одним блоком. */
+  #screen-career-hub .ch-squad-body{display:grid;grid-template-columns:auto minmax(0,1fr);gap:12px;align-items:start;}
+  @media (max-width:900px){ #screen-career-hub .ch-squad-body{grid-template-columns:1fr;} }
+  #screen-career-hub .ch-squad-side{display:flex;flex-direction:column;gap:10px;min-width:0;}
+  #screen-career-hub .ch-squad-side > .ch-tile{margin:0;}
+  #screen-career-hub .ch-squad-side .ch-squad-how{margin-top:0;}
+  #screen-career-hub .ch-squad-cards{grid-template-columns:repeat(auto-fill,minmax(190px,210px));}
+  #screen-career-hub details.cc-inv > summary{list-style:none;cursor:pointer;}
+  #screen-career-hub details.cc-inv > summary::-webkit-details-marker{display:none;}
+  #screen-career-hub details.cc-inv > summary h4{margin:0;}
+  #screen-career-hub details.cc-inv[open] > summary h4{margin-bottom:6px;}
+  /* Карточки состава - в ряд, а не столбиком. */
+  #screen-career-hub .ch-squad-body .ch-squad-cards{grid-template-columns:none;grid-auto-flow:column;grid-auto-columns:200px;}
+  @media (max-width:900px){ #screen-career-hub .ch-squad-body .ch-squad-cards{grid-auto-flow:row;grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-columns:auto;} }

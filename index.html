@@ -10889,6 +10889,26 @@
   .cc-aw .cc-aw-r > .cc-aw-go{grid-column:1 / -1;}
   .cc-aw .cc-aw-r > .cc-aw-n:first-child{grid-column:1 / -1;}
   .cc-aw .cc-aw-ic{margin-right:0;}
+  /* 22.11 «слишком большие карточки»: в блоке состава карточка в 0.6 размера, плитка плотнее. zoom есть в Chrome, Safari и Firefox 126+. */
+  #screen-career-hub .ch-squad-cards{grid-template-columns:repeat(auto-fill,minmax(200px,240px));justify-content:start;}
+  #screen-career-hub .ch-squad-cards .ch-cardwrap{zoom:.6;}
+  #screen-career-hub .ch-squad-cards .ch-tile-card{padding-bottom:8px;}
+  #screen-career-hub .ch-squad-cards .ch-tile-card h4{font-size:14px;}
+  #screen-career-hub .ch-squad-cards .ch-swap,#screen-career-hub .ch-squad-cards .ch-sign{font-size:12px;padding:6px 10px;}
+  /* Вкладка «Карьера»: состав и всё про него одним блоком. */
+  #screen-career-hub .ch-squad-body{display:grid;grid-template-columns:auto minmax(0,1fr);gap:12px;align-items:start;}
+  @media (max-width:900px){ #screen-career-hub .ch-squad-body{grid-template-columns:1fr;} }
+  #screen-career-hub .ch-squad-side{display:flex;flex-direction:column;gap:10px;min-width:0;}
+  #screen-career-hub .ch-squad-side > .ch-tile{margin:0;}
+  #screen-career-hub .ch-squad-side .ch-squad-how{margin-top:0;}
+  #screen-career-hub .ch-squad-cards{grid-template-columns:repeat(auto-fill,minmax(190px,210px));}
+  #screen-career-hub details.cc-inv > summary{list-style:none;cursor:pointer;}
+  #screen-career-hub details.cc-inv > summary::-webkit-details-marker{display:none;}
+  #screen-career-hub details.cc-inv > summary h4{margin:0;}
+  #screen-career-hub details.cc-inv[open] > summary h4{margin-bottom:6px;}
+  /* Карточки состава - в ряд, а не столбиком. */
+  #screen-career-hub .ch-squad-body .ch-squad-cards{grid-template-columns:none;grid-auto-flow:column;grid-auto-columns:200px;}
+  @media (max-width:900px){ #screen-career-hub .ch-squad-body .ch-squad-cards{grid-auto-flow:row;grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-columns:auto;} }
 /*@@PART shell.html@@*/
 </style>
 <!-- ?v= — это НЕ украшение, это починка того, что он поймал 24 августа.
@@ -123906,7 +123926,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='dbd15457';
+const CC_BUILD='293cc463';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -130425,23 +130445,24 @@ function careerMeHTML0(){
   const mp=(typeof ccMpOn==='function' && ccMpOn());
   const how=mp ? '<p class="ch-sq-howp">'+esc(T.sqHowMp)+'</p>'
     : '<ol class="ch-sq-steps"><li>'+esc(T.sqStepFind)+'</li><li>'+esc(T.sqStepDm)+'</li><li>'+esc(T.sqStepKick)+'</li><li>'+esc(T.sqStepFmt)+'</li></ol>';
+  /* 22.11 «слишком большие карточки, и надо вниз скролить»: один блок - слева карточки, справа составы по форматам,
+     химия и «как поменять». Плитки «Дуо» (то же, что на карточках) и «Следующий турнир» (он на Центре) здесь больше не
+     рисуются. Ниже одной строкой своя точка и сравнение с тиммейтом. */
   return `<div class="ch-squad-hero">
       <div class="ch-squad-h"><h3>${esc(T.sqTitle(fmtName))}</h3></div>
-      <div class="ch-pair ch-pair-cards ch-squad-cards${seats>1?' ch-pair-trio':''}">${cardTiles.join('')}</div>
-      <details class="ch-squad-how"${(CAREER.career.log||[]).length<3 ? ' open' : ''}><summary>${esc(T.sqHow)}</summary>${how}</details>
+      <div class="ch-squad-body">
+        <div class="ch-pair ch-pair-cards ch-squad-cards${seats>1?' ch-pair-trio':''}">${cardTiles.join('')}</div>
+        <div class="ch-squad-side">
+          ${ccRostersTileHTML()}
+          ${ccChemTileHTML()}
+          <details class="ch-squad-how"${(CAREER.career.log||[]).length<3 ? ' open' : ''}><summary>${esc(T.sqHow)}</summary>${how}</details>
+        </div>
+      </div>
     </div>
-    ${ccRostersTileHTML()}
     <div class="ch-grid ch-grid-me">
-    <div class="ch-col">
-      ${careerDuoTileHTML()}
-      ${careerNextCardHTML(careerNext(), careerCanPlay(careerNext()) && !CAREER.career.seasonOver)}
-    </div>
-    <div class="ch-col">
-      ${careerSpotTileHTML()}
-      ${ccMateCompareHTML()}
-      ${ccChemTileHTML()}
-    </div>
-  </div>`;
+      <div class="ch-col">${careerSpotTileHTML()}</div>
+      <div class="ch-col">${ccMateCompareHTML()}</div>
+    </div>`;
 }
 // Составы по размерам — дуо, трио, сквад: кто в каком, какой играет сейчас.
 function ccRostersTileHTML(){
@@ -151381,7 +151402,9 @@ function ccInvTileHTML(){
     return '<div class="cc-inv-row"><div class="cc-inv-in"><b>'+esc(n)+'</b><small>'+esc(d)+'</small>'+(v.amt || v.ret ? '<small>'+esc(T.ivHave(ccMoney(v.amt||0), ccMoney(v.ret||0)))+'</small>' : '')+'</div>'+
       '<button class="dc-btn sm"'+((cr.balance||0)>=s ? '' : ' disabled')+' onclick="ccInvBuy(\''+k+'\')">'+esc(T.ivBuy(ccMoney(s)))+'</button>'+
       (v.amt ? '<button class="dc-btn ghost sm" onclick="ccInvSell(\''+k+'\')">'+esc(T.ivSell(ccMoney(v.amt)))+'</button>' : '')+'</div>'; }).join('');
-  return '<div class="ch-tile cc-inv"><h4>'+esc(T.ivTitle)+'</h4><p class="yt-sub">'+esc(T.ivNote)+'</p>'+rows+'</div>';
+  // Свёрнуто (22.11, «надо вниз скролить»): в заголовке - сколько вложено сейчас.
+  const tot=Object.keys(i).reduce((s0,k)=>s0+((i[k]||{}).amt||0), 0);
+  return '<details class="ch-tile cc-inv"><summary><h4>'+esc(T.ivTitle)+(tot ? ' · '+ccMoney(tot) : '')+'</h4></summary><p class="yt-sub">'+esc(T.ivNote)+'</p>'+rows+'</details>';
 }
 
 /* 12в. Гифт-сабы креатору: $50 (десять сабов по $5). Каждый подарок +5 % к шансу, что он согласится на коллаб (до +25 %). */

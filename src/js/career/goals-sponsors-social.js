@@ -6766,7 +6766,9 @@ function ccInvTileHTML(){
     return '<div class="cc-inv-row"><div class="cc-inv-in"><b>'+esc(n)+'</b><small>'+esc(d)+'</small>'+(v.amt || v.ret ? '<small>'+esc(T.ivHave(ccMoney(v.amt||0), ccMoney(v.ret||0)))+'</small>' : '')+'</div>'+
       '<button class="dc-btn sm"'+((cr.balance||0)>=s ? '' : ' disabled')+' onclick="ccInvBuy(\''+k+'\')">'+esc(T.ivBuy(ccMoney(s)))+'</button>'+
       (v.amt ? '<button class="dc-btn ghost sm" onclick="ccInvSell(\''+k+'\')">'+esc(T.ivSell(ccMoney(v.amt)))+'</button>' : '')+'</div>'; }).join('');
-  return '<div class="ch-tile cc-inv"><h4>'+esc(T.ivTitle)+'</h4><p class="yt-sub">'+esc(T.ivNote)+'</p>'+rows+'</div>';
+  // Свёрнуто (22.11, «надо вниз скролить»): в заголовке - сколько вложено сейчас.
+  const tot=Object.keys(i).reduce((s0,k)=>s0+((i[k]||{}).amt||0), 0);
+  return '<details class="ch-tile cc-inv"><summary><h4>'+esc(T.ivTitle)+(tot ? ' · '+ccMoney(tot) : '')+'</h4></summary><p class="yt-sub">'+esc(T.ivNote)+'</p>'+rows+'</details>';
 }
 
 /* 12в. Гифт-сабы креатору: $50 (десять сабов по $5). Каждый подарок +5 % к шансу, что он согласится на коллаб (до +25 %). */
