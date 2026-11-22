@@ -616,7 +616,10 @@ function ccAwayRowHTML(day, late, strip){
     // Время региона не настало (его слово 15.11: «просто не давать играть, если время не настало») — серая кнопка, без вопросов.
     const later=why==='later', closed=!!why;
     const st=later ? T.awAfterOwn : closed ? T['aw_'+why]+(why==='tired' ? ' '+Math.floor(careerEnergy())+'/'+CC_AWAY_ENERGY : '') : T.awGo;
-    return '<div class="cc-aw-r'+(closed ? ' off' : '')+'"><div class="cc-aw-n"><b>'+esc(regionName(r))+(slot[r] ? ' <span class="cc-aw-t">'+esc(hm(slot[r]))+'</span>' : '')+'</b>'+
+    // Значок турнира, как в календаре и истории (его «иконки в стиле турнира», Notion 22.11): ccLogArt по дню, виду и дивизиону.
+    let art=''; try{ art=ccLogArt({day:day, kind:kind, div:evDiv||1})||''; }catch(e){}
+    const ic=art ? '<span class="cc-aw-ic"><img src="'+esc(art)+'" alt="" loading="lazy" onerror="this.parentNode.remove()"></span>' : '';
+    return '<div class="cc-aw-r'+(closed ? ' off' : '')+'">'+ic+'<div class="cc-aw-n"><b>'+esc(regionName(r))+(slot[r] ? ' <span class="cc-aw-t">'+esc(hm(slot[r]))+'</span>' : '')+'</b>'+
       evLine+'<span>'+sub+'</span></div>'+
       '<button class="cc-awayb cc-aw-go" type="button"'+(closed ? ' disabled' : '')+' onclick="ccAwayPlay(\''+r+'\',\''+day+'\')">'+esc(st)+'</button></div>';
   }).join('');

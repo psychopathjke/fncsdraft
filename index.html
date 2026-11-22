@@ -10880,6 +10880,15 @@
   #screen-career-hub .ch-squad-how summary::before{content:'? ';}
   #screen-career-hub .ch-sq-steps{margin:8px 0 0;padding-left:20px;display:flex;flex-direction:column;gap:4px;opacity:.9;}
   #screen-career-hub .ch-sq-howp{margin:8px 0 0;opacity:.9;}
+  /* Значок турнира в строке выезда. */
+  .cc-aw-ic{flex:0 0 auto;width:44px;height:44px;border-radius:8px;overflow:hidden;background:rgba(255,255,255,.08);margin-right:8px;align-self:flex-start;}
+  .cc-aw-ic img{width:100%;height:100%;object-fit:cover;display:block;}
+  .cc-aw-strip .cc-aw-ic{width:36px;height:36px;}
+  /* В карточке вечера строка выезда столбиком: значок слева от названия, кнопка во всю ширину снизу. */
+  .cc-aw .cc-aw-r{display:grid;grid-template-columns:auto 1fr;column-gap:8px;align-items:start;}
+  .cc-aw .cc-aw-r > .cc-aw-go{grid-column:1 / -1;}
+  .cc-aw .cc-aw-r > .cc-aw-n:first-child{grid-column:1 / -1;}
+  .cc-aw .cc-aw-ic{margin-right:0;}
 /*@@PART shell.html@@*/
 </style>
 <!-- ?v= — это НЕ украшение, это починка того, что он поймал 24 августа.
@@ -123897,7 +123906,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='9034e7de';
+const CC_BUILD='dbd15457';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -165732,7 +165741,10 @@ function ccAwayRowHTML(day, late, strip){
     // Время региона не настало (его слово 15.11: «просто не давать играть, если время не настало») — серая кнопка, без вопросов.
     const later=why==='later', closed=!!why;
     const st=later ? T.awAfterOwn : closed ? T['aw_'+why]+(why==='tired' ? ' '+Math.floor(careerEnergy())+'/'+CC_AWAY_ENERGY : '') : T.awGo;
-    return '<div class="cc-aw-r'+(closed ? ' off' : '')+'"><div class="cc-aw-n"><b>'+esc(regionName(r))+(slot[r] ? ' <span class="cc-aw-t">'+esc(hm(slot[r]))+'</span>' : '')+'</b>'+
+    // Значок турнира, как в календаре и истории (его «иконки в стиле турнира», Notion 22.11): ccLogArt по дню, виду и дивизиону.
+    let art=''; try{ art=ccLogArt({day:day, kind:kind, div:evDiv||1})||''; }catch(e){}
+    const ic=art ? '<span class="cc-aw-ic"><img src="'+esc(art)+'" alt="" loading="lazy" onerror="this.parentNode.remove()"></span>' : '';
+    return '<div class="cc-aw-r'+(closed ? ' off' : '')+'">'+ic+'<div class="cc-aw-n"><b>'+esc(regionName(r))+(slot[r] ? ' <span class="cc-aw-t">'+esc(hm(slot[r]))+'</span>' : '')+'</b>'+
       evLine+'<span>'+sub+'</span></div>'+
       '<button class="cc-awayb cc-aw-go" type="button"'+(closed ? ' disabled' : '')+' onclick="ccAwayPlay(\''+r+'\',\''+day+'\')">'+esc(st)+'</button></div>';
   }).join('');

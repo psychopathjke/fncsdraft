@@ -10359,3 +10359,12 @@
   #screen-career-hub .ch-squad-how summary::before{content:'? ';}
   #screen-career-hub .ch-sq-steps{margin:8px 0 0;padding-left:20px;display:flex;flex-direction:column;gap:4px;opacity:.9;}
   #screen-career-hub .ch-sq-howp{margin:8px 0 0;opacity:.9;}
+  /* Значок турнира в строке выезда. */
+  .cc-aw-ic{flex:0 0 auto;width:44px;height:44px;border-radius:8px;overflow:hidden;background:rgba(255,255,255,.08);margin-right:8px;align-self:flex-start;}
+  .cc-aw-ic img{width:100%;height:100%;object-fit:cover;display:block;}
+  .cc-aw-strip .cc-aw-ic{width:36px;height:36px;}
+  /* В карточке вечера строка выезда столбиком: значок слева от названия, кнопка во всю ширину снизу. */
+  .cc-aw .cc-aw-r{display:grid;grid-template-columns:auto 1fr;column-gap:8px;align-items:start;}
+  .cc-aw .cc-aw-r > .cc-aw-go{grid-column:1 / -1;}
+  .cc-aw .cc-aw-r > .cc-aw-n:first-child{grid-column:1 / -1;}
+  .cc-aw .cc-aw-ic{margin-right:0;}

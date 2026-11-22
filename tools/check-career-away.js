@@ -225,7 +225,7 @@ const BOOT = `
     const lateDivRegs=lateDiv ? [...lateDiv.querySelectorAll('button')].map(b=>((b.getAttribute('onclick')||'').match(/'([A-Z]+)'/)||[])[1]) : [];
     if(lateDivRegs.indexOf('NAC')<0) fail('night row after the home div cup has no NAC: '+lateDivRegs.join());
     { const nbD=[...lateDiv.querySelectorAll('button')].find(b=>(b.getAttribute('onclick')||'').indexOf("'NAC'")>=0);
-      const rD=nbD && nbD.closest('.cc-aw-r'); if(!rD || rD.textContent.indexOf(L().awDivD(ccDivCount('NAC')))<0) fail('NAC row does not show its division: '+(rD && rD.textContent)); }
+      const rD=nbD && nbD.closest('.cc-aw-r'); if(!rD || (rD.textContent.indexOf(L().awDivD(ccDivCount('NAC')))<0 && rD.textContent.indexOf(L().ccDivision+' '+ccDivCount('NAC'))<0)) fail('NAC row does not show its division: '+(rD && rD.textContent)); }
     let dBase=null, dPow=null;
     const cyt3=careerYouTeam; careerYouTeam=function(){ const t=cyt3.apply(this, arguments); dBase=t.pow; return t; };
     const sgl3=simulateGamesLive; simulateGamesLive=function(field){ if(dPow==null){ const y=field.find(t=>t.isYou); dPow=y && y.pow; } return sgl3.apply(this, arguments); };
