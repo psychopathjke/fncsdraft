@@ -596,8 +596,17 @@ function ccDiscordHTML(){
     body=chan(T.dcSession, msg(ccPracSrv(), true, '<p>'+esc(T.dcSessionTxt(sv.name))+'</p>'))+ccDcSessHTML('pc')+ladder+
          ccDcScrHTML('pc', chan, msg);
   } else if(srv==='mob'){
+    // Анонсы и итоги мобильных турниров (его «пусть результаты будут в мобил дискорде, турниров, новости»): ближайшие
+    // этапы Mobile Series из календаря и твои места на мобильных турнирах за три недели.
+    const isMob=(k, lbl)=>/mob/i.test(k||'') || /mobile/i.test(lbl||'');
+    const mUp=ccDcUpcoming(4, e=>isMob(e.kind, e.label||e.title));
+    const mFrom=ccAddDays(careerToday(), -21);
+    const mRes=(cr.log||[]).filter(e=>e && e.place && e.day>=mFrom && e.day<=careerToday() && isMob(e.kind, ccDcEvName(e))).slice(-4).reverse();
     body=chan(T.dcAnnounce, msg(T.dcSrvMob, true, '<p>'+esc(T.dcLobbyMob(CC_DC_MOB_RATE, CC_DC_MOB_PER_WIN))+'</p>'+
-           '<p class="dc-sub">'+esc(T.ccMobTitle+' '+ccMobileOvr().toFixed(1))+'</p>'))+ccDcSessHTML('mob')+
+           '<p class="dc-sub">'+esc(T.ccMobTitle+' '+ccMobileOvr().toFixed(1))+'</p>')+
+           mUp.map(x=>msg(T.dcSrvMob, true, '<p>'+esc(T.fnUp(x.label, ccDayLabel(x.day)))+'</p>')).join(''))+
+         (mRes.length || (last && last.kind==='mobJoin') ? chan('results', mRes.map(e=>msg(T.dcSrvMob, true, '<p>'+esc(T.fnRes(ccDcEvName(e), e.place, e.of||'?'))+'</p>')).join('')+res(['mobJoin'])) : '')+
+         ccDcSessHTML('mob')+
          ccDcScrHTML('mob', chan, msg);
   } else {
     // Фан-сервер (ccFanHTML) - над кастомками: создать, потом фанаты после турниров, вопросы, покупки по коду.
@@ -2256,6 +2265,31 @@ function ccCrewChatTick(members){
   /* Тебя тегают (его «больше выбора общения, чтоб тегали и игроки сами чет предлагали»): предложение поиграть - кто-то
      из свободных зовёт в режим, где сегодня можно играть (ccCrewWhy), согласие сразу ведёт в игру с ним; и вопрос с двумя
      ответами или молчанием. Броски - от дня, как и весь чат. */
+  /* Новости сцены в тусовке (его «про подписания в оргу писать в дс, поздравлять, или про новые дуо трио»): за три
+     дня - твоё подписание (поздравляют с тегом), твой распад пары и новые составы сцены. Каждая новость - один раз
+     (c.nwSeen: день|ключ|первый аргумент). */
+  try{
+    const seen=c.nwSeen=(c.nwSeen||[]).slice(-60), nick0=CAREER.player.nick||'';
+    const fresh=(CAREER.career.news||[]).filter(x=>x && x.k && x.day && ccDaysBetween(x.day, day)<=3 && x.day<=day).slice(0, 12);
+    let said=0;
+    fresh.forEach(x=>{
+      if(said>=2) return;
+      const id=x.day+'|'+x.k+'|'+String((x.a||[])[0]||''); if(seen.indexOf(id)>=0) return;
+      const a=on[Math.floor(r()*on.length)]; let b=on[Math.floor(r()*on.length)]; if(b===a) b=on[(on.indexOf(a)+1)%on.length];
+      const clean=v=>String(v||'').replace(/<[^>]+>/g, '');
+      if(/^ccNewsSigned/.test(x.k)){
+        const org=clean((x.a||[])[0]);
+        log.push({h:a.handle, t:T.crNwSign1(nick0, org), d:day});
+        log.push({h:b.handle, t:(r()<0.5 ? T.crNwSign2 : T.crNwSign3)(nick0, org), d:day});
+      } else if(/^ccNewsSceneDuo/.test(x.k)){
+        log.push({h:a.handle, t:T.crNwDuo1('@'+ccHandle(clean((x.a||[])[0])), clean((x.a||[])[1])), d:day});
+        log.push({h:b.handle, t:T.crNwDuo2('', ''), d:day});
+      } else if(/^ccNewsDuoSplit/.test(x.k)){
+        log.push({h:a.handle, t:T.crNwSplit(nick0, clean((x.a||[])[0])), d:day});
+      } else return;
+      seen.push(id); said++;
+    });
+  }catch(e){}
   /* Игроки друг с другом (его «пусть игроки друг друга тегают и играют, чтоб дискорд живым выглядел»): 2-3 разговора
      в день из CC_CREW_NP - зовут на бокс-файты и пишут счёт, собирают зон-варс, ищут дуо на турнир, подкалывают,
      просят глянуть вод. Строки crNp<номер><буква>, говорящий - 0/1/2 (A/B/C). */
