@@ -6621,6 +6621,7 @@
   .dc-av img.dc-fn-av,.dc-srv img.dc-fn-av{transform:scale(1.45);}
   .dc-reg{font-size:11px;letter-spacing:.02em;}
   /* Сообщение с тегом тебя - подсветка, как упоминание в Discord. */
+  .dc-at{background:rgba(88,101,242,.3);color:#c9cdfb;border-radius:3px;padding:0 2px;font-weight:600;}
   .dc-ment{background:rgba(240,177,50,.1);border-left:2px solid #f0b132;padding:2px 8px;border-radius:0 4px 4px 0;}
   /* Тусовка региона (ccCrewHTML): участник строкой - аватарка с точкой статуса, ник и рейтинг, статус и отношение,
      справа «Поиграть вместе» и «Позвать в дуо». Войс - аватарками в ряд. */

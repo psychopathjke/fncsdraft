@@ -2225,6 +2225,17 @@ function ccCrewEventBtns(m, why){
    На игру не влияет, кроме +1 к отношению у ответивших (раз в день). Текст игрока выводится только через esc(). */
 const CC_CREW_CHAT_KEEP=40, CC_CREW_DLG=6;
 function ccCrewChatLog(){ const c=ccCrew(); c.chat=c.chat||[]; return c.chat; }
+const CC_CREW_NP=[
+  {lines:[['1a',0], ['1b',1], ['1c',0]]},
+  {three:true, lines:[['2a',0], ['2b',1], ['2c',2]]},
+  {ev:true, lines:[['3a',0], ['3b',1]]},
+  {lines:[['4a',0], ['4b',1], ['4c',1]]},
+  {lines:[['5a',0], ['5b',1]]},
+  {lines:[['6a',0], ['6b',1]]},
+  {three:true, lines:[['7a',0], ['7b',1], ['7c',0], ['7d',2]]}
+];
+// @ник в тексте - подсвеченное упоминание, как в Discord. Текст уже экранирован.
+function ccDcAt(html){ return String(html).replace(/@([A-Za-z0-9_.]+)/g, '<span class="dc-at">@$1</span>'); }
 function ccCrewChatTick(members){
   const c=ccCrew(), day=careerToday(); if(c.chatDay===day) return;
   c.chatDay=day;
@@ -2245,6 +2256,21 @@ function ccCrewChatTick(members){
   /* Тебя тегают (его «больше выбора общения, чтоб тегали и игроки сами чет предлагали»): предложение поиграть - кто-то
      из свободных зовёт в режим, где сегодня можно играть (ccCrewWhy), согласие сразу ведёт в игру с ним; и вопрос с двумя
      ответами или молчанием. Броски - от дня, как и весь чат. */
+  /* Игроки друг с другом (его «пусть игроки друг друга тегают и играют, чтоб дискорд живым выглядел»): 2-3 разговора
+     в день из CC_CREW_NP - зовут на бокс-файты и пишут счёт, собирают зон-варс, ищут дуо на турнир, подкалывают,
+     просят глянуть вод. Строки crNp<номер><буква>, говорящий - 0/1/2 (A/B/C). */
+  if(on.length>=2){
+    const np=CC_CREW_NP.filter(d=>(!d.ev || ev) && (!d.three || on.length>=3)).slice();
+    const k=Math.min(np.length, 2+(r()<0.5 ? 1 : 0));
+    for(let d=0; d<k; d++){
+      const dl=np.splice(Math.floor(r()*np.length), 1)[0];
+      const ppl=on.slice(); const A=ppl.splice(Math.floor(r()*ppl.length), 1)[0], B=ppl.splice(Math.floor(r()*ppl.length), 1)[0];
+      const C=ppl.length ? ppl[Math.floor(r()*ppl.length)] : B;
+      const who=[A, B, C], hs=who.map(m=>ccHandle(m.handle));
+      const win=r()<0.5, lose=Math.floor(r()*5), x=dl.ev ? ev : (win ? 5 : lose), y=win ? lose : 5;
+      dl.lines.forEach(([id, sp])=>log.push({h:who[sp].handle, t:T['crNp'+id](hs[0], hs[1], hs[2], x, y), d:day}));
+    }
+  }
   const nick=CAREER.player.nick||'', free=on.filter(m=>ccCrewStatus(m)!=='game' && m.kind!=='mate');
   if(free.length && r()<0.65){
     const m=free[Math.floor(r()*free.length)];
@@ -2351,8 +2377,8 @@ function ccCrewChatBoxHTML(msg, members){
     if(x.q) return '<div class="cr-replies">'+['a', 'b', 'n'].map(o=>'<button type="button" class="dc-btn ghost sm" onclick="ccCrewAnswer('+i+','+o.charCodeAt(0)+')">'+esc(o==='n' ? T.crQIgnore : T['crQ'+x.q+o])+'</button>').join('')+'</div>';
     return '';
   };
-  const list=log.map((x, i)=>x.me ? msg(CAREER.player.nick, false, '<p>'+esc(x.t)+'</p>')
-    : (()=>{ const m=byH.get(hKey(x.h)); return msg(ccHandle(x.h), false, '<p'+(x.offer || x.q ? ' class="dc-ment"' : '')+'>'+esc(x.t)+'</p>'+acts(x, i), m ? ccCrewAv(m) : esc(String(x.h).slice(0, 2).toUpperCase())); })()).join('');
+  const list=log.map((x, i)=>x.me ? msg(CAREER.player.nick, false, '<p>'+ccDcAt(esc(x.t))+'</p>')
+    : (()=>{ const m=byH.get(hKey(x.h)); return msg(ccHandle(x.h), false, '<p'+(x.offer || x.q ? ' class="dc-ment"' : '')+'>'+ccDcAt(esc(x.t))+'</p>'+acts(x, i), m ? ccCrewAv(m) : esc(String(x.h).slice(0, 2).toUpperCase())); })()).join('');
   const chips=[1, 2, 3, ev ? 4 : 0, 5].filter(i=>i && !ccCrewChipUsed(i)).map(i=>{
     const s=T['crS'+i]; const txt=typeof s==='function' ? s(next ? (next.type==='cup' ? T.ccCupLive : (next.title||next.label||'')) : '') : s;
     return '<button type="button" class="dc-btn ghost sm" onclick="ccCrewSayPick('+i+')">'+esc(txt)+'</button>'; }).join('');
