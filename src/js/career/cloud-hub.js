@@ -1553,7 +1553,7 @@ function careerWorldHTML(){
 // Подвкладки объединённых вкладок: «Медиа» = соцсети + стримы, «Таблицы» = PR/призовые + моя статистика + игроки сайта.
 function ccSubTabsHTML(group){
   // Discord — своей вкладкой рядом с соцсетями (его скрин 19.11: стрелка из меню ленты на ряд вкладок).
-  const list=group==='media' ? [['social', L().chTabSocial], ['streams', L().chTabStreams], ['youtube', L().chTabYt], ['discord', 'Discord']]
+  const list=group==='media' ? [['social', L().chTabSocial], ['streams', L().chTabStreams], ['youtube', L().chTabYt], ['tiktok', 'TikTok'], ['discord', 'Discord']]
                              : [['table', L().lfSubPrMoney], ['stats', L().chTabStats], ['world', L().lbTab]];
   return '<div class="ch-subtabs">'+list.map(([k,t])=>'<button class="ch-subtab ch-subtab-'+k+(CH_TAB===k?' on':'')+'" onclick="careerTab(\''+k+'\')">'+esc(t)+'</button>').join('')+'</div>';
 }
@@ -1734,6 +1734,7 @@ function careerRenderHubBody(tab){
   // Папки входящих (клубы, игроки, зрители, хейтеры, лента) - наверху соцсети: из полосы вкладок их сменили кнопки медиа.
   if(CH_TAB==='social'){ let nb=''; try{ nb=careerNoteBarHTML(); }catch(e){}
     body.innerHTML=ccMediaPhHTML()+(nb ? '<div class="cc-lb-note cc-social-note">'+nb+'</div>' : '')+'<div class="cc-media cc-media-x">'+careerSocialHTML()+'</div>'; return; }
+  if(CH_TAB==='tiktok'){ body.innerHTML=ccMediaPhHTML()+'<div class="cc-media cc-media-tt">'+careerTtHTML()+'</div>'; return; }
   if(CH_TAB==='youtube'){ body.innerHTML=ccMediaPhHTML()+'<div class="cc-media cc-media-yt">'+careerYtHTML()+'</div>'; return; }
   if(CH_TAB==='discord'){ body.innerHTML=ccMediaPhHTML()+'<div class="cc-media cc-media-dc">'+ccDiscordHTML()+'</div>'; try{ ccDcLayout(body); }catch(e){ console.error(e); } return; }
   /* The career itself, on its own screen.
@@ -4456,6 +4457,9 @@ const CC_DAY_ACTS=[
   {id:'trWcon', energy:15, watch:true, gain:{con:ccStep('con')/2}},
   {id:'trWclu', energy:15, watch:true, gain:{clu:ccStep('clu')/2}},
   {id:'trWend', energy:15, watch:true, gain:{end:ccStep('end')/2}},
+  // Коучинг за деньги и занятие с учеником (22.11): свои плитки во вкладке «Тренировка», кнопок дня нет (side).
+  {id:'lesson', energy:20, gain:{}, side:true, lesson:true},
+  {id:'mentor', energy:20, gain:{}, side:true, mentor:true},
   // Разминка перед турниром: только в день турнира, форма на вечер (ccPreEvent, CC_WARM_FORM).
   {id:'warm',   energy:15, gain:{}, warm:true},
   /* Discord-тусовка (его «да» на план 21.11, ccCrewHTML): не кнопки дня, а действия из Discord, поэтому в панели дня

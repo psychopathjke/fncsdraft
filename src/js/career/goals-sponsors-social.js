@@ -6256,6 +6256,7 @@ const CC_MQ_ICONS={
   social:'<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M17.8 3h3.1l-6.8 7.8 8 10.2h-6.3l-4.9-6.4L5.3 21H2.2l7.3-8.3L1.9 3h6.4l4.4 5.9L17.8 3Zm-1.1 16.2h1.7L7.4 4.7H5.6l11.1 14.5Z"/></svg>',
   streams:'<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M4.3 2 3 5.4v13.5h4.6V21h2.6l2.4-2.1h3.7l5-4.9V2H4.3Zm15.2 11.2-2.9 2.8H12l-2.4 2.1V16H5.8V3.8h13.7v9.4ZM16 7.1h-1.8v5.1H16V7.1Zm-4.9 0H9.3v5.1h1.8V7.1Z"/></svg>',
   youtube:'<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M23 7.2a3 3 0 0 0-2.1-2.1C19 4.6 12 4.6 12 4.6s-7 0-8.9.5A3 3 0 0 0 1 7.2 31 31 0 0 0 .5 12a31 31 0 0 0 .5 4.8 3 3 0 0 0 2.1 2.1c1.9.5 8.9.5 8.9.5s7 0 8.9-.5a3 3 0 0 0 2.1-2.1 31 31 0 0 0 .5-4.8 31 31 0 0 0-.5-4.8ZM9.8 15.1V8.9l5.8 3.1-5.8 3.1Z"/></svg>',
+  tiktok:'<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M16.6 2h-3.3v13.3a2.9 2.9 0 1 1-2.9-2.9c.3 0 .6 0 .9.1V9.1a6.3 6.3 0 1 0 5.3 6.2V8.6a7.9 7.9 0 0 0 4.4 1.4V6.7a4.5 4.5 0 0 1-4.4-4.7Z"/></svg>',
   discord:'<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M19.6 5.3A17 17 0 0 0 15.4 4l-.5 1a15.7 15.7 0 0 0-5.8 0L8.6 4a17 17 0 0 0-4.2 1.3C1.7 9.3 1 13.2 1.3 17a17 17 0 0 0 5.2 2.6l1.1-1.8a11 11 0 0 1-1.7-.8l.4-.3a12.2 12.2 0 0 0 11.4 0l.4.3c-.6.3-1.1.6-1.7.8l1.1 1.8a17 17 0 0 0 5.2-2.6c.4-4.4-.7-8.3-3.1-11.7ZM8.7 14.7c-1 0-1.9-1-1.9-2.1s.8-2.1 1.9-2.1 1.9 1 1.9 2.1-.8 2.1-1.9 2.1Zm6.6 0c-1 0-1.9-1-1.9-2.1s.8-2.1 1.9-2.1 1.9 1 1.9 2.1-.8 2.1-1.9 2.1Z"/></svg>'
 };
 function ccMediaQuickHTML(){
@@ -6264,7 +6265,7 @@ function ccMediaQuickHTML(){
   const tab=typeof CH_TAB!=='undefined' ? CH_TAB : '';
   const item=(k, label, badge)=>'<button type="button" class="cc-mq cc-mq-'+k+(tab===k ? ' on' : '')+'" onclick="careerTab(\''+k+'\')" title="'+esc(label)+'" aria-label="'+esc(label)+(badge ? ' ('+badge+')' : '')+'">'+
     CC_MQ_ICONS[k]+'<span>'+esc(label)+'</span>'+(badge ? '<i>'+(badge>99 ? '99+' : badge)+'</i>' : '')+'</button>';
-  return '<div class="cc-mq-row">'+item('social', T.chTabSocial, n)+item('streams', 'Twitch', 0)+item('youtube', 'YouTube', 0)+item('discord', 'Discord', 0)+'</div>';
+  return '<div class="cc-mq-row">'+item('social', T.chTabSocial, n)+item('streams', 'Twitch', 0)+item('youtube', 'YouTube', 0)+item('tiktok', 'TikTok', 0)+item('discord', 'Discord', 0)+'</div>';
 }
 
 /* ===== ТИЛЬТ, СОПЕРНИК СЕЗОНА, ИТОГИ ГОДА (22.11, его «делай» на список «что ещё в карьере») ===== */
@@ -6417,3 +6418,150 @@ function ccWrapBtnHTML(){
   if(!rows.length) return '';
   return '<button type="button" class="cc-wrap-open" onclick="ccWrapOpen()"><b>'+esc(L().wrBtn)+'</b><span>'+esc(cr.seasonOver ? L().wrBtnDone : L().wrBtnSoFar)+'</span></button>';
 }
+
+/* ===== TIKTOK, КОУЧИНГ, НАСТАВНИЧЕСТВО (22.11, его «156» на список «чего не хватает в карьере») ===== */
+
+/* TikTok. Канал стартует с доли аудитории (CC_TT_SEED от большего из X и Twitch), как YouTube. Клип - из заметной игры журнала
+   (победа, подиум, топ-10): СММ выкладывает сам, без СММ - кнопкой, один в день. Просмотры клипа = (подписчики·0.08 + 200) × вид ×
+   разброс, и с шансом CC_TT_VIRAL клип «залетает» ×15; доходят за несколько дней (CC_TT_DECAY). Подписывается 0.4 % посмотревших
+   (у большого меньше), «залетевший» приводит людей и в X. Монетизация с 10 тыс. подписчиков, $0.4 за тысячу просмотров.
+   Все числа - решение, не замер. */
+const CC_TT_SEED=0.15, CC_TT_VIRAL=0.06, CC_TT_VIRAL_X=15, CC_TT_DECAY=0.45, CC_TT_FUND={fol:10000, rpm:0.4}, CC_TT_KIND={win:2, podium:1.4, top:1};
+function ccTt(){
+  const cr=CAREER.career; cr.tt=cr.tt||{fol:0, views:0, usd:0, clips:[]};
+  const t=cr.tt;
+  if(!t.seed){ t.seed=1; t.fol=Math.max(t.fol||0, Math.round(Math.max(cr.twitch||0, cr.reach||0)*CC_TT_SEED)); }
+  return t;
+}
+function ccTtKind(e){ const p=e && e.place; return !p ? null : p===1 ? 'win' : p<=3 ? 'podium' : p<=10 ? 'top' : null; }
+function ccTtKey(e){ return e.day+'|'+(e.kind||'cup')+'|'+(e.stage||''); }
+function ccTtFresh(){
+  const cr=CAREER.career, t=ccTt(), from=ccAddDays(careerToday(), -7), used=new Set(t.clips.map(c=>c.ev));
+  return (cr.log||[]).filter(e=>e && e.day && e.day>from && e.day<=careerToday() && ccTtKind(e) && !used.has(ccTtKey(e))).slice(-3).reverse();
+}
+function ccTtEvName(e){ try{ return String(ccLogName(e)).replace(/<[^>]+>/g, ''); }catch(err){ return ''; } }
+function ccTtPublish(e){
+  const t=ccTt(), kind=ccTtKind(e); if(!kind) return null;
+  const id=ccTtKey(e); if(t.clips.some(c=>c.ev===id)) return null;
+  const rnd=careerRng(ccHashStr('tt|'+id+'|'+(CAREER.player.nick||'')));
+  const viral=rnd()<CC_TT_VIRAL, spread=Math.exp((rnd()-0.5)*1.4);
+  const total=Math.max(50, Math.round(((t.fol||0)*0.08+200)*CC_TT_KIND[kind]*spread*(viral ? CC_TT_VIRAL_X : 1)));
+  const clip={ev:id, day:careerToday(), on:e.day, kind, place:e.place, name:ccTtEvName(e), total, v:0, viral};
+  t.clips.unshift(clip); if(t.clips.length>40) t.clips.length=40;
+  return clip;
+}
+// Ручная публикация: один клип в день, из самой заметной свежей игры.
+function ccTtPostToday(){ const t=ccTt(); return t.clips.some(c=>c.day===careerToday() && c.manual); }
+function ccTtPost(){
+  if(ccTtPostToday()) return false;
+  const e=ccTtFresh()[0]; if(!e) return false;
+  const c=ccTtPublish(e); if(c) c.manual=true;
+  careerSave(); careerRenderHub('tiktok'); return !!c;
+}
+// Дневной тик (рядом с ccYtTick): СММ выкладывает свежее, просмотры доходят, подписчики и деньги.
+function ccTtTick(){
+  const cr=CAREER && CAREER.career; if(!cr) return;
+  if(typeof ccSmm==='function' && ccSmm()) ccTtFresh().filter(e=>e.day<careerToday()).forEach(e=>ccTtPublish(e));
+  if(!cr.tt) return;
+  const t=cr.tt, today=careerToday();
+  let got=0, gotViral=0;
+  t.clips.forEach(c=>{
+    const age=Math.max(0, ccDaysBetween(c.day, today));
+    const want=Math.round(c.total*(1-Math.pow(CC_TT_DECAY, Math.min(10, age)+1)));
+    const add=Math.max(0, want-(c.v||0)); if(!add) return;
+    c.v=(c.v||0)+add; got+=add; if(c.viral) gotViral+=add;
+  });
+  if(!got) return;
+  const fund=(t.fol||0)>=CC_TT_FUND.fol;
+  t.views=(t.views||0)+got;
+  t.fol=(t.fol||0)+Math.round(got*0.004/Math.sqrt(1+(t.fol||0)/200000));
+  if(gotViral) try{ careerReachAdd(Math.round(gotViral*0.0005)); }catch(e){}
+  if(fund){ const usd=got/1000*CC_TT_FUND.rpm; t.usd=Math.round(((t.usd||0)+usd)*100)/100; t.owe=(t.owe||0)+usd;
+    const whole=Math.floor(t.owe); if(whole>0){ cr.balance=(cr.balance||0)+whole; t.owe-=whole; } }
+}
+function ccTtClipTitle(c){ const T=L(); return c.kind==='win' ? T.ttClipWin(c.name) : c.kind==='podium' ? T.ttClipPod(c.name, c.place) : T.ttClipTop(c.name, c.place); }
+function careerTtHTML(){
+  const T=L(), t=ccTt(), me=CAREER.player||{}, today=careerToday();
+  const sm=typeof ccSmm==='function' ? ccSmm() : null, smc=sm ? ((typeof ccSmmOf==='function' && ccSmmOf(sm.id))||sm) : null;
+  const fund=(t.fol||0)>=CC_TT_FUND.fol, fresh=ccTtFresh(), posted=ccTtPostToday();
+  const head='<div class="tt-head"><span class="tt-logo" aria-hidden="true">♪</span><div class="tt-ch"><b>@'+esc(me.nick||'')+'</b><small>'+
+    esc(T.ttFol(ccNum(t.fol||0)))+' · '+esc(T.ttViews(ccNum(t.views||0)))+'</small></div>'+
+    '<div class="tt-earn"><em>'+esc(T.ttEarned)+'</em><b>'+ccMoney(Math.round(t.usd||0))+'</b><small>'+esc(fund ? T.ttFundOn : T.ttFund)+'</small></div></div>';
+  const how='<div class="ch-tile tt-how"><p class="yt-sub">'+esc(smc ? T.ttBySmm(smc.name||'') : T.ttNoSmm)+'</p>'+
+    (smc ? '' : '<button class="ch-play" '+(posted || !fresh.length ? 'disabled' : '')+' onclick="ccTtPost()">'+esc(posted ? T.ttPostDone : T.ttPost)+'</button>')+'</div>';
+  let face=''; try{ const cd=careerCard(); face=cd ? (photoURL(cd)||'') : ''; }catch(e){}
+  const grid=t.clips.length ? '<div class="tt-grid">'+t.clips.map(c=>{
+      const age=Math.max(0, ccDaysBetween(c.day, today));
+      return '<div class="tt-clip k-'+c.kind+(c.viral ? ' viral' : '')+'">'+(face ? '<img class="tt-bg" src="'+esc(face)+'" alt="" loading="lazy" onerror="this.remove()">' : '')+(c.viral ? '<i class="tt-viral">'+esc(T.ttViral)+'</i>' : '')+'<div class="tt-clip-in">'+
+        '<b>'+esc(ccTtClipTitle(c))+'</b><small>▶ '+ccNum(c.v||0)+' · '+esc(T.ttAgo(age))+'</small></div></div>'; }).join('')+'</div>'
+    : '<p class="ch-empty">'+esc(T.ttNone)+'</p>';
+  return '<div class="tt-wrap">'+head+how+grid+'</div>';
+}
+
+/* Коучинг за деньги: урок игроку пониже, 20 энергии, не больше CC_LESSON_DAY в день. Цена - от твоего рейтинга и известности,
+   в порядке платных уроков про на сайтах коучинга (решение, не замер). Не в день турнира (общее правило ccPreEvent). */
+const CC_LESSON_DAY=2;
+function ccLessonPay(){ const o=Math.round(ccMyShownOvr ? ccMyShownOvr() : (CAREER.player.ovr||70)); const fame=Math.min(1, (careerReach()||0)/500000);
+  return Math.max(20, Math.round((20+Math.max(0, o-70)*3)*2*(1+fame)/5)*5); }
+function ccLessonsToday(){ const d=(CAREER.career.did||{})[careerToday()]||[]; return d.filter(x=>x==='lesson').length; }
+function ccLessonRun(){
+  const cr=CAREER.career, pay=ccLessonPay();
+  cr.balance=(cr.balance||0)+pay; cr.lessons=cr.lessons||{n:0, usd:0}; cr.lessons.n++; cr.lessons.usd+=pay;
+  CC_LESSON_LAST={day:careerToday(), pay:pay};
+}
+let CC_LESSON_LAST=null;
+function ccLessonGo(){
+  if(ccLessonsToday()>=CC_LESSON_DAY) return false;
+  const r=careerDoAct('lesson'); careerSave(); careerRenderHub('train'); return !!r;
+}
+function ccLessonTileHTML(){
+  const T=L(), cr=CAREER.career, act=CC_DAY_ACTS.find(a=>a.id==='lesson'); if(!act) return '';
+  const full=ccLessonsToday()>=CC_LESSON_DAY, pre=!!ccPreEvent(), can=!full && !pre && careerEnergy()>=act.energy && !careerDayClosed();
+  const last=CC_LESSON_LAST && CC_LESSON_LAST.day===careerToday() ? '<p class="mg-note">'+esc(T.lsDone(ccMoney(CC_LESSON_LAST.pay)))+'</p>' : '';
+  return '<div class="ch-tile cc-lesson"><h4>'+esc(T.ccLsTitle)+'</h4><p class="yt-sub">'+esc(T.lsNote(ccMoney(ccLessonPay())))+'</p>'+last+
+    '<button class="ch-play"'+(can ? '' : ' disabled')+' onclick="ccLessonGo()">'+esc(full ? T.lsLimit : pre ? T.crNotTourDay : T.lsBtn(ccMoney(ccLessonPay()), act.energy))+'</button>'+
+    (cr.lessons && cr.lessons.n ? '<p class="yt-sub">'+esc(T.lsTotal(cr.lessons.n, ccMoney(cr.lessons.usd)))+'</p>' : '')+'</div>';
+}
+
+/* Наставничество: с рейтинга CC_MENTOR_MIN берёшь в ученики молодого (до 19 лет) игрока своего региона, ниже тебя на
+   CC_MENTOR_GAP и больше. Занятие - 20 энергии: ученику +CC_MENTOR_STEP к сдвигу рейтинга в книге развития сцены (CAREER.dev,
+   её читает careerDevOf), до +CC_MENTOR_CAP за сезон; тебе репутация +1 каждые три занятия; каждые +2 ученика - его пост.
+   В командной карьере и гонке нельзя: книга развития - общий мир двоих. */
+const CC_MENTOR_MIN=85, CC_MENTOR_GAP=6, CC_MENTOR_STEP=0.4, CC_MENTOR_CAP=6;
+function ccMentorOff(){ return (typeof ccMpOn==='function' && ccMpOn()) || (typeof ccRaceOn==='function' && ccRaceOn()); }
+function ccMentor(){ const cr=CAREER.career, m=cr.mentee; return (m && m.season===cr.season) ? m : null; }
+function ccMentorCands(){
+  const me=Math.round(ccMyShownOvr ? ccMyShownOvr() : (CAREER.player.ovr||70)), mine=hKey(CAREER.player.handle||CAREER.player.nick||'');
+  let list=[]; try{ list=careerRosterNowEU(); }catch(e){}
+  return list.filter(p=>{ if(!p || !p.handle || hKey(p)===mine) return false;
+      const a=ccAgeOf(p.handle); const o=(p._ovr!=null ? p._ovr : (attrsFor(p)||{}).ovr)||0;
+      return a!=null && a<=19 && o && o<=me-CC_MENTOR_GAP; })
+    .sort((a,b)=>((b._ovr||0)-(a._ovr||0))).slice(0, 6);
+}
+function ccMentorPick(h){ if(ccMentorOff()) return; const cr=CAREER.career; cr.mentee={h:h, season:cr.season, n:0, d:0}; careerSave(); careerRenderHub('train'); }
+function ccMentorDrop(){ CAREER.career.mentee=null; careerSave(); careerRenderHub('train'); }
+function ccMentorRun(){
+  const m=ccMentor(); if(!m || ccMentorOff()) return;
+  m.n++;
+  const step=Math.min(CC_MENTOR_STEP, Math.max(0, CC_MENTOR_CAP-m.d));
+  if(step>0){ const k=hKey(m.h); CAREER.dev=CAREER.dev||{}; CAREER.dev[k]=Math.min(CC_SCENE_DEV_MAX, (CAREER.dev[k]||0)+step); m.d=Math.round((m.d+step)*10)/10; }
+  if(m.n%3===0) try{ careerRepAdd(1); }catch(e){}
+  const shown=Math.floor(m.d/2)*2;
+  if(shown>=2 && shown>(m.told||0)){ m.told=shown; try{ careerNews('good', 'ccNewsMentor', [ccHandle(m.h), shown], {by:{name:m.h}}); }catch(e){} }
+}
+function ccMentorGo(){ const r=careerDoAct('mentor'); careerSave(); careerRenderHub('train'); return !!r; }
+function ccMentorTileHTML(){
+  const T=L(), me=Math.round(ccMyShownOvr ? ccMyShownOvr() : (CAREER.player.ovr||70)), act=CC_DAY_ACTS.find(a=>a.id==='mentor'); if(!act) return '';
+  let body='';
+  if(ccMentorOff()) body='<p class="yt-sub">'+esc(T.mtMp)+'</p>';
+  else if(me<CC_MENTOR_MIN) body='<p class="yt-sub">'+esc(T.mtLocked(CC_MENTOR_MIN))+'</p>';
+  else { const m=ccMentor();
+    if(m){ const pre=!!ccPreEvent(), can=!pre && careerEnergy()>=act.energy && !careerDayClosed();
+      body='<p class="yt-sub">'+esc(T.mtCur(ccHandle(m.h), m.n, m.d))+'</p><button class="ch-play"'+(can ? '' : ' disabled')+' onclick="ccMentorGo()">'+esc(pre ? T.crNotTourDay : T.mtBtn(act.energy))+'</button>'+
+        ' <button class="cc-back" onclick="ccMentorDrop()">'+esc(T.mtEnd)+'</button>'; }
+    else { const c=ccMentorCands();
+      body=c.length ? '<div class="cc-mentor-list">'+c.map(p=>'<div class="cc-mentor-row"><b>'+esc(ccHandle(p.handle))+'</b><em>'+((p._ovr!=null ? p._ovr : (attrsFor(p)||{}).ovr)||'')+' · '+ccAgeOf(p.handle)+'</em>'+
+          '<button class="dc-btn sm" onclick="ccMentorPick(\''+jsq(p.handle)+'\')">'+esc(T.mtPick)+'</button></div>').join('')+'</div>' : '<p class="yt-sub">'+esc(T.mtNone)+'</p>'; } }
+  return '<div class="ch-tile cc-mentor"><h4>'+esc(T.mtTitle)+'</h4><p class="yt-sub">'+esc(T.mtNote)+'</p>'+body+'</div>';
+}
+

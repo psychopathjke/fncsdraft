@@ -3094,7 +3094,7 @@ function careerDayPanelHTML(locked){
   const dayMult = ccTrainDayMult()*clamp((careerTrainCap()-nowOvr)/CAREER_TAPER, 0, 1);
   const dayCoach = ccCoach();
   const six = CAREER.player.attrs || ccOwnAttrs();
-  const actsShown=CC_DAY_ACTS.filter(function(a){ return a.watch ? false : pre ? (ccTrainAct(a) || a.warm) : (!a.warm &&!a.crew && !a.voice && (!a.meta || ccMetaOpen())); });
+  const actsShown=CC_DAY_ACTS.filter(function(a){ return (a.watch || a.side) ? false : pre ? (ccTrainAct(a) || a.warm) : (!a.warm &&!a.crew && !a.voice && (!a.meta || ccMetaOpen())); });
   if(CC_DAY_VIEW==='train') actsShown.sort((x, y)=>(ccDiscTile(x.id) ? 0 : 1)-(ccDiscTile(y.id) ? 0 : 1));
   const rows=actsShown.map(function(a, ai, allActs){
     const noDev=!!a.mobile && !ccMobileOwn();
@@ -3336,7 +3336,7 @@ function careerTrainTabHTML(){
   const six=CAREER.player.attrs || ccOwnAttrs();
   // Сначала карты, под ними план недели и таблица Noble (если на неделе были сессии).
   const noble=ccNobleBoardHTML();
-  const below=ccWatchTileHTML()+ccRkTileHTML()+ccTrainPlanHTML()+(noble ? '<div class="ch-tile tw-tile"><h4>'+(ccCareerRegion()==='EU' ? '<img class="tw-noble-ic" src="items/creative/noble-crown.png" alt="">Noble Practice' : esc(ccPracSrv()))+'</h4>'+noble+'</div>' : '');
+  const below=ccWatchTileHTML()+ccLessonTileHTML()+ccMentorTileHTML()+ccRkTileHTML()+ccTrainPlanHTML()+(noble ? '<div class="ch-tile tw-tile"><h4>'+(ccCareerRegion()==='EU' ? '<img class="tw-noble-ic" src="items/creative/noble-crown.png" alt="">Noble Practice' : esc(ccPracSrv()))+'</h4>'+noble+'</div>' : '');
   if(ccCentreDayOpen() || ccPreEvent()){
     CC_DAY_VIEW='train';
     try{ return '<div class="cc-train-tab">'+careerDayPanelHTML(null)+below+'</div>'; } finally{ CC_DAY_VIEW=''; }

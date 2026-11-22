@@ -956,6 +956,8 @@ function careerDoAct(id){
   if(act.rest) careerRestore(act.rest);
   // Тильт снимают отдых, разговор, войс и игра с друзьями (ccTiltAfterNight).
   if(act.rest || act.talk || act.voice || act.crew) ccTiltClear();
+  if(act.lesson) ccLessonRun();
+  if(act.mentor) ccMentorRun();
   // The same taper the cup's own growth uses. Without it training ran at full
   // speed right up to the ceiling and every career hit its own in the first
   // season, then stood still for seven more — a mode that is over after a year.
