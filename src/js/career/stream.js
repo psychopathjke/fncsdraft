@@ -1323,7 +1323,17 @@ function ccYt(){
   const cr=CAREER.career; cr.yt=cr.yt||{subs:0, views:0, hours:0, usd:0, vids:[]};
   const y=cr.yt;
   if(!y.seed){ y.seed=1; y.subs=Math.max(y.subs||0, Math.round(Math.max(cr.twitch||0, cr.reach||0)*CC_YT_SEED)); }
+  /* Раздутые сейвы (Notion 22.11, «слишком много дает ютуб и просмотры большие»: 2.88 млн подписчиков, 335 млн просмотров -
+     выросли на старой формуле): один раз подписчики сводятся к потолку ccYtCeil, просмотры, часы и ролики - в той же доле.
+     Заработанное остаётся. */
+  if(!y.fix22){ y.fix22=1; const ceil=ccYtCeil(cr); if((y.subs||0)>ceil){ const f=ceil/y.subs; y.subs=ceil;
+    y.views=Math.round((y.views||0)*f); y.hours=Math.round((y.hours||0)*f);
+    (y.vids||[]).forEach(v=>{ v.total=Math.round((v.total||0)*f); v.v=Math.round((v.v||0)*f); v.likes=Math.round((v.likes||0)*f); }); } }
   return y;
+}
+// Потолок подписчиков YouTube: половина большей аудитории (X или Twitch), не меньше 20 тыс. Решение, не замер: у про подписчиков
+// на YouTube обычно меньше, чем фолловеров на Twitch (Malibuca 185 тыс., Peterbot 1 млн при большей аудитории на Twitch).
+function ccYtCeil(cr){ cr=cr||CAREER.career; return Math.max(20000, Math.round(Math.max(cr.twitch||0, cr.reach||0)*0.5));
 }
 function ccYtSat(n, k){ return 1/Math.sqrt(1+Math.max(0, n||0)/k); }
 function ccYtMonet(y){ return (y.subs||0)>=CC_YT_YPP.subs && (y.hours||0)>=CC_YT_YPP.hours; }
@@ -1558,7 +1568,8 @@ function ccYtTick(){
   const wasMon=ccYtMonet(y);
   y.views=(y.views||0)+gotV; y.hours=(y.hours||0)+gotH;
   // Подписывается около процента посмотревших (было 5 %: канал рос на тысячи за ролик), у большого меньше (sat).
-  y.subs=(y.subs||0)+Math.max(0, Math.round(gotV*CC_YT_SUB_RATE*ccYtSat(y.subs, 300000)));
+  // Ближе к потолку (ccYtCeil) - медленнее, у потолка почти стоит.
+  y.subs=(y.subs||0)+Math.max(0, Math.round(gotV*CC_YT_SUB_RATE*ccYtSat(y.subs, 300000)*Math.max(0.05, 1-(y.subs||0)/ccYtCeil(cr))));
   if(wasMon){
     const usd=gotV/1000*CC_YT_RPM;
     y.usd=Math.round(((y.usd||0)+usd)*100)/100;

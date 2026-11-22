@@ -3019,7 +3019,7 @@ function careerDuoTileHTML(){
    who is hired by the month. The rival closes it, because he is the only one
    here who does not want anything from you except to finish above you. */
 function careerMeHTML(){
-  return ccWrapBtnHTML()+ccVacTileHTML()+ccInvTileHTML()+careerMeHTML0();
+  return careerMeHTML0()+ccVacTileHTML()+ccWrapBtnHTML()+ccInvTileHTML();
 }
 function careerMeHTML0(){
   const card=careerCard(), mates=careerMates(), seats=careerMateSeats();
@@ -3107,19 +3107,28 @@ function careerMeHTML0(){
   }
   /* «Карьера» — только игра: состав слева, справа своя точка, составы по размерам и коуч.
      Клуб, менеджер, маркетинг и SMM переехали во вкладку «Клуб» (careerClubTabHTML). */
-  return `<div class="ch-grid ch-grid-me">
+  /* 22.11 (его «career я бы переработал, чтоб игрок сразу видел свой состав и всё понятно было, как он сменить может»):
+     сверху во всю ширину - состав карточками с кнопками под каждой и коротко, как его поменять; под ним составы по
+     форматам (дуо, трио, сквад). Пара, своя точка, сравнение и химия - ниже. */
+  const T=L(), fmtName={1:'Solo', 2:T.lfRosterDuo, 3:T.lfRosterTrio, 4:T.lfRosterSquad}[careerSquadSize()]||'';
+  const mp=(typeof ccMpOn==='function' && ccMpOn());
+  const how=mp ? '<p class="ch-sq-howp">'+esc(T.sqHowMp)+'</p>'
+    : '<ol class="ch-sq-steps"><li>'+esc(T.sqStepFind)+'</li><li>'+esc(T.sqStepDm)+'</li><li>'+esc(T.sqStepKick)+'</li><li>'+esc(T.sqStepFmt)+'</li></ol>';
+  return `<div class="ch-squad-hero">
+      <div class="ch-squad-h"><h3>${esc(T.sqTitle(fmtName))}</h3></div>
+      <div class="ch-pair ch-pair-cards ch-squad-cards${seats>1?' ch-pair-trio':''}">${cardTiles.join('')}</div>
+      <details class="ch-squad-how"${(CAREER.career.log||[]).length<3 ? ' open' : ''}><summary>${esc(T.sqHow)}</summary>${how}</details>
+    </div>
+    ${ccRostersTileHTML()}
+    <div class="ch-grid ch-grid-me">
     <div class="ch-col">
-      <!-- The duo reads first, the two cards under it, and the tournament last,
-           his order of 18 August. -->
       ${careerDuoTileHTML()}
-      <div class="ch-pair ch-pair-cards${seats>1?' ch-pair-trio':''}">${cardTiles.join('')}</div>
       ${careerNextCardHTML(careerNext(), careerCanPlay(careerNext()) && !CAREER.career.seasonOver)}
     </div>
     <div class="ch-col">
       ${careerSpotTileHTML()}
       ${ccMateCompareHTML()}
       ${ccChemTileHTML()}
-      ${ccRostersTileHTML()}
     </div>
   </div>`;
 }
@@ -3189,7 +3198,7 @@ function ccStaffTermRecs(){
     if(c) out.push({key:'coach', rec:CAREER.coach, role:S.coach, name:c.name, month:CAREER.coach.cost||c.cost, free:()=>ccOrgPaysCoach()}); }
   if(CAREER.smm) out.push({key:'smm', rec:CAREER.smm, role:S.smm, name:CAREER.smm.name, month:CAREER.smm.cost||CC_SMM_FROM});
   if(CAREER.mkt) out.push({key:'mkt', rec:CAREER.mkt, role:S.mkt, name:CAREER.mkt.name, month:CAREER.mkt.cost||0});
-  for(const k of ['analyst','psych']) if(CAREER[k]) out.push({key:k, rec:CAREER[k], role:S[k], name:CAREER[k].name, month:CAREER[k].cost||0, free:()=>ccOrgPays(k)});
+  for(const k of ['analyst','psych','physio']) if(CAREER[k]) out.push({key:k, rec:CAREER[k], role:S[k]||L().ccPhysio, name:CAREER[k].name, month:CAREER[k].cost||0, free:()=>ccOrgPays(k)});
   return out;
 }
 function ccStaffAutoRenew(toISO){

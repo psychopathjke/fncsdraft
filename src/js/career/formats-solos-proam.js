@@ -1490,9 +1490,14 @@ function solosPrize(place){
 /* Кап дивизиона в соло-год (размер 1): очки как в финале FNCS Solos 2026 (сетка мест victoryR1Points, 4 за элим),
    призы по таблице того финала в регионе: Д1 целиком, каждый дивизион ниже вдвое меньше. Это решение, не данные Epic. */
 function ccSoloDivCupOn(){ return typeof careerSquadSize==='function' && careerSquadSize()===1; }
+const CC_SOLO_DIVCUP_DIV=20;
 function ccSoloDivCupPrize(place, div){
   if(!ccSoloDivCupOn()) return 0;
-  return Math.round(solosPrize(place)/Math.pow(2, Math.max(0, (div||1)-1)));
+  /* 22.11 (Notion: «чет много призов за див кап» - #1 Div 1 Cup платил $60 000, как финал FNCS Solos): кап дивизиона в
+     соло-год - не финал, сетка финала делится на CC_SOLO_DIVCUP_DIV (решение, не замер: Epic такого формата не проводит;
+     ориентир - денежный кап, где первое место около двух-трёх тысяч). Меньше $25 не платится. */
+  const v=Math.round(solosPrize(place)/CC_SOLO_DIVCUP_DIV/Math.pow(2, Math.max(0, (div||1)-1)));
+  return v>=25 ? Math.round(v/5)*5 : 0;
 }
 /* Стадии турнира, числа Epic'овы: Round 3 тысяча → топ-100 (в карьерной сотне топ-10), Fast Track сотня → топ-8, хит сотня, LCQ Final 70, финал сотня.
    Своё только топ-11 во втором круге: у Epic проходят 108 из тысячи (10,8%).
