@@ -75,6 +75,16 @@ function ccLbFigCut(img){
     const row=x.getImageData(0, 46, 48, 2).data;
     let n=0; for(let i=3; i<row.length; i+=4) if(row[i]>60) n++;
     img.classList.toggle('cut', n>=6);
+    /* Где у скина ноги (Notion 22.11, игрок из X «it looks wrong»: фигуры висели над дисками). У картинок скинов снизу
+       разный прозрачный запас, а диск и фигура стоят по одним процентам. Ищем нижнюю непрозрачную строку и опускаем
+       картинку на этот запас (--lb-gap, доля высоты), чтобы ноги стояли на диске. Обрезанным снизу (cut) запас не нужен. */
+    if(n<6 && img.naturalWidth && img.naturalHeight>=img.naturalWidth*0.98){
+      const H=96, W=Math.max(8, Math.round(H*img.naturalWidth/img.naturalHeight)), d=document.createElement('canvas'); d.width=W; d.height=H;
+      const y=d.getContext('2d', {willReadFrequently:true}); y.drawImage(img, 0, 0, W, H);
+      const px=y.getImageData(0, 0, W, H).data; let low=-1;
+      for(let r=H-1; r>=0 && low<0; r--){ let k=0; for(let q=0; q<W; q++) if(px[(r*W+q)*4+3]>80) k++; if(k>=2) low=r; }
+      if(low>0) img.style.setProperty('--lb-gap', Math.min(0.25, (H-1-low)/H).toFixed(3));
+    }
   }catch(e){}
 }
 function ccFnHeroErr(img){

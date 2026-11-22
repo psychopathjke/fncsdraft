@@ -10482,3 +10482,5 @@
   #screen-career-create .cc-chip.cc-rar-mythic{--r1:#ffe45c;--r2:#b9870a;color:#241a00;}
   #screen-career-create .cc-chip.cc-rar-mythic::after{background:linear-gradient(110deg,transparent 30%,rgba(255,255,255,.55) 45%,transparent 60%);background-size:250% 100%;animation:ccRarShine 2.6s linear infinite;}
   @media(max-width:600px){ #screen-career-create #ccDiffChips{grid-template-columns:1fr 1fr;} #screen-career-create #ccDiffChips .cc-rar-mythic{grid-column:span 2;} }
+  /* Ноги скина на диске: картинка опущена на свой прозрачный запас снизу (ccLbFigCut, --lb-gap). */
+  .cc-lb-fig img.full:not(.cut){transform:translateY(calc(var(--lb-gap, 0) * 100%));}

@@ -11003,6 +11003,8 @@
   #screen-career-create .cc-chip.cc-rar-mythic{--r1:#ffe45c;--r2:#b9870a;color:#241a00;}
   #screen-career-create .cc-chip.cc-rar-mythic::after{background:linear-gradient(110deg,transparent 30%,rgba(255,255,255,.55) 45%,transparent 60%);background-size:250% 100%;animation:ccRarShine 2.6s linear infinite;}
   @media(max-width:600px){ #screen-career-create #ccDiffChips{grid-template-columns:1fr 1fr;} #screen-career-create #ccDiffChips .cc-rar-mythic{grid-column:span 2;} }
+  /* Ноги скина на диске: картинка опущена на свой прозрачный запас снизу (ccLbFigCut, --lb-gap). */
+  .cc-lb-fig img.full:not(.cut){transform:translateY(calc(var(--lb-gap, 0) * 100%));}
 /*@@PART shell.html@@*/
 </style>
 <!-- ?v= — это НЕ украшение, это починка того, что он поймал 24 августа.
@@ -124066,7 +124068,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='d4daf691';
+const CC_BUILD='e23b3cac';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -129521,6 +129523,11 @@ function ccLobbyFit(){
   if(lb && lb.__fitRO) lb.querySelectorAll('.cc-lb-left, .cc-lb-right').forEach(c=>{ [...c.children].forEach(k=>lb.__fitRO.observe(k)); });
   // Скрытое меню (другой экран сайта) меряется нулями — не трогаем; покажется — сработает наблюдатель.
   if(lb && !lb.getClientRects().length) return;
+  /* Колонки - сразу под полосой недель (Notion 22.11, игрок из X «higher too»: на ноутбуке между полосой и колонками
+     стояло 40+ px пустоты, сцена уезжала вниз). Отступ - от реального низа полосы, а не числом из CSS. */
+  try{ if(lb && innerWidth>700){ const bar=lb.querySelector('.cc-lb-bottom');
+    if(bar){ const top=bar.offsetTop+bar.offsetHeight+8;
+      lb.querySelectorAll('.cc-lb-left, .cc-lb-right').forEach(c=>{ c.style.top=''; const cur=c.offsetTop; if(cur>top+4 && getComputedStyle(c).top!=='auto') c.style.top=top+'px'; }); } } }catch(e){}
   try{ ccLobbyFitHeight(lb); }catch(e){}
   if(lb) try{ ccLobbyPads(lb); }catch(e){}
   if(lb && innerWidth>700) try{ ccLobbyPlatesClear(lb); }catch(e){}
@@ -157841,6 +157848,16 @@ function ccLbFigCut(img){
     const row=x.getImageData(0, 46, 48, 2).data;
     let n=0; for(let i=3; i<row.length; i+=4) if(row[i]>60) n++;
     img.classList.toggle('cut', n>=6);
+    /* Где у скина ноги (Notion 22.11, игрок из X «it looks wrong»: фигуры висели над дисками). У картинок скинов снизу
+       разный прозрачный запас, а диск и фигура стоят по одним процентам. Ищем нижнюю непрозрачную строку и опускаем
+       картинку на этот запас (--lb-gap, доля высоты), чтобы ноги стояли на диске. Обрезанным снизу (cut) запас не нужен. */
+    if(n<6 && img.naturalWidth && img.naturalHeight>=img.naturalWidth*0.98){
+      const H=96, W=Math.max(8, Math.round(H*img.naturalWidth/img.naturalHeight)), d=document.createElement('canvas'); d.width=W; d.height=H;
+      const y=d.getContext('2d', {willReadFrequently:true}); y.drawImage(img, 0, 0, W, H);
+      const px=y.getImageData(0, 0, W, H).data; let low=-1;
+      for(let r=H-1; r>=0 && low<0; r--){ let k=0; for(let q=0; q<W; q++) if(px[(r*W+q)*4+3]>80) k++; if(k>=2) low=r; }
+      if(low>0) img.style.setProperty('--lb-gap', Math.min(0.25, (H-1-low)/H).toFixed(3));
+    }
   }catch(e){}
 }
 function ccFnHeroErr(img){

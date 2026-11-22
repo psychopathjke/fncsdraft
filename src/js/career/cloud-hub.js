@@ -2050,6 +2050,11 @@ function ccLobbyFit(){
   if(lb && lb.__fitRO) lb.querySelectorAll('.cc-lb-left, .cc-lb-right').forEach(c=>{ [...c.children].forEach(k=>lb.__fitRO.observe(k)); });
   // Скрытое меню (другой экран сайта) меряется нулями — не трогаем; покажется — сработает наблюдатель.
   if(lb && !lb.getClientRects().length) return;
+  /* Колонки - сразу под полосой недель (Notion 22.11, игрок из X «higher too»: на ноутбуке между полосой и колонками
+     стояло 40+ px пустоты, сцена уезжала вниз). Отступ - от реального низа полосы, а не числом из CSS. */
+  try{ if(lb && innerWidth>700){ const bar=lb.querySelector('.cc-lb-bottom');
+    if(bar){ const top=bar.offsetTop+bar.offsetHeight+8;
+      lb.querySelectorAll('.cc-lb-left, .cc-lb-right').forEach(c=>{ c.style.top=''; const cur=c.offsetTop; if(cur>top+4 && getComputedStyle(c).top!=='auto') c.style.top=top+'px'; }); } } }catch(e){}
   try{ ccLobbyFitHeight(lb); }catch(e){}
   if(lb) try{ ccLobbyPads(lb); }catch(e){}
   if(lb && innerWidth>700) try{ ccLobbyPlatesClear(lb); }catch(e){}
