@@ -10388,3 +10388,32 @@
   /* Карточки состава - в ряд, а не столбиком. */
   #screen-career-hub .ch-squad-body .ch-squad-cards{grid-template-columns:none;grid-auto-flow:column;grid-auto-columns:200px;}
   @media (max-width:900px){ #screen-career-hub .ch-squad-body .ch-squad-cards{grid-auto-flow:row;grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-columns:auto;} }
+  /* Состав списком (ccSquadListHTML). */
+  #screen-career-hub .ch-squad-h{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:10px;}
+  #screen-career-hub .ch-squad-h h3{margin:0;}
+  #screen-career-hub .csq-chem{display:flex;align-items:center;gap:8px;margin-left:auto;font-size:12.5px;}
+  #screen-career-hub .csq-chem em{font-style:normal;opacity:.75;text-transform:uppercase;letter-spacing:.04em;font-size:11px;}
+  #screen-career-hub .csq-chem u{display:block;width:120px;height:6px;border-radius:3px;background:rgba(255,255,255,.12);overflow:hidden;}
+  #screen-career-hub .csq-chem s{display:block;height:100%;background:#3ee9b8;}
+  #screen-career-hub .csq-list{display:flex;flex-direction:column;border:1px solid rgba(255,255,255,.1);border-radius:10px;overflow:hidden;}
+  #screen-career-hub .csq-row{display:grid;grid-template-columns:44px minmax(0,1.4fr) 44px minmax(0,.8fr) minmax(0,.8fr) auto;align-items:center;gap:10px;padding:8px 12px;background:rgba(10,16,30,.35);}
+  #screen-career-hub .csq-row+.csq-row{border-top:1px solid rgba(255,255,255,.07);}
+  #screen-career-hub .csq-me{background:rgba(255,221,0,.08);}
+  #screen-career-hub .csq-av{width:40px;height:40px;border-radius:50%;overflow:hidden;background:rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;}
+  #screen-career-hub .csq-av img{width:100%;height:100%;object-fit:cover;}
+  #screen-career-hub .csq-plus{font-size:22px;color:#ffdd00;border:1px dashed rgba(255,221,0,.5);background:none;}
+  #screen-career-hub .csq-n{font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:flex;align-items:center;gap:6px;}
+  #screen-career-hub .csq-o{font-style:normal;font-weight:900;color:#ffdd00;font-size:17px;}
+  #screen-career-hub .csq-r,#screen-career-hub .csq-m{font-size:12.5px;opacity:.8;}
+  #screen-career-hub .csq-a{display:flex;gap:6px;justify-content:flex-end;align-items:center;}
+  #screen-career-hub .csq-a .ch-swap{margin:0;width:auto;padding:6px 12px;font-size:12px;}
+  #screen-career-hub .csq-kick{position:static;}
+  #screen-career-hub .csq-empty .csq-n{opacity:.7;font-weight:600;}
+  #screen-career-hub .csq-empty{grid-template-columns:44px minmax(0,1fr) auto;}
+  #screen-career-hub .csq-edit{display:flex;justify-content:flex-end;margin:6px 0 8px;}
+  #screen-career-hub .ch-squad-hero > .ch-tile{margin:0 0 8px;}
+  @media (max-width:700px){ #screen-career-hub .csq-row{grid-template-columns:40px minmax(0,1fr) auto;row-gap:4px;}
+    #screen-career-hub .csq-row .csq-r,#screen-career-hub .csq-row .csq-m{grid-column:2;font-size:11.5px;}
+    #screen-career-hub .csq-row .csq-o{grid-column:3;grid-row:1;justify-self:end;}
+    #screen-career-hub .csq-row .csq-a{grid-column:1 / -1;justify-content:flex-start;}
+    #screen-career-hub .csq-chem{margin-left:0;width:100%;} }

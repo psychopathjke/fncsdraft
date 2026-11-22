@@ -731,7 +731,7 @@ function careerEnergyMax(){
   // chair, and the better one is the one you are sitting in.
   const slots={};
   // The rooms you are not working in are part of what a day is worth too.
-  let extra=((typeof ccFlatCap==='function') ? ccFlatCap() : 0)+((typeof ccPhysioCap==='function') ? ccPhysioCap() : 0);   // физио штаба (22.11)
+  let extra=(typeof ccFlatCap==='function') ? ccFlatCap() : 0;
   CC_SHOP.forEach(it=>{
     if(!it.cap || !careerOwns(it.id)) return;
     if(!it.slot){ extra+=it.cap; return; }

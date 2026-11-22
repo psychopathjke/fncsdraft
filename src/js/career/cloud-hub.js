@@ -2988,6 +2988,37 @@ function ccMateBlockHTML(mate, rec){
       return a ? `<div class="ch-row"><em>${L().ccAge}</em><b>${L().ccYearsOld(a)}</b></div>` : ''; })()+
     `<div class="ch-row"><em>${L().ccMood}</em><b>${L()[careerMoodKey(pat)]}</b></div>`;
 }
+/* СОСТАВ СПИСКОМ, КАК В EA FC (22.11, его выбор после «всё равно чет не то»): строка на человека - фото, ник, рейтинг,
+   роль, настроение и кнопки справа; пустое кресло - плюс и «Найти». В шапке - химия (средняя по напарникам) и прибавка.
+   Карточки целиком - в профиле; здесь только то, что нужно, чтобы понять состав и поменять его. */
+function ccSquadListHTML(){
+  const T=L(), card=careerCard(), mates=careerMates(), recs=careerMateRecords(), seats=careerMateSeats();
+  const mp=(typeof ccMpOn==='function' && ccMpOn());
+  const av=c=>{ let f=''; try{ f=c ? (photoURL(c)||'') : ''; }catch(e){} const fb=String((c && c.handle)||'?').slice(0, 2).toUpperCase();
+    return '<span class="csq-av">'+(f ? '<img src="'+esc(f)+'" alt="" loading="lazy" onerror="this.remove()">' : esc(fb))+'</span>'; };
+  const roleNow=ccRoleNow(), roleCan=ccRoleSwapCan();
+  const meOvr=Math.round(typeof ccMyShownOvr==='function' ? ccMyShownOvr() : (CAREER.player.ovr||0));
+  const rows=[];
+  rows.push('<div class="csq-row csq-me">'+av(card)+'<b class="csq-n">'+esc(CAREER.player.nick||'')+'</b><em class="csq-o">'+meOvr+'</em>'+
+    '<span class="csq-r">'+esc(roleNow ? (T[roleNow]||'') : '')+'</span><span class="csq-m">'+esc(T.sqYou)+'</span>'+
+    '<span class="csq-a">'+(roleNow ? '<button class="ch-swap"'+(roleCan.ok ? '' : ' disabled title="'+esc(roleCan.why==='cool' ? T.ccRoleCool(roleCan.days) : roleCan.why==='two' ? T.ccRoleLockedTwo : T.ccRoleLockedNone)+'"')+' onclick="careerRoleSwap()">'+esc(T.ccRoleSwapTo(T[ccRoleOther(roleNow)]))+'</button>' : '')+'</span></div>');
+  for(let i=0; i<seats; i++){
+    const m=mates[i], rec=recs[i];
+    if(!m){ rows.push('<div class="csq-row csq-empty"><span class="csq-av csq-plus">+</span><b class="csq-n">'+esc((i===0 && !mates.length) ? T.chNoPartner : T.ccSeatEmpty)+'</b>'+
+      '<span class="csq-a"><button class="ch-swap" onclick="ccDuoFindOpen('+i+')">'+esc(ccSay('ccFindDuo'))+'</button></span></div>'); continue; }
+    const a=attrsFor(m)||{}, pat=rec && rec.patience!=null ? rec.patience : CAREER_PATIENCE_START;
+    const peer=i===0 && mp && typeof MP!=='undefined' && MP.peer;
+    rows.push('<div class="csq-row">'+av(m)+'<b class="csq-n">'+(typeof flagFor==='function' ? flagFor(m) : '')+esc(m.handle)+'</b><em class="csq-o">'+(a.ovr||'')+'</em>'+
+      '<span class="csq-r">'+esc(T[a.roleKey]||'')+'</span><span class="csq-m">'+esc(T[careerMoodKey(pat)]||'')+'</span>'+
+      '<span class="csq-a">'+(peer ? '' : '<button class="ch-swap" onclick="ccDuoFindOpen('+i+')">'+esc(ccSay('ccMateReplace'))+'</button>'+
+        '<button class="ch-kick csq-kick" title="'+esc(T.ccMateKick)+'" aria-label="'+esc(T.ccMateKick)+'" onclick="careerMateKickAsk('+i+')">×</button>')+'</span></div>');
+  }
+  // Химия: средняя по напарникам (дни вместе к CC_CHEM_DAYS), как в ccChemTileHTML.
+  let pct=null;
+  try{ const rs=(mp ? (careerMates()||[]) : recs).filter(Boolean); if(rs.length){ pct=Math.round(rs.reduce((s0,p)=>{ const d=mp ? careerChemDays() : (p.since ? Math.max(0, ccDaysBetween(p.since, careerToday())) : 0)+(p.chemX||0); return s0+Math.min(100, d/CC_CHEM_DAYS*100); }, 0)/rs.length); } }catch(e){}
+  const chem=pct==null ? '' : '<span class="csq-chem"><em>'+esc(T.lfChem)+'</em><u><s style="width:'+pct+'%"></s></u><b>'+pct+'% · +'+careerChem()+'</b></span>';
+  return {rows:rows.join(''), chem:chem};
+}
 function careerDuoTileHTML(){
   const mates=careerMates(), recs=careerMateRecords(), seats=careerMateSeats();
   const mate=mates[0];
@@ -3117,16 +3148,13 @@ function careerMeHTML0(){
   /* 22.11 «слишком большие карточки, и надо вниз скролить»: один блок - слева карточки, справа составы по форматам,
      химия и «как поменять». Плитки «Дуо» (то же, что на карточках) и «Следующий турнир» (он на Центре) здесь больше не
      рисуются. Ниже одной строкой своя точка и сравнение с тиммейтом. */
+  const sl=ccSquadListHTML();
   return `<div class="ch-squad-hero">
-      <div class="ch-squad-h"><h3>${esc(T.sqTitle(fmtName))}</h3></div>
-      <div class="ch-squad-body">
-        <div class="ch-pair ch-pair-cards ch-squad-cards${seats>1?' ch-pair-trio':''}">${cardTiles.join('')}</div>
-        <div class="ch-squad-side">
-          ${ccRostersTileHTML()}
-          ${ccChemTileHTML()}
-          <details class="ch-squad-how"${(CAREER.career.log||[]).length<3 ? ' open' : ''}><summary>${esc(T.sqHow)}</summary>${how}</details>
-        </div>
-      </div>
+      <div class="ch-squad-h"><h3>${esc(T.sqTitle(fmtName))}</h3>${sl.chem}</div>
+      <div class="csq-list">${sl.rows}</div>
+      <div class="csq-edit">${ccMeEditHTML()}</div>
+      ${ccRostersTileHTML()}
+      <details class="ch-squad-how"${(CAREER.career.log||[]).length<3 ? ' open' : ''}><summary>${esc(T.sqHow)}</summary>${how}</details>
     </div>
     <div class="ch-grid ch-grid-me">
       <div class="ch-col">${careerSpotTileHTML()}</div>
@@ -3199,7 +3227,7 @@ function ccStaffTermRecs(){
     if(c) out.push({key:'coach', rec:CAREER.coach, role:S.coach, name:c.name, month:CAREER.coach.cost||c.cost, free:()=>ccOrgPaysCoach()}); }
   if(CAREER.smm) out.push({key:'smm', rec:CAREER.smm, role:S.smm, name:CAREER.smm.name, month:CAREER.smm.cost||CC_SMM_FROM});
   if(CAREER.mkt) out.push({key:'mkt', rec:CAREER.mkt, role:S.mkt, name:CAREER.mkt.name, month:CAREER.mkt.cost||0});
-  for(const k of ['analyst','psych','physio']) if(CAREER[k]) out.push({key:k, rec:CAREER[k], role:S[k]||L().ccPhysio, name:CAREER[k].name, month:CAREER[k].cost||0, free:()=>ccOrgPays(k)});
+  for(const k of ['analyst','psych']) if(CAREER[k]) out.push({key:k, rec:CAREER[k], role:S[k], name:CAREER[k].name, month:CAREER[k].cost||0, free:()=>ccOrgPays(k)});
   return out;
 }
 function ccStaffAutoRenew(toISO){
@@ -3228,7 +3256,7 @@ function ccStaffBadge(r){
   return `<span class="cc-staff-rt ${cls}">${r}</span>`;
 }
 function ccStaffCards(){
-  const T=L(), S=Object.assign({physio:T.ccPhysio}, T.ccStaffRole), out=[];
+  const T=L(), S=T.ccStaffRole, out=[];
   // Коуч
   { const w=ccCoach(), row=w ? (CC_COACHES.find(c=>c.id===w.id)||w) : null;
     out.push(w ? {role:S.coach, name:w.name, at:w.at, photo:w.photo, r:row.rating||ccCoachRatingOf(row),
@@ -3251,7 +3279,7 @@ function ccStaffCards(){
                   fx:T.ccStaffMktFx((m.rate!=null ? m.rate : ccMktTermsOf(row).rate).toFixed(2)), until:m.until, year:(m.months||1)>=12, open:'ccMktPickOpen()', end:'careerEndMkt()'}
                : {role:S.mkt, open:'ccMktPickOpen()'}); }
   // Аналитик и психолог
-  for(const kind of ['analyst','psych','physio']){
+  for(const kind of ['analyst','psych']){
     const m=ccStaff2(kind);
     out.push(m ? {role:S[kind], name:m.name, at:m.at, photo:m.photo, r:m.rating, fx:ccStaff2Effect(kind, m.rating),
                   until:m.until, year:(m.months||1)>=12, open:"ccStaff2PickOpen('"+kind+"')", end:"careerEndStaff2('"+kind+"')"}

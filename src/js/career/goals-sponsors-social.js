@@ -2579,11 +2579,10 @@ function careerHireStaff2(kind, id, months){
 function careerEndStaff2(kind){ if(!CAREER[kind]) return false; CAREER[kind]=null; careerSave(); careerRenderHub(); return true; }
 function ccStaff2Effect(kind, rating){
   const k=Math.max(0, Math.min(1, ((rating||60)-60)/35));
-  if(kind==='physio') return L().ccPhysioCap(Math.round(5+10*k));
   return kind==='analyst' ? L().ccAnalystPow(Math.round(1+2*k)) : L().ccPsychSoft(Math.round((0.25+0.25*k)*100));
 }
 function careerStaff2TileHTML(kind){
-  const m=ccStaff2(kind), T=L(), K=kind==='analyst' ? 'ccAnalyst' : kind==='physio' ? 'ccPhysio' : 'ccPsych';
+  const m=ccStaff2(kind), T=L(), K=kind==='analyst' ? 'ccAnalyst' : 'ccPsych';
   if(m) return `<div class="ch-tile">
     <h4>${T[K]}</h4>
     <div class="ch-orghead">${m.photo ? `<img class="ch-coach-av" src="${PHOTO_DIR}${esc(m.photo)}" alt="" onerror="this.remove()">` : ''}
@@ -2603,7 +2602,7 @@ function careerStaff2TileHTML(kind){
   </div>`;
 }
 function ccStaff2PickOpen(kind){
-  const cr=CAREER.career, T=L(), K=kind==='analyst' ? 'ccAnalyst' : kind==='physio' ? 'ccPhysio' : 'ccPsych', on=ccStaff2(kind);
+  const cr=CAREER.career, T=L(), K=kind==='analyst' ? 'ccAnalyst' : 'ccPsych', on=ccStaff2(kind);
   const rows=ccStaff2List(kind).map(p=>{
     const r=ccStaff2Rating(kind, p), paid=ccOrgPays(kind), cost=ccStaff2Cost(kind, p), mine=!!on && on.id===p.id, can=!mine && (paid || (cr.balance||0)>=cost);
     return `<div class="cc-buy${mine?' own':''}">
@@ -6739,14 +6738,6 @@ function ccPatchTileHTML(){
       : '<p class="yt-sub">'+esc(T.ptHit)+'</p><button class="ch-play"'+(can ? '' : ' disabled')+' onclick="ccPatchGo()">'+esc(ccPreEvent() ? T.crNotTourDay : T.ptAdaptBtn(act ? act.energy : 20))+'</button>')+'</div>';
 }
 
-/* 12а. Физио: третий в штабе рядом с аналитиком и психологом (CC_STAFF2). +5…+15 к запасу энергии (careerEnergyMax). */
-const CC_PHYSIOS=[
-  {id:'motion', name:'Motion Lab',     at:null, photo:null, x:0, rating:70, why:'sports physiotherapy'},
-  {id:'probody',name:'ProBody Clinic', at:null, photo:null, x:0, rating:80, why:'esports health programme'},
-  {id:'peak',   name:'Peak Physio',    at:null, photo:null, x:0, rating:90, why:'team physio for pro rosters'}
-];
-function ccPhysioCap(){ const m=(typeof ccStaff2==='function') ? ccStaff2('physio') : null; return !m ? 0 : Math.round(5+10*Math.max(0, Math.min(1, (m.rating-60)/35))); }
-
 /* 12б. Инвестиции: три проекта. Раз в месяц доход (rate) или крах (bust) - вложение пропадает. Забрать можно в любой день. */
 const CC_INV={drink:{rate:0.01, bust:0.005}, org:{rate:0.025, bust:0.02}, start:{rate:0.06, bust:0.08}};
 function ccInv(){ const x=ccL22(); x.inv=x.inv||{}; return x.inv; }
@@ -6781,5 +6772,4 @@ function ccGiftSubs(name){
 }
 function ccGiftBonus(name){ return Math.min(0.25, 0.05*ccGiftOf(name)); }
 
-CC_STAFF2.physio={list:CC_PHYSIOS, cost:[400,3000]};
 
