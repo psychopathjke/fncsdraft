@@ -3156,6 +3156,20 @@
     text-transform:uppercase;color:#efeff1;margin-bottom:10px;}
   #screen-career-hub .tv-go-row{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;}
   #screen-career-hub .tv-go-off{color:#adadb8;font-size:13px;}
+  /* Запуск как в Twitch: чипы категории и одна кнопка эфира (ccTvCatPick). */
+  #screen-career-hub .tv-cat-h{font-size:11px;font-weight:700;color:#efeff1;margin-bottom:6px;text-shadow:0 1px 3px rgba(0,0,0,.8);}
+  #screen-career-hub .tv-cats{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-bottom:10px;}
+  #screen-career-hub .tv-cat-c{border:0;border-radius:999px;background:rgba(0,0,0,.6);color:#efeff1;font:inherit;
+    font-size:12px;font-weight:700;padding:6px 12px;cursor:pointer;box-shadow:inset 0 0 0 1px rgba(255,255,255,.18);}
+  #screen-career-hub .tv-cat-c:hover{background:rgba(0,0,0,.8);}
+  #screen-career-hub .tv-cat-c.on{background:#efeff1;color:#0e0e10;box-shadow:none;}
+  #screen-career-hub .tv-go-one{max-width:340px;margin:0 auto;}
+  #screen-career-hub .tv-go-one .tv-go{margin:0;text-align:center;}
+  #screen-career-hub .tv-hud .tv-hud-off{background:#3a3a3d;color:#efeff1;text-transform:uppercase;letter-spacing:.06em;font-size:11px;}
+  #screen-career-hub .tv-chat-quiet{margin:auto 0;padding:24px 14px;text-align:center;color:#adadb8;font-size:12.5px;line-height:1.45;}
+  #screen-career-hub .tv-colab-more{display:block;margin:4px 12px 0;border:0;background:none;color:#bf94ff;font:inherit;
+    font-size:12px;font-weight:700;padding:4px 0;cursor:pointer;}
+  #screen-career-hub .tv-colab-more:hover{text-decoration:underline;}
   /* Строка канала под плеером: аватар с LIVE, ник с галочкой, заголовок,
      категория и язык, справа кнопки Twitch. */
   #screen-career-hub .tv-chanrow{display:flex;align-items:flex-start;gap:10px;padding:12px;
@@ -5224,6 +5238,7 @@
   .cc-social-note .cc-nb-l{display:inline;font-size:11px;font-weight:800;letter-spacing:.03em;text-transform:uppercase;white-space:nowrap;}
   /* Кнопки медиа в полосе вкладок (ccMediaQuickHTML): значок в цвете площадки, подпись с 1100px, число непрочитанного. */
   .cc-mq-row{display:flex;gap:6px;align-items:center;}
+  @media (min-width:701px){ #screen-career-hub .ch-media-ph{display:none;} }
   .cc-mq{position:relative;display:inline-flex;align-items:center;gap:6px;height:30px;padding:0 9px;border-radius:8px;
     border:1px solid #24314e;background:#131c30;color:#c6d5f0;font-family:inherit;font-size:11px;font-weight:800;
     letter-spacing:.03em;text-transform:uppercase;cursor:pointer;white-space:nowrap;}

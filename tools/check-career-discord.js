@@ -24,7 +24,7 @@ setLang('en');
 // Discord — своя вкладка рядом с соцсетями (его скрин 19.11), не пункт меню ленты.
 careerRenderHub('social');
 check('в меню ленты Discord нет', !/Discord/.test((document.querySelector('.x-rail')||{}).innerText||''));
-check('вкладка Discord в ряду медиа', !!document.querySelector('.ch-subtab-discord'));
+check('кнопка Discord в полосе медиа', !!document.querySelector('.cc-mq-discord'));
 check('свободный день открыт', ccCentreDayOpen());
 check('PC: сессии открыты всем', ccDcWhy('pcJoin')===null, ccDcWhy('pcJoin'));
 check('мобила: с телефоном открыта', ccDcWhy('mobJoin')===null, ccDcWhy('mobJoin'));

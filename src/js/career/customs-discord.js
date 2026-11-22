@@ -841,9 +841,11 @@ function careerDoAct(id){
   const cr=CAREER.career, pl=CAREER.player;
   // День турнира: только занятия и разминка, и энергия на кап остаётся (см. ccPreEvent).
   const pre=ccPreEvent();
-  if(pre && !(ccTrainAct(act) || act.warm || act.voice)) return null;
+  // Эфир с турнира (careerPlayLive) - это сам вечер, а не занятие до него: пропускается и без резерва.
+  const cupAir=act.id==='stream' && typeof CC_STREAM_CUP!=='undefined' && CC_STREAM_KIND===CC_STREAM_CUP.id;
+  if(pre && !cupAir && !(ccTrainAct(act) || act.warm || act.voice)) return null;
   if(act.warm && (!pre || ccWarmDone())) return null;
-  if(pre && careerEnergy()-act.energy<pre.reserve) return null;
+  if(pre && !cupAir && careerEnergy()-act.energy<pre.reserve) return null;
   // The store is what says how much of a day there is, and the three things
   // that take all of it say when there is none left. See careerDayClosed.
   if(careerDayClosed()) return null;
@@ -1501,7 +1503,7 @@ function ccCrewHTML(chan, msg){
     return '<div class="cr-mem cr-fold st-'+st+(invited ? ' inv open' : '')+'">'+
       '<span class="dc-av">'+ccCrewAv(m)+'<i class="cr-dot" aria-hidden="true"></i></span>'+
       '<button type="button" class="cr-who" onclick="ccMemToggle(this)" aria-expanded="'+(invited ? 'true' : 'false')+'"><b>'+esc(ccHandle(m.handle))+' <em>'+m.ovr+'</em></b>'+
-        '<span>'+esc(stName[st])+' · '+esc(T[ccCrewRelKey(rel)])+'</span>'+
+        '<span>'+esc(stName[st])+(ccCrewRelKey(rel)==='crRelNew' ? '' : ' · '+esc(T[ccCrewRelKey(rel)]))+'</span>'+
         (invited ? '<span class="cr-inv">'+esc(T.crInvitedYou)+'</span>' : '')+
         (why && why!==stName[st] ? '<span class="dc-why">'+esc(why)+'</span>' : '')+'</button>'+
       '<div class="cr-btns">'+

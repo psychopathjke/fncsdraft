@@ -4764,3 +4764,6 @@ Object.assign(I18N.es=I18N.es||{},
 /* Дозаливка «es» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
 Object.assign(I18N.es=I18N.es||{},
 ({ccRepMore:(a,b,c)=>"También mueve el crecimiento de seguidores: con +"+a+", un "+a+"% más de nuevos seguidores; con -"+a+", un "+a+"% menos. Una victoria da +"+b+" y un podio +"+c+" (torneos de 20 o más)."}));
+/* Дозаливка «es» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
+Object.assign(I18N.es=I18N.es||{},
+({tvCat:"Categoría", tvChatQuiet:"El canal está desconectado. El chat se anima cuando empieces el directo.", tvColabMore:(a)=>"Mostrar "+a+" más", tvColabLess:"Mostrar menos"}));

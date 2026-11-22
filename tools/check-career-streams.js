@@ -30,6 +30,8 @@ const BOOT = `
                      _attrs:ccRookieAttrs(80,'roleFRG')}, patience:60}],
       gear:{own:[], train:0, reach:0}, sponsor:null, org:null, coach:null}; };
     careerRenderHub = function(){};
+    // Свободный день: в день турнира до вечера идут только занятия (ccPreEvent), эфир с капа проверяет check-career-stream-cup.
+    ccPreEvent = function(){ return null; };
     careerSave = function(){};
 
     // ---- виды эфира ---------------------------------------------------------
@@ -133,9 +135,12 @@ const BOOT = `
     check('the sidebar lists followed channels and offline ones',
           html.indexOf(String(L().ccStreamFollowed)) >= 0 &&
           html.indexOf(String(L().ccStreamOffline)) >= 0);
-    check('the channel row carries the Twitch buttons',
-          html.indexOf(String(L().ccStreamSub)) >= 0 && html.indexOf(String(L().ccStreamGift)) >= 0 &&
-          html.indexOf(String(L().ccStreamBits)) >= 0);
+    // Свой канал: кнопок зрителя (Subscribe, Gift a sub, Bits) самому себе нет.
+    check('your own channel has no viewer buttons',
+          html.indexOf('tv-acts') < 0 && html.indexOf(String(L().ccStreamGift)) < 0 &&
+          html.indexOf(String(L().ccStreamBits)) < 0);
+    check('offline: no live counter, chat waits for the stream',
+          html.indexOf('tv-hud-off') >= 0 && html.indexOf('tv-chat-quiet') >= 0);
     check('the chat has a pinned line and a box',
           html.indexOf('tv-pin') >= 0 && html.indexOf(String(L().ccStreamSay)) >= 0);
     /* Чат — живые люди мода и одинаковый за один день. */
@@ -210,10 +215,16 @@ const BOOT = `
     check('and it sits under the avatar, not in a corner',
           /\\.tv-live\\{[^}]*bottom:/.test(css) && !/\\.tv-live\\{[^}]*top:/.test(css));
     fresh();
-    check('every kind has a button and words',
+    // Каждый вид - чип категории; кнопка эфира одна, у выбранного вида.
+    CC_TV_CAT = 'grind';
+    const html2 = careerStreamsHTML();
+    check('every kind has a category chip and words',
           CC_STREAM_KINDS.every(k => L()['ccStream_' + k.id] && L()['ccStream_' + k.id + 'Note'] &&
-            html.indexOf("careerStreamGo('" + k.id + "')") >= 0));
-    check('and it says what the day costs', html.indexOf(String(L().ccStreamCost(30))) >= 0);
+            html2.indexOf("ccTvCatPick('" + k.id + "')") >= 0));
+    check('one go-live button, for the picked kind', (html2.match(/class="tv-go[ "]/g) || []).length === 1 &&
+          html2.indexOf("careerStreamGo('grind')") >= 0);
+    check('and it says what the day costs', html2.indexOf(String(L().ccStreamCost(30))) >= 0);
+    CC_TV_CAT = null;
     // Закрывает день отдых или событие дня, а не эфир — см. ccDayShuts.
     CAREER.career.did[careerToday()] = ['rest'];
     check('a closed day says so instead of offering buttons',

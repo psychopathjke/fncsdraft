@@ -109,9 +109,10 @@ const BOOT = `
     check('the streams tab button is off on 5 energy', !!offBtn && offBtn.disabled);
     check('and carries the reason, not the price', !!offBtn && offBtn.textContent.indexOf(L().ccStreamNeed(CC_STREAM_CUP.energy, 5)) >= 0,
           offBtn ? offBtn.textContent.replace(/\\s+/g, ' ').trim() : 'no button');
+    // До вечера турнира идут только занятия (ccPreEvent), поэтому из эфиров на плеере один турнирный.
     const offRanked = document.querySelector('#chBody .tv-go:not(.tv-go-cup)');
-    check('so does an ordinary stream button', !!offRanked && offRanked.textContent.indexOf(L().ccStreamNeed(30, 5)) >= 0,
-          offRanked ? offRanked.textContent.replace(/\\s+/g, ' ').trim() : 'no button');
+    const cats = document.querySelectorAll('#chBody .tv-cat-c').length;
+    check('on a cup day the only stream on offer is the cup', !offRanked && cats === 1, cats + ' categories');
     CAREER.career.energy = eKeep;
     careerTab('centre');
 

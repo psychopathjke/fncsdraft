@@ -1547,6 +1547,8 @@ function ccSubTabsHTML(group){
                              : [['table', L().lfSubPrMoney], ['stats', L().chTabStats], ['world', L().lbTab]];
   return '<div class="ch-subtabs">'+list.map(([k,t])=>'<button class="ch-subtab ch-subtab-'+k+(CH_TAB===k?' on':'')+'" onclick="careerTab(\''+k+'\')">'+esc(t)+'</button>').join('')+'</div>';
 }
+// Ряд Social/Twitch/YouTube/Discord внутри вкладки - только на телефоне: шире 700px те же кнопки стоят в полосе вкладок (ccTabsSide).
+function ccMediaPhHTML(){ return '<div class="ch-media-ph">'+ccSubTabsHTML('media')+'</div>'; }
 function careerRenderHubBody(tab){
   CH_TAB=tab||CH_TAB;
   try{ ccPirateNews(); }catch(e){}
@@ -1707,7 +1709,7 @@ function careerRenderHubBody(tab){
   if(CH_TAB==='hist'){ body.innerHTML=careerHistoryHTML(); return; }
   if(CH_TAB==='stats'){ body.innerHTML=ccSubTabsHTML('boards')+careerStatsHTML(); return; }
   if(CH_TAB==='world'){ body.innerHTML=ccSubTabsHTML('boards')+careerWorldHTML(); return; }
-  if(CH_TAB==='streams'){ body.innerHTML=ccSubTabsHTML('media')+'<div class="cc-media cc-media-tw">'+careerStreamsHTML()+'</div>'; return; }
+  if(CH_TAB==='streams'){ body.innerHTML=ccMediaPhHTML()+'<div class="cc-media cc-media-tw">'+careerStreamsHTML()+'</div>'; return; }
   // Two standings on one tab: the division's season table, which only Division 1
   // has, and the money, which everybody is in.
   if(CH_TAB==='table'){
@@ -1721,9 +1723,9 @@ function careerRenderHubBody(tab){
   // Медиа в цветах своих сетей (28.10, его «соцсети в цвете X, стримы в цвете твич, youtube в цветах ютуб»).
   // Папки входящих (клубы, игроки, зрители, хейтеры, лента) - наверху соцсети: из полосы вкладок их сменили кнопки медиа.
   if(CH_TAB==='social'){ let nb=''; try{ nb=careerNoteBarHTML(); }catch(e){}
-    body.innerHTML=ccSubTabsHTML('media')+(nb ? '<div class="cc-lb-note cc-social-note">'+nb+'</div>' : '')+'<div class="cc-media cc-media-x">'+careerSocialHTML()+'</div>'; return; }
-  if(CH_TAB==='youtube'){ body.innerHTML=ccSubTabsHTML('media')+'<div class="cc-media cc-media-yt">'+careerYtHTML()+'</div>'; return; }
-  if(CH_TAB==='discord'){ body.innerHTML=ccSubTabsHTML('media')+'<div class="cc-media cc-media-dc">'+ccDiscordHTML()+'</div>'; try{ ccDcLayout(body); }catch(e){ console.error(e); } return; }
+    body.innerHTML=ccMediaPhHTML()+(nb ? '<div class="cc-lb-note cc-social-note">'+nb+'</div>' : '')+'<div class="cc-media cc-media-x">'+careerSocialHTML()+'</div>'; return; }
+  if(CH_TAB==='youtube'){ body.innerHTML=ccMediaPhHTML()+'<div class="cc-media cc-media-yt">'+careerYtHTML()+'</div>'; return; }
+  if(CH_TAB==='discord'){ body.innerHTML=ccMediaPhHTML()+'<div class="cc-media cc-media-dc">'+ccDiscordHTML()+'</div>'; try{ ccDcLayout(body); }catch(e){ console.error(e); } return; }
   /* The career itself, on its own screen.
 
      The centre was doing two jobs — what to do today, and who you have deals

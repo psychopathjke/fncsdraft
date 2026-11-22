@@ -4764,3 +4764,6 @@ Object.assign(I18N.de=I18N.de||{},
 /* Дозаливка «de» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
 Object.assign(I18N.de=I18N.de||{},
 ({ccRepMore:(a,b,c)=>"Sie beeinflusst auch das Follower-Wachstum: bei +"+a+" kommen "+a+"% mehr neue Follower, bei -"+a+" "+a+"% weniger. Ein Sieg gibt +"+b+", ein Podium +"+c+" (Felder ab 20)."}));
+/* Дозаливка «de» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
+Object.assign(I18N.de=I18N.de||{},
+({tvCat:"Kategorie", tvChatQuiet:"Der Kanal ist offline. Der Chat wird lebendig, sobald du live gehst.", tvColabMore:(a)=>a+" weitere anzeigen", tvColabLess:"Weniger anzeigen"}));

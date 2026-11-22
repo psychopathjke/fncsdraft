@@ -183,11 +183,15 @@ function careerColabAsk(name){
   try{ careerRenderHub('streams'); }catch(e){}
   return yes;
 }
+const CC_COLAB_SHOW=4; let CC_COLAB_ALL=false;
 function ccColabPanelHTML(){
   const cr=CAREER && CAREER.career; if(!cr) return '';
-  const list=(typeof ccProAmCreators==='function') ? ccProAmCreators().slice(0, 8) : [];
-  if(!list.length) return '';
+  const all=(typeof ccProAmCreators==='function') ? ccProAmCreators().slice(0, 8) : [];
+  if(!all.length) return '';
   const T=L(), deal=ccColabDeal(), asked=cr.colabAskDay===careerToday();
+  // Сначала четыре; договорённый креатор всегда виден. Остальные по «Показать ещё» (CC_COLAB_ALL).
+  const list=CC_COLAB_ALL ? all : all.filter((n,i)=>i<CC_COLAB_SHOW || (deal && deal.name===n));
+  const rest=all.length-list.length;
   return `<div class="tv-colab"><div class="tw-h">${esc(T.ccColabTitle)}</div>
     <div class="tv-colab-hint">${esc(T.ccColabHint)}</div>${list.map(n=>{
       const ava=(typeof ccProAmAvatar==='function') ? ccProAmAvatar(n) : null, times=ccColabTimes(n);
@@ -197,7 +201,7 @@ function ccColabPanelHTML(){
         : `<button class="tv-colab-go" onclick="careerColabAsk('${jsq(n)}')">${esc(T.ccColabAsk)}</button>`;
       return `<div class="tv-colab-row"><span class="tv-av">${ava?`<img src="${ava}" alt="" loading="lazy" onerror="this.remove()">`:esc(n.slice(0,2).toUpperCase())}</span>
         <div class="tv-colab-in"><b>@${esc(ccHandle(n))}</b><em>${ccFollowers(ccProAmFollowers(n))} Twitch · ${esc(T.ccColabOdds(Math.round(ccColabOdds(n)*100)))}${times?' · '+esc(T.ccColabTimes(times)):''}</em></div>
-        ${act}</div>`; }).join('')}</div>`;
+        ${act}</div>`; }).join('')}${all.length>CC_COLAB_SHOW ? `<button type="button" class="tv-colab-more" onclick="CC_COLAB_ALL=!CC_COLAB_ALL;careerRenderHub('streams')">${esc(CC_COLAB_ALL ? T.tvColabLess : T.tvColabMore(rest))}</button>` : ''}</div>`;
 }
 function ccStreamMate(){
   const cr=CAREER && CAREER.career; if(!cr) return null;
@@ -1301,7 +1305,15 @@ const CC_YT_KINDS={
 };
 const CC_YT_FRESH=7, CC_YT_DECAY=0.6, CC_YT_DAYS=30, CC_YT_RPM=2.5, CC_YT_YPP={subs:1000, hours:4000}, CC_YT_HL_EVERY=30;
 const CC_YT_BIG=['major','summit','globals','gclc','rc','solo','eval'];   // недельный финал Д1 — не большое (у Malibuca его победы 20–40 % подписчиков)
-function ccYt(){ const cr=CAREER.career; cr.yt=cr.yt||{subs:0, views:0, hours:0, usd:0, vids:[]}; return cr.yt; }
+/* Канал YouTube стартует не с нуля: у игрока с сотнями тысяч в X и на Twitch часть людей подписана и там (CC_YT_SEED, решение, не замер).
+   Один раз на сохранение, флаг seed. */
+const CC_YT_SEED=0.1;
+function ccYt(){
+  const cr=CAREER.career; cr.yt=cr.yt||{subs:0, views:0, hours:0, usd:0, vids:[]};
+  const y=cr.yt;
+  if(!y.seed){ y.seed=1; y.subs=Math.max(y.subs||0, Math.round(Math.max(cr.twitch||0, cr.reach||0)*CC_YT_SEED)); }
+  return y;
+}
 function ccYtSat(n, k){ return 1/Math.sqrt(1+Math.max(0, n||0)/k); }
 function ccYtMonet(y){ return (y.subs||0)>=CC_YT_YPP.subs && (y.hours||0)>=CC_YT_YPP.hours; }
 function ccYtKey(e){ return e.day+'|'+(e.kind||'cup')+'|'+(e.stage||''); }
@@ -1594,6 +1606,7 @@ function ccTwMonth(){
 // за спокойный месяц.
 function ccTwStatus(){
   const cr=CAREER && CAREER.career; if(!cr) return 'none';
+  if((cr.twitch||0)>=CC_TW_BIG) return 'part';   // большой канал - партнёр сразу, см. careerTwTick
   return cr.twTier || 'none';
 }
 function ccTwEarned(){
@@ -1616,8 +1629,12 @@ function ccTwGoals(tier){
     {k:T.ccTwGoalAvg,   a:m.avg,                b:CC_TW_AFF.avg}];
 }
 const CC_TW_RANK={none:0, aff:1, part:2};
+/* Канал с CC_TW_BIG фолловерами (перенос аудитории про, см. careerMigrateTwitch) на настоящем Twitch давно партнёр:
+   путь «0/4 дня» при 634 тысячах выглядел нелепо. Ставится молча, без новости. Порог - решение, не замер. */
+const CC_TW_BIG=10000;
 function careerTwTick(){
   const cr=CAREER && CAREER.career; if(!cr) return null;
+  if((cr.twitch||0)>=CC_TW_BIG && cr.twTier!=='part'){ cr.twTier='part'; return null; }
   const got=ccTwEarned(), had=cr.twTier||'none';
   if(CC_TW_RANK[got]<=CC_TW_RANK[had]) return null;
   cr.twTier=got;
@@ -1835,6 +1852,8 @@ function ccTvAlert(kind, title, note){
     setTimeout(function(){ if(el.parentNode) el.parentNode.removeChild(el); }, 3400);
   });
 }
+let CC_TV_CAT=null;
+function ccTvCatPick(id){ CC_TV_CAT=id; try{ careerRenderHub('streams'); }catch(e){} }
 function careerStreamsHTML(){
   const cr=CAREER.career, T=L();
   const me=CAREER.player;
@@ -1881,6 +1900,18 @@ function careerStreamsHTML(){
       onclick="careerPlayLive()">
       <b>${esc(T.ccStreamCupTitle)} · ${esc(evNext.label||evNext.title||'')}</b>
       <em>${esc(cupWhy || T.ccStreamCupHint(CC_STREAM_CUP.energy, CC_STREAM_POW))}</em></button>` : '';
+  /* Запуск как в Twitch: категория выбирается чипом, эфир включает одна кнопка (было пять больших кнопок поверх плеера).
+     Чип хранит вид в CC_TV_CAT; кнопки вида выше остались той же разметкой, на экран идёт только выбранная. */
+  // В день турнира до вечера можно только тренироваться (ccPreEvent), поэтому из эфиров остаётся турнирный.
+  const preDay=typeof ccPreEvent==='function' && !!ccPreEvent();
+  const cats=[];
+  if(evToday) cats.push({id:'cup', name:T.ccStreamCupTitle, html:cupBtn});
+  if(wEv && !preDay) cats.push({id:'watch', name:T.ccStream_watch||T.ccStreamWatchOf(''), html:watchBtn});
+  if(!preDay) CC_STREAM_KINDS.forEach(k=>cats.push({id:k.id, name:T['ccStream_'+k.id], html:btn(k)}));
+  const cat=cats.filter(c=>c.id===CC_TV_CAT)[0] || cats[0];
+  const goPanel=`<div class="tv-cat-h">${esc(T.tvCat)}</div>
+    <div class="tv-cats" role="radiogroup" aria-label="${esc(T.tvCat)}">${cats.map(c=>`<button type="button" role="radio" aria-checked="${c===cat}" class="tv-cat-c${c===cat?' on':''}" onclick="ccTvCatPick('${c.id}')">${esc(c.name)}</button>`).join('')}</div>
+    <div class="tv-go-row tv-go-one">${cat ? cat.html : ''}</div>`;
   /* СТРАНИЦА КАНАЛА, а не витрина. Скриншот из Notion — это
      twitch.tv/<канал> во время эфира, и оттуда взято ровно то, что делает
      страницу собой:
@@ -1908,7 +1939,7 @@ function careerStreamsHTML(){
             : `<span class="tv-vv"><i></i>${ccNum(s.v)}</span>`}
       ${ccTwFollowBtnHTML(s.name, !!s.creator, 'tv-fb')}
     </div>`;
-  const chat=careerStreamChat(live ? 14 : 8).map(m=>`
+  const chat=careerStreamChat(14).map(m=>`
     <div class="tv-msg"><i>${esc(m.at)}</i><b style="color:${m.c}">${esc(m.who)}</b>: <span>${esc(m.text)}</span></div>`).join('');
   const art=(typeof CAREER_EV_ART!=='undefined' && CAREER_EV_ART.cup) || '';
   return `<div class="tv-wrap">
@@ -1923,14 +1954,14 @@ function careerStreamsHTML(){
         ${live ? ccStreamScreenHTML() : ''}
         <div class="tv-alert" id="tvAlert"></div>
         <div class="tv-hud">
-          <span class="tv-hud-v"><i></i>${ccNum(viewers)}</span>
+          ${live ? `<span class="tv-hud-v"><i></i>${ccNum(viewers)}</span>` : `<span class="tv-hud-off">${esc(T.ccStreamOffline)}</span>`}
           ${subsToday?`<span class="tv-hud-s">${esc(T.ccStreamSubsToday(ccNum(subsToday)))}</span>`:''}
           ${live?`<span class="tv-hud-t">${esc(T.ccStreamUptime)}</span>`:''}
         </div>
         ${live ? '' : `<div class="tv-go-wrap">
           <div class="tv-go-h">${T.ccStreamGoLive}</div>
           ${closed ? `<div class="tv-go-off">${T.ccStreamDayGone}</div>`
-                   : `<div class="tv-go-row">${cupBtn}${watchBtn}${CC_STREAM_KINDS.map(btn).join('')}</div>`}
+                   : goPanel}
         </div>`}
       </div>
       <div class="tv-chanrow">
@@ -1944,12 +1975,6 @@ function careerStreamsHTML(){
             <span class="tv-lang">${esc(T.ccStreamLang)}</span></div>
           ${ccSacOn() ? `<div class="tv-sac" title="${esc(T.ccSacTitle)}">${esc(T.ccSacBio(ccSacCode()))}</div>`
                       : `<div class="tv-sac off">${esc(T.ccSacLocked(ccNum(CC_SAC.fol)))}</div>`}
-        </div>
-        <div class="tv-acts">
-          <span class="tv-heart">♥</span><span class="tv-bell">🔔</span>
-          <span class="tv-bits">${T.ccStreamBits}</span>
-          <span class="tv-gift">${T.ccStreamGift}</span>
-          <span class="tv-sub">${T.ccStreamSub}</span>
         </div>
       </div>
       <div class="tv-stats">
@@ -1970,7 +1995,7 @@ function careerStreamsHTML(){
       <div class="tv-chat-h">${T.ccStreamChat}</div>
       <div class="tv-pin"><i>${esc(T.ccStreamPinned(me.nick||''))}</i>
         <b>${esc(T.ccStreamPinText)}</b></div>
-      <div class="tv-msgs">${chat}</div>
+      <div class="tv-msgs">${live ? chat : `<p class="tv-chat-quiet">${esc(T.tvChatQuiet)}</p>`}</div>
       <div class="tv-say">${T.ccStreamSay}</div>
     </aside>
   </div>`;
