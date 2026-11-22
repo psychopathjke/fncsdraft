@@ -85,11 +85,15 @@ function ccMpFmtBegin(fmt){
   /* Только кап КРУПНЕЕ состава года (трио/сквад в дуо-год) — о нём просили. Дуо-кап в трио-год онлайн по-прежнему
      играется составом года: своим форматом он разводил сгенерированные дуо лестницы (онлайн-прогон 2022, 22.10). */
   if(fmt<=careerSquadSize()) return null;
-  if(typeof MP==='undefined' || !MP.peer){ CC_MP_FMT_WHY='nopeer'; return null; }
+  /* Без карточки напарника - по запомненному нику (ccMpPeerHandle): добору нужен только ник, рейтинг берётся со сцены.
+     Прод 18.11b: трио-кап у одного тройкой с филлом, у другого парой (у него карточка ещё не пришла). */
+  const peerH=(typeof ccMpPeerHandle==='function') ? ccMpPeerHandle() : ((typeof MP!=='undefined' && MP.peer) ? MP.peer.handle : null);
+  if(!peerH){ CC_MP_FMT_WHY='nopeer'; return null; }
+  const PEER_C=(typeof MP!=='undefined' && MP.peer) || {handle:peerH};
   const cr=CAREER.career, need=fmt-CC_MP_HUMANS;
   if(need<0) return null;
   const shared=(Array.isArray(cr.mates) ? cr.mates : []).filter(Boolean).slice(0, need);
-  const me=careerCard(), taken=new Set([hKey(me||CAREER.player.handle||CAREER.player.nick||''), hKey(MP.peer)]);
+  const me=careerCard(), taken=new Set([hKey(me||CAREER.player.handle||CAREER.player.nick||''), hKey(PEER_C)]);
   shared.forEach(r=>{ const c=ccMateCardOf(r); if(c) taken.add(hKey(c)); });
   const ovr=c=>{ try{ return (attrsFor(c)||{}).ovr || c.rating || 80; }catch(e){ return 80; } };
   /* Средний рейтинг двоих — из сцены (она у обоих одна), а не из карточек: добор идёт до ворот вечера, своя
@@ -97,7 +101,7 @@ function ccMpFmtBegin(fmt){
      и третьим у одного выходил JOE (98), у другого Kami (99): онлайн-прогон 2022, 22.10, Trios Quick Cash Cup 26.08. */
   const scene=ccSceneRoster(ccCareerRegion());
   const sceneOvr=h=>{ const k=hKey(h), c=scene.find(x=>x && hKey(x)===k); return c ? ccCardOvr(c) : 80; };
-  const target=Math.round((sceneOvr(me||CAREER.player.handle||CAREER.player.nick||'')+sceneOvr(MP.peer))/4)*2;
+  const target=Math.round((sceneOvr(me||CAREER.player.handle||CAREER.player.nick||'')+sceneOvr(PEER_C))/4)*2;
   const stand=[];
   /* ВЫБРАННЫЕ ОБОИМИ — ПЕРВЫМИ (его «а выбрать игрока я могу?», 22.10): cr.fmtPick[fmt] — ники, на которых оба сказали
      «да» (ccMpFmtPickAsk → 'fmtpick'/'fmtpick-ok'), ключ команды. Карточка — из сцены (у обоих одна), филл — на остаток. */
@@ -109,7 +113,7 @@ function ccMpFmtBegin(fmt){
     const pool=scene.filter(c=>c && c.handle && !taken.has(hKey(c)))
       .sort((a,b)=>Math.abs(ccCardOvr(a)-target)-Math.abs(ccCardOvr(b)-target) || (hKey(a)<hKey(b) ? -1 : hKey(a)>hKey(b) ? 1 : 0));
     for(let i=0;stand.length<need-shared.length && i<pool.length;i++) stand.push({card:{...pool[i]}, patience:60, since:careerToday(), dev:0, standin:true});
-    try{ fpPool=' tg'+target+' me'+(me ? ovr(me) : '-')+' pe'+ovr(MP.peer)+' top '+pool.slice(0, 5).map(c=>c.handle+':'+ccCardOvr(c)+':'+careerDevOf(c)).join(',')+' dev '+ccHashStr(JSON.stringify(CAREER.dev||{}))+' tag '+CC_NOW_TAG; }catch(e){}
+    try{ fpPool=' tg'+target+' me'+(me ? ovr(me) : '-')+' pe'+ovr(PEER_C)+' top '+pool.slice(0, 5).map(c=>c.handle+':'+ccCardOvr(c)+':'+careerDevOf(c)).join(',')+' dev '+ccHashStr(JSON.stringify(CAREER.dev||{}))+' tag '+CC_NOW_TAG; }catch(e){}
   }
   CC_MP_FMT_MATES=shared.concat(stand); CC_MP_FMT_PICKS=0;
   // Отпечаток памяти троек и пула на входе — в журнал вечера: расхождение видно у обоих рядом.

@@ -3899,6 +3899,21 @@ function ccTeamFormPow(){
   const theirs=Number(MP.peer.formPow);
   return (mine+(isFinite(theirs) ? theirs : 0))/2;
 }
+/* Сыгранность команды в онлайне - одна у двоих: среднее своей и напарника (как форма, ccTeamFormPow). Стаж общий
+   (chemSince), но тренер с бонусом к сыгранности у каждого свой, и сила команды расходилась на его величину. */
+function ccTeamChemPow(){
+  const snap=ccMpMyCardNow();
+  const mine=(snap && isFinite(Number(snap.chemPow))) ? Number(snap.chemPow) : careerChem();
+  if(!ccMpOn() || typeof MP==='undefined' || !MP.peer) return mine;
+  const theirs=Number(MP.peer.chemPow);
+  return isFinite(theirs) ? (mine+theirs)/2 : mine;
+}
+// Ник напарника по команде: карточка приходит не сразу после загрузки, а добору третьего нужен только ник.
+function ccMpPeerHandle(){
+  const cr=CAREER && CAREER.career; if(!cr) return null;
+  try{ if(typeof MP!=='undefined' && MP.peer && MP.peer.handle){ cr.mpPeerH=MP.peer.handle; return MP.peer.handle; } }catch(e){}
+  return cr.mpPeerH||null;
+}
 function careerYouTeam(cards){
   // Своя карточка в командном вечере — из снимка гейта, как у напарника (см. ccMpMyCardNow).
   /* И напарник — СВЕЖИЙ, из MP.peer. Раннеры берут careerMates() ДО гейта (runCareerCup и др.),
@@ -3933,7 +3948,7 @@ function careerYouTeam(cards){
   /* И эфир, если вечер идёт в эфир: −CC_STREAM_POW к силе своей команды.
      Это цена, которой платят за стрим с турнира — см. CC_STREAM_CUP. В
      командной карьере всегда ноль: эфира там нет, и сила у двоих сходится. */
-  const basePow=t.pow, formPow=ccTeamFormPow(), chemPow=careerChem(), livePow=ccStreamPow(), anPow=ccAnalystPow();
+  const basePow=t.pow, formPow=ccTeamFormPow(), chemPow=((typeof ccMpTeam==="function" && ccMpTeam()) ? ccTeamChemPow() : careerChem()), livePow=ccStreamPow(), anPow=ccAnalystPow();
   t.pow=Math.round(basePow+formPow+chemPow+livePow+anPow);   // anPow — разбор аналитика (ccAnalystPow), в команде 0
   // Общая комната гонки: у своей команды адрес вопросов — своя карточка (ccMpMine по ':<ник>').
   if(typeof ccRaceLock==='function' && ccRaceLock()) t.mpTag=':'+hKey(ordered[0]);

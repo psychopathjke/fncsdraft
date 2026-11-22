@@ -2082,7 +2082,9 @@ function ccRaceRivalTeam(p){
   /* Сила — из строки владельца и в соло тоже: соло-ветка считала её из карточки (база + formPow)
      и теряла химию/форму вечера (год 9.09: соло Victory Cup 13.06, live3:97 vs 102 = 95+2.5+5). */
   if(p.pow!=null) t.pow=p.pow;
-  else if(solo) t.pow=Math.round(t.pow+(Number(p.card.formPow)||0));
+  /* Строка без силы (напарников меньше мест, первый вечер): база карточек плюс форма и сыгранность владельца, как
+     складывает его careerYouTeam. Раньше не-соло брал голую базу: прод 18.11b, daki+nocif 99 у соседа, 103 у себя. */
+  else t.pow=Math.round(t.pow+(Number(p.card.formPow)||0)+(solo ? 0 : (Number(p.card.chemPow)||0)));
   if(p.edge!=null) t.closeEdge=p.edge;   // край ближнего боя — из строки владельца (см. CC_RACE_EDGE_NOW)
   t.isRival=true; t.raceId=p.id||null; t.mpTag=':'+hKey(cards[0]);
   if(p.pair) t.pair=true;

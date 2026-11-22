@@ -190,6 +190,9 @@ var MP={
     // Её читает ccTeamFormPow: у обоих одни и те же два числа. Сырое form
     // выше остаётся для плитки.
     out.formPow = (typeof careerForm==='function') ? careerForm() : 0;
+    // И сыгранность со всеми личными прибавками (тренер): у каждого своя, а сила команды у двоих должна быть одна
+    // (ccTeamChemPow, ccRaceRivalTeam). Прод 18.11b: daki+nocif 99 против 103 у соседа.
+    try{ out.chemPow = (typeof careerChem==='function') ? careerChem() : 0; }catch(e){ out.chemPow=0; }
     out.tired = cr.tired||0;
     out.sick = !!cr.sickUntil;
     out.camp = cr.camp||null;
