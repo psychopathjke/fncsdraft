@@ -1041,9 +1041,10 @@ function careerDoAct(id){
     // Доли с насыщением по размеру канала — см. CC_TW_SAT (его «слишком много стримы онлайн», 13.09).
     const viewers=ccTwViewersOf(tw, careerReach());
     const peak=Math.round(viewers*(1.6+rndS()*0.9));
-    const newTw=Math.max(1, Math.round(viewers*0.18*ccTwFolRate(tw)*(0.7+rndS()*0.6)*(sk.subs||1)));
+    const newTw=Math.max(1, Math.round(viewers*0.18*CC_TW_UNIQ*ccTwFolRate(tw)*(0.7+rndS()*0.6)*(sk.subs||1)));
     cr.twitch=tw+newTw;
-    const dono=Math.round(viewers*0.04*(sk.cash||1));
+    // Сабы, биты и донаты за вечер - около $0.1 со зрителя (22.11: зрителей стало в разы меньше, решение, не замер).
+    const dono=Math.round(viewers*0.1*(sk.cash||1));
     let banner=0, brand=null;
     if(!sps.length && CAREER.agent){
       brand=CC_STREAM_BRANDS[Math.floor(rndS()*CC_STREAM_BRANDS.length)];
@@ -1343,7 +1344,8 @@ function ccCrewAskedToday(m){ const a=ccCrew().inv; return !!(a && a.day===caree
 function ccCrewInvited(m){ const v=ccCrew().voice; return !!(v && v.day===careerToday() && v.inviter===m.k); }
 // Почему нельзя позвать поиграть; '' - можно.
 // Режимы «поиграть вместе»: занятие и подпись. Ранкед вдвоём - обычная сессия ранкеда (trSur, ccRk).
-const CC_CREW_MODES=[['rk','trSur'], ['box','crewBox'], ['zw','crewZw'], ['scr','crew']];
+// Скримов здесь нет (22.11, его «это то же самое, что нобл»): скримы с другом - это запись на Noble ('nb' в строке игрока).
+const CC_CREW_MODES=[['rk','trSur'], ['box','crewBox'], ['zw','crewZw']];
 function ccCrewModeAct(mode){ const x=CC_CREW_MODES.find(e=>e[0]===mode); return x ? x[1] : 'crew'; }
 function ccCrewModeName(mode){ return mode==='rk' ? ccActName('trSur') : mode==='box' ? ccActName('trBox') : mode==='zw' ? ccActName('trZw') : L().crModeScr; }
 // Почему нельзя позвать поиграть; '' - можно. С mode - ещё и почему нельзя именно этот режим.
@@ -1375,7 +1377,7 @@ function ccCrewYes(m){
 }
 function ccCrewFind(k){ return ccCrewMembers().find(m=>m.k===k) || null; }
 function ccCrewPlay(k, mode){
-  mode=mode||'scr';
+  mode=mode||'box';
   const m=ccCrewFind(k); if(!m || ccCrewWhy(m, mode)) return;
   const c=ccCrew(), T=L(), today=careerToday();
   const invited=ccCrewInvited(m);
@@ -1509,7 +1511,7 @@ function ccCrewHTML(chan, msg){
       '<div class="cr-btns">'+
         // Во что играть - на выбор: ранкед, бокс-файты, зон-варс, скримы, Noble (сразу запись и игра).
         '<span class="cr-modes-l">'+esc(invited ? T.crAccept : T.crPlay)+':</span>'+
-        [['rk', 'trSur'], ['box', 'crewBox'], ['zw', 'crewZw'], ['scr', 'crew'], ['nb', null]].map(([md, act])=>{
+        [['rk', 'trSur'], ['box', 'crewBox'], ['zw', 'crewZw'], ['nb', null]].map(([md, act])=>{
           const w=why || ccCrewWhy(m, md), en=act ? ccActById(act).energy : CC_DC_ENERGY;
           return '<button class="dc-btn sm"'+(w ? ' disabled title="'+esc(w)+'"' : '')+' onclick="ccCrewPlay(\''+jsq(m.k)+'\',\''+md+'\')">'+
             esc(md==='nb' ? ccPracSrv() : ccCrewModeName(md))+' <em>'+en+T.ccEnergyMark+'</em></button>';
@@ -2189,13 +2191,15 @@ function ccCrewSay(text){
   text=String(text||'').replace(/\s+/g, ' ').trim().slice(0, 300); if(!text) return;
   const T=L(), c=ccCrew(), day=careerToday(), log=ccCrewChatLog(), members=ccCrewMembers();
   const on=members.filter(m=>ccCrewStatus(m)!=='off');
+  // Одно и то же сообщение за день второй раз - спам: в ленте оно есть, но отвечать на него никто не будет, и знакомство не растёт.
+  const again=log.some(x=>x.me && x.d===day && String(x.t).toLowerCase()===text.toLowerCase());
   log.push({me:1, t:text, d:day});
   const r=careerRng(ccHashStr('crewsay|'+day+'|'+log.length+'|'+text));
   // Упомянул @ника - отвечает он; иначе 1-2 человека в сети.
   const low=text.toLowerCase();
   const tagged=members.find(m=>low.indexOf('@'+String(ccHandle(m.handle)).toLowerCase())>=0);
-  const who=[]; if(tagged && ccCrewStatus(tagged)!=='off') who.push(tagged);
-  while(who.length<(tagged ? 1 : Math.min(2, on.length)) && on.length){ const m=on[Math.floor(r()*on.length)]; if(who.indexOf(m)<0) who.push(m); else break; }
+  const who=[]; if(!again && tagged && ccCrewStatus(tagged)!=='off') who.push(tagged);
+  while(!again && who.length<(tagged ? 1 : Math.min(2, on.length)) && on.length){ const m=on[Math.floor(r()*on.length)]; if(who.indexOf(m)<0) who.push(m); else break; }
   // «Отметили меня» - только если отвечает сам отмеченный; он не в сети - другие отвечают на смысл сообщения.
   const kind=(tagged && who[0]===tagged) ? 'M' : ccCrewSayKind(text), per={S:3, Q:4, H:3, G:5, M:3}[kind], used=[];
   who.forEach(m=>{
@@ -2214,9 +2218,14 @@ function ccCrewSayKey(e){ if(e.key==='Enter' && !e.shiftKey){ e.preventDefault()
 function ccCrewSayPick(i){
   const T=L(); let next=null; try{ next=careerNext(); }catch(e){}
   const ev=next && next.type!=='free' ? (next.type==='cup' ? T.ccCupLive : (next.title||next.label||'')) : '';
-  const s=T['crS'+i]; if(!s) return;
+  const s=T['crS'+i]; if(!s || ccCrewChipUsed(i)) return;
+  const c=ccCrew(), day=careerToday();
+  if(!c.chips || c.chips.day!==day) c.chips={day:day, ids:[]};
+  c.chips.ids.push(i);
   ccCrewSay(typeof s==='function' ? s(ev) : s);
 }
+// Заготовка - раз в день (его «могу несколько раз спамить каждую фразу»): отправленная пропадает до завтра.
+function ccCrewChipUsed(i){ const c=ccCrew(), k=c && c.chips; return !!(k && k.day===careerToday() && k.ids.indexOf(i)>=0); }
 // Лента и поле ввода для #general.
 function ccCrewChatBoxHTML(msg, members){
   try{ ccCrewChatTick(members); }catch(e){}
@@ -2226,7 +2235,7 @@ function ccCrewChatBoxHTML(msg, members){
   const byH=new Map(members.map(m=>[hKey(m.handle), m]));
   const list=log.map(x=>x.me ? msg(CAREER.player.nick, false, '<p>'+esc(x.t)+'</p>')
     : (()=>{ const m=byH.get(hKey(x.h)); return msg(ccHandle(x.h), false, '<p>'+esc(x.t)+'</p>', m ? ccCrewAv(m) : esc(String(x.h).slice(0, 2).toUpperCase())); })()).join('');
-  const chips=[1, 2, 3, ev ? 4 : 0, 5].filter(Boolean).map(i=>{
+  const chips=[1, 2, 3, ev ? 4 : 0, 5].filter(i=>i && !ccCrewChipUsed(i)).map(i=>{
     const s=T['crS'+i]; const txt=typeof s==='function' ? s(next ? (next.type==='cup' ? T.ccCupLive : (next.title||next.label||'')) : '') : s;
     return '<button type="button" class="dc-btn ghost sm" onclick="ccCrewSayPick('+i+')">'+esc(txt)+'</button>'; }).join('');
   return '<div class="dc-chatlog">'+list+'</div>'+

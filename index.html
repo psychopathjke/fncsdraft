@@ -123720,7 +123720,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='67b52d45';
+const CC_BUILD='3b883752';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -132785,9 +132785,10 @@ function careerDoAct(id){
     // Доли с насыщением по размеру канала — см. CC_TW_SAT (его «слишком много стримы онлайн», 13.09).
     const viewers=ccTwViewersOf(tw, careerReach());
     const peak=Math.round(viewers*(1.6+rndS()*0.9));
-    const newTw=Math.max(1, Math.round(viewers*0.18*ccTwFolRate(tw)*(0.7+rndS()*0.6)*(sk.subs||1)));
+    const newTw=Math.max(1, Math.round(viewers*0.18*CC_TW_UNIQ*ccTwFolRate(tw)*(0.7+rndS()*0.6)*(sk.subs||1)));
     cr.twitch=tw+newTw;
-    const dono=Math.round(viewers*0.04*(sk.cash||1));
+    // Сабы, биты и донаты за вечер - около $0.1 со зрителя (22.11: зрителей стало в разы меньше, решение, не замер).
+    const dono=Math.round(viewers*0.1*(sk.cash||1));
     let banner=0, brand=null;
     if(!sps.length && CAREER.agent){
       brand=CC_STREAM_BRANDS[Math.floor(rndS()*CC_STREAM_BRANDS.length)];
@@ -133087,7 +133088,8 @@ function ccCrewAskedToday(m){ const a=ccCrew().inv; return !!(a && a.day===caree
 function ccCrewInvited(m){ const v=ccCrew().voice; return !!(v && v.day===careerToday() && v.inviter===m.k); }
 // Почему нельзя позвать поиграть; '' - можно.
 // Режимы «поиграть вместе»: занятие и подпись. Ранкед вдвоём - обычная сессия ранкеда (trSur, ccRk).
-const CC_CREW_MODES=[['rk','trSur'], ['box','crewBox'], ['zw','crewZw'], ['scr','crew']];
+// Скримов здесь нет (22.11, его «это то же самое, что нобл»): скримы с другом - это запись на Noble ('nb' в строке игрока).
+const CC_CREW_MODES=[['rk','trSur'], ['box','crewBox'], ['zw','crewZw']];
 function ccCrewModeAct(mode){ const x=CC_CREW_MODES.find(e=>e[0]===mode); return x ? x[1] : 'crew'; }
 function ccCrewModeName(mode){ return mode==='rk' ? ccActName('trSur') : mode==='box' ? ccActName('trBox') : mode==='zw' ? ccActName('trZw') : L().crModeScr; }
 // Почему нельзя позвать поиграть; '' - можно. С mode - ещё и почему нельзя именно этот режим.
@@ -133119,7 +133121,7 @@ function ccCrewYes(m){
 }
 function ccCrewFind(k){ return ccCrewMembers().find(m=>m.k===k) || null; }
 function ccCrewPlay(k, mode){
-  mode=mode||'scr';
+  mode=mode||'box';
   const m=ccCrewFind(k); if(!m || ccCrewWhy(m, mode)) return;
   const c=ccCrew(), T=L(), today=careerToday();
   const invited=ccCrewInvited(m);
@@ -133253,7 +133255,7 @@ function ccCrewHTML(chan, msg){
       '<div class="cr-btns">'+
         // Во что играть - на выбор: ранкед, бокс-файты, зон-варс, скримы, Noble (сразу запись и игра).
         '<span class="cr-modes-l">'+esc(invited ? T.crAccept : T.crPlay)+':</span>'+
-        [['rk', 'trSur'], ['box', 'crewBox'], ['zw', 'crewZw'], ['scr', 'crew'], ['nb', null]].map(([md, act])=>{
+        [['rk', 'trSur'], ['box', 'crewBox'], ['zw', 'crewZw'], ['nb', null]].map(([md, act])=>{
           const w=why || ccCrewWhy(m, md), en=act ? ccActById(act).energy : CC_DC_ENERGY;
           return '<button class="dc-btn sm"'+(w ? ' disabled title="'+esc(w)+'"' : '')+' onclick="ccCrewPlay(\''+jsq(m.k)+'\',\''+md+'\')">'+
             esc(md==='nb' ? ccPracSrv() : ccCrewModeName(md))+' <em>'+en+T.ccEnergyMark+'</em></button>';
@@ -133933,13 +133935,15 @@ function ccCrewSay(text){
   text=String(text||'').replace(/\s+/g, ' ').trim().slice(0, 300); if(!text) return;
   const T=L(), c=ccCrew(), day=careerToday(), log=ccCrewChatLog(), members=ccCrewMembers();
   const on=members.filter(m=>ccCrewStatus(m)!=='off');
+  // Одно и то же сообщение за день второй раз - спам: в ленте оно есть, но отвечать на него никто не будет, и знакомство не растёт.
+  const again=log.some(x=>x.me && x.d===day && String(x.t).toLowerCase()===text.toLowerCase());
   log.push({me:1, t:text, d:day});
   const r=careerRng(ccHashStr('crewsay|'+day+'|'+log.length+'|'+text));
   // Упомянул @ника - отвечает он; иначе 1-2 человека в сети.
   const low=text.toLowerCase();
   const tagged=members.find(m=>low.indexOf('@'+String(ccHandle(m.handle)).toLowerCase())>=0);
-  const who=[]; if(tagged && ccCrewStatus(tagged)!=='off') who.push(tagged);
-  while(who.length<(tagged ? 1 : Math.min(2, on.length)) && on.length){ const m=on[Math.floor(r()*on.length)]; if(who.indexOf(m)<0) who.push(m); else break; }
+  const who=[]; if(!again && tagged && ccCrewStatus(tagged)!=='off') who.push(tagged);
+  while(!again && who.length<(tagged ? 1 : Math.min(2, on.length)) && on.length){ const m=on[Math.floor(r()*on.length)]; if(who.indexOf(m)<0) who.push(m); else break; }
   // «Отметили меня» - только если отвечает сам отмеченный; он не в сети - другие отвечают на смысл сообщения.
   const kind=(tagged && who[0]===tagged) ? 'M' : ccCrewSayKind(text), per={S:3, Q:4, H:3, G:5, M:3}[kind], used=[];
   who.forEach(m=>{
@@ -133958,9 +133962,14 @@ function ccCrewSayKey(e){ if(e.key==='Enter' && !e.shiftKey){ e.preventDefault()
 function ccCrewSayPick(i){
   const T=L(); let next=null; try{ next=careerNext(); }catch(e){}
   const ev=next && next.type!=='free' ? (next.type==='cup' ? T.ccCupLive : (next.title||next.label||'')) : '';
-  const s=T['crS'+i]; if(!s) return;
+  const s=T['crS'+i]; if(!s || ccCrewChipUsed(i)) return;
+  const c=ccCrew(), day=careerToday();
+  if(!c.chips || c.chips.day!==day) c.chips={day:day, ids:[]};
+  c.chips.ids.push(i);
   ccCrewSay(typeof s==='function' ? s(ev) : s);
 }
+// Заготовка - раз в день (его «могу несколько раз спамить каждую фразу»): отправленная пропадает до завтра.
+function ccCrewChipUsed(i){ const c=ccCrew(), k=c && c.chips; return !!(k && k.day===careerToday() && k.ids.indexOf(i)>=0); }
 // Лента и поле ввода для #general.
 function ccCrewChatBoxHTML(msg, members){
   try{ ccCrewChatTick(members); }catch(e){}
@@ -133970,7 +133979,7 @@ function ccCrewChatBoxHTML(msg, members){
   const byH=new Map(members.map(m=>[hKey(m.handle), m]));
   const list=log.map(x=>x.me ? msg(CAREER.player.nick, false, '<p>'+esc(x.t)+'</p>')
     : (()=>{ const m=byH.get(hKey(x.h)); return msg(ccHandle(x.h), false, '<p>'+esc(x.t)+'</p>', m ? ccCrewAv(m) : esc(String(x.h).slice(0, 2).toUpperCase())); })()).join('');
-  const chips=[1, 2, 3, ev ? 4 : 0, 5].filter(Boolean).map(i=>{
+  const chips=[1, 2, 3, ev ? 4 : 0, 5].filter(i=>i && !ccCrewChipUsed(i)).map(i=>{
     const s=T['crS'+i]; const txt=typeof s==='function' ? s(next ? (next.type==='cup' ? T.ccCupLive : (next.title||next.label||'')) : '') : s;
     return '<button type="button" class="dc-btn ghost sm" onclick="ccCrewSayPick('+i+')">'+esc(txt)+'</button>'; }).join('');
   return '<div class="dc-chatlog">'+list+'</div>'+
@@ -184461,7 +184470,7 @@ function ccStreamCupAfter(day, board, cupx){
   if(sacX){ got.push({id:'sac', cash:sacX}); cr.sac=(cr.sac||0)+sacX; }
   const folX=got.reduce((a,g)=>a+(g.fol||0), 0), subsX=got.reduce((a,g)=>a+(g.subs||0), 0);
   // Доля фолловеров с насыщением по размеру канала (CC_TW_SAT) — та же, что в чате эфира.
-  const fol=Math.max(1, Math.round(v*0.25*beat*ccTwFolRate(cr.twitch)), ev.fol||0)+folX;
+  const fol=Math.max(1, Math.round(v*0.25*CC_TW_UNIQ*beat*ccTwFolRate(cr.twitch)), ev.fol||0)+folX;
   const cash=Math.max(Math.round(v*0.06*beat), Math.round(ev.cash||0))+Math.round(subsX*CC_TV_SUB_USD)+sacX;
   cr.twitch=(cr.twitch||0)+fol;
   if(cash){
@@ -184888,7 +184897,7 @@ function ccTvEvents(board, games){
   let beat=0.5;
   if(board && board.of>1) beat=1-(board.place-1)/(board.of-1);
   const ticks=Math.max(60, (games||11)*CC_TV_TICKS_PER_GAME);
-  const folBudget=v*0.25*beat*ccTwFolRate(CAREER && CAREER.career ? CAREER.career.twitch : 0), cashBudget=v*0.06*beat;
+  const folBudget=v*0.25*CC_TW_UNIQ*beat*ccTwFolRate(CAREER && CAREER.career ? CAREER.career.twitch : 0), cashBudget=v*0.15*beat;
   let pFol=folBudget/ticks*(1+0.5*CC_TV_HYPE)+(CC_TV_BURST>0 ? 0.5 : 0);
   /* Фолловеры считаются все, а строкой в чат идёт не каждый: у канала на
      десять тысяч зрителей их по пять на тик, и чат состоял бы из одного
@@ -185072,7 +185081,7 @@ function careerLiveNow(n){
     if(!f) return;
     if(rnd()>0.55) return;                       // не все в эфире каждый день
     creRows.push({name:name, f:f, creator:true, ava:ccProAmAvatar(name),
-              v:Math.max(20, Math.round(f*0.004*(0.5+rnd()))),
+              v:Math.max(20, Math.round(ccTwAvgOf(f)*(0.6+0.8*rnd()))),
               cat:CC_STREAM_CATS[Math.floor(rnd()*CC_STREAM_CATS.length)]});
   });
   // И сцена: те же карточки, что играют вечерами, с их портретами.
@@ -185082,8 +185091,10 @@ function careerLiveNow(n){
   roster.forEach(p=>{
     if(rnd()>0.25) return;
     const ovr=(p._ovr!=null?p._ovr:(attrsFor(p)||{}).ovr)||70;
-    proRows.push({name:p.handle, card:p, f:0,
-              v:Math.max(8, Math.round((ovr-60)*40*(0.4+rnd()))),
+    // Про с настоящим каналом (CC_PRO_SOCIAL) - по той же кривой; без канала - десятки-сотни по рейтингу.
+    const pf=(ccProSocial(p.handle)||[])[0]||0;
+    proRows.push({name:p.handle, card:p, f:pf,
+              v:Math.max(8, Math.round((pf ? ccTwAvgOf(pf) : (ovr-60)*12)*(0.4+rnd()))),
               cat:CC_STREAM_CATS[Math.floor(rnd()*CC_STREAM_CATS.length)]});
   });
   /* Витрина — ПОПОЛАМ. Если просто отсортировать по зрителям, сцену не видно
@@ -185126,10 +185137,18 @@ function ccTwSat(tw, k){ return 1/Math.sqrt(1+Math.max(0, tw||0)/k); }
    доля была reach·0.008 без потолка, и про без фолловеров открывал эфир на 90 тысяч (28.10, его «у меня 90к онлайна,
    когда нет фоловеров»). Теперь от сцены — не больше 20 + 3 % фолловеров: новичок со звёздным именем собирает
    десятки, а не десятки тысяч, и онлайн растёт вместе с каналом. */
+/* 22.11, его «онлайны слишком нереалистичные»: было 6 % фолловеров с насыщением + до 3 % от сцены, канал на 634 тысячи
+   собирал 16 тысяч (2.5 %). Средний онлайн на живом Twitch у больших каналов - десятые доли процента фолловеров,
+   у маленьких до процента. Одна кривая на всех (ccTwAvgOf): 5 тыс. → ~45, 50 тыс. → ~300, 634 тыс. → ~1.6 тыс.,
+   12 млн → ~9 тыс. Коэффициенты - решение по порядку величин, не замер. Сцена добавляет не больше половины. */
+function ccTwAvgOf(f){ f=Math.max(0, f||0); return f*0.01*Math.pow(1+f/20000, -0.4); }
 function ccTwViewersOf(tw, reach){
-  const fol=Math.max(0, tw||0);
-  return Math.max(3, Math.round(fol*0.06*ccTwSat(fol, CC_TW_SAT.view) + Math.min((reach||0)*0.008, 20+fol*0.03)));
+  const base=ccTwAvgOf(tw);
+  return Math.max(3, Math.round(base + Math.min((reach||0)*0.0005, 20+base*0.5)));
 }
+/* Средний онлайн - не все, кто зашёл за вечер: уникальных примерно CC_TW_UNIQ раз больше, и подписываются из них.
+   Доли фолловеров и денег со зрителя умножены на него, когда онлайн стал реальным (22.11, решение, не замер). */
+const CC_TW_UNIQ=5;
 function ccTwFolRate(tw){ return ccTwSat(tw, CC_TW_SAT.fol); }
 /* Сейв, выросший на старой формуле, несёт сотни миллионов фолловеров; насыщение
    его не лечит — оно только останавливает рост. Потолок один раз при загрузке:

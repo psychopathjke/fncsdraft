@@ -490,7 +490,7 @@ function ccStreamCupAfter(day, board, cupx){
   if(sacX){ got.push({id:'sac', cash:sacX}); cr.sac=(cr.sac||0)+sacX; }
   const folX=got.reduce((a,g)=>a+(g.fol||0), 0), subsX=got.reduce((a,g)=>a+(g.subs||0), 0);
   // Доля фолловеров с насыщением по размеру канала (CC_TW_SAT) — та же, что в чате эфира.
-  const fol=Math.max(1, Math.round(v*0.25*beat*ccTwFolRate(cr.twitch)), ev.fol||0)+folX;
+  const fol=Math.max(1, Math.round(v*0.25*CC_TW_UNIQ*beat*ccTwFolRate(cr.twitch)), ev.fol||0)+folX;
   const cash=Math.max(Math.round(v*0.06*beat), Math.round(ev.cash||0))+Math.round(subsX*CC_TV_SUB_USD)+sacX;
   cr.twitch=(cr.twitch||0)+fol;
   if(cash){
@@ -917,7 +917,7 @@ function ccTvEvents(board, games){
   let beat=0.5;
   if(board && board.of>1) beat=1-(board.place-1)/(board.of-1);
   const ticks=Math.max(60, (games||11)*CC_TV_TICKS_PER_GAME);
-  const folBudget=v*0.25*beat*ccTwFolRate(CAREER && CAREER.career ? CAREER.career.twitch : 0), cashBudget=v*0.06*beat;
+  const folBudget=v*0.25*CC_TW_UNIQ*beat*ccTwFolRate(CAREER && CAREER.career ? CAREER.career.twitch : 0), cashBudget=v*0.15*beat;
   let pFol=folBudget/ticks*(1+0.5*CC_TV_HYPE)+(CC_TV_BURST>0 ? 0.5 : 0);
   /* Фолловеры считаются все, а строкой в чат идёт не каждый: у канала на
      десять тысяч зрителей их по пять на тик, и чат состоял бы из одного
@@ -1101,7 +1101,7 @@ function careerLiveNow(n){
     if(!f) return;
     if(rnd()>0.55) return;                       // не все в эфире каждый день
     creRows.push({name:name, f:f, creator:true, ava:ccProAmAvatar(name),
-              v:Math.max(20, Math.round(f*0.004*(0.5+rnd()))),
+              v:Math.max(20, Math.round(ccTwAvgOf(f)*(0.6+0.8*rnd()))),
               cat:CC_STREAM_CATS[Math.floor(rnd()*CC_STREAM_CATS.length)]});
   });
   // И сцена: те же карточки, что играют вечерами, с их портретами.
@@ -1111,8 +1111,10 @@ function careerLiveNow(n){
   roster.forEach(p=>{
     if(rnd()>0.25) return;
     const ovr=(p._ovr!=null?p._ovr:(attrsFor(p)||{}).ovr)||70;
-    proRows.push({name:p.handle, card:p, f:0,
-              v:Math.max(8, Math.round((ovr-60)*40*(0.4+rnd()))),
+    // Про с настоящим каналом (CC_PRO_SOCIAL) - по той же кривой; без канала - десятки-сотни по рейтингу.
+    const pf=(ccProSocial(p.handle)||[])[0]||0;
+    proRows.push({name:p.handle, card:p, f:pf,
+              v:Math.max(8, Math.round((pf ? ccTwAvgOf(pf) : (ovr-60)*12)*(0.4+rnd()))),
               cat:CC_STREAM_CATS[Math.floor(rnd()*CC_STREAM_CATS.length)]});
   });
   /* Витрина — ПОПОЛАМ. Если просто отсортировать по зрителям, сцену не видно
@@ -1155,10 +1157,18 @@ function ccTwSat(tw, k){ return 1/Math.sqrt(1+Math.max(0, tw||0)/k); }
    доля была reach·0.008 без потолка, и про без фолловеров открывал эфир на 90 тысяч (28.10, его «у меня 90к онлайна,
    когда нет фоловеров»). Теперь от сцены — не больше 20 + 3 % фолловеров: новичок со звёздным именем собирает
    десятки, а не десятки тысяч, и онлайн растёт вместе с каналом. */
+/* 22.11, его «онлайны слишком нереалистичные»: было 6 % фолловеров с насыщением + до 3 % от сцены, канал на 634 тысячи
+   собирал 16 тысяч (2.5 %). Средний онлайн на живом Twitch у больших каналов - десятые доли процента фолловеров,
+   у маленьких до процента. Одна кривая на всех (ccTwAvgOf): 5 тыс. → ~45, 50 тыс. → ~300, 634 тыс. → ~1.6 тыс.,
+   12 млн → ~9 тыс. Коэффициенты - решение по порядку величин, не замер. Сцена добавляет не больше половины. */
+function ccTwAvgOf(f){ f=Math.max(0, f||0); return f*0.01*Math.pow(1+f/20000, -0.4); }
 function ccTwViewersOf(tw, reach){
-  const fol=Math.max(0, tw||0);
-  return Math.max(3, Math.round(fol*0.06*ccTwSat(fol, CC_TW_SAT.view) + Math.min((reach||0)*0.008, 20+fol*0.03)));
+  const base=ccTwAvgOf(tw);
+  return Math.max(3, Math.round(base + Math.min((reach||0)*0.0005, 20+base*0.5)));
 }
+/* Средний онлайн - не все, кто зашёл за вечер: уникальных примерно CC_TW_UNIQ раз больше, и подписываются из них.
+   Доли фолловеров и денег со зрителя умножены на него, когда онлайн стал реальным (22.11, решение, не замер). */
+const CC_TW_UNIQ=5;
 function ccTwFolRate(tw){ return ccTwSat(tw, CC_TW_SAT.fol); }
 /* Сейв, выросший на старой формуле, несёт сотни миллионов фолловеров; насыщение
    его не лечит — оно только останавливает рост. Потолок один раз при загрузке:

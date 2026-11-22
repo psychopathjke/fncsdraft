@@ -9,7 +9,7 @@
 // Проверяется:
 //   * прирост за день эфира падает с размером канала: ~1 % на тысяче,
 //     не больше 0.5 % на ста тысячах, не больше 0.05 % на трёх миллионах;
-//   * онлайн канала размером с Clix — десятки тысяч, а не сотни;
+//   * онлайн канала на 3 млн - тысячи (десятые доли процента), на тысяче - десяток;
 //   * турнирный эфир платит фолловерами по той же доле, что и обычный день;
 //   * два года ежедневных эфиров с турнирами — канал остаётся под потолком;
 //   * сейв с сотнями миллионов при загрузке ставится под CC_TW_CEIL.
@@ -56,10 +56,11 @@ const BOOT = `
     // Онлайн канала размером с Clix.
     localStorage.removeItem('fncsdraft_career'); save(3000000); careerEntry();
     const vBig=ccStreamViewersNow();
-    if(!(vBig>10000 && vBig<60000)) fail('у канала на 3 млн онлайн '+vBig+' — у Clix это десятки тысяч');
+    // 22.11 «онлайны слишком нереалистичные»: средний онлайн - десятые доли процента фолловеров (ccTwAvgOf).
+    if(!(vBig>2000 && vBig<20000)) fail('у канала на 3 млн онлайн '+vBig+' — ждали тысячи');
     localStorage.removeItem('fncsdraft_career'); save(1000); careerEntry();
     const vSmall=ccStreamViewersNow();
-    if(!(vSmall>=30 && vSmall<=400)) fail('у канала на тысячу онлайн '+vSmall);
+    if(!(vSmall>=5 && vSmall<=100)) fail('у канала на тысячу онлайн '+vSmall);
     out.steps.push('онлайн: 1k фолловеров → '+vSmall+', 3M → '+ccNum(vBig));
     // Турнирный эфир: победа при 3 млн даёт фолловеров по насыщенной доле.
     { localStorage.removeItem('fncsdraft_career'); save(3000000); careerEntry();
@@ -79,9 +80,9 @@ const BOOT = `
     { let tw=100, reach=2000, peakV=0;
       for(let d=1; d<=730; d++){
         const v=ccTwViewersOf(tw, reach);
-        tw+=Math.max(1, Math.round(v*0.18*ccTwFolRate(tw)));
+        tw+=Math.max(1, Math.round(v*0.18*CC_TW_UNIQ*ccTwFolRate(tw)));
         reach+=180;
-        if(d%2===0){ const vv=v*1.8; tw+=Math.max(1, Math.round(vv*0.25*0.7*ccTwFolRate(tw))); }
+        if(d%2===0){ const vv=v*1.8; tw+=Math.max(1, Math.round(vv*0.25*CC_TW_UNIQ*0.7*ccTwFolRate(tw))); }
         peakV=Math.max(peakV, v);
       }
       if(!(tw<CC_TW_CEIL)) fail('два года эфиров: '+ccNum(tw)+' фолловеров — выше потолка '+ccNum(CC_TW_CEIL));
