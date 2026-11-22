@@ -4800,3 +4800,6 @@ Object.assign(I18N.es=I18N.es||{},
 /* Дозаливка «es» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
 Object.assign(I18N.es=I18N.es||{},
 ({ccRusty:"oxidado", ccRustTip:v=>"Tras el parón, tu forma baja "+v+": se va en tres semanas, antes si entrenas."}));
+/* Дозаливка «es» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
+Object.assign(I18N.es=I18N.es||{},
+({crResMeG:(p,e)=>"#"+p+" en "+e+", por fin", crResMeB:(p,e)=>"quedé #"+p+" en "+e+", no fue mi noche"}));

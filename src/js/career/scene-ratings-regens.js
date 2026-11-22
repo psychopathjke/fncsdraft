@@ -4097,6 +4097,7 @@ function careerGrowEvent(place, total, you, field){
      (командный год за Pixie и SwizzY 20.10: соло 17.01 → Duos Victory Cup 19.01, f1n4ik+zarbeh 88 против 89). */
   const teamApart=(typeof ccTeamSoloNight==='function' && ccTeamSoloNight());
   if(field && field.length>1 && !raceApart && !teamApart){ careerGrowField(field, you); ccBreakoutTick(); ccBreakoutCheck(field, you); }
+  try{ if(field && field.length>1) ccCrewNightKeep(field, you, place); }catch(e){}   // кто где встал - для #results Дискорда
   /* И вечер, отыгранный дома, пишется на дом — на ту из трёх точек, где ты
      сидел. Ауру делает не результат турнира, а то, удержал ли ты место: счёт
      стычек за этап против счёта поражений. См. careerSpotNight. */

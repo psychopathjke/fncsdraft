@@ -2129,6 +2129,19 @@ function ccFanSettingsHTML(chan){
    #ищу-напарника: двое-трое из тусовки ищут состав на ближайший турнир с порогом рейтинга; кнопка «написать» -
    то же предложение в личку (careerDmWrite), только если в сезоне есть места. */
 const CC_CREW_BACK={b1:-2, b2:3, b3:0};
+/* Вечер глазами тусовки (Notion 22.11: «в results почему-то только про игрока, за которого играешь»). После каждого
+   вечера - кто выиграл и на каком месте встали люди с серверов: тогда в #results пишут и про победителя, и про себя.
+   Таблица - по очкам этапа; если с ней не сходится твоё место, вечер не пишется (значит, поле устроено иначе). */
+function ccCrewNightKeep(field, you, place){
+  const cr=CAREER && CAREER.career; if(!cr || !field || !you) return;
+  const rank=field.slice().sort((a, b)=>(b.stagePts||0)-(a.stagePts||0));
+  if(rank.indexOf(you)+1!==place) return;
+  const want=new Set(); try{ ccCrewMembers().forEach(m=>want.add(m.k)); }catch(e){}
+  const pl={};
+  rank.forEach((t, i)=>(t.squad||[]).forEach(c=>{ if(c && c.handle){ const k=hKey(c.handle); if(want.has(k)) pl[k]=i+1; } }));
+  const w=rank[0]===you ? null : (rank[0].squad||[]).filter(Boolean).map(c=>ccHandle(c.handle)).join(' & ');
+  cr.crewNight={day:careerToday(), of:rank.length, w:w||null, pl:pl};
+}
 function ccCrewResults(members){
   const T=L(), today=careerToday(), cr=CAREER.career, rnd=careerRng(ccHashStr('crewres|'+today));
   const on=members.filter(m=>ccCrewStatus(m)!=='off'); if(!on.length) return {lines:[], troll:null};
@@ -2140,13 +2153,28 @@ function ccCrewResults(members){
     const of=last.of||100, p=last.place, good=p<=Math.max(3, Math.ceil(of*0.1)), bad=p>Math.ceil(of*0.5);
     const ev=last.kind==='cup' ? T.ccCupLive : ((careerYearDays().get(last.day)||[]).find(x=>x.kind===last.kind)||{}).label || T.fnTheCup;
     const who=[]; while(who.length<Math.min(3, on.length)){ const m=pick(); if(who.indexOf(m)<0) who.push(m); }
+    const usedT=new Set();   // одна и та же фраза дважды не пишется (скрин: трое подряд «got lucky»)
     who.forEach((m, i)=>{
       const rel=ccCrewRel(m), mean=rel<25;
       const set=good ? (mean ? 'crResGt' : 'crResG') : bad ? (mean ? 'crResB' : 'crResBk') : (mean ? 'crResMt' : 'crResM');
       const n={crResG:4, crResGt:2, crResB:4, crResBk:2, crResM:2, crResMt:2}[set];
-      const line={m:m, text:T[set+(1+Math.floor(rnd()*n))](nick, p, ev)};
+      let v=1+Math.floor(rnd()*n), tries=0; while(usedT.has(set+v) && tries++<n) v=v%n+1;
+      if(usedT.has(set+v)) return;
+      usedT.add(set+v);
+      const line={m:m, text:T[set+v](nick, p, ev)};
       lines.push(line);
       if(mean && !troll && (set==='crResB' || set==='crResMt' || set==='crResGt')) troll=line;
+    });
+  }
+  // Тот же вечер: кто выиграл (если не ты) и как сыграли сами люди с сервера (ccCrewNightKeep).
+  const nt=cr.crewNight;
+  if(nt && last && nt.day===last.day && ccDaysBetween(nt.day, today)<=3){
+    const ev=last.kind==='cup' ? T.ccCupLive : ((careerYearDays().get(last.day)||[]).find(x=>x.kind===last.kind)||{}).label || T.fnTheCup;
+    if(nt.w){ const m=pick(); lines.push({m:m, text:rnd()<0.5 ? T.crResW1(nt.w, ev) : T.crResW2(nt.w, ev)}); }
+    const mateK=new Set((careerMates()||[]).filter(Boolean).map(c=>hKey(c.handle)));   // напарники играли с тобой - их место твоё
+    on.filter(m=>nt.pl[m.k] && !mateK.has(m.k)).sort((a, b)=>nt.pl[a.k]-nt.pl[b.k]).slice(0, 3).forEach(m=>{
+      const q=nt.pl[m.k], g=q<=Math.max(3, Math.ceil(nt.of*0.1));
+      lines.push({m:m, text:g ? T.crResMeG(q, ev) : T.crResMeB(q, ev)});
     });
   }
   // Победители мира за три дня.
