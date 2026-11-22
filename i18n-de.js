@@ -4767,3 +4767,6 @@ Object.assign(I18N.de=I18N.de||{},
 /* Дозаливка «de» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
 Object.assign(I18N.de=I18N.de||{},
 ({tvCat:"Kategorie", tvChatQuiet:"Der Kanal ist offline. Der Chat wird lebendig, sobald du live gehst.", tvColabMore:(a)=>a+" weitere anzeigen", tvColabLess:"Weniger anzeigen"}));
+/* Дозаливка «de» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
+Object.assign(I18N.de=I18N.de||{},
+({clNext:(a,b)=>"Als Nächstes fürs Team: "+a+", "+b, clGGWin:(a)=>"Sieg bei "+a+". Was für ein Abend, wir sind stolz", clGGPod:(a,b)=>a+": #"+b+", Podium. Starke Arbeit", clGGOk:(a,b)=>a+": #"+b+". Passt, weiter geht’s", clGGBad:(a,b)=>a+": #"+b+". Wir schauen es uns diese Woche an und kommen stärker zurück", clCoach:(a)=>"Diese Woche arbeiten wir an der Schwäche: "+a, clMate1:"wer ist heute Abend für Scrims dabei?", clMate2:"Replay geschaut, die Rotationen waren gut", clMate3:"morgen fangen wir früher an", clMate4:"Drop wie immer", clRoleYou:"du", clRoleMate:"Teamkollege", clRoleCoach:"Coach", clRoleMgr:"Manager", fnUp:(a,b)=>"Demnächst: "+a+", "+b, fnRes:(a,b,c)=>"Ergebnisse von "+a+" sind online. Dein Platz: #"+b+" von "+c, fnNone:"Noch nichts im Kalender."}));

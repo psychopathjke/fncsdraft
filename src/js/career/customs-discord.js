@@ -483,6 +483,58 @@ function ccDcSessHTML(kind){
       '<p class="dc-sub">'+esc(T.dcFmt(f.games, kind==='mob' ? 16 : 100))+(kind!=='mob' && ccCareerRegion()==='EU' ? ' '+esc(T.dcRules) : '')+'</p>'+list+'</div>'+
     '<div class="dc-chan"><div class="dc-chan-h"># '+esc(T.dcCheckChan)+'</div>'+check+'</div>';
 }
+/* Ещё два сервера (22.11, его «12» на список): сервер клуба (только в орге) и официальный Fortnite Competitive.
+   Оба читают то, что в карьере уже есть: календарь (careerEvents), журнал (cr.log), состав (careerMates), тренера (ccCoach),
+   менеджера (CAREER.agent). Своих механик у них нет, это лента и состав. */
+const CC_DC_FN_SVG='<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0V4Z"/><path d="M17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/></svg>';
+// Ближайшие n событий календаря с сегодняшнего дня: [{day, label}].
+function ccDcUpcoming(n, keep){
+  const out=[], today=careerToday();
+  let days=[]; try{ days=[...careerEvents().entries()].filter(([d])=>d>=today).sort((a,b)=>a[0]<b[0] ? -1 : 1); }catch(e){}
+  for(const [d, list] of days){ for(const e of list){ if(out.length>=n) return out; if(keep && !keep(e)) continue; out.push({day:d, kind:e.kind||'', label:e.label||e.title||''}); } }
+  return out;
+}
+// Имя турнира из журнала текстом (ccLogName отдаёт HTML): подпись календаря, у капа - дивизион сезона, если в строке его нет.
+function ccDcEvName(e){
+  const x=ccLogName(e.div!=null || (e.kind && e.kind!=='cup') ? e : Object.assign({}, e, {div:CAREER.career.division}));
+  const t=document.createElement('textarea'); t.innerHTML=String(x).replace(/<[^>]+>/g, ''); return t.value;
+}
+// Последний сыгранный турнир за 10 дней, или null.
+function ccDcLastResult(){
+  const cr=CAREER.career, from=ccAddDays(careerToday(), -10);
+  const e=(cr.log||[]).filter(x=>x && x.place && x.day && x.day>=from && x.day<=careerToday()).slice(-1)[0];
+  return e || null;
+}
+function ccDcClubHTML(chan, msg){
+  const T=L(), org=CAREER.org, club=org.name, me=CAREER.player.nick;
+  // Мобильная серия - личная, у команды её в планах нет.
+  const up=ccDcUpcoming(3, e=>!/mob/i.test(e.kind||'') && !/mobile/i.test(e.label||'')), last=ccDcLastResult();
+  let ann=up.length ? up.map(x=>msg(club, true, '<p>'+esc(T.clNext(x.label, ccDayLabel(x.day)))+'</p>')).join('') : msg(club, true, '<p>'+esc(T.fnNone)+'</p>');
+  if(last){ const ev=ccDcEvName(last), pl=last.place;
+    ann=msg(club, true, '<p>'+esc(pl===1 ? T.clGGWin(ev) : pl<=3 ? T.clGGPod(ev, pl) : pl<=Math.max(10, Math.round((last.of||100)*0.25)) ? T.clGGOk(ev, pl) : T.clGGBad(ev, pl))+'</p>')+ann; }
+  const mates=(typeof careerMates==='function' ? careerMates() : []).filter(Boolean);
+  const coach=ccCoach();
+  const rnd=careerRng(ccHashStr('club|'+careerToday()+'|'+club));
+  let team='';
+  if(coach){ const k=ccWeakestAttr(), K=k.charAt(0).toUpperCase()+k.slice(1);
+    team+=msg(coach.name, false, '<p>'+esc(T.clCoach(T['attr'+K+'Full'] || T['attr'+K] || k))+'</p>', coach.photo ? ccDcImg(PHOTO_DIR+coach.photo, ccDcInitials(coach.name)) : esc(ccDcInitials(coach.name))); }
+  mates.forEach(m=>{ const face=(()=>{ try{ return photoURL(m)||''; }catch(e){ return ''; } })();
+    team+=msg(ccHandle(m.handle), false, '<p>'+esc(T['clMate'+(1+Math.floor(rnd()*4))])+'</p>', face ? ccDcImg(face, String(m.handle).slice(0, 2).toUpperCase()) : null); });
+  const row=(name, role, av)=>'<div class="cr-mem st-on"><span class="dc-av">'+av+'<i class="cr-dot" aria-hidden="true"></i></span><div class="cr-who"><b>'+esc(name)+'</b><span>'+esc(role)+'</span></div></div>';
+  let mem=row(me, T.clRoleYou, ccDcFace() ? ccDcImg(ccDcFace(), String(me).slice(0, 2).toUpperCase()) : esc(String(me).slice(0, 2).toUpperCase()));
+  mates.forEach(m=>{ let f=''; try{ f=photoURL(m)||''; }catch(e){} mem+=row(ccHandle(m.handle), T.clRoleMate, f ? ccDcImg(f, String(m.handle).slice(0, 2).toUpperCase()) : esc(String(m.handle).slice(0, 2).toUpperCase())); });
+  if(coach) mem+=row(coach.name, T.clRoleCoach, coach.photo ? ccDcImg(PHOTO_DIR+coach.photo, ccDcInitials(coach.name)) : esc(ccDcInitials(coach.name)));
+  if(CAREER.agent && CAREER.agent.name) mem+=row(CAREER.agent.name, T.clRoleMgr, esc(ccDcInitials(CAREER.agent.name)));
+  return chan(T.dcAnnounce, ann)+(team ? chan('team-chat', team) : '')+chan(T.crMembers, '<div class="cr-mems">'+mem+'</div>', 'members');
+}
+function ccDcFnHTML(chan, msg){
+  const T=L(), bot='Fortnite Competitive', up=ccDcUpcoming(5);
+  const ann=up.length ? up.map(x=>msg(bot, true, '<p>'+esc(T.fnUp(x.label, ccDayLabel(x.day)))+'</p>')).join('') : msg(bot, true, '<p>'+esc(T.fnNone)+'</p>');
+  const from=ccAddDays(careerToday(), -21);
+  const res=(CAREER.career.log||[]).filter(x=>x && x.place && x.day && x.day>=from && x.day<=careerToday()).slice(-4).reverse()
+    .map(e=>msg(bot, true, '<p>'+esc(T.fnRes(ccDcEvName(e), e.place, e.of||'?'))+'</p>')).join('');
+  return chan(T.dcAnnounce, ann)+(res ? chan('results', res) : '');
+}
 function ccDcServer(id){ CH_DC=id; CH_DCV='list'; careerRenderHub('discord'); }
 /* Аватарки Discord (его «добавь дискордам аватарки», 21.11): у игрока - фото его карточки, как в шапке хаба; у бота -
    значок его сервера; у серверов - корона Noble (EU), инициалы сервера практики региона, телефон у мобильного,
@@ -496,15 +548,19 @@ function ccDcInitials(name){
 // Картинка аватарки; не загрузилась - вместо неё буквы.
 function ccDcImg(src, fb){ return '<img src="'+esc(src)+'" alt="" loading="lazy" data-fb="'+esc(fb)+'" onerror="this.replaceWith(this.dataset.fb)">'; }
 function ccDcSrvIcon(id){
+  if(id==='club') return (CAREER.org && typeof careerCrestImg==='function') ? careerCrestImg(CAREER.org.name, 30) : esc(ccDcInitials(CAREER.org && CAREER.org.name));
+  if(id==='fn') return CC_DC_FN_SVG;
   if(id==='pc') return ccCareerRegion()==='EU' ? ccDcImg('items/creative/noble-crown.png', 'NP') : esc(ccDcInitials(ccPracSrv()));
   if(id==='mob') return CC_DC_PHONE_SVG;
   if(ccFans()) return ccFanIcon();   // своя аватарка сервера из настроек
   const f=ccDcFace(); return f ? ccDcImg(f, '★') : '★';
 }
 function ccDiscordHTML(){
-  const T=L(), cr=CAREER.career, srv=CH_DC||'pc';
+  // Ушёл из клуба, а открыт был его сервер - показываем сервер практики.
+  const T=L(), cr=CAREER.career, srv=(CH_DC==='club' && !CAREER.org) ? 'pc' : (CH_DC||'pc');
   // Первым - тусовка региона (ccCrewHTML): про и стримеры, с которыми ты пересекался.
-  const servers=[['crew', CC_CREW_GROUP_SVG, T.dcSrvCrew(ccCareerRegion())], ['pc', ccDcSrvIcon('pc'), ccPracSrv()], ['mob', ccDcSrvIcon('mob'), T.dcSrvMob], ['own', ccDcSrvIcon('own'), (CAREER.career.fans && CAREER.career.fans.name) || T.dcSrvOwn]];
+  const servers=[['crew', CC_CREW_GROUP_SVG, T.dcSrvCrew(ccCareerRegion())]].concat(CAREER.org ? [['club', ccDcSrvIcon('club'), CAREER.org.name]] : [],
+    [['fn', ccDcSrvIcon('fn'), 'Fortnite Competitive'], ['pc', ccDcSrvIcon('pc'), ccPracSrv()], ['mob', ccDcSrvIcon('mob'), T.dcSrvMob], ['own', ccDcSrvIcon('own'), (CAREER.career.fans && CAREER.career.fans.name) || T.dcSrvOwn]]);
   const last=cr.dcLast && cr.dcLast.day===careerToday() ? cr.dcLast : null;
   const btn=(kind, label)=>{ const why=ccDcWhy(kind);
     return '<div class="dc-act"><button class="dc-btn"'+(why ? ' disabled' : '')+' onclick="ccDcGo(\''+kind+'\')">'+esc(label)+
@@ -525,6 +581,10 @@ function ccDiscordHTML(){
   let body='';
   if(srv==='crew'){
     body=ccCrewHTML(chan, msg);
+  } else if(srv==='club' && CAREER.org){
+    body=ccDcClubHTML(chan, msg);
+  } else if(srv==='fn'){
+    body=ccDcFnHTML(chan, msg);
   } else if(srv==='pc'){
     // Кастомки ПК — сессии сервера практики региона (занятие noble: одна игра на сотню, таблица недели, форма от места).
     const sv=ccNobleServer(), tier=ccNobleTier();
