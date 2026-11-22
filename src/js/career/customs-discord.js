@@ -1404,13 +1404,15 @@ function ccCrewFace(m){ try{ return m.card ? (photoURL(m.card)||'') : ''; }catch
 function ccCrewAv(m){ const fb=String(m.handle).slice(0, 2).toUpperCase(), f=ccCrewFace(m); return f ? ccDcImg(f, fb) : esc(fb); }
 function ccCrewRelKey(r){ return r>=70 ? 'crRelClose' : r>=40 ? 'crRelFriend' : r>=20 ? 'crRelKnown' : 'crRelNew'; }
 function ccCrewAskedToday(m){ const a=ccCrew().inv; return !!(a && a.day===careerToday() && a.who.indexOf(m.k)>=0); }
-function ccCrewInvited(m){ const v=ccCrew().voice; return !!(v && v.day===careerToday() && v.inviter===m.k); }
+function ccCrewInvited(m){ const c=ccCrew(), v=c.voice, o=c.offerYes, d=careerToday();
+  // Позвал голосом - или сам предложил в чате, и ты согласился (ccCrewOffer): отказа уже не будет.
+  return !!((v && v.day===d && v.inviter===m.k) || (o && o.day===d && o.k===m.k)); }
 // Почему нельзя позвать поиграть; '' - можно.
 // Режимы «поиграть вместе»: занятие и подпись. Ранкед вдвоём - обычная сессия ранкеда (trSur, ccRk).
 // Скримов здесь нет (22.11, его «это то же самое, что нобл»): скримы с другом - это запись на Noble ('nb' в строке игрока).
 const CC_CREW_MODES=[['rk','trSur'], ['box','crewBox'], ['zw','crewZw']];
 function ccCrewModeAct(mode){ const x=CC_CREW_MODES.find(e=>e[0]===mode); return x ? x[1] : 'crew'; }
-function ccCrewModeName(mode){ return mode==='rk' ? ccActName('trSur') : mode==='box' ? ccActName('trBox') : mode==='zw' ? ccActName('trZw') : L().crModeScr; }
+function ccCrewModeName(mode){ return mode==='nb' ? ccPracSrv() : mode==='rk' ? ccActName('trSur') : mode==='box' ? ccActName('trBox') : mode==='zw' ? ccActName('trZw') : L().crModeScr; }
 // Почему нельзя позвать поиграть; '' - можно. С mode - ещё и почему нельзя именно этот режим.
 function ccCrewWhy(m, mode){
   const T=L(), st=ccCrewStatus(m), cr=CAREER.career;
@@ -1453,7 +1455,7 @@ function ccCrewPlay(k, mode){
   }
   if(mode==='nb'){
     // Согласился - запись на ближайшую сессию, чек-ин, метка на самую свободную точку и сразу игра (ccScrimRun).
-    ccCrewRelAdd(m, 5); if(invited) c.voice.inviter=null;
+    ccCrewRelAdd(m, 5); if(invited){ if(c.voice) c.voice.inviter=null; c.offerYes=null; }
     c.last={day:today, text:T.crPlayedRk(ccHandle(m.handle), ccPracSrv())};
     let r=ccDcReg();
     if(!r){ ccDcRegister('pc', CC_DC_SESS[0].id); r=ccDcReg(); }
@@ -1467,7 +1469,7 @@ function ccCrewPlay(k, mode){
   if(mode==='rk'){
     // Ранкед вдвоём: та же сессия, что из вкладки тренировок (ccRkPlay), но без ухода с Discord.
     const n0=ccRk().n||0, r=careerDoAct('trSur'), rk=ccRk();
-    if(r){ ccCrewRelAdd(m, 5); if(invited) c.voice.inviter=null; c.last={day:today, text:T.crPlayedRk(ccHandle(m.handle), ccCrewModeName('rk'))}; }
+    if(r){ ccCrewRelAdd(m, 5); if(invited){ if(c.voice) c.voice.inviter=null; c.offerYes=null; } c.last={day:today, text:T.crPlayedRk(ccHandle(m.handle), ccCrewModeName('rk'))}; }
     careerSave(); careerRenderHub('discord');
     if((rk.n||0)!==n0 && rk.last && rk.last.games && rk.last.games.length) ccRkSimOpen(rk.last);
     return;
@@ -1477,7 +1479,7 @@ function ccCrewPlay(k, mode){
   try{ r=careerDoAct(ccCrewModeAct(mode)); } finally{ CC_CREW_WITH=null; }
   if(r){
     ccCrewRelAdd(m, 5);
-    if(invited) c.voice.inviter=null;
+    if(invited){ if(c.voice) c.voice.inviter=null; c.offerYes=null; }
     const s=r.scrim;
     c.last={day:today, text:T.crPlayedMode(ccHandle(m.handle), ccCrewModeName(mode), s ? s.mine : 0, s ? s.theirs : 0)};
   }
@@ -2240,8 +2242,51 @@ function ccCrewChatTick(members){
     const lines=T['crDlg'+id](ev, w, wev, Math.max(40, Math.round(a.ovr-5)));
     lines.forEach((t, i)=>log.push({h:(i%2 ? b : a).handle, t:t, d:day}));
   }
+  /* Тебя тегают (его «больше выбора общения, чтоб тегали и игроки сами чет предлагали»): предложение поиграть - кто-то
+     из свободных зовёт в режим, где сегодня можно играть (ccCrewWhy), согласие сразу ведёт в игру с ним; и вопрос с двумя
+     ответами или молчанием. Броски - от дня, как и весь чат. */
+  const nick=CAREER.player.nick||'', free=on.filter(m=>ccCrewStatus(m)!=='game' && m.kind!=='mate');
+  if(free.length && r()<0.65){
+    const m=free[Math.floor(r()*free.length)];
+    const modes=['box', 'zw', 'rk', 'nb'].filter(md=>!ccCrewWhy(m, md));
+    if(modes.length){ const md=modes[Math.floor(r()*modes.length)];
+      const t=md==='box' ? T.crOfBox(nick) : md==='zw' ? T.crOfZw(nick) : md==='rk' ? T.crOfRk(nick) : T.crOfNb(nick, ccPracSrv());
+      log.push({h:m.handle, t:t, d:day, offer:md}); }
+  }
+  if(r()<0.5){
+    const m=on[Math.floor(r()*on.length)], qn=1+Math.floor(r()*3);
+    log.push({h:m.handle, t:T['crQ'+qn](nick), d:day, q:qn});
+  }
   while(log.length>CC_CREW_CHAT_KEEP) log.shift();
   careerSave();
+}
+// Ответ на предложение из чата: да - он уже договорился, играете сразу (ccCrewPlay); нет - он отвечает «ок».
+function ccCrewOffer(i, yes){
+  const log=ccCrewChatLog(), x=log[i], day=careerToday(); if(!x || !x.offer || x.d!==day || x.done) return;
+  const m=ccCrewMembers().find(mm=>hKey(mm.handle)===hKey(x.h)); if(!m) return;
+  const c=ccCrew();
+  if(yes){
+    if(ccCrewWhy(m, x.offer)) return;
+    x.done='yes'; c.offerYes={day:day, k:m.k};
+    log.push({me:1, t:L().crOfYes, d:day});
+    ccCrewPlay(m.k, x.offer);
+    return;
+  }
+  x.done='no';
+  log.push({me:1, t:L().crOfNo, d:day}); log.push({h:x.h, t:L().crOfNp, d:day});
+  while(log.length>CC_CREW_CHAT_KEEP) log.shift();
+  careerSave(); careerRenderHub('discord');
+}
+// Ответ на вопрос: развёрнутый ответ - знакомство +2, короткий +1, молчание -1.
+function ccCrewAnswer(i, opt){
+  if(typeof opt==='number') opt=String.fromCharCode(opt);
+  const log=ccCrewChatLog(), x=log[i], day=careerToday(); if(!x || !x.q || x.d!==day || x.done) return;
+  const m=ccCrewMembers().find(mm=>hKey(mm.handle)===hKey(x.h));
+  x.done=opt;
+  if(opt!=='n') log.push({me:1, t:L()['crQ'+x.q+opt], d:day});
+  if(m) ccCrewRelAdd(m, opt==='a' ? 2 : opt==='b' ? 1 : -1);
+  while(log.length>CC_CREW_CHAT_KEEP) log.shift();
+  careerSave(); careerRenderHub('discord');
 }
 function ccCrewSayKind(text){
   const t=String(text||'').toLowerCase();
@@ -2296,8 +2341,18 @@ function ccCrewChatBoxHTML(msg, members){
   let next=null; try{ next=careerNext(); }catch(e){}
   const ev=next && next.type!=='free' ? 1 : 0;
   const byH=new Map(members.map(m=>[hKey(m.handle), m]));
-  const list=log.map(x=>x.me ? msg(CAREER.player.nick, false, '<p>'+esc(x.t)+'</p>')
-    : (()=>{ const m=byH.get(hKey(x.h)); return msg(ccHandle(x.h), false, '<p>'+esc(x.t)+'</p>', m ? ccCrewAv(m) : esc(String(x.h).slice(0, 2).toUpperCase())); })()).join('');
+  const today=careerToday();
+  // Под сегодняшним предложением или вопросом с тегом - кнопки ответа, пока не ответил.
+  const acts=(x, i)=>{
+    if(x.d!==today || x.done) return '';
+    if(x.offer){ const m=byH.get(hKey(x.h)), why=m ? ccCrewWhy(m, x.offer) : '';
+      return '<div class="cr-replies"><button type="button" class="dc-btn sm"'+(why ? ' disabled title="'+esc(why)+'"' : '')+' onclick="ccCrewOffer('+i+',true)">'+esc(T.crOfYes)+' · '+esc(ccCrewModeName(x.offer))+'</button>'+
+        '<button type="button" class="dc-btn ghost sm" onclick="ccCrewOffer('+i+',false)">'+esc(T.crOfNo)+'</button></div>'; }
+    if(x.q) return '<div class="cr-replies">'+['a', 'b', 'n'].map(o=>'<button type="button" class="dc-btn ghost sm" onclick="ccCrewAnswer('+i+','+o.charCodeAt(0)+')">'+esc(o==='n' ? T.crQIgnore : T['crQ'+x.q+o])+'</button>').join('')+'</div>';
+    return '';
+  };
+  const list=log.map((x, i)=>x.me ? msg(CAREER.player.nick, false, '<p>'+esc(x.t)+'</p>')
+    : (()=>{ const m=byH.get(hKey(x.h)); return msg(ccHandle(x.h), false, '<p'+(x.offer || x.q ? ' class="dc-ment"' : '')+'>'+esc(x.t)+'</p>'+acts(x, i), m ? ccCrewAv(m) : esc(String(x.h).slice(0, 2).toUpperCase())); })()).join('');
   const chips=[1, 2, 3, ev ? 4 : 0, 5].filter(i=>i && !ccCrewChipUsed(i)).map(i=>{
     const s=T['crS'+i]; const txt=typeof s==='function' ? s(next ? (next.type==='cup' ? T.ccCupLive : (next.title||next.label||'')) : '') : s;
     return '<button type="button" class="dc-btn ghost sm" onclick="ccCrewSayPick('+i+')">'+esc(txt)+'</button>'; }).join('');

@@ -8734,11 +8734,20 @@ async function simulateGamesLive(teams, numGames, pointsFn, killMult, fieldPrefi
           const recMine=skipRec(lobby);
           if(recMine) RECORD_NEXT_ZONE_GAME=true;
           let off;
+          /* Перемотка календаря (22.11, его «не ждать по несколько минут»): лобби без людей - быстрой моделью чужих
+             регионов (CC_WORLD_FAST, сверена 16.10 с полным движком: связь силы и места 0.624 против 0.625). Своё лобби,
+             лобби с людьми, командная карьера и гонка - полным движком, как было. CC_FF_FAST_OFF - выключатель для сверки. */
+          const ffFast=typeof CC_FF!=='undefined' && !!CC_FF && !CC_FF_FAST_OFF && !lockRng && !recMine &&
+                       lobby!==myLobby && humanLobbies.indexOf(lobby)<0 && ccFfFastSize(lobby) &&
+                       !(typeof ccMpOn==='function' && ccMpOn()) && !(typeof ccRaceFfOn==='function' && ccRaceFfOn());
+          const wf0=CC_WORLD_FAST, wn0=CC_WORLD_FAST_NOISE, we0=CC_WORLD_FAST_EXP;
+          if(ffFast){ CC_WORLD_FAST=true; CC_WORLD_FAST_NOISE=CC_FF_FAST_NOISE; CC_WORLD_FAST_EXP=CC_FF_FAST_EXP; }
           try{
             off=simulateGame(lobby);
             if(dropOnMap) creditLandingFights(lobby);
-          } finally { if(lockRng) Math.random=mr0; RECORD_NEXT_ZONE_GAME=false; }
+          } finally { if(lockRng) Math.random=mr0; RECORD_NEXT_ZONE_GAME=false; CC_WORLD_FAST=wf0; CC_WORLD_FAST_NOISE=wn0; CC_WORLD_FAST_EXP=we0; }
           if(recMine){ skipShow(); LAST_ZONE_TIMELINE=[]; }
+          if(ffFast) ccFfFastElims(off);
           score(off);
           ccMpMark('oth');
           if(performance.now()-lastYield > 24){

@@ -6620,6 +6620,8 @@
   .dc-av svg.dc-eu,.dc-srv svg.dc-eu{width:100%;height:100%;}
   .dc-av img.dc-fn-av,.dc-srv img.dc-fn-av{transform:scale(1.45);}
   .dc-reg{font-size:11px;letter-spacing:.02em;}
+  /* Сообщение с тегом тебя - подсветка, как упоминание в Discord. */
+  .dc-ment{background:rgba(240,177,50,.1);border-left:2px solid #f0b132;padding:2px 8px;border-radius:0 4px 4px 0;}
   /* Тусовка региона (ccCrewHTML): участник строкой - аватарка с точкой статуса, ник и рейтинг, статус и отношение,
      справа «Поиграть вместе» и «Позвать в дуо». Войс - аватарками в ряд. */
   .cr-mem{display:flex;align-items:center;gap:10px;padding:8px 0;border-top:1px solid rgba(255,255,255,.06);}

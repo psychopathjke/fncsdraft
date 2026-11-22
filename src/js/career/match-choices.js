@@ -280,6 +280,26 @@ let RECORD_NEXT_ZONE_GAME = false;
 /* Чужие регионы быстрой моделью (16.10): разброс силы ±24% подобран по замеру — связь силы и места 0.624 против 0.625 у
    полного движка (NAC, EU, ASIA, BR по 20 вечеров), переход дня в 4 раза быстрее. CC_WORLD_FAST_EXP — запасная ручка, 1. */
 let CC_WORLD_FAST=false, CC_WORLD_FAST_EXP=1, CC_WORLD_FAST_NOISE=0.24;
+/* Перемотка: чужие лобби своего региона быстрой моделью (draft.js, ffFast). Настройки свои, не как у чужих регионов: замер 22.11
+   (30 дней D1 EU 2026, 4666 игр лобби без людей, scratchpad ff-cmp.js) - с разбросом 0.24 и степенью 1 сила решала слабее
+   (связь силы и места 0.29 против 0.45 у полного движка). Без разброса и со степенью 1.5: победитель лобби в верхних 11.7 %
+   по силе (полный 11.2 %), сильнейшая команда в среднем на 23 % поля (полный 25 %).
+   Киллы быстрая модель даёт целыми отрядами и копит у победителя (8.2 против 5.7), поэтому они умножаются на поправку
+   группы мест (CC_FF_FAST_EL, со сглаживанием +1), чтобы средние по местам совпали с полным движком. Замерены только дуо - трио, сквады и
+   соло при перемотке остаются на полном движке (ccFfFastSize), пока не замерены. */
+let CC_FF_FAST_OFF=false, CC_FF_FAST_NOISE=0, CC_FF_FAST_EXP=1.5;
+// [до места, среднее киллов полного движка, среднее быстрой модели] - замер 22.11 только по лобби дуо (3776 и 3427 игр).
+const CC_FF_FAST_EL={2:[[1, 6.17, 8.87], [3, 4.59, 5.38], [10, 3.05, 2.50], [25, 2.06, 0.84], [9999, 1.29, 0.57]]};
+function ccFfFastSize(lobby){ const t=lobby && lobby[0]; const n=(t && t.squad && t.squad.length) || 0; return !!CC_FF_FAST_EL[n]; }
+function ccFfFastElims(order){
+  if(!Array.isArray(order) || !order.length) return;
+  const tab=CC_FF_FAST_EL[(order[0].squad && order[0].squad.length) || 0]; if(!tab) return;
+  order.forEach((t, i)=>{
+    // Среднее группы мест - как у полного движка; +1 сглаживает: у быстрой модели киллы целыми отрядами и много нулей.
+    const r=tab.find(x=>i+1<=x[0])||tab[tab.length-1], v=r[1]*((t._elims||0)+1)/(r[2]+1), w=Math.floor(v);
+    t._elims=w+(Math.random()<v-w ? 1 : 0);
+  });
+}   // сверка перемотки: true - чужие лобби полным движком (см. draft.js, ffFast)
 function useZoneSim(teams){
   return typeof ZoneSim !== 'undefined' && !CC_WORLD_FAST
       // Every mode and every squad size the app plays. The engine was written
