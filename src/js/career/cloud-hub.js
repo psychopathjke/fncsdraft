@@ -1339,7 +1339,8 @@ function careerRenderHubRaw(tab){
    10 больше, хотя это не так». Потолок тот же, что у карточки. */
 function ccMyShownOvr(){
   const card=careerCard(), a=card ? attrsFor(card) : null;
-  return a ? Math.min(CAREER_SCALE_TOP, Math.round(a.ovr + (card._pingEdge||0) + (card._ageEdge||0)))
+  // Пинг страны - скрытая сила, как лут и локи (его слово 23.11): в бою есть (buildTeam), в цифре нет.
+  return a ? Math.min(CAREER_SCALE_TOP, Math.round(a.ovr + (card._ageEdge||0)))
            : (CAREER && CAREER.player ? CAREER.player.ovr : 0);
 }
 /* Шапка: ближайший играбельный турнир (сегодня или впереди, до 120 дней) — старший

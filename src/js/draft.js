@@ -3450,7 +3450,8 @@ function futCardHTML(p, opts){
   // plus what their connection and their age are worth. Rarity, colour and
   // division are still read from the rating alone, so choosing a country can
   // never move you up a rung.
-  const extra = (p._pingEdge||0) + (p._ageEdge||0);
+  // Пинг - скрытая сила (его слово 23.11), в цифру карточки не идёт: только возраст.
+  const extra = (p._ageEdge||0);
   /* And it stops at the top of the scale.
 
      The connection and the age are added on top of the rating, and the rating is
@@ -3476,7 +3477,7 @@ function futCardHTML(p, opts){
     ? `<div class="fut-ovr-split" style="font-size:${wide?9:8}px;color:${skin.glow};" title="${esc(L().brkFormBoost)}">${p.form.base} +${p.form.boost}</div>`
     : extra
     ? `<div class="fut-ovr-split" style="font-size:${wide?9:8}px;" title="${esc(L().cardOvrFull)}">${Math.round(a.ovr)} ${
-        [p._pingEdge, p._ageEdge].filter(v=>Math.round(v||0)).map(sgn).join(' ')}</div>`
+        [p._ageEdge].filter(v=>Math.round(v||0)).map(sgn).join(' ')}</div>`
     : '';
   // The rarity, in the language the page is in. It used to print the skin's own
   // tag, which is the English word baked into CARD_SKIN beside the gradient —

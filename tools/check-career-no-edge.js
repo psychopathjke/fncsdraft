@@ -16,7 +16,8 @@ for(const off of [false, true]){
   const field=document.getElementById('ccEdgeField').style.display;
   document.getElementById('ccStart').click();
   const pl=CAREER.player, c=careerCard();
-  const shown=Math.round(attrsFor(c).ovr+(c._pingEdge||0)+(c._ageEdge||0));
+  // Пинг - скрытая сила (23.11): в цифру идёт только возраст, пинг остаётся в _pingEdge и в силе команды.
+  const shown=ccMyShownOvr ? Math.round(attrsFor(c).ovr+(c._ageEdge||0)) : 0;
   const r={field, noEdge:!!pl.noEdge, save:[pl.closeRangeEdge, pl.ageEdge], card:[c._pingEdge, c._ageEdge], ovr:pl.ovr, shown,
     move:ccMoveGain('fr')};
   // Год прошёл — возраст +1, прибавка за возраст пересчитывается заново.
@@ -33,7 +34,7 @@ for(const off of [false, true]){
     check('с прибавкой: пинг и возраст на карточке', c._pingEdge>0 && c._ageEdge>0, JSON.stringify(r.card));
   }
 }
-check('разница — и есть прибавка', notes.on.shown-notes.off.shown===Math.round(notes.on.card[0]+notes.on.card[1]), notes.on.shown+' vs '+notes.off.shown);
+check('разница — и есть прибавка', notes.on.shown-notes.off.shown===Math.round(notes.on.card[1]), notes.on.shown+' vs '+notes.off.shown);
 // «Свои статы до 99» — прибавки нет всегда, переключателя нет (его слово 18.10: «отключи эти +10, где игрок сам выбирает статы»).
 localStorage.clear(); CAREER=null;
 careerEntry(); ccSetMode('free'); ccPickRole('roleFRG'); ccPickRegion('EU'); ccPickCountry('de');

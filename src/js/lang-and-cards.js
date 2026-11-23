@@ -1646,7 +1646,7 @@ function shownRarity(p){
   // Division is deliberately not read from here. It stays on the base rating, so
   // choosing a good country still cannot move you up a rung.
   const a=attrsFor(p);
-  const extra=(p._pingEdge||0)+(p._ageEdge||0);
+  const extra=(p._ageEdge||0);   // пинг скрыт (23.11)
   return rarityForRating(Math.round(a.ovr+extra));
 }
 

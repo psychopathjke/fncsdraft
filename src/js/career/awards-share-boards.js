@@ -60,7 +60,7 @@ function ccGalaYear(season){
   const card=careerCard(), a=card ? attrsFor(card) : null;
   // Прошлый сезон — рейтинг его последнего вечера, а не сегодняшний.
   const ovr = s!==cr.season && log.length && log[log.length-1].ovr ? log[log.length-1].ovr
-            : a ? Math.round(a.ovr + (card._pingEdge||0) + (card._ageEdge||0))
+            : a ? Math.round(a.ovr + (card._ageEdge||0))
                 : CAREER.player.ovr;
   return {
     season:s, div:cr.division,

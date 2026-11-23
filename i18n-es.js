@@ -4848,3 +4848,6 @@ Object.assign(I18N.es=I18N.es||{},
 /* Дозаливка «es» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
 Object.assign(I18N.es=I18N.es||{},
 ({ccPingGain2:(c,ms,e,mx,lo,hi)=>'<b>'+c+': ping '+ms+' ms → '+e+' de fuerza.</b> Menos de '+lo+' ms +'+mx+', desde '+hi+' ms 0. Nada en otras regiones.'}));
+/* Дозаливка «es» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
+Object.assign(I18N.es=I18N.es||{},
+({ccPingGain3:(c,ms,t)=>'<b>'+c+': ping '+ms+' ms.</b> '+({"a":"Ping excelente: algo más rápido en las peleas.","b":"Buen ping: pequeña ventaja en las peleas.","c":"Ping medio: ventaja casi nula.","d":"Lejos del servidor: sin ventaja."})[t], ccPingGainNone2:"Cuanto más cerca del servidor, mejor ping y más fuerte en las peleas."}));
