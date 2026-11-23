@@ -2482,7 +2482,7 @@ function careerCentreHTML(card, a){
                     ? `<div class="ch-big"><b>${sh.cut}</b><span>${L().ccAdvanceOf(sh.of)}</span></div>`
                     : `<div class="ch-big"><b>${sh.of}</b><span>${ccSquadWordCap()}</span></div>`; })()
               : `<p>${next.sub}</p>`}
-            <div class="ch-mode"><span>${[careerNightSolo(next) ? L().ccSpotSoloTab : ccSquadWordCap(),
+            <div class="ch-mode"><span>${[careerNightSolo(next) || ccNightMobile(next) ? L().ccSpotSoloTab : ccSquadWordCap(),
                 (ccNoDivisions() || next.type==='nations') ? '' : L().ccDivision+' '+cr.division].filter(Boolean).join(' · ')}</span></div>
             ${/* Выезд — сразу под плашкой «формат · дивизион», полосой вбок: виден без прокрутки (Notion 20.11, его «не хочу скролить вниз»). */
               (()=>{ awayIn=true; return cr.seasonOver ? '' : ccAwayHTML(true); })()}

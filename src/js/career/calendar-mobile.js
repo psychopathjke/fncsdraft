@@ -97,12 +97,23 @@ function careerNightSolo(next){
   if(next.type==='victory'){ const ev=careerVictoryOn(next.day); return !!(ev && ev.mode==='solo'); }
   return false;
 }
+/* Мобильный кап вечера: метка на соло-вкладке (карта сезона), даже когда кап дня по дате другой
+   (этапы Mobile Series не всегда стоят в списке дня, и ключ уходил на дуо-метку сезона). */
+function ccNightMobile(next){
+  if(!next || next.type!=='victory') return false;
+  try{
+    const day=next.day||careerToday();
+    const ev=(next.id && ((typeof CC_CONSOLE_2026!=='undefined' && CC_CONSOLE_2026.find(v=>v.id===next.id && v.day===day)) ||
+      ccVictoryAlts(day).find(v=>v.id===next.id))) || careerVictoryOn(day);
+    return !!(ev && ccConsoleNeed(ev)==='mobile');
+  }catch(e){ return false; }
+}
 /* Ключ метки сегодняшнего вечера: у соло-турнира она своя, и в одиночной
    карьере тоже — см. careerSpotSets. */
 function careerNightSpotKey(next){
   const set=careerNightSet(next);
   if(next && next.type==='nations') return 'nations';   // вечер сборной — её метка
-  if(careerNightSolo(next)) return 'solo';
+  if(careerNightSolo(next) || ccNightMobile(next)) return 'solo';
   // Кап другого формата на сезонном острове — спот этого формата (ccFmtSpotKey).
   if(next && next.type==='victory' && set===careerBrSet()){
     const v=careerVictoryOn(next.day||careerToday());

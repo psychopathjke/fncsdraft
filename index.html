@@ -124219,7 +124219,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='1fc7b8a6';
+const CC_BUILD='c7adca24';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -130109,7 +130109,7 @@ function careerCentreHTML(card, a){
                     ? `<div class="ch-big"><b>${sh.cut}</b><span>${L().ccAdvanceOf(sh.of)}</span></div>`
                     : `<div class="ch-big"><b>${sh.of}</b><span>${ccSquadWordCap()}</span></div>`; })()
               : `<p>${next.sub}</p>`}
-            <div class="ch-mode"><span>${[careerNightSolo(next) ? L().ccSpotSoloTab : ccSquadWordCap(),
+            <div class="ch-mode"><span>${[careerNightSolo(next) || ccNightMobile(next) ? L().ccSpotSoloTab : ccSquadWordCap(),
                 (ccNoDivisions() || next.type==='nations') ? '' : L().ccDivision+' '+cr.division].filter(Boolean).join(' · ')}</span></div>
             ${/* Выезд — сразу под плашкой «формат · дивизион», полосой вбок: виден без прокрутки (Notion 20.11, его «не хочу скролить вниз»). */
               (()=>{ awayIn=true; return cr.seasonOver ? '' : ccAwayHTML(true); })()}
@@ -160180,12 +160180,23 @@ function careerNightSolo(next){
   if(next.type==='victory'){ const ev=careerVictoryOn(next.day); return !!(ev && ev.mode==='solo'); }
   return false;
 }
+/* Мобильный кап вечера: метка на соло-вкладке (карта сезона), даже когда кап дня по дате другой
+   (этапы Mobile Series не всегда стоят в списке дня, и ключ уходил на дуо-метку сезона). */
+function ccNightMobile(next){
+  if(!next || next.type!=='victory') return false;
+  try{
+    const day=next.day||careerToday();
+    const ev=(next.id && ((typeof CC_CONSOLE_2026!=='undefined' && CC_CONSOLE_2026.find(v=>v.id===next.id && v.day===day)) ||
+      ccVictoryAlts(day).find(v=>v.id===next.id))) || careerVictoryOn(day);
+    return !!(ev && ccConsoleNeed(ev)==='mobile');
+  }catch(e){ return false; }
+}
 /* Ключ метки сегодняшнего вечера: у соло-турнира она своя, и в одиночной
    карьере тоже — см. careerSpotSets. */
 function careerNightSpotKey(next){
   const set=careerNightSet(next);
   if(next && next.type==='nations') return 'nations';   // вечер сборной — её метка
-  if(careerNightSolo(next)) return 'solo';
+  if(careerNightSolo(next) || ccNightMobile(next)) return 'solo';
   // Кап другого формата на сезонном острове — спот этого формата (ccFmtSpotKey).
   if(next && next.type==='victory' && set===careerBrSet()){
     const v=careerVictoryOn(next.day||careerToday());
