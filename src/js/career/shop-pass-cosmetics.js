@@ -1581,26 +1581,59 @@ function ccDealsHTML(){
     '<div class="cc-deals">'+cards+'</div></div>';
 }
 // Сколько в разделе можно купить прямо сейчас — цифра на чипе.
-/* Каталог девайсов: все модели места карточками, фильтр по цене, покупка в любом порядке, купленное надевается
-   (ccDevPick) и меняется во вкладке «Девайсы». */
-let CC_DEV_TIER='all';
-function ccDevTierSet(t){ CC_DEV_TIER=t; careerRenderHub(CH_TAB); }
-function ccShopDevCatHTML(keys){
+/* Каталог девайсов окном поверх магазина (его слово 23.11: «кликаешь в магазине - поверх окно с девайсами на выбор, и
+   выбор большой»). В «Сетапе» - карточка на каждое место шкафчика (что стоит сейчас), клик открывает окно со всеми
+   моделями этого места: фильтр по цене, покупка в любом порядке, купленное сразу надевается (ccDevPick). */
+let CC_DEV_TIER='all', CC_DEV_MODAL=null;
+const CC_DEV_SHOP_KEYS=['mouse', 'keyboard', 'mpad', 'headset', 'monitor', 'ctl', 'con', 'mob', 'mctl', 'mcool'];
+function ccDevSlotsOf(key){ return key==='con' ? ['ps', 'xbox'] : key==='mob' ? ['android', 'ios'] : [key]; }
+function ccDevTierSet(t){ CC_DEV_TIER=t; ccDevModalSync(); }
+function ccDevCardHTML(x){
   const T=L(), bal=(CAREER.career.balance||0);
+  const own=careerOwns(x.id), key=ccDevKey(x), eff=ccDevEff(key), inUse=!!(eff && eff.id===x.id);
+  const btn=!own ? '<button class="ch-sign"'+(bal>=x.cost ? '' : ' disabled')+' onclick="careerBuy(\''+x.id+'\')">$'+ccNum(x.cost)+'</button>'
+    : inUse ? '<span class="cc-owned">'+T.ccDevInUse+'</span>'
+    : '<button class="cc-chip" onclick="ccDevPick(\''+key+'\', \''+x.id+'\', \'shop\')">'+(key==='con' || key==='mob' ? T.ccDevUseBtn : T.ccDevEquip)+'</button>';
+  return '<div class="cc-dev-card'+(own ? ' own' : '')+(inUse ? ' on' : '')+(ccShopJustOn('item:'+x.id) || ccShopJustOn('slot:'+x.slot) ? ' just' : '')+'">'+ccShopImg(x, 'cc-dev-card-img')+
+    '<b>'+esc(T['ccShop'+x.id]||x.id)+'</b><em>'+esc(T['ccDevTier_'+(x.tier||'m')]+(ccDevFx(x, T) ? ' · '+ccDevFx(x, T) : ''))+'</em>'+btn+'</div>';
+}
+function ccDevModalHTML(key){
+  const T=L();
   const tiers='<div class="cc-dev-tiers">'+['all','b','m','f'].map(t=>'<button class="cc-chip'+(CC_DEV_TIER===t ? ' on' : '')+'" onclick="ccDevTierSet(\''+t+'\')">'+esc(T['ccDevTier_'+t])+'</button>').join('')+'</div>';
-  const card=x=>{
-    const own=careerOwns(x.id), key=ccDevKey(x), eff=ccDevEff(key), inUse=!!(eff && eff.id===x.id);
-    const btn=!own ? '<button class="ch-sign"'+(bal>=x.cost ? '' : ' disabled')+' onclick="careerBuy(\''+x.id+'\')">$'+ccNum(x.cost)+'</button>'
-      : inUse ? '<span class="cc-owned">'+T.ccDevInUse+'</span>'
-      : '<button class="cc-chip" onclick="ccDevPick(\''+key+'\', \''+x.id+'\', \'shop\')">'+T.ccDevUseBtn+'</button>';
-    return '<div class="cc-dev-card'+(own ? ' own' : '')+(inUse ? ' on' : '')+(ccShopJustOn('item:'+x.id) ? ' just' : '')+'">'+ccShopImg(x, 'cc-dev-card-img')+
-      '<b>'+esc(T['ccShop'+x.id]||x.id)+'</b><em>'+esc(T['ccDevTier_'+(x.tier||'m')]+' · '+ccDevFx(x, T))+'</em>'+btn+'</div>';
-  };
-  return tiers+keys.map(s=>{
-    const list=CC_SHOP.filter(x=>x.slot===s && (x.unlock || x.cat) && (CC_DEV_TIER==='all' || x.tier===CC_DEV_TIER)).sort((a,b)=>a.cost-b.cost);
+  const slots=ccDevSlotsOf(key);
+  const grids=slots.map(s=>{
+    const list=CC_SHOP.filter(x=>x.slot===s && ccDevCatItem(x) && (CC_DEV_TIER==='all' || x.tier===CC_DEV_TIER || (x.starter && CC_DEV_TIER==='b'))).sort((a,b)=>a.cost-b.cost);
     if(!list.length) return '';
-    return '<h5 class="cc-dev-plat">'+esc(T['ccDevSlot_'+s]||T['ccSlot_'+s]||s)+'</h5><div class="cc-dev-cat">'+list.map(card).join('')+'</div>'+(s==='xbox' ? '<div class="cc-lad-plat">'+ccPlatCalBtn('console')+'</div>' : s==='ios' ? '<div class="cc-lad-plat">'+ccPlatCalBtn('mobile')+'</div>' : '');
+    return (slots.length>1 ? '<h5 class="cc-dev-plat">'+esc(T['ccSlot_'+s]||s)+'</h5>' : '')+'<div class="cc-dev-cat">'+list.map(ccDevCardHTML).join('')+'</div>';
   }).join('');
+  const extra=key==='con' ? '<div class="cc-lad-plat">'+ccPlatCalBtn('console')+'</div>'
+    : key==='mob' ? ccMobRateLineHTML()+'<div class="cc-lad-plat">'+ccPlatCalBtn('mobile')+'</div>' : '';
+  return '<div class="cc-devm-head"><h4>'+esc(T['ccDevSlot_'+key]||key)+'</h4><span class="cc-devm-bal">$'+ccNum(CAREER.career.balance||0)+'</span>'+
+    '<button class="cc-devm-x" aria-label="'+esc(T.ccClose||'Close')+'" onclick="ccDevModalClose()">×</button></div>'+
+    (key==='con' || key==='mob' ? '<div class="ch-hint">'+esc(T.ccShopDevHint)+'</div>' : '')+tiers+grids+extra;
+}
+function ccDevModalOpen(key){
+  CC_DEV_MODAL=key;
+  let m=document.getElementById('ccDevModal');
+  if(!m){ m=document.createElement('div'); m.id='ccDevModal'; m.className='cc-devm';
+    m.onclick=e=>{ if(e.target===m) ccDevModalClose(); };
+    m.innerHTML='<div class="cc-devm-in ch-tile" role="dialog" aria-modal="true"></div>'; (document.getElementById('screen-career-hub')||document.body).appendChild(m); }
+  m.style.display='flex'; ccDevModalSync();
+}
+function ccDevModalSync(){
+  const m=document.getElementById('ccDevModal'); if(!m || !CC_DEV_MODAL || m.style.display==='none') return;
+  const box=m.querySelector('.cc-devm-in'), y=box.scrollTop; box.innerHTML=ccDevModalHTML(CC_DEV_MODAL); box.scrollTop=y;
+}
+function ccDevModalClose(){ CC_DEV_MODAL=null; const m=document.getElementById('ccDevModal'); if(m) m.style.display='none'; }
+// Карточки мест в «Сетапе»: что стоит сейчас и сколько моделей на выбор.
+function ccShopDevSlotsHTML(){
+  const T=L();
+  return '<div class="ch-tile cc-shop"><h4>'+T.ccDevTitle+'</h4><div class="ch-hint">'+esc(T.ccDevShopHint)+'</div><div class="cc-devslots">'+
+    CC_DEV_SHOP_KEYS.map(k=>{
+      const eff=ccDevEff(k), n=CC_SHOP.filter(x=>ccDevKey(x)===k && ccDevCatItem(x)).length;
+      const img=eff && eff.img ? '<img class="cc-devslot-img" src="'+CC_DEVICE_DIR+eff.img+'" alt="" loading="lazy" onerror="this.remove()">' : '<span class="cc-devslot-img cc-dev-auto">'+ccInputIcon(k==='ctl' || k==='con' ? 'pad' : k==='mob' || k==='mctl' || k==='mcool' ? 'mob' : 'kbm')+'</span>';
+      return '<button class="cc-devslot" onclick="ccDevModalOpen(\''+k+'\')">'+img+'<b>'+esc(T['ccDevSlot_'+k]||k)+'</b><em>'+esc(eff ? (T['ccShop'+eff.id]||eff.id) : T.ccDevStd)+'</em><span class="cc-devslot-n">'+esc(T.ccDevModels(n))+'</span></button>';
+    }).join('')+'</div></div>';
 }
 function ccShopAffordable(sec){
   const cr=CAREER.career, bal=cr.balance||0;
@@ -1637,13 +1670,10 @@ function careerShopHTML(){
   let body='';
   if(CC_SHOP_SEC==='gear'){
     const rooms=CC_SHOP.filter(x=>!x.slot && !x.unlock);
-    body=ccShopBestHTML()+
+    body=ccShopBestHTML()+ccShopDevSlotsHTML()+
       '<div class="ch-tile cc-shop"><h4>'+T.ccSecGear+'</h4><div class="cc-lads">'+
-      CC_SHOP_SLOTS.map(s=>ccShopLadderHTML(s, fresh)).join('')+'</div></div>'+
+      CC_SHOP_SLOTS.filter(s=>CC_DEV_CAT_SLOTS.indexOf(s)<0).map(s=>ccShopLadderHTML(s, fresh)).join('')+'</div></div>'+
       '<div class="ch-tile cc-shop"><h4>'+T.ccShopRooms+'</h4><div class="cc-buys">'+rooms.map(it=>ccShopRowHTML(it, fresh)).join('')+'</div></div>'+
-      '<div class="ch-tile cc-shop"><h4>'+T.ccShopConsoles+'</h4><div class="ch-hint">'+esc(T.ccShopDevHint)+'</div>'+ccMobRateLineHTML()+ccShopDevCatHTML(['ps','xbox','android','ios'])+
-        '</div>'+
-      '<div class="ch-tile cc-shop"><h4>'+T.ccShopAcc+'</h4>'+ccShopDevCatHTML(['mpad','ctl','mctl','mcool'])+'</div>'+
       careerCheatHTML();
   } else if(CC_SHOP_SEC==='home') body=careerFlatHTML()+careerMoveHTML();
   else if(CC_SHOP_SEC==='fame') body=careerOwnCupHTML()+careerMerchHTML()+careerCharityHTML();

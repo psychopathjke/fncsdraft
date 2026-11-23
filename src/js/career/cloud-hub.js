@@ -2986,11 +2986,11 @@ function ccSquadListHTML(){
   const rows=[];
   rows.push('<div class="csq-row csq-me">'+av(card)+'<b class="csq-n">'+esc(CAREER.player.nick||'')+'</b><em class="csq-o">'+meOvr+'</em>'+
     '<span class="csq-r">'+esc(roleNow ? (T[roleNow]||'') : '')+'</span><span class="csq-m">'+esc(T.sqYou)+'</span>'+
-    '<span class="csq-a">'+(roleNow ? '<button class="ch-swap"'+(roleCan.ok ? '' : ' disabled title="'+esc(roleCan.why==='cool' ? T.ccRoleCool(roleCan.days) : roleCan.why==='two' ? T.ccRoleLockedTwo : T.ccRoleLockedNone)+'"')+' onclick="careerRoleSwap()">'+esc(T.ccRoleSwapTo(T[ccRoleOther(roleNow)]))+'</button>' : '')+'</span></div>');
+    '<span class="csq-a">'+(roleNow ? '<button class="ch-swap"'+(roleCan.ok ? '' : ' disabled title="'+esc(roleCan.why==='cool' ? T.ccRoleCool(roleCan.days) : roleCan.why==='two' ? T.ccRoleLockedTwo : T.ccRoleLockedNone)+'"')+' onclick="careerRoleSwap()">'+esc(T.ccRoleSwapTo(T[ccRoleOther(roleNow)]))+'</button>' : '')+(mates.length ? '<i class="csq-kick-gap"></i>' : '')+'</span></div>');
   for(let i=0; i<seats; i++){
     const m=mates[i], rec=recs[i];
     if(!m){ rows.push('<div class="csq-row csq-empty"><span class="csq-av csq-plus">+</span><b class="csq-n">'+esc((i===0 && !mates.length) ? T.chNoPartner : T.ccSeatEmpty)+'</b>'+
-      '<span class="csq-a"><button class="ch-swap" onclick="ccDuoFindOpen('+i+')">'+esc(ccSay('ccFindDuo'))+'</button></span></div>'); continue; }
+      '<span class="csq-a"><button class="ch-swap" onclick="ccDuoFindOpen('+i+')">'+esc(ccSay('ccFindDuo'))+'</button>'+(mates.length ? '<i class="csq-kick-gap"></i>' : '')+'</span></div>'); continue; }
     const a=attrsFor(m)||{}, pat=rec && rec.patience!=null ? rec.patience : CAREER_PATIENCE_START;
     const peer=i===0 && mp && typeof MP!=='undefined' && MP.peer;
     rows.push('<div class="csq-row">'+av(m)+'<b class="csq-n">'+(typeof flagFor==='function' ? flagFor(m) : '')+esc(m.handle)+'</b><em class="csq-o">'+(a.ovr||'')+'</em>'+

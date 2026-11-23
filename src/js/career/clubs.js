@@ -1374,10 +1374,11 @@ function careerOrgKitOut(){
   const slots={};
   CAREER.gear.train=CC_SHOP.reduce((s,it)=>{
     if(!careerOwns(it.id)) return s;
-    if(!it.slot) return s+it.train;
-    if((slots[it.slot]||0)>=it.train) return s;
-    const gain=it.train-(slots[it.slot]||0);
-    slots[it.slot]=it.train;
+    const tr=it.train||0;   // консоли, телефоны и стартовые без тренировки: без NaN в сумме
+    if(!it.slot) return s+tr;
+    if((slots[it.slot]||0)>=tr) return s;
+    const gain=tr-(slots[it.slot]||0);
+    slots[it.slot]=tr;
     return s+gain;
   }, 0);
   careerGearSkill();

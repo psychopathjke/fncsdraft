@@ -1463,6 +1463,7 @@ function ccDevPick(key, id, back){
   if(id==='def') g.use[key]='def'; else if(id && careerOwns(id)) g.use[key]=id; else delete g.use[key];
   try{ careerGearSkill(); }catch(e){}
   careerSave(); careerRenderHub(back||'devices');
+  try{ ccDevModalSync(); }catch(e){}
 }
 function ccDevInput(k){
   const p=CAREER.player; if(!p) return;
@@ -1487,12 +1488,12 @@ function ccDevLockerHTML(){
   const row=key=>{
     const own=ccDevOwned(key).sort((a,b)=>a.cost-b.cost), eff=ccDevEff(key);
     // Консоль и телефон: стандартный - это стартовый (PS4, Xbox One, простой Android), он и так в купленных.
-    const hasStarter=key==='con' || key==='mob';
+    const hasStarter=CC_SHOP.some(x=>ccDevKey(x)===key && x.starter) || key==='con' || key==='mob';
     const def=hasStarter ? '' : '<button class="cc-dev-it'+(eff ? '' : ' on')+'" onclick="ccDevPick(\''+key+'\', \'def\')"><span class="cc-dev-auto">'+(key==='ctl' ? ccInputIcon('pad') : key==='mctl' || key==='mcool' ? ccInputIcon('mob') : ccInputIcon('kbm'))+'</span><b>'+esc(T.ccDevStd)+'</b><em>+0 '+esc(T.ccDevPow)+'</em></button>';
     const items=own.map(x=>'<button class="cc-dev-it'+(eff && eff.id===x.id ? ' on' : '')+'" onclick="ccDevPick(\''+key+'\', \''+x.id+'\')">'+
       (x.img ? '<img src="'+CC_DEVICE_DIR+x.img+'" alt="" loading="lazy" onerror="this.remove()">' : '')+
       '<b>'+esc(T['ccShop'+x.id]||x.id)+'</b><em>'+esc(ccDevFx(x, T))+'</em></button>').join('');
-    const more=CC_SHOP.some(x=>ccDevKey(x)===key && !careerOwns(x.id)) ? '<button class="cc-dev-it cc-dev-more" onclick="ccShopSec(\'gear\'); careerTab(\'shop\')"><span class="cc-dev-auto">+</span><b>'+esc(T.ccDevShop)+'</b></button>' : '';
+    const more=CC_SHOP.some(x=>ccDevKey(x)===key && !careerOwns(x.id)) ? '<button class="cc-dev-it cc-dev-more" onclick="ccShopSec(\'gear\'); careerTab(\'shop\');'+(key==='pc' ? '' : ' ccDevModalOpen(\''+key+'\')')+'"><span class="cc-dev-auto">+</span><b>'+esc(T.ccDevShop)+'</b></button>' : '';
     return '<h5>'+esc(T['ccDevSlot_'+key]||T['ccSlot_'+key]||key)+'</h5><div class="cc-dev-grid">'+def+items+more+'</div>';
   };
   return '<div class="ch-tile cc-devlock"><h4>'+T.ccDevTitle+'</h4>'+

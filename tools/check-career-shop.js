@@ -34,7 +34,7 @@ const BOOT = `
     fresh(0);
     CC_SHOP.forEach(it => {
       check('item ' + it.id + ' has a name', !!L()['ccShop' + it.id]);
-      check('item ' + it.id + ' has a price', it.cost > 0);
+      check('item ' + it.id + ' has a price', it.cost > 0 || !!it.starter);   // стартовые девайсы бесплатно
     });
     out.notes.items = CC_SHOP.map(it => it.id + ' $' + it.cost).join(', ');
 

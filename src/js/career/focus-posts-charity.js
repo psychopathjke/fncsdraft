@@ -1225,28 +1225,28 @@ const CC_SHOP=[
      (check-career-shop). Each rung adds a point of its device's skill; chairs give stamina,
      stream gear audience, cars only reach. Old ids are reused so existing saves keep their items. */
   // Mice — AIM. The hand's half of the game.
-  {id:'mouse',    cost:160,   train:0.05, img:'mouse-sl2.png',        slot:'mouse', rank:1, skill:{aim:1}},
-  {id:'mouse2',   cost:180,   train:0.05, img:'mouse-viper4.webp',    slot:'mouse', rank:2, skill:{aim:2}},
-  {id:'mouse3',   cost:200,   train:0.05, img:'mouse-ultralightx.jpg',slot:'mouse', rank:3, skill:{aim:3}},
+  {id:'mouse',    cost:160,   train:0.05, img:'mouse-sl2.png',        slot:'mouse', rank:1, skill:{aim:1}, tier:'m'},
+  {id:'mouse2',   cost:180,   train:0.05, img:'mouse-viper4.webp',    slot:'mouse', rank:2, skill:{aim:2}, tier:'m'},
+  {id:'mouse3',   cost:200,   train:0.05, img:'mouse-ultralightx.jpg',slot:'mouse', rank:3, skill:{aim:3}, tier:'f'},
   // Keyboards — END. The builds that decide an endgame.
-  {id:'keyboard', cost:200,   train:0.05, img:'keyboard-apex.jpg',    slot:'keyboard', rank:1, skill:{end:1}},
-  {id:'keyboard2',cost:220,   train:0.05, img:'keyboard-w80he.webp',  slot:'keyboard', rank:2, skill:{end:2}},
-  {id:'keyboard3',cost:250,   train:0.05, img:'keyboard-w60he2.webp', slot:'keyboard', rank:3, skill:{end:3}},
-  {id:'keyboard4',cost:400,   train:0.05, img:'keyboard-custom.webp', slot:'keyboard', rank:4, skill:{end:4}},
+  {id:'keyboard', cost:200,   train:0.05, img:'keyboard-apex.jpg',    slot:'keyboard', rank:1, skill:{end:1}, tier:'m'},
+  {id:'keyboard2',cost:220,   train:0.05, img:'keyboard-w80he.webp',  slot:'keyboard', rank:2, skill:{end:2}, tier:'m'},
+  {id:'keyboard3',cost:250,   train:0.05, img:'keyboard-w60he2.webp', slot:'keyboard', rank:3, skill:{end:3}, tier:'f'},
+  {id:'keyboard4',cost:400,   train:0.05, img:'keyboard-custom.webp', slot:'keyboard', rank:4, skill:{end:4}, tier:'f'},
   // Headsets — SUR. Hearing the fight before seeing it.
-  {id:'headset',  cost:200,   train:0.05, img:'headset-bsv3.jpg',     slot:'headset', rank:1, skill:{sur:1}},
-  {id:'headset2', cost:400,   train:0.05, img:'headset-maxwell.webp', slot:'headset', rank:2, skill:{sur:2}},
-  {id:'headset3', cost:900,   train:0.05, img:'headset-lcdgx.jpg',    slot:'headset', rank:3, skill:{sur:3}},
-  {id:'headset4', cost:2000,  train:0.05, img:'headset-lcd3.webp',    slot:'headset', rank:4, skill:{sur:4}},
+  {id:'headset',  cost:200,   train:0.05, img:'headset-bsv3.jpg',     slot:'headset', rank:1, skill:{sur:1}, tier:'m'},
+  {id:'headset2', cost:400,   train:0.05, img:'headset-maxwell.webp', slot:'headset', rank:2, skill:{sur:2}, tier:'f'},
+  {id:'headset3', cost:900,   train:0.05, img:'headset-lcdgx.jpg',    slot:'headset', rank:3, skill:{sur:3}, tier:'f'},
+  {id:'headset4', cost:2000,  train:0.05, img:'headset-lcd3.webp',    slot:'headset', rank:4, skill:{sur:4}, tier:'f'},
   // Monitors — CLU. What you can actually see in a clutch.
-  {id:'monitor',  cost:500,   train:0.10, img:'monitor-2566k.webp',   slot:'monitor', rank:1, skill:{clu:1}},
-  {id:'monitor2', cost:650,   train:0.10, img:'monitor-2566xp.webp',  slot:'monitor', rank:2, skill:{clu:2}},
-  {id:'monitor3', cost:1000,  train:0.10, img:'monitor-2586xp.webp',  slot:'monitor', rank:3, skill:{clu:3}},
-  {id:'monitor4', cost:1200,  train:0.10, img:'monitor-pg248qp.jpg',  slot:'monitor', rank:4, skill:{clu:4}},
+  {id:'monitor',  cost:500,   train:0.10, img:'monitor-2566k.webp',   slot:'monitor', rank:1, skill:{clu:1}, tier:'m'},
+  {id:'monitor2', cost:650,   train:0.10, img:'monitor-2566xp.webp',  slot:'monitor', rank:2, skill:{clu:2}, tier:'m'},
+  {id:'monitor3', cost:1000,  train:0.10, img:'monitor-2586xp.webp',  slot:'monitor', rank:3, skill:{clu:3}, tier:'f'},
+  {id:'monitor4', cost:1200,  train:0.10, img:'monitor-pg248qp.jpg',  slot:'monitor', rank:4, skill:{clu:4}, tier:'f'},
   // PCs — CON. Frames are consistency.
-  {id:'pcbudget', cost:500,   train:0.10, img:'pc-budget.jpg', slot:'pc', rank:1, skill:{con:1}},
-  {id:'pcpro',    cost:1500,  train:0.20, img:'pc-pro.jpg',    slot:'pc', rank:2, skill:{con:2}},
-  {id:'pcelite',  cost:3000,  train:0.30, img:'pc-elite.jpg',  slot:'pc', rank:3, skill:{con:3}},
+  {id:'pcbudget', cost:500,   train:0.10, img:'pc-budget.jpg', slot:'pc', rank:1, skill:{con:1}, tier:'b'},
+  {id:'pcpro',    cost:1500,  train:0.20, img:'pc-pro.jpg',    slot:'pc', rank:2, skill:{con:2}, tier:'m'},
+  {id:'pcelite',  cost:3000,  train:0.30, img:'pc-elite.jpg',  slot:'pc', rank:3, skill:{con:3}, tier:'f'},
   /* Консоли и мобильные — лесенкой, как ПК: одно устройство на платформу, следующая ступень заменяет прежнюю. Любая
      ступень открывает капы своей платформы (ccConsoleOk); con — сила на консольном вечере, mob — на мобильном (кадры
      и экран). Цены магазинные, con/mob решение, не замер. Фото с сайтов производителей. */
@@ -1266,6 +1266,32 @@ const CC_SHOP=[
   {id:'tabultra',  cost:1399, img:'tablet-tabultra-shop.jpg', slot:'android', rank:3, unlock:'mobile', mob:3, tier:'f'},
   {id:'phone',     cost:1299, img:'phone-iphone18-shop.jpg', slot:'ios',     rank:1, unlock:'mobile', mob:2, tier:'f'},
   {id:'ipad',      cost:1499, img:'tablet-ipadm5-shop.jpg',  slot:'ios',     rank:2, unlock:'mobile', mob:3, tier:'f'},
+  /* Стартовый набор (его слово 23.11: «стандартные самые дешёвые девайсы в начале карьеры»): у всех с первого дня, без
+     силы и без тренировки (CC_DEV_STARTER), в магазине не продаются. */
+  {id:'mouse0',    cost:0, img:'mouse-g102-shop.jpg',      slot:'mouse',    rank:0, starter:true, tier:'b'},
+  {id:'keyboard0', cost:0, img:'keyboard-k120-shop.jpg',   slot:'keyboard', rank:0, starter:true, tier:'b'},
+  {id:'mpad0',     cost:0, img:'mpad-g240-shop.jpg',       slot:'mpad',     rank:0, starter:true, tier:'b'},
+  {id:'headset0',  cost:0, img:'headset-stinger2-shop.jpg',slot:'headset',  rank:0, starter:true, tier:'b'},
+  {id:'monitor0',  cost:0, img:'monitor-office-shop.jpg',  slot:'monitor',  rank:0, starter:true, tier:'b'},
+  {id:'pc0',       cost:0, img:'pc-old-shop.jpg',          slot:'pc',       rank:0, starter:true, tier:'b'},
+  {id:'ctl0',      cost:0, img:'ctl-ds4-shop.jpg',         slot:'ctl',      rank:0, starter:true, tier:'b'},
+  // Больше моделей ПК-девайсов, каталогом (cat): тренировка как у первой ступени слота, навык по классу. Решение, не замер.
+  {id:'mg305',     cost:50,  train:0.05, img:'mouse-g305-shop.jpg',  slot:'mouse', rank:1, cat:true, tier:'b', skill:{aim:1}},
+  {id:'mda3',      cost:90,  train:0.05, img:'mouse-da3-shop.jpg',   slot:'mouse', rank:2, cat:true, tier:'m', skill:{aim:2}},
+  {id:'mx2v2',     cost:95,  train:0.05, img:'mouse-x2v2-shop.jpg',  slot:'mouse', rank:2, cat:true, tier:'m', skill:{aim:2}},
+  {id:'mec2cw',    cost:150, train:0.05, img:'mouse-ec2cw-shop.jpg', slot:'mouse', rank:2, cat:true, tier:'m', skill:{aim:2}},
+  {id:'kg413',     cost:60,  train:0.05, img:'keyboard-g413-shop.jpg',     slot:'keyboard', rank:1, cat:true, tier:'b', skill:{end:1}},
+  {id:'ka75',      cost:90,  train:0.05, img:'keyboard-a75-shop.jpg',      slot:'keyboard', rank:1, cat:true, tier:'b', skill:{end:1}},
+  {id:'kk70max',   cost:230, train:0.05, img:'keyboard-k70max-shop.jpg',   slot:'keyboard', rank:2, cat:true, tier:'m', skill:{end:2}},
+  {id:'khuntsman', cost:250, train:0.05, img:'keyboard-huntsman-shop.jpg', slot:'keyboard', rank:2, cat:true, tier:'m', skill:{end:2}},
+  {id:'hcloud3',   cost:100, train:0.05, img:'headset-cloud3-shop.jpg',  slot:'headset', rank:1, cat:true, tier:'b', skill:{sur:1}},
+  {id:'hdt990',    cost:160, train:0.05, img:'headset-dt990-shop.jpg',   slot:'headset', rank:2, cat:true, tier:'m', skill:{sur:2}},
+  {id:'hgprox2',   cost:250, train:0.05, img:'headset-gprox2-shop.jpg',  slot:'headset', rank:2, cat:true, tier:'m', skill:{sur:2}},
+  {id:'hnovapro',  cost:350, train:0.05, img:'headset-novapro-shop.jpg', slot:'headset', rank:2, cat:true, tier:'m', skill:{sur:2}},
+  {id:'mo24g2',    cost:180, train:0.10, img:'monitor-24g2-shop.jpg',    slot:'monitor', rank:1, cat:true, tier:'b', skill:{clu:1}},
+  {id:'movg259',   cost:250, train:0.10, img:'monitor-vg259-shop.jpg',   slot:'monitor', rank:1, cat:true, tier:'b', skill:{clu:1}},
+  {id:'moxl2546x', cost:500, train:0.10, img:'monitor-xl2546x-shop.jpg', slot:'monitor', rank:2, cat:true, tier:'m', skill:{clu:2}},
+  {id:'moaw2524h', cost:650, train:0.10, img:'monitor-aw2524h-shop.jpg', slot:'monitor', rank:3, cat:true, tier:'f', skill:{clu:3}},
   /* Каталог девайсов (его слово 23.11: «больше выбор, разные компании и ценовые категории»). Покупаются в любом порядке,
      на турнир идёт выбранный во вкладке «Девайсы» или лучший. Цены США на конец 2026, сила решение, не замер. */
   {id:'ps4pro',   cost:350,  img:'console-ps4pro-shop.jpg',   slot:'ps',   rank:1, unlock:'ps',   con:0, tier:'b'},
@@ -1522,7 +1548,10 @@ function ccShopSlotRank(slot){
   return CC_SHOP.reduce((r,it)=>(it.slot===slot && careerOwns(it.id) && it.rank>r) ? it.rank : r, 0);
 }
 // Стартовые девайсы (его слово 23.11): самые дешёвые консоли и телефон есть у всех с первого дня.
-const CC_DEV_STARTER=['ps4', 'xboxone', 'phonebase'];
+const CC_DEV_STARTER=['ps4', 'xboxone', 'phonebase', 'mouse0', 'keyboard0', 'mpad0', 'headset0', 'monitor0', 'pc0', 'ctl0'];
+// Девайс из каталога (окно выбора, любой порядок покупки): консоли, телефоны, cat-вещи и ПК-девайсы кроме самого ПК.
+const CC_DEV_CAT_SLOTS=['mouse', 'keyboard', 'headset', 'monitor'];
+function ccDevCatItem(x){ return !!(x && (x.unlock || x.cat || x.starter || CC_DEV_CAT_SLOTS.indexOf(x.slot)>=0)); }
 function careerOwns(id){ return CC_DEV_STARTER.indexOf(id)>=0 || !!(CAREER.gear && CAREER.gear.own && CAREER.gear.own.indexOf(id)>=0); }
 // Куплено ли в группе что-то кроме стартового: от этого зависит, идут ли капы платформы в календарь по умолчанию.
 function ccDevBought(g){ const own=(CAREER && CAREER.gear && CAREER.gear.own)||[];
@@ -1615,16 +1644,18 @@ function careerBuy(id, price){
   }
   // An upgrade in a slot pays only the difference: the old rig is replaced, not
   // stacked, so a desk cannot be worth more than the best thing standing on it.
-  if(item.slot && !item.unlock && !item.cat && ccShopSlotRank(item.slot)>=item.rank) return false;   // девайсы - каталог, любой порядок
+  if(item.starter) return false;
+  if(item.slot && !ccDevCatItem(item) && ccShopSlotRank(item.slot)>=item.rank) return false;   // девайсы - каталог, любой порядок
   cr.balance-=cost;
   // Купленный девайс сразу на своём месте в «Девайсах».
-  if(item.unlock || item.cat){ CAREER.gear=CAREER.gear||{own:[], train:0}; CAREER.gear.use=CAREER.gear.use||{}; CAREER.gear.use[ccDevKey(item)]=id; }
+  if(ccDevCatItem(item) || item.slot==='pc'){ CAREER.gear=CAREER.gear||{own:[], train:0}; CAREER.gear.use=CAREER.gear.use||{}; CAREER.gear.use[ccDevKey(item)]=id; }
   careerGearAdd(item);
   // Консоль открывает консольные капы: календарь года собирается заново (ccVictoryList, CC_YEAR_DAYS).
   if(item.unlock){ CC_VICTORY_LIST=null; CC_YEAR_DAYS=null; }
   ccShopJust(item.slot ? 'slot:'+item.slot : 'item:'+id, name, delta);
   careerSave();
   careerRenderHub('shop');
+  try{ ccDevModalSync(); }catch(e){}
   return true;
 }
 /* Вещь ложится на стол — своя покупка или подарок напарника, одним кодом. */
@@ -2698,7 +2729,8 @@ function careerMovePanelHTML(){
 function ccShopVisible(){
   const seen={};
   return CC_SHOP.filter(function(it){
-    if(!it.slot || it.unlock || it.cat) return true;   // девайсы - каталогом, видны все
+    if(ccDevCatItem(it)) return false;   // девайсы - в окне выбора, не строкой
+    if(!it.slot) return true;   // девайсы - каталогом, видны все
     const have=ccShopSlotRank(it.slot);
     // The next rung up, or the top one when the slot is finished.
     const top=CC_SHOP.reduce((r,x)=>(x.slot===it.slot && x.rank>r) ? x.rank : r, 0);
