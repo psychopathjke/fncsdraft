@@ -1435,6 +1435,45 @@ function ccLockerCheck(){
   }
   cr.lockSeen=cr.log.length; delete cr.lockAgain;
 }
+/* ШКАФЧИК ДЕВАЙСОВ (его слово 23.11): управление на ПК меняется в любой день, а на консольные и мобильные турниры
+   берётся выбранное устройство из купленных. Не выбрано или продано — лучшее из купленных, как было.
+   CAREER.gear.use={con:id, mob:id}. Мобайл, выбранный при создании, остаётся открытым (player.mobFree). */
+function ccDevOwned(kind){ return CC_SHOP.filter(x=>(kind==='con' ? (x.unlock==='ps' || x.unlock==='xbox') : x.unlock==='mobile') && careerOwns(x.id)); }
+function ccDevUse(kind){
+  try{ const g=CAREER && CAREER.gear, id=g && g.use && g.use[kind]; if(!id || !careerOwns(id)) return null;
+    return CC_SHOP.find(x=>x.id===id) || null; }catch(e){ return null; }
+}
+function ccDevPick(kind, id){
+  const g=CAREER.gear=CAREER.gear||{}; g.use=g.use||{};
+  if(id && careerOwns(id)) g.use[kind]=id; else delete g.use[kind];
+  careerSave(); careerRenderHub('locker');
+}
+function ccDevInput(k){
+  const p=CAREER.player; if(!p) return;
+  if(k==='mob' && !ccMobileOwn()) return;
+  if(p.input==='mob' && k!=='mob') p.mobFree=true;
+  p.input=(k==='pad' || k==='mob') ? k : 'kbm';
+  careerSave(); careerRenderHub('locker');
+}
+function ccDevLockerHTML(){
+  if(!CAREER || !CAREER.career || !CAREER.player) return '';
+  const T=L(), cur=ccInputOf(CAREER.player);
+  const ins=['kbm', 'pad'].concat(ccMobileOwn() ? ['mob'] : []);
+  const chips='<div class="cc-dev-in">'+ins.map(k=>'<button class="cc-chip'+(cur===k ? ' on' : '')+'" onclick="ccDevInput(\''+k+'\')">'+ccInputIcon(k)+'<span>'+esc(T['ccInput_'+k]||k)+'</span></button>').join('')+'</div>';
+  const row=kind=>{
+    const own=ccDevOwned(kind), u=ccDevUse(kind);
+    if(!own.length) return '<div class="ch-empty">'+T.ccDevNone+' <button class="cc-chip" onclick="careerTab(\'shop\')">'+T.ccDevShop+'</button></div>';
+    const fx=x=>kind==='con' ? '+'+(x.con||0)+' '+T.ccDevPow : '+'+(x.mob||0)+' '+T.ccDevPow;
+    const auto='<button class="cc-dev-it'+(u ? '' : ' on')+'" onclick="ccDevPick(\''+kind+'\', \'\')"><span class="cc-dev-auto">★</span><b>'+T.ccDevBest+'</b><em>'+T.ccDevBestSub+'</em></button>';
+    return '<div class="cc-dev-grid">'+auto+own.map(x=>'<button class="cc-dev-it'+(u && u.id===x.id ? ' on' : '')+'" onclick="ccDevPick(\''+kind+'\', \''+x.id+'\')">'+
+      (x.img ? '<img src="'+CC_DEVICE_DIR+x.img+'" alt="" loading="lazy" onerror="this.remove()">' : '')+
+      '<b>'+esc(T['ccShop'+x.id]||x.id)+'</b><em>'+esc((T['ccSlot_'+x.slot]||x.slot)+' · '+fx(x))+'</em></button>').join('')+'</div>';
+  };
+  return '<div class="ch-tile cc-devlock"><h4>'+T.ccDevTitle+'</h4>'+
+    '<h5>'+T.ccDevPc+'</h5>'+chips+
+    '<h5>'+T.ccDevCon+'</h5>'+row('con')+
+    '<h5>'+T.ccDevMob+'</h5>'+row('mob')+'</div>';
+}
 function ccLockerHTML(){
   const cr=CAREER && CAREER.career; if(!cr) return '';
   try{ ccLockerCheck(); }catch(e){}
@@ -1450,7 +1489,7 @@ function ccLockerHTML(){
       ? '<img class="cc-lock-axe" src="'+CC_PICKAXE_ART+'" alt="" loading="lazy">' : '<i>'+(CC_LOCKER_ICON[it.kind]||'🎁')+'</i>';
     return '<span class="cc-lock-art"'+bg+'>'+top+'</span>';
   };
-  return ccFnLoadoutHTML()+'<div class="ch-tile cc-locker"><h4>'+L().ccLockerTitle+'</h4>'+(items.length
+  return ccDevLockerHTML()+ccFnLoadoutHTML()+'<div class="ch-tile cc-locker"><h4>'+L().ccLockerTitle+'</h4>'+(items.length
     ? '<div class="cc-locker-grid">'+items.map(it=>'<div class="cc-lock-it cc-lock-'+it.kind+'" title="'+esc(it.name)+'"><span class="cc-lock-ic">'+ic(it)+
         '</span><b>'+esc(it.name)+'</b><em>'+esc(it.club ? L().ccLockClub+(it.now ? ' · '+L().ccLockNow : '') : (L()['ccLock_'+it.kind]||it.kind))+(it.x>1 ? ' ×'+it.x : '')+'</em></div>').join('')+'</div>'
     : '<div class="ch-empty">'+L().ccLockerNone+'</div>')+'</div>';

@@ -1039,8 +1039,11 @@ function ccConsoleOk(ev){
   }catch(e){ return true; }
 }
 // Сила купленной консоли на консольном вечере: лучшая из подходящих платформ (на «any» — любая из двух).
+// Устройство из шкафчика девайсов (ccDevUse) берётся вместо лучшего, если подходит под вечер.
 function ccConsoleDevBonus(n){
   const best=s=>CC_SHOP.reduce((v,x)=>(x.slot===s && careerOwns(x.id)) ? Math.max(v, x.con||0) : v, 0);
+  const u=ccDevUse('con');
+  if(u && (n==='any' || u.slot===n)) return u.con||0;
   return n==='ps' ? best('ps') : n==='xbox' ? best('xbox') : n==='any' ? Math.max(best('ps'), best('xbox')) : 0;
 }
 function ccConsoleWhy(ev){ const n=ccConsoleNeed(ev), T=L(); if(!ccMobSeriesOk(ev)) return ev.series==='heats' ? T.ccMobSerNeedRound : T.ccMobSerNeedStage(ev.series); return n==='mobile' ? T.ccNeedPhone : n==='ps' ? T.ccNeedPs : n==='xbox' ? T.ccNeedXbox : T.ccNeedConsole; }
@@ -1066,8 +1069,8 @@ function ccPlatCalToggle(g){
   CC_VICTORY_LIST=null; CC_YEAR_DAYS=null; careerSave(); careerRenderHub('shop');
 }
 // Выбрал при создании «мобайл» - телефон уже есть, мобильные капы открыты без покупки в магазине.
-function ccMobileOwn(){ try{ if(CAREER && CAREER.player && CAREER.player.input==='mob') return true; return CC_SHOP.some(x=>x.unlock==='mobile' && careerOwns(x.id)); }catch(e){ return false; } }
-function ccMobileDevBonus(){ try{ return CC_SHOP.reduce((v,x)=>(x.unlock==='mobile' && careerOwns(x.id)) ? Math.max(v, x.mob||0) : v, 0); }catch(e){ return 0; } }
+function ccMobileOwn(){ try{ if(CAREER && CAREER.player && (CAREER.player.input==='mob' || CAREER.player.mobFree)) return true; return CC_SHOP.some(x=>x.unlock==='mobile' && careerOwns(x.id)); }catch(e){ return false; } }
+function ccMobileDevBonus(){ try{ const u=ccDevUse('mob'); if(u) return u.mob||0; return CC_SHOP.reduce((v,x)=>(x.unlock==='mobile' && careerOwns(x.id)) ? Math.max(v, x.mob||0) : v, 0); }catch(e){ return 0; } }
 function ccMobileSelfPow(){
   const reg=ccCareerRegion(), me=[CAREER.player.handle||CAREER.player.nick||'-', CAREER.player.country||null, ccMobileOvr()];
   return Math.max(1, Math.round(careerTeam([ccMobileCard(me, reg)]).pow+ccMobileDevBonus()));

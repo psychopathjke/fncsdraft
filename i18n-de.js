@@ -4809,3 +4809,6 @@ Object.assign(I18N.de=I18N.de||{},
 /* Дозаливка «de» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
 Object.assign(I18N.de=I18N.de||{},
 ({ccInput_mob:"Mobil"}));
+/* Дозаливка «de» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
+Object.assign(I18N.de=I18N.de||{},
+({ccDevTitle:"Geräte", ccDevPc:"Eingabe am PC", ccDevCon:"Konsole für Turniere", ccDevMob:"Handy oder Tablet für Turniere", ccDevNone:"Noch nichts gekauft.", ccDevShop:"Zum Shop", ccDevBest:"Das beste", ccDevBestSub:"wird für dich gewählt", ccDevPow:"Stärke"}));
