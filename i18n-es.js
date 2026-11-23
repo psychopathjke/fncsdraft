@@ -4836,3 +4836,6 @@ Object.assign(I18N.es=I18N.es||{},
 /* Дозаливка «es» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
 Object.assign(I18N.es=I18N.es||{},
 ({ccDevGrp_kbm:"PC", ccDevGrp_pad:"Consola", ccDevGrp_mob:"Móvil"}));
+/* Дозаливка «es» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
+Object.assign(I18N.es=I18N.es||{},
+({ccShopmrival3:"SteelSeries Rival 3 Gen 2", ccShopmmaya:"Fnatic x Lamzu Maya 8K", ccShopmda4:"Razer DeathAdder V4 Pro", ccShopmsuperstrike:"Logitech G PRO X2 SUPERSTRIKE", ccShopkdrunk:"DrunkDeer A75 Pro", ccShopkproxtkl:"Logitech G PRO X TKL RAPID", ccShophbsv2x:"Razer BlackShark V2 X", ccShophnova5:"SteelSeries Arctis Nova 5", ccShopmo255xf:"MSI MAG 255XF", ccShopmopg27:"ASUS ROG Swift OLED PG27AQDP", ccShopmpstrider:"Razer Strider", ccShopmpzero:"Artisan Zero", ccShopctlg7:"GameSir G7 Pro", ccShopctlrev5:"Nacon Revolution 5 Pro", ccShopmctlkv2:"Razer Kishi V2", ccShopmcoolfd:"Flydigi B6X"}));
