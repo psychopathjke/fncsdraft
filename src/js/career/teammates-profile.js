@@ -1474,6 +1474,7 @@ function ccDevInput(k){
   careerSave(); careerRenderHub('devices');
 }
 function ccDevFx(x, T){
+  if(x.slot==='pc' || x.slot==='chair' || x.slot==='stream') return ccShopEffect(x);
   if(x.unlock) return '+'+ccDevPow(x)+' '+T.ccDevPow;
   if(x.skill) return Object.keys(x.skill).map(k=>'+'+x.skill[k]+' '+(T[ATTR_LABEL[k]]||k.toUpperCase())).join(' · ');
   if(x.acc) return '+'+x.acc+' '+T.ccDevPow;
@@ -1493,7 +1494,7 @@ function ccDevLockerHTML(){
     const items=own.map(x=>'<button class="cc-dev-it'+(eff && eff.id===x.id ? ' on' : '')+'" onclick="ccDevPick(\''+key+'\', \''+x.id+'\')">'+
       (x.img ? '<img src="'+CC_DEVICE_DIR+x.img+'" alt="" loading="lazy" onerror="this.remove()">' : '')+
       '<b>'+esc(T['ccShop'+x.id]||x.id)+'</b><em>'+esc(ccDevFx(x, T))+'</em></button>').join('');
-    const more=CC_SHOP.some(x=>ccDevKey(x)===key && !careerOwns(x.id)) ? '<button class="cc-dev-it cc-dev-more" onclick="ccShopSec(\'gear\'); careerTab(\'shop\');'+(key==='pc' ? '' : ' ccDevModalOpen(\''+key+'\')')+'"><span class="cc-dev-auto">+</span><b>'+esc(T.ccDevShop)+'</b></button>' : '';
+    const more=CC_SHOP.some(x=>ccDevKey(x)===key && !careerOwns(x.id)) ? '<button class="cc-dev-it cc-dev-more" onclick="ccShopSec(\'gear\'); careerTab(\'shop\'); ccDevModalOpen(\''+key+'\')"><span class="cc-dev-auto">+</span><b>'+esc(T.ccDevShop)+'</b></button>' : '';
     return '<h5>'+esc(T['ccDevSlot_'+key]||T['ccSlot_'+key]||key)+'</h5><div class="cc-dev-grid">'+def+items+more+'</div>';
   };
   return '<div class="ch-tile cc-devlock"><h4>'+T.ccDevTitle+'</h4>'+

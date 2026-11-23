@@ -47,7 +47,7 @@ const BOOT = `
     out.notes.pcTrain = afterBudget + ' -> ' + afterPro;
     check('a budget rig is worth its own training', Math.abs(afterBudget - 0.10) < 1e-9, String(afterBudget));
     check('upgrading to PRO pays the difference', Math.abs(afterPro - 0.20) < 1e-9, String(afterPro));
-    check('and buying down is refused', careerBuy('pcbudget') === false);
+    check('and buying again is refused', careerBuy('pcpro') === false);
     careerBuy('pcelite');
     check('and ELITE tops the slot', Math.abs(CAREER.gear.train - 0.30) < 1e-9, String(CAREER.gear.train));
 
@@ -188,19 +188,16 @@ const BOOT = `
     out.notes.photos = imgs;
     check('every row drawn carries its photo', imgs === shown.filter(i => i.img).length,
           imgs + ' of ' + shown.filter(i => i.img).length);
-    check('a slot is one row', shown.filter(i => i.slot === 'pc').length === 1,
-          shown.filter(i => i.slot === 'pc').map(i => i.id).join(','));
-    check('and it is the step up from what is owned',
-          shown.some(i => i.id === 'pcelite'), out.notes.rows.ids);
-    check('the rig already bought is not offered again',
-          !shown.some(i => i.id === 'pcpro' || i.id === 'pcbudget'), out.notes.rows.ids);
+    // Девайсы и сетап (23.11) - окном выбора: строкой не рисуются, на месте каждого - карточка, открывающая окно.
+    check('devices are not rows', !shown.some(i => ccDevCatItem(i)), out.notes.rows.ids);
+    check('every device slot has a card', (html.match(/class="cc-devslot"/g) || []).length === CC_DEV_SHOP_KEYS.length + 3);
+    ccDevModalOpen('pc');
+    const mh = document.getElementById('ccDevModal').innerHTML; ccDevModalClose();
+    check('the PC window lists every rig', CC_SHOP.filter(i => i.slot === 'pc' && !i.starter).every(i => mh.indexOf(L()['ccShop' + i.id]) >= 0));
     check('nothing says HAVE BETTER any more', !/cc-buy-old/.test(html));
-    // A finished slot still says what is on the desk.
-    fresh(20000); careerBuy('pcbudget'); careerBuy('pcpro'); careerBuy('pcelite');
-    const done = ccShopVisible().filter(i => i.slot === 'pc');
-    check('a finished slot shows the one that is owned',
-          done.length === 1 && done[0].id === 'pcelite' && careerOwns(done[0].id),
-          done.map(i => i.id).join(','));
+    // Купленный слабее не убавляет тренировку: работает лучший.
+    fresh(20000); careerBuy('pcelite'); careerBuy('pcbudget');
+    check('a weaker rig bought later keeps the best training', Math.abs(CAREER.gear.train - 0.30) < 1e-9, String(CAREER.gear.train));
   } catch(e) { out.err = String(e && e.stack || e); }
   document.getElementById('__out').textContent =
     'PB' + 'EGIN' + encodeURIComponent(JSON.stringify(out)) + 'PE' + 'ND';

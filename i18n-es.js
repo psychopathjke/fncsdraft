@@ -4827,3 +4827,6 @@ Object.assign(I18N.es=I18N.es||{},
 /* Дозаливка «es» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
 Object.assign(I18N.es=I18N.es||{},
 ({ccDevEquip:"Equipar"}));
+/* Дозаливка «es» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
+Object.assign(I18N.es=I18N.es||{},
+({ccDevSlot_chair:"Silla", ccDevSlot_stream:"Stream", ccDevEmpty:"Vacío", ccShoppcvictus:"HP Victus 15L", ccShoppccyber:"CyberPowerPC Gamer Xtreme", ccShoppclegion:"Lenovo Legion Tower 5", ccShoppcstrix:"ASUS ROG Strix G16", ccShoppcaurora:"Alienware Aurora", ccShoppctrident:"MSI MEG Trident X2", ccShopchtc100:"Corsair TC100", ccShopchdx:"DXRacer Formula", ccShopchnoble:"noblechairs HERO", ccShopchkaiser:"AndaSeat Kaiser 4", ccShopchiskur:"Razer Iskur V2", ccShopstkiyo:"Razer Kiyo Pro", ccShopstface:"Elgato Facecam MK.2", ccShopstwave3:"Elgato Wave:3", ccShopstmv7:"Shure MV7+", ccShopsta6700:"Sony a6700"}));

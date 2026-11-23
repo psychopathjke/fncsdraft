@@ -1593,6 +1593,7 @@ function ccDevCardHTML(x){
   const own=careerOwns(x.id), key=ccDevKey(x), eff=ccDevEff(key), inUse=!!(eff && eff.id===x.id);
   const btn=!own ? '<button class="ch-sign"'+(bal>=x.cost ? '' : ' disabled')+' onclick="careerBuy(\''+x.id+'\')">$'+ccNum(x.cost)+'</button>'
     : inUse ? '<span class="cc-owned">'+T.ccDevInUse+'</span>'
+    : !ccDevWearable(key) ? '<span class="cc-owned">'+T.ccShopOwned+'</span>'
     : '<button class="cc-chip" onclick="ccDevPick(\''+key+'\', \''+x.id+'\', \'shop\')">'+(key==='con' || key==='mob' ? T.ccDevUseBtn : T.ccDevEquip)+'</button>';
   return '<div class="cc-dev-card'+(own ? ' own' : '')+(inUse ? ' on' : '')+(ccShopJustOn('item:'+x.id) || ccShopJustOn('slot:'+x.slot) ? ' just' : '')+'">'+ccShopImg(x, 'cc-dev-card-img')+
     '<b>'+esc(T['ccShop'+x.id]||x.id)+'</b><em>'+esc(T['ccDevTier_'+(x.tier||'m')]+(ccDevFx(x, T) ? ' · '+ccDevFx(x, T) : ''))+'</em>'+btn+'</div>';
@@ -1626,13 +1627,13 @@ function ccDevModalSync(){
 }
 function ccDevModalClose(){ CC_DEV_MODAL=null; const m=document.getElementById('ccDevModal'); if(m) m.style.display='none'; }
 // Карточки мест в «Сетапе»: что стоит сейчас и сколько моделей на выбор.
-function ccShopDevSlotsHTML(){
+function ccShopDevSlotsHTML(keys, title){
   const T=L();
-  return '<div class="ch-tile cc-shop"><h4>'+T.ccDevTitle+'</h4><div class="ch-hint">'+esc(T.ccDevShopHint)+'</div><div class="cc-devslots">'+
-    CC_DEV_SHOP_KEYS.map(k=>{
+  return '<div class="ch-tile cc-shop"><h4>'+(title||T.ccDevTitle)+'</h4>'+(title ? '' : '<div class="ch-hint">'+esc(T.ccDevShopHint)+'</div>')+'<div class="cc-devslots">'+
+    (keys||CC_DEV_SHOP_KEYS).map(k=>{
       const eff=ccDevEff(k), n=CC_SHOP.filter(x=>ccDevKey(x)===k && ccDevCatItem(x)).length;
-      const img=eff && eff.img ? '<img class="cc-devslot-img" src="'+CC_DEVICE_DIR+eff.img+'" alt="" loading="lazy" onerror="this.remove()">' : '<span class="cc-devslot-img cc-dev-auto">'+ccInputIcon(k==='ctl' || k==='con' ? 'pad' : k==='mob' || k==='mctl' || k==='mcool' ? 'mob' : 'kbm')+'</span>';
-      return '<button class="cc-devslot" onclick="ccDevModalOpen(\''+k+'\')">'+img+'<b>'+esc(T['ccDevSlot_'+k]||k)+'</b><em>'+esc(eff ? (T['ccShop'+eff.id]||eff.id) : T.ccDevStd)+'</em><span class="cc-devslot-n">'+esc(T.ccDevModels(n))+'</span></button>';
+      const img=eff && eff.img ? '<img class="cc-devslot-img" src="'+CC_DEVICE_DIR+eff.img+'" alt="" loading="lazy" onerror="this.remove()">' : '<span class="cc-devslot-img cc-dev-auto">'+(k==='chair' || k==='stream' ? '+' : ccInputIcon(k==='ctl' || k==='con' ? 'pad' : k==='mob' || k==='mctl' || k==='mcool' ? 'mob' : 'kbm'))+'</span>';
+      return '<button class="cc-devslot" onclick="ccDevModalOpen(\''+k+'\')">'+img+'<b>'+esc(T['ccDevSlot_'+k]||k)+'</b><em>'+esc(eff ? (T['ccShop'+eff.id]||eff.id) : ccDevWearable(k) ? T.ccDevStd : T.ccDevEmpty)+'</em><span class="cc-devslot-n">'+esc(T.ccDevModels(n))+'</span></button>';
     }).join('')+'</div></div>';
 }
 function ccShopAffordable(sec){
@@ -1671,8 +1672,7 @@ function careerShopHTML(){
   if(CC_SHOP_SEC==='gear'){
     const rooms=CC_SHOP.filter(x=>!x.slot && !x.unlock);
     body=ccShopBestHTML()+ccShopDevSlotsHTML()+
-      '<div class="ch-tile cc-shop"><h4>'+T.ccSecGear+'</h4><div class="cc-lads">'+
-      CC_SHOP_SLOTS.filter(s=>CC_DEV_CAT_SLOTS.indexOf(s)<0).map(s=>ccShopLadderHTML(s, fresh)).join('')+'</div></div>'+
+      ccShopDevSlotsHTML(['pc', 'chair', 'stream'], T.ccSecGear)+
       '<div class="ch-tile cc-shop"><h4>'+T.ccShopRooms+'</h4><div class="cc-buys">'+rooms.map(it=>ccShopRowHTML(it, fresh)).join('')+'</div></div>'+
       careerCheatHTML();
   } else if(CC_SHOP_SEC==='home') body=careerFlatHTML()+careerMoveHTML();

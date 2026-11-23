@@ -1331,22 +1331,40 @@ const CC_SHOP=[
   {id:'mctlkishi', cost:150, img:'mctl-kishi-shop.jpg',     slot:'mctl', rank:2, cat:true, tier:'f', acc:2},
   {id:'mcoolbs',   cost:40,  img:'mcool-blackshark-shop.jpg', slot:'mcool', rank:1, cat:true, tier:'b', acc:1},
   {id:'mcoolrz',   cost:60,  img:'mcool-razer-shop.jpg',    slot:'mcool', rank:1, cat:true, tier:'m', acc:1},
+  /* Сетап каталогом (его слово 23.11: «и для сетапа тоже выбор»): ПК, кресла и стрим разных брендов. Ранг идёт по силе,
+     чтобы «лучший купленный» оставался лучшим. Цены США, числа решение, не замер. */
+  {id:'pcvictus', cost:900,  train:0.10, img:'pc-victus-shop.jpg',     slot:'pc', rank:1, tier:'b', skill:{con:1}},
+  {id:'pccyber',  cost:1000, train:0.10, img:'pc-cyberpower-shop.jpg', slot:'pc', rank:1, tier:'b', skill:{con:1}},
+  {id:'pclegion', cost:1400, train:0.20, img:'pc-legion-shop.jpg',     slot:'pc', rank:2, tier:'m', skill:{con:2}},
+  {id:'pcstrix',  cost:1600, train:0.20, img:'pc-strix-shop.jpg',      slot:'pc', rank:2, tier:'m', skill:{con:2}},
+  {id:'pcaurora', cost:2200, train:0.20, img:'pc-aurora-shop.jpg',     slot:'pc', rank:2, tier:'m', skill:{con:2}},
+  {id:'pctrident',cost:3500, train:0.30, img:'pc-trident-shop.jpg',    slot:'pc', rank:3, tier:'f', skill:{con:3}},
+  {id:'chtc100',  cost:300,  cap:6,  img:'chair-tc100-shop.jpg',   slot:'chair', rank:2.2, tier:'b'},
+  {id:'chdx',     cost:350,  cap:7,  img:'chair-dxracer-shop.jpg', slot:'chair', rank:2.4, tier:'b'},
+  {id:'chnoble',  cost:430,  cap:8,  img:'chair-noble-shop.jpg',   slot:'chair', rank:2.6, tier:'m'},
+  {id:'chkaiser', cost:500,  cap:10, img:'chair-kaiser-shop.jpg',  slot:'chair', rank:2.9, tier:'m'},
+  {id:'chiskur',  cost:650,  cap:12, img:'chair-iskur-shop.jpg',   slot:'chair', rank:3.4, tier:'m'},
+  {id:'stkiyo',   cost:150,  reach:0.50, img:'stream-kiyo-shop.jpg',     slot:'stream', rank:1.4, tier:'b'},
+  {id:'stface',   cost:170,  reach:0.60, img:'stream-facecam-shop.jpg',  slot:'stream', rank:1.6, tier:'b'},
+  {id:'stwave3',  cost:150,  reach:0.80, img:'stream-wave3-shop.jpg',    slot:'stream', rank:2,   tier:'b'},
+  {id:'stmv7',    cost:280,  reach:0.95, img:'stream-mv7-shop.jpg',      slot:'stream', rank:2.5, tier:'m'},
+  {id:'sta6700',  cost:1400, reach:1.70, img:'stream-a6700-shop.jpg',    slot:'stream', rank:4.4, tier:'f'},
   // Chairs — stamina, from a $20 start to the one people buy with prize money.
-  {id:'chair0',   cost:20,    cap:2,  img:'chair-old.jpg',    slot:'chair', rank:1},
-  {id:'chair1',   cost:150,   cap:5,  img:'chair-ikea.jpg',   slot:'chair', rank:2},
-  {id:'chair',    cost:550,   cap:10, img:'chair-titan.webp', slot:'chair', rank:3},
-  {id:'chairvm',  cost:1000,  cap:15, img:'chair-vantum.jpg', slot:'chair', rank:4},
-  {id:'chairhm',  cost:2000,  cap:20, img:'chair-embody.webp',slot:'chair', rank:5},
+  {id:'chair0',   cost:20,    cap:2,  img:'chair-old.jpg',    slot:'chair', rank:1, tier:'b'},
+  {id:'chair1',   cost:150,   cap:5,  img:'chair-ikea.jpg',   slot:'chair', rank:2, tier:'b'},
+  {id:'chair',    cost:550,   cap:10, img:'chair-titan.webp', slot:'chair', rank:3, tier:'m'},
+  {id:'chairvm',  cost:1000,  cap:15, img:'chair-vantum.jpg', slot:'chair', rank:4, tier:'f'},
+  {id:'chairhm',  cost:2000,  cap:20, img:'chair-embody.webp',slot:'chair', rank:5, tier:'f'},
   // The desk that stands and the rooms that are not products.
   {id:'desk',     cost:700,   cap:8,  img:'desk.jpg'},
   {id:'camp',     cost:1000,  train:0.45, img:'camp.jpg', wide:true, days:30},
   {id:'fitness',  cost:2000,  cap:15, img:'gym.jpg', wide:true},
   // The stream corner — audience, from a webcam to a cinema camera.
-  {id:'streamcam', cost:70,   reach:0.35, img:'stream-c920.jpg',     slot:'stream', rank:1},
-  {id:'streamkit', cost:150,  reach:0.80, img:'stream-quadcast.webp',slot:'stream', rank:2},
-  {id:'streamdeck',cost:150,  reach:1.10, img:'stream-deck.jpg',     slot:'stream', rank:3},
-  {id:'streamlab', cost:1000, reach:1.50, img:'stream-zve10.jpg',    slot:'stream', rank:4},
-  {id:'streamfx',  cost:3900, reach:2.20, img:'stream-fx3.jpg',      slot:'stream', rank:5},
+  {id:'streamcam', cost:70,   reach:0.35, img:'stream-c920.jpg',     slot:'stream', rank:1, tier:'b'},
+  {id:'streamkit', cost:150,  reach:0.80, img:'stream-quadcast.webp',slot:'stream', rank:2, tier:'b'},
+  {id:'streamdeck',cost:150,  reach:1.10, img:'stream-deck.jpg',     slot:'stream', rank:3, tier:'b'},
+  {id:'streamlab', cost:1000, reach:1.50, img:'stream-zve10.jpg',    slot:'stream', rank:4, tier:'m'},
+  {id:'streamfx',  cost:3900, reach:2.20, img:'stream-fx3.jpg',      slot:'stream', rank:5, tier:'f'},
   /* The cars — confidence, his word for it. A car does not make anybody aim
      better, so it pays into nothing a training day touches. What it does is
      hold the floor: form runs from -3 to +3 and lands straight on the team's
@@ -1550,7 +1568,9 @@ function ccShopSlotRank(slot){
 // Стартовые девайсы (его слово 23.11): самые дешёвые консоли и телефон есть у всех с первого дня.
 const CC_DEV_STARTER=['ps4', 'xboxone', 'phonebase', 'mouse0', 'keyboard0', 'mpad0', 'headset0', 'monitor0', 'pc0', 'ctl0'];
 // Девайс из каталога (окно выбора, любой порядок покупки): консоли, телефоны, cat-вещи и ПК-девайсы кроме самого ПК.
-const CC_DEV_CAT_SLOTS=['mouse', 'keyboard', 'headset', 'monitor'];
+const CC_DEV_CAT_SLOTS=['mouse', 'keyboard', 'headset', 'monitor', 'pc', 'chair', 'stream'];
+// Кресло и стрим не надеваются: работает лучшее купленное (энергия и охват так и считались).
+function ccDevWearable(key){ return key!=='chair' && key!=='stream'; }
 function ccDevCatItem(x){ return !!(x && (x.unlock || x.cat || x.starter || CC_DEV_CAT_SLOTS.indexOf(x.slot)>=0)); }
 function careerOwns(id){ return CC_DEV_STARTER.indexOf(id)>=0 || !!(CAREER.gear && CAREER.gear.own && CAREER.gear.own.indexOf(id)>=0); }
 // Куплено ли в группе что-то кроме стартового: от этого зависит, идут ли капы платформы в календарь по умолчанию.
@@ -1648,7 +1668,7 @@ function careerBuy(id, price){
   if(item.slot && !ccDevCatItem(item) && ccShopSlotRank(item.slot)>=item.rank) return false;   // девайсы - каталог, любой порядок
   cr.balance-=cost;
   // Купленный девайс сразу на своём месте в «Девайсах».
-  if(ccDevCatItem(item) || item.slot==='pc'){ CAREER.gear=CAREER.gear||{own:[], train:0}; CAREER.gear.use=CAREER.gear.use||{}; CAREER.gear.use[ccDevKey(item)]=id; }
+  if(ccDevCatItem(item) && ccDevWearable(ccDevKey(item))){ CAREER.gear=CAREER.gear||{own:[], train:0}; CAREER.gear.use=CAREER.gear.use||{}; CAREER.gear.use[ccDevKey(item)]=id; }
   careerGearAdd(item);
   // Консоль открывает консольные капы: календарь года собирается заново (ccVictoryList, CC_YEAR_DAYS).
   if(item.unlock){ CC_VICTORY_LIST=null; CC_YEAR_DAYS=null; }
@@ -1666,8 +1686,8 @@ function careerGearAdd(item){
     ? CC_SHOP.reduce((v,x)=>(x.slot===item.slot && careerOwns(x.id) && (x[key]||0)>v) ? x[key] : v, 0)
     : 0;
   const held=heldOf('train');
-  const gain=(item.train||0)-held;
-  const reachGain=(item.reach||0)-heldOf('reach');
+  const gain=Math.max(0, (item.train||0)-held);   // слабее того, что стоит, - тренировку не убавляет
+  const reachGain=Math.max(0, (item.reach||0)-heldOf('reach'));
   CAREER.gear=CAREER.gear||{own:[], train:0};
   CAREER.gear.own=(CAREER.gear.own||[]).concat(id);
   CAREER.gear.train=Math.max(0,(CAREER.gear.train||0)+gain);
