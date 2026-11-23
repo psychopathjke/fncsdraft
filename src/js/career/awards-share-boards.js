@@ -1897,6 +1897,7 @@ function ccEvResApply(d){
   return true;
 }
 function careerMoneyAdd(ranked, prize){
+  if(!CAREER || !CAREER.career) return;   // вечер дорисовался после выхода из карьеры (журнал: экран режимов)
   if(!ranked || !ranked.length) return;
   const m=careerMoney(), k=careerMoneyKeys();
   ranked.forEach(function(t, i){

@@ -2111,7 +2111,9 @@ let CC_RACE_DBG=null;   // для проб: сколько людей и бот�
    здесь же, когда команда вечера уже посчитана раннером; чужие ждутся до
    CC_RACE_LINE_WAIT, потом комната строится с тем, что есть (сверка игры это
    поймает и скажет, где разошлось). */
-const CC_RACE_LINE_WAIT=90000;
+// 4 минуты, как ответ на вопрос в игре: за 90 с телефон, свёрнутый на минуту или стоящий на выборе высадки, не успевал,
+// и сосед строил поле со вчерашней силой (журнал 22.11: «daki+nocif:100 vs 104», гонка с телефонов).
+const CC_RACE_LINE_WAIT=240000;
 async function ccRaceWaitLines(){
   const ev=(typeof CC_MP_SEED!=='undefined') ? CC_MP_SEED : null;
   if(!ev) return true;
@@ -2126,7 +2128,8 @@ async function ccRaceWaitLines(){
     if(typeof CC_MP_HOLD!=='undefined' && CC_MP_HOLD) break;   // вечер уже расходится/остановлен
     await ccMpIdle(new Promise(r=>setTimeout(r, 100)));
   }
-  if(!fresh() && typeof CC_RACE_DBG!=='undefined') CC_RACE_DBG={stale:ccRaceRoom().filter(p=>p.ev!==ev).map(p=>(p.card||{}).handle)};
+  if(!fresh() && typeof CC_RACE_DBG!=='undefined'){ CC_RACE_DBG={stale:ccRaceRoom().filter(p=>p.ev!==ev).map(p=>(p.card||{}).handle)};
+    try{ ccErrLog('split', 'race line stale after '+Math.round((Date.now()-t0)/1000)+'s · '+CC_RACE_DBG.stale.length+' of '+ccRaceRoom().length, ''); }catch(e){} }
   return fresh();
 }
 async function ccRaceFieldSync(teams, opts){
