@@ -1275,6 +1275,10 @@ const CC_SHOP=[
   {id:'monitor0',  cost:0, img:'monitor-office-shop.jpg',  slot:'monitor',  rank:0, starter:true, tier:'b'},
   {id:'pc0',       cost:0, img:'pc-old-shop.jpg',          slot:'pc',       rank:0, starter:true, tier:'b'},
   {id:'ctl0',      cost:0, img:'ctl-ds4-shop.jpg',         slot:'ctl',      rank:0, starter:true, tier:'b'},
+  {id:'mctl0',     cost:0, img:'mctl-ipega-shop.jpg',      slot:'mctl',     rank:0, starter:true, tier:'b'},
+  {id:'mcool0',    cost:0, img:'mcool-memo-shop.jpg',      slot:'mcool',    rank:0, starter:true, tier:'b'},
+  {id:'chair00',   cost:0, img:'chair-frosta-shop.jpg',    slot:'chair',    rank:0, starter:true, tier:'b'},
+  {id:'stream0',   cost:0, img:'stream-c270-shop.jpg',     slot:'stream',   rank:0, starter:true, tier:'b'},
   // Больше моделей ПК-девайсов, каталогом (cat): тренировка как у первой ступени слота, навык по классу. Решение, не замер.
   {id:'mg305',     cost:50,  train:0.05, img:'mouse-g305-shop.jpg',  slot:'mouse', rank:1, cat:true, tier:'b', skill:{aim:1}},
   {id:'mda3',      cost:90,  train:0.05, img:'mouse-da3-shop.jpg',   slot:'mouse', rank:2, cat:true, tier:'m', skill:{aim:2}},
@@ -1566,7 +1570,7 @@ function ccShopSlotRank(slot){
   return CC_SHOP.reduce((r,it)=>(it.slot===slot && careerOwns(it.id) && it.rank>r) ? it.rank : r, 0);
 }
 // Стартовые девайсы (его слово 23.11): самые дешёвые консоли и телефон есть у всех с первого дня.
-const CC_DEV_STARTER=['ps4', 'xboxone', 'phonebase', 'mouse0', 'keyboard0', 'mpad0', 'headset0', 'monitor0', 'pc0', 'ctl0'];
+const CC_DEV_STARTER=['ps4', 'xboxone', 'phonebase', 'mouse0', 'keyboard0', 'mpad0', 'headset0', 'monitor0', 'pc0', 'ctl0', 'mctl0', 'mcool0', 'chair00', 'stream0'];
 // Девайс из каталога (окно выбора, любой порядок покупки): консоли, телефоны, cat-вещи и ПК-девайсы кроме самого ПК.
 const CC_DEV_CAT_SLOTS=['mouse', 'keyboard', 'headset', 'monitor', 'pc', 'chair', 'stream'];
 // Кресло и стрим не надеваются: работает лучшее купленное (энергия и охват так и считались).

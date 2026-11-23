@@ -1451,7 +1451,7 @@ function ccDevUse(key){
   try{ const g=CAREER && CAREER.gear, id=g && g.use && g.use[key]; if(!id || id==='def' || !careerOwns(id)) return null;
     return CC_SHOP.find(x=>x.id===id) || null; }catch(e){ return null; }
 }
-function ccDevIsDef(key){ const g=CAREER && CAREER.gear; return !!(g && g.use && g.use[key]==='def'); }
+function ccDevIsDef(key){ const g=CAREER && CAREER.gear; return !!(g && g.use && g.use[key]==='def') && !CC_SHOP.some(x=>x.starter && ccDevKey(x)===key); }
 // Что стоит в месте сейчас: выбранное, иначе лучший купленный (по рангу, как раньше), иначе стандартный (null).
 function ccDevEff(key){
   if(ccDevIsDef(key)) return null;
@@ -1474,6 +1474,7 @@ function ccDevInput(k){
   careerSave(); careerRenderHub('devices');
 }
 function ccDevFx(x, T){
+  if(x.starter) return '';
   if(x.slot==='pc' || x.slot==='chair' || x.slot==='stream') return ccShopEffect(x);
   if(x.unlock) return '+'+ccDevPow(x)+' '+T.ccDevPow;
   if(x.skill) return Object.keys(x.skill).map(k=>'+'+x.skill[k]+' '+(T[ATTR_LABEL[k]]||k.toUpperCase())).join(' · ');
