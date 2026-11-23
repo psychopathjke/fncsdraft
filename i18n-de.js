@@ -4809,3 +4809,33 @@ Object.assign(I18N.de=I18N.de||{},
 /* Дозаливка «de» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
 Object.assign(I18N.de=I18N.de||{},
 ({ccInput_mob:"Mobil"}));
+/* Дозаливка «de» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
+Object.assign(I18N.de=I18N.de||{},
+({ccDevTitle:"Geräte", ccDevPc:"Eingabe am PC", ccDevCon:"Konsole für Turniere", ccDevMob:"Handy oder Tablet für Turniere", ccDevNone:"Noch nichts gekauft.", ccDevShop:"Zum Shop", ccDevBest:"Das beste", ccDevBestSub:"wird für dich gewählt", ccDevPow:"Stärke"}));
+/* Дозаливка «de» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
+Object.assign(I18N.de=I18N.de||{},
+({ccDevTier_all:"Alle", ccDevTier_b:"Günstig", ccDevTier_m:"Mittelklasse", ccDevTier_f:"Flaggschiff", ccDevUseBtn:"Für Turniere", ccDevInUse:"Im Einsatz", ccShopps4pro:"PlayStation 4 Pro", ccShopps5dig:"PlayStation 5 Digital Edition", ccShopxboxonex:"Xbox One X", ccShopxboxsxd:"Xbox Series X Digital", ccShopa56:"Galaxy A56", ccShoppixel10:"Pixel 10", ccShoponeplus15:"OnePlus 15", ccShoprog9:"ROG Phone 9 Pro", ccShopxpad7:"Xiaomi Pad 7", ccShoptabs10fe:"Galaxy Tab S10 FE", ccShoplegion:"Lenovo Legion Tab", ccShopiphone16e:"iPhone 16e", ccShopiphone17:"iPhone 17", ccShopiphoneair:"iPhone Air", ccShopipada16:"iPad (A16)", ccShopipadmini:"iPad mini", ccShopipadair:"iPad Air M3"}));
+/* Дозаливка «de» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
+Object.assign(I18N.de=I18N.de||{},
+({ccShopDevHint:"Konsolen und Handys öffnen ihre eigenen Cups. Kauf jedes Modell in beliebiger Reihenfolge: Im Turnier spielt das im Tab Geräte gewählte, sonst das beste. Ein stärkeres Gerät gibt mehr Stärke. Mobile hat eine eigene Szene und Wertung."}));
+/* Дозаливка «de» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
+Object.assign(I18N.de=I18N.de||{},
+({ccDevStd:"Standard", ccShopAcc:"Mauspads, Controller und Zubehör", ccDevInputT:"Womit du spielst", ccDevSlot_mouse:"Maus", ccDevSlot_keyboard:"Tastatur", ccDevSlot_mpad:"Mauspad", ccDevSlot_headset:"Headset", ccDevSlot_monitor:"Monitor", ccDevSlot_pc:"PC", ccDevSlot_con:"Konsole für Turniere", ccDevSlot_ctl:"Controller", ccDevSlot_mob:"Handy oder Tablet", ccDevSlot_mctl:"Handy-Controller", ccDevSlot_mcool:"Kühler", ccDevSetHint_kbm:"Maus, Tastatur und Mauspad geben Skills, solange du mit Tastatur spielst.", ccDevSetHint_pad:"Der Controller gibt Skills, solange du mit ihm spielst. Die Konsole geht zu Konsolen-Cups.", ccDevSetHint_mob:"Gerät, Controller und Kühler geben mehr Stärke in Mobile-Cups.", ccShopmpqck:"SteelSeries QcK Heavy", ccShopmpg640:"Logitech G640", ccShopmpgigantus:"Razer Gigantus V2", ccShopmpsaturn:"LGG Saturn Pro", ccShopmphien:"Artisan Hien", ccShopctlxbox:"Xbox Wireless Controller", ccShopctlds:"DualSense", ccShopctlelite:"Xbox Elite Series 2", ccShopctlwolv:"Razer Wolverine V3 Pro", ccShopctledge:"DualSense Edge", ccShopctlbfg:"Victrix Pro BFG", ccShopctlscuf:"SCUF Instinct Pro", ccShopmctlg8:"GameSir G8 Galileo", ccShopmctlbb:"Backbone One", ccShopmctlkishi:"Razer Kishi V2 Pro", ccShopmcoolbs:"Black Shark FunCooler", ccShopmcoolrz:"Razer Phone Cooler Chroma"}));
+/* Дозаливка «de» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
+Object.assign(I18N.de=I18N.de||{},
+({ccShoppc0:"Alter Büro-PC", ccDevShopHint:"Tippe auf einen Platz für alle Modelle. Gekauftes landet direkt bei Geräte.", ccDevModels:n=>n+(n===1?' Modell':' Modelle'), ccShopmouse0:"Logitech G102", ccShopkeyboard0:"Logitech K120", ccShopmpad0:"Logitech G240", ccShopheadset0:"HyperX Cloud Stinger 2", ccShopmonitor0:"Dell P2426H", ccShopctl0:"DualShock 4", ccShopmg305:"Logitech G305", ccShopmda3:"Razer DeathAdder V3", ccShopmx2v2:"Pulsar X2V2", ccShopmec2cw:"ZOWIE EC2-CW", ccShopkg413:"Logitech G413 SE", ccShopka75:"DrunkDeer A75", ccShopkk70max:"Corsair K70 MAX", ccShopkhuntsman:"Razer Huntsman V3 Pro TKL", ccShophcloud3:"HyperX Cloud III", ccShophdt990:"Beyerdynamic DT 990 Pro", ccShophgprox2:"Logitech G PRO X 2", ccShophnovapro:"SteelSeries Arctis Nova Pro", ccShopmo24g2:"AOC 24G2", ccShopmovg259:"ASUS TUF VG259QM", ccShopmoxl2546x:"ZOWIE XL2546X", ccShopmoaw2524h:"Alienware AW2524H"}));
+/* Дозаливка «de» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
+Object.assign(I18N.de=I18N.de||{},
+({ccDevEquip:"Ausrüsten"}));
+/* Дозаливка «de» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
+Object.assign(I18N.de=I18N.de||{},
+({ccDevSlot_chair:"Stuhl", ccDevSlot_stream:"Stream", ccDevEmpty:"Leer", ccShoppcvictus:"HP Victus 15L", ccShoppccyber:"CyberPowerPC Gamer Xtreme", ccShoppclegion:"Lenovo Legion Tower 5", ccShoppcstrix:"ASUS ROG Strix G16", ccShoppcaurora:"Alienware Aurora", ccShoppctrident:"MSI MEG Trident X2", ccShopchtc100:"Corsair TC100", ccShopchdx:"DXRacer Formula", ccShopchnoble:"noblechairs HERO", ccShopchkaiser:"AndaSeat Kaiser 4", ccShopchiskur:"Razer Iskur V2", ccShopstkiyo:"Razer Kiyo Pro", ccShopstface:"Elgato Facecam MK.2", ccShopstwave3:"Elgato Wave:3", ccShopstmv7:"Shure MV7+", ccShopsta6700:"Sony a6700"}));
+/* Дозаливка «de» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
+Object.assign(I18N.de=I18N.de||{},
+({ccShopmctl0:"iPega PG-9083S", ccShopmcool0:"MEMO DL05", ccShopchair00:"IKEA FROSTA Hocker", ccShopstream0:"Logitech C270"}));
+/* Дозаливка «de» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
+Object.assign(I18N.de=I18N.de||{},
+({ccDevGrp_kbm:"PC", ccDevGrp_pad:"Konsole", ccDevGrp_mob:"Mobile"}));
+/* Дозаливка «de» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
+Object.assign(I18N.de=I18N.de||{},
+({ccShopmrival3:"SteelSeries Rival 3 Gen 2", ccShopmmaya:"Fnatic x Lamzu Maya 8K", ccShopmda4:"Razer DeathAdder V4 Pro", ccShopmsuperstrike:"Logitech G PRO X2 SUPERSTRIKE", ccShopkdrunk:"DrunkDeer A75 Pro", ccShopkproxtkl:"Logitech G PRO X TKL RAPID", ccShophbsv2x:"Razer BlackShark V2 X", ccShophnova5:"SteelSeries Arctis Nova 5", ccShopmo255xf:"MSI MAG 255XF", ccShopmopg27:"ASUS ROG Swift OLED PG27AQDP", ccShopmpstrider:"Razer Strider", ccShopmpzero:"Artisan Zero", ccShopctlg7:"GameSir G7 Pro", ccShopctlrev5:"Nacon Revolution 5 Pro", ccShopmctlkv2:"Razer Kishi V2", ccShopmcoolfd:"Flydigi B6X"}));
