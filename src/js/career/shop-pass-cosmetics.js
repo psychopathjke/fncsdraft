@@ -1581,25 +1581,25 @@ function ccDealsHTML(){
     '<div class="cc-deals">'+cards+'</div></div>';
 }
 // Сколько в разделе можно купить прямо сейчас — цифра на чипе.
-/* Каталог девайсов: все модели платформы карточками, фильтр по цене, покупка в любом порядке, «На турниры» ставит
-   устройство в шкафчик девайсов (ccDevPick). */
+/* Каталог девайсов: все модели места карточками, фильтр по цене, покупка в любом порядке, купленное надевается
+   (ccDevPick) и меняется во вкладке «Девайсы». */
 let CC_DEV_TIER='all';
 function ccDevTierSet(t){ CC_DEV_TIER=t; careerRenderHub(CH_TAB); }
-function ccShopDevCatHTML(){
+function ccShopDevCatHTML(keys){
   const T=L(), bal=(CAREER.career.balance||0);
   const tiers='<div class="cc-dev-tiers">'+['all','b','m','f'].map(t=>'<button class="cc-chip'+(CC_DEV_TIER===t ? ' on' : '')+'" onclick="ccDevTierSet(\''+t+'\')">'+esc(T['ccDevTier_'+t])+'</button>').join('')+'</div>';
   const card=x=>{
-    const own=careerOwns(x.id), kind=x.unlock==='mobile' ? 'mob' : 'con', u=ccDevUse(kind), inUse=!!(u && u.id===x.id);
+    const own=careerOwns(x.id), key=ccDevKey(x), eff=ccDevEff(key), inUse=!!(eff && eff.id===x.id);
     const btn=!own ? '<button class="ch-sign"'+(bal>=x.cost ? '' : ' disabled')+' onclick="careerBuy(\''+x.id+'\')">$'+ccNum(x.cost)+'</button>'
       : inUse ? '<span class="cc-owned">'+T.ccDevInUse+'</span>'
-      : '<button class="cc-chip" onclick="ccDevPick(\''+kind+'\', \''+x.id+'\', \'shop\')">'+T.ccDevUseBtn+'</button>';
-    return '<div class="cc-dev-card'+(own ? ' own' : '')+(inUse ? ' on' : '')+(ccShopJustOn('slot:'+x.slot) ? ' just' : '')+'">'+ccShopImg(x, 'cc-dev-card-img')+
-      '<b>'+esc(T['ccShop'+x.id]||x.id)+'</b><em>'+esc(T['ccDevTier_'+(x.tier||'m')]+' · +'+(x.unlock==='mobile' ? (x.mob||0) : (x.con||0))+' '+T.ccDevPow)+'</em>'+btn+'</div>';
+      : '<button class="cc-chip" onclick="ccDevPick(\''+key+'\', \''+x.id+'\', \'shop\')">'+T.ccDevUseBtn+'</button>';
+    return '<div class="cc-dev-card'+(own ? ' own' : '')+(inUse ? ' on' : '')+(ccShopJustOn('item:'+x.id) ? ' just' : '')+'">'+ccShopImg(x, 'cc-dev-card-img')+
+      '<b>'+esc(T['ccShop'+x.id]||x.id)+'</b><em>'+esc(T['ccDevTier_'+(x.tier||'m')]+' · '+ccDevFx(x, T))+'</em>'+btn+'</div>';
   };
-  return tiers+['ps','xbox','android','ios'].map(s=>{
-    const list=CC_SHOP.filter(x=>x.slot===s && x.unlock && (CC_DEV_TIER==='all' || x.tier===CC_DEV_TIER)).sort((a,b)=>a.cost-b.cost);
+  return tiers+keys.map(s=>{
+    const list=CC_SHOP.filter(x=>x.slot===s && (x.unlock || x.cat) && (CC_DEV_TIER==='all' || x.tier===CC_DEV_TIER)).sort((a,b)=>a.cost-b.cost);
     if(!list.length) return '';
-    return '<h5 class="cc-dev-plat">'+esc(T['ccSlot_'+s]||s)+'</h5><div class="cc-dev-cat">'+list.map(card).join('')+'</div>'+(s==='xbox' ? '<div class="cc-lad-plat">'+ccPlatCalBtn('console')+'</div>' : s==='ios' ? '<div class="cc-lad-plat">'+ccPlatCalBtn('mobile')+'</div>' : '');
+    return '<h5 class="cc-dev-plat">'+esc(T['ccDevSlot_'+s]||T['ccSlot_'+s]||s)+'</h5><div class="cc-dev-cat">'+list.map(card).join('')+'</div>'+(s==='xbox' ? '<div class="cc-lad-plat">'+ccPlatCalBtn('console')+'</div>' : s==='ios' ? '<div class="cc-lad-plat">'+ccPlatCalBtn('mobile')+'</div>' : '');
   }).join('');
 }
 function ccShopAffordable(sec){
@@ -1641,8 +1641,9 @@ function careerShopHTML(){
       '<div class="ch-tile cc-shop"><h4>'+T.ccSecGear+'</h4><div class="cc-lads">'+
       CC_SHOP_SLOTS.map(s=>ccShopLadderHTML(s, fresh)).join('')+'</div></div>'+
       '<div class="ch-tile cc-shop"><h4>'+T.ccShopRooms+'</h4><div class="cc-buys">'+rooms.map(it=>ccShopRowHTML(it, fresh)).join('')+'</div></div>'+
-      '<div class="ch-tile cc-shop"><h4>'+T.ccShopConsoles+'</h4><div class="ch-hint">'+esc(T.ccShopDevHint)+'</div>'+ccMobRateLineHTML()+ccShopDevCatHTML()+
+      '<div class="ch-tile cc-shop"><h4>'+T.ccShopConsoles+'</h4><div class="ch-hint">'+esc(T.ccShopDevHint)+'</div>'+ccMobRateLineHTML()+ccShopDevCatHTML(['ps','xbox','android','ios'])+
         '</div>'+
+      '<div class="ch-tile cc-shop"><h4>'+T.ccShopAcc+'</h4>'+ccShopDevCatHTML(['mpad','ctl','mctl','mcool'])+'</div>'+
       careerCheatHTML();
   } else if(CC_SHOP_SEC==='home') body=careerFlatHTML()+careerMoveHTML();
   else if(CC_SHOP_SEC==='fame') body=careerOwnCupHTML()+careerMerchHTML()+careerCharityHTML();

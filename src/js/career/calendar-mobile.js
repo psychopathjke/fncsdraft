@@ -1072,7 +1072,7 @@ function ccPlatCalToggle(g){
 }
 // Выбрал при создании «мобайл» - телефон уже есть, мобильные капы открыты без покупки в магазине.
 function ccMobileOwn(){ try{ if(CAREER && CAREER.player && (CAREER.player.input==='mob' || CAREER.player.mobFree)) return true; return CC_SHOP.some(x=>x.unlock==='mobile' && careerOwns(x.id)); }catch(e){ return false; } }
-function ccMobileDevBonus(){ try{ const u=ccDevUse('mob'); if(u) return u.mob||0; return CC_SHOP.reduce((v,x)=>(x.unlock==='mobile' && careerOwns(x.id)) ? Math.max(v, x.mob||0) : v, 0); }catch(e){ return 0; } }
+function ccMobileDevBonus(){ try{ const acc=['mctl', 'mcool'].reduce((s,k)=>{ const e=ccDevEff(k); return s+((e && e.acc)||0); }, 0); const u=ccDevUse('mob'); if(u) return (u.mob||0)+acc; return acc+ CC_SHOP.reduce((v,x)=>(x.unlock==='mobile' && careerOwns(x.id)) ? Math.max(v, x.mob||0) : v, 0); }catch(e){ return 0; } }
 function ccMobileSelfPow(){
   const reg=ccCareerRegion(), me=[CAREER.player.handle||CAREER.player.nick||'-', CAREER.player.country||null, ccMobileOvr()];
   return Math.max(1, Math.round(careerTeam([ccMobileCard(me, reg)]).pow+ccMobileDevBonus()));

@@ -1435,17 +1435,33 @@ function ccLockerCheck(){
   }
   cr.lockSeen=cr.log.length; delete cr.lockAgain;
 }
-/* ШКАФЧИК ДЕВАЙСОВ (его слово 23.11): управление на ПК меняется в любой день, а на консольные и мобильные турниры
-   берётся выбранное устройство из купленных. Не выбрано или продано — лучшее из купленных, как было.
-   CAREER.gear.use={con:id, mob:id}. Мобайл, выбранный при создании, остаётся открытым (player.mobFree). */
-function ccDevOwned(kind){ return CC_SHOP.filter(x=>(kind==='con' ? (x.unlock==='ps' || x.unlock==='xbox') : x.unlock==='mobile') && careerOwns(x.id)); }
-function ccDevUse(kind){
-  try{ const g=CAREER && CAREER.gear, id=g && g.use && g.use[kind]; if(!id || !careerOwns(id)) return null;
+/* ШКАФЧИК ДЕВАЙСОВ (его слово 23.11): у каждого управления свой набор мест. Клавиатура и мышь: мышь, клавиатура, коврик,
+   наушники, монитор, ПК. Контроллер: консоль, контроллер, наушники. Мобайл: телефон или планшет, контроллер для телефона,
+   кулер. В каждом месте есть стандартный девайс без силы, дальше выбирается любой купленный. CAREER.gear.use[место]=id
+   или 'def' (стандартный); нет выбора - лучший купленный, как было до шкафчика. Купленное сразу надевается (careerBuy).
+   Навыки мыши, клавиатуры и коврика идут только на клавиатуре, контроллера - только на контроллере (careerGearSkill). */
+const CC_DEV_SETS={kbm:['mouse', 'keyboard', 'mpad', 'headset', 'monitor', 'pc'], pad:['con', 'ctl', 'headset'], mob:['mob', 'mctl', 'mcool']};
+// Место девайса: консоли и мобильные устройства - по платформе, остальное - по слоту магазина.
+function ccDevKey(x){ return x.unlock==='mobile' ? 'mob' : x.unlock ? 'con' : x.slot; }
+function ccDevOwned(key){ return CC_SHOP.filter(x=>ccDevKey(x)===key && careerOwns(x.id)); }
+function ccDevPow(x){ if(!x) return 0; if(x.unlock==='mobile') return x.mob||0; if(x.unlock) return x.con||0;
+  return x.skill ? Object.keys(x.skill).reduce((s,k)=>s+x.skill[k], 0) : (x.acc||0); }
+// Явно выбранное (или null): то, что ставит вкладка; 'def' - стандартный.
+function ccDevUse(key){
+  try{ const g=CAREER && CAREER.gear, id=g && g.use && g.use[key]; if(!id || id==='def' || !careerOwns(id)) return null;
     return CC_SHOP.find(x=>x.id===id) || null; }catch(e){ return null; }
 }
-function ccDevPick(kind, id, back){
+function ccDevIsDef(key){ const g=CAREER && CAREER.gear; return !!(g && g.use && g.use[key]==='def'); }
+// Что стоит в месте сейчас: выбранное, иначе лучший купленный (по рангу, как раньше), иначе стандартный (null).
+function ccDevEff(key){
+  if(ccDevIsDef(key)) return null;
+  const u=ccDevUse(key); if(u) return u;
+  return ccDevOwned(key).reduce((b,x)=>(!b || (x.rank||0)>(b.rank||0) || ((x.rank||0)===(b.rank||0) && ccDevPow(x)>ccDevPow(b))) ? x : b, null);
+}
+function ccDevPick(key, id, back){
   const g=CAREER.gear=CAREER.gear||{}; g.use=g.use||{};
-  if(id && careerOwns(id)) g.use[kind]=id; else delete g.use[kind];
+  if(id==='def') g.use[key]='def'; else if(id && careerOwns(id)) g.use[key]=id; else delete g.use[key];
+  try{ careerGearSkill(); }catch(e){}
   careerSave(); careerRenderHub(back||'devices');
 }
 function ccDevInput(k){
@@ -1453,26 +1469,35 @@ function ccDevInput(k){
   if(k==='mob' && !ccMobileOwn()) return;
   if(p.input==='mob' && k!=='mob') p.mobFree=true;
   p.input=(k==='pad' || k==='mob') ? k : 'kbm';
+  try{ careerGearSkill(); }catch(e){}
   careerSave(); careerRenderHub('devices');
+}
+function ccDevFx(x, T){
+  if(x.unlock) return '+'+ccDevPow(x)+' '+T.ccDevPow;
+  if(x.skill) return Object.keys(x.skill).map(k=>'+'+x.skill[k]+' '+(T[ATTR_LABEL[k]]||k.toUpperCase())).join(' · ');
+  if(x.acc) return '+'+x.acc+' '+T.ccDevPow;
+  if(x.train) return T.ccShopTrain+' +'+Math.round(x.train*100)+'%';
+  return '';
 }
 function ccDevLockerHTML(){
   if(!CAREER || !CAREER.career || !CAREER.player) return '';
   const T=L(), cur=ccInputOf(CAREER.player);
   const ins=['kbm', 'pad'].concat(ccMobileOwn() ? ['mob'] : []);
   const chips='<div class="cc-dev-in">'+ins.map(k=>'<button class="cc-chip'+(cur===k ? ' on' : '')+'" onclick="ccDevInput(\''+k+'\')">'+ccInputIcon(k)+'<span>'+esc(T['ccInput_'+k]||k)+'</span></button>').join('')+'</div>';
-  const row=kind=>{
-    const own=ccDevOwned(kind), u=ccDevUse(kind);
-    if(!own.length) return '<div class="ch-empty">'+T.ccDevNone+' <button class="cc-chip" onclick="careerTab(\'shop\')">'+T.ccDevShop+'</button></div>';
-    const fx=x=>kind==='con' ? '+'+(x.con||0)+' '+T.ccDevPow : '+'+(x.mob||0)+' '+T.ccDevPow;
-    const auto='<button class="cc-dev-it'+(u ? '' : ' on')+'" onclick="ccDevPick(\''+kind+'\', \'\')"><span class="cc-dev-auto">★</span><b>'+T.ccDevBest+'</b><em>'+T.ccDevBestSub+'</em></button>';
-    return '<div class="cc-dev-grid">'+auto+own.map(x=>'<button class="cc-dev-it'+(u && u.id===x.id ? ' on' : '')+'" onclick="ccDevPick(\''+kind+'\', \''+x.id+'\')">'+
+  const row=key=>{
+    const own=ccDevOwned(key).sort((a,b)=>a.cost-b.cost), eff=ccDevEff(key);
+    // Консоль и телефон: стандартный - это стартовый (PS4, Xbox One, простой Android), он и так в купленных.
+    const hasStarter=key==='con' || key==='mob';
+    const def=hasStarter ? '' : '<button class="cc-dev-it'+(eff ? '' : ' on')+'" onclick="ccDevPick(\''+key+'\', \'def\')"><span class="cc-dev-auto">'+(key==='ctl' ? ccInputIcon('pad') : key==='mctl' || key==='mcool' ? ccInputIcon('mob') : ccInputIcon('kbm'))+'</span><b>'+esc(T.ccDevStd)+'</b><em>+0 '+esc(T.ccDevPow)+'</em></button>';
+    const items=own.map(x=>'<button class="cc-dev-it'+(eff && eff.id===x.id ? ' on' : '')+'" onclick="ccDevPick(\''+key+'\', \''+x.id+'\')">'+
       (x.img ? '<img src="'+CC_DEVICE_DIR+x.img+'" alt="" loading="lazy" onerror="this.remove()">' : '')+
-      '<b>'+esc(T['ccShop'+x.id]||x.id)+'</b><em>'+esc((T['ccSlot_'+x.slot]||x.slot)+' · '+fx(x))+'</em></button>').join('')+'</div>';
+      '<b>'+esc(T['ccShop'+x.id]||x.id)+'</b><em>'+esc(ccDevFx(x, T))+'</em></button>').join('');
+    const more=CC_SHOP.some(x=>ccDevKey(x)===key && !careerOwns(x.id)) ? '<button class="cc-dev-it cc-dev-more" onclick="ccShopSec(\'gear\'); careerTab(\'shop\')"><span class="cc-dev-auto">+</span><b>'+esc(T.ccDevShop)+'</b></button>' : '';
+    return '<h5>'+esc(T['ccDevSlot_'+key]||T['ccSlot_'+key]||key)+'</h5><div class="cc-dev-grid">'+def+items+more+'</div>';
   };
   return '<div class="ch-tile cc-devlock"><h4>'+T.ccDevTitle+'</h4>'+
-    '<h5>'+T.ccDevPc+'</h5>'+chips+
-    '<h5>'+T.ccDevCon+'</h5>'+row('con')+
-    '<h5>'+T.ccDevMob+'</h5>'+row('mob')+'</div>';
+    '<h5>'+T.ccDevInputT+'</h5>'+chips+'<div class="ch-hint" style="margin-top:6px">'+esc(T['ccDevSetHint_'+cur])+'</div>'+
+    (CC_DEV_SETS[cur]||CC_DEV_SETS.kbm).map(row).join('')+'</div>';
 }
 function ccLockerHTML(){
   const cr=CAREER && CAREER.career; if(!cr) return '';

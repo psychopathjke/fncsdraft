@@ -1285,6 +1285,26 @@ const CC_SHOP=[
   {id:'ipada16',  cost:349,  img:'tablet-ipada16-shop.jpg',   slot:'ios', rank:1, unlock:'mobile', mob:1, tier:'b'},
   {id:'ipadmini', cost:499,  img:'tablet-ipadmini-shop.jpg',  slot:'ios', rank:1, unlock:'mobile', mob:2, tier:'m'},
   {id:'ipadair',  cost:599,  img:'tablet-ipadair-shop.jpg',   slot:'ios', rank:2, unlock:'mobile', mob:2, tier:'m'},
+  /* Коврики, контроллеры и аксессуары для телефона - каталогом (cat), покупаются в любом порядке, на место ставятся во
+     вкладке «Девайсы». Коврик - AIM на клавиатуре, контроллер - AIM и END на контроллере, аксессуар телефона - сила на
+     мобиле (acc). Цены США, числа решение, не замер. */
+  {id:'mpqck',     cost:30,  img:'mpad-qck-shop.jpg',       slot:'mpad', rank:1, cat:true, tier:'b', skill:{aim:1}},
+  {id:'mpg640',    cost:40,  img:'mpad-g640-shop.jpg',      slot:'mpad', rank:1, cat:true, tier:'b', skill:{aim:1}},
+  {id:'mpgigantus',cost:35,  img:'mpad-gigantus-shop.jpg',  slot:'mpad', rank:1, cat:true, tier:'b', skill:{aim:1}},
+  {id:'mpsaturn',  cost:60,  img:'mpad-saturn-shop.jpg',    slot:'mpad', rank:2, cat:true, tier:'m', skill:{aim:2}},
+  {id:'mphien',    cost:70,  img:'mpad-hien-shop.jpg',      slot:'mpad', rank:2, cat:true, tier:'f', skill:{aim:2}},
+  {id:'ctlxbox',   cost:65,  img:'ctl-xbox-shop.jpg',       slot:'ctl', rank:1, cat:true, tier:'b', skill:{aim:1, end:1}},
+  {id:'ctlds',     cost:75,  img:'ctl-dualsense-shop.jpg',  slot:'ctl', rank:1, cat:true, tier:'b', skill:{aim:1, end:1}},
+  {id:'ctlelite',  cost:180, img:'ctl-elite-shop.jpg',      slot:'ctl', rank:2, cat:true, tier:'m', skill:{aim:3, end:2}},
+  {id:'ctlwolv',   cost:200, img:'ctl-wolverine-shop.jpg',  slot:'ctl', rank:2, cat:true, tier:'m', skill:{aim:3, end:2}},
+  {id:'ctledge',   cost:200, img:'ctl-edge-shop.jpg',       slot:'ctl', rank:2, cat:true, tier:'m', skill:{aim:3, end:3}},
+  {id:'ctlbfg',    cost:180, img:'ctl-bfg-shop.jpg',        slot:'ctl', rank:3, cat:true, tier:'f', skill:{aim:4, end:3}},
+  {id:'ctlscuf',   cost:300, img:'ctl-scuf-shop.jpg',       slot:'ctl', rank:3, cat:true, tier:'f', skill:{aim:5, end:4}},
+  {id:'mctlg8',    cost:80,  img:'mctl-g8-shop.jpg',        slot:'mctl', rank:1, cat:true, tier:'b', acc:1},
+  {id:'mctlbb',    cost:100, img:'mctl-backbone-shop.jpg',  slot:'mctl', rank:1, cat:true, tier:'m', acc:1},
+  {id:'mctlkishi', cost:150, img:'mctl-kishi-shop.jpg',     slot:'mctl', rank:2, cat:true, tier:'f', acc:2},
+  {id:'mcoolbs',   cost:40,  img:'mcool-blackshark-shop.jpg', slot:'mcool', rank:1, cat:true, tier:'b', acc:1},
+  {id:'mcoolrz',   cost:60,  img:'mcool-razer-shop.jpg',    slot:'mcool', rank:1, cat:true, tier:'m', acc:1},
   // Chairs — stamina, from a $20 start to the one people buy with prize money.
   {id:'chair0',   cost:20,    cap:2,  img:'chair-old.jpg',    slot:'chair', rank:1},
   {id:'chair1',   cost:150,   cap:5,  img:'chair-ikea.jpg',   slot:'chair', rank:2},
@@ -1595,8 +1615,10 @@ function careerBuy(id, price){
   }
   // An upgrade in a slot pays only the difference: the old rig is replaced, not
   // stacked, so a desk cannot be worth more than the best thing standing on it.
-  if(item.slot && !item.unlock && ccShopSlotRank(item.slot)>=item.rank) return false;   // девайсы - каталог, любой порядок
+  if(item.slot && !item.unlock && !item.cat && ccShopSlotRank(item.slot)>=item.rank) return false;   // девайсы - каталог, любой порядок
   cr.balance-=cost;
+  // Купленный девайс сразу на своём месте в «Девайсах».
+  if(item.unlock || item.cat){ CAREER.gear=CAREER.gear||{own:[], train:0}; CAREER.gear.use=CAREER.gear.use||{}; CAREER.gear.use[ccDevKey(item)]=id; }
   careerGearAdd(item);
   // Консоль открывает консольные капы: календарь года собирается заново (ccVictoryList, CC_YEAR_DAYS).
   if(item.unlock){ CC_VICTORY_LIST=null; CC_YEAR_DAYS=null; }
@@ -2676,7 +2698,7 @@ function careerMovePanelHTML(){
 function ccShopVisible(){
   const seen={};
   return CC_SHOP.filter(function(it){
-    if(!it.slot || it.unlock) return true;   // девайсы - каталогом, видны все
+    if(!it.slot || it.unlock || it.cat) return true;   // девайсы - каталогом, видны все
     const have=ccShopSlotRank(it.slot);
     // The next rung up, or the top one when the slot is finished.
     const top=CC_SHOP.reduce((r,x)=>(x.slot===it.slot && x.rank>r) ? x.rank : r, 0);

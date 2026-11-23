@@ -1386,12 +1386,21 @@ function careerOrgKitOut(){
    rule the training bonus uses, so an upgrade replaces rather than stacks.
    Recounted from scratch on every change — buying and being kitted out both
    come through here — and read by careerCard. */
+// Девайсы (23.11): в месте шкафчика считается надетое (ccDevEff), мышь/клавиатура/коврик - не на контроллере, контроллер - только на нём.
+const CC_DEV_SKILL_SLOTS=['mouse', 'keyboard', 'mpad', 'headset', 'monitor', 'pc', 'ctl'];
 function careerGearSkill(){
   const bySlot={}, skill={};
   CC_SHOP.forEach(it=>{
     if(!it.skill || !careerOwns(it.id)) return;
     const key=it.slot||it.id;
+    if(CC_DEV_SKILL_SLOTS.indexOf(key)>=0) return;
     if(!bySlot[key] || (it.rank||0)>(bySlot[key].rank||0)) bySlot[key]=it;
+  });
+  const inp=(CAREER.player && CAREER.player.input)||'kbm';
+  CC_DEV_SKILL_SLOTS.forEach(k=>{
+    if(inp==='pad' ? (k==='mouse' || k==='keyboard' || k==='mpad') : k==='ctl') return;
+    let e=null; try{ e=ccDevEff(k); }catch(err){}
+    if(e && e.skill) bySlot[k]=e;
   });
   Object.values(bySlot).forEach(it=>{
     Object.keys(it.skill).forEach(k=>{ skill[k]=(skill[k]||0)+it.skill[k]; });
