@@ -184,7 +184,7 @@ const BOOT = `
     out.notes.rows = {shown: shown.length, ofItems: CC_SHOP.length,
                       ids: shown.map(i => i.id).join(',')};
     // The wide class contains the base class, so count the tags.
-    const imgs = (html.match(/<img class="cc-(buy|lad)-img/g) || []).length;
+    const imgs = (html.match(/<img class="cc-(buy|lad|dev-card)-img/g) || []).length;
     out.notes.photos = imgs;
     check('every row drawn carries its photo', imgs === shown.filter(i => i.img).length,
           imgs + ' of ' + shown.filter(i => i.img).length);

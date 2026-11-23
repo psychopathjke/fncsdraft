@@ -1250,22 +1250,41 @@ const CC_SHOP=[
   /* Консоли и мобильные — лесенкой, как ПК: одно устройство на платформу, следующая ступень заменяет прежнюю. Любая
      ступень открывает капы своей платформы (ccConsoleOk); con — сила на консольном вечере, mob — на мобильном (кадры
      и экран). Цены магазинные, con/mob решение, не замер. Фото с сайтов производителей. */
-  {id:'ps4',     cost:300, img:'console-ps4-shop.jpg',     slot:'ps',   rank:1, unlock:'ps',   con:0},
-  {id:'ps5',     cost:500, img:'console-ps5-shop.jpg',     slot:'ps',   rank:2, unlock:'ps',   con:1},
-  {id:'ps5pro',  cost:700, img:'console-ps5pro-shop.jpg',  slot:'ps',   rank:3, unlock:'ps',   con:2},
-  {id:'xboxone', cost:300, img:'console-xboxone-shop.jpg', slot:'xbox', rank:1, unlock:'xbox', con:0},
-  {id:'xboxs',   cost:380, img:'console-xboxs-shop.jpg',   slot:'xbox', rank:2, unlock:'xbox', con:1},
-  {id:'xbox',    cost:500, img:'console-xbox-shop.jpg',    slot:'xbox', rank:3, unlock:'xbox', con:2},
+  {id:'ps4',     cost:300, img:'console-ps4-shop.jpg',     slot:'ps',   rank:1, unlock:'ps',   con:0, tier:'b'},
+  {id:'ps5',     cost:500, img:'console-ps5-shop.jpg',     slot:'ps',   rank:2, unlock:'ps',   con:1, tier:'m'},
+  {id:'ps5pro',  cost:700, img:'console-ps5pro-shop.jpg',  slot:'ps',   rank:3, unlock:'ps',   con:2, tier:'f'},
+  {id:'xboxone', cost:300, img:'console-xboxone-shop.jpg', slot:'xbox', rank:1, unlock:'xbox', con:0, tier:'b'},
+  {id:'xboxs',   cost:380, img:'console-xboxs-shop.jpg',   slot:'xbox', rank:2, unlock:'xbox', con:1, tier:'m'},
+  {id:'xbox',    cost:500, img:'console-xbox-shop.jpg',    slot:'xbox', rank:3, unlock:'xbox', con:2, tier:'f'},
   /* Мобильные двумя ветками, как PlayStation и Xbox (его «разделение андроид или айфон»): любая открывает мобильные капы,
      сила на мобиле — лучшая из купленных (ccMobileDevBonus). Последние модели ноября 2026, цены США: S26 Ultra и
      iPhone 18 Pro Max по $1299, iPad Pro M5 13" $1499 после июньского подорожания. */
-  {id:'phonebase', cost:449,  img:'phone-android-shop.jpg',  slot:'android', rank:1, unlock:'mobile', mob:0},
-  {id:'s26u',      cost:1299, img:'phone-s26u-shop.jpg',     slot:'android', rank:2, unlock:'mobile', mob:2},
+  {id:'phonebase', cost:449,  img:'phone-android-shop.jpg',  slot:'android', rank:1, unlock:'mobile', mob:0, tier:'b'},
+  {id:'s26u',      cost:1299, img:'phone-s26u-shop.jpg',     slot:'android', rank:2, unlock:'mobile', mob:2, tier:'f'},
   // Планшет Android (его «а планшет андроид»): Galaxy Tab S12 Ultra, в продаже с 7.10.2026 за $1399. Фото S12 на Commons
   // ещё нет, на картинке S11 Ultra того же корпуса (без таблички с названием).
-  {id:'tabultra',  cost:1399, img:'tablet-tabultra-shop.jpg', slot:'android', rank:3, unlock:'mobile', mob:3},
-  {id:'phone',     cost:1299, img:'phone-iphone18-shop.jpg', slot:'ios',     rank:1, unlock:'mobile', mob:2},
-  {id:'ipad',      cost:1499, img:'tablet-ipadm5-shop.jpg',  slot:'ios',     rank:2, unlock:'mobile', mob:3},
+  {id:'tabultra',  cost:1399, img:'tablet-tabultra-shop.jpg', slot:'android', rank:3, unlock:'mobile', mob:3, tier:'f'},
+  {id:'phone',     cost:1299, img:'phone-iphone18-shop.jpg', slot:'ios',     rank:1, unlock:'mobile', mob:2, tier:'f'},
+  {id:'ipad',      cost:1499, img:'tablet-ipadm5-shop.jpg',  slot:'ios',     rank:2, unlock:'mobile', mob:3, tier:'f'},
+  /* Каталог девайсов (его слово 23.11: «больше выбор, разные компании и ценовые категории»). Покупаются в любом порядке,
+     на турнир идёт выбранный во вкладке «Девайсы» или лучший. Цены США на конец 2026, сила решение, не замер. */
+  {id:'ps4pro',   cost:350,  img:'console-ps4pro-shop.jpg',   slot:'ps',   rank:1, unlock:'ps',   con:0, tier:'b'},
+  {id:'ps5dig',   cost:450,  img:'console-ps5dig-shop.jpg',   slot:'ps',   rank:2, unlock:'ps',   con:1, tier:'m'},
+  {id:'xboxonex', cost:350,  img:'console-xboxonex-shop.jpg', slot:'xbox', rank:1, unlock:'xbox', con:0, tier:'b'},
+  {id:'xboxsxd',  cost:600,  img:'console-xboxsxd-shop.jpg',  slot:'xbox', rank:3, unlock:'xbox', con:2, tier:'f'},
+  {id:'a56',      cost:499,  img:'phone-a56-shop.jpg',        slot:'android', rank:1, unlock:'mobile', mob:1, tier:'b'},
+  {id:'pixel10',  cost:799,  img:'phone-pixel10-shop.jpg',    slot:'android', rank:2, unlock:'mobile', mob:1, tier:'m'},
+  {id:'oneplus15',cost:899,  img:'phone-oneplus15-shop.jpg',  slot:'android', rank:2, unlock:'mobile', mob:2, tier:'m'},
+  {id:'rog9',     cost:1199, img:'phone-rog9-shop.jpg',       slot:'android', rank:3, unlock:'mobile', mob:3, tier:'f'},
+  {id:'xpad7',    cost:399,  img:'tablet-xpad7-shop.jpg',     slot:'android', rank:1, unlock:'mobile', mob:1, tier:'b'},
+  {id:'tabs10fe', cost:499,  img:'tablet-tabs10fe-shop.jpg',  slot:'android', rank:1, unlock:'mobile', mob:1, tier:'b'},
+  {id:'legion',   cost:549,  img:'tablet-legion-shop.jpg',    slot:'android', rank:2, unlock:'mobile', mob:2, tier:'m'},
+  {id:'iphone16e',cost:599,  img:'phone-iphone16e-shop.jpg',  slot:'ios', rank:1, unlock:'mobile', mob:1, tier:'b'},
+  {id:'iphone17', cost:799,  img:'phone-iphone17-shop.jpg',   slot:'ios', rank:1, unlock:'mobile', mob:1, tier:'m'},
+  {id:'iphoneair',cost:999,  img:'phone-iphoneair-shop.jpg',  slot:'ios', rank:1, unlock:'mobile', mob:2, tier:'m'},
+  {id:'ipada16',  cost:349,  img:'tablet-ipada16-shop.jpg',   slot:'ios', rank:1, unlock:'mobile', mob:1, tier:'b'},
+  {id:'ipadmini', cost:499,  img:'tablet-ipadmini-shop.jpg',  slot:'ios', rank:1, unlock:'mobile', mob:2, tier:'m'},
+  {id:'ipadair',  cost:599,  img:'tablet-ipadair-shop.jpg',   slot:'ios', rank:2, unlock:'mobile', mob:2, tier:'m'},
   // Chairs — stamina, from a $20 start to the one people buy with prize money.
   {id:'chair0',   cost:20,    cap:2,  img:'chair-old.jpg',    slot:'chair', rank:1},
   {id:'chair1',   cost:150,   cap:5,  img:'chair-ikea.jpg',   slot:'chair', rank:2},
@@ -1482,7 +1501,12 @@ const CC_DEVICE_DIR='devices/';
 function ccShopSlotRank(slot){
   return CC_SHOP.reduce((r,it)=>(it.slot===slot && careerOwns(it.id) && it.rank>r) ? it.rank : r, 0);
 }
-function careerOwns(id){ return !!(CAREER.gear && CAREER.gear.own && CAREER.gear.own.indexOf(id)>=0); }
+// Стартовые девайсы (его слово 23.11): самые дешёвые консоли и телефон есть у всех с первого дня.
+const CC_DEV_STARTER=['ps4', 'xboxone', 'phonebase'];
+function careerOwns(id){ return CC_DEV_STARTER.indexOf(id)>=0 || !!(CAREER.gear && CAREER.gear.own && CAREER.gear.own.indexOf(id)>=0); }
+// Куплено ли в группе что-то кроме стартового: от этого зависит, идут ли капы платформы в календарь по умолчанию.
+function ccDevBought(g){ const own=(CAREER && CAREER.gear && CAREER.gear.own)||[];
+  return CC_SHOP.some(x=>own.indexOf(x.id)>=0 && CC_DEV_STARTER.indexOf(x.id)<0 && (g==='mobile' ? x.unlock==='mobile' : (x.unlock==='ps' || x.unlock==='xbox'))); }
 // A career date the way the calendar writes one: "14 мар" / "14 Mar".
 /* The year on screen is the season the career is in.
 
@@ -1571,7 +1595,7 @@ function careerBuy(id, price){
   }
   // An upgrade in a slot pays only the difference: the old rig is replaced, not
   // stacked, so a desk cannot be worth more than the best thing standing on it.
-  if(item.slot && ccShopSlotRank(item.slot)>=item.rank) return false;
+  if(item.slot && !item.unlock && ccShopSlotRank(item.slot)>=item.rank) return false;   // девайсы - каталог, любой порядок
   cr.balance-=cost;
   careerGearAdd(item);
   // Консоль открывает консольные капы: календарь года собирается заново (ccVictoryList, CC_YEAR_DAYS).
@@ -2652,7 +2676,7 @@ function careerMovePanelHTML(){
 function ccShopVisible(){
   const seen={};
   return CC_SHOP.filter(function(it){
-    if(!it.slot) return true;
+    if(!it.slot || it.unlock) return true;   // девайсы - каталогом, видны все
     const have=ccShopSlotRank(it.slot);
     // The next rung up, or the top one when the slot is finished.
     const top=CC_SHOP.reduce((r,x)=>(x.slot===it.slot && x.rank>r) ? x.rank : r, 0);

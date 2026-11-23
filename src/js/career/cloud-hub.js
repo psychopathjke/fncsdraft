@@ -969,8 +969,8 @@ function careerSlotDrop(n){
 let CH_TAB='centre';
 /* Группы вкладок (22.11): шесть главных в полосе, остальные подвкладками сверху тела (ccSubTabsHTML). Первая в списке -
    главная, её кнопка стоит в полосе. Ключи вкладок не менялись: сейвы и переходы careerTab('shop') и т.д. работают. */
-const CC_TAB_GROUPS={calendar:['calendar', 'table'], items:['items', 'shop', 'bp', 'locker'], me:['me', 'log', 'hist']};
-const CC_SUB_KEY={calendar:'chTabCalendar', table:'chTabBoards', items:'chTabItems', shop:'chTabShop', bp:'chTabBp', locker:'chTabLocker', me:'chTabMe', log:'chTabLog', hist:'chTabHist'};
+const CC_TAB_GROUPS={calendar:['calendar', 'table'], items:['items', 'shop', 'devices', 'bp', 'locker'], me:['me', 'log', 'hist']};
+const CC_SUB_KEY={calendar:'chTabCalendar', table:'chTabBoards', items:'chTabItems', shop:'chTabShop', devices:'ccDevTitle', bp:'chTabBp', locker:'chTabLocker', me:'chTabMe', log:'chTabLog', hist:'chTabHist'};
 function ccTabGroupOf(t){ for(const g in CC_TAB_GROUPS) if(CC_TAB_GROUPS[g].indexOf(t)>=0) return g; return t; }
 // Не ccSubTabsHTML: так зовутся подвкладки «Таблиц» (PR/статистика/игроки) ниже.
 function ccGrpTabsHTML(t){
@@ -1732,6 +1732,7 @@ function careerRenderHubBody(tab){
   if(CH_TAB==='items'){ body.innerHTML='<div class="ch-grid" style="grid-template-columns:minmax(0,1fr);">'+ccFnShopHTML()+'</div>'; return; }
   // 19.10 вечером шкафчик вернулся своей вкладкой (его «шкафчик верни, он должен быть отдельным»), не внутри Медиа/Профиля.
   // Батл пасс сезона — рядом со шкафчиком.
+  if(CH_TAB==='devices'){ body.innerHTML='<div class="ch-grid" style="grid-template-columns:minmax(0,1fr);">'+ccDevLockerHTML()+'</div>'; return; }
   if(CH_TAB==='bp'){ body.innerHTML='<div class="ch-grid cc-bp" style="grid-template-columns:minmax(0,1fr);">'+ccBpHTML()+'</div>'; return; }
   if(CH_TAB==='locker'){ if(!CC_FN_PICK) CC_FN_PICK='o'; body.innerHTML='<div class="ch-grid" style="grid-template-columns:minmax(0,1fr);">'+ccLockerHTML()+'</div>'; return; }
   /* Задачи клуба и месяца (ccGoalsTileHTML) - во вкладке «Клуб», а не в «Тренировке» (22.11, Notion «20.11»: «это лишнее

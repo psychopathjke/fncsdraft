@@ -4812,3 +4812,9 @@ Object.assign(I18N.es=I18N.es||{},
 /* Дозаливка «es» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
 Object.assign(I18N.es=I18N.es||{},
 ({ccDevTitle:"Dispositivos", ccDevPc:"Control en PC", ccDevCon:"Consola en torneos", ccDevMob:"Móvil o tablet en torneos", ccDevNone:"Aún no has comprado nada.", ccDevShop:"A la tienda", ccDevBest:"El mejor", ccDevBestSub:"elegido por ti", ccDevPow:"de fuerza"}));
+/* Дозаливка «es» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
+Object.assign(I18N.es=I18N.es||{},
+({ccDevTier_all:"Todos", ccDevTier_b:"Económico", ccDevTier_m:"Gama media", ccDevTier_f:"Gama alta", ccDevUseBtn:"Usar en torneos", ccDevInUse:"En uso", ccShopps4pro:"PlayStation 4 Pro", ccShopps5dig:"PlayStation 5 Digital Edition", ccShopxboxonex:"Xbox One X", ccShopxboxsxd:"Xbox Series X Digital", ccShopa56:"Galaxy A56", ccShoppixel10:"Pixel 10", ccShoponeplus15:"OnePlus 15", ccShoprog9:"ROG Phone 9 Pro", ccShopxpad7:"Xiaomi Pad 7", ccShoptabs10fe:"Galaxy Tab S10 FE", ccShoplegion:"Lenovo Legion Tab", ccShopiphone16e:"iPhone 16e", ccShopiphone17:"iPhone 17", ccShopiphoneair:"iPhone Air", ccShopipada16:"iPad (A16)", ccShopipadmini:"iPad mini", ccShopipadair:"iPad Air M3"}));
+/* Дозаливка «es» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
+Object.assign(I18N.es=I18N.es||{},
+({ccShopDevHint:"Las consolas y los móviles abren sus propias cups. Compra cualquier modelo en cualquier orden: en los torneos va el elegido en la pestaña Dispositivos, o el mejor. Un dispositivo más fuerte da más fuerza. El móvil tiene su propia escena y ranking."}));

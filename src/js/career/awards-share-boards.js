@@ -3243,7 +3243,7 @@ function ccNextYearEvents(){
   const mp=typeof ccMpOn==='function' && ccMpOn();
   return CC_NEXT_YEAR_EVENTS.filter(v=>!(mp && v.fight));
 }
-function ccVictoryListKey(){ let cn=''; try{ cn=(ccShopSlotRank('ps')?'p':'')+(ccShopSlotRank('xbox')?'x':'')+(ccMobileOwn()?'m':''); const ms=CAREER && CAREER.career && CAREER.career.mobSer; if(ms) cn+='|'+ms.next+ms.until+(ms.heat||'');
+function ccVictoryListKey(){ let cn=''; try{ cn=(ccShopSlotRank('ps')?'p':'')+(ccShopSlotRank('xbox')?'x':'')+(ccMobileOwn()?'m':'')+(ccPlatCalOn('console')?'C':'')+(ccPlatCalOn('mobile')?'M':''); const ms=CAREER && CAREER.career && CAREER.career.mobSer; if(ms) cn+='|'+ms.next+ms.until+(ms.heat||'');
   const gs=CAREER && CAREER.career && CAREER.career.mobGS; if(gs) cn+='|'+gs.stage+(gs.grp||''); if(CAREER && CAREER.career && CAREER.career.mobLcq) cn+='|l'+CAREER.career.mobLcq; cn+='|'+(ccPlatCalOn('console')?1:0)+(ccPlatCalOn('mobile')?1:0); }catch(e){}
   return ccCalYear()+'|'+ccYearShift()+'|'+((typeof ccMpOn==='function' && ccMpOn()) ? 1 : 0)+'|'+ccOwnCupsVer()+'|z'+((CAREER && CAREER.career && CAREER.career.size)||2)+'|'+cn; }
 /* Остальные денежные капы года — всё, что в архиве Tracker платило деньгами (ecomm в

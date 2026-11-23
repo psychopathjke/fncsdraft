@@ -1063,7 +1063,9 @@ function ccMobilePen(){ const pc=(CAREER && CAREER.player && CAREER.player.ovr)|
    в календаре»): cr.platCal={console:bool, mobile:bool}, по умолчанию вкл. Выключено — капы этой платформы не идут в календарь
    (ccVictoryList), устройство остаётся. Переключатель — на купленном устройстве в магазине. */
 function ccPlatGroup(n){ return n==='mobile' ? 'mobile' : n ? 'console' : null; }
-function ccPlatCalOn(g){ const p=CAREER && CAREER.career && CAREER.career.platCal; return !(p && p[g]===false); }
+// Пока стоит только стартовый девайс, капы платформы в календарь не лезут; включаются галочкой или покупкой.
+function ccPlatCalOn(g){ const p=CAREER && CAREER.career && CAREER.career.platCal; if(p && p[g]!=null) return !!p[g];
+  try{ return !!(ccDevBought(g) || (g==='mobile' && CAREER.player && (CAREER.player.input==='mob' || CAREER.player.mobFree))); }catch(e){ return true; } }
 function ccPlatCalToggle(g){
   const cr=CAREER.career; cr.platCal=cr.platCal||{}; cr.platCal[g]=!ccPlatCalOn(g);
   CC_VICTORY_LIST=null; CC_YEAR_DAYS=null; careerSave(); careerRenderHub('shop');

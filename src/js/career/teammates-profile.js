@@ -1443,17 +1443,17 @@ function ccDevUse(kind){
   try{ const g=CAREER && CAREER.gear, id=g && g.use && g.use[kind]; if(!id || !careerOwns(id)) return null;
     return CC_SHOP.find(x=>x.id===id) || null; }catch(e){ return null; }
 }
-function ccDevPick(kind, id){
+function ccDevPick(kind, id, back){
   const g=CAREER.gear=CAREER.gear||{}; g.use=g.use||{};
   if(id && careerOwns(id)) g.use[kind]=id; else delete g.use[kind];
-  careerSave(); careerRenderHub('locker');
+  careerSave(); careerRenderHub(back||'devices');
 }
 function ccDevInput(k){
   const p=CAREER.player; if(!p) return;
   if(k==='mob' && !ccMobileOwn()) return;
   if(p.input==='mob' && k!=='mob') p.mobFree=true;
   p.input=(k==='pad' || k==='mob') ? k : 'kbm';
-  careerSave(); careerRenderHub('locker');
+  careerSave(); careerRenderHub('devices');
 }
 function ccDevLockerHTML(){
   if(!CAREER || !CAREER.career || !CAREER.player) return '';
@@ -1489,7 +1489,7 @@ function ccLockerHTML(){
       ? '<img class="cc-lock-axe" src="'+CC_PICKAXE_ART+'" alt="" loading="lazy">' : '<i>'+(CC_LOCKER_ICON[it.kind]||'🎁')+'</i>';
     return '<span class="cc-lock-art"'+bg+'>'+top+'</span>';
   };
-  return ccDevLockerHTML()+ccFnLoadoutHTML()+'<div class="ch-tile cc-locker"><h4>'+L().ccLockerTitle+'</h4>'+(items.length
+  return ccFnLoadoutHTML()+'<div class="ch-tile cc-locker"><h4>'+L().ccLockerTitle+'</h4>'+(items.length
     ? '<div class="cc-locker-grid">'+items.map(it=>'<div class="cc-lock-it cc-lock-'+it.kind+'" title="'+esc(it.name)+'"><span class="cc-lock-ic">'+ic(it)+
         '</span><b>'+esc(it.name)+'</b><em>'+esc(it.club ? L().ccLockClub+(it.now ? ' · '+L().ccLockNow : '') : (L()['ccLock_'+it.kind]||it.kind))+(it.x>1 ? ' ×'+it.x : '')+'</em></div>').join('')+'</div>'
     : '<div class="ch-empty">'+L().ccLockerNone+'</div>')+'</div>';
