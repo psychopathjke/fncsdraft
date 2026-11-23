@@ -469,6 +469,17 @@ const CC_XREG_MS={'EU|NAC':92, 'EU|NAW':151, 'EU|BR':204, 'EU|ME':85, 'EU|ASIA':
   'NAW|BR':178, 'NAW|ME':220, 'NAW|ASIA':104, 'NAW|OCE':145,
   'BR|ME':276, 'BR|ASIA':259, 'BR|OCE':317, 'ME|ASIA':166, 'ME|OCE':191, 'ASIA|OCE':110};
 function ccXregMs(a, b){ return a===b ? 0 : (CC_XREG_MS[a+'|'+b] || CC_XREG_MS[b+'|'+a] || 150); }
+/* Пинг до чужого сервера по стране (его слово 23.11: «силу в зависимости от страны в старте карьеры»): страна есть в таблице
+   того региона (Турция в ME, штаты в NAC/NAW) - её пинг оттуда; иначе пинг между серверами плюс половина того, насколько
+   страна дальше 10 мс от своего сервера (Москва до NAC дальше Франкфурта). Оценка, не замер. */
+function ccCountryMs(code, from, to){
+  if(from===to) return 0;
+  const base=ccXregMs(from, to); if(!code) return base;
+  const direct=ccPingOf(code, to); if(direct!=null) return direct;
+  const own=ccPingOf(code, from);
+  return base+(own!=null ? Math.max(0, Math.round((own-10)/2)) : 0);
+}
+function ccMyAwayMs(reg){ const pl=CAREER && CAREER.player; return ccCountryMs(pl ? (pl.livesIn||pl.country) : null, ccCareerRegion(), reg); }
 // Свой пинг-бонус на чужом сервере пропадает (ccPingNow отдаёт межрегиональный пинг) и сверху минус сила:
 // 1 за каждые 4 мс после 20, до 35. NAC -18, ME -16, NAW -33, дальше -35.
 const CC_AWAY_PEN_MAX=35;
@@ -605,7 +616,7 @@ function ccAwayRowHTML(day, late, strip){
   const head='<div class="cc-aw-h">'+(late ? '<i class="cc-aw-live"></i>' : '')+'<b>'+esc(late ? T.awLateT : T.awHT)+'</b>'+
     '<small>'+esc(T.awCost(CC_AWAY_ENERGY))+'</small></div>';
   const rows=regs.map(r=>{
-    const why=ccAwayWhy(r, day), ms=ccXregMs(home, r), kind=ccAwayKind(r, day);
+    const why=ccAwayWhy(r, day), ms=ccMyAwayMs(r), kind=ccAwayKind(r, day);
     // Что именно играется там и в каком дивизионе, той же плашкой, что «Solo · Division 1» на карточке вечера.
     // Perf Eval и финал недели идут в Д1 региона, кап дивизиона — в своём дивизионе там (ccAwayDiv).
     const evName=kind==='cup' ? T.ccCupLive : kind==='eval' ? T.calPerfEval : kind==='final' ? T.calWeeklyFinal
@@ -620,9 +631,7 @@ function ccAwayRowHTML(day, late, strip){
     let art=''; try{ art=ccLogArt({day:day, kind:kind, div:evDiv||1})||''; }catch(e){}
     // Напарник из игроков этого региона (ccPplOpen): кто позван, или кнопка позвать. Только там, где нужен напарник.
     const amR=ccAwayMateFor(r, day), amH=amR && amR.rec && amR.rec.card ? ccHandle(amR.rec.card.handle||'') : '';
-    const evA=kind==='victory' ? ccAwayEv(r, day) : null;
-    const soloA=evA ? (evA.mode==='solo' || ccPickFormat(evA)===1) : (kind==='cup' && typeof ccSoloDivCupOn==='function' && ccSoloDivCupOn());
-    const awMate=(careerMateSeats()>0 && !soloA && kind!=='eval' &&(!closed || why==='mate') && typeof ccPplOpen==='function')
+    const awMate=(typeof ccAwayMateKind==='function' && ccAwayMateKind(r, day) && (!closed || why==='mate') && typeof ccPplOpen==='function')
       ? '<button class="cc-aw-mate" type="button" onclick="ccPplOpen(\'away\',\''+r+'\',\''+day+'\')">'+esc(amH ? T.pplAwayWith(amH) : T.pplAwayPick(regionName(r)))+'</button>' : '';
     const ic=art ? '<span class="cc-aw-ic"><img src="'+esc(art)+'" alt="" loading="lazy" onerror="this.parentNode.remove()"></span>' : '';
     return '<div class="cc-aw-r'+(closed ? ' off' : '')+'">'+ic+'<div class="cc-aw-n"><b>'+esc(regionName(r))+(slot[r] ? ' <span class="cc-aw-t">'+esc(hm(slot[r]))+'</span>' : '')+'</b>'+
@@ -630,7 +639,8 @@ function ccAwayRowHTML(day, late, strip){
       '<button class="cc-awayb cc-aw-go" type="button"'+(closed ? ' disabled' : '')+' onclick="ccAwayPlay(\''+r+'\',\''+day+'\')">'+esc(st)+'</button></div>';
   }).join('');
   // strip — в карточке вечера: регионы одной полосой вбок (.cc-aw-strip), см. CSS .ch-art-in .cc-aw.
-  return '<div class="cc-away cc-aw'+(late ? ' cc-away-late cc-aw-late' : '')+'">'+head+(strip ? '<div class="cc-aw-strip">'+rows+'</div>' : rows)+afterHTML+'</div>';
+  const offer=!late && typeof ccAwOfferHubHTML==='function' ? ccAwOfferHubHTML() : '';
+  return '<div class="cc-away cc-aw'+(late ? ' cc-away-late cc-aw-late' : '')+'">'+head+offer+(strip ? '<div class="cc-aw-strip">'+rows+'</div>' : rows)+afterHTML+'</div>';
 }
 function ccAwayHTML(strip){
   try{ if(ccVictoryLocked()) return ''; return ccAwayRowHTML(careerToday(), false, strip); }catch(e){ return ''; }
@@ -653,14 +663,16 @@ function ccAwayLateHTML(){
   try{ if(ccVictoryLocked()) return ''; const d=ccAwayCarryDay(); return d ? ccAwayRowHTML(d, true) : ''; }catch(e){ return ''; }
 }
 // Позванный на выезд из Discord: {reg, day, rec} в cr.awayMate, только на этот регион и день.
+// Пара на неделю (week): вторая сессия Д1, финал недели и Performance того региона - с тем же человеком.
 function ccAwayMateFor(reg, day){
-  const cr=CAREER && CAREER.career, a=cr && cr.awayMate;
-  return (a && a.reg===reg && a.day===(day||careerToday()) && a.rec) ? a : null;
+  const cr=CAREER && CAREER.career, a=cr && cr.awayMate; day=day||careerToday();
+  if(!a || a.reg!==reg || !a.rec) return null;
+  return (a.day===day || (a.week && a.week===careerMonday(day))) ? a : null;
 }
 async function ccAwayPlay(reg, day){
   day=day||careerToday();
   if(CAREER_RUN || ccAwayWhy(reg, day)) return;
-  const cr=CAREER.career, today=careerToday(), home=ccCareerRegion(), ms=ccXregMs(home, reg);
+  const cr=CAREER.career, today=careerToday(), home=ccCareerRegion(), ms=ccMyAwayMs(reg);
   const kind=ccAwayKind(reg, day), ev=kind==='victory' ? ccAwayEv(reg, day) : null, slot=ccAwaySlot(reg, day);
   const n0=(cr.log||[]).length, was=CC_REGION_AS;
   let paid=false, awayKeepPartners=undefined;
@@ -695,7 +707,7 @@ async function ccAwayPlay(reg, day){
     await careerPlayRun(next);
   } finally {
     CC_REGION_AS=was; CC_AWAY=null;
-    if(awayKeepPartners!==undefined){ CAREER.partners=awayKeepPartners; awayKeepPartners=undefined; if(cr.awayMate) delete cr.awayMate; careerSave(); }
+    if(awayKeepPartners!==undefined){ CAREER.partners=awayKeepPartners; awayKeepPartners=undefined; if(cr.awayMate && !cr.awayMate.week) delete cr.awayMate; careerSave(); }
     if(day!==today) cr.day=today;
     cr.division=homeDiv;
     if(kind==='final'){ if(paid && !cr.wf && cr.regWf) delete cr.regWf[reg]; cr.wf=homeWf; if(homeWf===undefined) delete cr.wf; }
@@ -818,7 +830,7 @@ async function runCareerEval(){
   you.name=L().yourTeamPrefix+teamLabel(drafted); you.isYou=true;
   if(CC_AWAY) you.pow=Math.max(1, Math.round(you.pow-CC_AWAY.pen));   // чужой сервер: пинг (ccAwayPen)
   // The evaluation's room and its cut are this season's, like every other night.
-  const field=[you, ...careerCupField(cr, drafted, ccTeams(CAREER_CUP_FIELD))];
+  const field=[you, ...ccTravelers(careerCupField(cr, drafted, ccTeams(CAREER_CUP_FIELD)), 'eval', 'eval|'+careerToday(), drafted, false)];
   const evalCut=ccTeams(CC_EVAL_CUT);
 
   // Round 1: the ordinary ladder, a kill worth one.

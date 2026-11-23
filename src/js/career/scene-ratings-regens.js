@@ -4505,3 +4505,54 @@ function ccOrgEarn(name){
   return v==null ? null : v;
 }
 function ccOrgEarnLevel(usd){ return 82+8*Math.log10(usd/1e5); }
+
+/* Боты на выезде (его слово 23.11: «пусть другие боты играют на разных капах, которые можно, но не все: с NAC могут играть
+   EU перфоманс, дивижен капы и тд»). В поле капа без регион-лока (Д1 капа дивизиона, Performance, Victory/Cash-кап по
+   ccAwayFits) часть хвоста поля - пары сильнейших из соседних регионов (CC_TRAVEL_NB, по пингу cloudping). Доля мала
+   (CC_TRAVEL_SHARE), берутся из верха их пула (про гриндят чужие сервера), выбор детерминирован по salt, поэтому Д1
+   во вторник видит тех же, что в понедельник (копилка). В командной игре и гонке выключено (поле сверяется у двоих).
+   Сила минус штраф пинга, как у игрока на выезде. Трио/сквад-год не трогаем: у пар соседей нет третьих. Числа - решение, не замер. */
+const CC_TRAVEL_NB={EU:['NAC', 'ME'], NAC:['EU', 'NAW', 'BR'], NAW:['NAC', 'OCE', 'ASIA'], BR:['NAC', 'EU'], ME:['EU', 'ASIA'], ASIA:['OCE', 'ME'], OCE:['ASIA', 'NAW']};
+const CC_TRAVEL_SHARE={cup:0.05, eval:0.06, victory:0.03}, CC_TRAVEL_MAX=14, CC_TRAVEL_TOP=40;
+function ccTravelOff(){
+  return (typeof ccMpOn==='function' && ccMpOn()) || (typeof ccRaceLock==='function' && ccRaceLock()) ||
+    (typeof ccRaceOn==='function' && ccRaceOn()) || (typeof CC_WORLD!=='undefined' && CC_WORLD);
+}
+function ccTravelers(field, kind, salt, mine, open){
+  try{
+    if(!Array.isArray(field) || !field.length || ccTravelOff()) return field;
+    // Размер команды - по самому полю (соло-кап в дуо-год садит одиночек).
+    const per=((field.find(t=>t && t.squad)||{}).squad||[]).length; if(per<1 || per>2) return field;
+    const home=ccPoolRegion(), nb=(CC_TRAVEL_NB[home]||[]).filter(r=>CC_REGIONS.indexOf(r)>=0);
+    if(!nb.length) return field;
+    const n=Math.min(CC_TRAVEL_MAX, Math.round(field.length*(CC_TRAVEL_SHARE[kind]||0)));
+    if(n<1) return field;
+    const rnd=careerRng(ccHashStr('travel|'+kind+'|'+home+'|'+String(salt||careerToday())+'|'+(CAREER.career.season||0)));
+    const taken=new Set((mine||[]).map(c=>c && (c._k||hKey(c))));
+    field.forEach(t=>(t.squad||[]).forEach(c=>{ if(c) taken.add(c._k||hKey(c)); }));
+    const out=[];
+    for(let i=0; i<n*3 && out.length<n; i++){
+      const reg=nb[Math.floor(rnd()*nb.length)];
+      const t=ccAsRegion(reg, ()=>{
+        const duos=((careerPools()||{}).duos||[]).slice().sort((a,b)=>ccDuoOvr(b)-ccDuoOvr(a)).slice(0, CC_TRAVEL_TOP);
+        if(!duos.length) return null;
+        const d=duos[Math.floor(rnd()*duos.length)];
+        let cards=(d.cards||[]).filter(Boolean);
+        if(per===1) cards=[cards[Math.floor(rnd()*cards.length)]].filter(Boolean);
+        if(!cards.length || cards.some(c=>taken.has(c._k||hKey(c)))) return null;
+        const tm=careerTeam(cards, false, open); tm.name=teamLabel(cards); tm.travel=reg;
+        // Чужой сервер и для них: пинг между регионами срезает силу так же, как игроку на выезде (ccAwayPen).
+        let nat=''; try{ nat=ccDuoNatCode({card:cards[0]}); }catch(e){}
+        const ms=ccCountryMs(nat||null, reg, home); tm.ping=ms; tm.pow=Math.max(1, Math.round(tm.pow-ccAwayPen(ms)));
+        cards.forEach(c=>taken.add(c._k||hKey(c)));
+        return tm;
+      });
+      if(t) out.push(t);
+    }
+    if(!out.length) return field;
+    // Хвост поля (добор лестницей), а не записанные пары: свои про остаются.
+    return field.slice(0, Math.max(0, field.length-out.length)).concat(out);
+  }catch(e){ return field; }
+}
+// Victory/Cash-кап: соседи только там, где можно и на выезде (ccAwayFits), и не на консольных/мобильных.
+function ccVicTravel(ev, field, mine){ try{ return (ev && ccAwayFits(ev) && !ccConsoleNeed(ev)) ? ccTravelers(field, 'victory', 'v|'+(ev.id||'')+'|'+careerToday(), mine, true) : field; }catch(e){ return field; } }

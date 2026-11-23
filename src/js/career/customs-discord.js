@@ -1675,6 +1675,8 @@ function ccCrewHTML(chan, msg){
       ccCrewAv(chat.toYou.m));
     if(done && done!=='r3') chatHTML+=msg(CAREER.player.nick, false, '<p>'+esc(T['crR'+done.slice(1)])+'</p>');
   }
+  // Зовут на выезд (ccCrewAwOffer): сообщение с ответом.
+  { const ax=ccCrewAwOfferLive(); if(ax) chatHTML+=msg(ccHandle(ax.m.handle), false, '<p>'+esc(ccCrewAwOfferText(ax))+'</p>'+ccCrewAwOfferBtns(), ccCrewAv(ax.m)); }
   const vWhy=ccCrewVoiceWhy(), vPaid=!!(c.voice && c.voice.day===today), vIn=vPaid && !c.voice.left, vCh=vIn ? (c.voice.ch|0) : -1;
   // Зашёл в войс - ты тоже в списке своего канала, своей карточкой (как в Discord: себя видно в канале).
   const meV='<span class="cr-vm cr-vm-me" title="'+esc(CAREER.player.nick||'')+'"><span class="dc-av">'+(ccDcFace() ? ccDcImg(ccDcFace(), 'ME') : 'ME')+'</span><i>'+esc(CAREER.player.nick||'')+'</i></span>';
@@ -2288,7 +2290,8 @@ function ccCrewCups(){
 function ccCrewAwayRegs(){
   if(!CAREER || careerMateSeats()<=0 || (typeof ccMpOn==='function' && ccMpOn())) return [];
   const home=ccCareerRegion(), day=careerToday();
-  return CC_REGIONS.filter(r=>r!==home && ccAwayKind(r, day)==='cup' && ['', 'mate', 'later'].indexOf(ccAwayWhy(r, day))>=0);
+  // Любой выезд, где нужен напарник: кап дивизиона, командный кап, финал недели, Performance (ccAwayMateKind).
+  return CC_REGIONS.filter(r=>r!==home && ccAwayMateKind(r, day) && ['', 'mate', 'later'].indexOf(ccAwayWhy(r, day))>=0);
 }
 function ccCrewRec(m){ return m.card ? {card:{...m.card}, patience:CAREER_PATIENCE_START, since:careerToday()} : null; }
 // Общий шаг приглашения на турнир: согласие и отметка «звал сегодня». true - согласился.
@@ -2319,7 +2322,7 @@ function ccCrewAway(k, reg){
   const st=ccCrewStatus(m); if(!ccCrewInvited(m) && (st==='off' || ccCrewAskedToday(m))) return;
   const T=L(), c=ccCrew(), cr=CAREER.career;
   if(!ccCrewAsk(m)){ careerSave(); careerRenderHub('discord'); return; }
-  cr.awayMate={reg:reg, day:careerToday(), rec:ccCrewRec(m)};
+  cr.awayMate={reg:reg, day:careerToday(), week:careerMonday(careerToday()), rec:ccCrewRec(m)};
   const why=ccAwayWhy(reg);
   c.last={day:careerToday(), text:why ? T.crAwayLater(ccHandle(m.handle), regionName(reg)) : T.crAwayGo(ccHandle(m.handle), regionName(reg))};
   careerSave(); careerRenderHub('discord');
@@ -2333,7 +2336,7 @@ function ccCrewEventBtns(m, why){
   const off=why || ccCrewStatus(m)==='game';
   return '<span class="cr-modes-l">'+esc(T.crCallTo)+':</span>'+
     cups.map((cu, i)=>'<button class="dc-btn ghost sm"'+(off ? ' disabled' : '')+' onclick="ccCrewCup(\''+jsq(m.k)+'\','+i+')">'+esc((cu.ev.name||'')+' · '+ccDayLabel(cu.day))+'</button>').join('')+
-    regs.map(r=>'<button class="dc-btn ghost sm"'+(off ? ' disabled' : '')+' onclick="ccCrewAway(\''+jsq(m.k)+'\',\''+r+'\')">'+esc(T.ccCupLive+' · '+regionName(r))+'</button>').join('');
+    regs.map(r=>'<button class="dc-btn ghost sm"'+(off ? ' disabled' : '')+' onclick="ccCrewAway(\''+jsq(m.k)+'\',\''+r+'\')">'+esc(ccAwayEvLabel(r)+' · '+regionName(r))+'</button>').join('');
 }
 
 /* ---- Чат тусовки: диалоги и свои сообщения (его слово 21.11: «диалоги в чат добавить бы и выбор для отправки
@@ -2603,7 +2606,7 @@ function ccPplAsk(handle){
   if(ccPplNo().who.indexOf(k)>=0) return;
   if(!ccPplYes(w)){ ccPplNo().who.push(k); p.msg=T.pplNoMsg(ccHandle(w.handle)); careerSave(); ccPplSync(); return; }
   if(p.kind==='away'){
-    cr.awayMate={reg:p.reg, day:p.day, rec:{card:{...w.card}, patience:CAREER_PATIENCE_START, since:careerToday()}};
+    cr.awayMate={reg:p.reg, day:p.day, week:careerMonday(p.day), rec:{card:{...w.card}, patience:CAREER_PATIENCE_START, since:careerToday()}};
     careerSave(); ccPplClose(); careerRenderHub(CH_TAB||'centre');
     careerNews('good', 'pplNewsAway', [ccHandle(w.handle), regionName(p.reg)]);
     return;
@@ -2622,4 +2625,71 @@ function ccTrWithHTML(){
     '<button class="ch-sign" type="button" onclick="ccPplOpen(\'train\')">'+esc(w ? T.pplChange : T.pplPick)+'</button>'+
     (w ? '<button class="cc-devm-x" type="button" aria-label="'+esc(T.pplClear)+'" title="'+esc(T.pplClear)+'" onclick="ccTrWithClear()">×</button>' : '')+
     '</div></div>';
+}
+
+/* Выезд с кем-то из тусовки (его слово 23.11: «после EU капа с кем-то пойти NAC… пусть игроку предлагают, согласился - играет,
+   и второй день, который суммируется, и финал, если квалятся, и перфоманс»). Пара на выезд держится всю неделю в этом
+   регионе (cr.awayMate.week): вторая сессия Д1 с копилкой, финал недели по путёвке, Performance. Звать можно самому
+   (кнопки участника, ccCrewAway), а раз в день кто-то из тусовки зовёт сам (ccCrewAwOffer): сообщение в #general и строка
+   над регионами на хабе. Зовёт тот, кто сам бы согласился (ccCrewYes), шанс CC_AW_OFFER в день. Решение, не замер. */
+const CC_AW_OFFER=0.6;
+// Нужен ли напарник на выезде в этот вечер: командный кап, финал недели, Performance; соло - нет.
+function ccAwayMateKind(r, day){
+  if(!CAREER || careerMateSeats()<=0) return false;
+  const kind=ccAwayKind(r, day||careerToday()); if(!kind) return false;
+  if(kind==='victory'){ const e=ccAwayEv(r, day||careerToday()); if(!e || e.mode==='solo' || ccPickFormat(e)===1) return false; }
+  return true;
+}
+function ccAwayEvLabel(r, day){
+  const T=L(), kind=ccAwayKind(r, day||careerToday());
+  if(kind==='cup') return T.ccCupLive; if(kind==='eval') return T.calPerfEval; if(kind==='final') return T.calWeeklyFinal;
+  const v=ccAwayEv(r, day||careerToday()); return v ? (v.lan||v.name||'') : '';
+}
+function ccCrewAwOffer(){
+  if(!CAREER || (typeof ccMpOn==='function' && ccMpOn()) || ccVictoryLocked()) return null;
+  const c=ccCrew(), today=careerToday(), cr=CAREER.career;
+  if(c.awOffer && c.awOffer.day===today) return c.awOffer;
+  const regs=ccCrewAwayRegs().filter(r=>!ccAwayMateFor(r, today));
+  if(!regs.length) return null;
+  const rnd=careerRng(ccHashStr('awoffer|'+today+'|'+(cr.season||0)));
+  if(rnd()>=CC_AW_OFFER){ c.awOffer={day:today, none:true}; return c.awOffer; }
+  const mates=new Set((careerMates()||[]).filter(Boolean).map(x=>hKey(x)));
+  const who=ccCrewMembers().filter(m=>m.card && m.kind!=='mate' && !mates.has(m.k) && ccCrewStatus(m)!=='off' && ccCrewYes(m));
+  if(!who.length){ c.awOffer={day:today, none:true}; return c.awOffer; }
+  const m=who[Math.floor(rnd()*who.length)], reg=regs[Math.floor(rnd()*regs.length)];
+  c.awOffer={day:today, k:m.k, reg:reg};
+  return c.awOffer;
+}
+function ccCrewAwOfferLive(){
+  const o=ccCrewAwOffer(); if(!o || o.none || o.done) return null;
+  if(ccCrewAwayRegs().indexOf(o.reg)<0) return null;
+  const m=ccCrewFind(o.k); return m && m.card ? {o:o, m:m} : null;
+}
+function ccCrewAwOfferAnswer(yes){
+  const x=ccCrewAwOfferLive(); if(!x) return;
+  const T=L(), c=ccCrew(), cr=CAREER.career, today=careerToday();
+  x.o.done=yes ? 'yes' : 'no';
+  if(!yes){ ccCrewRelAdd(x.m, -1); careerSave(); careerRenderHub(CH_TAB||'discord'); return; }
+  ccCrewRelAdd(x.m, 3);
+  cr.awayMate={reg:x.o.reg, day:today, week:careerMonday(today), rec:ccCrewRec(x.m)};
+  const why=ccAwayWhy(x.o.reg);
+  c.last={day:today, text:why ? T.crAwWeek(ccHandle(x.m.handle), regionName(x.o.reg)) : T.crAwayGo(ccHandle(x.m.handle), regionName(x.o.reg))};
+  careerSave(); careerRenderHub(CH_TAB||'discord');
+  if(!why) ccAwayPlay(x.o.reg);
+}
+function ccCrewAwOfferText(x){ return L().crAwOffer(ccAwayEvLabel(x.o.reg), regionName(x.o.reg)); }
+function ccCrewAwOfferBtns(){
+  const T=L();
+  return '<div class="cr-replies"><button class="dc-btn sm" onclick="ccCrewAwOfferAnswer(true)">'+esc(T.crAwYes)+'</button>'+
+    '<button class="dc-btn ghost sm" onclick="ccCrewAwOfferAnswer(false)">'+esc(T.crAwNo)+'</button></div>';
+}
+// Строка над регионами на хабе: кто зовёт и куда.
+function ccAwOfferHubHTML(){
+  try{
+    const x=ccCrewAwOfferLive(); if(!x) return '';
+    const T=L();
+    return '<div class="cc-aw-offer"><span class="dc-av">'+ccCrewAv(x.m)+'</span><div><b>'+esc(ccHandle(x.m.handle))+'</b><span>'+esc(ccCrewAwOfferText(x))+'</span></div>'+
+      '<button class="cc-aw-mate" type="button" onclick="ccCrewAwOfferAnswer(true)">'+esc(T.crAwYes)+'</button>'+
+      '<button class="cc-aw-mate cc-aw-no" type="button" onclick="ccCrewAwOfferAnswer(false)">'+esc(T.crAwNo)+'</button></div>';
+  }catch(e){ return ''; }
 }

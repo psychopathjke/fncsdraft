@@ -1139,8 +1139,8 @@ async function runCareerVictoryNight(){
   const field=[...humans, ...(lanN ? (solo ? (ccConsoleNeed(ev)==='mobile' ? (ev.series ? ccMobileStageField(ev, vSize-humans.length) : ccMobileField(vSize-humans.length, true)) : careerSoloField(cr, pc ? [me, pc] : drafted, vSize-(humans.length-1), false, 'final'))
                                            : careerCupField(cr, drafted, vSize, 'lan|'+ev.id, false, CC_FIELD_SHARP.lan))   // size — вместе со мной (было vSize-1: Katowice 49 пар из 50, 21.10)
                              : solo ? (ccConsoleNeed(ev)==='mobile' ? ccMobileField(vSize-humans.length)   // мобильная сцена (ровно столько, без места под себя)
-                                         : careerSoloField(cr, pc ? [me, pc] : drafted, vSize-(humans.length-1), true))
-                                    : careerCupField(cr, drafted, vSize, null, true))];
+                                         : ccVicTravel(ev, careerSoloField(cr, pc ? [me, pc] : drafted, vSize-(humans.length-1), true), drafted))
+                                    : ccVicTravel(ev, careerCupField(cr, drafted, vSize, null, true), drafted))];
   // Финал своего турнира: прошедшие квалы, кого нет на сцене — добор обычным полем ЛАНа.
   if(ev.finalOf){
     const room=lanN-humans.length, own=ccOwnFinalField(ev, room)||[];
@@ -3216,7 +3216,9 @@ async function runCareerCup(){
   you.name=L().yourTeamPrefix+teamLabel(drafted); you.isYou=true;
   if(CC_AWAY) you.pow=Math.max(1, Math.round(you.pow-CC_AWAY.pen));   // чужой сервер: пинг (ccAwayPen)
   const cut=careerCupCut(cr.division);
-  const field=[you, ...careerCupField(cr, drafted, careerCupSize(cr.division), ccCupWeekSalt())];
+  // Д1: часть хвоста - про соседних регионов (ccTravelers), по недельной соли: во вторник те же, что в понедельник.
+  const cupRoom=careerCupField(cr, drafted, careerCupSize(cr.division), ccCupWeekSalt());
+  const field=[you, ...(cr.division===1 ? ccTravelers(cupRoom, 'cup', ccCupWeekSalt(), drafted, false) : cupRoom)];
 
   // Division 1's Tuesday carries Monday in with it. Keyed by team name, which
   // is stable because the field is: the same seed draws the same duos. Handed
