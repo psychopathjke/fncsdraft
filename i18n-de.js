@@ -4839,3 +4839,15 @@ Object.assign(I18N.de=I18N.de||{},
 /* Дозаливка «de» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
 Object.assign(I18N.de=I18N.de||{},
 ({ccShopmrival3:"SteelSeries Rival 3 Gen 2", ccShopmmaya:"Fnatic x Lamzu Maya 8K", ccShopmda4:"Razer DeathAdder V4 Pro", ccShopmsuperstrike:"Logitech G PRO X2 SUPERSTRIKE", ccShopkdrunk:"DrunkDeer A75 Pro", ccShopkproxtkl:"Logitech G PRO X TKL RAPID", ccShophbsv2x:"Razer BlackShark V2 X", ccShophnova5:"SteelSeries Arctis Nova 5", ccShopmo255xf:"MSI MAG 255XF", ccShopmopg27:"ASUS ROG Swift OLED PG27AQDP", ccShopmpstrider:"Razer Strider", ccShopmpzero:"Artisan Zero", ccShopctlg7:"GameSir G7 Pro", ccShopctlrev5:"Nacon Revolution 5 Pro", ccShopmctlkv2:"Razer Kishi V2", ccShopmcoolfd:"Flydigi B6X"}));
+/* Дозаливка «de» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
+Object.assign(I18N.de=I18N.de||{},
+({awBanked:r=>'Punkte für die Woche gesammelt · '+r, pplAwayT:r=>'Mitspieler für die Reise · '+r, pplTrainT:"Mit wem trainieren", pplAwayHint:"Spieler aus dieser Region. Sie sagen zu, wenn dein Rating und Ruf nicht weit unter ihrem liegen. Spielt heute Abend mit dir.", pplTrainHint:"Gegner in Scrims, Box Fights und Zone Wars, Mitspieler im Ranked. Bleibt, bis du ihn entfernst.", pplFind:"Name", pplOn:"Gewählt", pplSaidNo:"Hat heute abgesagt", pplAsk:"Fragen", pplNone:"Niemand gefunden", pplNoMsg:h=>h+' hat abgesagt. Versuch jemanden näher an deinem Rating.', pplNewsAway:(h,r)=>'Reise nach '+r+': '+h+' spielt mit dir', pplAwayWith:h=>'Mit dir: '+h, pplAwayPick:r=>'Mitspieler aus '+r, pplWithT:"Training mit", pplWithAuto:"beliebig", pplWithSub:"Scrims, Box Fights, Zone Wars und Ranked", pplWithSubAuto:"Scrim gegen den Stärksten aus deinen DMs, der Rest allein", pplPick:"Wählen", pplChange:"Wechseln", pplClear:"Entfernen"}));
+/* Дозаливка «de» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
+Object.assign(I18N.de=I18N.de||{},
+({crAwOffer:(e,r)=>'Lust auf '+r+'? '+e+', ich bin die ganze Woche dabei', crAwYes:"Los", crAwNo:"Heute nicht", crAwWeek:(h,r)=>h+' spielt die ganze Woche '+r+' mit dir: Cup, zweite Session, Finale und Performance'}));
+/* Дозаливка «de» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
+Object.assign(I18N.de=I18N.de||{},
+({ccPingGain2:(c,ms,e,mx,lo,hi)=>'<b>'+c+': '+ms+' ms Ping → '+e+' Stärke.</b> Unter '+lo+' ms +'+mx+', ab '+hi+' ms 0. In anderen Regionen nichts.'}));
+/* Дозаливка «de» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
+Object.assign(I18N.de=I18N.de||{},
+({ccPingGain3:(c,ms,t)=>'<b>'+c+': Ping '+ms+' ms.</b> '+({"a":"Top-Ping: in Fights etwas schneller.","b":"Guter Ping: kleiner Vorteil in Fights.","c":"Mittlerer Ping: kaum ein Vorteil.","d":"Weit vom Server: kein Vorteil."})[t], ccPingGainNone2:"Je näher das Land am Server, desto besser der Ping und desto stärker bist du in Fights."}));
