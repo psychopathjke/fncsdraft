@@ -4845,3 +4845,6 @@ Object.assign(I18N.es=I18N.es||{},
 /* Дозаливка «es» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
 Object.assign(I18N.es=I18N.es||{},
 ({crAwOffer:(e,r)=>'¿vamos a '+r+'? '+e+', estoy contigo toda la semana', crAwYes:"Vamos", crAwNo:"Hoy no", crAwWeek:(h,r)=>h+' juega '+r+' contigo toda la semana: cup, segunda sesión, final y Performance'}));
+/* Дозаливка «es» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
+Object.assign(I18N.es=I18N.es||{},
+({ccPingGain2:(c,ms,e,mx,lo,hi)=>'<b>'+c+': ping '+ms+' ms → '+e+' de fuerza.</b> Menos de '+lo+' ms +'+mx+', desde '+hi+' ms 0. Nada en otras regiones.'}));

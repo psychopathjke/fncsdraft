@@ -3586,7 +3586,7 @@ function ccGainNotes(){
     pg.style.display=built ? '' : 'none';
     const ms=CC.country ? ccPingOf(CC.country, CC.region) : null;
     pg.innerHTML=CC.country && ms!=null
-      ? T.ccPingGain(esc(ccCountryName(CC.country)||CC.country), ms, '+'+ccPingEdge(ms), CC_PING_EDGE, CC_PING_FREE, CC_PING_MAX)
+      ? T.ccPingGain2(esc(ccCountryName(CC.country)||CC.country), ms, '+'+ccPingEdge(ms), CC_PING_EDGE, CC_PING_FREE, CC_PING_MAX)
       : T.ccPingGainNone(CC_PING_EDGE, CC_PING_FREE, CC_PING_MAX);
   }
 }

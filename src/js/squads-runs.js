@@ -4940,7 +4940,10 @@ function buildTeam(squadArr){
   // letting it single-handedly double a squad's power.
   const powSynergy=Math.min(syn.bonus, SYN_POW_CAP);
   const ageEdge = ageEdgeOf(squadArr);
-  let pow = Math.round((avg+powSynergy)*regionMult + ageEdge);
+  // Пинг страны и в силу (его слово 23.11: «пинг давал power: Германия больше, Россия меньше»), не только в ближнем бою.
+  // Есть только у созданного игрока (_pingEdge); на выезде ccPingNow отдаёт чужой пинг, и прибавка уходит.
+  const pingPow = closeRangeEdge(squadArr);
+  let pow = Math.round((avg+powSynergy)*regionMult + ageEdge + pingPow);
   if(CARD_MODE){
     // In card mode the six attributes drive power: a squad's OVR average sets the
     // baseline, and covering both roles — there are two, IGL and fragger — is
@@ -4953,7 +4956,7 @@ function buildTeam(squadArr){
        читалось как «есть ИГЛ» и молчало про второго. */
     const igls=squadArr.filter(p=>attrsFor(p).roleKey==='roleIGL').length;
     const roleBonus=(squadArr.length>1 && igls===1) ? ROLE_BONUS_STEP : 0;
-    pow = Math.round((ovrAvg+powSynergy+roleBonus)*regionMult + ageEdge);
+    pow = Math.round((ovrAvg+powSynergy+roleBonus)*regionMult + ageEdge + pingPow);
     return {squad:squadArr, syn, pow, regionMult, roles, roleBonus, ovrAvg,
             attrs:engineAttrs(squadArr), closeEdge:closeRangeEdge(squadArr)};
   }
