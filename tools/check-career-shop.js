@@ -190,7 +190,7 @@ const BOOT = `
           imgs + ' of ' + shown.filter(i => i.img).length);
     // Девайсы и сетап (23.11) - окном выбора: строкой не рисуются, на месте каждого - карточка, открывающая окно.
     check('devices are not rows', !shown.some(i => ccDevCatItem(i)), out.notes.rows.ids);
-    check('every device slot has a card', (html.match(/class="cc-devslot"/g) || []).length === CC_DEV_SHOP_KEYS.length + 3);
+    check('every device slot has a card', (html.match(/class="cc-devslot"/g) || []).length === CC_DEV_SHOP_GROUPS.reduce((n,g)=>n+g.keys.length, 0) + 3);
     ccDevModalOpen('pc');
     const mh = document.getElementById('ccDevModal').innerHTML; ccDevModalClose();
     check('the PC window lists every rig', CC_SHOP.filter(i => i.slot === 'pc' && !i.starter).every(i => mh.indexOf(L()['ccShop' + i.id]) >= 0));

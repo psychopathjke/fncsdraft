@@ -1585,6 +1585,7 @@ function ccDealsHTML(){
    выбор большой»). В «Сетапе» - карточка на каждое место шкафчика (что стоит сейчас), клик открывает окно со всеми
    моделями этого места: фильтр по цене, покупка в любом порядке, купленное сразу надевается (ccDevPick). */
 let CC_DEV_TIER='all', CC_DEV_MODAL=null;
+const CC_DEV_SHOP_GROUPS=[{in:'kbm', keys:['mouse', 'keyboard', 'mpad', 'headset', 'monitor']}, {in:'pad', keys:['ctl', 'con', 'headset']}, {in:'mob', keys:['mob', 'mctl', 'mcool']}];
 const CC_DEV_SHOP_KEYS=['mouse', 'keyboard', 'mpad', 'headset', 'monitor', 'ctl', 'con', 'mob', 'mctl', 'mcool'];
 function ccDevSlotsOf(key){ return key==='con' ? ['ps', 'xbox'] : key==='mob' ? ['android', 'ios'] : [key]; }
 function ccDevTierSet(t){ CC_DEV_TIER=t; ccDevModalSync(); }
@@ -1629,12 +1630,15 @@ function ccDevModalClose(){ CC_DEV_MODAL=null; const m=document.getElementById('
 // Карточки мест в «Сетапе»: что стоит сейчас и сколько моделей на выбор.
 function ccShopDevSlotsHTML(keys, title){
   const T=L();
-  return '<div class="ch-tile cc-shop"><h4>'+(title||T.ccDevTitle)+'</h4>'+(title ? '' : '<div class="ch-hint">'+esc(T.ccDevShopHint)+'</div>')+'<div class="cc-devslots">'+
-    (keys||CC_DEV_SHOP_KEYS).map(k=>{
+  const card=k=>{
       const eff=ccDevEff(k), n=CC_SHOP.filter(x=>ccDevKey(x)===k && ccDevCatItem(x)).length;
       const img=eff && eff.img ? '<img class="cc-devslot-img" src="'+CC_DEVICE_DIR+eff.img+'" alt="" loading="lazy" onerror="this.remove()">' : '<span class="cc-devslot-img cc-dev-auto">'+(k==='chair' || k==='stream' ? '+' : ccInputIcon(k==='ctl' || k==='con' ? 'pad' : k==='mob' || k==='mctl' || k==='mcool' ? 'mob' : 'kbm'))+'</span>';
       return '<button class="cc-devslot" onclick="ccDevModalOpen(\''+k+'\')">'+img+'<b>'+esc(T['ccDevSlot_'+k]||k)+'</b><em>'+esc(eff ? (T['ccShop'+eff.id]||eff.id) : ccDevWearable(k) ? T.ccDevStd : T.ccDevEmpty)+'</em><span class="cc-devslot-n">'+esc(T.ccDevModels(n))+'</span></button>';
-    }).join('')+'</div></div>';
+  };
+  const head='<div class="ch-tile cc-shop"><h4>'+(title||T.ccDevTitle)+'</h4>'+(title ? '' : '<div class="ch-hint">'+esc(T.ccDevShopHint)+'</div>');
+  if(keys) return head+'<div class="cc-devslots">'+keys.map(card).join('')+'</div></div>';
+  // По платформам: ПК, консоль, мобайл (наушники нужны и на ПК, и на консоли).
+  return head+CC_DEV_SHOP_GROUPS.map(g=>'<div class="cc-devgrp"><div class="cc-devgrp-h">'+ccInputIcon(g.in)+'<span>'+esc(T['ccDevGrp_'+g.in]||g.in)+'</span></div><div class="cc-devslots">'+g.keys.map(card).join('')+'</div></div>').join('')+'</div>';
 }
 function ccShopAffordable(sec){
   const cr=CAREER.career, bal=cr.balance||0;

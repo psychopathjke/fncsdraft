@@ -4833,3 +4833,6 @@ Object.assign(I18N.de=I18N.de||{},
 /* Дозаливка «de» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
 Object.assign(I18N.de=I18N.de||{},
 ({ccShopmctl0:"iPega PG-9083S", ccShopmcool0:"MEMO DL05", ccShopchair00:"IKEA FROSTA Hocker", ccShopstream0:"Logitech C270"}));
+/* Дозаливка «de» 17.10 (tools/merge-i18n-patch.js): ключи, которых в словаре не было. */
+Object.assign(I18N.de=I18N.de||{},
+({ccDevGrp_kbm:"PC", ccDevGrp_pad:"Konsole", ccDevGrp_mob:"Mobile"}));
