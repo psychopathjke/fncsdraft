@@ -3406,7 +3406,7 @@ function careerTrainTabHTML(){
   const below=ccPatchTileHTML()+ccWatchTileHTML()+ccLessonTileHTML()+ccMentorTileHTML()+ccRkTileHTML()+ccTrainPlanHTML()+(noble ? '<div class="ch-tile tw-tile"><h4>'+(ccCareerRegion()==='EU' ? '<img class="tw-noble-ic" src="items/creative/noble-crown.png" alt="">Noble Practice' : esc(ccPracSrv()))+'</h4>'+noble+'</div>' : '');
   if(ccCentreDayOpen() || ccPreEvent()){
     CC_DAY_VIEW='train';
-    try{ return '<div class="cc-train-tab">'+careerDayPanelHTML(null)+below+'</div>'; } finally{ CC_DAY_VIEW=''; }
+    try{ return '<div class="cc-train-tab">'+ccTrWithHTML()+careerDayPanelHTML(null)+below+'</div>'; } finally{ CC_DAY_VIEW=''; }
   }
   const cr=CAREER.career, next=careerNext();
   return '<div class="cc-train-tab"><div class="ch-art cc-day cc-day-train" style="background-image:url('+ccDayArt()+');">'+

@@ -1006,7 +1006,9 @@ function careerDoAct(id){
      draw. Playing somebody better teaches more: half again against somebody five
      points over you, two thirds against somebody five under. */
   // «Поиграть вместе» из Discord-тусовки - против того, кого позвал (CC_CREW_WITH), а не против сильнейшего из лички.
-  const foe=act.crew ? CC_CREW_WITH : act.versus ? ccScrimFoe() : null;
+  // Выбранный во вкладке «Тренировка» (cr.trWith) - соперник в скримах, бокс-файтах и зон-варс.
+  const tw=!act.crew && (act.versus || act.id==='trBox' || act.id==='trZw') ? ccTrWith() : null;
+  const foe=act.crew ? CC_CREW_WITH : tw ? {handle:tw.handle, ovr:tw.ovr} : act.versus ? ccScrimFoe() : null;
   const scrim=foe ? ccScrimSet(foe, now) : null;
   // The coach pays into his own half of the game, so which one is hired shows
   // in the shape of the card and not only in how fast it grows.
@@ -2530,4 +2532,94 @@ function ccCrewChatBoxHTML(msg, members){
     '<div class="dc-compose"><input id="ccCrewChatIn" type="text" maxlength="300" autocomplete="off" placeholder="'+esc(T.fnChatPh(T.crGeneral))+'" '+
       'aria-label="'+esc(T.fnChatPh(T.crGeneral))+'" onkeydown="ccCrewSayKey(event)">'+
     '<button type="button" class="dc-btn sm" onclick="ccCrewSayInput()">'+esc(T.fnSend)+'</button></div></div>';
+}
+
+/* Выбор человека (идея игрока, Notion «20.11», скрин 40): «на выезде играть с людьми того региона» и «в скримах,
+   1v1 и ранкеде выбирать, с кем играть». Одно окно: игроки региона (тот же список, что поиск дуо, ccInvPool),
+   поиск по нику. Согласие - как «поиграть вместе» без отношения (рейтинг и репутация против его рейтинга); отказ
+   помнится до конца дня. Выезд: согласился - сидит в первом кресле этот вечер (cr.awayMate, ccAwayPlay).
+   Тренировка: cr.trWith - соперник в скримах, бокс-файтах и зон-варс, напарник в ранкеде (ccRkMatch), пока не снят. */
+let CC_PPL=null;
+function ccPplYes(w){ return CAREER.player.ovr+careerRep()/CC_REP_PER_OVR-(w.ovr-CAREER_DM_REACH)>=0; }
+function ccPplNo(){ const cr=CAREER.career, d=careerToday(); if(!cr.pplNo || cr.pplNo.day!==d) cr.pplNo={day:d, who:[]}; return cr.pplNo; }
+function ccPplPool(reg){
+  const keep=CC_INV_REG; CC_INV_REG=reg||''; let pool=[];
+  try{ pool=ccInvPool(); }finally{ CC_INV_REG=keep; }
+  return pool.filter(w=>w && w.card);
+}
+function ccTrWith(){ const cr=CAREER && CAREER.career, w=cr && cr.trWith; return w && w.handle ? w : null; }
+function ccTrWithClear(){ delete CAREER.career.trWith; careerSave(); careerRenderHub('train'); }
+function ccPplOpen(kind, reg, day){
+  CC_PPL={kind:kind, reg:reg||ccCareerRegion(), day:day||careerToday(), q:'', msg:''};
+  let m=document.getElementById('ccPplModal');
+  if(!m){ m=document.createElement('div'); m.id='ccPplModal'; m.className='cc-devm';
+    m.onclick=e=>{ if(e.target===m) ccPplClose(); };
+    m.innerHTML='<div class="cc-devm-in ch-tile" role="dialog" aria-modal="true"></div>'; (document.getElementById('screen-career-hub')||document.body).appendChild(m); }
+  m.style.display='flex'; ccPplSync();
+}
+function ccPplClose(){ CC_PPL=null; const m=document.getElementById('ccPplModal'); if(m) m.style.display='none'; }
+function ccPplReg(r){ if(!CC_PPL) return; CC_PPL.reg=r; CC_PPL.msg=''; ccPplSync(); }
+function ccPplQ(v){ if(!CC_PPL) return; CC_PPL.q=String(v||''); ccPplSync(true); }
+function ccPplSync(keepInput){
+  const m=document.getElementById('ccPplModal'); if(!m || !CC_PPL) return;
+  const box=m.querySelector('.cc-devm-in');
+  if(keepInput && box.querySelector('.cc-ppl-list')){ box.querySelector('.cc-ppl-list').innerHTML=ccPplRowsHTML(); return; }
+  box.innerHTML=ccPplHTML();
+}
+function ccPplHTML(){
+  const T=L(), p=CC_PPL, away=p.kind==='away';
+  const regs=away ? [] : ((typeof ccYearRegions==='function' ? ccYearRegions() : CC_REGIONS)||CC_REGIONS);
+  return '<div class="cc-devm-head"><h4>'+esc(away ? T.pplAwayT(regionName(p.reg)) : T.pplTrainT)+'</h4>'+
+      '<button class="cc-devm-x" type="button" aria-label="'+esc(T.close||'Close')+'" onclick="ccPplClose()">×</button></div>'+
+    '<div class="ch-hint">'+esc(away ? T.pplAwayHint : T.pplTrainHint)+'</div>'+
+    (regs.length ? '<div class="cc-dev-tiers">'+regs.map(r=>'<button class="cc-chip'+(r===p.reg ? ' on' : '')+'" onclick="ccPplReg(\''+r+'\')">'+esc(regionName(r))+'</button>').join('')+'</div>' : '')+
+    '<input class="cc-ppl-q" type="search" autocomplete="off" placeholder="'+esc(T.pplFind)+'" aria-label="'+esc(T.pplFind)+'" value="'+esc(p.q)+'" oninput="ccPplQ(this.value)">'+
+    (p.msg ? '<div class="cc-ppl-msg">'+esc(p.msg)+'</div>' : '')+
+    '<div class="cc-ppl-list">'+ccPplRowsHTML()+'</div>';
+}
+function ccPplRowsHTML(){
+  const T=L(), p=CC_PPL, q=p.q.trim().toLowerCase(), me=CAREER.player.ovr, no=ccPplNo().who;
+  const list=ccPplPool(p.reg).filter(w=>!q || String(w.handle).toLowerCase().indexOf(q)>=0)
+    .sort((a,b)=>Math.abs(a.ovr-me)-Math.abs(b.ovr-me) || b.ovr-a.ovr).slice(0, 80);
+  if(!list.length) return '<p class="ch-hint">'+esc(T.pplNone)+'</p>';
+  const cur=p.kind==='away' ? ((CAREER.career.awayMate||{}).rec||{}).card : (ccTrWith()||{}).card;
+  return list.map(w=>{
+    let f=''; try{ f=photoURL(w.card)||''; }catch(e){}
+    let nat=''; try{ nat=ccDuoNatCode(w)||''; }catch(e){}
+    const k=hKey(w.handle), said=no.indexOf(k)>=0, on=cur && hKey(cur.handle||'')===k;
+    const btn=on ? '<span class="cc-owned">'+esc(T.pplOn)+'</span>'
+      : said ? '<span class="cc-ppl-no">'+esc(T.pplSaidNo)+'</span>'
+      : '<button class="ch-sign" type="button" onclick="ccPplAsk(\''+jsq(w.handle)+'\')">'+esc(T.pplAsk)+'</button>';
+    return '<div class="cc-ppl-r">'+(f ? '<img class="cc-ppl-av" src="'+esc(f)+'" alt="" loading="lazy" onerror="this.remove()">' : '<span class="cc-ppl-av"></span>')+
+      '<div class="cc-ppl-n"><b>'+(nat ? '<img class="inv-flag" src="flags/w20/'+esc(nat)+'.png" alt="" onerror="this.remove()">' : '')+esc(ccHandle(w.handle))+'</b>'+
+      '<span>'+esc([w.role ? (T[w.role]||'') : '', w.club||''].filter(Boolean).join(' · '))+'</span></div>'+
+      '<em class="cc-ppl-o">'+Math.round(w.ovr)+'</em>'+btn+'</div>';
+  }).join('');
+}
+function ccPplAsk(handle){
+  const p=CC_PPL; if(!p) return;
+  const T=L(), cr=CAREER.career, k=hKey(handle);
+  const w=ccPplPool(p.reg).find(x=>hKey(x.handle)===k); if(!w) return;
+  if(ccPplNo().who.indexOf(k)>=0) return;
+  if(!ccPplYes(w)){ ccPplNo().who.push(k); p.msg=T.pplNoMsg(ccHandle(w.handle)); careerSave(); ccPplSync(); return; }
+  if(p.kind==='away'){
+    cr.awayMate={reg:p.reg, day:p.day, rec:{card:{...w.card}, patience:CAREER_PATIENCE_START, since:careerToday()}};
+    careerSave(); ccPplClose(); careerRenderHub(CH_TAB||'centre');
+    careerNews('good', 'pplNewsAway', [ccHandle(w.handle), regionName(p.reg)]);
+    return;
+  }
+  cr.trWith={handle:w.handle, ovr:Math.round(w.ovr), card:{...w.card}, reg:p.reg};
+  careerSave(); ccPplClose(); careerRenderHub('train');
+}
+// Строка вкладки «Тренировка»: с кем сегодня скримы, 1v1 и ранкед.
+function ccTrWithHTML(){
+  if(!CAREER || (typeof ccMpOn==='function' && ccMpOn())) return '';
+  const T=L(), w=ccTrWith();
+  let f=''; try{ f=w ? (photoURL(w.card)||'') : ''; }catch(e){}
+  return '<div class="ch-tile cc-trwith"><div class="cc-trwith-in">'+
+    (w ? (f ? '<img class="cc-ppl-av" src="'+esc(f)+'" alt="" loading="lazy" onerror="this.remove()">' : '')+'<div class="cc-ppl-n"><b>'+esc(T.pplWithT)+': '+esc(ccHandle(w.handle))+' <em class="cc-ppl-o">'+w.ovr+'</em></b><span>'+esc(T.pplWithSub)+'</span></div>'
+       : '<div class="cc-ppl-n"><b>'+esc(T.pplWithT)+': '+esc(T.pplWithAuto)+'</b><span>'+esc(T.pplWithSubAuto)+'</span></div>')+
+    '<button class="ch-sign" type="button" onclick="ccPplOpen(\'train\')">'+esc(w ? T.pplChange : T.pplPick)+'</button>'+
+    (w ? '<button class="cc-devm-x" type="button" aria-label="'+esc(T.pplClear)+'" title="'+esc(T.pplClear)+'" onclick="ccTrWithClear()">×</button>' : '')+
+    '</div></div>';
 }

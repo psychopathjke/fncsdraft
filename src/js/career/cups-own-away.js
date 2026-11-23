@@ -485,7 +485,7 @@ function ccAwayFits(ev){ return !!ev && !ev.own && !ev.lan && !ev.invite && !ev.
    региона; в карьере только Дивизион 1, как и дома), '' — ничего. */
 /* ДИВИЗИОН В ЧУЖОМ РЕГИОНЕ (его слово 14.11: «дивизионы я могу на разных регионах играть, в этом регионе точно»): у каждого
    региона своя лестница. Первый раз в регионе — нижний дивизион, переход вверх по той же отсечке, что дома. Свой
-   дивизион это не трогает. cr.regDiv={NAC:3, ...}. Путёвки в финал недели из чужого Д1 нет: это отдельный вечер. */
+   дивизион это не трогает. cr.regDiv={NAC:3, ...}. Д1 там копит очки за две сессии недели (cr.regD1) и даёт путёвку в его финал недели (cr.regWf). */
 function ccAwayDiv(reg){
   const cr=CAREER && CAREER.career, d=cr && cr.regDiv && cr.regDiv[reg], n=ccDivCount(reg);
   return d>=1 ? Math.min(d, n) : n;
@@ -618,9 +618,15 @@ function ccAwayRowHTML(day, late, strip){
     const st=later ? T.awAfterOwn : closed ? T['aw_'+why]+(why==='tired' ? ' '+Math.floor(careerEnergy())+'/'+CC_AWAY_ENERGY : '') : T.awGo;
     // Значок турнира, как в календаре и истории (его «иконки в стиле турнира», Notion 22.11): ccLogArt по дню, виду и дивизиону.
     let art=''; try{ art=ccLogArt({day:day, kind:kind, div:evDiv||1})||''; }catch(e){}
+    // Напарник из игроков этого региона (ccPplOpen): кто позван, или кнопка позвать. Только там, где нужен напарник.
+    const amR=ccAwayMateFor(r, day), amH=amR && amR.rec && amR.rec.card ? ccHandle(amR.rec.card.handle||'') : '';
+    const evA=kind==='victory' ? ccAwayEv(r, day) : null;
+    const soloA=evA ? (evA.mode==='solo' || ccPickFormat(evA)===1) : (kind==='cup' && typeof ccSoloDivCupOn==='function' && ccSoloDivCupOn());
+    const awMate=(careerMateSeats()>0 && !soloA && kind!=='eval' &&(!closed || why==='mate') && typeof ccPplOpen==='function')
+      ? '<button class="cc-aw-mate" type="button" onclick="ccPplOpen(\'away\',\''+r+'\',\''+day+'\')">'+esc(amH ? T.pplAwayWith(amH) : T.pplAwayPick(regionName(r)))+'</button>' : '';
     const ic=art ? '<span class="cc-aw-ic"><img src="'+esc(art)+'" alt="" loading="lazy" onerror="this.parentNode.remove()"></span>' : '';
     return '<div class="cc-aw-r'+(closed ? ' off' : '')+'">'+ic+'<div class="cc-aw-n"><b>'+esc(regionName(r))+(slot[r] ? ' <span class="cc-aw-t">'+esc(hm(slot[r]))+'</span>' : '')+'</b>'+
-      evLine+'<span>'+sub+'</span></div>'+
+      evLine+'<span>'+sub+'</span>'+awMate+'</div>'+
       '<button class="cc-awayb cc-aw-go" type="button"'+(closed ? ' disabled' : '')+' onclick="ccAwayPlay(\''+r+'\',\''+day+'\')">'+esc(st)+'</button></div>';
   }).join('');
   // strip — в карточке вечера: регионы одной полосой вбок (.cc-aw-strip), см. CSS .ch-art-in .cc-aw.
@@ -638,6 +644,7 @@ function ccAwayAfterAppend(box){
     const d=ccAwayCarryDay(); if(!d) return;
     const h=ccAwayRowHTML(d, true); if(!h) return;
     const w=document.createElement('div'); w.className='cc-away-card'; w.innerHTML=h.split('ccAwayPlay(').join('ccAwayNow(');
+    w.querySelectorAll('.cc-aw-mate').forEach(b=>b.remove());   // окно выбора живёт на хабе, с карточки итога его не открыть
     const act=box.querySelector('.stage-actions'); if(act && act.parentNode===box) box.insertBefore(w, act); else box.appendChild(w);
   }catch(e){}
 }

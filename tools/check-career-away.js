@@ -64,7 +64,7 @@ const BOOT = `
     careerRenderHub('centre');
     const row=document.querySelector('#screen-career-hub .cc-away');
     if(!row) fail('no other-regions row on a cup day');
-    const btns=[...row.querySelectorAll('button')];
+    const btns=[...row.querySelectorAll('button.cc-aw-go')];
     // \u0414\u043e \u0441\u0432\u043e\u0435\u0433\u043e \u043a\u0430\u043f\u0430 (EU 13:00\u201317:00) \u2014 \u0442\u043e\u043b\u044c\u043a\u043e \u0442\u043e, \u0447\u0442\u043e \u0443\u0441\u043f\u0435\u0432\u0430\u0435\u0442 \u0437\u0430\u043a\u043e\u043d\u0447\u0438\u0442\u044c\u0441\u044f \u0440\u0430\u043d\u044c\u0448\u0435: OCE 02:00, ASIA 04:00.
     const order0=btns.map(b=>((b.getAttribute('onclick')||'').match(/'([A-Z]+)'/)||[])[1]);
     // До своего капа (EU 13:00–17:00): OCE и ASIA обычной кнопкой, поздние (BR, NAC, NAW) — с пометкой и вопросом о пропуске.
@@ -155,7 +155,7 @@ const BOOT = `
     if(ccAwayCarryDay()!==DAY) fail('late regions not carried to the night');
     careerRenderHub('centre');
     const late=document.querySelector('#screen-career-hub .cc-away');
-    const lateRegs=late ? [...late.querySelectorAll('button')].map(b=>((b.getAttribute('onclick')||'').match(/'([A-Z]+)'/)||[])[1]) : [];
+    const lateRegs=late ? [...late.querySelectorAll('button.cc-aw-go')].map(b=>((b.getAttribute('onclick')||'').match(/'([A-Z]+)'/)||[])[1]) : [];
     if(lateRegs.join()!=='NAC,NAW') fail('night row should be NAC, NAW (BR 16:00 over): '+lateRegs.join());
     if(late.textContent.indexOf(L().awLateT)<0 || !late.classList.contains('cc-away-late')) fail('night block has no title');
     await play('NAC', DAY);
@@ -222,9 +222,9 @@ const BOOT = `
     ccAwayHomeDone(DD, 'cup'); careerAdvanceTo(ccAddDays(DD, 1)); careerSave();
     careerRenderHub('centre');
     const lateDiv=document.querySelector('#screen-career-hub .cc-away');
-    const lateDivRegs=lateDiv ? [...lateDiv.querySelectorAll('button')].map(b=>((b.getAttribute('onclick')||'').match(/'([A-Z]+)'/)||[])[1]) : [];
+    const lateDivRegs=lateDiv ? [...lateDiv.querySelectorAll('button.cc-aw-go')].map(b=>((b.getAttribute('onclick')||'').match(/'([A-Z]+)'/)||[])[1]) : [];
     if(lateDivRegs.indexOf('NAC')<0) fail('night row after the home div cup has no NAC: '+lateDivRegs.join());
-    { const nbD=[...lateDiv.querySelectorAll('button')].find(b=>(b.getAttribute('onclick')||'').indexOf("'NAC'")>=0);
+    { const nbD=[...lateDiv.querySelectorAll('button.cc-aw-go')].find(b=>(b.getAttribute('onclick')||'').indexOf("'NAC'")>=0);
       const rD=nbD && nbD.closest('.cc-aw-r'); if(!rD || (rD.textContent.indexOf(L().awDivD(ccDivCount('NAC')))<0 && rD.textContent.indexOf(L().ccDivision+' '+ccDivCount('NAC'))<0)) fail('NAC row does not show its division: '+(rD && rD.textContent)); }
     let dBase=null, dPow=null;
     const cyt3=careerYouTeam; careerYouTeam=function(){ const t=cyt3.apply(this, arguments); dBase=t.pow; return t; };
@@ -248,12 +248,27 @@ const BOOT = `
     { const wfDays=[...careerYearDays().entries()].filter(([d, l])=>l.some(e=>e.kind==='final') && d>'2026-01-15').map(([d])=>d).sort();
       const WF=wfDays[0]; if(!WF) fail('no Weekly Final day in 2026');
       // Путёвка: кап дивизиона в Д1 NAC на этой неделе, отсечку проходят все (careerCupCut подменён).
-      const cupDay=[...careerYearDays().entries()].filter(([d, l])=>l.some(e=>e.kind==='cup') && careerMonday(d)===careerMonday(WF) && d<WF).map(([d])=>d).sort()[0];
+      const cupDays=[...careerYearDays().entries()].filter(([d, l])=>l.some(e=>e.kind==='cup') && careerMonday(d)===careerMonday(WF) && d<WF).map(([d])=>d).sort();
+      const cupDay=cupDays[0];
       if(!cupDay) fail('no cup day in the week of '+WF);
       seedDiv(cupDay); CAREER.career.regDiv={NAC:1};
       const cutKeep=careerCupCut; careerCupCut=()=>999999;
       const sl=ccAwaySlot('NAC'); if(ccAwayWhy('NAC')==='later'){ ccAwayHomeDone(cupDay, 'cup'); careerAdvanceTo(ccAddDays(cupDay, 1)); careerSave(); }
       await play('NAC', cupDay);
+      /* Д1 на выезде копит очки, как дома: первая сессия недели в копилку (cr.regD1.NAC), без путёвки; вторая
+         играется с ней и даёт путёвку по сумме. */
+      const bankA=(CAREER.career.regD1||{}).NAC;
+      if(cupDays[1]){
+        if(!bankA || bankA.monday!==careerMonday(cupDay) || !bankA.rows) fail('NAC Division 1 first session was not banked: '+JSON.stringify(CAREER.career.regD1||null).slice(0, 120));
+        if((CAREER.career.regWf||{}).NAC) fail('NAC first session gave a seat before the second');
+        const nB=(bankA.log||[]).length;
+        CAREER.career.day=cupDays[1]; CAREER.career.energy=100; seedDiv(cupDays[1]); CAREER.career.regDiv={NAC:1}; CAREER.career.regD1={NAC:bankA}; careerSave();
+        if(ccAwayWhy('NAC')==='later'){ ccAwayHomeDone(cupDays[1], 'cup'); careerAdvanceTo(ccAddDays(cupDays[1], 1)); careerSave(); }
+        await play('NAC', cupDays[1]);
+        if((CAREER.career.regD1||{}).NAC) fail('NAC bank not spent by the second session');
+        const l2=(CAREER.career.log||[]).slice(-1)[0];
+        out.steps.push('NAC D1 bank: session 1 '+cupDay+' banked '+nB+' games, session 2 '+cupDays[1]+' #'+(l2 && l2.place));
+      }
       careerCupCut=cutKeep;
       const seat=(CAREER.career.regWf||{}).NAC;
       if(!seat || seat.monday!==careerMonday(WF)) fail('NAC Division 1 cup gave no Weekly Final seat: '+JSON.stringify(CAREER.career.regWf));
@@ -285,7 +300,7 @@ const BOOT = `
       hc=[...document.querySelectorAll('#majorStages .stage-card')].find(x=>x.querySelector('button[onclick*="careerBackToHub"]')); }
     await homeP;
     if(!hc) fail('no result card after the home cup');
-    const nb=[...hc.querySelectorAll('.cc-away-card button')].find(b=>(b.getAttribute('onclick')||'').indexOf("'NAC'")>=0);
+    const nb=[...hc.querySelectorAll('.cc-away-card button.cc-aw-go')].find(b=>(b.getAttribute('onclick')||'').indexOf("'NAC'")>=0);
     if(!nb || nb.disabled) fail('no usable NAC button on the home result card: '+((hc.querySelector('.cc-away-card')||{}).textContent||'none'));
     const n0=(CAREER.career.log||[]).length;
     document.querySelectorAll('#majorStages .stage-card').forEach(c=>c.classList.add('old'));

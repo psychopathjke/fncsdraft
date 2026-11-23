@@ -3222,8 +3222,10 @@ async function runCareerCup(){
   // is stable because the field is: the same seed draws the same duos. Handed
   // to the live stage rather than added after it, so the table on screen is the
   // week's table all evening and the line across it is the real cut.
-  const banked=(!CC_AWAY && cr.division===1 && careerCupSession()===2 && cr.d1 &&
-                cr.d1.monday===careerMonday(careerToday())) ? cr.d1 : null;
+  // На выезде копилка своя у каждого региона (cr.regD1[reg]): очки Д1 там суммируются за две сессии, как дома.
+  const bank=CC_AWAY ? ((cr.regD1||{})[CC_AWAY.reg]||null) : cr.d1;
+  const banked=(cr.division===1 && careerCupSession()===2 && bank &&
+                bank.monday===careerMonday(careerToday())) ? bank : null;
   // Unpacked back into the four maps the field builder already reads, so nothing
   // downstream knows the difference. A Monday banked before the rows were packed
   // is keyed on the row's name and is read as it stands.
@@ -3241,7 +3243,7 @@ async function runCareerCup(){
   const dSc=ccSoloDivCupOn() ? {pts:victoryR1Points, kill:4} : ccDivCupScore(careerToday(), cr.division);
   await simulateGamesLive(field, CAREER_CUP_GAMES, dSc ? dSc.pts : pointsForPlace, dSc ? dSc.kill : 4, 'stage', 0, null, zones,
     {lobbySize:ccTeams(50), stageName:L().ccCupLive, mapReplay:true, choices:true, stopOnYourDeath:true,
-     carry:carry, cutAt: (careerBanking() && !CC_AWAY) ? 0 : cut,
+     carry:carry, cutAt: careerBanking() ? 0 : cut,
      dropEachGame:(g,room)=>careerLandingPick(room||field, you, L().ccCupLive, kindsForDrop)});
   removeSkipButton();
 
@@ -3265,10 +3267,25 @@ async function runCareerCup(){
     ? L().ccCupTitleWeek(cr.division, field.length, CAREER_CUP_GAMES*2)
     : L().ccCupTitle(cr.division, field.length));
   await revealStageLog(you, shell, true);
-  /* ВЫЕЗД (ccAwayPlay): кап дивизиона в чужом регионе — одна сессия, место и рост рейтинга. Перехода между дивизионами,
-     путёвки в финал недели и копилки Д1 нет: дивизион у игрока в своём регионе. День не двигается. */
+  /* ВЫЕЗД (ccAwayPlay): кап дивизиона в чужом регионе. Ниже Д1 прошёл отсечку - дивизион выше там (cr.regDiv).
+     Д1 того региона - как дома: первая сессия недели в копилку (cr.regD1[reg]), вторая играется с ней, и сумма
+     решает путёвку в его финал недели (cr.regWf). День не двигается. */
   if(CC_AWAY){
-    const regA=CC_AWAY.reg, divA=cr.division, upA=passed && divA>1;
+    const regA=CC_AWAY.reg, divA=cr.division;
+    if(careerBanking()){
+      cr.regD1=cr.regD1||{};
+      cr.regD1[regA]={monday:careerMonday(careerToday()), rows:ccRelPack(field),
+        log:(you.stageLog||[]).map(g=>({game:g.game, place:g.place, elims:g.elims, pts:g.pts, elimPts:g.elimPts, label:g.label}))};
+      finalizeStageCard(shell, place, field.length, you.stagePts, null, false, L().awBanked(regionName(regA)));
+      await revealStandings(shell, ranked, you, 0);
+      careerSave();
+      CARD_MODE=prevMode; squadSize=prevSize; drafted=prevDrafted; CC_KILL_CAP=0;
+      careerRenderHub('centre');
+      careerBankedCard(place, field.length, you.stagePts, L().ccCupLive+' · '+regionName(regA));
+      return;
+    }
+    if(cr.regD1 && cr.regD1[regA]) delete cr.regD1[regA];
+    const upA=passed && divA>1;
     if(upA){ cr.regDiv=cr.regDiv||{}; cr.regDiv[regA]=divA-1; }
     // Д1 того региона: прошёл отсечку — путёвка в его финал недели (cr.regWf, как cr.wf дома).
     const wfA=passed && divA===1;

@@ -182,7 +182,9 @@ function ccRkLobbyPool(lvl){
 }
 function ccRkMatch(rnd, lvl, teams){
   const g=()=>{ let s=0; for(let i=0;i<6;i++) s+=rnd(); return (s-3)/Math.sqrt(0.5); };
-  const six=CAREER.player.attrs||{}, o=ccMyShownOvr();
+  // Напарник из вкладки «Тренировка» (cr.trWith) в дуо/трио-ранкеде: сила лобби против среднего по паре.
+  const tw=ccRkSize()>1 && typeof ccTrWith==='function' ? ccTrWith() : null;
+  const six=CAREER.player.attrs||{}, o=tw ? (ccMyShownOvr()+tw.ovr)/2 : ccMyShownOvr();
   const z=(o+careerForm()+g()*4-lvl)/5.5, pct=1/(1+Math.exp(-1.7*z));
   const place=clamp(Math.round((1-pct)*(teams-1)+g()*teams*0.04)+1, 1, teams);
   const kills=Math.max(0, Math.round(pct*4.5+g()*1.3+((six.aim||70)-70)/15));
