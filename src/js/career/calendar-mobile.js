@@ -1065,7 +1065,8 @@ function ccPlatCalToggle(g){
   const cr=CAREER.career; cr.platCal=cr.platCal||{}; cr.platCal[g]=!ccPlatCalOn(g);
   CC_VICTORY_LIST=null; CC_YEAR_DAYS=null; careerSave(); careerRenderHub('shop');
 }
-function ccMobileOwn(){ try{ return CC_SHOP.some(x=>x.unlock==='mobile' && careerOwns(x.id)); }catch(e){ return false; } }
+// Выбрал при создании «мобайл» - телефон уже есть, мобильные капы открыты без покупки в магазине.
+function ccMobileOwn(){ try{ if(CAREER && CAREER.player && CAREER.player.input==='mob') return true; return CC_SHOP.some(x=>x.unlock==='mobile' && careerOwns(x.id)); }catch(e){ return false; } }
 function ccMobileDevBonus(){ try{ return CC_SHOP.reduce((v,x)=>(x.unlock==='mobile' && careerOwns(x.id)) ? Math.max(v, x.mob||0) : v, 0); }catch(e){ return 0; } }
 function ccMobileSelfPow(){
   const reg=ccCareerRegion(), me=[CAREER.player.handle||CAREER.player.nick||'-', CAREER.player.country||null, ccMobileOvr()];
