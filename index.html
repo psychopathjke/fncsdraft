@@ -124201,7 +124201,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='65b248a6';
+const CC_BUILD='b6de0486';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -159677,7 +159677,7 @@ function ccDevModalHTML(key){
     : key==='mob' ? ccMobRateLineHTML()+'<div class="cc-lad-plat">'+ccPlatCalBtn('mobile')+'</div>' : '';
   return '<div class="cc-devm-head"><h4>'+esc(T['ccDevSlot_'+key]||key)+'</h4><span class="cc-devm-bal">$'+ccNum(CAREER.career.balance||0)+'</span>'+
     '<button class="cc-devm-x" aria-label="'+esc(T.ccClose||'Close')+'" onclick="ccDevModalClose()">×</button></div>'+
-    (key==='con' || key==='mob' ? '<div class="ch-hint">'+esc(T.ccShopDevHint)+'</div>' : '')+tiers+grids+extra;
+    (key==='con' || key==='mob' ? '<div class="ch-hint">'+esc(T.ccShopDevHint)+'</div>' : '')+grids+extra;
 }
 function ccDevModalOpen(key){
   CC_DEV_MODAL=key;

@@ -1610,7 +1610,7 @@ function ccDevModalHTML(key){
     : key==='mob' ? ccMobRateLineHTML()+'<div class="cc-lad-plat">'+ccPlatCalBtn('mobile')+'</div>' : '';
   return '<div class="cc-devm-head"><h4>'+esc(T['ccDevSlot_'+key]||key)+'</h4><span class="cc-devm-bal">$'+ccNum(CAREER.career.balance||0)+'</span>'+
     '<button class="cc-devm-x" aria-label="'+esc(T.ccClose||'Close')+'" onclick="ccDevModalClose()">×</button></div>'+
-    (key==='con' || key==='mob' ? '<div class="ch-hint">'+esc(T.ccShopDevHint)+'</div>' : '')+tiers+grids+extra;
+    (key==='con' || key==='mob' ? '<div class="ch-hint">'+esc(T.ccShopDevHint)+'</div>' : '')+grids+extra;
 }
 function ccDevModalOpen(key){
   CC_DEV_MODAL=key;
