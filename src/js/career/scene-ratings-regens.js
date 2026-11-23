@@ -682,7 +682,24 @@ function ccSquadCastRoles(cards){
   }
   return cards;
 }
+/* Пинг страны у ботов (его «надо» 23.11 на «а ботам за страну прибавляется?»): та же скрытая прибавка, что у игрока,
+   по стране карточки до сервера вечера (ccCareerRegion: на выезде и у приезжих - чужой). Страны нет в таблице региона
+   (американцы на NAC, где в таблице штаты) - типовой пинг региона CC_PING_HOME. Только карьера: флаг ставит careerTeam. */
+let CC_BOT_PING=false;
+function ccBotPingEdge(c){
+  try{
+    if(typeof ccNoEdgeNow==='function' && ccNoEdgeNow()) return 0;
+    const code=c && c.nat ? String(FLAG_CODE[c.nat]||'').toLowerCase() : '';
+    let ms=code ? ccPingOf(code, ccCareerRegion()) : null;
+    if(ms==null) ms=CC_PING_HOME;
+    return ccPingEdge(ms);
+  }catch(e){ return 0; }
+}
 function careerTeam(cards, keepRoles, strangers){
+  const was=CC_BOT_PING; CC_BOT_PING=true;
+  try{ return careerTeamIn(cards, keepRoles, strangers); } finally{ CC_BOT_PING=was; }
+}
+function careerTeamIn(cards, keepRoles, strangers){
   // Своя команда собрана по правилу с самого начала — поиск не предлагает
   // лишнего ИГЛа, — и её роли не переписываются под тобой.
   if(!keepRoles) ccSquadCastRoles(cards);
@@ -713,10 +730,10 @@ function careerTeam(cards, keepRoles, strangers){
     const after=synCap(t.syn.bonus);
     // Rebuilt from the parts buildTeam left on the team rather than nudged, so
     // the number is the one buildTeam would have produced with this synergy.
-    const ageEdge=ageEdgeOf(cards);
+    const ageEdge=ageEdgeOf(cards), pingPow=closeRangeEdge(cards);
     t.pow = CARD_MODE
-      ? Math.round((t.ovrAvg+after+t.roleBonus)*t.regionMult + ageEdge)
-      : Math.round((cards.reduce((s,p)=>s+p.rating,0)/cards.length+after)*t.regionMult + ageEdge);
+      ? Math.round((t.ovrAvg+after+t.roleBonus)*t.regionMult + ageEdge + pingPow)
+      : Math.round((cards.reduce((s,p)=>s+p.rating,0)/cards.length+after)*t.regionMult + ageEdge + pingPow);
   }
   if(!keepRoles && !lad.size) ccBotEdge(t, cards, already);
   return t;
@@ -4543,7 +4560,7 @@ function ccTravelers(field, kind, salt, mine, open){
         const tm=careerTeam(cards, false, open); tm.name=teamLabel(cards); tm.travel=reg;
         // Чужой сервер и для них: пинг между регионами срезает силу так же, как игроку на выезде (ccAwayPen).
         let nat=''; try{ nat=ccDuoNatCode({card:cards[0]}); }catch(e){}
-        const ms=ccCountryMs(nat||null, reg, home); tm.ping=ms; tm.pow=Math.max(1, Math.round(tm.pow-ccAwayPen(ms)));
+        const ms=ccCountryMs(nat||null, reg, home); tm.ping=ms; tm.pow=Math.max(1, Math.round(tm.pow-(tm.pingPow||0)-ccAwayPen(ms)));
         cards.forEach(c=>taken.add(c._k||hKey(c)));
         return tm;
       });

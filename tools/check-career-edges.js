@@ -141,8 +141,10 @@ const BOOT = `
     out.notes.taken = {who: sky.handle,
                        asCareer: {age: taken._ageEdge, ping: taken._pingEdge},
                        inLobby: {age: inLobby._ageEdge||0, ping: inLobby._pingEdge||0}};
-    check('a career played as a real person carries no edges either',
-          !taken._ageEdge && !taken._pingEdge,
+    // 23.11: пинг - скрытая сила у всех (боты по стране, ccBotPingEdge), поэтому взятая карточка несёт пинг своей связи;
+    // возраста по-прежнему нет.
+    check('a career played as a real person carries no age edge, and the ping of where it sits',
+          !taken._ageEdge && Math.abs((taken._pingEdge||0)-ccPingEdge(ccPingNow()))<0.01,
           JSON.stringify(out.notes.taken.asCareer));
     check('and the same person in a lobby carries none',
           !inLobby._ageEdge && !inLobby._pingEdge,

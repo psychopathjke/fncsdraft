@@ -4901,7 +4901,8 @@ function regionMultFor(p){
 // edge — a card with no connection of its own brings nothing either way.
 function closeRangeEdge(squadArr){
   if(!squadArr || !squadArr.length) return 0;
-  return squadArr.reduce((s,p)=>s+(p && p._pingEdge || 0),0)/squadArr.length;
+  // Карьера (CC_BOT_PING, ставит careerTeam): у кого своего _pingEdge нет - пинг его страны до сервера вечера (ccBotPingEdge).
+  return squadArr.reduce((s,p)=>s+(!p ? 0 : p._pingEdge!=null ? (p._pingEdge||0) : (typeof CC_BOT_PING!=='undefined' && CC_BOT_PING && typeof ccBotPingEdge==='function') ? ccBotPingEdge(p) : 0),0)/squadArr.length;
 }
 // Age works the same way but on the whole number, not just the fighting half.
 // Roster cards carry no age, so they contribute nothing and the field is unmoved.
@@ -4957,10 +4958,10 @@ function buildTeam(squadArr){
     const igls=squadArr.filter(p=>attrsFor(p).roleKey==='roleIGL').length;
     const roleBonus=(squadArr.length>1 && igls===1) ? ROLE_BONUS_STEP : 0;
     pow = Math.round((ovrAvg+powSynergy+roleBonus)*regionMult + ageEdge + pingPow);
-    return {squad:squadArr, syn, pow, regionMult, roles, roleBonus, ovrAvg,
+    return {squad:squadArr, syn, pow, regionMult, roles, roleBonus, ovrAvg, pingPow,
             attrs:engineAttrs(squadArr), closeEdge:closeRangeEdge(squadArr)};
   }
-  return {squad:squadArr, syn, pow, regionMult, roleBonus:0,
+  return {squad:squadArr, syn, pow, regionMult, roleBonus:0, pingPow,
           attrs:engineAttrs(squadArr), closeEdge:closeRangeEdge(squadArr)};
 }
 

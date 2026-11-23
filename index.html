@@ -114292,7 +114292,8 @@ function regionMultFor(p){
 // edge — a card with no connection of its own brings nothing either way.
 function closeRangeEdge(squadArr){
   if(!squadArr || !squadArr.length) return 0;
-  return squadArr.reduce((s,p)=>s+(p && p._pingEdge || 0),0)/squadArr.length;
+  // Карьера (CC_BOT_PING, ставит careerTeam): у кого своего _pingEdge нет - пинг его страны до сервера вечера (ccBotPingEdge).
+  return squadArr.reduce((s,p)=>s+(!p ? 0 : p._pingEdge!=null ? (p._pingEdge||0) : (typeof CC_BOT_PING!=='undefined' && CC_BOT_PING && typeof ccBotPingEdge==='function') ? ccBotPingEdge(p) : 0),0)/squadArr.length;
 }
 // Age works the same way but on the whole number, not just the fighting half.
 // Roster cards carry no age, so they contribute nothing and the field is unmoved.
@@ -114348,10 +114349,10 @@ function buildTeam(squadArr){
     const igls=squadArr.filter(p=>attrsFor(p).roleKey==='roleIGL').length;
     const roleBonus=(squadArr.length>1 && igls===1) ? ROLE_BONUS_STEP : 0;
     pow = Math.round((ovrAvg+powSynergy+roleBonus)*regionMult + ageEdge + pingPow);
-    return {squad:squadArr, syn, pow, regionMult, roles, roleBonus, ovrAvg,
+    return {squad:squadArr, syn, pow, regionMult, roles, roleBonus, ovrAvg, pingPow,
             attrs:engineAttrs(squadArr), closeEdge:closeRangeEdge(squadArr)};
   }
-  return {squad:squadArr, syn, pow, regionMult, roleBonus:0,
+  return {squad:squadArr, syn, pow, regionMult, roleBonus:0, pingPow,
           attrs:engineAttrs(squadArr), closeEdge:closeRangeEdge(squadArr)};
 }
 
@@ -124292,7 +124293,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='f0c6e425';
+const CC_BUILD='e3763cf4';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -128422,9 +128423,10 @@ function careerCard(raw){
   const homePing = pl.countryPing!=null ? pl.countryPing
                  : (pl.country!=null ? ccPingOf(pl.country, pl.homeRegion||pl.region||'EU') : null);
   const moved = !built && !!pl.livesIn && homePing!=null;
-  base._pingEdge = ccEdgeOff(pl) ? 0 : built ? ccPingEdge(ccPingNow())
-                 : moved ? Math.round((ccPingEdge(ccPingNow())-ccPingEdge(homePing))*10)/10
-                         : 0;
+  /* 23.11: пинг - скрытая сила и у ботов (ccBotPingEdge), поэтому и взятая карточка про получает свою: по связи, на которой
+     сидит (ccPingNow; на выезде чужой пинг, прибавки нет). В цифру рейтинга пинг больше не идёт (ccMyShownOvr). */
+  base._pingEdge = ccEdgeOff(pl) ? 0 : ccPingEdge(ccPingNow());
+  void built; void moved;
   // Через ccPlayerAge, а не через счётчик: у игрока с введённой датой возраст
   // меняется в его собственный день, а не на границе сезона. Для всех
   // остальных это то же самое число, что и было. См. ccPlayerAge.
@@ -140046,7 +140048,24 @@ function ccSquadCastRoles(cards){
   }
   return cards;
 }
+/* Пинг страны у ботов (его «надо» 23.11 на «а ботам за страну прибавляется?»): та же скрытая прибавка, что у игрока,
+   по стране карточки до сервера вечера (ccCareerRegion: на выезде и у приезжих - чужой). Страны нет в таблице региона
+   (американцы на NAC, где в таблице штаты) - типовой пинг региона CC_PING_HOME. Только карьера: флаг ставит careerTeam. */
+let CC_BOT_PING=false;
+function ccBotPingEdge(c){
+  try{
+    if(typeof ccNoEdgeNow==='function' && ccNoEdgeNow()) return 0;
+    const code=c && c.nat ? String(FLAG_CODE[c.nat]||'').toLowerCase() : '';
+    let ms=code ? ccPingOf(code, ccCareerRegion()) : null;
+    if(ms==null) ms=CC_PING_HOME;
+    return ccPingEdge(ms);
+  }catch(e){ return 0; }
+}
 function careerTeam(cards, keepRoles, strangers){
+  const was=CC_BOT_PING; CC_BOT_PING=true;
+  try{ return careerTeamIn(cards, keepRoles, strangers); } finally{ CC_BOT_PING=was; }
+}
+function careerTeamIn(cards, keepRoles, strangers){
   // Своя команда собрана по правилу с самого начала — поиск не предлагает
   // лишнего ИГЛа, — и её роли не переписываются под тобой.
   if(!keepRoles) ccSquadCastRoles(cards);
@@ -140077,10 +140096,10 @@ function careerTeam(cards, keepRoles, strangers){
     const after=synCap(t.syn.bonus);
     // Rebuilt from the parts buildTeam left on the team rather than nudged, so
     // the number is the one buildTeam would have produced with this synergy.
-    const ageEdge=ageEdgeOf(cards);
+    const ageEdge=ageEdgeOf(cards), pingPow=closeRangeEdge(cards);
     t.pow = CARD_MODE
-      ? Math.round((t.ovrAvg+after+t.roleBonus)*t.regionMult + ageEdge)
-      : Math.round((cards.reduce((s,p)=>s+p.rating,0)/cards.length+after)*t.regionMult + ageEdge);
+      ? Math.round((t.ovrAvg+after+t.roleBonus)*t.regionMult + ageEdge + pingPow)
+      : Math.round((cards.reduce((s,p)=>s+p.rating,0)/cards.length+after)*t.regionMult + ageEdge + pingPow);
   }
   if(!keepRoles && !lad.size) ccBotEdge(t, cards, already);
   return t;
@@ -143907,7 +143926,7 @@ function ccTravelers(field, kind, salt, mine, open){
         const tm=careerTeam(cards, false, open); tm.name=teamLabel(cards); tm.travel=reg;
         // Чужой сервер и для них: пинг между регионами срезает силу так же, как игроку на выезде (ccAwayPen).
         let nat=''; try{ nat=ccDuoNatCode({card:cards[0]}); }catch(e){}
-        const ms=ccCountryMs(nat||null, reg, home); tm.ping=ms; tm.pow=Math.max(1, Math.round(tm.pow-ccAwayPen(ms)));
+        const ms=ccCountryMs(nat||null, reg, home); tm.ping=ms; tm.pow=Math.max(1, Math.round(tm.pow-(tm.pingPow||0)-ccAwayPen(ms)));
         cards.forEach(c=>taken.add(c._k||hKey(c)));
         return tm;
       });

@@ -722,9 +722,10 @@ function careerCard(raw){
   const homePing = pl.countryPing!=null ? pl.countryPing
                  : (pl.country!=null ? ccPingOf(pl.country, pl.homeRegion||pl.region||'EU') : null);
   const moved = !built && !!pl.livesIn && homePing!=null;
-  base._pingEdge = ccEdgeOff(pl) ? 0 : built ? ccPingEdge(ccPingNow())
-                 : moved ? Math.round((ccPingEdge(ccPingNow())-ccPingEdge(homePing))*10)/10
-                         : 0;
+  /* 23.11: пинг - скрытая сила и у ботов (ccBotPingEdge), поэтому и взятая карточка про получает свою: по связи, на которой
+     сидит (ccPingNow; на выезде чужой пинг, прибавки нет). В цифру рейтинга пинг больше не идёт (ccMyShownOvr). */
+  base._pingEdge = ccEdgeOff(pl) ? 0 : ccPingEdge(ccPingNow());
+  void built; void moved;
   // Через ccPlayerAge, а не через счётчик: у игрока с введённой датой возраст
   // меняется в его собственный день, а не на границе сезона. Для всех
   // остальных это то же самое число, что и было. См. ccPlayerAge.
