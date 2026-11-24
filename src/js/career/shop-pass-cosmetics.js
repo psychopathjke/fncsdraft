@@ -1316,18 +1316,18 @@ function ccFnLoadoutHTML(){
   // Как шкафчик в игре той главы: слева большой образ (надетый скин), справа ячейки по разделам.
   const o=eq.o && own[eq.o] ? eq.o : null;
   const hero='<button class="cc-fn-hero" onclick="ccFnPick(\'o\')" style="--fn-bg:'+(o ? (CC_FN_RAR[own[o].r]||CC_FN_RAR.rare) : '#1d2433')+'">'+
-    (o ? '<span class="cc-fn-floor"></span>'+ccFnStyleBadge(o)+'<img class="full" src="'+ccFnFull(o)+'" data-id="'+esc(o)+'" alt="" loading="lazy" onerror="ccFnHeroErr(this)">'+'<b>'+esc(own[o].n||o)+(ccFnStyleOf(o) ? ' · '+esc(ccFnStyleOf(o).name) : '')+'</b>' : '<i>+</i><b>'+esc(T.ccFnType_o)+'</b>')+'</button>';
+    (o ? '<span class="cc-fn-floor"></span><img class="full" src="'+ccFnFull(o)+'" data-id="'+esc(o)+'" alt="" loading="lazy" onerror="ccFnHeroErr(this)">'+'<b>'+esc(own[o].n||o)+(ccFnStyleOf(o) ? ' · '+esc(ccFnStyleOf(o).name) : '')+'</b>' : '<i>+</i><b>'+esc(T.ccFnType_o)+'</b>')+'</button>';
   const cat=(h, ss)=>'<div class="cc-fn-cat"><h5>'+esc(h)+'</h5><div class="cc-fn-slots">'+ss.map(slot).join('')+'</div></div>';
   if(era.k==='c5') return ccFnLocker5HTML();
   const slots='<div class="cc-fn-lk">'+hero+'<div class="cc-fn-cats">'+cat(T.ccFnCatChar, ['o','b','p','g'])+cat(T.ccFnTypes_e+' · '+T.ccFnTypes_w, ['e','w'])+'</div></div>';
   let pick='';
   if(CC_FN_PICK){
     const mine=Object.keys(own).filter(id=>own[id].t===CC_FN_PICK);
-    pick='<div class="cc-fn-pick">'+(mine.length
+    pick=ccFnStylesHTML(CC_FN_PICK)+'<div class="cc-fn-pick">'+(mine.length
       ? mine.map(id=>'<button class="cc-fn-pit'+(eq[CC_FN_PICK]===id ? ' on' : '')+'" onclick="ccFnEquip(\''+CC_FN_PICK+'\',\''+esc(id)+'\')" style="--fn-bg:'+(CC_FN_RAR[own[id].r]||CC_FN_RAR.rare)+'">'+
           '<img src="'+ccFnImg(id, true)+'" alt="" loading="lazy" onerror="this.remove()"><b>'+esc(own[id].n||id)+'</b></button>').join('')+
         (eq[CC_FN_PICK] ? '<button class="cc-fn-pit off" onclick="ccFnEquip(\''+CC_FN_PICK+'\',null)"><b>'+esc(T.ccFnTakeOff)+'</b></button>' : '')
-      : '<div class="ch-empty">'+esc(T.ccFnNone)+' <a href="#" onclick="ccFnShopOpen();return false;">'+esc(T.ccFnToShop)+'</a></div>')+'</div>'+ccFnStylesHTML(CC_FN_PICK);
+      : '<div class="ch-empty">'+esc(T.ccFnNone)+' <a href="#" onclick="ccFnShopOpen();return false;">'+esc(T.ccFnToShop)+'</a></div>')+'</div>';
   }
   return '<div class="ch-tile cc-fn-load cc-fn-'+era.k+'"><h4><span class="cc-fn-ttl">'+esc(T.ccFnLoadout)+'</span> <span class="cc-fn-era">'+esc(T.ccFnEra(era.ch))+'</span></h4>'+
     slots+pick+'</div>';
@@ -1354,11 +1354,11 @@ function ccFnLocker5HTML(){
   let pick='';
   if(CC_FN_PICK){
     const mine=Object.keys(own).filter(id=>own[id].t===CC_FN_PICK);
-    pick='<div class="cc-lk5-pick">'+(mine.length
+    pick=ccFnStylesHTML(CC_FN_PICK)+'<div class="cc-lk5-pick">'+(mine.length
       ? mine.map(id=>'<button class="cc-lk5-slot'+(eq[CC_FN_PICK]===id ? ' on' : '')+'" onclick="ccFnEquip(\''+CC_FN_PICK+'\',\''+esc(id)+'\')" title="'+esc(own[id].n||id)+'" style="--fn-bg:'+(CC_FN_RAR[own[id].r]||CC_FN_RAR.rare)+'">'+
           '<img src="'+ccFnImg(id, true)+'" alt="" loading="lazy" onerror="this.remove()"></button>').join('')+
         (eq[CC_FN_PICK] ? '<button class="cc-lk5-slot off" onclick="ccFnEquip(\''+CC_FN_PICK+'\',null)"><b>'+esc(T.ccFnTakeOff)+'</b></button>' : '')
-      : '<div class="ch-empty">'+esc(T.ccFnNone)+'</div>')+'</div>'+ccFnStylesHTML(CC_FN_PICK);
+      : '<div class="ch-empty">'+esc(T.ccFnNone)+'</div>')+'</div>';
   }
   const rail=[['o','👤'],['e','💃'],['w','🎨']].map(([k, ic])=>'<button class="'+((k==='o' ? ['o','b','p','g'] : [k]).indexOf(CC_FN_PICK||'o')>=0 ? 'on' : '')+'" onclick="ccFnPick(\''+k+'\')">'+ic+'</button>').join('');
   return '<div class="ch-tile cc-fn-load cc-fn-c5 cc-lk5"><nav class="cc-lk5-rail">'+rail+'</nav>'+
@@ -1386,8 +1386,8 @@ function ccFnVariants(id){
   return null;
 }
 // Выбранный стиль: картинка лежит в сейве (fnStyleImg), список вариантов подтягивается сам — после перезагрузки он пуст, и стиль пропадал.
-// Стили сняты: у источника нет моделей стилей в полный рост, только портреты 128 px. Выбор, отметка в магазине и карточка выключены.
-const CC_FN_STYLES_ON=false;
+// У источника стили только портретом 128 px: портрет меняется в слоте и карточке, фигура в полный рост остаётся основной.
+const CC_FN_STYLES_ON=true;
 function ccFnStyleOf(id){
   if(!CC_FN_STYLES_ON) return null;
   const t=CAREER && CAREER.fnStyle && CAREER.fnStyle[id]; if(!t) return null;
