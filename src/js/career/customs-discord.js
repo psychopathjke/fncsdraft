@@ -1909,36 +1909,27 @@ function ccDcLayout(root){
 }
 
 /* ---- Чат на своём сервере (его слово 21.11: «просто чат на сервере личном») -------------------------------------
-   Канал #chat первым на фан-сервере: пишешь своё сообщение, фанаты сразу отвечают. Что отвечают - по словам в
-   сообщении: вопрос, свой код автора, стрим, победа, иначе обычные реакции. Сколько отвечает - как в канале после
+   Канал #chat первым на фан-сервере: выбираешь готовую фразу (раз в день каждую), фанаты сразу отвечают. Сколько отвечает - как в канале после
    турнира (ccFanVoices), но не больше трёх. На игру не влияет, хранится последних CC_FAN_CHAT_KEEP сообщений.
    Текст игрока выводится только через esc(). */
-const CC_FAN_CHAT_KEEP=40, CC_FAN_CHAT_MAX=300;
+const CC_FAN_CHAT_KEEP=40;
 function ccFanChat(){ const f=ccFans(); if(!f) return []; f.chat=f.chat||[]; return f.chat; }
-function ccFanReplyKind(text){
-  const t=String(text||'').toLowerCase(), code=(typeof ccSacOwnCode==='function' && ccSacOwnCode()) || '';
-  if(code && t.toUpperCase().indexOf(code)>=0) return 'Code';
-  const sm=ccChatSmart(text); if(sm) return sm;
-  if(/stream|twitch|live|стрим|эфир|трансл|direct|diretta|transmis/.test(t)) return 'Stream';
-  if(/\?/.test(t)) return 'Q';
-  if(/\bgg\b|win|won|выигр|побед|топ|top|#1|gagn|vinto|ganh|gewonn|gan[eé]/.test(t)) return 'Hype';
-  return 'Gen';
-}
-function ccFanChatSend(){
-  const inp=document.getElementById('ccFanChatIn'); if(!inp || !ccFans()) return;
-  const text=String(inp.value||'').replace(/\s+/g, ' ').trim().slice(0, CC_FAN_CHAT_MAX);
-  if(!text) return;
+function ccFanChipUsed(i){ const k=(ccFans()||{}).chips; return !!(k && k.day===careerToday() && k.ids.indexOf(i)>=0); }
+function ccFanChatSend(i){
+  const f=ccFans(), text=ccChatPhrase(i); if(!f || !text || ccFanChipUsed(i)) return;
+  if(!f.chips || f.chips.day!==careerToday()) f.chips={day:careerToday(), ids:[]};
+  f.chips.ids.push(i);
   const chat=ccFanChat(), T=L(), day=careerToday(), n=chat.length;
   chat.push({me:1, t:text, d:day});
-  const kind=ccFanReplyKind(text), r=careerRng(ccHashStr('fanchat|'+day+'|'+n+'|'+text));
-  const per={Code:1, Stream:2, Q:4, Hype:3, Gen:5}[kind]||3;
-  const k=Math.min('YNTDKU'.indexOf(kind)>=0 ? 1 : 3, ccFanVoices(), per);   // не больше, чем разных фраз: одна и та же дважды читалась как сбой
+  const kind={W:'W', Q:'Q', G:'Gen', T:'T'}[CC_CHAT_PICK[i]], r=careerRng(ccHashStr('fanchat|'+day+'|'+n+'|'+text));
+  const per={Q:3, Gen:5}[kind]||3;
+  const k=Math.min(3, ccFanVoices(), per);   // не больше, чем разных фраз: одна и та же дважды читалась как сбой
   const used=[];
-  for(let i=0;i<k;i++){
+  for(let q=0;q<k;q++){
     let j=1+Math.floor(r()*per); if(used.indexOf(j)>=0 && used.length<per){ j=1; while(used.indexOf(j)>=0) j++; }
     used.push(j);
     const key='fnR'+kind+j, s=T[key]||ccChatLine(kind, j);
-    chat.push({nick:ccFanNick('c|'+day+'|'+n+'|'+i), t:typeof s==='function' ? s((typeof ccSacOwnCode==='function' && ccSacOwnCode())||'') : (s||''), d:day});
+    chat.push({nick:ccFanNick('c|'+day+'|'+n+'|'+q), t:typeof s==='function' ? s((typeof ccSacOwnCode==='function' && ccSacOwnCode())||'') : (s||''), d:day});
   }
   // Позванный на сервер (не фанат) тоже иногда отвечает - своим ником и фото карточки.
   const gs=ccFanGuests();
@@ -1949,9 +1940,7 @@ function ccFanChatSend(){
   while(chat.length>CC_FAN_CHAT_KEEP) chat.shift();
   CH_DCC.own=T.fnChatChan; CH_DCV='chan';
   careerSave(); careerRenderHub('discord');
-  const again=document.getElementById('ccFanChatIn'); if(again){ try{ again.focus({preventScroll:true}); }catch(e){} }
 }
-function ccFanChatKey(e){ if(e.key==='Enter' && !e.shiftKey){ e.preventDefault(); ccFanChatSend(); } }
 /* Люди пишут в #chat сами (его слово 21.11: «чат, чтоб люди туда чего-то писали»): раз в день, когда сервер открыт,
    в чат приходит пачка сообщений фанатов и приглашённых - про сегодняшний турнир, твой последний результат, предмет
    из магазина дня, стрим, просто разговоры. Сколько - от фанатов (ccFanVoices) и гостей, 2-7. Пропущенные дни не
@@ -1994,10 +1983,9 @@ function ccFanChatHTML(chan, msg){
       : m.g ? msg(ccHandle(m.nick), false, '<p>'+esc(m.t)+'</p>', ccFanGuestAv({handle:m.nick}))
       : msg(m.nick, false, '<p>'+esc(m.t)+'</p>', ccFanAv(m.nick))).join('')
     : '<p class="dc-sub">'+esc(T.fnChatEmpty)+'</p>';
-  const box='<div class="dc-compose"><input id="ccFanChatIn" type="text" maxlength="'+CC_FAN_CHAT_MAX+'" autocomplete="off" '+
-    'placeholder="'+esc(T.fnChatPh(T.fnChatChan))+'" aria-label="'+esc(T.fnChatPh(T.fnChatChan))+'" onkeydown="ccFanChatKey(event)">'+
-    '<button type="button" class="dc-btn sm" onclick="ccFanChatSend()">'+esc(T.fnSend)+'</button></div>';
-  return chan(T.fnChatChan, '<div class="dc-chatlog">'+list+'</div><div class="dc-compose-dock">'+box+'</div>');
+  const box=[1, 4, 5, 7].filter(i=>!ccFanChipUsed(i) && ccChatPhrase(i)).map(i=>
+    '<button type="button" class="dc-btn ghost sm" onclick="ccFanChatSend('+i+')">'+esc(ccChatPhrase(i))+'</button>').join('');
+  return chan(T.fnChatChan, '<div class="dc-chatlog">'+list+'</div>'+(box ? '<div class="dc-compose-dock"><div class="cr-replies cr-chips">'+box+'</div></div>' : ''));
 }
 
 /* ---- Свой сервер: инвайты, поиск, настройки (его слово 21.11: «инвайтнуть можно будет, в самом дискорде поиск, и
@@ -2463,76 +2451,45 @@ function ccCrewAnswer(i, opt){
   while(log.length>CC_CREW_CHAT_KEEP) log.shift();
   careerSave(); careerRenderHub('discord');
 }
-/* Ответы в чатах по смыслу короткого сообщения: код, привет, gg, спасибо, смех, подкол, да/нет, «когда/кто/почему».
-   '' - смысла не нашли, дальше обычные реакции. U - непонятный набор символов: отвечает один и переспрашивает. */
-const CC_CHAT_WORDS={
-  I:'hi hey hello yo sup hola salut bonjour coucou ciao buongiorno salve oi olá ola eae hallo servus moin buenas привет прив хай ку здарова здаров салам',
-  B:'bye gn cya goodnight adios adiós tschüss tchau notte ciaoo пока спокойной бб',
-  W:'gg ggs ggwp гг',
-  T:'thanks thx ty thank merci grazie obrigado obrigada danke gracias спасибо спс пасиб',
-  L:'lol lmao haha hahaha mdr ptdr kkk kkkk jaja jajaja xd rofl ахах ахаха ахахах хаха лол',
-  D:'trash bad noob bot ez dogwater washed scarso nul nulle ruim lixo schlecht malo malos мусор нуб бот слабый слабые изи',
-  Y:'yes yeah yep ok okay sure bet oui si sì sim ja sí vale да ок окей ага го давай',
-  N:'no nah nope non não nein нет неа не'};
-const CC_CHAT_WH='who when where what how why which qui quand où quoi comment pourquoi chi quando dove cosa come perché quem onde como porque wer wann wo was wie warum quién cuándo dónde qué cómo кто когда где что как почему зачем сколько';
-const CC_CHAT_SETS=Object.fromEntries(Object.entries(CC_CHAT_WORDS).concat([['K', CC_CHAT_WH]]).map(([k, v])=>[k, new Set(v.split(' '))]));
+/* В чатах пишут готовыми фразами: у каждой свой вид ответа, поэтому отвечают всегда к месту.
+   W gg, S зовёт играть, Q вопрос, G мнение, C код (только если его просили), T спасибо. */
+const CC_CHAT_PICK={1:'W', 2:'S', 3:'S', 4:'Q', 5:'G', 6:'C', 7:'T'};
 const CC_CHAT_R={
-  ru:{C:['захожу','зашёл','вижу, захожу'], I:['привет','ку','здарова'], B:['пока','до завтра','бб'], W:['гг','гг вп','хорошо сыграли'], T:['не за что','всегда','обращайся'], L:['ахах','лол','плачу'], D:['1 на 1?','следи за словами','увидимся на капе'], Y:['ок','договорились','отлично'], N:['ок','понял','ладно'], K:['не знаю','без понятия','сам хотел спросить'], U:['?','чего?','не понял']},
-  en:{C:['in','joining','got it, loading in'], I:['hey','yo','sup'], B:['cya','gn','later'], W:['gg','ggwp','well played'], T:['np','anytime','all good'], L:['lol','lmao','im crying'], D:['1v1?','watch your mouth','see you in cup'], Y:['bet','ok','nice'], N:['ok','np','fair'], K:['no idea','idk tbh','was about to ask the same'], U:['?','what?','wdym']},
-  fr:{C:['je suis dedans','je rejoins','c’est bon, je charge'], I:['salut','yo','coucou'], B:['à plus','bonne nuit','à demain'], W:['gg','ggwp','bien joué'], T:['de rien','pas de souci','avec plaisir'], L:['mdr','ptdr','je pleure'], D:['1v1 ?','fais attention','on se voit en cup'], Y:['ok','ça marche','parfait'], N:['ok','pas grave','compris'], K:['aucune idée','je sais pas','j’allais demander pareil'], U:['?','quoi ?','comment ça ?']},
-  it:{C:['sono dentro','entro','ok, sto caricando'], I:['ciao','ehi','yo'], B:['a dopo','notte','a domani'], W:['gg','ggwp','ben giocato'], T:['di nulla','quando vuoi','tranquillo'], L:['ahah','lol','sto piangendo'], D:['1v1?','attento a come parli','ci vediamo in cup'], Y:['ok','va bene','perfetto'], N:['ok','tranquillo','capito'], K:['boh','non lo so','stavo per chiederlo'], U:['?','cosa?','in che senso?']},
-  pt:{C:['entrei','entrando','peguei, carregando'], I:['oi','eae','fala'], B:['falou','boa noite','até amanhã'], W:['gg','ggwp','jogou bem'], T:['de nada','tamo junto','tranquilo'], L:['kkk','kkkk','tô chorando'], D:['x1?','cuidado com a boca','te vejo na cup'], Y:['ok','fechou','boa'], N:['ok','tranquilo','entendi'], K:['não sei','sem ideia','ia perguntar o mesmo'], U:['?','quê?','como assim?']},
-  de:{C:['bin drin','komme rein','hab ihn, lade gerade'], I:['hi','hey','moin'], B:['bis später','gute Nacht','bis morgen'], W:['gg','ggwp','gut gespielt'], T:['kein Ding','gerne','immer'], L:['lol','haha','ich kann nicht mehr'], D:['1v1?','pass auf','wir sehen uns im Cup'], Y:['ok','passt','top'], N:['ok','kein Problem','verstanden'], K:['keine Ahnung','weiß nicht','wollte ich auch fragen'], U:['?','was?','wie meinst du das?']},
-  es:{C:['dentro','entrando','lo tengo, cargando'], I:['hola','ey','buenas'], B:['nos vemos','buenas noches','hasta mañana'], W:['gg','ggwp','bien jugado'], T:['de nada','cuando quieras','tranquilo'], L:['jaja','lol','estoy llorando'], D:['¿1v1?','cuidado con lo que dices','nos vemos en la cup'], Y:['ok','hecho','genial'], N:['ok','no pasa nada','entendido'], K:['ni idea','no sé','iba a preguntar lo mismo'], U:['?','¿qué?','¿cómo?']}};
-function ccChatLine(kind, j){ const D=CC_CHAT_R[LANG]||CC_CHAT_R.en, a=D[kind]; return a ? a[j%a.length] : ''; }
-function ccChatSmart(text){
-  const t=String(text||'').toLowerCase().trim();
-  if(/^[^?]{0,14}?#?[0-9][0-9 -]{2,18}$/.test(t) && (/^#?[0-9]/.test(t) || /^(the )?(code|key|код|codice|código|codigo|is|это|ключ)/.test(t))) return 'C';
-  const w=t.split(/[^\p{L}\p{N}]+/u).filter(Boolean);
-  if(!w.length) return t.indexOf('?')>=0 ? 'U' : '';
-  const has=k=>w.some(x=>CC_CHAT_SETS[k].has(x));
-  if(/\?/.test(t) && has('K') && !/play|игра|scrim|скрим|ranked|ранкед|gioc|jou|jog|spiel|jug/.test(t)) return 'K';
-  if(w.length<=4 && !/\?/.test(t)){
-    for(const k of ['W','T','B','L']) if(has(k)) return k;
-    if(CC_CHAT_SETS.I.has(w[0])) return 'I';
-    if(has('D')) return 'D';
-    if(w.length<=2 && CC_CHAT_SETS.Y.has(w[0])) return 'Y';
-    if(w.length<=2 && CC_CHAT_SETS.N.has(w[0])) return 'N';
-  }
-  if(/^[0-9]+$/.test(w.join('')) || (w.length===1 && w[0].length>3 && !/[aeiouyàáâãäèéêìíòóôõöùúüаеёиоуыэюя]/.test(w[0]))) return 'U';
-  return '';
+  ru:{code:n=>'код '+n, thx:'спасибо всем', C:['захожу','зашёл','вижу, захожу'], W:['гг','гг вп','хорошо сыграли'], T:['не за что','всегда','обращайся']},
+  en:{code:n=>'code '+n, thx:'thanks everyone', C:['in','joining','got it, loading in'], W:['gg','ggwp','well played'], T:['np','anytime','all good']},
+  fr:{code:n=>'code '+n, thx:'merci à tous', C:['je suis dedans','je rejoins','c’est bon, je charge'], W:['gg','ggwp','bien joué'], T:['de rien','pas de souci','avec plaisir']},
+  it:{code:n=>'codice '+n, thx:'grazie a tutti', C:['sono dentro','entro','ok, sto caricando'], W:['gg','ggwp','ben giocato'], T:['di nulla','quando vuoi','tranquillo']},
+  pt:{code:n=>'código '+n, thx:'valeu, pessoal', C:['entrei','entrando','peguei, carregando'], W:['gg','ggwp','jogou bem'], T:['de nada','tamo junto','tranquilo']},
+  de:{code:n=>'Code '+n, thx:'danke an alle', C:['bin drin','komme rein','hab ihn, lade gerade'], W:['gg','ggwp','gut gespielt'], T:['kein Ding','gerne','immer']},
+  es:{code:n=>'código '+n, thx:'gracias a todos', C:['dentro','entrando','lo tengo, cargando'], W:['gg','ggwp','bien jugado'], T:['de nada','cuando quieras','tranquilo']}};
+function ccChatR(){ return CC_CHAT_R[LANG]||CC_CHAT_R.en; }
+function ccChatLine(kind, j){ const a=ccChatR()[kind]; return a ? a[j%a.length] : ''; }
+// Текст готовой фразы; событие - ближайший турнир, для «кто играет».
+function ccChatPhrase(i){
+  if(i===6) return ccChatR().code(100000+(ccHashStr('chatcode|'+careerToday())>>>0)%900000);
+  if(i===7) return ccChatR().thx;
+  let next=null; try{ next=careerNext(); }catch(e){}
+  const s=L()['crS'+i];
+  if(typeof s!=='function') return s||'';
+  return next && next.type!=='free' ? s(next.type==='cup' ? L().ccCupLive : (next.title||next.label||'')) : '';
 }
-function ccCrewSayKind(text){
-  const sm=ccChatSmart(text); if(sm) return sm;
-  const t=String(text||'').toLowerCase();
-  if(/scrim|скрим|ranked|ранкед|ranq|box|zone ?wars|зон|1v1|duo|дуо|play|поигр|jouer|giocare|jogar|spielen|jugar/.test(t)) return 'S';
-  if(/\?/.test(t)) return 'Q';
-  if(/\b(gg|win|won|go|goo+|lets)\b|выигр|побед|#1|погнали/.test(t)) return 'H';
-  return 'G';
+// Просили код после твоего последнего сообщения - тот, кто просил.
+function ccChatCodeAsk(){
+  const log=ccCrewChatLog(), day=careerToday(), T=L(), np=T.crNp1b('', '', '', '', '');
+  for(let i=log.length-1; i>=0; i--){ const x=log[i]; if(x.d!==day || x.me) return null; if(x.t===T.crRS3 || x.t===np) return x; }
+  return null;
 }
-function ccCrewSay(text){
+function ccCrewSay(text, kind){
   text=String(text||'').replace(/\s+/g, ' ').trim().slice(0, 300); if(!text) return;
   const T=L(), c=ccCrew(), day=careerToday(), log=ccCrewChatLog(), members=ccCrewMembers();
   const on=members.filter(m=>ccCrewStatus(m)!=='off');
-  // Одно и то же сообщение за день второй раз - спам: в ленте оно есть, но отвечать на него никто не будет, и знакомство не растёт.
-  const again=log.some(x=>x.me && x.d===day && String(x.t).toLowerCase()===text.toLowerCase());
+  const ask=kind==='C' ? ccChatCodeAsk() : null;
   log.push({me:1, t:text, d:day});
   const r=careerRng(ccHashStr('crewsay|'+day+'|'+log.length+'|'+text));
-  // Упомянул @ника - отвечает он; иначе 1-2 человека в сети.
-  const low=text.toLowerCase();
-  const tagged=members.find(m=>low.indexOf('@'+String(ccHandle(m.handle)).toLowerCase())>=0);
-  const who=[]; if(!again && tagged && ccCrewStatus(tagged)!=='off') who.push(tagged);
-  while(!again && who.length<(tagged ? 1 : Math.min(2, on.length)) && on.length){ const m=on[Math.floor(r()*on.length)]; if(who.indexOf(m)<0) who.push(m); else break; }
-  // «Отметили меня» - только если отвечает сам отмеченный; он не в сети - другие отвечают на смысл сообщения.
-  const rest=text.replace(/@[A-Za-z0-9_.]+/g, '').trim();
-  const kind=(tagged && who[0]===tagged && !rest) ? 'M' : ccCrewSayKind(rest||text), per={S:3, Q:4, H:3, G:5, M:3}[kind]||3, used=[];
-  // Код, да/нет, спасибо - первым отвечает тот, кому это: просивший код или писавший последним.
-  if(who.length && !tagged && 'CYNTLD'.indexOf(kind)>=0){
-    const back=log.slice(0, -1).filter(x=>!x.me && x.d===day).slice(-6).reverse(), ask=kind==='C' && back.find(x=>x.t===T.crRS3 || x.t===T.crNp1b('', '', '', '', ''));
-    const to=ask||back[0], m=to && on.find(x=>hKey(x.handle)===hKey(to.h));
-    if(m){ const i=who.indexOf(m); if(i>=0) who.splice(i, 1); who.unshift(m); }
-  }
-  if('YNTDKU'.indexOf(kind)>=0) who.length=Math.min(1, who.length); else who.length=Math.min(2, who.length);
+  // Отвечают 1-2 человека в сети; на код первым - тот, кто его просил.
+  const who=[], to=ask && on.find(m=>hKey(m.handle)===hKey(ask.h)); if(to) who.push(to);
+  while(who.length<Math.min(2, on.length)){ const m=on[Math.floor(r()*on.length)]; if(who.indexOf(m)<0) who.push(m); else break; }
+  const per={S:3, Q:3, G:5}[kind]||3, used=[];
   who.forEach(m=>{
     let j=1+Math.floor(r()*per); while(used.indexOf(j)>=0 && used.length<per) j=j%per+1; used.push(j);
     log.push({h:m.handle, t:T['crR'+kind+j]||ccChatLine(kind, j), d:day});
@@ -2542,18 +2499,13 @@ function ccCrewSay(text){
   while(log.length>CC_CREW_CHAT_KEEP) log.shift();
   CH_DCC.crew=T.crGeneral; CH_DCV='chan';
   careerSave(); careerRenderHub('discord');
-  const inp=document.getElementById('ccCrewChatIn'); if(inp){ try{ inp.focus({preventScroll:true}); }catch(e){} }
 }
-function ccCrewSayInput(){ const inp=document.getElementById('ccCrewChatIn'); if(!inp) return; const v=inp.value; inp.value=''; ccCrewSay(v); }
-function ccCrewSayKey(e){ if(e.key==='Enter' && !e.shiftKey){ e.preventDefault(); ccCrewSayInput(); } }
 function ccCrewSayPick(i){
-  const T=L(); let next=null; try{ next=careerNext(); }catch(e){}
-  const ev=next && next.type!=='free' ? (next.type==='cup' ? T.ccCupLive : (next.title||next.label||'')) : '';
-  const s=T['crS'+i]; if(!s || ccCrewChipUsed(i)) return;
+  const s=ccChatPhrase(i); if(!s || ccCrewChipUsed(i) || (i===6 && !ccChatCodeAsk())) return;
   const c=ccCrew(), day=careerToday();
   if(!c.chips || c.chips.day!==day) c.chips={day:day, ids:[]};
   c.chips.ids.push(i);
-  ccCrewSay(typeof s==='function' ? s(ev) : s);
+  ccCrewSay(s, CC_CHAT_PICK[i]);
 }
 // Заготовка - раз в день (его «могу несколько раз спамить каждую фразу»): отправленная пропадает до завтра.
 function ccCrewChipUsed(i){ const c=ccCrew(), k=c && c.chips; return !!(k && k.day===careerToday() && k.ids.indexOf(i)>=0); }
@@ -2576,14 +2528,10 @@ function ccCrewChatBoxHTML(msg, members){
   };
   const list=log.map((x, i)=>x.me ? msg(CAREER.player.nick, false, '<p>'+ccDcAt(esc(x.t))+'</p>')
     : (()=>{ const m=byH.get(hKey(x.h)); return msg(ccHandle(x.h), false, '<p'+(x.offer || x.q ? ' class="dc-ment"' : '')+'>'+ccDcAt(esc(x.t))+'</p>'+acts(x, i), m ? ccCrewAv(m) : esc(String(x.h).slice(0, 2).toUpperCase())); })()).join('');
-  const chips=[1, 2, 3, ev ? 4 : 0, 5].filter(i=>i && !ccCrewChipUsed(i)).map(i=>{
-    const s=T['crS'+i]; const txt=typeof s==='function' ? s(next ? (next.type==='cup' ? T.ccCupLive : (next.title||next.label||'')) : '') : s;
-    return '<button type="button" class="dc-btn ghost sm" onclick="ccCrewSayPick('+i+')">'+esc(txt)+'</button>'; }).join('');
+  const chips=[ccChatCodeAsk() ? 6 : 0, 1, 2, 3, ev ? 4 : 0, 5, 7].filter(i=>i && !ccCrewChipUsed(i)).map(i=>
+    '<button type="button" class="dc-btn ghost sm" onclick="ccCrewSayPick('+i+')">'+esc(ccChatPhrase(i))+'</button>').join('');
   return '<div class="dc-chatlog">'+list+'</div>'+
-    '<div class="dc-compose-dock"><div class="cr-replies cr-chips">'+chips+'</div>'+
-    '<div class="dc-compose"><input id="ccCrewChatIn" type="text" maxlength="300" autocomplete="off" placeholder="'+esc(T.fnChatPh(T.crGeneral))+'" '+
-      'aria-label="'+esc(T.fnChatPh(T.crGeneral))+'" onkeydown="ccCrewSayKey(event)">'+
-    '<button type="button" class="dc-btn sm" onclick="ccCrewSayInput()">'+esc(T.fnSend)+'</button></div></div>';
+    (chips ? '<div class="dc-compose-dock"><div class="cr-replies cr-chips">'+chips+'</div></div>' : '');
 }
 
 /* Выбор человека (идея игрока, Notion «20.11», скрин 40): «на выезде играть с людьми того региона» и «в скримах,
