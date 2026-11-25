@@ -1652,6 +1652,48 @@ function ccWorldPoolsSeed(){
     try{ ccWithEventSize(f, ()=>careerPools()); } finally { CC_POOLS=null; }
   }catch(e){}
 }
+/* Записи Мейджоров 2019-2023 в книге гонки: серия, хиты и их итоги досчитывались у каждого сами, и поле финала
+   расходилось. Своё (билет, пройденные раунды, youKey) остаётся личным. */
+const CC_RACE_MX={majorxs:['series','seriesRows','wf','heats','heatRes','wcq'], major21:['series','seriesRows','direct','heats','heatRes','reboot'],
+  major22:['series','seriesRows','direct','semi'], major23:['series','seriesRows','surgeTop']};
+function ccRaceMxList(){
+  const cr=(CAREER && CAREER.career)||{}, out=[];
+  Object.values(cr.majorxs||{}).forEach(m=>{ if(m) out.push(['majorxs', m.y+'|'+m.n, m]); });
+  ['major21','major22','major23'].forEach(k=>{ if(cr[k]) out.push([k, String(cr[k].n), cr[k]]); });
+  return out.filter(x=>x[2].season===cr.season);
+}
+function ccRaceMxSettle(k, m){
+  try{
+    if(k==='majorxs'){ ccMXSettleWeeks(m); ccMXSettleHeats(m); }
+    if(k==='major21') ccM21SettleQuals(m);
+    if(k==='major22') ccM22SettleQuals(m);
+    if(k==='major23') ccM23SettleWeeks(m);
+  }catch(e){}
+}
+function ccRaceMxPack(){
+  const out={};
+  ccRaceMxList().forEach(([k, id, m])=>{ ccRaceMxSettle(k, m); const o={}; CC_RACE_MX[k].forEach(p=>{ o[p]=m[p]===undefined ? null : m[p]; }); out[k+'|'+id]=o; });
+  return JSON.parse(JSON.stringify(out));
+}
+// Где в записи стою я: хит, полуфинал. Запись старшего, где меня там нет, не берём - своего места она лишить не может.
+function ccRaceMxSpots(v, path, out){
+  if(Array.isArray(v) && ccSeedHasMe(v)) out.push(path);
+  else if(v && typeof v==='object') Object.keys(v).forEach(k=>{ if(path.length<60) ccRaceMxSpots(v[k], path+'.'+k, out); });
+  return out;
+}
+function ccRaceMxApply(mx){
+  if(!mx || typeof mx!=='object') return;
+  ccRaceMxList().forEach(([k, id, m])=>{
+    const o=mx[k+'|'+id]; if(!o || typeof o!=='object') return;
+    ccRaceMxSettle(k, m);
+    const own={}; CC_RACE_MX[k].forEach(p=>{ own[p]=m[p]; });
+    const pick=x=>({heats:x.heats, semi:x.semi});
+    const his=ccRaceMxSpots(pick(o), '', []);
+    if(ccRaceMxSpots(pick(own), '', []).some(p=>his.indexOf(p)<0)) return;
+    if(m.youKey && m.series && m.series[m.youKey]!=null && !(o.series && o.series[m.youKey]!=null)) return;
+    CC_RACE_MX[k].forEach(p=>{ if(o[p]==null && p!=='heats' && p!=='surgeTop' && p!=='reboot') return; m[p]=o[p]; });
+  });
+}
 function ccRaceWorldPack(){
   /* ТРОЙКИ ГОДА — ДО КНИГИ. Посев третьих (careerPools, cr.triosSeeded) идёт при первой сборке пула,
      и у старшего она могла случиться ПОСЛЕ отправки: прогон годов 20.10, 2025 — старший слал trios {},
@@ -1677,7 +1719,7 @@ function ccRaceWorldPack(){
   // И напарники сирот (cr.orphanMate) — память личная, как в команде (см. ccTeamWorldPack).
   return {orphanMate:cr.orphanMate||{},
           dev:(CAREER && CAREER.dev)||{}, devL:(CAREER && CAREER.devL)||{}, splits:(CAREER && CAREER.splits)||{}, duoSplits:cr.duoSplits||{}, trios:cr.trios||{},
-          duoStreak:(CAREER && CAREER.duoStreak)||{}, lft:(CAREER && CAREER.lft)||{}, tseed:{seeded:cr.triosSeeded===undefined ? null : cr.triosSeeded, cores:cr.trioCores||null, filled:cr.trioFilled||null}, cseed:ccCareerSeed(), seeds:seeds};
+          duoStreak:(CAREER && CAREER.duoStreak)||{}, lft:(CAREER && CAREER.lft)||{}, tseed:{seeded:cr.triosSeeded===undefined ? null : cr.triosSeeded, cores:cr.trioCores||null, filled:cr.trioFilled||null}, cseed:ccCareerSeed(), seeds:seeds, mx:ccRaceMxPack()};
 }
 function ccRaceWorldApply(w){
   if(!w || !CAREER) return false;
@@ -1708,6 +1750,7 @@ function ccRaceWorldApply(w){
       if(v===null) delete CAREER.career[k];           // у старшего записи нет — нет её и у меня
       else CAREER.career[k]=v;
     });
+  if(w.mx) ccRaceMxApply(w.mx);
   CC_RACE_WORLD_SEED=w.cseed ? String(w.cseed) : null;
   if(CAREER.career && CAREER.career.race && w.cseed) CAREER.career.race.wseed=String(w.cseed);
   try{ ccWorldReset(); }catch(e){}

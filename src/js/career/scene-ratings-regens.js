@@ -688,7 +688,7 @@ function ccSquadCastRoles(cards){
 let CC_BOT_PING=false;
 function ccBotPingEdge(c){
   try{
-    if(typeof ccNoEdgeNow==='function' && ccNoEdgeNow()) return 0;
+    // Не ccNoEdgeNow: это галка экрана создания, у каждого клиента своя, и поле гонки расходилось на 6 силы у каждого бота.
     const code=c && c.nat ? String(FLAG_CODE[c.nat]||'').toLowerCase() : '';
     let ms=code ? ccPingOf(code, ccCareerRegion()) : null;
     if(ms==null) ms=CC_PING_HOME;

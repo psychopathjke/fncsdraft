@@ -218,7 +218,7 @@ const boot = (who) => `
         if(CAREER.career.day!==lastDay){ lastDay=CAREER.career.day; lastMove=Date.now(); }
         else if(Date.now()-lastMove>${STALL_MS}){
           let nx=null; try{ nx=careerNext(); }catch(e){}
-          out.notes.stall={day:CAREER.career.day, ff:!!CC_FF, next:nx&&{type:nx.type, title:nx.title}, can:nx?careerCanPlay(nx):null,
+          out.notes.stall={tr:(window.__tr||[]).slice(-14), ui:[...document.querySelectorAll('body *')].filter(e=>{ const s=getComputedStyle(e); return s.position==='fixed' && s.display!=='none' && e.offsetHeight>60 && s.visibility!=='hidden'; }).map(e=>(e.id||e.className)+':'+(e.innerText||'').slice(0,160).split(String.fromCharCode(10)).join('/')).slice(0,8), run2:((document.querySelector('#screen-results')||{}).innerText||'').slice(0,500).split(String.fromCharCode(10)).join('/'), btns:[...document.querySelectorAll('button')].filter(b=>b.offsetParent && b.closest('#screen-results')).map(b=>b.textContent.trim().slice(0,40)).slice(0,12), day:CAREER.career.day, ff:!!CC_FF, next:nx&&{type:nx.type, title:nx.title}, can:nx?careerCanPlay(nx):null,
             why:(typeof ccMpWhy==='function')?ccMpWhy():null, block:(typeof ccMpBlockWhy==='function')?ccMpBlockWhy():null, gate:!!MP.gate, alone:CC_MP_ALONE, rand:!!CC_MP_RAND,
             screen:[...document.querySelectorAll('.screen')].filter(e=>e.offsetParent!==null).map(e=>e.id).join(','), mates:careerMates().map(m=>m&&m.handle),
             log:(CAREER.career.log||[]).slice(-3).map(r=>[r.day,r.kind,r.stage||'',r.place,r.who||''].join(' ')), waiting:MP.waiting||null, ffPlayed:(CC_FF&&CC_FF.played||[]).slice(-4), ffUntil:CC_FF&&CC_FF.until, run:(typeof CAREER_RUN!=='undefined'&&CAREER_RUN)?1:0, natTeam:(CAREER.career.nat||{}).team||null};

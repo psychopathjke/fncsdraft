@@ -56,6 +56,9 @@ var PENDING=[];
 function pendKey(kind, p){ return String(kind)+'#'+(p && p.q!=null ? p.q : '')+'#'+(p && p.g!=null ? p.g : ''); }
 function pendDrop(kind, p){ var k=pendKey(kind, p); for(var i=PENDING.length-1;i>=0;i--) if(PENDING[i].key===k) PENDING.splice(i,1); }
 function pendFlush(sock){ if(!PENDING.length) return; PENDING.forEach(function(x){ try{ sock.send(JSON.stringify({t:'act', kind:x.kind, payload:x.payload})); }catch(e){} }); }
+// Связь жива, а эхо акта не пришло за 4 с - шлём ещё раз: повтор по номеру вопроса сервер выбросит сам.
+function pendAgain(sock){ var now=(new Date()).getTime(); PENDING.forEach(function(x){ if(!x.payload || (x.payload.q==null && x.kind!=='race') || now-x.at<4000) return; x.at=now;
+  try{ sock.send(JSON.stringify({t:'act', kind:x.kind, payload:x.payload})); }catch(e){} }); }
 var LAST_MSG=0, WATCH=null;   // когда сервер последний раз что-то прислал; сторож тишины (см. connect)
 /* Состояние связи — четыре слова, и все четыре видны игроку.
 
@@ -402,6 +405,7 @@ var MP={
           /* Только посреди сеяного вечера: пульс соседей идёт лишь там (ccMpHeartbeat), а в хабе
              тишина от сервера — норма, и сторож рвал бы живой сокет каждые 45 с (год 9.09 03:48:
              шестеро в хабе на 22.02, связь lost/wait по кругу). */
+          if(MP.state==='live') pendAgain(sock);
           if(MP.state!=='live' || !Object.keys(PEER_HBS).length) return;
           if(typeof CC_MP_RAND==='undefined' || !CC_MP_RAND) return;
           if((new Date()).getTime()-LAST_MSG>45000){ try{ sock.close(); }catch(e){} }
@@ -532,7 +536,7 @@ var MP={
   // Вид вечера едет вместе с днём: двое обязаны нажать ОДИН турнир. См. ccMpGate.
   ready:function(day, kind){ MP.send({t:'ready', day:day, kind:kind||null}); },
   act:function(kind, payload){
-    if(kind!=='hb'){ pendDrop(kind, payload); PENDING.push({key:pendKey(kind, payload), kind:kind, payload:payload}); if(PENDING.length>64) PENDING.shift(); }
+    if(kind!=='hb'){ pendDrop(kind, payload); PENDING.push({key:pendKey(kind, payload), kind:kind, payload:payload, at:(new Date()).getTime()}); if(PENDING.length>64) PENDING.shift(); }
     MP.send({t:'act', kind:kind, payload:payload});
   },
   pending:function(){ return PENDING.length; },
