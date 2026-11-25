@@ -147,11 +147,11 @@ export class Lobby {
     const id=a.id;
     // Потолок одного сообщения: карточка, строка гонки и книга мира весят десятки килобайт, мегабайтный мусор не разбираем.
     if((typeof data==='string' ? data.length : (data && data.byteLength)||0) > WS_MAX) return;
-    /* Частота с одного сокета: живой клиент шлёт единицы сообщений в секунду (вопросы, голоса, строки гонки).
-       Сверх WS_RATE за WS_RATE_MS сообщения молча отбрасываются: каждое иначе стоит записи состояния и квоты DO. */
+    /* Частота с одного сокета. Перемотка честно шлёт сотни сообщений за секунды, и потерянный ход подвешивает вечер
+       у обоих, поэтому потолок высокий, а сверх него сокет закрывается: клиент переподключится и дочитает журнал (since). */
     { const now=Date.now(), r=this.rate.get(ws);
       if(!r || now-r.t>WS_RATE_MS) this.rate.set(ws, {t:now, n:1});
-      else if(++r.n>WS_RATE) return; }
+      else if(++r.n>WS_RATE){ try{ ws.close(1008, 'rate'); }catch(e){} return; } }
     let m=null; try{ m=JSON.parse(data); }catch(e){ return; }
     // Не член команды (третьему отказано: full) ничего не шлёт паре, кроме нового hello.
     if(!m || (m.t!=='hello' && !(id in this.lobby.state.cards))) return;
@@ -383,7 +383,7 @@ function json(o, status){
     headers:Object.assign({'Content-Type':'application/json', 'Cache-Control':'no-store'}, CORS)});
 }
 
-const WS_MAX=256*1024, WS_RATE=300, WS_RATE_MS=10000;
+const WS_MAX=900*1024, WS_RATE=5000, WS_RATE_MS=10000;
 export default {
   async fetch(req, env){
     const url=new URL(req.url);
