@@ -4226,6 +4226,9 @@
 .cc-lad-plat{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
 .cc-dev-auto .cc-inico{width:44px;height:28px}.cc-dev-more{border-style:dashed}
 .cc-devm{display:none;position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:240;align-items:center;justify-content:center;padding:16px}
+.cc-devm{touch-action:none}
+/* .ch-tile below sets overflow:hidden with a stronger selector, so the list needs its own */
+#screen-career-hub .cc-devm .cc-devm-in{overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain;touch-action:pan-y;-webkit-overflow-scrolling:touch}
 .cc-devm-in{width:100%;max-width:980px;max-height:100%;overflow:auto;box-shadow:0 24px 70px rgba(0,0,0,.6);background:linear-gradient(180deg,#123a73,#0b2350) !important;color:#fff}
 .cc-devm-head{display:flex;align-items:center;gap:12px;position:sticky;top:-1px;z-index:2;background:inherit}
 .cc-devm-head h4{margin:0;flex:1}.cc-devm-bal{font-weight:800;color:#ffdd00}
