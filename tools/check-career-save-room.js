@@ -50,7 +50,7 @@ const BOOT = `
     localStorage.setItem('zz_fill', 'x'.repeat(lo));
   };
   const setup = () => {
-    localStorage.clear();
+    localStorage.clear(); CC_IDB_ON = {}; CC_IDB_MEM = {};
     localStorage.setItem('fncsdraft_career', JSON.stringify({
       v:1, player:{nick:'Roomer', age:20, source:'rookie', country:'de', countryPing:15,
         closeRangeEdge:6, region:'EU', ovr:80, role:'roleIGL', attrs:null, ageEdge:4},
@@ -75,13 +75,15 @@ const BOOT = `
     let s = setup();
     if(s.free >= s.ownLz) fail('setup: the own save still fits compressed (' + s.ownLz + ' vs free ' + s.free + ')');
     window.ccSaveMakeRoom = () => false;
+    const keepIdb = window.ccIdbSaveOwn; window.ccIdbSaveOwn = () => false;   // и без IndexedDB (check-career-save-idb)
     CC_SAVE_FAIL = null; careerSave();
     if(!CC_SAVE_FAIL) fail('control: with no room made the save still went through, the probe proves nothing');
     out.steps.push('control: other slots full, own save ' + s.own + ' chars (' + s.ownLz + ' packed), free ' + s.free + ': ' + CC_SAVE_FAIL);
-    window.ccSaveMakeRoom = keep;
+    window.ccSaveMakeRoom = keep; window.ccIdbSaveOwn = keepIdb;
 
     // ---- с освобождением: сохраняется, и ничего не потеряно ------------------
     s = setup();
+    window.ccIdbSaveOwn = () => false;   // место должно найтись в localStorage, без базы
     CC_SAVE_FAIL = null; careerSave();
     if(CC_SAVE_FAIL) fail('the career is still not saved: ' + CC_SAVE_FAIL);
     const back = ccSaveParse(localStorage.getItem('fncsdraft_career'));

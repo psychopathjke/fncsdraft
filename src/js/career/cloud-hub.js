@@ -61,9 +61,11 @@ async function ccCloudPush(){
   CC_CLOUD_BUSY=true;
   const sent=ccCloudSent();
   try{
+    // Слот в IndexedDB: в облако уходит сейв из базы, а не заглушка (ccSlotRaw).
+    try{ await ccIdbLoadAll(); }catch(e){}
     const keys=ccCloudKeys();
     for(const k of keys){
-      const raw=localStorage.getItem(k)||'';
+      const raw=ccSlotRaw(k)||'';
       const sig=raw.length+':'+ccHashStr(raw);
       if(sent[k]===sig) continue;
       // Профиль — без права уронить отправку карьер: сервер до 30.10 этот ключ не знает и отвечает «key».
@@ -173,7 +175,14 @@ async function ccCloudRestore(){
     for(const sv of saves){
       const j=await ccCloudPost({code, op:'get', key:sv.key});
       const raw=await ccCloudUnpack(j.data);
-      localStorage.setItem(sv.key, raw);
+      // Карьера не влезла в localStorage (iPhone, ~5 МБ) — в IndexedDB с заглушкой, как ccIdbSaveOwn.
+      try{ localStorage.setItem(sv.key, raw); if(CC_IDB_ON[sv.key]) ccIdbDel(sv.key); }
+      catch(e1){
+        const s=/^fncsdraft_career/.test(sv.key) && typeof indexedDB!=='undefined' ? ccSaveParse(raw) : null;
+        if(!s || !s.career) throw e1;
+        await ccIdbPut(sv.key, raw); CC_IDB_MEM[sv.key]=raw; CC_IDB_ON[sv.key]=1;
+        try{ localStorage.setItem(sv.key, ccIdbStubOf(s)); }catch(e2){ localStorage.removeItem(sv.key); localStorage.setItem(sv.key, ccIdbStubOf(s)); }
+      }
       sent[sv.key]=raw.length+':'+ccHashStr(raw);
     }
     sent._at=Date.now();
@@ -224,6 +233,7 @@ function ccSaveMakeRoom(own, level){
     if(!k || k===own) return;
     try{
       if(/_undo$/.test(k)){
+        const u=localStorage.getItem(k); if(u && u.length<200) return;   // метка снимка в IndexedDB: места не держит
         if(level>=2 || k!==own+'_undo'){ localStorage.removeItem(k); freed=true; }
         return;
       }
@@ -337,10 +347,13 @@ function careerSave(){
      миллион символов (журнал игроков, PR, деньги, Мейджор), и слотов несколько. Сжатый сейв (lz-string)
      в ~7 раз меньше; пишется только когда обычный не влез, чтобы пробы и инструменты читали JSON как
      раньше. Обрезка (CC_SAVE_TRIM) — уже после сжатия. */
-  let lz=false, room=0;
+  let lz=false, room=0, idb=false;
   for(let step=0; step<=CC_SAVE_TRIM.length; step++){
     try{
       const json=JSON.stringify(CAREER);
+      // Слот уже в IndexedDB (ccIdbSaveOwn) — туда же, без сжатия и без проб localStorage.
+      if(CC_IDB_ON[key]){ ccLzDrop(key); if(!ccIdbSaveOwn(key, json, CAREER)){ const q=new Error('quota'); q.name='QuotaExceededError'; throw q; } }
+      else {
       if(!lz && CC_LZ_ON[key] && typeof LZString!=='undefined') lz=true;   // этот слот уже не влезал — сразу в сжатие
       if(!lz){ try{ localStorage.setItem(key, json); ccLzDrop(key); }
                catch(e1){ if(!/quota|exceed/i.test(String(e1&&e1.name||e1)) || typeof LZString==='undefined') throw e1; lz=true; } }
@@ -351,6 +364,7 @@ function careerSave(){
           ccLzPut(key, json, z=>{ try{ localStorage.setItem(key, CC_SAVE_LZ+z); }
                                   catch(e2){ CC_LZ_SYNC=true; if(CAREER && !CAREER._mgr && LS_SLOT(ccSlotMine())===key) careerSave(); } });
         else { ccLzDrop(key); localStorage.setItem(key, CC_SAVE_LZ+LZString.compressToUTF16(json)); CC_LZ_ON[key]=1; }
+      }
       }
       try{ if(!CC_TAB_ID) CC_TAB_ID=Math.random().toString(36).slice(2, 10); CC_SAVE_N=(CC_SAVE_N||0)+1;
            const mk=CC_TAB_ID+':'+CC_SAVE_N; localStorage.setItem(ccSaveMarkKey(), mk); CC_SAVE_MARK=mk; }catch(e){}
@@ -367,6 +381,11 @@ function careerSave(){
       let made=false;
       while(room<2 && !made){ room++; made=ccSaveMakeRoom(key, room); }
       if(made){ step--; continue; }
+      // Дальше localStorage только резать — сначала в IndexedDB, свой слот и чужие большие.
+      if(!idb && !CC_IDB_ON[key] && typeof indexedDB!=='undefined'){
+        idb=true; try{ ccIdbParkOthers(key); }catch(e2){}
+        CC_IDB_ON[key]=1; step--; continue;
+      }
       if(step===CC_SAVE_TRIM.length) break;
       if(!CC_SAVE_TRIM[step](CAREER.career)) continue;
     }
@@ -753,6 +772,7 @@ function careerCard(raw){
 }
 
 function openCareerHub(){
+  if(ccSlotParkedWait(openCareerHub)) return;
   CH_MONTH=null;   // календарь закрыт вместе с прошлым визитом; см. careerTab
   if(!careerLoad()){
     // Нечитаемый сейв — не повод создавать карьеру поверх него (см. CC_LOAD_BAD).
@@ -787,6 +807,7 @@ function careerEntry(direct){
      карьера обязана открыться и без сети. localStorage держит последнее
      известное состояние команды, а 'state' от сервера приедет и перепишет его
      через ccApplyTeamState. См. ccMpBoot. */
+  if(ccSlotParkedWait(()=>careerEntry(direct))) return;
   if(careerExists()){ careerLoad(); careerMigrateClock(); careerMigrateMoney(); careerMigrateOrg(); careerMigrateOwnClub(); ccMpBoot(); openCareerHub(); return; }
   // The slot the tile opens is empty, but another one may not be — that is what
   // switching careers looks like from here, so ask rather than start a third.

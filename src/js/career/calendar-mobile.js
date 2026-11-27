@@ -318,6 +318,16 @@ function ccUndoSnap(){
   const day=careerToday(), key=ccUndoKey();
   if(CC_LZ_Q[key] && CC_LZ_Q[key].day===day) return;
   try{ const old=JSON.parse(localStorage.getItem(key)||'null'); if(old && old.day===day) return; }catch(e){}
+  /* Снимок в IndexedDB, в localStorage только метка дня. В localStorage снимок
+     удалялся первым, когда не хватало места на сейв (ccSaveMakeRoom), и откат
+     был в одной карьере и пропадал в другой. */
+  if(typeof indexedDB!=='undefined'){
+    const data=JSON.stringify(CAREER);
+    // Метка сразу: чтение снимка (ccIdbGet) встаёт в очередь базы после этой записи.
+    try{ localStorage.setItem(key, JSON.stringify({day:day, idb:1, data:'idb'})); }catch(e){ return; }
+    ccIdbPut(key, data).catch(()=>{ try{ localStorage.removeItem(key); }catch(e){} });
+    return;
+  }
   // Сжатие в воркере, как у сейва (ccLzPut): снимок снят сейчас, на диск ляжет, когда досчитается.
   try{ localStorage.removeItem(key);
        ccLzPut(key, JSON.stringify(CAREER), z=>{ try{ localStorage.setItem(key, JSON.stringify({day:day, data:CC_SAVE_LZ+z})); }catch(e){ try{ localStorage.removeItem(key); }catch(e2){} } });
@@ -335,9 +345,20 @@ function ccUndoInfo(){
 function ccUndoPlayed(day){ try{ return (CAREER.career.log||[]).some(x=>x && x.day===day); }catch(e){ return false; } }
 function ccUndoRestore(u){
   try{ if(u.data==='pend'){ ccLzFlush(ccUndoKey()); u=JSON.parse(localStorage.getItem(ccUndoKey())||'null'); if(!u || !u.data) return; } }catch(e){ return; }
-  try{ CC_LZ_Q={}; localStorage.setItem(LS_SLOT(ccSlotMine()), u.data); }catch(e){ return; }
-  if(ccUndoShared()) try{ localStorage.setItem(ccUndoKey()+'go', u.day); }catch(e){}
-  location.reload();
+  // Снимок в базе: дочитать и вернуться сюда же с данными.
+  if(u.idb){ ccIdbGet(ccUndoKey()).then(d=>{ if(d) ccUndoRestore({day:u.day, data:d}); }, ()=>{}); return; }
+  const key=LS_SLOT(ccSlotMine());
+  const go=()=>{ if(ccUndoShared()) try{ localStorage.setItem(ccUndoKey()+'go', u.day); }catch(e){} location.reload(); };
+  // Слот в IndexedDB: снимок туда же, перезагрузка после записи.
+  if(CC_IDB_ON[key]){ CC_LZ_Q={}; CC_IDB_MEM[key]=u.data; ccIdbPut(key, u.data).then(go, ()=>{}); return; }
+  try{ CC_LZ_Q={}; localStorage.setItem(key, u.data); }
+  catch(e){
+    // Снимок не влез в localStorage — слот в базу, как ccIdbSaveOwn.
+    let s=null; try{ s=ccSaveParse(u.data); }catch(e2){}
+    if(!s || typeof indexedDB==='undefined') return;
+    CC_LZ_Q={}; ccIdbSaveOwn(key, u.data, s); ccIdbPut(key, u.data).then(go, ()=>{}); return;
+  }
+  go();
 }
 function ccUndoAskRestore(){
   const u=ccUndoInfo(); if(!u) return;

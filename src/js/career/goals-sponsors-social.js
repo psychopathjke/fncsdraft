@@ -2699,6 +2699,8 @@ function ccMoney(n){
   return LANG==="fr" ? v.toLocaleString("fr-FR")+" $" : "$"+v.toLocaleString("en-US");
 }
 // A plain count — no currency, same grouping rule.
+// Очки в кадре: сумма недель бывает дробной (57.599999999999994), показываем до десятых.
+function ccShotPts(v){ return typeof v==='number' ? ccNum(Math.round(v*10)/10) : (v==null ? '' : v); }
 function ccNum(n){
   return (Number(n)||0).toLocaleString(LANG==="fr" ? "fr-FR" : "en-US");
 }
@@ -3041,7 +3043,7 @@ function ccShotLookHTML(tbl){
   const meK=tbl.me ? hKey(tbl.me) : null;
   const line=(r, extra)=>{
     const cls=(r.p===1?' win':'')+(meK && hKey(r.n)===meK ? ' me' : '')+(tbl.cut && r.p===tbl.cut ? ' cut' : '')+(extra||'');
-    return `<div class="x-shot-r${cls}"><i>#${r.p}</i><b>${flags(r)}${esc(r.n)}</b><em>${r.s}</em>`+
+    return `<div class="x-shot-r${cls}"><i>#${r.p}</i><b>${flags(r)}${esc(r.n)}</b><em>${ccShotPts(r.s)}</em>`+
       `<u>${r.m!=null?r.m:''}</u><u>${r.w!=null?r.w:''}</u><u>${r.e!=null?r.e:''}</u></div>`;
   };
   // Своя строка внизу — только когда её нет в кадре, как в живой таблице.
@@ -3075,7 +3077,7 @@ function ccShotHTML(tbl){
     const cls=(r.p===1?' win':'')+(tbl.me && hKey(r.n)===hKey(tbl.me) ? ' me' : '')+(extra||'');
     return `<div class="x-shot-r${cls}"><i>#${r.p}</i><b>${flags(r)}${esc(r.n)}</b>`+
       (wide ? `<u>${r.m!=null?r.m:''}</u><u>${r.w!=null?r.w:''}</u><u>${r.e!=null?r.e:''}</u>` : '')+
-      `<em>${r.s}</em></div>`;
+      `<em>${ccShotPts(r.s)}</em></div>`;
   };
   const rows=tbl.rows.map(r=>line(r, '')).join('')+
     (tbl.pin ? line(tbl.pin, ' pin') : '');
