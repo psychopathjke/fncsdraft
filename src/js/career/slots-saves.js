@@ -16,11 +16,111 @@ function ccSlotUse(n){
   CC_SLOT_TAB=n;
   try{ localStorage.setItem(LS_ACTIVE, String(n)); }catch(e){}
 }
+/* СЛОТ В INDEXEDDB. Safari даёт localStorage около 5 МБ, а карьера в 14 сезонов
+   даже сжатой занимает почти всё: новая карьера рядом уже не сохранялась
+   (QuotaExceededError на iPhone). Когда сжатие и чистка не помогли, слот уезжает
+   в IndexedDB, где места на порядки больше, а в localStorage остаётся заглушка
+   IDB1 с полями плитки. Чужой слот сначала пишется в базу и только после записи
+   заменяется заглушкой. База читается в память при загрузке страницы.
+   Сторож tools/check-career-save-idb.js. */
+var CC_IDB_STUB='IDB1', CC_IDB_MEM={}, CC_IDB_ON={}, CC_IDB_READY=null, CC_IDB_DB=null;
+function ccIdbDb(){
+  if(!CC_IDB_DB) CC_IDB_DB=new Promise((res, rej)=>{
+    const r=indexedDB.open('fncsdraft', 1);
+    r.onupgradeneeded=()=>r.result.createObjectStore('slots');
+    r.onsuccess=()=>res(r.result); r.onerror=()=>rej(r.error);
+  }).catch(e=>{ CC_IDB_DB=null; throw e; });
+  return CC_IDB_DB;
+}
+function ccIdbTx(fn){
+  return ccIdbDb().then(db=>new Promise((res, rej)=>{
+    const t=db.transaction('slots', 'readwrite'); fn(t.objectStore('slots'));
+    t.oncomplete=()=>res(); t.onerror=t.onabort=()=>rej(t.error);
+  }));
+}
+function ccIdbPut(k, v){ return ccIdbTx(st=>st.put(v, k)); }
+function ccIdbGet(k){
+  return ccIdbDb().then(db=>new Promise((res, rej)=>{
+    const rq=db.transaction('slots', 'readonly').objectStore('slots').get(k);
+    rq.onsuccess=()=>res(rq.result); rq.onerror=()=>rej(rq.error);
+  }));
+}
+function ccIdbDel(k){ delete CC_IDB_MEM[k]; delete CC_IDB_ON[k]; return ccIdbTx(st=>st.delete(k)).catch(()=>{}); }
+function ccIdbIsStub(v){ return !!v && v.slice(0, 4)===CC_IDB_STUB; }
+// Запись базы без заглушки в localStorage устарела: слот с тех пор писался туда целиком.
+function ccIdbLoadAll(){
+  if(CC_IDB_READY) return CC_IDB_READY;
+  if(typeof indexedDB==='undefined') return (CC_IDB_READY=Promise.resolve());
+  CC_IDB_READY=ccIdbDb().then(db=>new Promise(res=>{
+    const t=db.transaction('slots', 'readonly'), rq=t.objectStore('slots').openCursor(), stale=[];
+    rq.onsuccess=()=>{ const c=rq.result; if(!c) return;
+      let ls=null; try{ ls=localStorage.getItem(c.key); }catch(e){}
+      // Снимок отката (ccUndoSnap) живёт, пока рядом есть его метка; в память не читается.
+      if(/_undo$/.test(c.key)){ if(!(ls && ls.indexOf('"idb"')>=0)) stale.push(c.key); }
+      else if(ccIdbIsStub(ls)){ CC_IDB_MEM[c.key]=c.value; CC_IDB_ON[c.key]=1; } else stale.push(c.key);
+      c.continue(); };
+    t.oncomplete=t.onerror=t.onabort=()=>{ stale.forEach(ccIdbDel); res(); };
+  })).catch(()=>{});
+  return CC_IDB_READY;
+}
+try{ ccIdbLoadAll(); }catch(e){}
+// Сырой сейв слота: из localStorage, а за заглушкой — из базы.
+function ccSlotRaw(key){
+  const v=localStorage.getItem(key);
+  return (ccIdbIsStub(v) && CC_IDB_MEM[key]!=null) ? CC_IDB_MEM[key] : v;
+}
+// Заглушка: то, что читают плитка слота, главная и профиль без загрузки карьеры.
+function ccIdbStubOf(s){
+  const small=o=>{ const r={}; Object.keys(o||{}).forEach(k=>{ const v=o[k];
+    if(v==null || typeof v!=='object') r[k]=v; else { try{ if(JSON.stringify(v).length<600) r[k]=v; }catch(e){} } }); return r; };
+  return CC_IDB_STUB+JSON.stringify({player:s.player||null, career:small(s.career),
+    partners:(s.partners||[]).map(p=>p ? {handle:p.handle||null, nick:p.nick||null} : null),
+    org:s.org ? {name:s.org.name||null} : null});
+}
+// Свой слот в базу: синхронно память и заглушка, база — следом.
+function ccIdbSaveOwn(key, json, save){
+  if(typeof indexedDB==='undefined') return false;
+  const stub=ccIdbStubOf(save);
+  try{ localStorage.setItem(key, stub); }
+  catch(e){ try{ localStorage.removeItem(key); localStorage.setItem(key, stub); }catch(e2){ return false; } }
+  CC_IDB_MEM[key]=json; CC_IDB_ON[key]=1;
+  ccIdbPut(key, json).catch(e=>{ CC_SAVE_FAIL='IndexedDB '+String(e&&e.name||e); try{ careerSaveWarn(); }catch(e2){} });
+  return true;
+}
+// Чужие большие слоты — в базу, освобождая localStorage. Без потерь: заглушка только после записи.
+function ccIdbParkOthers(own){
+  if(typeof indexedDB==='undefined') return;
+  for(let n=1; n<=CC_SLOTS; n++){
+    const k=LS_SLOT(n); if(k===own) continue;
+    let v=null; try{ v=localStorage.getItem(k); }catch(e){}
+    if(!v || v.length<100000 || ccIdbIsStub(v)) continue;
+    let s=null; try{ s=ccSaveParse(v); }catch(e){}
+    if(!s || !s.career) continue;
+    const stub=ccIdbStubOf(s);
+    ccIdbPut(k, v).then(()=>{
+      try{ if(localStorage.getItem(k)!==v) return; CC_IDB_MEM[k]=v; CC_IDB_ON[k]=1; localStorage.setItem(k, stub); }catch(e){}
+    }).catch(()=>{});
+  }
+}
+/* Слот вкладки в базе, а база ещё не прочитана: подождать и повторить вход.
+   Иначе заглушку приняли бы за отсутствие карьеры и предложили создать новую поверх. */
+function ccSlotParkedWait(again){
+  const key=LS_SLOT(ccSlotMine());
+  let v=null; try{ v=localStorage.getItem(key); }catch(e){}
+  if(!ccIdbIsStub(v) || CC_IDB_MEM[key]!=null) return false;
+  ccIdbLoadAll().then(()=>{
+    if(CC_IDB_MEM[key]!=null) return again();
+    openCareerSlots();
+    try{ ccTell(L().ccSaveUnread || 'This career save could not be read. It is kept aside; start the new career in another slot.'); }catch(e){}
+  });
+  return true;
+}
 function ccSlotRead(n){
-  try{ ccLzFlush(LS_SLOT(n)); return ccSaveParse(localStorage.getItem(LS_SLOT(n))); }catch(e){ return null; }
+  try{ ccLzFlush(LS_SLOT(n)); return ccSaveParse(ccSlotRaw(LS_SLOT(n))); }catch(e){ return null; }
 }
 function ccSlotWipe(n){
   try{ ccLzDrop(LS_SLOT(n)); localStorage.removeItem(LS_SLOT(n)); }catch(e){}
+  try{ if(typeof indexedDB!=='undefined'){ ccIdbDel(LS_SLOT(n)); ccIdbDel(LS_SLOT(n)+'_undo'); } }catch(e){}
 }
 // What a slot says about itself on the picker, without loading it.
 // Старый сейв без флага: годы без дивизионных кубков по сезону дня — до S18 (2019–2021) и
@@ -94,7 +194,8 @@ function careerLoad(){
   CC_SLOT_TAB=ccSlotMine();   // слот этой вкладки — с первой загрузки
   CC_LOAD_BAD=null;
   let raw=null;
-  try{ ccLzFlush(LS_SLOT(CC_SLOT_TAB)); raw=localStorage.getItem(LS_SLOT(CC_SLOT_TAB)); CAREER=ccSaveParse(raw); }catch(e){ CAREER=null; }
+  try{ ccLzFlush(LS_SLOT(CC_SLOT_TAB)); raw=ccSlotRaw(LS_SLOT(CC_SLOT_TAB)); CAREER=ccSaveParse(raw); }catch(e){ CAREER=null; }
+  if(CAREER && CAREER._parked){ CAREER=null; return false; }   // база не прочитана: см. ccSlotParkedWait
   try{ ccSaveMarkAdopt(); }catch(e){}   // отметка записи слота — своя с этой загрузки (см. ccSaveStale)
   if(raw && !CAREER){
     CC_LOAD_BAD={slot:CC_SLOT_TAB};

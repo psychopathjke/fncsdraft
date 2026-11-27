@@ -124034,6 +124034,7 @@ const LS_SLOT=n=>n===1 ? LS_CAREER : 'fncsdraft_career_s'+n;
 const CC_SAVE_LZ='LZ1';
 function ccSaveParse(str){
   if(!str) return null;
+  if(str.slice(0, 4)==='IDB1'){ const o=JSON.parse(str.slice(4)); o._parked=true; return o; }   // заглушка слота в IndexedDB
   if(str.slice(0, 3)===CC_SAVE_LZ){ const raw=(typeof LZString!=='undefined') ? LZString.decompressFromUTF16(str.slice(3)) : null; return raw ? JSON.parse(raw) : null; }
   return JSON.parse(str);
 }
@@ -124056,11 +124057,111 @@ function ccSlotUse(n){
   CC_SLOT_TAB=n;
   try{ localStorage.setItem(LS_ACTIVE, String(n)); }catch(e){}
 }
+/* СЛОТ В INDEXEDDB. Safari даёт localStorage около 5 МБ, а карьера в 14 сезонов
+   даже сжатой занимает почти всё: новая карьера рядом уже не сохранялась
+   (QuotaExceededError на iPhone). Когда сжатие и чистка не помогли, слот уезжает
+   в IndexedDB, где места на порядки больше, а в localStorage остаётся заглушка
+   IDB1 с полями плитки. Чужой слот сначала пишется в базу и только после записи
+   заменяется заглушкой. База читается в память при загрузке страницы.
+   Сторож tools/check-career-save-idb.js. */
+var CC_IDB_STUB='IDB1', CC_IDB_MEM={}, CC_IDB_ON={}, CC_IDB_READY=null, CC_IDB_DB=null;
+function ccIdbDb(){
+  if(!CC_IDB_DB) CC_IDB_DB=new Promise((res, rej)=>{
+    const r=indexedDB.open('fncsdraft', 1);
+    r.onupgradeneeded=()=>r.result.createObjectStore('slots');
+    r.onsuccess=()=>res(r.result); r.onerror=()=>rej(r.error);
+  }).catch(e=>{ CC_IDB_DB=null; throw e; });
+  return CC_IDB_DB;
+}
+function ccIdbTx(fn){
+  return ccIdbDb().then(db=>new Promise((res, rej)=>{
+    const t=db.transaction('slots', 'readwrite'); fn(t.objectStore('slots'));
+    t.oncomplete=()=>res(); t.onerror=t.onabort=()=>rej(t.error);
+  }));
+}
+function ccIdbPut(k, v){ return ccIdbTx(st=>st.put(v, k)); }
+function ccIdbGet(k){
+  return ccIdbDb().then(db=>new Promise((res, rej)=>{
+    const rq=db.transaction('slots', 'readonly').objectStore('slots').get(k);
+    rq.onsuccess=()=>res(rq.result); rq.onerror=()=>rej(rq.error);
+  }));
+}
+function ccIdbDel(k){ delete CC_IDB_MEM[k]; delete CC_IDB_ON[k]; return ccIdbTx(st=>st.delete(k)).catch(()=>{}); }
+function ccIdbIsStub(v){ return !!v && v.slice(0, 4)===CC_IDB_STUB; }
+// Запись базы без заглушки в localStorage устарела: слот с тех пор писался туда целиком.
+function ccIdbLoadAll(){
+  if(CC_IDB_READY) return CC_IDB_READY;
+  if(typeof indexedDB==='undefined') return (CC_IDB_READY=Promise.resolve());
+  CC_IDB_READY=ccIdbDb().then(db=>new Promise(res=>{
+    const t=db.transaction('slots', 'readonly'), rq=t.objectStore('slots').openCursor(), stale=[];
+    rq.onsuccess=()=>{ const c=rq.result; if(!c) return;
+      let ls=null; try{ ls=localStorage.getItem(c.key); }catch(e){}
+      // Снимок отката (ccUndoSnap) живёт, пока рядом есть его метка; в память не читается.
+      if(/_undo$/.test(c.key)){ if(!(ls && ls.indexOf('"idb"')>=0)) stale.push(c.key); }
+      else if(ccIdbIsStub(ls)){ CC_IDB_MEM[c.key]=c.value; CC_IDB_ON[c.key]=1; } else stale.push(c.key);
+      c.continue(); };
+    t.oncomplete=t.onerror=t.onabort=()=>{ stale.forEach(ccIdbDel); res(); };
+  })).catch(()=>{});
+  return CC_IDB_READY;
+}
+try{ ccIdbLoadAll(); }catch(e){}
+// Сырой сейв слота: из localStorage, а за заглушкой — из базы.
+function ccSlotRaw(key){
+  const v=localStorage.getItem(key);
+  return (ccIdbIsStub(v) && CC_IDB_MEM[key]!=null) ? CC_IDB_MEM[key] : v;
+}
+// Заглушка: то, что читают плитка слота, главная и профиль без загрузки карьеры.
+function ccIdbStubOf(s){
+  const small=o=>{ const r={}; Object.keys(o||{}).forEach(k=>{ const v=o[k];
+    if(v==null || typeof v!=='object') r[k]=v; else { try{ if(JSON.stringify(v).length<600) r[k]=v; }catch(e){} } }); return r; };
+  return CC_IDB_STUB+JSON.stringify({player:s.player||null, career:small(s.career),
+    partners:(s.partners||[]).map(p=>p ? {handle:p.handle||null, nick:p.nick||null} : null),
+    org:s.org ? {name:s.org.name||null} : null});
+}
+// Свой слот в базу: синхронно память и заглушка, база — следом.
+function ccIdbSaveOwn(key, json, save){
+  if(typeof indexedDB==='undefined') return false;
+  const stub=ccIdbStubOf(save);
+  try{ localStorage.setItem(key, stub); }
+  catch(e){ try{ localStorage.removeItem(key); localStorage.setItem(key, stub); }catch(e2){ return false; } }
+  CC_IDB_MEM[key]=json; CC_IDB_ON[key]=1;
+  ccIdbPut(key, json).catch(e=>{ CC_SAVE_FAIL='IndexedDB '+String(e&&e.name||e); try{ careerSaveWarn(); }catch(e2){} });
+  return true;
+}
+// Чужие большие слоты — в базу, освобождая localStorage. Без потерь: заглушка только после записи.
+function ccIdbParkOthers(own){
+  if(typeof indexedDB==='undefined') return;
+  for(let n=1; n<=CC_SLOTS; n++){
+    const k=LS_SLOT(n); if(k===own) continue;
+    let v=null; try{ v=localStorage.getItem(k); }catch(e){}
+    if(!v || v.length<100000 || ccIdbIsStub(v)) continue;
+    let s=null; try{ s=ccSaveParse(v); }catch(e){}
+    if(!s || !s.career) continue;
+    const stub=ccIdbStubOf(s);
+    ccIdbPut(k, v).then(()=>{
+      try{ if(localStorage.getItem(k)!==v) return; CC_IDB_MEM[k]=v; CC_IDB_ON[k]=1; localStorage.setItem(k, stub); }catch(e){}
+    }).catch(()=>{});
+  }
+}
+/* Слот вкладки в базе, а база ещё не прочитана: подождать и повторить вход.
+   Иначе заглушку приняли бы за отсутствие карьеры и предложили создать новую поверх. */
+function ccSlotParkedWait(again){
+  const key=LS_SLOT(ccSlotMine());
+  let v=null; try{ v=localStorage.getItem(key); }catch(e){}
+  if(!ccIdbIsStub(v) || CC_IDB_MEM[key]!=null) return false;
+  ccIdbLoadAll().then(()=>{
+    if(CC_IDB_MEM[key]!=null) return again();
+    openCareerSlots();
+    try{ ccTell(L().ccSaveUnread || 'This career save could not be read. It is kept aside; start the new career in another slot.'); }catch(e){}
+  });
+  return true;
+}
 function ccSlotRead(n){
-  try{ ccLzFlush(LS_SLOT(n)); return ccSaveParse(localStorage.getItem(LS_SLOT(n))); }catch(e){ return null; }
+  try{ ccLzFlush(LS_SLOT(n)); return ccSaveParse(ccSlotRaw(LS_SLOT(n))); }catch(e){ return null; }
 }
 function ccSlotWipe(n){
   try{ ccLzDrop(LS_SLOT(n)); localStorage.removeItem(LS_SLOT(n)); }catch(e){}
+  try{ if(typeof indexedDB!=='undefined'){ ccIdbDel(LS_SLOT(n)); ccIdbDel(LS_SLOT(n)+'_undo'); } }catch(e){}
 }
 // What a slot says about itself on the picker, without loading it.
 // Старый сейв без флага: годы без дивизионных кубков по сезону дня — до S18 (2019–2021) и
@@ -124134,7 +124235,8 @@ function careerLoad(){
   CC_SLOT_TAB=ccSlotMine();   // слот этой вкладки — с первой загрузки
   CC_LOAD_BAD=null;
   let raw=null;
-  try{ ccLzFlush(LS_SLOT(CC_SLOT_TAB)); raw=localStorage.getItem(LS_SLOT(CC_SLOT_TAB)); CAREER=ccSaveParse(raw); }catch(e){ CAREER=null; }
+  try{ ccLzFlush(LS_SLOT(CC_SLOT_TAB)); raw=ccSlotRaw(LS_SLOT(CC_SLOT_TAB)); CAREER=ccSaveParse(raw); }catch(e){ CAREER=null; }
+  if(CAREER && CAREER._parked){ CAREER=null; return false; }   // база не прочитана: см. ccSlotParkedWait
   try{ ccSaveMarkAdopt(); }catch(e){}   // отметка записи слота — своя с этой загрузки (см. ccSaveStale)
   if(raw && !CAREER){
     CC_LOAD_BAD={slot:CC_SLOT_TAB};
@@ -127808,9 +127910,11 @@ async function ccCloudPush(){
   CC_CLOUD_BUSY=true;
   const sent=ccCloudSent();
   try{
+    // Слот в IndexedDB: в облако уходит сейв из базы, а не заглушка (ccSlotRaw).
+    try{ await ccIdbLoadAll(); }catch(e){}
     const keys=ccCloudKeys();
     for(const k of keys){
-      const raw=localStorage.getItem(k)||'';
+      const raw=ccSlotRaw(k)||'';
       const sig=raw.length+':'+ccHashStr(raw);
       if(sent[k]===sig) continue;
       // Профиль — без права уронить отправку карьер: сервер до 30.10 этот ключ не знает и отвечает «key».
@@ -127920,7 +128024,14 @@ async function ccCloudRestore(){
     for(const sv of saves){
       const j=await ccCloudPost({code, op:'get', key:sv.key});
       const raw=await ccCloudUnpack(j.data);
-      localStorage.setItem(sv.key, raw);
+      // Карьера не влезла в localStorage (iPhone, ~5 МБ) — в IndexedDB с заглушкой, как ccIdbSaveOwn.
+      try{ localStorage.setItem(sv.key, raw); if(CC_IDB_ON[sv.key]) ccIdbDel(sv.key); }
+      catch(e1){
+        const s=/^fncsdraft_career/.test(sv.key) && typeof indexedDB!=='undefined' ? ccSaveParse(raw) : null;
+        if(!s || !s.career) throw e1;
+        await ccIdbPut(sv.key, raw); CC_IDB_MEM[sv.key]=raw; CC_IDB_ON[sv.key]=1;
+        try{ localStorage.setItem(sv.key, ccIdbStubOf(s)); }catch(e2){ localStorage.removeItem(sv.key); localStorage.setItem(sv.key, ccIdbStubOf(s)); }
+      }
       sent[sv.key]=raw.length+':'+ccHashStr(raw);
     }
     sent._at=Date.now();
@@ -127971,6 +128082,7 @@ function ccSaveMakeRoom(own, level){
     if(!k || k===own) return;
     try{
       if(/_undo$/.test(k)){
+        const u=localStorage.getItem(k); if(u && u.length<200) return;   // метка снимка в IndexedDB: места не держит
         if(level>=2 || k!==own+'_undo'){ localStorage.removeItem(k); freed=true; }
         return;
       }
@@ -128084,10 +128196,13 @@ function careerSave(){
      миллион символов (журнал игроков, PR, деньги, Мейджор), и слотов несколько. Сжатый сейв (lz-string)
      в ~7 раз меньше; пишется только когда обычный не влез, чтобы пробы и инструменты читали JSON как
      раньше. Обрезка (CC_SAVE_TRIM) — уже после сжатия. */
-  let lz=false, room=0;
+  let lz=false, room=0, idb=false;
   for(let step=0; step<=CC_SAVE_TRIM.length; step++){
     try{
       const json=JSON.stringify(CAREER);
+      // Слот уже в IndexedDB (ccIdbSaveOwn) — туда же, без сжатия и без проб localStorage.
+      if(CC_IDB_ON[key]){ ccLzDrop(key); if(!ccIdbSaveOwn(key, json, CAREER)){ const q=new Error('quota'); q.name='QuotaExceededError'; throw q; } }
+      else {
       if(!lz && CC_LZ_ON[key] && typeof LZString!=='undefined') lz=true;   // этот слот уже не влезал — сразу в сжатие
       if(!lz){ try{ localStorage.setItem(key, json); ccLzDrop(key); }
                catch(e1){ if(!/quota|exceed/i.test(String(e1&&e1.name||e1)) || typeof LZString==='undefined') throw e1; lz=true; } }
@@ -128098,6 +128213,7 @@ function careerSave(){
           ccLzPut(key, json, z=>{ try{ localStorage.setItem(key, CC_SAVE_LZ+z); }
                                   catch(e2){ CC_LZ_SYNC=true; if(CAREER && !CAREER._mgr && LS_SLOT(ccSlotMine())===key) careerSave(); } });
         else { ccLzDrop(key); localStorage.setItem(key, CC_SAVE_LZ+LZString.compressToUTF16(json)); CC_LZ_ON[key]=1; }
+      }
       }
       try{ if(!CC_TAB_ID) CC_TAB_ID=Math.random().toString(36).slice(2, 10); CC_SAVE_N=(CC_SAVE_N||0)+1;
            const mk=CC_TAB_ID+':'+CC_SAVE_N; localStorage.setItem(ccSaveMarkKey(), mk); CC_SAVE_MARK=mk; }catch(e){}
@@ -128114,6 +128230,11 @@ function careerSave(){
       let made=false;
       while(room<2 && !made){ room++; made=ccSaveMakeRoom(key, room); }
       if(made){ step--; continue; }
+      // Дальше localStorage только резать — сначала в IndexedDB, свой слот и чужие большие.
+      if(!idb && !CC_IDB_ON[key] && typeof indexedDB!=='undefined'){
+        idb=true; try{ ccIdbParkOthers(key); }catch(e2){}
+        CC_IDB_ON[key]=1; step--; continue;
+      }
       if(step===CC_SAVE_TRIM.length) break;
       if(!CC_SAVE_TRIM[step](CAREER.career)) continue;
     }
@@ -128500,6 +128621,7 @@ function careerCard(raw){
 }
 
 function openCareerHub(){
+  if(ccSlotParkedWait(openCareerHub)) return;
   CH_MONTH=null;   // календарь закрыт вместе с прошлым визитом; см. careerTab
   if(!careerLoad()){
     // Нечитаемый сейв — не повод создавать карьеру поверх него (см. CC_LOAD_BAD).
@@ -128534,6 +128656,7 @@ function careerEntry(direct){
      карьера обязана открыться и без сети. localStorage держит последнее
      известное состояние команды, а 'state' от сервера приедет и перепишет его
      через ccApplyTeamState. См. ccMpBoot. */
+  if(ccSlotParkedWait(()=>careerEntry(direct))) return;
   if(careerExists()){ careerLoad(); careerMigrateClock(); careerMigrateMoney(); careerMigrateOrg(); careerMigrateOwnClub(); ccMpBoot(); openCareerHub(); return; }
   // The slot the tile opens is empty, but another one may not be — that is what
   // switching careers looks like from here, so ask rather than start a third.
@@ -148128,6 +148251,8 @@ function ccMoney(n){
   return LANG==="fr" ? v.toLocaleString("fr-FR")+" $" : "$"+v.toLocaleString("en-US");
 }
 // A plain count — no currency, same grouping rule.
+// Очки в кадре: сумма недель бывает дробной (57.599999999999994), показываем до десятых.
+function ccShotPts(v){ return typeof v==='number' ? ccNum(Math.round(v*10)/10) : (v==null ? '' : v); }
 function ccNum(n){
   return (Number(n)||0).toLocaleString(LANG==="fr" ? "fr-FR" : "en-US");
 }
@@ -148470,7 +148595,7 @@ function ccShotLookHTML(tbl){
   const meK=tbl.me ? hKey(tbl.me) : null;
   const line=(r, extra)=>{
     const cls=(r.p===1?' win':'')+(meK && hKey(r.n)===meK ? ' me' : '')+(tbl.cut && r.p===tbl.cut ? ' cut' : '')+(extra||'');
-    return `<div class="x-shot-r${cls}"><i>#${r.p}</i><b>${flags(r)}${esc(r.n)}</b><em>${r.s}</em>`+
+    return `<div class="x-shot-r${cls}"><i>#${r.p}</i><b>${flags(r)}${esc(r.n)}</b><em>${ccShotPts(r.s)}</em>`+
       `<u>${r.m!=null?r.m:''}</u><u>${r.w!=null?r.w:''}</u><u>${r.e!=null?r.e:''}</u></div>`;
   };
   // Своя строка внизу — только когда её нет в кадре, как в живой таблице.
@@ -148504,7 +148629,7 @@ function ccShotHTML(tbl){
     const cls=(r.p===1?' win':'')+(tbl.me && hKey(r.n)===hKey(tbl.me) ? ' me' : '')+(extra||'');
     return `<div class="x-shot-r${cls}"><i>#${r.p}</i><b>${flags(r)}${esc(r.n)}</b>`+
       (wide ? `<u>${r.m!=null?r.m:''}</u><u>${r.w!=null?r.w:''}</u><u>${r.e!=null?r.e:''}</u>` : '')+
-      `<em>${r.s}</em></div>`;
+      `<em>${ccShotPts(r.s)}</em></div>`;
   };
   const rows=tbl.rows.map(r=>line(r, '')).join('')+
     (tbl.pin ? line(tbl.pin, ' pin') : '');
@@ -156130,7 +156255,7 @@ function careerD1TablePost(){
   const rows=careerTableRows();
   const t=careerTable();
   if(!rows.length || (t.weeks||0)<3) return;
-  const shot=rows.slice(0,5).map((r,i)=>({p:i+1, n:r.name, s:r.pts}));
+  const shot=rows.slice(0,5).map((r,i)=>({p:i+1, n:r.name, s:Math.round((r.pts||0)*10)/10}));
   careerNews('flat', 'ccNewsD1Table', [t.weeks],
              {tbl:{div:1, cap:L().ccCongratsTable, rows:shot,
                    me:(rows.find(r=>r.you)||{}).name||null}});
@@ -160772,6 +160897,16 @@ function ccUndoSnap(){
   const day=careerToday(), key=ccUndoKey();
   if(CC_LZ_Q[key] && CC_LZ_Q[key].day===day) return;
   try{ const old=JSON.parse(localStorage.getItem(key)||'null'); if(old && old.day===day) return; }catch(e){}
+  /* Снимок в IndexedDB, в localStorage только метка дня. В localStorage снимок
+     удалялся первым, когда не хватало места на сейв (ccSaveMakeRoom), и откат
+     был в одной карьере и пропадал в другой. */
+  if(typeof indexedDB!=='undefined'){
+    const data=JSON.stringify(CAREER);
+    // Метка сразу: чтение снимка (ccIdbGet) встаёт в очередь базы после этой записи.
+    try{ localStorage.setItem(key, JSON.stringify({day:day, idb:1, data:'idb'})); }catch(e){ return; }
+    ccIdbPut(key, data).catch(()=>{ try{ localStorage.removeItem(key); }catch(e){} });
+    return;
+  }
   // Сжатие в воркере, как у сейва (ccLzPut): снимок снят сейчас, на диск ляжет, когда досчитается.
   try{ localStorage.removeItem(key);
        ccLzPut(key, JSON.stringify(CAREER), z=>{ try{ localStorage.setItem(key, JSON.stringify({day:day, data:CC_SAVE_LZ+z})); }catch(e){ try{ localStorage.removeItem(key); }catch(e2){} } });
@@ -160789,9 +160924,20 @@ function ccUndoInfo(){
 function ccUndoPlayed(day){ try{ return (CAREER.career.log||[]).some(x=>x && x.day===day); }catch(e){ return false; } }
 function ccUndoRestore(u){
   try{ if(u.data==='pend'){ ccLzFlush(ccUndoKey()); u=JSON.parse(localStorage.getItem(ccUndoKey())||'null'); if(!u || !u.data) return; } }catch(e){ return; }
-  try{ CC_LZ_Q={}; localStorage.setItem(LS_SLOT(ccSlotMine()), u.data); }catch(e){ return; }
-  if(ccUndoShared()) try{ localStorage.setItem(ccUndoKey()+'go', u.day); }catch(e){}
-  location.reload();
+  // Снимок в базе: дочитать и вернуться сюда же с данными.
+  if(u.idb){ ccIdbGet(ccUndoKey()).then(d=>{ if(d) ccUndoRestore({day:u.day, data:d}); }, ()=>{}); return; }
+  const key=LS_SLOT(ccSlotMine());
+  const go=()=>{ if(ccUndoShared()) try{ localStorage.setItem(ccUndoKey()+'go', u.day); }catch(e){} location.reload(); };
+  // Слот в IndexedDB: снимок туда же, перезагрузка после записи.
+  if(CC_IDB_ON[key]){ CC_LZ_Q={}; CC_IDB_MEM[key]=u.data; ccIdbPut(key, u.data).then(go, ()=>{}); return; }
+  try{ CC_LZ_Q={}; localStorage.setItem(key, u.data); }
+  catch(e){
+    // Снимок не влез в localStorage — слот в базу, как ccIdbSaveOwn.
+    let s=null; try{ s=ccSaveParse(u.data); }catch(e2){}
+    if(!s || typeof indexedDB==='undefined') return;
+    CC_LZ_Q={}; ccIdbSaveOwn(key, u.data, s); ccIdbPut(key, u.data).then(go, ()=>{}); return;
+  }
+  go();
 }
 function ccUndoAskRestore(){
   const u=ccUndoInfo(); if(!u) return;

@@ -3995,6 +3995,7 @@ const LS_SLOT=n=>n===1 ? LS_CAREER : 'fncsdraft_career_s'+n;
 const CC_SAVE_LZ='LZ1';
 function ccSaveParse(str){
   if(!str) return null;
+  if(str.slice(0, 4)==='IDB1'){ const o=JSON.parse(str.slice(4)); o._parked=true; return o; }   // заглушка слота в IndexedDB
   if(str.slice(0, 3)===CC_SAVE_LZ){ const raw=(typeof LZString!=='undefined') ? LZString.decompressFromUTF16(str.slice(3)) : null; return raw ? JSON.parse(raw) : null; }
   return JSON.parse(str);
 }

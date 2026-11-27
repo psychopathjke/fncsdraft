@@ -507,7 +507,7 @@ function careerD1TablePost(){
   const rows=careerTableRows();
   const t=careerTable();
   if(!rows.length || (t.weeks||0)<3) return;
-  const shot=rows.slice(0,5).map((r,i)=>({p:i+1, n:r.name, s:r.pts}));
+  const shot=rows.slice(0,5).map((r,i)=>({p:i+1, n:r.name, s:Math.round((r.pts||0)*10)/10}));
   careerNews('flat', 'ccNewsD1Table', [t.weeks],
              {tbl:{div:1, cap:L().ccCongratsTable, rows:shot,
                    me:(rows.find(r=>r.you)||{}).name||null}});
